@@ -1,5 +1,5 @@
 /*\
-|*|  :: pptxgen.js ::
+|*|  :: pptxgen.masters.js ::
 |*|
 |*|  A complete JavaScript PowerPoint presentation creator framework for client browsers.
 |*|  https://github.com/gitbrent/PptxGenJS
@@ -26,3 +26,26 @@
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
+
+var gObjPptxMasters = {
+	MASTER_SLIDE: {
+		title:      'Basic corp slide master',
+		isNumbered: true,
+		margin:     [ 0.5, 0.25, 1.0, 0.25 ],
+		bkgd:       'FFFFFF',
+		images:     [ { src:'images/logo_square.png', x:9.3, y:4.9, cx:0.5, cy:0.5 } ],
+		shapes:     [
+			{ type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true }
+		]
+	},
+	TITLE_SLIDE: {
+		title:      'I am the Title Slide',
+		isNumbered: false,
+		bkgd:       { src:'images/title_bkgd.png' },
+		images:     [ { src:'images/sample_logo.png', x:'7.4', y:'4.1', cx:'2', cy:'1' } ],
+		shapes:     [
+			{ type:'text', x:0.3, y:3.3, cx:5.5, cy:0.5, text:'Global IT Team', font_face:'Arial', color:'888888', font_size:20 },
+			{ type:'line', x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' }
+		]
+	}
+};
