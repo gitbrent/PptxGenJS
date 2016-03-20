@@ -9,6 +9,7 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css" media="screen">
+    <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
   </head>
   <body>
     <section class="page-header">
@@ -19,7 +20,9 @@
       <a href="https://github.com/gitbrent/PptxGenJS/tarball/master" class="btn">Download .tar.gz</a>
     </section>
 
-    <section class="main-content">
+    <!-- ====================================================================================== -->
+
+    <section id="sect-top" class="main-content">
         <h1>JavaScript PowerPoint Generator</h1>
         <h3>A complete JavaScript PowerPoint Presentation creator framework for client web browsers</h3>
         <p>By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and easily produce PowerPoint presentations with a few simple JavaScript commands.
@@ -33,11 +36,44 @@
         </p>
     </section>
 
-    <section class="main-content">
-        <code>
-            <script lang="javascript" src="dist/pptxgen.min.js"></script>
-        </code>
+    <section id="sect-setup" class="main-content">
+        <h2>Setup</h2>
+        <ul>
+            <li>Include the script tags below in your document</li>
+        </ul>
+        <div class="contprettyprint" style="background-color:white">
+            <code class="prettyprint lang-html">
+                &lt;script type="text/javascript" src="js/jquery.min.js"&gt;&lt;/script&gt;<br>
+            	&lt;script type="text/javascript" src="js/jszip.min.js"&gt;&lt;/script&gt;<br>
+                &lt;script type="text/javascript" src="js/filesaver.js"&gt;&lt;/script&gt;<br>
+                &lt;script type="text/javascript" src="js/pptxgen.min.js"&gt;&lt;/script&gt;
+            </code>
+        </div>
     </section>
+
+    <section id="sect-usage" class="main-content">
+        <h2>Usage</h2>
+        <ul>
+            <li>Basically, just create a slide and add objects</li>
+            <li>Units are inches</li>
+        </ul>
+        <div class="contprettyprint">
+            <code class="prettyprint lang-js">
+                var pptx = new PptxGenJS();<br>
+                <br>
+                var slide = pptx.addNewSlide();<br>
+                slide.addText('Hello World!', { x:0.5, y:0.7, color:'0000FF' });<br>
+                <br>
+                pptx.save('Sample Presentation');<br>
+            </code>
+        </div>
+        <div class="contExampleImg">
+            <a href="images/example-01.png"><img src="images/example-01.png" alt="example 01"></a>
+        </div>
+    </section>
+
+
+    <!-- ====================================================================================== -->
 
     <section class="main-content">
       <footer class="site-footer">

@@ -61,11 +61,11 @@ a {
 
 @media screen and (min-width: 64em) {
   .page-header {
-    padding: 5rem 6rem; } }
+    padding: 2rem 6rem; } }
 
 @media screen and (min-width: 42em) and (max-width: 64em) {
   .page-header {
-    padding: 3rem 4rem; } }
+    padding: 2rem 4rem; } }
 
 @media screen and (max-width: 42em) {
   .page-header {
@@ -115,6 +115,7 @@ a {
   color: #159957; }
 .main-content p {
   margin-bottom: 1em; }
+/*
 .main-content code {
   padding: 2px 4px;
   font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
@@ -164,6 +165,7 @@ a {
   border: 0; }
   .main-content pre code:before, .main-content pre code:after, .main-content pre tt:before, .main-content pre tt:after {
     content: normal; }
+*/
 .main-content ul, .main-content ol {
   margin-top: 0; }
 .main-content blockquote {
@@ -202,6 +204,21 @@ a {
   margin: 1rem 0;
   background-color: #eff0f1;
   border: 0; }
+
+/* gitbrent */
+.contprettyprint {
+  background-color: white;
+  padding: 10px 20px;
+}
+.contExampleImg {
+    padding: 20px;
+    text-align: center;
+}
+.contExampleImg img {
+    box-shadow: 12px 12px 25px rgba(0,0,0,0.5);
+    width: 50%;
+    max-width: 50%;
+}
 
 @media screen and (min-width: 64em) {
   .main-content {
