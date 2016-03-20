@@ -71,24 +71,52 @@
 
         <h3>
             Basic Example
-            <input type="button" class="flatBtn flatBtn-blueMd" style="float:right"
-            onclick="{ var pptx = new PptxGenJS(); var slide = pptx.addNewSlide(); slide.addText('Hello World!', { x:0.5, y:0.7, color:'0000FF' }); pptx.save('Demo'); }"
-            value="Try It">
+            <input type="button" class="flatBtn flatBtn-blueMd" style="float:right" value="Try It" onclick="eval( $(this).parent().next('div').text() )">
         </h3>
         <div class="contprettyprint">
-            <code class="prettyprint lang-js">
-                var pptx = new PptxGenJS();<br>
-                <br>
-                var slide = pptx.addNewSlide();<br>
-                slide.addText('Hello World!', { x:0.5, y:0.7, color:'0000FF' });<br>
-                <br>
-                pptx.save('Demo');<br>
-            </code>
+<pre id="ex01" class="prettyprint lang-js">
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+slide.addText('Hello World!', { x:0.5, y:0.7, color:'0000FF' });
+pptx.save('Demo-01');
+</pre>
+            <div class="contExampleImg">
+                <a href="images/demo-01.png"><img src="images/demo-01.png" alt="demo 01"></a>
+            </div>
         </div>
-        <div class="contExampleImg">
-            <a href="images/example-01.png"><img src="images/example-01.png" alt="example 01"></a>
+
+        <h3>
+            Shapes Example
+            <input type="button" class="flatBtn flatBtn-blueMd" style="float:right" value="Try It" onclick="eval( $(this).parent().next('div').text() )">
+        </h3>
+        <div class="contprettyprint">
+<pre id="ex02" class="prettyprint lang-js">
+var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
+var slide = pptx.addNewSlide();
+slide.addText('Demo-02: Shapes', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
+// Misc Shapes
+slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.40, cx:5, cy:0, line:'FF0000', line_size:1 });
+slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.80, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
+slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.20, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
+slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.60, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:8.00, y:0.75, cx:5, cy:3.2, fill:'00FF00' });
+slide.addShape(pptx.shapes.OVAL,              { x:4.15, y:0.75, cx:5, cy:2.0, fill:{ type:'solid', color:'0088CC', alpha:25 } });
+slide.addShape(pptx.shapes.RECTANGLE,         { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF0000' });
+// Add text to Shapes:
+slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
+slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.00, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
+pptx.save('Demo-02');
+</pre>
+            <div class="contExampleImg">
+                <a href="images/demo-02.png"><img src="images/demo-02.png" alt="demo 02"></a>
+            </div>
         </div>
     </section>
+
+
+
+
 
     <section id="sect-setup" class="main-content">
         <h2>License</h2>
