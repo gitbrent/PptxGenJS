@@ -10,6 +10,12 @@
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/style.css" media="screen">
     <script src="https://google-code-prettify.googlecode.com/svn/loader/run_prettify.js"></script>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/filesaver.js"></script>
+	<script type="text/javascript" src="js/jszip.min.js"></script>
+	<script type="text/javascript" src="js/pptxgen.shapes.js"></script>
+	<script type="text/javascript" src="js/pptxgen.masters.js"></script>
+	<script type="text/javascript" src="js/pptxgen.js"></script>
   </head>
   <body>
     <section class="page-header">
@@ -57,6 +63,12 @@
             <li>Basically, just create a slide and add objects</li>
             <li>Units are inches</li>
         </ul>
+
+        <h3>
+            Basic Example
+            <input type="button" class="flatBtn flatBtn-blueMd" style="float:right;" value="Try It"
+                onclick="{ var pptx = new PptxGenJS(); var slide = pptx.addNewSlide(); slide.addText('Hello World!', { x:0.5, y:0.7, color:'0000FF' }); pptx.save('Demo'); }">
+        </h3>
         <div class="contprettyprint">
             <code class="prettyprint lang-js">
                 var pptx = new PptxGenJS();<br>
@@ -64,7 +76,7 @@
                 var slide = pptx.addNewSlide();<br>
                 slide.addText('Hello World!', { x:0.5, y:0.7, color:'0000FF' });<br>
                 <br>
-                pptx.save('Sample Presentation');<br>
+                pptx.save('Demo');<br>
             </code>
         </div>
         <div class="contExampleImg">
