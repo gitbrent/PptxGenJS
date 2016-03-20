@@ -211,8 +211,10 @@ a {
   padding: 10px 20px;
 }
 .contExampleImg {
-    padding: 20px;
+    margin: 20px 0;
+    padding: 10px;
     text-align: center;
+    border-left: 0.3rem solid #dce6f0;
 }
 .contExampleImg img {
     box-shadow: 12px 12px 25px rgba(0,0,0,0.5);
@@ -223,7 +225,7 @@ a {
 @media screen and (min-width: 64em) {
   .main-content {
     max-width: 64rem;
-    padding: 2rem 6rem;
+    padding: 1.4rem 6rem;
     margin: 0 auto;
     font-size: 1.1rem; } }
 
