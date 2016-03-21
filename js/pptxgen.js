@@ -1440,11 +1440,15 @@ var PptxGenJS = function(){
 				$.each(tabOpt.colW, function(i,colW){ if ( colW < 20 ) tabOpt.colW[i] = inch2Emu(colW); });
 			}
 
+			// Handle case where user passed in a simple array
+			var arrTemp = $.extend(true,[],arrTabRows);
+			if ( ! Array.isArray(arrTemp[0]) ) arrTemp = [ $.extend(true,[],arrTabRows) ];
+
 			// STEP 5: Add data
 			// NOTE: Use extend to avoid mutation
 			gObjPptx.slides[slideNum].data[slideObjNum] = {
 				type:       'table',
-				arrTabRows: $.extend(true,[],arrTabRows),
+				arrTabRows: arrTemp,
 				options:    $.extend(true,{},opt),
 				objTabOpts: ($.extend(true,{},tabOpt) || {})
 			};

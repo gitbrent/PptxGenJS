@@ -132,6 +132,7 @@ var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
 ```
 
 ## Shape
+* Shaoes are arraigned in the order they are created (bottom to top)
 ```javascript
 ```
 
