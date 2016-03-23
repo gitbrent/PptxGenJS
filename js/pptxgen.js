@@ -50,7 +50,7 @@ Number.isInteger = Number.isInteger || function(value) {
 
 var PptxGenJS = function(){
 	// CONSTS
-	var APP_VER = "0.9.5"; // Used for API versioning
+	var APP_VER = "1.0.0"; // Used for API versioning
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -233,11 +233,12 @@ var PptxGenJS = function(){
 		slideRel.data = inStr.substring(inStr.indexOf(',')+1);
 
 		// STEP 2: Call export function once all async processes have completed
-		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
-			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
-				if ( gObjPptx.slides[idx].rels[idy].data == null || gObjPptx.slides[idx].rels[idy].data.length == 0) intEmpty++;
-			}
-		}
+		$.each(gObjPptx.slides, function(i,slide){
+			$.each(slide.rels, function(i,rel){
+				if ( rel.path == slideRel.path ) rel.data = inStr.substring(inStr.indexOf(',')+1);
+				if ( rel.data == null || rel.data.length == 0 ) intEmpty++;
+			});
+		});
 
 		// STEP 3: Continue export process
 		if ( intEmpty == 0 ) doExportPresentation();
@@ -250,14 +251,14 @@ var PptxGenJS = function(){
 
 		// STEP 1: Calc chars-per-inch [pitch]
 		// SEE: CPL Formula from http://www.pearsonified.com/2012/01/characters-per-line.php
-		intCharPerInch = (120 / cell.opts.fontSizePt);
+		intCharPerInch = (120 / cell.opts.font_size);
 
 		// STEP 2: Calc line count
 		var intLineCnt = Math.floor( cell.text.length / (intCharPerInch * inIntWidthInches) );
 		if (intLineCnt < 1) intLineCnt = 1; // Dont allow line count to be 0!
 
 		// STEP 3: Calc cell height
-		var intCellH = ( intLineCnt * ((cell.opts.fontSizePt * 2) / 100) );
+		var intCellH = ( intLineCnt * ((cell.opts.font_size * 2) / 100) );
 		if ( intLineCnt > 8 ) intCellH = (intCellH * 0.9);
 
 		// STEP 4: Add cell padding to height
@@ -820,14 +821,14 @@ var PptxGenJS = function(){
 								// 2: Do Important/Override Opts
 								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-								$.each(['align','bold','border','color','fill','fontFace','fontSizePt','underline','valign'], function(i,name){
+								$.each(['align','bold','border','color','fill','font_face','font_size','underline','valign'], function(i,name){
 									if ( objTabOpts[name] && ! cellOpts[name]) cellOpts[name] = objTabOpts[name];
 								});
 
 								var cellB       = (cellOpts.bold)       ? ' b="1"' : ''; // [0,1] or [false,true]
 								var cellU       = (cellOpts.underline)  ? ' u="sng"' : ''; // [none,sng (single), et al.]
-								var cellFont    = (cellOpts.fontFace)   ? ' <a:latin typeface="'+ cellOpts.fontFace +'"/>' : '';
-								var cellFontPt  = (cellOpts.fontSizePt) ? ' sz="'+ cellOpts.fontSizePt +'00"' : '';
+								var cellFont    = (cellOpts.font_face)  ? ' <a:latin typeface="'+ cellOpts.font_face +'"/>' : '';
+								var cellFontPt  = (cellOpts.font_size)  ? ' sz="'+ cellOpts.font_size +'00"' : '';
 								var cellAlign   = (cellOpts.align)      ? ' algn="'+ cellOpts.align.replace(/^c$/i,'ctr').replace('center','ctr').replace('left','l').replace('right','r') +'"' : '';
 								var cellValign  = (cellOpts.valign)     ? ' anchor="'+ cellOpts.valign.replace(/^c$/i,'ctr').replace(/^m$/i,'ctr').replace('center','ctr').replace('middle','ctr').replace('top','t').replace('btm','b').replace('bottom','b') +'"' : '';
 								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
@@ -1365,16 +1366,19 @@ var PptxGenJS = function(){
 	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
 	this.save = function save(inStrExportName) {
-		var intRels = 0;
+		var intRels = 0, arrImages = [];
 
-		// STEP 1: Total all images (rels) across the Presenation
-		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
-			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
+		// STEP 1: Total all images (rels) across the Presentation
+		// PERF: Only send unique image paths for encoding (encoding func will find and fill ALL matching img paths and fill)
+		$.each(gObjPptx.slides, function(i,slide){
+			$.each(slide.rels, function(i,rel){
 				intRels++;
-				// A: Launch async bkgd process for each image we need to encode
-				convertImgToDataURLviaCanvas(gObjPptx.slides[idx].rels[idy], callbackImgToDataURLDone);
-			}
-		}
+				if ( !rel.data && $.inArray(rel.path, arrImages) == -1 ) {
+					convertImgToDataURLviaCanvas(rel, callbackImgToDataURLDone);
+					arrImages.push(rel.path);
+				}
+			});
+		});
 
 		// STEP 2: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
 		if ( intRels == 0 ) doExportPresentation(inStrExportName);
@@ -1498,7 +1502,7 @@ var PptxGenJS = function(){
 			return this;
 		};
 
-		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY ) {
+		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImgData ) {
 			var intRels = 1;
 
 			// REALITY-CHECK:
@@ -1531,12 +1535,12 @@ var PptxGenJS = function(){
 
 			// STEP 3: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) { intRels += gObjPptx.slides[idx].rels.length; }
+			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
 			slideObjRels.push({
 				path: strImagePath,
 				type: 'image/'+strImgExtn,
 				extn: strImgExtn,
-				data: '',
+				data: (strImgData || ''),
 				rId: (intRels+1),
 				Target: '../media/image' + intRels + '.' + strImgExtn
 			});
@@ -1555,7 +1559,7 @@ var PptxGenJS = function(){
 			// A: Add images (do this before adding slide bkgd)
 			if ( inMaster.images && inMaster.images.length > 0 ) {
 				$.each(inMaster.images, function(i,image){
-					slideObj.addImage( image.src, inch2Emu(image.x), inch2Emu(image.y), inch2Emu(image.cx), inch2Emu(image.cy) );
+					slideObj.addImage( image.src, inch2Emu(image.x), inch2Emu(image.y), inch2Emu(image.cx), inch2Emu(image.cy), (image.data || '') );
 				});
 			}
 
@@ -1564,6 +1568,7 @@ var PptxGenJS = function(){
 				var slideObjRels = gObjPptx.slides[slideNum].rels;
 				var strImgExtn = inMaster.bkgd.src.substring( inMaster.bkgd.src.indexOf('.')+1 ).toLowerCase();
 				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
+				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
 				// TODO 1.5: The next few lines are copies from .addImage above. A bad idea thats already bit my once! So of course it's makred as future :)
 				var intRels = 1;
 				for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) { intRels += gObjPptx.slides[idx].rels.length; }
@@ -1571,7 +1576,7 @@ var PptxGenJS = function(){
 					path: inMaster.bkgd.src,
 					type: 'image/'+strImgExtn,
 					extn: strImgExtn,
-					data: '',
+					data: (inMaster.bkgd.data || ''),
 					rId: (intRels+1),
 					Target: '../media/image' + intRels + '.' + strImgExtn
 				});
@@ -1667,7 +1672,7 @@ var PptxGenJS = function(){
 
 					// B: Create option object
 					var objOpts = {
-						fontSizePt: $(cell).css('font-size').replace(/\D/gi,''),
+						font_size: $(cell).css('font-size').replace(/\D/gi,''),
 						bold:       (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
 						color:      rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
 						fill:       rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
@@ -1688,8 +1693,7 @@ var PptxGenJS = function(){
 					if ( $(cell).attr('colspan') ) objOpts.colspan = $(cell).attr('colspan');
 
 					// E: Add border (if any)
-					// NOTE: jQuery will return empty 'border' value when border-TRBL values differ ('border-top', 'border-left', etc. always have values)
-					if ( $(cell).css('border').length > 0 || $(cell).css('border-top').length > 0 ) {
+					if ( $(cell).css('border-top-width') || $(cell).css('border-right-width') || $(cell).css('border-bottom-width') || $(cell).css('border-left-width') ) {
 						objOpts.border = [];
 						$.each(['top','right','bottom','left'], function(i,val){
 							var intBorderW = Math.round( Number($(cell).css('border-'+val+'-width').replace(/\D/gi,'')) );
@@ -1732,7 +1736,7 @@ var PptxGenJS = function(){
 					currRow.push({ text:'', opts:cell.opts });
 
 					// 2: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
-					var lines = parseTextToLines(cell.text, cell.opts.fontSizePt, (arrColW[iCell]/ONEPT));
+					var lines = parseTextToLines(cell.text, cell.opts.font_size, (arrColW[iCell]/ONEPT));
 					arrCellsLines.push( lines );
 
 					// 3: Keep track of max line count within all row cells
@@ -1743,7 +1747,7 @@ var PptxGenJS = function(){
 				// FYI: Line-Height =~ font-size [px~=pt] * 1.65 / 100 = inches high
 				// FYI: 1px = 14288 EMU (0.156 inches) @96 PPI - I ended up going with 20000 EMU as margin spacing needed a bit more than 1:1
 				$(row).each(function(iCell,cell){
-					var lineHeight = inch2Emu(cell.opts.fontSizePt * 1.65 / 100);
+					var lineHeight = inch2Emu(cell.opts.font_size * 1.65 / 100);
 					if ( Array.isArray(cell.opts.marginPt) && cell.opts.marginPt[0] ) lineHeight += cell.opts.marginPt[0] / intMaxLineCnt;
 					if ( Array.isArray(cell.opts.marginPt) && cell.opts.marginPt[2] ) lineHeight += cell.opts.marginPt[2] / intMaxLineCnt;
 					arrCellsLineHeights.push( Math.round(lineHeight) );
