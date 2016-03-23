@@ -70,6 +70,22 @@
         </ul>
 
         <h3>
+            Simple Example
+            <input type="button" class="flatBtn flatBtn-blueMd" style="float:right" value="Try It" onclick="eval( $(this).parent().next('div').text() )">
+        </h3>
+        <div class="contprettyprint">
+<pre id="demo-simple" class="prettyprint lang-js">
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+slide.addText('Hello world!', { x:1.0, y:1.0, font_size:42, color:'00FF00' });
+pptx.save('Demo-Simple');
+</pre>
+            <div class="contExampleImg">
+                <a href="images/demo-simple.png"><img src="images/demo-simple.png" alt="demo simple"></a>
+            </div>
+        </div>
+
+        <h3>
             Table Example
             <input type="button" class="flatBtn flatBtn-blueMd" style="float:right" value="Try It" onclick="eval( $(this).parent().next('div').text() )">
         </h3>
@@ -82,7 +98,7 @@ slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, font_face:'Arial'
 // TABLE 1: Simple array
 var rows = [ 1,2,3,4,5,6,7,8,9,10 ];
 var tabOpts = { x:0.5, y:1.0, cx:9.0 };
-var celOpts = { fill:'F7F7F7', fontSizePt:14, color:'363636' };
+var celOpts = { fill:'F7F7F7', font_size:14, color:'363636' };
 slide.addTable( rows, tabOpts, celOpts );
 
 // TABLE 2: Multi-row Array
@@ -91,21 +107,20 @@ var rows = [
     ['A2', 'B2', 'C3']
 ];
 var tabOpts = { x:0.5, y:2.0, cx:9.0 };
-var celOpts = { fill:'dfefff', fontSizePt:18, color:'6f9fc9', rowH:1.0, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
+var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
 slide.addTable( rows, tabOpts, celOpts );
 
 // TABLE 3: Formatting on a cell-by-cell basis - (TIP: use this to over-ride table options)
 var rows = [
     [
-        { text: 'Top Lft', opts: { valign:'top', align:'left'   } },
-        { text: 'Top Ctr', opts: { valign:'t',   align:'center' } },
-        { text: 'Top Rgt', opts: { valign:'t',   align:'right'  } }
+        { text: 'Top Lft', opts: { valign:'t', align:'l', font_face:'Arial'   } },
+        { text: 'Top Ctr', opts: { valign:'t', align:'c', font_face:'Verdana' } },
+        { text: 'Top Rgt', opts: { valign:'t', align:'r', font_face:'Courier' } }
     ],
 ];
 var tabOpts = { x:0.5, y:4.5, cx:9.0 };
-var celOpts = { fill:'dfefff', fontSizePt:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
+var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
 slide.addTable( rows, tabOpts, celOpts );
-
 
 pptx.save('Demo-Tables');
 </pre>
