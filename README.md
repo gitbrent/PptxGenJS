@@ -1,12 +1,14 @@
 # PptxGenJS
 A complete JavaScript PowerPoint Presentation creator framework for client web browsers.
 
-By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and easily produce PowerPoint presentations with a few simple JavaScript commands.
+By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and
+easily produce PowerPoint presentations with a few simple JavaScript commands.
 * Works with all modern desktop browsers (IE11, Edge, Chrome, Firefox, Opera)
 * The presentation export is pushed to client browsers as a regular file without any interaction required
 * Complete HTML5/JavaScript solution - no other libraries, plug-ins, or settings are required
 
-Additionally, this framework includes a unique Table-To-Slides feature that will reproduce an HTML Table in 1 or more slides with a single command.
+Additionally, this framework includes a unique Table-To-Slides feature that will reproduce
+an HTML Table in 1 or more slides with a single command.
 
 Supported write/output formats:
 * PowerPoint 2007+ and Open Office XML format (.PPTX)
@@ -32,7 +34,8 @@ include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape 
 <script lang="javascript" src="dist/pptxgen.shapes.js"></script>
 ```
 
-For times when a plain white slide won't due, why not create a Slide Master? (especially useful for corporate environments). See the one in the examples folder to get started
+For times when a plain white slide won't due, why not create a Slide Master? (especially useful for corporate environments).
+See the one in the examples folder to get started
 ```javascript
 <script lang="javascript" src="dist/pptxgen.masters.js"></script>
 ```
@@ -46,9 +49,9 @@ For times when a plain white slide won't due, why not create a Slide Master? (es
 
 # Creating a Presentation
 Creating a Presentation is as easy as 1-2-3:
-1. Add a Slide
-2. Add any Shapes, Text or Tables
-3. Save the Presentation
+1. Add a Slide  
+2. Add any Shapes, Text or Tables  
+3. Save the Presentation  
 
 ```javascript
 var slide = pptx.addNewSlide();
@@ -58,7 +61,8 @@ pptx.save('Sample Presentation');
 
 **************************************************************************************************
 # Table-to-Slides / 1-Click Exports
-* With the unique `addSlidesForTable()` function, you can reproduce an HTML table - background colors, borders, fonts, padding, etc. - with a single function call.
+* With the unique `addSlidesForTable()` function, you can reproduce an HTML table - background
+colors, borders, fonts, padding, etc. - with a single function call.
 * The function will detect margins (based on Master Slide layout or parameters) and will create Slides as needed
 * All you have to do is throw a table at the function and you're done!
 
@@ -86,10 +90,98 @@ into a button and place next to any table on your site.
 <input type="button" value="Export to PPTX" onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
 ### TIP:
-* Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality to SharePoint/Office365. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
+* Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
+to SharePoint/Office365. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
 
 **************************************************************************************************
 # In-Depth Examples
+
+### Table Example
+```javascript
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
+
+// TABLE 1: Simple array
+var rows = [ 1,2,3,4,5,6,7,8,9,10 ];
+var tabOpts = { x:0.5, y:1.0, cx:9.0 };
+var celOpts = { fill:'F7F7F7', font_size:14, color:'363636' };
+slide.addTable( rows, tabOpts, celOpts );
+
+// TABLE 2: Multi-row Array
+var rows = [
+    ['A1', 'B1', 'C1'],
+    ['A2', 'B2', 'C3']
+];
+var tabOpts = { x:0.5, y:2.0, cx:9.0 };
+var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
+slide.addTable( rows, tabOpts, celOpts );
+
+// TABLE 3: Formatting on a cell-by-cell basis - (TIP: use this to over-ride table options)
+var rows = [
+    [
+        { text: 'Top Lft', opts: { valign:'t', align:'l', font_face:'Arial'   } },
+        { text: 'Top Ctr', opts: { valign:'t', align:'c', font_face:'Verdana' } },
+        { text: 'Top Rgt', opts: { valign:'t', align:'r', font_face:'Courier' } }
+    ],
+];
+var tabOpts = { x:0.5, y:4.5, cx:9.0 };
+var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
+slide.addTable( rows, tabOpts, celOpts );
+
+pptx.save('Demo-Tables');
+```
+
+### Text Example
+```javascript
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+
+slide.addText('Hello',  { x:0.5, y:0.7, cx:3, color:'0000FF', font_size:64 });
+slide.addText('World!', { x:2.7, y:1.0, cx:5, color:'DDDD00', font_size:90 });
+slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
+var objOptions = {
+    x:0.5, y:4.3, cx:'90%',
+    font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
+};
+slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
+
+pptx.save('Demo-Text');
+```
+
+### Shape Example
+```javascript
+var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
+
+var slide = pptx.addNewSlide();
+// Misc Shapes
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.40, cx:5, cy:0, line:'FF0000', line_size:1 });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.80, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.20, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.60, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+slide.addShape(pptx.shapes.OVAL,      { x:4.15, y:0.75, cx:5, cy:2.0, fill:{ type:'solid', color:'0088CC', alpha:25 } });
+slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF0000' });
+// Add text to Shapes:
+slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
+slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.00, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
+
+pptx.save('Demo-Shapes');
+```
+
+### Image Example
+```javascript
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+
+slide.addImage('images/cc_copyremix.gif',          0.5, 0.75, 2.35, 2.45 );
+// Slide API calls return the same slide, so you can chain calls:
+slide.addImage('images/cc_license_comp_chart.png', 6.6, 0.75, 6.30, 3.70 )
+     .addImage('images/cc_logo.jpg',               0.5, 3.50, 5.00, 3.70 )
+     .addImage('images/cc_symbols_trans.png',      6.6, 4.80, 6.30, 2.30 );
+
+pptx.save('Demo-Shapes');
+```
 
 **************************************************************************************************
 # Library Reference
@@ -99,7 +191,7 @@ Setting the Title:
 ```javascript
 pptx.setTitle('PptxGenJS Sample Export');
 ```
-Setting the Layout: (Layout applied to every Slide in the Presentation)
+Setting the Layout (layout is applied to every Slide in the Presentation):
 ```javascript
 pptx.setLayout('LAYOUT_WIDE');
 ```
@@ -125,14 +217,37 @@ var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
 
 ## Text
 ```javascript
+slide.addText('World!', { x:2.7, y:1.0, cx:5, color:'DDDD00', font_size:90 });
 ```
+### Text Options
+| Parameter  | Description   | Possible Values  |
+| :--------- | :------------ | :--------------- |
+| x          | Location: X   | (inches)         |
+| y          | Location: Y   | (inches)         |
+
 
 ## Table
 ```javascript
+var rows = [
+    [
+        { text: 'Top Lft', opts: { valign:'t', align:'l', font_face:'Arial'   } },
+        { text: 'Top Ctr', opts: { valign:'t', align:'c', font_face:'Verdana' } },
+        { text: 'Top Rgt', opts: { valign:'t', align:'r', font_face:'Courier' } }
+    ],
+];
+var tabOpts = { x:0.5, y:4.5, cx:9.0 };
+var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
+slide.addTable( rows, tabOpts, celOpts );
 ```
 
 ## Shape
 ```javascript
+slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF0000' });
+```
+
+## Image
+```javascript
+slide.addImage('images/cc_license_comp_chart.png', 6.6, 0.75, 6.30, 3.70);
 ```
 
 ## Performance Considerations
