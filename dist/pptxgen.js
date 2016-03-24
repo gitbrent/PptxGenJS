@@ -42,8 +42,7 @@
 	* SEE: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-// POLYFILL for IE
-// SEE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+// POLYFILL (SEE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
 Number.isInteger = Number.isInteger || function(value) {
 	return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 };
@@ -51,6 +50,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var PptxGenJS = function(){
 	// CONSTS
 	var APP_VER = "1.0.0"; // Used for API versioning
+	var BLD_VER = "20160323"
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -345,7 +345,7 @@ var PptxGenJS = function(){
 	function decodeXmlEntities( inStr ) {
 		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 		if ( typeof inStr === 'undefined' || inStr == null ) return "";
-		return inStr.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/\'/i, '&apos;');
+		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
 	}
 
 	/* =======================================================================================================
@@ -1696,7 +1696,7 @@ var PptxGenJS = function(){
 					if ( $(cell).css('border-top-width') || $(cell).css('border-right-width') || $(cell).css('border-bottom-width') || $(cell).css('border-left-width') ) {
 						objOpts.border = [];
 						$.each(['top','right','bottom','left'], function(i,val){
-							var intBorderW = Math.round( Number($(cell).css('border-'+val+'-width').replace(/\D/gi,'')) );
+							var intBorderW = Math.round( Number($(cell).css('border-'+val+'-width').replace('px','')) );
 							var arrRGB = [];
 							arrRGB = $(cell).css('border-'+val+'-color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
 							var strBorderC = rgbToHex( Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]) );
