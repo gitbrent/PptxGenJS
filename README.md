@@ -49,6 +49,7 @@ See the one in the examples folder to get started
 
 # Creating a Presentation
 Creating a Presentation is as easy as 1-2-3:
+
 1. Add a Slide  
 2. Add any Shapes, Text or Tables  
 3. Save the Presentation  
@@ -96,19 +97,21 @@ to SharePoint/Office365. (You'd also need to add the 4 `<script>` includes in th
 **************************************************************************************************
 # In-Depth Examples
 
-### Table Example
+## Table Example
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
 
 // TABLE 1: Simple array
+// --------
 var rows = [ 1,2,3,4,5,6,7,8,9,10 ];
 var tabOpts = { x:0.5, y:1.0, cx:9.0 };
 var celOpts = { fill:'F7F7F7', font_size:14, color:'363636' };
 slide.addTable( rows, tabOpts, celOpts );
 
 // TABLE 2: Multi-row Array
+// --------
 var rows = [
     ['A1', 'B1', 'C1'],
     ['A2', 'B2', 'C3']
@@ -118,6 +121,7 @@ var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0, valign:'m
 slide.addTable( rows, tabOpts, celOpts );
 
 // TABLE 3: Formatting on a cell-by-cell basis - (TIP: use this to over-ride table options)
+// --------
 var rows = [
     [
         { text: 'Top Lft', opts: { valign:'t', align:'l', font_face:'Arial'   } },
@@ -132,7 +136,7 @@ slide.addTable( rows, tabOpts, celOpts );
 pptx.save('Demo-Tables');
 ```
 
-### Text Example
+## Text Example
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
@@ -149,7 +153,7 @@ slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
 pptx.save('Demo-Text');
 ```
 
-### Shape Example
+## Shape Example
 ```javascript
 var pptx = new PptxGenJS();
 pptx.setLayout('LAYOUT_WIDE');
@@ -169,7 +173,7 @@ slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x
 pptx.save('Demo-Shapes');
 ```
 
-### Image Example
+## Image Example
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
@@ -186,7 +190,7 @@ pptx.save('Demo-Shapes');
 **************************************************************************************************
 # Library Reference
 
-### Presentation Options
+## Presentation Options
 Setting the Title:
 ```javascript
 pptx.setTitle('PptxGenJS Sample Export');
@@ -196,7 +200,7 @@ Setting the Layout (layout is applied to every Slide in the Presentation):
 pptx.setLayout('LAYOUT_WIDE');
 ```
 
-### Available Layouts
+## Available Layouts
 | Layout Name  | Default | Description       |
 | :----------- | :-------| :---------------- |
 | LAYOUT_WIDE  | No      | 13.3 x 7.5 inches |
@@ -204,7 +208,7 @@ pptx.setLayout('LAYOUT_WIDE');
 | LAYOUT_16x10 | No      | 10 x 6.25 inches  |
 | LAYOUT_16x9  | Yes     | 10 x 5.625 inches |
 
-### Creating Slides
+## Creating Slides
 
 ```javascript
 var slide = pptx.addNewSlide();
@@ -217,17 +221,34 @@ var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
 
 ## Text
 ```javascript
-slide.addText('World!', { x:2.7, y:1.0, cx:5, color:'DDDD00', font_size:90 });
-```
-### Text Options
-| Parameter  | Description   | Possible Values  |
-| :--------- | :------------ | :--------------- |
-| x          | Location: X   | (inches)         |
-| y          | Location: Y   | (inches)         |
+// Syntax
+slide.addText('TEXT', {OPTIONS});
 
+// Example
+slide.addText('World!', { x:2.7, y:1.0, color:'DDDD00', font_size:90 });
+```
+
+### Text Options
+| Parameter  | Description    | Possible Values       |
+| :--------- | :------------- | :-------------------- |
+| x          | X location     | (inches)              |
+| y          | Y location     | (inches)              |
+| inset      | inset/padding  | (inches)              |
+| align      | horiz align    | left / center / right |
+| valign     | vert align     | top / middle / bottom |
+| autoFit    | "Fit to Shape" | true / false          |
 
 ## Table
 ```javascript
+// Syntax
+slide.addTable( [rows] );
+slide.addTable( [rows], {tabOpts} );
+slide.addTable( [rows], {tabOpts}, {cellOpts} );
+
+// Basic Example
+slide.addTable( ['A1', 'B1', 'C1'] );
+
+// Cell-Styling Example
 var rows = [
     [
         { text: 'Top Lft', opts: { valign:'t', align:'l', font_face:'Arial'   } },
@@ -235,19 +256,35 @@ var rows = [
         { text: 'Top Rgt', opts: { valign:'t', align:'r', font_face:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, cx:9.0 };
-var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
-slide.addTable( rows, tabOpts, celOpts );
+var cellOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
+// The cellOpts provide a way to format all cells
+// Individual cell opts override this base style, so you can quickly format a table with minimum effort
+slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 ```
+
+### Table Options
+| Parameter  | Description    | Possible Values       |
+| :--------- | :------------- | :-------------------- |
+| x          | X location     | (inches)              |
+| y          | Y location     | (inches)              |
 
 ## Shape
 ```javascript
+// Syntax
+slide.addShape({SHAPE}, {options});
+
+// Example: Red Rectangle
 slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF0000' });
+// View the pptxgen.shapes.js file for a complete list of Shapes
 ```
 
 ## Image
 ```javascript
-slide.addImage('images/cc_license_comp_chart.png', 6.6, 0.75, 6.30, 3.70);
+// Syntax
+slide.addShape({SHAPE}, {options});
+
+// Example: Located at 1.5" x 1.5", 6.0" Wide, 3.0" Height
+slide.addImage('images/cc_license_comp_chart.png', 1.5, 1.5, 6.0, 3.0);
 ```
 
 ## Performance Considerations
