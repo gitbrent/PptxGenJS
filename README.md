@@ -40,6 +40,39 @@ See the one in the examples folder to get started
 <script lang="javascript" src="dist/pptxgen.masters.js"></script>
 ```
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [PptxGenJS](#pptxgenjs)
+- [Demo](#demo)
+- [Installation](#installation)
+- [Optional Modules](#optional-modules)
+- [The Basics](#the-basics)
+- [Creating a Presentation](#creating-a-presentation)
+- [Table-to-Slides / 1-Click Exports](#table-to-slides--1-click-exports)
+    - [TIP:](#tip)
+- [In-Depth Examples](#in-depth-examples)
+  - [Table Example](#table-example)
+  - [Text Example](#text-example)
+  - [Shape Example](#shape-example)
+  - [Image Example](#image-example)
+- [Library Reference](#library-reference)
+  - [Presentation Options](#presentation-options)
+  - [Available Layouts](#available-layouts)
+  - [Creating Slides](#creating-slides)
+  - [Text](#text)
+    - [Text Options](#text-options)
+  - [Table](#table)
+    - [Table Options](#table-options)
+  - [Shape](#shape)
+  - [Image](#image)
+  - [Performance Considerations](#performance-considerations)
+- [Bugs & Issues](#bugs-&-issues)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 **************************************************************************************************
 # The Basics
 * Presentations are composed of 1 or more Slides
@@ -90,7 +123,7 @@ into a button and place next to any table on your site.
 ```javascript
 <input type="button" value="Export to PPTX" onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
-### TIP:
+## TIP:
 * Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint/Office365. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
 
