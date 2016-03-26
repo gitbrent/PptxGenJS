@@ -244,10 +244,10 @@ pptx.setLayout('LAYOUT_WIDE');
 ## Available Layouts
 | Layout Name  | Default | Description       |
 | :----------- | :-------| :---------------- |
-| LAYOUT_WIDE  | No      | 13.3 x 7.5 inches |
-| LAYOUT_4x3   | No      | 10 x 7.5 inches   |
-| LAYOUT_16x10 | No      | 10 x 6.25 inches  |
 | LAYOUT_16x9  | Yes     | 10 x 5.625 inches |
+| LAYOUT_16x10 | No      | 10 x 6.25 inches  |
+| LAYOUT_4x3   | No      | 10 x 7.5 inches   |
+| LAYOUT_WIDE  | No      | 13.3 x 7.5 inches |
 
 ## Creating Slides
 
@@ -276,10 +276,10 @@ slide.addText('World!', { x:2.7, y:1.0, color:'DDDD00', font_size:90 });
 | y          | Y location     | (inches)              |
 | w          | width          | (inches)              |
 | h          | height         | (inches)              |
-| inset      | inset/padding  | (inches)              |
 | align      | horiz align    | left / center / right |
-| valign     | vert align     | top / middle / bottom |
 | autoFit    | "Fit to Shape" | true / false          |
+| inset      | inset/padding  | (inches)              |
+| valign     | vert align     | top / middle / bottom |
 
 ## Table
 ```javascript
@@ -316,20 +316,20 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 ### Cell Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| colW       | column width   | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
-| rowH       | row height     | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
-| bold       | bold           | true/false |
-| underline  | underline      | true/false |
-| font_face  | font face      | 'Arial' etc. |
-| font_size  | font size      | Std PPT font sizes (1-256 pt) |
 | align      | horiz align    | left / center / right |
-| valign     | vert align     | top / middle / bottom |
+| bold       | bold           | true/false |
 | border     | cell border    | single style or an array (TRBL-format) of styles - {pt:'1', color:'CFCFCF'} |
 | color      | font color     | CSS-Hex style ('336699', etc.) |
+| colspan    | column span    | 2-N |
+| colW       | column width   | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
+| font_face  | font face      | 'Arial' etc. |
+| font_size  | font size      | Std PPT font sizes (1-256 pt) |
 | fill       | fill color     | CSS-Hex style ('336699', etc.) |
 | marginPt   | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
-| colspan    | column span    | 2-N |
 | rowspan    | row span       | 2-N |
+| rowH       | row height     | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
+| underline  | underline      | true/false |
+| valign     | vert align     | top / middle / bottom |
 
 
 ## Shape
@@ -349,6 +349,9 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF00
 | y          | Y location     | (inches)              |
 | w          | shape width    | (inches)              |
 | h          | shape height   | (inches)              |
+| flipH      | flip Horizontal| true/false            |
+| flipV      | flip Vertical  | true/false            |
+| rotate     | rotate         | 0-360 (integer)       |
 
 ## Image
 ```javascript
