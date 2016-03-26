@@ -723,7 +723,9 @@ var PptxGenJS = function(){
 			if ( slideObj.options ) {
 				if ( slideObj.options.x  || slideObj.options.x  == 0 )  x = getSmartParseNumber( slideObj.options.x , 'X' );
 				if ( slideObj.options.y  || slideObj.options.y  == 0 )  y = getSmartParseNumber( slideObj.options.y , 'Y' );
+				if ( slideObj.options.w  || slideObj.options.w  == 0 ) cx = getSmartParseNumber( slideObj.options.w , 'X' );
 				if ( slideObj.options.cx || slideObj.options.cx == 0 ) cx = getSmartParseNumber( slideObj.options.cx, 'X' );
+				if ( slideObj.options.h  || slideObj.options.h  == 0 ) cy = getSmartParseNumber( slideObj.options.h , 'Y' );
 				if ( slideObj.options.cy || slideObj.options.cy == 0 ) cy = getSmartParseNumber( slideObj.options.cy, 'Y' );
 				if ( slideObj.options.flipH  ) locationAttr += ' flipH="1"';
 				if ( slideObj.options.flipV  ) locationAttr += ' flipV="1"';
@@ -1514,9 +1516,8 @@ var PptxGenJS = function(){
 			// STEP 1: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
-			var strImgExtn = strImagePath.substring( strImagePath.indexOf('.')+1 ).toLowerCase();
-			if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-			if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
+			// NOTE: canvas.toDataURL produces png no what what type of image we start with (jpg, gif, etc)
+			var strImgExtn = 'png';
 			//
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';

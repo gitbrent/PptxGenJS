@@ -1,5 +1,5 @@
 # PptxGenJS
-A complete JavaScript PowerPoint Presentation creator framework for client web browsers.
+Client-side JavaScript framework that produces PowerPoint (pptx) presentations.
 
 By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and
 easily produce PowerPoint presentations with a few simple JavaScript commands.
@@ -13,17 +13,56 @@ an HTML Table in 1 or more slides with a single command.
 Supported write/output formats:
 * PowerPoint 2007+ and Open Office XML format (.PPTX)
 
+**************************************************************************************************
+
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  (*generated with [DocToc](https://github.com/thlorenz/doctoc)*)
+
+- [Demo](#demo)
+- [Installation](#installation)
+- [Optional Modules](#optional-modules)
+- [The Basics](#the-basics)
+- [Creating a Presentation](#creating-a-presentation)
+- [Table-to-Slides / 1-Click Exports](#table-to-slides--1-click-exports)
+  - [TIP:](#tip)
+- [In-Depth Examples](#in-depth-examples)
+  - [Table Example](#table-example)
+  - [Text Example](#text-example)
+  - [Shape Example](#shape-example)
+  - [Image Example](#image-example)
+- [Library Reference](#library-reference)
+  - [Presentation Options](#presentation-options)
+  - [Available Layouts](#available-layouts)
+  - [Creating Slides](#creating-slides)
+  - [Text](#text)
+    - [Text Options](#text-options)
+  - [Table](#table)
+    - [Table Options](#table-options)
+    - [Cell Options](#cell-options)
+  - [Shape](#shape)
+    - [Shape Options](#shape-options)
+  - [Image](#image)
+    - [Image Options](#image-options)
+  - [Performance Considerations](#performance-considerations)
+- [Bugs & Issues](#bugs-&-issues)
+- [License](#license)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+**************************************************************************************************
+
 # Demo
 [http://gitbrent.github.io/PptxGenJS](http://gitbrent.github.io/PptxGenJS)
 
 # Installation
-PptxGenJS requires just three other libraries to produce and push a file to web browsers.
+PptxGenJS requires only three additional libraries to produce and push a file to web browsers.
 
 ```javascript
 <script lang="javascript" src="dist/jquery.min.js"></script>
-<script lang="javascript" src="dist/filesaver.js"></script>
 <script lang="javascript" src="dist/jszip.min.js"></script>
-<script lang="javascript" src="dist/pptxgen.min.js"></script>
+<script lang="javascript" src="dist/filesaver.js"></script>
+<script lang="javascript" src="dist/pptxgen.js"></script>
 ```
 
 # Optional Modules
@@ -40,38 +79,7 @@ See the one in the examples folder to get started
 <script lang="javascript" src="dist/pptxgen.masters.js"></script>
 ```
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [PptxGenJS](#pptxgenjs)
-- [Demo](#demo)
-- [Installation](#installation)
-- [Optional Modules](#optional-modules)
-- [The Basics](#the-basics)
-- [Creating a Presentation](#creating-a-presentation)
-- [Table-to-Slides / 1-Click Exports](#table-to-slides--1-click-exports)
-    - [TIP:](#tip)
-- [In-Depth Examples](#in-depth-examples)
-  - [Table Example](#table-example)
-  - [Text Example](#text-example)
-  - [Shape Example](#shape-example)
-  - [Image Example](#image-example)
-- [Library Reference](#library-reference)
-  - [Presentation Options](#presentation-options)
-  - [Available Layouts](#available-layouts)
-  - [Creating Slides](#creating-slides)
-  - [Text](#text)
-    - [Text Options](#text-options)
-  - [Table](#table)
-    - [Table Options](#table-options)
-  - [Shape](#shape)
-  - [Image](#image)
-  - [Performance Considerations](#performance-considerations)
-- [Bugs & Issues](#bugs-&-issues)
-- [License](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 **************************************************************************************************
 # The Basics
@@ -266,6 +274,8 @@ slide.addText('World!', { x:2.7, y:1.0, color:'DDDD00', font_size:90 });
 | :--------- | :------------- | :-------------------- |
 | x          | X location     | (inches)              |
 | y          | Y location     | (inches)              |
+| w          | width          | (inches)              |
+| h          | height         | (inches)              |
 | inset      | inset/padding  | (inches)              |
 | align      | horiz align    | left / center / right |
 | valign     | vert align     | top / middle / bottom |
@@ -300,6 +310,27 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 | :--------- | :------------- | :-------------------- |
 | x          | X location     | (inches)              |
 | y          | Y location     | (inches)              |
+| w          | table width    | (inches)              |
+| h          | table height   | (inches)              |
+
+### Cell Options
+| Parameter  | Description    | Possible Values       |
+| :--------- | :------------- | :-------------------- |
+| colW       | column width   | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
+| rowH       | row height     | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
+| bold       | bold           | true/false |
+| underline  | underline      | true/false |
+| font_face  | font face      | 'Arial' etc. |
+| font_size  | font size      | Std PPT font sizes (1-256 pt) |
+| align      | horiz align    | left / center / right |
+| valign     | vert align     | top / middle / bottom |
+| border     | cell border    | single style or an array (TRBL-format) of styles - {pt:'1', color:'CFCFCF'} |
+| color      | font color     | CSS-Hex style ('336699', etc.) |
+| fill       | fill color     | CSS-Hex style ('336699', etc.) |
+| marginPt   | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
+| colspan    | column span    | 2-N |
+| rowspan    | row span       | 2-N |
+
 
 ## Shape
 ```javascript
@@ -311,6 +342,14 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF00
 // View the pptxgen.shapes.js file for a complete list of Shapes
 ```
 
+### Shape Options
+| Parameter  | Description    | Possible Values       |
+| :--------- | :------------- | :-------------------- |
+| x          | X location     | (inches)              |
+| y          | Y location     | (inches)              |
+| w          | shape width    | (inches)              |
+| h          | shape height   | (inches)              |
+
 ## Image
 ```javascript
 // Syntax
@@ -320,10 +359,20 @@ slide.addShape({SHAPE}, {options});
 slide.addImage('images/cc_license_comp_chart.png', 1.5, 1.5, 6.0, 3.0);
 ```
 
+### Image Options
+| Argument | Description    | Possible Values       |
+| :------- | :------------- | :-------------------- |
+| 0        | source URL     | (local image address) |
+| 1        | X location     | (inches)              |
+| 2        | Y location     | (inches)              |
+| 3        | image width    | (inches)              |
+| 4        | image height   | (inches)              |
+
+
+**************************************************************************************************
 ## Performance Considerations
 NOTE: It takes time to encode images, so the more images you include and the larger they are, the more time will be consumed.
 You will want to show a jQuery Dialog with a nice hour glass before you start creating the file.
-
 
 
 **************************************************************************************************
