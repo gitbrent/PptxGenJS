@@ -50,7 +50,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var PptxGenJS = function(){
 	// CONSTS
 	var APP_VER = "1.0.0"; // Used for API versioning
-	var BLD_VER = "20160323"
+	var BLD_VER = "20160328"
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -103,7 +103,7 @@ var PptxGenJS = function(){
 	 * Export the .pptx file (using saveAs - dep. filesaver.js)
 	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
-	function doExportPresentation(inStrExportName){
+	function doExportPresentation() {
 		var intSlideNum = 0, intRels = 0;
 
 		// =======
@@ -157,7 +157,7 @@ var PptxGenJS = function(){
 		// =======
 		// STEP 3: Push the PPTX file to browser
 		// =======
-		var strExportName = (( inStrExportName ) ? inStrExportName+gObjPptx.fileExtn : gObjPptx.fileName+gObjPptx.fileExtn );
+		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 		saveAs( zip.generate({type:"blob"}), strExportName );
 	}
 
@@ -723,9 +723,7 @@ var PptxGenJS = function(){
 			if ( slideObj.options ) {
 				if ( slideObj.options.x  || slideObj.options.x  == 0 )  x = getSmartParseNumber( slideObj.options.x , 'X' );
 				if ( slideObj.options.y  || slideObj.options.y  == 0 )  y = getSmartParseNumber( slideObj.options.y , 'Y' );
-				if ( slideObj.options.w  || slideObj.options.w  == 0 ) cx = getSmartParseNumber( slideObj.options.w , 'X' );
 				if ( slideObj.options.cx || slideObj.options.cx == 0 ) cx = getSmartParseNumber( slideObj.options.cx, 'X' );
-				if ( slideObj.options.h  || slideObj.options.h  == 0 ) cy = getSmartParseNumber( slideObj.options.h , 'Y' );
 				if ( slideObj.options.cy || slideObj.options.cy == 0 ) cy = getSmartParseNumber( slideObj.options.cy, 'Y' );
 				if ( slideObj.options.flipH  ) locationAttr += ' flipH="1"';
 				if ( slideObj.options.flipV  ) locationAttr += ' flipV="1"';
@@ -1370,7 +1368,10 @@ var PptxGenJS = function(){
 	this.save = function save(inStrExportName) {
 		var intRels = 0, arrImages = [];
 
-		// STEP 1: Total all images (rels) across the Presentation
+		// STEP 1: Set export title (if any)
+		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
+
+		// STEP 2: Total all images (rels) across the Presentation
 		// PERF: Only send unique image paths for encoding (encoding func will find and fill ALL matching img paths and fill)
 		$.each(gObjPptx.slides, function(i,slide){
 			$.each(slide.rels, function(i,rel){
@@ -1382,8 +1383,8 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// STEP 2: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-		if ( intRels == 0 ) doExportPresentation(inStrExportName);
+		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
+		if ( intRels == 0 ) doExportPresentation();
 	};
 
 	/**
@@ -1516,8 +1517,9 @@ var PptxGenJS = function(){
 			// STEP 1: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
-			// NOTE: canvas.toDataURL produces png no what what type of image we start with (jpg, gif, etc)
-			var strImgExtn = 'png';
+			var strImgExtn = strImagePath.substring( strImagePath.indexOf('.')+1 ).toLowerCase();
+			if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
+			if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
 			//
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
@@ -1754,8 +1756,7 @@ var PptxGenJS = function(){
 					arrCellsLineHeights.push( Math.round(lineHeight) );
 				});
 
-				// AUTO-PAGING:
-				// D: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
+				// D: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
 				for (var idx=0; idx<intMaxLineCnt; idx++) {
 					// 1: Add the current line to cell
 					for (var col=0; col<arrCellsLines.length; col++) {
@@ -1780,6 +1781,16 @@ var PptxGenJS = function(){
 							emuTabCurrH = 0; // This row's emuRowH w/b added below
 							// 5: Empty current row's text (continue adding lines where we left off below)
 							$.each(currRow,function(i,cell){ cell.text = ''; });
+							// 6: Auto-Paging Options: addHeaderToEach
+							if ( opts.addHeaderToEach ) {
+								var headRow = [];
+								$.each(arrObjTabHeadRows[0], function(iCell,cell){
+									headRow.push({ text:cell.text, opts:cell.opts });
+									var lines = parseTextToLines(cell.text, cell.opts.font_size, (arrColW[iCell]/ONEPT));
+									if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
+								});
+								arrRows.push( $.extend(true, [], headRow) );
+							}
 						}
 
 						// B: Add next line of text to this cell
@@ -1794,9 +1805,9 @@ var PptxGenJS = function(){
 				// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
 				arrRows.push( $.extend(true, [], currRow) );
 				currRow.length = 0;
-			}); // row Loop
-		}); // tab Loop
-		// STEP 4-LAST: Flush final row buffer to slide
+			}); // row loop
+		}); // tab loop
+		// Flush final row buffer to slide
 		arrObjSlides.push( $.extend(true,[],arrRows) );
 
 		// STEP 5: Create a SLIDE for each of our 1-N table pieces
@@ -1821,6 +1832,7 @@ var PptxGenJS = function(){
 			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts || {}) );
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
 			if ( opts.addImage ) newSlide.addImage( opts.addImage.url,   opts.addImage.x, opts.addImage.y, opts.addImage.w, opts.addImage.h );
+			if ( opts.addTable ) newSlide.addTable( opts.addTable.arrTabRows, opts.addTable.inOpt, opts.addTable.tabOpt );
 		});
 	}
 };

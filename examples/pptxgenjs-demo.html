@@ -1,12 +1,13 @@
 ﻿<!DOCTYPE html>
 <html lang="en-us">
 <head>
-	<title>PptxGenJS Demo Page</title>
+	<title>PptxGenJS Examples/Demo Page</title>
 	<meta name="author" content="https://github.com/gitbrent">
 	<link type="text/css" rel="stylesheet" href="style.css">
 	<!-- NOTE:
-		Run Chrome from the terminal to allow using local files (not from a web server)
+		Run Chrome from the terminal to allow reading local image files (not from a web server)
 		$ open -a 'Google Chrome' --args --allow-file-access-from-files &
+		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
  	-->
 
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
@@ -80,13 +81,49 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 		function table2slides() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
+
 			// STEP 1: Set slide size/layout
 			pptx.setLayout('LAYOUT_16x9');
-			// STEP 2: Pass table to addSlidesForTable function to produce 1-N slides
-			//pptx.addSlidesForTable('tabAutoPaging', { margin:1.0 });
-			pptx.addSlidesForTable('tabAutoPaging', { master:pptx.masters.MASTER_SLIDE });
+
+			// STEP 2: Set generated Slidle options
+			var objOpts = {};
+			objOpts.master = pptx.masters.MASTER_SLIDE;
+			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
+
+			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
+			pptx.addSlidesForTable('tabAutoPaging', objOpts);
+
 			// LAST: Export Presentation
 			pptx.save('Table2SlideDemo');
+		}
+
+		function table2slidesExtras() {
+			// FIRST: Instantiate new PptxGenJS instance
+			var pptx = new PptxGenJS();
+
+			// STEP 1: Set slide size/layout
+			pptx.setLayout('LAYOUT_16x9');
+
+			// STEP 2: Set generated Slidle options
+			var objOpts = {};
+			// Add a master slide to have a pre-defined style applied (eg: std corp title, logo etc.)
+			//objOpts.master = pptx.masters.MASTER_SLIDE;
+			// Set custom margins (you can also define them in a Master Slide)
+			objOpts.margin = 1.0;
+
+			// OPTIONS: Add header to each slide
+			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
+
+			// Add any dynamic content to gnerated Slides
+			// things that cant be pre-defined like a title that varies as you generate sections of tables, etc.
+			objOpts.addText = { text:"Some dynamic title here", opts:{ x:1, y:0.5, color:'0088CC', font_face:'Arial', font_size:16 } };
+			// You can do this for all other stypes as well: .addShape(), .addTable() and .addImage()
+
+			// STEP 3: Create all Slides from table data
+			pptx.addSlidesForTable('tabAutoPaging', objOpts);
+
+			// LAST: Export Presentation
+			pptx.save('Table2SlideDemoExtra');
 		}
 
 		function doGenPptFile() {
@@ -107,7 +144,6 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			// B: Presentation Options
 			pptx.setLayout('LAYOUT_WIDE');
 			//pptx.setLayout('LAYOUT_CRAP_DEBUG'); console.log("^^^ [negative test] ^^^");
-			//pptx.setLayout( $('input[name=radioLayout]:checked').val() );
 			// align: [l (left), r (right), c (center), just (justified), dist (dist across entire line)]
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 			var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
@@ -368,8 +404,8 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 <body>
 	<div style="padding:20px 10%; margin:auto;">
 		<div class="mainTitle">
-			<a href="https://github.com/GitBrent/PptxGenJS" style="text-decoration:none; color:inherit;">PptxGenJS</a><span>
-			 - Test File Generation (HTML5+JavaScript)</span>
+			<a href="https://github.com/GitBrent/PptxGenJS" style="text-decoration:none; color:inherit;">PptxGenJS</a>
+			<span> - Test File Generation (HTML5+JavaScript)</span>
 		</div>
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
@@ -469,7 +505,9 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				<input type="button" class="flatBtn flatBtn-green" onclick="doGenPptFile()" value="Generate Sample PowerPoint">
 				<input type="button" class="flatBtn flatBtn-nsPurple" style="margin-left:100px;" value="Simple Test" onclick="doSimpleTest()">
 
-				<div style="margin-top:10px; color:#b7b7b7; font-size:10px;">All Modern Desktop Browsers Supported</div>
+				<div style="margin:15px 0 -5px 0; color:#b7b7b7; font-size:12px;">
+					(NOTE: Images wont work if you are running this locally! You need to run Chrome with --allow-file-access-from-files flag)
+				</div>
 			</div>
 		</div>
 
@@ -478,14 +516,20 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			<div class="arrow active"></div>DEMO: HTML Table To Slide(s)
 		</div>
 		<div class="sectionBox" style="display:block">
-			<div style="text-align:center; margin-bottom:10px;">
-				<b>OPTIONS -- </b>
-				<label for="numTab2SlideRows" style="font-size:12px">Table Rows:</label>
-				<input id="numTab2SlideRows" type="number" min="1" max="25" value="5" onchange="buildDataTable()">
+			<div id="auto-paging-options" style="text-align:center; margin-bottom:10px;">
+				<b>OPTIONS: </b>
+				<label for="numTab2SlideHead" style="font-size:12px">Include Header on each Slide?</label>
+				<input type="radio" name="radioHead" value="Y" checked="checked">Yes<span>&nbsp;&nbsp;&nbsp;</span>
+				<input type="radio" name="radioHead" value="N">No
 
-				<label for="numTab2SlidePadding" style="font-size:12px">Cell Padding:</label>
-				<input id="numTab2Padding" type="number" min="0" max="25" value="5"
-					onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+				<div style="display:inline-block; margin-left:50px">
+					<b>SETUP: </b>
+					<label for="numTab2SlideRows" style="font-size:12px">Table Rows:</label>
+					<input id="numTab2SlideRows" type="number" min="1" max="25" value="5" onchange="buildDataTable()">
+					<label for="numTab2SlidePadding" style="font-size:12px">Cell Padding:</label>
+					<input id="numTab2Padding" type="number" min="0" max="25" value="5"
+						onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+				</div>
 			</div>
 			<table id="tabAutoPaging" class="tabCool">
 				<thead>
@@ -499,7 +543,8 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				<tbody></tbody>
 			</table>
 			<div style="text-align:center; padding:20px;">
-				<input type="button" class="flatBtn flatBtn-green" onclick="table2slides()" value="Export Table To Slides">
+				<input type="button" class="flatBtn flatBtn-green" onclick="table2slides()" value="Export Table To Slides">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="button" class="flatBtn flatBtn-green" onclick="table2slidesExtras()" value="Export Table To Slides (With Objects)">
 			</div>
 		</div>
 	</div>

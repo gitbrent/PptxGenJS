@@ -11,7 +11,7 @@ Additionally, this framework includes a unique Table-To-Slides feature that will
 an HTML Table in 1 or more slides with a single command.
 
 Supported write/output formats:
-* PowerPoint 2007+ and Open Office XML format (.PPTX)
+* PowerPoint 2007+, Open Office XML, Apple Keynote (.PPTX)
 
 **************************************************************************************************
 
@@ -53,6 +53,7 @@ Supported write/output formats:
 **************************************************************************************************
 
 # Demo
+Use JavaScript to Create PowerPoint presentations right from our demo page
 [http://gitbrent.github.io/PptxGenJS](http://gitbrent.github.io/PptxGenJS)
 
 # Installation
