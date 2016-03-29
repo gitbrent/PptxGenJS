@@ -53,7 +53,7 @@ Supported write/output formats:
 **************************************************************************************************
 
 # Demo
-Use JavaScript to Create PowerPoint presentations right from our demo page
+Use JavaScript to Create PowerPoint presentations right from our demo page  
 [http://gitbrent.github.io/PptxGenJS](http://gitbrent.github.io/PptxGenJS)
 
 # Installation

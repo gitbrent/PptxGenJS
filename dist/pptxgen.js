@@ -50,7 +50,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var PptxGenJS = function(){
 	// CONSTS
 	var APP_VER = "1.0.0"; // Used for API versioning
-	var BLD_VER = "20160328"
+	var BLD_VER = "20160329"
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -213,7 +213,15 @@ var PptxGenJS = function(){
 	        canvas.height = this.height;
 	        canvas.width  = this.width;
 	        ctx.drawImage(this, 0, 0);
-	        callback( canvas.toDataURL(slideRel.type), slideRel );
+			// Users running on local machine will get the following error:
+			// "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
+			// when the canvas.toDataURL call executes below.
+			try { callback( canvas.toDataURL(slideRel.type), slideRel ); }
+			catch(ex) {
+				this.onerror();
+				console.log("NOTE: Browsers wont let you load/convert local images! (search for --allow-file-access-from-files)");
+				return;
+			}
 	        canvas = null;
 	    };
 		image.onerror = function(){
@@ -742,8 +750,8 @@ var PptxGenJS = function(){
 					var arrTabRows = slideObj.arrTabRows;
 					var objTabOpts = slideObj.objTabOpts;
 					var intColCnt = 0, intColW = 0;
-					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not sufficient to determine column count
-					// ....: Therefore, check each cell for a colspan and total cols as reqd
+					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
+					// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 					for (var tmp=0; tmp<arrTabRows[0].length; tmp++) {
 						intColCnt += ( arrTabRows[0][tmp].opts && arrTabRows[0][tmp].opts.colspan ) ? Number(arrTabRows[0][tmp].opts.colspan) : 1;
 					}
@@ -874,43 +882,24 @@ var PptxGenJS = function(){
 									+ '  <a:tcPr'+ cellMargin + cellValign +'>';
 
 							// 5: Borders: Add any borders
-							var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
 							if ( cellOpts.border && typeof cellOpts.border === 'string' ) {
-								strXml += '  <a:lnL w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnL>';
-								strXml += '  <a:lnR w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnR>';
-								strXml += '  <a:lnT w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnT>';
-								strXml += '  <a:lnB w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnB>';
+								strXml += '  <a:lnL w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnL>';
+								strXml += '  <a:lnR w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnR>';
+								strXml += '  <a:lnT w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnT>';
+								strXml += '  <a:lnB w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnB>';
 							}
 							else if ( cellOpts.border && Array.isArray(cellOpts.border) ) {
-								if ( cellOpts.border[3] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[3].color) ? cellOpts.border[3].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[3] && cellOpts.border[3].pt) ? (ONEPT * Number(cellOpts.border[3].pt)) : ONEPT;
-									strXml += '<a:lnL w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnL>';
-								}
-								else if ( cellOpts.border[3] == 0 ) strXml += '<a:lnL w="0"><a:miter lim="400000" /></a:lnL>';
-
-								if ( cellOpts.border[1] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[1].color) ? cellOpts.border[1].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[1] && cellOpts.border[1].pt) ? (ONEPT * Number(cellOpts.border[1].pt)) : ONEPT;
-									strXml += '<a:lnR w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnR>';
-								}
-								else if ( cellOpts.border[1] == 0 ) strXml += '<a:lnR w="0"><a:miter lim="400000" /></a:lnR>';
-
-								if ( cellOpts.border[0] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[0].color) ? cellOpts.border[0].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[0] && cellOpts.border[0].pt) ? (ONEPT * Number(cellOpts.border[0].pt)) : ONEPT;
-									strXml += '<a:lnT w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnT>';
-								}
-								else if ( cellOpts.border[0] == 0 ) strXml += '<a:lnT w="0"><a:miter lim="400000" /></a:lnT>';
-
-								if ( cellOpts.border[2] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[2].color) ? cellOpts.border[2].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[2] && cellOpts.border[2].pt) ? (ONEPT * Number(cellOpts.border[2].pt)) : ONEPT;
-									strXml += '  <a:lnB w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnB>';
-								}
-								else if ( cellOpts.border[2] == 0 ) strXml += '<a:lnB w="0"><a:miter lim="400000" /></a:lnB>';
+								$.each([ {idx:3,name:'lnL'}, {idx:1,name:'lnR'}, {idx:0,name:'lnT'}, {idx:2,name:'lnB'} ], function(i,obj){
+									if ( cellOpts.border[obj.idx] ) {
+										var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[obj.idx].color) ? cellOpts.border[obj.idx].color : '666666') +'"/></a:solidFill>';
+										var intW = (cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt == 0)) ? (ONEPT * Number(cellOpts.border[obj.idx].pt)) : ONEPT;
+										strXml += '<a:'+ obj.name +' w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:'+ obj.name +'>';
+									}
+									else strXml += '<a:'+ obj.name +' w="0"><a:miter lim="400000" /></a:'+ obj.name +'>';
+								});
 							}
 							else if ( cellOpts.border && typeof cellOpts.border === 'object' ) {
+								var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
 								var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color : '666666') +'"/></a:solidFill>';
 								var strAttr = '<a:prstDash val="';
 								strAttr += ((cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1) ? "sysDash" : "solid" );
@@ -1517,9 +1506,7 @@ var PptxGenJS = function(){
 			// STEP 1: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
-			var strImgExtn = strImagePath.substring( strImagePath.indexOf('.')+1 ).toLowerCase();
-			if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-			if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
+			var strImgExtn = 'png'; // Every image is encoded via canvas>base64, so they all come out as png (use of another extn will cause "needs repair" dialog on open in PPT)
 			//
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
@@ -1829,10 +1816,10 @@ var PptxGenJS = function(){
 			newSlide.addTable( arrTabRows, {x:arrInchMargins[3], y:arrInchMargins[0], cx:(emuSlideTabW/EMU)}, {colW:arrColW} );
 
 			// E: Add any additional objects
-			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts || {}) );
-			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
 			if ( opts.addImage ) newSlide.addImage( opts.addImage.url,   opts.addImage.x, opts.addImage.y, opts.addImage.w, opts.addImage.h );
-			if ( opts.addTable ) newSlide.addTable( opts.addTable.arrTabRows, opts.addTable.inOpt, opts.addTable.tabOpt );
+			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
+			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
+			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}), (opts.addTable.tabOpts || {}) );
 		});
 	}
 };
