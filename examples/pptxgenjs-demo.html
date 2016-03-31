@@ -331,7 +331,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 						{ text:'Hello ', options:{ font_size:48, font_face:'Courier New', color:'0000CC' } },
 						{ text:'World!', options:{ font_size:48, font_face:'Arial', color:'FFFF00' } }
 					],
-					{ x:0.5, y:3.25, cx:2.5, cy:3, fill:'000000' }
+					{ x:0.5, y:2.5, cx:2.5, cy:3, margin:0.25 }
 				);
 
 				var objOptions = {
@@ -406,11 +406,23 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 		<div class="mainTitle">
 			<a href="https://github.com/GitBrent/PptxGenJS" style="text-decoration:none; color:inherit;">PptxGenJS</a>
 			<span> - Test File Generation (HTML5+JavaScript)</span>
+			<div style="margin:8px 0; color:#c7d7e7; font-size:12px;">
+				(NOTE: Images cannot be encoded if you are running this locally! Run from a web server or run Chrome with --allow-file-access-from-files flag)
+			</div>
 		</div>
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Different Objects
+			<div class="arrow active"></div>DEMO: Misc
+		</div>
+		<div class="sectionBox" style="display:block; padding:15px;">
+			<input type="button" class="flatBtn flatBtn-nsOrange" style="width:25%; margin-right:20px;" value="Corporate Masters Test" onclick="doCorpPresTest()">
+			<input type="button" class="flatBtn flatBtn-nsTeal"   style="width:25%; padding:8px 40px;" value="Simple Test" onclick="doSimpleTest()">
+		</div>
+
+		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+			<div class="arrow active"></div>DEMO: Object Types
 		</div>
 		<div class="sectionBox" style="display:block">
 			<div class="formBox">
@@ -498,24 +510,18 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				</fieldset>
 			</div>
 
-			<div id="buttonBar" style="clear:both">
-				<input type="button" class="flatBtn flatBtn-nsDark" style="margin-right:100px;" value="Corporate Masters Test" onclick="doCorpPresTest()">
-				<input type="button" class="flatBtn flatBtn-blueMd" style="margin-right:10px;" value="Check All"
+			<div id="buttonBarBtm" style="clear:both">
+				<input type="button" class="flatBtn flatBtn-green"  style="margin-right:20px; width:40%" onclick="doGenPptFile()" value="Generate Sample PowerPoint">
+				<input type="button" class="flatBtn flatBtn-blueMd" style="margin-right:20px;" value="Check All"
 					onclick="$(this).parents('.sectionBox').find('.formBox input[type=\'checkbox\']').prop('checked',!$(this).attr('checked'));">
-				<input type="button" class="flatBtn flatBtn-green" onclick="doGenPptFile()" value="Generate Sample PowerPoint">
-				<input type="button" class="flatBtn flatBtn-nsPurple" style="margin-left:100px;" value="Simple Test" onclick="doSimpleTest()">
-
-				<div style="margin:15px 0 -5px 0; color:#b7b7b7; font-size:12px;">
-					(NOTE: Images wont work if you are running this locally! You need to run Chrome with --allow-file-access-from-files flag)
-				</div>
 			</div>
 		</div>
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: HTML Table To Slide(s)
+			<div class="arrow"></div>DEMO: HTML Table To Slide(s)
 		</div>
-		<div class="sectionBox" style="display:block">
+		<div class="sectionBox" style="display:none">
 			<div id="auto-paging-options" style="text-align:center; margin-bottom:10px;">
 				<b>OPTIONS: </b>
 				<label for="numTab2SlideHead" style="font-size:12px">Include Header on each Slide?</label>

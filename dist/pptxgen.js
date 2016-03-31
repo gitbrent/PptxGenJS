@@ -710,7 +710,7 @@ var PptxGenJS = function(){
 				+ '  <p:nvSpPr>'
 				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
 				+ '  <p:spPr>'
-				+ '    <a:xfrm><a:off x="'+ (EMU*0.3) +'" y="'+ (EMU*5.2) +'"/><a:ext cx="400000" cy="150000"/></a:xfrm>'
+				+ '    <a:xfrm><a:off x="'+ (EMU*0.3) +'" y="'+ (EMU*5.2) +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
 				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 				+ '    <a:extLst>'
 				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
