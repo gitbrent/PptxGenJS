@@ -42,8 +42,7 @@
 	* SEE: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-// POLYFILL for IE
-// SEE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger
+// POLYFILL (SEE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
 Number.isInteger = Number.isInteger || function(value) {
 	return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 };
@@ -51,6 +50,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var PptxGenJS = function(){
 	// CONSTS
 	var APP_VER = "1.0.0"; // Used for API versioning
+	var BLD_VER = "20160329"
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -103,7 +103,7 @@ var PptxGenJS = function(){
 	 * Export the .pptx file (using saveAs - dep. filesaver.js)
 	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
-	function doExportPresentation(inStrExportName){
+	function doExportPresentation() {
 		var intSlideNum = 0, intRels = 0;
 
 		// =======
@@ -157,7 +157,7 @@ var PptxGenJS = function(){
 		// =======
 		// STEP 3: Push the PPTX file to browser
 		// =======
-		var strExportName = (( inStrExportName ) ? inStrExportName+gObjPptx.fileExtn : gObjPptx.fileName+gObjPptx.fileExtn );
+		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 		saveAs( zip.generate({type:"blob"}), strExportName );
 	}
 
@@ -213,7 +213,15 @@ var PptxGenJS = function(){
 	        canvas.height = this.height;
 	        canvas.width  = this.width;
 	        ctx.drawImage(this, 0, 0);
-	        callback( canvas.toDataURL(slideRel.type), slideRel );
+			// Users running on local machine will get the following error:
+			// "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
+			// when the canvas.toDataURL call executes below.
+			try { callback( canvas.toDataURL(slideRel.type), slideRel ); }
+			catch(ex) {
+				this.onerror();
+				console.log("NOTE: Browsers wont let you load/convert local images! (search for --allow-file-access-from-files)");
+				return;
+			}
 	        canvas = null;
 	    };
 		image.onerror = function(){
@@ -345,7 +353,7 @@ var PptxGenJS = function(){
 	function decodeXmlEntities( inStr ) {
 		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 		if ( typeof inStr === 'undefined' || inStr == null ) return "";
-		return inStr.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/\'/i, '&apos;');
+		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
 	}
 
 	/* =======================================================================================================
@@ -702,7 +710,7 @@ var PptxGenJS = function(){
 				+ '  <p:nvSpPr>'
 				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
 				+ '  <p:spPr>'
-				+ '    <a:xfrm><a:off x="'+ (EMU*0.3) +'" y="'+ (EMU*5.2) +'"/><a:ext cx="400000" cy="150000"/></a:xfrm>'
+				+ '    <a:xfrm><a:off x="'+ (EMU*0.3) +'" y="'+ (EMU*5.2) +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
 				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 				+ '    <a:extLst>'
 				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
@@ -742,8 +750,8 @@ var PptxGenJS = function(){
 					var arrTabRows = slideObj.arrTabRows;
 					var objTabOpts = slideObj.objTabOpts;
 					var intColCnt = 0, intColW = 0;
-					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not sufficient to determine column count
-					// ....: Therefore, check each cell for a colspan and total cols as reqd
+					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
+					// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 					for (var tmp=0; tmp<arrTabRows[0].length; tmp++) {
 						intColCnt += ( arrTabRows[0][tmp].opts && arrTabRows[0][tmp].opts.colspan ) ? Number(arrTabRows[0][tmp].opts.colspan) : 1;
 					}
@@ -874,43 +882,24 @@ var PptxGenJS = function(){
 									+ '  <a:tcPr'+ cellMargin + cellValign +'>';
 
 							// 5: Borders: Add any borders
-							var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
 							if ( cellOpts.border && typeof cellOpts.border === 'string' ) {
-								strXml += '  <a:lnL w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnL>';
-								strXml += '  <a:lnR w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnR>';
-								strXml += '  <a:lnT w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnT>';
-								strXml += '  <a:lnB w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnB>';
+								strXml += '  <a:lnL w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnL>';
+								strXml += '  <a:lnR w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnR>';
+								strXml += '  <a:lnT w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnT>';
+								strXml += '  <a:lnB w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnB>';
 							}
 							else if ( cellOpts.border && Array.isArray(cellOpts.border) ) {
-								if ( cellOpts.border[3] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[3].color) ? cellOpts.border[3].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[3] && cellOpts.border[3].pt) ? (ONEPT * Number(cellOpts.border[3].pt)) : ONEPT;
-									strXml += '<a:lnL w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnL>';
-								}
-								else if ( cellOpts.border[3] == 0 ) strXml += '<a:lnL w="0"><a:miter lim="400000" /></a:lnL>';
-
-								if ( cellOpts.border[1] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[1].color) ? cellOpts.border[1].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[1] && cellOpts.border[1].pt) ? (ONEPT * Number(cellOpts.border[1].pt)) : ONEPT;
-									strXml += '<a:lnR w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnR>';
-								}
-								else if ( cellOpts.border[1] == 0 ) strXml += '<a:lnR w="0"><a:miter lim="400000" /></a:lnR>';
-
-								if ( cellOpts.border[0] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[0].color) ? cellOpts.border[0].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[0] && cellOpts.border[0].pt) ? (ONEPT * Number(cellOpts.border[0].pt)) : ONEPT;
-									strXml += '<a:lnT w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnT>';
-								}
-								else if ( cellOpts.border[0] == 0 ) strXml += '<a:lnT w="0"><a:miter lim="400000" /></a:lnT>';
-
-								if ( cellOpts.border[2] ) {
-									var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[2].color) ? cellOpts.border[2].color : '666666') +'"/></a:solidFill>';
-									var intW = (cellOpts.border[2] && cellOpts.border[2].pt) ? (ONEPT * Number(cellOpts.border[2].pt)) : ONEPT;
-									strXml += '  <a:lnB w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:lnB>';
-								}
-								else if ( cellOpts.border[2] == 0 ) strXml += '<a:lnB w="0"><a:miter lim="400000" /></a:lnB>';
+								$.each([ {idx:3,name:'lnL'}, {idx:1,name:'lnR'}, {idx:0,name:'lnT'}, {idx:2,name:'lnB'} ], function(i,obj){
+									if ( cellOpts.border[obj.idx] ) {
+										var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[obj.idx].color) ? cellOpts.border[obj.idx].color : '666666') +'"/></a:solidFill>';
+										var intW = (cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt == 0)) ? (ONEPT * Number(cellOpts.border[obj.idx].pt)) : ONEPT;
+										strXml += '<a:'+ obj.name +' w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:'+ obj.name +'>';
+									}
+									else strXml += '<a:'+ obj.name +' w="0"><a:miter lim="400000" /></a:'+ obj.name +'>';
+								});
 							}
 							else if ( cellOpts.border && typeof cellOpts.border === 'object' ) {
+								var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
 								var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color : '666666') +'"/></a:solidFill>';
 								var strAttr = '<a:prstDash val="';
 								strAttr += ((cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1) ? "sysDash" : "solid" );
@@ -1368,7 +1357,10 @@ var PptxGenJS = function(){
 	this.save = function save(inStrExportName) {
 		var intRels = 0, arrImages = [];
 
-		// STEP 1: Total all images (rels) across the Presentation
+		// STEP 1: Set export title (if any)
+		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
+
+		// STEP 2: Total all images (rels) across the Presentation
 		// PERF: Only send unique image paths for encoding (encoding func will find and fill ALL matching img paths and fill)
 		$.each(gObjPptx.slides, function(i,slide){
 			$.each(slide.rels, function(i,rel){
@@ -1380,8 +1372,8 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// STEP 2: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-		if ( intRels == 0 ) doExportPresentation(inStrExportName);
+		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
+		if ( intRels == 0 ) doExportPresentation();
 	};
 
 	/**
@@ -1514,9 +1506,7 @@ var PptxGenJS = function(){
 			// STEP 1: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
-			var strImgExtn = strImagePath.substring( strImagePath.indexOf('.')+1 ).toLowerCase();
-			if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-			if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
+			var strImgExtn = 'png'; // Every image is encoded via canvas>base64, so they all come out as png (use of another extn will cause "needs repair" dialog on open in PPT)
 			//
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
@@ -1696,7 +1686,7 @@ var PptxGenJS = function(){
 					if ( $(cell).css('border-top-width') || $(cell).css('border-right-width') || $(cell).css('border-bottom-width') || $(cell).css('border-left-width') ) {
 						objOpts.border = [];
 						$.each(['top','right','bottom','left'], function(i,val){
-							var intBorderW = Math.round( Number($(cell).css('border-'+val+'-width').replace(/\D/gi,'')) );
+							var intBorderW = Math.round( Number($(cell).css('border-'+val+'-width').replace('px','')) );
 							var arrRGB = [];
 							arrRGB = $(cell).css('border-'+val+'-color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
 							var strBorderC = rgbToHex( Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]) );
@@ -1753,8 +1743,7 @@ var PptxGenJS = function(){
 					arrCellsLineHeights.push( Math.round(lineHeight) );
 				});
 
-				// AUTO-PAGING:
-				// D: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
+				// D: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
 				for (var idx=0; idx<intMaxLineCnt; idx++) {
 					// 1: Add the current line to cell
 					for (var col=0; col<arrCellsLines.length; col++) {
@@ -1779,6 +1768,16 @@ var PptxGenJS = function(){
 							emuTabCurrH = 0; // This row's emuRowH w/b added below
 							// 5: Empty current row's text (continue adding lines where we left off below)
 							$.each(currRow,function(i,cell){ cell.text = ''; });
+							// 6: Auto-Paging Options: addHeaderToEach
+							if ( opts.addHeaderToEach ) {
+								var headRow = [];
+								$.each(arrObjTabHeadRows[0], function(iCell,cell){
+									headRow.push({ text:cell.text, opts:cell.opts });
+									var lines = parseTextToLines(cell.text, cell.opts.font_size, (arrColW[iCell]/ONEPT));
+									if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
+								});
+								arrRows.push( $.extend(true, [], headRow) );
+							}
 						}
 
 						// B: Add next line of text to this cell
@@ -1793,9 +1792,9 @@ var PptxGenJS = function(){
 				// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
 				arrRows.push( $.extend(true, [], currRow) );
 				currRow.length = 0;
-			}); // row Loop
-		}); // tab Loop
-		// STEP 4-LAST: Flush final row buffer to slide
+			}); // row loop
+		}); // tab loop
+		// Flush final row buffer to slide
 		arrObjSlides.push( $.extend(true,[],arrRows) );
 
 		// STEP 5: Create a SLIDE for each of our 1-N table pieces
@@ -1817,9 +1816,10 @@ var PptxGenJS = function(){
 			newSlide.addTable( arrTabRows, {x:arrInchMargins[3], y:arrInchMargins[0], cx:(emuSlideTabW/EMU)}, {colW:arrColW} );
 
 			// E: Add any additional objects
-			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts || {}) );
-			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
 			if ( opts.addImage ) newSlide.addImage( opts.addImage.url,   opts.addImage.x, opts.addImage.y, opts.addImage.w, opts.addImage.h );
+			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
+			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
+			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}), (opts.addTable.tabOpts || {}) );
 		});
 	}
 };
