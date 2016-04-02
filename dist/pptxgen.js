@@ -786,7 +786,7 @@ var PptxGenJS = function(){
 					if ( Array.isArray(objTabOpts.colW) ) {
 						strXml += '<a:tblGrid>';
 						for ( var col=0; col<intColCnt; col++ ) {
-							strXml += '  <a:gridCol w="'+ (objTabOpts.colW[col] || (objTabOpts.cx/intColCnt)) +'"/>';
+							strXml += '  <a:gridCol w="'+ (objTabOpts.colW[col] || (slideObj.options.cx/intColCnt)) +'"/>';
 						}
 						strXml += '</a:tblGrid>';
 					}
@@ -795,7 +795,7 @@ var PptxGenJS = function(){
 						intColW = (objTabOpts.colW) ? objTabOpts.colW : EMU;
 						if ( slideObj.options.cx && !objTabOpts.colW ) intColW = ( slideObj.options.cx / intColCnt );
 						strXml += '<a:tblGrid>';
-						for ( var col=0; col<intColCnt; col++ ) { strXml += '  <a:gridCol w="'+ intColW +'"/>'; }
+						for ( var col=0; col<intColCnt; col++ ) { strXml += '<a:gridCol w="'+ intColW +'"/>'; }
 						strXml += '</a:tblGrid>';
 					}
 					// C: Table Height provided without rowH? Then distribute rows
@@ -1413,6 +1413,8 @@ var PptxGenJS = function(){
 
 		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
 			var opt = (typeof inOpt === 'object') ? inOpt : {};
+			if (opt.w) opt.cx = opt.w;
+			if (opt.h) opt.cy = opt.h;
 
 			// STEP 1: REALITY-CHECK
 			if ( arrTabRows == null || arrTabRows.length == 0 || ! Array.isArray(arrTabRows) ) {
@@ -1427,11 +1429,13 @@ var PptxGenJS = function(){
 			if ( typeof opt.x  === 'undefined' ) opt.x  = (EMU / 2);
 			if ( typeof opt.y  === 'undefined' ) opt.y  = EMU;
 			if ( typeof opt.cx === 'undefined' ) opt.cx = (gObjPptx.pptLayout.width - (EMU / 2));
-			// Dont do this for cy - leaving it null triggers auto-rowH in makeSlide
+			// Dont do this for cy - leaving it null triggers auto-rowH in makeXMLSlide function
 
 			// STEP 4: We use different logic in makeSlide (smartCalc is not used), so convert to EMU now
 			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
 			if ( opt.y  < 20 ) opt.y  = inch2Emu(opt.y);
+			if ( opt.w  < 20 ) opt.w  = inch2Emu(opt.w);
+			if ( opt.h  < 20 ) opt.h  = inch2Emu(opt.h);
 			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
 			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 			//
