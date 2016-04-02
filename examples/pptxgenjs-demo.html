@@ -44,7 +44,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 		function doSimpleTest() {
 			var pptx = new PptxGenJS();
 			var slide = pptx.addNewSlide();
-			slide.addText('Hello World!', { x:0.5, y:0.7, color:'0000FF' });
+			slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
 			pptx.save('Sample Presentation');
 		}
 
@@ -417,7 +417,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 		</div>
 		<div class="sectionBox" style="display:block; padding:15px;">
 			<input type="button" class="flatBtn flatBtn-nsOrange" style="width:25%; margin-right:20px;" value="Corporate Masters Test" onclick="doCorpPresTest()">
-			<input type="button" class="flatBtn flatBtn-nsTeal"   style="width:25%; padding:8px 40px;" value="Simple Test" onclick="doSimpleTest()">
+			<input type="button" class="flatBtn flatBtn-nsPurple" style="width:25%; padding:8px 40px;" value="Simple Test" onclick="doSimpleTest()">
 		</div>
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
