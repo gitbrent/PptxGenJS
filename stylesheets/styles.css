@@ -1,3 +1,4 @@
+/* modernist theme stylesheet */
 /*@import url(https://fonts.googleapis.com/css?family=Lato:300italic,700italic,300,700);*/
 html {
   background: #6C7989;
@@ -197,7 +198,7 @@ section {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  color: #222;
+  color: #696969;
   padding: 0;
   margin: 0 0 20px;
   line-height: 1.2;
@@ -216,15 +217,15 @@ h1 {
 }
 
 h2 {
-  color: #393939;
+  color: #696969;
 }
 
 h3, h4, h5, h6 {
-  color: #494949;
+  color: #696969;
 }
 
 blockquote {
-  margin: 0 -40px 40px;
+  margin: 0 -30px 20px;
   padding: 15px 20px 1px 40px;
   font-style: italic;
   background: #ccc;
@@ -246,14 +247,17 @@ pre, .code {
   padding: 20px 30px;
   background: #3A3C42;
   color: #f8f8f2;
-  margin: 0 -30px 30px;
+  margin: 0 0 30px;
+  /*margin: 0 -30px 30px;*/
   overflow-x:auto;
 }
 
 /* ===== */
+article { margin-bottom: 40px; }
 .code {
     font-family: Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
     font-size: 12px;
+    border-radius: 10px;
 }
 .prettyprint {
     color: white;
@@ -279,12 +283,12 @@ pre code {
 .contExample > div:last-child {
     display: table-cell;;
     width: 30%;
-    text-align: center;
+    padding-left: 40px;
+    text-align: left;
 }
 .contExample input[type="button"] {
-    width: 90%;
+    width: 100%;
     height: 50px;
-    float: right;
 }
 .contExample img {
     box-shadow: 12px 12px 25px rgba(0,0,0,0.5);

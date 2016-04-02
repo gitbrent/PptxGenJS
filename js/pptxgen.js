@@ -50,7 +50,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var PptxGenJS = function(){
 	// CONSTS
 	var APP_VER = "1.0.0"; // Used for API versioning
-	var BLD_VER = "20160329"
+	var BLD_VER = "20160402"
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -729,6 +729,9 @@ var PptxGenJS = function(){
 
 			// A: Set option vars
 			if ( slideObj.options ) {
+				if ( slideObj.options.w  || slideObj.options.w  == 0 ) slideObj.options.cx = slideObj.options.w;
+				if ( slideObj.options.h  || slideObj.options.h  == 0 ) slideObj.options.cy = slideObj.options.h;
+				//
 				if ( slideObj.options.x  || slideObj.options.x  == 0 )  x = getSmartParseNumber( slideObj.options.x , 'X' );
 				if ( slideObj.options.y  || slideObj.options.y  == 0 )  y = getSmartParseNumber( slideObj.options.y , 'Y' );
 				if ( slideObj.options.cx || slideObj.options.cx == 0 ) cx = getSmartParseNumber( slideObj.options.cx, 'X' );
@@ -783,7 +786,7 @@ var PptxGenJS = function(){
 					if ( Array.isArray(objTabOpts.colW) ) {
 						strXml += '<a:tblGrid>';
 						for ( var col=0; col<intColCnt; col++ ) {
-							strXml += '  <a:gridCol w="'+ (objTabOpts.colW[col] || (objTabOpts.cx/intColCnt)) +'"/>';
+							strXml += '  <a:gridCol w="'+ (objTabOpts.colW[col] || (slideObj.options.cx/intColCnt)) +'"/>';
 						}
 						strXml += '</a:tblGrid>';
 					}
@@ -792,7 +795,7 @@ var PptxGenJS = function(){
 						intColW = (objTabOpts.colW) ? objTabOpts.colW : EMU;
 						if ( slideObj.options.cx && !objTabOpts.colW ) intColW = ( slideObj.options.cx / intColCnt );
 						strXml += '<a:tblGrid>';
-						for ( var col=0; col<intColCnt; col++ ) { strXml += '  <a:gridCol w="'+ intColW +'"/>'; }
+						for ( var col=0; col<intColCnt; col++ ) { strXml += '<a:gridCol w="'+ intColW +'"/>'; }
 						strXml += '</a:tblGrid>';
 					}
 					// C: Table Height provided without rowH? Then distribute rows
@@ -1410,6 +1413,8 @@ var PptxGenJS = function(){
 
 		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
 			var opt = (typeof inOpt === 'object') ? inOpt : {};
+			if (opt.w) opt.cx = opt.w;
+			if (opt.h) opt.cy = opt.h;
 
 			// STEP 1: REALITY-CHECK
 			if ( arrTabRows == null || arrTabRows.length == 0 || ! Array.isArray(arrTabRows) ) {
@@ -1424,11 +1429,13 @@ var PptxGenJS = function(){
 			if ( typeof opt.x  === 'undefined' ) opt.x  = (EMU / 2);
 			if ( typeof opt.y  === 'undefined' ) opt.y  = EMU;
 			if ( typeof opt.cx === 'undefined' ) opt.cx = (gObjPptx.pptLayout.width - (EMU / 2));
-			// Dont do this for cy - leaving it null triggers auto-rowH in makeSlide
+			// Dont do this for cy - leaving it null triggers auto-rowH in makeXMLSlide function
 
 			// STEP 4: We use different logic in makeSlide (smartCalc is not used), so convert to EMU now
 			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
 			if ( opt.y  < 20 ) opt.y  = inch2Emu(opt.y);
+			if ( opt.w  < 20 ) opt.w  = inch2Emu(opt.w);
+			if ( opt.h  < 20 ) opt.h  = inch2Emu(opt.h);
 			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
 			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 			//

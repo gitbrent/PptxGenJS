@@ -34,83 +34,86 @@
 		</header>
 
 		<section>
-            <div>
-            <h1>Create a PowerPoint presentation using JavaScript</h1>
-			By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and easily
-			produce PowerPoint presentations with a few simple JavaScript commands.<br>
-			<br>
-			<ul>
-				<li>Works with all modern desktop browsers (IE11, Edge, Chrome, Firefox, Opera)</li>
-				<li>PPTX file is pushed to client browsers as a regular file without the need for any user interaction</li>
-				<li>Complete HTML5/JavaScript solution - no other libraries, plug-ins, or settings are required</li>
-			</ul>
-			Additionally, this framework includes a unique <b>Table-To-Slides</b> feature that will reproduce an HTML
-			Table in 1 or more slides with a single command.<br>
-			<br>
-			Supported write/output formats:
-			<ul>
-				<li>PowerPoint 2007+ and Open Office XML format (.pptx)</li>
-			</ul>
-        </div>
+            <article id="Intro">
+	            <h1>Create a PowerPoint presentation using JavaScript</h1>
+				By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and easily
+				produce PowerPoint presentations with a few simple JavaScript commands.<br>
+				<br>
+				<ul>
+					<li>Works with all modern desktop browsers (IE11, Edge, Chrome, Firefox, Opera)</li>
+					<li>PPTX file is pushed to client browsers as a regular file without the need for any user interaction</li>
+					<li>Complete HTML5/JavaScript solution - no other libraries, plug-ins, or settings are required</li>
+				</ul>
+				Additionally, this framework includes a unique <b>Table-To-Slides</b> feature that will reproduce an HTML
+				Table in 1 or more slides with a single command.<br>
+				<br>
+				Supported write/output formats:
+				<ul>
+					<li>PowerPoint 2007+ and Open Office XML format (.pptx)</li>
+				</ul>
+	        </article>
 
-        <article id="Setup">
-            <h2>Setup</h2>
-            <ul>
-                <li>Include the script tags below in your document</li>
-            </ul>
-			<div class="code">
-	            <pre class="prettyprint">
-&lt;script type="text/javascript" src="js/jquery.min.js"&gt;&lt;/script&gt;
+	        <article id="Setup">
+	            <h1>Minimal Dependency Setup</h1>
+				<h3>Only 3 additional libraries are required to use PptxGenJS</h3>
+	            <ul>
+					<li>jQuery (you're likely using this one already)
+					<li>jsZip.js (to create the pptx export file)
+					<li>FileSaver.js (to push the export file to client browsers)</li>
+	            </ul>
+				<p>Download and include these scripts in your HTML page</p>
+				<div class="code">
+<pre class="prettyprint">&lt;script type="text/javascript" src="js/jquery.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="js/jszip.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="js/filesaver.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="js/pptxgen.min.js"&gt;&lt;/script&gt;</pre>
-	        </div>
-        </article>
+&lt;script type="text/javascript" src="js/pptxgen.js"&gt;&lt;/script&gt;</pre>
+		        </div>
+	        </article>
 
-		<article id="sect-usage" class="main-content">
-	        <h2>Usage</h2>
-	        <ul>
-	            <li>Basically, just create a slide and add objects</li>
-	            <li>All non-pt units are in inches</li>
-	        </ul>
+			<article id="Usage" class="main-content">
+		        <h1>Creating Presentations is Super Easy</h1>
+				<h3>Just create a new PptxGenJS presentation, add a slide, add 1 or more objects, then save/export it.</h3>
+		        <ul>
+					<li>Set object parameter values using inches like you would in PowerPoint</li>
+		        </ul>
 
-			<!-- ======================================================================================= -->
-	        <h3>
-	            Simple Example
-	        </h3>
-	        <div class="code">
+				<!-- ======================================================================================= -->
+		        <h2>
+		            Simple Example
+		        </h2>
+		        <div class="code">
 <pre id="demo-simple" class="prettyprint">
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 slide.addText('Hello world!', { x:1.0, y:1.0, font_size:42, color:'00FF00' });
 pptx.save('Demo-Simple');
 </pre>
-	        </div>
-			<div class="contExample">
-				<div>
-					<h3>Output</h3>
-					<a href="images/demo-simple.png"><img src="images/demo-simple.png" alt="demo simple"></a>
+		        </div>
+				<div class="contExample">
+					<div>
+						<h3>Output</h3>
+						<a href="images/demo-simple.png"><img src="images/demo-simple.png" alt="demo simple"></a>
+					</div>
+					<div>
+						<h3>Demo</h3>
+						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
+						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+					</div>
 				</div>
-				<div>
-					<h3>Demo</h3>
-					<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-					 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
-				</div>
-			</div>
 
-			<!-- ======================================================================================= -->
-	        <h3>Table Example</h3>
-	        <div class="code">
-<pre id="demo03" class="prettyprint">
+				<!-- ======================================================================================= -->
+		        <h2>Table Example</h2>
+		        <div class="code">
+<pre id="demo-table" class="prettyprint">
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 slide.addText('Table Example', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
 
 // TABLE 1: Simple array (if there is only one row of data, you can just use a simple array)
-var rows = [ 1,2,3,4,5,6,7,8,9,10 ];
+var arrRows = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 var tabOpts = { x:0.5, y:1.0, w:9.0 };
 var celOpts = { fill:'F7F7F7', font_size:14, color:'363636' };
-slide.addTable( rows, tabOpts, celOpts );
+slide.addTable( arrRows, tabOpts, celOpts );
 
 // TABLE 2: Multi-row Array (data structure: rows are arrays of cells)
 var rows = [
@@ -119,7 +122,9 @@ var rows = [
 ];
 var tabOpts = { x:0.5, y:2.0, w:9.0 };
 var celOpts = {
-	fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'}
+		fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0,
+		valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'
+	}
 };
 slide.addTable( rows, tabOpts, celOpts );
 
@@ -133,35 +138,35 @@ var rows = [
 ];
 var tabOpts = { x:0.5, y:4.5, w:9.0 };
 var celOpts = {
-	fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'}
+	fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6,
+	valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'}
 };
 slide.addTable( rows, tabOpts, celOpts );
 
 pptx.save('Demo-Tables');
 </pre>
-	        </div>
-			<div class="contExample">
-				<div>
-					<h3>Output</h3>
-					<a href="images/demo-03.png"><img src="images/demo-03.png" alt="demo 03"></a>
+		        </div>
+				<div class="contExample">
+					<div>
+						<h3>Output</h3>
+						<a href="images/demo-table.png"><img src="images/demo-table.png" alt="demo table"></a>
+					</div>
+					<div>
+						<h3>Demo</h3>
+						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
+						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+					</div>
 				</div>
-				<div>
-					<h3>Demo</h3>
-					<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-					 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
-				</div>
-			</div>
 
-			<!-- ======================================================================================= -->
-	        <h3>Text Example</h3>
-	        <div class="code">
-<pre id="demo01" class="prettyprint">
+				<!-- ======================================================================================= -->
+		        <h2>Text Example</h2>
+		        <div class="code">
+<pre id="demo-text" class="prettyprint">
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-slide.addText('Text Example', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
 
-slide.addText('Hello',  { x:0.5, y:1.0, w:3, color:'0000FF', font_size:64 });
-slide.addText('World!', { x:2.7, y:1.3, w:5, color:'DDDD00', font_size:90 });
+slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', font_size:64 });
+slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
 
 slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
 var objOptions = {
@@ -171,23 +176,23 @@ var objOptions = {
 slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
 pptx.save('Demo-Text');
 </pre>
-	        </div>
-			<div class="contExample">
-				<div>
-					<h3>Output</h3>
-					<a href="images/demo-text.png"><img src="images/demo-text.png" alt="demo text"></a>
+		        </div>
+				<div class="contExample">
+					<div>
+						<h3>Output</h3>
+						<a href="images/demo-text.png"><img src="images/demo-text.png" alt="demo text"></a>
+					</div>
+					<div>
+						<h3>Demo</h3>
+						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
+						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+					</div>
 				</div>
-				<div>
-					<h3>Demo</h3>
-					<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-					 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
-				</div>
-			</div>
 
-			<!-- ======================================================================================= -->
-	        <h3>Shapes Example</h3>
-	        <div class="code">
-<pre id="demo02" class="prettyprint">
+				<!-- ======================================================================================= -->
+		        <h2>Shapes Example</h2>
+		        <div class="code">
+<pre id="demo-shapes" class="prettyprint">
 // Create a new Presentation
 var pptx = new PptxGenJS();
 pptx.setLayout('LAYOUT_WIDE');
@@ -197,71 +202,67 @@ var slide = pptx.addNewSlide();
 slide.addText('Shapes Example', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
 
 // Shapes
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.40, w:5, h:0.0, line:'FF0000', line_size:1 });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.80, w:5, h:0.0, line:'FF0000', line_size:2, line_head:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.20, w:5, h:0.0, line:'FF0000', line_size:3, line_tail:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.60, w:5, h:0.0, line:'FF0000', line_size:4 });
-slide.addShape(pptx.shapes.RECTANGLE, { x:8.00, y:0.75, w:5, h:3.2, fill:'00FF00' });
-slide.addShape(pptx.shapes.OVAL,      { x:4.15, y:0.75, w:5, h:2.0, fill:{ type:'solid', color:'0088CC', alpha:25 } });
-slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, w:5, h:3.2, fill:'FF0000' });
+slide.addShape(pptx.shapes.LINE,      { x:4.2, y:4.4, w:5, h:0, line:'FF0000', line_size:1 });
+slide.addShape(pptx.shapes.LINE,      { x:4.2, y:4.8, w:5, h:0, line:'FF0000', line_size:2, line_head:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.2, y:5.2, w:5, h:0, line:'FF0000', line_size:3, line_tail:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.2, y:5.6, w:5, h:0, line:'FF0000', line_size:4 });
+slide.addShape(pptx.shapes.RECTANGLE, { x:8.0, y:0.7, w:5, h:3, fill:'00FF00' });
+slide.addShape(pptx.shapes.OVAL,      { x:4.2, y:0.7, w:5, h:2, fill:{ type:'solid', color:'0088CC', alpha:25 } });
+slide.addShape(pptx.shapes.RECTANGLE, { x:0.5, y:0.7, w:5, h:3, fill:'FF0000' });
 
 // Shapes with Text
 slide.addText(
-    'RIGHT-TRIANGLE',
-    { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 }
+  'RIGHT-TRIANGLE',
+  { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.4, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 }
 );
 slide.addText(
-    'RIGHT-TRIANGLE',
-    { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.00, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true }
+  'RIGHT-TRIANGLE',
+  { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.0, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true }
 );
 
 // Export Presentation
 pptx.save('Demo-Shapes');
 </pre>
-	        </div>
-			<div class="contExample">
-				<div>
-					<h3>Output</h3>
-					<a href="images/demo-shapes.png"><img src="images/demo-shapes.png" alt="demo shapes"></a>
+		        </div>
+				<div class="contExample">
+					<div>
+						<h3>Output</h3>
+						<a href="images/demo-shapes.png"><img src="images/demo-shapes.png" alt="demo shapes"></a>
+					</div>
+					<div>
+						<h3>Demo</h3>
+						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
+						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+					</div>
 				</div>
-				<div>
-					<h3>Demo</h3>
-					<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-					 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
-				</div>
-			</div>
-	    </article>
-		<article id="sect-license">
-			<h2>License</h2>
-			<a href="http://opensource.org/licenses/MIT">MIT License</a><br>
-			<br>
-			Copyright (c) 2015-2016 <a href="https://github.com/GitBrent/">Brent Ely</a><br>
-			<br>
-			Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br>
-			<br>
-			The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br>
-			<br>
-			THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.<br>
-		</article>
+		    </article>
+
+			<blockquote>&nbsp;</blockquote>
+
+			<article id="sect-license">
+				<h2>License</h2>
+				<a href="http://opensource.org/licenses/MIT">MIT License</a><br><br>
+				Copyright (c) 2015-2016 <a href="https://github.com/GitBrent/">Brent Ely</a><br><br>
+				Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:<br><br>
+				The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.<br><br>
+				THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.<br>
+			</article>
+		</section>
 	</div>
-
-
 	<footer>
-		<p>Project maintained by <a href="http://github.com/gitbrent">Brent Ely</a></p>
+		<p>Project maintained by <a href="https://github.com/gitbrent">Brent Ely</a></p>
 		<p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
 	</footer>
+
 	<script src="javascripts/scale.fix.js"></script>
 
-    <script type="text/javascript">
-    var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
-    document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
-    </script>
-    <script type="text/javascript">
-    try {
-    var pageTracker = _gat._getTracker("UA-75147115-1");
-    pageTracker._trackPageview();
-    } catch(err) {}
-    </script>
-
+	<!-- analytics -->
+	<script type="text/javascript">
+	var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+	document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+	</script>
+	<script type="text/javascript">
+	try { var pageTracker = _gat._getTracker("UA-75147115-1"); pageTracker._trackPageview(); } catch(err) {}
+	</script>
 </body>
 </html>
