@@ -62,7 +62,7 @@ PptxGenJS requires only three additional libraries to produce and push a file to
 ```javascript
 <script lang="javascript" src="dist/jquery.min.js"></script>
 <script lang="javascript" src="dist/jszip.min.js"></script>
-<script lang="javascript" src="dist/filesaver.js"></script>
+<script lang="javascript" src="dist/filesaver.min.js"></script>
 <script lang="javascript" src="dist/pptxgen.js"></script>
 ```
 
@@ -79,8 +79,6 @@ See the one in the examples folder to get started
 ```javascript
 <script lang="javascript" src="dist/pptxgen.masters.js"></script>
 ```
-
-
 
 **************************************************************************************************
 # The Basics
