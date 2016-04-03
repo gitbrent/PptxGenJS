@@ -17,8 +17,8 @@
 	<script type="text/javascript" src="js/pptxgen.shapes.js"></script>
 	<script type="text/javascript" src="js/pptxgen.masters.js"></script>
 	<script type="text/javascript" src="js/pptxgen.js"></script>
-	<!-- -->
-	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?lang=js&amp;skin=sunburst"></script>
+	<!-- Google Code Prettify -->
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 </head>
 <body>
 	<div class="wrapper">
@@ -53,15 +53,18 @@
 				</ul>
 	        </article>
 
+			<blockquote></blockquote>
+
 	        <article id="Setup">
 	            <h1>Minimal Dependency Setup</h1>
 				<h3>Only 3 additional libraries are required to use PptxGenJS</h3>
 	            <ul>
-					<li>jQuery (you're likely using this one already)
-					<li>jsZip.js (to create the pptx export file)
-					<li>FileSaver.js (to push the export file to client browsers)</li>
+					<li><a href="https://jquery.com/">jQuery</a> (you're likely using this one already)
+					<li><a href="https://github.com/Stuk/jszip">jszip.js</a> (to create the pptx export zip file)
+					<li><a href="https://github.com/eligrey/FileSaver.js/">FileSaver.js</a> (to push the export file to client browsers)</li>
 	            </ul>
-				<p>Download and include these scripts in your HTML page</p>
+				<p>Download and include these scripts in an HTML page, and you are ready to create a PowerPoint presentation.<br>
+				(A copy of each is included in the <tt>libs</tt> directory, but you should obtain the latest releases)</p>
 				<div class="code">
 <pre class="prettyprint">&lt;script type="text/javascript" src="js/jquery.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="js/jszip.min.js"&gt;&lt;/script&gt;
@@ -69,6 +72,8 @@
 &lt;script type="text/javascript" src="js/pptxgen.js"&gt;&lt;/script&gt;</pre>
 		        </div>
 	        </article>
+
+			<blockquote></blockquote>
 
 			<article id="Usage" class="main-content">
 		        <h1>Creating Presentations is Super Easy</h1>
@@ -112,7 +117,7 @@ slide.addText('Table Example', { x:0.5, y:0.25, font_size:18, font_face:'Arial',
 // TABLE 1: Simple array (if there is only one row of data, you can just use a simple array)
 var arrRows = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 var tabOpts = { x:0.5, y:1.0, w:9.0 };
-var celOpts = { fill:'F7F7F7', font_size:14, color:'363636' };
+var celOpts = { color:'363636', fill:'F7F7F7', font_size:14 };
 slide.addTable( arrRows, tabOpts, celOpts );
 
 // TABLE 2: Multi-row Array (data structure: rows are arrays of cells)
@@ -122,13 +127,13 @@ var rows = [
 ];
 var tabOpts = { x:0.5, y:2.0, w:9.0 };
 var celOpts = {
-		fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0,
-		valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'
-	}
+	fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0,
+	valign:'m', align:'c', border:{ pt:'1', color:'FFFFFF' }
 };
 slide.addTable( rows, tabOpts, celOpts );
 
-// TABLE 3: Formatting can be done on a cell-by-cell basis - (TIP: use this to over-ride table options)
+// TABLE 3: Formatting can be done on a cell-by-cell basis
+// TIP: Use this to selectively override table style options
 var rows = [
     [
         { text: 'Top Lft', opts: { valign:'t', align:'l', font_face:'Arial'   } },
@@ -139,7 +144,7 @@ var rows = [
 var tabOpts = { x:0.5, y:4.5, w:9.0 };
 var celOpts = {
 	fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6,
-	valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'}
+	valign:'m', align:'c', border:{ pt:'1', color:'FFFFFF' }
 };
 slide.addTable( rows, tabOpts, celOpts );
 
@@ -237,7 +242,14 @@ pptx.save('Demo-Shapes');
 				</div>
 		    </article>
 
-			<blockquote>&nbsp;</blockquote>
+			<blockquote></blockquote>
+
+			<article>
+				<h2>Documentation Etc.</h2>
+				<p>Complete documentation and sample code is available on the <a href="https://github.com/gitbrent/PptxGenJS">PptxGenJS GitHub site</a></h2>
+			</article>
+
+			<blockquote></blockquote>
 
 			<article id="sect-license">
 				<h2>License</h2>

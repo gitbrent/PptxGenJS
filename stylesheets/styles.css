@@ -41,7 +41,6 @@ header, section, footer {
 
 a {
   color: #069;
-  text-decoration: none;
 }
 
 p {
@@ -225,13 +224,15 @@ h3, h4, h5, h6 {
 }
 
 blockquote {
-  margin: 0 -30px 20px;
+  margin: 0 -30px 30px;
   padding: 15px 20px 1px 40px;
   font-style: italic;
   background: #ccc;
   background: rgba(0, 0, 0, 0.06);
   color: #222;
 }
+
+tt { background: #ccc; padding: 1px 3px; }
 
 img {
   max-width:100%;
@@ -253,7 +254,7 @@ pre, .code {
 }
 
 /* ===== */
-article { margin-bottom: 40px; }
+article { margin-bottom: 30px; }
 .code {
     font-family: Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
     font-size: 12px;
@@ -294,7 +295,10 @@ pre code {
     box-shadow: 12px 12px 25px rgba(0,0,0,0.5);
 }
 /* ===== */
-
+pre .atv, code .atv, pre .str, code .str {
+    color: #00cc00 !important;
+}
+/* ===== */
 li pre {
   margin-left: -70px;
   padding-left: 80px;
