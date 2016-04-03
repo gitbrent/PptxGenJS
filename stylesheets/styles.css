@@ -169,6 +169,7 @@ header ul a {
   padding-top: 13px;
   height: 56px;
   text-shadow: rgba(0, 0, 0, 0.4) 0 -1px 0;
+  text-decoration: none;
 }
 header ul a strong {
   font-size: 15px;
