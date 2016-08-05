@@ -143,8 +143,8 @@ var PptxGenJS = function(){
 		// Add all images
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
 			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
-				intRels++;
-				zip.file("ppt/media/image"+intRels+"."+gObjPptx.slides[idx].rels[idy].extn, gObjPptx.slides[idx].rels[idy].data, {base64:true});
+				var id = gObjPptx.slides[idx].rels[idy].rId - 1;
+				zip.file("ppt/media/image"+id+"."+gObjPptx.slides[idx].rels[idy].extn, gObjPptx.slides[idx].rels[idy].data, {base64:true});
 			}
 		}
 
