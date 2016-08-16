@@ -158,7 +158,9 @@ var PptxGenJS = function(){
 		// STEP 3: Push the PPTX file to browser
 		// =======
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-		saveAs( zip.generate({type:"blob"}), strExportName );
+		zip.generateAsync({type:"blob"}).then(function(content) {
+			saveAs(content, strExportName);
+		});
 	}
 
 	function componentToHex(c) {
