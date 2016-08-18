@@ -2,7 +2,7 @@
   "name": "pptxgenjs",
   "version": "1.0.0",
   "description": "Library to generate PowerPoint presentations",
-  "main": "src/pptxgen.js",
+  "main": "dist/pptxgen.js",
   "directories": {
     "example": "examples"
   },
