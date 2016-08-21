@@ -144,7 +144,14 @@ var PptxGenJS = function(){
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
 			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
 				var id = gObjPptx.slides[idx].rels[idy].rId - 1;
-				zip.file("ppt/media/image"+id+"."+gObjPptx.slides[idx].rels[idy].extn, gObjPptx.slides[idx].rels[idy].data, {base64:true});
+				var data = gObjPptx.slides[idx].rels[idy].data;
+				// data:image/png;base64
+				var header = data.substring(0, data.indexOf(","));
+				// NOTE: Trim the leading 'data:image/png;base64,' text as it is not needed (and image wont render correctly with it)
+				var content = data.substring(data.indexOf(",") + 1);
+				var extn = /data:image\/(\w+)/.exec(header)[1];
+				var isBase64 = /base64/.test(header);
+				zip.file("ppt/media/image" + id + "." + extn, content, {base64: isBase64});
 			}
 		}
 
@@ -158,7 +165,9 @@ var PptxGenJS = function(){
 		// STEP 3: Push the PPTX file to browser
 		// =======
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-		saveAs( zip.generate({type:"blob"}), strExportName );
+		zip.generateAsync({type:"blob"}).then(function(content) {
+			saveAs(content, strExportName);
+		});
 	}
 
 	function componentToHex(c) {
@@ -201,50 +210,49 @@ var PptxGenJS = function(){
 		image.src = inImgUrl;
 	}
 
-	function convertImgToDataURLviaCanvas(slideRel, callback){
+	function convertImgToDataURLviaCanvas(slideRel){
 		// A: Create
-	    var image = new Image();
+		var image = new Image();
 		// B: Set onload event
-	    image.onload = function(){
+		image.onload = function(){
 			// First: Check for any errors: This is the best method (try/catch wont work, etc.)
 			if (this.width + this.height == 0) { this.onerror(); return; }
-	        var canvas = document.createElement('CANVAS');
-	        var ctx = canvas.getContext('2d');
-	        canvas.height = this.height;
-	        canvas.width  = this.width;
-	        ctx.drawImage(this, 0, 0);
+			var canvas = document.createElement('CANVAS');
+			var ctx = canvas.getContext('2d');
+			canvas.height = this.height;
+			canvas.width  = this.width;
+			ctx.drawImage(this, 0, 0);
 			// Users running on local machine will get the following error:
 			// "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
 			// when the canvas.toDataURL call executes below.
-			try { callback( canvas.toDataURL(slideRel.type), slideRel ); }
+			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
 			catch(ex) {
 				this.onerror();
 				console.log("NOTE: Browsers wont let you load/convert local images! (search for --allow-file-access-from-files)");
 				return;
 			}
-	        canvas = null;
-	    };
+			canvas = null;
+		};
 		image.onerror = function(){
 			try { console.error( '[Error] Unable to load image: ' + slideRel.path ); } catch(ex){}
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			callbackImgToDataURLDone('data:image/png;base64,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', slideRel);
-	    };
+		};
 		// C: Load image
-    	image.src = slideRel.path;
+		image.src = slideRel.path;
 	}
 
 	function callbackImgToDataURLDone(inStr, slideRel){
 		var intEmpty = 0;
 
 		// STEP 1: Store base64 data for this image
-		// NOTE: Trim the leading 'data:image/png;base64,' text as it is not needed (and image wont render correctly with it)
-		slideRel.data = inStr.substring(inStr.indexOf(',')+1);
+		slideRel.data = inStr;
 
 		// STEP 2: Call export function once all async processes have completed
 		$.each(gObjPptx.slides, function(i,slide){
 			$.each(slide.rels, function(i,rel){
-				if ( rel.path == slideRel.path ) rel.data = inStr.substring(inStr.indexOf(',')+1);
-				if ( rel.data == null || rel.data.length == 0 ) intEmpty++;
+				if ( rel.path == slideRel.path ) rel.data = inStr;
+				if ( !rel.data ) intEmpty++;
 			});
 		});
 
@@ -1367,8 +1375,8 @@ var PptxGenJS = function(){
 		// PERF: Only send unique image paths for encoding (encoding func will find and fill ALL matching img paths and fill)
 		$.each(gObjPptx.slides, function(i,slide){
 			$.each(slide.rels, function(i,rel){
-				intRels++;
 				if ( !rel.data && $.inArray(rel.path, arrImages) == -1 ) {
+					intRels++;
 					convertImgToDataURLviaCanvas(rel, callbackImgToDataURLDone);
 					arrImages.push(rel.path);
 				}
@@ -1505,8 +1513,8 @@ var PptxGenJS = function(){
 			var intRels = 1;
 
 			// REALITY-CHECK:
-			if ( strImagePath == null || strImagePath == '' || strImagePath.indexOf('.') == -1 ) {
-				try { console.error('ERROR: Image needs an extension/Cant be blank'); } catch(ex){}
+			if ( !strImagePath && !strImgData ) {
+				try { console.error("ERROR: Image can't be empty"); } catch(ex){}
 				return null;
 			}
 
@@ -1514,7 +1522,7 @@ var PptxGenJS = function(){
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
 			var strImgExtn = 'png'; // Every image is encoded via canvas>base64, so they all come out as png (use of another extn will cause "needs repair" dialog on open in PPT)
-			//
+
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
 			gObjPptx.slides[slideNum].data[slideObjNum].image = strImagePath;

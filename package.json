@@ -1,0 +1,27 @@
+{
+  "name": "pptxgenjs",
+  "version": "1.0.0",
+  "description": "Library to generate PowerPoint presentations",
+  "main": "dist/pptxgen.js",
+  "directories": {
+    "example": "examples"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com:gitbrent/PptxGenJS.git"
+  },
+  "keywords": [
+    "powerpoint",
+    "pptx",
+    "ppt"
+  ],
+  "author": "gitbrent",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com:gitbrent/PptxGenJS/issues"
+  },
+  "homepage": "https://github.com:gitbrent/PptxGenJS#readme"
+}
