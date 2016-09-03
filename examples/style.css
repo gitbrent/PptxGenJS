@@ -139,6 +139,9 @@ div.formBox input[type="checkbox"] {
     margin-right: 3px;
 }
 
+div.table { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
+div.table > div { display: table-cell; }
+
 div.divTable { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
 div.divTable > div { display: table-row; }
 div.divTable > div > div { display: table-cell; padding: 3px 10px; }
