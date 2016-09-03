@@ -5,13 +5,16 @@ By including the PptxGenJS framework inside an HTML page, you have the ability t
 easily produce PowerPoint presentations with a few simple JavaScript commands.
 * Works with all modern desktop browsers (IE11, Edge, Chrome, Firefox, Opera)
 * The presentation export is pushed to client browsers as a regular file without any interaction required
-* Complete HTML5/JavaScript solution - no other libraries, plug-ins, or settings are required
+* Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings needed!
 
 Additionally, this framework includes a unique Table-To-Slides feature that will reproduce
 an HTML Table in 1 or more slides with a single command.
 
 Supported write/output formats:
 * PowerPoint 2007+, Open Office XML, Apple Keynote (.PPTX)
+
+Now available on NPM/Node:
+* [https://www.npmjs.com/package/pptxgenjs](https://www.npmjs.com/package/pptxgenjs)
 
 **************************************************************************************************
 
@@ -57,7 +60,7 @@ Use JavaScript to Create PowerPoint presentations right from our demo page
 [http://gitbrent.github.io/PptxGenJS](http://gitbrent.github.io/PptxGenJS)
 
 # Installation
-PptxGenJS requires only three additional libraries to produce and push a file to web browsers.
+PptxGenJS requires only three additional JavaScript libraries to function.
 
 ```javascript
 <script lang="javascript" src="dist/jquery.min.js"></script>
