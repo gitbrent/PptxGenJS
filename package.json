@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com:gitbrent/PptxGenJS.git"
+    "url": "git+https://github.com/gitbrent/PptxGenJS.git"
   },
   "keywords": [
     "powerpoint",
@@ -21,7 +21,7 @@
   "author": "gitbrent",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com:gitbrent/PptxGenJS/issues"
+    "url": "https://github.com/gitbrent/PptxGenJS/issues"
   },
   "homepage": "http://gitbrent.github.io/PptxGenJS/",
   "dependencies": {
