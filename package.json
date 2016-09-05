@@ -1,32 +1,32 @@
 {
-  "name": "pptxgenjs",
-  "version": "1.0.0",
-  "description": "Library to generate PowerPoint presentations",
-  "main": "dist/pptxgen.js",
-  "directories": {
-    "example": "examples"
-  },
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gitbrent/PptxGenJS.git"
-  },
-  "keywords": [
-    "powerpoint",
-    "pptx",
-    "ppt"
-  ],
-  "author": "gitbrent",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/gitbrent/PptxGenJS/issues"
-  },
-  "homepage": "http://gitbrent.github.io/PptxGenJS/",
-  "dependencies": {
-    "file-saver": "^1.3.2",
-    "jquery": "^3.1.0",
-    "jszip": "^3.1.2"
-  }
+    "name": "pptxgenjs",
+    "version": "1.0.1",
+    "description": "JavaScript framework that creates PowerPoint presentations",
+    "main": "dist/pptxgen.js",
+    "directories": {
+        "example": "examples"
+    },
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/gitbrent/PptxGenJS.git"
+    },
+    "keywords": [
+        "powerpoint",
+        "pptx",
+        "ppt"
+    ],
+    "author": "gitbrent",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/gitbrent/PptxGenJS/issues"
+    },
+    "homepage": "http://gitbrent.github.io/PptxGenJS/",
+    "dependencies": {
+        "file-saver": "^1.3.2",
+        "jquery": "^3.1.0",
+        "jszip": "^3.1.2"
+    }
 }
