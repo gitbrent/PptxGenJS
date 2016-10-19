@@ -338,9 +338,9 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 
 				var objOptions = {
 					x:0.5, y:5.5, cx:'90%',
-					font_face:'Arial', font_size:42, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
+					font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true, margin:0, isTextBox:true
 				};
-				slide.addText('Arial, 42pt, green, bold, underline, 0 inset', objOptions);
+				slide.addText('Arial (42pt, green, bold, italic, underline), [0 inset]', objOptions);
 
 				slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
 					{ x:0, y:6.5, cx:'100%', cy:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
@@ -473,7 +473,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 					<div class="divTable">
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Colors and Alignments</label></div>
+							<div><label>Text Formatting, Colors and Alignments</label></div>
 						</div>
 					</div>
 				</fieldset>

@@ -268,7 +268,8 @@ var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
 slide.addText('TEXT', {OPTIONS});
 
 // Example
-slide.addText('World!', { x:2.7, y:1.0, color:'DDDD00', font_size:90 });
+slide.addText('World!', { x:2.5, y:3.5, color:'DDDD00', font_size:90 });
+slide.addText('Options!', { x:1, y:1, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
 ```
 
 ### Text Options
@@ -280,7 +281,16 @@ slide.addText('World!', { x:2.7, y:1.0, color:'DDDD00', font_size:90 });
 | h          | height         | (inches)              |
 | align      | horiz align    | left / center / right |
 | autoFit    | "Fit to Shape" | true / false          |
+| bold       | bold           | true/false |
+| color      | font color     | CSS-Hex style ('336699', etc.) |
+| fill       | fill color     | CSS-Hex style ('336699', etc.) |
+| font_face  | font face      | 'Arial' etc. |
+| font_size  | font size      | Std PPT font sizes (1-256 pt) |
 | inset      | inset/padding  | (inches)              |
+| isTextBox  | PPT "Textbox"  | true/false |
+| italic     | italic         | true/false |
+| margin     | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
+| underline  | underline      | true/false |
 | valign     | vert align     | top / middle / bottom |
 
 ## Table
@@ -327,6 +337,7 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 | font_face  | font face      | 'Arial' etc. |
 | font_size  | font size      | Std PPT font sizes (1-256 pt) |
 | fill       | fill color     | CSS-Hex style ('336699', etc.) |
+| italic     | italic         | true/false |
 | marginPt   | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
 | rowspan    | row span       | 2-N |
 | rowH       | row height     | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |

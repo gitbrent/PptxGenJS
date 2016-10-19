@@ -50,7 +50,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var PptxGenJS = function(){
 	// CONSTS
 	var APP_VER = "1.0.0"; // Used for API versioning
-	var BLD_VER = "20160402"
+	var APP_REL = "20161018"
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -415,7 +415,7 @@ var PptxGenJS = function(){
 	function genXmlTextCommand( text_info, text_string, slide_obj, slide_num ) {
 		var area_opt_data = genXmlTextData( text_info, slide_obj );
 		var parsedText;
-		var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold + area_opt_data.underline + area_opt_data.char_spacing + ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>') + '<a:t>';
+		var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold + area_opt_data.italic + area_opt_data.underline + area_opt_data.char_spacing + ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>') + '<a:t>';
 		var endTag = '</a:r>';
 		var outData = '<a:r>' + startInfo;
 
@@ -469,6 +469,7 @@ var PptxGenJS = function(){
 
 		out_obj.font_size = '';
 		out_obj.bold = '';
+		out_obj.italic = '';
 		out_obj.underline = '';
 		out_obj.rpr_info = '';
         out_obj.char_spacing = '';
@@ -476,6 +477,10 @@ var PptxGenJS = function(){
 		if ( typeof text_info == 'object' ) {
 			if ( text_info.bold ) {
 				out_obj.bold = ' b="1"';
+			}
+
+			if ( text_info.italic ) {
+				out_obj.italic = ' i="1"';
 			}
 
 			if ( text_info.underline ) {
@@ -504,11 +509,10 @@ var PptxGenJS = function(){
 			}
 		}
 		else {
-			if ( slide_obj && slide_obj.color ) out_obj.rpr_info += genXmlColorSelection ( slide_obj.color );
+			if ( slide_obj && slide_obj.color ) out_obj.rpr_info += genXmlColorSelection( slide_obj.color );
 		}
 
-		if ( out_obj.rpr_info != '' )
-			out_obj.rpr_info += '</a:rPr>';
+		if ( out_obj.rpr_info != '' ) out_obj.rpr_info += '</a:rPr>';
 
 		return out_obj;
 	}
@@ -993,8 +997,7 @@ var PptxGenJS = function(){
 					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst/></a:prstGeom>';
 
 					if ( slideObj.options ) {
-						( slideObj.options.fill )
-							? strSlideXml += genXmlColorSelection(slideObj.options.fill) : strSlideXml += '<a:noFill/>';
+						( slideObj.options.fill ) ? strSlideXml += genXmlColorSelection(slideObj.options.fill) : strSlideXml += '<a:noFill/>';
 
 						if ( slideObj.options.line ) {
 							var lineAttr = '';
@@ -1623,6 +1626,9 @@ var PptxGenJS = function(){
 		var arrObjTabHeadRows = [], arrObjTabBodyRows = [], arrObjTabFootRows = [];
 		var arrObjSlides = [], arrRows = [], arrColW = [], arrTabColW = [];
 		var intTabW = 0, emuTabCurrH = 0;
+
+		// REALITY-CHECK:
+		if ( $('#'+tabEleId).length == 0 ) { console.error('ERROR: Table "'+tabEleId+'" does not exist!'); return; }
 
 		// NOTE: Look for opts.margin first as user can override Slide Master settings if they want
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
