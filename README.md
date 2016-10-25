@@ -136,7 +136,7 @@ into a button and place next to any table on your site.
 
 Note: Slide background color/image can be overridden on a per-slide basis when needed.
 ```javascript
-var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+var slide1 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
 ```
 
 ## TIP:
