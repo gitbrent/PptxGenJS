@@ -3,6 +3,7 @@
 <head>
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta name="author" content="https://github.com/gitbrent">
+	<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
 	<link type="text/css" rel="stylesheet" href="style.css">
 	<!-- NOTE:
 		Run Chrome from the terminal to allow reading local image files (not from a web server)
@@ -16,6 +17,8 @@
 	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>
 	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script>
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
+	<!-- Google Code Prettify -->
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 
 	<script type="text/javascript">
 		var CUST_NAME = 'ACME Corp Weekly Report';
@@ -33,9 +36,11 @@
 Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus.\
 Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus.\
 Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.\
-Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra.';
+Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra\
+.';
 		var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Kim','Ann','Lacey','Jenny','Linda','Kathryn'];
 		var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
+		var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE';
 		var colors = ['FF0000','AB00CD','00FF00','00AA00','003300','330033','990099','33FFFF','AA33CC','336699'];
 		var fonts = ['Arial','Courier New','Times','Verdana'];
 
@@ -53,8 +58,16 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 		function doCorpPresTest() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
-			var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
-			var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
+
+			if ( $('#inclCorp1').prop('checked') ) {
+				var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
+				var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
+			}
+			if ( $('#inclCorp2').prop('checked') ) {
+				var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+				var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
+			}
+
 			// LAST: Export Presentation
 			pptx.save();
 		}
@@ -415,11 +428,32 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Misc
+			<div class="arrow active"></div>DEMO: Basic Slide
 		</div>
 		<div class="sectionBox" style="display:block; padding:15px;">
-			<input type="button" class="flatBtn flatBtn-nsOrange" style="width:25%; margin-right:20px;" value="Corporate Masters Test" onclick="doCorpPresTest()">
-			<input type="button" class="flatBtn flatBtn-nsPurple" style="width:25%; padding:8px 40px;" value="Simple Test" onclick="doSimpleTest()">
+			<div class="code" style="text-align:left; margin-bottom:15px">
+<pre id="demo-basic" class="prettyprint">
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+var opts = { font_size:16, color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+
+slide.addTable( [ [{ text:gStrHello, opts:opts }] ], { x:0.43, y:0.13, w:9.0 } );
+slide.addText($('#demo-basic-text').val(), { x:1.0, y:1.0, font_size:42, color:'00FF00' });
+
+pptx.save('PptxGenJs-Demo-Basic-Example');
+</pre>
+			</div>
+			<div class="table">
+				<div style="width:5%; text-align:left;">
+					<span style="white-space:nowrap; margin-right:5px; font-size:16px">Slide Text:</span>
+				</div>
+				<div style="width:94%; text-align:left;">
+					<input id="demo-basic-text" type="text" value="Hello World!" style="width:95%; font-size:16px">
+				</div>
+				<div style="width:1%">
+					<input type="button" class="flatBtn flatBtn-blueMd" value="Basic Slide Demo" onclick="eval( $('#demo-basic').text() )">
+				</div>
+			</div>
 		</div>
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
@@ -442,7 +476,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 						</div>
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Row/Col Heights/Widths</label></div>
+							<div><label>Row H / Col W</label></div>
 						</div>
 					</div>
 					<h3>Slide 2</h3>
@@ -516,6 +550,54 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				<input type="button" class="flatBtn flatBtn-green"  style="margin-right:20px; width:40%" onclick="doGenPptFile()" value="Generate Sample PowerPoint">
 				<input type="button" class="flatBtn flatBtn-blueMd" style="margin-right:20px;" value="Check All"
 					onclick="$(this).parents('.sectionBox').find('.formBox input[type=\'checkbox\']').prop('checked',!$(this).attr('checked'));">
+			</div>
+		</div>
+
+		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+			<div class="arrow active"></div>DEMO: Slide Masters (Using Corporate Slide Designs)
+		</div>
+		<div class="sectionBox" style="display:block">
+			<div class="formBox" style="width:48%">
+				<fieldset style="height:auto">
+			    	<legend><label for="inclCorp1"><input id="inclCorp1" type="checkbox" checked="checked"> Table Slide</label></legend>
+					<h3>Slide 1</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.TITLE_SLIDE</label></div>
+						</div>
+					</div>
+					<h3>Slide 2</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.MASTER_SLIDE</label></div>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="formBox" style="width:48%">
+				<fieldset style="height:auto">
+			    	<legend><label for="inclCorp2"><input id="inclCorp2" type="checkbox"> Table Slide</label></legend>
+					<h3>Slide 3</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.MASTER_SLIDE with background color override</label></div>
+						</div>
+					</div>
+					<h3>Slide 4</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.MASTER_SLIDE with background image override</label></div>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div id="buttonBarBtm" style="clear:both">
+				<input type="button" class="flatBtn flatBtn-nsPurple" value="Corporate Masters Test" onclick="doCorpPresTest()">
 			</div>
 		</div>
 

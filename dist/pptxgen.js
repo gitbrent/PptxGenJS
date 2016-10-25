@@ -518,14 +518,14 @@ var PptxGenJS = function(){
 	}
 
 	function genXmlColorSelection( color_info, back_info ) {
-		var outText = '';
 		var colorVal;
 		var fillType = 'solid';
 		var internalElements = '';
+		var outText = '';
 
 		if ( back_info ) {
 			outText += '<p:bg><p:bgPr>';
-			outText += genXmlColorSelection ( back_info, false );
+			outText += genXmlColorSelection( back_info.replace('#',''), false );
 			outText += '<a:effectLst/>';
 			outText += '</p:bgPr></p:bg>';
 		}
@@ -533,7 +533,7 @@ var PptxGenJS = function(){
 		if ( color_info ) {
 			if ( typeof color_info == 'string' ) colorVal = color_info;
 			else {
-				if ( color_info.type ) fillType = color_info.type;
+				if ( color_info.type  ) fillType = color_info.type;
 				if ( color_info.color ) colorVal = color_info.color;
 				if ( color_info.alpha ) internalElements += '<a:alpha val="' + (100 - color_info.alpha) + '000"/>';
 			}
@@ -1174,7 +1174,7 @@ var PptxGenJS = function(){
 					+ '<p:sldLayoutIdLst>\r\n';
 		// Create a sldLayout for each SLIDE
 		for ( var idx=1; idx<=gObjPptx.slides.length; idx++ ) {
-			strXml += ' <p:sldLayoutId id="'+ intSlideLayoutId +'" r:id="rId'+ idx +'"/>\r\n'
+			strXml += ' <p:sldLayoutId id="'+ intSlideLayoutId +'" r:id="rId'+ idx +'"/>\r\n';
 			intSlideLayoutId++;
 		}
 		strXml += '</p:sldLayoutIdLst>\r\n'
@@ -1394,11 +1394,17 @@ var PptxGenJS = function(){
 	 * Add a new Slide to the Presentation
 	 * @returns {Object[]} slideObj - The new Slide object
 	 */
-	this.addNewSlide = function addNewSlide(inMaster) {
+	this.addNewSlide = function addNewSlide(inMaster, inMasterOpts) {
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
+
+		var inMasterOpts = (inMasterOpts || {});
+		// ISSUE#7: Allow bkgd image/color override on a per-slide basic
+		if ( inMaster && inMasterOpts ) {
+			if ( inMasterOpts.bkgd ) inMaster.bkgd = inMasterOpts.bkgd;
+		}
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {};
@@ -1571,7 +1577,7 @@ var PptxGenJS = function(){
 				});
 			}
 
-			// B: Add any Slide BAckground: Image or Fill
+			// B: Add any Slide Background: Image or Fill
 			if ( inMaster.bkgd && inMaster.bkgd.src ) {
 				var slideObjRels = gObjPptx.slides[slideNum].rels;
 				var strImgExtn = inMaster.bkgd.src.substring( inMaster.bkgd.src.indexOf('.')+1 ).toLowerCase();
