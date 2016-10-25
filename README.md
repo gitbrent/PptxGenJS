@@ -133,9 +133,15 @@ into a button and place next to any table on your site.
 ```javascript
 <input type="button" value="Export to PPTX" onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
+
+Note: Slide background color/image can be overridden on a per-slide basis when needed.
+```javascript
+var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+```
+
 ## TIP:
 * Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
-to SharePoint/Office365. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
+to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
 
 **************************************************************************************************
 # In-Depth Examples
