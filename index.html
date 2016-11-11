@@ -36,11 +36,11 @@
 		<header>
 			<h1>PptxGenJS</h1>
 			<p>Client-side JavaScript framework that creates PowerPoint (pptx) presentations</p>
-			<p class="view"><a href="https://github.com/gitbrent/PptxGenJS">View the Project on GitHub <small>gitbrent/PptxGenJS</small></a></p>
+			<p class="view"><a href="https://github.com/gitbrent/PptxGenJS" onclick="ga('send','event','Link','click','GitHub Project Page')">View the Project on GitHub <small>gitbrent/PptxGenJS</small></a></p>
 			<ul>
-				<li><a href="https://github.com/gitbrent/PptxGenJS/zipball/master" onclick="ga('send', 'event', 'Link', 'click', 'Download Zipball-Master')">Download <strong>ZIP File</strong></a></li>
-				<li><a href="https://github.com/gitbrent/PptxGenJS/tarball/master" onclick="ga('send', 'event', 'Link', 'click', 'Download Tarball-Master')">Download <strong>TAR Ball</strong></a></li>
-				<li><a href="https://github.com/gitbrent/PptxGenJS" onclick="ga('send', 'event', 'Link', 'click', 'GitHub Project Page')">View On <strong>GitHub</strong></a></li>
+				<li><a href="https://github.com/gitbrent/PptxGenJS/zipball/master" onclick="ga('send','event','Link','click','Download Zipball-Master')">Download <strong>ZIP File</strong></a></li>
+				<li><a href="https://github.com/gitbrent/PptxGenJS/tarball/master" onclick="ga('send','event','Link','click','Download Tarball-Master')">Download <strong>TAR Ball</strong></a></li>
+				<li><a href="https://github.com/gitbrent/PptxGenJS" onclick="ga('send','event','Link','click','GitHub Project Page')">View On <strong>GitHub</strong></a></li>
 			</ul>
 		</header>
 
@@ -70,9 +70,9 @@
 	            <h1>Minimal Dependency Setup</h1>
 				<h3>Only 3 additional libraries are required to use PptxGenJS</h3>
 	            <ul>
-					<li><a href="https://jquery.com/">jQuery</a> (you're likely using this one already)
-					<li><a href="https://github.com/Stuk/jszip">jszip.js</a> (to create the pptx export zip file)
-					<li><a href="https://github.com/eligrey/FileSaver.js/">FileSaver.js</a> (to push the export file to client browsers)</li>
+					<li><a href="https://jquery.com/" target="_blank">jQuery</a> (you're likely using this one already)</li>
+					<li><a href="https://github.com/Stuk/jszip" target="_blank">jszip.js</a> (to create the pptx export zip file)</li>
+					<li><a href="https://github.com/eligrey/FileSaver.js/" target="_blank">FileSaver.js</a> (to push the export file to client browsers)</li>
 	            </ul>
 				<p>Download and include these scripts in an HTML page, and you are ready to create a PowerPoint presentation.<br>
 				(A copy of each is included in the <tt>libs</tt> directory, but you should obtain the latest releases)</p>
@@ -113,7 +113,7 @@ pptx.save('Demo-Simple');
 					<div>
 						<h3>Demo</h3>
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Simple')">
 					</div>
 				</div>
 
@@ -170,7 +170,7 @@ pptx.save('Demo-Tables');
 					<div>
 						<h3>Demo</h3>
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+						 onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Table')">
 					</div>
 				</div>
 
@@ -201,7 +201,7 @@ pptx.save('Demo-Text');
 					<div>
 						<h3>Demo</h3>
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Text')">
 					</div>
 				</div>
 
@@ -248,7 +248,7 @@ pptx.save('Demo-Shapes');
 					<div>
 						<h3>Demo</h3>
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Try It"
-						 onclick="eval( $(this).parent().parent().prev('div.code').text() )">
+						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Shapes')">
 					</div>
 				</div>
 		    </article>
@@ -257,7 +257,10 @@ pptx.save('Demo-Shapes');
 
 			<article>
 				<h2>Documentation Etc.</h2>
-				<p>Complete documentation and sample code is available on the <a href="https://github.com/gitbrent/PptxGenJS">PptxGenJS GitHub site</a></h2>
+				<p>
+					Complete documentation and sample code is available on the
+					<a href="https://github.com/gitbrent/PptxGenJS" onclick="ga('send','event','Link','click','GitHub Project Page')">PptxGenJS GitHub site</a>
+				</p>
 			</article>
 
 			<blockquote></blockquote>
@@ -273,7 +276,7 @@ pptx.save('Demo-Shapes');
 		</section>
 	</div>
 	<footer>
-		<p>Project maintained by <a href="https://github.com/gitbrent">Brent Ely</a></p>
+		<p>Project maintained by <a href="https://github.com/gitbrent" onclick="ga('send','event','Link','click','GitHub Project Page')">Brent Ely</a></p>
 		<p>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></p>
 	</footer>
 
