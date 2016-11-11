@@ -268,7 +268,7 @@ var gObjPptxMasters = {
 	TITLE_SLIDE: {
 		title:      'I am the Title Slide',
 		isNumbered: false,
-		bkgd:       { src:'images/title_bkgd.png', data:'image/gif;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' },
+		bkgd:       { src:'images/title_bkgd.png', data:'base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
 		images:     [ { src:'images/sample_logo.png', x:'7.4', y:'4.1', cx:'2', cy:'1', data:'image/gif;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
 	}
 };
@@ -278,16 +278,17 @@ Pre-encode your images (base64) and add the string as the optional data key/val
 (see the `TITLE_SLIDE.images` object above)
 
 Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
-referenced by their key names that you created (e.g.: "TITLE_SLIDE").  
+by their key names that you created (e.g.: "TITLE_SLIDE").  
 
 ```javascript
 var pptx = new PptxGenJS();
 
-pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
+var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
+slide1.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
 // NOTE: Base master slide properties can be overridden on a selective basis:
 // Here we can set a new background color or image on-the-fly
-pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
-pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd.jpg' } } );
+var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd.jpg' } } );
 
 pptx.save();
 ```
