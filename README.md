@@ -35,7 +35,10 @@ Now available on NPM/Node:
   - [Shape Example](#shape-example)
   - [Image Example](#image-example)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
-  - [Master Slides](#master-slides)
+  - [Slide Masters](#slide-masters)
+  - [Slide Master Examples](#slide-master-examples)
+  - [Slide Master Object Options](#slide-master-object-options)
+  - [Sample Slide Master File](#sample-slide-master-file)
 - [Library Reference](#library-reference)
   - [Presentation Options](#presentation-options)
   - [Available Layouts](#available-layouts)
@@ -235,12 +238,73 @@ pptx.save('Demo-Shapes');
 **************************************************************************************************
 # Master Slides and Corporate Branding
 
-## Slide Styles
-For times when a plain white slide won't due, why not create a Slide Master? (especially useful for corporate environments).
-See the one in the examples folder to get started
+## Slide Masters
+It's one thing to generate sample slides like those shown above, but most of us are required to produce
+slides that have a consistent look and feel and/or with corporate branding, etc.
+
+In addition, it's often useful to have various pre-defined slide masters to use as giant "Thank You"
+slides, title slides, etc.
+
+Fortunately, you can do both with PptxGenJS!
+
+Slide Masters are defined using the same style as the Slides and then added as a variable to a file that
+is included in the script src tags on your page.  
+E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
+
+## Slide Master Examples
+`pptxgenjs.masters.js` contents:
 ```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.masters.js"></script>
+var gObjPptxMasters = {
+	MASTER_SLIDE: {
+		title:      'Basic corp slide master',
+		isNumbered: true,
+		margin:     [ 0.5, 0.25, 1.0, 0.25 ],
+		bkgd:       'FFFFFF',
+		images:     [ { src:'images/logo_square.png', x:9.3, y:4.9, cx:0.5, cy:0.5 } ],
+		shapes:     [
+			{ type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true }
+		]
+	},
+	TITLE_SLIDE: {
+		title:      'I am the Title Slide',
+		isNumbered: false,
+		bkgd:       { src:'images/title_bkgd.png', data:'image/gif;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' },
+		images:     [ { src:'images/sample_logo.png', x:'7.4', y:'4.1', cx:'2', cy:'1', data:'image/gif;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
+	}
+};
+```  
+#### PRO-TIP: Pre-encode Images for Performance Boost
+Pre-encode your images (base64) and add the string as the optional data key/val
+(see the `TITLE_SLIDE.images` object above)
+
+Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
+referenced by their key names that you created (e.g.: "TITLE_SLIDE").  
+
+```javascript
+var pptx = new PptxGenJS();
+
+pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
+// NOTE: Base master slide properties can be overridden on a selective basis:
+// Here we can set a new background color or image on-the-fly
+pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd.jpg' } } );
+
+pptx.save();
 ```
+
+## Slide Master Object Options
+| Parameter  | Description        | Possible Values       |
+| :--------- | :-------------     | :-------------------- |
+| bkgd       | background color   | [string] CSS-Hex style ('336699', etc.) OR [object] {src:'img/path'} - (optional) data:'base64code' |
+| images     | image(s)           | array of image objects: {src,x,y,cx,cy} - (optional) data:'base64code' |
+| isNumbered | Show slide numbers | true/false |
+| margin     | slide margin       | [integer] OR [array] of ints in TRBL order [top,right,bottom,left] (inches) |
+| shapes     | shape(s)           | array of shape objects: {type,text,x,y,cx,cy,align,valign,color,font_size,bold} |
+| title      | Slide Title        | [text string] |
+
+## Sample Slide Master File
+A sample masters file is included in the distribution and included a couple of different slides to get you started.  
+Location: `PptxGenJS/dist/pptxgen.masters.js`
 
 **************************************************************************************************
 # Library Reference
