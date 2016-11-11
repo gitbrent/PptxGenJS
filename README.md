@@ -34,6 +34,8 @@ Now available on NPM/Node:
   - [Text Example](#text-example)
   - [Shape Example](#shape-example)
   - [Image Example](#image-example)
+- [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
+  - [Master Slides](#master-slides)
 - [Library Reference](#library-reference)
   - [Presentation Options](#presentation-options)
   - [Available Layouts](#available-layouts)
@@ -63,10 +65,10 @@ Use JavaScript to Create PowerPoint presentations right from our demo page
 PptxGenJS requires only three additional JavaScript libraries to function.
 
 ```javascript
-<script lang="javascript" src="dist/jquery.min.js"></script>
-<script lang="javascript" src="dist/jszip.min.js"></script>
-<script lang="javascript" src="dist/filesaver.min.js"></script>
-<script lang="javascript" src="dist/pptxgen.js"></script>
+<script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
+<script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
+<script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
+<script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
 
 # Optional Modules
@@ -74,13 +76,7 @@ If you are planning on creating Shapes (basically anything other than Text, Tabl
 include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape object array thanks to the
 [officegen project](https://github.com/Ziv-Barber/officegen)
 ```javascript
-<script lang="javascript" src="dist/pptxgen.shapes.js"></script>
-```
-
-For times when a plain white slide won't due, why not create a Slide Master? (especially useful for corporate environments).
-See the one in the examples folder to get started
-```javascript
-<script lang="javascript" src="dist/pptxgen.masters.js"></script>
+<script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
 ```
 
 **************************************************************************************************
@@ -234,6 +230,16 @@ slide.addImage('images/cc_license_comp_chart.png', 6.6, 0.75, 6.30, 3.70 )
      .addImage('images/cc_symbols_trans.png',      6.6, 4.80, 6.30, 2.30 );
 
 pptx.save('Demo-Shapes');
+```
+
+**************************************************************************************************
+# Master Slides and Corporate Branding
+
+## Slide Styles
+For times when a plain white slide won't due, why not create a Slide Master? (especially useful for corporate environments).
+See the one in the examples folder to get started
+```javascript
+<script lang="javascript" src="PptxGenJS/dist/pptxgen.masters.js"></script>
 ```
 
 **************************************************************************************************
