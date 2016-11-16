@@ -255,22 +255,24 @@ E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
 `pptxgenjs.masters.js` contents:
 ```javascript
 var gObjPptxMasters = {
-	MASTER_SLIDE: {
-		title:      'Basic corp slide master',
-		isNumbered: true,
-		margin:     [ 0.5, 0.25, 1.0, 0.25 ],
-		bkgd:       'FFFFFF',
-		images:     [ { src:'images/logo_square.png', x:9.3, y:4.9, cx:0.5, cy:0.5 } ],
-		shapes:     [
-			{ type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true }
-		]
-	},
-	TITLE_SLIDE: {
-		title:      'I am the Title Slide',
-		isNumbered: false,
-		bkgd:       { src:'images/title_bkgd.png', data:'base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-		images:     [ { src:'images/sample_logo.png', x:'7.4', y:'4.1', cx:'2', cy:'1', data:'image/gif;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
-	}
+  MASTER_SLIDE: {
+    title:      'Basic corp slide master',
+    isNumbered: true,
+    margin:     [ 0.5, 0.25, 1.0, 0.25 ],
+    bkgd:       'FFFFFF',
+    images:     [ { src:'images/logo_square.png', x:9.3, y:4.9, cx:0.5, cy:0.5 } ],
+    shapes:     [
+      { type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
+      { type:'line', x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' },
+      { type:'rectangle', x:0, y:0, w:'100%', h:.65, cx:5, cy:3.2, fill:'003b75' },
+    ]
+  },
+  TITLE_SLIDE: {
+    title:      'I am the Title Slide',
+    isNumbered: false,
+    bkgd:       { src:'images/title_bkgd.png', data:'base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
+    images:     [ { src:'images/sample_logo.png', x:'7.4', y:'4.1', cx:'2', cy:'1', data:'image/gif;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
+  }
 };
 ```  
 #### PRO-TIP: Pre-encode Images for Performance Boost
