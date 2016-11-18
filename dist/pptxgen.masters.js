@@ -42,14 +42,14 @@ var gObjPptxMasters = {
 		]
 	},
 	TITLE_SLIDE: {
-		title:      'I am the Title Slide',
+		title:      'Presentation Title Slide',
 		isNumbered: false,
 		bkgd:       { src:'images/title_bkgd.png' },
 		images:     [ { src:'images/sample_logo.png', x:'7.4', y:'4.1', cx:'2', cy:'1' } ],
 		shapes:     [
-			{ type:'text',      x:0.3, y:3.30, cx:5.5, cy:0.5, text:'Global IT Team', font_face:'Arial', color:'888888', font_size:20 },
-			{ type:'line',      x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' },
-			{ type:'rectangle', x:0,   y:0,    cx:5.0, cy:3.2, w:'100%', h:.65, fill:'003b75' }
+			{ type:'text', x:0.3, y:3.30, cx:5.5, cy:0.5, text:'Global IT Team', font_face:'Arial', color:'888888', font_size:20 },
+			{ type:'line', x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' },
+			{ type:'rectangle', x:0, y:0, w:'100%', h:0.5, fill:'003b75' }
 		]
 	}
 };

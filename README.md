@@ -264,14 +264,14 @@ var gObjPptxMasters = {
     shapes:     [
       { type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
       { type:'line', x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' },
-      { type:'rectangle', x:0, y:0, w:'100%', h:.65, cx:5, cy:3.2, fill:'003b75' },
+      { type:'rectangle', x:0, y:0, w:'100%', h:.65, cx:5, cy:3.2, fill:'003b75' }
     ]
   },
   TITLE_SLIDE: {
     title:      'I am the Title Slide',
     isNumbered: false,
     bkgd:       { src:'images/title_bkgd.png', data:'base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-    images:     [ { src:'images/sample_logo.png', x:'7.4', y:'4.1', cx:'2', cy:'1', data:'image/gif;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
+    images:     [ { x:'7.4', y:'4.1', cx:'2', cy:'1', data:'data:image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
   }
 };
 ```  
