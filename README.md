@@ -256,7 +256,7 @@ E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
 ```javascript
 var gObjPptxMasters = {
   MASTER_SLIDE: {
-    title:      'Basic corp slide master',
+    title:      'Slide master',
     isNumbered: true,
     margin:     [ 0.5, 0.25, 1.0, 0.25 ],
     bkgd:       'FFFFFF',
@@ -306,7 +306,7 @@ pptx.save();
 | title      | Slide Title        | [text string] |
 
 ## Sample Slide Master File
-A sample masters file is included in the distribution and included a couple of different slides to get you started.  
+A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
 Location: `PptxGenJS/dist/pptxgen.masters.js`
 
 **************************************************************************************************
