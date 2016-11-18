@@ -450,6 +450,7 @@ slide.addShape({SHAPE}, {options});
 
 // Example: Located at 1.5" x 1.5", 6.0" Wide, 3.0" Height
 slide.addImage('images/cc_license_comp_chart.png', 1.5, 1.5, 6.0, 3.0);
+slide.addImage('', 1.5, 1.5, 6.0, 3.0, 'data:image/png;base64,iVBORw[...]=');
 ```
 
 ### Image Options
@@ -460,6 +461,7 @@ slide.addImage('images/cc_license_comp_chart.png', 1.5, 1.5, 6.0, 3.0);
 | 2        | Y location     | (inches)              |
 | 3        | image width    | (inches)              |
 | 4        | image height   | (inches)              |
+| 5        | image data     | (base64-encoded string) |
 
 
 **************************************************************************************************
@@ -467,6 +469,10 @@ slide.addImage('images/cc_license_comp_chart.png', 1.5, 1.5, 6.0, 3.0);
 NOTE: It takes time to encode images, so the more images you include and the larger they are, the more time will be consumed.
 You will want to show a jQuery Dialog with a nice hour glass before you start creating the file.
 
+## PRO-TIP
+Pre-encode images into a base64 string (eg: 'data:image/png;base64,iVBORw[...]=') and add as the data
+argument so exports are super fast (no need to read/encode images!) and reduce dependencies (you dont
+need yet another img asset to keep track of or deploy right?)
 
 **************************************************************************************************
 # Bugs & Issues
