@@ -49,8 +49,8 @@ Number.isInteger = Number.isInteger || function(value) {
 
 var PptxGenJS = function(){
 	// CONSTS
-	var APP_VER = "1.0.0"; // Used for API versioning
-	var APP_REL = "20161018"
+	var APP_VER = "1.0.1"; // Used for API versioning
+	var APP_REL = "20161117";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -145,9 +145,9 @@ var PptxGenJS = function(){
 			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
 				var id = gObjPptx.slides[idx].rels[idy].rId - 1;
 				var data = gObjPptx.slides[idx].rels[idy].data;
-				// data:image/png;base64
+				// Grab base64 encoding header (ex: "data:image/png;base64,iVB[...]=")
 				var header = data.substring(0, data.indexOf(","));
-				// NOTE: Trim the leading 'data:image/png;base64,' text as it is not needed (and image wont render correctly with it)
+				// NOTE: Trim the leading base64 header ('data:image/png;base64,') as image wont render correctly with this header!)
 				var content = data.substring(data.indexOf(",") + 1);
 				var extn = /data:image\/(\w+)/.exec(header)[1];
 				var isBase64 = /base64/.test(header);
@@ -1534,7 +1534,7 @@ var PptxGenJS = function(){
 
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
-			gObjPptx.slides[slideNum].data[slideObjNum].image = strImagePath;
+			gObjPptx.slides[slideNum].data[slideObjNum].image = (strImagePath || 'preencoded.png');
 
 			// STEP 2: Set image properties & options
 			// TODO 1.1: Measure actual image when no intSizeX/intSizeY params passed
@@ -1551,7 +1551,7 @@ var PptxGenJS = function(){
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
 			slideObjRels.push({
-				path: strImagePath,
+				path: (strImagePath || 'preencoded.png'),
 				type: 'image/'+strImgExtn,
 				extn: strImgExtn,
 				data: (strImgData || ''),
@@ -1578,7 +1578,9 @@ var PptxGenJS = function(){
 			}
 
 			// B: Add any Slide Background: Image or Fill
-			if ( inMaster.bkgd && inMaster.bkgd.src ) {
+			if ( inMaster.bkgd && (inMaster.bkgd.src || inMaster.bkgd.data) ) {
+				// Allow the use of only the data key (no src reqd)
+				if (!inMaster.bkgd.src) inMaster.bkgd.src = 'preencoded.png';
 				var slideObjRels = gObjPptx.slides[slideNum].rels;
 				var strImgExtn = inMaster.bkgd.src.substring( inMaster.bkgd.src.indexOf('.')+1 ).toLowerCase();
 				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
