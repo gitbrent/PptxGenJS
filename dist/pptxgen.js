@@ -8,6 +8,9 @@
 |*|
 |*|  PptxGenJS (C) 2015-2016 Brent Ely -- https://github.com/gitbrent
 |*|
+|*|  Some code derived from the OfficeGen project:
+|*|  github.com/Ziv-Barber/officegen/ (copyright 2013 Ziv Barber)
+|*|
 |*|  Permission is hereby granted, free of charge, to any person obtaining a copy
 |*|  of this software and associated documentation files (the "Software"), to deal
 |*|  in the Software without restriction, including without limitation the rights
@@ -49,8 +52,8 @@ Number.isInteger = Number.isInteger || function(value) {
 
 var PptxGenJS = function(){
 	// CONSTS
-	var APP_VER = "1.0.1"; // Used for API versioning
-	var APP_REL = "20161117";
+	var APP_VER = "1.1.0"; // Used for API versioning
+	var APP_REL = "20161122";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -101,19 +104,14 @@ var PptxGenJS = function(){
 
 	/**
 	 * Export the .pptx file (using saveAs - dep. filesaver.js)
-	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
 	function doExportPresentation() {
 		var intSlideNum = 0, intRels = 0;
 
-		// =======
 		// STEP 1: Create new JSZip file
-		// =======
 		var zip = new JSZip();
 
-		// =======
 		// STEP 2: Add all required folders and files
-		// =======
 		zip.folder("_rels");
 		zip.folder("docProps");
 		zip.folder("ppt").folder("_rels");
@@ -145,11 +143,24 @@ var PptxGenJS = function(){
 			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
 				var id = gObjPptx.slides[idx].rels[idy].rId - 1;
 				var data = gObjPptx.slides[idx].rels[idy].data;
-				// Grab base64 encoding header (ex: "data:image/png;base64,iVB[...]=")
+
+				// A: Users will undoubtedly pass in string in various formats, so lets deal with that issue
+				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,'+data;
+				else if ( data.indexOf(',') == -1 ) data = 'image/png;base64,'+data;
+				else if ( data.indexOf(';') == -1 ) data = 'image/png;'+data;
+
+				// B: Grab base64 encoding header (ex: "data:image/png;base64,iVB[...]=")
 				var header = data.substring(0, data.indexOf(","));
 				// NOTE: Trim the leading base64 header ('data:image/png;base64,') as image wont render correctly with this header!)
+
+				// C: Set content
 				var content = data.substring(data.indexOf(",") + 1);
-				var extn = /data:image\/(\w+)/.exec(header)[1];
+
+				// D: Set extension - handle cases where user passes base64 without 'data:' at the beginning
+				var extn = 'png';
+				if ( data.toLowerCase().indexOf('data:') == 0 ) extn = /data:image\/(\w+)/.exec(header)[1];
+
+				// E: Add image
 				var isBase64 = /base64/.test(header);
 				zip.file("ppt/media/image" + id + "." + extn, content, {base64: isBase64});
 			}
@@ -161,9 +172,7 @@ var PptxGenJS = function(){
 		zip.file("ppt/tableStyles.xml", makeXmlTableStyles());
 		zip.file("ppt/viewProps.xml", makeXmlViewProps());
 
-		// =======
 		// STEP 3: Push the PPTX file to browser
-		// =======
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 		zip.generateAsync({type:"blob"}).then(function(content) {
 			saveAs(content, strExportName);
@@ -1013,6 +1022,7 @@ var PptxGenJS = function(){
 						strSlideXml += '<a:noFill/>';
 					}
 
+					// TODO: Implement/document inner/outer-Shadow
 					if ( slideObj.options.effects ) {
 						for ( var ii = 0, total_size_ii = slideObj.options.effects.length; ii < total_size_ii; ii++ ) {
 							switch ( slideObj.options.effects[ii].type ) {
@@ -1061,18 +1071,37 @@ var PptxGenJS = function(){
 						if ( slideObj.options.indentLevel > 0 ) moreStylesAttr += ' lvl="' + slideObj.options.indentLevel + '"';
 					}
 
-					if ( moreStyles != '' ) outStyles = '<a:pPr' + moreStylesAttr + '>' + moreStyles + '</a:pPr>';
-					else if ( moreStylesAttr != '' ) outStyles = '<a:pPr' + moreStylesAttr + '/>';
-
-					if ( styleData != '' ) strSlideXml += '<p:style>' + styleData + '</p:style>';
-
-					if ( typeof slideObj.text == 'string' ) {
-						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
-						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text, inSlide.slide, inSlide.slide.getPageNumber() );
+					// BULLET: Add bullet params
+					/*
+					FYI: Each "line" of text needs this to be bulleted within a block like this
+					<a:p>
+						<a:pPr marL="228600" indent="-228600"><a:buSzPct val="100000"/><a:buChar char="&#x2022;"/></a:pPr>
+						<a:r><a:t>bullet one</a:t></a:r>
+					</a:p>
+					*/
+					if ( slideObj.options.bullet ) {
+						moreStylesAttr = ' marL="228600" indent="-228600"';
+						moreStyles = '<a:buSzPct val="100000"/><a:buChar char="&#x2022;"/>';
 					}
-					else if ( typeof slideObj.text == 'number' ) {
+
+					if ( moreStyles ) outStyles = '<a:pPr' + moreStylesAttr + '>' + moreStyles + '</a:pPr>';
+					else if ( moreStylesAttr ) outStyles = '<a:pPr' + moreStylesAttr + '/>';
+
+					if ( styleData ) strSlideXml += '<p:style>' + styleData + '</p:style>';
+
+					// Bullets: Multi-line bullets must have a complete <a:p><a:pPr></a:pPr><a:r></a:r></a:p> *per line*
+					if ( slideObj.options.bullet && typeof slideObj.text == 'string' && slideObj.text.split('\n').length > 0
+						&& slideObj.text.split('\n')[1] && slideObj.text.split('\n')[1].length > 0 ) {
+						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/>';
+						$.each(slideObj.text.split('\n'), function(i,line){
+							if ( i > 0 ) strSlideXml += '</a:p>';
+							strSlideXml += '<a:p>' + outStyles;
+							strSlideXml += genXmlTextCommand( slideObj.options, line, inSlide.slide, inSlide.slide.getPageNumber() );
+						});
+					}
+					else if ( typeof slideObj.text == 'string' || typeof slideObj.text == 'number' ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
-						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text + '', inSlide.slide, inSlide.slide.getPageNumber() );
+						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text+'', inSlide.slide, inSlide.slide.getPageNumber() );
 					}
 					else if ( slideObj.text && slideObj.text.length ) {
 						var outBodyOpt = genXmlBodyProperties( slideObj.options );
@@ -1093,12 +1122,12 @@ var PptxGenJS = function(){
 							}
 						}
 					}
-					else if ( (typeof slideObj.text == 'object') && slideObj.text.field ) {
+					else if ( typeof slideObj.text == 'object' && slideObj.text.field ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
 						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text, inSlide.slide, inSlide.slide.getPageNumber() );
 					}
 
-					// We must add that at the end of every paragraph with text:
+					// LAST: End of every paragraph
 					if ( typeof slideObj.text !== 'undefined' ) {
 						var font_size = '';
 						if ( slideObj.options && slideObj.options.font_size ) font_size = ' sz="' + slideObj.options.font_size + '00"';
@@ -1518,16 +1547,29 @@ var PptxGenJS = function(){
 			return this;
 		};
 
-		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImgData ) {
+		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
+		// FUTURE: slideObj.addImage = function(opt){
+		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
 			var intRels = 1;
 
+			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
+			// TODO: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
+			if ( typeof strImagePath === 'object' ) {
+				intPosX = (strImagePath.x || 0);
+				intPosY = (strImagePath.y || 0);
+				intSizeX = (strImagePath.cx || strImagePath.w || 0);
+				intSizeY = (strImagePath.cy || strImagePath.h || 0);
+				strImageData = (strImagePath.data || '');
+				strImagePath = (strImagePath.path || ''); // This line must be last as were about to ovewrite ourself!
+			}
+
 			// REALITY-CHECK:
-			if ( !strImagePath && !strImgData ) {
-				try { console.error("ERROR: Image can't be empty"); } catch(ex){}
+			if ( !strImagePath && !strImageData ) {
+				try { console.error("ERROR: addImage requires either 'data' or 'path' parameter!"); } catch(ex){}
 				return null;
 			}
 
-			// STEP 1: Set vars for this Slide
+			// STEP 2: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
 			var strImgExtn = 'png'; // Every image is encoded via canvas>base64, so they all come out as png (use of another extn will cause "needs repair" dialog on open in PPT)
@@ -1536,8 +1578,8 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
 			gObjPptx.slides[slideNum].data[slideObjNum].image = (strImagePath || 'preencoded.png');
 
-			// STEP 2: Set image properties & options
-			// TODO 1.1: Measure actual image when no intSizeX/intSizeY params passed
+			// STEP 3: Set image properties & options
+			// TODO 1.5: Measure actual image when no intSizeX/intSizeY params passed
 			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
 			// if ( !intSizeX || !intSizeY ) { var imgObj = getSizeFromImage(strImagePath);
 			var imgObj = { width:1, height:1 };
@@ -1547,15 +1589,15 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].options.cx = (intSizeX || imgObj.width );
 			gObjPptx.slides[slideNum].data[slideObjNum].options.cy = (intSizeY || imgObj.height);
 
-			// STEP 3: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
 			slideObjRels.push({
 				path: (strImagePath || 'preencoded.png'),
 				type: 'image/'+strImgExtn,
 				extn: strImgExtn,
-				data: (strImgData || ''),
-				rId: (intRels+1),
+				data: (strImageData || ''),
+				rId:  (intRels+1),
 				Target: '../media/image' + intRels + '.' + strImgExtn
 			});
 			gObjPptx.slides[slideNum].data[slideObjNum].imageRid = slideObjRels[slideObjRels.length-1].rId;
@@ -1573,7 +1615,14 @@ var PptxGenJS = function(){
 			// A: Add images (do this before adding slide bkgd)
 			if ( inMaster.images && inMaster.images.length > 0 ) {
 				$.each(inMaster.images, function(i,image){
-					slideObj.addImage( image.src, inch2Emu(image.x), inch2Emu(image.y), inch2Emu(image.cx), inch2Emu(image.cy), (image.data || '') );
+					slideObj.addImage({
+						data: (image.data || ''),
+						path: (image.path || image.src || ''),
+						x: inch2Emu(image.x),
+						y: inch2Emu(image.y),
+						w: inch2Emu(image.w || image.cx),
+						h: inch2Emu(image.h || image.cy)
+					});
 				});
 			}
 
@@ -1846,7 +1895,7 @@ var PptxGenJS = function(){
 			newSlide.addTable( arrTabRows, {x:arrInchMargins[3], y:arrInchMargins[0], cx:(emuSlideTabW/EMU)}, {colW:arrColW} );
 
 			// E: Add any additional objects
-			if ( opts.addImage ) newSlide.addImage( opts.addImage.url,   opts.addImage.x, opts.addImage.y, opts.addImage.w, opts.addImage.h );
+			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
 			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
 			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}), (opts.addTable.tabOpts || {}) );

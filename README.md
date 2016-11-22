@@ -75,7 +75,7 @@ PptxGenJS requires only three additional JavaScript libraries to function.
 ```
 
 # Optional Modules
-If you are planning on creating Shapes (basically anything other than Text, Tables or rectangles), then you'll want to
+If you are planning on creating Shapes (basically anything other than Text, Tables or Rectangles), then you'll want to
 include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape object array thanks to the
 [officegen project](https://github.com/Ziv-Barber/officegen)
 ```javascript
@@ -226,11 +226,11 @@ pptx.save('Demo-Shapes');
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
-slide.addImage('images/cc_copyremix.gif',          0.5, 0.75, 2.35, 2.45 );
+slide.addImage({ path:'images/cc_copyremix.gif',          x:0.5, y:0.75, w:2.35, h:2.45 });
 // Slide API calls return the same slide, so you can chain calls:
-slide.addImage('images/cc_license_comp_chart.png', 6.6, 0.75, 6.30, 3.70 )
-     .addImage('images/cc_logo.jpg',               0.5, 3.50, 5.00, 3.70 )
-     .addImage('images/cc_symbols_trans.png',      6.6, 4.80, 6.30, 2.30 );
+slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30, h:3.70 })
+     .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
+     .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
 
 pptx.save('Demo-Shapes');
 ```
@@ -360,7 +360,8 @@ slide.addText('Options!', { x:1, y:1, font_face:'Arial', font_size:42, color:'00
 | h          | height         | (inches)              |
 | align      | horiz align    | left / center / right |
 | autoFit    | "Fit to Shape" | true / false          |
-| bold       | bold           | true/false |
+| bold       | bold           | true/false            |
+| bullet     | bullet text    | true/false            |
 | color      | font color     | CSS-Hex style ('336699', etc.) |
 | fill       | fill color     | CSS-Hex style ('336699', etc.) |
 | font_face  | font face      | 'Arial' etc. |
@@ -370,7 +371,7 @@ slide.addText('Options!', { x:1, y:1, font_face:'Arial', font_size:42, color:'00
 | italic     | italic         | true/false |
 | margin     | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
 | underline  | underline      | true/false |
-| valign     | vert align     | top / middle / bottom |
+| valign     | vertical align | top / middle / bottom |
 
 ## Table
 ```javascript
@@ -435,36 +436,38 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF00
 ```
 
 ### Shape Options
-| Parameter  | Description    | Possible Values       |
-| :--------- | :------------- | :-------------------- |
-| x          | X location     | (inches)              |
-| y          | Y location     | (inches)              |
-| w          | shape width    | (inches)              |
-| h          | shape height   | (inches)              |
-| flipH      | flip Horizontal| true/false            |
-| flipV      | flip Vertical  | true/false            |
-| rotate     | rotate         | 0-360 (integer)       |
+| Parameter  | Description     | Possible Values       |
+| :--------- | :-------------- | :-------------------- |
+| x          | X location      | (inches)              |
+| y          | Y location      | (inches)              |
+| w          | shape width     | (inches)              |
+| h          | shape height    | (inches)              |
+| flipH      | flip Horizontal | true/false            |
+| flipV      | flip Vertical   | true/false            |
+| rotate     | rotate          | 0-360 (integer)       |
 
 ## Image
 ```javascript
 // Syntax
-slide.addShape({SHAPE}, {options});
+slide.addShape({options});
 
-// Example: Located at 1.5" x 1.5", 6.0" Wide, 3.0" Height
-slide.addImage('images/cc_license_comp_chart.png', 1.5, 1.5, 6.0, 3.0);
-slide.addImage('', 1.5, 1.5, 6.0, 3.0, 'data:image/png;base64,iVBORw[...]=');
+// Example: Image by path / Image by base64-encoding
+slide.addImage({ path:'images/chart_world_peace_is_close.png', x:1.0, y:1.0, w:8.0, h:4.0 });
+slide.addImage({ data:'data:image/png;base64,iVBORwTwB[...]=', x:3.0, y:5.0, w:6.0, h:3.0 });
 ```
 
 ### Image Options
-| Argument | Description    | Possible Values       |
-| :------- | :------------- | :-------------------- |
-| 0        | source URL     | (local image address) |
-| 1        | X location     | (inches)              |
-| 2        | Y location     | (inches)              |
-| 3        | image width    | (inches)              |
-| 4        | image height   | (inches)              |
-| 5        | image data     | (base64-encoded string) |
+| Parameter  | Description    | Possible Values       |
+| :--------- | :------------- | :-------------------- |
+| path       | image path     | (path - can be relative - like a normal <img src="path">)
+| data       | image data     | (base64-encoded string) |
+| x          | X location     | (inches)              |
+| y          | Y location     | (inches)              |
+| w          | image width    | (inches)              |
+| h          | image height   | (inches)              |
 
+### Deprecation Warning
+Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1.5, 1.5, 6.0, 3.0)`) are now deprecated
 
 **************************************************************************************************
 ## Performance Considerations
