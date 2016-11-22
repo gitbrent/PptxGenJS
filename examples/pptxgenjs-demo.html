@@ -456,15 +456,15 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 <pre id="demo-basic" class="prettyprint">
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-var opts = { font_size:16, color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+var options = { font_size:16, color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 
-slide.addTable( [ [{ text:gStrHello, opts:opts }] ], { x:0.43, y:0.13, w:9.0 } );
+slide.addTable( [[{text:gStrHello, opts:options}]], { x:0.43, y:0.13, w:9.0 } );
 slide.addText($('#demo-basic-text').val(), { x:1.0, y:1.0, font_size:42, color:'00FF00' });
 
-pptx.save('PptxGenJs-Demo-Basic-Example');
+pptx.save('PptxGenJs-Basic-Slide-Demo');
 </pre>
 			</div>
-			<div class="table">
+			<div class="table" style="padding:0 15px">
 				<div style="width:5%; text-align:left;">
 					<span style="white-space:nowrap; margin-right:5px; font-size:16px">Slide Text:</span>
 				</div>
@@ -479,9 +479,9 @@ pptx.save('PptxGenJs-Demo-Basic-Example');
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Object Types
+			<div class="arrow"></div>DEMO: Object Types
 		</div>
-		<div class="sectionBox" style="display:block">
+		<div class="sectionBox" style="display:none">
 			<div class="formBox">
 				<fieldset>
 			    	<legend><label for="inclTable"><input id="inclTable" type="checkbox"> Table Slide</label></legend>
@@ -584,10 +584,10 @@ pptx.save('PptxGenJs-Demo-Basic-Example');
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Slide Masters (Using Corporate Slide Designs)
+			<div class="arrow"></div>DEMO: Slide Masters (Using Corporate Slide Designs)
 		</div>
-		<div class="sectionBox" style="display:block">
-			<div class="formBox" style="width:48%">
+		<div class="sectionBox" style="display:none">
+			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
 				<fieldset style="height:auto">
 			    	<legend><label for="inclCorp1"><input id="inclCorp1" type="checkbox" checked="checked"> Table Slide</label></legend>
 					<h3>Slide 1</h3>
@@ -606,7 +606,7 @@ pptx.save('PptxGenJs-Demo-Basic-Example');
 					</div>
 				</fieldset>
 			</div>
-			<div class="formBox" style="width:48%">
+			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
 				<fieldset style="height:auto">
 			    	<legend><label for="inclCorp2"><input id="inclCorp2" type="checkbox"> Table Slide</label></legend>
 					<h3>Slide 3</h3>
