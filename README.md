@@ -260,7 +260,7 @@ var gObjPptxMasters = {
     isNumbered: true,
     margin:     [ 0.5, 0.25, 1.0, 0.25 ],
     bkgd:       'FFFFFF',
-    images:     [ { src:'images/logo_square.png', x:9.3, y:4.9, cx:0.5, cy:0.5 } ],
+    images:     [ { src:'images/logo_square.png', x:9.3, y:4.9, w:0.5, h:0.5 } ],
     shapes:     [
       { type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
       { type:'line', x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' },
@@ -271,7 +271,7 @@ var gObjPptxMasters = {
     title:      'I am the Title Slide',
     isNumbered: false,
     bkgd:       { src:'images/title_bkgd.png', data:'base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-    images:     [ { x:'7.4', y:'4.1', cx:'2', cy:'1', data:'data:image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
+    images:     [ { x:'7.4', y:'4.1', w:'2', h:'1', data:'data:image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
   }
 };
 ```  
@@ -449,7 +449,7 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF00
 ## Image
 ```javascript
 // Syntax
-slide.addShape({options});
+slide.addImage({options});
 
 // Example: Image by path / Image by base64-encoding
 slide.addImage({ path:'images/chart_world_peace_is_close.png', x:1.0, y:1.0, w:8.0, h:4.0 });
