@@ -459,7 +459,7 @@ slide.addImage({ data:'data:image/png;base64,iVBORwTwB[...]=', x:3.0, y:5.0, w:6
 ### Image Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| path       | image path     | (path - can be relative - like a normal <img src="path">)
+| path       | image path     | (path - can be relative - like a normal html tag: img src="path")
 | data       | image data     | (base64-encoded string) |
 | x          | X location     | (inches)              |
 | y          | Y location     | (inches)              |
