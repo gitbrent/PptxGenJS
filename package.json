@@ -1,6 +1,6 @@
 {
     "name": "pptxgenjs",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "JavaScript framework that creates PowerPoint presentations",
     "main": "dist/pptxgen.js",
     "directories": {
