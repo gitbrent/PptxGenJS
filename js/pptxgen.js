@@ -8,6 +8,9 @@
 |*|
 |*|  PptxGenJS (C) 2015-2016 Brent Ely -- https://github.com/gitbrent
 |*|
+|*|  Some code derived from the OfficeGen project:
+|*|  github.com/Ziv-Barber/officegen/ (copyright 2013 Ziv Barber)
+|*|
 |*|  Permission is hereby granted, free of charge, to any person obtaining a copy
 |*|  of this software and associated documentation files (the "Software"), to deal
 |*|  in the Software without restriction, including without limitation the rights
@@ -49,8 +52,8 @@ Number.isInteger = Number.isInteger || function(value) {
 
 var PptxGenJS = function(){
 	// CONSTS
-	var APP_VER = "1.0.0"; // Used for API versioning
-	var BLD_VER = "20160402"
+	var APP_VER = "1.1.0"; // Used for API versioning
+	var APP_REL = "20161122";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -101,19 +104,14 @@ var PptxGenJS = function(){
 
 	/**
 	 * Export the .pptx file (using saveAs - dep. filesaver.js)
-	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
 	function doExportPresentation() {
 		var intSlideNum = 0, intRels = 0;
 
-		// =======
 		// STEP 1: Create new JSZip file
-		// =======
 		var zip = new JSZip();
 
-		// =======
 		// STEP 2: Add all required folders and files
-		// =======
 		zip.folder("_rels");
 		zip.folder("docProps");
 		zip.folder("ppt").folder("_rels");
@@ -143,8 +141,28 @@ var PptxGenJS = function(){
 		// Add all images
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
 			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
-				intRels++;
-				zip.file("ppt/media/image"+intRels+"."+gObjPptx.slides[idx].rels[idy].extn, gObjPptx.slides[idx].rels[idy].data, {base64:true});
+				var id = gObjPptx.slides[idx].rels[idy].rId - 1;
+				var data = gObjPptx.slides[idx].rels[idy].data;
+
+				// A: Users will undoubtedly pass in string in various formats, so lets deal with that issue
+				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,'+data;
+				else if ( data.indexOf(',') == -1 ) data = 'image/png;base64,'+data;
+				else if ( data.indexOf(';') == -1 ) data = 'image/png;'+data;
+
+				// B: Grab base64 encoding header (ex: "data:image/png;base64,iVB[...]=")
+				var header = data.substring(0, data.indexOf(","));
+				// NOTE: Trim the leading base64 header ('data:image/png;base64,') as image wont render correctly with this header!)
+
+				// C: Set content
+				var content = data.substring(data.indexOf(",") + 1);
+
+				// D: Set extension - handle cases where user passes base64 without 'data:' at the beginning
+				var extn = 'png';
+				if ( data.toLowerCase().indexOf('data:') == 0 ) extn = /data:image\/(\w+)/.exec(header)[1];
+
+				// E: Add image
+				var isBase64 = /base64/.test(header);
+				zip.file("ppt/media/image" + id + "." + extn, content, {base64: isBase64});
 			}
 		}
 
@@ -154,11 +172,11 @@ var PptxGenJS = function(){
 		zip.file("ppt/tableStyles.xml", makeXmlTableStyles());
 		zip.file("ppt/viewProps.xml", makeXmlViewProps());
 
-		// =======
 		// STEP 3: Push the PPTX file to browser
-		// =======
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-		saveAs( zip.generate({type:"blob"}), strExportName );
+		zip.generateAsync({type:"blob"}).then(function(content) {
+			saveAs(content, strExportName);
+		});
 	}
 
 	function componentToHex(c) {
@@ -201,50 +219,49 @@ var PptxGenJS = function(){
 		image.src = inImgUrl;
 	}
 
-	function convertImgToDataURLviaCanvas(slideRel, callback){
+	function convertImgToDataURLviaCanvas(slideRel){
 		// A: Create
-	    var image = new Image();
+		var image = new Image();
 		// B: Set onload event
-	    image.onload = function(){
+		image.onload = function(){
 			// First: Check for any errors: This is the best method (try/catch wont work, etc.)
 			if (this.width + this.height == 0) { this.onerror(); return; }
-	        var canvas = document.createElement('CANVAS');
-	        var ctx = canvas.getContext('2d');
-	        canvas.height = this.height;
-	        canvas.width  = this.width;
-	        ctx.drawImage(this, 0, 0);
+			var canvas = document.createElement('CANVAS');
+			var ctx = canvas.getContext('2d');
+			canvas.height = this.height;
+			canvas.width  = this.width;
+			ctx.drawImage(this, 0, 0);
 			// Users running on local machine will get the following error:
 			// "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
 			// when the canvas.toDataURL call executes below.
-			try { callback( canvas.toDataURL(slideRel.type), slideRel ); }
+			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
 			catch(ex) {
 				this.onerror();
 				console.log("NOTE: Browsers wont let you load/convert local images! (search for --allow-file-access-from-files)");
 				return;
 			}
-	        canvas = null;
-	    };
+			canvas = null;
+		};
 		image.onerror = function(){
 			try { console.error( '[Error] Unable to load image: ' + slideRel.path ); } catch(ex){}
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			callbackImgToDataURLDone('data:image/png;base64,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', slideRel);
-	    };
+		};
 		// C: Load image
-    	image.src = slideRel.path;
+		image.src = slideRel.path;
 	}
 
 	function callbackImgToDataURLDone(inStr, slideRel){
 		var intEmpty = 0;
 
 		// STEP 1: Store base64 data for this image
-		// NOTE: Trim the leading 'data:image/png;base64,' text as it is not needed (and image wont render correctly with it)
-		slideRel.data = inStr.substring(inStr.indexOf(',')+1);
+		slideRel.data = inStr;
 
 		// STEP 2: Call export function once all async processes have completed
 		$.each(gObjPptx.slides, function(i,slide){
 			$.each(slide.rels, function(i,rel){
-				if ( rel.path == slideRel.path ) rel.data = inStr.substring(inStr.indexOf(',')+1);
-				if ( rel.data == null || rel.data.length == 0 ) intEmpty++;
+				if ( rel.path == slideRel.path ) rel.data = inStr;
+				if ( !rel.data ) intEmpty++;
 			});
 		});
 
@@ -407,7 +424,7 @@ var PptxGenJS = function(){
 	function genXmlTextCommand( text_info, text_string, slide_obj, slide_num ) {
 		var area_opt_data = genXmlTextData( text_info, slide_obj );
 		var parsedText;
-		var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold + area_opt_data.underline + area_opt_data.char_spacing + ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>') + '<a:t>';
+		var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold + area_opt_data.italic + area_opt_data.underline + area_opt_data.char_spacing + ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>') + '<a:t>';
 		var endTag = '</a:r>';
 		var outData = '<a:r>' + startInfo;
 
@@ -461,6 +478,7 @@ var PptxGenJS = function(){
 
 		out_obj.font_size = '';
 		out_obj.bold = '';
+		out_obj.italic = '';
 		out_obj.underline = '';
 		out_obj.rpr_info = '';
         out_obj.char_spacing = '';
@@ -468,6 +486,10 @@ var PptxGenJS = function(){
 		if ( typeof text_info == 'object' ) {
 			if ( text_info.bold ) {
 				out_obj.bold = ' b="1"';
+			}
+
+			if ( text_info.italic ) {
+				out_obj.italic = ' i="1"';
 			}
 
 			if ( text_info.underline ) {
@@ -496,24 +518,23 @@ var PptxGenJS = function(){
 			}
 		}
 		else {
-			if ( slide_obj && slide_obj.color ) out_obj.rpr_info += genXmlColorSelection ( slide_obj.color );
+			if ( slide_obj && slide_obj.color ) out_obj.rpr_info += genXmlColorSelection( slide_obj.color );
 		}
 
-		if ( out_obj.rpr_info != '' )
-			out_obj.rpr_info += '</a:rPr>';
+		if ( out_obj.rpr_info != '' ) out_obj.rpr_info += '</a:rPr>';
 
 		return out_obj;
 	}
 
 	function genXmlColorSelection( color_info, back_info ) {
-		var outText = '';
 		var colorVal;
 		var fillType = 'solid';
 		var internalElements = '';
+		var outText = '';
 
 		if ( back_info ) {
 			outText += '<p:bg><p:bgPr>';
-			outText += genXmlColorSelection ( back_info, false );
+			outText += genXmlColorSelection( back_info.replace('#',''), false );
 			outText += '<a:effectLst/>';
 			outText += '</p:bgPr></p:bg>';
 		}
@@ -521,7 +542,7 @@ var PptxGenJS = function(){
 		if ( color_info ) {
 			if ( typeof color_info == 'string' ) colorVal = color_info;
 			else {
-				if ( color_info.type ) fillType = color_info.type;
+				if ( color_info.type  ) fillType = color_info.type;
 				if ( color_info.color ) colorVal = color_info.color;
 				if ( color_info.alpha ) internalElements += '<a:alpha val="' + (100 - color_info.alpha) + '000"/>';
 			}
@@ -985,8 +1006,7 @@ var PptxGenJS = function(){
 					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst/></a:prstGeom>';
 
 					if ( slideObj.options ) {
-						( slideObj.options.fill )
-							? strSlideXml += genXmlColorSelection(slideObj.options.fill) : strSlideXml += '<a:noFill/>';
+						( slideObj.options.fill ) ? strSlideXml += genXmlColorSelection(slideObj.options.fill) : strSlideXml += '<a:noFill/>';
 
 						if ( slideObj.options.line ) {
 							var lineAttr = '';
@@ -1002,6 +1022,7 @@ var PptxGenJS = function(){
 						strSlideXml += '<a:noFill/>';
 					}
 
+					// TODO: Implement/document inner/outer-Shadow
 					if ( slideObj.options.effects ) {
 						for ( var ii = 0, total_size_ii = slideObj.options.effects.length; ii < total_size_ii; ii++ ) {
 							switch ( slideObj.options.effects[ii].type ) {
@@ -1050,18 +1071,37 @@ var PptxGenJS = function(){
 						if ( slideObj.options.indentLevel > 0 ) moreStylesAttr += ' lvl="' + slideObj.options.indentLevel + '"';
 					}
 
-					if ( moreStyles != '' ) outStyles = '<a:pPr' + moreStylesAttr + '>' + moreStyles + '</a:pPr>';
-					else if ( moreStylesAttr != '' ) outStyles = '<a:pPr' + moreStylesAttr + '/>';
-
-					if ( styleData != '' ) strSlideXml += '<p:style>' + styleData + '</p:style>';
-
-					if ( typeof slideObj.text == 'string' ) {
-						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
-						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text, inSlide.slide, inSlide.slide.getPageNumber() );
+					// BULLET: Add bullet params
+					/*
+					FYI: Each "line" of text needs this to be bulleted within a block like this
+					<a:p>
+						<a:pPr marL="228600" indent="-228600"><a:buSzPct val="100000"/><a:buChar char="&#x2022;"/></a:pPr>
+						<a:r><a:t>bullet one</a:t></a:r>
+					</a:p>
+					*/
+					if ( slideObj.options.bullet ) {
+						moreStylesAttr = ' marL="228600" indent="-228600"';
+						moreStyles = '<a:buSzPct val="100000"/><a:buChar char="&#x2022;"/>';
 					}
-					else if ( typeof slideObj.text == 'number' ) {
+
+					if ( moreStyles ) outStyles = '<a:pPr' + moreStylesAttr + '>' + moreStyles + '</a:pPr>';
+					else if ( moreStylesAttr ) outStyles = '<a:pPr' + moreStylesAttr + '/>';
+
+					if ( styleData ) strSlideXml += '<p:style>' + styleData + '</p:style>';
+
+					// Bullets: Multi-line bullets must have a complete <a:p><a:pPr></a:pPr><a:r></a:r></a:p> *per line*
+					if ( slideObj.options.bullet && typeof slideObj.text == 'string' && slideObj.text.split('\n').length > 0
+						&& slideObj.text.split('\n')[1] && slideObj.text.split('\n')[1].length > 0 ) {
+						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/>';
+						$.each(slideObj.text.split('\n'), function(i,line){
+							if ( i > 0 ) strSlideXml += '</a:p>';
+							strSlideXml += '<a:p>' + outStyles;
+							strSlideXml += genXmlTextCommand( slideObj.options, line, inSlide.slide, inSlide.slide.getPageNumber() );
+						});
+					}
+					else if ( typeof slideObj.text == 'string' || typeof slideObj.text == 'number' ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
-						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text + '', inSlide.slide, inSlide.slide.getPageNumber() );
+						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text+'', inSlide.slide, inSlide.slide.getPageNumber() );
 					}
 					else if ( slideObj.text && slideObj.text.length ) {
 						var outBodyOpt = genXmlBodyProperties( slideObj.options );
@@ -1082,12 +1122,12 @@ var PptxGenJS = function(){
 							}
 						}
 					}
-					else if ( (typeof slideObj.text == 'object') && slideObj.text.field ) {
+					else if ( typeof slideObj.text == 'object' && slideObj.text.field ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
 						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text, inSlide.slide, inSlide.slide.getPageNumber() );
 					}
 
-					// We must add that at the end of every paragraph with text:
+					// LAST: End of every paragraph
 					if ( typeof slideObj.text !== 'undefined' ) {
 						var font_size = '';
 						if ( slideObj.options && slideObj.options.font_size ) font_size = ' sz="' + slideObj.options.font_size + '00"';
@@ -1163,7 +1203,7 @@ var PptxGenJS = function(){
 					+ '<p:sldLayoutIdLst>\r\n';
 		// Create a sldLayout for each SLIDE
 		for ( var idx=1; idx<=gObjPptx.slides.length; idx++ ) {
-			strXml += ' <p:sldLayoutId id="'+ intSlideLayoutId +'" r:id="rId'+ idx +'"/>\r\n'
+			strXml += ' <p:sldLayoutId id="'+ intSlideLayoutId +'" r:id="rId'+ idx +'"/>\r\n';
 			intSlideLayoutId++;
 		}
 		strXml += '</p:sldLayoutIdLst>\r\n'
@@ -1367,8 +1407,8 @@ var PptxGenJS = function(){
 		// PERF: Only send unique image paths for encoding (encoding func will find and fill ALL matching img paths and fill)
 		$.each(gObjPptx.slides, function(i,slide){
 			$.each(slide.rels, function(i,rel){
-				intRels++;
 				if ( !rel.data && $.inArray(rel.path, arrImages) == -1 ) {
+					intRels++;
 					convertImgToDataURLviaCanvas(rel, callbackImgToDataURLDone);
 					arrImages.push(rel.path);
 				}
@@ -1383,11 +1423,17 @@ var PptxGenJS = function(){
 	 * Add a new Slide to the Presentation
 	 * @returns {Object[]} slideObj - The new Slide object
 	 */
-	this.addNewSlide = function addNewSlide(inMaster) {
+	this.addNewSlide = function addNewSlide(inMaster, inMasterOpts) {
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
+
+		var inMasterOpts = (inMasterOpts || {});
+		// ISSUE#7: Allow bkgd image/color override on a per-slide basic
+		if ( inMaster && inMasterOpts ) {
+			if ( inMasterOpts.bkgd ) inMaster.bkgd = inMasterOpts.bkgd;
+		}
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {};
@@ -1501,26 +1547,39 @@ var PptxGenJS = function(){
 			return this;
 		};
 
-		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImgData ) {
+		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
+		// FUTURE: slideObj.addImage = function(opt){
+		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
 			var intRels = 1;
 
+			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
+			// TODO: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
+			if ( typeof strImagePath === 'object' ) {
+				intPosX = (strImagePath.x || 0);
+				intPosY = (strImagePath.y || 0);
+				intSizeX = (strImagePath.cx || strImagePath.w || 0);
+				intSizeY = (strImagePath.cy || strImagePath.h || 0);
+				strImageData = (strImagePath.data || '');
+				strImagePath = (strImagePath.path || ''); // This line must be last as were about to ovewrite ourself!
+			}
+
 			// REALITY-CHECK:
-			if ( strImagePath == null || strImagePath == '' || strImagePath.indexOf('.') == -1 ) {
-				try { console.error('ERROR: Image needs an extension/Cant be blank'); } catch(ex){}
+			if ( !strImagePath && !strImageData ) {
+				try { console.error("ERROR: addImage requires either 'data' or 'path' parameter!"); } catch(ex){}
 				return null;
 			}
 
-			// STEP 1: Set vars for this Slide
+			// STEP 2: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
 			var strImgExtn = 'png'; // Every image is encoded via canvas>base64, so they all come out as png (use of another extn will cause "needs repair" dialog on open in PPT)
-			//
+
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
-			gObjPptx.slides[slideNum].data[slideObjNum].image = strImagePath;
+			gObjPptx.slides[slideNum].data[slideObjNum].image = (strImagePath || 'preencoded.png');
 
-			// STEP 2: Set image properties & options
-			// TODO 1.1: Measure actual image when no intSizeX/intSizeY params passed
+			// STEP 3: Set image properties & options
+			// TODO 1.5: Measure actual image when no intSizeX/intSizeY params passed
 			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
 			// if ( !intSizeX || !intSizeY ) { var imgObj = getSizeFromImage(strImagePath);
 			var imgObj = { width:1, height:1 };
@@ -1530,15 +1589,15 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].options.cx = (intSizeX || imgObj.width );
 			gObjPptx.slides[slideNum].data[slideObjNum].options.cy = (intSizeY || imgObj.height);
 
-			// STEP 3: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
 			slideObjRels.push({
-				path: strImagePath,
+				path: (strImagePath || 'preencoded.png'),
 				type: 'image/'+strImgExtn,
 				extn: strImgExtn,
-				data: (strImgData || ''),
-				rId: (intRels+1),
+				data: (strImageData || ''),
+				rId:  (intRels+1),
 				Target: '../media/image' + intRels + '.' + strImgExtn
 			});
 			gObjPptx.slides[slideNum].data[slideObjNum].imageRid = slideObjRels[slideObjRels.length-1].rId;
@@ -1556,12 +1615,21 @@ var PptxGenJS = function(){
 			// A: Add images (do this before adding slide bkgd)
 			if ( inMaster.images && inMaster.images.length > 0 ) {
 				$.each(inMaster.images, function(i,image){
-					slideObj.addImage( image.src, inch2Emu(image.x), inch2Emu(image.y), inch2Emu(image.cx), inch2Emu(image.cy), (image.data || '') );
+					slideObj.addImage({
+						data: (image.data || ''),
+						path: (image.path || image.src || ''),
+						x: inch2Emu(image.x),
+						y: inch2Emu(image.y),
+						w: inch2Emu(image.w || image.cx),
+						h: inch2Emu(image.h || image.cy)
+					});
 				});
 			}
 
-			// B: Add any Slide BAckground: Image or Fill
-			if ( inMaster.bkgd && inMaster.bkgd.src ) {
+			// B: Add any Slide Background: Image or Fill
+			if ( inMaster.bkgd && (inMaster.bkgd.src || inMaster.bkgd.data) ) {
+				// Allow the use of only the data key (no src reqd)
+				if (!inMaster.bkgd.src) inMaster.bkgd.src = 'preencoded.png';
 				var slideObjRels = gObjPptx.slides[slideNum].rels;
 				var strImgExtn = inMaster.bkgd.src.substring( inMaster.bkgd.src.indexOf('.')+1 ).toLowerCase();
 				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
@@ -1592,6 +1660,7 @@ var PptxGenJS = function(){
 					// 2: Create object using 'type'
 					if ( shape.type == 'text' ) slideObj.addText(shape.text, objOpts);
 					else if ( shape.type == 'line' ) slideObj.addShape(gObjPptxShapes.LINE, objOpts);
+					else if ( shape.type == 'rectangle' ) slideObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
 				});
 			}
 
@@ -1615,6 +1684,9 @@ var PptxGenJS = function(){
 		var arrObjTabHeadRows = [], arrObjTabBodyRows = [], arrObjTabFootRows = [];
 		var arrObjSlides = [], arrRows = [], arrColW = [], arrTabColW = [];
 		var intTabW = 0, emuTabCurrH = 0;
+
+		// REALITY-CHECK:
+		if ( $('#'+tabEleId).length == 0 ) { console.error('ERROR: Table "'+tabEleId+'" does not exist!'); return; }
 
 		// NOTE: Look for opts.margin first as user can override Slide Master settings if they want
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
@@ -1823,7 +1895,7 @@ var PptxGenJS = function(){
 			newSlide.addTable( arrTabRows, {x:arrInchMargins[3], y:arrInchMargins[0], cx:(emuSlideTabW/EMU)}, {colW:arrColW} );
 
 			// E: Add any additional objects
-			if ( opts.addImage ) newSlide.addImage( opts.addImage.url,   opts.addImage.x, opts.addImage.y, opts.addImage.w, opts.addImage.h );
+			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
 			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
 			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}), (opts.addTable.tabOpts || {}) );

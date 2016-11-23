@@ -1,7 +1,7 @@
 /*
  * PptxGenJS > stylesheets > style.css
  */
-body { font-family:"Open Sans",Arial,Verdana,sans-serif; background:#f7f7f7; color:#4488CC; font-size:11px; }
+body { font-family:Roboto,Helvetica,Arial,Verdana,sans-serif; background:#f7f7f7; color:#4488CC; font-size:11px; }
 textarea { border:1px solid #cccccc; padding:3px; }
 h3 {
     color: #3498DB;
@@ -68,8 +68,9 @@ h3 {
 
 .flatBtn {
     display: inline-block;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 12px !important;
+    /*font-family: Roboto,Helvetica,Arial,Verdana,sans-serif;*/
+	font-weight: 100;
+    font-size: 18px !important;
     color: #ffffff !important;
     border: 0 !important;
     padding: 8px 30px;
@@ -144,5 +145,11 @@ div.divTable > div { display: table-row; }
 div.divTable > div > div { display: table-cell; padding: 3px 10px; }
 div.divTable > div > div:first-child { vertical-align: top; white-space: nowrap; width: 10%; }
 div.divTable input[type="number"], div.divTable input[type="text"] { width: 100%; }
+
+.headerTab { display:table; box-sizing:border-box; width:100%; font-size:12px; margin-bottom:20px; }
+.headerTab > div { display:table-row; }
+.headerTab > div > div { display:table-cell; padding:5px 10px; vertical-align:middle; font-size:16px; }
+.headerTab > div > div:first-child { white-space:nowrap; width:1%; padding:5px 0 5px 20px; }
+.headerTab svg { vertical-align:middle; width:48px; height:48px; }
 
 #console { text-align:left; font-size:12px; font-family:'Courier New', Courier, monospace; color:limegreen; background: #060606; }
