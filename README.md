@@ -3,18 +3,21 @@ Client-side JavaScript framework that produces PowerPoint (pptx) presentations.
 
 By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and
 easily produce PowerPoint presentations with a few simple JavaScript commands.
-* Works with all modern desktop browsers (IE11, Edge, Chrome, Firefox, Opera)
-* The presentation export is pushed to client browsers as a regular file without any interaction required
-* Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings needed!
+* Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings required
+* Works with all modern desktop browsers (Chrome, Edge, Firefox, IE11, Opera et al.)
+* Presentation pptx export is pushed to client browsers as a regular file without the need for any user interaction
+* Simple, feature-rich API: Supports Master Slides and all major object types (Tables, Shapes, Images and Text)
 
-Additionally, this framework includes a unique Table-To-Slides feature that will reproduce
+Additionally, this framework includes a unique [Table-to-Slides](#table-to-slides--1-click-exports) feature that will reproduce
 an HTML Table in 1 or more slides with a single command.
 
 Supported write/output formats:
-* PowerPoint 2007+, Open Office XML, Apple Keynote (.PPTX)
+* PowerPoint 2007+ (.pptx), Open Office XML format, and Apple Keynote
 
-Now available on NPM/Node:
-* [https://www.npmjs.com/package/pptxgenjs](https://www.npmjs.com/package/pptxgenjs)
+Download:
+* [Download Latest (Windows/MacOS)](https://github.com/gitbrent/PptxGenJS/zipball/master)
+* [Download Latest (UNIX/Linux)](https://github.com/gitbrent/PptxGenJS/tarball/master)
+* Now available as a [Node Package](https://www.npmjs.com/package/pptxgenjs)! (npm install pptxgenjs)
 
 **************************************************************************************************
 
@@ -54,6 +57,7 @@ Now available on NPM/Node:
     - [Image Options](#image-options)
   - [Performance Considerations](#performance-considerations)
 - [Bugs & Issues](#bugs-&-issues)
+- [Special Thanks](#special-thanks)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -270,12 +274,12 @@ var gObjPptxMasters = {
   TITLE_SLIDE: {
     title:      'I am the Title Slide',
     isNumbered: false,
-    bkgd:       { src:'images/title_bkgd.png', data:'base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-    images:     [ { x:'7.4', y:'4.1', w:'2', h:'1', data:'data:image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
+    bkgd:       { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
+    images:     [ { x:'7.4', y:'4.1', w:'2', h:'1', data:'image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
   }
 };
 ```  
-#### PRO-TIP: Pre-encode Images for Performance Boost
+#### ProTip: Pre-encode Images for Performance Boost
 Pre-encode your images (base64) and add the string as the optional data key/val
 (see the `TITLE_SLIDE.images` object above)
 
@@ -298,12 +302,12 @@ pptx.save();
 ## Slide Master Object Options
 | Parameter  | Description        | Possible Values       |
 | :--------- | :-------------     | :-------------------- |
-| bkgd       | background color   | [string] CSS-Hex style ('336699', etc.) OR [object] {src:'img/path'} - (optional) data:'base64code' |
-| images     | image(s)           | array of image objects: {src,x,y,cx,cy} - (optional) data:'base64code' |
-| isNumbered | Show slide numbers | true/false |
-| margin     | slide margin       | [integer] OR [array] of ints in TRBL order [top,right,bottom,left] (inches) |
-| shapes     | shape(s)           | array of shape objects: {type,text,x,y,cx,cy,align,valign,color,font_size,bold} |
-| title      | Slide Title        | [text string] |
+| `bkgd`       | background color   | [string] CSS-Hex style ('336699', etc.) OR [object] {src:'img/path'} - (optional) data:'base64code' |
+| `images`     | image(s)           | array of image objects: {src,x,y,cx,cy} - (optional) data:'base64code' |
+| `isNumbered` | Show slide numbers | true/false |
+| `margin`     | slide margin       | [integer] OR [array] of ints in TRBL order [top,right,bottom,left] (inches) |
+| `shapes`     | shape(s)           | array of shape objects: {type,text,x,y,cx,cy,align,valign,color,font_size,bold} |
+| `title`      | Slide Title        | [text string] |
 
 ## Sample Slide Master File
 A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
@@ -354,24 +358,24 @@ slide.addText('Options!', { x:1, y:1, font_face:'Arial', font_size:42, color:'00
 ### Text Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| x          | X location     | (inches)              |
-| y          | Y location     | (inches)              |
-| w          | width          | (inches)              |
-| h          | height         | (inches)              |
-| align      | horiz align    | left / center / right |
-| autoFit    | "Fit to Shape" | true / false          |
-| bold       | bold           | true/false            |
-| bullet     | bullet text    | true/false            |
-| color      | font color     | CSS-Hex style ('336699', etc.) |
-| fill       | fill color     | CSS-Hex style ('336699', etc.) |
-| font_face  | font face      | 'Arial' etc. |
-| font_size  | font size      | Std PPT font sizes (1-256 pt) |
-| inset      | inset/padding  | (inches)              |
-| isTextBox  | PPT "Textbox"  | true/false |
-| italic     | italic         | true/false |
-| margin     | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
-| underline  | underline      | true/false |
-| valign     | vertical align | top / middle / bottom |
+| `x`          | X location     | (inches)              |
+| `y`          | Y location     | (inches)              |
+| `w`          | width          | (inches)              |
+| `h`          | height         | (inches)              |
+| `align`      | horiz align    | left / center / right |
+| `autoFit`    | "Fit to Shape" | true / false          |
+| `bold`       | bold           | true/false            |
+| `bullet`     | bullet text    | true/false            |
+| `color`      | font color     | CSS-Hex style ('336699', etc.) |
+| `fill`       | fill color     | CSS-Hex style ('336699', etc.) |
+| `font_face`  | font face      | 'Arial' etc. |
+| `font_size`  | font size      | Std PPT font sizes (1-256 pt) |
+| `inset`      | inset/padding  | (inches)              |
+| `isTextBox`  | PPT "Textbox"  | true/false |
+| `italic`     | italic         | true/false |
+| `margin`     | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
+| `underline`  | underline      | true/false |
+| `valign`     | vertical align | top / middle / bottom |
 
 ## Table
 ```javascript
@@ -400,29 +404,29 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 ### Table Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| x          | X location     | (inches)              |
-| y          | Y location     | (inches)              |
-| w          | table width    | (inches)              |
-| h          | table height   | (inches)              |
+| `x`        | X location     | (inches)              |
+| `y`        | Y location     | (inches)              |
+| `w`        | table width    | (inches)              |
+| `h`        | table height   | (inches)              |
 
 ### Cell Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| align      | horiz align    | left / center / right |
-| bold       | bold           | true/false |
-| border     | cell border    | single style or an array (TRBL-format) of styles - {pt:'1', color:'CFCFCF'} |
-| color      | font color     | CSS-Hex style ('336699', etc.) |
-| colspan    | column span    | 2-N |
-| colW       | column width   | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
-| font_face  | font face      | 'Arial' etc. |
-| font_size  | font size      | Std PPT font sizes (1-256 pt) |
-| fill       | fill color     | CSS-Hex style ('336699', etc.) |
-| italic     | italic         | true/false |
-| marginPt   | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
-| rowspan    | row span       | 2-N |
-| rowH       | row height     | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
-| underline  | underline      | true/false |
-| valign     | vert align     | top / middle / bottom |
+| `align`      | horiz align    | left / center / right |
+| `bold`       | bold           | true/false |
+| `border`     | cell border    | single style or an array (TRBL-format) of styles - {pt:'1', color:'CFCFCF'} |
+| `color`      | font color     | CSS-Hex style ('336699', etc.) |
+| `colspan`    | column span    | 2-N |
+| `colW`       | column width   | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
+| `font_face`  | font face      | 'Arial' etc. |
+| `font_size`  | font size      | Std PPT font sizes (1-256 pt) |
+| `fill`       | fill color     | CSS-Hex style ('336699', etc.) |
+| `italic`     | italic         | true/false |
+| `marginPt`   | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
+| `rowspan`    | row span       | 2-N |
+| `rowH`       | row height     | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
+| `underline`  | underline      | true/false |
+| `valign`     | vert align     | top / middle / bottom |
 
 
 ## Shape
@@ -438,13 +442,13 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF00
 ### Shape Options
 | Parameter  | Description     | Possible Values       |
 | :--------- | :-------------- | :-------------------- |
-| x          | X location      | (inches)              |
-| y          | Y location      | (inches)              |
-| w          | shape width     | (inches)              |
-| h          | shape height    | (inches)              |
-| flipH      | flip Horizontal | true/false            |
-| flipV      | flip Vertical   | true/false            |
-| rotate     | rotate          | 0-360 (integer)       |
+| `x`        | X location      | (inches)              |
+| `y`        | Y location      | (inches)              |
+| `w`        | shape width     | (inches)              |
+| `h`        | shape height    | (inches)              |
+| `flipH`    | flip Horizontal | true/false            |
+| `flipV`    | flip Vertical   | true/false            |
+| `rotate`   | rotate          | 0-360 (integer)       |
 
 ## Image
 ```javascript
@@ -459,30 +463,37 @@ slide.addImage({ data:'data:image/png;base64,iVBORwTwB[...]=', x:3.0, y:5.0, w:6
 ### Image Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| path       | image path     | (path - can be relative - like a normal html tag: img src="path")
-| data       | image data     | (base64-encoded string) |
-| x          | X location     | (inches)              |
-| y          | Y location     | (inches)              |
-| w          | image width    | (inches)              |
-| h          | image height   | (inches)              |
+| `path`     | image path     | (path - can be relative - like a normal html tag: img src="path")
+| `data`     | image data     | (base64-encoded string) |
+| `x`        | X location     | (inches)              |
+| `y`        | Y location     | (inches)              |
+| `w`        | image width    | (inches)              |
+| `h`        | image height   | (inches)              |
 
 ### Deprecation Warning
 Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1.5, 1.5, 6.0, 3.0)`) are now deprecated
 
 **************************************************************************************************
 ## Performance Considerations
-NOTE: It takes time to encode images, so the more images you include and the larger they are, the more time will be consumed.
+It takes time to read and encode images! The more images you include and the larger they are, the more time will be consumed.
 You will want to show a jQuery Dialog with a nice hour glass before you start creating the file.
 
-## PRO-TIP
-Pre-encode images into a base64 string (eg: 'data:image/png;base64,iVBORw[...]=') and add as the data
-argument so exports are super fast (no need to read/encode images!) and reduce dependencies (you dont
-need yet another img asset to keep track of or deploy right?)
+## ProTip
+Pre-encode images into a base64 string (eg: 'data:image/png;base64,iVBORw[...]=') and use as the `data` argument.
+This will both reduce dependencies (who needs another image asset to keep track of?) and provide a performance
+boost (no time will need to be consumed reading and encoding the image).
 
 **************************************************************************************************
 # Bugs & Issues
 
 When reporting bugs or issues, if you could include a link to a simple jsbin or similar demonstrating the issue, that'd be really helpful.
+
+**************************************************************************************************
+# Special Thanks
+
+* [Officegen Project](https://github.com/Ziv-Barber/officegen) - For the Shape definitions and XML code
+* [Dzmitry Dulko](https://github.com/DzmitryDulko) - For getting the project published on NPM
+* Everyone who has submitted a Patch or an Issue
 
 **************************************************************************************************
 # License
