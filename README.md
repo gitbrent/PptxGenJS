@@ -1,3 +1,4 @@
+[![npm version](https://badge.fury.io/js/pptxgenjs.svg)](https://badge.fury.io/js/pptxgenjs) [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/) [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
 # PptxGenJS
 Client-side JavaScript framework that produces PowerPoint (pptx) presentations.
 
@@ -9,15 +10,10 @@ easily produce PowerPoint presentations with a few simple JavaScript commands.
 * Simple, feature-rich API: Supports Master Slides and all major object types (Tables, Shapes, Images and Text)
 
 Additionally, this framework includes a unique [Table-to-Slides](#table-to-slides--1-click-exports) feature that will reproduce
-an HTML Table in 1 or more slides with a single command.
+an HTML Table across one or more Slides with a single command.
 
 Supported write/output formats:
-* PowerPoint 2007+ (.pptx), Open Office XML format, and Apple Keynote
-
-Download:
-* [Download Latest (Windows/MacOS)](https://github.com/gitbrent/PptxGenJS/zipball/master)
-* [Download Latest (UNIX/Linux)](https://github.com/gitbrent/PptxGenJS/tarball/master)
-* Now available as a [Node Package](https://www.npmjs.com/package/pptxgenjs)! (npm install pptxgenjs)
+* PowerPoint 2007+ (.pptx), Open Office, and Apple Keynote
 
 **************************************************************************************************
 
@@ -69,13 +65,17 @@ Use JavaScript to Create PowerPoint presentations right from our demo page
 [http://gitbrent.github.io/PptxGenJS](http://gitbrent.github.io/PptxGenJS)
 
 # Installation
+## Client-Side
 PptxGenJS requires only three additional JavaScript libraries to function.
-
 ```javascript
 <script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
 <script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
 <script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
+```
+## NPM/Node.js
+```javascript
+npm install pptxgenjs
 ```
 
 # Optional Modules
@@ -404,29 +404,29 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 ### Table Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| `x`        | X location     | (inches)              |
-| `y`        | Y location     | (inches)              |
-| `w`        | table width    | (inches)              |
-| `h`        | table height   | (inches)              |
+| `x`        | X location     | (float - inches)      |
+| `y`        | Y location     | (float - inches)      |
+| `w`        | table width    | (float - inches)      |
+| `h`        | table height   | (float - inches)      |
 
 ### Cell Options
-| Parameter  | Description    | Possible Values       |
-| :--------- | :------------- | :-------------------- |
-| `align`      | horiz align    | left / center / right |
-| `bold`       | bold           | true/false |
+| Parameter    | Description    | Possible Values       |
+| :----------- | :------------- | :-------------------- |
+| `align`      | horiz align    | (string) 'left' / 'center' / 'right' |
+| `bold`       | bold           | (bool) true / false |
 | `border`     | cell border    | single style or an array (TRBL-format) of styles - {pt:'1', color:'CFCFCF'} |
-| `color`      | font color     | CSS-Hex style ('336699', etc.) |
-| `colspan`    | column span    | 2-N |
-| `colW`       | column width   | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
-| `font_face`  | font face      | 'Arial' etc. |
-| `font_size`  | font size      | Std PPT font sizes (1-256 pt) |
-| `fill`       | fill color     | CSS-Hex style ('336699', etc.) |
-| `italic`     | italic         | true/false |
-| `marginPt`   | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
-| `rowspan`    | row span       | 2-N |
-| `rowH`       | row height     | an int or array of ints in TRBL order [top,right,bottom,left] (inches) |
-| `underline`  | underline      | true/false |
-| `valign`     | vert align     | top / middle / bottom |
+| `color`      | font color     | (string) CSS-Hex style ('336699', etc.) |
+| `colspan`    | column span    | (integer) 2-n |
+| `colW`       | column width   | (integer) or (array of ints in TRBL [top,right,bottom,left] order). Unit = inches |
+| `font_face`  | font face      | (string) 'Arial' etc. |
+| `font_size`  | font size      | (integer) Std PPT font sizes (1-256 pt) |
+| `fill`       | fill color     | (string) CSS-Hex style ('336699', etc.) |
+| `italic`     | italic         | (bool) true / false |
+| `marginPt`   | margin/padding | (integer) Use same value as current CSS padding for similar results on Slide) |
+| `rowspan`    | row span       | (integer) 2-n |
+| `rowH`       | row height     | (integer) or (array of ints in TRBL [top,right,bottom,left] order). Unit = inches |
+| `underline`  | underline      | (bool) true / false |
+| `valign`     | vert align     | (string) 'top' / 'middle' / 'bottom' |
 
 
 ## Shape
@@ -463,15 +463,15 @@ slide.addImage({ data:'data:image/png;base64,iVBORwTwB[...]=', x:3.0, y:5.0, w:6
 ### Image Options
 | Parameter  | Description    | Possible Values       |
 | :--------- | :------------- | :-------------------- |
-| `path`     | image path     | (path - can be relative - like a normal html tag: img src="path")
-| `data`     | image data     | (base64-encoded string) |
+| `path`     | image path     | (path to image. can be relative like a normal html tag: img src="path")
+| `data`     | image data     | (base64-encoded string. leading 'data:' text is optional) |
 | `x`        | X location     | (inches)              |
 | `y`        | Y location     | (inches)              |
 | `w`        | image width    | (inches)              |
 | `h`        | image height   | (inches)              |
 
 ### Deprecation Warning
-Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1.5, 1.5, 6.0, 3.0)`) are now deprecated
+Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1.5, 1.5, 6.0, 3.0)`) are now deprecated as of 1.1.0
 
 **************************************************************************************************
 ## Performance Considerations
