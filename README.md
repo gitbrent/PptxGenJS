@@ -92,15 +92,16 @@ include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape 
 **************************************************************************************************
 # Creating a Presentation
 PowerPoint Presentations are created via JavaScript by following 4 basic steps:
-1. Create a new Presentation
+
+1. Create the Presentation
 2. Add a new Slide  
-3. Add any Shapes, Text or Tables  
+3. Add objects (Images, Shapes, Text or Tables)
 4. Save the Presentation  
 
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-slide.addText('Hello World!', { x:0.5, y:0.7, font_size:18, color:'0000FF' });
+slide.addText('Hello World!', { x:1.5, y:1.5, font_size:18, color:'363636' });
 pptx.save('Sample Presentation');
 ```
 That's really all there is to it!
