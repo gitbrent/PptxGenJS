@@ -1,4 +1,4 @@
-[![npm version](https://badge.fury.io/js/pptxgenjs.svg)](https://badge.fury.io/js/pptxgenjs) [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/) [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php)
+[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/) [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php) [![npm version](https://badge.fury.io/js/pptxgenjs.svg)](https://badge.fury.io/js/pptxgenjs)
 # PptxGenJS
 Client-side JavaScript framework that produces PowerPoint (pptx) presentations.
 
@@ -243,16 +243,15 @@ pptx.save('Demo-Shapes');
 # Master Slides and Corporate Branding
 
 ## Slide Masters
-It's one thing to generate sample slides like those shown above, but most of us are required to produce
-slides that have a consistent look and feel and/or with corporate branding, etc.
+Generating sample slides like those shown above is great for demonstrating library features,
+but the reality is most of us will be required to produce presentations that have a certain design or
+corporate branding.
 
-In addition, it's often useful to have various pre-defined slide masters to use as giant "Thank You"
-slides, title slides, etc.
+PptxGenJS allows you to define Master Slides via objects that can then be used to provide branding
+functionality.
 
-Fortunately, you can do both with PptxGenJS!
-
-Slide Masters are defined using the same style as the Slides and then added as a variable to a file that
-is included in the script src tags on your page.  
+Slide Masters are defined using the same object style used in Slides. Add these objects as a variable to a file that
+is included in the script src tags on your page, then reference them by name in your code.
 E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
 
 ## Slide Master Examples
@@ -264,7 +263,7 @@ var gObjPptxMasters = {
     isNumbered: true,
     margin:     [ 0.5, 0.25, 1.0, 0.25 ],
     bkgd:       'FFFFFF',
-    images:     [ { src:'images/logo_square.png', x:9.3, y:4.9, w:0.5, h:0.5 } ],
+    images:     [ { path:'images/logo_square.png', x:9.3, y:4.9, w:0.5, h:0.5 } ],
     shapes:     [
       { type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
       { type:'line', x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' },
@@ -293,21 +292,24 @@ var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
 slide1.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
 // NOTE: Base master slide properties can be overridden on a selective basis:
 // Here we can set a new background color or image on-the-fly
-var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
-var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd.jpg' } } );
+var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC' } );
+var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd.jpg' } } );
+var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ data:'images/title_bkgd.jpg' } } );
 
 pptx.save();
 ```
 
 ## Slide Master Object Options
-| Parameter  | Description        | Possible Values       |
-| :--------- | :-------------     | :-------------------- |
-| `bkgd`       | background color   | [string] CSS-Hex style ('336699', etc.) OR [object] {src:'img/path'} - (optional) data:'base64code' |
-| `images`     | image(s)           | array of image objects: {src,x,y,cx,cy} - (optional) data:'base64code' |
-| `isNumbered` | Show slide numbers | true/false |
-| `margin`     | slide margin       | [integer] OR [array] of ints in TRBL order [top,right,bottom,left] (inches) |
-| `shapes`     | shape(s)           | array of shape objects: {type,text,x,y,cx,cy,align,valign,color,font_size,bold} |
-| `title`      | Slide Title        | [text string] |
+| Option       | Type    | Unit   | Default  | Description  | Possible Values       |
+| :----------- | :------ | :----- | :------- | :----------- | :-------------------- |
+| `bkgd`       | string  |        | `ffffff` | color        | hex color code. Ex: `{ bkgd:'0088CC' }` |
+| `bkgd`       | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
+| `images`     | array   |        |          | image(s) | object array of path OR data. Ex: `{path:'img/logo.png'}` OR `{data:'image/png;base64,tFfInmP[...]'}`|
+| `isNumbered` | boolean |        | false    | Show slide numbers | `true` or `false` |
+| `margin`     | number  | inches | `1.0`    | Slide margin       | 0.0 through whatever |
+| `margin`     | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
+| `shapes`     | array   |        |          | shape(s)           | array of shape objects. Ex: (see [Shape](#shape) section) |
+| `title`      | string  |        |          | Sldie title        | some title |
 
 ## Sample Slide Master File
 A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
@@ -356,26 +358,26 @@ slide.addText('Options!', { x:1, y:1, font_face:'Arial', font_size:42, color:'00
 ```
 
 ### Text Options
-| Parameter  | Description    | Possible Values       |
-| :--------- | :------------- | :-------------------- |
-| `x`          | X location     | (inches)              |
-| `y`          | Y location     | (inches)              |
-| `w`          | width          | (inches)              |
-| `h`          | height         | (inches)              |
-| `align`      | horiz align    | left / center / right |
-| `autoFit`    | "Fit to Shape" | true / false          |
-| `bold`       | bold           | true/false            |
-| `bullet`     | bullet text    | true/false            |
-| `color`      | font color     | CSS-Hex style ('336699', etc.) |
-| `fill`       | fill color     | CSS-Hex style ('336699', etc.) |
-| `font_face`  | font face      | 'Arial' etc. |
-| `font_size`  | font size      | Std PPT font sizes (1-256 pt) |
-| `inset`      | inset/padding  | (inches)              |
-| `isTextBox`  | PPT "Textbox"  | true/false |
-| `italic`     | italic         | true/false |
-| `margin`     | margin/padding | Points/Pixels (use same value as CSS passing for similar results in PPT) |
-| `underline`  | underline      | true/false |
-| `valign`     | vertical align | top / middle / bottom |
+| Option       | Type    | Unit   | Default   | Description | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :---------- | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
+| `w`          | number  | inches | `1.0`     | width               | 0-n |
+| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `align`      | string  |        | `left`    | alignment       | `left` or `center` or `right` |
+| `autoFit`    | boolean |        | `false`   | "Fit to Shape"  | `true` or `false` |
+| `bold`       | boolean |        | `false`   | bold text       | `true` or `false` |
+| `bullet`     | boolean |        | `false`   | bullet text     | `true` or `false` |
+| `color`      | string  |        | `000000`  | text color      | hex color code. Ex: `{ color:'0088CC' }` |
+| `fill`       | string  |        | `000000`  | fill/bkgd color | hex color code. Ex: `{ color:'0088CC' }` |
+| `font_face`  | string  |        |           | font face       | Ex: 'Arial' |
+| `font_size`  | number  | points |           | font size       | 1-256. Ex: `{ font_size:12 }` |
+| `inset`      | number  | inches | `1.0`     | inset/padding   | 1-256. Ex: `{ inset:10 }` |
+| `isTextBox`  | boolean |        | `false`   | PPT "Textbox"   | `true` or `false` |
+| `italic`     | boolean |        | `false`   | italic text     | `true` or `false` |
+| `margin`     | number  | points |           | margin          | 1-n (ProTip: use the same value from CSS padding) |
+| `underline`  | boolean |        | `false`   | underline text  | `true` or `false` |
+| `valign`     | string  |        | `left`    | vertical alignment | `top` or `middle` or `bottom` |
 
 ## Table
 ```javascript
@@ -402,32 +404,34 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 ```
 
 ### Table Options
-| Parameter  | Description    | Possible Values       |
-| :--------- | :------------- | :-------------------- |
-| `x`        | X location     | (float - inches)      |
-| `y`        | Y location     | (float - inches)      |
-| `w`        | table width    | (float - inches)      |
-| `h`        | table height   | (float - inches)      |
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
+| `w`          | number  | inches | `1.0`     | width               | 0-n |
+| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `colW`       | integer | inches |           | width for every column | Ex: Width for every column in table (uniform) `2.0` |
+| `colW`       | array   | inches |           | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]` |
+| `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
+| `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 
 ### Cell Options
-| Parameter    | Description    | Possible Values       |
-| :----------- | :------------- | :-------------------- |
-| `align`      | horiz align    | (string) 'left' / 'center' / 'right' |
-| `bold`       | bold           | (bool) true / false |
-| `border`     | cell border    | single style or an array (TRBL-format) of styles - {pt:'1', color:'CFCFCF'} |
-| `color`      | font color     | (string) CSS-Hex style ('336699', etc.) |
-| `colspan`    | column span    | (integer) 2-n |
-| `colW`       | column width   | (integer) or (array of ints in TRBL [top,right,bottom,left] order). Unit = inches |
-| `font_face`  | font face      | (string) 'Arial' etc. |
-| `font_size`  | font size      | (integer) Std PPT font sizes (1-256 pt) |
-| `fill`       | fill color     | (string) CSS-Hex style ('336699', etc.) |
-| `italic`     | italic         | (bool) true / false |
-| `marginPt`   | margin/padding | (integer) Use same value as current CSS padding for similar results on Slide) |
-| `rowspan`    | row span       | (integer) 2-n |
-| `rowH`       | row height     | (integer) or (array of ints in TRBL [top,right,bottom,left] order). Unit = inches |
-| `underline`  | underline      | (bool) true / false |
-| `valign`     | vert align     | (string) 'top' / 'middle' / 'bottom' |
-
+| Option       | Type    | Unit   | Default   | Description        | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :----------------- | :--------------- |
+| `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` |
+| `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
+| `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'CFCFCF'}` |
+| `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
+| `color`      | string  |        | `000000`  | text color         | hex color code. Ex: `{color:'0088CC'}` |
+| `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` |
+| `fill`       | string  |        | `000000`  | fill/bkgd color    | hex color code. Ex: `{color:'0088CC'}` |
+| `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
+| `font_size`  | number  | points |           | font size          | 1-256. Ex: `{ font_size:12 }` |
+| `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
+| `marginPt`   | number  | points |           | margin             | 1-n (ProTip: use the same value from CSS padding) |
+| `rowspan`    | integer |        |           | row span           | 2-n. Ex: `{rowspan:2}` |
+| `underline`  | boolean |        | `false`   | underline text     | `true` or `false` |
+| `valign`     | string  |        | `left`    | vertical alignment | `top` or `middle` or `bottom` |
 
 ## Shape
 ```javascript
@@ -440,15 +444,15 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF00
 ```
 
 ### Shape Options
-| Parameter  | Description     | Possible Values       |
-| :--------- | :-------------- | :-------------------- |
-| `x`        | X location      | (inches)              |
-| `y`        | Y location      | (inches)              |
-| `w`        | shape width     | (inches)              |
-| `h`        | shape height    | (inches)              |
-| `flipH`    | flip Horizontal | true/false            |
-| `flipV`    | flip Vertical   | true/false            |
-| `rotate`   | rotate          | 0-360 (integer)       |
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
+| `w`          | number  | inches | `1.0`     | width               | 0-n |
+| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
+| `flipV`      | boolean |        |           | flip Vertical       | `true` or `false` |
+| `rotate`     | integer | degrees |          | rotation degrees    | 0-360. Ex: `{rotate:180}` |
 
 ## Image
 ```javascript
@@ -456,19 +460,19 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF00
 slide.addImage({options});
 
 // Example: Image by path / Image by base64-encoding
-slide.addImage({ path:'images/chart_world_peace_is_close.png', x:1.0, y:1.0, w:8.0, h:4.0 });
-slide.addImage({ data:'data:image/png;base64,iVBORwTwB[...]=', x:3.0, y:5.0, w:6.0, h:3.0 });
+slide.addImage({ path:'images/chart_world_peace_near.png', x:1.0, y:1.0, w:8.0, h:4.0 });
+slide.addImage({ data:'image/png;base64,iVtDafDrBF[...]=', x:3.0, y:5.0, w:6.0, h:3.0 });
 ```
 
 ### Image Options
-| Parameter  | Description    | Possible Values       |
-| :--------- | :------------- | :-------------------- |
-| `path`     | image path     | (path to image. can be relative like a normal html tag: img src="path")
-| `data`     | image data     | (base64-encoded string. leading 'data:' text is optional) |
-| `x`        | X location     | (inches)              |
-| `y`        | Y location     | (inches)              |
-| `w`        | image width    | (inches)              |
-| `h`        | image height   | (inches)              |
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
+| `w`          | number  | inches | `1.0`     | width               | 0-n |
+| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `data`       | string  |        |           | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
+| `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
 ### Deprecation Warning
 Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1.5, 1.5, 6.0, 3.0)`) are now deprecated as of 1.1.0
