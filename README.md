@@ -131,9 +131,9 @@ var gObjPptxMasters = {
     bkgd:       'FFFFFF',
     images:     [ { path:'images/logo_square.png', x:9.3, y:4.9, w:0.5, h:0.5 } ],
     shapes:     [
-      { type:'text', text:'ACME - Confidential', x:0, y:5.17, cx:'100%', cy:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
-      { type:'line', x:0.3, y:3.85, cx:5.7, cy:0.0, line:'007AAA' },
-      { type:'rectangle', x:0, y:0, w:'100%', h:.65, cx:5, cy:3.2, fill:'003b75' }
+      { type:'text', text:'ACME - Confidential', x:0, y:5.17, w:'100%', h:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
+      { type:'line', x:0.3, y:3.85, w:5.7, h:0.0, line:'007AAA' },
+      { type:'rectangle', x:0, y:0, w:'100%', h:.65, w:5, h:3.2, fill:'003b75' }
     ]
   },
   TITLE_SLIDE: {
@@ -251,11 +251,11 @@ slide.addText('Text Options', { x:1, y:1, font_face:'Arial', font_size:42, color
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
-slide.addText('Hello',  { x:0.5, y:0.7, cx:3, color:'0000FF', font_size:64 });
-slide.addText('World!', { x:2.7, y:1.0, cx:5, color:'DDDD00', font_size:90 });
+slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', font_size:64 });
+slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
 slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
 var objOptions = {
-    x:0.5, y:4.3, cx:'90%',
+    x:0.5, y:4.3, w:'90%',
     font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
 };
 slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
@@ -310,7 +310,7 @@ slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, font_face:'Arial'
 // TABLE 1: Simple array
 // --------
 var rows = [ 1,2,3,4,5,6,7,8,9,10 ];
-var tabOpts = { x:0.5, y:1.0, cx:9.0 };
+var tabOpts = { x:0.5, y:1.0, w:9.0 };
 var celOpts = { fill:'F7F7F7', font_size:14, color:'363636' };
 slide.addTable( rows, tabOpts, celOpts );
 
@@ -320,7 +320,7 @@ var rows = [
     ['A1', 'B1', 'C1'],
     ['A2', 'B2', 'C3']
 ];
-var tabOpts = { x:0.5, y:2.0, cx:9.0 };
+var tabOpts = { x:0.5, y:2.0, w:9.0 };
 var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
 slide.addTable( rows, tabOpts, celOpts );
 
@@ -333,7 +333,7 @@ var rows = [
         { text: 'Top Rgt', opts: { valign:'t', align:'r', font_face:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, cx:9.0 };
+var tabOpts = { x:0.5, y:4.5, w:9.0 };
 var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
 slide.addTable( rows, tabOpts, celOpts );
 
@@ -344,8 +344,10 @@ pptx.save('Demo-Tables');
 Syntax:
 ```javascript
 slide.addShape({SHAPE}, {options});
+// Shapes with text:
+slide.addText({string}, {options});
 ```
-Browse the `pptxgen.shapes.js` file for a complete list of the hundreds of PPT Shapes available.
+Browse the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerPoint shape typeds available.
 
 ### Shape Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
@@ -354,8 +356,15 @@ Browse the `pptxgen.shapes.js` file for a complete list of the hundreds of PPT S
 | `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
 | `w`          | number  | inches | `1.0`     | width               | 0-n |
 | `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
+| `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{color:'0088CC'}` |
+| `fill`       | object | | | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
 | `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
 | `flipV`      | boolean |        |           | flip Vertical       | `true` or `false` |
+| `line`       | string  |        |           | border line color   | hex color code. Ex: `{line:'0088CC'}` |
+| `line_head`  | string  |        |           | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
+| `line_size`  | number  | points |           | border line size    | 1-256. Ex: {line_size:4} |
+| `line_tail`  | string  |        |           | border line heading | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
 | `rotate`     | integer | degrees |          | rotation degrees    | 0-360. Ex: `{rotate:180}` |
 
 ### Shape Examples
@@ -364,16 +373,18 @@ var pptx = new PptxGenJS();
 pptx.setLayout('LAYOUT_WIDE');
 
 var slide = pptx.addNewSlide();
+
 // Misc Shapes
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.40, cx:5, cy:0, line:'FF0000', line_size:1 });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.80, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.20, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.60, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-slide.addShape(pptx.shapes.OVAL,      { x:4.15, y:0.75, cx:5, cy:2.0, fill:{ type:'solid', color:'0088CC', alpha:25 } });
-slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, cx:5, cy:3.2, fill:'FF0000' });
-// Add text to Shapes:
-slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
-slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.00, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.40, w:5, h:0, line:'FF0000', line_size:1 });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.80, w:5, h:0, line:'FF0000', line_size:2, line_head:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.20, w:5, h:0, line:'FF0000', line_size:3, line_tail:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.60, w:5, h:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, w:5, h:3, fill:'FF0000' });
+slide.addShape(pptx.shapes.OVAL,      { x:4.15, y:0.75, w:5, h:2, fill:{ type:'solid', color:'0088CC', alpha:25 } });
+
+// Adding text to Shapes:
+slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 });
+slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.00, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
 
 pptx.save('Demo-Shapes');
 ```
