@@ -2,18 +2,18 @@
 # PptxGenJS
 Client-side JavaScript framework that produces PowerPoint (pptx) presentations.
 
-By including the PptxGenJS framework inside an HTML page, you have the ability to quickly and
+Include the PptxGenJS framework inside an HTML page (or a node project), to gain the ability to quickly and
 easily produce PowerPoint presentations with a few simple JavaScript commands.
+
+## Main Features
 * Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings required
 * Works with all modern desktop browsers (Chrome, Edge, Firefox, IE11, Opera et al.)
 * Presentation pptx export is pushed to client browsers as a regular file without the need for any user interaction
 * Simple, feature-rich API: Supports Master Slides and all major object types (Tables, Shapes, Images and Text)
 
-Additionally, this framework includes a unique [Table-to-Slides](#table-to-slides--1-click-exports) feature that will reproduce
+## Additional Features
+This framework also includes a unique [Table-to-Slides](#table-to-slides--1-click-exports) feature that will reproduce
 an HTML Table across one or more Slides with a single command.
-
-Supported write/output formats:
-* PowerPoint 2007+ (.pptx), Open Office, and Apple Keynote
 
 **************************************************************************************************
 
@@ -23,11 +23,14 @@ Supported write/output formats:
 
 - [Demo](#demo)
 - [Installation](#installation)
+  - [Client-Side](#client-side)
+  - [NPM/Node.js](#npmnodejs)
 - [Optional Modules](#optional-modules)
 - [The Basics](#the-basics)
 - [Creating a Presentation](#creating-a-presentation)
 - [Table-to-Slides / 1-Click Exports](#table-to-slides--1-click-exports)
-  - [TIP:](#tip)
+  - [Slide Branding](#slide-branding)
+    - [ProTip](#protip)
 - [In-Depth Examples](#in-depth-examples)
   - [Table Example](#table-example)
   - [Text Example](#text-example)
@@ -36,6 +39,7 @@ Supported write/output formats:
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Slide Masters](#slide-masters)
   - [Slide Master Examples](#slide-master-examples)
+    - [ProTip](#protip-1)
   - [Slide Master Object Options](#slide-master-object-options)
   - [Sample Slide Master File](#sample-slide-master-file)
 - [Library Reference](#library-reference)
@@ -51,7 +55,9 @@ Supported write/output formats:
     - [Shape Options](#shape-options)
   - [Image](#image)
     - [Image Options](#image-options)
-  - [Performance Considerations](#performance-considerations)
+    - [Deprecation Warning](#deprecation-warning)
+- [Performance Considerations](#performance-considerations)
+  - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Bugs & Issues](#bugs-&-issues)
 - [Special Thanks](#special-thanks)
 - [License](#license)
@@ -127,6 +133,7 @@ pptx.addSlidesForTable('tabAutoPaging');
 pptx.save('Table2SlidesDemo');
 ```
 
+## Slide Branding
 What about cases where you have a specific Slide Master or Corporate layout to adhere to?  
 No problem!  
 Simply pass the Slide Master name and all shapes/text will appear on the output Slides.  Even better,
@@ -142,8 +149,8 @@ Note: Slide background color/image can be overridden on a per-slide basis when n
 var slide1 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
 ```
 
-## TIP:
-* Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
+### ProTip
+Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
 
 **************************************************************************************************
@@ -251,7 +258,7 @@ PptxGenJS allows you to define Master Slides via objects that can then be used t
 functionality.
 
 Slide Masters are defined using the same object style used in Slides. Add these objects as a variable to a file that
-is included in the script src tags on your page, then reference them by name in your code.
+is included in the script src tags on your page, then reference them by name in your code.  
 E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
 
 ## Slide Master Examples
@@ -278,12 +285,12 @@ var gObjPptxMasters = {
   }
 };
 ```  
-#### ProTip: Pre-encode Images for Performance Boost
-Pre-encode your images (base64) and add the string as the optional data key/val
-(see the `TITLE_SLIDE.images` object above)
-
 Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
 by their key names that you created (e.g.: "TITLE_SLIDE").  
+
+### ProTip
+Pre-encode your images (base64) and add the string as the optional data key/val
+(see the `TITLE_SLIDE.images` object above)
 
 ```javascript
 var pptx = new PptxGenJS();
@@ -294,7 +301,7 @@ slide1.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5
 // Here we can set a new background color or image on-the-fly
 var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC' } );
 var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd.jpg' } } );
-var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ data:'images/title_bkgd.jpg' } } );
+var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ data:'image/png;base64,tFfInmP[...]=' } } );
 
 pptx.save();
 ```
@@ -305,11 +312,11 @@ pptx.save();
 | `bkgd`       | string  |        | `ffffff` | color        | hex color code. Ex: `{ bkgd:'0088CC' }` |
 | `bkgd`       | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
 | `images`     | array   |        |          | image(s) | object array of path OR data. Ex: `{path:'img/logo.png'}` OR `{data:'image/png;base64,tFfInmP[...]'}`|
-| `isNumbered` | boolean |        | false    | Show slide numbers | `true` or `false` |
+| `isNumbered` | boolean |        | `false`  | Show slide numbers | `true` or `false` |
 | `margin`     | number  | inches | `1.0`    | Slide margin       | 0.0 through whatever |
 | `margin`     | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
 | `shapes`     | array   |        |          | shape(s)           | array of shape objects. Ex: (see [Shape](#shape) section) |
-| `title`      | string  |        |          | Sldie title        | some title |
+| `title`      | string  |        |          | Slide title        | some title |
 
 ## Sample Slide Master File
 A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
@@ -329,12 +336,12 @@ pptx.setLayout('LAYOUT_WIDE');
 ```
 
 ## Available Layouts
-| Layout Name  | Default | Description       |
-| :----------- | :-------| :---------------- |
-| LAYOUT_16x9  | Yes     | 10 x 5.625 inches |
-| LAYOUT_16x10 | No      | 10 x 6.25 inches  |
-| LAYOUT_4x3   | No      | 10 x 7.5 inches   |
-| LAYOUT_WIDE  | No      | 13.3 x 7.5 inches |
+| Layout Name    | Default  | Layout Slide Size |
+| :------------- | :------- | :---------------- |
+| `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches |
+| `LAYOUT_16x10` | No       | 10 x 6.25 inches  |
+| `LAYOUT_4x3`   | No       | 10 x 7.5 inches   |
+| `LAYOUT_WIDE`  | No       | 13.3 x 7.5 inches |
 
 ## Creating Slides
 
@@ -362,14 +369,14 @@ slide.addText('Options!', { x:1, y:1, font_face:'Arial', font_size:42, color:'00
 | :----------- | :------ | :----- | :-------- | :---------- | :--------------- |
 | `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
 | `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
-| `w`          | number  | inches | `1.0`     | width               | 0-n |
-| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `w`          | number  | inches |           | width               | 0-n |
+| `h`          | number  | inches |           | height              | 0-n |
 | `align`      | string  |        | `left`    | alignment       | `left` or `center` or `right` |
 | `autoFit`    | boolean |        | `false`   | "Fit to Shape"  | `true` or `false` |
 | `bold`       | boolean |        | `false`   | bold text       | `true` or `false` |
 | `bullet`     | boolean |        | `false`   | bullet text     | `true` or `false` |
-| `color`      | string  |        | `000000`  | text color      | hex color code. Ex: `{ color:'0088CC' }` |
-| `fill`       | string  |        | `000000`  | fill/bkgd color | hex color code. Ex: `{ color:'0088CC' }` |
+| `color`      | string  |        |           | text color      | hex color code. Ex: `{ color:'0088CC' }` |
+| `fill`       | string  |        |           | fill/bkgd color | hex color code. Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |        |           | font face       | Ex: 'Arial' |
 | `font_size`  | number  | points |           | font size       | 1-256. Ex: `{ font_size:12 }` |
 | `inset`      | number  | inches | `1.0`     | inset/padding   | 1-256. Ex: `{ inset:10 }` |
@@ -408,8 +415,8 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
 | `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
-| `w`          | number  | inches | `1.0`     | width               | 0-n |
-| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `w`          | number  | inches |           | width               | 0-n |
+| `h`          | number  | inches |           | height              | 0-n |
 | `colW`       | integer | inches |           | width for every column | Ex: Width for every column in table (uniform) `2.0` |
 | `colW`       | array   | inches |           | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
@@ -422,9 +429,9 @@ slide.addTable( rows, { x:0.5, y:4.5, cx:9.0 }, cellOpts );
 | `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
 | `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'CFCFCF'}` |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
-| `color`      | string  |        | `000000`  | text color         | hex color code. Ex: `{color:'0088CC'}` |
+| `color`      | string  |        |           | text color         | hex color code. Ex: `{color:'0088CC'}` |
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` |
-| `fill`       | string  |        | `000000`  | fill/bkgd color    | hex color code. Ex: `{color:'0088CC'}` |
+| `fill`       | string  |        |           | fill/bkgd color    | hex color code. Ex: `{color:'0088CC'}` |
 | `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
 | `font_size`  | number  | points |           | font size          | 1-256. Ex: `{ font_size:12 }` |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
@@ -475,14 +482,14 @@ slide.addImage({ data:'image/png;base64,iVtDafDrBF[...]=', x:3.0, y:5.0, w:6.0, 
 | `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
 ### Deprecation Warning
-Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1.5, 1.5, 6.0, 3.0)`) are now deprecated as of 1.1.0
+Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1, 1, 6, 3)`) are now deprecated as of 1.1.0
 
 **************************************************************************************************
-## Performance Considerations
+# Performance Considerations
 It takes time to read and encode images! The more images you include and the larger they are, the more time will be consumed.
 You will want to show a jQuery Dialog with a nice hour glass before you start creating the file.
 
-## ProTip
+## Pre-Encode Large Images
 Pre-encode images into a base64 string (eg: 'data:image/png;base64,iVBORw[...]=') and use as the `data` argument.
 This will both reduce dependencies (who needs another image asset to keep track of?) and provide a performance
 boost (no time will need to be consumed reading and encoding the image).
@@ -502,12 +509,6 @@ When reporting bugs or issues, if you could include a link to a simple jsbin or 
 **************************************************************************************************
 # License
 
-[MIT License](http://opensource.org/licenses/MIT)
+Copyright &copy; 2015-2016 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
-Copyright (c) 2015-2016 Brent Ely, [https://github.com/GitBrent/PptxGenJS](https://github.com/GitBrent/PptxGenJS)
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+[MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)
