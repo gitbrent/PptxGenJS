@@ -220,31 +220,31 @@ var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
 slide.addText('TEXT', {OPTIONS});
 
 // Example
-slide.addText('Hello World!', { x:2.5, y:3.5, color:'DDDD00', font_size:90 });
-slide.addText('Text Options', { x:1, y:1, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+slide.addText('Hello World!', { x:2, y:3, color:'DDDD00', font_size:90 });
+slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
 ```
 
 ### Text Options
-| Option       | Type    | Unit   | Default   | Description | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :---------- | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
-| `w`          | number  | inches |           | width               | 0-n |
-| `h`          | number  | inches |           | height              | 0-n |
-| `align`      | string  |        | `left`    | alignment       | `left` or `center` or `right` |
-| `autoFit`    | boolean |        | `false`   | "Fit to Shape"  | `true` or `false` |
-| `bold`       | boolean |        | `false`   | bold text       | `true` or `false` |
-| `bullet`     | boolean |        | `false`   | bulleted text   | `true` or `false` |
-| `color`      | string  |        |           | text color      | hex color code. Ex: `{ color:'0088CC' }` |
-| `fill`       | string  |        |           | fill/bkgd color | hex color code. Ex: `{ color:'0088CC' }` |
-| `font_face`  | string  |        |           | font face       | Ex: 'Arial' |
-| `font_size`  | number  | points |           | font size       | 1-256. Ex: `{ font_size:12 }` |
-| `inset`      | number  | inches |           | inset/padding   | 1-256. Ex: `{ inset:1.25 }` |
-| `isTextBox`  | boolean |        | `false`   | PPT "Textbox"   | `true` or `false` |
-| `italic`     | boolean |        | `false`   | italic text     | `true` or `false` |
-| `margin`     | number  | points |           | margin          | 1-n (ProTip: use the same value from CSS padding) |
-| `underline`  | boolean |        | `false`   | underline text  | `true` or `false` |
-| `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` |
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
+| `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
+| `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
+| `autoFit`    | boolean |        | `false`   | "Fit to Shape"      | `true` or `false` |
+| `bold`       | boolean |        | `false`   | bold text           | `true` or `false` |
+| `bullet`     | boolean |        | `false`   | bulleted text       | `true` or `false` |
+| `color`      | string  |        |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `font_face`  | string  |        |           | font face           | Ex: 'Arial' |
+| `font_size`  | number  | points |           | font size           | 1-256. Ex: `{ font_size:12 }` |
+| `inset`      | number  | inches |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
+| `isTextBox`  | boolean |        | `false`   | PPT "Textbox"       | `true` or `false` |
+| `italic`     | boolean |        | `false`   | italic text         | `true` or `false` |
+| `margin`     | number  | points |           | margin              | 1-n (ProTip: use the same value from CSS padding) |
+| `underline`  | boolean |        | `false`   | underline text      | `true` or `false` |
+| `valign`     | string  |        |           | vertical alignment  | `top` or `middle` or `bottom` |
 
 ### Text Examples
 ```javascript
@@ -274,10 +274,10 @@ slide.addTable( [rows], {tabOpts}, {cellOpts} );
 ### Table Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
-| `w`          | number  | inches |           | width               | 0-n |
-| `h`          | number  | inches |           | height              | 0-n |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
+| `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
 | `colW`       | integer | inches |           | width for every column | Ex: Width for every column in table (uniform) `2.0` |
 | `colW`       | array   | inches |           | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
@@ -288,7 +288,7 @@ slide.addTable( [rows], {tabOpts}, {cellOpts} );
 | :----------- | :------ | :----- | :-------- | :----------------- | :--------------- |
 | `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` |
 | `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
-| `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'CFCFCF'}` |
+| `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}` |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
 | `color`      | string  |        |           | text color         | hex color code. Ex: `{color:'0088CC'}` |
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` |
@@ -299,7 +299,7 @@ slide.addTable( [rows], {tabOpts}, {cellOpts} );
 | `marginPt`   | number  | points |           | margin             | 1-n (ProTip: use the same value from CSS padding) |
 | `rowspan`    | integer |        |           | row span           | 2-n. Ex: `{rowspan:2}` |
 | `underline`  | boolean |        | `false`   | underline text     | `true` or `false` |
-| `valign`     | string  |        | `left`    | vertical alignment | `top` or `middle` or `bottom` |
+| `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` |
 
 ### Table Examples
 ```javascript
@@ -352,10 +352,10 @@ Browse the `pptxgen.shapes.js` file for a complete list of the hundreds of Power
 ### Shape Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
-| `w`          | number  | inches | `1.0`     | width               | 0-n |
-| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
+| `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{color:'0088CC'}` |
 | `fill`       | object | | | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
