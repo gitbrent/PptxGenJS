@@ -666,6 +666,30 @@ pptx.save('PptxGenJs-Basic-Slide-Demo');
 				<input type="button" class="flatBtn flatBtn-green" onclick="table2slidesExtras()" value="Export Table To Slides (With Objects)">
 			</div>
 		</div>
+
+		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+			<div class="arrow"></div>ADVANCED: Sandbox
+		</div>
+		<div class="sectionBox" style="display:none">
+			<div class="code" style="text-align:left; margin-bottom:15px">
+				<div contenteditable="true">
+<pre id="adv-sandbox" class="prettyprint" style="margin:0 !important; width:auto;">
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+
+slide.addText( 'Sandbox Output', { x:0.25, y:0.15, font_size:32, color:'00FF00' });
+slide.addTable( [1,2,3,4,5,6,7] );
+
+pptx.save('PptxGenJs-Advanced-Sandbox');
+</pre>
+				</div>
+			</div>
+
+			<div style="text-align:center; padding:20px;">
+				<input type="button" class="flatBtn flatBtn-nsOrange" value="Execute Sandbox Code" onclick="eval( $('#adv-sandbox').text() )">
+			</div>
+		</div>
 	</div>
 </body>
 </html>
