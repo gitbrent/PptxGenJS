@@ -52,8 +52,8 @@ Number.isInteger = Number.isInteger || function(value) {
 
 var PptxGenJS = function(){
 	// CONSTS
-	var APP_VER = "1.1.0"; // Used for API versioning
-	var APP_REL = "20161122";
+	var APP_VER = "1.1.1"; // Used for API versioning
+	var APP_REL = "20161208";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -725,7 +725,7 @@ var PptxGenJS = function(){
 		strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
 
 		// STEP 4: Add slide numbers if selected
-		// TODO 1.0: Fixed location sucks! Place near bottom corner using slide.size !!!
+		// TODO: FIXME: This fixed-location placement sucks! Instead, location s/b bottom corner using dynamic value slide.size
 		if ( inSlide.hasSlideNumber ) {
 			strSlideXml += '<p:sp>'
 				+ '  <p:nvSpPr>'
@@ -742,7 +742,7 @@ var PptxGenJS = function(){
 				+ '</p:sp>';
 		}
 
-		// STEP 5: Loop over all Slide objects and add them to this slide:
+		// STEP 5: Loop over all Slide objects and add them to this slide ===============================
 		$.each(objSlideData, function(idx,slideObj){
 			var x = 0, y = 0, cx = (EMU*10), cy = 0;
 			var moreStyles = '', moreStylesAttr = '', outStyles = '', styleData = '', locationAttr = '';
@@ -767,7 +767,7 @@ var PptxGenJS = function(){
 				}
 			}
 
-			// B: Create this particular object on Slide
+			// B: Add TABLE / TEXT / IMAGE to current Slide ----------------------------
 			switch ( slideObj.type ) {
 				case 'table':
 					var arrRowspanCells = [];
@@ -797,7 +797,7 @@ var PptxGenJS = function(){
 							+ '      <a:tbl>'
 							+ '        <a:tblPr/>';
 							// + '        <a:tblPr bandRow="1"/>';
-					// TODO 1.5: Support banded rows, first/last row, etc.
+					// TODO: FUTURE: Support banded rows, first/last row, etc.
 					// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
 					// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
 
@@ -807,14 +807,14 @@ var PptxGenJS = function(){
 					if ( Array.isArray(objTabOpts.colW) ) {
 						strXml += '<a:tblGrid>';
 						for ( var col=0; col<intColCnt; col++ ) {
-							strXml += '  <a:gridCol w="'+ (objTabOpts.colW[col] || (slideObj.options.cx/intColCnt)) +'"/>';
+							strXml += '  <a:gridCol w="'+ Math.round(objTabOpts.colW[col] || (slideObj.options.cx/intColCnt)) +'"/>';
 						}
 						strXml += '</a:tblGrid>';
 					}
 					// B: Table Width provided without colW? Then distribute cols
 					else {
-						intColW = (objTabOpts.colW) ? objTabOpts.colW : EMU;
-						if ( slideObj.options.cx && !objTabOpts.colW ) intColW = ( slideObj.options.cx / intColCnt );
+						intColW = ( objTabOpts.colW ? objTabOpts.colW : EMU );
+						if ( slideObj.options.cx && !objTabOpts.colW ) intColW = Math.round( slideObj.options.cx / intColCnt ); // FIX: Issue#12
 						strXml += '<a:tblGrid>';
 						for ( var col=0; col<intColCnt; col++ ) { strXml += '<a:gridCol w="'+ intColW +'"/>'; }
 						strXml += '</a:tblGrid>';
@@ -1344,12 +1344,12 @@ var PptxGenJS = function(){
 	/* ===============================================================================================
 	|
 	######                                             #     ######   ###
-    #     #  #    #  #####   #       #   ####         # #    #     #   #
-    #     #  #    #  #    #  #       #  #    #       #   #   #     #   #
-    ######   #    #  #####   #       #  #           #     #  ######    #
-    #        #    #  #    #  #       #  #           #######  #         #
-    #        #    #  #    #  #       #  #    #      #     #  #         #
-    #         ####   #####   ######  #   ####       #     #  #        ###
+	#     #  #    #  #####   #       #   ####         # #    #     #   #
+	#     #  #    #  #    #  #       #  #    #       #   #   #     #   #
+	######   #    #  #####   #       #  #           #     #  ######    #
+	#        #    #  #    #  #       #  #           #######  #         #
+	#        #    #  #    #  #       #  #    #      #     #  #         #
+	#         ####   #####   ######  #   ####       #     #  #        ###
 	|
 	==================================================================================================
 	*/
