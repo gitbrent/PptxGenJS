@@ -481,9 +481,10 @@ boost (no time will need to be consumed reading and encoding the image).
 **************************************************************************************************
 # Issues / Suggestions
 
-Please file issues or suggestions on the [issues page on github](https://github.com/gitbrent/PptxGenJS/issues/new), or even better, [submit a pull request](https://github.com/gitbrent/PptxGenJS/pulls)!
+Please file issues or suggestions on the [issues page on github](https://github.com/gitbrent/PptxGenJS/issues/new), or even better, [submit a pull request](https://github.com/gitbrent/PptxGenJS/pulls). Feedback is always welcome!
 
-When reporting bugs or issues, if you could include a link to a jsFiddle demonstrating the issue, that'd be really helpful!
+When reporting issues, please include a code snippet or a link demonstrating the problem.
+Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is already configured and uses the latest PptxGenJS code.
 
 **************************************************************************************************
 # Special Thanks

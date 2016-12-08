@@ -532,7 +532,7 @@ var PptxGenJS = function(){
 		var internalElements = '';
 		var outText = '';
 
-		if ( back_info ) {
+		if ( back_info && typeof back_info === 'string' ) {
 			outText += '<p:bg><p:bgPr>';
 			outText += genXmlColorSelection( back_info.replace('#',''), false );
 			outText += '<a:effectLst/>';

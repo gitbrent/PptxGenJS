@@ -71,10 +71,12 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			if ( $('#inclCorp1').prop('checked') ) {
 				var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
 				var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
+				var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
 			}
 			if ( $('#inclCorp2').prop('checked') ) {
-				var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
-				var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
+				var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+				var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
+				var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
 			}
 
 			// LAST: Export Presentation
@@ -589,7 +591,7 @@ pptx.save('PptxGenJs-Basic-Slide-Demo');
 		<div class="sectionBox" style="display:none">
 			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
 				<fieldset style="height:auto">
-			    	<legend><label for="inclCorp1"><input id="inclCorp1" type="checkbox" checked="checked"> Table Slide</label></legend>
+			    	<legend><label for="inclCorp1"><input id="inclCorp1" type="checkbox" checked="checked"> As Defined</label></legend>
 					<h3>Slide 1</h3>
 					<div class="divTable">
 						<div>
@@ -604,23 +606,37 @@ pptx.save('PptxGenJs-Basic-Slide-Demo');
 							<div><label>pptx.masters.MASTER_SLIDE</label></div>
 						</div>
 					</div>
+					<h3>Slide 3</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.THANKS_SLIDE</label></div>
+						</div>
+					</div>
 				</fieldset>
 			</div>
 			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
 				<fieldset style="height:auto">
-			    	<legend><label for="inclCorp2"><input id="inclCorp2" type="checkbox"> Table Slide</label></legend>
-					<h3>Slide 3</h3>
+			    	<legend><label for="inclCorp2"><input id="inclCorp2" type="checkbox"> Options Overidden</label></legend>
+					<h3>Slide 4</h3>
 					<div class="divTable">
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
 							<div><label>pptx.masters.MASTER_SLIDE with background color override</label></div>
 						</div>
 					</div>
-					<h3>Slide 4</h3>
+					<h3>Slide 5</h3>
 					<div class="divTable">
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
 							<div><label>pptx.masters.MASTER_SLIDE with background image override</label></div>
+						</div>
+					</div>
+					<h3>Slide 6</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.THANKS_SLIDE with background color override</label></div>
 						</div>
 					</div>
 				</fieldset>
