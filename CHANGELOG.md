@@ -1,10 +1,22 @@
 # Change Log
 
-## [v1.1.0](https://github.com/gitbrent/pptxgenjs/tree/v1.0.0) (2016-11-22)
+## [v1.1.1](https://github.com/gitbrent/pptxgenjs/tree/v1.1.1) (2016-12-08)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.0...v1.1.1)
+
+**Implemented Enhancements:**
+- Major documentation update
+- Added instructions to `pptxgenjs.masters.js` file, plus more examples and code
+- Added sandbox/ad-hoc code area to demo page
+
+**Fixed Bugs:**
+- Table with 7 columns generates an invalid pptx file [\#12](https://github.com/gitbrent/PptxGenJS/issues/12) ([rikvdk](https://github.com/rikvdk))
+
+## [v1.1.0](https://github.com/gitbrent/pptxgenjs/tree/v1.1.0) (2016-11-22)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.0.1...v1.1.0)
 
 **Implemented Enhancements:**
 - Added support for base64-encoded images
+- Adding npm dependencies [\#4](https://github.com/gitbrent/PptxGenJS/pull/1) ([DzmitryDulko](https://github.com/DzmitryDulko))
 - Added support for italic text [\#6](https://github.com/gitbrent/PptxGenJS/issues/6) ([stevenljacobsen](https://github.com/stevenljacobsen))
 - Added ability to selectively override Master Slide background color/image [\#7](https://github.com/gitbrent/PptxGenJS/issues/7) ([stevenljacobsen](https://github.com/stevenljacobsen))
 - How can customize pptx theme? [\#9](https://github.com/gitbrent/PptxGenJS/issues/9) ([ielijose](https://github.com/ielijose))
@@ -14,7 +26,7 @@
 **Fixed Bugs:**
 - Fix repo URL in package.json [\#5](https://github.com/gitbrent/PptxGenJS/pull/5) ([pdehaan](https://github.com/pdehaan))
 
-## [v1.0.1](https://github.com/gitbrent/pptxgenjs/tree/v1.0.0) (2016-09-03)
+## [v1.0.1](https://github.com/gitbrent/pptxgenjs/tree/v1.0.1) (2016-09-03)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.0.0...v1.0.1)
 
 **Implemented enhancements:**
