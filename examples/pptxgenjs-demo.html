@@ -3,19 +3,22 @@
 <head>
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta name="author" content="https://github.com/gitbrent">
+	<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
 	<link type="text/css" rel="stylesheet" href="style.css">
 	<!-- NOTE:
-		Run Chrome from the terminal to allow reading local image files (not from a web server)
+		Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
 		$ open -a 'Google Chrome' --args --allow-file-access-from-files &
 		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
  	-->
 
-	<script type="text/javascript" src="../libs/jquery.min.js"></script>
-	<script type="text/javascript" src="../libs/filesaver.min.js"></script>
-	<script type="text/javascript" src="../libs/jszip.min.js"></script>
-	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>
-	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script>
-	<script type="text/javascript" src="../dist/pptxgen.js"></script>
+	<script type="text/javascript" src="./libs/jquery.min.js"></script>
+	<script type="text/javascript" src="./libs/filesaver.min.js"></script>
+	<script type="text/javascript" src="./libs/jszip.min.js"></script>
+	<script type="text/javascript" src="./dist/pptxgen.shapes.js"></script>
+	<script type="text/javascript" src="./dist/pptxgen.masters.js"></script>
+	<script type="text/javascript" src="../lib/pptxgen.js"></script>
+	<!-- Google Code Prettify -->
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 
 	<script type="text/javascript">
 		var CUST_NAME = 'ACME Corp Weekly Report';
@@ -33,9 +36,11 @@
 Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus.\
 Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus.\
 Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.\
-Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra.';
+Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra\
+.';
 		var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Kim','Ann','Lacey','Jenny','Linda','Kathryn'];
 		var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
+		var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE';
 		var colors = ['FF0000','AB00CD','00FF00','00AA00','003300','330033','990099','33FFFF','AA33CC','336699'];
 		var fonts = ['Arial','Courier New','Times','Verdana'];
 
@@ -45,16 +50,33 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			var pptx = new PptxGenJS();
 			var slide = pptx.addNewSlide();
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+
 			slide.addTable( [ [{ text:'Simple Example', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 			slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
+			// Bullet Test: Number
+			slide.addText(999, { x:0.5, y:2.0, w:'50%', h:1, color:'0000DE', bullet:true });
+			// Bullet Test: Text test
+			slide.addText('Bullet text', { x:0.5, y:2.5, w:'50%', h:1, color:'00AA00', bullet:true });
+			// Bullet Test: Multi-line text test
+			slide.addText('Line 1\nLine 2\nLine 3', { x:0.5, y:3.5, w:'50%', h:1, color:'AACD00', bullet:true });
+
+			// Export:
 			pptx.save('Sample Presentation');
 		}
 
 		function doCorpPresTest() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
-			var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
-			var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
+
+			if ( $('#inclCorp1').prop('checked') ) {
+				var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
+				var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
+			}
+			if ( $('#inclCorp2').prop('checked') ) {
+				var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+				var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
+			}
+
 			// LAST: Export Presentation
 			pptx.save();
 		}
@@ -129,17 +151,13 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 		}
 
 		function doGenPptFile() {
-			// =======
 			// REALITY-CHECK: Ensure user has a modern browser
-			// =======
 			if ( typeof PptxGenJS === 'undefined' || !window.Blob ) {
 				alert("Unsupported Browser\n\nSorry, but you'll need a modern browser (IE10+/Chrome/Firefox) to enable this feature.");
 				return;
 			}
 
-			// =======
 			// STEP 1: Instantiate new PptxGenJS object
-			// =======
 			var pptx = new PptxGenJS();
 			// A: Presentation Title
 			pptx.setTitle('PptxGenJS Sample Export');
@@ -150,9 +168,8 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 			var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
 
-			// =======
 			// STEP 2: Create selected slides
-			// =======
+
 			// A: TABLE slide ------------------------------------------------------------------------------
 			if ( document.getElementById('inclTable').checked ) {
 				// ======== -----------------------------------------------------------------------------------
@@ -306,6 +323,13 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 					);
 				});
 
+				// Bullet Test: Number
+				slide.addText(999, { x:9.0, y:0.8, w:'20%', h:1, color:'0000DE', bullet:true });
+				// Bullet Test: Text test
+				slide.addText('Bullet text (int above)', { x:9.0, y:1.5, w:'30%', h:1, color:'00AA00', bullet:true });
+				// Bullet Test: Multi-line text test
+				slide.addText('Line 1\nLine 2\nLine 3', { x:9.0, y:2.5, w:'30%', h:1, color:'AACD00', bullet:true });
+
 				// ======== -----------------------------------------------------------------------------------
 				// SLIDE 2: Misc mess
 				// ======== -----------------------------------------------------------------------------------
@@ -338,9 +362,9 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 
 				var objOptions = {
 					x:0.5, y:5.5, cx:'90%',
-					font_face:'Arial', font_size:42, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
+					font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true, margin:0, isTextBox:true
 				};
-				slide.addText('Arial, 42pt, green, bold, underline, 0 inset', objOptions);
+				slide.addText('Arial (42pt, green, bold, italic, underline), [0 inset]', objOptions);
 
 				slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
 					{ x:0, y:6.5, cx:'100%', cy:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
@@ -388,11 +412,21 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				var slide = pptx.addNewSlide();
 				slide.addTable( [ [{ text:'Image Examples: Misc Image Types', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
-				slide.addImage('images/cc_copyremix.gif',          0.5, 0.75, 2.35, 2.45 );
+				// Add an image using basic syntax
+				slide.addImage({ path:'images/cc_copyremix.gif',          x:0.5, y:0.75, w:2.35, h:2.45 });
 				// Slide API calls return the same slide, so you can chain calls:
-				slide.addImage('images/cc_license_comp_chart.png', 6.6, 0.75, 6.30, 3.70 )
-				     .addImage('images/cc_logo.jpg',               0.5, 3.50, 5.00, 3.70 )
-				     .addImage('images/cc_symbols_trans.png',      6.6, 4.80, 6.30, 2.30 );
+				slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30, h:3.70 })
+				     .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
+				     .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
+
+				// 2: Images can be pre-encoded into base64, so they do not have to be on the webserver etc. (saves generation time and resources!)
+				slide.addImage({ x:3.0, y:0.8, w:0.5, h:0.5, data:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
+				// NOTE: The 'data:' part of the encoded string is optional:
+				slide.addImage({ x:3.7, y:1.3, w:0.6, h:0.6, data:'image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
+				// TEST: Ensure framework corrects for missing type header
+				slide.addImage({ x:4.4, y:1.9, w:0.7, h:0.7, data:'base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
+				// TEST: Ensure framework corrects for missing all header
+				slide.addImage({ x:5.2, y:2.6, w:0.8, h:0.8, data:'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
 			}
 
 			// LAST: Export Presentation
@@ -415,18 +449,39 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Misc
+			<div class="arrow active"></div>DEMO: Basic Slide
 		</div>
 		<div class="sectionBox" style="display:block; padding:15px;">
-			<input type="button" class="flatBtn flatBtn-nsOrange" style="width:25%; margin-right:20px;" value="Corporate Masters Test" onclick="doCorpPresTest()">
-			<input type="button" class="flatBtn flatBtn-nsPurple" style="width:25%; padding:8px 40px;" value="Simple Test" onclick="doSimpleTest()">
+			<div class="code" style="text-align:left; margin-bottom:15px">
+<pre id="demo-basic" class="prettyprint">
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+var options = { font_size:16, color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+
+slide.addTable( [[{text:gStrHello, opts:options}]], { x:0.43, y:0.13, w:9.0 } );
+slide.addText($('#demo-basic-text').val(), { x:1.0, y:1.0, font_size:42, color:'00FF00' });
+
+pptx.save('PptxGenJs-Basic-Slide-Demo');
+</pre>
+			</div>
+			<div class="table" style="padding:0 15px">
+				<div style="width:5%; text-align:left;">
+					<span style="white-space:nowrap; margin-right:5px; font-size:16px">Slide Text:</span>
+				</div>
+				<div style="width:94%; text-align:left;">
+					<input id="demo-basic-text" type="text" value="Hello World!" style="width:95%; font-size:16px">
+				</div>
+				<div style="width:1%">
+					<input type="button" class="flatBtn flatBtn-blueMd" value="Basic Slide Demo" onclick="eval( $('#demo-basic').text() )">
+				</div>
+			</div>
 		</div>
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Object Types
+			<div class="arrow"></div>DEMO: Object Types
 		</div>
-		<div class="sectionBox" style="display:block">
+		<div class="sectionBox" style="display:none">
 			<div class="formBox">
 				<fieldset>
 			    	<legend><label for="inclTable"><input id="inclTable" type="checkbox"> Table Slide</label></legend>
@@ -442,7 +497,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 						</div>
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Row/Col Heights/Widths</label></div>
+							<div><label>Row H / Col W</label></div>
 						</div>
 					</div>
 					<h3>Slide 2</h3>
@@ -468,12 +523,16 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
 							<div><label>Font Face/Color in 12-60pt Sizes</label></div>
 						</div>
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>Bullets: Number, text and multi-line</label></div>
+						</div>
 					</div>
 					<h3>Slide 2</h3>
 					<div class="divTable">
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Colors and Alignments</label></div>
+							<div><label>Text Formatting, Colors and Alignments</label></div>
 						</div>
 					</div>
 				</fieldset>
@@ -506,7 +565,11 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 					<div class="divTable">
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Misc Image Types</label></div>
+							<div><label>4 Image Types using Src</label></div>
+						</div>
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>4 Images pre-encoded using data:[base64]</label></div>
 						</div>
 					</div>
 				</fieldset>
@@ -516,6 +579,54 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				<input type="button" class="flatBtn flatBtn-green"  style="margin-right:20px; width:40%" onclick="doGenPptFile()" value="Generate Sample PowerPoint">
 				<input type="button" class="flatBtn flatBtn-blueMd" style="margin-right:20px;" value="Check All"
 					onclick="$(this).parents('.sectionBox').find('.formBox input[type=\'checkbox\']').prop('checked',!$(this).attr('checked'));">
+			</div>
+		</div>
+
+		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+			<div class="arrow"></div>DEMO: Slide Masters (Using Corporate Slide Designs)
+		</div>
+		<div class="sectionBox" style="display:none">
+			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
+				<fieldset style="height:auto">
+			    	<legend><label for="inclCorp1"><input id="inclCorp1" type="checkbox" checked="checked"> Table Slide</label></legend>
+					<h3>Slide 1</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.TITLE_SLIDE</label></div>
+						</div>
+					</div>
+					<h3>Slide 2</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.MASTER_SLIDE</label></div>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
+				<fieldset style="height:auto">
+			    	<legend><label for="inclCorp2"><input id="inclCorp2" type="checkbox"> Table Slide</label></legend>
+					<h3>Slide 3</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.MASTER_SLIDE with background color override</label></div>
+						</div>
+					</div>
+					<h3>Slide 4</h3>
+					<div class="divTable">
+						<div>
+							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+							<div><label>pptx.masters.MASTER_SLIDE with background image override</label></div>
+						</div>
+					</div>
+				</fieldset>
+			</div>
+			<div id="buttonBarBtm" style="clear:both">
+				<input type="button" class="flatBtn flatBtn-nsPurple" value="Corporate Masters Test" onclick="doCorpPresTest()">
 			</div>
 		</div>
 

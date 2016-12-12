@@ -96,7 +96,7 @@ h3 {
 fieldset {
     border: 1px dotted #aaa;
     background: #f9f9f9;
-    height: 200px;
+    height: 220px;
 }
 fieldset legend {
     font-size: 14px;
@@ -149,3 +149,9 @@ div.divTable > div > div:first-child { vertical-align: top; white-space: nowrap;
 div.divTable input[type="number"], div.divTable input[type="text"] { width: 100%; }
 
 #console { text-align:left; font-size:12px; font-family:'Courier New', Courier, monospace; color:limegreen; background: #060606; }
+
+.prettyprint {
+    margin: 2px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 14px;
+}
