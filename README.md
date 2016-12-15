@@ -51,8 +51,10 @@ an HTML Table across one or more Slides with a single command.
     - [Image Options](#image-options)
     - [Image Examples](#image-examples)
 - [Table-to-Slides Feature](#table-to-slides-feature)
-  - [Table-to-Slides Master Pages and Branding](#table-to-slides-master-pages-and-branding)
-    - [ProTip](#protip-1)
+  - [Master Pages and Branding](#master-pages-and-branding)
+  - [Override Slide Master Settings](#override-slide-master-settings)
+  - [One-Line Presentation Exports](#one-line-presentation-exports)
+    - [Easy SharePoint Integration](#easy-sharepoint-integration)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
@@ -359,7 +361,7 @@ Browse the `pptxgen.shapes.js` file for a complete list of the hundreds of Power
 | `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{color:'0088CC'}` |
-| `fill`       | object | | | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
+| `fill`       | object |   |   | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
 | `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
 | `flipV`      | boolean |        |           | flip Vertical       | `true` or `false` |
 | `line`       | string  |        |           | border line color   | hex color code. Ex: `{line:'0088CC'}` |
@@ -433,6 +435,7 @@ pptx.save('Demo-Images');
 colors, borders, fonts, padding, etc. - with a single line of code.
 * The function will detect margins (based on Master Slide layout or parameters) and will create Slides as needed
 * All you have to do is pass the table element ID to `addSlidesForTable()` and you're done!
+* NOTE: Nested tables are not currently supported
 
 ```javascript
 // STEP 1: Instantiate new PptxGenJS instance
@@ -448,23 +451,26 @@ pptx.addSlidesForTable('tabAutoPaging');
 pptx.save('Table2SlidesDemo');
 ```
 
-## Table-to-Slides Master Pages and Branding
-What about cases where you have a specific Slide Master or Corporate layout to adhere to?  
-No problem!  
-Simply pass the Slide Master name and all shapes/text will appear on the output Slides.  Even better,
-your slide layout/size and margins are already defined as well, so you end up with code you can just inline
-into a button and place next to any table on your site.
+## Master Pages and Branding
+Do you need to have the generated slides use a Slide Master or Corporate?  
+Just pass the Slide Master name to use (you can also add shapes/text on-the-fly as well).
+
+## Override Slide Master Settings
+The Master Slide background color/image can be selectively overridden on a per-slide basis when needed,
+so it's easy to handle exceptions where users want things like the first slide to have a white background, etc.
+```javascript
+var slide1 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+```
+
+## One-Line Presentation Exports
+Your Slide Master should already contain slide layout, size & margins. Meaning, the code to produce
+professional looking slides is so small that you can just inline it into a button and place next to any table on your site:
 
 ```javascript
 <input type="button" value="Export to PPTX" onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
 
-**Note**: Slide background color/image can be overridden on a per-slide basis when needed.
-```javascript
-var slide1 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
-```
-
-### ProTip
+### Easy SharePoint Integration
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
 
