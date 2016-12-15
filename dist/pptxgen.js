@@ -1,7 +1,7 @@
 /*\
 |*|  :: pptxgen.js ::
 |*|
-|*|  A complete JavaScript PowerPoint presentation creator framework for client browsers.
+|*|  JavaScript framework that creates PowerPoint (pptx) presentations
 |*|  https://github.com/gitbrent/PptxGenJS
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
@@ -9,7 +9,7 @@
 |*|  PptxGenJS (C) 2015-2016 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
-|*|  github.com/Ziv-Barber/officegen/ (copyright 2013 Ziv Barber)
+|*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
 |*|
 |*|  Permission is hereby granted, free of charge, to any person obtaining a copy
 |*|  of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,9 @@
 	|
 	REFS:
 	* "Structure of a PresentationML document (Open XML SDK)"
-	* SEE: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
+	* @see: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
 	* TableStyleId enumeration
-	* SEE: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
+	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
 // POLYFILL (SEE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
@@ -51,9 +51,9 @@ Number.isInteger = Number.isInteger || function(value) {
 };
 
 var PptxGenJS = function(){
-	// CONSTS
-	var APP_VER = "1.1.1"; // Used for API versioning
-	var APP_REL = "20161208";
+	// CONSTANTS
+	var APP_VER = "1.1.2"; // Used for API versioning
+	var APP_REL = "20161215";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -1676,7 +1676,7 @@ var PptxGenJS = function(){
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * "Auto-Paging is the future!" --Elon Musk
 	 * @param {string} tabEleId - The HTML Element ID of the table
-	 * @param {Array} opts - An array of options (e.g.: tabsize)
+	 * @param {array} inOpts - An array of options (e.g.: tabsize)
 	 */
 	this.addSlidesForTable = function addSlidesForTable(tabEleId,inOpts) {
 		var api = this;
@@ -1703,8 +1703,8 @@ var PptxGenJS = function(){
 
 		// STEP 1: Grab overall table style/col widths
 		$.each(['thead','tbody','tfoot'], function(i,val){
-			if ( $('#'+tabEleId+' '+val+' tr').length > 0 ) {
-				$('#'+tabEleId+' '+val+' tr:first-child').find('th, td').each(function(i,cell){
+			if ( $('#'+tabEleId+' > '+val+' > tr').length > 0 ) {
+				$('#'+tabEleId+' > '+val+' > tr:first-child').find('> th, > td').each(function(i,cell){
 					// TODO 1.5: This is a hack - guessing at col widths when colspan
 					if ( $(this).attr('colspan') ) {
 						for (var idx=0; idx<$(this).attr('colspan'); idx++ ) {
@@ -1730,21 +1730,21 @@ var PptxGenJS = function(){
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
 		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
 		$.each(['thead','tbody','tfoot'], function(i,val){
-			$('#'+tabEleId+' '+val+' tr').each(function(i,row){
+			$('#'+tabEleId+' > '+val+' > tr').each(function(i,row){
 				var arrObjTabCells = [];
-				$(row).find('th, td').each(function(i,cell){
-					// A: Covert colors to Hex from RGB
+				$(row).find('> th, > td').each(function(i,cell){
+					// A: Covert colors from RGB to Hex
 					var arrRGB1 = [];
 					var arrRGB2 = [];
-					arrRGB1 = $(cell).css('color').replace(/\s+/gi,'').replace('rgb(','').replace(')','').split(',');
-					arrRGB2 = $(cell).css('background-color').replace(/\s+/gi,'').replace('rgb(','').replace(')','').split(',');
+					arrRGB1 = $(cell).css('color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
+					arrRGB2 = $(cell).css('background-color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
 
 					// B: Create option object
 					var objOpts = {
 						font_size: $(cell).css('font-size').replace(/\D/gi,''),
-						bold:       (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
-						color:      rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
-						fill:       rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
+						bold:      (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
+						color:     rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
+						fill:      rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
 					};
 					if ( $.inArray($(cell).css('text-align'), ['left','center','right','start','end']) > -1 ) objOpts.align = $(cell).css('text-align').replace('start','left').replace('end','right');
 					if ( $.inArray($(cell).css('vertical-align'), ['top','middle','bottom']) > -1 ) objOpts.valign = $(cell).css('vertical-align');
@@ -1774,12 +1774,12 @@ var PptxGenJS = function(){
 					}
 
 					// F: Massage cell text so we honor linebreak tag as a line break during line parsing
-					var $cell = $(cell).clone();
-					$cell.html( $(cell).html().replace(/<br[^>]*>/gi,'\n') );
+					var $cell2 = $(cell).clone();
+					$cell2.html( $(cell).html().replace(/<br[^>]*>/gi,'\n') );
 
 					// LAST: Add cell
 					arrObjTabCells.push({
-						text: $cell.text(),
+						text: $.trim( $cell2.text() ),
 						opts: objOpts
 					});
 				});
@@ -1805,7 +1805,7 @@ var PptxGenJS = function(){
 					currRow.push({ text:'', opts:cell.opts });
 
 					// 2: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
-					var lines = parseTextToLines(cell.text, cell.opts.font_size, (arrColW[iCell]/ONEPT));
+					var lines = parseTextToLines($.trim(cell.text), cell.opts.font_size, (arrColW[iCell]/ONEPT));
 					arrCellsLines.push( lines );
 
 					// 3: Keep track of max line count within all row cells
