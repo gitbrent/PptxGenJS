@@ -7,7 +7,7 @@ ability to quickly and easily produce PowerPoint presentations with a few simple
 
 ## Main Features
 * Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings required
-* Works with all modern desktop browsers (Chrome, Edge, Firefox, IE11, Opera et al.)
+* Works with all recent desktop browsers (Chrome, Edge, Firefox, IE11, Opera et al.)
 * Presentation pptx export is pushed to client browsers as a regular file without the need for any user interaction
 * Simple, feature-rich API: Supports Master Slides and all major object types (Tables, Shapes, Images and Text)
 
@@ -452,7 +452,7 @@ pptx.save('Table2SlidesDemo');
 ```
 
 ## Master Pages and Branding
-Do you need to have the generated slides use a Slide Master or Corporate?  
+Do you need to have the generated slides use a Slide Master or corporate branding?  
 Just pass the Slide Master name to use (you can also add shapes/text on-the-fly as well).
 
 ## Override Slide Master Settings
@@ -476,11 +476,11 @@ to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or 
 
 **************************************************************************************************
 # Performance Considerations
-It takes time to read and encode images! The more images you include and the larger they are, the more time will be consumed.
-You will want to show a jQuery Dialog with a nice hour glass before you start creating the file.
+It takes CPU time to read and encode images! The more images you include and the larger they are, the more time will be consumed.
+The time needed to read/encode images can be completely eliminated by pre-encoding any images (see below).
 
 ## Pre-Encode Large Images
-Pre-encode images into a base64 string (eg: 'data:image/png;base64,iVBORw[...]=') and use as the `data` argument.
+Pre-encode images into a base64 string (eg: 'image/png;base64,iVBORw[...]=') for use as the `data` option value.
 This will both reduce dependencies (who needs another image asset to keep track of?) and provide a performance
 boost (no time will need to be consumed reading and encoding the image).
 
