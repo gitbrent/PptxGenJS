@@ -22,7 +22,8 @@ export default class ExportPptx {
     constructor() {
 
         this.gObjPptx = Slide.gObjPptx;
-        this.zip = new JSZip();
+        //this.zip = new JSZip();
+        this.zip = new com.sap.powerdesigner.web.galilei.common.util.Zip.create();
         this.intSlideNum = 0;
         this.intRels = 0;
     }
@@ -97,7 +98,8 @@ export default class ExportPptx {
         this.zip.generateAsync( {
             type: "blob"
         } ).then( function( content ) {
-            saveAs( content, strExportName );
+            //saveAs( content, strExportName );
+            sap.galilei.ui.common.FileManager.saveAs( content, strExportName );
             Slide.gObjPptx.slides = [];
         });
 
