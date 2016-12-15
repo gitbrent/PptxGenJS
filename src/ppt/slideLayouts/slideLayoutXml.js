@@ -1,6 +1,8 @@
 export default function makeXmlSlideLayout() {
-  var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n',
-      SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
+  let strXml;
+  const SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
+
+  strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n';
   strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" type="title" preserve="1">\r\n'
       + '<p:cSld name="Title Slide">'
       + '<p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'

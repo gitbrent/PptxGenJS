@@ -1,10 +1,11 @@
 import BaseGroup from './baseGroup';
 import { inch2Emu } from '../utils/helpers';
+import Slide from '../slide.js';
 
 export default class SlideGroup extends BaseGroup {
-    constructor(gObjPptx) {
+    constructor() {
         super();
-        this.allShapes = gObjPptx.slides;
+        this.allShapes = Slide.gObjPptx.slides;
     }
 
     set groupStart(sGroupStart){
@@ -73,21 +74,26 @@ export default class SlideGroup extends BaseGroup {
               })
           }
       }
-      this.groupStart = `<p:grpSp>
-                              <p:nvGrpSpPr>
-                                <p:cNvPr id="${this.wrapperGroupCoordinate.id}" name="${this.wrapperGroupCoordinate.name}"/>
-                                <p:cNvGrpSpPr/>
-                                <p:nvPr/>
-                              </p:nvGrpSpPr>
-                              <p:grpSpPr>
-                              <a:xfrm>
-                              <a:off x="${inch2Emu(this.wrapperGroupCoordinate.x)}"  y="${inch2Emu(this.wrapperGroupCoordinate.y)}"/>
-                              <a:ext cx="${inch2Emu(this.wrapperGroupCoordinate.cx)}" cy="${inch2Emu(this.wrapperGroupCoordinate.cy)}" />
-                              <a:chOff x="${inch2Emu(this.wrapperGroupCoordinate.x)}"  y="${inch2Emu(this.wrapperGroupCoordinate.y)}" />
-                              <a:chExt cx="${inch2Emu(this.wrapperGroupCoordinate.cx)}" cy="${inch2Emu(this.wrapperGroupCoordinate.cy)}" />
-                              </a:xfrm>
-                              </p:grpSpPr>`;
-      this.groupEnd = '</p:grpSp>';
+      let sStart = [
+          `<p:grpSp>`,
+          ` <p:nvGrpSpPr>`,
+          ` <p:cNvPr id="${this.wrapperGroupCoordinate.id}" name="${this.wrapperGroupCoordinate.name}"/>`,
+          `<p:cNvGrpSpPr/>`,
+          `<p:nvPr/>`,
+          `</p:nvGrpSpPr>`,
+          `<p:grpSpPr>`,
+          `<a:xfrm>`,
+          `<a:off x="${inch2Emu(this.wrapperGroupCoordinate.x)}"  y="${inch2Emu(this.wrapperGroupCoordinate.y)}"/>`,
+          `<a:ext cx="${inch2Emu(this.wrapperGroupCoordinate.cx)}" cy="${inch2Emu(this.wrapperGroupCoordinate.cy)}"/>`,
+          `<a:chOff x="${inch2Emu(this.wrapperGroupCoordinate.x)}"  y="${inch2Emu(this.wrapperGroupCoordinate.y)}" />`,
+          `<a:chExt cx="${inch2Emu(this.wrapperGroupCoordinate.cx)}" cy="${inch2Emu(this.wrapperGroupCoordinate.cy)}"/>`,
+          `</a:xfrm>`,
+          `</p:grpSpPr>`
+      ];
+        this.groupStart = sStart.join('')
+        this.groupEnd = '</p:grpSp>';
+        this.id++;
+        return this;
     }
 
 }

@@ -8,8 +8,7 @@
   },
   "scripts": {
     "dev": "webpack --progress --colors --watch",
-    "build": "webpack --progress --colors",
-    "prod": "webpack --config webpack.config.sap --progress --colors -p",
+    "build": "webpack --progress --colors -p",
     "test": "mocha --compilers js:babel-core/register -w"
   },
   "repository": {

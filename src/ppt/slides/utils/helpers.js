@@ -130,7 +130,7 @@ export function getShapeInfo(shapeName) {
     return gObjPptxShapes.RECTANGLE;
 }
 
-export function getSmartParseNumber(inVal, inDir, gObjPptx) {
+export function getSmartParseNumber(inVal, inDir) {
     // FIRST: Convert string numeric value if reqd
     if (typeof inVal == 'string' && !isNaN(Number(inVal))) inVal = Number(inVal);
 
@@ -144,10 +144,10 @@ export function getSmartParseNumber(inVal, inDir, gObjPptx) {
 
     // CASE 3: Percentage (ex: '50%')
     if (typeof inVal == 'string' && inVal.indexOf('%') > -1) {
-        if (inDir && inDir == 'X') return Math.round((parseInt(inVal, 10) / 100) * gObjPptx.pptLayout.width);
-        if (inDir && inDir == 'Y') return Math.round((parseInt(inVal, 10) / 100) * gObjPptx.pptLayout.height);
+        if (inDir && inDir == 'X') return Math.round((parseInt(inVal, 10) / 100) * Slide.gObjPptx.pptLayout.width);
+        if (inDir && inDir == 'Y') return Math.round((parseInt(inVal, 10) / 100) * Slide.gObjPptx.pptLayout.height);
         // Default: Assume width (x/cx)
-        return Math.round((parseInt(inVal, 10) / 100) * gObjPptx.pptLayout.width);
+        return Math.round((parseInt(inVal, 10) / 100) * Slide.gObjPptx.pptLayout.width);
     }
 
     // LAST: Default value
@@ -227,6 +227,142 @@ export function convertImgToDataURLviaCanvas(slideRel) {
     };
     // C: Load image
     image.src = slideRel.path;
+}
+
+export function genXmlBodyProperties( objOptions ) {
+    var bodyProperties = '<a:bodyPr';
+
+    if ( objOptions && objOptions.bodyProp ) {
+        // A: Enable or disable textwrapping none or square:
+        ( objOptions.bodyProp.wrap ) ? bodyProperties += ' wrap="' + objOptions.bodyProp.wrap + '" rtlCol="0"' : bodyProperties += ' wrap="square" rtlCol="0"';
+
+        // B: Set anchorPoints bottom, center or top:
+        if ( objOptions.bodyProp.anchor    ) bodyProperties += ' anchor="' + objOptions.bodyProp.anchor + '"';
+        if ( objOptions.bodyProp.anchorCtr ) bodyProperties += ' anchorCtr="' + objOptions.bodyProp.anchorCtr + '"';
+
+        // C: Textbox margins [padding]:
+        if ( objOptions.bodyProp.bIns || objOptions.bodyProp.bIns == 0 ) bodyProperties += ' bIns="' + objOptions.bodyProp.bIns + '"';
+        if ( objOptions.bodyProp.lIns || objOptions.bodyProp.lIns == 0 ) bodyProperties += ' lIns="' + objOptions.bodyProp.lIns + '"';
+        if ( objOptions.bodyProp.rIns || objOptions.bodyProp.rIns == 0 ) bodyProperties += ' rIns="' + objOptions.bodyProp.rIns + '"';
+        if ( objOptions.bodyProp.tIns || objOptions.bodyProp.tIns == 0 ) bodyProperties += ' tIns="' + objOptions.bodyProp.tIns + '"';
+
+        // D: Close <a:bodyPr element
+        bodyProperties += '>';
+
+        // E: NEW: Add auto-fit type tags
+        if ( objOptions.shrinkText ) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000" />'; // MS-PPT > Format Shape > Text Options: "Shrink text on overflow"
+        else if ( objOptions.bodyProp.autoFit !== false ) bodyProperties += '<a:spAutoFit/>'; // MS-PPT > Format Shape > Text Options: "Resize shape to fit text"
+
+        // LAST: Close bodyProp
+        bodyProperties += '</a:bodyPr>';
+    }
+    else {
+        // DEFAULT:
+        bodyProperties += ' wrap="square" rtlCol="0"></a:bodyPr>';
+    }
+
+    return bodyProperties;
+}
+
+export function genXmlTextCommand( text_info, text_string, slide_obj, slide_num ) {
+
+    var area_opt_data = genXmlTextData( text_info, slide_obj );
+    var parsedText;
+    //var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold + area_opt_data.italic + area_opt_data.underline + area_opt_data.char_spacing + ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>') + '<a:t>';
+    var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold  + area_opt_data.underline + area_opt_data.char_spacing + ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>') + '<a:t>';
+    var endTag = '</a:r>';
+    var outData = '<a:r>' + startInfo;
+
+    if ( text_string.field ) {
+        endTag = '</a:fld>';
+        var outTextField = pptxFields[text_string.field];
+        if ( outTextField === null ) {
+            for ( var fieldIntName in pptxFields ) {
+                if ( pptxFields[fieldIntName] === text_string.field ) {
+                    outTextField = text_string.field;
+                    break;
+                }
+            }
+
+            if ( outTextField === null ) outTextField = 'datetime';
+        }
+
+        outData = '<a:fld id="{' + gen_private.plugs.type.msoffice.makeUniqueID ( '5C7A2A3D' ) + '}" type="' + outTextField + '">' + startInfo;
+        outData += CreateFieldText( outTextField, slide_num );
+
+    }
+    else {
+        // Automatic support for newline - split it into multi-p:
+        parsedText = text_string.split( "\n" );
+        if ( parsedText.length > 1 ) {
+            var outTextData = '';
+            for ( var i = 0, total_size_i = parsedText.length; i < total_size_i; i++ ) {
+                outTextData += outData + decodeXmlEntities(parsedText[i]);
+
+                if ( (i + 1) < total_size_i ) {
+                    outTextData += '</a:t></a:r></a:p><a:p>';
+                }
+            }
+
+            outData = outTextData;
+
+        }
+        else {
+            outData += text_string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    }
+
+    var outBreakP = '';
+    if ( text_info.breakLine ) outBreakP += '</a:p><a:p>';
+
+    return outData + '</a:t>' + endTag + outBreakP;
+}
+
+function genXmlTextData(text_info, slide_obj) {
+    var out_obj = {};
+
+    out_obj.font_size = '';
+    out_obj.bold = '';
+    out_obj.underline = '';
+    out_obj.rpr_info = '';
+    out_obj.char_spacing = '';
+
+    if (typeof text_info == 'object') {
+        if (text_info.bold) {
+            out_obj.bold = ' b="1"';
+        }
+
+        if (text_info.underline) {
+            out_obj.underline = ' u="sng"';
+        }
+
+        if (text_info.font_size) {
+            out_obj.font_size = ' sz="' + text_info.font_size + '00"';
+        }
+
+        if (text_info.char_spacing) {
+            out_obj.char_spacing = ' spc="' + (text_info.char_spacing * 100) + '"';
+            // must also disable kerning; otherwise text won't actually expand
+            out_obj.char_spacing += ' kern="0"';
+        }
+
+        if (text_info.color) {
+            out_obj.rpr_info += genXmlColorSelection(text_info.color);
+        } else if (slide_obj && slide_obj.color) {
+            out_obj.rpr_info += genXmlColorSelection(slide_obj.color);
+        }
+
+        if (text_info.font_face) {
+            out_obj.rpr_info += '<a:latin typeface="' + text_info.font_face + '" pitchFamily="34" charset="0"/><a:cs typeface="' + text_info.font_face + '" pitchFamily="34" charset="0"/>';
+        }
+    } else {
+        if (slide_obj && slide_obj.color) out_obj.rpr_info += genXmlColorSelection(slide_obj.color);
+    }
+
+    if (out_obj.rpr_info != '')
+        out_obj.rpr_info += '</a:rPr>';
+
+    return out_obj;
 }
 
 function callbackImgToDataURLDone(inStr, slideRel) {

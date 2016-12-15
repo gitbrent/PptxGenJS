@@ -35,7 +35,7 @@ class Slide {
 
         // A: Add this SLIDE to PRESENTATION, Add default values as well
         Slide.gObjPptx.slides[this.slideNum] = {};
-        Slide.gObjPptx.slides[this.slideNum].slide = new Slide();
+        Slide.gObjPptx.slides[this.slideNum].slide = new Slide(this.group);
         Slide.gObjPptx.slides[this.slideNum].name = 'Slide ' + pageNum;
         Slide.gObjPptx.slides[this.slideNum].numb = pageNum;
         Slide.gObjPptx.slides[this.slideNum].data = [];
@@ -162,7 +162,7 @@ class Slide {
         Slide.gObjPptx.slides[this.slideNum].data[this.slideObjNum].type = 'text';
         Slide.gObjPptx.slides[this.slideNum].data[this.slideObjNum].text = text;
         Slide.gObjPptx.slides[this.slideNum].data[this.slideObjNum].options = (typeof opt === 'object') ? opt : {};
-        Slide.gObjPptx.slides[this.slideNum].data[this.slideObjNum].options.bodyProp = {};
+        Slide.gObjPptx.slides[this.slideNum].data[this.slideObjNum].options.bodyProp = jQuery.extend({}, opt.bodyProp);
         Slide.gObjPptx.slides[this.slideNum].data[this.slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
         Slide.gObjPptx.slides[this.slideNum].data[this.slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
         if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0) {
@@ -253,15 +253,15 @@ class Slide {
     }
 
     static header(inSlide){
-        let strSlideXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-                            <p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" 
-                                 xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" 
-                                 xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">
-                               <p:cSld name="${inSlide.name}">`;
+
+        let strSlideXml, aStr=[], propertBg = [], propertySpTree=[], propertySp=[];
+
+        let head =`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld name="${inSlide.name}">`;
+        aStr.push(head);
 
         // STEP 2: Add background color or background image (if any)
         // A: Background color
-        if ( inSlide.slide.back ) strSlideXml += genXmlColorSelection(false, inSlide.slide.back);
+        /*if ( inSlide.slide.back ) strSlideXml += genXmlColorSelection(false, inSlide.slide.back);
         // B: Add background image (using Strech) (if any)
         if ( inSlide.slide.bkgdImgRid ) {
             // TODO 1.0: We should be doing this in the slideLayout...
@@ -271,42 +271,61 @@ class Slide {
                                 <a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>
                                 <a:effectLst/></p:bgPr>
                          </p:bg>`;
+        } */
+
+        if ( inSlide.slide.back ) aStrSlideXml.push(genXmlColorSelection(false, inSlide.slide.back));
+        // B: Add background image (using Strech) (if any)
+        if ( inSlide.slide.bkgdImgRid ) {
+            // TODO 1.0: We should be doing this in the slideLayout...
+            propertBg = [`<p:bg>`,
+                `<p:bgPr><a:blipFill dpi="0" rotWithShape="1">`,
+                `<a:blip r:embed="rId${inSlide.slide.bkgdImgRid}"><a:lum/></a:blip>`,
+                `<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>`,
+                `<a:effectLst/></p:bgPr>`,
+                `</p:bg>`
+            ];
+            aStr.push(propertBg.join(''))
         }
+        propertySpTree = [`<p:spTree>`,
+            `<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>`,
+            `<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>`,
+            `<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>`];
 
-        // STEP 3: Continue slide by starting spTree node
-        strSlideXml += `<p:spTree>
-                        <p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>
-                        <p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>
-                        <a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>`;
+            aStr.push(propertySpTree.join(''));
 
-        // STEP 4: Add slide numbers if selected
+// STEP 4: Add slide numbers if selected
         // TODO 1.0: Fixed location sucks! Place near bottom corner using slide.size !!!
         if ( inSlide.hasSlideNumber ) {
-            strSlideXml += `<p:sp>
-                              <p:nvSpPr>
-                              <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>
-                              <p:spPr>'
-                                <a:xfrm><a:off x="${(EMU*0.3)}" y="${(EMU*5.2)}"/><a:ext cx="400000" cy="300000"/></a:xfrm>
-                                <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>
-                                <a:extLst>
-                                  <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">
-                                  <ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>
-                                </a:extLst>
-                              </p:spPr>
-                              <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr/><a:fld id="${SLDNUMFLDID}" type="slidenum"/></a:p></p:txBody>
-                            </p:sp>`;
+            propertySp = [`<p:sp>`,
+                              `<p:nvSpPr>`,
+                              `<p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>`,
+                              `<p:spPr>`,
+                                `<a:xfrm><a:off x="${(EMU*0.3)}" y="${(EMU*5.2)}"/><a:ext cx="400000" cy="300000"/></a:xfrm>`,
+                                `<a:prstGeom prst="rect"><a:avLst/></a:prstGeom>`,
+                                `<a:extLst>`,
+                                `<a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">`,
+                                  `<ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>`,
+                                `</a:extLst>`,
+                              `</p:spPr>`,
+                              `<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr/><a:fld id="${SLDNUMFLDID}" type="slidenum"/></a:p></p:txBody>`,
+                              `</p:sp>`];
+            aStr.push(propertySp.join(''))
+
         }
+        strSlideXml = aStr.join('');
         return strSlideXml;
     }
 
     static footer(){
-        let strSlideXml =  `</p:spTree>
-                            </p:cSld>
-                            <p:clrMapOvr>
-                                <a:masterClrMapping/>
-                            </p:clrMapOvr>
-                            </p:sld>`;
-        return strSlideXml;
+        let footer= [
+            `</p:spTree>`,
+                `</p:cSld>`,
+                `<p:clrMapOvr>`,
+                    `<a:masterClrMapping/>`,
+                `</p:clrMapOvr>`,
+            `</p:sld>`
+            ];
+        return footer.join('');
     }
 
 }

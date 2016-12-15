@@ -1,12 +1,12 @@
 import ExportTable  from './utils/slideHelpers/exportTable';
-import ExportText  from './utils/slideHelpers/exportText';
 import ExportImage  from './utils/slideHelpers/exportImage';
 import OptionAdapter  from './utils/slideHelpers/optionAdapter';
 import Group from './group/slideGroup';
 import Slide from './slide';
+import Shape from './shape/shape.js';
 
 
-export default function makeXmlSlide(inSlide, gObjPptx) {
+export default function makeXmlSlide(inSlide) {
 
     const EMU = 914400, ONEPT= 12700;
     let intTableNum = 1,
@@ -15,21 +15,21 @@ export default function makeXmlSlide(inSlide, gObjPptx) {
 
     if(inSlide.slide.group){
         var startGroup, endGroup,
-        group = new Group(gObjPptx);
-        group.generateGroup();
+        group = new Group().generateGroup();
+
         startGroup = group.groupStart;
         endGroup = group.groupEnd;
     }
     // STEP 1: Start slide XML
     strSlideXml = Slide.header(inSlide);
-    (inSlide.slide.group) ? strSlideXml += startGroup: '';
+    (inSlide.slide.group) ? strSlideXml += startGroup: strSlideXml;
 
     // STEP 5: Loop over all Slide objects and add them to this slide:
     $.each(objSlideData, function(idx, slideObj){
 
         // A: Set option vars
         if ( slideObj.options ) {
-            var { x, y, cx, cy, shapeType, locationAttr } = OptionAdapter(slideObj, gObjPptx)
+            var { x, y, cx, cy, shapeType, locationAttr } = OptionAdapter(slideObj)
         }else{
             var x = 0, y = 0, cx = (EMU*10), cy = 0,
                 locationAttr = '',
@@ -43,7 +43,7 @@ export default function makeXmlSlide(inSlide, gObjPptx) {
                 break;
 
             case 'text':
-                strSlideXml += ExportText(inSlide, shapeType, slideObj, locationAttr, idx, x, y, cx, cy);
+                strSlideXml += new Shape(slideObj).generateShape(idx, inSlide)
                 break;
 
             case 'image':
@@ -51,7 +51,7 @@ export default function makeXmlSlide(inSlide, gObjPptx) {
                 break;
         }
     });
-    (inSlide.slide.group) ? strSlideXml += endGroup: '';
+    (inSlide.slide.group) ? strSlideXml += endGroup: strSlideXml;
     // STEP 6: Close spTree and finalize slide XML
     strSlideXml += Slide.footer();
 

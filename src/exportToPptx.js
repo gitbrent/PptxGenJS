@@ -54,7 +54,6 @@ export default class ExportPptx {
         };
     }
 
-    //generatePptx() {
     doExportPresentation() {
         this.zip.folder( "_rels" );
         this.zip.folder( "docProps" );

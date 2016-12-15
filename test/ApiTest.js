@@ -1,5 +1,6 @@
 "use strict";
-import  Lib from '../lib/pptxgen';
+
+import PptxGenJS  from '../lib/pptxgen';
 
 var chai = require('chai'),
     should = chai.should(),
@@ -7,9 +8,9 @@ var chai = require('chai'),
 
 describe('Test API', ()=> {
 
-        let pptx = new Lib();
 
     it('Should upload the library', ()=>{
+        //should.exist(PptxGenJS, 'Library uploaded ...')
     })
     it('Should get the API version', ()=>{
     })

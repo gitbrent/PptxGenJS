@@ -1,7 +1,9 @@
 export default class BaseGroup {
 
     constructor( name ) {
-        let id = new Date().getTime();
-        this.wrapperGroupCoordinate = {id: id, name, x: 0, y: 0, cx: 0, cy: 0};
+        this.id = 2;
+        this.wrapperGroupCoordinate = {id: this.id, name, x: 0, y: 0, cx: 0, cy: 0};
+        this.groupStart = '';
+        this.groupEnd = '';
     }
 }

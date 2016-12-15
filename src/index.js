@@ -36,6 +36,7 @@ export default class PptxGenJS {
                 console.warn( 'UNKNOWN LAYOUT! Valid values = ' + Object.keys( LAYOUTS ) );
             } catch ( ex ) {}
         }
+        return this;
     }
 
     /**
@@ -47,9 +48,14 @@ export default class PptxGenJS {
 
 
 
-    addNewSlide(inMaster) {
-        let slide = new Slide();
-        return slide.addNewSlide(inMaster)
+    addNewSlide(isGroup) {
+        let slide = new Slide(isGroup);
+        return slide.addNewSlide();
+    }
+
+    addSlidesForTable(tabEleId, inOpts) {
+        let slideTable = new SlideTable();
+        slideTable.addSlidesForTable(tabEleId, inOpts);
     }
 
     /**
@@ -60,11 +66,6 @@ export default class PptxGenJS {
 
         let exportPptx = new ExportPptx();
         exportPptx.save(inStrExportName);
-    }
-
-    addSlidesForTable(tabEleId, inOpts) {
-        let slideTable = new SlideTable();
-        slideTable.addSlidesForTable(tabEleId, inOpts);
     }
 
 }
