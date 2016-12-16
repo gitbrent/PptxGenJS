@@ -104,7 +104,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			$('#tabAutoPaging tbody tr:last-child td:last-child').css('font-size','16px');
 		}
 
-		function table2slides() {
+		function table2slides1() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
 
@@ -123,14 +123,14 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			pptx.save('Table2SlideDemo');
 		}
 
-		function table2slidesExtras() {
+		function table2slides2() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
 
 			// STEP 1: Set slide size/layout
 			pptx.setLayout('LAYOUT_16x9');
 
-			// STEP 2: Set generated Slidle options
+			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			// Add a master slide to have a pre-defined style applied (eg: std corp title, logo etc.)
 			//objOpts.master = pptx.masters.MASTER_SLIDE;
@@ -241,8 +241,10 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 					[ {text:'1x1'}, {text:'2x1'}, { text:'2.5x1' }, { text:'3x1' }, { text:'4x1' } ],
 					[ {text:'1x2'}, {text:'2x2'}, { text:'2.5x2' }, { text:'3x2' }, { text:'4x2' } ]
 				];
-				slide.addTable( arrTabRows, { x:0.5, y:4.0 },
-					{ rowH: [1, 2], colW: [1, 2, 2.5, 3, 4],
+				slide.addTable( arrTabRows,
+					{
+						x:0.5, y:4.0,
+						rowH: [1, 2], colW: [1, 2, 2.5, 3, 4],
 						fill:'F7F7F7', color:'6c6c6c',
 						font_size:14, valign:'center', align:'ctr',
 						border:{pt:'1', color:'BBCCDD'}
@@ -277,34 +279,28 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
 				// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
 				// (e.g.: there are 5 elements in the first row, and 6 in the second)
-				slide.addTable( arrTabRows1, { x:0.5, y:1.1, cx:12.3 }, { rowH:0.75, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
+				slide.addTable( arrTabRows1, { x:0.5, y:1.1, w:12.3, rowH:0.75, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
 
 				var arrTabRows2 = [
-				    [
-				        { text:'A1/B1', opts:{colspan:2, fill:'00CC00'} }
-						,{ text:'C1' }
-				    ]
-				    ,[
-						{ text:'A2' }
-						,{ text:'B2/C2', opts:{colspan:2, fill:'00cc00'} }
-					]
+				    [ { text:'A1/B1', opts:{colspan:2, fill:'00CC00'} }, { text:'C1' } ],
+				    [ { text:'A2' }, { text:'B2/C2', opts:{colspan:2, fill:'00cc00'} } ]
 				];
 				// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
 				// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
 				// (e.g.: there are 5 elements in the first row, and 6 in the second)
-				slide.addTable( arrTabRows2, { x:0.5, y:3.6, cx:12.3 }, { rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
+				slide.addTable( arrTabRows2, { x:0.5, y:3.6, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
 
 				// Complex/Compound border
 				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 4.8;
 				slide.addText('Complex Cell Border:', optsSub);
 				var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
-				slide.addTable( [['Borders!']], { x:0.5, y:5.2, cx:12.3 }, { rowH:0.6, fill:'F5F5F5', color:'3D3D3D', border:arrBorder, align:'c', valign:'c' } );
+				slide.addTable( [['Borders!']], { x:0.5, y:5.2, w:12.3, rowH:0.6, fill:'F5F5F5', color:'3D3D3D', border:arrBorder, align:'c', valign:'c' } );
 
 				// Invalid char check
 				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 6.1;
 				slide.addText('Escaped Invalid Chars:', optsSub);
 				var arrTabRows3 = [['<', '>', '"', "'", '&', 'plain']];
-				slide.addTable( arrTabRows3, { x:0.5, y:6.5, cx:12.3 }, { rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
+				slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
 			}
 
 			// B: TEXT slide -------------------------------------------------------------------------------
@@ -586,7 +582,7 @@ pptx.save('PptxGenJs-Basic-Slide-Demo');
 
 		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow"></div>DEMO: Slide Masters (Using Corporate Slide Designs)
+			<div class="arrow"></div>DEMO: Slide Masters
 		</div>
 		<div class="sectionBox" style="display:none">
 			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
@@ -678,8 +674,8 @@ pptx.save('PptxGenJs-Basic-Slide-Demo');
 				<tbody></tbody>
 			</table>
 			<div style="text-align:center; padding:20px;">
-				<input type="button" class="flatBtn flatBtn-green" onclick="table2slides()" value="Export Table To Slides">&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="button" class="flatBtn flatBtn-green" onclick="table2slidesExtras()" value="Export Table To Slides (With Objects)">
+				<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slides1()" value="Table To Slides (Slide Master)">&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="button" class="flatBtn flatBtn-nsTeal" onclick="table2slides2()" value="Table To Slides (using custom shapes)">
 			</div>
 		</div>
 
@@ -695,7 +691,10 @@ var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
 slide.addText( 'Sandbox Output', { x:0.25, y:0.15, font_size:32, color:'00FF00' });
-slide.addTable( [1,2,3,4,5,6,7] );
+var tabOpts = { x:0.5, y:0.73, cx:9.0, rowH:0.25, colW:[0.65, 3.25, 0.65, 0.65, 0.65, 1.3, 0.65] };
+tabOpts.fill ='e6e6e6';
+tabOpts.border = { pt:1, color:'c7c7c7' };
+slide.addTable( [1,2,3,4,5,6,7], tabOpts );
 
 pptx.save('PptxGenJs-Advanced-Sandbox');
 </pre>

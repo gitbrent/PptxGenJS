@@ -41,8 +41,10 @@ an HTML Table across one or more Slides with a single command.
     - [Text Options](#text-options)
     - [Text Examples](#text-examples)
   - [Adding Tables](#adding-tables)
-    - [Table Options](#table-options)
-    - [Cell Options](#cell-options)
+    - [Table Layout Options](#table-layout-options)
+    - [Table Formatting Options](#table-formatting-options)
+    - [Table Cell Formatting](#table-cell-formatting)
+    - [Table Cell Formatting Examples](#table-cell-formatting-examples)
     - [Table Examples](#table-examples)
   - [Adding Shapes](#adding-shapes)
     - [Shape Options](#shape-options)
@@ -270,11 +272,10 @@ pptx.save('Demo-Text');
 Syntax:
 ```javascript
 slide.addTable( [rows] );
-slide.addTable( [rows], {tabOpts} );
-slide.addTable( [rows], {tabOpts}, {cellOpts} );
+slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 ```
 
-### Table Options
+### Table Layout Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
@@ -286,10 +287,10 @@ slide.addTable( [rows], {tabOpts}, {cellOpts} );
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
 | `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 
-### Cell Options
+### Table Formatting Options
 | Option       | Type    | Unit   | Default   | Description        | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :----------------- | :--------------- |
-| `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` |
+| `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` (or `l` `c` `r`) |
 | `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
 | `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}` |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
@@ -297,12 +298,29 @@ slide.addTable( [rows], {tabOpts}, {cellOpts} );
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` |
 | `fill`       | string  |        |           | fill/bkgd color    | hex color code. Ex: `{color:'0088CC'}` |
 | `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
-| `font_size`  | number  | points |           | font size          | 1-256. Ex: `{ font_size:12 }` |
+| `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}` |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
 | `marginPt`   | number  | points |           | margin             | 1-n (ProTip: use the same value from CSS padding) |
 | `rowspan`    | integer |        |           | row span           | 2-n. Ex: `{rowspan:2}` |
 | `underline`  | boolean |        | `false`   | underline text     | `true` or `false` |
-| `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` |
+| `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`) |
+
+### Table Cell Formatting
+* **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
+* You can selectively override formatting on a per-cell basis by including any **Formatting Option** in the row cell itself
+
+### Table Cell Formatting Examples
+```javascript
+var rows = [];
+// These cells will be formatted according to any options provided to addTable()
+rows.push( ['First', 'Second', 'Third'] );
+// Any formatting options provided by cells will be applied - overriding table options (if any)
+rwos.push([
+    { text:'1st', opts:{color:'ff0000'} },
+    { text:'2nd', opts:{color:'00ff00'} },
+    { text:'3rd', opts:{color:'0000ff'} }
+]);
+```
 
 ### Table Examples
 ```javascript
@@ -310,47 +328,46 @@ var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
 
-// TABLE 1: Simple array
+// TABLE 1: Single-row table
 // --------
-var rows = [ 1,2,3,4,5,6,7,8,9,10 ];
-var tabOpts = { x:0.5, y:1.0, w:9.0 };
-var celOpts = { fill:'F7F7F7', font_size:14, color:'363636' };
-slide.addTable( rows, tabOpts, celOpts );
+var rows = [ 'Cell 1', 'Cell 2', 'Cell 3' ];
+var tabOpts = { x:0.5, y:1.0, w:9.0, fill:'F7F7F7', font_size:14, color:'363636' };
+slide.addTable( rows, tabOpts );
 
-// TABLE 2: Multi-row Array
+// TABLE 2: Multi-row table (each rows array element is an array of cells)
 // --------
 var rows = [
     ['A1', 'B1', 'C1'],
-    ['A2', 'B2', 'C3']
+    ['A2', 'B2', 'C2']
 ];
-var tabOpts = { x:0.5, y:2.0, w:9.0 };
-var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:1.0, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
-slide.addTable( rows, tabOpts, celOpts );
+var tabOpts = { x:0.5, y:2.0, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9' };
+slide.addTable( rows, tabOpts );
 
-// TABLE 3: Formatting on a cell-by-cell basis - (NOTE: use this to selectively over-ride table formatting options)
+// TABLE 3: Formatting at a cell level - use this to selectively override table's cell options
 // --------
 var rows = [
     [
-        { text: 'Top Lft', opts: { valign:'t', align:'l', font_face:'Arial'   } },
-        { text: 'Top Ctr', opts: { valign:'t', align:'c', font_face:'Verdana' } },
-        { text: 'Top Rgt', opts: { valign:'t', align:'r', font_face:'Courier' } }
+        { text:'Top Lft', opts:{ valign:'t', align:'l', font_face:'Arial'   } },
+        { text:'Top Ctr', opts:{ valign:'t', align:'c', font_face:'Verdana' } },
+        { text:'Top Rgt', opts:{ valign:'t', align:'r', font_face:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, w:9.0 };
-var celOpts = { fill:'dfefff', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m', align:'c', border:{pt:'1', color:'FFFFFF'} };
-slide.addTable( rows, tabOpts, celOpts );
+var tabOpts = { x:0.5, y:4.5, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m'} };
+slide.addTable( rows, tabOpts );
 
 pptx.save('Demo-Tables');
 ```
 
 ## Adding Shapes
-Syntax:
+Syntax (no text):
 ```javascript
-slide.addShape({SHAPE}, {options});
-// Shapes with text:
-slide.addText({string}, {options});
+slide.addShape({SHAPE}, {OPTIONS});
 ```
-Browse the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerPoint shape typeds available.
+Syntax (with text):
+```javascript
+slide.addText("some string", {SHAPE, OPTIONS});
+```
+Check the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerPoint shapes available.
 
 ### Shape Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
@@ -395,7 +412,7 @@ pptx.save('Demo-Shapes');
 ## Adding Images
 Syntax:
 ```javascript
-slide.addImage({options});
+slide.addImage({OPTIONS});
 ```
 
 ### Image Options

@@ -53,7 +53,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.1.2"; // Used for API versioning
-	var APP_REL = "20161215";
+	var APP_REL = "20161216";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -772,7 +772,7 @@ var PptxGenJS = function(){
 				case 'table':
 					var arrRowspanCells = [];
 					var arrTabRows = slideObj.arrTabRows;
-					var objTabOpts = slideObj.objTabOpts;
+					var objTabOpts = slideObj.options;
 					var intColCnt = 0, intColW = 0;
 					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 					// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
@@ -1457,14 +1457,18 @@ var PptxGenJS = function(){
 			return pageNum;
 		};
 
+		// WARN: DEPRECATED: Will soon combine 2nd and 3rd arguments into single {object} (20161216-v1.1.2)
+		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
 		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
-			var opt = (typeof inOpt === 'object') ? inOpt : {};
-			if (opt.w) opt.cx = opt.w;
-			if (opt.h) opt.cy = opt.h;
+			var opt = ( typeof inOpt === 'object' ? inOpt : {} );
+			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // TODO: DEPRECATED: merge opts for now for non-breaking fix (20161216)
+
+			if ( opt.w ) opt.cx = opt.w;
+			if ( opt.h ) opt.cy = opt.h;
 
 			// STEP 1: REALITY-CHECK
 			if ( arrTabRows == null || arrTabRows.length == 0 || ! Array.isArray(arrTabRows) ) {
-				try { console.warn('[warn] addTable: Array expected!'); } catch(ex){}
+				try { console.warn('[warn] addTable: Array expected! USAGE: slide.addTable( [rows], {options} );'); } catch(ex){}
 				return null;
 			}
 
@@ -1485,8 +1489,8 @@ var PptxGenJS = function(){
 			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
 			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 			//
-			if ( tabOpt && Array.isArray(tabOpt.colW) ) {
-				$.each(tabOpt.colW, function(i,colW){ if ( colW < 20 ) tabOpt.colW[i] = inch2Emu(colW); });
+			if ( opt && Array.isArray(opt.colW) ) {
+				$.each(opt.colW, function(i,colW){ if ( colW < 20 ) opt.colW[i] = inch2Emu(colW); });
 			}
 
 			// Handle case where user passed in a simple array
@@ -1498,15 +1502,16 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum] = {
 				type:       'table',
 				arrTabRows: arrTemp,
-				options:    $.extend(true,{},opt),
-				objTabOpts: ($.extend(true,{},tabOpt) || {})
+				options:    $.extend(true,{},opt)
 			};
 
 			// LAST: Return this Slide object
 			return this;
 		};
 
-		slideObj.addText = function( text, opt ) {
+		slideObj.addText = function( text, options ) {
+			var opt = ( typeof options === 'object' ? options : {} );
+
 			// STEP 1: Grab Slide object count
 			slideObjNum = gObjPptx.slides[slideNum].data.length;
 
@@ -1540,7 +1545,7 @@ var PptxGenJS = function(){
 			// STEP 2: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt == 'object') ? opt : {};
+			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {};
 			gObjPptx.slides[slideNum].data[slideObjNum].options.shape = shape;
 
 			// LAST: Return
@@ -1678,7 +1683,7 @@ var PptxGenJS = function(){
 	 * @param {string} tabEleId - The HTML Element ID of the table
 	 * @param {array} inOpts - An array of options (e.g.: tabsize)
 	 */
-	this.addSlidesForTable = function addSlidesForTable(tabEleId,inOpts) {
+	this.addSlidesForTable = function addSlidesForTable(tabEleId, inOpts) {
 		var api = this;
 		var opts = (inOpts || {});
 		var arrObjTabHeadRows = [], arrObjTabBodyRows = [], arrObjTabFootRows = [];
@@ -1882,7 +1887,7 @@ var PptxGenJS = function(){
 			var arrTabRows = [];
 
 			// B: Create new Slide
-			var newSlide = (opts && opts.master && gObjPptxMasters) ?  api.addNewSlide(opts.master) : api.addNewSlide();
+			var newSlide = (opts && opts.master && gObjPptxMasters) ? api.addNewSlide(opts.master) : api.addNewSlide();
 
 			// C: Create array of Rows
 			$.each(slide, function(i,row){
@@ -1892,13 +1897,13 @@ var PptxGenJS = function(){
 			});
 
 			// D: Add table to Slide
-			newSlide.addTable( arrTabRows, {x:arrInchMargins[3], y:arrInchMargins[0], cx:(emuSlideTabW/EMU)}, {colW:arrColW} );
+			newSlide.addTable( arrTabRows, { x:arrInchMargins[3], y:arrInchMargins[0], cx:(emuSlideTabW/EMU), colW:arrColW } );
 
 			// E: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
 			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
-			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}), (opts.addTable.tabOpts || {}) );
+			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}) );
 		});
 	}
 };

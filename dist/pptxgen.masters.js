@@ -1,7 +1,7 @@
 /*\
 |*|  :: pptxgen.masters.js ::
 |*|
-|*|  A complete JavaScript PowerPoint presentation creator framework for client browsers.
+|*|  JavaScript framework that produces PowerPoint (pptx) presentations
 |*|  https://github.com/gitbrent/PptxGenJS
 |*|
 |*|  This framework is released under the MIT Public License (MIT)

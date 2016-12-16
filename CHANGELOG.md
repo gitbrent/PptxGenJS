@@ -1,5 +1,13 @@
 # Change Log
 
+## [v1.1.2](https://github.com/gitbrent/pptxgenjs/tree/v1.1.2) (2016-12-16)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.1...v1.1.2)
+
+**Fixed Bugs:**
+- The colW `addTable` option is not working [\#15](https://github.com/gitbrent/PptxGenJS/issues/15) [ninas880025](https://github.com/ninas880025)
+- Modified `addSlidesForTable`: table selectors made more specific by selecting only direct children now (nested tables would cause excessive looping)
+- Fixed crash caused by calling `addText` without an options object
+
 ## [v1.1.1](https://github.com/gitbrent/pptxgenjs/tree/v1.1.1) (2016-12-08)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.0...v1.1.1)
 
