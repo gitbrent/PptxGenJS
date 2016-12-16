@@ -7,8 +7,8 @@
 - The Slide `addTable()` method was modified to reduce the options passed from 2 objects to a single one.
 
 **Fixed Bugs:**
-- The colW `addTable` option is not working [\#15](https://github.com/gitbrent/PptxGenJS/issues/15) [ninas880025](https://github.com/ninas880025)
-- Modified `addSlidesForTable`: table selectors made more specific by selecting only direct children now (nested tables would cause excessive looping) [\#14](https://github.com/gitbrent/PptxGenJS/issues/14)
+- The colW `addTable` option is not working [\#15](https://github.com/gitbrent/PptxGenJS/issues/15) ([ninas880025](https://github.com/ninas880025))
+- Modified `addSlidesForTable`: table selectors made more specific by selecting only direct children now (nested tables would cause excessive looping) [\#14](https://github.com/gitbrent/PptxGenJS/issues/14) ([forrahul123](https://github.com/forrahul123))
 - Fixed crash caused by calling `addText` without an options object
 
 ## [v1.1.1](https://github.com/gitbrent/pptxgenjs/tree/v1.1.1) (2016-12-08)
