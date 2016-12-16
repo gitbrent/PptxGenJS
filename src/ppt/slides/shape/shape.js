@@ -1,7 +1,6 @@
 import { getShapeInfo, genXmlColorSelection, genXmlTextCommand, genXmlBodyProperties, inch2Emu } from '../utils/helpers';
 import OptionAdapter from '../utils/slideHelpers/optionAdapter.js';
-import Slide from '../slide.js';
-
+import { moveTo, lnTo, quadBezTo } from './pathHelpers';
 const ONEPT = 12700, EMU = 914400;
 
 export default class Shape {
@@ -61,7 +60,9 @@ export default class Shape {
         if (shapeType == null) shapeType = getShapeInfo(null);
         if (this.shapeObject.options && this.shapeObject.options.customGeom) {
             if (shapeType.name === 'polyline'){
-                this._xmlShape += `<a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>${this.genaratePathList()}</a:custGeom>`;
+                this._xmlShape += `<a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>${this.createPolyline()}</a:custGeom>`;
+            }else if (shapeType.name === 'polygon') {
+                this._xmlShape += `<a:custGeom><a:avLst/><a:gdLst/><a:ahLst/><a:cxnLst/>${this.createPolyline('polygon')}</a:custGeom>`;
             }else if (shapeType.name === 'chevron') {
                 this._xmlShape += `<a:prstGeom prst="${shapeType.name}">${this.shapeObject.options.customGeom}</a:prstGeom>`;
             }
@@ -74,15 +75,24 @@ export default class Shape {
         return this;
     }
 
-    isFillOption() {
+    fillOption() {
         if (this.shapeObject.options) {
 
-            (this.shapeObject.options.fill) ? this._xmlShape += genXmlColorSelection(this.shapeObject.options.fill) : this._xmlShape += '<a:noFill/>';
+            if(this.shapeObject.options.fill){
+                this._xmlShape += genXmlColorSelection(this.shapeObject.options.fill)
+            }else{
+                this._xmlShape += '<a:noFill/>';
+            }
+        }
+         return this;
+    }
+
+    lineOption(){
 
             if (this.shapeObject.options.line) {
                 var lineAttr = '';
 
-                if (this.shapeObject.options.line_size) lineAttr += ` w="${(this.shapeObject.options.line_size * ONEPT)}"`;
+                if (this.shapeObject.options.line_size > 1) lineAttr += ` w="${(this.shapeObject.options.line_size * ONEPT)}"`;
                 this._xmlShape += `<a:ln${lineAttr}>`;
                 this._xmlShape += genXmlColorSelection(this.shapeObject.options.line);
                 if (this.shapeObject.options && this.shapeObject.options.dash){
@@ -92,13 +102,11 @@ export default class Shape {
                 if (this.shapeObject.options.line_tail) this._xmlShape += `<a:tailEnd type="${this.shapeObject.options.line_tail}"/>`;
                 this._xmlShape += '</a:ln>';
             }
-        } else {
-            this._xmlShape += '<a:noFill/>';
-        }
+
         return this;
     }
 
-    isEffect() {
+    effectOption() {
         if (this.shapeObject.options.effects) {
 
             for (var ii = 0, total_size_ii = this.shapeObject.options.effects.length; ii < total_size_ii; ii++) {
@@ -197,69 +205,42 @@ export default class Shape {
         return this;
     }
 
+    createPolyline(type){
+
+        let aPath = this.shapeObject.options && this.shapeObject.options.customGeom,
+            w = this.coordinate.cx,  h = this.coordinate.cy,
+            {x, y} = this.coordinate,
+            polyline = `<a:pathLst><a:path w="${inch2Emu(w)}" h="${inch2Emu(h)}">`;
+        for (let nIndex=0; nIndex < aPath.length; nIndex++){
+            switch (aPath[nIndex][0]){
+                case 'M':
+                    polyline += moveTo(aPath[nIndex]);
+                    break;
+                case 'L':
+                    polyline += lnTo(aPath[nIndex]);
+                    break;
+                case 'Q':
+                    polyline += quadBezTo(aPath[nIndex]);
+                    break;
+            }
+        }
+
+        type === 'polygon' ? polyline += '<a:close/></a:path></a:pathLst>' : polyline += '</a:path></a:pathLst>';
+
+        return polyline;
+    }
+
     generateShape(idx, inSlide){
         this.fixMargin()
             .setShapeProperty(idx)
             .setPrstGeom()
-            .isFillOption()
-            .isEffect()
+            .fillOption()
+            .lineOption()
+            .effectOption()
             .closeShapeProperty()
             .txBody(inSlide)
             .closeShape();
         return this._xmlShape;
-    }
-
-    genaratePathList(){
-
-        let aPath = this.shapeObject.options && this.shapeObject.options.customGeom,
-            w = this.coordinate.cx,  h = this.coordinate.cy,
-            pathList = `<a:pathLst><a:path w="${inch2Emu(w)}" h="${inch2Emu(h)}">`;
-        for (let nIndex=0; nIndex < aPath.length; nIndex++){
-            switch (aPath[nIndex][0]){
-                case 'M':
-                    pathList += moveTo(aPath[nIndex]);
-                    break;
-                case 'L':
-                    pathList += lnTo(aPath[nIndex]);
-                    break;
-                case 'Q':
-                    pathList += quadBezTo(aPath[nIndex]);
-                    break;
-            }
-        }
-
-        function moveTo(points){
-            let aPoints = points.substr(1).split(','),
-                moveTo = [`<a:moveTo>`,
-                            `<a:pt x="${inch2Emu(aPoints[0] / 96)}" y="${inch2Emu(aPoints[1] / 96)}"/>`,
-                         `</a:moveTo>`
-                         ];
-            return moveTo.join('')
-        }
-
-        function lnTo(points){
-            let aPoints = points.substr(1).split(','),
-                lineTo = [  `<a:lnTo>`,
-                    `<a:pt x="${ inch2Emu(aPoints[0] / 96)}" y="${ inch2Emu(aPoints[1] / 96)}"/>`,
-                    `</a:lnTo>`
-                ];
-            return lineTo.join('')
-        }
-
-        function quadBezTo(points){
-            let aPoints = points.substr(1).split(' '),
-                quadBezTo = '<a:quadBezTo>';
-            for (let i=0; i<aPoints.length; i++){
-                let apts = aPoints[i].split(',');
-                quadBezTo +=`<a:pt x="${inch2Emu(apts[0] / 96)}" y="${inch2Emu(apts[1] / 96)}"/>`;
-            }
-
-            quadBezTo += '</a:quadBezTo>';
-            return quadBezTo;
-        }
-
-        pathList += '</a:path></a:pathLst>';
-        return pathList;
     }
 
 }
