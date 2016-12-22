@@ -52,8 +52,8 @@ Number.isInteger = Number.isInteger || function(value) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.1.2"; // Used for API versioning
-	var APP_REL = "20161216";
+	var APP_VER = "1.1.3"; // Used for API versioning
+	var APP_REL = "20161222";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -237,13 +237,16 @@ var PptxGenJS = function(){
 			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
 			catch(ex) {
 				this.onerror();
-				console.log("NOTE: Browsers wont let you load/convert local images! (search for --allow-file-access-from-files)");
+				console.warn("NOTE: Web browsers will not allow you to access local files! (use '--allow-file-access-from-files' flag with Chrome, etc.)");
 				return;
 			}
 			canvas = null;
 		};
 		image.onerror = function(){
-			try { console.error( '[Error] Unable to load image: ' + slideRel.path ); } catch(ex){}
+			try {
+				console.error('Unable to load "'+ slideRel.path +'" - please ensure an image exists at this location.');
+				console.log("NOTE: Web browsers will not allow you to access local files! (use '--allow-file-access-from-files' flag with Chrome, etc.)");
+			} catch(ex){}
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			callbackImgToDataURLDone('data:image/png;base64,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', slideRel);
 		};
@@ -827,7 +830,7 @@ var PptxGenJS = function(){
  					$.each(arrTabRows, function(rIdx,row){
 						$(row).each(function(cIdx,cell){
 							var colIdx = cIdx;
-							if ( cell.opts && cell.opts.rowspan && Number.isInteger(cell.opts.rowspan) ) {
+							if ( cell && cell.opts && cell.opts.rowspan && Number.isInteger(cell.opts.rowspan) ) {
 								for (idy=1; idy<cell.opts.rowspan; idy++) {
 									arrRowspanCells.push( {row:(rIdx+idy), col:colIdx} );
 									colIdx++; // For cases where we already have a rowspan in this row - we need to Increment to account for this extra cell!
@@ -1122,13 +1125,13 @@ var PptxGenJS = function(){
 							}
 						}
 					}
-					else if ( typeof slideObj.text == 'object' && slideObj.text.field ) {
+					else if ( slideObj.text && typeof slideObj.text == 'object' && slideObj.text.field ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
 						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text, inSlide.slide, inSlide.slide.getPageNumber() );
 					}
 
 					// LAST: End of every paragraph
-					if ( typeof slideObj.text !== 'undefined' ) {
+					if ( slideObj.text && typeof slideObj.text !== 'undefined' ) {
 						var font_size = '';
 						if ( slideObj.options && slideObj.options.font_size ) font_size = ' sz="' + slideObj.options.font_size + '00"';
 						strSlideXml += '<a:endParaRPr lang="en-US" '+ font_size +' dirty="0"/></a:p></p:txBody>';
@@ -1460,14 +1463,11 @@ var PptxGenJS = function(){
 		// WARN: DEPRECATED: Will soon combine 2nd and 3rd arguments into single {object} (20161216-v1.1.2)
 		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
 		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
-			var opt = ( typeof inOpt === 'object' ? inOpt : {} );
+			var opt = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
 			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // TODO: DEPRECATED: merge opts for now for non-breaking fix (20161216)
 
-			if ( opt.w ) opt.cx = opt.w;
-			if ( opt.h ) opt.cy = opt.h;
-
 			// STEP 1: REALITY-CHECK
-			if ( arrTabRows == null || arrTabRows.length == 0 || ! Array.isArray(arrTabRows) ) {
+			if ( arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows) ) {
 				try { console.warn('[warn] addTable: Array expected! USAGE: slide.addTable( [rows], {options} );'); } catch(ex){}
 				return null;
 			}
@@ -1476,10 +1476,12 @@ var PptxGenJS = function(){
 			slideObjNum = gObjPptx.slides[slideNum].data.length;
 
 			// STEP 3: Set default options if needed
+			if ( opt.w ) opt.cx = opt.w;
+			if ( opt.h ) opt.cy = opt.h;
 			if ( typeof opt.x  === 'undefined' ) opt.x  = (EMU / 2);
 			if ( typeof opt.y  === 'undefined' ) opt.y  = EMU;
 			if ( typeof opt.cx === 'undefined' ) opt.cx = (gObjPptx.pptLayout.width - (EMU / 2));
-			// Dont do this for cy - leaving it null triggers auto-rowH in makeXMLSlide function
+			// NOTE: Do not do this for `cy` - leaving it null triggers auto-rowH in makeXMLSlide()
 
 			// STEP 4: We use different logic in makeSlide (smartCalc is not used), so convert to EMU now
 			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
@@ -1510,7 +1512,7 @@ var PptxGenJS = function(){
 		};
 
 		slideObj.addText = function( text, options ) {
-			var opt = ( typeof options === 'object' ? options : {} );
+			var opt = ( options && typeof options === 'object' ? options : {} );
 
 			// STEP 1: Grab Slide object count
 			slideObjNum = gObjPptx.slides[slideNum].data.length;

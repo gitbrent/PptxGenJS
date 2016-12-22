@@ -691,7 +691,7 @@ var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
 slide.addText( 'Sandbox Output', { x:0.25, y:0.15, font_size:32, color:'00FF00' });
-var tabOpts = { x:0.5, y:0.73, cx:9.0, rowH:0.25, colW:[0.65, 3.25, 0.65, 0.65, 0.65, 1.3, 0.65] };
+var tabOpts = { x:0.5, y:0.73, w:9.0, rowH:0.25, colW:[0.65, 3.25, 0.65, 0.65, 0.65, 1.3, 0.65] };
 tabOpts.fill ='e6e6e6';
 tabOpts.border = { pt:1, color:'c7c7c7' };
 slide.addTable( [1,2,3,4,5,6,7], tabOpts );
