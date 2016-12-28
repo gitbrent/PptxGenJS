@@ -162,10 +162,10 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			// STEP 2: Add options (Master Slide, location, width, etc)
 			var objOpts = {};
 			objOpts.master = pptx.masters.MASTER_SLIDE;
-			objOpts.x = 1.25;
-			objOpts.y = 0.75;
+			objOpts.x = 0.25;
+			objOpts.y = 1.5;
 			//objOpts.w = 6.5;
-			//objOpts.h = 5.5;
+			//objOpts.h = 3.5;
 
 			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
 			pptx.addSlidesForTable('tabAutoPaging', objOpts);

@@ -7,7 +7,7 @@ ability to quickly and easily produce PowerPoint presentations with a few simple
 
 ## Main Features
 * Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings required
-* Works with all recent desktop browsers (Chrome, Edge, Firefox, IE11, Opera et al.)
+* Works with all current desktop browsers (Chrome, Edge, Firefox, Opera et al.) and with IE11
 * Presentation pptx export is pushed to client browsers as a regular file without the need for any user interaction
 * Simple, feature-rich API: Supports Master Slides and all major object types (Tables, Shapes, Images and Text)
 
@@ -452,8 +452,21 @@ pptx.save('Demo-Images');
 colors, borders, fonts, padding, etc. - with a single line of code.
 * The function will detect margins (based on Master Slide layout or parameters) and will create Slides as needed
 * All you have to do is pass the table element ID to `addSlidesForTable()` and you're done!
-* NOTE: Nested tables are not currently supported
+* NOTE: Nested tables are not supported in PowerPoint
 
+### Table-to-Slides Options
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches |           | horizontal location | 0-n |
+| `y`          | number  | inches |           | vertical location   | 0-n |
+| `w`          | number  | inches |           | width               | 0-n |
+| `h`          | number  | inches |           | height              | 0-n |
+
+### Notes:
+* Default margins are 0.5 inches, table will take up all remaining space by default
+* Use a Master Slide with pre-defined margins to over-ride defaults
+
+### Table-to-Slides Example
 ```javascript
 // STEP 1: Instantiate new PptxGenJS instance
 var pptx = new PptxGenJS();
