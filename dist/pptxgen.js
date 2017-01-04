@@ -52,8 +52,8 @@ Number.isInteger = Number.isInteger || function(value) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.1.3"; // Used for API versioning
-	var APP_REL = "20161226";
+	var APP_VER = "1.1.4";
+	var APP_REL = "20170103";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -854,11 +854,15 @@ var PptxGenJS = function(){
 						$(row).each(function(cIdx,cell){
 							// 1: OPTIONS: Build/set cell options (blocked for code folding)
 							{
-								// 1: Load/Create options
-								if ( !cell ) cell = { text:'' }; // Handle [null] and other manner of junk values
+								// A: Create cell if needed (handle [null] and other manner of junk values)
+								// IMPORTANT: MS-PPTX PROBLEM: using '' will cause PPT to use its own default font/size! (Arial/18 in US)
+								// SOLN: Pass a space instead to cement formatting options (Issue #20)
+								if ( !cell ) cell = { text:' ' };
+
+								// B: Load/Create options
 								var cellOpts = cell.opts || {};
 
-								// 2: Do Important/Override Opts
+								// C: Do Important/Override Opts
 								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
 								$.each(['align','bold','border','color','fill','font_face','font_size','underline','valign'], function(i,name){
@@ -873,8 +877,8 @@ var PptxGenJS = function(){
 								var cellValign  = (cellOpts.valign)     ? ' anchor="'+ cellOpts.valign.replace(/^c$/i,'ctr').replace(/^m$/i,'ctr').replace('center','ctr').replace('middle','ctr').replace('top','t').replace('btm','b').replace('bottom','b') +'"' : '';
 								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
-								var cellFontClr = ((cell.optImp && cell.optImp.color) || cellOpts.color) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.color) || cellOpts.color) +'"/></a:solidFill>' : '';
-								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill) +'"/></a:solidFill>' : '';
+								var cellFontClr = ((cell.optImp && cell.optImp.color) || cellOpts.color) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.color) || cellOpts.color.replace('#','')) +'"/></a:solidFill>' : '';
+								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
 								var intMarginPt = (cellOpts.marginPt || cellOpts.marginPt == 0) ? (cellOpts.marginPt * ONEPT) : 0;
 								// Margin/Padding:
 								var cellMargin  = '';
@@ -932,7 +936,7 @@ var PptxGenJS = function(){
 							}
 							else if ( cellOpts.border && typeof cellOpts.border === 'object' ) {
 								var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
-								var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color : '666666') +'"/></a:solidFill>';
+								var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color.replace('#','') : '666666') +'"/></a:solidFill>';
 								var strAttr = '<a:prstDash val="';
 								strAttr += ((cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1) ? "sysDash" : "solid" );
 								strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>';

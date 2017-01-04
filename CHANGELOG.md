@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.1.4](https://github.com/gitbrent/pptxgenjs/tree/v1.1.3) (2017-01-04)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.3...v1.1.4)
+
+**Fixed Bugs:**
+- Table formatting options set to default on empty cells [\#20](https://github.com/gitbrent/PptxGenJS/issues/20) ([rikvdk](https://github.com/rikvdk))
+- Fixed issue with `addTable()` where passing "#" before hex value for `color` or `fill` option would generate an invalid slide
+
 ## [v1.1.3](https://github.com/gitbrent/pptxgenjs/tree/v1.1.3) (2016-12-28)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.2...v1.1.3)
 
@@ -13,7 +20,7 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.1...v1.1.2)
 
 **Implemented Enhancements:**
-- The Slide `addTable()` method was modified to reduce the options passed from 2 objects to a single one.
+- The Slide `addTable()` method was modified to reduce the options passed from 2 objects to a single one
 
 **Fixed Bugs:**
 - The colW `addTable()` option is not working [\#15](https://github.com/gitbrent/PptxGenJS/issues/15) ([ninas880025](https://github.com/ninas880025))

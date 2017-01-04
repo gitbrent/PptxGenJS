@@ -4,7 +4,7 @@
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
 	},
-    "version": "1.1.3-3",
+    "version": "1.1.4",
     "description": "JavaScript framework that creates PowerPoint (pptx) presentations",
 	"homepage": "http://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
@@ -15,18 +15,20 @@
     },
     "main": "dist/pptxgen.js",
     "directories": {
-        "example": "examples"
+        "example": "examples",
+		"libs": "dist"
     },
     "repository": {
         "type": "git",
         "url": "git+https://github.com/gitbrent/PptxGenJS.git"
     },
     "keywords": [
+		"js powerpoint",
+		"javascript",
         "powerpoint",
         "pptx",
         "ppt",
-		"presentations",
-		"javascript"
+		"presentations"
     ],
     "bugs": {
         "url": "https://github.com/gitbrent/PptxGenJS/issues"
