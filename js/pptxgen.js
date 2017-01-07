@@ -1,7 +1,7 @@
 /*\
 |*|  :: pptxgen.js ::
 |*|
-|*|  A complete JavaScript PowerPoint presentation creator framework for client browsers.
+|*|  JavaScript framework that creates PowerPoint (pptx) presentations
 |*|  https://github.com/gitbrent/PptxGenJS
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
@@ -9,7 +9,7 @@
 |*|  PptxGenJS (C) 2015-2016 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
-|*|  github.com/Ziv-Barber/officegen/ (copyright 2013 Ziv Barber)
+|*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
 |*|
 |*|  Permission is hereby granted, free of charge, to any person obtaining a copy
 |*|  of this software and associated documentation files (the "Software"), to deal
@@ -40,9 +40,9 @@
 	|
 	REFS:
 	* "Structure of a PresentationML document (Open XML SDK)"
-	* SEE: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
+	* @see: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
 	* TableStyleId enumeration
-	* SEE: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
+	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
 // POLYFILL (SEE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
@@ -51,9 +51,9 @@ Number.isInteger = Number.isInteger || function(value) {
 };
 
 var PptxGenJS = function(){
-	// CONSTS
-	var APP_VER = "1.1.0"; // Used for API versioning
-	var APP_REL = "20161122";
+	// CONSTANTS
+	var APP_VER = "1.1.4";
+	var APP_REL = "20170103";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -237,13 +237,20 @@ var PptxGenJS = function(){
 			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
 			catch(ex) {
 				this.onerror();
-				console.log("NOTE: Browsers wont let you load/convert local images! (search for --allow-file-access-from-files)");
+				if ( window.location.href.indexOf('file:') == 0 ) {
+					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files! (use '--allow-file-access-from-files' flag with Chrome, etc.)");
+				}
 				return;
 			}
 			canvas = null;
 		};
 		image.onerror = function(){
-			try { console.error( '[Error] Unable to load image: ' + slideRel.path ); } catch(ex){}
+			try {
+				if ( window.location.href.indexOf('file:') == 0 ) {
+					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files! (use '--allow-file-access-from-files' flag with Chrome, etc.)");
+				}
+				console.error('Unable to load image: "'+ slideRel.path +'"\nPlease check the image URL:\n'+ ( slideRel.path.indexOf('/') == 0 ? slideRel.path : window.location.href.substring(0,window.location.href.lastIndexOf('/')+1) + slideRel.path ) );
+			} catch(ex){}
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			callbackImgToDataURLDone('data:image/png;base64,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', slideRel);
 		};
@@ -532,7 +539,7 @@ var PptxGenJS = function(){
 		var internalElements = '';
 		var outText = '';
 
-		if ( back_info ) {
+		if ( back_info && typeof back_info === 'string' ) {
 			outText += '<p:bg><p:bgPr>';
 			outText += genXmlColorSelection( back_info.replace('#',''), false );
 			outText += '<a:effectLst/>';
@@ -725,7 +732,7 @@ var PptxGenJS = function(){
 		strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
 
 		// STEP 4: Add slide numbers if selected
-		// TODO 1.0: Fixed location sucks! Place near bottom corner using slide.size !!!
+		// TODO: FIXME: This fixed-location placement sucks! Instead, location s/b bottom corner using dynamic value slide.size
 		if ( inSlide.hasSlideNumber ) {
 			strSlideXml += '<p:sp>'
 				+ '  <p:nvSpPr>'
@@ -742,7 +749,7 @@ var PptxGenJS = function(){
 				+ '</p:sp>';
 		}
 
-		// STEP 5: Loop over all Slide objects and add them to this slide:
+		// STEP 5: Loop over all Slide objects and add them to this slide ===============================
 		$.each(objSlideData, function(idx,slideObj){
 			var x = 0, y = 0, cx = (EMU*10), cy = 0;
 			var moreStyles = '', moreStylesAttr = '', outStyles = '', styleData = '', locationAttr = '';
@@ -767,17 +774,17 @@ var PptxGenJS = function(){
 				}
 			}
 
-			// B: Create this particular object on Slide
+			// B: Add TABLE / TEXT / IMAGE to current Slide ----------------------------
 			switch ( slideObj.type ) {
 				case 'table':
 					var arrRowspanCells = [];
 					var arrTabRows = slideObj.arrTabRows;
-					var objTabOpts = slideObj.objTabOpts;
+					var objTabOpts = slideObj.options;
 					var intColCnt = 0, intColW = 0;
 					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 					// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 					for (var tmp=0; tmp<arrTabRows[0].length; tmp++) {
-						intColCnt += ( arrTabRows[0][tmp].opts && arrTabRows[0][tmp].opts.colspan ) ? Number(arrTabRows[0][tmp].opts.colspan) : 1;
+						intColCnt += ( arrTabRows[0][tmp] && arrTabRows[0][tmp].opts && arrTabRows[0][tmp].opts.colspan ) ? Number(arrTabRows[0][tmp].opts.colspan) : 1;
 					}
 
 					// STEP 1: Start Table XML
@@ -797,7 +804,7 @@ var PptxGenJS = function(){
 							+ '      <a:tbl>'
 							+ '        <a:tblPr/>';
 							// + '        <a:tblPr bandRow="1"/>';
-					// TODO 1.5: Support banded rows, first/last row, etc.
+					// TODO: FUTURE: Support banded rows, first/last row, etc.
 					// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
 					// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
 
@@ -807,14 +814,14 @@ var PptxGenJS = function(){
 					if ( Array.isArray(objTabOpts.colW) ) {
 						strXml += '<a:tblGrid>';
 						for ( var col=0; col<intColCnt; col++ ) {
-							strXml += '  <a:gridCol w="'+ (objTabOpts.colW[col] || (slideObj.options.cx/intColCnt)) +'"/>';
+							strXml += '  <a:gridCol w="'+ Math.round(objTabOpts.colW[col] || (slideObj.options.cx/intColCnt)) +'"/>';
 						}
 						strXml += '</a:tblGrid>';
 					}
 					// B: Table Width provided without colW? Then distribute cols
 					else {
-						intColW = (objTabOpts.colW) ? objTabOpts.colW : EMU;
-						if ( slideObj.options.cx && !objTabOpts.colW ) intColW = ( slideObj.options.cx / intColCnt );
+						intColW = ( objTabOpts.colW ? objTabOpts.colW : EMU );
+						if ( slideObj.options.cx && !objTabOpts.colW ) intColW = Math.round( slideObj.options.cx / intColCnt ); // FIX: Issue#12
 						strXml += '<a:tblGrid>';
 						for ( var col=0; col<intColCnt; col++ ) { strXml += '<a:gridCol w="'+ intColW +'"/>'; }
 						strXml += '</a:tblGrid>';
@@ -827,7 +834,7 @@ var PptxGenJS = function(){
  					$.each(arrTabRows, function(rIdx,row){
 						$(row).each(function(cIdx,cell){
 							var colIdx = cIdx;
-							if ( cell.opts && cell.opts.rowspan && Number.isInteger(cell.opts.rowspan) ) {
+							if ( cell && cell.opts && cell.opts.rowspan && Number.isInteger(cell.opts.rowspan) ) {
 								for (idy=1; idy<cell.opts.rowspan; idy++) {
 									arrRowspanCells.push( {row:(rIdx+idy), col:colIdx} );
 									colIdx++; // For cases where we already have a rowspan in this row - we need to Increment to account for this extra cell!
@@ -847,10 +854,15 @@ var PptxGenJS = function(){
 						$(row).each(function(cIdx,cell){
 							// 1: OPTIONS: Build/set cell options (blocked for code folding)
 							{
-								// 1: Load/Create options
+								// A: Create cell if needed (handle [null] and other manner of junk values)
+								// IMPORTANT: MS-PPTX PROBLEM: using '' will cause PPT to use its own default font/size! (Arial/18 in US)
+								// SOLN: Pass a space instead to cement formatting options (Issue #20)
+								if ( !cell ) cell = { text:' ' };
+
+								// B: Load/Create options
 								var cellOpts = cell.opts || {};
 
-								// 2: Do Important/Override Opts
+								// C: Do Important/Override Opts
 								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
 								$.each(['align','bold','border','color','fill','font_face','font_size','underline','valign'], function(i,name){
@@ -865,8 +877,8 @@ var PptxGenJS = function(){
 								var cellValign  = (cellOpts.valign)     ? ' anchor="'+ cellOpts.valign.replace(/^c$/i,'ctr').replace(/^m$/i,'ctr').replace('center','ctr').replace('middle','ctr').replace('top','t').replace('btm','b').replace('bottom','b') +'"' : '';
 								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
-								var cellFontClr = ((cell.optImp && cell.optImp.color) || cellOpts.color) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.color) || cellOpts.color) +'"/></a:solidFill>' : '';
-								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill) +'"/></a:solidFill>' : '';
+								var cellFontClr = ((cell.optImp && cell.optImp.color) || cellOpts.color) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.color) || cellOpts.color.replace('#','')) +'"/></a:solidFill>' : '';
+								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
 								var intMarginPt = (cellOpts.marginPt || cellOpts.marginPt == 0) ? (cellOpts.marginPt * ONEPT) : 0;
 								// Margin/Padding:
 								var cellMargin  = '';
@@ -924,7 +936,7 @@ var PptxGenJS = function(){
 							}
 							else if ( cellOpts.border && typeof cellOpts.border === 'object' ) {
 								var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
-								var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color : '666666') +'"/></a:solidFill>';
+								var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color.replace('#','') : '666666') +'"/></a:solidFill>';
 								var strAttr = '<a:prstDash val="';
 								strAttr += ((cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1) ? "sysDash" : "solid" );
 								strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>';
@@ -1122,13 +1134,13 @@ var PptxGenJS = function(){
 							}
 						}
 					}
-					else if ( typeof slideObj.text == 'object' && slideObj.text.field ) {
+					else if ( slideObj.text && typeof slideObj.text == 'object' && slideObj.text.field ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
 						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text, inSlide.slide, inSlide.slide.getPageNumber() );
 					}
 
 					// LAST: End of every paragraph
-					if ( typeof slideObj.text !== 'undefined' ) {
+					if ( slideObj.text && typeof slideObj.text !== 'undefined' ) {
 						var font_size = '';
 						if ( slideObj.options && slideObj.options.font_size ) font_size = ' sz="' + slideObj.options.font_size + '00"';
 						strSlideXml += '<a:endParaRPr lang="en-US" '+ font_size +' dirty="0"/></a:p></p:txBody>';
@@ -1344,12 +1356,12 @@ var PptxGenJS = function(){
 	/* ===============================================================================================
 	|
 	######                                             #     ######   ###
-    #     #  #    #  #####   #       #   ####         # #    #     #   #
-    #     #  #    #  #    #  #       #  #    #       #   #   #     #   #
-    ######   #    #  #####   #       #  #           #     #  ######    #
-    #        #    #  #    #  #       #  #           #######  #         #
-    #        #    #  #    #  #       #  #    #      #     #  #         #
-    #         ####   #####   ######  #   ####       #     #  #        ###
+	#     #  #    #  #####   #       #   ####         # #    #     #   #
+	#     #  #    #  #    #  #       #  #    #       #   #   #     #   #
+	######   #    #  #####   #       #  #           #     #  ######    #
+	#        #    #  #    #  #       #  #           #######  #         #
+	#        #    #  #    #  #       #  #    #      #     #  #         #
+	#         ####   #####   ######  #   ####       #     #  #        ###
 	|
 	==================================================================================================
 	*/
@@ -1457,14 +1469,15 @@ var PptxGenJS = function(){
 			return pageNum;
 		};
 
+		// WARN: DEPRECATED: Will soon combine 2nd and 3rd arguments into single {object} (20161216-v1.1.2)
+		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
 		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
-			var opt = (typeof inOpt === 'object') ? inOpt : {};
-			if (opt.w) opt.cx = opt.w;
-			if (opt.h) opt.cy = opt.h;
+			var opt = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
+			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // TODO: DEPRECATED: merge opts for now for non-breaking fix (20161216)
 
 			// STEP 1: REALITY-CHECK
-			if ( arrTabRows == null || arrTabRows.length == 0 || ! Array.isArray(arrTabRows) ) {
-				try { console.warn('[warn] addTable: Array expected!'); } catch(ex){}
+			if ( arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows) ) {
+				try { console.warn('[warn] addTable: Array expected! USAGE: slide.addTable( [rows], {options} );'); } catch(ex){}
 				return null;
 			}
 
@@ -1472,10 +1485,12 @@ var PptxGenJS = function(){
 			slideObjNum = gObjPptx.slides[slideNum].data.length;
 
 			// STEP 3: Set default options if needed
+			if ( opt.w ) opt.cx = opt.w;
+			if ( opt.h ) opt.cy = opt.h;
 			if ( typeof opt.x  === 'undefined' ) opt.x  = (EMU / 2);
 			if ( typeof opt.y  === 'undefined' ) opt.y  = EMU;
 			if ( typeof opt.cx === 'undefined' ) opt.cx = (gObjPptx.pptLayout.width - (EMU / 2));
-			// Dont do this for cy - leaving it null triggers auto-rowH in makeXMLSlide function
+			// NOTE: Do not do this for `cy` - leaving it null triggers auto-rowH in makeXMLSlide()
 
 			// STEP 4: We use different logic in makeSlide (smartCalc is not used), so convert to EMU now
 			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
@@ -1485,8 +1500,8 @@ var PptxGenJS = function(){
 			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
 			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 			//
-			if ( tabOpt && Array.isArray(tabOpt.colW) ) {
-				$.each(tabOpt.colW, function(i,colW){ if ( colW < 20 ) tabOpt.colW[i] = inch2Emu(colW); });
+			if ( opt && Array.isArray(opt.colW) ) {
+				$.each(opt.colW, function(i,colW){ if ( colW < 20 ) opt.colW[i] = inch2Emu(colW); });
 			}
 
 			// Handle case where user passed in a simple array
@@ -1498,15 +1513,16 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum] = {
 				type:       'table',
 				arrTabRows: arrTemp,
-				options:    $.extend(true,{},opt),
-				objTabOpts: ($.extend(true,{},tabOpt) || {})
+				options:    $.extend(true,{},opt)
 			};
 
 			// LAST: Return this Slide object
 			return this;
 		};
 
-		slideObj.addText = function( text, opt ) {
+		slideObj.addText = function( text, options ) {
+			var opt = ( options && typeof options === 'object' ? options : {} );
+
 			// STEP 1: Grab Slide object count
 			slideObjNum = gObjPptx.slides[slideNum].data.length;
 
@@ -1540,7 +1556,7 @@ var PptxGenJS = function(){
 			// STEP 2: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt == 'object') ? opt : {};
+			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {};
 			gObjPptx.slides[slideNum].data[slideObjNum].options.shape = shape;
 
 			// LAST: Return
@@ -1676,9 +1692,9 @@ var PptxGenJS = function(){
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * "Auto-Paging is the future!" --Elon Musk
 	 * @param {string} tabEleId - The HTML Element ID of the table
-	 * @param {Array} opts - An array of options (e.g.: tabsize)
+	 * @param {array} inOpts - An array of options (e.g.: tabsize)
 	 */
-	this.addSlidesForTable = function addSlidesForTable(tabEleId,inOpts) {
+	this.addSlidesForTable = function addSlidesForTable(tabEleId, inOpts) {
 		var api = this;
 		var opts = (inOpts || {});
 		var arrObjTabHeadRows = [], arrObjTabBodyRows = [], arrObjTabFootRows = [];
@@ -1686,7 +1702,7 @@ var PptxGenJS = function(){
 		var intTabW = 0, emuTabCurrH = 0;
 
 		// REALITY-CHECK:
-		if ( $('#'+tabEleId).length == 0 ) { console.error('ERROR: Table "'+tabEleId+'" does not exist!'); return; }
+		if ( $('#'+tabEleId).length == 0 ) { console.error('Table "'+tabEleId+'" does not exist!'); return; }
 
 		// NOTE: Look for opts.margin first as user can override Slide Master settings if they want
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
@@ -1698,13 +1714,13 @@ var PptxGenJS = function(){
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
 		}
-		var emuSlideTabW = (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3]));
-		var emuSlideTabH = (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]));
+		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])) );
+		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])) );
 
 		// STEP 1: Grab overall table style/col widths
 		$.each(['thead','tbody','tfoot'], function(i,val){
-			if ( $('#'+tabEleId+' '+val+' tr').length > 0 ) {
-				$('#'+tabEleId+' '+val+' tr:first-child').find('th, td').each(function(i,cell){
+			if ( $('#'+tabEleId+' > '+val+' > tr').length > 0 ) {
+				$('#'+tabEleId+' > '+val+' > tr:first-child').find('> th, > td').each(function(i,cell){
 					// TODO 1.5: This is a hack - guessing at col widths when colspan
 					if ( $(this).attr('colspan') ) {
 						for (var idx=0; idx<$(this).attr('colspan'); idx++ ) {
@@ -1730,21 +1746,21 @@ var PptxGenJS = function(){
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
 		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
 		$.each(['thead','tbody','tfoot'], function(i,val){
-			$('#'+tabEleId+' '+val+' tr').each(function(i,row){
+			$('#'+tabEleId+' > '+val+' > tr').each(function(i,row){
 				var arrObjTabCells = [];
-				$(row).find('th, td').each(function(i,cell){
-					// A: Covert colors to Hex from RGB
+				$(row).find('> th, > td').each(function(i,cell){
+					// A: Covert colors from RGB to Hex
 					var arrRGB1 = [];
 					var arrRGB2 = [];
-					arrRGB1 = $(cell).css('color').replace(/\s+/gi,'').replace('rgb(','').replace(')','').split(',');
-					arrRGB2 = $(cell).css('background-color').replace(/\s+/gi,'').replace('rgb(','').replace(')','').split(',');
+					arrRGB1 = $(cell).css('color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
+					arrRGB2 = $(cell).css('background-color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
 
 					// B: Create option object
 					var objOpts = {
 						font_size: $(cell).css('font-size').replace(/\D/gi,''),
-						bold:       (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
-						color:      rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
-						fill:       rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
+						bold:      (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
+						color:     rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
+						fill:      rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
 					};
 					if ( $.inArray($(cell).css('text-align'), ['left','center','right','start','end']) > -1 ) objOpts.align = $(cell).css('text-align').replace('start','left').replace('end','right');
 					if ( $.inArray($(cell).css('vertical-align'), ['top','middle','bottom']) > -1 ) objOpts.valign = $(cell).css('vertical-align');
@@ -1774,12 +1790,12 @@ var PptxGenJS = function(){
 					}
 
 					// F: Massage cell text so we honor linebreak tag as a line break during line parsing
-					var $cell = $(cell).clone();
-					$cell.html( $(cell).html().replace(/<br[^>]*>/gi,'\n') );
+					var $cell2 = $(cell).clone();
+					$cell2.html( $(cell).html().replace(/<br[^>]*>/gi,'\n') );
 
 					// LAST: Add cell
 					arrObjTabCells.push({
-						text: $cell.text(),
+						text: $.trim( $cell2.text() ),
 						opts: objOpts
 					});
 				});
@@ -1805,7 +1821,7 @@ var PptxGenJS = function(){
 					currRow.push({ text:'', opts:cell.opts });
 
 					// 2: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
-					var lines = parseTextToLines(cell.text, cell.opts.font_size, (arrColW[iCell]/ONEPT));
+					var lines = parseTextToLines($.trim(cell.text), cell.opts.font_size, (arrColW[iCell]/ONEPT));
 					arrCellsLines.push( lines );
 
 					// 3: Keep track of max line count within all row cells
@@ -1882,7 +1898,7 @@ var PptxGenJS = function(){
 			var arrTabRows = [];
 
 			// B: Create new Slide
-			var newSlide = (opts && opts.master && gObjPptxMasters) ?  api.addNewSlide(opts.master) : api.addNewSlide();
+			var newSlide = ( opts.master && gObjPptxMasters ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
 			// C: Create array of Rows
 			$.each(slide, function(i,row){
@@ -1892,13 +1908,13 @@ var PptxGenJS = function(){
 			});
 
 			// D: Add table to Slide
-			newSlide.addTable( arrTabRows, {x:arrInchMargins[3], y:arrInchMargins[0], cx:(emuSlideTabW/EMU)}, {colW:arrColW} );
+			newSlide.addTable( arrTabRows, { x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), cx:(emuSlideTabW/EMU), colW:arrColW } );
 
 			// E: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
 			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
-			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}), (opts.addTable.tabOpts || {}) );
+			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}) );
 		});
 	}
 };
