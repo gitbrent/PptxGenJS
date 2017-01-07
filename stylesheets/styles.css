@@ -354,12 +354,15 @@ footer p + p {
   float: right;
 }
 
-@media print, screen and (max-width: 740px) {
-  body {
-    padding: 0;
-  }
+@media print, screen and (max-width:1024px) {
+  body { padding: 0; }
+  .wrapper { width: 95%; margin: 20px auto; }
+}
 
-  .wrapper {
+@media print, screen and (max-width:768px) {
+  body { padding: 0; }
+
+  .wrapper { width: 95%; margin: 20px auto;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
     -o-border-radius: 0;
@@ -370,7 +373,6 @@ footer p + p {
     -webkit-box-shadow: none;
     -o-box-shadow: none;
     box-shadow: none;
-    width: 100%;
   }
 
   footer {
