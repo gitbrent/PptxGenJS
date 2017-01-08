@@ -1,69 +1,8 @@
-/*
- * PptxGenJS > stylesheets > style.css
- */
 body { font-family:Roboto,Helvetica,Arial,Verdana,sans-serif; background:#f7f7f7; color:#4488CC; font-size:11px; }
-textarea { border:1px solid #cccccc; padding:3px; }
 h3 {
     color: #3498DB;
     margin: 6px 0 2px 8px;
     font-weight: normal;
-}
-
-.arrow {
-    display: inline-block;
-    height: 10px; width : 10px;
-    border-top  : 4px solid #0085C3; border-right: 4px solid #0085C3;
-    margin-right: 10px;
-    cursor: pointer;
-    transition: all .25s ease;
-    transform: rotate(45deg);
-}
-.arrow.active {
-    transform: rotate(135deg);
-    margin-bottom: 3px;
-}
-
-.tabCool {
-    width: 100%;
-    border-collapse: collapse;
-}
-.tabCool thead th {
-    border: 1px solid white;
-    background: #4488DD;
-    color: white;
-    padding: 10px;
-    margin: 0;
-}
-.tabCool tbody td {
-    border: 1px solid #d7d7d7;
-    background: #efefFF;
-    padding: 10px;
-    margin: 0;
-    text-align: left;
-}
-.tabCool tbody td:nth-child(1), .tabCool tbody td:nth-child(2) {
-    white-space: nowrap;
-}
-
-.mainTitle {
-    font-size: 38px;
-    color: #4488DD;
-    margin-bottom: 20px;
-}
-.mainTitle span {
-    font-size: 24px;
-    opacity: .6;
-}
-
-.sectionTitle {
-    font-size: 18px;
-    color: rgb(0,133,195);
-    margin: 20px 0 10px 0;
-    text-transform: uppercase;
-    -webkit-user-select: none;  /* Chrome all / Safari all */
-    -moz-user-select: none;     /* Firefox all */
-    -ms-user-select: none;      /* IE 10+ */
-    user-select: none;          /* Likely future */
 }
 
 .flatBtn {
@@ -83,73 +22,9 @@ h3 {
     cursor: pointer;
     box-shadow: 0 2px 0 #c7c7c7;
 }
-.flatBtn-green,		.flatBtn-green:hover	{ background-color: #27AE60 !important; }
-.flatBtn-blueMd,	.flatBtn-blueMd:hover	{ background-color: #199FD2 !important; }
-.flatBtn-nsTeal,	.flatBtn-nsTeal:hover	{ background-color: #1ABC9C !important; }
-.flatBtn-nsBlue,	.flatBtn-nsBlue:hover	{ background-color: #3498DB !important; }
-.flatBtn-nsPurple,	.flatBtn-nsPurple:hover	{ background-color: #9B59B6 !important; }
-.flatBtn-nsDark,	.flatBtn-nsDark:hover	{ background-color: #34495E !important; }
-.flatBtn-nsYellow,	.flatBtn-nsYellow:hover	{ background-color: #F1C40F !important; }
-.flatBtn-nsOrange,	.flatBtn-nsOrange:hover	{ background-color: #E67E22 !important; }
-.flatBtn-nsRed,		.flatBtn-nsRed:hover	{ background-color: #E74C3C !important; }
-.flatBtn-nsBlueLt,	.flatBtn-nsBlueLt:hover	{ background-color: #1FA6D5 !important; }
-
-fieldset {
-    border: 1px dotted #aaa;
-    background: #f9f9f9;
-    height: 200px;
-}
-fieldset legend {
-    font-size: 14px;
-    color: #4488CC;
-    text-transform: uppercase;
-}
-fieldset div label {
-    font-style: italic;
-    color: #9f9f9f;
-}
-
-div.sectionBox {
-    display: block;
-    padding: 25px;
-    margin: 0 0 10px;
-    font-size: 13px;
-    text-align: center;
-    line-height: 1.4;
-    color: #333333;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-div.formBox {
-    margin: 0 20px 20px 0;
-    display: inline-block;
-    float: left;
-    width: 24%; width:calc(25% - 20px);
-    text-align: left;
-    font-size: 13px;
-}
-div.formBox label {
-    -webkit-user-select: none;
-    user-select: none;
-    margin-right: 20px;
-    vertical-align: middle;
-}
-div.formBox input[type="checkbox"] {
-    vertical-align: middle;
-    margin-right: 3px;
-}
-
-div.divTable { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
-div.divTable > div { display: table-row; }
-div.divTable > div > div { display: table-cell; padding: 3px 10px; }
-div.divTable > div > div:first-child { vertical-align: top; white-space: nowrap; width: 10%; }
-div.divTable input[type="number"], div.divTable input[type="text"] { width: 100%; }
 
 .headerTab { display:table; box-sizing:border-box; width:100%; font-size:12px; margin-bottom:20px; }
 .headerTab > div { display:table-row; }
 .headerTab > div > div { display:table-cell; padding:5px 10px; vertical-align:middle; font-size:16px; }
 .headerTab > div > div:first-child { white-space:nowrap; width:1%; min-width:48px; padding:5px 0 5px 10px; }
 .headerTab svg { vertical-align:middle; width:48px; height:48px; }
-
-#console { text-align:left; font-size:12px; font-family:'Courier New', Courier, monospace; color:limegreen; background: #060606; }
