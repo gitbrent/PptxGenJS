@@ -42,10 +42,12 @@ header, section, footer {
 a {
   color: #069;
 }
+
 p {
   margin: 0 0 20px;
   padding: 0;
 }
+
 strong {
   color: #222;
   font-weight: 700;
@@ -201,21 +203,27 @@ h1, h2, h3, h4, h5, h6 {
   margin: 0 0 20px;
   line-height: 1.2;
 }
+
 p, ul, ol, table, pre, dl {
   margin: 0 0 20px;
 }
+
 h1, h2, h3 {
   line-height: 1.1;
 }
+
 h1 {
   font-size: 28px;
 }
+
 h2 {
   color: #696969;
 }
+
 h3, h4, h5, h6 {
   color: #696969;
 }
+
 blockquote {
   margin: 0 -30px 30px;
   padding: 15px 20px 1px 40px;
@@ -224,14 +232,26 @@ blockquote {
   background: rgba(0, 0, 0, 0.06);
   color: #222;
 }
+
 tt { background: #ccc; padding: 1px 3px; }
+
 img {
   max-width:100%;
 }
+
 code, pre {
   font-family: Monaco, Bitstream Vera Sans Mono, Lucida Console, Terminal;
   color: #333;
   font-size: 12px;
+}
+
+pre, .code {
+  padding: 20px 30px;
+  background: #3A3C42;
+  color: #f8f8f2;
+  margin: 0 0 30px;
+  /*margin: 0 -30px 30px;*/
+  overflow-x:auto;
 }
 
 /* ===== */
@@ -280,8 +300,40 @@ pre .atv, code .atv, pre .str, code .str {
     color: #00cc00 !important;
 }
 /* ===== */
+li pre {
+  margin-left: -70px;
+  padding-left: 80px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 5px 10px;
+  border-bottom: 1px solid #aaa;
+}
+
+dt {
+  color: #222;
+  font-weight: 700;
+}
+
+th {
+  color: #222;
+}
+
 small {
   font-size: 11px;
+}
+
+hr {
+  border: 0;
+  background: #aaa;
+  height: 1px;
+  margin: 0 0 20px;
 }
 
 footer {
