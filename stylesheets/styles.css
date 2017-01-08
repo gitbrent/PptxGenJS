@@ -357,11 +357,10 @@ footer p + p {
 @media print, screen and (max-width:1024px) {
   body { padding: 0; }
   .wrapper { width: 95%; margin: 20px auto; }
+  .flatBtn { font-size: 14px !important; padding: 4px 12px; }
 }
-
 @media print, screen and (max-width:768px) {
   body { padding: 0; }
-
   .wrapper { width: 95%; margin: 20px auto;
     -moz-border-radius: 0;
     -webkit-border-radius: 0;
@@ -374,17 +373,13 @@ footer p + p {
     -o-box-shadow: none;
     box-shadow: none;
   }
-
-  footer {
-    -moz-border-radius: 0;
-    -webkit-border-radius: 0;
-    -o-border-radius: 0;
-    -ms-border-radius: 0;
-    -khtml-border-radius: 0;
-    border-radius: 0;
-    padding: 20px;
-    width: auto;
-  }
+  code, pre { font-size:10px; }
+  header h1 { font-size:30px; }
+  h1 { font-size: 24px; }
+  header ul, header ul li, header ul a { height:48px; }
+  header ul a { padding-top:10px; }
+  .contExample img { box-shadow:none; }
+  footer { padding: 20px; width: auto; border-radius: 0; }
   footer p {
     float: none;
     margin: 0;

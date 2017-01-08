@@ -149,7 +149,7 @@ div.divTable input[type="number"], div.divTable input[type="text"] { width: 100%
 .headerTab { display:table; box-sizing:border-box; width:100%; font-size:12px; margin-bottom:20px; }
 .headerTab > div { display:table-row; }
 .headerTab > div > div { display:table-cell; padding:5px 10px; vertical-align:middle; font-size:16px; }
-.headerTab > div > div:first-child { white-space:nowrap; width:1%; padding:5px 0 5px 10px; }
+.headerTab > div > div:first-child { white-space:nowrap; width:1%; min-width:48px; padding:5px 0 5px 10px; }
 .headerTab svg { vertical-align:middle; width:48px; height:48px; }
 
 #console { text-align:left; font-size:12px; font-family:'Courier New', Courier, monospace; color:limegreen; background: #060606; }
