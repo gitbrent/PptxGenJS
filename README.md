@@ -85,6 +85,11 @@ PptxGenJS requires only three additional JavaScript libraries to function.
 npm install pptxgenjs
 ```
 
+Adding PptxGenJS to a Node project:
+```javascript
+var pptxgenjs = require("pptxgenjs").PptxGenJS;
+```
+
 # Optional Library Files
 If you are planning on creating Shapes (basically anything other than Text, Tables or Rectangles), then you'll want to
 include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape object array thanks to the
@@ -532,6 +537,6 @@ Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is al
 **************************************************************************************************
 # License
 
-Copyright &copy; 2015-2016 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
+Copyright &copy; 2015-2017 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)

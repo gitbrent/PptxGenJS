@@ -6,7 +6,7 @@
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2016 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2017 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
 |*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
@@ -45,15 +45,15 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-// POLYFILL (SEE: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
+// POLYFILL for IE11 (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
 Number.isInteger = Number.isInteger || function(value) {
 	return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 };
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.1.4";
-	var APP_REL = "20170103";
+	var APP_VER = "1.1.5";
+	var APP_REL = "20170116";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -84,10 +84,7 @@ var PptxGenJS = function(){
 	this.masters = (typeof gObjPptxMasters !== 'undefined') ? gObjPptxMasters : {};
 
 	// D: Check for associated .js files and provide warings about anything missing
-	if ( typeof gObjPptxShapes === 'undefined' ) {
-		gObjPptxShapes = BASE_SHAPES;
-		try { console.warn("[WARN]: Please include the 'pptxgen.shapes.js' file if you want shapes!"); } catch(ex){}
-	}
+	if ( typeof gObjPptxShapes === 'undefined' ) gObjPptxShapes = BASE_SHAPES;
 
 	/* ===============================================================================================
 	|
@@ -185,7 +182,7 @@ var PptxGenJS = function(){
 	}
 
 	/**
-	 * Used by {addSlidesForTable} to convert RGB colors from jQuery selectors to Hex for Presentation colors
+	 * DESC: Used by `addSlidesForTable()` to convert RGB colors from jQuery selectors to Hex for Presentation colors
 	 */
 	function rgbToHex(r, g, b) {
 		if (! Number.isInteger(r)) { try { console.warn('Integer expected!'); } catch(ex){} }
@@ -1918,3 +1915,6 @@ var PptxGenJS = function(){
 		});
 	}
 };
+
+// Node.js support (Usage: `var pptxgenjs = require("pptxgenjs").PptxGenJS;`)
+if (typeof module !== 'undefined' && module.exports) exports.PptxGenJS = new PptxGenJS();
