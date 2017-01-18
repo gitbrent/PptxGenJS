@@ -24,7 +24,7 @@ an HTML Table across one or more Slides with a single command.
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
-  - [Node.js (using NPM)](#nodejs-using-npm)
+  - [Node.js (4.x and later)](#nodejs-4x-and-later)
 - [Optional Library Files](#optional-library-files)
 - [Creating a Presentation](#creating-a-presentation)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
@@ -53,6 +53,9 @@ an HTML Table across one or more Slides with a single command.
     - [Image Options](#image-options)
     - [Image Examples](#image-examples)
 - [Table-to-Slides Feature](#table-to-slides-feature)
+    - [Table-to-Slides Options](#table-to-slides-options)
+    - [Notes:](#notes)
+    - [Table-to-Slides Example](#table-to-slides-example)
   - [Master Pages and Branding](#master-pages-and-branding)
   - [Override Slide Master Settings](#override-slide-master-settings)
   - [One-Line Presentation Exports](#one-line-presentation-exports)
@@ -60,6 +63,7 @@ an HTML Table across one or more Slides with a single command.
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
+- [Development Roadmap](#development-roadmap)
 - [Special Thanks](#special-thanks)
 - [License](#license)
 
@@ -79,15 +83,12 @@ PptxGenJS requires only three additional JavaScript libraries to function.
 <script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
-## Node.js (using NPM)
+## Node.js (4.x and later)
 [PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
 npm install pptxgenjs
-```
 
-Adding PptxGenJS to a Node project:
-```javascript
-var pptxgenjs = require("pptxgenjs").PptxGenJS;
+var pptx = require("pptxgenjs");
 ```
 
 # Optional Library Files
@@ -526,6 +527,12 @@ Please file issues or suggestions on the [issues page on github](https://github.
 
 When reporting issues, please include a code snippet or a link demonstrating the problem.
 Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is already configured and uses the latest PptxGenJS code.
+
+**************************************************************************************************
+# Development Roadmap
+
+Version 2.0 will be released later in 2017 and will drop support for IE11 as we move to adopt more
+JavaScript ES6 features and remove many instances of jQuery utility functions.
 
 **************************************************************************************************
 # Special Thanks
