@@ -50,8 +50,11 @@ Number.isInteger = Number.isInteger || function(value) {
 	return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 };
 
+// Detect Node.js
+var NODEJS = ( typeof module !== 'undefined' && module.exports );
+
 // [Node.js] <script> includes
-if ( typeof module !== 'undefined' && module.exports ) {
+if ( NODEJS ) {
 	var gObjPptxMasters = require('../dist/pptxgen.masters.js');
 	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
 }
@@ -59,7 +62,7 @@ if ( typeof module !== 'undefined' && module.exports ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.1.6";
-	var APP_REL = "20170118";
+	var APP_REL = "20170119";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -173,8 +176,7 @@ var PptxGenJS = function(){
 
 		// STEP 3: Push the PPTX file to browser
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-		// [Node.js]
-		if ( typeof module !== 'undefined' && module.exports ) {
+		if ( NODEJS ) {
 			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
 		}
 		else {
@@ -204,8 +206,7 @@ var PptxGenJS = function(){
 	}
 
 	function getSizeFromImage(inImgUrl) {
-		// Node.js
-		if ( typeof module !== 'undefined' && module.exports ) {
+		if ( NODEJS ) {
 			try {
 				var dimensions = sizeOf(inImgUrl);
 				return { width:dimensions.width, height:dimensions.height };
@@ -235,8 +236,7 @@ var PptxGenJS = function(){
 	}
 
 	function convertImgToDataURLviaCanvas(slideRel){
-		// Node.js
-		if ( typeof module !== 'undefined' && module.exports ) {
+		if ( NODEJS ) {
 			try {
 				var bitmap = fs.readFileSync(slideRel.path);
 				callbackImgToDataURLDone( new Buffer(bitmap).toString('base64'), slideRel );
@@ -763,13 +763,18 @@ var PptxGenJS = function(){
 		strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
 
 		// STEP 4: Add slide numbers if selected
-		// TODO: FIXME: This fixed-location placement sucks! Instead, location s/b bottom corner using dynamic value slide.size
-		if ( inSlide.hasSlideNumber ) {
+		if ( inSlide.slideNumberObj || inSlide.hasSlideNumber ) {
+			var numberX = (EMU * 0.3); // default and/or inSlide.hasSlideNumber value
+			var numberY = (0.90 * gObjPptx.pptLayout.height); // default and/or inSlide.hasSlideNumber value
+
+			if ( inSlide.slideNumberObj && inSlide.slideNumberObj.x ) numberX = getSmartParseNumber(inSlide.slideNumberObj.x, 'X');
+			if ( inSlide.slideNumberObj && inSlide.slideNumberObj.y ) numberY = getSmartParseNumber(inSlide.slideNumberObj.y, 'Y');
+
 			strSlideXml += '<p:sp>'
 				+ '  <p:nvSpPr>'
 				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
 				+ '  <p:spPr>'
-				+ '    <a:xfrm><a:off x="'+ (EMU*0.3) +'" y="'+ (EMU*5.2) +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
+				+ '    <a:xfrm><a:off x="'+ numberX +'" y="'+ numberY +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
 				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 				+ '    <a:extLst>'
 				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
@@ -1472,11 +1477,8 @@ var PptxGenJS = function(){
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
 
-		var inMasterOpts = (inMasterOpts || {});
-		// ISSUE#7: Allow bkgd image/color override on a per-slide basic
-		if ( inMaster && inMasterOpts ) {
-			if ( inMasterOpts.bkgd ) inMaster.bkgd = inMasterOpts.bkgd;
-		}
+		var inMasterOpts = inMasterOpts || {};
+		if ( inMaster && inMasterOpts && inMasterOpts.bkgd ) inMaster.bkgd = inMasterOpts.bkgd; // ISSUE#7: Allow bkgd image/color override on a per-slide basic
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {};
@@ -1485,15 +1487,22 @@ var PptxGenJS = function(){
 		gObjPptx.slides[slideNum].numb = pageNum;
 		gObjPptx.slides[slideNum].data = [];
 		gObjPptx.slides[slideNum].rels = [];
-		gObjPptx.slides[slideNum].hasSlideNumber = false;
+		gObjPptx.slides[slideNum].slideNumberObj = null;
+		gObjPptx.slides[slideNum].hasSlideNumber = false; // DEPRECATED
 
 		// ==========================================================================
 		// SLIDE METHODS:
 		// ==========================================================================
 
+		// DEPRECATED
 		slideObj.hasSlideNumber = function( inBool ) {
 			if ( inBool ) gObjPptx.slides[slideNum].hasSlideNumber = inBool;
 			else return gObjPptx.slides[slideNum].hasSlideNumber;
+		};
+
+		slideObj.slideNumber = function( inObj ) {
+			if ( inObj && typeof inObj === 'object' ) gObjPptx.slides[slideNum].slideNumberObj = inObj;
+			else return gObjPptx.slides[slideNum].slideNumberObj;
 		};
 
 		slideObj.getPageNumber = function() {
@@ -1628,6 +1637,8 @@ var PptxGenJS = function(){
 			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
 				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
 			}
+			// Node.js can read/base64-encode any image, so take at face value
+			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
 
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
@@ -1719,8 +1730,9 @@ var PptxGenJS = function(){
 				});
 			}
 
-			// D: Slide Number
-			if ( typeof inMaster.isNumbered !== 'undefined' ) slideObj.hasSlideNumber(inMaster.isNumbered);
+			// D: Slide numbers
+			if ( typeof inMaster.isNumbered !== 'undefined' ) slideObj.hasSlideNumber(inMaster.isNumbered); // DEPRECATED
+			if ( inMaster.slideNumber ) slideObj.slideNumber(inMaster.slideNumber);
 		}
 
 		// LAST: Return this Slide to allow command chaining
@@ -1959,7 +1971,7 @@ var PptxGenJS = function(){
 };
 
 // [Node.js] support
-if ( typeof module !== 'undefined' && module.exports ) {
+if ( NODEJS ) {
 	// A: Load 2 depdendencies
 	var fs = require("fs");
 	var $ = require("jquery-node");

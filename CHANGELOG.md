@@ -1,13 +1,20 @@
 # Change Log
 
-## [v1.1.5](https://github.com/gitbrent/pptxgenjs/tree/v1.1.4) (2017-01-17)
-[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.3...v1.1.5)
+## [v1.1.6](https://github.com/gitbrent/pptxgenjs/tree/v1.1.6) (2017-01-19)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.5...v1.1.6)
+
+**Implemented Enhancements:**
+- Support for animated GIFs in `addImage()` [\#22](https://github.com/gitbrent/PptxGenJS/issues/22) ([shashank2104](https://github.com/shashank2104))
+- Added new `slideNumber` option allowing `x` and `y` placement of slide number [\#25](https://github.com/gitbrent/PptxGenJS/issues/25) ([priyaraskar](https://github.com/priyaraskar))
+
+## [v1.1.5](https://github.com/gitbrent/pptxgenjs/tree/v1.1.5) (2017-01-17)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.4...v1.1.5)
 
 **Fixed Bugs:**
 - Trouble running in NW.js [\#19](https://github.com/gitbrent/PptxGenJS/issues/19) ([GregReser](https://github.com/GregReser))
 - Supported usage via node program instead of HTML [\#23](https://github.com/gitbrent/PptxGenJS/issues/23) ([parsleyt](https://github.com/parsleyt))
 
-## [v1.1.4](https://github.com/gitbrent/pptxgenjs/tree/v1.1.3) (2017-01-04)
+## [v1.1.4](https://github.com/gitbrent/pptxgenjs/tree/v1.1.4) (2017-01-04)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.3...v1.1.4)
 
 **Fixed Bugs:**

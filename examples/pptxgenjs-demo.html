@@ -52,6 +52,8 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			var slide = pptx.addNewSlide();
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 
+			slide.slideNumber({ x:0.5, y:'90%' });
+
 			slide.addTable( [ [{ text:'Simple Example', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 			slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
 			// Bullet Test: Number
