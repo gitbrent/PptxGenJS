@@ -45,12 +45,12 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-// POLYFILL for IE11 (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
+// Polyfill for IE11 (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
 Number.isInteger = Number.isInteger || function(value) {
 	return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 };
 
-// Node.js version of <script> includes
+// [Node.js] <script> includes
 if ( typeof module !== 'undefined' && module.exports ) {
 	var gObjPptxMasters = require('../dist/pptxgen.masters.js');
 	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
@@ -58,8 +58,8 @@ if ( typeof module !== 'undefined' && module.exports ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.1.5";
-	var APP_REL = "20170117";
+	var APP_VER = "1.1.6";
+	var APP_REL = "20170118";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -147,37 +147,33 @@ var PptxGenJS = function(){
 			for ( var idy=0; idy<gObjPptx.slides[idx].rels.length; idy++ ) {
 				var id = gObjPptx.slides[idx].rels[idy].rId - 1;
 				var data = gObjPptx.slides[idx].rels[idy].data;
+				var extn = gObjPptx.slides[idx].rels[idy].extn;
 
-				// A: Users will undoubtedly pass in string in various formats, so lets deal with that issue
+				// A: Users will undoubtedly pass in string in various formats, so modify as needed
 				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,'+data;
 				else if ( data.indexOf(',') == -1 ) data = 'image/png;base64,'+data;
 				else if ( data.indexOf(';') == -1 ) data = 'image/png;'+data;
 
-				// B: Grab base64 encoding header (ex: "data:image/png;base64,iVB[...]=")
+				// B: Grab base64 encoding header (ex: "data:image/png;base64")
 				var header = data.substring(0, data.indexOf(","));
-				// NOTE: Trim the leading base64 header ('data:image/png;base64,') as image wont render correctly with this header!)
 
-				// C: Set content
+				// C: Set content and trim the leading base64 header ('data:image/png;base64,') JSZip only needs the data after ',' (will error otherwiose)
 				var content = data.substring(data.indexOf(",") + 1);
 
-				// D: Set extension - handle cases where user passes base64 without 'data:' at the beginning
-				var extn = 'png';
-				if ( data.toLowerCase().indexOf('data:') == 0 ) extn = /data:image\/(\w+)/.exec(header)[1];
-
-				// E: Add image
-				var isBase64 = /base64/.test(header);
-				zip.file( "ppt/media/image" + id + "." + extn, content, {base64:isBase64} );
+				// D: Add image
+				zip.file( "ppt/media/image"+id+"."+extn, content, {base64:true} );
 			}
 		}
 
 		zip.file("ppt/theme/theme1.xml", makeXmlTheme());
 		zip.file("ppt/presentation.xml", makeXmlPresentation());
-		zip.file("ppt/presProps.xml", makeXmlPresProps());
-		zip.file("ppt/tableStyles.xml", makeXmlTableStyles());
-		zip.file("ppt/viewProps.xml", makeXmlViewProps());
+		zip.file("ppt/presProps.xml",    makeXmlPresProps());
+		zip.file("ppt/tableStyles.xml",  makeXmlTableStyles());
+		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
 		// STEP 3: Push the PPTX file to browser
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
+		// [Node.js]
 		if ( typeof module !== 'undefined' && module.exports ) {
 			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
 		}
@@ -607,6 +603,7 @@ var PptxGenJS = function(){
 					+ ' <Default Extension="xml" ContentType="application/xml"/>'
 					+ ' <Default Extension="jpeg" ContentType="image/jpeg"/>'
 					+ ' <Default Extension="png" ContentType="image/png"/>'
+					+ ' <Default Extension="gif" ContentType="image/gif"/>'
 					+ ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
 					+ ' <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>'
 					+ ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
@@ -1615,14 +1612,22 @@ var PptxGenJS = function(){
 
 			// REALITY-CHECK:
 			if ( !strImagePath && !strImageData ) {
-				try { console.error("ERROR: addImage requires either 'data' or 'path' parameter!"); } catch(ex){}
+				console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
 				return null;
+			}
+			else if ( strImageData && strImageData.toLowerCase().indexOf('base64,') == -1 ) {
+				console.warn("Warning: Image `data` does not appear to be valid (lacks a header): "+strImageData+"\nExport will tank if this is invalid base64!");
 			}
 
 			// STEP 2: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
-			var strImgExtn = 'png'; // Every image is encoded via canvas>base64, so they all come out as png (use of another extn will cause "needs repair" dialog on open in PPT)
+			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
+			var strImgExtn = 'png';
+			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
+			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
+				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
+			}
 
 			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
@@ -1643,7 +1648,7 @@ var PptxGenJS = function(){
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
 			slideObjRels.push({
-				path: (strImagePath || 'preencoded.png'),
+				path: (strImagePath || 'preencoded'+strImgExtn),
 				type: 'image/'+strImgExtn,
 				extn: strImgExtn,
 				data: (strImageData || ''),
@@ -1953,7 +1958,7 @@ var PptxGenJS = function(){
 	}
 };
 
-// Node.js support (Usage: `var pptxgenjs = require("pptxgenjs").PptxGenJS;`)
+// [Node.js] support
 if ( typeof module !== 'undefined' && module.exports ) {
 	// A: Load 2 depdendencies
 	var fs = require("fs");

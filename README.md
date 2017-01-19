@@ -421,6 +421,10 @@ Syntax:
 slide.addImage({OPTIONS});
 ```
 
+Animated GIFs can be included in Presentations in one of two ways:
+* Using Node.js: use either `data` or `path` options (Node can encode any image into base64)
+* Client Browsers: pre-encode the gif and add it using the `data` option (encoding images into GIFs is beyond any current browser)
+
 ### Image Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
