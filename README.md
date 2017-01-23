@@ -414,7 +414,7 @@ Syntax:
 slide.addMedia({OPTIONS});
 ```
 
-Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) are supported [Formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows):
+Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) are supported (list of [supported formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
 * Using Node.js: use either `data` or `path` options (Node can encode any media into base64)
 * Client Browsers: pre-encode the media and add it using the `data` option (encoding video/audio is beyond any current browser)
 
