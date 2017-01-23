@@ -18,8 +18,8 @@ STARTING TEST
 // ============================================================================
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
-//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
-var pptx = require("pptxgenjs");
+var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+//var pptx = require("pptxgenjs");
 console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
 pptx.setTitle('PptxGenJS Node.js Demo');
@@ -305,6 +305,38 @@ function demoCorpPres() {
 	var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
 }
 
+function demoMedia() {
+	var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+
+	var slide1 = pptx.addNewSlide();
+	slide1.addTable( [ [{ text:'Media: Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:'media/sample.m4v' });
+
+	slide1.addText('Video: mpg', { x:5.5, y:0.6, w:3.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:5.5, y:1.0, w:3.00, h:2.05, type:'video', path:'media/sample.mpg' });
+
+	slide1.addText('Video: mov', { x:9.4, y:0.6, w:3.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:9.4, y:1.0, w:3.00, h:1.71, type:'video', path:'media/sample.mov' });
+
+	slide1.addText('Video: mp4', { x:0.5, y:3.6, w:4.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:0.5, y:4.0, w:4.00, h:3.00, type:'video', path:'media/sample.mp4'});
+
+	slide1.addText('Video: avi', { x:5.5, y:3.6, w:3.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:'media/sample.avi' });
+
+	slide1.addText('Online: YouTube', { x:9.4, y:3.6, w:3.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:9.4, y:4.0, w:3.00, h:2.25, type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc' });
+
+	var slide2 = pptx.addNewSlide();
+	slide2.addTable( [ [{ text:'Media: Audio Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
+	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:'media/sample.mp3' });
+	slide2.addMedia({ x:0.5, y:3.0, w:4.00, h:0.3, type:'audio', path:'media/sample.wav' });
+}
+
 // ============================================================================
 
 // STEP 3: Run all test funcs
@@ -313,10 +345,11 @@ demoText();
 demoImages();
 demoShapes();
 demoTables();
+demoMedia();
 demoCorpPres();
 
 // STEP 4: Export giant demo file
-pptx.save('Nodejs-Demo-Presentation');
+pptx.save('Nodejs-Demo-Pres');
 
 // ============================================================================
 

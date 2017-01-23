@@ -363,6 +363,7 @@ slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x
 pptx.save('Demo-Shapes');
 ```
 
+
 ## Adding Images
 Syntax:
 ```javascript
@@ -402,6 +403,45 @@ slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30,
      .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
 
 pptx.save('Demo-Images');
+```
+
+## Adding Media (Audio/Video/YouTube)
+Syntax:
+```javascript
+slide.addMedia({OPTIONS});
+```
+
+Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) are supported [Formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows):
+* Using Node.js: use either `data` or `path` options (Node can encode any media into base64)
+* Client Browsers: pre-encode the media and add it using the `data` option (encoding video/audio is beyond any current browser)
+
+Online video (YouTube embeds, etc.) is supported in both client browser and in Node.js
+
+### Media Options
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
+| `w`          | number  | inches | `1.0`     | width               | 0-n |
+| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `data`       | string  |        |           | media data (base64) | base64-encoded image string. |
+| `path`       | string  |        |           | media path          | Same as used in an (img src="") tag. |
+| `link`       | string  |        |           | online link         | Link to online video. Ex: `link:'https://www.youtube.com/embed/blahBlah'` |
+| `type`       | string  |        |           | media type          | Media type: `audio` or `video` (reqs: `data` or `path`) or `online` (reqs:`link`) |
+
+### Media Examples
+```javascript
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+
+// Media by path (only using Node.js)
+slide.addMedia({ path:'../media/sample.mp3', x:1.0, y:1.0, w:8.0, h:4.0 });
+// Media by data (pre-encoded: client browser or Node.js)
+slide.addMedia({ type:'audio', data:'audio/mp3;base64,iVtDafDrBF[...]=', x:3.0, y:5.0, w:6.0, h:3.0 });
+// Online video: Youtube (client browser or Node.js)
+slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:9.4, y:4.0, w:3.00, h:2.25 });
+
+pptx.save('Demo-Media');
 ```
 
 **************************************************************************************************
