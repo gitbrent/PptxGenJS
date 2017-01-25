@@ -24,19 +24,16 @@ an HTML Table across one or more Slides with a single command.
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
-  - [Node.js (using NPM)](#nodejs-using-npm)
+  - [Node.js (4.x and later)](#nodejs-4x-and-later)
 - [Optional Library Files](#optional-library-files)
-- [Creating a Presentation](#creating-a-presentation)
-- [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
-  - [Slide Masters](#slide-masters)
-  - [Slide Master Examples](#slide-master-examples)
-    - [ProTip](#protip)
-  - [Slide Master Object Options](#slide-master-object-options)
-  - [Sample Slide Master File](#sample-slide-master-file)
+- [Presentation Basics](#presentation-basics)
 - [Library Reference](#library-reference)
-  - [Presentation Options](#presentation-options)
-  - [Available Layouts](#available-layouts)
+  - [Create Presentation](#create-presentation)
+    - [Presentation Options](#presentation-options)
+    - [Available Layouts](#available-layouts)
   - [Creating Slides](#creating-slides)
+    - [Slide Options](#slide-options)
+    - [Slide Number Options](#slide-number-options)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
     - [Text Examples](#text-examples)
@@ -52,7 +49,18 @@ an HTML Table across one or more Slides with a single command.
   - [Adding Images](#adding-images)
     - [Image Options](#image-options)
     - [Image Examples](#image-examples)
+  - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
+    - [Media Options](#media-options)
+    - [Media Examples](#media-examples)
+- [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
+  - [Slide Masters](#slide-masters)
+  - [Slide Master Examples](#slide-master-examples)
+  - [Slide Master Object Options](#slide-master-object-options)
+  - [Sample Slide Master File](#sample-slide-master-file)
 - [Table-to-Slides Feature](#table-to-slides-feature)
+    - [Table-to-Slides Options](#table-to-slides-options)
+    - [Notes:](#notes)
+    - [Table-to-Slides Example](#table-to-slides-example)
   - [Master Pages and Branding](#master-pages-and-branding)
   - [Override Slide Master Settings](#override-slide-master-settings)
   - [One-Line Presentation Exports](#one-line-presentation-exports)
@@ -60,6 +68,7 @@ an HTML Table across one or more Slides with a single command.
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
+- [Development Roadmap](#development-roadmap)
 - [Special Thanks](#special-thanks)
 - [License](#license)
 
@@ -79,10 +88,12 @@ PptxGenJS requires only three additional JavaScript libraries to function.
 <script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
-## Node.js (using NPM)
+## Node.js (4.x and later)
 [PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
 npm install pptxgenjs
+
+var pptx = require("pptxgenjs");
 ```
 
 # Optional Library Files
@@ -94,7 +105,7 @@ include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape 
 ```
 
 **************************************************************************************************
-# Creating a Presentation
+# Presentation Basics
 PowerPoint Presentations are created via JavaScript by following 4 basic steps:
 
 1. Create the Presentation
@@ -111,95 +122,30 @@ pptx.save('Sample Presentation');
 That's really all there is to it!
 
 **************************************************************************************************
-# Master Slides and Corporate Branding
-
-## Slide Masters
-Generating sample slides like those shown above is great for demonstrating library features,
-but the reality is most of us will be required to produce presentations that have a certain design or
-corporate branding.
-
-PptxGenJS allows you to define Master Slides via objects that can then be used to provide branding
-functionality.
-
-Slide Masters are defined using the same object style used in Slides. Add these objects as a variable to a file that
-is included in the script src tags on your page, then reference them by name in your code.  
-E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
-
-## Slide Master Examples
-`pptxgenjs.masters.js` contents:
-```javascript
-var gObjPptxMasters = {
-  MASTER_SLIDE: {
-    title:      'Slide master',
-    isNumbered: true,
-    margin:     [ 0.5, 0.25, 1.0, 0.25 ],
-    bkgd:       'FFFFFF',
-    images:     [ { path:'images/logo_square.png', x:9.3, y:4.9, w:0.5, h:0.5 } ],
-    shapes:     [
-      { type:'text', text:'ACME - Confidential', x:0, y:5.17, w:'100%', h:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
-      { type:'line', x:0.3, y:3.85, w:5.7, h:0.0, line:'007AAA' },
-      { type:'rectangle', x:0, y:0, w:'100%', h:.65, w:5, h:3.2, fill:'003b75' }
-    ]
-  },
-  TITLE_SLIDE: {
-    title:      'I am the Title Slide',
-    isNumbered: false,
-    bkgd:       { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-    images:     [ { x:'7.4', y:'4.1', w:'2', h:'1', data:'image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
-  }
-};
-```  
-Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
-by their key names that you created (e.g.: "TITLE_SLIDE").  
-
-### ProTip
-Pre-encode your images (base64) and add the string as the optional data key/val
-(see the `TITLE_SLIDE.images` object above)
-
-```javascript
-var pptx = new PptxGenJS();
-
-var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
-slide1.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
-// NOTE: Base master slide properties can be overridden on a selective basis:
-// Here we can set a new background color or image on-the-fly
-var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC' } );
-var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd.jpg' } } );
-var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ data:'image/png;base64,tFfInmP[...]=' } } );
-
-pptx.save();
-```
-
-## Slide Master Object Options
-| Option       | Type    | Unit   | Default  | Description  | Possible Values       |
-| :----------- | :------ | :----- | :------- | :----------- | :-------------------- |
-| `bkgd`       | string  |        | `ffffff` | color        | hex color code. Ex: `{ bkgd:'0088CC' }` |
-| `bkgd`       | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
-| `images`     | array   |        |          | image(s) | object array of path OR data. Ex: `{path:'img/logo.png'}` OR `{data:'image/png;base64,tFfInmP[...]'}`|
-| `isNumbered` | boolean |        | `false`  | Show slide numbers | `true` or `false` |
-| `margin`     | number  | inches | `1.0`    | Slide margin       | 0.0 through whatever |
-| `margin`     | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
-| `shapes`     | array   |        |          | shape(s)           | array of shape objects. Ex: (see [Shape](#shape) section) |
-| `title`      | string  |        |          | Slide title        | some title |
-
-## Sample Slide Master File
-A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
-Location: `PptxGenJS/dist/pptxgen.masters.js`
-
-**************************************************************************************************
 # Library Reference
 
-## Presentation Options
+## Create Presentation
+
+Client Browser:
+```javascript
+var pptx = new PptxGenJS();
+```
+Node.js:
+```javascript
+var pptx = require("pptxgenjs");
+```
+
+### Presentation Options
 Setting the Title:
 ```javascript
 pptx.setTitle('PptxGenJS Sample Presentation');
 ```
-Setting the Layout (applied to every Slide in the Presentation):
+Setting the Layout (applies to all Slides in the Presentation):
 ```javascript
 pptx.setLayout('LAYOUT_WIDE');
 ```
 
-## Available Layouts
+### Available Layouts
 | Layout Name    | Default  | Layout Slide Size |
 | :------------- | :------- | :---------------- |
 | `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches |
@@ -214,10 +160,21 @@ Add a Slide to a Presentation
 var slide = pptx.addNewSlide();
 ```
 
-(*Optional*) Pass the name of a Master Slide to use
+### Slide Options
+Applying Master Slides
 ```javascript
 var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
 ```
+Adding Slide Numbers
+```javascript
+slide.slideNumber({ x:1.0, y:'90%' });
+```
+
+### Slide Number Options
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
+| `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
 
 ## Adding Text
 ```javascript
@@ -409,11 +366,16 @@ slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x
 pptx.save('Demo-Shapes');
 ```
 
+
 ## Adding Images
 Syntax:
 ```javascript
 slide.addImage({OPTIONS});
 ```
+
+Animated GIFs can be included in Presentations in one of two ways:
+* Using Node.js: use either `data` or `path` options (Node can encode any image into base64)
+* Client Browsers: pre-encode the gif and add it using the `data` option (encoding images into GIFs is beyond any current browser)
 
 ### Image Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
@@ -445,6 +407,120 @@ slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30,
 
 pptx.save('Demo-Images');
 ```
+
+## Adding Media (Audio/Video/YouTube)
+Syntax:
+```javascript
+slide.addMedia({OPTIONS});
+```
+
+Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) are supported (list of [supported formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
+* Using Node.js: use either `data` or `path` options (Node can encode any media into base64)
+* Client Browsers: pre-encode the media and add it using the `data` option (encoding video/audio is beyond any current browser)
+
+Online video (YouTube embeds, etc.) is supported in both client browser and in Node.js
+
+### Media Options
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
+| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
+| `w`          | number  | inches | `1.0`     | width               | 0-n |
+| `h`          | number  | inches | `1.0`     | height              | 0-n |
+| `data`       | string  |        |           | media data (base64) | base64-encoded string |
+| `path`       | string  |        |           | media path          | relative path to media file |
+| `link`       | string  |        |           | online url/link     | link to online video. Ex: `link:'https://www.youtube.com/embed/blahBlah'` |
+| `type`       | string  |        |           | media type          | media type: `audio` or `video` (reqs: `data` or `path`) or `online` (reqs:`link`) |
+
+### Media Examples
+```javascript
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+
+// Media by path (Node.js only)
+slide.addMedia({ path:'../media/sample.mp3', x:1.0, y:1.0, w:3.0, h:0.5 });
+// Media by data (client browser or Node.js)
+slide.addMedia({ type:'audio', data:'audio/mp3;base64,iVtDafDrBF[...]=', x:3.0, y:1.0, w:6.0, h:3.0 });
+// Online by link (client browser or Node.js)
+slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:1.0, y:4.0, w:8.0, h:4.5 });
+
+pptx.save('Demo-Media');
+```
+
+**************************************************************************************************
+# Master Slides and Corporate Branding
+
+## Slide Masters
+Generating sample slides like those shown above is great for demonstrating library features,
+but the reality is most of us will be required to produce presentations that have a certain design or
+corporate branding.
+
+PptxGenJS allows you to define Master Slides via objects that can then be used to provide branding
+functionality.
+
+Slide Masters are defined using the same object style used in Slides. Add these objects as a variable to a file that
+is included in the script src tags on your page, then reference them by name in your code.  
+E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
+
+## Slide Master Examples
+`pptxgenjs.masters.js` contents:
+```javascript
+var gObjPptxMasters = {
+  MASTER_SLIDE: {
+    title:  'Slide master',
+    margin: [ 0.5, 0.25, 1.0, 0.25 ],
+    bkgd:   'FFFFFF',
+    images: [ { path:'images/logo_square.png', x:9.3, y:4.9, w:0.5, h:0.5 } ],
+    shapes: [
+      { type:'text', text:'ACME - Confidential', x:0, y:5.17, w:'100%', h:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
+      { type:'line', x:0.3, y:3.85, w:5.7, h:0.0, line:'007AAA' },
+      { type:'rectangle', x:0, y:0, w:'100%', h:.65, w:5, h:3.2, fill:'003b75' }
+    ],
+    slideNumber: { x:0.3, y:'90%' }
+  },
+  TITLE_SLIDE: {
+    title:  'I am the Title Slide',
+    bkgd:   { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
+    images: [ { x:'7.4', y:'4.1', w:'2', h:'1', data:'image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
+  }
+};
+```  
+Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
+by their key names that you created (e.g.: "TITLE_SLIDE").  
+
+**TIP:**
+Pre-encode your images (base64) and add the string as the optional data key/val
+(see the `TITLE_SLIDE.images` object above)
+
+```javascript
+var pptx = new PptxGenJS();
+
+var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
+slide1.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
+// NOTE: Base master slide properties can be overridden on a selective basis:
+// Here we can set a new background color or image on-the-fly
+var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC' } );
+var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd.jpg' } } );
+var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ data:'image/png;base64,tFfInmP[...]=' } } );
+
+pptx.save();
+```
+
+## Slide Master Object Options
+| Option        | Type    | Unit   | Default  | Description  | Possible Values       |
+| :------------ | :------ | :----- | :------- | :----------- | :-------------------- |
+| `bkgd`        | string  |        | `ffffff` | color        | hex color code. Ex: `{ bkgd:'0088CC' }` |
+| `bkgd`        | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
+| `images`      | array   |        |   | image(s) | object array of path OR data. Ex: `{path:'img/logo.png'}` OR `{data:'image/png;base64,tFfInmP[...]'}`|
+| `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
+| `margin`      | number  | inches | `1.0`    | Slide margin       | 0.0 through whatever |
+| `margin`      | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
+| `shapes`      | array   |        |          | shape(s)           | array of shape objects. Ex: (see [Shape](#shape) section) |
+| `title`       | string  |        |          | Slide title        | some title |
+
+## Sample Slide Master File
+A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
+Location: `PptxGenJS/dist/pptxgen.masters.js`
 
 **************************************************************************************************
 # Table-to-Slides Feature
@@ -523,6 +599,12 @@ When reporting issues, please include a code snippet or a link demonstrating the
 Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is already configured and uses the latest PptxGenJS code.
 
 **************************************************************************************************
+# Development Roadmap
+
+Version 2.0 will be released later in 2017 and will drop support for IE11 as we move to adopt more
+JavaScript ES6 features and remove many instances of jQuery utility functions.
+
+**************************************************************************************************
 # Special Thanks
 
 * [Officegen Project](https://github.com/Ziv-Barber/officegen) - For the Shape definitions and XML code
@@ -532,6 +614,6 @@ Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is al
 **************************************************************************************************
 # License
 
-Copyright &copy; 2015-2016 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
+Copyright &copy; 2015-2017 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)
