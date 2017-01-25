@@ -1,15 +1,16 @@
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/) [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php) [![npm version](https://badge.fury.io/js/pptxgenjs.svg)](https://badge.fury.io/js/pptxgenjs)
-# PptxGenJS
-JavaScript framework that produces PowerPoint (pptx) presentations.
 
-Include the PptxGenJS framework in an HTML webpage (client-side) or Node.js project (via NPM) to gain the
-ability to quickly and easily produce PowerPoint presentations with a few simple JavaScript commands.
+# PptxGenJS
+
+### JavaScript framework that produces PowerPoint (pptx) presentations
+
+Quickly and easily produce PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
 
 ## Main Features
-* Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings required
+* Complete JavaScript framework: No client configuration, plug-ins, or other settings required
 * Works with all current desktop browsers (Chrome, Edge, Firefox, Opera et al.) and with IE11
-* Presentation pptx export is pushed to client browsers as a regular file without the need for any user interaction
-* Simple, feature-rich API: Supports Master Slides and all major object types (Tables, Shapes, Images and Text)
+* Full Featured: Create Tables, Shapes, Images, Text and Media - plus use Master Slides
+* Presentation exports download to any modern browser as a normal PPTX file
 
 ## Additional Features
 This framework also includes a unique [Table-to-Slides](#table-to-slides--1-click-exports) feature that will reproduce
@@ -24,13 +25,13 @@ an HTML Table across one or more Slides with a single command.
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
-  - [Node.js (4.x and later)](#nodejs-4x-and-later)
+  - [Node.js (4.x)](#nodejs-4x)
 - [Optional Library Files](#optional-library-files)
 - [Presentation Basics](#presentation-basics)
 - [Library Reference](#library-reference)
-  - [Create Presentation](#create-presentation)
+  - [Creating Presentations](#creating-presentations)
     - [Presentation Options](#presentation-options)
-    - [Available Layouts](#available-layouts)
+    - [Presentation Layouts](#presentation-layouts)
   - [Creating Slides](#creating-slides)
     - [Slide Options](#slide-options)
     - [Slide Number Options](#slide-number-options)
@@ -88,7 +89,7 @@ PptxGenJS requires only three additional JavaScript libraries to function.
 <script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
-## Node.js (4.x and later)
+## Node.js (4.x)
 [PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
 npm install pptxgenjs
@@ -124,7 +125,7 @@ That's really all there is to it!
 **************************************************************************************************
 # Library Reference
 
-## Create Presentation
+## Creating Presentations
 
 Client Browser:
 ```javascript
@@ -145,7 +146,7 @@ Setting the Layout (applies to all Slides in the Presentation):
 pptx.setLayout('LAYOUT_WIDE');
 ```
 
-### Available Layouts
+### Presentation Layouts
 | Layout Name    | Default  | Layout Slide Size |
 | :------------- | :------- | :---------------- |
 | `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches |
@@ -438,7 +439,7 @@ var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
 // Media by path (Node.js only)
-slide.addMedia({ path:'../media/sample.mp3', x:1.0, y:1.0, w:3.0, h:0.5 });
+slide.addMedia({ type:'audio', path:'../media/sample.mp3', x:1.0, y:1.0, w:3.0, h:0.5 });
 // Media by data (client browser or Node.js)
 slide.addMedia({ type:'audio', data:'audio/mp3;base64,iVtDafDrBF[...]=', x:3.0, y:1.0, w:6.0, h:3.0 });
 // Online by link (client browser or Node.js)

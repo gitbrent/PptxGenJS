@@ -47,7 +47,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 
 		// ==================================================================================================================
 
-		function doSimpleTest() {
+		function doTestSimple() {
 			var pptx = new PptxGenJS();
 			var slide = pptx.addNewSlide();
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
@@ -65,6 +65,20 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 
 			// Export:
 			pptx.save('Sample Presentation');
+		}
+
+		function doMedia() {
+			var pptx = new PptxGenJS();
+			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+
+			var slide = pptx.addNewSlide();
+			slide.addTable( [ [{ text:'Media: Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+			slide.addText('Online: YouTube', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
+			slide.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'online', link:'https://www.youtube.com/embed/w3w9FVAyyL0' });
+
+			// LAST: Export Presentation
+			pptx.save();
 		}
 
 		function doCorpPresTest() {
@@ -616,6 +630,28 @@ pptx.save('PptxGenJs-Basic-Slide-Demo');
 				<input type="button" class="flatBtn flatBtn-green"  style="margin-right:20px; width:40%" onclick="doGenPptFile()" value="Generate Sample PowerPoint">
 				<input type="button" class="flatBtn flatBtn-blueMd" style="margin-right:20px;" value="Check All"
 					onclick="$(this).parents('.sectionBox').find('.formBox input[type=\'checkbox\']').prop('checked',!$(this).attr('checked'));">
+			</div>
+		</div>
+
+		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+			<div class="arrow"></div>DEMO: Media: YouTube
+		</div>
+		<div class="sectionBox" style="display:none; padding:15px;">
+			<div class="code" style="text-align:left; margin-bottom:15px">
+<pre id="demo-youtube" class="prettyprint">
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+
+// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
+slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });
+slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });
+
+pptx.save('PptxGenJs-YouTube-Demo');
+</pre>
+			</div>
+			<div id="buttonBarBtm" style="clear:both">
+				<input type="button" class="flatBtn flatBtn-blueMd" value="YouTube Slide Demo" onclick="eval( $('#demo-youtube').text() )">
 			</div>
 		</div>
 

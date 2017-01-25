@@ -1,5 +1,11 @@
 # Change Log
 
+## [v1.2.0](https://github.com/gitbrent/pptxgenjs/tree/v1.2.0) (2017-01-24)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.6...v1.2.0)
+
+**Implemented Enhancements:**
+- Add support for media (Audio,Video,YouTube) [\#26](https://github.com/gitbrent/PptxGenJS/issues/26) ([shashank2104](https://github.com/shashank2104))
+
 ## [v1.1.6](https://github.com/gitbrent/pptxgenjs/tree/v1.1.6) (2017-01-19)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.5...v1.1.6)
 
