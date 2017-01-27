@@ -1,11 +1,13 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
 	<title>PptxGenJS - Create PowerPoint PPTX Presentations With JavaScript</title>
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
 	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="chrome=1">
-	<meta http-equiv="cache-control" content="max-age=600">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="author" content="Brent Ely">
+	<meta name="keywords" content="javascript, powerpoint, js-powerpoint, pptx">
+	<meta name="description" content="JavaScript JS PowerPoint Library Generate PPT">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<style>
@@ -260,7 +262,7 @@
 		  background: rgba(0, 0, 0, 0.06);
 		  color: #222;
 		}
-		tt { background: #ccc; padding: 1px 3px; }
+		.tt { font-family:Consolas,monospace; background:#ccc; padding:1px 3px; }
 		img {
 		  max-width:100%;
 		}
@@ -430,8 +432,8 @@
 			}
 			</script><script async type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
+			<h1>Create a PowerPoint presentation using JavaScript</h1>
             <article id="Intro">
-	            <h1>Create a PowerPoint presentation using JavaScript</h1>
 				<p>Quickly and easily produce PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.</p>
 
 				<h3>Features:</h3>
@@ -481,7 +483,7 @@
 						<a href="https://github.com/gitbrent/PptxGenJS/zipball/master" onclick="ga('send','event','Link','click','Download Zipball-Master')">
 						<div class="contSvg">
 							<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 64 64" version="1.1" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 64 64">
-							<g id="XMLID_16_"><path d="m32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32z" fill="#2ECC71"/></g><rect y="43" x="16" height="6" width="32" fill="#fff"/><polygon points="43 27 32 40 21 27 28 27 28 12 36 12 36 27" fill="#fff"/>
+							<g><path d="m32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32z" fill="#2ECC71"/></g><rect y="43" x="16" height="6" width="32" fill="#fff"/><polygon points="43 27 32 40 21 27 28 27 28 12 36 12 36 27" fill="#fff"/>
 							</svg>
 						</div>
 						</a>
@@ -493,7 +495,7 @@
 						<a href="https://github.com/gitbrent/PptxGenJS/tarball/master" onclick="ga('send','event','Link','click','Download Tarball-Master')">
 						<div class="contSvg">
 							<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve" viewBox="0 0 64 64" version="1.1" y="0px" x="0px" xmlns:xlink="http://www.w3.org/1999/xlink" enable-background="new 0 0 64 64">
-							<g id="XMLID_16_"><path d="m32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32z" fill="#2ECC71"/></g><rect y="43" x="16" height="6" width="32" fill="#fff"/><polygon points="43 27 32 40 21 27 28 27 28 12 36 12 36 27" fill="#fff"/>
+							<g><path d="m32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32z" fill="#2ECC71"/></g><rect y="43" x="16" height="6" width="32" fill="#fff"/><polygon points="43 27 32 40 21 27 28 27 28 12 36 12 36 27" fill="#fff"/>
 							</svg>
 						</div>
 						</a>
@@ -506,9 +508,8 @@
 
 			<blockquote></blockquote>
 
+			<h2>Installation</h2>
 	        <article id="Setup">
-	            <h1>Installation</h1>
-
 				<h3>Client-Browser</h3>
 	            <!--<ul>
 					<li><a href="https://jquery.com/" target="_blank">jQuery</a> (does everything - you're likely using this one already)</li>
@@ -516,7 +517,7 @@
 					<li><a href="https://github.com/eligrey/FileSaver.js/" target="_blank">FileSaver.js</a> (pushes the export file to client browsers)</li>
 	            </ul>-->
 				<p>Include these 4 scripts in an HTML page, and you are ready to create a PowerPoint presentation
-					(included in the <tt>PptxGenJS/libs</tt> directory).</p>
+					(included in the <span class="tt">PptxGenJS/libs</span> directory).</p>
 				<div class="code">
 <pre class="prettyprint">&lt;script type="text/javascript" src="PptxGenJS/libs/jquery.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="PptxGenJS/libs/jszip.min.js"&gt;&lt;/script&gt;
@@ -538,8 +539,8 @@ var pptx = require('pptxgenjs');
 
 			<blockquote></blockquote>
 
+			<h2>Creating PowerPoint Presentations is Really Easy</h2>
 			<article id="Usage" class="main-content">
-		        <h1>Creating Presentations is Really Easy</h1>
 				<h3>Nobody likes a complicated framework, so we've made PptxGenJS as simple and straight-forward as possible.</h3>
 				<p>A single-slide presentation can be created in 4 lines of code.  More complex objets such as tabes are
 					actually not that much more coding - they simply take more options (cell borders, background colors, etc.)</p>
@@ -780,16 +781,16 @@ pptx.save('Demo-Text');
 			<blockquote></blockquote>
 
 			<article>
-				<h2>Documentation Etc.</h2>
+				<h2>Documentation / Code Examples</h2>
 				<p>
-					Complete documentation and sample code is available on the
+					Complete API documentation and sample code is available on the
 					<a href="https://github.com/gitbrent/PptxGenJS" onclick="ga('send','event','Link','click','GitHub Project Page')">PptxGenJS GitHub site</a>
 				</p>
 			</article>
 
 			<blockquote></blockquote>
 
-			<article id="sect-license">
+			<article>
 				<h2>License</h2>
 				Copyright (c) 2015-2017 <a href="https://github.com/GitBrent/">Brent Ely</a><br>
 				<br>
