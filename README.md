@@ -37,6 +37,7 @@ an HTML Table across one or more Slides with a single command.
     - [Slide Number Options](#slide-number-options)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
+    - [Text Shadow Options](#text-shadow-options)
     - [Text Examples](#text-examples)
   - [Adding Tables](#adding-tables)
     - [Table Layout Options](#table-layout-options)
@@ -206,8 +207,19 @@ slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color
 | `isTextBox`  | boolean |        | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |        | `false`   | italic text         | `true` or `false` |
 | `margin`     | number  | points |           | margin              | 1-n (ProTip: use the same value from CSS padding) |
+| `shadow`     | object  |        |           | text shadow options | see options below. ex: `shadow:{ type:'outer' }` |
 | `underline`  | boolean |        | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |        |           | vertical alignment  | `top` or `middle` or `bottom` |
+
+### Text Shadow Options
+| Option       | Type    | Unit    | Default   | Description            | Possible Values  |
+| :----------- | :------ | :------ | :-------- | :--------------------- | :--------------- |
+| `type`       | string  |         | outer     | shadow type            | `outer` or `inner` |
+| `angle`      | number  | degrees |           | shadow angle           | 0-359. Ex: `{ angle:180 }` |
+| `blur`       | number  | points  |           | blur size              | 1-256. Ex: `{ blur:3 }` |
+| `offset`     | number  | points  |           | offset size            | 1-256. Ex: `{ offset:8 }` |
+| `color`      | string  |         |           | text color             | hex color code. Ex: `{ color:'0088CC' }` |
+| `opacity`    | number  | percent |           | opacity                | 0-1 Ex: `opacity:0.75` |
 
 ### Text Examples
 ```javascript

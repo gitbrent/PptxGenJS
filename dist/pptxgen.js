@@ -1071,21 +1071,24 @@ var PptxGenJS = function(){
 						strSlideXml += '<a:noFill/>';
 					}
 
-					// TODO: Implement/document inner/outer-Shadow
-					if ( slideObj.options.effects ) {
-						for ( var ii = 0, total_size_ii = slideObj.options.effects.length; ii < total_size_ii; ii++ ) {
-							switch ( slideObj.options.effects[ii].type ) {
-								case 'outerShadow':
-									effectsList += cbGenerateEffects( slideObj.options.effects[ii], 'outerShdw' );
-									break;
-								case 'innerShadow':
-									effectsList += cbGenerateEffects( slideObj.options.effects[ii], 'innerShdw' );
-									break;
-							}
-						}
-					}
+					// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
+					if ( slideObj.options.shadow ) {
+						slideObj.options.shadow.type    = ( slideObj.options.shadow.type    || 'outer' );
+						slideObj.options.shadow.blur    = ( slideObj.options.shadow.blur    || 8 ) * ONEPT;
+						slideObj.options.shadow.offset  = ( slideObj.options.shadow.offset  || 4 ) * ONEPT;
+						slideObj.options.shadow.angle   = ( slideObj.options.shadow.angle   || 270 ) * 60000;
+						slideObj.options.shadow.color   = ( slideObj.options.shadow.color   || '000000' );
+						slideObj.options.shadow.opacity = ( slideObj.options.shadow.opacity || 0.75 ) * 100000;
 
-					if ( effectsList ) strSlideXml += '<a:effectLst>' + effectsList + '</a:effectLst>';
+						strSlideXml += '<a:effectLst>';
+						strSlideXml += '<a:'+ slideObj.options.shadow.type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
+						strSlideXml += ' algn="bl" rotWithShape="0" blurRad="'+ slideObj.options.shadow.blur +'" ';
+						strSlideXml += ' dist="'+ slideObj.options.shadow.offset +'" dir="'+ slideObj.options.shadow.angle +'">';
+						strSlideXml += '<a:srgbClr val="'+ slideObj.options.shadow.color +'">';
+						strSlideXml += '<a:alpha val="'+ slideObj.options.shadow.opacity +'"/></a:srgbClr>'
+						strSlideXml += '</a:outerShdw>';
+						strSlideXml += '</a:effectLst>';
+					}
 
 					// TODO 1.5: Text wrapping (copied from MS-PPTX export)
 					/*
@@ -1651,7 +1654,8 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
 			gObjPptx.slides[slideNum].data[slideObjNum].text = text;
-			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {};
+
+			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {}; // CAPTURE everything passed
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
@@ -1661,6 +1665,40 @@ var PptxGenJS = function(){
 				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
 				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
 			}
+
+			// ROBUST: Set rational values for some shadow props if needed
+			if ( opt.shadow ) {
+				// OPT: `type`
+				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
+					console.warn('Warning: shadow.type options are `outer` or `inner`.');
+					gObjPptx.slides[slideNum].data[slideObjNum].options.type = 'outer';
+				}
+
+				// OPT: `angle`
+				if ( opt.shadow.angle ) {
+					// A: REALITY-CHECK
+					if ( isNaN(Number(opt.shadow.angle)) || opt.shadow.angle < 0 || opt.shadow.angle > 359 ) {
+						console.warn('Warning: shadow.angle can only be 0-359');
+						opt.shadow.angle = 270;
+					}
+
+					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+					gObjPptx.slides[slideNum].data[slideObjNum].options.angle = Math.round(Number(opt.shadow.angle));
+				}
+
+				// OPT: `opacity`
+				if ( opt.shadow.opacity ) {
+					// A: REALITY-CHECK
+					if ( isNaN(Number(opt.shadow.opacity)) || opt.shadow.opacity < 0 || opt.shadow.opacity > 1 ) {
+						console.warn('Warning: shadow.opacity can only be 0-1');
+						opt.shadow.opacity = 0.75;
+					}
+
+					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+					gObjPptx.slides[slideNum].data[slideObjNum].options.opacity = Number(opt.shadow.opacity)
+				}
+			}
+
 
 			// LAST: Return
 			return this;

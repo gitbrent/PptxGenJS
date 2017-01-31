@@ -55,7 +55,13 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			slide.slideNumber({ x:0.5, y:'90%' });
 
 			slide.addTable( [ [{ text:'Simple Example', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-			slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
+
+			//slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
+// TODO: shadow
+			slide.addText('Hello 45! ', { x:0.5, y:0.5, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'00AAFF', blur:2, offset:10, angle: 45, opacity:0.25} });
+			slide.addText('Hello 180!', { x:0.5, y:1.0, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'ceAA00', blur:2, offset:10, angle:180, opacity:0.5} });
+			slide.addText('Hello 355!', { x:0.5, y:1.5, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'aaAA33', blur:2, offset:10, angle:355, opacity:0.75} });
+
 			// Bullet Test: Number
 			slide.addText(999, { x:0.5, y:2.0, w:'50%', h:1, color:'0000DE', bullet:true });
 			// Bullet Test: Text test
@@ -351,7 +357,7 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				slide.addTable( [ [{ text:'Text Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 				// DEMO: Array of text fonts/colors in increasing size
-				$.each([12,18,22,28,32,42,48,60],function(i,val){
+				$.each([18,22,28,32,42,48],function(i,val){
 					slide.addText( 'Misc font/color, size = '+val,
 						{
 							x:0.5, y:0.7+(i*0.8), cx:12.75,
@@ -361,11 +367,13 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 				});
 
 				// Bullet Test: Number
-				slide.addText(999, { x:9.0, y:0.8, w:'20%', h:1, color:'0000DE', bullet:true });
+				slide.addText(999, { x:9.0, y:0.6, w:'20%', h:1, color:'0000DE', bullet:true });
 				// Bullet Test: Text test
-				slide.addText('Bullet text (int above)', { x:9.0, y:1.5, w:'30%', h:1, color:'00AA00', bullet:true });
+				slide.addText('Bullet text (int above)', { x:9.0, y:1.0, w:'30%', h:1, color:'00AA00', bullet:true });
 				// Bullet Test: Multi-line text test
-				slide.addText('Line 1\nLine 2\nLine 3', { x:9.0, y:2.5, w:'30%', h:1, color:'AACD00', bullet:true });
+				slide.addText('Line 1\nLine 2\nLine 3', { x:9.0, y:2.0, w:'30%', h:1, color:'AACD00', bullet:true });
+				// Effects > Shadow
+				slide.addText('Outer Shadow ', { x:0.5, y:6.0, w:6, h:1, font_size:36, color:'0088cc', shadow:{type:'outer', color:'696969', blur:3, offset:10, angle: 45, opacity:0.8} });
 
 				// ======== -----------------------------------------------------------------------------------
 				// SLIDE 2: Misc mess
@@ -572,7 +580,7 @@ pptx.save('PptxGenJs-Basic-Slide-Demo');
 					<div class="divTable">
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Font Face/Color in 12-60pt Sizes</label></div>
+							<div><label>Font Face/Color Combos, Bullets, Shadow</label></div>
 						</div>
 						<div>
 							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
