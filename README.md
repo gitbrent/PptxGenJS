@@ -146,10 +146,6 @@ Setting the Layout (applies to all Slides in the Presentation):
 ```javascript
 pptx.setLayout('LAYOUT_WIDE');
 ```
-Custom Layout sizes are supported - just supply a `name` and the size in inches:
-```javascript
-pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
-```
 
 ### Presentation Layouts
 | Layout Name    | Default  | Layout Slide Size |
@@ -158,6 +154,15 @@ pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 | `LAYOUT_16x10` | No       | 10 x 6.25 inches  |
 | `LAYOUT_4x3`   | No       | 10 x 7.5 inches   |
 | `LAYOUT_WIDE`  | No       | 13.3 x 7.5 inches |
+| `LAYOUT_USER`  | No       | user defined - see below (inches) |
+
+Custom user defined Layout sizes are supported - just supply a `name` and the size in inches.
+* Defining a new Layout using an object will also set this new size as the current Presentation Layout
+
+```javascript
+// Defines and sets this new layout for the Presentation
+pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
+```
 
 ## Creating Slides
 
