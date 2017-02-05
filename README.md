@@ -146,6 +146,10 @@ Setting the Layout (applies to all Slides in the Presentation):
 ```javascript
 pptx.setLayout('LAYOUT_WIDE');
 ```
+Custom Layout sizes are supported - just supply a `name` and the size in inches:
+```javascript
+pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
+```
 
 ### Presentation Layouts
 | Layout Name    | Default  | Layout Slide Size |
@@ -183,9 +187,12 @@ slide.slideNumber({ x:1.0, y:'90%' });
 // Syntax
 slide.addText('TEXT', {OPTIONS});
 
-// Example
+// Examples
 slide.addText('Hello World!', { x:2, y:3, color:'DDDD00', font_size:90 });
 slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+
+// Multiline Text / Line Breaks - use either "\r" or "\n"
+slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
 ```
 
 ### Text Options
@@ -206,7 +213,7 @@ slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color
 | `inset`      | number  | inches |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
 | `isTextBox`  | boolean |        | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |        | `false`   | italic text         | `true` or `false` |
-| `margin`     | number  | points |           | margin              | 1-n (ProTip: use the same value from CSS padding) |
+| `margin`     | number  | points |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
 | `shadow`     | object  |        |           | text shadow options | see options below. ex: `shadow:{ type:'outer' }` |
 | `underline`  | boolean |        | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |        |           | vertical alignment  | `top` or `middle` or `bottom` |
@@ -234,6 +241,8 @@ var objOptions = {
     font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
 };
 slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
+
+slide.addText('Outer Shadow', { x:0.5, y:6.0, font_size:36, color:'0088cc', shadow:{type:'outer', color:'696969', blur:3, offset:10, angle:45} });
 
 pptx.save('Demo-Text');
 ```
@@ -270,7 +279,8 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
 | `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}` |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
-| `marginPt`   | number  | points |           | margin             | 1-n (ProTip: use the same value from CSS padding) |
+| `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`) |
+| `margin`     | array   | points |           | margin             | array of integer values in TRBL order. Ex: `margin:[5,10,5,10]` |
 | `rowspan`    | integer |        |           | row span           | 2-n. Ex: `{rowspan:2}` |
 | `underline`  | boolean |        | `false`   | underline text     | `true` or `false` |
 | `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`) |
@@ -324,6 +334,9 @@ var rows = [
 ];
 var tabOpts = { x:0.5, y:4.5, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m'} };
 slide.addTable( rows, tabOpts );
+
+// Multiline Text / Line Breaks - use either "\r" or "\n"
+slide.addTable( ['Line 1\nLine 2\nLine 3'], { x:2, y:3, w:4 });
 
 pptx.save('Demo-Tables');
 ```

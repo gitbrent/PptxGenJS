@@ -62,12 +62,13 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.2.0";
-	var APP_REL = "20170124";
+	var APP_REL = "20170204";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
 		'LAYOUT_16x10': { name: 'screen16x10', width:  9144000, height: 5715000 },
-		'LAYOUT_WIDE' : { name: 'custom',      width: 12191996, height: 6858000 }
+		'LAYOUT_WIDE' : { name: 'custom',      width: 12191996, height: 6858000 },
+		'LAYOUT_USER' : { name: 'userDefined', width: 12191996, height: 6858000 }
 	};
 	var BASE_SHAPES = {
 		RECTANGLE: { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
@@ -317,47 +318,15 @@ var PptxGenJS = function(){
 		if ( intLineCnt > 8 ) intCellH = (intCellH * 0.9);
 
 		// STEP 4: Add cell padding to height
-		if ( cell.opts.marginPt && Array.isArray(cell.opts.marginPt) ) {
-			intCellH += (cell.opts.marginPt[0]/ONEPT*(1/72)) + (cell.opts.marginPt[2]/ONEPT*(1/72));
+		if ( cell.opts.margin && Array.isArray(cell.opts.margin) ) {
+			intCellH += (cell.opts.margin[0]/ONEPT*(1/72)) + (cell.opts.margin[2]/ONEPT*(1/72));
 		}
-		else if ( cell.opts.marginPt && Number.isInteger(cell.opts.marginPt) ) {
-			intCellH += (cell.opts.marginPt/ONEPT*(1/72)) + (cell.opts.marginPt/ONEPT*(1/72));
+		else if ( cell.opts.margin && Number.isInteger(cell.opts.margin) ) {
+			intCellH += (cell.opts.margin/ONEPT*(1/72)) + (cell.opts.margin/ONEPT*(1/72));
 		}
 
 		// LAST: Return size
 		return inch2Emu( intCellH );
-	}
-
-	function parseTextToLines(inStr, inFontSize, inWidth) {
-		var U = 2.2; // Character Constant thingy
-		var CPL = (inWidth / ( inFontSize/U ));
-		var arrLines = [];
-		var strCurrLine = '';
-
-		// A: Remove leading/trailing space
-		inStr = $.trim(inStr);
-
-		// B: Build line array
-		$.each(inStr.split('\n'), function(i,line){
-			$.each(line.split(' '), function(i,word){
-				if ( strCurrLine.length + word.length + 1 < CPL ) {
-					strCurrLine += (word + " ");
-				}
-				else {
-					if ( strCurrLine ) arrLines.push( strCurrLine );
-					strCurrLine = (word + " ");
-				}
-			});
-			// All words for this line have been exhausted, flush buffer to new line, clear line var
-			if ( strCurrLine ) arrLines.push( $.trim(strCurrLine) + CRLF );
-			strCurrLine = "";
-		});
-
-		// C: Remove trailing linebreak
-		arrLines[(arrLines.length-1)] = $.trim(arrLines[(arrLines.length-1)]);
-
-		// D: Return lines
-		return arrLines;
 	}
 
 	function getShapeInfo( shapeName ) {
@@ -401,6 +370,185 @@ var PptxGenJS = function(){
 		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 		if ( typeof inStr === 'undefined' || inStr == null ) return "";
 		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
+	}
+
+	/**
+	* Magic happens here
+	*/
+	function parseTextToLines(inStr, inFontSize, inWidth) {
+		var U = 2.2; // Character Constant thingy
+		var CPL = (inWidth / ( inFontSize/U ));
+		var arrLines = [];
+		var strCurrLine = '';
+
+		// A: Remove leading/trailing space
+		inStr = $.trim(inStr);
+
+		// B: Build line array
+		$.each(inStr.split('\n'), function(i,line){
+			$.each(line.split(' '), function(i,word){
+				if ( strCurrLine.length + word.length + 1 < CPL ) {
+					strCurrLine += (word + " ");
+				}
+				else {
+					if ( strCurrLine ) arrLines.push( strCurrLine );
+					strCurrLine = (word + " ");
+				}
+			});
+			// All words for this line have been exhausted, flush buffer to new line, clear line var
+			if ( strCurrLine ) arrLines.push( $.trim(strCurrLine) + CRLF );
+			strCurrLine = "";
+		});
+
+		// C: Remove trailing linebreak
+		arrLines[(arrLines.length-1)] = $.trim(arrLines[(arrLines.length-1)]);
+
+		// D: Return lines
+		return arrLines;
+	}
+
+	/**
+	* Magic happens here
+	*/
+	function getSlidesForTableRows( inArrRows, opts ) {
+		var LINEH_MODIFIER = 1.99;
+		var DEF_FONT_SIZE = 12;
+		var opts = opts || {};
+		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+		var arrObjTabHeadRows = [], arrObjTabBodyRows = [], arrObjTabFootRows = [];
+		var arrObjSlides = [], arrRows = [], currRow = [];
+		var intTabW = 0, emuTabCurrH = 0;
+		var emuSlideTabW = EMU*1, emuSlideTabH = EMU*1;
+		var arrObjTabHeadRows = opts.arrObjTabHeadRows || '';
+		var numCols = 0;
+
+		// NOTE: Use default size of 1 as zero cell margin is causing our tables to be too large and touch bottom of slide!
+		if ( !opts.margin && opts.margin != 0 ) opts.margin = 1;
+
+		// STEP 1: Calc margins/usable space
+		if ( opts.margin || opts.margin == 0 ) {
+			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
+			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
+		}
+		else if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
+			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
+			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
+		}
+
+		// STEP 2: Calc number of columns
+		// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
+		// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
+		inArrRows[0].forEach(function(cell,idx){ numCols += ( cell.opts && cell.opts.colspan ? cell.opts.colspan : 1 ) });
+
+		// Calc opts.w if we can
+		if ( !opts.w && opts.colW ) {
+			if ( Array.isArray(opts.colW) ) opts.colW.forEach(function(val,idx){ opts.w += val });
+			else { opts.w = opts.colW * numCols }
+		}
+
+		// STEP 2: Set table size now that we have usable space calc'd
+		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])/ONEPT) );
+		emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])/ONEPT) );
+
+		// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
+		if ( !opts.colW || !Array.isArray(opts.colW) ) {
+			if ( opts.colW && !isNaN(Number(opts.colW)) ) {
+				var arrColW = [];
+				inArrRows[0].forEach(function(cell,idx){ arrColW.push( opts.colW ) });
+				opts.colW = [];
+				arrColW.forEach(function(val,idx){ opts.colW.push(val) });
+			}
+			// No column widths provided? Then distribute cols.
+			else {
+				opts.colW = [];
+				for (var iCol=0; iCol<numCols; iCol++) { opts.colW.push( Math.round(emuSlideTabW/numCols) ) }
+			}
+		}
+
+		// STEP 4: Iterate over each line and perform magic
+		// ROBUST: inArrRows will be an array of {text:'', opts{}} whether from `addSlidesForTable()` or `.addTable()`
+		inArrRows.forEach(function(row,iRow){
+			// A: Reset ROW variables
+			var arrCellsLines = [], arrCellsLineHeights = [], emuRowH = 0, intMaxLineCnt = 0, intMaxColIdx = 0;
+
+			// B: Parse and store each cell's text into line array (*MAGIC HAPPENS HERE*)
+			row.forEach(function(cell,iCell){
+				// 1: Handle cases where plain array of strings was passed
+				if ( typeof cell !== 'object' ) cell = { text:cell.toString(), opts:opts };
+				if ( !cell.opts ) cell.opts = {};
+
+				// 2: Create a cell object for each table column
+				currRow.push({ text:'', opts:cell.opts });
+
+				// 3: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
+				var lines = parseTextToLines(cell.text.trim(), (cell.opts.font_size || opts.font_size || DEF_FONT_SIZE), (opts.colW[iCell]/ONEPT));
+				arrCellsLines.push( lines );
+
+				// 4: Keep track of max line count within all row cells
+				if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
+
+				var lineHeight = inch2Emu((cell.opts.font_size || opts.font_size || DEF_FONT_SIZE) * LINEH_MODIFIER / 100);
+				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[0] ) lineHeight += cell.opts.margin[0] / intMaxLineCnt;
+				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[2] ) lineHeight += cell.opts.margin[2] / intMaxLineCnt;
+				arrCellsLineHeights.push( Math.round(lineHeight) );
+			});
+
+			// C: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
+			for (var idx=0; idx<intMaxLineCnt; idx++) {
+				// 1: Add the current line to cell
+				for (var col=0; col<arrCellsLines.length; col++) {
+					// A: Commit this slide to Presenation if table Height limit is hit
+					if ( emuTabCurrH + arrCellsLineHeights[intMaxColIdx] > emuSlideTabH ) {
+						// 1: Add the current row to table
+						// NOTE: Edge cases can occur where we create a new slide only to have no more lines
+						// ....: and then a blank row sits at the bottom of a table!
+						// ....: Hence, we verify all cells have text before adding this final row.
+						$.each(currRow, function(i,cell){
+							if (cell.text.length > 0 ) {
+								// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
+								arrRows.push( $.extend(true, [], currRow) );
+								return false; // break out of .each loop
+							}
+						});
+						// 2: Add new Slide with current array of table rows
+						arrObjSlides.push( $.extend(true, [], arrRows) );
+						// 3: Empty rows for new Slide
+						arrRows.length = 0;
+						// 4: Reset curr table height for new Slide
+						emuTabCurrH = 0; // This row's emuRowH w/b added below
+						// 5: Empty current row's text (continue adding lines where we left off below)
+						$.each(currRow,function(i,cell){ cell.text = ''; });
+						// 6: Auto-Paging Options: addHeaderToEach
+						if ( opts.addHeaderToEach && arrObjTabHeadRows ) {
+							var headRow = [];
+							$.each(arrObjTabHeadRows[0], function(iCell,cell){
+								headRow.push({ text:cell.text, opts:cell.opts });
+								var lines = parseTextToLines(cell.text, cell.opts.font_size, (opts.colW[iCell]/ONEPT));
+								if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
+							});
+							arrRows.push( $.extend(true, [], headRow) );
+						}
+					}
+
+					// B: Add next line of text to this cell
+					if ( arrCellsLines[col][idx] ) currRow[col].text += arrCellsLines[col][idx];
+				}
+
+				// 2: Add this new rows H to overall (The cell with the longest line array is the one we use as the determiner for overall row Height)
+				emuTabCurrH += arrCellsLineHeights[intMaxColIdx];
+			}
+
+			// D: Flush row buffer - Add the current row to table, then truncate row cell array
+			// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
+			arrRows.push( $.extend(true,[],currRow) );
+			currRow.length = 0;
+		});
+
+		// STEP 4-2: Flush final row buffer to slide
+		arrObjSlides.push( $.extend(true,[],arrRows) );
+
+		// LAST:
+		return arrObjSlides;
 	}
 
 	/* =======================================================================================================
@@ -587,7 +735,7 @@ var PptxGenJS = function(){
 		return outText;
 	}
 
-	// XML GEN: First 6 funcs create the base /ppt files
+	// XML-GEN: First 6 functions create the base /ppt files
 
 	function makeXmlContTypes() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
@@ -728,7 +876,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	// XML GEN: Next 5 run 1-N times
+	// XML-GEN: Next 5 functions run 1-N times (once for each Slide)
 
 	/**
 	 * Generates the XML slide resource from a Slide object
@@ -739,7 +887,7 @@ var PptxGenJS = function(){
 		var intTableNum = 1;
 
 		// STEP 1: Start slide XML
-		var strSlideXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n';
+		var strSlideXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
 		strSlideXml += '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
 		strSlideXml += '<p:cSld name="'+ inSlide.name +'">';
 
@@ -814,10 +962,15 @@ var PptxGenJS = function(){
 			// B: Add TABLE / TEXT / IMAGE / MEDIA to current Slide ----------------------------
 			switch ( slideObj.type ) {
 				case 'table':
+					// FIRST: Ensure we have rows - otherwise, bail!
+					if ( !slideObj.arrTabRows || (Array.isArray(slideObj.arrTabRows) && slideObj.arrTabRows.length == 0) ) break;
+
+					// Set table vars
 					var arrRowspanCells = [];
 					var arrTabRows = slideObj.arrTabRows;
 					var objTabOpts = slideObj.options;
 					var intColCnt = 0, intColW = 0;
+
 					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 					// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 					for (var tmp=0; tmp<arrTabRows[0].length; tmp++) {
@@ -841,6 +994,7 @@ var PptxGenJS = function(){
 							+ '      <a:tbl>'
 							+ '        <a:tblPr/>';
 							// + '        <a:tblPr bandRow="1"/>';
+
 					// TODO: FUTURE: Support banded rows, first/last row, etc.
 					// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
 					// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
@@ -916,14 +1070,15 @@ var PptxGenJS = function(){
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
 								var cellFontClr = ((cell.optImp && cell.optImp.color) || cellOpts.color) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.color) || cellOpts.color.replace('#','')) +'"/></a:solidFill>' : '';
 								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
-								var intMarginPt = (cellOpts.marginPt || cellOpts.marginPt == 0) ? (cellOpts.marginPt * ONEPT) : 0;
+								var cellMargin  = (cellOpts.margin && Array.isArray(cellOpts.margin) ? cellOpts.margin : (cellOpts.margin || '') );
+
 								// Margin/Padding:
-								var cellMargin  = '';
-								if ( cellOpts.marginPt && Array.isArray(cellOpts.marginPt) ) {
-									cellMargin = ' marL="'+ cellOpts.marginPt[3] +'" marR="'+ cellOpts.marginPt[1] +'" marT="'+ cellOpts.marginPt[0] +'" marB="'+ cellOpts.marginPt[2] +'"';
-								}
-								else if ( cellOpts.marginPt && Number.isInteger(cellOpts.marginPt) ) {
-									cellMargin = ' marL="'+ intMarginPt +'" marR="'+ intMarginPt +'" marT="'+ intMarginPt +'" marB="'+ intMarginPt +'"';
+								if ( cellMargin ) {
+									var arrMargin = [];
+									if ( Array.isArray(cellMargin) ) arrMargin = cellMargin;
+									else if ( !isNaN(Number(cellMargin)) ) arrMargin = [Number(cellMargin), Number(cellMargin), Number(cellMargin), Number(cellMargin)];
+									else arrMargin = [0, 0, 0, 0];
+									cellMargin = ' marL="'+ arrMargin[3]*ONEPT +'" marR="'+ arrMargin[1]*ONEPT +'" marT="'+ arrMargin[0]*ONEPT +'" marB="'+ arrMargin[2]*ONEPT +'"';
 								}
 							}
 
@@ -1381,7 +1536,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	// XML GEN: Last 5 are root /ppt files
+	// XML-GEN: Last 5 functions create root /ppt files
 
 	function makeXmlTheme() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n\
@@ -1503,10 +1658,18 @@ var PptxGenJS = function(){
 	/**
 	 * Sets the Presentation's Slide Layout {object}: [screen4x3, screen16x9, widescreen]
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
-	 * @param {string} a const name from LAYOUTS variable
+	 * @param {string} inLayout - a const name from LAYOUTS variable
+	 * @param {object} inLayout - an object with user-defined w/h
 	 */
 	this.setLayout = function setLayout(inLayout) {
-		if ( $.inArray(inLayout, Object.keys(LAYOUTS)) > -1 ) {
+		// Allow custom slide size (inches) [ISSUE #29]
+		if ( typeof inLayout === 'object' && inLayout.width && inLayout.height ) {
+			LAYOUTS['LAYOUT_USER'].width  = Number(inLayout.width ) * EMU;
+			LAYOUTS['LAYOUT_USER'].height = Number(inLayout.height) * EMU;
+
+			gObjPptx.pptLayout = LAYOUTS['LAYOUT_USER'];
+		}
+		else if ( $.inArray(inLayout, Object.keys(LAYOUTS)) > -1 ) {
 			gObjPptx.pptLayout = LAYOUTS[inLayout];
 		}
 		else {
@@ -1574,148 +1737,18 @@ var PptxGenJS = function(){
 		// SLIDE METHODS:
 		// ==========================================================================
 
-		// DEPRECATED
-		slideObj.hasSlideNumber = function( inBool ) {
-			if ( inBool ) gObjPptx.slides[slideNum].hasSlideNumber = inBool;
-			else return gObjPptx.slides[slideNum].hasSlideNumber;
-		};
-
-		slideObj.slideNumber = function( inObj ) {
-			if ( inObj && typeof inObj === 'object' ) gObjPptx.slides[slideNum].slideNumberObj = inObj;
-			else return gObjPptx.slides[slideNum].slideNumberObj;
-		};
-
 		slideObj.getPageNumber = function() {
 			return pageNum;
 		};
 
-		// WARN: DEPRECATED: Will soon combine 2nd and 3rd arguments into single {object} (20161216-v1.1.2)
-		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
-		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
-			var opt = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
-			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // TODO: DEPRECATED: merge opts for now for non-breaking fix (20161216)
-
-			// STEP 1: REALITY-CHECK
-			if ( arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows) ) {
-				try { console.warn('[warn] addTable: Array expected! USAGE: slide.addTable( [rows], {options} );'); } catch(ex){}
-				return null;
-			}
-
-			// STEP 2: Grab Slide object count
-			slideObjNum = gObjPptx.slides[slideNum].data.length;
-
-			// STEP 3: Set default options if needed
-			if ( opt.w ) opt.cx = opt.w;
-			if ( opt.h ) opt.cy = opt.h;
-			if ( typeof opt.x  === 'undefined' ) opt.x  = (EMU / 2);
-			if ( typeof opt.y  === 'undefined' ) opt.y  = EMU;
-			if ( typeof opt.cx === 'undefined' ) opt.cx = (gObjPptx.pptLayout.width - (EMU / 2));
-			// NOTE: Do not do this for `cy` - leaving it null triggers auto-rowH in makeXMLSlide()
-
-			// STEP 4: We use different logic in makeSlide (smartCalc is not used), so convert to EMU now
-			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
-			if ( opt.y  < 20 ) opt.y  = inch2Emu(opt.y);
-			if ( opt.w  < 20 ) opt.w  = inch2Emu(opt.w);
-			if ( opt.h  < 20 ) opt.h  = inch2Emu(opt.h);
-			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
-			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
-			//
-			if ( opt && Array.isArray(opt.colW) ) {
-				$.each(opt.colW, function(i,colW){ if ( colW < 20 ) opt.colW[i] = inch2Emu(colW); });
-			}
-
-			// Handle case where user passed in a simple array
-			var arrTemp = $.extend(true,[],arrTabRows);
-			if ( ! Array.isArray(arrTemp[0]) ) arrTemp = [ $.extend(true,[],arrTabRows) ];
-
-			// STEP 5: Add data
-			// NOTE: Use extend to avoid mutation
-			gObjPptx.slides[slideNum].data[slideObjNum] = {
-				type:       'table',
-				arrTabRows: arrTemp,
-				options:    $.extend(true,{},opt)
-			};
-
-			// LAST: Return this Slide object
-			return this;
+		// WARN: DEPRECATED: (leaves in 1.5 or 2.0 at latest)
+		slideObj.hasSlideNumber = function( inBool ) {
+			if ( inBool ) gObjPptx.slides[slideNum].hasSlideNumber = inBool;
+			else return gObjPptx.slides[slideNum].hasSlideNumber;
 		};
-
-		slideObj.addText = function( text, options ) {
-			var opt = ( options && typeof options === 'object' ? options : {} );
-
-			// STEP 1: Grab Slide object count
-			slideObjNum = gObjPptx.slides[slideNum].data.length;
-
-			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
-			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
-			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
-
-			// STEP 2: Set props
-			gObjPptx.slides[slideNum].data[slideObjNum] = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].text = text;
-
-			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {}; // CAPTURE everything passed
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
-			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
-			}
-
-			// ROBUST: Set rational values for some shadow props if needed
-			if ( opt.shadow ) {
-				// OPT: `type`
-				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
-					console.warn('Warning: shadow.type options are `outer` or `inner`.');
-					gObjPptx.slides[slideNum].data[slideObjNum].options.type = 'outer';
-				}
-
-				// OPT: `angle`
-				if ( opt.shadow.angle ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.angle)) || opt.shadow.angle < 0 || opt.shadow.angle > 359 ) {
-						console.warn('Warning: shadow.angle can only be 0-359');
-						opt.shadow.angle = 270;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					gObjPptx.slides[slideNum].data[slideObjNum].options.angle = Math.round(Number(opt.shadow.angle));
-				}
-
-				// OPT: `opacity`
-				if ( opt.shadow.opacity ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.opacity)) || opt.shadow.opacity < 0 || opt.shadow.opacity > 1 ) {
-						console.warn('Warning: shadow.opacity can only be 0-1');
-						opt.shadow.opacity = 0.75;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					gObjPptx.slides[slideNum].data[slideObjNum].options.opacity = Number(opt.shadow.opacity)
-				}
-			}
-
-
-			// LAST: Return
-			return this;
-		};
-
-		slideObj.addShape = function( shape, opt ) {
-			// STEP 1: Grab Slide object count
-			slideObjNum = gObjPptx.slides[slideNum].data.length;
-
-			// STEP 2: Set props
-			gObjPptx.slides[slideNum].data[slideObjNum] = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {};
-			gObjPptx.slides[slideNum].data[slideObjNum].options.shape = shape;
-
-			// LAST: Return
-			return this;
+		slideObj.slideNumber = function( inObj ) {
+			if ( inObj && typeof inObj === 'object' ) gObjPptx.slides[slideNum].slideNumberObj = inObj;
+			else return gObjPptx.slides[slideNum].slideNumberObj;
 		};
 
 		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
@@ -1899,6 +1932,157 @@ var PptxGenJS = function(){
 			return this;
 		}
 
+		slideObj.addShape = function( shape, opt ) {
+			// STEP 1: Grab Slide object count
+			slideObjNum = gObjPptx.slides[slideNum].data.length;
+
+			// STEP 2: Set props
+			gObjPptx.slides[slideNum].data[slideObjNum] = {};
+			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
+			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {};
+			gObjPptx.slides[slideNum].data[slideObjNum].options.shape = shape;
+
+			// LAST: Return
+			return this;
+		};
+
+		// WARN: DEPRECATED: Will soon combine 2nd and 3rd arguments into single {object} (20161216-v1.1.2) (1.5 or 2.0 at the latest)
+		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
+		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
+			var opt = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
+			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // TODO: DEPRECATED: merge opts for now for non-breaking fix (20161216)
+
+			// STEP 1: REALITY-CHECK
+			if ( arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows) ) {
+				try { console.warn('[warn] addTable: Array expected! USAGE: slide.addTable( [rows], {options} );'); } catch(ex){}
+				return null;
+			}
+
+			// STEP 2: Set default options if needed
+			opt.x         = opt.x || (EMU / 2);
+			opt.y         = opt.y || EMU;
+			opt.cx        = opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU * 2));
+			opt.cy        = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
+			opt.font_size = opt.font_size || 12;
+			opt.margin    = opt.marginPt || opt.margin || 0;
+
+			// STEP 3: Convert units to EMU now (we use different logic in makeSlide - smartCalc is not used)
+			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
+			if ( opt.y  < 20 ) opt.y  = inch2Emu(opt.y);
+			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
+			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
+			opt.w = opt.cx;
+			opt.h = opt.cy;
+
+			if ( Array.isArray(opt.colW) ) {
+				$.each(opt.colW, function(i,colW){ if ( colW < 20 ) opt.colW[i] = inch2Emu(colW); });
+			}
+
+			// STEP 4: Row setup: Handle case where user passed in a simple array
+			var arrRows = $.extend(true,[],arrTabRows);
+			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
+
+			// Allow `addSlidesForTable()` to not engage recursion! We've already paged the table data, just add this one
+			if ( tabOpt && tabOpt == false ) {
+				// A: Grab Slide object count
+				var slideObjNum = gObjPptx.slides[slideNum].data.length;
+
+				// B: Add data (NOTE: Use `extend` to avoid mutation)
+				gObjPptx.slides[slideNum].data[slideObjNum] = {
+					type:       'table',
+					arrTabRows: arrRows,
+					options:    $.extend(true,{},opt)
+				};
+			}
+			else {
+				// STEP 5: Loop over rows and create one+ tables as needed (ISSUE#21)
+				getSlidesForTableRows(arrRows,opt).forEach(function(arrRows,idx){
+					// A: We've got a the current Slide already, so add first slides' worth of rows to that,
+					// BUT, create new ones going forward!
+					if ( !gObjPptx.slides[slideNum+idx] ) {
+						gObjPptx.slides[slideNum+idx] = $.extend(true,{},gObjPptx.slides[slideNum]);
+						gObjPptx.slides[slideNum+idx].data = [];
+					}
+
+					// B: Grab Slide object count
+					var slideObjNum = gObjPptx.slides[slideNum+idx].data.length;
+
+					// C: Add data (NOTE: Use `extend` to avoid mutation)
+					gObjPptx.slides[slideNum+idx].data[slideObjNum] = {
+						type:       'table',
+						arrTabRows: arrRows,
+						options:    $.extend(true,{},opt)
+					};
+				});
+			}
+
+			// LAST: Return this Slide object
+			return this;
+		};
+
+		slideObj.addText = function( text, options ) {
+			var opt = ( options && typeof options === 'object' ? options : {} );
+
+			// STEP 1: Grab Slide object count
+			slideObjNum = gObjPptx.slides[slideNum].data.length;
+
+			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
+			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
+			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
+
+			// STEP 2: Set props
+			gObjPptx.slides[slideNum].data[slideObjNum] = {};
+			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
+			gObjPptx.slides[slideNum].data[slideObjNum].text = text;
+
+			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {}; // CAPTURE everything passed
+			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
+			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
+			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
+			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
+			}
+
+			// ROBUST: Set rational values for some shadow props if needed
+			if ( opt.shadow ) {
+				// OPT: `type`
+				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
+					console.warn('Warning: shadow.type options are `outer` or `inner`.');
+					gObjPptx.slides[slideNum].data[slideObjNum].options.type = 'outer';
+				}
+
+				// OPT: `angle`
+				if ( opt.shadow.angle ) {
+					// A: REALITY-CHECK
+					if ( isNaN(Number(opt.shadow.angle)) || opt.shadow.angle < 0 || opt.shadow.angle > 359 ) {
+						console.warn('Warning: shadow.angle can only be 0-359');
+						opt.shadow.angle = 270;
+					}
+
+					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+					gObjPptx.slides[slideNum].data[slideObjNum].options.angle = Math.round(Number(opt.shadow.angle));
+				}
+
+				// OPT: `opacity`
+				if ( opt.shadow.opacity ) {
+					// A: REALITY-CHECK
+					if ( isNaN(Number(opt.shadow.opacity)) || opt.shadow.opacity < 0 || opt.shadow.opacity > 1 ) {
+						console.warn('Warning: shadow.opacity can only be 0-1');
+						opt.shadow.opacity = 0.75;
+					}
+
+					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+					gObjPptx.slides[slideNum].data[slideObjNum].options.opacity = Number(opt.shadow.opacity)
+				}
+			}
+
+			// LAST: Return
+			return this;
+		};
+
 		// ==========================================================================
 		// POST-METHODS:
 		// ==========================================================================
@@ -1974,7 +2158,7 @@ var PptxGenJS = function(){
 	 */
 	this.addSlidesForTable = function addSlidesForTable(tabEleId, inOpts) {
 		var api = this;
-		var opts = (inOpts || {});
+		var opts = inOpts || {};
 		var arrObjTabHeadRows = [], arrObjTabBodyRows = [], arrObjTabFootRows = [];
 		var arrObjSlides = [], arrRows = [], arrColW = [], arrTabColW = [];
 		var intTabW = 0, emuTabCurrH = 0;
@@ -1984,6 +2168,7 @@ var PptxGenJS = function(){
 
 		// NOTE: Look for opts.margin first as user can override Slide Master settings if they want
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+		opts.margin = opts.marginPt || opts.margin || 0;
 		if ( opts && opts.margin ) {
 			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
 			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
@@ -1992,14 +2177,14 @@ var PptxGenJS = function(){
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
 		}
-		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])) );
-		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])) );
+		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])/ONEPT) );
+		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])/ONEPT) );
 
 		// STEP 1: Grab overall table style/col widths
 		$.each(['thead','tbody','tfoot'], function(i,val){
 			if ( $('#'+tabEleId+' > '+val+' > tr').length > 0 ) {
 				$('#'+tabEleId+' > '+val+' > tr:first-child').find('> th, > td').each(function(i,cell){
-					// TODO 1.5: This is a hack - guessing at col widths when colspan
+					// TODO: FIXME: This is a hack - guessing at col widths when colspan
 					if ( $(this).attr('colspan') ) {
 						for (var idx=0; idx<$(this).attr('colspan'); idx++ ) {
 							arrTabColW.push( Math.round($(this).outerWidth()/$(this).attr('colspan')) );
@@ -2046,9 +2231,9 @@ var PptxGenJS = function(){
 					// C: Add padding [margin] (if any)
 					// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
 					if ( $(cell).css('padding-left') ) {
-						objOpts.marginPt = [];
+						objOpts.margin = [];
 						$.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'],function(i,val){
-							objOpts.marginPt.push( Math.round($(cell).css(val).replace(/\D/gi,'') * ONEPT) );
+							objOpts.margin.push( Math.round($(cell).css(val).replace(/\D/gi,'')) );
 						});
 					}
 
@@ -2086,109 +2271,20 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// STEP 4: Paginate data: Iterate over all table rows, divide into slides/pages based upon the row height>overall height
-		$.each([arrObjTabHeadRows,arrObjTabBodyRows,arrObjTabFootRows], function(iTab,tab){
-			var currRow = [];
-			$.each(tab, function(iRow,row){
-				// A: Reset ROW variables
-				var arrCellsLines = [], arrCellsLineHeights = [], emuRowH = 0, intMaxLineCnt = 0, intMaxColIdx = 0;
+		// STEP 4: Break table into Slides as needed
+		// Pass head-rows as there is an option to add to each table and the parse func needs this daa to fulfill that option
+		opts.arrObjTabHeadRows = arrObjTabHeadRows || '';
+		opts.colW = arrColW;
 
-				// B: Parse and store each cell's text into line array (*MAGIC HAPPENS HERE*)
-				$(row).each(function(iCell,cell){
-					// 1: Create a cell object for each table column
-					currRow.push({ text:'', opts:cell.opts });
-
-					// 2: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
-					var lines = parseTextToLines($.trim(cell.text), cell.opts.font_size, (arrColW[iCell]/ONEPT));
-					arrCellsLines.push( lines );
-
-					// 3: Keep track of max line count within all row cells
-					if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
-				});
-
-				// C: Calculate Line-Height
-				// FYI: Line-Height =~ font-size [px~=pt] * 1.65 / 100 = inches high
-				// FYI: 1px = 14288 EMU (0.156 inches) @96 PPI - I ended up going with 20000 EMU as margin spacing needed a bit more than 1:1
-				$(row).each(function(iCell,cell){
-					var lineHeight = inch2Emu(cell.opts.font_size * 1.65 / 100);
-					if ( Array.isArray(cell.opts.marginPt) && cell.opts.marginPt[0] ) lineHeight += cell.opts.marginPt[0] / intMaxLineCnt;
-					if ( Array.isArray(cell.opts.marginPt) && cell.opts.marginPt[2] ) lineHeight += cell.opts.marginPt[2] / intMaxLineCnt;
-					arrCellsLineHeights.push( Math.round(lineHeight) );
-				});
-
-				// D: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
-				for (var idx=0; idx<intMaxLineCnt; idx++) {
-					// 1: Add the current line to cell
-					for (var col=0; col<arrCellsLines.length; col++) {
-						// A: Commit this slide to Presenation if table Height limit is hit
-						if ( emuTabCurrH + arrCellsLineHeights[intMaxColIdx] > emuSlideTabH ) {
-							// 1: Add the current row to table
-							// NOTE: Edge cases can occur where we create a new slide only to have no more lines
-							// ....: and then a blank row sits at the bottom of a table!
-							// ....: Hence, we very all cells have text before adding this final row.
-							$.each(currRow, function(i,cell){
-								if (cell.text.length > 0 ) {
-									// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
-									arrRows.push( $.extend(true, [], currRow) );
-									return false; // break out of .each loop
-								}
-							});
-							// 2: Add new Slide with current array of table rows
-							arrObjSlides.push( $.extend(true, [], arrRows) );
-							// 3: Empty rows for new Slide
-							arrRows.length = 0;
-							// 4: Reset curr table height for new Slide
-							emuTabCurrH = 0; // This row's emuRowH w/b added below
-							// 5: Empty current row's text (continue adding lines where we left off below)
-							$.each(currRow,function(i,cell){ cell.text = ''; });
-							// 6: Auto-Paging Options: addHeaderToEach
-							if ( opts.addHeaderToEach ) {
-								var headRow = [];
-								$.each(arrObjTabHeadRows[0], function(iCell,cell){
-									headRow.push({ text:cell.text, opts:cell.opts });
-									var lines = parseTextToLines(cell.text, cell.opts.font_size, (arrColW[iCell]/ONEPT));
-									if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
-								});
-								arrRows.push( $.extend(true, [], headRow) );
-							}
-						}
-
-						// B: Add next line of text to this cell
-						if ( arrCellsLines[col][idx] ) currRow[col].text += arrCellsLines[col][idx];
-					}
-
-					// 2: Add this new rows H to overall (The cell with the longest line array is the one we use as the determiner for overall row Height)
-					emuTabCurrH += arrCellsLineHeights[intMaxColIdx];
-				}
-
-				// E: Flush row buffer - Add the current row to table, then truncate row cell array
-				// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
-				arrRows.push( $.extend(true, [], currRow) );
-				currRow.length = 0;
-			}); // row loop
-		}); // tab loop
-		// Flush final row buffer to slide
-		arrObjSlides.push( $.extend(true,[],arrRows) );
-
-		// STEP 5: Create a SLIDE for each of our 1-N table pieces
-		$.each(arrObjSlides, function(i,slide){
-			// A: Create table row array
-			var arrTabRows = [];
-
-			// B: Create new Slide
+		getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts)
+		.forEach(function(arrTabRows,i){
+			// A: Create new Slide
 			var newSlide = ( opts.master && gObjPptxMasters ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
-			// C: Create array of Rows
-			$.each(slide, function(i,row){
-				var arrTabRowCells = [];
-				$.each(row, function(i,cell){ arrTabRowCells.push( cell ); });
-				arrTabRows.push( arrTabRowCells );
-			});
+			// B: Add table to Slide
+			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), cx:(emuSlideTabW/EMU), colW:arrColW}, false );
 
-			// D: Add table to Slide
-			newSlide.addTable( arrTabRows, { x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), cx:(emuSlideTabW/EMU), colW:arrColW } );
-
-			// E: Add any additional objects
+			// C: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
 			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );

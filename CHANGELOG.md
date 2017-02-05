@@ -1,10 +1,14 @@
 # Change Log
 
-## [v1.2.0](https://github.com/gitbrent/pptxgenjs/tree/v1.2.0) (2017-01-24)
+## [v1.2.0](https://github.com/gitbrent/pptxgenjs/tree/v1.2.0) (2017-02-04)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.6...v1.2.0)
 
 **Implemented Enhancements:**
+- Pagination for `slideObj.addTable()`? [\#21](https://github.com/gitbrent/PptxGenJS/issues/21) ([TheDorkSide74](https://github.com/TheDorkSide74))
 - Add support for media (Audio,Video,YouTube) [\#26](https://github.com/gitbrent/PptxGenJS/issues/26) ([shashank2104](https://github.com/shashank2104))
+- How to set text shadow? [\#28](https://github.com/gitbrent/PptxGenJS/issues/28) ([itskun](https://github.com/itskun))
+- Allow custom Layout sizes (ex: A3) [\#29](https://github.com/gitbrent/PptxGenJS/issues/29) ([itskun](https://github.com/itskun))
+- Table cell marginPt should allow zero and take TRBL array [\#32](https://github.com/gitbrent/PptxGenJS/issues/32) ([ellisgl](https://github.com/ellisgl))
 
 ## [v1.1.6](https://github.com/gitbrent/pptxgenjs/tree/v1.1.6) (2017-01-19)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.5...v1.1.6)

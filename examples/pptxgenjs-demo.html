@@ -4,7 +4,8 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta name="author" content="https://github.com/gitbrent">
 	<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
-	<link type="text/css" rel="stylesheet" href="style.css">
+	<link type="text/css" rel="stylesheet" href="pptxgenjs-demo.css">
+
 	<!-- NOTE:
 		Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
 		$ open -a 'Google Chrome' --args --allow-file-access-from-files &
@@ -33,17 +34,365 @@
 		var ARRSTRBITES = [130];
 		var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 chars/line
 		// FYI: 3086 chars
-		var gStrLorumIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin condimentum dignissim velit vel luctus. Donec feugiat ipsum quis tempus blandit. Donec mattis mauris vel est dictum interdum. Pellentesque imperdiet nibh vitae porta ornare. Fusce non nisl lacus. Curabitur ut mattis dui. Ut pulvinar urna velit, vitae aliquam neque pulvinar eu. Fusce eget tellus eu lorem finibus mattis. Nunc blandit consequat arcu. Ut sed pharetra tortor, nec finibus ipsum. Pellentesque a est vitae ligula imperdiet rhoncus. Ut quis hendrerit tellus. Phasellus non malesuada mi. Suspendisse ullamcorper tristique odio fermentum elementum. Phasellus mattis mollis mauris, non mattis ligula dapibus quis. Quisque pretium metus massa.\
-Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus.\
-Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus.\
-Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.\
-Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra\
-.';
-		var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Kim','Ann','Lacey','Jenny','Linda','Kathryn'];
+		var gStrLorumIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin condimentum dignissim velit vel luctus. Donec feugiat ipsum quis tempus blandit. Donec mattis mauris vel est dictum interdum. Pellentesque imperdiet nibh vitae porta ornare. Fusce non nisl lacus. Curabitur ut mattis dui. Ut pulvinar urna velit, vitae aliquam neque pulvinar eu. Fusce eget tellus eu lorem finibus mattis. Nunc blandit consequat arcu. Ut sed pharetra tortor, nec finibus ipsum. Pellentesque a est vitae ligula imperdiet rhoncus. Ut quis hendrerit tellus. Phasellus non malesuada mi. Suspendisse ullamcorper tristique odio fermentum elementum. Phasellus mattis mollis mauris, non mattis ligula dapibus quis. Quisque pretium metus massa. '
+		+ 'Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus. '
+		+ 'Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus. '
+		+ 'Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.'
+		+ 'Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra... '
+		+ 'Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus. '
+		+ 'Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus. '
+		+ 'Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.'
+		+ 'Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra.';
+		var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenny','Lara','Kathryn'];
 		var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
-		var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE';
+		var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - 你好';
 		var colors = ['FF0000','AB00CD','00FF00','00AA00','003300','330033','990099','33FFFF','AA33CC','336699'];
 		var fonts = ['Arial','Courier New','Times','Verdana'];
+		//
+		var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+		var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
+
+		// ==================================================================================================================
+
+		function doGenTabTest(type) {
+			// STEP 1: Instantiate new PptxGenJS object
+			var pptx = new PptxGenJS();
+			pptx.setTitle('PptxGenJS Sample '+type);
+			pptx.setLayout('LAYOUT_WIDE');
+
+			// STEP 2: Run requested test
+			var arrTypes = ( typeof type === 'string' ? [type] : type );
+			arrTypes.forEach(function(type,idx){
+				eval( 'genSlides_'+type+'(pptx)' );
+			});
+
+			// LAST: Export Presentation
+			pptx.save('Demo-'+type);
+		}
+
+		function genSlides_Table(pptx) {
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 1: Table text alignment and cell styles
+			// ======== -----------------------------------------------------------------------------------
+			{
+				var slide = pptx.addNewSlide();
+				slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+				// DEMO: align/valign -------------------------------------------------------------------------
+				var objOpts1 = { x:0.5, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
+				slide.addText('Cell Text Alignment:', objOpts1);
+
+				var arrTabRows = [
+					[
+						{ text: 'Top Lft', opts: { valign:'top',    align:'left'  , font_face:'Arial'   } },
+						{ text: 'Top Ctr', opts: { valign:'t'  ,    align:'center', font_face:'Courier' } },
+						{ text: 'Top Rgt', opts: { valign:'t'  ,    align:'right' , font_face:'Verdana' } }
+					],
+					[
+						{ text: 'Ctr Lft', opts: { valign:'middle', align:'left' } },
+						{ text: 'Ctr Ctr', opts: { valign:'center', align:'ctr'  } },
+						{ text: 'Ctr Rgt', opts: { valign:'c'     , align:'r'    } }
+					],
+					[
+						{ text: 'Btm Lft', opts: { valign:'bottom', align:'l' } },
+						{ text: 'Btm Ctr', opts: { valign:'btm',    align:'c' } },
+						{ text: 'Btm Rgt', opts: { valign:'b',      align:'r' } }
+					]
+				];
+				slide.addTable(
+					arrTabRows, { x:0.5, y:1.1, w:6.0 },
+					{ rowH:0.75, fill:'F7F7F7', font_size:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
+				);
+				// Pass default cell style as tabOpts, then just style/override individual cells as needed
+
+				// DEMO: cell styles --------------------------------------------------------------------------
+				var objOpts2 = { x:7.0, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
+				slide.addText('Cell Styles:', objOpts2);
+
+				var arrTabRows = [
+					[
+						{ text: 'White',  opts: { fill:'6699CC', color:'FFFFFF' } },
+						{ text: 'Yellow', opts: { fill:'99AACC', color:'FFFFAA' } },
+						{ text: 'Pink',   opts: { fill:'AACCFF', color:'E140FE' } }
+					],
+					[
+						{ text: '12pt', opts: { fill:'FF0000', font_size:12 } },
+						{ text: '20pt', opts: { fill:'00FF00', font_size:20 } },
+						{ text: '28pt', opts: { fill:'0000FF', font_size:28 } }
+					],
+					[
+						{ text: 'Bold',      opts: { fill:'003366', bold:true } },
+						{ text: 'Underline', opts: { fill:'336699', underline:true } },
+						{ text: '10pt Pad',  opts: { fill:'6699CC', marginPt:10 } }
+					]
+				];
+				slide.addTable(
+					arrTabRows, { x:7.0, y:1.1, w:6.0 },
+					{ rowH:0.75, fill:'F7F7F7', color:'FFFFFF', font_size:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
+				);
+
+				// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
+				var objOpts3 = { x:0.5, y:3.6, font_size:18, font_face:'Arial', color:'0088CC' };
+				slide.addText('Row/Col Heights/Widths:', objOpts3);
+
+				var arrTabRows = [
+					[ {text:'1x1'}, {text:'2x1'}, { text:'2.5x1' }, { text:'3x1' }, { text:'4x1' } ],
+					[ {text:'1x2'}, {text:'2x2'}, { text:'2.5x2' }, { text:'3x2' }, { text:'4x2' } ]
+				];
+				slide.addTable( arrTabRows,
+					{
+						x:0.5, y:4.0,
+						rowH: [1, 2], colW: [1, 2, 2.5, 3, 4],
+						fill:'F7F7F7', color:'6c6c6c',
+						font_size:14, valign:'center', align:'ctr',
+						border:{pt:'1', color:'BBCCDD'}
+					}
+				);
+			}
+
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 2: Table row/col-spans
+			// ======== -----------------------------------------------------------------------------------
+			{
+				var slide = pptx.addNewSlide();
+				// 2: Slide title
+				slide.addTable(
+					[ [{ text:'Table Examples 2', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
+					{ x:0.5, y:0.13, cx:12.5 }
+				);
+
+				// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
+				var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+				slide.addText('Colspans/Rowspans:', optsSub);
+
+				var tabOpts1 = { x:0.5, y:1.1, w:12.3, rowH:1.0, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:'FFFFFF', align:'c', valign:'c' };
+				var arrTabRows1 = [
+					[
+						{ text:'A1 and A2', opts:{rowspan:2, fill:'00CC00'} }
+						,{ text:'B1' }
+						,{ text:'C1 and D1', opts:{colspan:2, fill:'00CC00'} }
+						,{ text:'E1' }
+						,{ text:'F1/F2/F3',  opts:{rowspan:3, fill:'00CC00'} }
+					]
+					,[       'B2', 'C2', 'D2', 'E2' ]
+					,[ 'A3', 'B3', 'C3', 'D3', 'E3' ]
+				];
+				// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
+				// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
+				// (e.g.: there are 5 elements in the first row, and 6 in the second)
+				slide.addTable( arrTabRows1, tabOpts1 );
+
+				var arrTabRows2 = [
+					[ { text:'A1/B1', opts:{colspan:2, fill:'00CC00'} }, { text:'C1' } ],
+					[ { text:'A2' }, { text:'B2/C2', opts:{colspan:2, fill:'00cc00'} } ]
+				];
+				// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
+				// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
+				// (e.g.: there are 5 elements in the first row, and 6 in the second)
+				var tabOpts2 = { x:0.5, y:4.8, w:12.3, rowH:1.0, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:'FFFFFF', align:'c', valign:'c' };
+				slide.addTable( arrTabRows2, tabOpts2 );
+			}
+
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 3: Cell Formatting
+			// ======== -----------------------------------------------------------------------------------
+			{
+				var slide = pptx.addNewSlide();
+				// 2: Slide title
+				slide.addTable(
+					[ [{ text:'Table Examples 3', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
+					{ x:0.5, y:0.13, cx:12.5 }
+				);
+
+				// Cell Margins
+				var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+				slide.addText('Cell Margins:', optsSub);
+
+				slide.addTable( [['margin:0']],           { x:0.5, y:1.1, margin:0,           w:0.8, fill:'F1F1F1' } );
+				slide.addTable( [['margin:5']],           { x:2.5, y:1.1, margin:5,           w:1.0, fill:'F1F1F1' } );
+				slide.addTable( [['margin:[40,5,5,20]']], { x:4.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
+				slide.addTable( [['margin:[80,5,5,10]']], { x:8.0, y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
+
+				// Complex/Compound border
+				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 3.0;
+				slide.addText('Complex Cell Border:', optsSub);
+				var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
+				slide.addTable( [['Borders!']], { x:0.5, y:3.4, w:12.3, rowH:2.0, fill:'F5F5F5', color:'3D3D3D', font_size:18, border:arrBorder, align:'c', valign:'c' } );
+
+				// Invalid char check
+				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 6.1;
+				slide.addText('Escaped Invalid Chars:', optsSub);
+				var arrTabRows3 = [['<', '>', '"', "'", '&', 'plain']];
+				slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
+
+			}
+
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 4: Table auto-paging
+			// ======== -----------------------------------------------------------------------------------
+			{
+				var slide = pptx.addNewSlide();
+
+				var arrRows = [];
+
+				for (var idx=0; idx<gArrNamesF.length; idx++) {
+					arrRows.push( [idx, gArrNamesF[idx], gStrLorumIpsum.substring(idx*100,idx*300)] );
+				}
+
+				slide.addTable( arrRows, { x:0.5, y:0.25, w:12.5, colW:[0.75,1.75,10], border:'CFCFCF' } );
+			}
+		}
+
+		function genSlides_YouTube(pptx) {
+			var slide = pptx.addNewSlide();
+			slide.addTable( [ [{ text:'Media: Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+			// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
+			slide.addText('TED Talks 2016: Top 10', { x:0.5, y:1.2, w:8.00, h:0.4, color:'0088CC' });
+			slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:1.6, w:8.00, h:4.54 });
+		}
+
+		function genSlides_Image(pptx) {
+			// 1:
+			var slide = pptx.addNewSlide();
+			slide.addTable( [ [{ text:'Image Examples: Misc Image Types', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+
+			// Add an image using basic syntax
+			slide.addImage({ path:'images/cc_copyremix.gif',          x:0.5, y:0.75, w:1.20, h:1.20 });
+			// Slide API calls return the same slide, so you can chain calls:
+			slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30, h:3.70 })
+				 .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
+				 .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
+
+			// 2: Images can be pre-encoded into base64, so they do not have to be on the webserver etc. (saves generation time and resources!)
+			// Also has the benefit of being able to be any type (path:images can only be exported as PNG)
+			slide.addImage({ x:1.8, y:0.7, w:1.78, h:1.78, data:GIF_ANIM_FIRE });
+			// NOTE: The 'data:' part of the encoded string is optional:
+			slide.addImage({ x:3.7, y:1.3, w:0.6, h:0.6, data:'image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
+			// TEST: Ensure framework corrects for missing type header
+			slide.addImage({ x:4.4, y:1.9, w:0.7, h:0.7, data:'base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
+
+			// TEST: Ensure framework corrects for missing all header (Please DO NOT pass base64 data without the header! This is a junky test)
+			//slide.addImage({ x:5.2, y:2.6, w:0.8, h:0.8, data:'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
+			// NEGATIVE-TEST:
+			//slide.addImage({ data:'images/doh_this_isnt_base64_data.gif',  x:0.5, y:0.5, w:1.0, h:1.0 });
+		}
+
+		function genSlides_Shape(pptx) {
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 1: Misc Shape Types (no text)
+			// ======== -----------------------------------------------------------------------------------
+			var slide = pptx.addNewSlide();
+			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (no text)', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+
+			slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
+			slide.addShape(pptx.shapes.OVAL,              { x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
+			slide.addShape(pptx.shapes.RECTANGLE,         { x:0.50, y:0.75, cx:5, cy:3.25, fill:'FF0000' });
+			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.4, cx:5, cy:0, line:'FF0000', line_size:1 });
+			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.8, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
+			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.2, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
+			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.6, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+			slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:0.40, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
+			slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:7.00, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
+
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 2: Misc Shape Types with Text
+			// ======== -----------------------------------------------------------------------------------
+			var slide = pptx.addNewSlide();
+			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (with text)', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+
+			slide.addText('ROUNDED-RECTANGLE', { shape:pptx.shapes.ROUNDED_RECTANGLE, align:'l', x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
+			slide.addText('OVAL',              { shape:pptx.shapes.OVAL,              align:'c', x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
+			slide.addText('RECTANGLE',         { shape:pptx.shapes.RECTANGLE,         align:'r', x:0.50, y:0.75, cx:5, cy:3.25, fill:'FF0000' });
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:4.40, cx:5, cy:0, line:'FF0000', line_size:1 });
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'l', x:4.15, y:4.8, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'r', x:4.15, y:5.2, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:5.6, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+			slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:0.40, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
+			slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:7.00, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
+		}
+
+		function genSlides_Text(pptx) {
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 1: Font Size/Color line examples 12-60 pt font, random color
+			// ======== -----------------------------------------------------------------------------------
+			var slide = pptx.addNewSlide();
+			slide.addTable( [ [{ text:'Text Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+
+			// DEMO: Array of text fonts/colors in increasing size
+			$.each([18,22,28,32,42,48],function(i,val){
+				slide.addText( 'Misc font/color, size = '+val,
+					{
+						x:0.5, y:0.7+(i*0.8), cx:12.75,
+						font_size:val, font_face:fonts[Math.floor((Math.random()*4)+1)], color:colors[i]
+					}
+				);
+			});
+
+			// Bullet Test: Number
+			slide.addText(999, { x:9.0, y:0.6, w:'20%', h:1, color:'0000DE', bullet:true });
+			// Bullet Test: Text test
+			slide.addText('Bullet text (int above)', { x:9.0, y:1.0, w:'30%', h:1, color:'00AA00', bullet:true });
+			// Bullet Test: Multi-line text test
+			slide.addText('Line 1\nLine 2\nLine 3', { x:9.0, y:2.0, w:'30%', h:1, color:'AACD00', bullet:true });
+			// Effects > Shadow
+			var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
+			slide.addText('Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)', { x:0.5, y:6.0, w:12, h:1, font_size:32, color:'0088cc', shadow:shadowOpts });
+
+			// ======== -----------------------------------------------------------------------------------
+			// SLIDE 2: Misc mess
+			// ======== -----------------------------------------------------------------------------------
+			var slide = pptx.addNewSlide();
+			// Slide colors: bkgd/fore
+			slide.back = '030303';
+			slide.color = '9F9F9F';
+			// Title
+			slide.addTable( [ [{ text:'Text Examples 2', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+
+			// Actual Textbox shape (can have any Height, can wrap text, etc.)
+			slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, cx:8.5, cy:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
+			slide.addText( 'Textbox (top/lft)', { x:10,  y:0.75, cx:3.0, cy:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', isTextBox:true } );
+			slide.addText( 'Textbox (btm/rgt)', { x:10,  y:2.25, cx:3.0, cy:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', isTextBox:true } );
+
+			slide.addText('Plain x/y coords', { x:10, y:3.5 });
+
+			slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5 });
+
+			slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
+
+			// Add text box with multi colors and fonts:
+			slide.addText(
+				[
+					{ text:'Hello ', options:{ font_size:48, font_face:'Courier New', color:'0000CC' } },
+					{ text:'World!', options:{ font_size:48, font_face:'Arial', color:'FFFF00' } }
+				],
+				{ x:0.5, y:2.5, cx:2.5, cy:3, margin:0.25 }
+			);
+
+			var objOptions = {
+				x:0.5, y:5.5, cx:'90%',
+				font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true, margin:0, isTextBox:true
+			};
+			slide.addText('Arial (42pt, green, bold, italic, underline), [0 inset]', objOptions);
+
+			slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
+				{ x:0, y:6.5, cx:'100%', cy:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
+			);
+		}
+
+		function genSlides_Master(pptx) {
+			var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
+			var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
+			var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
+
+			var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+			var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
+			var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
+		}
+
+		function runEveryTest() {
+			doGenTabTest([ 'Table', 'Image', 'Shape', 'Text', 'Master', 'YouTube' ]);
+		}
 
 		// ==================================================================================================================
 
@@ -52,12 +401,13 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			var slide = pptx.addNewSlide();
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 
+			pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
+
 			slide.slideNumber({ x:0.5, y:'90%' });
 
 			slide.addTable( [ [{ text:'Simple Example', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 			//slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
-// TODO: shadow
 			slide.addText('Hello 45! ', { x:0.5, y:0.5, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'00AAFF', blur:2, offset:10, angle: 45, opacity:0.25} });
 			slide.addText('Hello 180!', { x:0.5, y:1.0, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'ceAA00', blur:2, offset:10, angle:180, opacity:0.5} });
 			slide.addText('Hello 355!', { x:0.5, y:1.5, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'aaAA33', blur:2, offset:10, angle:355, opacity:0.75} });
@@ -71,39 +421,6 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 
 			// Export:
 			pptx.save('Sample Presentation');
-		}
-
-		function doMedia() {
-			var pptx = new PptxGenJS();
-			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
-
-			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Media: Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-			slide.addText('Online: YouTube', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
-			slide.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'online', link:'https://www.youtube.com/embed/w3w9FVAyyL0' });
-
-			// LAST: Export Presentation
-			pptx.save();
-		}
-
-		function doCorpPresTest() {
-			// FIRST: Instantiate new PptxGenJS instance
-			var pptx = new PptxGenJS();
-
-			if ( $('#inclCorp1').prop('checked') ) {
-				var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
-				var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
-				var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
-			}
-			if ( $('#inclCorp2').prop('checked') ) {
-				var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
-				var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
-				var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
-			}
-
-			// LAST: Export Presentation
-			pptx.save();
 		}
 
 		function buildDataTable() {
@@ -197,599 +514,425 @@ Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ul
 			pptx.save('Table2SlideDemo3');
 		}
 
-		function doGenPptFile() {
+		// ==================================================================================================================
+		$(document).ready(function(){
 			// REALITY-CHECK: Ensure user has a modern browser
-			if ( typeof PptxGenJS === 'undefined' || !window.Blob ) {
-				alert("Unsupported Browser\n\nSorry, but you'll need a modern browser (IE10+/Chrome/Firefox) to enable this feature.");
+			if ( !window.Blob ) {
+				alert("Unsupported Browser\n\nSorry, but you'll need a modern browser - (Chrome, Firefox, Edge, Opera) or IE11 - to enable this feature.");
+				return;
+			}
+			else if ( typeof PptxGenJS === 'undefined' ) {
+				alert("Oops!\n\n`PptxGenJS` is undefined - maybe a bad link to the 'pptxgen.js' file or something...?\n");
 				return;
 			}
 
-			// STEP 1: Instantiate new PptxGenJS object
-			var pptx = new PptxGenJS();
-			// A: Presentation Title
-			pptx.setTitle('PptxGenJS Sample Export');
-			// B: Presentation Options
-			pptx.setLayout('LAYOUT_WIDE');
-			//pptx.setLayout('LAYOUT_CRAP_DEBUG'); console.log("^^^ [negative test] ^^^");
-			// align: [l (left), r (right), c (center), just (justified), dist (dist across entire line)]
-			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
-			var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
-
-			// STEP 2: Create selected slides
-
-			// A: TABLE slide ------------------------------------------------------------------------------
-			if ( document.getElementById('inclTable').checked ) {
-				// ======== -----------------------------------------------------------------------------------
-				// SLIDE 1: Table text alignment and cell styles
-				// ======== -----------------------------------------------------------------------------------
-				var slide = pptx.addNewSlide();
-				slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
-
-				// DEMO: align/valign -------------------------------------------------------------------------
-				var objOpts1 = { x:0.5, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
-				slide.addText('Cell Text Alignment:', objOpts1);
-
-				var arrTabRows = [
-					[
-						{ text: 'Top Lft', opts: { valign:'top',    align:'left'  , font_face:'Arial'   } },
-						{ text: 'Top Ctr', opts: { valign:'t'  ,    align:'center', font_face:'Courier' } },
-						{ text: 'Top Rgt', opts: { valign:'t'  ,    align:'right' , font_face:'Verdana' } }
-					],
-					[
-						{ text: 'Ctr Lft', opts: { valign:'middle', align:'left' } },
-						{ text: 'Ctr Ctr', opts: { valign:'center', align:'ctr'  } },
-						{ text: 'Ctr Rgt', opts: { valign:'c'     , align:'r'    } }
-					],
-					[
-						{ text: 'Btm Lft', opts: { valign:'bottom', align:'l' } },
-						{ text: 'Btm Ctr', opts: { valign:'btm',    align:'c' } },
-						{ text: 'Btm Rgt', opts: { valign:'b',      align:'r' } }
-					]
-				];
-				slide.addTable(
-					arrTabRows, { x:0.5, y:1.1, cx:6.0 },
-					{ rowH:0.75, fill:'F7F7F7', font_size:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
-				);
-				// Pass default cell style as tabOpts, then just style/override individual cells as needed
-
-				// DEMO: cell styles --------------------------------------------------------------------------
-				var objOpts2 = { x:7.0, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
-				slide.addText('Cell Styles:', objOpts2);
-
-				var arrTabRows = [
-					[
-						{ text: 'White',  opts: { fill:'6699CC', color:'FFFFFF' } },
-						{ text: 'Yellow', opts: { fill:'99AACC', color:'FFFFAA' } },
-						{ text: 'Pink',   opts: { fill:'AACCFF', color:'E140FE' } }
-					],
-					[
-						{ text: '12pt', opts: { fill:'FF0000', font_size:12 } },
-						{ text: '20pt', opts: { fill:'00FF00', font_size:20 } },
-						{ text: '28pt', opts: { fill:'0000FF', font_size:28 } }
-					],
-					[
-						{ text: 'Bold',      opts: { fill:'003366', bold:true } },
-						{ text: 'Underline', opts: { fill:'336699', underline:true } },
-						{ text: '10pt Pad',  opts: { fill:'6699CC', marginPt:10 } }
-					]
-				];
-				slide.addTable(
-					arrTabRows, { x:7.0, y:1.1, cx:6.0 },
-					{ rowH:0.75, fill:'F7F7F7', color:'FFFFFF', font_size:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
-				);
-
-				// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
-				var objOpts3 = { x:0.5, y:3.6, font_size:18, font_face:'Arial', color:'0088CC' };
-				slide.addText('Row/Col Heights/Widths:', objOpts3);
-
-				var arrTabRows = [
-					[ {text:'1x1'}, {text:'2x1'}, { text:'2.5x1' }, { text:'3x1' }, { text:'4x1' } ],
-					[ {text:'1x2'}, {text:'2x2'}, { text:'2.5x2' }, { text:'3x2' }, { text:'4x2' } ]
-				];
-				slide.addTable( arrTabRows,
-					{
-						x:0.5, y:4.0,
-						rowH: [1, 2], colW: [1, 2, 2.5, 3, 4],
-						fill:'F7F7F7', color:'6c6c6c',
-						font_size:14, valign:'center', align:'ctr',
-						border:{pt:'1', color:'BBCCDD'}
-					}
-				);
-
-				// ======== -----------------------------------------------------------------------------------
-				// SLIDE 2: Table row/col-spans
-				// ======== -----------------------------------------------------------------------------------
-				var slide = pptx.addNewSlide();
-				// 2: Slide title
-				slide.addTable(
-					[ [{ text:'Table Examples 2', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-					{ x:0.5, y:0.13, cx:12.5 }
-				);
-
-				// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
-				var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
-				slide.addText('Row/Col-spans:', optsSub);
-
-				var arrTabRows1 = [
-				    [
-				        { text:'A1 and A2', opts:{rowspan:2, fill:'00CC00'} }
-						,{ text:'B1' }
-				        ,{ text:'C1 and D1', opts:{colspan:2, fill:'00CC00'} }
-				        ,{ text:'E1' }
-						,{ text:'F1/F2/F3',  opts:{rowspan:3, fill:'00CC00'} }
-				    ]
-				    ,[       'B2', 'C2', 'D2', 'E2' ]
-					,[ 'A3', 'B3', 'C3', 'D3', 'E3' ]
-				];
-				// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
-				// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
-				// (e.g.: there are 5 elements in the first row, and 6 in the second)
-				slide.addTable( arrTabRows1, { x:0.5, y:1.1, w:12.3, rowH:0.75, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
-
-				var arrTabRows2 = [
-				    [ { text:'A1/B1', opts:{colspan:2, fill:'00CC00'} }, { text:'C1' } ],
-				    [ { text:'A2' }, { text:'B2/C2', opts:{colspan:2, fill:'00cc00'} } ]
-				];
-				// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
-				// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
-				// (e.g.: there are 5 elements in the first row, and 6 in the second)
-				slide.addTable( arrTabRows2, { x:0.5, y:3.6, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
-
-				// Complex/Compound border
-				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 4.8;
-				slide.addText('Complex Cell Border:', optsSub);
-				var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
-				slide.addTable( [['Borders!']], { x:0.5, y:5.2, w:12.3, rowH:0.6, fill:'F5F5F5', color:'3D3D3D', border:arrBorder, align:'c', valign:'c' } );
-
-				// Invalid char check
-				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 6.1;
-				slide.addText('Escaped Invalid Chars:', optsSub);
-				var arrTabRows3 = [['<', '>', '"', "'", '&', 'plain']];
-				slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
-			}
-
-			// B: TEXT slide -------------------------------------------------------------------------------
-			if ( document.getElementById('inclText').checked ) {
-				// ======== -----------------------------------------------------------------------------------
-				// SLIDE 1: Font Size/Color line examples 12-60 pt font, random color
-				// ======== -----------------------------------------------------------------------------------
-				var slide = pptx.addNewSlide();
-				slide.addTable( [ [{ text:'Text Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
-
-				// DEMO: Array of text fonts/colors in increasing size
-				$.each([18,22,28,32,42,48],function(i,val){
-					slide.addText( 'Misc font/color, size = '+val,
-						{
-							x:0.5, y:0.7+(i*0.8), cx:12.75,
-							font_size:val, font_face:fonts[Math.floor((Math.random()*4)+1)], color:colors[i]
-						}
-					);
-				});
-
-				// Bullet Test: Number
-				slide.addText(999, { x:9.0, y:0.6, w:'20%', h:1, color:'0000DE', bullet:true });
-				// Bullet Test: Text test
-				slide.addText('Bullet text (int above)', { x:9.0, y:1.0, w:'30%', h:1, color:'00AA00', bullet:true });
-				// Bullet Test: Multi-line text test
-				slide.addText('Line 1\nLine 2\nLine 3', { x:9.0, y:2.0, w:'30%', h:1, color:'AACD00', bullet:true });
-				// Effects > Shadow
-				slide.addText('Outer Shadow ', { x:0.5, y:6.0, w:6, h:1, font_size:36, color:'0088cc', shadow:{type:'outer', color:'696969', blur:3, offset:10, angle: 45, opacity:0.8} });
-
-				// ======== -----------------------------------------------------------------------------------
-				// SLIDE 2: Misc mess
-				// ======== -----------------------------------------------------------------------------------
-				var slide = pptx.addNewSlide();
-				// Slide colors: bkgd/fore
-				slide.back = '030303';
-				slide.color = '9F9F9F';
-				// Title
-				slide.addTable( [ [{ text:'Text Examples 2', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
-
-				// Actual Textbox shape (can have any Height, can wrap text, etc.)
-				slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, cx:8.5, cy:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
-				slide.addText( 'Textbox (top/lft)', { x:10,  y:0.75, cx:3.0, cy:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', isTextBox:true } );
-				slide.addText( 'Textbox (btm/rgt)', { x:10,  y:2.25, cx:3.0, cy:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', isTextBox:true } );
-
-				slide.addText('Plain x/y coords', { x:10, y:3.5 });
-
-				slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5 });
-
-				slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
-
-				// Add text box with multi colors and fonts:
-				slide.addText(
-					[
-						{ text:'Hello ', options:{ font_size:48, font_face:'Courier New', color:'0000CC' } },
-						{ text:'World!', options:{ font_size:48, font_face:'Arial', color:'FFFF00' } }
-					],
-					{ x:0.5, y:2.5, cx:2.5, cy:3, margin:0.25 }
-				);
-
-				var objOptions = {
-					x:0.5, y:5.5, cx:'90%',
-					font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true, margin:0, isTextBox:true
-				};
-				slide.addText('Arial (42pt, green, bold, italic, underline), [0 inset]', objOptions);
-
-				slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
-					{ x:0, y:6.5, cx:'100%', cy:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
-				);
-			}
-
-			// C: SHAPE slide ------------------------------------------------------------------------------
-			if ( document.getElementById('inclShape').checked ) {
-				// ======== -----------------------------------------------------------------------------------
-				// SLIDE 1: Misc Shape Types (no text)
-				// ======== -----------------------------------------------------------------------------------
-				var slide = pptx.addNewSlide();
-				slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (no text)', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
-
-				slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
-			    slide.addShape(pptx.shapes.OVAL,              { x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
-				slide.addShape(pptx.shapes.RECTANGLE,         { x:0.50, y:0.75, cx:5, cy:3.25, fill:'FF0000' });
-			    slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.4, cx:5, cy:0, line:'FF0000', line_size:1 });
-			    slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.8, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
-			    slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.2, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
-				slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.6, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-				slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:0.40, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
-				slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:7.00, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
-
-				// ======== -----------------------------------------------------------------------------------
-				// SLIDE 2: Misc Shape Types with Text
-				// ======== -----------------------------------------------------------------------------------
-				var slide = pptx.addNewSlide();
-				slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (with text)', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
-
-				slide.addText('ROUNDED-RECTANGLE', { shape:pptx.shapes.ROUNDED_RECTANGLE, align:'l', x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
-				slide.addText('OVAL',              { shape:pptx.shapes.OVAL,              align:'c', x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
-				slide.addText('RECTANGLE',         { shape:pptx.shapes.RECTANGLE,         align:'r', x:0.50, y:0.75, cx:5, cy:3.25, fill:'FF0000' });
-				slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:4.40, cx:5, cy:0, line:'FF0000', line_size:1 });
-				slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'l', x:4.15, y:4.8, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
-			    slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'r', x:4.15, y:5.2, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
-				slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:5.6, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-				slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:0.40, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
-				slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:7.00, y:4.3, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
-			}
-
-			// D: IMAGE slide ------------------------------------------------------------------------------
-			if ( document.getElementById('inclImage').checked ) {
-				// 1:
-				var slide = pptx.addNewSlide();
-				slide.addTable( [ [{ text:'Image Examples: Misc Image Types', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
-
-				// Add an image using basic syntax
-				slide.addImage({ path:'images/cc_copyremix.gif',          x:0.5, y:0.75, w:1.20, h:1.20 });
-				// Slide API calls return the same slide, so you can chain calls:
-				slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30, h:3.70 })
-				     .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
-				     .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
-
-				// 2: Images can be pre-encoded into base64, so they do not have to be on the webserver etc. (saves generation time and resources!)
-				// Also has the benefit of being able to be any type (path:images can only be exported as PNG)
-				slide.addImage({ x:1.8, y:0.7, w:1.78, h:1.78, data:GIF_ANIM_FIRE });
-				// NOTE: The 'data:' part of the encoded string is optional:
-				slide.addImage({ x:3.7, y:1.3, w:0.6, h:0.6, data:'image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
-				// TEST: Ensure framework corrects for missing type header
-				slide.addImage({ x:4.4, y:1.9, w:0.7, h:0.7, data:'base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
-
-				// TEST: Ensure framework corrects for missing all header (Please DO NOT pass base64 data without the header! This is a junky test)
-				//slide.addImage({ x:5.2, y:2.6, w:0.8, h:0.8, data:'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
-				// NEGATIVE-TEST:
-				//slide.addImage({ data:'images/doh_this_isnt_base64_data.gif',  x:0.5, y:0.5, w:1.0, h:1.0 });
-			}
-
-			// LAST: Export Presentation
-			pptx.save();
-		}
-
-		// ON-LOAD:
-		$( document ).ready(function(){
+			// STEP 1: Check
 			if ( window.location.href.indexOf('file:') == 0 ) { $('.jsLocalFile').show(); }
+
+			// STEP 2: Build table-2-slide rows
 			buildDataTable();
+
+			// STEP 3: Populate code areas
+			$('#demo-basic').html('<pre class="prettyprint">\n'
+				+ '// STEP 1: Create a new Presentation\n'
+				+ 'var pptx = new PptxGenJS();\n'
+				+ '\n'
+				+ '// STEP 2: Add a Slide to the new Presentation\n'
+				+ 'var slide = pptx.addNewSlide();\n'
+				+ '\n'
+				+ '// STEP 3: Add any objects (table, text, shape or images) to the Slide\n'
+				+ "slide.addText('BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - 你好', {x:0.5, y:1.0, font_size:28, color:'0088CC'} )\n"
+				+ '\n'
+				+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
+				+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
+				+ '</pre>\n');
+
+			$('#demo-youtube').html('<pre class="prettyprint">\n'
+				+ "var pptx = new PptxGenJS();\n"
+				+ "var slide = pptx.addNewSlide();\n"
+				+ '\n'
+				+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
+				+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
+				+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
+				+ '\n'
+				+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
+				+ '</pre>\n');
+
+			$('#demo-sandbox').html('<pre class="prettyprint" style="margin:0 !important; width:auto; padding:10px; border-radius:0;">\n'
+				+ "var pptx = new PptxGenJS();\n"
+				+ "var slide = pptx.addNewSlide();\n"
+				+ "// Custom Slide sizes are supported. Just provide 3 options:\n"
+				+ "pptx.setLayout({ name:'A3', width:16.5, height:11.7 });\n"
+				+ "\n"
+				+ "slide.addText('Sandbox Output', { x:0.25, y:0.15, font_size:32, color:'00FF00' });\n"
+				+ "var tabOpts = { x:0.5, y:0.73, rowH:0.5, colW:[0.65, 3.25, 0.65, 0.65, 0.65, 1.3, 0.65] };\n"
+				+ "tabOpts.fill ='e6e6e6';\n"
+				+ "tabOpts.border = { pt:1, color:'c7c7c7' };\n"
+				+ "tabOpts.margin = [10,5,10,5];\n"
+				+ "slide.addTable( [1,2,3,4,5,6,7], tabOpts );\n"
+				+ "\n"
+				+ "pptx.save('PptxGenJs-Advanced-Sandbox');\n"
+				+ "</pre>\n");
 		});
 	</script>
 </head>
 <body>
+	<a href="https://github.com/GitBrent/PptxGenJS"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+
 	<div style="padding:20px 10%; margin:auto;">
 		<div class="mainTitle">
 			<a href="https://github.com/GitBrent/PptxGenJS" style="text-decoration:none; color:inherit;">PptxGenJS</a>
-			<span>- JavaScript PowerPoint Framework - Presentation Demos</span>
+			<span> - JavaScript PowerPoint Framework - Presentation Demos</span>
+			<input type="button" class="flatBtn flatBtn-blueMd" style="float:right; margin-top:10px;" value="Run All Demos" onclick="runEveryTest()">
 		</div>
 
-		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Basic Slide
-		</div>
-		<div class="sectionBox" style="display:block; padding:15px;">
-			<div class="code" style="text-align:left; margin-bottom:15px">
-<pre id="demo-basic" class="prettyprint">
-// STEP 1: Create a new Presentation
-var pptx = new PptxGenJS();
+		<div id="navTabs" class="modernTabs">
+			<ul>
+				<li class="active" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab1').addClass('active');">Introduction</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab2').addClass('active');">Tables</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab3').addClass('active');">Images &amp; YouTube</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab4').addClass('active');">Shapes &amp; Text</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab5').addClass('active');">Templates/Masters</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab6').addClass('active');">Table To Slides</li>
+			</ul>
 
-// STEP 2: Add a Slide to the new Presentation
-var slide = pptx.addNewSlide();
-
-// STEP 3: Add any objects (table, text, shape or images) to the Slide
-// In this case, we will use what you enter in the textbox below
-slide.addText( $('#demo-basic-text').val(), {x:1.0, y:1.0, font_size:42, color:'00FF00'} );
-
-// STEP 4: Send the PPTX Presentation to the user, using your choice of file name
-pptx.save('PptxGenJs-Basic-Slide-Demo');
-</pre>
-			</div>
-			<div class="table" style="padding:0 15px">
-				<div style="width:5%; text-align:left;">
-					<span style="white-space:nowrap; margin-right:5px; font-size:16px">Slide Text:</span>
+			<div id="tab1" class="active" data-title="Intro">
+				<div class="topDocLink">
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
+					<a href="https://github.com/gitbrent/PptxGenJS#library-reference" target="_blank">View Documentation and Example Code</a>
 				</div>
-				<div style="width:94%; text-align:left;">
-					<input id="demo-basic-text" type="text" value="Hello World!" style="width:95%; font-size:16px">
+
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Basic Presentation: Slide
 				</div>
-				<div style="width:1%">
-					<input type="button" class="flatBtn flatBtn-blueMd" value="Basic Slide Demo" onclick="eval( $('#demo-basic').text() )">
+				<div class="sectionBox" style="display:block; padding:15px;">
+					<div id="demo-basic" class="code" style="text-align:left; margin-bottom:15px"></div>
+					<div style="text-align:center; padding:20px;">
+						<input type="button" class="flatBtn flatBtn-green" value="Basic Slide Demo" onclick="eval( $('#demo-basic').text() )">
+					</div>
 				</div>
-			</div>
-		</div>
 
-		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow active"></div>DEMO: Core Object Types
-		</div>
-		<div class="sectionBox">
-			<div class="jsLocalFile" style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px; display:none;">
-				NOTE: Web browsers will not allow local file access, meaning images using
-				<code>path:</code> cannot be read if running this locally!
-				<br>
-				(Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files)
-			</div>
-			<div id="field-table" class="formBox">
-				<fieldset>
-			    	<legend><label for="inclTable"><input id="inclTable" type="checkbox"> Table Slide</label></legend>
-					<h3>Slide 1</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Text Alignment</label></div>
-						</div>
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Cell Styles</label></div>
-						</div>
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Row H / Col W</label></div>
-						</div>
-					</div>
-					<h3>Slide 2</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Colspans/Rowspans</label></div>
-						</div>
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Complex Cell Borders</label></div>
-						</div>
-					</div>
-				</fieldset>
-			</div>
-
-			<div class="formBox">
-				<fieldset>
-					<legend><label for="inclText"><input id="inclText" type="checkbox"> Text Slide</label></legend>
-					<h3>Slide 1</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Font Face/Color Combos, Bullets, Shadow</label></div>
-						</div>
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Bullets: Number, text and multi-line</label></div>
-						</div>
-					</div>
-					<h3>Slide 2</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Text Formatting, Colors and Alignments</label></div>
-						</div>
-					</div>
-				</fieldset>
-			</div>
-
-			<div class="formBox">
-				<fieldset>
-			    	<legend><input id="inclShape" type="checkbox"><label for="inclShape"> Shape Slide</label></legend>
-					<h3>Slide 1</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Misc Shapes without Text</label></div>
-						</div>
-					</div>
-					<h3>Slide 2</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>Misc Shapes with Text</label></div>
-						</div>
-					</div>
-				</fieldset>
-			</div>
-
-			<div class="formBox">
-				<fieldset>
-			    	<legend><input id="inclImage" type="checkbox"><label for="inclImage"> Images Slide</label></legend>
-					<h3>Slide 1</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>4 Image Types using Src</label></div>
-						</div>
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>4 Images pre-encoded using data:[base64]</label></div>
-						</div>
-					</div>
-				</fieldset>
-			</div>
-
-			<div id="buttonBarBtm" style="clear:both">
-				<input type="button" class="flatBtn flatBtn-green"  style="margin-right:20px; width:40%" onclick="doGenPptFile()" value="Generate Sample PowerPoint">
-				<input type="button" class="flatBtn flatBtn-blueMd" style="margin-right:20px;" value="Check All"
-					onclick="$(this).parents('.sectionBox').find('.formBox input[type=\'checkbox\']').prop('checked',!$(this).attr('checked'));">
-			</div>
-		</div>
-
-		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow"></div>DEMO: Media: YouTube
-		</div>
-		<div class="sectionBox" style="display:none; padding:15px;">
-			<div class="code" style="text-align:left; margin-bottom:15px">
-<pre id="demo-youtube" class="prettyprint">
-var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
-
-// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
-slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });
-slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });
-
-pptx.save('PptxGenJs-YouTube-Demo');
-</pre>
-			</div>
-			<div id="buttonBarBtm" style="clear:both">
-				<input type="button" class="flatBtn flatBtn-blueMd" value="YouTube Slide Demo" onclick="eval( $('#demo-youtube').text() )">
-			</div>
-		</div>
-
-		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow"></div>DEMO: Slide Masters
-		</div>
-		<div class="sectionBox" style="display:none">
-			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
-				<fieldset style="height:auto">
-			    	<legend><label for="inclCorp1"><input id="inclCorp1" type="checkbox" checked="checked"> As Defined</label></legend>
-					<h3>Slide 1</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>pptx.masters.TITLE_SLIDE</label></div>
-						</div>
-					</div>
-					<h3>Slide 2</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>pptx.masters.MASTER_SLIDE</label></div>
-						</div>
-					</div>
-					<h3>Slide 3</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>pptx.masters.THANKS_SLIDE</label></div>
-						</div>
-					</div>
-				</fieldset>
-			</div>
-			<div class="formBox" style="width:47%; width:calc(50% - 20px);">
-				<fieldset style="height:auto">
-			    	<legend><label for="inclCorp2"><input id="inclCorp2" type="checkbox"> Options Overidden</label></legend>
-					<h3>Slide 4</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>pptx.masters.MASTER_SLIDE with background color override</label></div>
-						</div>
-					</div>
-					<h3>Slide 5</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>pptx.masters.MASTER_SLIDE with background image override</label></div>
-						</div>
-					</div>
-					<h3>Slide 6</h3>
-					<div class="divTable">
-						<div>
-							<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-							<div><label>pptx.masters.THANKS_SLIDE with background color override</label></div>
-						</div>
-					</div>
-				</fieldset>
-			</div>
-			<div id="buttonBarBtm" style="clear:both">
-				<input type="button" class="flatBtn flatBtn-nsPurple" value="Corporate Masters Test" onclick="doCorpPresTest()">
-			</div>
-		</div>
-
-		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow"></div>DEMO: HTML Table To Slide(s)
-		</div>
-		<div class="sectionBox" style="display:none">
-			<div id="auto-paging-options" style="text-align:center; margin-bottom:10px;">
-				<b>OPTIONS: </b>
-				<label for="numTab2SlideHead" style="font-size:12px">Include Header on each Slide?</label>
-				<input type="radio" name="radioHead" value="Y" checked="checked">Yes<span>&nbsp;&nbsp;&nbsp;</span>
-				<input type="radio" name="radioHead" value="N">No
-
-				<div style="display:inline-block; margin-left:50px">
-					<b>SETUP: </b>
-					<label for="numTab2SlideRows" style="font-size:12px">Table Rows:</label>
-					<input id="numTab2SlideRows" type="number" min="1" max="25" value="2" onchange="buildDataTable()">
-					<label for="numTab2SlidePadding" style="font-size:12px">Cell Padding:</label>
-					<input id="numTab2Padding" type="number" min="0" max="25" value="5"
-						onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow"></div>Code Sandbox
 				</div>
-			</div>
-			<table id="tabAutoPaging" class="tabCool">
-				<thead>
-					<tr>
-						<th data-pptx-min-width="0.6" style="width:5%">Row</th>
-						<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
-						<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-						<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
-					</tr>
-				</thead>
-				<tbody></tbody>
-			</table>
-			<div style="text-align:center; padding:20px;">
-				<input type="button" class="flatBtn flatBtn-nsBlue"   onclick="table2slides1()" style="margin-right:20px" value="Demo using Slide Master">
-				<input type="button" class="flatBtn flatBtn-nsTeal"   onclick="table2slides2()" style="margin-right:20px" value="Demo using Custom Shapes">
-				<input type="button" class="flatBtn flatBtn-nsYellow" onclick="table2slides3()" value="Demo using Slide Master+Options">
-			</div>
-		</div>
+				<div class="sectionBox" style="display:none">
+					<div style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px;">
+						Code below is editable (use shift-return to create a new line)
+					</div>
+					<div class="code" style="text-align:left; margin-bottom:15px">
+						<div id="demo-sandbox" contenteditable="true" style="background:#f1f1f1;"></div>
+					</div>
 
-		<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-			onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-			<div class="arrow"></div>ADVANCED: Sandbox
-		</div>
-		<div class="sectionBox" style="display:none">
-			<div style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px;">
-				Code below is editable (use shift-return to create a new line)
-			</div>
-			<div class="code" style="text-align:left; margin-bottom:15px">
-				<div id="sandboxCode" contenteditable="true" style="background:#f1f1f1;">
-<pre id="adv-sandbox" style="margin:0 !important; width:auto; padding:10px; border-radius:0;">
-var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
-
-slide.addText( 'Sandbox Output', { x:0.25, y:0.15, font_size:32, color:'00FF00' });
-var tabOpts = { x:0.5, y:0.73, rowH:0.5, colW:[0.65, 3.25, 0.65, 0.65, 0.65, 1.3, 0.65] };
-tabOpts.fill ='e6e6e6';
-tabOpts.border = { pt:1, color:'c7c7c7' };
-slide.addTable( [1,2,3,4,5,6,7], tabOpts );
-
-pptx.save('PptxGenJs-Advanced-Sandbox');
-</pre>
+					<div style="text-align:center; padding:20px;">
+						<input type="button" class="flatBtn flatBtn-nsOrange" value="Execute Sandbox Code" onclick="eval( $('#demo-sandbox').text() )">
+					</div>
 				</div>
 			</div>
 
-			<div style="text-align:center; padding:20px;">
-				<input type="button" class="flatBtn flatBtn-nsOrange" value="Execute Sandbox Code" onclick="eval( $('#sandboxCode').text() )">
+			<div id="tab2" data-title="Tables">
+				<div class="topDocLink">
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
+					<a href="https://github.com/gitbrent/PptxGenJS#adding-tables" target="_blank">View Documentation and Example Code</a>
+				</div>
+
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Tables
+				</div>
+				<div class="sectionBox">
+					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
+						<fieldset style="height:auto">
+					    	<legend>Table Layout/Format</legend>
+							<h3>Slide 1</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Text Alignment</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Cell Styles</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Row Height / Col Width</label></div>
+								</div>
+							</div>
+							<h3>Slide 2</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Colspans/Rowspans</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
+						<fieldset style="height:auto">
+							<legend>Cell Formatting</legend>
+							<h3>Slide 3</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Cell Margins</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Complex Cell Borders</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Escaped Special Characters</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
+						<fieldset style="height:auto">
+							<legend>Automattic Table Paging</legend>
+							<h3>Slide 1-n</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Large amount of text to overflow onto subsequent slides</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div id="buttonBarBtm" style="clear:both">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Table Slides" onclick="doGenTabTest('Table')">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab3" data-title="Images/YouTube">
+				<div class="topDocLink">
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
+					<a href="https://github.com/gitbrent/PptxGenJS#adding-images" target="_blank">View Documentation and Example Code</a>
+				</div>
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Images &amp; YouTube
+				</div>
+				<div class="sectionBox">
+					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+							<legend>Images Slide</legend>
+							<h3>Slide 1</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Animated GIF (campfire icon - click to play)</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Four Image types using `path:'someImage'`</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Two pre-encoded images (green checkmarks) using `data:[base64]`</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+							<legend>Embedded YouTube Video</legend>
+							<h3>Slide 2</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Embedded "TED Talks Best of 2016" video</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div id="buttonBarBtm" style="clear:both">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Slides" onclick="doGenTabTest(['Image','YouTube'])">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab4" data-title="Shapes and Text">
+				<div class="topDocLink">
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
+					<a href="https://github.com/gitbrent/PptxGenJS#adding-text" target="_blank">View Documentation and Example Code</a>
+				</div>
+
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Shapes &amp; Text
+				</div>
+				<div class="sectionBox">
+					<div class="jsLocalFile" style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px; display:none;">
+						NOTE: Web browsers will not allow local file access, meaning images using
+						<code>path:</code> cannot be read if running this locally!
+						<br>
+						(Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files)
+					</div>
+
+					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+							<legend>Text Objects</legend>
+							<h3>Slide 1</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Font Face/Color Combos, Bullets, Shadow</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Bullets: Number, text and multi-line</label></div>
+								</div>
+							</div>
+							<h3>Slide 2</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Text Formatting, Colors and Alignments</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+					    	<legend>Shape Objects</legend>
+							<h3>Slide 1</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Major Shapes without Text</label></div>
+								</div>
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Borders, lines and arrow heads</label></div>
+								</div>
+							</div>
+							<h3>Slide 2</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Misc Shapes with Text</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+
+					<div id="buttonBarBtm" style="clear:both">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Slides" onclick="doGenTabTest(['Shape','Text'])">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab5" data-title="Templates and Master Slides">
+				<div class="topDocLink">
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
+					<a href="https://github.com/gitbrent/PptxGenJS#master-slides-and-corporate-branding" target="_blank">View Documentation and Example Code</a>
+				</div>
+
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Slide Masters / Themes
+				</div>
+				<div class="sectionBox">
+					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+					    	<legend>As Defined</legend>
+							<h3>Slide 1</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>pptx.masters.TITLE_SLIDE</label></div>
+								</div>
+							</div>
+							<h3>Slide 2</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>pptx.masters.MASTER_SLIDE</label></div>
+								</div>
+							</div>
+							<h3>Slide 3</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>pptx.masters.THANKS_SLIDE</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+					    	<legend>Options Overidden</legend>
+							<h3>Slide 4</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>pptx.masters.MASTER_SLIDE with background color override</label></div>
+								</div>
+							</div>
+							<h3>Slide 5</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>pptx.masters.MASTER_SLIDE with background image override</label></div>
+								</div>
+							</div>
+							<h3>Slide 6</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>pptx.masters.THANKS_SLIDE with background color override</label></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+					<div id="buttonBarBtm" style="clear:both">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Slides" onclick="doGenTabTest('Master')">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab6" data-title="Table to Slides">
+				<div class="topDocLink">
+					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
+					<a href="https://github.com/gitbrent/PptxGenJS#table-to-slides-feature" target="_blank">View Documentation and Example Code</a>
+				</div>
+
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>HTML Table to Slides
+				</div>
+				<div class="sectionBox">
+					<div id="auto-paging-options" style="text-align:center; margin-bottom:10px;">
+						<b>OPTIONS: </b>
+						<label for="numTab2SlideHead" style="font-size:12px">Include Header on each Slide?</label>
+						<input type="radio" name="radioHead" value="Y" checked="checked">Yes<span>&nbsp;&nbsp;&nbsp;</span>
+						<input type="radio" name="radioHead" value="N">No
+
+						<div style="display:inline-block; margin-left:50px">
+							<b>SETUP: </b>
+							<label for="numTab2SlideRows" style="font-size:12px">Table Rows:</label>
+							<input id="numTab2SlideRows" type="number" min="1" max="25" value="2" onchange="buildDataTable()">
+							<label for="numTab2SlidePadding" style="font-size:12px">Cell Padding:</label>
+							<input id="numTab2Padding" type="number" min="0" max="25" value="5"
+								onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+						</div>
+					</div>
+					<table id="tabAutoPaging" class="tabCool">
+						<thead>
+							<tr>
+								<th data-pptx-min-width="0.6" style="width:5%">Row</th>
+								<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
+								<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
+								<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div style="text-align:center; padding:20px;">
+						<input type="button" class="flatBtn flatBtn-nsBlue"   onclick="table2slides1()" style="margin-right:20px" value="Demo using Slide Master">
+						<input type="button" class="flatBtn flatBtn-nsTeal"   onclick="table2slides2()" style="margin-right:20px" value="Demo using Custom Shapes">
+						<input type="button" class="flatBtn flatBtn-nsYellow" onclick="table2slides3()" value="Demo using Slide Master+Options">
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

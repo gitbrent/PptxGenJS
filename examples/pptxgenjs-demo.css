@@ -1,5 +1,5 @@
 /*
- * PptxGenJS > demo.html > style.css
+ * FILE: examples > pptxgenjs-demo.css
  */
 body { font-family:"Open Sans",Arial,Verdana,sans-serif; background:#f7f7f7; color:#4488CC; font-size:11px; }
 textarea { border:1px solid #cccccc; padding:3px; }
@@ -22,6 +22,56 @@ h3 {
     transform: rotate(135deg);
     margin-bottom: 3px;
 }
+
+/*-*/
+.modernTabs {
+	width: 100%;
+	margin: 20px 0 10px 0;
+	font-family: Roboto, "Segoe UI", Helvetica, Arial, sans-serif;
+	border: 1px solid #d5d5d5;
+	box-shadow: 0px 4px 10px -5px rgba(0,0,0,0.5);
+	border-radius: 5px;
+}
+.modernTabs > ul {
+	background: #FAFAFA;
+	list-style-type: none;
+	margin: 0 !important; -webkit-margin-before: 0;  -moz-margin-before: 0;  -ms-margin-before: 0;
+	padding: 0 !important;
+	border-bottom: 1px solid #d5d5d5;
+	border-radius: 5px 5px 0 0;
+}
+.modernTabs > ul > li {
+	box-sizing: border-box;
+	cursor: pointer;
+	text-shadow: 2px 2px #efefef;
+	width: 16.66%;
+	text-align: center;
+	display: inline-block; list-style-type:none;
+	padding: 15px;
+	font-size: 14px;
+	color: #a7a7a7;
+	text-transform: uppercase;
+	border-bottom: 3px solid #FAFAFA;
+	-webkit-user-select: none;
+	   -moz-user-select: none;
+		-ms-user-select: none;
+			user-select: none;
+}
+.modernTabs > ul > li.active {
+	font-weight: bold;
+	text-shadow: none;
+	color: #0088CC;
+	border-bottom: 3px solid #0088cc;
+}
+.modernTabs > div {
+	display: none;
+	margin: 0;
+	padding: 20px;
+	background: white;
+	border-radius: 0 0 5px 5px;
+}
+.modernTabs > div.active { display: block; }
+.modernTabs > div > .subTitle:first-child { margin-top: 0; }
 
 .tabCool {
     width: 100%;
@@ -95,7 +145,7 @@ h3 {
 
 fieldset {
     border: 1px dotted #aaa;
-    background: #f9f9f9;
+    background: #fff;
     height: 220px;
 }
 fieldset legend {
@@ -116,8 +166,8 @@ div.sectionBox {
     text-align: center;
     line-height: 1.4;
     color: #333333;
-    background-color: #fff;
-    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    border: 1px solid #c7c7c7;
     border-radius: 4px;
 }
 div.formBox {
@@ -138,6 +188,19 @@ div.formBox input[type="checkbox"] {
     vertical-align: middle;
     margin-right: 3px;
 }
+
+.topDocLink {
+	font-family: Roboto, Helvetica, Arial, sans-serif;
+	font-size: 14px;
+}
+
+.topDocLink svg {
+	width: 42px;
+	height: 42px;
+	vertical-align: middle;
+	margin-right: 5px;
+}
+
 
 div.table { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
 div.table > div { display: table-cell; }
