@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.2.0";
-	var APP_REL = "20170204";
+	var APP_REL = "20170209";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -377,7 +377,7 @@ var PptxGenJS = function(){
 	*/
 	function parseTextToLines(inStr, inFontSize, inWidth) {
 		var U = 2.2; // Character Constant thingy
-		var CPL = (inWidth / ( inFontSize/U ));
+		var CPL = (inWidth*EMU / ( inFontSize/U ));
 		var arrLines = [];
 		var strCurrLine = '';
 
@@ -411,7 +411,7 @@ var PptxGenJS = function(){
 	* Magic happens here
 	*/
 	function getSlidesForTableRows( inArrRows, opts ) {
-		var LINEH_MODIFIER = 1.99;
+		var LINEH_MODIFIER = 1.8;
 		var DEF_FONT_SIZE = 12;
 		var opts = opts || {};
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
@@ -422,18 +422,23 @@ var PptxGenJS = function(){
 		var arrObjTabHeadRows = opts.arrObjTabHeadRows || '';
 		var numCols = 0;
 
+		if (opts.debug) console.log('opts.colW.......... = '+ (opts.colW||'').toString());
+		if (opts.debug) console.log('opts.slideMargin... = '+ (opts.slideMargin||'').toString());
+
 		// NOTE: Use default size of 1 as zero cell margin is causing our tables to be too large and touch bottom of slide!
-		if ( !opts.margin && opts.margin != 0 ) opts.margin = 1;
+		if ( !opts.slideMargin && opts.slideMargin != 0 ) opts.slideMargin = 1;
 
 		// STEP 1: Calc margins/usable space
-		if ( opts.margin || opts.margin == 0 ) {
-			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
-			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
+		if ( opts.slideMargin || opts.slideMargin == 0 ) {
+			if ( Array.isArray(opts.slideMargin) ) arrInchMargins = opts.slideMargin;
+			else if ( !isNaN(opts.slideMargin) ) arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin];
 		}
 		else if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
 		}
+
+		if (opts.debug) console.log('arrInchMargins = '+ arrInchMargins.toString());
 
 		// STEP 2: Calc number of columns
 		// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
@@ -447,8 +452,11 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 2: Set table size now that we have usable space calc'd
-		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])/ONEPT) );
-		emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])/ONEPT) );
+		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])) );
+		emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu((opts.y || arrInchMargins[0]) + arrInchMargins[2])) );
+
+		if (opts.debug) console.log('gObjPptx.pptLayout.height (in) = '+ (gObjPptx.pptLayout.height/EMU) );
+		if (opts.debug) console.log('emuSlideTabH (in) ............ = '+ (emuSlideTabH/EMU).toFixed(1) );
 
 		// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
 		if ( !opts.colW || !Array.isArray(opts.colW) ) {
@@ -461,9 +469,11 @@ var PptxGenJS = function(){
 			// No column widths provided? Then distribute cols.
 			else {
 				opts.colW = [];
-				for (var iCol=0; iCol<numCols; iCol++) { opts.colW.push( Math.round(emuSlideTabW/numCols) ) }
+				for (var iCol=0; iCol<numCols; iCol++) { opts.colW.push( Math.round(emuSlideTabW/EMU/numCols) ) }
 			}
 		}
+
+		if (opts.debug) console.log('opts.colW..... = '+ opts.colW.toString());
 
 		// STEP 4: Iterate over each line and perform magic
 		// ROBUST: inArrRows will be an array of {text:'', opts{}} whether from `addSlidesForTable()` or `.addTable()`
@@ -491,6 +501,7 @@ var PptxGenJS = function(){
 				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[0] ) lineHeight += cell.opts.margin[0] / intMaxLineCnt;
 				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[2] ) lineHeight += cell.opts.margin[2] / intMaxLineCnt;
 				arrCellsLineHeights.push( Math.round(lineHeight) );
+				if (opts.debug) console.log('lineHeight (in)....: '+ (lineHeight/EMU) + ' ... (intMaxLineCnt = '+intMaxLineCnt+')');
 			});
 
 			// C: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
@@ -514,7 +525,7 @@ var PptxGenJS = function(){
 						arrObjSlides.push( $.extend(true, [], arrRows) );
 						// 3: Empty rows for new Slide
 						arrRows.length = 0;
-						// 4: Reset curr table height for new Slide
+						// 4: Reset current table height for new Slide
 						emuTabCurrH = 0; // This row's emuRowH w/b added below
 						// 5: Empty current row's text (continue adding lines where we left off below)
 						$.each(currRow,function(i,cell){ cell.text = ''; });
@@ -540,7 +551,7 @@ var PptxGenJS = function(){
 
 			// D: Flush row buffer - Add the current row to table, then truncate row cell array
 			// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
-			arrRows.push( $.extend(true,[],currRow) );
+			if (currRow.length) arrRows.push( $.extend(true,[],currRow) );
 			currRow.length = 0;
 		});
 
@@ -548,6 +559,7 @@ var PptxGenJS = function(){
 		arrObjSlides.push( $.extend(true,[],arrRows) );
 
 		// LAST:
+		if (opts.debug) { console.log('arrObjSlides count = '+arrObjSlides.length); console.log(arrObjSlides); }
 		return arrObjSlides;
 	}
 
@@ -602,7 +614,11 @@ var PptxGenJS = function(){
 	function genXmlTextCommand( text_info, text_string, slide_obj, slide_num ) {
 		var area_opt_data = genXmlTextData( text_info, slide_obj );
 		var parsedText;
-		var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold + area_opt_data.italic + area_opt_data.underline + area_opt_data.char_spacing + ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>') + '<a:t>';
+		//
+		var startInfo = '<a:rPr lang="en-US"' + area_opt_data.font_size + area_opt_data.bold
+				+ area_opt_data.italic + area_opt_data.underline + area_opt_data.char_spacing
+				+ ' dirty="0" smtClean="0"' + (area_opt_data.rpr_info != '' ? ('>' + area_opt_data.rpr_info) : '/>')
+				+ '<a:t>';
 		var endTag = '</a:r>';
 		var outData = '<a:r>' + startInfo;
 
@@ -625,30 +641,32 @@ var PptxGenJS = function(){
 
 		}
 		else {
-			// Automatic support for newline - split it into multi-p:
-			parsedText = text_string.split( "\n" );
+			// LINE-BREAKS/MULTI-LINE: Split text into multi-p:
+			parsedText = text_string.split("\n");
 			if ( parsedText.length > 1 ) {
 				var outTextData = '';
 				for ( var i = 0, total_size_i = parsedText.length; i < total_size_i; i++ ) {
+					// ISSUE #34: Text with linebreaks doesnt allow for align formatting
+					// IMPORTANT: Closing <p> is fine and all, but one option `align` isnt set at the <r>un-level - its a `pPr` so do that here:
+					var outData = ( (text_info.align && (i > 0 || text_info.lineIdx > 0)) ? '<a:pPr algn="'+ text_info.align.toLowerCase().replace(/^c.*/i,'ctr').replace(/^l.*/i,'l').replace(/^r.*/i,'r') +'"/>' : '') + '<a:r>' + startInfo;
 					outTextData += outData + decodeXmlEntities(parsedText[i]);
-
+					// Stop/Start <p>aragraph as long as there is more lines ahead (otherwise its closed at the end of this function)
 					if ( (i + 1) < total_size_i ) {
-						outTextData += '</a:t></a:r></a:p><a:p>';
+						outTextData += '</a:t></a:r>'+ ( text_info.align ? '<a:endParaRPr lang="en-US"/>' : '') +'</a:p><a:p>';
 					}
 				}
-
 				outData = outTextData;
-
 			}
 			else {
-				outData += text_string.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+				// Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
+				// The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
+				var outData = ( (text_info.align && (i > 0 || text_info.lineIdx > 0)) ? '<a:pPr algn="'+ text_info.align.toLowerCase().replace(/^c.*/i,'ctr').replace(/^l.*/i,'l').replace(/^r.*/i,'r') +'"/>' : '') + '<a:r>' + startInfo;
+				outData += decodeXmlEntities(text_string);
 			}
 		}
 
-		var outBreakP = '';
-		if ( text_info.breakLine ) outBreakP += '</a:p><a:p>';
-
-		return outData + '</a:t>' + endTag + outBreakP;
+		// Return paragraph with text run
+		return outData + '</a:t>' + endTag + (text_info.breakLine ? '</a:p><a:p>' : '');
 	}
 
 	function genXmlTextData( text_info, slide_obj ) {
@@ -896,7 +914,7 @@ var PptxGenJS = function(){
 		if ( inSlide.slide.back ) strSlideXml += genXmlColorSelection(false, inSlide.slide.back);
 		// B: Add background image (using Strech) (if any)
 		if ( inSlide.slide.bkgdImgRid ) {
-			// TODO 1.0: We should be doing this in the slideLayout...
+			// FIXME: We should be doing this in the slideLayout...
 			strSlideXml += '<p:bg>'
 						+ '<p:bgPr><a:blipFill dpi="0" rotWithShape="1">'
 						+ '<a:blip r:embed="rId'+ inSlide.slide.bkgdImgRid +'"><a:lum/></a:blip>'
@@ -995,7 +1013,7 @@ var PptxGenJS = function(){
 							+ '        <a:tblPr/>';
 							// + '        <a:tblPr bandRow="1"/>';
 
-					// TODO: FUTURE: Support banded rows, first/last row, etc.
+					// FIXME: Support banded rows, first/last row, etc.
 					// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
 					// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
 
@@ -1005,7 +1023,7 @@ var PptxGenJS = function(){
 					if ( Array.isArray(objTabOpts.colW) ) {
 						strXml += '<a:tblGrid>';
 						for ( var col=0; col<intColCnt; col++ ) {
-							strXml += '  <a:gridCol w="'+ Math.round(objTabOpts.colW[col] || (slideObj.options.cx/intColCnt)) +'"/>';
+							strXml += '  <a:gridCol w="'+ Math.round(inch2Emu(objTabOpts.colW[col]) || (slideObj.options.cx/intColCnt)) +'"/>';
 						}
 						strXml += '</a:tblGrid>';
 					}
@@ -1086,10 +1104,10 @@ var PptxGenJS = function(){
 							// 2: Cell Content: Either the text element or the cell itself (for when users just pass a string - no object or options)
 							var strCellText = ((typeof cell === 'object') ? cell.text : cell);
 
-							// TODO 1.5: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
+							// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
 
 							// 3: ROWSPAN: Add dummy cells for any active rowspan
-							// TODO 1.5: ROWSPAN & COLSPAN in same cell is not yet handled!
+							// FIXME: FUTURE: ROWSPAN & COLSPAN in same cell is not yet handled!
 							if ( arrRowspanCells.filter(function(obj){ return obj.row == rIdx && obj.col == cIdx }).length > 0 ) {
 								strXml += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
 							}
@@ -1246,7 +1264,7 @@ var PptxGenJS = function(){
 						strSlideXml += '</a:effectLst>';
 					}
 
-					// TODO 1.5: Text wrapping (copied from MS-PPTX export)
+					// FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
 					/*
 					// Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
 					if ( slideObj.options.textWrap ) {
@@ -1261,47 +1279,59 @@ var PptxGenJS = function(){
 					// B: Close Shape
 					strSlideXml += '</p:spPr>';
 
-					if ( slideObj.options ) {
-						if ( slideObj.options.align ) {
-							switch ( slideObj.options.align ) {
-								case 'right':
-									moreStylesAttr += ' algn="r"';
-									break;
-								case 'center':
-									moreStylesAttr += ' algn="ctr"';
-									break;
-								case 'justify':
-									moreStylesAttr += ' algn="just"';
-									break;
-							}
-						}
+					// OPTION: align
+					if ( slideObj.options &&
+						( slideObj.options.align || (Array.isArray(slideObj.text) && slideObj.text[0].options && slideObj.text[0].options.align) )
+						) {
+						var align = (Array.isArray(slideObj.text) && slideObj.text[0].options && slideObj.text[0].options.align ? slideObj.text[0].options.align : slideObj.options.align);
 
-						if ( slideObj.options.indentLevel > 0 ) moreStylesAttr += ' lvl="' + slideObj.options.indentLevel + '"';
+						switch ( align ) {
+							case 'r':
+							case 'right':
+								moreStylesAttr += ' algn="r"';
+								break;
+							case 'c':
+							case 'ctr':
+							case 'center':
+								moreStylesAttr += ' algn="ctr"';
+								break;
+							case 'justify':
+								moreStylesAttr += ' algn="just"';
+								break;
+						}
 					}
 
-					// BULLET: Add bullet params
-					/*
-					FYI: Each "line" of text needs this to be bulleted within a block like this
-					<a:p>
-						<a:pPr marL="228600" indent="-228600"><a:buSzPct val="100000"/><a:buChar char="&#x2022;"/></a:pPr>
-						<a:r><a:t>bullet one</a:t></a:r>
-					</a:p>
-					*/
+					// OPTION: indent
+					if ( slideObj.options && slideObj.options.indentLevel > 0 ) {
+						moreStylesAttr += ' lvl="' + slideObj.options.indentLevel + '"';
+					}
+
+					// OPTION: bullet
 					if ( slideObj.options.bullet ) {
 						moreStylesAttr = ' marL="228600" indent="-228600"';
 						moreStyles = '<a:buSzPct val="100000"/><a:buChar char="&#x2022;"/>';
 					}
 
+					// Add properties
 					if ( moreStyles ) outStyles = '<a:pPr' + moreStylesAttr + '>' + moreStyles + '</a:pPr>';
 					else if ( moreStylesAttr ) outStyles = '<a:pPr' + moreStylesAttr + '/>';
 
+					// Add style
 					if ( styleData ) strSlideXml += '<p:style>' + styleData + '</p:style>';
 
-					// Bullets: Multi-line bullets must have a complete <a:p><a:pPr></a:pPr><a:r></a:r></a:p> *per line*
-					if ( slideObj.options.bullet && typeof slideObj.text == 'string' && slideObj.text.split('\n').length > 0
-						&& slideObj.text.split('\n')[1] && slideObj.text.split('\n')[1].length > 0 ) {
+					// NOTE: MULTI-LINE: SPEC: Each "line" needs a `p`-aragraph section
+					/* <a:p>
+						<a:pPr marL="228600" indent="-228600"><a:buSzPct val="100000"/><a:buChar char="&#x2022;"/></a:pPr>
+						<a:r><a:t>bullet one</a:t></a:r>
+					</a:p> */
+
+					if ( slideObj.options.bullet
+						&& typeof slideObj.text == 'string' && slideObj.text.split('\n').length > 0
+						&& slideObj.text.split('\n')[1] && slideObj.text.split('\n')[1].length > 0 )
+					{
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/>';
-						$.each(slideObj.text.split('\n'), function(i,line){
+						// IMPORTANT: Split text here (even though `genXmlTextCommand` handles \n) b/c we need `outStyles` for bullets to build correctly
+						slideObj.text.toString().split('\n').forEach(function(line,i){
 							if ( i > 0 ) strSlideXml += '</a:p>';
 							strSlideXml += '<a:p>' + outStyles;
 							strSlideXml += genXmlTextCommand( slideObj.options, line, inSlide.slide, inSlide.slide.getPageNumber() );
@@ -1309,37 +1339,30 @@ var PptxGenJS = function(){
 					}
 					else if ( typeof slideObj.text == 'string' || typeof slideObj.text == 'number' ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
-						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text+'', inSlide.slide, inSlide.slide.getPageNumber() );
+						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text.toString(), inSlide.slide, inSlide.slide.getPageNumber() );
 					}
-					else if ( slideObj.text && slideObj.text.length ) {
-						var outBodyOpt = genXmlBodyProperties( slideObj.options );
-						strSlideXml += '<p:txBody>' + outBodyOpt + '<a:lstStyle/><a:p>' + outStyles;
-
-						for ( var j = 0, total_size_j = slideObj.text.length; j < total_size_j; j++ ) {
-							if ( (typeof slideObj.text[j] == 'object') && slideObj.text[j].text ) {
-								strSlideXml += genXmlTextCommand( slideObj.text[j].options || slideObj.options, slideObj.text[j].text, inSlide.slide, outBodyOpt, outStyles, inSlide.slide.getPageNumber() );
-							}
-							else if ( typeof slideObj.text[j] == 'string' ) {
-								strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text[j], inSlide.slide, outBodyOpt, outStyles, inSlide.slide.getPageNumber() );
-							}
-							else if ( typeof slideObj.text[j] == 'number' ) {
-								strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text[j] + '', inSlide.slide, outBodyOpt, outStyles, inSlide.slide.getPageNumber() );
-							}
-							else if ( (typeof slideObj.text[j] == 'object') && slideObj.text[j].field ) {
-								strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text[j], inSlide.slide, outBodyOpt, outStyles, inSlide.slide.getPageNumber() );
-							}
-						}
+					else if ( slideObj.text && Array.isArray(slideObj.text) ) {
+						// DESC: This is an array of text objects: [{},{}]
+						// EX: slide.addText([ {text:'hello', options:{color:'0088CC'}}, {text:'world', options:{color:'CC8800'}} ]);
+						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
+						slideObj.text.forEach(function(textObj,idx){
+							textObj.options = textObj.options || {};
+							textObj.options.lineIdx = idx;
+							strSlideXml += genXmlTextCommand( (textObj.options || slideObj.options), textObj.text.toString(), inSlide.slide, inSlide.slide.getPageNumber() );
+						});
 					}
+					/*
 					else if ( slideObj.text && typeof slideObj.text == 'object' && slideObj.text.field ) {
 						strSlideXml += '<p:txBody>' + genXmlBodyProperties( slideObj.options ) + '<a:lstStyle/><a:p>' + outStyles;
 						strSlideXml += genXmlTextCommand( slideObj.options, slideObj.text, inSlide.slide, inSlide.slide.getPageNumber() );
 					}
+					*/
 
 					// LAST: End of every paragraph
-					if ( slideObj.text && typeof slideObj.text !== 'undefined' ) {
-						var font_size = '';
-						if ( slideObj.options && slideObj.options.font_size ) font_size = ' sz="' + slideObj.options.font_size + '00"';
-						strSlideXml += '<a:endParaRPr lang="en-US" '+ font_size +' dirty="0"/></a:p></p:txBody>';
+					if ( slideObj.text ) {
+						strSlideXml += '<a:endParaRPr lang="en-US" '+ ( slideObj.options && slideObj.options.font_size ? ' sz="'+ slideObj.options.font_size +'00"' : '') +' dirty="0"/>';
+						strSlideXml += '</a:p>';
+						strSlideXml += '</p:txBody>';
 					}
 
 					strSlideXml += (slideObj.type == 'cxn') ? '</p:cxnSp>' : '</p:sp>';
@@ -1525,7 +1548,7 @@ var PptxGenJS = function(){
 	}
 
 	function makeXmlSlideMasterRel() {
-		// TODO 1.1: create a slideLayout for each SLDIE
+		// FIXME: create a slideLayout for each SLDIE
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
 					+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">\r\n';
 		for ( var idx=1; idx<=gObjPptx.slides.length; idx++ ) {
@@ -1758,7 +1781,7 @@ var PptxGenJS = function(){
 			var intRels = 1;
 
 			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
-			// TODO: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
+			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
 			if ( typeof strImagePath === 'object' ) {
 				intPosX = (strImagePath.x || 0);
 				intPosY = (strImagePath.y || 0);
@@ -1795,7 +1818,7 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].image = (strImagePath || 'preencoded.png');
 
 			// STEP 3: Set image properties & options
-			// TODO 1.5: Measure actual image when no intSizeX/intSizeY params passed
+			// FIXME: Measure actual image when no intSizeX/intSizeY params passed
 			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
 			// if ( !intSizeX || !intSizeY ) { var imgObj = getSizeFromImage(strImagePath);
 			var imgObj = { width:1, height:1 };
@@ -1951,7 +1974,7 @@ var PptxGenJS = function(){
 		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
 		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
 			var opt = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
-			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // TODO: DEPRECATED: merge opts for now for non-breaking fix (20161216)
+			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // FIXME: DEPRECATED: merge opts for now for non-breaking fix (20161216)
 
 			// STEP 1: REALITY-CHECK
 			if ( arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows) ) {
@@ -1975,16 +1998,12 @@ var PptxGenJS = function(){
 			opt.w = opt.cx;
 			opt.h = opt.cy;
 
-			if ( Array.isArray(opt.colW) ) {
-				$.each(opt.colW, function(i,colW){ if ( colW < 20 ) opt.colW[i] = inch2Emu(colW); });
-			}
-
 			// STEP 4: Row setup: Handle case where user passed in a simple array
 			var arrRows = $.extend(true,[],arrTabRows);
 			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
 
 			// Allow `addSlidesForTable()` to not engage recursion! We've already paged the table data, just add this one
-			if ( tabOpt && tabOpt == false ) {
+			if ( typeof tabOpt !== 'undefined' && tabOpt == false ) {
 				// A: Grab Slide object count
 				var slideObjNum = gObjPptx.slides[slideNum].data.length;
 
@@ -2112,7 +2131,7 @@ var PptxGenJS = function(){
 				var strImgExtn = inMaster.bkgd.src.substring( inMaster.bkgd.src.indexOf('.')+1 ).toLowerCase();
 				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
 				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
-				// TODO: FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
+				// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
 				var intRels = 1;
 				for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) { intRels += gObjPptx.slides[idx].rels.length; }
 				slideObjRels.push({
@@ -2169,7 +2188,7 @@ var PptxGenJS = function(){
 
 		// NOTE: Look for opts.margin first as user can override Slide Master settings if they want
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
-		opts.margin = opts.marginPt || opts.margin || 0;
+		opts.margin = opts.marginPt || opts.margin || 0.5;
 		if ( opts && opts.margin ) {
 			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
 			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
@@ -2177,15 +2196,16 @@ var PptxGenJS = function(){
 		else if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
+			opts.margin = arrInchMargins;
 		}
-		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])/ONEPT) );
-		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])/ONEPT) );
+		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])) );
+		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])) );
 
 		// STEP 1: Grab overall table style/col widths
 		$.each(['thead','tbody','tfoot'], function(i,val){
 			if ( $('#'+tabEleId+' > '+val+' > tr').length > 0 ) {
 				$('#'+tabEleId+' > '+val+' > tr:first-child').find('> th, > td').each(function(i,cell){
-					// TODO: FIXME: This is a hack - guessing at col widths when colspan
+					// FIXME: This is a hack - guessing at col widths when colspan
 					if ( $(this).attr('colspan') ) {
 						for (var idx=0; idx<$(this).attr('colspan'); idx++ ) {
 							arrTabColW.push( Math.round($(this).outerWidth()/$(this).attr('colspan')) );
@@ -2203,8 +2223,8 @@ var PptxGenJS = function(){
 		// STEP 2: Calc/Set column widths by using same column width percent from HTML table
 		$.each(arrTabColW, function(i,colW){
 			( $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width') )
-				? arrColW.push( inch2Emu( $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width') ) )
-				: arrColW.push( Math.round( (emuSlideTabW * (colW / intTabW * 100) ) / 100 ) );
+				? arrColW.push( $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width') )
+				: arrColW.push( Math.round( (emuSlideTabW * (colW / intTabW * 100) ) / 100 / EMU ) );
 		});
 
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
@@ -2272,12 +2292,17 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// STEP 4: Break table into Slides as needed
+		// STEP 4: NOTE: `margin` is "cell margin (pt)" everywhere else tables are used, so explicitly convert to "slide margin" here
+		if (opts.margin) {
+			opts.slideMargin = opts.margin;
+			delete(opts.margin);
+		}
+		// STEP 5: Break table into Slides as needed
 		// Pass head-rows as there is an option to add to each table and the parse func needs this daa to fulfill that option
 		opts.arrObjTabHeadRows = arrObjTabHeadRows || '';
 		opts.colW = arrColW;
 
-		getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts)
+		getSlidesForTableRows( arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts )
 		.forEach(function(arrTabRows,i){
 			// A: Create new Slide
 			var newSlide = ( opts.master && gObjPptxMasters ? api.addNewSlide(opts.master) : api.addNewSlide() );

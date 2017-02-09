@@ -25,7 +25,7 @@ an HTML Table across one or more Slides with a single command.
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
-  - [Node.js (4.x)](#nodejs-4x)
+  - [Node.js](#nodejs)
 - [Optional Library Files](#optional-library-files)
 - [Presentation Basics](#presentation-basics)
 - [Library Reference](#library-reference)
@@ -90,7 +90,7 @@ PptxGenJS requires only three additional JavaScript libraries to function.
 <script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
-## Node.js (4.x)
+## Node.js
 [PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
 npm install pptxgenjs
@@ -191,13 +191,22 @@ slide.slideNumber({ x:1.0, y:'90%' });
 ```javascript
 // Syntax
 slide.addText('TEXT', {OPTIONS});
+slide.addText('Line 1\nLine 2', {OPTIONS});
+slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 
 // Examples
-slide.addText('Hello World!', { x:2, y:3, color:'DDDD00', font_size:90 });
-slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
-
-// Multiline Text / Line Breaks - use either "\r" or "\n"
+// EX: Format some text
+slide.addText('Hello World!', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+// EX: Multiline Text / Line Breaks - use either "\r" or "\n"
 slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
+// EX: Format individual words or lines by passing an array of text objects with `text` and `options`
+slide.addText(
+	[
+		{ text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
+		{ text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
+	],
+	{ x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
+);
 ```
 
 ### Text Options
@@ -210,6 +219,7 @@ slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
 | `autoFit`    | boolean |        | `false`   | "Fit to Shape"      | `true` or `false` |
 | `bold`       | boolean |        | `false`   | bold text           | `true` or `false` |
+| `breakLine`  | boolean |        | `false`   | adds a line break   | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |        | `false`   | bulleted text       | `true` or `false` |
 | `color`      | string  |        |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
@@ -238,16 +248,38 @@ slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
+// EX: Dynamic location using percentages
+slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
+
+// EX: Basic formatting
 slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', font_size:64 });
 slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
-slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
-var objOptions = {
-    x:0.5, y:4.3, w:'90%',
-    font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
-};
-slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
 
-slide.addText('Outer Shadow', { x:0.5, y:6.0, font_size:36, color:'0088cc', shadow:{type:'outer', color:'696969', blur:3, offset:10, angle:45} });
+// EX: More formatting options
+slide.addText(
+	'Arial, 32pt, green, bold, underline, 0 inset',
+	{ x:0.5, y:5.0, w:'90%', margin:0.5, font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
+);
+
+// EX: Drop/Outer Shadow
+slide.addText(
+	'Outer Shadow',
+	{
+		x:0.5, y:6.0, font_size:36, color:'0088CC',
+		shadow: {type:'outer', color:'696969', blur:3, offset:10, angle:45}
+	}
+);
+
+// EX: Formatting can be applied at the word/line level
+// Provide an array of text objects with the formatting options for that `text` string value
+// Line-breaks work as well
+slide.addText(
+	[
+		{ text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+		{ text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
+	],
+	{ x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
+);
 
 pptx.save('Demo-Text');
 ```
