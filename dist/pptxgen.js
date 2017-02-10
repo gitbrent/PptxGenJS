@@ -68,7 +68,7 @@ var PptxGenJS = function(){
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
 		'LAYOUT_16x10': { name: 'screen16x10', width:  9144000, height: 5715000 },
 		'LAYOUT_WIDE' : { name: 'custom',      width: 12191996, height: 6858000 },
-		'LAYOUT_USER' : { name: 'userDefined', width: 12191996, height: 6858000 }
+		'LAYOUT_USER' : { name: 'custom',      width: 12191996, height: 6858000 }
 	};
 	var BASE_SHAPES = {
 		RECTANGLE: { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
