@@ -426,6 +426,16 @@
 			// Table cell margin:0
 			slide.addTable( [['margin:0']], { x:0.5, y:1.1, margin:0, w:0.75, fill:'FFFCCC' } );
 
+			// Fine-grained Formatting/word-level/line-level Formatting
+			slide.addText(
+				[
+					{ text:'right line', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+					{ text:'ctr line',   options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
+					{ text:'left line',  options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
+				],
+				{ x:0.5, y:3.0, w:8.5, h:4, margin:0.1, fill:'232323' }
+			);
+
 			// Export:
 			pptx.save('Sample Presentation');
 		}
