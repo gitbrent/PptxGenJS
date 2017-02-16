@@ -54,6 +54,7 @@ an HTML Table across one or more Slides with a single command.
   - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
     - [Media Options](#media-options)
     - [Media Examples](#media-examples)
+  - [Saving Presentations](#saving-presentations)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Slide Masters](#slide-masters)
   - [Slide Master Examples](#slide-master-examples)
@@ -508,6 +509,27 @@ slide.addMedia({ type:'audio', data:'audio/mp3;base64,iVtDafDrBF[...]=', x:3.0, 
 slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:1.0, y:4.0, w:8.0, h:4.5 });
 
 pptx.save('Demo-Media');
+```
+
+## Saving Presentations
+
+Client Browser:
+* Simply provide a filename
+
+```javascript
+pptx.save('Demo-Media');
+```
+
+Node.js:
+* Node can accept a callback function that will return the filename
+
+```javascript
+// A: File will be saved to the local working directory (`__dirname`)
+pptx.save('Node_Demo');
+// B: Inline callback function
+pptx.save('Node_Demo', function(filename){ console.log('Created: '+filename); } );
+// C: Predefined callback function
+pptx.save('Node_Demo', saveCallback );
 ```
 
 **************************************************************************************************
