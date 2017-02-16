@@ -114,7 +114,7 @@ var PptxGenJS = function(){
 	/**
 	 * Export the .pptx file (using saveAs - dep. filesaver.js)
 	 */
-	function doExportPresentation() {
+	function doExportPresentation(callback) {
 		var intSlideNum = 0, intRels = 0;
 
 		// STEP 1: Create new JSZip file
@@ -171,7 +171,7 @@ var PptxGenJS = function(){
 		// STEP 3: Push the PPTX file to browser
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 		if ( NODEJS ) {
-			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
+			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback); });
 		}
 		else {
 			zip.generateAsync({type:'blob'}).then(function(content){ saveAs(content, strExportName); });
@@ -1761,7 +1761,7 @@ var PptxGenJS = function(){
 	 * Export the Presentation to an .pptx file
 	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
-	this.save = function save(inStrExportName) {
+	this.save = function save(inStrExportName, callback) {
 		var intRels = 0, arrRelsDone = [];
 
 		// STEP 1: Set export title (if any)
@@ -1780,7 +1780,7 @@ var PptxGenJS = function(){
 		});
 
 		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-		if ( intRels == 0 ) doExportPresentation();
+		if ( intRels == 0 ) doExportPresentation(callback);
 	};
 
 	/**
