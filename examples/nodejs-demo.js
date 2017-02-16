@@ -1,7 +1,7 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Jan 19, 2017
+ * DATE: Feb 15, 2017
  * DESC: Demonstrate PptxGenJS on Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  * EXEC: `node nodejs-demo.js`
@@ -18,8 +18,8 @@ STARTING TEST
 // ============================================================================
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
-var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
-//var pptx = require("pptxgenjs");
+//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+var pptx = require("pptxgenjs");
 console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
 pptx.setTitle('PptxGenJS Node.js Demo');
@@ -437,6 +437,12 @@ function demoMedia() {
 
 // ============================================================================
 
+function saveCallback(filename) {
+	console.log('Good News Everyone!  File created: '+ filename);
+}
+
+// ============================================================================
+
 // STEP 3: Run all test funcs
 demoBasic();
 demoText();
@@ -447,7 +453,20 @@ demoMedia();
 demoCorpPres();
 
 // STEP 4: Export giant demo file
-pptx.save('Node_Demo_'+getTimestamp());
+
+// A: Inline save
+//pptx.save('Node_Demo_'+getTimestamp());
+
+// B: or Save using callback function
+//pptx.save('Node_Demo_'+getTimestamp(), function(filename){ console.log('Created: '+filename); } );
+
+// C: or use a predefined callback function
+pptx.save('Node_Demo_'+getTimestamp(), saveCallback );
+
+
+// **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
+// Create a new variable or reset `pptx` for an empty Presenation
+// EX: pptx = require("pptxgenjs");
 
 // ============================================================================
 

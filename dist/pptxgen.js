@@ -171,7 +171,7 @@ var PptxGenJS = function(){
 		// STEP 3: Push the PPTX file to browser
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 		if ( NODEJS ) {
-			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback); });
+			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
 		}
 		else {
 			zip.generateAsync({type:'blob'}).then(function(content){ saveAs(content, strExportName); });
@@ -230,18 +230,6 @@ var PptxGenJS = function(){
 	}
 
 	function convertImgToDataURLviaCanvas(slideRel){
-		if ( NODEJS ) {
-			try {
-				var bitmap = fs.readFileSync(slideRel.path);
-				callbackImgToDataURLDone( new Buffer(bitmap).toString('base64'), slideRel );
-			}
-			catch(ex) {
-				console.error('ERROR: Unable to read image: '+slideRel.path);
-				callbackImgToDataURLDone(IMG_BROKEN, slideRel);
-			}
-			return;
-		}
-
 		// A: Create
 		var image = new Image();
 
@@ -285,10 +273,7 @@ var PptxGenJS = function(){
 	function callbackImgToDataURLDone(inStr, slideRel){
 		var intEmpty = 0;
 
-		// STEP 1: Store base64 data for this image
-		slideRel.data = inStr;
-
-		// STEP 2: Set data for this rel, count outstanding
+		// STEP 1: Set data for this rel, count outstanding
 		$.each(gObjPptx.slides, function(i,slide){
 			$.each(slide.rels, function(i,rel){
 				if ( rel.path == slideRel.path ) rel.data = inStr;
@@ -296,7 +281,7 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// STEP 3: Continue export process if all rels have base64 `data` now
+		// STEP 2: Continue export process if all rels have base64 `data` now
 		if ( intEmpty == 0 ) doExportPresentation();
 	}
 
@@ -1767,14 +1752,28 @@ var PptxGenJS = function(){
 		// STEP 1: Set export title (if any)
 		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
 
-		// STEP 2: Total all physical rels across the Presentation
+		// STEP 2: Read/Encode Images
+		// B: Total all physical rels across the Presentation
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
 				if ( rel.type != 'online' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
-					intRels++;
-					convertImgToDataURLviaCanvas(rel, callbackImgToDataURLDone);
-					arrRelsDone.push(rel.path);
+					// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
+					if ( NODEJS ) {
+						try {
+							var bitmap = fs.readFileSync(rel.path);
+							rel.data = new Buffer(bitmap).toString('base64');
+						}
+						catch(ex) {
+							console.error('ERROR: Unable to read image: '+rel.path);
+							rel.data = IMG_BROKEN;
+						}
+					}
+					else {
+						intRels++;
+						convertImgToDataURLviaCanvas(rel, callbackImgToDataURLDone);
+						arrRelsDone.push(rel.path);
+					}
 				}
 			});
 		});
