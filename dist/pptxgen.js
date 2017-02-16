@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.2.0";
-	var APP_REL = "20170209";
+	var APP_REL = "20170215";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -422,8 +422,9 @@ var PptxGenJS = function(){
 		var arrObjTabHeadRows = opts.arrObjTabHeadRows || '';
 		var numCols = 0;
 
-		if (opts.debug) console.log('opts.colW.......... = '+ (opts.colW||'').toString());
-		if (opts.debug) console.log('opts.slideMargin... = '+ (opts.slideMargin||'').toString());
+		if (opts.debug) console.log('opts.w ............. = '+ (opts.w||'').toString());
+		if (opts.debug) console.log('opts.colW .......... = '+ (opts.colW||'').toString());
+		if (opts.debug) console.log('opts.slideMargin ... = '+ (opts.slideMargin||'').toString());
 
 		// NOTE: Use default size of 1 as zero cell margin is causing our tables to be too large and touch bottom of slide!
 		if ( !opts.slideMargin && opts.slideMargin != 0 ) opts.slideMargin = 1;
@@ -438,12 +439,13 @@ var PptxGenJS = function(){
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
 		}
 
-		if (opts.debug) console.log('arrInchMargins = '+ arrInchMargins.toString());
-
 		// STEP 2: Calc number of columns
 		// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 		// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 		inArrRows[0].forEach(function(cell,idx){ numCols += ( cell.opts && cell.opts.colspan ? cell.opts.colspan : 1 ) });
+
+		if (opts.debug) console.log('arrInchMargins ..... = '+ arrInchMargins.toString());
+		if (opts.debug) console.log('numCols ............ = '+ numCols );
 
 		// Calc opts.w if we can
 		if ( !opts.w && opts.colW ) {
@@ -456,6 +458,7 @@ var PptxGenJS = function(){
 		emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu((opts.y || arrInchMargins[0]) + arrInchMargins[2])) );
 
 		if (opts.debug) console.log('gObjPptx.pptLayout.height (in) = '+ (gObjPptx.pptLayout.height/EMU) );
+		if (opts.debug) console.log('emuSlideTabW (in) ............ = '+ (emuSlideTabW/EMU).toFixed(1) );
 		if (opts.debug) console.log('emuSlideTabH (in) ............ = '+ (emuSlideTabH/EMU).toFixed(1) );
 
 		// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
@@ -469,7 +472,7 @@ var PptxGenJS = function(){
 			// No column widths provided? Then distribute cols.
 			else {
 				opts.colW = [];
-				for (var iCol=0; iCol<numCols; iCol++) { opts.colW.push( Math.round(emuSlideTabW/EMU/numCols) ) }
+				for (var iCol=0; iCol<numCols; iCol++) { opts.colW.push( (emuSlideTabW/EMU/numCols) ); }
 			}
 		}
 
@@ -984,7 +987,7 @@ var PptxGenJS = function(){
 					if ( !slideObj.arrTabRows || (Array.isArray(slideObj.arrTabRows) && slideObj.arrTabRows.length == 0) ) break;
 
 					// Set table vars
-					var arrRowspanCells = [];
+					var objTableGrid = {};
 					var arrTabRows = slideObj.arrTabRows;
 					var objTabOpts = slideObj.options;
 					var intColCnt = 0, intColW = 0;
@@ -995,7 +998,7 @@ var PptxGenJS = function(){
 						intColCnt += ( arrTabRows[0][tmp] && arrTabRows[0][tmp].opts && arrTabRows[0][tmp].opts.colspan ) ? Number(arrTabRows[0][tmp].opts.colspan) : 1;
 					}
 
-					// STEP 1: Start Table XML
+					// STEP 1: Start Table XML =============================
 					// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
 					var strXml = '<p:graphicFrame>'
 							+ '  <p:nvGraphicFramePr>'
@@ -1035,32 +1038,86 @@ var PptxGenJS = function(){
 						for ( var col=0; col<intColCnt; col++ ) { strXml += '<a:gridCol w="'+ intColW +'"/>'; }
 						strXml += '</a:tblGrid>';
 					}
-					// C: Table Height provided without rowH? Then distribute rows
-					var intRowH = (objTabOpts.rowH) ? inch2Emu(objTabOpts.rowH) : 0;
-					if ( slideObj.options.cy && !objTabOpts.rowH ) intRowH = ( slideObj.options.cy / arrTabRows.length );
 
-					// STEP 3: Build an array of rowspan cells now so we can add stubs in as we loop below
+					// STEP 3: Build our row arrays into an actual grid to match the XML we will be building next (ISSUE #36)
+					// Note row arrays can arrive "lopsided" as in row1:[1,2,3] row2:[3] when first two cols rowspan!,
+					// so a simple loop below in XML building wont suffice to build table right.
+					// We have to build an actual grid now
+					/* EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
+						/------|------|------|------\
+						|  A0  |  B0  |  C0  |  D0  |
+						|      |  B1  |  C1  |      |
+						|      |      |  C2  |  D2  |
+						\------|------|------|------/
+					*/
  					$.each(arrTabRows, function(rIdx,row){
+						// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
+						if ( !objTableGrid[rIdx] ) objTableGrid[rIdx] = {};
+
+						// B: Track colspans so we can set correct trailing col cells
+						var intColspans = 0;
+
+						// B: Loop over all cells
 						$(row).each(function(cIdx,cell){
-							var colIdx = cIdx;
-							if ( cell && cell.opts && cell.opts.rowspan && Number.isInteger(cell.opts.rowspan) ) {
-								for (idy=1; idy<cell.opts.rowspan; idy++) {
-									arrRowspanCells.push( {row:(rIdx+idy), col:colIdx} );
-									colIdx++; // For cases where we already have a rowspan in this row - we need to Increment to account for this extra cell!
+							// 1: We recieve 'uneven' arrays (see ASCII table above), so lets calc how to slot cells in the correct grid column
+							for (var idx=0; (cIdx+idx)<intColCnt; idx++) {
+								var currColIdx = (cIdx + idx);
+
+								if ( !objTableGrid[rIdx][currColIdx] ) {
+									// A: Set this cell
+									objTableGrid[rIdx][cIdx+idx] = cell;
+
+									// B: Handle `colspan` or `rowspan` (a {cell} cant have both!)
+									// FIXME: FUTURE: ROWSPAN & COLSPAN in same cell is not yet handled!
+									if ( cell && cell.opts && cell.opts.colspan && !isNaN(Number(cell.opts.colspan)) ) {
+										for (var idy=1; idy<Number(cell.opts.colspan); idy++) {
+											// Advcance colspan count so rowspan below will have correct column index!
+											// (otherwise, colspan followed by rowspan wont be created correctly)
+											intColspans++;
+											objTableGrid[rIdx][currColIdx+idy] = {"hmerge":true, text:"hmerge"};
+										}
+									}
+									else if ( cell && cell.opts && cell.opts.rowspan && !isNaN(Number(cell.opts.rowspan)) ) {
+										for (var idz=1; idz<Number(cell.opts.rowspan); idz++) {
+											if ( !objTableGrid[rIdx+idz] ) objTableGrid[rIdx+idz] = {};
+											// Add colspans value to ensure proper alignment
+											objTableGrid[rIdx+idz][currColIdx+intColspans] = {"vmerge":true, text:"vmerge"};
+										}
+									}
+
+									// C: Stop once we're done
+									break;
 								}
 							}
 						});
 					});
+					if ( objTabOpts.debug ) {
+						console.table(objTableGrid);
+						var arrText = [];
+						$.each(objTableGrid, function(i,row){
+							var arrRow = [];
+							$.each(row, function(i,cell){ arrRow.push(cell.text); });
+							arrText.push( arrRow );
+						});
+						console.table( arrText );
+					}
 
-					// STEP 4: Build table rows/cells
-					$.each(arrTabRows, function(rIdx,row){
-						if ( Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx] ) intRowH = inch2Emu(objTabOpts.rowH[rIdx]);
+					// STEP 4: Build table rows/cells ============================
+					$.each(objTableGrid, function(rIdx,rowObj){
+						// A: Table Height provided without rowH? Then distribute rows
+						var intRowH = 0; // IMPORTANT: Default must be zero for auto-sizing to work
+						if ( Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx] ) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]));
+						else if ( objTabOpts.rowH && !isNaN(Number(objTabOpts.rowH)) ) intRowH = inch2Emu(Number(objTabOpts.rowH));
+						else if ( slideObj.options.cy || slideObj.options.h ) intRowH = ( slideObj.options.h ? inch2Emu(slideObj.options.h) : slideObj.options.cy) / arrTabRows.length;
 
-						// A: Start row
+						// B: Start row
 						strXml += '<a:tr h="'+ intRowH +'">';
 
-						// B: Loop over each CELL
-						$(row).each(function(cIdx,cell){
+						// C: Loop over each CELL
+						$.each(rowObj, function(cIdx,cell){
+							// FIRST: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
+							if ( cell.hmerge ) return;
+
 							// 1: OPTIONS: Build/set cell options (blocked for code folding)
 							{
 								// A: Create cell if needed (handle [null] and other manner of junk values)
@@ -1102,18 +1159,18 @@ var PptxGenJS = function(){
 							}
 
 							// 2: Cell Content: Either the text element or the cell itself (for when users just pass a string - no object or options)
-							var strCellText = ((typeof cell === 'object') ? cell.text : cell);
+							var strCellText = ( typeof cell === 'object' ? cell.text : cell );
 
 							// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
 
 							// 3: ROWSPAN: Add dummy cells for any active rowspan
-							// FIXME: FUTURE: ROWSPAN & COLSPAN in same cell is not yet handled!
-							if ( arrRowspanCells.filter(function(obj){ return obj.row == rIdx && obj.col == cIdx }).length > 0 ) {
+							if ( cell.vmerge ) {
 								strXml += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
+								return;
 							}
 
-							// 4: Start Table Cell, add Align, add Text content
-							strXml += ' <a:tc'+ cellColspan + cellRowspan +'>'
+							// 4: Start Table Cell, add Align, add Text content =========================
+							strXml += '<a:tc'+ cellColspan + cellRowspan +'>'
 									+ '  <a:txBody>'
 									+ '    <a:bodyPr/>'
 									+ '    <a:lstStyle/>'
@@ -1170,15 +1227,7 @@ var PptxGenJS = function(){
 							}
 						});
 
-						// B-2: Handle Rowspan as last col case
-						// We add dummy cells inside cell loop, but cases where last col is rowspaned
-						// by prev row wont be created b/c cell loop above exhausted before the col
-						// index of the final col was reached... ANYHOO, add it here when necc.
-						if ( arrRowspanCells.filter(function(obj){ return obj.row == rIdx && (obj.col+1) >= $(row).length }).length > 0 ) {
-							strXml += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
-						}
-
-						// C: Complete row
+						// D: Complete row
 						strXml += '</a:tr>';
 					});
 
@@ -1987,6 +2036,8 @@ var PptxGenJS = function(){
 			opt.y         = opt.y || EMU;
 			opt.cx        = opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU * 2));
 			opt.cy        = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
+			opt.w         = opt.cx;
+			opt.h         = opt.cy;
 			opt.font_size = opt.font_size || 12;
 			opt.margin    = opt.marginPt || opt.margin || 0;
 
@@ -1995,8 +2046,6 @@ var PptxGenJS = function(){
 			if ( opt.y  < 20 ) opt.y  = inch2Emu(opt.y);
 			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
 			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
-			opt.w = opt.cx;
-			opt.h = opt.cy;
 
 			// STEP 4: Row setup: Handle case where user passed in a simple array
 			var arrRows = $.extend(true,[],arrTabRows);

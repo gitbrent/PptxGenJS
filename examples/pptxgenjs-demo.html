@@ -75,7 +75,7 @@
 			// ======== -----------------------------------------------------------------------------------
 			{
 				var slide = pptx.addNewSlide();
-				slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+				slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
 
 				// DEMO: align/valign -------------------------------------------------------------------------
 				var objOpts1 = { x:0.5, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
@@ -99,13 +99,13 @@
 					]
 				];
 				slide.addTable(
-					arrTabRows, { x:0.5, y:1.1, w:6.0 },
+					arrTabRows, { x:0.5, y:1.1, w:5.0 },
 					{ rowH:0.75, fill:'F7F7F7', font_size:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
 				);
 				// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
 				// DEMO: cell styles --------------------------------------------------------------------------
-				var objOpts2 = { x:7.0, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
+				var objOpts2 = { x:6.0, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
 				slide.addText('Cell Styles:', objOpts2);
 
 				var arrTabRows = [
@@ -126,7 +126,7 @@
 					]
 				];
 				slide.addTable(
-					arrTabRows, { x:7.0, y:1.1, w:6.0 },
+					arrTabRows, { x:6.0, y:1.1, w:7.0 },
 					{ rowH:0.75, fill:'F7F7F7', color:'FFFFFF', font_size:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
 				);
 
@@ -156,21 +156,21 @@
 				// 2: Slide title
 				slide.addTable(
 					[ [{ text:'Table Examples 2', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-					{ x:0.5, y:0.13, cx:12.5 }
+					{ x:0.5, y:0.13, w:12.5, h:0.3 }
 				);
 
 				// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
 				var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
 				slide.addText('Colspans/Rowspans:', optsSub);
 
-				var tabOpts1 = { x:0.5, y:1.1, w:12.0, rowH:1.0, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:'FFFFFF', align:'c', valign:'c' };
+				var tabOpts1 = { x:0.5, y:1.1, w:12.4, h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'c' };
 				var arrTabRows1 = [
 					[
-						{ text:'A1 and A2', opts:{rowspan:2, fill:'00CC00'} }
+						 { text:'A1\nA2', opts:{rowspan:2, fill:'99FFCC'} }
 						,{ text:'B1' }
-						,{ text:'C1 and D1', opts:{colspan:2, fill:'00CC00'} }
+						,{ text:'C1 -> D1', opts:{colspan:2, fill:'99FFCC'} }
 						,{ text:'E1' }
-						,{ text:'F1/F2/F3',  opts:{rowspan:3, fill:'00CC00'} }
+						,{ text:'F1\nF2\nF3',  opts:{rowspan:3, fill:'99FFCC'} }
 					]
 					,[       'B2', 'C2', 'D2', 'E2' ]
 					,[ 'A3', 'B3', 'C3', 'D3', 'E3' ]
@@ -180,15 +180,34 @@
 				// (e.g.: there are 5 elements in the first row, and 6 in the second)
 				slide.addTable( arrTabRows1, tabOpts1 );
 
+				var tabOpts2 = { x:0.5, y:3.3, w:12.4, h:1.5, font_size:14, font_face:'Courier', align:'center', valign:'middle', fill:'F9F9F9', border:{pt:'1',color:'c7c7c7'}};
 				var arrTabRows2 = [
-					[ { text:'A1/B1', opts:{colspan:2, fill:'00CC00'} }, { text:'C1' } ],
-					[ { text:'A2' }, { text:'B2/C2', opts:{colspan:2, fill:'00cc00'} } ]
+					[
+						{ text:'A1\n--\nA2', opts:{rowspan:2, fill:'99FFCC'} },
+						{ text:'B1\n--\nB2', opts:{rowspan:2, fill:'99FFCC'} },
+						{ text:'C1 -> D1',   opts:{colspan:2, fill:'9999FF'} },
+						{ text:'E1 -> F1',   opts:{colspan:2, fill:'9999FF'} },
+						'G1'
+					],
+					[ 'C2','D2','E2','F2','G2' ]
 				];
-				// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
-				// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
-				// (e.g.: there are 5 elements in the first row, and 6 in the second)
-				var tabOpts2 = { x:0.5, y:4.8, w:12.0, rowH:1.0, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:'FFFFFF', align:'c', valign:'c' };
 				slide.addTable( arrTabRows2, tabOpts2 );
+
+				var tabOpts3 = {x:0.5, y:5.15, w:6.25, h:2, margin:0.25, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F1F1F1' }
+				var arrTabRows3 = [
+					[ {text:'A1\nA2\nA3', opts:{rowspan:3, fill:'FFFCCC'}}, {text:'B1\nB2', opts:{rowspan:2, fill:'FFFCCC'}}, 'C1' ],
+					[ 'C2' ],
+					[ 'B3','C3' ]
+				];
+				slide.addTable(arrTabRows3, tabOpts3);
+
+				var tabOpts4 = {x:7.4, y:5.15, w:5.5, h:2, margin:0, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F2F9FC' }
+				var arrTabRows4 = [
+					[ 'A1', {text:'B1\nB2', opts:{rowspan:2, fill:'FFFCCC'}}, {text:'C1\nC2\nC3', opts:{rowspan:3, fill:'FFFCCC'}} ],
+					[ 'A2' ],
+					[ 'A3','B3' ]
+				];
+				slide.addTable(arrTabRows4, tabOpts4);
 			}
 
 			// SLIDE 3: Cell Formatting / Cell Margins
@@ -198,7 +217,7 @@
 				// 2: Slide title
 				slide.addTable(
 					[ [{ text:'Table Examples 3', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-					{ x:0.5, y:0.13, cx:12.5 }
+					{ x:0.5, y:0.13, w:12.5, h:0.3 }
 				);
 
 				// Cell Margins
@@ -233,9 +252,9 @@
 					arrRows.push( [idx, gArrNamesF[idx], gStrLorumIpsum.substring(idx*100,idx*300)] );
 				}
 
-				pptx.addNewSlide().addTable( arrRows, { x:0.5, y:0.25, colW:[0.75,1.75,10], margin:2, border:'CFCFCF', debug:true } );
+				pptx.addNewSlide().addTable( arrRows, { x:0.5, y:0.25, colW:[0.75,1.75,10], margin:2, border:'CFCFCF' } );
 
-				pptx.addNewSlide().addTable( arrRows, { x:3.0, y:0.25, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF', debug:true } );
+				pptx.addNewSlide().addTable( arrRows, { x:3.0, y:0.25, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 			}
 		}
 
@@ -309,7 +328,6 @@
 		}
 
 		function genSlides_Text(pptx) {
-			// ======== -----------------------------------------------------------------------------------
 			// SLIDE 1: Font Size/Color line examples 12-60 pt font, random color
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
@@ -342,7 +360,6 @@
 			var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
 			slide.addText('Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)', { x:0.5, y:6.0, w:12, h:1, font_size:32, color:'0088cc', shadow:shadowOpts });
 
-			// ======== -----------------------------------------------------------------------------------
 			// SLIDE 2: Misc mess
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
@@ -447,7 +464,7 @@
 
 			var numMargin = 1.25;
 			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:'FFFCCC' });
-			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:'F1F1F1', debug:true} );
+			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:'F1F1F1'} );
 
 			pptx.save('PptxGenJs-TablePagingLogicCheck');
 		}
@@ -482,7 +499,7 @@
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
-			objOpts.debug = true;
+			//objOpts.debug = true;
 			objOpts.master = pptx.masters.MASTER_SLIDE;
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 
@@ -571,7 +588,10 @@
 				+ 'var slide = pptx.addNewSlide();\n'
 				+ '\n'
 				+ '// STEP 3: Add any objects (table, text, shape or images) to the Slide\n'
-				+ "slide.addText('BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - 你好', {x:0.5, y:1.0, font_size:28, color:'0088CC'} )\n"
+				+ "slide.addText(\n"
+				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - 你好',\n"
+				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:28, color:'0088CC', fill:'F1F1F1' }\n"
+				+ ")\n"
 				+ '\n'
 				+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
 				+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
@@ -590,22 +610,34 @@
 
 			$('#demo-sandbox').html('<pre class="prettyprint" style="margin:0 !important; width:auto; padding:10px; border-radius:0;">\n'
 				+ "var pptx = new PptxGenJS();\n"
+				+ "pptx.setLayout('LAYOUT_WIDE');\n"
 				+ "var slide = pptx.addNewSlide();\n"
 				+ "// Custom Slide sizes are supported. Just provide 3 options:\n"
 				+ "// pptx.setLayout({ name:'A3', width:16.5, height:11.7 });\n"
 				+ "\n"
-				+ "slide.addText('Sandbox Output', { x:0.25, y:0.15, font_size:32, color:'00FF00' });\n"
-				+ "var tabOpts = { x:0.5, y:0.73, rowH:0.5, colW:[0.65, 3.25, 0.65, 0.65, 0.65, 1.3, 0.65] };\n"
-				+ "tabOpts.fill ='e6e6e6';\n"
-				+ "tabOpts.border = { pt:1, color:'c7c7c7' };\n"
-				+ "tabOpts.margin = [10,5,10,5];\n"
-				+ "slide.addTable( [1,2,3,4,5,6,7], tabOpts );\n"
-				+ "slide.addTable( ['margin:0,0,0,20'], { x:1.5, y:2.0, w:1.25, margin:[0,0,0,20], fill:'FFFCCC' } );\n"
+				+ "slide.addText(\n"
+				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - 你好',\n"
+				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:28, color:'0088CC', fill:'F1F1F1' }\n"
+				+ ")\n"
 				+ "\n"
-				+ "slide.addText('First line\\nSecond line\\nThird line', { x:0.5, y:3.0, w:5, h:2, valign:'middle', align:'center', color:'00aacc', font_size:16, fill:'F1F1F1' });\n"
+				+ "slide.addText(\n"
+				+ " [\n"
+				+ "  { text:'word-level\\nformatting', options:{ font_size:36, font_face:'Arial', color:'99ABCC', align:'r', breakLine:true } },\n"
+				+ "  { text:'...in the same textbox', options:{ font_size:48, font_face:'Times', color:'FFFF00', align:'c' } }\n"
+				+ " ],\n"
+				+ " { x:0.5, y:3.0, w:8.5, h:2.5, margin:0.1, fill:'232323' }\n"
+				+ ");\n"
 				+ "\n"
-				+ "pptx.save('PptxGenJs-Advanced-Sandbox');\n"
-				+ "</pre>\n");
+				+ "var opts2 = {x:1.0, y:1.0, w:8, h:3, margin:0, align:'center', valign:'middle', font_size:18, border:{pt:'1'}, fill:'F1F1F1'}\n"
+				+ "var rows2 = [\n"
+				+ "	[ {text:'A1+A2', opts:{rowspan:2}}, {text:'B1+B2', opts:{rowspan:2}}, 'C1' ],\n"
+				+ "	[ 'C2' ]\n"
+				+ "];\n"
+				+ "pptx.addNewSlide().addTable(rows2, opts2);\n"
+				+ "\n"
+				+ "pptx.save('PptxGenJS-Sandbox');\n"
+				+ "</pre>\n"
+			);
 		});
 	</script>
 </head>
@@ -720,7 +752,7 @@
 					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Automattic Table Paging</legend>
-							<h3>Slide 1-n</h3>
+							<h3>Slide 4-n</h3>
 							<div class="divTable">
 								<div>
 									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
@@ -730,7 +762,7 @@
 							<div class="divTable">
 								<div>
 									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Same text but with higher different table dimensions</label></div>
+									<div><label>Same text but with different table dimensions</label></div>
 								</div>
 							</div>
 						</fieldset>

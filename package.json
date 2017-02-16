@@ -6,7 +6,7 @@
 		"url": "https://github.com/gitbrent/"
 	},
     "description": "JavaScript framework that creates PowerPoint (pptx) presentations",
-	"homepage": "http://gitbrent.github.io/PptxGenJS/",
+	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
     "dependencies": {
 		"jquery-node": ">=0.2.0",
@@ -28,6 +28,7 @@
 		"pptx",
 		"powerpoint",
 		"presentations",
+		"javascript-powerpoint",
 		"js-powerpoint",
 		"js-create-powerpoint"
     ],

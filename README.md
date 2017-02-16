@@ -79,7 +79,7 @@ an HTML Table across one or more Slides with a single command.
 **************************************************************************************************
 # Live Demo
 Use JavaScript to Create a PowerPoint presentation with your web browser right now:  
-[http://gitbrent.github.io/PptxGenJS](http://gitbrent.github.io/PptxGenJS)
+[https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 # Installation
 ## Client-Side

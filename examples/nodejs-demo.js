@@ -207,7 +207,7 @@ function demoTables() {
 	// ======== -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
 		var objOpts1 = { x:0.5, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
@@ -231,13 +231,13 @@ function demoTables() {
 			]
 		];
 		slide.addTable(
-			arrTabRows, { x:0.5, y:1.1, w:6.0 },
+			arrTabRows, { x:0.5, y:1.1, w:5.0 },
 			{ rowH:0.75, fill:'F7F7F7', font_size:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
 		);
 		// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
 		// DEMO: cell styles --------------------------------------------------------------------------
-		var objOpts2 = { x:7.0, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
+		var objOpts2 = { x:6.0, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
 		slide.addText('Cell Styles:', objOpts2);
 
 		var arrTabRows = [
@@ -258,7 +258,7 @@ function demoTables() {
 			]
 		];
 		slide.addTable(
-			arrTabRows, { x:7.0, y:1.1, w:6.0 },
+			arrTabRows, { x:6.0, y:1.1, w:7.0 },
 			{ rowH:0.75, fill:'F7F7F7', color:'FFFFFF', font_size:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
 		);
 
@@ -288,21 +288,21 @@ function demoTables() {
 		// 2: Slide title
 		slide.addTable(
 			[ [{ text:'Table Examples 2', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-			{ x:0.5, y:0.13, cx:12.5 }
+			{ x:0.5, y:0.13, w:12.5, h:0.3 }
 		);
 
 		// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
 		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
 		slide.addText('Colspans/Rowspans:', optsSub);
 
-		var tabOpts1 = { x:0.5, y:1.1, w:12.0, rowH:1.0, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:'FFFFFF', align:'c', valign:'c' };
+		var tabOpts1 = { x:0.5, y:1.1, w:12.4, h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'c' };
 		var arrTabRows1 = [
 			[
-				{ text:'A1 and A2', opts:{rowspan:2, fill:'00CC00'} }
+				 { text:'A1\nA2', opts:{rowspan:2, fill:'99FFCC'} }
 				,{ text:'B1' }
-				,{ text:'C1 and D1', opts:{colspan:2, fill:'00CC00'} }
+				,{ text:'C1 -> D1', opts:{colspan:2, fill:'99FFCC'} }
 				,{ text:'E1' }
-				,{ text:'F1/F2/F3',  opts:{rowspan:3, fill:'00CC00'} }
+				,{ text:'F1\nF2\nF3',  opts:{rowspan:3, fill:'99FFCC'} }
 			]
 			,[       'B2', 'C2', 'D2', 'E2' ]
 			,[ 'A3', 'B3', 'C3', 'D3', 'E3' ]
@@ -312,15 +312,34 @@ function demoTables() {
 		// (e.g.: there are 5 elements in the first row, and 6 in the second)
 		slide.addTable( arrTabRows1, tabOpts1 );
 
+		var tabOpts2 = { x:0.5, y:3.3, w:12.4, h:1.5, font_size:14, font_face:'Courier', align:'center', valign:'middle', fill:'F9F9F9', border:{pt:'1',color:'c7c7c7'}};
 		var arrTabRows2 = [
-			[ { text:'A1/B1', opts:{colspan:2, fill:'00CC00'} }, { text:'C1' } ],
-			[ { text:'A2' }, { text:'B2/C2', opts:{colspan:2, fill:'00cc00'} } ]
+			[
+				{ text:'A1\n--\nA2', opts:{rowspan:2, fill:'99FFCC'} },
+				{ text:'B1\n--\nB2', opts:{rowspan:2, fill:'99FFCC'} },
+				{ text:'C1 -> D1',   opts:{colspan:2, fill:'9999FF'} },
+				{ text:'E1 -> F1',   opts:{colspan:2, fill:'9999FF'} },
+				'G1'
+			],
+			[ 'C2','D2','E2','F2','G2' ]
 		];
-		// NOTE: Follow HTML conventions for colspan/rowspan cells - cells spanned are left out of arrays - see above
-		// The table above has 6 columns, but each of the 3 rows has 4-5 elements as colspan/rowspan replacing the missing ones
-		// (e.g.: there are 5 elements in the first row, and 6 in the second)
-		var tabOpts2 = { x:0.5, y:4.8, w:12.0, rowH:1.0, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:'FFFFFF', align:'c', valign:'c' };
 		slide.addTable( arrTabRows2, tabOpts2 );
+
+		var tabOpts3 = {x:0.5, y:5.15, w:6.25, h:2, margin:0.25, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F1F1F1' }
+		var arrTabRows3 = [
+			[ {text:'A1\nA2\nA3', opts:{rowspan:3, fill:'FFFCCC'}}, {text:'B1\nB2', opts:{rowspan:2, fill:'FFFCCC'}}, 'C1' ],
+			[ 'C2' ],
+			[ 'B3','C3' ]
+		];
+		slide.addTable(arrTabRows3, tabOpts3);
+
+		var tabOpts4 = {x:7.4, y:5.15, w:5.5, h:2, margin:0, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F2F9FC' }
+		var arrTabRows4 = [
+			[ 'A1', {text:'B1\nB2', opts:{rowspan:2, fill:'FFFCCC'}}, {text:'C1\nC2\nC3', opts:{rowspan:3, fill:'FFFCCC'}} ],
+			[ 'A2' ],
+			[ 'A3','B3' ]
+		];
+		slide.addTable(arrTabRows4, tabOpts4);
 	}
 
 	// SLIDE 3: Cell Formatting / Cell Margins
@@ -330,7 +349,7 @@ function demoTables() {
 		// 2: Slide title
 		slide.addTable(
 			[ [{ text:'Table Examples 3', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-			{ x:0.5, y:0.13, cx:12.5 }
+			{ x:0.5, y:0.13, w:12.5, h:0.3 }
 		);
 
 		// Cell Margins
