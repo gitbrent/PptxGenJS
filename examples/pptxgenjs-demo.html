@@ -54,6 +54,14 @@
 
 		// ==================================================================================================================
 
+		function getTimestamp() {
+			var dateNow = new Date();
+			var dateMM = dateNow.getMonth() + 1; dateDD = dateNow.getDate(); dateYY = dateNow.getFullYear(), h = dateNow.getHours(); m = dateNow.getMinutes();
+			return dateNow.getFullYear() +''+ (dateMM<=9 ? '0' + dateMM : dateMM) +''+ (dateDD<=9 ? '0' + dateDD : dateDD) + (h<=9 ? '0' + h : h) + (m<=9 ? '0' + m : m);
+		}
+
+		// ==================================================================================================================
+
 		function doGenTabTest(type) {
 			// STEP 1: Instantiate new PptxGenJS object
 			var pptx = new PptxGenJS();
@@ -67,7 +75,7 @@
 			});
 
 			// LAST: Export Presentation
-			pptx.save('Demo-'+type);
+			pptx.save('Demo-'+type+'_'+getTimestamp());
 		}
 
 		function genSlides_Table(pptx) {
@@ -75,7 +83,7 @@
 			// ======== -----------------------------------------------------------------------------------
 			{
 				var slide = pptx.addNewSlide();
-				slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
+				slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } ); // `opts` = legacy test
 
 				// DEMO: align/valign -------------------------------------------------------------------------
 				var objOpts1 = { x:0.5, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
@@ -83,19 +91,19 @@
 
 				var arrTabRows = [
 					[
-						{ text: 'Top Lft', opts: { valign:'top',    align:'left'  , font_face:'Arial'   } },
-						{ text: 'Top Ctr', opts: { valign:'t'  ,    align:'center', font_face:'Courier' } },
-						{ text: 'Top Rgt', opts: { valign:'t'  ,    align:'right' , font_face:'Verdana' } }
+						{ text: 'Top Lft', options: { valign:'top',    align:'left'  , font_face:'Arial'   } },
+						{ text: 'Top Ctr', options: { valign:'t'  ,    align:'center', font_face:'Courier' } },
+						{ text: 'Top Rgt', options: { valign:'t'  ,    align:'right' , font_face:'Verdana' } }
 					],
 					[
-						{ text: 'Ctr Lft', opts: { valign:'middle', align:'left' } },
-						{ text: 'Ctr Ctr', opts: { valign:'center', align:'ctr'  } },
-						{ text: 'Ctr Rgt', opts: { valign:'c'     , align:'r'    } }
+						{ text: 'Ctr Lft', options: { valign:'middle', align:'left' } },
+						{ text: 'Ctr Ctr', options: { valign:'center', align:'ctr'  } },
+						{ text: 'Ctr Rgt', options: { valign:'c'     , align:'r'    } }
 					],
 					[
-						{ text: 'Btm Lft', opts: { valign:'bottom', align:'l' } },
-						{ text: 'Btm Ctr', opts: { valign:'btm',    align:'c' } },
-						{ text: 'Btm Rgt', opts: { valign:'b',      align:'r' } }
+						{ text: 'Btm Lft', options: { valign:'bottom', align:'l' } },
+						{ text: 'Btm Ctr', options: { valign:'btm',    align:'c' } },
+						{ text: 'Btm Rgt', options: { valign:'b',      align:'r' } }
 					]
 				];
 				slide.addTable(
@@ -110,19 +118,19 @@
 
 				var arrTabRows = [
 					[
-						{ text: 'White',  opts: { fill:'6699CC', color:'FFFFFF' } },
-						{ text: 'Yellow', opts: { fill:'99AACC', color:'FFFFAA' } },
-						{ text: 'Pink',   opts: { fill:'AACCFF', color:'E140FE' } }
+						{ text: 'White',  options: { fill:'6699CC', color:'FFFFFF' } },
+						{ text: 'Yellow', options: { fill:'99AACC', color:'FFFFAA' } },
+						{ text: 'Pink',   options: { fill:'AACCFF', color:'E140FE' } }
 					],
 					[
-						{ text: '12pt', opts: { fill:'FF0000', font_size:12 } },
-						{ text: '20pt', opts: { fill:'00FF00', font_size:20 } },
-						{ text: '28pt', opts: { fill:'0000FF', font_size:28 } }
+						{ text: '12pt', options: { fill:'FF0000', font_size:12 } },
+						{ text: '20pt', options: { fill:'00FF00', font_size:20 } },
+						{ text: '28pt', options: { fill:'0000FF', font_size:28 } }
 					],
 					[
-						{ text: 'Bold',      opts: { fill:'003366', bold:true } },
-						{ text: 'Underline', opts: { fill:'336699', underline:true } },
-						{ text: '10pt Pad',  opts: { fill:'6699CC', marginPt:10 } }
+						{ text: 'Bold',      options: { fill:'003366', bold:true } },
+						{ text: 'Underline', options: { fill:'336699', underline:true } },
+						{ text: '10pt Pad',  options: { fill:'6699CC', marginPt:10 } }
 					]
 				];
 				slide.addTable(
@@ -155,7 +163,7 @@
 				var slide = pptx.addNewSlide();
 				// 2: Slide title
 				slide.addTable(
-					[ [{ text:'Table Examples 2', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
+					[ [{ text:'Table Examples 2', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
 					{ x:0.5, y:0.13, w:12.5, h:0.3 }
 				);
 
@@ -166,11 +174,11 @@
 				var tabOpts1 = { x:0.5, y:1.1, w:12.4, h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'c' };
 				var arrTabRows1 = [
 					[
-						 { text:'A1\nA2', opts:{rowspan:2, fill:'99FFCC'} }
+						 { text:'A1\nA2', options:{rowspan:2, fill:'99FFCC'} }
 						,{ text:'B1' }
-						,{ text:'C1 -> D1', opts:{colspan:2, fill:'99FFCC'} }
+						,{ text:'C1 -> D1', options:{colspan:2, fill:'99FFCC'} }
 						,{ text:'E1' }
-						,{ text:'F1\nF2\nF3',  opts:{rowspan:3, fill:'99FFCC'} }
+						,{ text:'F1\nF2\nF3', options:{rowspan:3, fill:'99FFCC'} }
 					]
 					,[       'B2', 'C2', 'D2', 'E2' ]
 					,[ 'A3', 'B3', 'C3', 'D3', 'E3' ]
@@ -183,10 +191,10 @@
 				var tabOpts2 = { x:0.5, y:3.3, w:12.4, h:1.5, font_size:14, font_face:'Courier', align:'center', valign:'middle', fill:'F9F9F9', border:{pt:'1',color:'c7c7c7'}};
 				var arrTabRows2 = [
 					[
-						{ text:'A1\n--\nA2', opts:{rowspan:2, fill:'99FFCC'} },
-						{ text:'B1\n--\nB2', opts:{rowspan:2, fill:'99FFCC'} },
-						{ text:'C1 -> D1',   opts:{colspan:2, fill:'9999FF'} },
-						{ text:'E1 -> F1',   opts:{colspan:2, fill:'9999FF'} },
+						{ text:'A1\n--\nA2', options:{rowspan:2, fill:'99FFCC'} },
+						{ text:'B1\n--\nB2', options:{rowspan:2, fill:'99FFCC'} },
+						{ text:'C1 -> D1',   options:{colspan:2, fill:'9999FF'} },
+						{ text:'E1 -> F1',   options:{colspan:2, fill:'9999FF'} },
 						'G1'
 					],
 					[ 'C2','D2','E2','F2','G2' ]
@@ -195,17 +203,17 @@
 
 				var tabOpts3 = {x:0.5, y:5.15, w:6.25, h:2, margin:0.25, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F1F1F1' }
 				var arrTabRows3 = [
-					[ {text:'A1\nA2\nA3', opts:{rowspan:3, fill:'FFFCCC'}}, {text:'B1\nB2', opts:{rowspan:2, fill:'FFFCCC'}}, 'C1' ],
+					[ {text:'A1\nA2\nA3', options:{rowspan:3, fill:'FFFCCC'}}, {text:'B1\nB2', options:{rowspan:2, fill:'FFFCCC'}}, 'C1' ],
 					[ 'C2' ],
-					[ 'B3','C3' ]
+					[ { text:'B3 -> C3', options:{colspan:2, fill:'99FFCC'} } ]
 				];
 				slide.addTable(arrTabRows3, tabOpts3);
 
 				var tabOpts4 = {x:7.4, y:5.15, w:5.5, h:2, margin:0, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F2F9FC' }
 				var arrTabRows4 = [
-					[ 'A1', {text:'B1\nB2', opts:{rowspan:2, fill:'FFFCCC'}}, {text:'C1\nC2\nC3', opts:{rowspan:3, fill:'FFFCCC'}} ],
+					[ 'A1', {text:'B1\nB2', options:{rowspan:2, fill:'FFFCCC'}}, {text:'C1\nC2\nC3', options:{rowspan:3, fill:'FFFCCC'}} ],
 					[ 'A2' ],
-					[ 'A3','B3' ]
+					[ { text:'A3 -> B3', options:{colspan:2, fill:'99FFCC'} } ]
 				];
 				slide.addTable(arrTabRows4, tabOpts4);
 			}
@@ -216,7 +224,7 @@
 				var slide = pptx.addNewSlide();
 				// 2: Slide title
 				slide.addTable(
-					[ [{ text:'Table Examples 3', opts:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
+					[ [{ text:'Table Examples 3', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
 					{ x:0.5, y:0.13, w:12.5, h:0.3 }
 				);
 
@@ -260,7 +268,7 @@
 
 		function genSlides_YouTube(pptx) {
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Media: Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+			slide.addTable( [ [{ text:'Media: Video Examples', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 			// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
 			slide.addText('TED Talks 2016: Top 10', { x:0.5, y:1.2, w:8.00, h:0.4, color:'0088CC' });
@@ -270,7 +278,7 @@
 		function genSlides_Image(pptx) {
 			// 1:
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Image Examples: Misc Image Types', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+			slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 			// Add an image using basic syntax
 			slide.addImage({ path:'images/cc_copyremix.gif',          x:0.5, y:0.75, w:1.20, h:1.20 });
@@ -298,7 +306,7 @@
 			// SLIDE 1: Misc Shape Types (no text)
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (no text)', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (no text)', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 			slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
 			slide.addShape(pptx.shapes.OVAL,              { x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
@@ -314,7 +322,7 @@
 			// SLIDE 2: Misc Shape Types with Text
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (with text)', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (with text)', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 			slide.addText('ROUNDED-RECTANGLE', { shape:pptx.shapes.ROUNDED_RECTANGLE, align:'l', x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
 			slide.addText('OVAL',              { shape:pptx.shapes.OVAL,              align:'c', x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
@@ -331,7 +339,7 @@
 			// SLIDE 1: Font Size/Color line examples 12-60 pt font, random color
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Text Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+			slide.addTable( [ [{ text:'Text Examples 1', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 			// DEMO: Array of text fonts/colors in increasing size
 			[18,22,28,32].forEach(function(val,i){
@@ -367,7 +375,7 @@
 			slide.back = '030303';
 			slide.color = '9F9F9F';
 			// Title
-			slide.addTable( [ [{ text:'Text Examples 2', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+			slide.addTable( [ [{ text:'Text Examples 2', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 			// Actual Textbox shape (can have any Height, can wrap text, etc.)
 			slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
@@ -426,7 +434,7 @@
 
 			slide.slideNumber({ x:0.5, y:'90%' });
 
-			slide.addTable( [ [{ text:'Simple Example', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+			slide.addTable( [ [{ text:'Simple Example', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 			//slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
 			slide.addText('Hello 45! ', { x:0.5, y:0.5, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'00AAFF', blur:2, offset:10, angle: 45, opacity:0.25} });
@@ -507,7 +515,7 @@
 			pptx.addSlidesForTable('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
-			pptx.save('Table2SlideMasterSlide');
+			pptx.save('Demo-TableToSlidesMasterSlide_'+getTimestamp());
 		}
 
 		function table2slides2() {
@@ -529,7 +537,7 @@
 
 			// Add any dynamic content to gnerated Slides
 			// things that cant be pre-defined like a title that varies as you generate sections of tables, etc.
-			objOpts.addText = { text:"Some dynamic title here", opts:{ x:1, y:0.5, color:'0088CC', font_face:'Arial', font_size:16 } };
+			objOpts.addText = { text:"Some dynamic title here", options:{ x:1, y:0.5, color:'0088CC', font_face:'Arial', font_size:16 } };
 			// You can do this for all other stypes as well: .addShape(), .addTable() and .addImage()
 
 			// STEP 3: Create all Slides from table data
@@ -589,7 +597,7 @@
 				+ '\n'
 				+ '// STEP 3: Add any objects (table, text, shape or images) to the Slide\n'
 				+ "slide.addText(\n"
-				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - 你好',\n"
+				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
 				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:28, color:'0088CC', fill:'F1F1F1' }\n"
 				+ ")\n"
 				+ '\n'
@@ -616,7 +624,7 @@
 				+ "// pptx.setLayout({ name:'A3', width:16.5, height:11.7 });\n"
 				+ "\n"
 				+ "slide.addText(\n"
-				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - 你好',\n"
+				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
 				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:28, color:'0088CC', fill:'F1F1F1' }\n"
 				+ ")\n"
 				+ "\n"
@@ -630,7 +638,7 @@
 				+ "\n"
 				+ "var opts2 = {x:1.0, y:1.0, w:8, h:3, margin:0, align:'center', valign:'middle', font_size:18, border:{pt:'1'}, fill:'F1F1F1'}\n"
 				+ "var rows2 = [\n"
-				+ "	[ {text:'A1+A2', opts:{rowspan:2}}, {text:'B1+B2', opts:{rowspan:2}}, 'C1' ],\n"
+				+ "	[ {text:'A1+A2', options:{rowspan:2}}, {text:'B1+B2', options:{rowspan:2}}, 'C1' ],\n"
 				+ "	[ 'C2' ]\n"
 				+ "];\n"
 				+ "pptx.addNewSlide().addTable(rows2, opts2);\n"

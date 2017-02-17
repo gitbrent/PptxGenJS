@@ -36,7 +36,7 @@
 	....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
 	SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
 	|
-	OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5")
+	OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
 	|
 	REFS:
 	* "Structure of a PresentationML document (Open XML SDK)"
@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.2.0";
-	var APP_REL = "20170215";
+	var APP_VER = "1.2.1";
+	var APP_REL = "20170216";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -427,7 +427,10 @@ var PptxGenJS = function(){
 		// STEP 2: Calc number of columns
 		// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 		// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
-		inArrRows[0].forEach(function(cell,idx){ numCols += ( cell.opts && cell.opts.colspan ? cell.opts.colspan : 1 ) });
+		inArrRows[0].forEach(function(cell,idx){
+			var cellOpts = cell.options || cell.opts || null; // DEPRECATED (`opts`)
+			numCols += ( cellOpts && cellOpts.colspan ? cellOpts.colspan : 1 );
+		});
 
 		if (opts.debug) console.log('arrInchMargins ..... = '+ arrInchMargins.toString());
 		if (opts.debug) console.log('numCols ............ = '+ numCols );
@@ -471,9 +474,21 @@ var PptxGenJS = function(){
 
 			// B: Parse and store each cell's text into line array (*MAGIC HAPPENS HERE*)
 			row.forEach(function(cell,iCell){
-				// 1: Handle cases where plain array of strings was passed
-				if ( typeof cell !== 'object' ) cell = { text:cell.toString(), opts:opts };
-				if ( !cell.opts ) cell.opts = {};
+				// DESIGN: Cells are henceforth {objects} with `text` and `opts`
+
+				// 1: Cleanse data
+				if ( !isNaN(cell) || typeof cell === 'string' ) {
+					// Grab table formatting `opts` to use here so text style/format inherits as it should
+					cell = { text:cell.toString(), opts:opts };
+				}
+				else if ( typeof cell === 'object' ) {
+					// ARG0: `text`
+					if ( !cell.text ) cell.text = "?";
+
+					// ARG1: `options`
+					var opt = cell.options || cell.opts || {}; // Legacy support for `opts` (<= v1.2.0)
+					cell.opts = opt; // This odd soln is needed until `opts` can be safely discarded (DEPRECATED)
+				}
 
 				// 2: Create a cell object for each table column
 				currRow.push({ text:'', opts:cell.opts });
@@ -1111,7 +1126,7 @@ var PptxGenJS = function(){
 								if ( !cell ) cell = { text:' ' };
 
 								// B: Load/Create options
-								var cellOpts = cell.opts || {};
+								var cellOpts = cell.options || cell.opts || {};
 
 								// C: Do Important/Override Opts
 								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
@@ -2360,9 +2375,9 @@ var PptxGenJS = function(){
 
 			// C: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
-			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
 			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}) );
+			if ( opts.addText  ) newSlide.addText(  opts.addText.text,   (opts.addText.opts  || {}) );
 		});
 	}
 };

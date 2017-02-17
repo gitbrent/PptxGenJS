@@ -4,7 +4,7 @@
 
 ### JavaScript framework that produces PowerPoint (pptx) presentations
 
-Quickly and easily produce PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
+Quickly and easily create PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
 
 ## Main Features
 * Complete JavaScript framework: No client configuration, plug-ins, or other settings required
@@ -33,7 +33,8 @@ an HTML Table across one or more Slides with a single command.
     - [Presentation Options](#presentation-options)
     - [Presentation Layouts](#presentation-layouts)
   - [Creating Slides](#creating-slides)
-    - [Slide Options](#slide-options)
+    - [Applying Master Slides / Branding](#applying-master-slides--branding)
+    - [Adding Slide Numbers](#adding-slide-numbers)
     - [Slide Number Options](#slide-number-options)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
@@ -42,6 +43,7 @@ an HTML Table across one or more Slides with a single command.
   - [Adding Tables](#adding-tables)
     - [Table Layout Options](#table-layout-options)
     - [Table Formatting Options](#table-formatting-options)
+    - [Table Formatting Notes](#table-formatting-notes)
     - [Table Cell Formatting](#table-cell-formatting)
     - [Table Cell Formatting Examples](#table-cell-formatting-examples)
     - [Table Examples](#table-examples)
@@ -55,19 +57,18 @@ an HTML Table across one or more Slides with a single command.
     - [Media Options](#media-options)
     - [Media Examples](#media-examples)
   - [Saving Presentations](#saving-presentations)
+    - [Client Browser](#client-browser)
+    - [Node.js](#nodejs-1)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Slide Masters](#slide-masters)
   - [Slide Master Examples](#slide-master-examples)
   - [Slide Master Object Options](#slide-master-object-options)
   - [Sample Slide Master File](#sample-slide-master-file)
 - [Table-to-Slides Feature](#table-to-slides-feature)
-    - [Table-to-Slides Options](#table-to-slides-options)
-    - [Notes:](#notes)
-    - [Table-to-Slides Example](#table-to-slides-example)
-  - [Master Pages and Branding](#master-pages-and-branding)
-  - [Override Slide Master Settings](#override-slide-master-settings)
-  - [One-Line Presentation Exports](#one-line-presentation-exports)
-    - [Easy SharePoint Integration](#easy-sharepoint-integration)
+  - [Table-to-Slides Options](#table-to-slides-options)
+  - [Table-to-Slides Notes](#table-to-slides-notes)
+  - [Table-to-Slides Examples](#table-to-slides-examples)
+  - [Creative Solutions](#creative-solutions)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
@@ -166,18 +167,20 @@ pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 ```
 
 ## Creating Slides
-
-Add a Slide to a Presentation
 ```javascript
 var slide = pptx.addNewSlide();
 ```
 
-### Slide Options
-Applying Master Slides
+### Applying Master Slides / Branding
 ```javascript
-var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
+// Create a new Slide that will inherit properties from a pre-defined master page (margins, logos, text, background, etc.)
+var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
+
+// The background color can be overridden on a per-slide basis:
+var slide2 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE, { bkgd:'FFFCCC'} );
 ```
-Adding Slide Numbers
+
+### Adding Slide Numbers
 ```javascript
 slide.slideNumber({ x:1.0, y:'90%' });
 ```
@@ -323,20 +326,25 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `underline`  | boolean |        | `false`   | underline text     | `true` or `false` |
 | `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`) |
 
-### Table Cell Formatting
+### Table Formatting Notes
 * **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
-* You can selectively override formatting on a per-cell basis by including any **Formatting Option** in the row cell itself
+* You can selectively override formatting at a cell-level providing any **Formatting Option** in the cell `options`
+
+### Table Cell Formatting
+Table cells can be either a text string or an object with text and options properties.
 
 ### Table Cell Formatting Examples
 ```javascript
 var rows = [];
-// These cells will be formatted according to any options provided to addTable()
+
+// Row One: cells will be formatted according to any options provided to `addTable()`
 rows.push( ['First', 'Second', 'Third'] );
-// Any formatting options provided by cells will be applied - overriding table options (if any)
-rwos.push([
-    { text:'1st', opts:{color:'ff0000'} },
-    { text:'2nd', opts:{color:'00ff00'} },
-    { text:'3rd', opts:{color:'0000ff'} }
+
+// Row Two: set/override formatting for each cell
+rows.push([
+    { text:'1st', options:{color:'ff0000'} },
+    { text:'2nd', options:{color:'00ff00'} },
+    { text:'3rd', options:{color:'0000ff'} }
 ]);
 ```
 
@@ -365,9 +373,9 @@ slide.addTable( rows, tabOpts );
 // --------
 var rows = [
     [
-        { text:'Top Lft', opts:{ valign:'t', align:'l', font_face:'Arial'   } },
-        { text:'Top Ctr', opts:{ valign:'t', align:'c', font_face:'Verdana' } },
-        { text:'Top Rgt', opts:{ valign:'t', align:'r', font_face:'Courier' } }
+        { text:'Top Lft', options:{ valign:'t', align:'l', font_face:'Arial'   } },
+        { text:'Top Ctr', options:{ valign:'t', align:'c', font_face:'Verdana' } },
+        { text:'Top Rgt', options:{ valign:'t', align:'r', font_face:'Courier' } }
     ],
 ];
 var tabOpts = { x:0.5, y:4.5, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m'} };
@@ -512,15 +520,17 @@ pptx.save('Demo-Media');
 ```
 
 ## Saving Presentations
+Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
+example of which can be found below.
 
-Client Browser:
+### Client Browser
 * Simply provide a filename
 
 ```javascript
 pptx.save('Demo-Media');
 ```
 
-Node.js:
+### Node.js
 * Node can accept a callback function that will return the filename
 
 ```javascript
@@ -609,59 +619,59 @@ Location: `PptxGenJS/dist/pptxgen.masters.js`
 
 **************************************************************************************************
 # Table-to-Slides Feature
-* With the unique `addSlidesForTable()` function, you can reproduce an HTML table - background
-colors, borders, fonts, padding, etc. - with a single line of code.
-* The function will detect margins (based on Master Slide layout or parameters) and will create Slides as needed
-* All you have to do is pass the table element ID to `addSlidesForTable()` and you're done!
-* NOTE: Nested tables are not supported in PowerPoint
-
-### Table-to-Slides Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches |           | horizontal location | 0-n |
-| `y`          | number  | inches |           | vertical location   | 0-n |
-| `w`          | number  | inches |           | width               | 0-n |
-| `h`          | number  | inches |           | height              | 0-n |
-
-### Notes:
-* Default margins are 0.5 inches, table will take up all remaining space by default
-* Use a Master Slide with pre-defined margins to over-ride defaults
-
-### Table-to-Slides Example
+Syntax:
 ```javascript
-// STEP 1: Instantiate new PptxGenJS instance
-var pptx = new PptxGenJS();
-
-// STEP 2: Set slide size/layout
-pptx.setLayout('LAYOUT_16x9');
-
-// STEP 3: Pass table element ID to addSlidesForTable function to produce 1-N slides
-pptx.addSlidesForTable('tabAutoPaging');
-
-// STEP 4: Export Presentation
-pptx.save('Table2SlidesDemo');
+slide.addSlidesForTable(htmlElementID);
+slide.addSlidesForTable(htmlElementID, {OPTIONS});
 ```
 
-## Master Pages and Branding
-Do you need to have the generated slides use a Slide Master or corporate branding?  
-Just pass the Slide Master name to use (you can also add shapes/text on-the-fly as well).
+Any variety of HTML table can be turned into a series of slides by providing the table's ID.
+* Reproduces an HTML table - background colors, borders, fonts, padding, etc.
+* Slide margins are based on either the Master Slide provided or options, then create 1 or more Slides as needed (auto-paging)
 
-## Override Slide Master Settings
-The Master Slide background color/image can be selectively overridden on a per-slide basis when needed,
-so it's easy to handle exceptions where users want things like the first slide to have a white background, etc.
+*NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
+
+## Table-to-Slides Options
+| Option       | Type    | Unit   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :------------------ | :--------------- |
+| `x`          | number  | inches | horizontal location | 0-256. Table will be placed here on each Slide |
+| `y`          | number  | inches | vertical location   | 0-256. Table will be placed here on each Slide |
+| `w`          | number  | inches | width               | 0-256. Default is (100% - Slide margins) |
+| `h`          | number  | inches | height              | 0-256. Default is (100% - Slide margins) |
+| `master`     | string  |        | master slide name   | Any pre-defined Master Slide. EX: `{ master:pptx.masters.TITLE_SLIDE }`
+| `addImage`   | string  |        | add an image to each slide | Use the established syntax. EX: `{ addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } }` |
+| `addShape`   | string  |        | add a shape to each slide | Use the established syntax. |
+| `addTable`   | string  |        | add a table to each slide | Use the established syntax. |
+| `addText`    | string  |        | add text to each slide | Use the established syntax. |
+
+## Table-to-Slides Notes
+* Default `x`, `y` and `margin` value is 0.5 inches, the table will take up all remaining space by default (h:100%, w:100%)
+* Your Master Slides should already have defined margins, so a Master Slide name is the only option you'll need most of the time
+
+## Table-to-Slides Examples
 ```javascript
-var slide1 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+// Pass table element ID to addSlidesForTable function to produce 1-N slides
+pptx.addSlidesForTable('myHtmlTableID');
+
+// Optionally, include a Master Slide name for pre-defined margins, background, logo, etc.
+pptx.addSlidesForTable( 'myHtmlTableID', { master:pptx.masters.MASTER_SLIDE } );
+
+// Optionally, add images/shapes/text/tables to each Slide
+pptx.addSlidesForTable( 'myHtmlTableID', { addText:{ text:"Dynamic Title", options:{x:1, y:0.5, color:'0088CC'} } } );
+pptx.addSlidesForTable( 'myHtmlTableID', { addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } } );
 ```
 
-## One-Line Presentation Exports
-Your Slide Master should already contain slide layout, size & margins. Meaning, the code to produce
-professional looking slides is so small that you can just inline it into a button and place next to any table on your site:
+## Creative Solutions
+Design a Master Slide that already contains: slide layout, margins, logos, etc., then you can produce
+professional looking Presentations with a single line of code which can be embedded into a link or a button:
 
+Add a button to a webpage that will create a Presentation using whatever table data is present:
 ```javascript
 <input type="button" value="Export to PPTX" onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
 
-### Easy SharePoint Integration
+**SharePoint Integration**  
+
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
 
