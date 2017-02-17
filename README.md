@@ -167,6 +167,8 @@ pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 ```
 
 ## Creating Slides
+
+### Add a new Slide
 ```javascript
 var slide = pptx.addNewSlide();
 ```
@@ -177,7 +179,7 @@ var slide = pptx.addNewSlide();
 var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
 
 // The background color can be overridden on a per-slide basis:
-var slide2 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE, { bkgd:'FFFCCC'} );
+var slide2 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE, {bkgd:'FFFCCC'} );
 ```
 
 ### Adding Slide Numbers
@@ -625,9 +627,9 @@ slide.addSlidesForTable(htmlElementID);
 slide.addSlidesForTable(htmlElementID, {OPTIONS});
 ```
 
-Any variety of HTML table can be turned into a series of slides by providing the table's ID.
+Any variety of HTML tables can be turned into a series of slides (auto-paging) by providing the table's ID.
 * Reproduces an HTML table - background colors, borders, fonts, padding, etc.
-* Slide margins are based on either the Master Slide provided or options, then create 1 or more Slides as needed (auto-paging)
+* Slide margins are based on either the Master Slide provided or options
 
 *NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
 
@@ -651,7 +653,7 @@ Any variety of HTML table can be turned into a series of slides by providing the
 ## Table-to-Slides Examples
 ```javascript
 // Pass table element ID to addSlidesForTable function to produce 1-N slides
-pptx.addSlidesForTable('myHtmlTableID');
+pptx.addSlidesForTable(' myHtmlTableID ');
 
 // Optionally, include a Master Slide name for pre-defined margins, background, logo, etc.
 pptx.addSlidesForTable( 'myHtmlTableID', { master:pptx.masters.MASTER_SLIDE } );
@@ -667,7 +669,8 @@ professional looking Presentations with a single line of code which can be embed
 
 Add a button to a webpage that will create a Presentation using whatever table data is present:
 ```javascript
-<input type="button" value="Export to PPTX" onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
+<input type="button" value="Export to PPTX"
+ onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
 
 **SharePoint Integration**  
