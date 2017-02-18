@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.2.1";
-	var APP_REL = "20170216";
+	var APP_REL = "20170218";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -499,8 +499,9 @@ var PptxGenJS = function(){
 
 				// 4: Keep track of max line count within all row cells
 				if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
-
 				var lineHeight = inch2Emu((cell.opts.font_size || opts.font_size || DEF_FONT_SIZE) * LINEH_MODIFIER / 100);
+				// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
+				if (cell.opts && cell.opts.rowspan) lineHeight = 0;
 				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[0] ) lineHeight += cell.opts.margin[0] / intMaxLineCnt;
 				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[2] ) lineHeight += cell.opts.margin[2] / intMaxLineCnt;
 				arrCellsLineHeights.push( Math.round(lineHeight) );
@@ -1043,7 +1044,9 @@ var PptxGenJS = function(){
 					// Note row arrays can arrive "lopsided" as in row1:[1,2,3] row2:[3] when first two cols rowspan!,
 					// so a simple loop below in XML building wont suffice to build table right.
 					// We have to build an actual grid now
-					/* EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
+					/*
+						EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
+
 						/------|------|------|------\
 						|  A0  |  B0  |  C0  |  D0  |
 						|      |  B1  |  C1  |      |
@@ -1054,38 +1057,33 @@ var PptxGenJS = function(){
 						// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
 						if ( !objTableGrid[rIdx] ) objTableGrid[rIdx] = {};
 
-						// B: Track colspans so we can set correct trailing col cells
-						var intColspans = 0;
-
 						// B: Loop over all cells
 						$(row).each(function(cIdx,cell){
-							// 1: We recieve 'uneven' arrays (see ASCII table above), so lets calc how to slot cells in the correct grid column
+							// DESIGN: NOTE: Row cell arrays can be "uneven" (diff cell count in each) due to rowspan/colspan
+							// Therefore, for each cell we run 0->colCount to determien the correct slot for it to reside
+							// as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
+							// E.g.: the 2nd element in the row array may actually go into the 5th table grid row cell b/c of colspans!
 							for (var idx=0; (cIdx+idx)<intColCnt; idx++) {
 								var currColIdx = (cIdx + idx);
 
 								if ( !objTableGrid[rIdx][currColIdx] ) {
 									// A: Set this cell
-									objTableGrid[rIdx][cIdx+idx] = cell;
+									objTableGrid[rIdx][currColIdx] = cell;
 
-									// B: Handle `colspan` or `rowspan` (a {cell} cant have both!)
-									// FIXME: FUTURE: ROWSPAN & COLSPAN in same cell is not yet handled!
+									// B: Handle `colspan` or `rowspan` (a {cell} cant have both! FIXME: FUTURE: ROWSPAN & COLSPAN in same cell)
 									if ( cell && cell.opts && cell.opts.colspan && !isNaN(Number(cell.opts.colspan)) ) {
 										for (var idy=1; idy<Number(cell.opts.colspan); idy++) {
-											// Advcance colspan count so rowspan below will have correct column index!
-											// (otherwise, colspan followed by rowspan wont be created correctly)
-											intColspans++;
 											objTableGrid[rIdx][currColIdx+idy] = {"hmerge":true, text:"hmerge"};
 										}
 									}
 									else if ( cell && cell.opts && cell.opts.rowspan && !isNaN(Number(cell.opts.rowspan)) ) {
 										for (var idz=1; idz<Number(cell.opts.rowspan); idz++) {
 											if ( !objTableGrid[rIdx+idz] ) objTableGrid[rIdx+idz] = {};
-											// Add colspans value to ensure proper alignment
-											objTableGrid[rIdx+idz][currColIdx+intColspans] = {"vmerge":true, text:"vmerge"};
+											objTableGrid[rIdx+idz][currColIdx] = {"vmerge":true, text:"vmerge"};
 										}
 									}
 
-									// C: Stop once we're done
+									// C: Break out of colCnt loop now that slot has been filled
 									break;
 								}
 							}
@@ -1094,11 +1092,7 @@ var PptxGenJS = function(){
 					if ( objTabOpts.debug ) {
 						console.table(objTableGrid);
 						var arrText = [];
-						$.each(objTableGrid, function(i,row){
-							var arrRow = [];
-							$.each(row, function(i,cell){ arrRow.push(cell.text); });
-							arrText.push( arrRow );
-						});
+						$.each(objTableGrid, function(i,row){ var arrRow = []; $.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
 						console.table( arrText );
 					}
 
@@ -2046,10 +2040,12 @@ var PptxGenJS = function(){
 			}
 
 			// STEP 2: Set default options if needed
-			opt.x         = opt.x || (EMU / 2);
-			opt.y         = opt.y || EMU;
-			opt.cx        = opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU * 2));
-			opt.cy        = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
+			opt.x         = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
+			opt.y         = getSmartParseNumber( (opt.y || EMU), 'Y' );
+			opt.cx        = getSmartParseNumber( (opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU*2))), 'X' );
+			// NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
+			opt.cy        = opt.h || opt.cy;
+			if ( opt.cy ) opt.cy = getSmartParseNumber( opt.cy, 'Y' );
 			opt.w         = opt.cx;
 			opt.h         = opt.cy;
 			opt.font_size = opt.font_size || 12;

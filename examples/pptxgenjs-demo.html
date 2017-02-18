@@ -163,15 +163,15 @@
 				var slide = pptx.addNewSlide();
 				// 2: Slide title
 				slide.addTable(
-					[ [{ text:'Table Examples 2', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-					{ x:0.5, y:0.13, w:12.5, h:0.3 }
+					[ [{ text:'Table Examples 2 [QA: this tables x,y,w,h all using %]', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
+					{ x:'5%', y:'2%', w:'90%', h:'4%' }
 				);
 
-				// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
+				// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 				var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
 				slide.addText('Colspans/Rowspans:', optsSub);
 
-				var tabOpts1 = { x:0.5, y:1.1, w:12.4, h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'c' };
+				var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'c' };
 				var arrTabRows1 = [
 					[
 						 { text:'A1\nA2', options:{rowspan:2, fill:'99FFCC'} }
@@ -218,13 +218,69 @@
 				slide.addTable(arrTabRows4, tabOpts4);
 			}
 
-			// SLIDE 3: Cell Formatting / Cell Margins
+			// SLIDE 3: Super rowspan/colspan demo
+			{
+				var slide = pptx.addNewSlide();
+				slide.addTable( [ [{ text:'Table Examples 3', opts:optsTitle }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } ); // `opts` = legacy test
+
+				// DEMO: Rowspans/Colspans ----------------------------------------------------------------
+				var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+				slide.addText('Extreme Colspans/Rowspans:', optsSub);
+
+				var optsRowspan2 = {rowspan:2, fill:'99FFCC'};
+				var optsRowspan3 = {rowspan:3, fill:'99FFCC'};
+				var optsRowspan4 = {rowspan:4, fill:'99FFCC'};
+				var optsRowspan5 = {rowspan:5, fill:'99FFCC'};
+				var optsColspan2 = {colspan:2, fill:'9999FF'};
+				var optsColspan3 = {colspan:3, fill:'9999FF'};
+				var optsColspan4 = {colspan:4, fill:'9999FF'};
+				var optsColspan5 = {colspan:5, fill:'9999FF'};
+
+				var arrTabRows5 = [
+					[
+						'A1','B1','C1','D1','E1','F1','G1','H1',
+						{ text:'I1\n-\nI2\n-\nI3\n-\nI4\n-\nI5', options:optsRowspan5 },
+						{ text:'J1 -> K1 -> L1 -> M1 -> N1', options:optsColspan5 }
+					],
+					[
+						{ text:'A2\n--\nA3', options:optsRowspan2 },
+						{ text:'B2 -> C2 -> D2',   options:optsColspan3 },
+						{ text:'E2 -> F2',   options:optsColspan2 },
+						{ text:'G2\n-\nG3\n-\nG4', options:optsRowspan3 },
+						'H2',
+						'J2','K2','L2','M2','N2'
+					],
+					[
+						{ text:'B3\n-\nB4\n-\nB5', options:optsRowspan3 },
+						'C3','D3','E3','F3', 'H3', 'J3','K3','L3','M3','N3'
+					],
+					[
+						{ text:'A4\n--\nA5', options:optsRowspan2 },
+						{ text:'C4 -> D4 -> E4 -> F4', options:optsColspan4 },
+						'H4',
+						{ text:'J4 -> K4 -> L4', options:optsColspan3 },
+						{ text:'M4\n--\nM5', options:optsRowspan2 },
+						{ text:'N4\n--\nN5', options:optsRowspan2 },
+					],
+					[
+						'C5','D5','E5','F5',
+						{ text:'G5 -> H5', options:{colspan:2, fill:'9999FF'} },
+						'J5','K5','L5'
+					]
+				];
+
+				var taboptions5 = { x:0.6, y:1.3, w:'90%', h:5.5, margin:0, font_size:14, align:'c', valign:'m', border:{pt:'1'} };
+
+				slide.addTable(arrTabRows5, taboptions5);
+			}
+
+			// SLIDE 4: Cell Formatting / Cell Margins
 			// ======== -----------------------------------------------------------------------------------
 			{
 				var slide = pptx.addNewSlide();
 				// 2: Slide title
 				slide.addTable(
-					[ [{ text:'Table Examples 3', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
+					[ [{ text:'Table Examples 4', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
 					{ x:0.5, y:0.13, w:12.5, h:0.3 }
 				);
 
@@ -233,10 +289,10 @@
 				slide.addText('Cell Margins:', optsSub);
 
 				slide.addTable( [['margin:0']],           { x:0.5, y:1.1, margin:0,           w:1.2, fill:'FFFCCC' } );
-				slide.addTable( [['margin:[0,0,0,20']],   { x:0.5, y:1.6, margin:[0,0,0,20],  w:1.2, fill:'FFFCCC' } );
-				slide.addTable( [['margin:5']],           { x:2.5, y:1.1, margin:5,           w:1.0, fill:'F1F1F1' } );
-				slide.addTable( [['margin:[40,5,5,20]']], { x:4.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
-				slide.addTable( [['margin:[80,5,5,10]']], { x:8.0, y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
+				slide.addTable( [['margin:[0,0,0,20]']],  { x:2.5, y:1.1, margin:[0,0,0,20],  w:2.0, fill:'FFFCCC', align:'r' } );
+				slide.addTable( [['margin:5']],           { x:5.5, y:1.1, margin:5,           w:1.0, fill:'F1F1F1' } );
+				slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
+				slide.addTable( [['margin:[80,5,5,10]']], { x:10.5,y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
 
 				// Complex/Compound border
 				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 3.0;
@@ -252,7 +308,7 @@
 
 			}
 
-			// SLIDE 4: Table auto-paging
+			// SLIDE 5: Table auto-paging
 			// ======== -----------------------------------------------------------------------------------
 			{
 				var arrRows = [];
@@ -735,12 +791,19 @@
 									<div><label>Colspans/Rowspans</label></div>
 								</div>
 							</div>
+							<h3>Slide 3</h3>
+							<div class="divTable">
+								<div>
+									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
+									<div><label>Extreme Colspans/Rowspans</label></div>
+								</div>
+							</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Cell Formatting</legend>
-							<h3>Slide 3</h3>
+							<h3>Slide 4</h3>
 							<div class="divTable">
 								<div>
 									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
@@ -760,7 +823,7 @@
 					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Automattic Table Paging</legend>
-							<h3>Slide 4-n</h3>
+							<h3>Slide 5-n</h3>
 							<div class="divTable">
 								<div>
 									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
