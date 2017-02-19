@@ -33,6 +33,7 @@ an HTML Table across one or more Slides with a single command.
     - [Presentation Options](#presentation-options)
     - [Presentation Layouts](#presentation-layouts)
   - [Creating Slides](#creating-slides)
+    - [Add A New Slide](#add-a-new-slide)
     - [Applying Master Slides / Branding](#applying-master-slides--branding)
     - [Adding Slide Numbers](#adding-slide-numbers)
     - [Slide Number Options](#slide-number-options)
@@ -168,7 +169,7 @@ pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 
 ## Creating Slides
 
-### Add a new Slide
+### Add A New Slide
 ```javascript
 var slide = pptx.addNewSlide();
 ```
@@ -441,6 +442,7 @@ pptx.save('Demo-Shapes');
 ```
 
 
+**************************************************************************************************
 ## Adding Images
 Syntax:
 ```javascript
@@ -482,6 +484,8 @@ slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30,
 pptx.save('Demo-Images');
 ```
 
+
+**************************************************************************************************
 ## Adding Media (Audio/Video/YouTube)
 Syntax:
 ```javascript
@@ -521,6 +525,8 @@ slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc'
 pptx.save('Demo-Media');
 ```
 
+
+**************************************************************************************************
 ## Saving Presentations
 Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
 example of which can be found below.
@@ -653,7 +659,7 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 ## Table-to-Slides Examples
 ```javascript
 // Pass table element ID to addSlidesForTable function to produce 1-N slides
-pptx.addSlidesForTable(' myHtmlTableID ');
+pptx.addSlidesForTable( 'myHtmlTableID' );
 
 // Optionally, include a Master Slide name for pre-defined margins, background, logo, etc.
 pptx.addSlidesForTable( 'myHtmlTableID', { master:pptx.masters.MASTER_SLIDE } );
