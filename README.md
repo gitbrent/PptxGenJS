@@ -13,7 +13,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 * Presentation exports download to any modern browser as a normal PPTX file
 
 ## Additional Features
-This framework also includes a unique [Table-to-Slides](#table-to-slides--1-click-exports) feature that will reproduce
+This framework also includes a unique [Table-to-Slides](#table-to-slides-feature) feature that will reproduce
 an HTML Table across one or more Slides with a single command.
 
 **************************************************************************************************
@@ -109,13 +109,14 @@ include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape 
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
 ```
 
+
 **************************************************************************************************
 # Presentation Basics
-PowerPoint Presentations are created via JavaScript by following 4 basic steps:
+PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
-1. Create the Presentation
-2. Add a new Slide  
-3. Add objects (Images, Shapes, Text or Tables)
+1. Create a new Presentation
+2. Add a Slide  
+3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 4. Save the Presentation  
 
 ```javascript
@@ -125,6 +126,7 @@ slide.addText('Hello World!', { x:1.5, y:1.5, font_size:18, color:'363636' });
 pptx.save('Sample Presentation');
 ```
 That's really all there is to it!
+
 
 **************************************************************************************************
 # Library Reference
@@ -167,6 +169,8 @@ Custom user defined Layout sizes are supported - just supply a `name` and the si
 pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 ```
 
+
+**************************************************************************************************
 ## Creating Slides
 
 ### Add A New Slide
@@ -194,6 +198,8 @@ slide.slideNumber({ x:1.0, y:'90%' });
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
 | `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
 
+
+**************************************************************************************************
 ## Adding Text
 ```javascript
 // Syntax
@@ -291,6 +297,8 @@ slide.addText(
 pptx.save('Demo-Text');
 ```
 
+
+**************************************************************************************************
 ## Adding Tables
 Syntax:
 ```javascript
@@ -390,6 +398,8 @@ slide.addTable( ['Line 1\nLine 2\nLine 3'], { x:2, y:3, w:4 });
 pptx.save('Demo-Tables');
 ```
 
+
+**************************************************************************************************
 ## Adding Shapes
 Syntax (no text):
 ```javascript
