@@ -5,14 +5,18 @@ body { font-family:"Open Sans",Arial,Verdana,sans-serif; background:#f7f7f7; col
 textarea { border:1px solid #cccccc; padding:3px; }
 h3 {
     color: #3498DB;
-    margin: 6px 0 2px 8px;
-    font-weight: normal;
+	font-weight: 100;
+    margin: 15px 0 2px 8px;
+}
+
+.github-fork-ribbon:before {
+    background-color: #ff7c00;
 }
 
 .arrow {
     display: inline-block;
-    height: 10px; width : 10px;
-    border-top  : 4px solid #0085C3; border-right: 4px solid #0085C3;
+    height: 12px; width : 12px;
+    border-top  : 3px solid #0085C3; border-right: 3px solid #0085C3;
     margin-right: 10px;
     cursor: pointer;
     transition: all .25s ease;
@@ -95,15 +99,9 @@ h3 {
     white-space: nowrap;
 }
 
-.mainTitle {
-    font-size: 38px;
-    color: #4488DD;
-    margin-bottom: 20px;
-}
-.mainTitle span {
-    font-size: 24px;
-    opacity: .6;
-}
+#contTitle { margin: 0 0 30px 0; }
+.bigTitle { font-family:'Roboto'; font-size:42px; font-weight:100; color:#0088cc; margin:0 0 10px 0; }
+.subTitle { font-family:'Roboto'; font-size:18px; font-weight:300; color:#c7c7c7; margin:0; }
 
 .sectionTitle {
     font-size: 18px;
@@ -146,16 +144,24 @@ h3 {
 fieldset {
     border: 1px dotted #aaa;
     background: #fff;
-    height: 220px;
 }
 fieldset legend {
     font-size: 14px;
     color: #4488CC;
     text-transform: uppercase;
 }
-fieldset div label {
-    font-style: italic;
-    color: #9f9f9f;
+fieldset > h3:first-child { margin-top: 0; }
+fieldset .chkRow {
+	padding: 2px 0 2px 10px;
+	color: #6c6c6c;
+}
+fieldset .svgCheck {
+	display: inline-block;
+	width: 24px;
+	height: 14px;
+	vertical-align: baseline;
+	margin-right: 5px;
+	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIxNHB4IiB2aWV3Qm94PSIwIDAgNjEyIDYxMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CgkJCQkJCQkJCTxwb2x5Z29uIHBvaW50cz0iNTczLjc1LDAgMTgzLjQ4NSw1MTYuOTY4IDM3LjY1NywzODAuNzAyIDAsNDIyLjU0OCAxODkuNDUyLDYxMiA2MTIsMzguODQzIiBmaWxsPSIjMDA4OGNjIi8+CgkJCQkJCQkJPC9zdmc+");
 }
 
 div.sectionBox {
@@ -190,17 +196,15 @@ div.formBox input[type="checkbox"] {
 }
 
 .topDocLink {
-	font-family: Roboto, Helvetica, Arial, sans-serif;
+	font-family: Roboto, "Segoe UI", Helvetica, Arial, sans-serif;
 	font-size: 14px;
 }
-
 .topDocLink svg {
 	width: 42px;
 	height: 42px;
 	vertical-align: middle;
 	margin-right: 5px;
 }
-
 
 div.table { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
 div.table > div { display: table-cell; }
@@ -211,7 +215,7 @@ div.divTable > div > div { display: table-cell; padding: 3px 10px; }
 div.divTable > div > div:first-child { vertical-align: top; white-space: nowrap; width: 10%; }
 div.divTable input[type="number"], div.divTable input[type="text"] { width: 100%; }
 
-#console { text-align:left; font-size:12px; font-family:'Courier New', Courier, monospace; color:limegreen; background: #060606; }
+#console { text-align:left; font-size:12px; font-family:'Roboto Mono','Courier New',Courier,monospace; color:limegreen; background:#060606; }
 
 .prettyprint {
     margin: 2px;

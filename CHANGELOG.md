@@ -1,5 +1,12 @@
 # Change Log
 
+## [v1.2.1](https://github.com/gitbrent/pptxgenjs/tree/v1.2.1) (2017-02-??)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.0...v1.2.1)
+
+**Fixed Bugs:**
+- Fixed issue with using percentages with `x`,`y`,`w`,`h` in `addTable()`
+- Table formatting bug with rowspans and colspans [\#46](https://github.com/gitbrent/PptxGenJS/issues/46) ([itskun](https://github.com/itskun))
+
 ## [v1.2.0](https://github.com/gitbrent/pptxgenjs/tree/v1.2.0) (2017-02-15)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.6...v1.2.0)
 

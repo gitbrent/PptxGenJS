@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.2.1";
-	var APP_REL = "20170218";
+	var APP_REL = "20170220";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -95,7 +95,7 @@ var PptxGenJS = function(){
 	this.shapes  = (typeof gObjPptxShapes  !== 'undefined') ? gObjPptxShapes  : BASE_SHAPES;
 	this.masters = (typeof gObjPptxMasters !== 'undefined') ? gObjPptxMasters : {};
 
-	// D: Check for associated .js files and provide warings about anything missing
+	// D: Fall back to base shapes if shapes file was not linked
 	if ( typeof gObjPptxShapes === 'undefined' ) gObjPptxShapes = BASE_SHAPES;
 
 	/* ===============================================================================================
@@ -112,7 +112,7 @@ var PptxGenJS = function(){
 	*/
 
 	/**
-	 * Export the .pptx file (using saveAs - dep. filesaver.js)
+	 * DESC: Export the .pptx file
 	 */
 	function doExportPresentation(callback) {
 		var intSlideNum = 0, intRels = 0;
@@ -971,14 +971,12 @@ var PptxGenJS = function(){
 				if ( slideObj.options.y  || slideObj.options.y  == 0 )  y = getSmartParseNumber( slideObj.options.y , 'Y' );
 				if ( slideObj.options.cx || slideObj.options.cx == 0 ) cx = getSmartParseNumber( slideObj.options.cx, 'X' );
 				if ( slideObj.options.cy || slideObj.options.cy == 0 ) cy = getSmartParseNumber( slideObj.options.cy, 'Y' );
+				//
+				if ( slideObj.options.shape  ) shapeType = getShapeInfo( slideObj.options.shape );
+				//
 				if ( slideObj.options.flipH  ) locationAttr += ' flipH="1"';
 				if ( slideObj.options.flipV  ) locationAttr += ' flipV="1"';
-				if ( slideObj.options.shape  ) shapeType = getShapeInfo( slideObj.options.shape );
-				if ( slideObj.options.rotate ) {
-					var rotateVal = (slideObj.options.rotate > 360) ? (slideObj.options.rotate - 360) : slideObj.options.rotate;
-					rotateVal *= 60000;
-					locationAttr += ' rot="' + rotateVal + '"';
-				}
+				if ( slideObj.options.rotate ) locationAttr += ' rot="' + ( (slideObj.options.rotate > 360 ? (slideObj.options.rotate - 360) : slideObj.options.rotate) * 60000 ) + '"';
 			}
 
 			// B: Add TABLE / TEXT / IMAGE / MEDIA to current Slide ----------------------------
@@ -2050,6 +2048,7 @@ var PptxGenJS = function(){
 			opt.h         = opt.cy;
 			opt.font_size = opt.font_size || 12;
 			opt.margin    = opt.marginPt || opt.margin || 0;
+			opt.autoPage  = (opt.autoPage == false ? false : true);
 
 			// STEP 3: Convert units to EMU now (we use different logic in makeSlide - smartCalc is not used)
 			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
@@ -2061,8 +2060,9 @@ var PptxGenJS = function(){
 			var arrRows = $.extend(true,[],arrTabRows);
 			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
 
-			// Allow `addSlidesForTable()` to not engage recursion! We've already paged the table data, just add this one
-			if ( typeof tabOpt !== 'undefined' && tabOpt == false ) {
+			// STEP 5: Auto-Paging: (via {options} and used internally)
+			// (used internally by `addSlidesForTable()` to not engage recursion - we've already paged the table data, just add this one)
+			if ( opt && opt.autoPage == false ) {
 				// A: Grab Slide object count
 				var slideObjNum = gObjPptx.slides[slideNum].data.length;
 
@@ -2367,7 +2367,7 @@ var PptxGenJS = function(){
 			var newSlide = ( opts.master && gObjPptxMasters ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
 			// B: Add table to Slide
-			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), cx:(emuSlideTabW/EMU), colW:arrColW}, false );
+			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), cx:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
 
 			// C: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });

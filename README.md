@@ -242,7 +242,7 @@ slide.addText(
 | `isTextBox`  | boolean |        | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |        | `false`   | italic text         | `true` or `false` |
 | `margin`     | number  | points |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
-| `shadow`     | object  |        |           | text shadow options | see options below. ex: `shadow:{ type:'outer' }` |
+| `shadow`     | object  |        |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
 | `underline`  | boolean |        | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |        |           | vertical alignment  | `top` or `middle` or `bottom` |
 
@@ -254,7 +254,7 @@ slide.addText(
 | `blur`       | number  | points  |           | blur size              | 1-256. Ex: `{ blur:3 }` |
 | `offset`     | number  | points  |           | offset size            | 1-256. Ex: `{ offset:8 }` |
 | `color`      | string  |         |           | text color             | hex color code. Ex: `{ color:'0088CC' }` |
-| `opacity`    | number  | percent |           | opacity                | 0-1 Ex: `opacity:0.75` |
+| `opacity`    | number  | percent |           | opacity                | 0-1. Ex: `opacity:0.75` |
 
 ### Text Examples
 ```javascript
@@ -306,13 +306,16 @@ slide.addTable( [rows] );
 slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 ```
 
+Notes:
+* Table will auto-page by default (as table rows overflow the Slide, new Slides will be added as needed)
+
 ### Table Layout Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
-| `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
-| `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
+| Option       | Type    | Unit   | Default   | Description            | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :--------------------- | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches | `1.0`     | vertical location      | 0-n OR 'n%'. |
+| `w`          | number  | inches |           | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`          | number  | inches |           | height                 | 0-n OR 'n%'. |
 | `colW`       | integer | inches |           | width for every column | Ex: Width for every column in table (uniform) `2.0` |
 | `colW`       | array   | inches |           | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
@@ -322,6 +325,7 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | Option       | Type    | Unit   | Default   | Description        | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :----------------- | :--------------- |
 | `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` (or `l` `c` `r`) |
+| `autoPage`   | boolean |        | `true`    | auto-page table    | `true` or `false` |
 | `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
 | `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}` |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
@@ -549,15 +553,15 @@ pptx.save('Demo-Media');
 ```
 
 ### Node.js
-* Node can accept a callback function that will return the filename
+* Node can accept a callback function that will return the filename once the save is complete
 
 ```javascript
 // A: File will be saved to the local working directory (`__dirname`)
-pptx.save('Node_Demo');
+pptx.save( 'Node_Demo' );
 // B: Inline callback function
-pptx.save('Node_Demo', function(filename){ console.log('Created: '+filename); } );
+pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); } );
 // C: Predefined callback function
-pptx.save('Node_Demo', saveCallback );
+pptx.save( 'Node_Demo', saveCallback );
 ```
 
 **************************************************************************************************

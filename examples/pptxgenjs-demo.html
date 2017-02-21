@@ -3,7 +3,8 @@
 <head>
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta name="author" content="https://github.com/gitbrent">
-	<link href="https://fonts.googleapis.com/css?family=Roboto|Roboto+Mono" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono" rel="stylesheet">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css">
 	<link type="text/css" rel="stylesheet" href="pptxgenjs-demo.css">
 
 	<!-- NOTE:
@@ -51,6 +52,8 @@
 		//
 		var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 		var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
+		var textTitle = { font_size:14, color:'0088CC', bold:true };
+		var textSubtt = { font_size:13, color:'9F9F9F' };
 
 		// ==================================================================================================================
 
@@ -316,9 +319,17 @@
 					arrRows.push( [idx, gArrNamesF[idx], gStrLorumIpsum.substring(idx*100,idx*300)] );
 				}
 
-				pptx.addNewSlide().addTable( arrRows, { x:0.5, y:0.25, colW:[0.75,1.75,10], margin:2, border:'CFCFCF' } );
+				var slide = pptx.addNewSlide();
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Auto-Paging Example', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+				slide.addTable( arrRows, { x:0.5, y:0.6, colW:[0.75,1.75,10], margin:2, border:'CFCFCF' } );
 
-				pptx.addNewSlide().addTable( arrRows, { x:3.0, y:0.25, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
+				var slide = pptx.addNewSlide();
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Smaller Table Area', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+				slide.addTable( arrRows, { x:3.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
+
+				var slide = pptx.addNewSlide();
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Auto-Paging Disabled', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+				slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF', autoPage:false } );
 			}
 		}
 
@@ -358,41 +369,47 @@
 		}
 
 		function genSlides_Shape(pptx) {
-			// ======== -----------------------------------------------------------------------------------
 			// SLIDE 1: Misc Shape Types (no text)
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
 			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (no text)', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
-			slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
-			slide.addShape(pptx.shapes.OVAL,              { x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
-			slide.addShape(pptx.shapes.RECTANGLE,         { x:0.50, y:0.75, cx:5, cy:3.25, fill:'FF0000' });
-			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.40, cx:5, cy:0, line:'FF0000', line_size:1 });
-			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:4.80, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
-			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.20, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
-			slide.addShape(pptx.shapes.LINE,              { x:4.15, y:5.60, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-			slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:0.40, y:4.30, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
-			slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:7.00, y:4.30, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
+			//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:'F9F9F9' });
+			slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
+			slide.addShape(pptx.shapes.RECTANGLE,         { x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45 });
+			slide.addShape(pptx.shapes.OVAL,              { x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC', alpha:25 } });
+			slide.addShape(pptx.shapes.OVAL,              { x:7.7, y:1.4, w:3.0, h:1.5, fill:{ type:'solid', color:'FF00CC', alpha:50 }, rotate:90 });
+			slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:10 , y:2.5, w:3.0, h:1.5, fill:'00FF00' });
+			//
+			slide.addShape(pptx.shapes.LINE,              { x:4.2, y:4.4, w:5.0, h:0.0, line:'FF0000', line_size:1 });
+			slide.addShape(pptx.shapes.LINE,              { x:4.2, y:4.8, w:5.0, h:0.0, line:'FF0000', line_size:2, line_head:'triangle' });
+			slide.addShape(pptx.shapes.LINE,              { x:4.2, y:5.2, w:5.0, h:0.0, line:'FF0000', line_size:3, line_tail:'triangle' });
+			slide.addShape(pptx.shapes.LINE,              { x:4.2, y:5.6, w:5.0, h:0.0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+			//
+			slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:0.4, y:4.3, w:6.0, h:3.0, fill:'0088CC', line:'000000', line_size:3 });
+			slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:7.0, y:4.3, w:6.0, h:3.0, fill:'0088CC', line:'000000', flipH:true });
 
-			// ======== -----------------------------------------------------------------------------------
 			// SLIDE 2: Misc Shape Types with Text
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (with text)', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (with text)', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-			slide.addText('ROUNDED-RECTANGLE', { shape:pptx.shapes.ROUNDED_RECTANGLE, align:'l', x:8.00, y:0.75, cx:5, cy:3.25, fill:'00FF00' });
-			slide.addText('OVAL',              { shape:pptx.shapes.OVAL,              align:'c', x:4.15, y:0.75, cx:5, cy:2.00, fill:{ type:'solid', color:'0088CC', alpha:25 } });
-			slide.addText('RECTANGLE',         { shape:pptx.shapes.RECTANGLE,         align:'r', x:0.50, y:0.75, cx:5, cy:3.25, fill:'FF0000' });
-			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:4.40, cx:5, cy:0, line:'FF0000', line_size:1 });
-			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'l', x:4.15, y:4.80, cx:5, cy:0, line:'FF0000', line_size:2, line_head:'triangle' });
-			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'r', x:4.15, y:5.20, cx:5, cy:0, line:'FF0000', line_size:3, line_tail:'triangle' });
-			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:5.60, cx:5, cy:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-			slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:0.40, y:4.30, cx:6, cy:3, fill:'0088CC', line:'000000', line_size:3 });
-			slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:7.00, y:4.30, cx:6, cy:3, fill:'0088CC', line:'000000', flipH:true });
+			slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE,         x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'c', font_size:14 });
+			slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE,         x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'c', font_size:14 });
+			slide.addText('OVAL (alpha:25)',            { shape:pptx.shapes.OVAL,              x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC', alpha:25 }, align:'c', font_size:14 });
+			slide.addText('OVAL (rotate:90, alpha:50)', { shape:pptx.shapes.OVAL,              x:7.7, y:1.4, w:3.0, h:1.5, fill:{ type:'solid', color:'FF00CC', alpha:50 }, rotate:90, align:'c', font_size:14 });
+			slide.addText('ROUNDED-RECTANGLE',          { shape:pptx.shapes.ROUNDED_RECTANGLE, x:10 , y:2.5, w:3.0, h:1.5, fill:'00FF00', align:'c', font_size:14 });
+			//
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:4.40, w:5, h:0, line:'FF0000', line_size:1 });
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'l', x:4.15, y:4.80, w:5, h:0, line:'FF0000', line_size:2, line_head:'triangle' });
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'r', x:4.15, y:5.20, w:5, h:0, line:'FF0000', line_size:3, line_tail:'triangle' });
+			slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:5.60, w:5, h:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+			slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:0.40, y:4.30, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 });
+			slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:7.00, y:4.30, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
 		}
 
 		function genSlides_Text(pptx) {
-			// SLIDE 1: Font Size/Color line examples 12-60 pt font, random color
+			// SLIDE 1: Font Size/Color line examples in various font pts and random colors
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
 			slide.addTable( [ [{ text:'Text Examples 1', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
@@ -411,6 +428,27 @@
 			slide.addText(999, { x:9.0, y:0.6, w:'20%', h:1, color:'0000DE', bullet:true });
 			// Bullet Test: Text test
 			slide.addText('Bullet (str here, number above)', { x:9.0, y:1.0, w:'30%', h:1, color:'00AA00', bullet:true });
+
+			/*
+			// TODO: bullets in text objects need help (20170215)
+			slide.addText(
+				[
+					{ text:'I should be bulleted!', options:{bullet:true} },
+					{ text:'as should I be bulleted!', options:{bullet:true} }
+				],
+				{ x:9.0, y:1.0, w:'30%', h:1, color:'00AA00' }
+			);
+
+			// Bullets can be applied to the all text en mass
+			slide.addText(
+				[
+					{ text: 'big red words... ', options:{font_size:24, color:'FF0000'} },
+					{ text: 'some green words.', options:{font_size:16, color:'0000FF'} }
+				],
+				{ x:0.75, y:1.5, w:5, h:0.5, margin:0.1, font_face:'Arial', bullet:true }
+			);
+			// TODO: ^^^ use 2+ {text} objects, each bulleted
+			*/
 
 			// Multi-line test: bullet lines
 			slide.addText('Line 1\nLine 2\nLine 3', { x:9.0, y:2.0, w:'30%', h:1, color:'393939', bullet:true, fill:'F2F2F2' });
@@ -706,13 +744,21 @@
 	</script>
 </head>
 <body>
-	<a href="https://github.com/GitBrent/PptxGenJS"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://camo.githubusercontent.com/652c5b9acfaddf3a9c326fa6bde407b87f7be0f4/68747470733a2f2f73332e616d617a6f6e6177732e636f6d2f6769746875622f726962626f6e732f666f726b6d655f72696768745f6f72616e67655f6666373630302e706e67" alt="Fork me on GitHub" data-canonical-src="https://s3.amazonaws.com/github/ribbons/forkme_right_orange_ff7600.png"></a>
+	<a href="https://github.com/GitBrent/PptxGenJS" class="github-fork-ribbon" title="Fork me on GitHub">Fork me on GitHub</a>
 
-	<div style="padding:20px 10%; margin:auto;">
-		<div class="mainTitle">
-			<a href="https://github.com/GitBrent/PptxGenJS" style="text-decoration:none; color:inherit;">PptxGenJS</a>
-			<span> - JavaScript PowerPoint Framework - Presentation Demos</span>
-			<input type="button" class="flatBtn flatBtn-blueMd" style="float:right; margin-top:10px;" value="Run All Demos" onclick="runEveryTest()">
+	<div id="contBody" style="padding:20px 10%; margin:auto;">
+		<div id="contTitle" class="table">
+			<div>
+				<div class="bigTitle">
+					<a href="https://github.com/GitBrent/PptxGenJS" style="text-decoration:none; color:inherit;">PptxGenJS</a>
+				</div>
+				<div class="subTitle">
+					JavaScript PowerPoint Framework - Presentation Demos
+				</div>
+			</div>
+			<div style="text-align:right">
+				<input type="button" class="flatBtn flatBtn-blueMd" value="Run All Demos" onclick="runEveryTest()">
+			</div>
 		</div>
 
 		<div id="navTabs" class="modernTabs">
@@ -767,79 +813,41 @@
 				</div>
 				<div class="sectionBox">
 					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
-						<fieldset style="height:auto">
+						<fieldset>
 					    	<legend>Table Layout/Format</legend>
+
 							<h3>Slide 1</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Text Alignment</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Cell Styles</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Row Height / Col Width</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Text Alignment</div>
+							<div class="chkRow"><div class="svgCheck"></div>Cell Styles</div>
+							<div class="chkRow"><div class="svgCheck"></div>Row Height / Col Width</div>
+
 							<h3>Slide 2</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Colspans/Rowspans</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Colspans/Rowspans</div>
+
 							<h3>Slide 3</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Extreme Colspans/Rowspans</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Extreme Colspans/Rowspans</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Cell Formatting</legend>
 							<h3>Slide 4</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Cell Margins</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Complex Cell Borders</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Escaped Special Characters</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Cell Margins</div>
+							<div class="chkRow"><div class="svgCheck"></div>Complex Cell Borders</div>
+							<div class="chkRow"><div class="svgCheck"></div>Escaped Special Characters</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
-							<legend>Automattic Table Paging</legend>
+							<legend>Table Auto-Paging</legend>
 							<h3>Slide 5-n</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Large amount of text to trigger auto-paging</label></div>
-								</div>
-							</div>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Same text but with different table dimensions</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lots of text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lots of text with diff dimensions</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lots of text with autoPage:false</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Table Slides" onclick="doGenTabTest('Table')">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presenation" onclick="doGenTabTest('Table')">
 					</div>
 				</div>
 			</div>
@@ -855,39 +863,23 @@
 				</div>
 				<div class="sectionBox">
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
+						<fieldset>
 							<legend>Images Slide</legend>
 							<h3>Slide 1</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Animated GIF (campfire icon - click to play)</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Four Image types using `path:'someImage'`</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Two pre-encoded images (green checkmarks) using `data:[base64]`</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Animated GIF (campfire icon - click to play)</div>
+							<div class="chkRow"><div class="svgCheck"></div>Four Image types using `path:'someImage'`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Two pre-encoded images (green checkmarks) using `data:[base64]`</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
+						<fieldset>
 							<legend>Embedded YouTube Video</legend>
 							<h3>Slide 2</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Embedded "TED Talks Best of 2016" video</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Embedded "TED Talks Best of 2016" video</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Slides" onclick="doGenTabTest(['Image','YouTube'])">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presenation" onclick="doGenTabTest(['Image','YouTube'])">
 					</div>
 				</div>
 			</div>
@@ -913,52 +905,30 @@
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Text Objects</legend>
+
 							<h3>Slide 1</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Font Face/Color Combos, Bullets, Shadow</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Bullets: Number, text and multi-line</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Font Face/Color Combos, Bullets, Shadow</div>
+							<div class="chkRow"><div class="svgCheck"></div>Bullets: Number, text and multi-line</div>
+
 							<h3>Slide 2</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Text Formatting, Colors and Alignments</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Text Formatting, Colors and Alignments</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
 						<fieldset style="height:auto">
 					    	<legend>Shape Objects</legend>
+
 							<h3>Slide 1</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Major Shapes without Text</label></div>
-								</div>
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Borders, lines and arrow heads</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Major Shapes without Text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Borders, lines and arrow heads</div>
+
 							<h3>Slide 2</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>Misc Shapes with Text</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>Misc Shapes with Text</div>
 						</fieldset>
 					</div>
 
 					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Slides" onclick="doGenTabTest(['Shape','Text'])">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presenation" onclick="doGenTabTest(['Shape','Text'])">
 					</div>
 				</div>
 			</div>
@@ -975,59 +945,33 @@
 				</div>
 				<div class="sectionBox">
 					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
+						<fieldset>
 					    	<legend>As Defined</legend>
 							<h3>Slide 1</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>pptx.masters.TITLE_SLIDE</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.TITLE_SLIDE</div>
+
 							<h3>Slide 2</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>pptx.masters.MASTER_SLIDE</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.MASTER_SLIDE</div>
+
 							<h3>Slide 3</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>pptx.masters.THANKS_SLIDE</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.THANKS_SLIDE</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
 						<fieldset style="height:auto">
 					    	<legend>Options Overidden</legend>
 							<h3>Slide 4</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>pptx.masters.MASTER_SLIDE with background color override</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.MASTER_SLIDE with background color override</div>
+
 							<h3>Slide 5</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>pptx.masters.MASTER_SLIDE with background image override</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.MASTER_SLIDE with background image override</div>
+
 							<h3>Slide 6</h3>
-							<div class="divTable">
-								<div>
-									<div><input type="checkbox" checked="checked" disabled="disabled"></div>
-									<div><label>pptx.masters.THANKS_SLIDE with background color override</label></div>
-								</div>
-							</div>
+							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.THANKS_SLIDE with background color override</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Slides" onclick="doGenTabTest('Master')">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presenation" onclick="doGenTabTest('Master')">
 					</div>
 				</div>
 			</div>
