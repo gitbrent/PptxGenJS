@@ -2,19 +2,18 @@
 
 # PptxGenJS
 
-### JavaScript framework that produces PowerPoint (pptx) presentations
+### JavaScript library that produces PowerPoint (pptx) presentations
 
 Quickly and easily create PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
 
 ## Main Features
-* Complete JavaScript framework: No client configuration, plug-ins, or other settings required
-* Works with all current desktop browsers (Chrome, Edge, Firefox, Opera et al.) and with IE11
-* Full Featured: Create Tables, Shapes, Images, Text and Media - plus use Master Slides
-* Presentation exports download to any modern browser as a normal PPTX file
+* Widely Supported: Creates and downloads presentations on all current web browsers (Chrome, Edge, Firefox, etc.) and IE11
+* Full Featured: Slides can include Tables, Shapes, Images, Text and Media - plus use Master Slides
+* Easy To Use: Entire PowerPoint presentations can be created in a few lines of code
+* Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
 
 ## Additional Features
-This framework also includes a unique [Table-to-Slides](#table-to-slides-feature) feature that will reproduce
-an HTML Table across one or more Slides with a single command.
+* Use the unique [Table-to-Slides](#table-to-slides-feature) feature to copy an HTML table into 1 or more Slides with a single command
 
 **************************************************************************************************
 
@@ -306,9 +305,6 @@ slide.addTable( [rows] );
 slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 ```
 
-Notes:
-* Table will auto-page by default (as table rows overflow the Slide, new Slides will be added as needed)
-
 ### Table Layout Options
 | Option       | Type    | Unit   | Default   | Description            | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :--------------------- | :--------------- |
@@ -321,11 +317,22 @@ Notes:
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
 | `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 
+### Table Paging Options
+| Option       | Type    | Unit   | Default   | Description            | Possible Values                          |
+| :----------- | :------ | :----- | :-------- | :--------------------- | :--------------------------------------- |
+| `autoPage`   | boolean |        | `true`    | auto-page table        | `true` or `false`  |
+| `lineWeight` | float   |        | 0         | line weight            | -1.0 to 1.0. Ex: {lineWeight:0.5} |
+
+### Table Auto-Paging Notes
+* Table will auto-page by default (as table rows overflow the Slide, new Slides will be added as needed)
+* Use `lineWeight` to adjust the calculated value of lines. If too much space is left under each table,
+then add a higher lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides,
+reduce the lineWeight value.
+
 ### Table Formatting Options
 | Option       | Type    | Unit   | Default   | Description        | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :----------------- | :--------------- |
 | `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` (or `l` `c` `r`) |
-| `autoPage`   | boolean |        | `true`    | auto-page table    | `true` or `false` |
 | `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
 | `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}` |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
@@ -393,7 +400,7 @@ var rows = [
         { text:'Top Rgt', options:{ valign:'t', align:'r', font_face:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m'} };
+var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', font_size:18, color:'6f9fc9', valign:'m'} };
 slide.addTable( rows, tabOpts );
 
 // Multiline Text / Line Breaks - use either "\r" or "\n"

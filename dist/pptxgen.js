@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.2.1";
-	var APP_REL = "20170220";
+	var APP_REL = "20170221";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -80,6 +80,7 @@ var PptxGenJS = function(){
 	var EMU = 914400;	// One (1) Inch - OfficeXML measures in EMU (English Metric Units)
 	var ONEPT = 12700;	// One (1) point (pt)
 	var CRLF = '\r\n';
+	var DEF_FONT_SIZE = 12;
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -314,7 +315,7 @@ var PptxGenJS = function(){
 		return inch2Emu( intCellH );
 	}
 
-	function getShapeInfo( shapeName ) {
+	function getShapeInfo(shapeName) {
 		if ( !shapeName ) return gObjPptxShapes.RECTANGLE;
 
 		if ( typeof shapeName == 'object' && shapeName.name && shapeName.displayName && shapeName.avLst ) return shapeName;
@@ -327,7 +328,7 @@ var PptxGenJS = function(){
 		return gObjPptxShapes.RECTANGLE;
 	}
 
-	function getSmartParseNumber( inVal, inDir ) {
+	function getSmartParseNumber(inVal, inDir) {
 		// FIRST: Convert string numeric value if reqd
 		if ( typeof inVal == 'string' && !isNaN(Number(inVal)) ) inVal = Number(inVal);
 
@@ -351,7 +352,7 @@ var PptxGenJS = function(){
 		return 0;
 	}
 
-	function decodeXmlEntities( inStr ) {
+	function decodeXmlEntities(inStr) {
 		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 		if ( typeof inStr === 'undefined' || inStr == null ) return "";
 		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
@@ -360,14 +361,15 @@ var PptxGenJS = function(){
 	/**
 	* Magic happens here
 	*/
-	function parseTextToLines(inStr, inFontSize, inWidth) {
-		var U = 2.2; // Character Constant thingy
-		var CPL = (inWidth*EMU / ( inFontSize/U ));
+	function parseTextToLines(cell, inWidth) {
+		// Character Constant thingy
+		var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0);
+		var CPL = (inWidth*EMU / ( (cell.opts.font_size || DEF_FONT_SIZE)/CHAR ));
 		var arrLines = [];
 		var strCurrLine = '';
 
 		// A: Remove leading/trailing space
-		inStr = $.trim(inStr);
+		var inStr = cell.text.trim();
 
 		// B: Build line array
 		$.each(inStr.split('\n'), function(i,line){
@@ -395,9 +397,8 @@ var PptxGenJS = function(){
 	/**
 	* Magic happens here
 	*/
-	function getSlidesForTableRows( inArrRows, opts ) {
+	function getSlidesForTableRows(inArrRows, opts) {
 		var LINEH_MODIFIER = 1.8;
-		var DEF_FONT_SIZE = 12;
 		var opts = opts || {};
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 		var arrObjTabHeadRows = [], arrObjTabBodyRows = [], arrObjTabFootRows = [];
@@ -489,12 +490,14 @@ var PptxGenJS = function(){
 					var opt = cell.options || cell.opts || {}; // Legacy support for `opts` (<= v1.2.0)
 					cell.opts = opt; // This odd soln is needed until `opts` can be safely discarded (DEPRECATED)
 				}
+				// Capture some table options for use in other functions
+				cell.opts.lineWeight = opts.lineWeight;
 
 				// 2: Create a cell object for each table column
 				currRow.push({ text:'', opts:cell.opts });
 
 				// 3: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
-				var lines = parseTextToLines(cell.text.trim(), (cell.opts.font_size || opts.font_size || DEF_FONT_SIZE), (opts.colW[iCell]/ONEPT));
+				var lines = parseTextToLines(cell, (opts.colW[iCell]/ONEPT));
 				arrCellsLines.push( lines );
 
 				// 4: Keep track of max line count within all row cells
@@ -538,7 +541,7 @@ var PptxGenJS = function(){
 							var headRow = [];
 							$.each(arrObjTabHeadRows[0], function(iCell,cell){
 								headRow.push({ text:cell.text, opts:cell.opts });
-								var lines = parseTextToLines(cell.text, cell.opts.font_size, (opts.colW[iCell]/ONEPT));
+								var lines = parseTextToLines(cell,(opts.colW[iCell]/ONEPT));
 								if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
 							});
 							arrRows.push( $.extend(true, [], headRow) );
@@ -580,7 +583,7 @@ var PptxGenJS = function(){
 	=========================================================================================================
 	*/
 
-	function genXmlBodyProperties( objOptions ) {
+	function genXmlBodyProperties(objOptions) {
 		var bodyProperties = '<a:bodyPr';
 
 		if ( objOptions && objOptions.bodyProp ) {
@@ -615,7 +618,7 @@ var PptxGenJS = function(){
 		return bodyProperties;
 	}
 
-	function genXmlTextCommand( text_info, text_string, slide_obj, slide_num ) {
+	function genXmlTextCommand(text_info, text_string, slide_obj, slide_num) {
 		var area_opt_data = genXmlTextData( text_info, slide_obj );
 		var parsedText;
 		//
@@ -673,7 +676,7 @@ var PptxGenJS = function(){
 		return outData + '</a:t>' + endTag + (text_info.breakLine ? '</a:p><a:p>' : '');
 	}
 
-	function genXmlTextData( text_info, slide_obj ) {
+	function genXmlTextData(text_info, slide_obj) {
 		var out_obj = {};
 
 		out_obj.font_size = '';
@@ -726,7 +729,7 @@ var PptxGenJS = function(){
 		return out_obj;
 	}
 
-	function genXmlColorSelection( color_info, back_info ) {
+	function genXmlColorSelection(color_info, back_info) {
 		var colorVal;
 		var fillType = 'solid';
 		var internalElements = '';
@@ -2038,17 +2041,20 @@ var PptxGenJS = function(){
 			}
 
 			// STEP 2: Set default options if needed
-			opt.x         = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
-			opt.y         = getSmartParseNumber( (opt.y || EMU), 'Y' );
-			opt.cx        = getSmartParseNumber( (opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU*2))), 'X' );
+			opt.x          = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
+			opt.y          = getSmartParseNumber( (opt.y || EMU), 'Y' );
+			opt.cx         = getSmartParseNumber( (opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU*2))), 'X' );
 			// NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-			opt.cy        = opt.h || opt.cy;
+			opt.cy         = opt.h || opt.cy;
 			if ( opt.cy ) opt.cy = getSmartParseNumber( opt.cy, 'Y' );
-			opt.w         = opt.cx;
-			opt.h         = opt.cy;
-			opt.font_size = opt.font_size || 12;
-			opt.margin    = opt.marginPt || opt.margin || 0;
-			opt.autoPage  = (opt.autoPage == false ? false : true);
+			opt.w          = opt.cx;
+			opt.h          = opt.cy;
+			opt.font_size  = opt.font_size || 12;
+			opt.margin     = opt.marginPt || opt.margin || 0;
+			opt.autoPage   = (opt.autoPage == false ? false : true);
+			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
+			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
+			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
 
 			// STEP 3: Convert units to EMU now (we use different logic in makeSlide - smartCalc is not used)
 			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);

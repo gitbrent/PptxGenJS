@@ -315,8 +315,10 @@
 			// ======== -----------------------------------------------------------------------------------
 			{
 				var arrRows = [];
+				var arrText = [];
 				for (var idx=0; idx<gArrNamesF.length; idx++) {
-					arrRows.push( [idx, gArrNamesF[idx], gStrLorumIpsum.substring(idx*100,idx*300)] );
+					arrRows.push( [idx, gArrNamesF[idx], gStrLorumIpsum.substring(idx*100,idx*200)] );
+					arrText.push( [gStrLorumIpsum.substring(idx*100,idx*200)] );
 				}
 
 				var slide = pptx.addNewSlide();
@@ -330,6 +332,17 @@
 				var slide = pptx.addNewSlide();
 				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Auto-Paging Disabled', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
 				slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF', autoPage:false } );
+
+				// lineWeight samples
+				var slide = pptx.addNewSlide();
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:0', options:textSubtt}], {x:0.5, y:0.13, w:3} );
+				slide.addTable( arrText, { x:0.5, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true } );
+
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:0.5', options:textSubtt}], {x:5.0, y:0.13, w:3} );
+				slide.addTable( arrText, { x:4.8, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:0.5 } );
+
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:-0.5', options:textSubtt}], {x:9.0, y:0.13, w:3} );
+				slide.addTable( arrText, { x:9.1, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:-0.5 } );
 			}
 		}
 
@@ -842,8 +855,9 @@
 							<legend>Table Auto-Paging</legend>
 							<h3>Slide 5-n</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Lots of text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of text with diff dimensions</div>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of text with autoPage:false</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lots of text with smaller dimensions</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lots of text with `{autoPage:false}`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Trio of tables with various `lineWeight`</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
