@@ -42,6 +42,8 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Text Examples](#text-examples)
   - [Adding Tables](#adding-tables)
     - [Table Layout Options](#table-layout-options)
+    - [Table Auto-Paging Options](#table-auto-paging-options)
+    - [Table Auto-Paging Notes](#table-auto-paging-notes)
     - [Table Formatting Options](#table-formatting-options)
     - [Table Formatting Notes](#table-formatting-notes)
     - [Table Cell Formatting](#table-cell-formatting)
@@ -317,7 +319,7 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
 | `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 
-### Table Paging Options
+### Table Auto-Paging Options
 | Option       | Type    | Unit   | Default   | Description            | Possible Values                          |
 | :----------- | :------ | :----- | :-------- | :--------------------- | :--------------------------------------- |
 | `autoPage`   | boolean |        | `true`    | auto-page table        | `true` or `false`  |
