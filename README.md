@@ -207,20 +207,6 @@ slide.slideNumber({ x:1.0, y:'90%' });
 slide.addText('TEXT', {OPTIONS});
 slide.addText('Line 1\nLine 2', {OPTIONS});
 slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
-
-// Examples
-// EX: Format some text
-slide.addText('Hello World!', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
-// EX: Multiline Text / Line Breaks - use either "\r" or "\n"
-slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
-// EX: Format individual words or lines by passing an array of text objects with `text` and `options`
-slide.addText(
-	[
-		{ text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
-		{ text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
-	],
-	{ x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
-);
 ```
 
 ### Text Options
@@ -273,6 +259,21 @@ slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
 slide.addText(
 	'Arial, 32pt, green, bold, underline, 0 inset',
 	{ x:0.5, y:5.0, w:'90%', margin:0.5, font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
+);
+
+// EX: Format some text
+slide.addText('Hello World!', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+
+// EX: Multiline Text / Line Breaks - use either "\r" or "\n"
+slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
+
+// EX: Format individual words or lines by passing an array of text objects with `text` and `options`
+slide.addText(
+	[
+		{ text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
+		{ text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
+	],
+	{ x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
 );
 
 // EX: Drop/Outer Shadow
