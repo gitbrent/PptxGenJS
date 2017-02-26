@@ -233,7 +233,7 @@ slide.addText(
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
 | `autoFit`    | boolean |        | `false`   | "Fit to Shape"      | `true` or `false` |
 | `bold`       | boolean |        | `false`   | bold text           | `true` or `false` |
-| `breakLine`  | boolean |        | `false`   | adds a line break   | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
+| `breakLine`  | boolean |        | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |        | `false`   | bulleted text       | `true` or `false` |
 | `color`      | string  |        |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
@@ -320,16 +320,23 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 
 ### Table Auto-Paging Options
-| Option       | Type    | Unit   | Default   | Description            | Possible Values                          |
-| :----------- | :------ | :----- | :-------- | :--------------------- | :--------------------------------------- |
-| `autoPage`   | boolean |        | `true`    | auto-page table        | `true` or `false`  |
-| `lineWeight` | float   |        | 0         | line weight            | -1.0 to 1.0. Ex: {lineWeight:0.5} |
+| Option          | Type    | Default   | Description            | Possible Values                          |
+| :-------------- | :------ | :-------- | :--------------------- | :--------------------------------------- |
+| `autoPage`      | boolean | `true`    | auto-page table        | `true` or `false`  |
+| `lineWeight`    | float   | 0         | line weight value      | -1.0 to 1.0. Ex: `{lineWeight:0.5}` |
+| `newPageStartY` | object  |           | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
 
 ### Table Auto-Paging Notes
-* Table will auto-page by default (as table rows overflow the Slide, new Slides will be added as needed)
-* Use `lineWeight` to adjust the calculated value of lines. If too much space is left under each table,
-then add a higher lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides,
-reduce the lineWeight value.
+Tables will auto-page by default and the table on new Slides will use the current Slide's top `margin` value as the starting point for `y`.
+Tables will retain their existing `x`, `w`, and `colW` values as they are continued onto subsequent Slides.
+
+* `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
+* `lineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
+then increase lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides, then
+reduce the lineWeight value. Also helpful when using some fonts that do not have the usual golden ratio.
+* `newPageStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
+you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
+tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
 
 ### Table Formatting Options
 | Option       | Type    | Unit   | Default   | Description        | Possible Values  |

@@ -83,7 +83,6 @@
 
 		function genSlides_Table(pptx) {
 			// SLIDE 1: Table text alignment and cell styles
-			// ======== -----------------------------------------------------------------------------------
 			{
 				var slide = pptx.addNewSlide();
 				slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } ); // `opts` = legacy test
@@ -161,7 +160,6 @@
 			}
 
 			// SLIDE 2: Table row/col-spans
-			// ======== -----------------------------------------------------------------------------------
 			{
 				var slide = pptx.addNewSlide();
 				// 2: Slide title
@@ -278,7 +276,6 @@
 			}
 
 			// SLIDE 4: Cell Formatting / Cell Margins
-			// ======== -----------------------------------------------------------------------------------
 			{
 				var slide = pptx.addNewSlide();
 				// 2: Slide title
@@ -298,16 +295,16 @@
 				slide.addTable( [['margin:[80,5,5,10]']], { x:10.5,y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
 
 				// Complex/Compound border
-				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 3.0;
+				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 2.6;
 				slide.addText('Complex Cell Border:', optsSub);
 				var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
-				slide.addTable( [['Borders!']], { x:0.5, y:3.4, w:12.3, rowH:2.0, fill:'F5F5F5', color:'3D3D3D', font_size:18, border:arrBorder, align:'c', valign:'c' } );
+				slide.addTable( [['Borders!']], { x:0.5, y:3.0, w:12.3, rowH:2.0, fill:'F5F5F5', color:'3D3D3D', font_size:18, border:arrBorder, align:'c', valign:'c' } );
 
 				// Invalid char check
-				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 6.1;
+				var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 5.7;
 				slide.addText('Escaped Invalid Chars:', optsSub);
 				var arrTabRows3 = [['<', '>', '"', "'", '&', 'plain']];
-				slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
+				slide.addTable( arrTabRows3, { x:0.5, y:6.0, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
 
 			}
 
@@ -330,19 +327,27 @@
 				slide.addTable( arrRows, { x:3.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 				var slide = pptx.addNewSlide();
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test for correct starting Y location upon paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+				slide.addTable( arrRows, { x:3.0, y:4.0, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
+
+				var slide = pptx.addNewSlide();
+				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: `{ newPageStartY: 0.5 }`', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+				slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:0.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
+
+				var slide = pptx.addNewSlide();
 				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Auto-Paging Disabled', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
 				slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF', autoPage:false } );
 
-				// lineWeight samples
+				// lineWeight option demos
 				var slide = pptx.addNewSlide();
 				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:0', options:textSubtt}], {x:0.5, y:0.13, w:3} );
-				slide.addTable( arrText, { x:0.5, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true } );
+				slide.addTable( arrText, { x:0.50, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true } );
 
 				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:0.5', options:textSubtt}], {x:5.0, y:0.13, w:3} );
-				slide.addTable( arrText, { x:4.8, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:0.5 } );
+				slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:0.5 } );
 
 				slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:-0.5', options:textSubtt}], {x:9.0, y:0.13, w:3} );
-				slide.addTable( arrText, { x:9.1, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:-0.5 } );
+				slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:-0.5 } );
 			}
 		}
 
@@ -385,7 +390,7 @@
 			// SLIDE 1: Misc Shape Types (no text)
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (no text)', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+			slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 			//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:'F9F9F9' });
 			slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
@@ -405,7 +410,7 @@
 			// SLIDE 2: Misc Shape Types with Text
 			// ======== -----------------------------------------------------------------------------------
 			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Shape Examples: Misc Shape Types (with text)', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+			slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 			slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE,         x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'c', font_size:14 });
 			slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE,         x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'c', font_size:14 });
@@ -423,96 +428,112 @@
 
 		function genSlides_Text(pptx) {
 			// SLIDE 1: Font Size/Color line examples in various font pts and random colors
-			// ======== -----------------------------------------------------------------------------------
-			var slide = pptx.addNewSlide();
-			slide.addTable( [ [{ text:'Text Examples 1', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+			{
+				var slide = pptx.addNewSlide();
+				slide.addTable( [ [{ text:'Text Examples 1', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
-			// DEMO: Array of text fonts/colors in increasing size
-			[18,22,28,32].forEach(function(val,i){
-				slide.addText( 'Misc font/color, size = '+val,
-					{
-						x:0.5, y:0.7+(i*0.7), cx:12.75,
-						font_size:val, font_face:fonts[Math.floor((Math.random()*4)+1)], color:colors[i]
-					}
+				// LEFT COLUMN ------------------------------------------------------------
+
+				// 1: Multi-Line Formatting
+				slide.addText("Line-Level Formatting:", { x:0.5, y:0.65, w:'40%', h:0.38, color:'0088CC' });
+				slide.addText(
+					[
+						{ text:'1st line', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+						{ text:'2nd line', options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
+						{ text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
+					],
+					{ x:0.5, y:1.1, w:6, h:2.25, margin:0.1, fill:'232323' }
 				);
-			});
 
-			// Bullet Test: Number
-			slide.addText(999, { x:9.0, y:0.6, w:'20%', h:1, color:'0000DE', bullet:true });
-			// Bullet Test: Text test
-			slide.addText('Bullet (str here, number above)', { x:9.0, y:1.0, w:'30%', h:1, color:'00AA00', bullet:true });
+				// 2: Line-Break Test
+				slide.addText("Line-Breaks:", { x:0.5, y:3.6, w:'40%', h:0.38, color:'0088CC' });
+				slide.addText(
+					'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
+					{ x:0.5, y:4.0, w:6, h:1.75, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
+				);
 
-			/*
-			// TODO: bullets in text objects need help (20170215)
-			slide.addText(
-				[
-					{ text:'I should be bulleted!', options:{bullet:true} },
-					{ text:'as should I be bulleted!', options:{bullet:true} }
-				],
-				{ x:9.0, y:1.0, w:'30%', h:1, color:'00AA00' }
-			);
+				// 3: Text Effects: Shadow
+				var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
+				slide.addText("Text Shadow:", { x:0.5, y:6.0, w:'40%', h:0.38, color:'0088CC' });
+				slide.addText(
+					'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
+					{ x:0.5, y:6.4, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
+				);
 
-			// Bullets can be applied to the all text en mass
-			slide.addText(
-				[
-					{ text: 'big red words... ', options:{font_size:24, color:'FF0000'} },
-					{ text: 'some green words.', options:{font_size:16, color:'0000FF'} }
-				],
-				{ x:0.75, y:1.5, w:5, h:0.5, margin:0.1, font_face:'Arial', bullet:true }
-			);
-			// TODO: ^^^ use 2+ {text} objects, each bulleted
-			*/
+				// RIGHT COLUMN ------------------------------------------------------------
 
-			// Multi-line test: bullet lines
-			slide.addText('Line 1\nLine 2\nLine 3', { x:9.0, y:2.0, w:'30%', h:1, color:'393939', bullet:true, fill:'F2F2F2' });
-			// Multi-line test: 3 lines
-			slide.addText(
-				'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
-				{ x:0.4, y:4.0, w:5, h:2, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
-			);
+				// 4: Regular bullets
+				slide.addText("Bullets:", { x:7.5, y:0.65, w:'40%', h:0.38, color:'0088CC' });
+				slide.addText(12345                  , { x:8.0, y:1.1, w:'30%', h:0.5, color:'0000DE', font_face:"Courier New", bullet:true });
+				slide.addText('String (number above)', { x:8.0, y:1.4, w:'30%', h:0.5, color:'00AA00', bullet:true });
 
-			// Effects > Shadow
-			var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
-			slide.addText('Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)', { x:0.5, y:6.0, w:12, h:1, font_size:32, color:'0088cc', shadow:shadowOpts });
+				// 5: Bullets: Text With Line-Breaks
+				slide.addText("Bullets with line-breaks:", { x:7.5, y:2.0, w:'40%', h:0.38, color:'0088CC' });
+				slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.4, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:true });
+
+				// 6: Bullets: With group of {text}
+				slide.addText("Bullet with {text} objects:", { x:7.5, y:3.6, w:'40%', h:0.38, color:'0088CC' });
+				slide.addText(
+					[
+						{ text: 'big red words... ', options:{font_size:24, color:'FF0000'} },
+						{ text: 'some green words.', options:{font_size:16, color:'0000FF'} }
+					],
+					{ x:8.0, y:4.0, w:5, h:0.5, margin:0.1, font_face:'Arial', bullet:true }
+				);
+
+				// 7: Bullets: Within a {text} object
+				slide.addText("Bullet within {text} objects:", { x:7.5, y:4.6, w:'40%', h:0.38, color:'0088CC' });
+				slide.addText(
+					[
+						{ text:'I am a text object with bullets.. ', options:{bullet:true, color:'CC0000'} },
+						{ text:'and i am the next text object!'    , options:{bullet:true, color:'00CD00'} },
+						{ text:'Text object without bullet:true.. ', options:{font_size:12} },
+						{ text:'then this is a text object too!'   , options:{font_size:12} },
+						{ text:'Final text object w/ bullet:true!!', options:{bullet:true, color:'0000AB'} }
+					],
+					{ x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
+				);
+			}
 
 			// SLIDE 2: Misc mess
-			// ======== -----------------------------------------------------------------------------------
-			var slide = pptx.addNewSlide();
-			// Slide colors: bkgd/fore
-			slide.back = '030303';
-			slide.color = '9F9F9F';
-			// Title
-			slide.addTable( [ [{ text:'Text Examples 2', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+			{
+				var slide = pptx.addNewSlide();
+				// Slide colors: bkgd/fore
+				slide.back = '030303';
+				slide.color = '9F9F9F';
+				// Title
+				slide.addTable( [ [{ text:'Text Examples 2', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-			// Actual Textbox shape (can have any Height, can wrap text, etc.)
-			slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
-			slide.addText( 'Textbox (top/lft)', { x:10,  y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', isTextBox:true } );
-			slide.addText( 'Textbox (btm/rgt)', { x:10,  y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', isTextBox:true } );
+				// Actual Textbox shape (can have any Height, can wrap text, etc.)
+				slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
+				slide.addText( 'Textbox (top/lft)', { x:10,  y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', isTextBox:true } );
+				slide.addText( 'Textbox (btm/rgt)', { x:10,  y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', isTextBox:true } );
 
-			slide.addText('Plain x/y coords', { x:10, y:3.5 });
+				slide.addText('Plain x/y coords', { x:10, y:3.5 });
 
-			slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5 });
+				slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5 });
 
-			slide.addText('^ (50%/50%)', {x:'50%', y:'50%', w:2});
+				slide.addText('^ (50%/50%)', {x:'50%', y:'50%', w:2});
 
-			// TEST: using {option}: Add text box with multiline options:
-			slide.addText(
-				[
-					{ text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-					{ text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
-				],
-				{ x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
-			);
+				// TEST: using {option}: Add text box with multiline options:
+				slide.addText(
+					[
+						{ text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+						{ text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
+					],
+					{ x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
+				);
 
-			var objOptions = {
-				x:0, y:6.25, w:'100%', h:0.5, align:'c',
-				font_face:'Arial', font_size:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
-			};
-			slide.addText('Arial 32pt, green, bold, italic, underline, margin:0, ctr', objOptions);
+				var objOptions = {
+					x:0, y:6.25, w:'100%', h:0.5, align:'c',
+					font_face:'Arial', font_size:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
+				};
+				slide.addText('Arial 32pt, green, bold, italic, underline, margin:0, ctr', objOptions);
 
-			slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
-				{ x:0, y:6.75, w:'100%', h:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
-			);
+				slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
+					{ x:0, y:6.75, w:'100%', h:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
+				);
+			}
 		}
 
 		function genSlides_Master(pptx) {
@@ -734,6 +755,14 @@
 				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
 				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:28, color:'0088CC', fill:'F1F1F1' }\n"
 				+ ")\n"
+				+ "\n"
+				+ "slide.addText(\n"
+				+ "	[\n"
+				+ "		{ text:'I should be bulleted!', options:{bullet:true} },\n"
+				+ "		{ text:'as should I be bulleted!', options:{bullet:true} }\n"
+				+ "	],\n"
+				+ "	{ x:9.0, y:1.0, w:'30%', h:1, color:'00AA00' }\n"
+				+ ");\n"
 				+ "\n"
 				+ "slide.addText(\n"
 				+ " [\n"
