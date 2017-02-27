@@ -1,11 +1,17 @@
 # Change Log
 
-## [v1.2.1](https://github.com/gitbrent/pptxgenjs/tree/v1.2.1) (2017-02-??)
+## [v1.2.1](https://github.com/gitbrent/pptxgenjs/tree/v1.2.1) (2017-02-26)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.0...v1.2.1)
 
 **Fixed Bugs:**
 - Fixed issue with using percentages with `x`,`y`,`w`,`h` in `addTable()`
 - Table formatting bug with rowspans and colspans [\#46](https://github.com/gitbrent/PptxGenJS/issues/46) ([itskun](https://github.com/itskun))
+
+**Implemented Enhancements:**
+- Allow more than a single 'x' and/or 'y' table location during Table Paging [\#43](https://github.com/gitbrent/PptxGenJS/issues/43) ([jenkinsns](https://github.com/jenkinsns))
+- Bullets do not work with text objects in addText() method [\#44](https://github.com/gitbrent/PptxGenJS/issues/44) ([ellisgl](https://github.com/ellisgl))
+- Table location and pagination [\#47](https://github.com/gitbrent/PptxGenJS/issues/47) ([itskun](https://github.com/itskun))
+- Meta: Improve auto-paging in 'addTable()' [\#48](https://github.com/gitbrent/PptxGenJS/issues/48) ([gitbrent](https://github.com/gitbrent))
 
 ## [v1.2.0](https://github.com/gitbrent/pptxgenjs/tree/v1.2.0) (2017-02-15)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.1.6...v1.2.0)
