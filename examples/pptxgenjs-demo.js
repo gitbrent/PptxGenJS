@@ -363,10 +363,8 @@ function genSlides_YouTube(pptx) {
 }
 
 function genSlides_Image(pptx) {
-	// 1:
 	var slide = pptx.addNewSlide();
 	slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
-
 
 	// Add an image using basic syntax
 	slide.addImage({ path:'images/cc_copyremix.gif',          x:0.5, y:0.75, w:1.20, h:1.20 });
@@ -375,7 +373,7 @@ function genSlides_Image(pptx) {
 		 .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
 		 .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
 
-	// 2: Images can be pre-encoded into base64, so they do not have to be on the webserver etc. (saves generation time and resources!)
+	// Images can be pre-encoded into base64, so they do not have to be on the webserver etc. (saves generation time and resources!)
 	// Also has the benefit of being able to be any type (path:images can only be exported as PNG)
 	if (NODEJS) slide.addImage({ x:1.8, y:0.7, w:1.78, h:1.78, path:'images/anim_campfire.gif' });
 	else slide.addImage({ x:1.8, y:0.7, w:1.78, h:1.78, data:GIF_ANIM_FIRE });

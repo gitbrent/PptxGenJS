@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.2.1";
-	var APP_REL = "20170226";
+	var APP_VER = "1.2.2";
+	var APP_REL = "20170227";
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -652,12 +652,12 @@ var PptxGenJS = function(){
 			// OPTION: bullet
 			if ( slideObj.options.bullet ) paragraphPropXml += ' marL="228600" indent="-228600"';
 
-			// Close Paragraph Properties ===========================
+			// Close Paragraph-Properties
 			paragraphPropXml += (slideObj.options.bullet ? '><a:buSzPct val="100000"/><a:buChar char="&#x2022;"/>' : '>');
 			paragraphPropXml += '</a:pPr>';
 		}
 
-		// STEP 2: Build paragraph(s) and its text props/runs
+		// STEP 2: Build paragraph(s) and its text props/runs =================================
 		if ( slideObj.options.bullet
 			&& typeof slideObj.text == 'string' && slideObj.text.split('\n').length > 0
 			&& slideObj.text.split('\n')[1] && slideObj.text.split('\n')[1].length > 0
@@ -681,6 +681,10 @@ var PptxGenJS = function(){
 			slideObj.text.forEach(function(textObj,idx){
 				textObj.options = textObj.options || {};
 				textObj.options.lineIdx = idx;
+				// Slide.color should be the fallback text color
+				// We only pass the text.options below and not the Slide.options, so the run building function cant just fallback to Slide.color,
+				// therefore, we need to do that here before passing options below
+				textObj.options.color = ( textObj.options.color ? textObj.options.color : slideObj.options.color );
 
 				// Add a line break if prev line was bulleted and this one isnt, otherwise, this new line will continue on prev bullet line and users probably dont want that!
 				if ( idx > 0 && slideObj.text[idx-1].options.bullet && !textObj.options.bullet ) strSlideXml += '</a:p><a:p>';
@@ -690,7 +694,7 @@ var PptxGenJS = function(){
 					if ( idx > 0 ) strSlideXml += '</a:p>';
 					strSlideXml += '<a:p>' + bulletParaPropXml;
 				}
-				else if ( idx == 0) {
+				else if ( idx == 0 ) {
 					strSlideXml += '<a:p>' + paragraphPropXml;
 				}
 
@@ -1192,7 +1196,7 @@ var PptxGenJS = function(){
 							// FIRST: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 							if ( cell.hmerge ) return;
 
-							// 1: OPTIONS: Build/set cell options (blocked for code folding)
+							// 1: OPTIONS: Build/set cell options (blocked for code folding) ===========================
 							{
 								// A: Create cell if needed (handle [null] and other manner of junk values)
 								// IMPORTANT: MS-PPTX PROBLEM: using '' will cause PPT to use its own default font/size! (Arial/18 in US)
@@ -1219,7 +1223,7 @@ var PptxGenJS = function(){
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
 								var cellFontClr = ((cell.optImp && cell.optImp.color) || cellOpts.color) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.color) || cellOpts.color.replace('#','')) +'"/></a:solidFill>' : '';
 								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
-								if ( cellOpts.margin == 0 ) cellOpts.margin = [0, 0, 0, 0]; // Allow 0 (zero) as a margin - otherwise our fancy short-circuit eval doesnt allow for thhis condition - solve here for doc and sanity sake
+								if ( cellOpts.margin == 0 ) cellOpts.margin = [0, 0, 0, 0]; // Allow 0 (zero) as a margin - otherwise our fancy short-circuit eval doesnt allow for this condition - solve here for doc and sanity sake
 								var cellMargin  = (cellOpts.margin && Array.isArray(cellOpts.margin) ? cellOpts.margin : (cellOpts.margin || '') );
 
 								// Margin/Padding:
@@ -1291,9 +1295,9 @@ var PptxGenJS = function(){
 							}
 
 							// 6: Close cell Properties & Cell
-							strXml += cellFill
-									+ '  </a:tcPr>'
-									+ ' </a:tc>';
+							strXml += cellFill;
+							strXml += '  </a:tcPr>';
+							strXml += ' </a:tc>';
 
 							// LAST: COLSPAN: Add a 'merged' col for each column being merged (SEE: http://officeopenxml.com/drwTableGrid.php)
 							if ( cellOpts.colspan ) {
@@ -1306,10 +1310,10 @@ var PptxGenJS = function(){
 					});
 
 					// STEP 5: Complete table
-					strXml += '      </a:tbl>'
-							+ '    </a:graphicData>'
-							+ '  </a:graphic>'
-							+ '</p:graphicFrame>';
+					strXml += '      </a:tbl>';
+					strXml += '    </a:graphicData>';
+					strXml += '  </a:graphic>';
+					strXml += '</p:graphicFrame>';
 
 					// STEP 6: Set table XML
 					strSlideXml += strXml;
@@ -1387,8 +1391,7 @@ var PptxGenJS = function(){
 						strSlideXml += '</a:effectLst>';
 					}
 
-					// FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
-					/*
+					/* FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
 					// Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
 					if ( slideObj.options.textWrap ) {
 						strSlideXml += '<a:extLst>'
@@ -2052,6 +2055,8 @@ var PptxGenJS = function(){
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
 			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
+			// Set default color if needed (table option > inherit from Slide > default to black)
+			if ( !opt.color ) opt.color = opt.color || this.color || '000000';
 
 			// STEP 3: Convert units to EMU now (we use different logic in makeSlide - smartCalc is not used)
 			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
@@ -2107,35 +2112,20 @@ var PptxGenJS = function(){
 			// STEP 1: Grab Slide object count
 			slideObjNum = gObjPptx.slides[slideNum].data.length;
 
+			// STEP 2: Set some options
+			// Set color (options > inherit from Slide > default to black)
+			opt.color = (opt.color || this.color || '000000');
+
 			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
 			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
 			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
-
-			// STEP 2: Set props
-			gObjPptx.slides[slideNum].data[slideObjNum] = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].text = text;
-
-			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {}; // CAPTURE everything passed
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
-			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
-			}
-
-			// OPTIONS: Set color if needed (inherit from Slide, or default to black)
-			if ( !opt.color ) opt.color = (this.color || '000000');
 
 			// ROBUST: Set rational values for some shadow props if needed
 			if ( opt.shadow ) {
 				// OPT: `type`
 				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
 					console.warn('Warning: shadow.type options are `outer` or `inner`.');
-					gObjPptx.slides[slideNum].data[slideObjNum].options.type = 'outer';
+					opt.type = 'outer';
 				}
 
 				// OPT: `angle`
@@ -2147,7 +2137,7 @@ var PptxGenJS = function(){
 					}
 
 					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					gObjPptx.slides[slideNum].data[slideObjNum].options.angle = Math.round(Number(opt.shadow.angle));
+					opt.angle = Math.round(Number(opt.shadow.angle));
 				}
 
 				// OPT: `opacity`
@@ -2159,8 +2149,24 @@ var PptxGenJS = function(){
 					}
 
 					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					gObjPptx.slides[slideNum].data[slideObjNum].options.opacity = Number(opt.shadow.opacity)
+					opt.opacity = Number(opt.shadow.opacity)
 				}
+			}
+
+			// STEP 3: Set props
+			gObjPptx.slides[slideNum].data[slideObjNum] = {};
+			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
+			gObjPptx.slides[slideNum].data[slideObjNum].text = text;
+
+			gObjPptx.slides[slideNum].data[slideObjNum].options = opt;
+			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
+			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
+			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
+			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
+				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
 			}
 
 			// LAST: Return
@@ -2385,7 +2391,7 @@ var PptxGenJS = function(){
 
 // [Node.js] support
 if ( NODEJS ) {
-	// A: Load 2 depdendencies
+	// A: Load depdendencies
 	var fs = require("fs");
 	var $ = require("jquery-node");
 	var JSZip = require("jszip");
