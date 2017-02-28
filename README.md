@@ -32,7 +32,8 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Presentation Options](#presentation-options)
     - [Presentation Layouts](#presentation-layouts)
   - [Creating Slides](#creating-slides)
-    - [Add A New Slide](#add-a-new-slide)
+    - [Slide Formatting](#slide-formatting)
+    - [Slide Formatting Options](#slide-formatting-options)
     - [Applying Master Slides / Branding](#applying-master-slides--branding)
     - [Adding Slide Numbers](#adding-slide-numbers)
     - [Slide Number Options](#slide-number-options)
@@ -174,10 +175,22 @@ pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 **************************************************************************************************
 ## Creating Slides
 
-### Add A New Slide
+Syntax:
 ```javascript
 var slide = pptx.addNewSlide();
 ```
+
+### Slide Formatting
+```javascript
+slide.bkgd  = 'F1F1F1';
+slide.color = '696969'
+```
+
+### Slide Formatting Options
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `bkgd`       | string  |        | 'FFFFFF'  | background color    | hex color code. |
+| `color`      | string  |        | '000000'  | default text color  | hex color code. |
 
 ### Applying Master Slides / Branding
 ```javascript
