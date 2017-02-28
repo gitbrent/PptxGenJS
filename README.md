@@ -189,8 +189,8 @@ slide.color = '696969'
 ### Slide Formatting Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `bkgd`       | string  |        | 'FFFFFF'  | background color    | hex color code. |
-| `color`      | string  |        | '000000'  | default text color  | hex color code. |
+| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code. |
+| `color`      | string  |        | `000000`  | default text color  | hex color code. |
 
 ### Applying Master Slides / Branding
 ```javascript
@@ -757,7 +757,7 @@ JavaScript ES6 features and remove many instances of jQuery utility functions.
 
 * [Officegen Project](https://github.com/Ziv-Barber/officegen) - For the Shape definitions and XML code
 * [Dzmitry Dulko](https://github.com/DzmitryDulko) - For getting the project published on NPM
-* Everyone who has submitted a Issue or a Pull Request. :-)
+* Everyone who has submitted an Issue or Pull Request. :-)
 
 **************************************************************************************************
 # License
