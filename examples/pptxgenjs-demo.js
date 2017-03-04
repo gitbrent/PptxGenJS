@@ -1,7 +1,7 @@
 /**
  * NAME: pptxgenjs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Feb 27, 2017
+ * DATE: Mar 03, 2017
  * DESC: Common test/demo slides for all library features
  * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 **/
@@ -9,8 +9,8 @@
 // Detect Node.js
 var NODEJS = ( typeof module !== 'undefined' && module.exports );
 // Constants
-var CUST_NAME = 'ACME Corp Weekly Report';
-var USER_NAME = 'John Q. Public';
+var CUST_NAME = 'S.T.A.R. Laboratories';
+var USER_NAME = 'Barry Allen';
 var COLOR_RED = 'FF0000';
 var COLOR_AMB = 'F2AF00';
 var COLOR_GRN = '7AB800';
@@ -429,7 +429,7 @@ function genSlides_Shape(pptx) {
 }
 
 function genSlides_Text(pptx) {
-	// SLIDE 1: Font Size/Color line examples in various font pts and random colors
+	// SLIDE 1: Line Break / Bullets
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Text Examples 1', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
@@ -471,7 +471,7 @@ function genSlides_Text(pptx) {
 
 		// 5: Bullets: Text With Line-Breaks
 		slide.addText("Bullets with line-breaks:", { x:7.5, y:2.0, w:'40%', h:0.38, color:'0088CC' });
-		slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.4, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:true });
+		slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.4, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:{type:'number'} });
 
 		// 6: Bullets: With group of {text}
 		slide.addText("Bullet with {text} objects:", { x:7.5, y:3.6, w:'40%', h:0.38, color:'0088CC' });
@@ -480,15 +480,15 @@ function genSlides_Text(pptx) {
 				{ text: 'big red words... ', options:{font_size:24, color:'FF0000'} },
 				{ text: 'some green words.', options:{font_size:16, color:'0000FF'} }
 			],
-			{ x:8.0, y:4.0, w:5, h:0.5, margin:0.1, font_face:'Arial', bullet:true }
+			{ x:8.0, y:4.0, w:5, h:0.5, margin:0.1, font_face:'Arial', bullet:{code:'25BA'} }
 		);
 
 		// 7: Bullets: Within a {text} object
 		slide.addText("Bullet within {text} objects:", { x:7.5, y:4.6, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'I am a text object with bullets.. ', options:{bullet:true, color:'CC0000'} },
-				{ text:'and i am the next text object!'    , options:{bullet:true, color:'00CD00'} },
+				{ text:'I am a text object with bullets.. ', options:{bullet:{code:'2605'}, color:'CC0000'} },
+				{ text:'and i am the next text object!'    , options:{bullet:{code:'25BA'}, color:'00CD00'} },
 				{ text:'Text object without bullet:true.. ', options:{font_size:12} },
 				{ text:'then this is a text object too!'   , options:{font_size:12} },
 				{ text:'Final text object w/ bullet:true!!', options:{bullet:true, color:'0000AB'} }

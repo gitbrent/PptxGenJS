@@ -88,16 +88,17 @@ h3 {
     padding: 10px;
     margin: 0;
 }
+.tabCool tbody td:first-child {
+	background: #efefff;
+}
 .tabCool tbody td {
     border: 1px solid #d7d7d7;
-    background: #efefFF;
+	background: white;
     padding: 10px;
     margin: 0;
     text-align: left;
 }
-.tabCool tbody td:nth-child(1), .tabCool tbody td:nth-child(2) {
-    white-space: nowrap;
-}
+.tabCool tbody td:nth-child(1), .tabCool tbody td:nth-child(2) { white-space: nowrap; }
 
 #contTitle { margin: 0 0 30px 0; }
 .bigTitle { font-family:'Roboto'; font-size:42px; font-weight:100; color:#0088cc; margin:0 0 10px 0; }
@@ -150,7 +151,7 @@ fieldset legend {
     color: #4488CC;
     text-transform: uppercase;
 }
-fieldset > h3:first-child { margin-top: 0; }
+fieldset h3:nth-child(2) { margin-top:5px; }
 fieldset .chkRow {
 	padding: 2px 0 2px 10px;
 	color: #6c6c6c;

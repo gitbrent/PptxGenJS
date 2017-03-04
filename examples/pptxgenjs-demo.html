@@ -372,6 +372,13 @@
 					<div class="arrow active"></div>Images &amp; YouTube
 				</div>
 				<div class="sectionBox">
+					<div class="jsLocalFile" style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px; display:none;">
+						NOTE: Web browsers will not allow local file access, meaning images using
+						<code>path:</code> cannot be read if running this locally!
+						<br>
+						(Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files)
+					</div>
+
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
 						<fieldset>
 							<legend>Images Slide</legend>
@@ -383,9 +390,9 @@
 					</div>
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
 						<fieldset>
-							<legend>Embedded YouTube Video</legend>
+							<legend>Media Slide</legend>
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Embedded "TED Talks Best of 2016" video</div>
+							<div class="chkRow"><div class="svgCheck"></div>Embedded Youtube video: "TED Talks Best of 2016"</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
@@ -405,25 +412,6 @@
 					<div class="arrow active"></div>Shapes &amp; Text
 				</div>
 				<div class="sectionBox">
-					<div class="jsLocalFile" style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px; display:none;">
-						NOTE: Web browsers will not allow local file access, meaning images using
-						<code>path:</code> cannot be read if running this locally!
-						<br>
-						(Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files)
-					</div>
-
-					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
-							<legend>Text Objects</legend>
-
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Font Face/Color Combos, Bullets, Shadow</div>
-							<div class="chkRow"><div class="svgCheck"></div>Bullets: Number, text and multi-line</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Text Formatting, Colors and Alignments</div>
-						</fieldset>
-					</div>
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
 						<fieldset style="height:auto">
 					    	<legend>Shape Objects</legend>
@@ -434,6 +422,18 @@
 
 							<h3>Slide 2</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Misc Shapes with Text</div>
+						</fieldset>
+					</div>
+					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+							<legend>Text Objects</legend>
+
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Font Face/Color Combos, Bullets, Shadow</div>
+							<div class="chkRow"><div class="svgCheck"></div>Bullets: Number, text and multi-line</div>
+
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Text Formatting, Colors and Alignments</div>
 						</fieldset>
 					</div>
 

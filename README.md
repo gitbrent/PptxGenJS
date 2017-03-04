@@ -234,6 +234,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `bold`       | boolean |        | `false`   | bold text           | `true` or `false` |
 | `breakLine`  | boolean |        | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |        | `false`   | bulleted text       | `true` or `false` |
+| `bullet`     | object  |        |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
 | `color`      | string  |        |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |        |           | font face           | Ex: 'Arial' |
@@ -287,6 +288,21 @@ slide.addText(
 		{ text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
 	],
 	{ x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
+);
+
+// EX: Bullets
+slide.addText('Regular, black circle bullet', { x:8.0, y:1.4, w:'30%', h:0.5, bullet:true });
+// Use line-break character to bullet multiple lines
+slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.4, w:'30%', h:1, fill:'F2F2F2', bullet:{type:'number'} });
+// Bullets can also be applied on a per-line level
+slide.addText(
+	[
+		{ text:'I have a star bullet'    , options:{bullet:{code:'2605'}, color:'CC0000'} },
+		{ text:'I have a triangle bullet', options:{bullet:{code:'25BA'}, color:'00CD00'} },
+		{ text:'no bullets on this line' , options:{font_size:12} },
+		{ text:'I have a normal bullet'  , options:{bullet:true, color:'0000AB'} }
+	],
+	{ x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
 );
 
 // EX: Drop/Outer Shadow
