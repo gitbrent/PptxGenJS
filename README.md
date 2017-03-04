@@ -77,6 +77,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Issues / Suggestions](#issues--suggestions)
 - [Development Roadmap](#development-roadmap)
 - [Special Thanks](#special-thanks)
+- [Support Us](#support-us)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
