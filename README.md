@@ -776,6 +776,12 @@ JavaScript ES6 features and remove many instances of jQuery utility functions.
 * Everyone who has submitted an Issue or Pull Request. :-)
 
 **************************************************************************************************
+# Support Us
+
+Do you like PptxGenJS and find it useful?  Please link to GitHub project page on your blog/website or give us a shout out
+on social media.  Thanks to everyone who supports us!
+
+**************************************************************************************************
 # License
 
 Copyright &copy; 2015-2017 [Brent Ely](https://github.com/gitbrent/PptxGenJS)

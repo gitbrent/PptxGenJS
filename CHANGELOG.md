@@ -1,5 +1,11 @@
 # Change Log
 
+## [v1.2.2](https://github.com/gitbrent/pptxgenjs/tree/v1.2.2) (2017-03-xx)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.1...v1.2.2)
+
+**Implemented Enhancements:**
+- Enhance bullet feature: offer diff types of bullets and add numbering option [\#49](https://github.com/gitbrent/PptxGenJS/issues/49) ([gitbrent](https://github.com/gitbrent))
+
 ## [v1.2.1](https://github.com/gitbrent/pptxgenjs/tree/v1.2.1) (2017-02-26)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.0...v1.2.1)
 
