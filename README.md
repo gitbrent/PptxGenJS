@@ -779,7 +779,7 @@ JavaScript ES6 features and remove many instances of jQuery utility functions.
 **************************************************************************************************
 # Support Us
 
-Do you like PptxGenJS and find it useful?  Add a link to the GitHub project page on your blog/website or on social media.
+Do you like this library and find it useful?  Add a link to the [PptxGenJS project](https://github.com/gitbrent/PptxGenJS) on your blog/website or on social media.
 Thanks to everyone who supports us!
 
 **************************************************************************************************
