@@ -770,17 +770,47 @@ pptx.save('Demo-Shapes');
 		        <div class="code">
 <pre id="demo-text" class="prettyprint">
 var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
 var slide = pptx.addNewSlide();
 
-slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', font_size:64 });
-slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
+slide.addText(
+    'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
+    { x:0.0, y:0.0, w:'100%', h:1.25, align:'c', font_size:18, color:'0088CC', fill:'F1F1F1' }
+);
 
-slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
-var objOptions = {
-    x:0.5, y:4.3, w:'90%',
-    font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
-};
-slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
+slide.addText("Line-Level Formatting:", { x:0.5, y:1.5, w:'40%', h:0.38, color:'0088CC' });
+slide.addText(
+    [
+        { text:'1st line', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+        { text:'2nd line', options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
+        { text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
+    ],
+    { x:0.5, y:2.0, w:6, h:2.25, margin:0.1, fill:'232323' }
+);
+
+slide.addText("Bullets: Normal", { x:8.0, y:1.5, w:'40%', h:0.38, color:'0088CC' });
+slide.addText(
+    'Line 1\nLine 2\nLine 3',
+    { x:8.0, y:2.0, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:true }
+);
+
+slide.addText("Bullets: Numbered", { x:8.0, y:3.4, w:'40%', h:0.38, color:'0088CC' });
+slide.addText(
+    'Line 1\nLine 2\nLine 3',
+    { x:8.0, y:3.9, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:{type:'number'} }
+);
+
+slide.addText("Bullets: Custom", { x:8.0, y:5.3, w:'40%', h:0.38, color:'0088CC' });
+slide.addText('Star bullet! ',   { x:8.0, y:5.6, w:'40%', h:0.38, color:'CC0000', bullet:{code:'2605'} });
+slide.addText('Check bullet!',   { x:8.0, y:5.9, w:'40%', h:0.38, color:'00CD00', bullet:{code:'25BA'} });
+
+var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
+slide.addText("Text Shadow:", { x:0.5, y:6.0, w:'40%', h:0.38, color:'0088CC' });
+slide.addText(
+    'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
+    { x:0.5, y:6.4, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
+);
+
 pptx.save('Demo-Text');
 </pre>
 		        </div>
