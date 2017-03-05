@@ -1,19 +1,19 @@
 [![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/) [![MIT Licence](https://badges.frapsoft.com/os/mit/mit.svg?v=103)](https://opensource.org/licenses/mit-license.php) [![npm version](https://badge.fury.io/js/pptxgenjs.svg)](https://badge.fury.io/js/pptxgenjs)
-# PptxGenJS
-JavaScript framework that produces PowerPoint (pptx) presentations.
 
-Include the PptxGenJS framework in an HTML webpage (client-side) or Node.js project (via NPM) to gain the
-ability to quickly and easily produce PowerPoint presentations with a few simple JavaScript commands.
+# PptxGenJS
+
+### JavaScript library that produces PowerPoint (pptx) presentations
+
+Quickly and easily create PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
 
 ## Main Features
-* Complete, modern JavaScript solution - no client configuration, plug-ins, or other settings required
-* Works with all current desktop browsers (Chrome, Edge, Firefox, Opera et al.) and with IE11
-* Presentation pptx export is pushed to client browsers as a regular file without the need for any user interaction
-* Simple, feature-rich API: Supports Master Slides and all major object types (Tables, Shapes, Images and Text)
+* Widely Supported: Creates and downloads presentations on all current web browsers (Chrome, Edge, Firefox, etc.) and IE11
+* Full Featured: Slides can include Tables, Shapes, Images, Text and Media - plus use Master Slides
+* Easy To Use: Entire PowerPoint presentations can be created in a few lines of code
+* Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
 
 ## Additional Features
-This framework also includes a unique [Table-to-Slides](#table-to-slides--1-click-exports) feature that will reproduce
-an HTML Table across one or more Slides with a single command.
+* Use the unique [Table-to-Slides](#table-to-slides-feature) feature to copy an HTML table into 1 or more Slides with a single command
 
 **************************************************************************************************
 
@@ -24,22 +24,29 @@ an HTML Table across one or more Slides with a single command.
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
-  - [Node.js (4.x and later)](#nodejs-4x-and-later)
+  - [Node.js](#nodejs)
 - [Optional Library Files](#optional-library-files)
 - [Presentation Basics](#presentation-basics)
 - [Library Reference](#library-reference)
-  - [Create Presentation](#create-presentation)
+  - [Creating Presentations](#creating-presentations)
     - [Presentation Options](#presentation-options)
-    - [Available Layouts](#available-layouts)
+    - [Presentation Layouts](#presentation-layouts)
   - [Creating Slides](#creating-slides)
-    - [Slide Options](#slide-options)
+    - [Slide Formatting](#slide-formatting)
+    - [Slide Formatting Options](#slide-formatting-options)
+    - [Applying Master Slides / Branding](#applying-master-slides--branding)
+    - [Adding Slide Numbers](#adding-slide-numbers)
     - [Slide Number Options](#slide-number-options)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
+    - [Text Shadow Options](#text-shadow-options)
     - [Text Examples](#text-examples)
   - [Adding Tables](#adding-tables)
     - [Table Layout Options](#table-layout-options)
+    - [Table Auto-Paging Options](#table-auto-paging-options)
+    - [Table Auto-Paging Notes](#table-auto-paging-notes)
     - [Table Formatting Options](#table-formatting-options)
+    - [Table Formatting Notes](#table-formatting-notes)
     - [Table Cell Formatting](#table-cell-formatting)
     - [Table Cell Formatting Examples](#table-cell-formatting-examples)
     - [Table Examples](#table-examples)
@@ -52,24 +59,25 @@ an HTML Table across one or more Slides with a single command.
   - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
     - [Media Options](#media-options)
     - [Media Examples](#media-examples)
+  - [Saving Presentations](#saving-presentations)
+    - [Client Browser](#client-browser)
+    - [Node.js](#nodejs-1)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Slide Masters](#slide-masters)
   - [Slide Master Examples](#slide-master-examples)
   - [Slide Master Object Options](#slide-master-object-options)
   - [Sample Slide Master File](#sample-slide-master-file)
 - [Table-to-Slides Feature](#table-to-slides-feature)
-    - [Table-to-Slides Options](#table-to-slides-options)
-    - [Notes:](#notes)
-    - [Table-to-Slides Example](#table-to-slides-example)
-  - [Master Pages and Branding](#master-pages-and-branding)
-  - [Override Slide Master Settings](#override-slide-master-settings)
-  - [One-Line Presentation Exports](#one-line-presentation-exports)
-    - [Easy SharePoint Integration](#easy-sharepoint-integration)
+  - [Table-to-Slides Options](#table-to-slides-options)
+  - [Table-to-Slides Notes](#table-to-slides-notes)
+  - [Table-to-Slides Examples](#table-to-slides-examples)
+  - [Creative Solutions](#creative-solutions)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
 - [Development Roadmap](#development-roadmap)
 - [Special Thanks](#special-thanks)
+- [Support Us](#support-us)
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
@@ -77,7 +85,7 @@ an HTML Table across one or more Slides with a single command.
 **************************************************************************************************
 # Live Demo
 Use JavaScript to Create a PowerPoint presentation with your web browser right now:  
-[http://gitbrent.github.io/PptxGenJS](http://gitbrent.github.io/PptxGenJS)
+[https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 # Installation
 ## Client-Side
@@ -88,7 +96,7 @@ PptxGenJS requires only three additional JavaScript libraries to function.
 <script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
-## Node.js (4.x and later)
+## Node.js
 [PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
 npm install pptxgenjs
@@ -104,13 +112,14 @@ include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape 
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
 ```
 
+
 **************************************************************************************************
 # Presentation Basics
-PowerPoint Presentations are created via JavaScript by following 4 basic steps:
+PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
-1. Create the Presentation
-2. Add a new Slide  
-3. Add objects (Images, Shapes, Text or Tables)
+1. Create a new Presentation
+2. Add a Slide  
+3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 4. Save the Presentation  
 
 ```javascript
@@ -121,10 +130,11 @@ pptx.save('Sample Presentation');
 ```
 That's really all there is to it!
 
+
 **************************************************************************************************
 # Library Reference
 
-## Create Presentation
+## Creating Presentations
 
 Client Browser:
 ```javascript
@@ -145,27 +155,54 @@ Setting the Layout (applies to all Slides in the Presentation):
 pptx.setLayout('LAYOUT_WIDE');
 ```
 
-### Available Layouts
+### Presentation Layouts
 | Layout Name    | Default  | Layout Slide Size |
 | :------------- | :------- | :---------------- |
 | `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches |
 | `LAYOUT_16x10` | No       | 10 x 6.25 inches  |
 | `LAYOUT_4x3`   | No       | 10 x 7.5 inches   |
 | `LAYOUT_WIDE`  | No       | 13.3 x 7.5 inches |
+| `LAYOUT_USER`  | No       | user defined - see below (inches) |
 
+Custom user defined Layout sizes are supported - just supply a `name` and the size in inches.
+* Defining a new Layout using an object will also set this new size as the current Presentation Layout
+
+```javascript
+// Defines and sets this new layout for the Presentation
+pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
+```
+
+
+**************************************************************************************************
 ## Creating Slides
 
-Add a Slide to a Presentation
+Syntax:
 ```javascript
 var slide = pptx.addNewSlide();
 ```
 
-### Slide Options
-Applying Master Slides
+### Slide Formatting
 ```javascript
-var slide = pptx.addNewSlide(pptx.masters.TITLE_SLIDE);
+slide.bkgd  = 'F1F1F1';
+slide.color = '696969'
 ```
-Adding Slide Numbers
+
+### Slide Formatting Options
+| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
+| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code. |
+| `color`      | string  |        | `000000`  | default text color  | hex color code. |
+
+### Applying Master Slides / Branding
+```javascript
+// Create a new Slide that will inherit properties from a pre-defined master page (margins, logos, text, background, etc.)
+var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
+
+// The background color can be overridden on a per-slide basis:
+var slide2 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE, {bkgd:'FFFCCC'} );
+```
+
+### Adding Slide Numbers
 ```javascript
 slide.slideNumber({ x:1.0, y:'90%' });
 ```
@@ -176,14 +213,14 @@ slide.slideNumber({ x:1.0, y:'90%' });
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
 | `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
 
+
+**************************************************************************************************
 ## Adding Text
 ```javascript
 // Syntax
 slide.addText('TEXT', {OPTIONS});
-
-// Example
-slide.addText('Hello World!', { x:2, y:3, color:'DDDD00', font_size:90 });
-slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+slide.addText('Line 1\nLine 2', {OPTIONS});
+slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 ```
 
 ### Text Options
@@ -196,7 +233,9 @@ slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
 | `autoFit`    | boolean |        | `false`   | "Fit to Shape"      | `true` or `false` |
 | `bold`       | boolean |        | `false`   | bold text           | `true` or `false` |
+| `breakLine`  | boolean |        | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |        | `false`   | bulleted text       | `true` or `false` |
+| `bullet`     | object  |        |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
 | `color`      | string  |        |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |        |           | font face           | Ex: 'Arial' |
@@ -204,27 +243,94 @@ slide.addText('Text Options', { x:2, y:4, font_face:'Arial', font_size:42, color
 | `inset`      | number  | inches |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
 | `isTextBox`  | boolean |        | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |        | `false`   | italic text         | `true` or `false` |
-| `margin`     | number  | points |           | margin              | 1-n (ProTip: use the same value from CSS padding) |
+| `margin`     | number  | points |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
+| `shadow`     | object  |        |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
 | `underline`  | boolean |        | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |        |           | vertical alignment  | `top` or `middle` or `bottom` |
+
+### Text Shadow Options
+| Option       | Type    | Unit    | Default   | Description            | Possible Values  |
+| :----------- | :------ | :------ | :-------- | :--------------------- | :--------------- |
+| `type`       | string  |         | outer     | shadow type            | `outer` or `inner` |
+| `angle`      | number  | degrees |           | shadow angle           | 0-359. Ex: `{ angle:180 }` |
+| `blur`       | number  | points  |           | blur size              | 1-256. Ex: `{ blur:3 }` |
+| `offset`     | number  | points  |           | offset size            | 1-256. Ex: `{ offset:8 }` |
+| `color`      | string  |         |           | text color             | hex color code. Ex: `{ color:'0088CC' }` |
+| `opacity`    | number  | percent |           | opacity                | 0-1. Ex: `opacity:0.75` |
 
 ### Text Examples
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
+// EX: Dynamic location using percentages
+slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
+
+// EX: Basic formatting
 slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', font_size:64 });
 slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
-slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
-var objOptions = {
-    x:0.5, y:4.3, w:'90%',
-    font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, margin:0, isTextBox:true
-};
-slide.addText('Arial, 32pt, green, bold, underline, 0 inset', objOptions);
+
+// EX: More formatting options
+slide.addText(
+	'Arial, 32pt, green, bold, underline, 0 inset',
+	{ x:0.5, y:5.0, w:'90%', margin:0.5, font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
+);
+
+// EX: Format some text
+slide.addText('Hello World!', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+
+// EX: Multiline Text / Line Breaks - use either "\r" or "\n"
+slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
+
+// EX: Format individual words or lines by passing an array of text objects with `text` and `options`
+slide.addText(
+	[
+		{ text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
+		{ text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
+	],
+	{ x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
+);
+
+// EX: Bullets
+slide.addText('Regular, black circle bullet', { x:8.0, y:1.4, w:'30%', h:0.5, bullet:true });
+// Use line-break character to bullet multiple lines
+slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.4, w:'30%', h:1, fill:'F2F2F2', bullet:{type:'number'} });
+// Bullets can also be applied on a per-line level
+slide.addText(
+	[
+		{ text:'I have a star bullet'    , options:{bullet:{code:'2605'}, color:'CC0000'} },
+		{ text:'I have a triangle bullet', options:{bullet:{code:'25BA'}, color:'00CD00'} },
+		{ text:'no bullets on this line' , options:{font_size:12} },
+		{ text:'I have a normal bullet'  , options:{bullet:true, color:'0000AB'} }
+	],
+	{ x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
+);
+
+// EX: Drop/Outer Shadow
+slide.addText(
+	'Outer Shadow',
+	{
+		x:0.5, y:6.0, font_size:36, color:'0088CC',
+		shadow: {type:'outer', color:'696969', blur:3, offset:10, angle:45}
+	}
+);
+
+// EX: Formatting can be applied at the word/line level
+// Provide an array of text objects with the formatting options for that `text` string value
+// Line-breaks work as well
+slide.addText(
+	[
+		{ text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+		{ text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
+	],
+	{ x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
+);
 
 pptx.save('Demo-Text');
 ```
 
+
+**************************************************************************************************
 ## Adding Tables
 Syntax:
 ```javascript
@@ -233,16 +339,35 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 ```
 
 ### Table Layout Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
-| `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
-| `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
+| Option       | Type    | Unit   | Default   | Description            | Possible Values  |
+| :----------- | :------ | :----- | :-------- | :--------------------- | :--------------- |
+| `x`          | number  | inches | `1.0`     | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches | `1.0`     | vertical location      | 0-n OR 'n%'. |
+| `w`          | number  | inches |           | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`          | number  | inches |           | height                 | 0-n OR 'n%'. |
 | `colW`       | integer | inches |           | width for every column | Ex: Width for every column in table (uniform) `2.0` |
 | `colW`       | array   | inches |           | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]` |
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
 | `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]` |
+
+### Table Auto-Paging Options
+| Option          | Type    | Default   | Description            | Possible Values                          |
+| :-------------- | :------ | :-------- | :--------------------- | :--------------------------------------- |
+| `autoPage`      | boolean | `true`    | auto-page table        | `true` or `false`  |
+| `lineWeight`    | float   | 0         | line weight value      | -1.0 to 1.0. Ex: `{lineWeight:0.5}` |
+| `newPageStartY` | object  |           | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
+
+### Table Auto-Paging Notes
+Tables will auto-page by default and the table on new Slides will use the current Slide's top `margin` value as the starting point for `y`.
+Tables will retain their existing `x`, `w`, and `colW` values as they are continued onto subsequent Slides.
+
+* `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
+* `lineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
+then increase lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides, then
+reduce the lineWeight value. Also helpful when using some fonts that do not have the usual golden ratio.
+* `newPageStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
+you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
+tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
 
 ### Table Formatting Options
 | Option       | Type    | Unit   | Default   | Description        | Possible Values  |
@@ -257,25 +382,31 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
 | `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}` |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
-| `marginPt`   | number  | points |           | margin             | 1-n (ProTip: use the same value from CSS padding) |
+| `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`) |
+| `margin`     | array   | points |           | margin             | array of integer values in TRBL order. Ex: `margin:[5,10,5,10]` |
 | `rowspan`    | integer |        |           | row span           | 2-n. Ex: `{rowspan:2}` |
 | `underline`  | boolean |        | `false`   | underline text     | `true` or `false` |
 | `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`) |
 
-### Table Cell Formatting
+### Table Formatting Notes
 * **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
-* You can selectively override formatting on a per-cell basis by including any **Formatting Option** in the row cell itself
+* You can selectively override formatting at a cell-level providing any **Formatting Option** in the cell `options`
+
+### Table Cell Formatting
+Table cells can be either a text string or an object with text and options properties.
 
 ### Table Cell Formatting Examples
 ```javascript
 var rows = [];
-// These cells will be formatted according to any options provided to addTable()
+
+// Row One: cells will be formatted according to any options provided to `addTable()`
 rows.push( ['First', 'Second', 'Third'] );
-// Any formatting options provided by cells will be applied - overriding table options (if any)
-rwos.push([
-    { text:'1st', opts:{color:'ff0000'} },
-    { text:'2nd', opts:{color:'00ff00'} },
-    { text:'3rd', opts:{color:'0000ff'} }
+
+// Row Two: set/override formatting for each cell
+rows.push([
+    { text:'1st', options:{color:'ff0000'} },
+    { text:'2nd', options:{color:'00ff00'} },
+    { text:'3rd', options:{color:'0000ff'} }
 ]);
 ```
 
@@ -304,17 +435,22 @@ slide.addTable( rows, tabOpts );
 // --------
 var rows = [
     [
-        { text:'Top Lft', opts:{ valign:'t', align:'l', font_face:'Arial'   } },
-        { text:'Top Ctr', opts:{ valign:'t', align:'c', font_face:'Verdana' } },
-        { text:'Top Rgt', opts:{ valign:'t', align:'r', font_face:'Courier' } }
+        { text:'Top Lft', options:{ valign:'t', align:'l', font_face:'Arial'   } },
+        { text:'Top Ctr', options:{ valign:'t', align:'c', font_face:'Verdana' } },
+        { text:'Top Rgt', options:{ valign:'t', align:'r', font_face:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9', rowH:0.6, valign:'m'} };
+var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', font_size:18, color:'6f9fc9', valign:'m'} };
 slide.addTable( rows, tabOpts );
+
+// Multiline Text / Line Breaks - use either "\r" or "\n"
+slide.addTable( ['Line 1\nLine 2\nLine 3'], { x:2, y:3, w:4 });
 
 pptx.save('Demo-Tables');
 ```
 
+
+**************************************************************************************************
 ## Adding Shapes
 Syntax (no text):
 ```javascript
@@ -367,6 +503,7 @@ pptx.save('Demo-Shapes');
 ```
 
 
+**************************************************************************************************
 ## Adding Images
 Syntax:
 ```javascript
@@ -408,6 +545,8 @@ slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30,
 pptx.save('Demo-Images');
 ```
 
+
+**************************************************************************************************
 ## Adding Media (Audio/Video/YouTube)
 Syntax:
 ```javascript
@@ -438,13 +577,38 @@ var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
 // Media by path (Node.js only)
-slide.addMedia({ path:'../media/sample.mp3', x:1.0, y:1.0, w:3.0, h:0.5 });
+slide.addMedia({ type:'audio', path:'../media/sample.mp3', x:1.0, y:1.0, w:3.0, h:0.5 });
 // Media by data (client browser or Node.js)
 slide.addMedia({ type:'audio', data:'audio/mp3;base64,iVtDafDrBF[...]=', x:3.0, y:1.0, w:6.0, h:3.0 });
 // Online by link (client browser or Node.js)
 slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:1.0, y:4.0, w:8.0, h:4.5 });
 
 pptx.save('Demo-Media');
+```
+
+
+**************************************************************************************************
+## Saving Presentations
+Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
+example of which can be found below.
+
+### Client Browser
+* Simply provide a filename
+
+```javascript
+pptx.save('Demo-Media');
+```
+
+### Node.js
+* Node can accept a callback function that will return the filename once the save is complete
+
+```javascript
+// A: File will be saved to the local working directory (`__dirname`)
+pptx.save( 'Node_Demo' );
+// B: Inline callback function
+pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); } );
+// C: Predefined callback function
+pptx.save( 'Node_Demo', saveCallback );
 ```
 
 **************************************************************************************************
@@ -513,7 +677,7 @@ pptx.save();
 | `bkgd`        | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
 | `images`      | array   |        |   | image(s) | object array of path OR data. Ex: `{path:'img/logo.png'}` OR `{data:'image/png;base64,tFfInmP[...]'}`|
 | `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
-| `margin`      | number  | inches | `1.0`    | Slide margin       | 0.0 through whatever |
+| `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
 | `margin`      | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
 | `shapes`      | array   |        |          | shape(s)           | array of shape objects. Ex: (see [Shape](#shape) section) |
 | `title`       | string  |        |          | Slide title        | some title |
@@ -524,59 +688,60 @@ Location: `PptxGenJS/dist/pptxgen.masters.js`
 
 **************************************************************************************************
 # Table-to-Slides Feature
-* With the unique `addSlidesForTable()` function, you can reproduce an HTML table - background
-colors, borders, fonts, padding, etc. - with a single line of code.
-* The function will detect margins (based on Master Slide layout or parameters) and will create Slides as needed
-* All you have to do is pass the table element ID to `addSlidesForTable()` and you're done!
-* NOTE: Nested tables are not supported in PowerPoint
-
-### Table-to-Slides Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches |           | horizontal location | 0-n |
-| `y`          | number  | inches |           | vertical location   | 0-n |
-| `w`          | number  | inches |           | width               | 0-n |
-| `h`          | number  | inches |           | height              | 0-n |
-
-### Notes:
-* Default margins are 0.5 inches, table will take up all remaining space by default
-* Use a Master Slide with pre-defined margins to over-ride defaults
-
-### Table-to-Slides Example
+Syntax:
 ```javascript
-// STEP 1: Instantiate new PptxGenJS instance
-var pptx = new PptxGenJS();
-
-// STEP 2: Set slide size/layout
-pptx.setLayout('LAYOUT_16x9');
-
-// STEP 3: Pass table element ID to addSlidesForTable function to produce 1-N slides
-pptx.addSlidesForTable('tabAutoPaging');
-
-// STEP 4: Export Presentation
-pptx.save('Table2SlidesDemo');
+slide.addSlidesForTable(htmlElementID);
+slide.addSlidesForTable(htmlElementID, {OPTIONS});
 ```
 
-## Master Pages and Branding
-Do you need to have the generated slides use a Slide Master or corporate branding?  
-Just pass the Slide Master name to use (you can also add shapes/text on-the-fly as well).
+Any variety of HTML tables can be turned into a series of slides (auto-paging) by providing the table's ID.
+* Reproduces an HTML table - background colors, borders, fonts, padding, etc.
+* Slide margins are based on either the Master Slide provided or options
 
-## Override Slide Master Settings
-The Master Slide background color/image can be selectively overridden on a per-slide basis when needed,
-so it's easy to handle exceptions where users want things like the first slide to have a white background, etc.
+*NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
+
+## Table-to-Slides Options
+| Option       | Type    | Unit   | Description         | Possible Values  |
+| :----------- | :------ | :----- | :------------------ | :--------------- |
+| `x`          | number  | inches | horizontal location | 0-256. Table will be placed here on each Slide |
+| `y`          | number  | inches | vertical location   | 0-256. Table will be placed here on each Slide |
+| `w`          | number  | inches | width               | 0-256. Default is (100% - Slide margins) |
+| `h`          | number  | inches | height              | 0-256. Default is (100% - Slide margins) |
+| `master`     | string  |        | master slide name   | Any pre-defined Master Slide. EX: `{ master:pptx.masters.TITLE_SLIDE }`
+| `addImage`   | string  |        | add an image to each slide | Use the established syntax. EX: `{ addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } }` |
+| `addShape`   | string  |        | add a shape to each slide | Use the established syntax. |
+| `addTable`   | string  |        | add a table to each slide | Use the established syntax. |
+| `addText`    | string  |        | add text to each slide | Use the established syntax. |
+
+## Table-to-Slides Notes
+* Default `x`, `y` and `margin` value is 0.5 inches, the table will take up all remaining space by default (h:100%, w:100%)
+* Your Master Slides should already have defined margins, so a Master Slide name is the only option you'll need most of the time
+
+## Table-to-Slides Examples
 ```javascript
-var slide1 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+// Pass table element ID to addSlidesForTable function to produce 1-N slides
+pptx.addSlidesForTable( 'myHtmlTableID' );
+
+// Optionally, include a Master Slide name for pre-defined margins, background, logo, etc.
+pptx.addSlidesForTable( 'myHtmlTableID', { master:pptx.masters.MASTER_SLIDE } );
+
+// Optionally, add images/shapes/text/tables to each Slide
+pptx.addSlidesForTable( 'myHtmlTableID', { addText:{ text:"Dynamic Title", options:{x:1, y:0.5, color:'0088CC'} } } );
+pptx.addSlidesForTable( 'myHtmlTableID', { addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } } );
 ```
 
-## One-Line Presentation Exports
-Your Slide Master should already contain slide layout, size & margins. Meaning, the code to produce
-professional looking slides is so small that you can just inline it into a button and place next to any table on your site:
+## Creative Solutions
+Design a Master Slide that already contains: slide layout, margins, logos, etc., then you can produce
+professional looking Presentations with a single line of code which can be embedded into a link or a button:
 
+Add a button to a webpage that will create a Presentation using whatever table data is present:
 ```javascript
-<input type="button" value="Export to PPTX" onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
+<input type="button" value="Export to PPTX"
+ onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
 
-### Easy SharePoint Integration
+**SharePoint Integration**  
+
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
 
@@ -609,7 +774,13 @@ JavaScript ES6 features and remove many instances of jQuery utility functions.
 
 * [Officegen Project](https://github.com/Ziv-Barber/officegen) - For the Shape definitions and XML code
 * [Dzmitry Dulko](https://github.com/DzmitryDulko) - For getting the project published on NPM
-* Everyone who has submitted a Issue or a Pull Request. :-)
+* Everyone who has submitted an Issue or Pull Request. :-)
+
+**************************************************************************************************
+# Support Us
+
+Do you like this library and find it useful?  Add a link to the [PptxGenJS project](https://github.com/gitbrent/PptxGenJS) on your blog/website or on social media.
+Thanks to everyone who supports us!
 
 **************************************************************************************************
 # License
