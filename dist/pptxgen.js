@@ -100,6 +100,10 @@ var PptxGenJS = function(){
 
 	// B: Set Presentation Property Defaults
 	gObjPptx.title = 'PptxGenJS Presentation';
+	gObjPptx.author = 'PptxGenJS';
+	gObjPptx.revision = '1';
+	gObjPptx.subject = '';
+	gObjPptx.company = 'PptxGenJS';
 	gObjPptx.fileName = 'Presentation';
 	gObjPptx.fileExtn = '.pptx';
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
@@ -981,7 +985,7 @@ var PptxGenJS = function(){
 		$.each(gObjPptx.slides, function(idx,slideObj){ strXml += '<vt:lpstr>Slide '+ (idx+1) +'</vt:lpstr>'; });
 		strXml += ' </vt:vector>\
 						</TitlesOfParts>\
-						<Company>PptxGenJS</Company>\
+						<Company>'+gObjPptx.company+'</Company>\
 						<LinksUpToDate>false</LinksUpToDate>\
 						<SharedDoc>false</SharedDoc>\
 						<HyperlinksChanged>false</HyperlinksChanged>\
@@ -996,9 +1000,10 @@ var PptxGenJS = function(){
 							 xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"\
 							 xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\
 							<dc:title>'+ gObjPptx.title +'</dc:title>\
-							<dc:creator>PptxGenJS</dc:creator>\
-							<cp:lastModifiedBy>PptxGenJS</cp:lastModifiedBy>\
-							<cp:revision>1</cp:revision>\
+							<dc:subject>'+ gObjPptx.subject +'</dc:subject>\
+							<dc:creator>'+ gObjPptx.author +'</dc:creator>\
+							<cp:lastModifiedBy>'+ gObjPptx.author +'</cp:lastModifiedBy>\
+							<cp:revision>'+ gObjPptx.revision +'</cp:revision>\
 							<dcterms:created xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:created>\
 							<dcterms:modified xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:modified>\
 						</cp:coreProperties>';
@@ -1788,6 +1793,34 @@ var PptxGenJS = function(){
 	 */
 	this.setTitle = function setTitle(inStrTitle) {
 		gObjPptx.title = inStrTitle || 'PptxGenJs Presentation';
+	};
+
+	/**
+	 * Sets the Presentation's Author
+	 */
+	this.setAuthor = function setAuthor(inStrAuthor) {
+		gObjPptx.author = inStrAuthor || 'PptxGenJs';
+	};
+
+	/**
+	 * Sets the Presentation's Revision
+	 */
+	this.setRevision = function setRevision(inStrRevision) {
+		gObjPptx.revision = inStrRevision || '1';
+	};
+
+	/**
+	 * Sets the Presentation's Subject
+	 */
+	this.setSubject = function setSubject(inStrSubject) {
+		gObjPptx.subject = inStrSubject || '';
+	};
+
+	/**
+	 * Sets the Presentation's Company
+	 */
+	this.setCompany = function setCompany(inStrCompany) {
+		gObjPptx.company = inStrCompany || '';
 	};
 
 	/**
