@@ -2293,6 +2293,7 @@ var PptxGenJS = function(){
 					$.each(Object.keys(shape), function(i,key){ if ( shape[key] != 'type' ) objOpts[key] = shape[key]; });
 					// 2: Create object using 'type'
 					if ( shape.type == 'text' ) slideObj.addText(shape.text, objOpts);
+                    else if ( shape.type == 'image' ) slideObj.addImage(objOpts);
 					else if ( shape.type == 'line' ) slideObj.addShape(gObjPptxShapes.LINE, objOpts);
 					else if ( shape.type == 'rectangle' ) slideObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
 				});
