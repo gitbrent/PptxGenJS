@@ -3,6 +3,9 @@
 ## [v1.2.2](https://github.com/gitbrent/pptxgenjs/tree/v1.2.2) (2017-03-xx)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.1...v1.2.2)
 
+**Fixed Bugs:**
+- Added image type to shapes to allow images to be placed on top of shapes, added more properties to ppt document [\#53](https://github.com/gitbrent/PptxGenJS/pull/53) ([ericwgreene](https://github.com/ericwgreene))
+
 **Implemented Enhancements:**
 - Enhance bullet feature: offer diff types of bullets and add numbering option [\#49](https://github.com/gitbrent/PptxGenJS/issues/49) ([gitbrent](https://github.com/gitbrent))
 
