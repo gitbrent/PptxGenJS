@@ -718,18 +718,21 @@ var PptxGenJS = function(){
 			// EX: slide.addText([ {text:'hello', options:{color:'0088CC'}}, {text:'world', options:{color:'CC8800'}} ]);
 			strSlideXml += genXmlBodyProperties(slideObj.options) + '<a:lstStyle/>';
 			slideObj.text.forEach(function(textObj,idx){
-				// A: options
+				// A: Options
 				textObj.options = textObj.options || {};
 				textObj.options.lineIdx = idx;
-				// Slide.color should be the fallback text color
+				// Inherit any main options (color, font_size, etc.)
 				// We only pass the text.options below and not the Slide.options, so the run building function cant just fallback to Slide.color,
-				// therefore, we need to do that here before passing options below
-				textObj.options.color = ( textObj.options.color ? textObj.options.color : slideObj.options.color );
+				// therefore, we need to do that here before passing options below!
+				// NOTE: This loop will pick up `x` etc, but it doesnt hurt anything
+				$.each(slideObj.options, function(key,val){
+					if ( !textObj.options[key] ) textObj.options[key] = val;
+				});
 
 				// B: Add a line break if prev line was bulleted and this one isnt, otherwise, this new line will continue on prev bullet line and users probably dont want that!
 				if ( idx > 0 && slideObj.text[idx-1].options.bullet && !textObj.options.bullet ) strSlideXml += '</a:p><a:p>';
 
-				// D: Add bullets in text objects (create a paragraph for each {text} ojbect with bullet:true)
+				// C: Add bullets in text objects (create a paragraph for each {text} ojbect with bullet:true)
 				if ( textObj.options.bullet ) {
 					// NOTE: Yes, much of this is the same code as above but bulelts can vary per text line (didnt want a func for this)
 					var paraBullPropXml = '';
@@ -764,7 +767,7 @@ var PptxGenJS = function(){
 				// 2: Begin a paragraph if this is the first line
 				else if ( idx == 0 ) strSlideXml += '<a:p>' + paragraphPropXml;
 
-				// E: Add formatted textrun
+				// D: Add formatted textrun
 				strSlideXml += genXmlTextRun((textObj.options || slideObj.options), textObj.text.toString());
 			});
 		}
