@@ -1,7 +1,7 @@
 /**
  * NAME: pptxgenjs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Mar 03, 2017
+ * DATE: Mar 09, 2017
  * DESC: Common test/demo slides for all library features
  * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 **/
@@ -543,7 +543,7 @@ function genSlides_Master(pptx) {
 	var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
 	var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
 
-	var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC'} );
+	var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'0088CC'} );
 	var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
 	var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
 }

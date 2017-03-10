@@ -55,7 +55,7 @@ var gObjPptxMasters = {
 		]
 	},
 	MASTER_SLIDE: {
-		title:   'Corporate Brand',
+		title:   'Corporate Branded Slide',
 		bkgd:    'FFFFFF',
 		margin:  [ 0.5, 0.25, 1.0, 0.25 ],
 		images:  [
@@ -63,18 +63,19 @@ var gObjPptxMasters = {
 			{ x:12.3, y:0.3, w:0.7, h:0.7, data:'image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' }
 		],
 		shapes:  [
-			{ type:'text', text:'Star Labs - Confidential', x:0, y:6.8, w:'100%', h:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true }
+			{ type:'text', text:'S.T.A.R. Laboratories - Confidential', x:0, y:6.8, w:'100%', h:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:9, bold:true }
 		],
 		slideNumber: { x:0.3, y:'90%' }
 	},
 	THANKS_SLIDE: {
 		title:   'Thanks Slide to be added as final Slide',
 		bkgd:    '36ABFF',
+		shapes:  [
+			{ type:'rectangle', x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' },
+			{ type:'text', text:'Thank You!', x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'ffffff', font_size:60, align:'c' }
+		],
 		images:  [
 			{ src:'images/starlabs_logo.png', x:4.6, y:3.5, w:4, h:1.8 }
-		],
-		shapes:  [
-			{ type:'text', text:'Thank You!', x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'ffffff', font_size:60, align:'c' }
 		]
 	}
 };

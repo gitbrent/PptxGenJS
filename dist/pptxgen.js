@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.2.2";
-	var APP_REL = "20170304";
+	var APP_REL = "20170309";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -2246,59 +2246,62 @@ var PptxGenJS = function(){
 
 		// C: Add 'Master Slide' attr to Slide if a valid master was provided
 		if ( inMaster && this.masters ) {
-			// A: Add images (do this before adding slide bkgd)
-			if ( inMaster.images && inMaster.images.length > 0 ) {
-				$.each(inMaster.images, function(i,image){
-					slideObj.addImage({
-						data: (image.data || ''),
-						path: (image.path || image.src || ''),
-						x: inch2Emu(image.x),
-						y: inch2Emu(image.y),
-						w: inch2Emu(image.w || image.cx),
-						h: inch2Emu(image.h || image.cy)
+			// Add Slide Master objects in order
+			$.each(inMaster, function(key,val){
+				// Backgrund color/image
+				if ( key == "bkgd" && typeof val === 'object' && (val.src || val.data) ) {
+					// Allow the use of only the data key (no src reqd)
+					if (!val.src) val.src = 'preencoded.png';
+					var slideObjRels = gObjPptx.slides[slideNum].rels;
+					var strImgExtn = val.src.substring( val.src.indexOf('.')+1 ).toLowerCase();
+					if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
+					if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
+					// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
+					var intRels = 1;
+					for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) { intRels += gObjPptx.slides[idx].rels.length; }
+					slideObjRels.push({
+						path: val.src,
+						type: 'image/'+strImgExtn,
+						extn: strImgExtn,
+						data: (val.data || ''),
+						rId: (intRels+1),
+						Target: '../media/image' + intRels + '.' + strImgExtn
 					});
-				});
-			}
+					slideObj.bkgdImgRid = slideObjRels[slideObjRels.length-1].rId;
+				}
+				else if ( key == "bkgd" && val && typeof val === 'string' ) {
+					slideObj.back = val;
+				}
 
-			// B: Add any Slide Background: Image or Fill
-			if ( inMaster.bkgd && (inMaster.bkgd.src || inMaster.bkgd.data) ) {
-				// Allow the use of only the data key (no src reqd)
-				if (!inMaster.bkgd.src) inMaster.bkgd.src = 'preencoded.png';
-				var slideObjRels = gObjPptx.slides[slideNum].rels;
-				var strImgExtn = inMaster.bkgd.src.substring( inMaster.bkgd.src.indexOf('.')+1 ).toLowerCase();
-				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
-				// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
-				var intRels = 1;
-				for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) { intRels += gObjPptx.slides[idx].rels.length; }
-				slideObjRels.push({
-					path: inMaster.bkgd.src,
-					type: 'image/'+strImgExtn,
-					extn: strImgExtn,
-					data: (inMaster.bkgd.data || ''),
-					rId: (intRels+1),
-					Target: '../media/image' + intRels + '.' + strImgExtn
-				});
-				slideObj.bkgdImgRid = slideObjRels[slideObjRels.length-1].rId;
-			}
-			else if ( inMaster.bkgd ) {
-				slideObj.back = inMaster.bkgd;
-			}
+				// Images
+				if ( key == "images" && Array.isArray(val) && val.length > 0 ) {
+					$.each(val, function(i,image){
+						slideObj.addImage({
+							data: (image.data || ''),
+							path: (image.path || image.src || ''),
+							x: inch2Emu(image.x),
+							y: inch2Emu(image.y),
+							w: inch2Emu(image.w || image.cx),
+							h: inch2Emu(image.h || image.cy)
+						});
+					});
+				}
 
-			// C: Add shapes
-			if ( inMaster.shapes && inMaster.shapes.length > 0 ) {
-				$.each(inMaster.shapes, function(i,shape){
-					// 1: Grab all options (x, y, color, etc.)
-					var objOpts = {};
-					$.each(Object.keys(shape), function(i,key){ if ( shape[key] != 'type' ) objOpts[key] = shape[key]; });
-					// 2: Create object using 'type'
-					if ( shape.type == 'text' ) slideObj.addText(shape.text, objOpts);
-					else if ( shape.type == 'line' ) slideObj.addShape(gObjPptxShapes.LINE, objOpts);
-					else if ( shape.type == 'rectangle' ) slideObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
-				});
-			}
+				// Shapes
+				if ( key == "shapes" && Array.isArray(val) && val.length > 0 ) {
+					$.each(val, function(i,shape){
+						// 1: Grab all options (x, y, color, etc.)
+						var objOpts = {};
+						$.each(Object.keys(shape), function(i,key){ if ( shape[key] != 'type' ) objOpts[key] = shape[key]; });
+						// 2: Create object using 'type'
+						if      ( shape.type == 'text'      ) slideObj.addText(shape.text, objOpts);
+						else if ( shape.type == 'line'      ) slideObj.addShape(gObjPptxShapes.LINE, objOpts);
+						else if ( shape.type == 'rectangle' ) slideObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
+					});
+				}
+			});
 
-			// D: Slide numbers
+			// Add Slide Numbers
 			if ( typeof inMaster.isNumbered !== 'undefined' ) slideObj.hasSlideNumber(inMaster.isNumbered); // DEPRECATED
 			if ( inMaster.slideNumber ) slideObj.slideNumber(inMaster.slideNumber);
 		}
