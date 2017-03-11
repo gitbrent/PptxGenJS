@@ -70,6 +70,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Sample Slide Master File](#sample-slide-master-file)
 - [Table-to-Slides Feature](#table-to-slides-feature)
   - [Table-to-Slides Options](#table-to-slides-options)
+  - [Table-to-Slides HTML Options](#table-to-slides-html-options)
   - [Table-to-Slides Notes](#table-to-slides-notes)
   - [Table-to-Slides Examples](#table-to-slides-examples)
   - [Creative Solutions](#creative-solutions)
@@ -719,9 +720,27 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 | `h`          | number  | inches | height              | 0-256. Default is (100% - Slide margins) |
 | `master`     | string  |        | master slide name   | Any pre-defined Master Slide. EX: `{ master:pptx.masters.TITLE_SLIDE }`
 | `addImage`   | string  |        | add an image to each slide | Use the established syntax. EX: `{ addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } }` |
-| `addShape`   | string  |        | add a shape to each slide | Use the established syntax. |
-| `addTable`   | string  |        | add a table to each slide | Use the established syntax. |
-| `addText`    | string  |        | add text to each slide | Use the established syntax. |
+| `addShape`   | string  |        | add a shape to each slide  | Use the established syntax. |
+| `addTable`   | string  |        | add a table to each slide  | Use the established syntax. |
+| `addText`    | string  |        | add text to each slide     | Use the established syntax. |
+
+## Table-to-Slides HTML Options
+A minimum column width can be specified by adding a `data-pptx-min-width` attribute to any given `<th>` tag.
+
+Example:
+```HTML
+<table id="tabAutoPaging" class="tabCool">
+  <thead>
+    <tr>
+      <th data-pptx-min-width="0.6" style="width:5%">Row</th>
+      <th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
+      <th data-pptx-min-width="0.8" style="width:10%">First Name</th>
+      <th                           style="width:75%">Description</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+```
 
 ## Table-to-Slides Notes
 * Default `x`, `y` and `margin` value is 0.5 inches, the table will take up all remaining space by default (h:100%, w:100%)

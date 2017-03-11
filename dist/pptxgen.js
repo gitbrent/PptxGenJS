@@ -99,11 +99,11 @@ var PptxGenJS = function(){
 	var gObjPptx = {};
 
 	// B: Set Presentation Property Defaults
-	gObjPptx.title = 'PptxGenJS Presentation';
 	gObjPptx.author = 'PptxGenJS';
+	gObjPptx.company = 'PptxGenJS';
 	gObjPptx.revision = '1';
 	gObjPptx.subject = 'PptxGenJS Presentation';
-	gObjPptx.company = 'PptxGenJS';
+	gObjPptx.title = 'PptxGenJS Presentation';
 	gObjPptx.fileName = 'Presentation';
 	gObjPptx.fileExtn = '.pptx';
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
