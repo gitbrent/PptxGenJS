@@ -76,6 +76,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
+- [Need Help?](#need-help)
 - [Development Roadmap](#development-roadmap)
 - [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
@@ -771,6 +772,17 @@ Please file issues or suggestions on the [issues page on github](https://github.
 
 When reporting issues, please include a code snippet or a link demonstrating the problem.
 Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is already configured and uses the latest PptxGenJS code.
+
+**************************************************************************************************
+# Need Help?
+
+Sometimes implementing a new library can be a difficult task and the slightest mistake will keep something from working. We've all been there!
+
+If you are having issues getting a presentation to generate, check out the demos in the `examples` directory. There
+are demos for both nodejs and client-browsers that contain working examples of every available library feature.
+
+* Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/)
+* Use Ask Question on [StackOverflow](http://stackoverflow.com/) - be sure to tag it with "PptxGenJS"
 
 **************************************************************************************************
 # Development Roadmap
