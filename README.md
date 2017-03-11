@@ -29,8 +29,9 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Presentation Basics](#presentation-basics)
 - [Library Reference](#library-reference)
   - [Creating Presentations](#creating-presentations)
-    - [Presentation Options](#presentation-options)
+    - [Presentation Properties](#presentation-properties)
     - [Presentation Layouts](#presentation-layouts)
+    - [Presentation Layout Options](#presentation-layout-options)
   - [Creating Slides](#creating-slides)
     - [Slide Formatting](#slide-formatting)
     - [Slide Formatting Options](#slide-formatting-options)
@@ -76,6 +77,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
 - [Development Roadmap](#development-roadmap)
+- [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
 - [Support Us](#support-us)
 - [License](#license)
@@ -145,23 +147,30 @@ Node.js:
 var pptx = require("pptxgenjs");
 ```
 
-### Presentation Options
-Setting the Title:
+### Presentation Properties
+There are several optional properties that can be set:
+
 ```javascript
+pptx.setAuthor('Brent Ely');
+pptx.setCompany('S.T.A.R. Laboratories');
+pptx.setRevision('15');
+pptx.setSubject('Annual Report');
 pptx.setTitle('PptxGenJS Sample Presentation');
 ```
+
+### Presentation Layouts
 Setting the Layout (applies to all Slides in the Presentation):
 ```javascript
 pptx.setLayout('LAYOUT_WIDE');
 ```
 
-### Presentation Layouts
-| Layout Name    | Default  | Layout Slide Size |
-| :------------- | :------- | :---------------- |
-| `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches |
-| `LAYOUT_16x10` | No       | 10 x 6.25 inches  |
-| `LAYOUT_4x3`   | No       | 10 x 7.5 inches   |
-| `LAYOUT_WIDE`  | No       | 13.3 x 7.5 inches |
+### Presentation Layout Options
+| Layout Name    | Default  | Layout Slide Size                 |
+| :------------- | :------- | :-------------------------------- |
+| `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches                 |
+| `LAYOUT_16x10` | No       | 10 x 6.25 inches                  |
+| `LAYOUT_4x3`   | No       | 10 x 7.5 inches                   |
+| `LAYOUT_WIDE`  | No       | 13.3 x 7.5 inches                 |
 | `LAYOUT_USER`  | No       | user defined - see below (inches) |
 
 Custom user defined Layout sizes are supported - just supply a `name` and the size in inches.
@@ -766,8 +775,20 @@ Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is al
 **************************************************************************************************
 # Development Roadmap
 
-Version 2.0 will be released later in 2017 and will drop support for IE11 as we move to adopt more
+Version 2.0 will be released in late 2017 and will drop support for IE11 as we move to adopt more
 JavaScript ES6 features and remove many instances of jQuery utility functions.
+
+**************************************************************************************************
+# Unimplemented Features
+
+The PptxgenJS library is not designed to replicate all the functionality of PowerPoint, meaning several features
+are not on the development roadmap.
+
+These include:
+* Animations
+* Cross-Slide Links
+* Outlines
+* Use of existing templates
 
 **************************************************************************************************
 # Special Thanks
@@ -780,7 +801,8 @@ JavaScript ES6 features and remove many instances of jQuery utility functions.
 # Support Us
 
 Do you like this library and find it useful?  Add a link to the [PptxGenJS project](https://github.com/gitbrent/PptxGenJS) on your blog/website or on social media.
-Thanks to everyone who supports us!
+
+Thanks to everyone who supports this project! <3
 
 **************************************************************************************************
 # License

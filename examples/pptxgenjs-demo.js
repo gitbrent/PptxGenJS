@@ -1,7 +1,7 @@
 /**
  * NAME: pptxgenjs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Mar 09, 2017
+ * DATE: Mar 11, 2017
  * DESC: Common test/demo slides for all library features
  * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 **/
@@ -58,18 +58,20 @@ function runEveryTest() {
 function execGenSlidesFuncs(type) {
 	// STEP 1: Instantiate new PptxGenJS object
 	if ( NODEJS ) {
-		//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
 		var pptx = require("pptxgenjs");
+		//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
 	}
 	else {
 		var pptx = new PptxGenJS();
 	}
 
-	pptx.setTitle('PptxGenJS Node.js Demo');
-
-	pptx.setTitle('PptxGenJS Sample '+type);
-
 	pptx.setLayout('LAYOUT_WIDE');
+
+	pptx.setAuthor('Brent Ely');
+	pptx.setCompany('S.T.A.R. Laboratories');
+	pptx.setRevision('15');
+	pptx.setSubject('Test Suite Export');
+	pptx.setTitle('PptxGenJS Demo Presentation');
 
 	// STEP 2: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );

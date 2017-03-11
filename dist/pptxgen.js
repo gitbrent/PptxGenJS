@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.2.2";
-	var APP_REL = "20170309";
+	var APP_VER = "1.3.0";
+	var APP_REL = "20170311";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -100,6 +100,10 @@ var PptxGenJS = function(){
 
 	// B: Set Presentation Property Defaults
 	gObjPptx.title = 'PptxGenJS Presentation';
+	gObjPptx.author = 'PptxGenJS';
+	gObjPptx.revision = '1';
+	gObjPptx.subject = 'PptxGenJS Presentation';
+	gObjPptx.company = 'PptxGenJS';
 	gObjPptx.fileName = 'Presentation';
 	gObjPptx.fileExtn = '.pptx';
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
@@ -958,64 +962,62 @@ var PptxGenJS = function(){
 	}
 
 	function makeXmlApp() {
-		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n\
-					<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">\
-						<TotalTime>0</TotalTime>\
-						<Words>0</Words>\
-						<Application>Microsoft Office PowerPoint</Application>\
-						<PresentationFormat>On-screen Show (4:3)</PresentationFormat>\
-						<Paragraphs>0</Paragraphs>\
-						<Slides>'+ gObjPptx.slides.length +'</Slides>\
-						<Notes>0</Notes>\
-						<HiddenSlides>0</HiddenSlides>\
-						<MMClips>0</MMClips>\
-						<ScaleCrop>false</ScaleCrop>\
-						<HeadingPairs>\
-						  <vt:vector size="4" baseType="variant">\
-						    <vt:variant><vt:lpstr>Theme</vt:lpstr></vt:variant>\
-						    <vt:variant><vt:i4>1</vt:i4></vt:variant>\
-						    <vt:variant><vt:lpstr>Slide Titles</vt:lpstr></vt:variant>\
-						    <vt:variant><vt:i4>'+ gObjPptx.slides.length +'</vt:i4></vt:variant>\
-						  </vt:vector>\
-						</HeadingPairs>\
-						<TitlesOfParts>';
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
+		strXml += '<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">';
+		strXml += '<TotalTime>0</TotalTime>';
+		strXml += '<Words>0</Words>';
+		strXml += '<Application>Microsoft Office PowerPoint</Application>';
+		strXml += '<PresentationFormat>On-screen Show</PresentationFormat>';
+		strXml += '<Paragraphs>0</Paragraphs>';
+		strXml += '<Slides>'+ gObjPptx.slides.length +'</Slides>';
+		strXml += '<Notes>0</Notes>';
+		strXml += '<HiddenSlides>0</HiddenSlides>';
+		strXml += '<MMClips>0</MMClips>';
+		strXml += '<ScaleCrop>false</ScaleCrop>';
+		strXml += '<HeadingPairs>';
+		strXml += '  <vt:vector size="4" baseType="variant">';
+		strXml += '    <vt:variant><vt:lpstr>Theme</vt:lpstr></vt:variant>';
+		strXml += '    <vt:variant><vt:i4>1</vt:i4></vt:variant>';
+		strXml += '    <vt:variant><vt:lpstr>Slide Titles</vt:lpstr></vt:variant>';
+		strXml += '    <vt:variant><vt:i4>'+ gObjPptx.slides.length +'</vt:i4></vt:variant>';
+		strXml += '  </vt:vector>';
+		strXml += '</HeadingPairs>';
+		strXml += '<TitlesOfParts>';
 		strXml += '<vt:vector size="'+ (gObjPptx.slides.length+1) +'" baseType="lpstr">';
 		strXml += '<vt:lpstr>Office Theme</vt:lpstr>';
 		$.each(gObjPptx.slides, function(idx,slideObj){ strXml += '<vt:lpstr>Slide '+ (idx+1) +'</vt:lpstr>'; });
-		strXml += ' </vt:vector>\
-						</TitlesOfParts>\
-						<Company>PptxGenJS</Company>\
-						<LinksUpToDate>false</LinksUpToDate>\
-						<SharedDoc>false</SharedDoc>\
-						<HyperlinksChanged>false</HyperlinksChanged>\
-						<AppVersion>15.0000</AppVersion>\
-					</Properties>';
+		strXml += '</vt:vector>';
+		strXml += '</TitlesOfParts>';
+		strXml += '<Company>'+gObjPptx.company+'</Company>';
+		strXml += '<LinksUpToDate>false</LinksUpToDate>';
+		strXml += '<SharedDoc>false</SharedDoc>';
+		strXml += '<HyperlinksChanged>false</HyperlinksChanged>';
+		strXml += '<AppVersion>15.0000</AppVersion>';
+		strXml += '</Properties>';
+
 		return strXml;
 	}
 
 	function makeXmlCore() {
-		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n\
-						<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties"\
-							 xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/"\
-							 xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">\
-							<dc:title>'+ gObjPptx.title +'</dc:title>\
-							<dc:creator>PptxGenJS</dc:creator>\
-							<cp:lastModifiedBy>PptxGenJS</cp:lastModifiedBy>\
-							<cp:revision>1</cp:revision>\
-							<dcterms:created xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:created>\
-							<dcterms:modified xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:modified>\
-						</cp:coreProperties>';
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
+		strXml += '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
+		strXml += '<dc:title>'+ decodeXmlEntities(gObjPptx.title) +'</dc:title>';
+		strXml += '<dc:subject>'+ decodeXmlEntities(gObjPptx.subject) +'</dc:subject>';
+		strXml += '<dc:creator>'+ decodeXmlEntities(gObjPptx.author) +'</dc:creator>';
+		strXml += '<cp:lastModifiedBy>'+ decodeXmlEntities(gObjPptx.author) +'</cp:lastModifiedBy>';
+		strXml += '<cp:revision>'+ gObjPptx.revision +'</cp:revision>';
+		strXml += '<dcterms:created xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:created>';
+		strXml += '<dcterms:modified xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:modified>';
+		strXml += '</cp:coreProperties>';
 		return strXml;
 	}
 
 	function makeXmlPresentationRels() {
 		var intRelNum = 0;
-		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n'
-					+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
-
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>\r\n';
+		strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
 		strXml += '  <Relationship Id="rId1" Target="slideMasters/slideMaster1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>';
 		intRelNum++;
-
 		for ( var idx=1; idx<=gObjPptx.slides.length; idx++ ) {
 			intRelNum++;
 			strXml += '  <Relationship Id="rId'+ intRelNum +'" Target="slides/slide'+ idx +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>';
@@ -1026,6 +1028,7 @@ var PptxGenJS = function(){
 				+ '  <Relationship Id="rId'+ (intRelNum+2) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>'
 				+ '  <Relationship Id="rId'+ (intRelNum+3) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>'
 				+ '</Relationships>';
+
 		return strXml;
 	}
 
@@ -1775,7 +1778,9 @@ var PptxGenJS = function(){
 	==================================================================================================
 	*/
 
-	// Expose a couple private helper functions from above
+	/**
+	 * Expose a couple private helper functions from above
+	 */
 	this.inch2Emu = inch2Emu;
 	this.rgbToHex = rgbToHex;
 
@@ -1784,13 +1789,6 @@ var PptxGenJS = function(){
 	 */
 	this.getVersion = function getVersion() {
 		return APP_VER;
-	};
-
-	/**
-	 * Sets the Presentation's Title
-	 */
-	this.setTitle = function setTitle(inStrTitle) {
-		gObjPptx.title = inStrTitle || 'PptxGenJs Presentation';
 	};
 
 	/**
@@ -1816,10 +1814,48 @@ var PptxGenJS = function(){
 	}
 
 	/**
-	 * Gets the Presentation's Slide Layout {object}: [screen4x3, screen16x9, widescreen]
+	 * Gets the Presentation's Slide Layout {object} from `LAYOUTS`
 	 */
 	this.getLayout = function getLayout() {
 		return gObjPptx.pptLayout;
+	};
+
+	/**
+	 * Sets the Presentation's Title
+	 */
+	this.setTitle = function setTitle(inStrTitle) {
+		gObjPptx.title = inStrTitle || 'PptxGenJS Presentation';
+	};
+
+	/**
+	 * Sets the Presentation's Author
+	 */
+	this.setAuthor = function setAuthor(inStrAuthor) {
+		gObjPptx.author = inStrAuthor || 'PptxGenJS';
+	};
+
+	/**
+	 * DESC: Sets the Presentation's Revision
+	 * NOTE: PowerPoint requires `revision` be: number only (without "." or ",") otherwise, PPT will throw errors upon opening Presentation.
+	 */
+	this.setRevision = function setRevision(inStrRevision) {
+		gObjPptx.revision = inStrRevision || '1';
+		gObjPptx.revision = gObjPptx.revision.replace(/[\.\,\-]+/gi,'');
+		if ( isNaN(gObjPptx.revision) ) gObjPptx.revision = '1';
+	};
+
+	/**
+	 * Sets the Presentation's Subject
+	 */
+	this.setSubject = function setSubject(inStrSubject) {
+		gObjPptx.subject = inStrSubject || 'PptxGenJS Presentation';
+	};
+
+	/**
+	 * Sets the Presentation's Company
+	 */
+	this.setCompany = function setCompany(inStrCompany) {
+		gObjPptx.company = inStrCompany || 'PptxGenJS';
 	};
 
 	/**
