@@ -732,7 +732,7 @@ Example:
 <table id="tabAutoPaging" class="tabCool">
   <thead>
     <tr>
-      <th data-pptx-min-width="0.6" style="width:5%">Row</th>
+      <th data-pptx-min-width="0.6" style="width: 5%">Row</th>
       <th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
       <th data-pptx-min-width="0.8" style="width:10%">First Name</th>
       <th                           style="width:75%">Description</th>
@@ -764,7 +764,7 @@ Design a Master Slide that already contains: slide layout, margins, logos, etc.,
 professional looking Presentations with a single line of code which can be embedded into a link or a button:
 
 Add a button to a webpage that will create a Presentation using whatever table data is present:
-```javascript
+```html
 <input type="button" value="Export to PPTX"
  onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```

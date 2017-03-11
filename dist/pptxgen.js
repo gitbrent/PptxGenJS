@@ -196,6 +196,9 @@ var PptxGenJS = function(){
 		}
 	}
 
+	/**
+	 * DESC: Convert component value to hex value
+	 */
 	function componentToHex(c) {
 		var hex = c.toString(16);
 		return hex.length == 1 ? "0" + hex : hex;
@@ -303,35 +306,6 @@ var PptxGenJS = function(){
 		if ( intEmpty == 0 ) doExportPresentation();
 	}
 
-	function calcEmuCellHeightForStr(cell, inIntWidthInches) {
-		// FORMULA for char-per-inch: (desired chars per line) / (font size [chars-per-inch]) = (reqd print area in inches)
-		var GRATIO = 2.61803398875; // "Golden Ratio"
-		var intCharPerInch = -1, intCalcGratio = 0;
-
-		// STEP 1: Calc chars-per-inch [pitch]
-		// SEE: CPL Formula from http://www.pearsonified.com/2012/01/characters-per-line.php
-		intCharPerInch = (120 / cell.opts.font_size);
-
-		// STEP 2: Calc line count
-		var intLineCnt = Math.floor( cell.text.length / (intCharPerInch * inIntWidthInches) );
-		if (intLineCnt < 1) intLineCnt = 1; // Dont allow line count to be 0!
-
-		// STEP 3: Calc cell height
-		var intCellH = ( intLineCnt * ((cell.opts.font_size * 2) / 100) );
-		if ( intLineCnt > 8 ) intCellH = (intCellH * 0.9);
-
-		// STEP 4: Add cell padding to height
-		if ( cell.opts.margin && Array.isArray(cell.opts.margin) ) {
-			intCellH += (cell.opts.margin[0]/ONEPT*(1/72)) + (cell.opts.margin[2]/ONEPT*(1/72));
-		}
-		else if ( cell.opts.margin && Number.isInteger(cell.opts.margin) ) {
-			intCellH += (cell.opts.margin/ONEPT*(1/72)) + (cell.opts.margin/ONEPT*(1/72));
-		}
-
-		// LAST: Return size
-		return inch2Emu( intCellH );
-	}
-
 	function getShapeInfo(shapeName) {
 		if ( !shapeName ) return gObjPptxShapes.RECTANGLE;
 
@@ -369,10 +343,46 @@ var PptxGenJS = function(){
 		return 0;
 	}
 
+	/**
+	 * DESC: Replace special XML characters with HTML-encoded strings
+	 */
 	function decodeXmlEntities(inStr) {
 		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 		if ( typeof inStr === 'undefined' || inStr == null ) return "";
 		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
+	}
+
+	/**
+	 * DESC: Calculate the cell height for the given text
+	 * USED: By `parseTextToLines`
+	 */
+	function calcEmuCellHeightForStr(cell, inIntWidthInches) {
+		// FORMULA for char-per-inch: (desired chars per line) / (font size [chars-per-inch]) = (reqd print area in inches)
+		var GRATIO = 2.61803398875; // "Golden Ratio"
+		var intCharPerInch = -1, intCalcGratio = 0;
+
+		// STEP 1: Calc chars-per-inch [pitch]
+		// SEE: CPL Formula from http://www.pearsonified.com/2012/01/characters-per-line.php
+		intCharPerInch = (120 / cell.opts.font_size);
+
+		// STEP 2: Calc line count
+		var intLineCnt = Math.floor( cell.text.length / (intCharPerInch * inIntWidthInches) );
+		if (intLineCnt < 1) intLineCnt = 1; // Dont allow line count to be 0!
+
+		// STEP 3: Calc cell height
+		var intCellH = ( intLineCnt * ((cell.opts.font_size * 2) / 100) );
+		if ( intLineCnt > 8 ) intCellH = (intCellH * 0.9);
+
+		// STEP 4: Add cell padding to height
+		if ( cell.opts.margin && Array.isArray(cell.opts.margin) ) {
+			intCellH += (cell.opts.margin[0]/ONEPT*(1/72)) + (cell.opts.margin[2]/ONEPT*(1/72));
+		}
+		else if ( cell.opts.margin && Number.isInteger(cell.opts.margin) ) {
+			intCellH += (cell.opts.margin/ONEPT*(1/72)) + (cell.opts.margin/ONEPT*(1/72));
+		}
+
+		// LAST: Return size
+		return inch2Emu( intCellH );
 	}
 
 	/**
@@ -634,19 +644,21 @@ var PptxGenJS = function(){
 	* - Bullets are a paragprah-level formatting device
 	*/
 	function genXmlTextBody(slideObj) {
+		if ( !slideObj.options ) slideObj.options = {};
+
+		var tagStart = ( slideObj.options.isTableCell ? '<a:txBody>'  : '<p:txBody>' );
+		var tagClose = ( slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>' );
 		// NOTE: OOXML uses the unicode character set for Bullets
-		// EG: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
+		// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
 		var strXmlBullet = '';
 		var paraPropXmlCore = '<a:pPr ';
 		var paragraphPropXml = '<a:pPr ';
-		var strSlideXml = '<p:txBody>';
+		var strSlideXml = tagStart;
 
 		// STEP 1: Build paragraphProperties
 		{
 			// OPTION: align
-			if ( slideObj.options &&
-				( slideObj.options.align || (Array.isArray(slideObj.text) && slideObj.text[0].options && slideObj.text[0].options.align) )
-				) {
+			if ( slideObj.options.align || (Array.isArray(slideObj.text) && slideObj.text[0].options && slideObj.text[0].options.align) ) {
 				var align = (Array.isArray(slideObj.text) && slideObj.text[0].options && slideObj.text[0].options.align ? slideObj.text[0].options.align : slideObj.options.align);
 
 				switch ( align ) {
@@ -666,7 +678,7 @@ var PptxGenJS = function(){
 			}
 
 			// OPTION: indent
-			if ( slideObj.options && slideObj.options.indentLevel > 0 ) paragraphPropXml += ' lvl="' + slideObj.options.indentLevel + '"';
+			if ( slideObj.options.indentLevel > 0 ) paragraphPropXml += ' lvl="' + slideObj.options.indentLevel + '"';
 			paraPropXmlCore = paragraphPropXml;
 
 			// OPTION: bullet
@@ -777,16 +789,16 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 3: Close paragraphProperties and the current open paragraph
-		if ( slideObj.text ) {
+		if ( typeof slideObj.text !== 'undefined' && slideObj.text != null ) {
 			strSlideXml += '<a:endParaRPr lang="en-US" '+ ( slideObj.options && slideObj.options.font_size ? ' sz="'+ slideObj.options.font_size +'00"' : '') +' dirty="0"/>';
 			strSlideXml += '</a:p>';
 		}
 
 		// STEP 4: Close the textBody
-		strSlideXml += '</p:txBody>';
+		strSlideXml += tagClose;
 
 		// NOTE: If there was no text to format return nothing (or Shape wont render!)
-		return ( strSlideXml == '<p:txBody></p:txBody>' ? '' : strSlideXml );
+		return ( strSlideXml == tagStart+tagClose ? '' : strSlideXml );
 	}
 
 	/**
@@ -882,7 +894,7 @@ var PptxGenJS = function(){
 			bodyProperties += ' wrap="square" rtlCol="0"></a:bodyPr>';
 		}
 
-		return bodyProperties;
+		return ( objOptions.isTableCell ? '<a:bodyPr/>' : bodyProperties );
 	}
 
 	function genXmlColorSelection(color_info, back_info) {
@@ -1266,35 +1278,31 @@ var PptxGenJS = function(){
 
 						// C: Loop over each CELL
 						$.each(rowObj, function(cIdx,cell){
-							// FIRST: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
+							// FIRST: Create cell if needed (handle [null] and other manner of junk values)
+							// IMPORTANT: MS-PPTX PROBLEM: using '' will cause PPT to use its own default font/size! (Arial/18 in US)
+							// SOLN: Pass a space instead to cement formatting options (Issue #20)
+							if ( typeof cell === 'undefined' || cell == null ) cell = { text:' ', options:{} };
+
+							// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 							if ( cell.hmerge ) return;
 
-							// 1: OPTIONS: Build/set cell options (blocked for code folding) ===========================
+							// 2: OPTIONS: Build/set cell options (blocked for code folding) ===========================
 							{
-								// A: Create cell if needed (handle [null] and other manner of junk values)
-								// IMPORTANT: MS-PPTX PROBLEM: using '' will cause PPT to use its own default font/size! (Arial/18 in US)
-								// SOLN: Pass a space instead to cement formatting options (Issue #20)
-								if ( !cell ) cell = { text:' ' };
-
-								// B: Load/Create options
 								var cellOpts = cell.options || cell.opts || {};
+								if ( typeof cell === 'number' || typeof cell === 'string' ) cell = { text:cell.toString() };
+								cellOpts.isTableCell = true; // Used to create textBody XML
+								cell.options = cellOpts;
 
-								// C: Do Important/Override Opts
+								// B: Do Important/Override Opts
 								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
 								$.each(['align','bold','border','color','fill','font_face','font_size','underline','valign'], function(i,name){
-									if ( objTabOpts[name] && ! cellOpts[name]) cellOpts[name] = objTabOpts[name];
+									if ( objTabOpts[name] && !cellOpts[name] ) cellOpts[name] = objTabOpts[name];
 								});
 
-								var cellB       = (cellOpts.bold)       ? ' b="1"' : ''; // [0,1] or [false,true]
-								var cellU       = (cellOpts.underline)  ? ' u="sng"' : ''; // [none,sng (single), et al.]
-								var cellFont    = (cellOpts.font_face)  ? ' <a:latin typeface="'+ cellOpts.font_face +'"/>' : '';
-								var cellFontPt  = (cellOpts.font_size)  ? ' sz="'+ cellOpts.font_size +'00"' : '';
-								var cellAlign   = (cellOpts.align)      ? ' algn="'+ cellOpts.align.replace(/^c$/i,'ctr').replace('center','ctr').replace('left','l').replace('right','r') +'"' : '';
 								var cellValign  = (cellOpts.valign)     ? ' anchor="'+ cellOpts.valign.replace(/^c$/i,'ctr').replace(/^m$/i,'ctr').replace('center','ctr').replace('middle','ctr').replace('top','t').replace('btm','b').replace('bottom','b') +'"' : '';
 								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
-								var cellFontClr = ((cell.optImp && cell.optImp.color) || cellOpts.color) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.color) || cellOpts.color.replace('#','')) +'"/></a:solidFill>' : '';
 								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
 								if ( cellOpts.margin == 0 ) cellOpts.margin = [0, 0, 0, 0]; // Allow 0 (zero) as a margin - otherwise our fancy short-circuit eval doesnt allow for this condition - solve here for doc and sanity sake
 								var cellMargin  = (cellOpts.margin && Array.isArray(cellOpts.margin) ? cellOpts.margin : (cellOpts.margin || '') );
@@ -1309,9 +1317,6 @@ var PptxGenJS = function(){
 								}
 							}
 
-							// 2: Cell Content: Either the text element or the cell itself (for when users just pass a string - no object or options)
-							var strCellText = ( typeof cell === 'object' ? cell.text : cell );
-
 							// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
 
 							// 3: ROWSPAN: Add dummy cells for any active rowspan
@@ -1320,21 +1325,8 @@ var PptxGenJS = function(){
 								return;
 							}
 
-							// 4: Start Table Cell, add Align, add Text content =========================
-							strXml += '<a:tc'+ cellColspan + cellRowspan +'>'
-									+ '  <a:txBody>'
-									+ '    <a:bodyPr/>'
-									+ '    <a:lstStyle/>'
-									+ '    <a:p>'
-									+ '      <a:pPr'+ cellAlign +'/>'
-									+ '      <a:r>'
-									+ '        <a:rPr lang="en-US" dirty="0" smtClean="0"'+ cellFontPt + cellB + cellU +'>'+ cellFontClr + cellFont +'</a:rPr>'
-									+ '        <a:t>'+ decodeXmlEntities(strCellText) +'</a:t>'
-									+ '      </a:r>'
-									+ '      <a:endParaRPr lang="en-US" dirty="0"/>'
-									+ '    </a:p>'
-									+ '  </a:txBody>'
-									+ '  <a:tcPr'+ cellMargin + cellValign +'>';
+							// 4: Set CELL content and properties ==================================
+							strXml += '<a:tc'+ cellColspan + cellRowspan +'>' + genXmlTextBody(cell) + '<a:tcPr'+ cellMargin + cellValign +'>';
 
 							// 5: Borders: Add any borders
 							if ( cellOpts.border && typeof cellOpts.border === 'string' ) {
@@ -1792,6 +1784,13 @@ var PptxGenJS = function(){
 	};
 
 	/**
+	 * Gets the Presentation's Slide Layout {object} from `LAYOUTS`
+	 */
+	this.getLayout = function getLayout() {
+		return gObjPptx.pptLayout;
+	};
+
+	/**
 	 * Sets the Presentation's Slide Layout {object}: [screen4x3, screen16x9, widescreen]
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 	 * @param {string} inLayout - a const name from LAYOUTS variable
@@ -1812,13 +1811,6 @@ var PptxGenJS = function(){
 			try { console.warn('UNKNOWN LAYOUT! Valid values = ' + Object.keys(LAYOUTS)); } catch(ex){}
 		}
 	}
-
-	/**
-	 * Gets the Presentation's Slide Layout {object} from `LAYOUTS`
-	 */
-	this.getLayout = function getLayout() {
-		return gObjPptx.pptLayout;
-	};
 
 	/**
 	 * Sets the Presentation's Title
@@ -2170,7 +2162,7 @@ var PptxGenJS = function(){
 			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
 			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 
-			// STEP 4: Row setup: Handle case where user passed in a simple array
+			// STEP 4: Row setup: Handle case where user passed in a simple 1-row array. (EX: `['cell 1','cell 2']`)
 			var arrRows = $.extend(true,[],arrTabRows);
 			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
 

@@ -24,15 +24,19 @@
     },
     "keywords": [
 		"javascript",
-		"ppt",
-		"pptx",
-		"powerpoint",
-		"presentations",
+		"javascript-create-powerpoint",
+		"javascript-create-pptx",
 		"javascript-pptx",
 		"javascript-powerpoint",
-		"javascript-create-powerpoint",
+		"js-create-powerpoint",
+		"js-generate-powerpoint",
+		"js-produce-powerpoint",
 		"js-powerpoint",
-		"js-create-powerpoint"
+		"powerpoint",
+		"powerpoint-presentation",
+		"ppt",
+		"pptx",
+		"presentations"
     ],
     "bugs": {
         "url": "https://github.com/gitbrent/PptxGenJS/issues"
