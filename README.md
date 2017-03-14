@@ -535,7 +535,9 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `data`       | string  |        |           | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
 | `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
-**NOTE**: svg images are not currently supported in PowerPoint (even when encoded into base64)
+**NOTE**
+SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
+properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
 
 **Deprecation Warning**
 Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1, 1, 6, 3)`) are now deprecated as of 1.1.0
