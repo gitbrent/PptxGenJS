@@ -13,15 +13,17 @@
 		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
  	-->
 
+	<!-- vvv PptxGenJS libraries (4 are required) vvv -->
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../libs/filesaver.min.js"></script>
 	<script type="text/javascript" src="../libs/jszip.min.js"></script>
-	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>
-	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script>
+	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script> <!-- optional if you dont need Shapes -->
+	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> <!-- optional if you dont need Masters -->
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
+	<!-- ^^^ PptxGenJS libraries ^^^ -->
+
 	<script type="text/javascript" src="../examples/pptxgenjs-demo.js"></script>
 	<script type="text/javascript" src="images/base64Images.js"></script>
-	<!-- Google Code Prettify -->
 	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 
 	<script type="text/javascript">
@@ -393,12 +395,16 @@
 							<div class="chkRow"><div class="svgCheck"></div>Cell Margins</div>
 							<div class="chkRow"><div class="svgCheck"></div>Complex Cell Borders</div>
 							<div class="chkRow"><div class="svgCheck"></div>Escaped Special Characters</div>
+							<h3>Slide 5</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Cell Text Formatting Overview</div>
+							<h3>Slide 6</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Cell Text Formatting Examples 2</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Table Auto-Paging</legend>
-							<h3>Slide 5-n</h3>
+							<h3>Slide 7-n</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Lots of text</div>
 							<div class="chkRow"><div class="svgCheck"></div>Lots of text with smaller dimensions</div>
 							<div class="chkRow"><div class="svgCheck"></div>Lots of text with `{autoPage:false}`</div>

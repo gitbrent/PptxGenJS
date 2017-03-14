@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.3.0";
-	var APP_REL = "20170311";
+	var APP_REL = "20170313";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -110,8 +110,8 @@ var PptxGenJS = function(){
 	gObjPptx.slides = [];
 
 	// C: Expose shape library to clients
-	this.shapes  = (typeof gObjPptxShapes  !== 'undefined') ? gObjPptxShapes  : BASE_SHAPES;
-	this.masters = (typeof gObjPptxMasters !== 'undefined') ? gObjPptxMasters : {};
+	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
+	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
 
 	// D: Fall back to base shapes if shapes file was not linked
 	if ( typeof gObjPptxShapes === 'undefined' ) gObjPptxShapes = BASE_SHAPES;
@@ -512,6 +512,7 @@ var PptxGenJS = function(){
 			// C: Parse and store each cell's text into line array (*MAGIC HAPPENS HERE*)
 			row.forEach(function(cell,iCell){
 				// DESIGN: Cells are henceforth {objects} with `text` and `opts`
+				var lines = [];
 
 				// 1: Cleanse data
 				if ( !isNaN(cell) || typeof cell === 'string' ) {
@@ -640,8 +641,11 @@ var PptxGenJS = function(){
 			</a:p>
 		  </p:txBody>
 	* NOTES:
-	* - Lines are createing using <p>-aragraph's
+	* - PPT text lines [lines followed by line-breaks] are createing using <p>-aragraph's
 	* - Bullets are a paragprah-level formatting device
+	*
+	* @param slideObj (object) - slideObj -OR- table `cell` object
+	* @returns XML string containing the param object's text and formatting
 	*/
 	function genXmlTextBody(slideObj) {
 		if ( !slideObj.options ) slideObj.options = {};
@@ -718,7 +722,7 @@ var PptxGenJS = function(){
 			&& slideObj.text.split('\n')[1] && slideObj.text.split('\n')[1].length > 0
 		) {
 			strSlideXml += genXmlBodyProperties(slideObj.options) + '<a:lstStyle/>';
-			// IMPORTANT: Split text here (even though `genXmlTextRun` handles \n) b/c we need `outStyles` for bullets to build correctly
+			// IMPORTANT: Split text here and feed each line to `genXmlTextRun()` as bullets are applied at the p-level
 			slideObj.text.toString().split('\n').forEach(function(line,idx){
 				if ( idx > 0 ) strSlideXml += '</a:p>';
 				strSlideXml += '<a:p>' + paragraphPropXml;
@@ -740,7 +744,7 @@ var PptxGenJS = function(){
 				// Inherit any main options (color, font_size, etc.)
 				// We only pass the text.options below and not the Slide.options, so the run building function cant just fallback to Slide.color,
 				// therefore, we need to do that here before passing options below!
-				// NOTE: This loop will pick up `x` etc, but it doesnt hurt anything
+				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
 				$.each(slideObj.options, function(key,val){
 					if ( !textObj.options[key] ) textObj.options[key] = val;
 				});
@@ -748,10 +752,13 @@ var PptxGenJS = function(){
 				// B: Add a line break if prev line was bulleted and this one isnt, otherwise, this new line will continue on prev bullet line and users probably dont want that!
 				if ( idx > 0 && slideObj.text[idx-1].options.bullet && !textObj.options.bullet ) strSlideXml += '</a:p><a:p>';
 
-				// C: Add bullets in text objects (create a paragraph for each {text} ojbect with bullet:true)
+				// C: Add bullets in text objects (create a paragraph for textObjs with `bullet:true`)
 				if ( textObj.options.bullet ) {
-					// NOTE: Yes, much of this is the same code as above but bulelts can vary per text line (didnt want a func for this)
+					// NOTE: Yes, much of this is the same code as above but bullets can vary per text line (ed:didnt want to code another func)
 					var paraBullPropXml = '';
+
+// TODO: multi-line (\n-delimted) string with bullets:true not working
+// TODO: current: need to loop over '\n' lines like we do in above bullet code!!
 
 					// 1: First, handle bullets (whether they're index=0 or not handle them)
 					if ( typeof textObj.options.bullet === 'object' ) {
@@ -2162,11 +2169,20 @@ var PptxGenJS = function(){
 			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
 			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 
-			// STEP 4: Row setup: Handle case where user passed in a simple 1-row array. (EX: `['cell 1','cell 2']`)
+			// STEP 4: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
 			var arrRows = $.extend(true,[],arrTabRows);
 			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
 
-			// STEP 5: Auto-Paging: (via {options} and used internally)
+			// STEP 5: Check for fine-grained formatting, disable auto-page when found
+			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
+			// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
+			arrRows.forEach(function(row,rIdx){
+				row.forEach(function(cell,cIdx){
+					if ( Array.isArray(cell.text) ) opt.autoPage = false;
+				});
+			});
+
+			// STEP 6: Auto-Paging: (via {options} and used internally)
 			// (used internally by `addSlidesForTable()` to not engage recursion - we've already paged the table data, just add this one)
 			if ( opt && opt.autoPage == false ) {
 				// A: Grab Slide object count

@@ -312,7 +312,68 @@ function genSlides_Table(pptx) {
 
 	}
 
-	// SLIDE 5: Table auto-paging
+	// SLIDE 5: Cell Fine-Grained Formatting
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [{ text:'Table Examples 5', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }], { x:0.5, y:0.13, w:12.5, h:0.3 } );
+
+		slide.addText(
+			'The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.',
+			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, font_size:14 }
+		);
+
+		slide.addText("[\n"
+			+ "  { text:'1st line', options:{ font_size:24, color:'99ABCC', align:'r', breakLine:true } },\n"
+			+ "  { text:'2nd line', options:{ font_size:36, color:'FFFF00', align:'c', breakLine:true } },\n"
+			+ "  { text:'3rd line', options:{ font_size:48, color:'0088CC', align:'l' } }\n"
+			+ "]",
+			{ x:0.5, y:1.1, w:11, h:1.5, margin:0.1, font_face:'Courier', font_size:14, fill:'F1F1F1', color:'333333' }
+		);
+
+		var arrTextObjects = [
+			{ text:'1st line', options:{ font_size:24, color:'99ABCC', align:'r', breakLine:true } },
+			{ text:'2nd line', options:{ font_size:36, color:'FFFF00', align:'c', breakLine:true } },
+			{ text:'3rd line', options:{ font_size:48, color:'0088CC', align:'l' } }
+		];
+
+		// EX: Text word-level formatting
+		slide.addText( arrTextObjects, { x:0.5, y:2.75, w:9, h:2, margin:0.1, fill:'232323' } );
+
+		// EX 1: Use the exact same code from addText to do the same word-level formatting within a cell
+		var opts2 = { x:0.5, y:5, w:9, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6], border:{pt:'1'}, fill:'F1F1F1' }
+		var arrTabRows = [
+			[
+				{ text:'Cell 1A', options:{font_face:'Arial'  } },
+				{ text:'Cell 1B', options:{font_face:'Courier'} },
+				{ text: arrTextObjects, options: { fill:'232323' } }
+			]
+		];
+		slide.addTable(arrTabRows, opts2);
+	}
+
+	// SLIDE 6: Cell Fine-Grained Formatting
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [{ text:'Table Examples 6', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }], { x:0.5, y:0.13, w:12.5, h:0.3 } );
+
+		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+		slide.addText('Table Cell Word-Level Formatting:', optsSub);
+
+
+		var arrCell1 = [{ text:'Outer Shadow', options:{ color:'0088cc', shadow:{ type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 } } }];
+		var arrCell2 = [{ text:'Red ', options:{color:'FF0000'} }, { text:'Green ', options:{color:'00FF00'} }, { text:'Blue', options:{color:'0000FF'} }];
+		var arrCell3 = [{ text:'Bullets\nBullets\nBullets', options:{ color:'0088cc', bullet:true } }];
+
+// bullet:{type:'number'}
+
+		var arrTabRows = [
+			[{ text:arrCell1 }, { text:arrCell2 }, { text:arrCell3 }]
+		];
+		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:5, font_size:32, border:{pt:'1'}, fill:'F1F1F1' } );
+
+	}
+
+	// SLIDE 7+: Table auto-paging
 	// ======== -----------------------------------------------------------------------------------
 	{
 		var arrRows = [];
