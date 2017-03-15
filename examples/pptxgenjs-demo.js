@@ -312,7 +312,7 @@ function genSlides_Table(pptx) {
 
 	}
 
-	// SLIDE 5: Cell Fine-Grained Formatting
+	// SLIDE 5: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [{ text:'Table Examples 5', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }], { x:0.5, y:0.13, w:12.5, h:0.3 } );
@@ -351,7 +351,7 @@ function genSlides_Table(pptx) {
 		slide.addTable(arrTabRows, opts2);
 	}
 
-	// SLIDE 6: Cell Fine-Grained Formatting
+	// SLIDE 6: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [{ text:'Table Examples 6', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }], { x:0.5, y:0.13, w:12.5, h:0.3 } );
@@ -359,18 +359,38 @@ function genSlides_Table(pptx) {
 		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
 		slide.addText('Table Cell Word-Level Formatting:', optsSub);
 
-
-		var arrCell1 = [{ text:'Outer Shadow', options:{ color:'0088cc', shadow:{ type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 } } }];
+		// EX 1:
+		var arrCell1 = [{ text:'Cell 1A', options:{ color:'0088cc', shadow:{ type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 } } }];
 		var arrCell2 = [{ text:'Red ', options:{color:'FF0000'} }, { text:'Green ', options:{color:'00FF00'} }, { text:'Blue', options:{color:'0000FF'} }];
 		var arrCell3 = [{ text:'Bullets\nBullets\nBullets', options:{ color:'0088cc', bullet:true } }];
-
-// bullet:{type:'number'}
-
+		var arrCell4 = [{ text:'Numbers\nNumbers\nNumbers', options:{ color:'0088cc', bullet:{type:'number'} } }];
 		var arrTabRows = [
-			[{ text:arrCell1 }, { text:arrCell2 }, { text:arrCell3 }]
+			[{ text:arrCell1 }, { text:arrCell2, options:{valign:'m'} }, { text:arrCell3 }, { text:arrCell4 }]
 		];
-		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:5, font_size:32, border:{pt:'1'}, fill:'F1F1F1' } );
+		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:3, font_size:24, border:{pt:'1'}, fill:'F1F1F1' } );
 
+		// EX 2:
+		slide.addTable(
+			[
+				{ text:[
+						{ text:'I am a text object with bullets ', options:{color:'CC0000', bullet:{code:'2605'}} },
+						{ text:'and i am the next text object'   , options:{color:'00CD00', bullet:{code:'25BA'}, breakLine:true} },
+						{ text:'No bullet text... '              , options:{color:'696969'} },
+						{ text:'same here.'                      , options:{color:'696969'} },
+						{ text:'Final text object w/ bullet:true', options:{color:'0000AB', bullet:true} }
+				]},
+				{ text:[
+					{ text:'Cell', options:{align:'c', breakLine:true} },
+					{ text:'#2', options:{font_size:60, color:'CD0101', align:'c'} }
+				]},
+				{ text:[
+					{ text:'Cell', options:{align:'c', font_face:'Courier', color:'dd0000', breakLine:true} },
+					{ text:'#'   , options:{align:'c', font_size:60, color:'8648cd'} },
+					{ text:'3'   , options:{align:'c', font_size:60, color:'33ccef'} }
+				]}
+			],
+			{ x:0.6, y:4.75, w:12, h:2, font_size:24, colW:[8,2,2], valign:'m', border:{pt:'1'}, fill:'F1F1F1' }
+		);
 	}
 
 	// SLIDE 7+: Table auto-paging
@@ -519,10 +539,10 @@ function genSlides_Text(pptx) {
 
 		// 3: Text Effects: Shadow
 		var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
-		slide.addText("Text Shadow:", { x:0.5, y:6.0, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Text Shadow:", { x:0.5, y:6.2, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
-			{ x:0.5, y:6.4, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
+			{ x:0.5, y:6.6, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
 		);
 
 		// RIGHT COLUMN ------------------------------------------------------------
@@ -541,22 +561,22 @@ function genSlides_Text(pptx) {
 		slide.addText(
 			[
 				{ text: 'big red words... ', options:{font_size:24, color:'FF0000'} },
-				{ text: 'some green words.', options:{font_size:16, color:'0000FF'} }
+				{ text: 'some green words.', options:{font_size:16, color:'00FF00'} }
 			],
 			{ x:8.0, y:4.0, w:5, h:0.5, margin:0.1, font_face:'Arial', bullet:{code:'25BA'} }
 		);
 
 		// 7: Bullets: Within a {text} object
-		slide.addText("Bullet within {text} objects:", { x:7.5, y:4.6, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Bullet within {text} objects:", { x:7.5, y:4.8, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'I am a text object with bullets.. ', options:{bullet:{code:'2605'}, color:'CC0000'} },
-				{ text:'and i am the next text object!'    , options:{bullet:{code:'25BA'}, color:'00CD00'} },
-				{ text:'Text object without bullet:true.. ', options:{font_size:12} },
-				{ text:'then this is a text object too!'   , options:{font_size:12} },
-				{ text:'Final text object w/ bullet:true!!', options:{bullet:true, color:'0000AB'} }
+				{ text:'I am a text object with bullets..', options:{bullet:{code:'2605'}, color:'CC0000'} },
+				{ text:' and i am the next text object.'  , options:{bullet:{code:'25BA'}, color:'00CD00', breakLine:true} },
+				{ text:'No bullet text.. '                , options:{color:'696969'} },
+				{ text:'text object #4.'                  , options:{color:'696969'} },
+				{ text:'Final text object w/ bullet:true.', options:{bullet:true, color:'0000AB'} }
 			],
-			{ x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
+			{ x:8.0, y:5.15, w:'35%', h:1.4, color:'ABABAB', margin:1 }
 		);
 	}
 

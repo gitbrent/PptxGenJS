@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.3.0";
-	var APP_REL = "20170313";
+	var APP_REL = "20170314";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -687,8 +687,7 @@ var PptxGenJS = function(){
 				// B: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
 				if ( obj.text.split('\n').length > 0 && obj.text.split('\n')[1] && obj.text.split('\n')[1].length > 0 ) {
 					obj.text.toString().split('\n').forEach(function(line,idx){
-						// TODO: slideObj.text.push new one??
-						// but we're looping on the array already!, so make a temp array, then compile final as we loop
+						if ( !obj.options.bullet ) obj.options.breakLine = true;
 						arrTextObjects.push( {text:line, options:obj.options} );
 					});
 				}
