@@ -648,164 +648,148 @@ var PptxGenJS = function(){
 	* @returns XML string containing the param object's text and formatting
 	*/
 	function genXmlTextBody(slideObj) {
+		// FIRST: Shapes without text, etc. may be sent here during buidl, but have no text to render so return empty string
+		if ( !slideObj.text ) return '';
+
+		// Create options if needed
 		if ( !slideObj.options ) slideObj.options = {};
 
+		// Vars
+		var arrTextObjects = [];
 		var tagStart = ( slideObj.options.isTableCell ? '<a:txBody>'  : '<p:txBody>' );
 		var tagClose = ( slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>' );
-		// NOTE: OOXML uses the unicode character set for Bullets
-		// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
-		var strXmlBullet = '';
-		var paraPropXmlCore = '<a:pPr ';
-		var paragraphPropXml = '<a:pPr ';
 		var strSlideXml = tagStart;
+		var strXmlBullet = '';
+		var paragraphPropXml = '<a:pPr ';
 
-		// STEP 1: Build paragraphProperties
-		{
-			// OPTION: align
-			if ( slideObj.options.align || (Array.isArray(slideObj.text) && slideObj.text[0].options && slideObj.text[0].options.align) ) {
-				var align = (Array.isArray(slideObj.text) && slideObj.text[0].options && slideObj.text[0].options.align ? slideObj.text[0].options.align : slideObj.options.align);
+		// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
+		/* CASES:
+			addText( 'string' )
+			addText( 'line1\n line2' )
+			addText( ['barry','allen'] )
+			addText( [{text'word1'}, {text:'word2'}] )
+			addText( [{text'line1\n line2'}, {text:'end word'}] )
+		*/
+		// A: Handle string/number
+		if ( typeof slideObj.text == 'string' || typeof slideObj.text == 'number' ) {
+			slideObj.text = [ {text:slideObj.text.toString(), options:(slideObj.options || {})} ];
+		}
+		// B: Handle array
+		if ( Array.isArray(slideObj.text) ) {
+			slideObj.text.forEach(function(obj,idx){
+				// A: Set options
+				obj.options = obj.options || slideObj.options || {};
+				if ( idx == 0 && !obj.options.bullet && slideObj.options.bullet ) obj.options.bullet = slideObj.options.bullet;
 
-				switch ( align ) {
-					case 'r':
-					case 'right':
-						paragraphPropXml += 'algn="r"';
-						break;
-					case 'c':
-					case 'ctr':
-					case 'center':
-						paragraphPropXml += 'algn="ctr"';
-						break;
-					case 'justify':
-						paragraphPropXml += 'algn="just"';
-						break;
+				// A: Cast to text-object if needed
+				if ( typeof obj.text == 'string' || typeof obj.text == 'number' ) obj.text = obj.text.toString();
+
+				// B: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
+				if ( obj.text.split('\n').length > 0 && obj.text.split('\n')[1] && obj.text.split('\n')[1].length > 0 ) {
+					obj.text.toString().split('\n').forEach(function(line,idx){
+						// TODO: slideObj.text.push new one??
+						// but we're looping on the array already!, so make a temp array, then compile final as we loop
+						arrTextObjects.push( {text:line, options:obj.options} );
+					});
 				}
-			}
+				else {
+					arrTextObjects.push( obj );
+				}
+			});
+		}
 
-			// OPTION: indent
-			if ( slideObj.options.indentLevel > 0 ) paragraphPropXml += ' lvl="' + slideObj.options.indentLevel + '"';
-			paraPropXmlCore = paragraphPropXml;
+		// STEP 2: Loop over each text object and create paragraph props, text run, etc.
+		arrTextObjects.forEach(function(textObj,idx){
+			// Clear/Increment loop vars
+			paragraphPropXml = '<a:pPr ';
+			strXmlBullet = '';
+			textObj.options.lineIdx = idx;
 
-			// OPTION: bullet
-			if ( typeof slideObj.options.bullet === 'object' ) {
-				if ( slideObj.options.bullet.type ) {
-					if ( slideObj.options.bullet.type.toString().toLowerCase() == "number" ) {
+			// A: Build paragraphProperties
+			{
+				// OPTION: align
+				if ( textObj.options.align ) {
+					switch ( textObj.options.align ) {
+						case 'r':
+						case 'right':
+							paragraphPropXml += 'algn="r"';
+							break;
+						case 'c':
+						case 'ctr':
+						case 'center':
+							paragraphPropXml += 'algn="ctr"';
+							break;
+						case 'justify':
+							paragraphPropXml += 'algn="just"';
+							break;
+					}
+				}
+
+				// OPTION: indent
+				if ( textObj.options.indentLevel > 0 ) paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
+				paraPropXmlCore = paragraphPropXml;
+
+				// OPTION: bullet
+				// NOTE: OOXML uses the unicode character set for Bullets
+				// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
+				if ( typeof textObj.options.bullet === 'object' ) {
+					if ( textObj.options.bullet.type ) {
+						if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
+							paragraphPropXml += ' marL="342900" indent="-342900"';
+							strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
+						}
+					}
+					else if ( textObj.options.bullet.code ) {
+						var bulletCode = '&#x'+ textObj.options.bullet.code +';';
+
+						// Check value for hex-ness (s/b 4 char hex)
+						if ( /^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false ) {
+							console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
+							bulletCode = BULLET_TYPES['DEFAULT'];
+						}
+
 						paragraphPropXml += ' marL="342900" indent="-342900"';
-						strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
+						strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
 					}
 				}
-				else if ( slideObj.options.bullet.code ) {
-					var bulletCode = '&#x'+ slideObj.options.bullet.code +';';
-
-					// Check value for hex-ness (s/b 4 char hex)
-					if ( /^[0-9A-Fa-f]{4}$/.test(slideObj.options.bullet.code) == false ) {
-						console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
-						bulletCode = BULLET_TYPES['DEFAULT'];
-					}
-
-					paragraphPropXml += ' marL="342900" indent="-342900"';
-					strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
+				// DEPRECATED: old bool value (FIXME:Drop in 2.0)
+				else if ( textObj.options.bullet == true ) {
+					paragraphPropXml += ' marL="228600" indent="-228600"';
+					strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
 				}
-			}
-			// DEPRECATED: old bool value (FIXME:Drop in 2.0)
-			else if ( slideObj.options.bullet == true ) {
-				paragraphPropXml += ' marL="228600" indent="-228600"';
-				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
+
+				// Close Paragraph-Properties --------------------
+				paragraphPropXml += '>'+ strXmlBullet +'</a:pPr>';
 			}
 
-			// Close Paragraph-Properties --------------------
-			paragraphPropXml += '>'+ strXmlBullet +'</a:pPr>';
-		}
+			// B: Add bodyProp
+			strSlideXml += genXmlBodyProperties(textObj.options) + '<a:lstStyle/>';
 
-		// STEP 2: Build paragraph(s) and its text props/runs =================================
-		if ( slideObj.options.bullet
-			&& typeof slideObj.text == 'string' && slideObj.text.split('\n').length > 0
-			&& slideObj.text.split('\n')[1] && slideObj.text.split('\n')[1].length > 0
-		) {
-			strSlideXml += genXmlBodyProperties(slideObj.options) + '<a:lstStyle/>';
-			// IMPORTANT: Split text here and feed each line to `genXmlTextRun()` as bullets are applied at the p-level
-			slideObj.text.toString().split('\n').forEach(function(line,idx){
-				if ( idx > 0 ) strSlideXml += '</a:p>';
-				strSlideXml += '<a:p>' + paragraphPropXml;
-				strSlideXml += genXmlTextRun(slideObj.options, line);
-			});
-		}
-		else if ( typeof slideObj.text == 'string' || typeof slideObj.text == 'number' ) {
-			strSlideXml += genXmlBodyProperties(slideObj.options) + '<a:lstStyle/><a:p>' + paragraphPropXml;
-			strSlideXml += genXmlTextRun(slideObj.options, slideObj.text.toString());
-		}
-		else if ( slideObj.text && Array.isArray(slideObj.text) ) {
-			// DESC: This is an array of text objects: [{},{}]
-			// EX: slide.addText([ {text:'hello', options:{color:'0088CC'}}, {text:'world', options:{color:'CC8800'}} ]);
-			strSlideXml += genXmlBodyProperties(slideObj.options) + '<a:lstStyle/>';
-			slideObj.text.forEach(function(textObj,idx){
-				// A: Options
-				textObj.options = textObj.options || {};
-				textObj.options.lineIdx = idx;
-				// Inherit any main options (color, font_size, etc.)
-				// We only pass the text.options below and not the Slide.options, so the run building function cant just fallback to Slide.color,
-				// therefore, we need to do that here before passing options below!
+			// C: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted
+			if ( idx == 0 ) strSlideXml += '<a:p>' + paragraphPropXml;
+			else if ( idx > 0 && textObj.options.bullet ) strSlideXml += '</a:p><a:p>' + paragraphPropXml;
+
+			// D: Inherit any main options (color, font_size, etc.)
+			// We only pass the text.options to genXmlTextRun (not the Slide.options),
+			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
+			$.each(slideObj.options, function(key,val){
 				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-				$.each(slideObj.options, function(key,val){
-					if ( !textObj.options[key] ) textObj.options[key] = val;
-				});
-
-				// B: Add a line break if prev line was bulleted and this one isnt, otherwise, this new line will continue on prev bullet line and users probably dont want that!
-				if ( idx > 0 && slideObj.text[idx-1].options.bullet && !textObj.options.bullet ) strSlideXml += '</a:p><a:p>';
-
-				// C: Add bullets in text objects (create a paragraph for textObjs with `bullet:true`)
-				if ( textObj.options.bullet ) {
-					// NOTE: Yes, much of this is the same code as above but bullets can vary per text line (ed:didnt want to code another func)
-					var paraBullPropXml = '';
-
-// TODO: multi-line (\n-delimted) string with bullets:true not working
-// TODO: current: need to loop over '\n' lines like we do in above bullet code!!
-
-					// 1: First, handle bullets (whether they're index=0 or not handle them)
-					if ( typeof textObj.options.bullet === 'object' ) {
-						if ( textObj.options.bullet.type ) {
-							if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
-								paraBullPropXml = paraPropXmlCore + ' marL="342900" indent="-342900"';
-								strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
-							}
-						}
-						else if ( textObj.options.bullet.code ) {
-							var bulletCode = '&#x'+ textObj.options.bullet.code +';';
-							// Check value for hex-ness (s/b 4 char hex)
-							if ( /^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false ) {
-								console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
-								bulletCode = BULLET_TYPES['DEFAULT'];
-							}
-							paraBullPropXml = paraPropXmlCore + ' marL="342900" indent="-342900"';
-							strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
-						}
-					}
-					// DEPRECATED: old bool value (FIXME:Drop in 2.0)
-					else if ( textObj.options.bullet == true ) {
-						paraBullPropXml = paraPropXmlCore + ' marL="228600" indent="-228600"';
-						strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="&#x2022;"/>';
-					}
-					// Either close existing <p> (bullets can only be applied at the <p>[level recall], or start th initial <p> if this is the first line)
-					strSlideXml += ( idx > 0 ? '</a:p>' : '') + '<a:p>' + paraBullPropXml +'>'+ strXmlBullet +'</a:pPr>';
-				}
-				// 2: Begin a paragraph if this is the first line
-				else if ( idx == 0 ) strSlideXml += '<a:p>' + paragraphPropXml;
-
-				// D: Add formatted textrun
-				strSlideXml += genXmlTextRun((textObj.options || slideObj.options), textObj.text.toString());
+				if ( key != 'bullet' && !textObj.options[key] ) textObj.options[key] = val;
 			});
-		}
+
+			// E: Add formatted textrun
+			strSlideXml += genXmlTextRun(textObj.options, textObj.text);
+		});
 
 		// STEP 3: Close paragraphProperties and the current open paragraph
-		if ( typeof slideObj.text !== 'undefined' && slideObj.text != null ) {
-			strSlideXml += '<a:endParaRPr lang="en-US" '+ ( slideObj.options && slideObj.options.font_size ? ' sz="'+ slideObj.options.font_size +'00"' : '') +' dirty="0"/>';
-			strSlideXml += '</a:p>';
-		}
+		strSlideXml += '<a:endParaRPr lang="en-US" '+ ( slideObj.options && slideObj.options.font_size ? ' sz="'+ slideObj.options.font_size +'00"' : '') +' dirty="0"/>';
+		strSlideXml += '</a:p>';
 
 		// STEP 4: Close the textBody
 		strSlideXml += tagClose;
 
-		// NOTE: If there was no text to format return nothing (or Shape wont render!)
-		return ( strSlideXml == tagStart+tagClose ? '' : strSlideXml );
+		// LAST: Return XML
+		return strSlideXml;
 	}
 
 	/**
