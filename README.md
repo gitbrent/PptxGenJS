@@ -25,19 +25,21 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Installation](#installation)
   - [Client-Side](#client-side)
   - [Node.js](#nodejs)
-- [Optional Library Files](#optional-library-files)
-- [Presentation Basics](#presentation-basics)
-- [Library Reference](#library-reference)
-  - [Creating Presentations](#creating-presentations)
+- [Presentations: Usage and Options](#presentations-usage-and-options)
+  - [Creating a Presentation](#creating-a-presentation)
     - [Presentation Properties](#presentation-properties)
     - [Presentation Layouts](#presentation-layouts)
     - [Presentation Layout Options](#presentation-layout-options)
-  - [Creating Slides](#creating-slides)
+  - [Adding a Slide](#adding-a-slide)
     - [Slide Formatting](#slide-formatting)
     - [Slide Formatting Options](#slide-formatting-options)
     - [Applying Master Slides / Branding](#applying-master-slides--branding)
     - [Adding Slide Numbers](#adding-slide-numbers)
     - [Slide Number Options](#slide-number-options)
+  - [Saving a Presentation](#saving-a-presentation)
+    - [Client Browser](#client-browser)
+    - [Node.js](#nodejs-1)
+- [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
     - [Text Shadow Options](#text-shadow-options)
@@ -60,9 +62,6 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
     - [Media Options](#media-options)
     - [Media Examples](#media-examples)
-  - [Saving Presentations](#saving-presentations)
-    - [Client Browser](#client-browser)
-    - [Node.js](#nodejs-1)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Slide Masters](#slide-masters)
   - [Slide Master Examples](#slide-master-examples)
@@ -74,6 +73,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Table-to-Slides Notes](#table-to-slides-notes)
   - [Table-to-Slides Examples](#table-to-slides-examples)
   - [Creative Solutions](#creative-solutions)
+- [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Issues / Suggestions](#issues--suggestions)
@@ -108,23 +108,14 @@ npm install pptxgenjs
 var pptx = require("pptxgenjs");
 ```
 
-# Optional Library Files
-If you are planning on creating Shapes (basically anything other than Text, Tables or Rectangles), then you'll want to
-include the `pptxgen.shapes.js` library.  It's a complete PowerPoint PPTX Shape object array thanks to the
-[officegen project](https://github.com/Ziv-Barber/officegen)
-```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
-```
-
-
 **************************************************************************************************
-# Presentation Basics
-PowerPoint presentations are created via JavaScript by following 4 basic steps:
+# Presentations: Usage and Options
+PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
 1. Create a new Presentation
-2. Add a Slide  
+2. Add a Slide
 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-4. Save the Presentation  
+4. Save the Presentation
 
 ```javascript
 var pptx = new PptxGenJS();
@@ -134,11 +125,10 @@ pptx.save('Sample Presentation');
 ```
 That's really all there is to it!
 
-
 **************************************************************************************************
-# Library Reference
-
-## Creating Presentations
+## Creating a Presentation
+A Presentation is a single `.pptx` file.  When creating more than one Presentation, declare the pptx again to
+start with a new, empty Presentation.
 
 Client Browser:
 ```javascript
@@ -185,7 +175,7 @@ pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 
 
 **************************************************************************************************
-## Creating Slides
+## Adding a Slide
 
 Syntax:
 ```javascript
@@ -224,6 +214,36 @@ slide.slideNumber({ x:1.0, y:'90%' });
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
 | `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
 
+
+**************************************************************************************************
+## Saving a Presentation
+Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
+examples of which can be found below.
+
+### Client Browser
+* Simply provide a filename
+
+```javascript
+pptx.save('Demo-Media');
+```
+
+### Node.js
+* Node can accept a callback function that will return the filename once the save is complete
+
+```javascript
+// A: File will be saved to the local working directory (`__dirname`)
+pptx.save( 'Node_Demo' );
+// B: Inline callback function
+pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); } );
+// C: Predefined callback function
+pptx.save( 'Node_Demo', saveCallback );
+```
+
+
+
+
+**************************************************************************************************
+# Presentations: Adding Objects
 
 **************************************************************************************************
 ## Adding Text
@@ -535,11 +555,11 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `data`       | string  |        |           | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
 | `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
-**NOTE**
+**NOTE**  
 SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
 properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
 
-**Deprecation Warning**
+**Deprecation Warning**  
 Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1, 1, 6, 3)`) are now deprecated as of 1.1.0
 
 ### Image Examples
@@ -601,30 +621,6 @@ slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc'
 pptx.save('Demo-Media');
 ```
 
-
-**************************************************************************************************
-## Saving Presentations
-Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
-example of which can be found below.
-
-### Client Browser
-* Simply provide a filename
-
-```javascript
-pptx.save('Demo-Media');
-```
-
-### Node.js
-* Node can accept a callback function that will return the filename once the save is complete
-
-```javascript
-// A: File will be saved to the local working directory (`__dirname`)
-pptx.save( 'Node_Demo' );
-// B: Inline callback function
-pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); } );
-// C: Predefined callback function
-pptx.save( 'Node_Demo', saveCallback );
-```
 
 **************************************************************************************************
 # Master Slides and Corporate Branding
@@ -777,6 +773,17 @@ Add a button to a webpage that will create a Presentation using whatever table d
 
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
+
+**************************************************************************************************
+# Full PowerPoint Shape Library
+If you are planning on creating Shapes (basically anything other than Text, Tables or Rectangles), then you'll want to
+include the `pptxgen.shapes.js` library.
+
+The shapes file contains a complete PowerPoint Shape object array thanks to the [officegen project](https://github.com/Ziv-Barber/officegen).
+
+```javascript
+<script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
+```
 
 **************************************************************************************************
 # Performance Considerations
