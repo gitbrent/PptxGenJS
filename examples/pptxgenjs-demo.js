@@ -360,7 +360,7 @@ function genSlides_Table(pptx) {
 		slide.addText('Table Cell Word-Level Formatting:', optsSub);
 
 		// EX 1:
-		var arrCell1 = [{ text:'Cell 1A', options:{ color:'0088cc', shadow:{ type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 } } }];
+		var arrCell1 = [{ text:'Cell 1A', options:{ color:'0088cc' } }];
 		var arrCell2 = [{ text:'Red ', options:{color:'FF0000'} }, { text:'Green ', options:{color:'00FF00'} }, { text:'Blue', options:{color:'0000FF'} }];
 		var arrCell3 = [{ text:'Bullets\nBullets\nBullets', options:{ color:'0088cc', bullet:true } }];
 		var arrCell4 = [{ text:'Numbers\nNumbers\nNumbers', options:{ color:'0088cc', bullet:{type:'number'} } }];

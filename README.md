@@ -303,8 +303,8 @@ slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
 
 // EX: More formatting options
 slide.addText(
-	'Arial, 32pt, green, bold, underline, 0 inset',
-	{ x:0.5, y:5.0, w:'90%', margin:0.5, font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
+    'Arial, 32pt, green, bold, underline, 0 inset',
+    { x:0.5, y:5.0, w:'90%', margin:0.5, font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
 );
 
 // EX: Format some text
@@ -315,11 +315,11 @@ slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90
 
 // EX: Format individual words or lines by passing an array of text objects with `text` and `options`
 slide.addText(
-	[
-		{ text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
-		{ text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
-	],
-	{ x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
+    [
+        { text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
+        { text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
+    ],
+    { x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
 );
 
 // EX: Bullets
@@ -328,33 +328,33 @@ slide.addText('Regular, black circle bullet', { x:8.0, y:1.4, w:'30%', h:0.5, bu
 slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.4, w:'30%', h:1, fill:'F2F2F2', bullet:{type:'number'} });
 // Bullets can also be applied on a per-line level
 slide.addText(
-	[
-		{ text:'I have a star bullet'    , options:{bullet:{code:'2605'}, color:'CC0000'} },
-		{ text:'I have a triangle bullet', options:{bullet:{code:'25BA'}, color:'00CD00'} },
-		{ text:'no bullets on this line' , options:{font_size:12} },
-		{ text:'I have a normal bullet'  , options:{bullet:true, color:'0000AB'} }
-	],
-	{ x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
+    [
+        { text:'I have a star bullet'    , options:{bullet:{code:'2605'}, color:'CC0000'} },
+        { text:'I have a triangle bullet', options:{bullet:{code:'25BA'}, color:'00CD00'} },
+        { text:'no bullets on this line' , options:{font_size:12} },
+        { text:'I have a normal bullet'  , options:{bullet:true, color:'0000AB'} }
+    ],
+    { x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
 );
 
 // EX: Drop/Outer Shadow
 slide.addText(
-	'Outer Shadow',
-	{
-		x:0.5, y:6.0, font_size:36, color:'0088CC',
-		shadow: {type:'outer', color:'696969', blur:3, offset:10, angle:45}
-	}
+    'Outer Shadow',
+    {
+        x:0.5, y:6.0, font_size:36, color:'0088CC',
+        shadow: {type:'outer', color:'696969', blur:3, offset:10, angle:45}
+    }
 );
 
 // EX: Formatting can be applied at the word/line level
 // Provide an array of text objects with the formatting options for that `text` string value
 // Line-breaks work as well
 slide.addText(
-	[
-		{ text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-		{ text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
-	],
-	{ x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
+    [
+        { text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+        { text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
+    ],
+    { x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
 );
 
 pptx.save('Demo-Text');
@@ -424,21 +424,47 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 * You can selectively override formatting at a cell-level providing any **Formatting Option** in the cell `options`
 
 ### Table Cell Formatting
-Table cells can be either a text string or an object with text and options properties.
+* Table cells can be either a plain text string or an object with text and options properties
+* When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
+
+Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
+as the `text` value allows fine-grained control over the text inside cells.
+* Available formatting options are here: [Text Options](#text-options)
+* See below for examples or view the `examples/pptxgenjs-demo.html` page for lots more
 
 ### Table Cell Formatting Examples
 ```javascript
+// TABLE 1: Cell-level Formatting
 var rows = [];
-
 // Row One: cells will be formatted according to any options provided to `addTable()`
 rows.push( ['First', 'Second', 'Third'] );
-
 // Row Two: set/override formatting for each cell
 rows.push([
     { text:'1st', options:{color:'ff0000'} },
     { text:'2nd', options:{color:'00ff00'} },
     { text:'3rd', options:{color:'0000ff'} }
 ]);
+slide.addTable( rows, { x:0.5, y:1.0, w:9.0, color:'363636' } );
+
+// TABLE 2: Using word-level formatting inside cells
+// NOTE: An array of text/options objects provides fine-grained control over formatting
+var arrObjText = [
+    { text:'Red ',   options:{color:'FF0000'} },
+    { text:'Green ', options:{color:'00FF00'} },
+    { text:'Blue',   options:{color:'0000FF'} }
+];
+// EX: Pass an array of tex objects to `addText()`
+slide.addText( arrObjText, { x:0.5, y:2.75, w:9, h:2, margin:0.1, fill:'232323' } );
+
+// EX Pass the same objects as a cell's `text` value
+var arrTabRows = [
+    [
+        { text:'Cell 1 A',  options:{font_face:'Arial'  } },
+        { text:'Cell 1 B',  options:{font_face:'Courier'} },
+        { text: arrObjText, options:{fill:'232323'}       }
+    ]
+];
+slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
 ```
 
 ### Table Examples
