@@ -15,9 +15,10 @@
 
 	<!-- vvv PptxGenJS libraries (4 are required) vvv -->
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
-	<script type="text/javascript" src="../libs/filesaver.min.js"></script>
 	<script type="text/javascript" src="../libs/jszip.min.js"></script>
-	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script> <!-- optional if you dont need Shapes -->
+	<script type="text/javascript" src="../libs/promise.min.js"></script>     <!-- optional if not using IE11 -->
+	<script type="text/javascript" src="../dist/pptxgen.charts.js"></script>  <!-- optional if you dont need Charts -->
+	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need Shapes -->
 	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> <!-- optional if you dont need Masters -->
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
 	<!-- ^^^ PptxGenJS libraries ^^^ -->
@@ -149,6 +150,12 @@
 			$('#tabAutoPaging tbody tr:last-child td:last-child').css('font-size','16px');
 		}
 
+		function table2slidesNoStyle() {
+			var pptx = new PptxGenJS();
+			pptx.addSlidesForTable('tabNoStyle');
+			pptx.save( 'tabNoSyle_'+getTimestamp() );
+		}
+
 		function table2slides1() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
@@ -269,16 +276,10 @@
 
 			$('#demo-sandbox').html('<pre class="prettyprint" style="margin:0 !important; width:auto; padding:10px; border-radius:0;">\n'
 				+ "var pptx = new PptxGenJS();\n"
-				+ "pptx.setAuthor('Brent Ely');\n"
-				+ "pptx.setRevision('15');\n"
 				+ "pptx.setLayout('LAYOUT_WIDE');\n"
 				+ "var slide = pptx.addNewSlide();\n"
 				+ "// Custom Slide sizes are supported. Just provide 3 options:\n"
 				+ "// pptx.setLayout({ name:'A3', width:16.5, height:11.7 });\n"
-				+ "\n"
-				+ "// Set Slide background color and default text colors:\n"
-				+ "slide.bkgd = 'F1F1F1';\n"
-				+ "slide.color = 'CC00FF';\n"
 				+ "\n"
 				+ "slide.addText('RECTANGLE', {shape:pptx.shapes.RECTANGLE, x:0.5, y:4.2, w:2.25, h:2.0, fill:'006699', align:'c', font_size:14});\n"
 				+ "\n"
@@ -290,12 +291,23 @@
 				+ " { x:0.5, y:0.5, w:8.5, h:2.5, margin:0.1, fill:'232323' }\n"
 				+ ");\n"
 				+ "\n"
-				+ "var opts2 = {x:4.2, y:4.2, w:8, h:3, margin:0, align:'center', valign:'middle', font_size:18, border:{pt:'1'}, fill:'F1F1F1'}\n"
-				+ "var rows2 = [\n"
-				+ "	[ {text:'A1+A2', options:{rowspan:2}}, {text:'B1+B2', options:{rowspan:2}}, 'C1' ],\n"
-				+ "	[ 'C2' ]\n"
-				+ "];\n"
-				+ "slide.addTable(rows2, opts2);\n"
+				+ "var objChart = {\n"
+				+ " type: 'pie',\n"
+				+ " title: 'Sample Chart',\n"
+				+ "	data: [\n"
+				+ "		{\n"
+				+ "			name: 'Region 1',\n"
+				+ "			labels: ['April', 'May', 'June', 'July'],\n"
+				+ "			values: [17, 26, 53, 96]\n"
+				+ "		},\n"
+				+ "		{\n"
+				+ "			name: 'Region 2',\n"
+				+ "			labels: ['April', 'May', 'June', 'July'],\n"
+				+ "			values: [55, 43, 70, 58]\n"
+				+ "		}\n"
+				+ "	]\n"
+				+ "};\n"
+				+ "slide.addChart(objChart, {x:4.2, y:3.6, w:8, h:3.2 });\n"
 				+ "\n"
 				+ "pptx.save('PptxGenJS-Sandbox');\n"
 				+ "</pre>\n"
@@ -549,7 +561,7 @@
 
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>HTML Table to Slides
+					<div class="arrow active"></div>Dynamic Test Table
 				</div>
 				<div class="sectionBox">
 					<div id="auto-paging-options" style="text-align:center; margin-bottom:10px;">
@@ -583,6 +595,25 @@
 						<input type="button" class="flatBtn flatBtn-nsTeal"   onclick="table2slides2()" style="margin-right:20px" value="Demo using Custom Shapes">
 						<input type="button" class="flatBtn flatBtn-nsYellow" onclick="table2slides3()" value="Demo using Slide Master+Options">
 					</div>
+				</div>
+
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Un-Styled Table
+				</div>
+				<div class="sectionBox">
+					<table id="tabNoStyle">
+					    <thead>
+					        <tr>
+					            <th>Name</th>
+					            <th>Email</th>
+					            <th>Company</th>
+					        </tr>
+					    </thead>
+					</table>
+				</div>
+				<div style="text-align:center; padding:20px;">
+					<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()" value="Un-Styled Table Demo">
 				</div>
 			</div>
 		</div>
