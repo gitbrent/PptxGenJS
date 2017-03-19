@@ -453,10 +453,10 @@ var arrObjText = [
     { text:'Green ', options:{color:'00FF00'} },
     { text:'Blue',   options:{color:'0000FF'} }
 ];
-// EX: Pass an array of tex objects to `addText()`
+// EX A: Pass an array of text objects to `addText()`
 slide.addText( arrObjText, { x:0.5, y:2.75, w:9, h:2, margin:0.1, fill:'232323' } );
 
-// EX Pass the same objects as a cell's `text` value
+// EX B: Pass the same objects as a cell's `text` value
 var arrTabRows = [
     [
         { text:'Cell 1 A',  options:{font_face:'Arial'  } },
