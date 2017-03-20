@@ -745,6 +745,7 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 | `w`          | number  | inches | width               | 0-256. Default is (100% - Slide margins) |
 | `h`          | number  | inches | height              | 0-256. Default is (100% - Slide margins) |
 | `master`     | string  |        | master slide name   | Any pre-defined Master Slide. EX: `{ master:pptx.masters.TITLE_SLIDE }`
+| `addHeaderToEach` | boolean |   | add table headers to each slide | EX: `addHeaderToEach:true` |
 | `addImage`   | string  |        | add an image to each slide | Use the established syntax. EX: `{ addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } }` |
 | `addShape`   | string  |        | add a shape to each slide  | Use the established syntax. |
 | `addTable`   | string  |        | add a table to each slide  | Use the established syntax. |
