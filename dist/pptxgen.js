@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.3.0";
-	var APP_REL = "20170318";
+	var APP_REL = "20170319";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -75,7 +75,7 @@ var PptxGenJS = function(){
 		'RECTANGLE': { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
 		'LINE'     : { 'displayName': 'Line',      'name': 'line', 'avLst': {} }
 	};
-	// NOTE: 20170304: Only default is used so far. I'd liek to combine the two peices of code that use these before implementing these as options
+	// NOTE: 20170304: Only default is used so far. I'd like to combine the two peices of code that use these before implementing these as options
 	// Since we close <p> within the text object bullets, its slightly more difficult than combinging into a func and calling to get the paraProp
 	// and i'm not sure if anyone will even use these... so, skipping for now.
 	var BULLET_TYPES = {
@@ -84,6 +84,10 @@ var PptxGenJS = function(){
 		'STAR'    : "&#x2605;",
 		'TRIANGLE': "&#x25B6;"
 	};
+	var CHART_TYPES = {
+		'BAR': "TODO:Use object or array for this CONST?",
+		'PIE': "TODO:Use object or array for this CONST?"
+	}
 	//
 	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 	var IMG_BROKEN  = 'data:image/png;base64,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';
@@ -306,7 +310,7 @@ var PptxGenJS = function(){
 							// 3: We're done
 							resolve();
 						})
-						.catch(function(steErr){
+						.catch(function(strErr){
 							reject(strErr);
 						});
 					}));
@@ -1093,28 +1097,119 @@ var PptxGenJS = function(){
 
 	// XML-GEN: Charts
 
+	// TODO:
 	function makeXmlCharts(objChart) {
-		// TODO:
-		//console.log(objChart);
 
+		console.log(`chart type.: ${objChart.type}`);
+		console.log(`chart title: ${objChart.title}`);
+
+		// BAR CHART
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+		strXml += '<c:chart>';
+		strXml += '  <c:plotArea>';
+		strXml += '    <c:layout/>';
+		strXml += '    <c:barChart>';
+		strXml += '      <c:barDir val="col"/>';
+		strXml += '      <c:grouping val="clustered"/>';
+		strXml += '      <c:varyColors val="0"/>';
+
+		// Create a <c:ser> block for every data row
+		// forEach row (starting at 2 (1 is col titles))
+
+		/*
+			data: [
+		     {
+		       name: 'Region 1',
+		       labels: ['April', 'May', 'June', 'July'],
+		       values: [17, 26, 53, 96]
+		     },
+		     {
+		       name: 'Region 2',
+		       labels: ['April', 'May', 'June', 'July'],
+		       values: [55, 43, 70, 58]
+		     }
+		    ]
+		*/
+
+		objChart.data.forEach(function(obj,idx){
+			strXml += '      <c:ser>';
+			strXml += '        <c:idx val="'+idx+'"/>';
+			strXml += '        <c:order val="'+idx+'"/>';
+			strXml += '        <c:tx>';
+			strXml += '          <c:strRef>';
+			strXml += '            <c:f>Sheet1!$A$'+ (idx+2) +'</c:f>';
+			strXml += '            <c:strCache>';
+			strXml += '              <c:ptCount val="1"/>';
+			strXml += '              <c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt>';
+			strXml += '            </c:strCache>';
+			strXml += '          </c:strRef>';
+			strXml += '        </c:tx>';
+			//strXml += '        <c:spPr></c:spPr>'; // skipping this for now
+			strXml += '        <c:dLbls>';
+			strXml += '          <c:numFmt formatCode="#,##0" sourceLinked="0"/>';
+			strXml += '          <c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr><a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none"><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/></a:defRPr></a:pPr></a:p></c:txPr>'; // FIXME: Add option for this
+			strXml += '          <c:dLblPos val="outEnd"/>';
+			strXml += '          <c:showLegendKey val="0"/>';	// FIXME: Add option for this
+			strXml += '          <c:showVal val="0"/>';			// FIXME: Add option for this
+			strXml += '          <c:showCatName val="0"/>';
+			strXml += '          <c:showSerName val="0"/>';
+			strXml += '          <c:showPercent val="0"/>';
+			strXml += '          <c:showBubbleSize val="0"/>';
+			strXml += '          <c:showLeaderLines val="0"/>';
+			strXml += '        </c:dLbls>';
+
+			// Create cols
+			strXml += '<c:cat>';
+			strXml += '  <c:strRef>';
+			strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ LETTERS[obj.labels.length] +'$1' +'</c:f>';
+			// TODO: ^^^ handle >26 letters issue
+			strXml += '    <c:strCache>';
+			strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
+			obj.labels.forEach(function(label,idx){
+				strXml += '	     <c:pt idx="'+ idx +'">';
+				strXml += '	       <c:v>'+ label +'</c:v>';
+				strXml += '	     </c:pt>';
+			});
+			strXml += '    </c:strCache>';
+			strXml += '  </c:strRef>';
+			strXml += '</c:cat>';
+
+			// Create vals
+			strXml += '  <c:val>';
+			strXml += '    <c:numRef>';
+			strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ LETTERS[obj.labels.length] +'$'+ (idx+2) +'</c:f>';
+			strXml += '      <c:numCache>';
+			strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
+			obj.values.forEach(function(value,idx){
+				strXml += '	       <c:pt idx="'+ idx +'">';
+				strXml += '          <c:v>'+ value +'</c:v>';
+				strXml += '	       </c:pt>';
+			});
+			strXml += '      </c:numCache>';
+			strXml += '    </c:numRef>';
+			strXml += '  </c:val>';
+			strXml += '</c:ser>';
+		});
+
+		// END LOOP
+
+		// Then close -barChart- and keep building chart props
+		strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace between col/colGrp
+		strXml += '  <c:overlap val="0"/>';
+		strXml += '  <c:axId val="2094734552"/>';
+		strXml += '  <c:axId val="2094734553"/>';
+		strXml += '</c:barChart>';
+
+		strXml += '';
+		strXml += '';
+		strXml += '';
+
+		/*
 		strXml += `<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
-		  <c:date1904 val="1"/>
-		  <c:roundedCorners val="0"/>
 		  <c:chart>
-		    <c:autoTitleDeleted val="1"/>
 		    <c:plotArea>
-		      <c:layout>
-		        <c:manualLayout>
-		          <c:layoutTarget val="inner"/>
-		          <c:xMode val="edge"/>
-		          <c:yMode val="edge"/>
-		          <c:x val="0.0855981"/>
-		          <c:y val="0.0874962"/>
-		          <c:w val="0.909402"/>
-		          <c:h val="0.765119"/>
-		        </c:manualLayout>
-		      </c:layout>
+		      <c:layout/>
 		      <c:barChart>
 		        <c:barDir val="col"/>
 		        <c:grouping val="clustered"/>
@@ -1324,7 +1419,9 @@ var PptxGenJS = function(){
 		        <c:axId val="2094734552"/>
 		        <c:axId val="2094734553"/>
 		      </c:barChart>
-		      <c:catAx>
+			  */
+
+		strXml += `<c:catAx>
 		        <c:axId val="2094734552"/>
 		        <c:scaling>
 		          <c:orientation val="minMax"/>
@@ -1427,16 +1524,8 @@ var PptxGenJS = function(){
 		    <c:plotVisOnly val="1"/>
 		    <c:dispBlanksAs val="gap"/>
 		  </c:chart>
-		  <c:spPr>
-		    <a:noFill/>
-		    <a:ln>
-		      <a:noFill/>
-		    </a:ln>
-		    <a:effectLst/>
-		  </c:spPr>
-		  <c:externalData r:id="rId1">
-		    <c:autoUpdate val="0"/>
-		  </c:externalData>
+		  <c:spPr><a:noFill/><a:ln><a:noFill/></a:ln><a:effectLst/></c:spPr>
+		  <c:externalData r:id="rId1"><c:autoUpdate val="0"/></c:externalData>
 		</c:chartSpace>\n`;
 
 		return strXml;
