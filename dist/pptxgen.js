@@ -170,7 +170,6 @@ var PptxGenJS = function(){
 		zip.file("ppt/presProps.xml",    makeXmlPresProps());
 		zip.file("ppt/tableStyles.xml",  makeXmlTableStyles());
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
-		//
 
 		// Create a Layout/Master/Rel/Slide file for each SLIDE
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
@@ -330,14 +329,20 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// STEP 3: Push the PPTX file to browser
-		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-		if ( NODEJS ) {
-			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
-		}
-		else {
-			zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });
-		}
+		// STEP 3: Wait for Promises (if any) then push the PPTX file to client-browser
+		Promise.all( arrChartPromises )
+		.then(function(arrResults){
+			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
+			if ( NODEJS ) {
+				zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+			}
+			else {
+				zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });
+			}
+		})
+		.catch(function(strErr){
+			console.error(strErr);
+		});
 	}
 
 	function writeFileToBrowser(strExportName, content, callback) {
