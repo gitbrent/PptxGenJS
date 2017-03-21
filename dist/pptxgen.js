@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.3.0";
-	var APP_REL = "20170319";
+	var APP_REL = "20170320";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -330,47 +330,43 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// TODO: debug line below
-		console.log(arrChartPromises);
-
-		// STEP 3: Wait for Promises (if any) then push the PPTX file to client-browser
-		Promise.all( arrChartPromises )
-		.then(function(arrResults){
-			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-			if ( NODEJS ) {
-				zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
-			}
-			else {
-				zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });
-			}
-		})
-		.catch(function(strErr){
-			console.error(strErr);
-		});
+		// STEP 3: Push the PPTX file to browser
+		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
+		if ( NODEJS ) {
+			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+		}
+		else {
+			zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });
+		}
 	}
 
 	function writeFileToBrowser(strExportName, content, callback) {
-		// DESIGN: Use `createObjectURL()` to push files to client browsers
-		// NOTE: It's supported in IE11 and everything modern (http://caniuse.com/#feat=bloburls)
-		// NOTE: createObjectURL is synchronously executed
+		// DESIGN: Use `createObjectURL()` to push files to modern client browsers (FYI: it is synchronously executed)
+		// IE11 NOTE: Un-supported and using the MS-specific function with blob will cause a heinous security warning on page load, so no go on that.
+		// .........: If `saveAs` is defined, then FileSaver.js is included so we use it
+		if ( typeof saveAs !== 'undefined' ) {
+			saveAs(content, strExportName);
+		}
+		else if ( typeof window.URL.createObjectURL !== 'undefined' ) {
+			// STEP 1: Create element
+			var a = document.createElement("a");
+			document.body.appendChild(a);
+			a.style = "display: none";
 
-		// STEP 1: Create element
-		var a = document.createElement("a");
-		document.body.appendChild(a);
-		a.style = "display: none";
+			// STEP 2: Create blob, set element props, push to browser
+			var blob = new Blob([content], {type: "octet/stream"});
+			var url = window.URL.createObjectURL(blob);
+			a.href = url;
+			a.download = strExportName;
+			a.click();
 
-		// STEP 2: Create blob, set element props
-		var blob = new Blob([content], {type: "octet/stream"});
-		var url = window.URL.createObjectURL(blob);
-		a.href = url;
-		a.download = strExportName;
-		a.click();
+			// STEP 3: Clean-up
+			window.URL.revokeObjectURL(url);
+			document.body.removeChild(a);
 
-		// STEP 3: Push to browser
-		window.URL.revokeObjectURL(url);
-
-		// LAST: Callback (if any)
-		if ( callback ) callback(strExportName);
+			// LAST: Callback (if any)
+			if ( callback ) callback(strExportName);
+		}
 	}
 
 	/**
@@ -3069,7 +3065,7 @@ var PptxGenJS = function(){
 		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])) );
 		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])) );
 
-		// STEP 1: Grab overall table style/col widths
+		// STEP 1: Grab table col widths
 		$.each(['thead','tbody','tfoot'], function(i,val){
 			if ( $('#'+tabEleId+' > '+val+' > tr').length > 0 ) {
 				$('#'+tabEleId+' > '+val+' > tr:first-child').find('> th, > td').each(function(i,cell){
@@ -3101,11 +3097,13 @@ var PptxGenJS = function(){
 			$('#'+tabEleId+' > '+val+' > tr').each(function(i,row){
 				var arrObjTabCells = [];
 				$(row).find('> th, > td').each(function(i,cell){
-					// A: Covert colors from RGB to Hex
+					// A: Get RGB text/bkgd colors
 					var arrRGB1 = [];
 					var arrRGB2 = [];
 					arrRGB1 = $(cell).css('color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
 					arrRGB2 = $(cell).css('background-color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
+					// ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
+					if ( $(cell).css('background-color') == 'rgba(0, 0, 0, 0)' ) arrRGB2 = [255,255,255];
 
 					// B: Create option object
 					var objOpts = {

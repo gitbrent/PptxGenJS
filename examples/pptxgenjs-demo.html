@@ -13,13 +13,13 @@
 		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
  	-->
 
-	<!-- vvv PptxGenJS libraries (4 are required) vvv -->
+	<!-- vvv PptxGenJS libraries (jquery/jszip/pptxgen are required) vvv -->
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../libs/jszip.min.js"></script>
+	<script type="text/javascript" src="../libs/filesaver.min.js"></script>   <!-- optional if not using IE11 -->
 	<script type="text/javascript" src="../libs/promise.min.js"></script>     <!-- optional if not using IE11 -->
-	<script type="text/javascript" src="../dist/pptxgen.charts.js"></script>  <!-- optional if you dont need Charts -->
-	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need Shapes -->
-	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> <!-- optional if you dont need Masters -->
+	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need non-core Shapes -->
+	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> <!-- optional if you dont need Slide Masters/Templates -->
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
 	<!-- ^^^ PptxGenJS libraries ^^^ -->
 
@@ -311,7 +311,11 @@
 				+ "};\n"
 				+ "slide.addChart(objChart, {x:2.0, y:1.2, w:10, h:5 });\n"
 				+ "\n"
+<<<<<<< HEAD
 				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
+=======
+				+ "pptx.save('PptxGenJS-Sandbox'+getTimestamp());\n"
+>>>>>>> master
 				+ "</pre>\n"
 			);
 		});
@@ -343,7 +347,7 @@
 			<div id="tab1" class="active" data-title="Intro">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#library-reference" target="_blank">View Documentation and Example Code</a>
+					<a href="https://github.com/gitbrent/PptxGenJS#" target="_blank">View Documentation and Example Code</a>
 				</div>
 
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
@@ -419,10 +423,12 @@
 						<fieldset style="height:auto">
 							<legend>Table Auto-Paging</legend>
 							<h3>Slide 7-n</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of text with smaller dimensions</div>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of text with `{autoPage:false}`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Trio of tables with various `lineWeight`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Test basic functionality</div>
+							<div class="chkRow"><div class="svgCheck"></div>Test with small table dimensions</div>
+							<div class="chkRow"><div class="svgCheck"></div>Test with correct starting `{y:4.0}`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Test with `{ newPageStartY:0.5 }`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Test with `{ autoPage:false }`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Three Tables with various `lineWeight`</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
@@ -568,7 +574,7 @@
 				<div class="sectionBox">
 					<div id="auto-paging-options" style="text-align:center; margin-bottom:10px;">
 						<b>OPTIONS: </b>
-						<label for="numTab2SlideHead" style="font-size:12px">Include Header on each Slide?</label>
+						<label for="numTab2SlideHead" style="font-size:12px">Include Header on each Slide? <code>`{ addHeaderToEach:true }`</code></label>
 						<input type="radio" name="radioHead" value="Y" checked="checked">Yes<span>&nbsp;&nbsp;&nbsp;</span>
 						<input type="radio" name="radioHead" value="N">No
 
