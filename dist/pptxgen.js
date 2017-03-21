@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.3.0";
-	var APP_REL = "20170320";
+	var APP_REL = "20170321";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -2438,7 +2438,7 @@ var PptxGenJS = function(){
 					arrRGB1 = $(cell).css('color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
 					arrRGB2 = $(cell).css('background-color').replace(/\s+/gi,'').replace('rgba(','').replace('rgb(','').replace(')','').split(',');
 					// ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
-					if ( $(cell).css('background-color') == 'rgba(0, 0, 0, 0)' ) arrRGB2 = [255,255,255];
+					if ( $(cell).css('background-color') == 'rgba(0, 0, 0, 0)' || $(cell).css('background-color') == 'transparent' ) arrRGB2 = [255,255,255];
 
 					// B: Create option object
 					var objOpts = {
