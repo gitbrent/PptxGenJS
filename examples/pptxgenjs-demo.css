@@ -50,6 +50,7 @@ h3 {
 	text-shadow: 2px 2px #efefef;
 	width: 16.66%;
 	text-align: center;
+	white-space: nowrap;
 	display: inline-block; list-style-type:none;
 	padding: 15px;
 	font-size: 14px;
