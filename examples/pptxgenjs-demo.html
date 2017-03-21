@@ -2,21 +2,27 @@
 <html lang="en-us">
 <head>
 	<title>PptxGenJS Examples/Demo Page</title>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono" rel="stylesheet">
+	<!-- Uncomment these 3 for IE11 - line above isn't supported
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+	-->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css">
 	<link type="text/css" rel="stylesheet" href="pptxgenjs-demo.css">
 
 	<!-- NOTE:
-		Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
-		$ open -a 'Google Chrome' --args --allow-file-access-from-files &
-		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
+		1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
+			$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
+			(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
+		2) IE11 will show an "Active-X blocked on this page, do you want to allow?" secuirty dialog when run locally (run from server to remedy)
  	-->
 
 	<!-- vvv PptxGenJS libraries (jquery/jszip/pptxgen are required) vvv -->
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../libs/jszip.min.js"></script>
-	<script type="text/javascript" src="../libs/filesaver.min.js"></script>   <!-- optional if not using IE11 -->
 	<script type="text/javascript" src="../libs/promise.min.js"></script>     <!-- optional if not using IE11 -->
 	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need non-core Shapes -->
 	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> <!-- optional if you dont need Slide Masters/Templates -->
@@ -304,7 +310,7 @@
 				+ "];\n"
 				+ "slide.addTable(rows2, opts2);\n"
 				+ "\n"
-				+ "pptx.save('PptxGenJS-Sandbox'+getTimestamp());\n"
+				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
 				+ "</pre>\n"
 			);
 		});

@@ -197,26 +197,34 @@ var PptxGenJS = function(){
 	}
 
 	function writeFileToBrowser(strExportName, content, callback) {
-		// DESIGN: Use `createObjectURL()` to push files to modern client browsers (FYI: it is synchronously executed)
-		// IE11 NOTE: Un-supported and using the MS-specific function with blob will cause a heinous security warning on page load, so no go on that.
-		// .........: If `saveAs` is defined, then FileSaver.js is included so we use it
-		if ( typeof saveAs !== 'undefined' ) {
-			saveAs(content, strExportName);
-		}
-		else if ( typeof window.URL.createObjectURL !== 'undefined' ) {
-			// STEP 1: Create element
-			var a = document.createElement("a");
-			document.body.appendChild(a);
-			a.style = "display: none";
+		// STEP 1: Create element
+		var a = document.createElement("a");
+		document.body.appendChild(a);
+		a.style = "display: none";
 
-			// STEP 2: Create blob, set element props, push to browser
+		// STEP 2: Download file to browser
+		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
+		if ( window.navigator.msSaveOrOpenBlob ) {
+			blobObject = new Blob([content]);
+			$(a).click(function(){
+				window.navigator.msSaveOrOpenBlob(blobObject, strExportName);
+			});
+			a.click();
+
+			// Clean-up
+			document.body.removeChild(a);
+
+			// LAST: Callback (if any)
+			if ( callback ) callback(strExportName);
+		}
+		else if ( window.URL.createObjectURL ) {
 			var blob = new Blob([content], {type: "octet/stream"});
 			var url = window.URL.createObjectURL(blob);
 			a.href = url;
 			a.download = strExportName;
 			a.click();
 
-			// STEP 3: Clean-up
+			// Clean-up
 			window.URL.revokeObjectURL(url);
 			document.body.removeChild(a);
 
