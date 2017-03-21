@@ -1,12 +1,15 @@
 # Change Log
 
-## [v1.3.0](https://github.com/gitbrent/pptxgenjs/tree/v1.3.0) (2017-03-xx)
+## [v1.3.0](https://github.com/gitbrent/pptxgenjs/tree/v1.3.0) (2017-04-xx)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.1...v1.3.0)
 
 **Fixed Bugs:**
 - Added image type to shapes to allow images to be placed on top of shapes, added more properties to ppt document [\#53](https://github.com/gitbrent/PptxGenJS/pull/53) ([ericwgreene](https://github.com/ericwgreene))
+- Table-to-Slides default for un-styled tables is black text on black bkgd [\#57](https://github.com/gitbrent/PptxGenJS/issues/57) ([orpitadutta](https://github.com/orpitadutta))
+- Table Header and Auto Paging [\#62](https://github.com/gitbrent/PptxGenJS/issues/62) ([tb23911](https://github.com/tb23911))
 
 **Implemented Enhancements:**
+- Removed FileSaver.js as a required library (only JSZip and jQuery are required now)
 - Moved to semver (semantic versioning)
 - Allow text multi-formatting in single table cells [\#24](https://github.com/gitbrent/PptxGenJS/issues/24) ([jenkinsns](https://github.com/jenkinsns))
 - Set fixed width to column using `addSlidesForTable()` [\#42](https://github.com/gitbrent/PptxGenJS/issues/42) ([priyaraskar](https://github.com/priyaraskar))
