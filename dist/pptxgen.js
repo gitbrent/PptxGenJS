@@ -1206,7 +1206,7 @@ var PptxGenJS = function(){
 		// DESC: Category Axis
 		strXml += '<c:catAx>';
 		strXml += '  <c:axId val="2094734552"/>';
-		strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'maxMin') +'"/></c:scaling>';
+		strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'minMax') +'"/></c:scaling>';
 		strXml += '  <c:delete val="0"/>';
 		strXml += '  <c:axPos val="'+ (objChart.options.barDir == 'col' ? 'b' : 'l') +'"/>';
 		strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
@@ -1246,7 +1246,7 @@ var PptxGenJS = function(){
 		// DESC: Value Axis
 		strXml += '<c:valAx>';
 		strXml += '  <c:axId val="2094734553"/>';
-		strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'maxMin') +'"/></c:scaling>';
+		strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'minMax') +'"/></c:scaling>';
 		strXml += '  <c:delete val="0"/>';
 		strXml += '  <c:axPos val="'+ (objChart.options.barDir == 'col' ? 'l' : 'b') +'"/>';
 		strXml += `<c:majorGridlines>
