@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.3.0";
-	var APP_REL = "20170321";
+	var APP_REL = "20170322";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -75,8 +75,8 @@ var PptxGenJS = function(){
 		'RECTANGLE': { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
 		'LINE'     : { 'displayName': 'Line',      'name': 'line', 'avLst': {} }
 	};
-	// NOTE: 20170304: Only default is used so far. I'd liek to combine the two peices of code that use these before implementing these as options
-	// Since we close <p> within the text object bullets, its slightly more difficult than combinging into a func and calling to get the paraProp
+	// NOTE: 20170304: Only default is used so far. I'd like to combine the two peices of code that use these before implementing these as options
+	// Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp
 	// and i'm not sure if anyone will even use these... so, skipping for now.
 	var BULLET_TYPES = {
 		'DEFAULT' : "&#x2022;",
@@ -205,6 +205,7 @@ var PptxGenJS = function(){
 		// STEP 2: Download file to browser
 		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
 		if ( window.navigator.msSaveOrOpenBlob ) {
+			// REF: https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
 			blobObject = new Blob([content]);
 			$(a).click(function(){
 				window.navigator.msSaveOrOpenBlob(blobObject, strExportName);
