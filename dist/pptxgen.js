@@ -218,7 +218,7 @@ var PptxGenJS = function(){
 							+ '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
 							+ '</Relationships>\n'
 						);
-						zipExcel.file("xl/sharedStrings.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst uniqueCount="7" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si/><si><t>April</t></si><si><t>May</t></si><si><t>June</t></si><si><t>July</t></si><si><t>Region 1</t></si><si><t>Region 2</t></si></sst>\n');
+						zipExcel.file("xl/sharedStrings.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><sst uniqueCount="7" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si/><si><t>April</t></si><si><t>May</t></si><si><t>June</t></si><si><t>July</t></si><si><t>August</t></si><si><t>Region 1</t></si><si><t>Region 2</t></si></sst>\n');
 						// TODO: ^^^ i guess this dynamic judging by its contents!!!
 						zipExcel.file("xl/styles.xml",
 							'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="0" formatCode="General"/></numFmts><fonts count="4"><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="10"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="18"/><color indexed="8"/>'
@@ -302,7 +302,7 @@ var PptxGenJS = function(){
 								+ '<Relationship Id="rId'+ intCharts +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Sheet'+ intCharts +'.xlsx"/>'
 								+ '</Relationships>\n'
 							);
-							zip.file("ppt/charts/chart"+ intCharts +".xml", makeXmlCharts(rel.data));
+							zip.file("ppt/charts/chart"+ intCharts +".xml", makeXmlCharts(rel));
 
 							// 3: We're done
 							resolve();
@@ -1106,216 +1106,303 @@ var PptxGenJS = function(){
 
 	// TODO:
 	// REF: https://msdn.microsoft.com/en-us/library/documentformat.openxml.drawing.charts.barchart_members.aspx
-	function makeXmlCharts(objChart) {
-		// Set some Defaults
+	function makeXmlCharts(rel) {
+		var objChart = rel.data;
+
+		// STEP 1: Set some Defaults
 		if ( !objChart.options.barDir ) objChart.options.barDir = 'col';
 
-		console.log(`chart type.: ${objChart.type}`);
-		console.log(`chart title: ${objChart.title}`);
+		// STEP 2: Create chart
+		switch ( objChart.type ) {
+			case 'bar':
+				// Start chartSpace
+				var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+				strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+				strXml += '<c:chart>';
 
-		// BAR CHART
-		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
-		strXml += '<c:chart>';
-		strXml += '  <c:plotArea>';
-		strXml += '    <c:layout/>';
-		strXml += '    <c:barChart>';
-		strXml += '      <c:barDir val="'+ objChart.options.barDir +'"/>';
-		strXml += '      <c:grouping val="clustered"/>'; // FIXME: add OPTION [clustered/stacked/percentStacked]
-		strXml += '      <c:varyColors val="0"/>';
+				if ( objChart.options.showTitle ) {
+					strXml += '<c:title>\
+				      <c:tx>\
+				        <c:rich>\
+				          <a:bodyPr rot="0"/>\
+				          <a:lstStyle/>\
+				          <a:p>\
+				            <a:pPr>\
+				              <a:defRPr b="0" i="0" strike="noStrike" sz="1000" u="none">\
+				                <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
+				                <a:latin typeface="Arial"/>\
+				              </a:defRPr>\
+				            </a:pPr>\
+				            <a:r>\
+				              <a:rPr b="0" i="0" strike="noStrike" sz="1000" u="none">\
+				                <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
+				                <a:latin typeface="Arial"/>\
+				              </a:rPr>\
+				              <a:t>'+ objChart.title +'</a:t>\
+				            </a:r>\
+				          </a:p>\
+				        </c:rich>\
+				      </c:tx>\
+				      <c:layout/>\
+				      <c:overlay val="1"/>\
+				      <c:spPr><a:noFill/><a:effectLst/></c:spPr>\
+				    </c:title>\
+				    <c:autoTitleDeleted val="1"/>';
+				}
 
-		// Create a <c:ser> "SERIES" block for every data row
-		/* EX:
-			data: [
-		     {
-		       name: 'Region 1',
-		       labels: ['April', 'May', 'June', 'July'],
-		       values: [17, 26, 53, 96]
-		     },
-		     {
-		       name: 'Region 2',
-		       labels: ['April', 'May', 'June', 'July'],
-		       values: [55, 43, 70, 58]
-		     }
-		    ]
-		*/
-		objChart.data.forEach(function(obj,idx){
-			strXml += '      <c:ser>';
-			strXml += '        <c:idx val="'+idx+'"/>';
-			strXml += '        <c:order val="'+idx+'"/>';
-			strXml += '        <c:tx>';
-			strXml += '          <c:strRef>';
-			strXml += '            <c:f>Sheet1!$A$'+ (idx+2) +'</c:f>';
-			strXml += '            <c:strCache>';
-			strXml += '              <c:ptCount val="1"/>';
-			strXml += '              <c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt>';
-			strXml += '            </c:strCache>';
-			strXml += '          </c:strRef>';
-			strXml += '        </c:tx>';
-			//strXml += '        <c:spPr></c:spPr>'; // skipping this for now (not needed?  PPT Online works fine without it!)
-			strXml += '        <c:invertIfNegative val="0"/>';
+				strXml += '  <c:plotArea>';
+				strXml += '          <c:layout>\
+				        <c:manualLayout>\
+				          <c:layoutTarget val="inner"/>\
+				          <c:xMode val="edge"/>\
+				          <c:yMode val="edge"/>\
+				          <c:x val="0.118362"/>\
+				          <c:y val="0.0492167"/>\
+				          <c:w val="0.876638"/>\
+				          <c:h val="0.862411"/>\
+				        </c:manualLayout>\
+				      </c:layout>';
+				strXml += '    <c:barChart>';
+				strXml += '      <c:barDir val="'+ objChart.options.barDir +'"/>';
+				strXml += '      <c:grouping val="clustered"/>'; // FIXME: add OPTION [clustered/stacked/percentStacked]
+				strXml += '      <c:varyColors val="0"/>';
 
-			// "Data Labels"
-			strXml += '        <c:dLbls>';
-			strXml += '          <c:numFmt formatCode="#,##0" sourceLinked="0"/>'; // FIXME: add option for numFmt
-			strXml += '          <c:txPr><a:bodyPr/><a:lstStyle/><a:p><a:pPr>';
-			strXml += '            <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none"><a:solidFill>';
-			strXml += '            <a:srgbClr val="000000"/></a:solidFill>';
-			strXml += '            <a:latin typeface="Arial"/></a:defRPr>';
-			strXml += '          </a:pPr></a:p></c:txPr>'; // FIXME: Add option for these text/font props ^^^
-			strXml += '          <c:dLblPos val="outEnd"/>'; // TAG-DEF: "data label position"[t,] // FIXME: add OPTION
-			strXml += '          <c:showLegendKey   val="0"/>'; // FIXME: Add OPTION
-			strXml += '          <c:showVal         val="'+ (objChart.options.labelShowVal ? "1" : "0") +'"/>'; // FIXME: Add OPTION
-			strXml += '          <c:showCatName     val="0"/>';
-			strXml += '          <c:showSerName     val="0"/>';
-			strXml += '          <c:showPercent     val="0"/>';
-			strXml += '          <c:showBubbleSize  val="0"/>';
-			strXml += '          <c:showLeaderLines val="0"/>';
-			strXml += '        </c:dLbls>';
+				// DESC: "Series" block for every data row
+				{
+					/* EX:
+						data: [
+					     {
+					       name: 'Region 1',
+					       labels: ['April', 'May', 'June', 'July'],
+					       values: [17, 26, 53, 96]
+					     },
+					     {
+					       name: 'Region 2',
+					       labels: ['April', 'May', 'June', 'July'],
+					       values: [55, 43, 70, 58]
+					     }
+					    ]
+					*/
+					objChart.data.forEach(function(obj,idx){
+						strXml += '      <c:ser>';
+						strXml += '        <c:idx val="'+idx+'"/>';
+						strXml += '        <c:order val="'+idx+'"/>';
+						strXml += '        <c:tx>';
+						strXml += '          <c:strRef>';
+						strXml += '            <c:f>Sheet1!$A$'+ (idx+2) +'</c:f>';
+						strXml += '            <c:strCache>';
+						strXml += '              <c:ptCount val="1"/>';
+						strXml += '              <c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt>';
+						strXml += '            </c:strCache>';
+						strXml += '          </c:strRef>';
+						strXml += '        </c:tx>';
+						//strXml += '        <c:spPr></c:spPr>'; // skipping this for now (not needed?  PPT Online works fine without it!)
+						strXml += '        <c:invertIfNegative val="0"/>';
 
-			// "Categories"
-			strXml += '<c:cat>';
-			strXml += '  <c:strRef>';
-			strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ LETTERS[obj.labels.length] +'$1' +'</c:f>';
-			// TODO: ^^^ handle >26 letters issue
-			strXml += '    <c:strCache>';
-			strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-			obj.labels.forEach(function(label,idx){
-				strXml += '	     <c:pt idx="'+ idx +'">';
-				strXml += '	       <c:v>'+ label +'</c:v>';
-				strXml += '	     </c:pt>';
-			});
-			strXml += '    </c:strCache>';
-			strXml += '  </c:strRef>';
-			strXml += '</c:cat>';
+						// "Data Labels"
+						strXml += '        <c:dLbls>';
+						strXml += '          <c:numFmt formatCode="#,##0" sourceLinked="0"/>'; // FIXME: add option for numFmt
+						strXml += '          <c:txPr>';
+						strXml += '            <a:bodyPr/><a:lstStyle/>';
+						strXml += '            <a:p><a:pPr>';
+						strXml += '              <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (objChart.options.dataLabelFontSize || '18') +'00" u="none">';
+						strXml += '                <a:solidFill><a:srgbClr val="'+ (objChart.options.dataLabelColor || '000000') +'"/></a:solidFill>';
+						strXml += '                <a:latin typeface="'+ (objChart.options.dataLabelFontFace || 'Arial') +'"/>';
+						strXml += '              </a:defRPr>';
+						strXml += '            </a:pPr></a:p>';
+						strXml += '          </c:txPr>';
+						strXml += '          <c:dLblPos val="outEnd"/>'; // TAG-DEF: "data label position"[t,] // FIXME: add OPTION
+						strXml += '          <c:showLegendKey   val="0"/>'; // FIXME: Add OPTION
+						strXml += '          <c:showVal         val="'+ (objChart.options.dataLabelShow ? "1" : "0") +'"/>'; // FIXME: Add OPTION
+						strXml += '          <c:showCatName     val="0"/>';
+						strXml += '          <c:showSerName     val="0"/>';
+						strXml += '          <c:showPercent     val="0"/>';
+						strXml += '          <c:showBubbleSize  val="0"/>';
+						strXml += '          <c:showLeaderLines val="0"/>';
+						strXml += '        </c:dLbls>';
 
-			// Create vals
-			strXml += '  <c:val>';
-			strXml += '    <c:numRef>';
-			strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ LETTERS[obj.labels.length] +'$'+ (idx+2) +'</c:f>';
-			strXml += '      <c:numCache>';
-			strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-			obj.values.forEach(function(value,idx){
-				strXml += '	       <c:pt idx="'+ idx +'">';
-				strXml += '          <c:v>'+ value +'</c:v>';
-				strXml += '	       </c:pt>';
-			});
-			strXml += '      </c:numCache>';
-			strXml += '    </c:numRef>';
-			strXml += '  </c:val>';
-			strXml += '</c:ser>';
-		});
-		strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace [percent] between col/colGrp // FIXME: add OPTION
-		strXml += '  <c:overlap val="0"/>';
-		strXml += '  <c:axId val="2094734552"/>';
-		strXml += '  <c:axId val="2094734553"/>';
-		strXml += '</c:barChart>';
+						// "Categories"
+						strXml += '<c:cat>';
+						strXml += '  <c:strRef>';
+						strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ LETTERS[obj.labels.length] +'$1' +'</c:f>';
+						// TODO: ^^^ handle >26 letters issue
+						strXml += '    <c:strCache>';
+						strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
+						obj.labels.forEach(function(label,idx){
+							strXml += '	     <c:pt idx="'+ idx +'">';
+							strXml += '	       <c:v>'+ label +'</c:v>';
+							strXml += '	     </c:pt>';
+						});
+						strXml += '    </c:strCache>';
+						strXml += '  </c:strRef>';
+						strXml += '</c:cat>';
 
-		// DESC: Category Axis
-		strXml += '<c:catAx>';
-		strXml += '  <c:axId val="2094734552"/>';
-		strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'minMax') +'"/></c:scaling>';
-		strXml += '  <c:delete val="0"/>';
-		strXml += '  <c:axPos val="'+ (objChart.options.barDir == 'col' ? 'b' : 'l') +'"/>';
-		strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
-		strXml += '  <c:majorTickMark val="out"/>';
-		strXml += '  <c:minorTickMark val="none"/>';
-		strXml += '  <c:tickLblPos val="'+ (objChart.options.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
-		strXml += `<c:spPr>
-		          <a:ln w="12700" cap="flat">
-		            <a:solidFill>
-		              <a:srgbClr val="888888"/>
-		            </a:solidFill>
-		            <a:prstDash val="solid"/>
-		            <a:round/>
-		          </a:ln>
-		        </c:spPr>
-		        <c:txPr>
-		          <a:bodyPr rot="0"/>
-		          <a:lstStyle/>
-		          <a:p>
-		            <a:pPr>
-		              <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">
-		                <a:solidFill>
-		                  <a:srgbClr val="000000"/>
-		                </a:solidFill>
-		                <a:latin typeface="Arial"/>
-		              </a:defRPr>
-		            </a:pPr>
-		          </a:p>
-		        </c:txPr>
-		        <c:crossAx val="2094734553"/>
-		        <c:crosses val="autoZero"/>
-		        <c:auto val="1"/>
-		        <c:lblAlgn val="ctr"/>
-		        <c:noMultiLvlLbl val="1"/>
-		</c:catAx>`;
+						// Create vals
+						strXml += '  <c:val>';
+						strXml += '    <c:numRef>';
+						strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ LETTERS[obj.labels.length] +'$'+ (idx+2) +'</c:f>';
+						strXml += '      <c:numCache>';
+						strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
+						obj.values.forEach(function(value,idx){
+							strXml += '	       <c:pt idx="'+ idx +'">';
+							strXml += '          <c:v>'+ value +'</c:v>';
+							strXml += '	       </c:pt>';
+						});
+						strXml += '      </c:numCache>';
+						strXml += '    </c:numRef>';
+						strXml += '  </c:val>';
+						strXml += '</c:ser>';
+					});
+					//
+					strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace [percent] between col/colGrp // FIXME: add OPTION
+					strXml += '  <c:overlap val="0"/>';
+					strXml += '  <c:axId val="2094734552"/>';
+					strXml += '  <c:axId val="2094734553"/>';
+					strXml += '</c:barChart>';
+				}
 
-		// DESC: Value Axis
-		strXml += '<c:valAx>';
-		strXml += '  <c:axId val="2094734553"/>';
-		strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'minMax') +'"/></c:scaling>';
-		strXml += '  <c:delete val="0"/>';
-		strXml += '  <c:axPos val="'+ (objChart.options.barDir == 'col' ? 'l' : 'b') +'"/>';
-		strXml += `<c:majorGridlines>
-		          <c:spPr>
-		            <a:ln w="12700" cap="flat">
-		              <a:solidFill>
-		                <a:srgbClr val="888888"/>
-		              </a:solidFill>
-		              <a:prstDash val="solid"/>
-		              <a:round/>
-		            </a:ln>
-		          </c:spPr>
-		        </c:majorGridlines>
-		        <c:numFmt formatCode="General" sourceLinked="0"/>
-		        <c:majorTickMark val="out"/>
-		        <c:minorTickMark val="none"/>`;
-		strXml += '<c:tickLblPos val="'+ (objChart.options.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
-		strXml += `<c:spPr>
-		          <a:ln w="12700" cap="flat">
-		            <a:solidFill>
-		              <a:srgbClr val="888888"/>
-		            </a:solidFill>
-		            <a:prstDash val="solid"/>
-		            <a:round/>
-		          </a:ln>
-		        </c:spPr>
-		        <c:txPr>
-		          <a:bodyPr rot="0"/>
-		          <a:lstStyle/>
-		          <a:p>
-		            <a:pPr>
-		              <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">
-		                <a:solidFill>
-		                  <a:srgbClr val="000000"/>
-		                </a:solidFill>
-		                <a:latin typeface="Arial"/>
-		              </a:defRPr>
-		            </a:pPr>
-		          </a:p>
-		        </c:txPr>
-		        <c:crossAx val="2094734552"/>
-		        <c:crosses val="autoZero"/>
-		        <c:crossBetween val="between"/>
-		        <c:majorUnit val="25"/>
-		        <c:minorUnit val="12.5"/>
-		      </c:valAx>
-		      <c:spPr>
-		        <a:noFill/>
-		        <a:ln w="12700" cap="flat">
-		          <a:noFill/>
-		          <a:miter lim="400000"/>
-		        </a:ln>
-		        <a:effectLst/>
-		      </c:spPr>
-		    </c:plotArea>
-		    <c:plotVisOnly val="1"/>
-		    <c:dispBlanksAs val="gap"/>
-		  </c:chart>
-		  <c:spPr><a:noFill/><a:ln><a:noFill/></a:ln><a:effectLst/></c:spPr>
-		  <c:externalData r:id="rId1"><c:autoUpdate val="0"/></c:externalData>
-		</c:chartSpace>\n`;
+				// DESC: "Category Axis"
+				{
+					strXml += '<c:catAx>';
+					strXml += '  <c:axId val="2094734552"/>';
+					strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.catAxisOrientation || (objChart.options.barDir == 'col' ? 'minMax' : 'maxMin')) +'"/></c:scaling>';
+					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:axPos val="'+ (objChart.options.barDir == 'col' ? 'b' : 'l') +'"/>';
+					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
+					strXml += '  <c:majorTickMark val="out"/>';
+					strXml += '  <c:minorTickMark val="none"/>';
+					strXml += '  <c:tickLblPos val="'+ (objChart.options.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+					strXml += `<c:spPr>
+					          <a:ln w="12700" cap="flat">
+					            <a:solidFill>
+					              <a:srgbClr val="888888"/>
+					            </a:solidFill>
+					            <a:prstDash val="solid"/>
+					            <a:round/>
+					          </a:ln>
+					        </c:spPr>
+					        <c:txPr>
+					          <a:bodyPr rot="0"/>
+					          <a:lstStyle/>
+					          <a:p>
+					            <a:pPr>`;
+					strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (objChart.options.catAxisLabelFontSize || '18') +'00" u="none">';
+					strXml += '<a:solidFill><a:srgbClr val="'+ (objChart.options.catAxisLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '<a:latin typeface="'+ (objChart.options.catAxisLabelFontFace || 'Arial') +'"/>';
+					strXml += `   </a:defRPr>
+					            </a:pPr>
+					          </a:p>
+					        </c:txPr>
+					        <c:crossAx val="2094734553"/>
+					        <c:crosses val="autoZero"/>
+					        <c:auto val="1"/>
+					        <c:lblAlgn val="ctr"/>
+					        <c:noMultiLvlLbl val="1"/>
+					</c:catAx>`;
+				}
+
+				// DESC: "Value Axis"
+				{
+					strXml += '<c:valAx>';
+					strXml += '  <c:axId val="2094734553"/>';
+					strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'minMax') +'"/></c:scaling>';
+					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:axPos val="'+ (objChart.options.barDir == 'col' ? 'l' : 'b') +'"/>';
+					strXml += '<c:majorGridlines>\
+								<c:spPr>\
+									<a:ln w="12700" cap="flat">\
+										<a:solidFill><a:srgbClr val="888888"/></a:solidFill>\
+										<a:prstDash val="solid"/>\
+										<a:round/>\
+									</a:ln>\
+								</c:spPr>\
+								</c:majorGridlines>\
+								<c:numFmt formatCode="General" sourceLinked="0"/>\
+								<c:majorTickMark val="out"/>\
+								<c:minorTickMark val="none"/>';
+					strXml += '<c:tickLblPos val="'+ (objChart.options.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+					strXml += '<c:spPr>';
+					strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += '</c:spPr>';
+					strXml += '<c:txPr>';
+					strXml += '  <a:bodyPr rot="0"/>';
+					strXml += '  <a:lstStyle/>';
+					strXml += '  <a:p>';
+					strXml += '    <a:pPr>';
+					strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (objChart.options.valAxisLabelFontSize || '18') +'00" u="none">';
+					strXml += '        <a:solidFill><a:srgbClr val="'+ (objChart.options.valAxisLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '        <a:latin typeface="'+ (objChart.options.valAxisLabelFontFace || 'Arial') +'"/>';
+					strXml += '      </a:defRPr>';
+					strXml += '    </a:pPr>';
+					strXml += '  </a:p>';
+					strXml += '</c:txPr>';
+					strXml += '<c:crossAx val="2094734552"/>';
+					strXml += '<c:crosses val="autoZero"/>';
+					strXml += '<c:crossBetween val="between"/>';
+					strXml += '<c:majorUnit val="25"/>';
+					strXml += '<c:minorUnit val="12.5"/>';
+					strXml += '</c:valAx>';
+				}
+
+				strXml += '<c:spPr>\
+				        <a:noFill/>\
+				        <a:ln w="12700" cap="flat">\
+				          <a:noFill/>\
+				          <a:miter lim="400000"/>\
+				        </a:ln>\
+				        <a:effectLst/>\
+				      </c:spPr>\
+				    </c:plotArea>';
+
+				if ( objChart.options.showLegend ) {
+					strXml += '<c:legend>\
+				      <c:legendPos val="t"/>\
+				      <c:layout>\
+				        <c:manualLayout>\
+				          <c:xMode val="edge"/>\
+				          <c:yMode val="edge"/>\
+				          <c:x val="0.0395149"/>\
+				          <c:y val="0"/>\
+				          <c:w val="0.909933"/>\
+				          <c:h val="0.0698062"/>\
+				        </c:manualLayout>\
+				      </c:layout>\
+				      <c:overlay val="1"/>\
+				      <c:spPr>\
+				        <a:noFill/>\
+				        <a:ln w="12700" cap="flat">\
+				          <a:noFill/>\
+				          <a:miter lim="400000"/>\
+				        </a:ln>\
+				        <a:effectLst/>\
+				      </c:spPr>\
+				      <c:txPr>\
+				        <a:bodyPr rot="0"/>\
+				        <a:lstStyle/>\
+				        <a:p>\
+				          <a:pPr>\
+				            <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
+				              <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
+				              <a:latin typeface="Arial"/>\
+				            </a:defRPr>\
+				          </a:pPr>\
+				        </a:p>\
+				      </c:txPr>\
+				    </c:legend>';
+				}
+
+				strXml += '<c:plotVisOnly val="1"/>\
+				    <c:dispBlanksAs val="gap"/>\
+				  </c:chart>\
+				  <c:spPr><a:noFill/><a:ln><a:noFill/></a:ln><a:effectLst/></c:spPr>\n';
+
+				// LAST: Add relID and close chartSpace
+				strXml += '<c:externalData r:id="rId'+ (rel.rId-1) +'"><c:autoUpdate val="0"/></c:externalData>';
+				strXml += '</c:chartSpace>\n';
+
+				// Done with CHART.BAR
+				break;
+		}
 
 		return strXml;
 	}
