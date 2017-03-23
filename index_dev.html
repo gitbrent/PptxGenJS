@@ -5,8 +5,8 @@
 	<link rel="shortcut icon" href="favicon.png" type="image/x-icon" />
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="author" content="Brent Ely">
-	<meta name="keywords" content="javascript, powerpoint, javascript-powerpoint, js-powerpoint, pptx, js-create-powerpoint">
+	<meta name="author" content="https://github.com/gitbrent/">
+	<meta name="keywords" content="javascript, powerpoint, pptx, javascript-powerpoint, js-powerpoint, js-create-powerpoint">
 	<meta name="description" content="JavaScript JS PowerPoint Library Generate PPT">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -392,7 +392,6 @@
 
 	<script async src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script><!-- Google Code Prettify -->
 	<script async type="text/javascript" src="js/jquery-3.1.1.slim.min.js"></script>
-	<script async type="text/javascript" src="js/filesaver.min.js"></script>
 	<script async type="text/javascript" src="js/jszip.min.js"></script>
 	<script async type="text/javascript" src="js/pptxgen.shapes.min.js"></script>
 	<script async type="text/javascript" src="js/pptxgen.min.js"></script>
@@ -535,12 +534,13 @@
 					<li><a href="https://github.com/Stuk/jszip" target="_blank">jszip.js</a> (creates the pptx export zip file)</li>
 					<li><a href="https://github.com/eligrey/FileSaver.js/" target="_blank">FileSaver.js</a> (pushes the export file to client browsers)</li>
 	            </ul>-->
-				<p>Include these 4 scripts in an HTML page, and you are ready to create a PowerPoint presentation
-					(available in the <span class="tt">PptxGenJS/libs</span> directory).</p>
+				<p>
+					Include these 3 scripts in an HTML page, and you are ready to create a PowerPoint presentation.<br>
+					(IE11 support reqiures the 'promise.min.js' library as well.)
+				</p>
 				<div class="code">
 <pre class="prettyprint">&lt;script type="text/javascript" src="PptxGenJS/libs/jquery.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="PptxGenJS/libs/jszip.min.js"&gt;&lt;/script&gt;
-&lt;script type="text/javascript" src="PptxGenJS/libs/filesaver.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="PptxGenJS/dist/pptxgen.js"&gt;&lt;/script&gt;</pre>
 		        </div>
 
