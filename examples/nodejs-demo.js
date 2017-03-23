@@ -9,6 +9,9 @@
 
 // ============================================================================
 var GIF_ANIM_FIRE = "";
+var AUDIO_MP3 = "";
+var VIDEO_MP4 = "";
+
 function getTimestamp() {
 	var dateNow = new Date();
 	var dateMM = dateNow.getMonth() + 1; dateDD = dateNow.getDate(); dateYY = dateNow.getFullYear(), h = dateNow.getHours(); m = dateNow.getMinutes();
