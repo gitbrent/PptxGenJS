@@ -456,12 +456,18 @@ function genSlides_Chart(pptx) {
 	// CHART 1: H/bar --------------------------------------------------
 	var optsChart1 = {
 		barDir: 'bar',
-		catAxisLabelColor: 'CC0000',
+
+		catAxisLabelColor   : 'CC0000',
 		catAxisLabelFontFace: 'Helvetica Neue',
 		catAxisLabelFontSize: 14,
-		catAxisOrientation: 'minMax',
+		catAxisOrientation  : 'minMax',
+
+		titleColor   : '33CF22',
+		titleFontFace: 'Helvetica Neue',
+		titleFontSize: 24,
+
 		showLegend: true,
-		showTitle: true
+		showTitle : true
 	};
 
 	slide.addChart(

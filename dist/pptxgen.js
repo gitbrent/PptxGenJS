@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.3.0";
-	var APP_REL = "20170321";
+	var APP_REL = "20170322";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -1120,28 +1120,29 @@ var PptxGenJS = function(){
 				strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
 				strXml += '<c:chart>';
 
+				// OPTION: Title
 				if ( objChart.options.showTitle ) {
-					strXml += '<c:title>\
-				      <c:tx>\
-				        <c:rich>\
-				          <a:bodyPr rot="0"/>\
-				          <a:lstStyle/>\
-				          <a:p>\
-				            <a:pPr>\
-				              <a:defRPr b="0" i="0" strike="noStrike" sz="1000" u="none">\
-				                <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
-				                <a:latin typeface="Arial"/>\
-				              </a:defRPr>\
-				            </a:pPr>\
-				            <a:r>\
-				              <a:rPr b="0" i="0" strike="noStrike" sz="1000" u="none">\
-				                <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
-				                <a:latin typeface="Arial"/>\
-				              </a:rPr>\
-				              <a:t>'+ objChart.title +'</a:t>\
-				            </a:r>\
-				          </a:p>\
-				        </c:rich>\
+					strXml += '<c:title>';
+					strXml += ' <c:tx>';
+					strXml += '  <c:rich>';
+  					strXml += '  <a:bodyPr rot="0"/>';
+  					strXml += '  <a:lstStyle/>';
+					strXml += '  <a:p>';
+  					strXml += '    <a:pPr>';
+  					strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (objChart.options.titleFontSize || '18') +'00" u="none">';
+  					strXml += '        <a:solidFill><a:srgbClr val="'+ (objChart.options.titleColor || '000000') +'"/></a:solidFill>';
+  					strXml += '        <a:latin typeface="'+ (objChart.options.titleFontFace || 'Arial') +'"/>';
+  					strXml += '      </a:defRPr>';
+  					strXml += '    </a:pPr>';
+					strXml += '    <a:r>';
+  					strXml += '      <a:rPr b="0" i="0" strike="noStrike" sz="'+ (objChart.options.titleFontSize || '18') +'00" u="none">';
+  					strXml += '        <a:solidFill><a:srgbClr val="'+ (objChart.options.titleColor || '000000') +'"/></a:solidFill>';
+  					strXml += '        <a:latin typeface="'+ (objChart.options.titleFontFace || 'Arial') +'"/>';
+  					strXml += '      </a:rPr>';
+					strXml += '      <a:t>'+ objChart.title +'</a:t>';
+  					strXml += '    </a:r>';
+  					strXml += '  </a:p>';
+					strXml += '  </c:rich>\
 				      </c:tx>\
 				      <c:layout/>\
 				      <c:overlay val="1"/>\
@@ -1354,6 +1355,7 @@ var PptxGenJS = function(){
 				      </c:spPr>\
 				    </c:plotArea>';
 
+				// OPTION: Legend
 				if ( objChart.options.showLegend ) {
 					strXml += '<c:legend>\
 				      <c:legendPos val="t"/>\
