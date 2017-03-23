@@ -76,11 +76,7 @@ var PptxGenJS = function(){
 		'LINE'     : { 'displayName': 'Line',      'name': 'line', 'avLst': {} }
 	};
 	// NOTE: 20170304: Only default is used so far. I'd like to combine the two peices of code that use these before implementing these as options
-<<<<<<< HEAD
-	// Since we close <p> within the text object bullets, its slightly more difficult than combinging into a func and calling to get the paraProp
-=======
 	// Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp
->>>>>>> master
 	// and i'm not sure if anyone will even use these... so, skipping for now.
 	var BULLET_TYPES = {
 		'DEFAULT' : "&#x2022;",
@@ -356,10 +352,7 @@ var PptxGenJS = function(){
 		// STEP 2: Download file to browser
 		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
 		if ( window.navigator.msSaveOrOpenBlob ) {
-<<<<<<< HEAD
-=======
 			// REF: https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
->>>>>>> master
 			blobObject = new Blob([content]);
 			$(a).click(function(){
 				window.navigator.msSaveOrOpenBlob(blobObject, strExportName);
