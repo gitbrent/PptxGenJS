@@ -15,7 +15,7 @@
 
 	<!-- NOTE:
 		1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
-			`$ open -a 'Google Chrome' -args -allow-file-access-from-files`
+			$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
 			(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
 		2) IE11 will show an "Active-X blocked on this page, do you want to allow?" secuirty dialog when run locally (run from server to remedy)
  	-->
@@ -31,6 +31,7 @@
 
 	<script type="text/javascript" src="../examples/pptxgenjs-demo.js"></script>
 	<script type="text/javascript" src="images/base64Images.js"></script>
+	<script type="text/javascript" src="media/base64media.js"></script>
 	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 
 	<script type="text/javascript">
@@ -344,7 +345,7 @@
 
 		<div id="navTabs" class="modernTabs">
 			<ul>
-				<li class="active" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab1').addClass('active');">Introduction</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab2').addClass('active');">Tables</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab7').addClass('active');">Charts</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab3').addClass('active');">Images &amp; YouTube</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab4').addClass('active');">Shapes &amp; Text</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab5').addClass('active');">Templates</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab6').addClass('active');">Table To Slides</li>
+				<li class="active" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab1').addClass('active');">Introduction</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab2').addClass('active');">Tables</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab7').addClass('active');">Charts</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab3').addClass('active');">Images &amp; Media</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab4').addClass('active');">Shapes &amp; Text</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab5').addClass('active');">Templates</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab6').addClass('active');">Table To Slides</li>
 			</ul>
 
 			<div id="tab1" class="active" data-title="Intro">
@@ -472,14 +473,14 @@
 				</div>
 			</div>
 
-			<div id="tab3" data-title="Images/YouTube">
+			<div id="tab3" data-title="Images/Media">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#adding-images" target="_blank">View Documentation and Example Code</a>
 				</div>
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Images &amp; YouTube
+					<div class="arrow active"></div>Images &amp; Media
 				</div>
 				<div class="sectionBox">
 					<div class="jsLocalFile" style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px; display:none;">
@@ -491,7 +492,7 @@
 
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
 						<fieldset>
-							<legend>Images Slide</legend>
+							<legend>Image Objects</legend>
 							<h3>Slide 1</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Animated GIF (campfire icon - click to play)</div>
 							<div class="chkRow"><div class="svgCheck"></div>Four Image types using `path:'someImage'`</div>
@@ -500,13 +501,16 @@
 					</div>
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
 						<fieldset>
-							<legend>Media Slide</legend>
+							<legend>Media Objects</legend>
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Embedded Youtube video: "TED Talks Best of 2016"</div>
+							<div class="chkRow"><div class="svgCheck"></div>Misc Audio formats</div>
+							<div style="color:red; padding:10px 0 0 30px">* Only Node.js can read/encode media.<br>(Use pre-encoded base64 with client browsers)</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presenation" onclick="execGenSlidesFuncs(['Image','YouTube'])">
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presenation" onclick="execGenSlidesFuncs(['Image','Media'])">
 					</div>
 				</div>
 			</div>

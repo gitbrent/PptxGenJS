@@ -1,6 +1,6 @@
 # Change Log
 
-## [v1.3.0](https://github.com/gitbrent/pptxgenjs/tree/v1.3.0) (2017-04-xx)
+## [v1.3.0](https://github.com/gitbrent/pptxgenjs/tree/v1.3.0) (2017-03-22)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.1...v1.3.0)
 
 **Fixed Bugs:**
@@ -9,12 +9,12 @@
 - Table Header and Auto Paging [\#62](https://github.com/gitbrent/PptxGenJS/issues/62) ([tb23911](https://github.com/tb23911))
 
 **Implemented Enhancements:**
-- Removed FileSaver.js as a required library (only JSZip and jQuery are required now)
-- Moved to semver (semantic versioning)
+- Removed `FileSaver.js` as a required library (only JSZip and jQuery are required now)
 - Allow text multi-formatting in single table cells [\#24](https://github.com/gitbrent/PptxGenJS/issues/24) ([jenkinsns](https://github.com/jenkinsns))
 - Set fixed width to column using `addSlidesForTable()` [\#42](https://github.com/gitbrent/PptxGenJS/issues/42) ([priyaraskar](https://github.com/priyaraskar))
 - Enhance bullet feature: offer diff types of bullets and add numbering option [\#49](https://github.com/gitbrent/PptxGenJS/issues/49) ([gitbrent](https://github.com/gitbrent))
 - Add 4 new Presentation properties: `author`, `company`, `revision`, `subject` [\#53](https://github.com/gitbrent/PptxGenJS/pull/53) ([ericwgreene](https://github.com/ericwgreene))
+- Moved to semver (semantic versioning)
 
 ## [v1.2.1](https://github.com/gitbrent/pptxgenjs/tree/v1.2.1) (2017-02-26)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.2.0...v1.2.1)

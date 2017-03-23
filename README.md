@@ -36,6 +36,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Applying Master Slides / Branding](#applying-master-slides--branding)
     - [Adding Slide Numbers](#adding-slide-numbers)
     - [Slide Number Options](#slide-number-options)
+    - [Slide Return Value](#slide-return-value)
   - [Saving a Presentation](#saving-a-presentation)
     - [Client Browser](#client-browser)
     - [Node.js](#nodejs-1)
@@ -93,11 +94,10 @@ Use JavaScript to Create a PowerPoint presentation with your web browser right n
 
 # Installation
 ## Client-Side
-PptxGenJS requires only three additional JavaScript libraries to function.
+PptxGenJS requires only 2 additional JavaScript libraries:
 ```javascript
 <script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
 <script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
-<script lang="javascript" src="PptxGenJS/libs/filesaver.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
 ## Node.js
@@ -185,14 +185,14 @@ var slide = pptx.addNewSlide();
 ### Slide Formatting
 ```javascript
 slide.bkgd  = 'F1F1F1';
-slide.color = '696969'
+slide.color = '696969';
 ```
 
 ### Slide Formatting Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code. |
-| `color`      | string  |        | `000000`  | default text color  | hex color code. |
+| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code.  |
+| `color`      | string  |        | `000000`  | default text color  | hex color code.  |
 
 ### Applying Master Slides / Branding
 ```javascript
@@ -213,6 +213,17 @@ slide.slideNumber({ x:1.0, y:'90%' });
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
 | `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
+
+### Slide Return Value
+The Slide object returns a reference to itself, so calls can be chained.
+
+Example:
+```javascript
+slide
+.addImage({ path:'images/logo1.png', x:1, y:2, w:3, h:3 })
+.addImage({ path:'images/logo2.jpg', x:5, y:3, w:3, h:3 })
+.addImage({ path:'images/logo3.png', x:9, y:4, w:3, h:3 });
+```
 
 
 **************************************************************************************************
@@ -245,6 +256,12 @@ pptx.save( 'Node_Demo', saveCallback );
 **************************************************************************************************
 # Presentations: Adding Objects
 
+Objects on the Slide are ordered from back-to-front based upon the order they were added.
+
+For example, if you add an Image, then a Shape, then a Textbox: the Textbox will be in front of the Shape,
+which is in front of the Image.
+
+
 **************************************************************************************************
 ## Adding Text
 ```javascript
@@ -255,39 +272,39 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 ```
 
 ### Text Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
-| `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
-| `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
-| `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
-| `autoFit`    | boolean |        | `false`   | "Fit to Shape"      | `true` or `false` |
-| `bold`       | boolean |        | `false`   | bold text           | `true` or `false` |
-| `breakLine`  | boolean |        | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
-| `bullet`     | boolean |        | `false`   | bulleted text       | `true` or `false` |
-| `bullet`     | object  |        |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
-| `color`      | string  |        |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
-| `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
-| `font_face`  | string  |        |           | font face           | Ex: 'Arial' |
-| `font_size`  | number  | points |           | font size           | 1-256. Ex: `{ font_size:12 }` |
-| `inset`      | number  | inches |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
-| `isTextBox`  | boolean |        | `false`   | PPT "Textbox"       | `true` or `false` |
-| `italic`     | boolean |        | `false`   | italic text         | `true` or `false` |
-| `margin`     | number  | points |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
-| `shadow`     | object  |        |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
-| `underline`  | boolean |        | `false`   | underline text      | `true` or `false` |
-| `valign`     | string  |        |           | vertical alignment  | `top` or `middle` or `bottom` |
+| Option       | Type    | Unit    | Default   | Description         | Possible Values  |
+| :----------- | :------ | :------ | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches  | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches  | `1.0`     | vertical location   | 0-n OR 'n%'. |
+| `w`          | number  | inches  |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`          | number  | inches  |           | height              | 0-n OR 'n%'. |
+| `align`      | string  |         | `left`    | alignment           | `left` or `center` or `right` |
+| `autoFit`    | boolean |         | `false`   | "Fit to Shape"      | `true` or `false` |
+| `bold`       | boolean |         | `false`   | bold text           | `true` or `false` |
+| `breakLine`  | boolean |         | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
+| `bullet`     | boolean |         | `false`   | bulleted text       | `true` or `false` |
+| `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
+| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
+| `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
+| `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
+| `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
+| `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |
+| `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
+| `shadow`     | object  |         |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
+| `underline`  | boolean |         | `false`   | underline text      | `true` or `false` |
+| `valign`     | string  |         |           | vertical alignment  | `top` or `middle` or `bottom` |
 
 ### Text Shadow Options
-| Option       | Type    | Unit    | Default   | Description            | Possible Values  |
-| :----------- | :------ | :------ | :-------- | :--------------------- | :--------------- |
-| `type`       | string  |         | outer     | shadow type            | `outer` or `inner` |
-| `angle`      | number  | degrees |           | shadow angle           | 0-359. Ex: `{ angle:180 }` |
-| `blur`       | number  | points  |           | blur size              | 1-256. Ex: `{ blur:3 }` |
-| `offset`     | number  | points  |           | offset size            | 1-256. Ex: `{ offset:8 }` |
-| `color`      | string  |         |           | text color             | hex color code. Ex: `{ color:'0088CC' }` |
-| `opacity`    | number  | percent |           | opacity                | 0-1. Ex: `opacity:0.75` |
+| Option       | Type    | Unit    | Default   | Description         | Possible Values                          |
+| :----------- | :------ | :------ | :-------- | :------------------ | :--------------------------------------- |
+| `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
+| `angle`      | number  | degrees |           | shadow angle        | 0-359. Ex: `{ angle:180 }`               |
+| `blur`       | number  | points  |           | blur size           | 1-256. Ex: `{ blur:3 }`                  |
+| `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
+| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `opacity`    | number  | percent |           | opacity             | 0-1. Ex: `opacity:0.75`                  |
 
 ### Text Examples
 ```javascript
@@ -856,8 +873,9 @@ are not on the development roadmap.
 These include:
 * Animations
 * Cross-Slide Links
+* Importing Existing Templates
 * Outlines
-* Use of existing templates
+* SmartArt
 
 **************************************************************************************************
 # Special Thanks
@@ -869,7 +887,8 @@ These include:
 **************************************************************************************************
 # Support Us
 
-Do you like this library and find it useful?  Add a link to the [PptxGenJS project](https://github.com/gitbrent/PptxGenJS) on your blog/website or on social media.
+Do you like this library and find it useful?  Add a link to the [PptxGenJS project](https://github.com/gitbrent/PptxGenJS)
+on your blog, website or social media.
 
 Thanks to everyone who supports this project! <3
 
