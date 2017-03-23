@@ -1901,7 +1901,7 @@ var PptxGenJS = function(){
 							rel.data = new Buffer(bitmap).toString('base64');
 						}
 						catch(ex) {
-							console.error('ERROR: Unable to read image: '+rel.path);
+							console.error('ERROR: Unable to read media: '+rel.path);
 							rel.data = IMG_BROKEN;
 						}
 					}
