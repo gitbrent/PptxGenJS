@@ -477,15 +477,17 @@ function genSlides_Chart(pptx) {
 			data: arrDataRegions,
 			options: optsChart1
 		},
-		{ x:0.3, y:1.0, w:6, h:6 }
+		{ x:0.3 , y:1.0, w:6, h:6 }
 	);
 
 	// CHART 2: V/col --------------------------------------------------
 	var optsChart2 = {
 		barDir: 'col',
+
 		dataLabelShow    : true,
 		dataLabelColor   : '00CC00',
 		dataLabelFontSize: 12,
+
 		valAxisLabelColor   : '0000CC',
 		valAxisLabelFontFace: 'Courier',
 		valAxisLabelFontSize: 12,
@@ -497,7 +499,7 @@ function genSlides_Chart(pptx) {
 			type: 'bar',
 			title: 'Col Chart',
 			data: arrDataRegions,
-			options: {}
+			options: optsChart2
 		},
 		{ x:7.0, y:1.0, w:6, h:6 }
 	);
