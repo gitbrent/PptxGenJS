@@ -456,6 +456,8 @@ function genSlides_Chart(pptx) {
 	// CHART 1: H/bar --------------------------------------------------
 	var optsChart1 = {
 		barDir: 'bar',
+		border: { pt:'2', color:'665050' },
+		fill: 'DDDDDD',
 
 		catAxisLabelColor   : 'CC0000',
 		catAxisLabelFontFace: 'Helvetica Neue',
@@ -464,10 +466,7 @@ function genSlides_Chart(pptx) {
 
 		titleColor   : '33CF22',
 		titleFontFace: 'Helvetica Neue',
-		titleFontSize: 24,
-
-		showLegend: true,
-		showTitle : true
+		titleFontSize: 24
 	};
 
 	slide.addChart(
@@ -491,7 +490,10 @@ function genSlides_Chart(pptx) {
 		valAxisLabelColor   : '0000CC',
 		valAxisLabelFontFace: 'Courier',
 		valAxisLabelFontSize: 12,
-		valAxisOrientation  : 'TODO'
+		valAxisOrientation  : 'minMax',
+
+		showLegend: true,
+		showTitle : true
 	};
 
 	slide.addChart(

@@ -819,6 +819,8 @@ var PptxGenJS = function(){
 				// Start chartSpace
 				var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 				strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+
+				// CHARTSPACE 1/3: CHART
 				strXml += '<c:chart>';
 
 				// OPTION: Title
@@ -853,7 +855,7 @@ var PptxGenJS = function(){
 				}
 
 				strXml += '  <c:plotArea>';
-				strXml += '  <c:layout/>';
+				strXml += '    <c:layout/>';
 				/*
 				strXml += '          <c:layout>\
 				        <c:manualLayout>\
@@ -979,9 +981,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:tickLblPos val="'+ (objChart.options.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 					strXml += `<c:spPr>
 					          <a:ln w="12700" cap="flat">
-					            <a:solidFill>
-					              <a:srgbClr val="888888"/>
-					            </a:solidFill>
+					            <a:solidFill><a:srgbClr val="888888"/></a:solidFill>
 					            <a:prstDash val="solid"/>
 					            <a:round/>
 					          </a:ln>
@@ -1010,7 +1010,7 @@ var PptxGenJS = function(){
 				{
 					strXml += '<c:valAx>';
 					strXml += '  <c:axId val="2094734553"/>';
-					strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.barDir == 'col' ? 'minMax' : 'minMax') +'"/></c:scaling>';
+					strXml += '  <c:scaling><c:orientation val="'+ (objChart.options.valAxisOrientation || (objChart.options.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (objChart.options.barDir == 'col' ? 'l' : 'b') +'"/>';
 					strXml += '<c:majorGridlines>\
@@ -1049,57 +1049,78 @@ var PptxGenJS = function(){
 					strXml += '</c:valAx>';
 				}
 
-				strXml += '      <c:spPr>';
-				strXml += '        <a:noFill/>';
-				strXml += '        <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
-				strXml += '        <a:effectLst/>';
-				strXml += '      </c:spPr>';
-				strXml += '    </c:plotArea>';
+				// CHART SHAPE PROPS: (Chart only not the overall container with legend, labels, etc)
+				{
+					strXml += '<c:spPr>';
 
-				// OPTION: Legend
-				if ( objChart.options.showLegend ) {
-					strXml += '<c:legend>\
-				      <c:legendPos val="t"/>\
-				      <c:layout>\
-				        <c:manualLayout>\
-				          <c:xMode val="edge"/>\
-				          <c:yMode val="edge"/>\
-				          <c:x val="0.0395149"/>\
-				          <c:y val="0"/>\
-				          <c:w val="0.909933"/>\
-				          <c:h val="0.0698062"/>\
-				        </c:manualLayout>\
-				      </c:layout>\
-				      <c:overlay val="1"/>\
-				      <c:spPr>\
-				        <a:noFill/>\
-				        <a:ln w="12700" cap="flat">\
-				          <a:noFill/>\
-				          <a:miter lim="400000"/>\
-				        </a:ln>\
-				        <a:effectLst/>\
-				      </c:spPr>\
-				      <c:txPr>\
-				        <a:bodyPr rot="0"/>\
-				        <a:lstStyle/>\
-				        <a:p>\
-				          <a:pPr>\
-				            <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
-				              <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
-				              <a:latin typeface="Arial"/>\
-				            </a:defRPr>\
-				          </a:pPr>\
-				        </a:p>\
-				      </c:txPr>\
-				    </c:legend>';
+					// OPTION: Fill
+					strXml += ( objChart.options.fill ? genXmlColorSelection(objChart.options.fill) : '<a:noFill/>' );
+
+					// OPTION: Border
+					if ( objChart.options.border && typeof objChart.options.border === 'object' ) {
+						strXml += '<a:ln w="'+ ( (objChart.options.border.pt || 1) * ONEPT )+ '"'+'>';
+						strXml += genXmlColorSelection( objChart.options.border.color || '000000' );
+						strXml += '</a:ln>';
+					}
+					else {
+						strXml += '  <a:ln><a:noFill/></a:ln>';
+					}
+
+					// OPTION: Legend
+					if ( objChart.options.showLegend ) {
+						strXml += '<c:legend>\
+					      <c:legendPos val="t"/>\
+					      <c:layout>\
+					        <c:manualLayout>\
+					          <c:xMode val="edge"/>\
+					          <c:yMode val="edge"/>\
+					          <c:x val="0.0395149"/>\
+					          <c:y val="0"/>\
+					          <c:w val="0.909933"/>\
+					          <c:h val="0.0698062"/>\
+					        </c:manualLayout>\
+					      </c:layout>\
+					      <c:overlay val="1"/>\
+					      <c:spPr>\
+					        <a:noFill/>\
+					        <a:ln w="12700" cap="flat">\
+					          <a:noFill/>\
+					          <a:miter lim="400000"/>\
+					        </a:ln>\
+					        <a:effectLst/>\
+					      </c:spPr>\
+					      <c:txPr>\
+					        <a:bodyPr rot="0"/>\
+					        <a:lstStyle/>\
+					        <a:p>\
+					          <a:pPr>\
+					            <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
+					              <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
+					              <a:latin typeface="Arial"/>\
+					            </a:defRPr>\
+					          </a:pPr>\
+					        </a:p>\
+					      </c:txPr>\
+					    </c:legend>';
+					}
+
+					strXml += '        <a:effectLst/>';
+					strXml += '      </c:spPr>';
 				}
 
+				strXml += '    </c:plotArea>';
 				strXml += '    <c:plotVisOnly val="1"/>';
 				strXml += '    <c:dispBlanksAs val="gap"/>';
 				strXml += '  </c:chart>';
-				strXml += '  <c:spPr><a:noFill/><a:ln><a:noFill/></a:ln><a:effectLst/></c:spPr>\n';
 
-				// LAST: Add relID and close chartSpace
+				// PART 2/3: CHARTPSACE SHAPE PROPS
+				strXml += '<c:spPr>';
+				strXml += '  <a:noFill/>';
+				strXml += '  <a:ln><a:noFill/></a:ln>';
+				strXml += '  <a:effectLst/>';
+				strXml += '</c:spPr>\n';
+
+				// PART 3/3: DATA (Add relID)
 				strXml += '<c:externalData r:id="rId'+ (rel.rId-1) +'"><c:autoUpdate val="0"/></c:externalData>';
 				strXml += '</c:chartSpace>\n';
 
