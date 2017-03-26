@@ -437,6 +437,8 @@ function genSlides_Table(pptx) {
 }
 
 function genSlides_Chart(pptx) {
+
+	// SLIDE 1: Bar Charts -----------------------------------------------------------------
 	var slide = pptx.addNewSlide();
 	slide.addTable( [ [{ text:'Chart Examples: Bar Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -453,7 +455,7 @@ function genSlides_Chart(pptx) {
 		}
 	];
 
-	// CHART 1: H/bar --------------------------------------------------
+	// CHART 1: H/bar
 	var optsChart1 = {
 		barDir: 'bar',
 		border: { pt:'2', color:'665050' },
@@ -468,7 +470,6 @@ function genSlides_Chart(pptx) {
 		titleFontFace: 'Helvetica Neue',
 		titleFontSize: 24
 	};
-
 	slide.addChart(
 		{
 			type: 'bar',
@@ -479,8 +480,8 @@ function genSlides_Chart(pptx) {
 		{ x:0.3 , y:1.0, w:6, h:6 }
 	);
 
-	// CHART 2: V/col --------------------------------------------------
-	var optsChart2 = {
+	// CHART 2: V/col
+	var optsChartBar2 = {
 		barDir: 'col',
 
 		dataLabelShow    : true,
@@ -495,23 +496,72 @@ function genSlides_Chart(pptx) {
 		showLegend: true,
 		showTitle : true
 	};
-
 	slide.addChart(
 		{
 			type: 'bar',
 			title: 'Col Chart',
 			data: arrDataRegions,
-			options: optsChart2
+			options: optsChartBar2
 		},
 		{ x:7.0, y:1.0, w:6, h:6 }
 	);
+
+	// SLIDE 2: Pie Charts -----------------------------------------------------------------
+	var slide = pptx.addNewSlide();
+	slide.addTable( [ [{ text:'Chart Examples: Pie Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+// TODO:
+// FIXME:
+// CRASH: adding any type of Chart to a second slide crashes Keynote - (other chapes are fine) so it must be the RELS and/or Excel???
+// yep, the 3rd worksheet is corrupt!!!
+
+	var arrDataPie = [
+		{
+			name: 'Project Status',
+			labels: ['Red', 'Amber', 'Green', 'Unknown'],
+			values: [10, 20, 58, 2]
+		}
+	];
+
+	var optsChartPie1 = {
+		catAxisLabelColor   : 'CC0000',
+		catAxisLabelFontFace: 'Helvetica Neue',
+		catAxisLabelFontSize: 14,
+		catAxisOrientation  : 'minMax',
+
+		dataLabelShow    : true,
+		dataLabelColor   : '363636',
+		dataLabelFontSize: 12,
+
+		valAxisLabelColor   : '0000CC',
+		valAxisLabelFontFace: 'Courier',
+		valAxisLabelFontSize: 12,
+		valAxisOrientation  : 'minMax',
+
+		showLegend: true,
+		showTitle : false,
+
+		titleColor   : '33CF22',
+		titleFontFace: 'Helvetica Neue',
+		titleFontSize: 24
+	};
+	slide.addChart(
+		{
+			type: 'pie',
+			title: 'Project Status',
+			data: arrDataPie,
+			options: optsChartPie1
+		},
+		{ x:1.0, y:1.0, w:6, h:6 }
+	);
+
 }
 
 function genSlides_Media(pptx) {
 	// SLIDE 1: Video and YouTube
 	// ======== -----------------------------------------------------------------------------------
 	var slide1 = pptx.addNewSlide();
-	slide1.addTable( [ [{ text:'Media: Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide1.addTable( [ [{ text:'Media: Video Examples', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
 	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:'media/sample.m4v' });
@@ -535,7 +585,7 @@ function genSlides_Media(pptx) {
 	// SLIDE 2: Audio / Pre-Encoded Video
 	// ======== -----------------------------------------------------------------------------------
 	var slide2 = pptx.addNewSlide();
-	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
 	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:'media/sample.mp3' });
@@ -552,7 +602,7 @@ function genSlides_Media(pptx) {
 
 function genSlides_Image(pptx) {
 	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	slide.addText('Type: GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
 	slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
@@ -594,7 +644,7 @@ function genSlides_Shape(pptx) {
 	// SLIDE 1: Misc Shape Types (no text)
 	// ======== -----------------------------------------------------------------------------------
 	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:'F9F9F9' });
 	slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
