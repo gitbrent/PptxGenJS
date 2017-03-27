@@ -510,19 +510,13 @@ function genSlides_Chart(pptx) {
 	var slide = pptx.addNewSlide();
 	slide.addTable( [ [{ text:'Chart Examples: Pie Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-// TODO:
-// FIXME:
-// CRASH: adding any type of Chart to a second slide crashes Keynote - (other chapes are fine) so it must be the RELS and/or Excel???
-// yep, the 3rd worksheet is corrupt!!!
-
-	var arrDataPie = [
+	var arrDataPie1 = [
 		{
 			name: 'Project Status',
 			labels: ['Red', 'Amber', 'Green', 'Unknown'],
 			values: [10, 20, 58, 2]
 		}
 	];
-
 	var optsChartPie1 = {
 		catAxisLabelColor   : 'CC0000',
 		catAxisLabelFontFace: 'Helvetica Neue',
@@ -532,12 +526,14 @@ function genSlides_Chart(pptx) {
 		dataLabelShow    : true,
 		dataLabelColor   : '363636',
 		dataLabelFontSize: 12,
+		dataLabelPosition: 'end',
 
 		valAxisLabelColor   : '0000CC',
 		valAxisLabelFontFace: 'Courier',
 		valAxisLabelFontSize: 12,
 		valAxisOrientation  : 'minMax',
 
+		showPercent: true,
 		showLegend: true,
 		showTitle : false,
 
@@ -549,10 +545,37 @@ function genSlides_Chart(pptx) {
 		{
 			type: 'pie',
 			title: 'Project Status',
-			data: arrDataPie,
+			data: arrDataPie1,
 			options: optsChartPie1
 		},
 		{ x:1.0, y:1.0, w:6, h:6 }
+	);
+
+	var arrDataPie2 = [
+		{
+			name: 'Resource Locations',
+			labels: ['DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+			values: [35, 40, 85, 38, 99, 101]
+		}
+	];
+	var optsChartPie2 = {
+		dataLabelColor   : 'FFFFFF',
+
+		showLabel: true,
+		showValue: true,
+		showPercent: true,
+
+		showLegend: false,
+		showTitle : false
+	};
+	slide.addChart(
+		{
+			type: 'pie',
+			title: 'Resource Locations',
+			data: arrDataPie2,
+			options: optsChartPie2
+		},
+		{ x:7.0, y:1.0, w:6, h:6 }
 	);
 
 }

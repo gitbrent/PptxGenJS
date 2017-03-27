@@ -100,8 +100,6 @@ var PptxGenJS = function(){
 	var ONEPT = 12700;	// One (1) point (pt)
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 
-	var GLOBAL_CHART_COUNT = 0; // TODO: count refs!
-
 	// A: Create internal pptx object
 	var gObjPptx = {};
 
@@ -975,7 +973,7 @@ var PptxGenJS = function(){
 					strXml += '    </c:txPr>';
 					strXml += '    <c:dLblPos val="outEnd"/>'; // TAG-DEF: "data label position"[t,] // FIXME: add OPTION
 					strXml += '    <c:showLegendKey   val="0"/>'; // FIXME: Add OPTION
-					strXml += '    <c:showVal         val="'+ (objChart.options.dataLabelShow ? "1" : "0") +'"/>'; // FIXME: Add OPTION
+					strXml += '    <c:showVal         val="'+ (objChart.options.showValue ? "1" : "0") +'"/>';
 					strXml += '    <c:showCatName     val="0"/>';
 					strXml += '    <c:showSerName     val="0"/>';
 					strXml += '    <c:showPercent     val="0"/>';
@@ -1179,7 +1177,7 @@ var PptxGenJS = function(){
 				obj.labels.forEach(function(label,idx){
 					strXml += '<c:dLbl>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
-					strXml += '    <c:numFmt formatCode="#,##0%" sourceLinked="0"/>'; // FIXME: add option for numFmt
+					strXml += '    <c:numFmt formatCode="0%" sourceLinked="0"/>'; // FIXME: add option for numFmt
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/><a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
@@ -1189,17 +1187,17 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					strXml += '    <c:dLblPos val="ctr"/>'; // FIXME: add OPTION
-					strXml += '    <c:showLegendKey   val="0"/>'; // FIXME: Add OPTION
-					strXml += '    <c:showVal         val="'+ (objChart.options.dataLabelShow ? "1" : "0") +'"/>'; // FIXME: Add OPTION
-					strXml += '    <c:showCatName     val="0"/>';
+					strXml += '    <c:dLblPos val="'+ ( objChart.options.dataLabelPosition || 'inEnd' ) +'"/>';
+					strXml += '    <c:showLegendKey   val="0"/>';
+					strXml += '    <c:showVal         val="'+ (objChart.options.showValue ? "1" : "0") +'"/>';
+					strXml += '    <c:showCatName     val="'+ (objChart.options.showLabel ? "1" : "0") +'"/>';
 					strXml += '    <c:showSerName     val="0"/>';
-					strXml += '    <c:showPercent     val="0"/>';
+					strXml += '    <c:showPercent     val="'+ (objChart.options.showPercent ? "1" : "0") +'"/>';
 					strXml += '    <c:showBubbleSize  val="0"/>';
 					strXml += '  </c:dLbl>';
 				});
 
-				strXml += `<c:numFmt formatCode="##0%" sourceLinked="0"/>
+				strXml += `<c:numFmt formatCode="0%" sourceLinked="0"/>
 		            <c:txPr>
 		              <a:bodyPr/>
 		              <a:lstStyle/>
@@ -1217,7 +1215,7 @@ var PptxGenJS = function(){
 		            <c:dLblPos val="ctr"/>
 		            <c:showLegendKey val="0"/>
 		            <c:showVal val="0"/>
-		            <c:showCatName val="0"/>
+		            <c:showCatName val="1"/>
 		            <c:showSerName val="0"/>
 		            <c:showPercent val="1"/>
 		            <c:showBubbleSize val="0"/>
@@ -2706,14 +2704,17 @@ var PptxGenJS = function(){
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
 
-			GLOBAL_CHART_COUNT += 1; // TODO:
-
 			// STEP 3: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type = 'chart';
 			gObjPptx.slides[slideNum].data[slideObjNum].chartType = chartParams.type;
 			gObjPptx.slides[slideNum].data[slideObjNum].chartData = chartParams;
 			gObjPptx.slides[slideNum].data[slideObjNum].options = options;
+
+			// STEP 4: Set default options/decode user options
+			chartParams.options.dataLabelPosition = chartParams.options.dataLabelPosition || 'inEnd';
+			if ( chartParams.options.dataLabelPosition == 'end' || chartParams.options.dataLabelPosition == 'e' ) chartParams.options.dataLabelPosition = 'inEnd';
+			// TODO: im sure theres more to do like above
 
 			// STEP 4: Add new chart to this Slides Rels (rId/rels count spans all slides! Count all images to get next rId)
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
