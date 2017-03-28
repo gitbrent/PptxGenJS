@@ -263,6 +263,95 @@ which is in front of the Image.
 
 
 **************************************************************************************************
+## Adding Charts
+```javascript
+// Syntax
+slide.addChart({CHART}, {DATA}, {OPTIONS});
+```
+
+Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
+
+### Chart Area Options
+| Option       | Type    | Unit    | Default   | Description         | Possible Values  |
+| :----------- | :------ | :------ | :-------- | :------------------ | :--------------- |
+| `x`          | number  | inches  | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches  | `1.0`     | vertical location   | 0-n OR 'n%'. |
+| `w`          | number  | inches  | `50%`     | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`          | number  | inches  | `50%`     | height              | 0-n OR 'n%'. |
+| `barDir`     | string  |         | `col`     | bar direction       | (Bar Chart only) `h` (horizontal) or `v` (vertical). Ex: `{barDir:'v'}` |
+| `border`     | object  |         |           | chart border        | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
+| `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `legendPos`  | string  |         | `r`       | chart legend position | `b` (Bottom), `tr` (Top Right), `l` (Left), `r` (Right), `t` (Top). Ex: `{ legendPos:'t' }` |
+| `showLabel`     | boolean |         | `false`   | show value labels   | `true` or `false`  |
+| `showValue`     | boolean |         | `false`   | show value amount   | `true` or `false`  |
+| `showPercent`   | boolean |         | `false`   | show value percent  | `true` or `false`  |
+| `showLegend`    | boolean |         | `false`   | show chart legend   | `true` or `false`  |
+| `showTitle`     | boolean |         | `false`   | show chart title    | `true` or `false`  |
+| `title`         | string  |         |           | chart title         | a string. Ex: `{ title:'Sales by Region' }` |
+| `titleColor`    | string  |         | `000000`  | title color         | hex color code. Ex: `{ color:'0088CC' }` |
+| `titleFontFace` | string  |         | `Arial`   | font face           | font name. Ex: { titleFontFace:'Arial' } |
+| `titleFontSize` | number  | points  | `18`      | font size           | 1-256. Ex: `{ titleFontSize:12 }` |
+
+### Chart Piece Options
+| Option              | Type    | Unit    | Default   | Description         | Possible Values  |
+| :------------------ | :------ | :------ | :-------- | :------------------ | :--------------- |
+| `catAxisLabelColor` | string  |         | '000000'  | Category Axis color | hex color code. Ex: `{ color:'0088CC' }` |
+
+catAxisLabelFontFace: 'Helvetica Neue',
+catAxisLabelFontSize: 14,
+catAxisOrientation  : 'minMax',
+dataLabelPosition: 'end'
+dataLabelShow    : true,
+dataLabelColor   : '00CC00',
+dataLabelFontSize: 12,
+valAxisLabelColor   : '0000CC',
+valAxisLabelFontFace: 'Courier',
+valAxisLabelFontSize: 12,
+valAxisOrientation  : 'minMax',
+
+
+### Chart Examples
+```javascript
+var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
+
+var slide = pptx.addNewSlide();
+
+// Chart Type: PIE
+var dataChartPie2 = [
+	{
+		name  : 'Location',
+		labels: ['DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+		values: [35, 40, 85, 38, 99, 101]
+	}
+];
+var optsChartPie2 = {
+	x:7.0, y:1.0, w:6, h:6,
+	dataLabelColor   : 'FFFFFF',
+	showLabel  : true,
+	showValue  : true,
+	showPercent: true,
+	showLegend : false,
+	showTitle  : false,
+	title: 'Resource Totals by Location'
+};
+slide.addChart(pptx.charts.PIE, dataChartPie2, optsChartPie2 );
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+**************************************************************************************************
 ## Adding Text
 ```javascript
 // Syntax
