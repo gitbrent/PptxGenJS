@@ -282,9 +282,9 @@ Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
 | `border`     | object  |         |           | chart border        | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
 | `legendPos`  | string  |         | `r`       | chart legend position | `b` (Bottom), `tr` (Top Right), `l` (Left), `r` (Right), `t` (Top). Ex: `{ legendPos:'t' }` |
-| `showLabel`     | boolean |         | `false`   | show value labels   | `true` or `false`  |
-| `showValue`     | boolean |         | `false`   | show value amount   | `true` or `false`  |
-| `showPercent`   | boolean |         | `false`   | show value percent  | `true` or `false`  |
+| `showLabel`     | boolean |         | `false`   | show data labels   | `true` or `false`  |
+| `showValue`     | boolean |         | `false`   | show data values   | `true` or `false`  |
+| `showPercent`   | boolean |         | `false`   | show data percent  | `true` or `false`  |
 | `showLegend`    | boolean |         | `false`   | show chart legend   | `true` or `false`  |
 | `showTitle`     | boolean |         | `false`   | show chart title    | `true` or `false`  |
 | `title`         | string  |         |           | chart title         | a string. Ex: `{ title:'Sales by Region' }` |
@@ -293,22 +293,19 @@ Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
 | `titleFontSize` | number  | points  | `18`      | font size           | 1-256. Ex: `{ titleFontSize:12 }` |
 
 ### Chart Piece Options
-| Option              | Type    | Unit    | Default   | Description         | Possible Values  |
-| :------------------ | :------ | :------ | :-------- | :------------------ | :--------------- |
-| `catAxisLabelColor` | string  |         | '000000'  | Category Axis color | hex color code. Ex: `{ color:'0088CC' }` |
-
-catAxisLabelFontFace: 'Helvetica Neue',
-catAxisLabelFontSize: 14,
-catAxisOrientation  : 'minMax',
-dataLabelPosition: 'end'
-dataLabelShow    : true,
-dataLabelColor   : '00CC00',
-dataLabelFontSize: 12,
-valAxisLabelColor   : '0000CC',
-valAxisLabelFontFace: 'Courier',
-valAxisLabelFontSize: 12,
-valAxisOrientation  : 'minMax',
-
+| Option                 | Type    | Unit    | Default   | Description             | Possible Values                          |
+| :--------------------- | :------ | :------ | :-------- | :---------------------- | :--------------------------------------- |
+| `catAxisLabelColor`    | string  |         | '000000'  | category-axis color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face | font name. Ex: { titleFontFace:'Arial' } |
+| `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size | 1-256. Ex: `{ titleFontSize:12 }`        |
+| `dataLabelPosition`    | string  |         | 'bestFit' | data label position  | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t`. Ex: `{ dataLabelPosition:'end' }` |
+| `dataLabelColor`       | string  |         | '000000'  | value-axis color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face | font name. Ex: { titleFontFace:'Arial' } |
+| `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size | 1-256. Ex: `{ titleFontSize:12 }`        |
+| `valAxisLabelColor`    | string  |         | '000000'  | value-axis color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face | font name. Ex: { titleFontFace:'Arial' } |
+| `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size | 1-256. Ex: `{ titleFontSize:12 }`        |
+| `valAxisOrientation`   | number  |         | `minMax`  | value-axis orientation | `maxMin` or `minMax`. Ex: `{ valAxisOrientation:'minMax' }`        |
 
 ### Chart Examples
 ```javascript
