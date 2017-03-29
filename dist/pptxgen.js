@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170328";
+	var APP_REL = "20170329";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -1308,6 +1308,7 @@ var PptxGenJS = function(){
 
 		strXml += '  <c:plotVisOnly val="1"/>';
 		strXml += '  <c:dispBlanksAs val="gap"/>';
+		strXml += '  <c:showDLblsOverMax val="1"/>';
 		strXml += '</c:chart>';
 
 		// C: CHARTPSACE SHAPE PROPS
@@ -1644,6 +1645,7 @@ var PptxGenJS = function(){
 		});
 		strXml += ' <Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>';
 		strXml += ' <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>';
+
 		strXml += ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>';
 		strXml += ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>';
 		strXml += ' <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
@@ -1657,9 +1659,16 @@ var PptxGenJS = function(){
 			strXml += '<Override PartName="/ppt/slides/slide'            + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
 		});
 
-		// TODO: vvv
-		strXml += ' <Override PartName="/ppt/charts/chart1.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
-		// TODO: create more than 1 when needed!
+		// Add charts (if any)
+		var intCharts = 0;
+		gObjPptx.slides.forEach(function(slide,idx){
+			slide.rels.forEach(function(rel,idy){
+				if ( rel.type == 'chart' ) {
+					intCharts++;
+					strXml += ' <Override PartName="/ppt/charts/chart'+ intCharts +'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+				}
+			});
+		});
 
 		strXml += '</Types>';
 
