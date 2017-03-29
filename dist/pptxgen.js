@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170327";
+	var APP_REL = "20170328";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -862,8 +862,9 @@ var PptxGenJS = function(){
 	=========================================================================================================
 	*/
 
-	// TODO:
-	// REF: https://msdn.microsoft.com/en-us/library/documentformat.openxml.drawing.charts.barchart_members.aspx
+	/**
+	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
+	*/
 	function makeXmlCharts(rel) {
 		// STEP 1: Create chart
 		// CHARTSPACE: BEGIN vvv
@@ -986,11 +987,7 @@ var PptxGenJS = function(){
 					// TODO: ^^^ handle >26 letters issue
 					strXml += '    <c:strCache>';
 					strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-					obj.labels.forEach(function(label,idx){
-						strXml += '	     <c:pt idx="'+ idx +'">';
-						strXml += '	       <c:v>'+ label +'</c:v>';
-						strXml += '	     </c:pt>';
-					});
+					obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
 					strXml += '    </c:strCache>';
 					strXml += '  </c:strRef>';
 					strXml += '</c:cat>';
@@ -1001,11 +998,7 @@ var PptxGenJS = function(){
 					strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ LETTERS[obj.labels.length] +'$'+ (idx+2) +'</c:f>';
 					strXml += '      <c:numCache>';
 					strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-					obj.values.forEach(function(value,idx){
-						strXml += '	       <c:pt idx="'+ idx +'">';
-						strXml += '          <c:v>'+ value +'</c:v>';
-						strXml += '	       </c:pt>';
-					});
+					obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
 					strXml += '      </c:numCache>';
 					strXml += '    </c:numRef>';
 					strXml += '  </c:val>';
@@ -1096,8 +1089,8 @@ var PptxGenJS = function(){
 					strXml += '<c:crossAx val="2094734552"/>';
 					strXml += '<c:crosses val="autoZero"/>';
 					strXml += '<c:crossBetween val="between"/>';
-					strXml += '<c:majorUnit val="25"/>';
-					strXml += '<c:minorUnit val="12.5"/>';
+					//strXml += '<c:majorUnit val="25"/>'; // NOTE: Not Required.	// FIXME: OPTION - auto-calc if no option. !!!
+					//strXml += '<c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// FIXME: OPTION - auto-calc if no option. !!!
 					strXml += '</c:valAx>';
 				}
 
@@ -1251,9 +1244,9 @@ var PptxGenJS = function(){
 				break;
 		}
 
-		// B: Chart porperties
+		// B: Chart properties
 		{
-			strXml += '<c:spPr>';
+			strXml += '  <c:spPr>';
 
 			// OPTION: Fill
 			strXml += ( rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>' );
@@ -1268,8 +1261,14 @@ var PptxGenJS = function(){
 				strXml += '  <a:ln><a:noFill/></a:ln>';
 			}
 
+			// Close shapeProp/plotArea before Legend
+			strXml += '    <a:effectLst/>';
+			strXml += '  </c:spPr>';
+			strXml += '</c:plotArea>';
+
 			// OPTION: Legend
 			if ( rel.opts.showLegend ) {
+				// TODO: Check PPT-2013(PC ver) - this param seems to have no effect!
 				strXml += '<c:legend>\
 			      <c:legendPos val="'+ rel.opts.legendPos +'"/>\
 			      <c:layout>\
@@ -1305,12 +1304,8 @@ var PptxGenJS = function(){
 			      </c:txPr>\
 			    </c:legend>';
 			}
-
-			strXml += '        <a:effectLst/>';
-			strXml += '      </c:spPr>';
 		}
 
-		strXml += '  </c:plotArea>';
 		strXml += '  <c:plotVisOnly val="1"/>';
 		strXml += '  <c:dispBlanksAs val="gap"/>';
 		strXml += '</c:chart>';
@@ -1318,7 +1313,7 @@ var PptxGenJS = function(){
 		// C: CHARTPSACE SHAPE PROPS
 		strXml += '<c:spPr>';
 		strXml += '  <a:noFill/>';
-		strXml += '  <a:ln><a:noFill/></a:ln>';
+		strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
 		strXml += '  <a:effectLst/>';
 		strXml += '</c:spPr>';
 
@@ -2715,31 +2710,16 @@ var PptxGenJS = function(){
 			options.h = (options.h || '50%');
 
 			// B: Misc
-			options.barDir = options.barDir || 'col';
-			/*
-				SRC: http://www.datypic.com/sc/ooxml/t-draw-chart_ST_DLblPos.html
-				|  Value  | Description    |
-				| --------|----------------|
-				| bestFit |	Best Fit
-				| b       | Bottom
-				| ctr     | Center
-				| inBase  | Inside Base
-				| inEnd   | Inside End
-				| l       | Left
-				| outEnd  | Outside End
-				| r       | Right
-				| t       | Top
-			*/
-			options.dataLabelPosition = options.dataLabelPosition || 'bestFit';
-			if ( options.dataLabelPosition == 'end' || options.dataLabelPosition == 'e' ) options.dataLabelPosition = 'inEnd';
-			if ( (options.legendPos || '').indexOf(['b','l','r','t','tr']) < 0 ) options.legendPos = 'r';
+			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
+			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = 'bestFit';
+			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
 
 			// C: Chart area stuff
-			options.showLabel   = options.showLabel   || false;
-			options.showValue   = options.showValue   || false;
-			options.showPercent = options.showPercent || true ;
-			options.showLegend  = options.showLegend  || false;
-			options.showTitle   = options.showTitle   || false;
+			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
+			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
+			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
+			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
+			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
 
 			// STEP 4: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
