@@ -512,7 +512,9 @@ function genSlides_Chart(pptx) {
 
 	// BTM-LEFT: H/bar - TITLE and LEGEND
 	var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
-		barDir: 'bar',
+		barDir     : 'bar',
+		barGrouping: 'percentStacked',
+
 		border: { pt:'3', color:'CF0909' },
 		fill: 'F1C1C1',
 

@@ -870,7 +870,7 @@ var PptxGenJS = function(){
 		// CHARTSPACE: BEGIN vvv
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
-		strXml += '<c:chart>';
+		strXml += '  <c:chart>';
 
 		// OPTION: Title
 		if ( rel.opts.showTitle ) {
@@ -905,26 +905,13 @@ var PptxGenJS = function(){
 
 		strXml += '<c:plotArea>';
 		strXml += '  <c:layout/>';
-		/*
-		strXml += '          <c:layout>\
-				<c:manualLayout>\
-				  <c:layoutTarget val="inner"/>\
-				  <c:xMode val="edge"/>\
-				  <c:yMode val="edge"/>\
-				  <c:x val="0.118362"/>\
-				  <c:y val="0.0492167"/>\
-				  <c:w val="0.876638"/>\
-				  <c:h val="0.862411"/>\
-				</c:manualLayout>\
-			  </c:layout>';
-		*/
 
 		// A: CHART TYPES -----------------------------------------------------------
 		switch ( rel.opts.type ) {
 			case 'bar':
 				strXml += '<c:barChart>';
 				strXml += '  <c:barDir val="'+ rel.opts.barDir +'"/>';
-				strXml += '  <c:grouping val="clustered"/>'; // FIXME: add OPTION [clustered/stacked/percentStacked]
+				strXml += '  <c:grouping val="'+ rel.opts.barGrouping + '"/>';
 				strXml += '  <c:varyColors val="0"/>';
 
 				// A: "Series" block for every data row
@@ -944,8 +931,8 @@ var PptxGenJS = function(){
 				*/
 				rel.data.forEach(function(obj,idx){
 					strXml += '<c:ser>';
-					strXml += '  <c:idx val="'+idx+'"/>';
-					strXml += '  <c:order val="'+idx+'"/>';
+					strXml += '  <c:idx val="'+ idx +'"/>';
+					strXml += '  <c:order val="'+ idx +'"/>';
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
 					strXml += '      <c:f>Sheet1!$A$'+ (idx+2) +'</c:f>';
@@ -955,8 +942,7 @@ var PptxGenJS = function(){
 					strXml += '      </c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
-					//strXml += '  <c:spPr></c:spPr>'; // skipping this for now (not needed?  PPT Online works fine without it!)
-					strXml += '  <c:invertIfNegative val="0"/>';
+					// Omit "<c:spPr></c:spPr>" block with '<a:schemeClr val="accent1"/>' etc and apps will auto-iterate over accents
 
 					// 1: "Data Labels"
 					strXml += '  <c:dLbls>';
@@ -970,7 +956,7 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					strXml += '    <c:dLblPos val="outEnd"/>'; // TAG-DEF: "data label position"[t,] // FIXME: add OPTION
+					strXml += '    <c:dLblPos val="outEnd"/>';
 					strXml += '    <c:showLegendKey   val="0"/>';
 					strXml += '    <c:showVal         val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
 					strXml += '    <c:showCatName     val="0"/>';
@@ -1007,8 +993,8 @@ var PptxGenJS = function(){
 					strXml += '</c:ser>';
 				});
 				//
-				strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace [percent] between col/colGrp // FIXME: add OPTION
-				strXml += '  <c:overlap val="0"/>';
+				strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace [percent] between col/colGrp // TODO: FIXME: add OPTION
+				strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('stacked') > 0 ? 100 : 0) +'"/>';
 				strXml += '  <c:axId val="2094734552"/>';
 				strXml += '  <c:axId val="2094734553"/>';
 				strXml += '</c:barChart>';
@@ -1244,7 +1230,7 @@ var PptxGenJS = function(){
 				break;
 		}
 
-		// B: Chart properties
+		// B: Chart Properties + Options: Fill, Border, Legend
 		{
 			strXml += '  <c:spPr>';
 
@@ -1253,7 +1239,7 @@ var PptxGenJS = function(){
 
 			// OPTION: Border
 			if ( rel.opts.border && typeof rel.opts.border === 'object' ) {
-				strXml += '<a:ln w="'+ ( (rel.opts.border.pt || 1) * ONEPT )+ '"'+'>';
+				strXml += '<a:ln w="'+ ( (rel.opts.border.pt || 1) * ONEPT )+ '"'+' cap="flat">';
 				strXml += genXmlColorSelection( rel.opts.border.color || '000000' );
 				strXml += '</a:ln>';
 			}
@@ -1308,7 +1294,7 @@ var PptxGenJS = function(){
 
 		strXml += '  <c:plotVisOnly val="1"/>';
 		strXml += '  <c:dispBlanksAs val="gap"/>';
-		strXml += '  <c:showDLblsOverMax val="1"/>';
+		//strXml += '  <c:showDLblsOverMax val="1"/>';
 		strXml += '</c:chart>';
 
 		// C: CHARTPSACE SHAPE PROPS
@@ -2669,6 +2655,8 @@ var PptxGenJS = function(){
 		/**
 		 * Generate the chart based on input data.
 		 *
+		 * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
+		 *
 		 * @param {object} renderType should belong to: 'column', 'pie'
 		 * @param {object} data a JSON object with follow the following format
 		 * {
@@ -2722,6 +2710,10 @@ var PptxGenJS = function(){
 			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
 			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = 'bestFit';
 			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
+			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
+			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
+			// TODO: Anything other than 'standard'/'clustered' BLOWS UP PPT Online!!! 20170329
+			options.barGrouping = 'standard'; // FIXME: ^^^
 
 			// C: Chart area stuff
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);

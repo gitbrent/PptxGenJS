@@ -283,6 +283,7 @@ Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
 | `w`             | number  | inches  | `50%`     | width                 | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`             | number  | inches  | `50%`     | height                | 0-n OR 'n%'. |
 | `barDir`        | string  |         | `col`     | bar direction         | (Bar Chart only) `h` (horizontal) or `v` (vertical). Ex: `{barDir:'v'}` |
+| `barGrouping`   | string  |         |`clustered`| bar grouping          | (Bar Chart only) `clustered` or `stacked` or `percentStacked`. |
 | `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
 | `fill`          | string  |         |           | fill/bkgd color       | hex color code. Ex: `{ fill:'0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
@@ -337,6 +338,8 @@ var optsChartPie2 = {
 	title: 'Resource Totals by Location'
 };
 slide.addChart(pptx.charts.PIE, dataChartPie2, optsChartPie2 );
+
+pptx.save('Demo-Chart');
 ```
 
 
