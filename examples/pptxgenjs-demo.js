@@ -176,7 +176,7 @@ function genSlides_Table(pptx) {
 		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
 		slide.addText('Colspans/Rowspans:', optsSub);
 
-		var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'c' };
+		var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'m' };
 		var arrTabRows1 = [
 			[
 				 { text:'A1\nA2', options:{rowspan:2, fill:'99FFCC'} }
@@ -365,7 +365,7 @@ function genSlides_Table(pptx) {
 		var arrCell3 = [{ text:'Bullets\nBullets\nBullets', options:{ color:'0088cc', bullet:true } }];
 		var arrCell4 = [{ text:'Numbers\nNumbers\nNumbers', options:{ color:'0088cc', bullet:{type:'number'} } }];
 		var arrTabRows = [
-			[{ text:arrCell1 }, { text:arrCell2, options:{valign:'m'} }, { text:arrCell3 }, { text:arrCell4 }]
+			[{ text:arrCell1 }, { text:arrCell2, options:{valign:'m'} }, { text:arrCell3, options:{valign:'m'} }, { text:arrCell4, options:{valign:'b'} }]
 		];
 		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:3, font_size:24, border:{pt:'1'}, fill:'F1F1F1' } );
 
@@ -380,11 +380,11 @@ function genSlides_Table(pptx) {
 						{ text:'Final text object w/ bullet:true', options:{color:'0000AB', bullet:true} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{align:'c', breakLine:true} },
+					{ text:'Cell', options:{font_size:36, align:'c', breakLine:true} },
 					{ text:'#2', options:{font_size:60, color:'CD0101', align:'c'} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{align:'c', font_face:'Courier', color:'dd0000', breakLine:true} },
+					{ text:'Cell', options:{align:'c', font_size:36, font_face:'Courier', color:'dd0000', breakLine:true} },
 					{ text:'#'   , options:{align:'c', font_size:60, color:'8648cd'} },
 					{ text:'3'   , options:{align:'c', font_size:60, color:'33ccef'} }
 				]}

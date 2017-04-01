@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170330";
+	var APP_REL = "20170401";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -393,39 +393,6 @@ var PptxGenJS = function(){
 	}
 
 	/**
-	 * DESC: Calculate the cell height for the given text
-	 * USED: By `parseTextToLines`
-	 */
-	function calcEmuCellHeightForStr(cell, inIntWidthInches) {
-		// FORMULA for char-per-inch: (desired chars per line) / (font size [chars-per-inch]) = (reqd print area in inches)
-		var GRATIO = 2.61803398875; // "Golden Ratio"
-		var intCharPerInch = -1, intCalcGratio = 0;
-
-		// STEP 1: Calc chars-per-inch [pitch]
-		// SEE: CPL Formula from http://www.pearsonified.com/2012/01/characters-per-line.php
-		intCharPerInch = (120 / cell.opts.font_size);
-
-		// STEP 2: Calc line count
-		var intLineCnt = Math.floor( cell.text.length / (intCharPerInch * inIntWidthInches) );
-		if (intLineCnt < 1) intLineCnt = 1; // Dont allow line count to be 0!
-
-		// STEP 3: Calc cell height
-		var intCellH = ( intLineCnt * ((cell.opts.font_size * 2) / 100) );
-		if ( intLineCnt > 8 ) intCellH = (intCellH * 0.9);
-
-		// STEP 4: Add cell padding to height
-		if ( cell.opts.margin && Array.isArray(cell.opts.margin) ) {
-			intCellH += (cell.opts.margin[0]/ONEPT*(1/72)) + (cell.opts.margin[2]/ONEPT*(1/72));
-		}
-		else if ( cell.opts.margin && Number.isInteger(cell.opts.margin) ) {
-			intCellH += (cell.opts.margin/ONEPT*(1/72)) + (cell.opts.margin/ONEPT*(1/72));
-		}
-
-		// LAST: Return size
-		return inch2Emu( intCellH );
-	}
-
-	/**
 	* Magic happens here
 	*/
 	function parseTextToLines(cell, inWidth) {
@@ -510,7 +477,7 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 2: Calc usable space/table size now that we have usable space calc'd
-		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])) );
+		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])) );
 		if (opts.debug) console.log('emuSlideTabW (in) ............ = '+ (emuSlideTabW/EMU).toFixed(1) );
 		//if (opts.debug) console.log('emuSlideTabH (in) ............ = '+ (emuSlideTabH/EMU).toFixed(1) );
 
@@ -1298,12 +1265,14 @@ var PptxGenJS = function(){
 							}
 						});
 					});
+					/* Only useful for rowspan/colspan testing
 					if ( objTabOpts.debug ) {
 						console.table(objTableGrid);
 						var arrText = [];
 						$.each(objTableGrid, function(i,row){ var arrRow = []; $.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
 						console.table( arrText );
 					}
+					*/
 
 					// STEP 4: Build table rows/cells ============================
 					$.each(objTableGrid, function(rIdx,rowObj){
@@ -2176,33 +2145,68 @@ var PptxGenJS = function(){
 				return null;
 			}
 
-			// STEP 2: Set default options if needed
+			// STEP 2: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
+			var arrRows = $.extend(true,[],arrTabRows);
+			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
+
+			// STEP 3: Set options
 			opt.x          = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
 			opt.y          = getSmartParseNumber( (opt.y || EMU), 'Y' );
-			opt.cx         = getSmartParseNumber( (opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU*2))), 'X' );
-			// NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-			opt.cy         = opt.h || opt.cy;
+			opt.cy         = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 			if ( opt.cy ) opt.cy = getSmartParseNumber( opt.cy, 'Y' );
-			opt.w          = opt.cx;
 			opt.h          = opt.cy;
+			opt.autoPage   = ( opt.autoPage == false ? false : true );
 			opt.font_size  = opt.font_size || 12;
-			opt.margin     = opt.marginPt || opt.margin || 0;
-			opt.autoPage   = (opt.autoPage == false ? false : true);
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
+			opt.margin     = opt.marginPt || opt.margin || 0;
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
 			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
 			// Set default color if needed (table option > inherit from Slide > default to black)
 			if ( !opt.color ) opt.color = opt.color || this.color || '000000';
 
-			// STEP 3: Convert units to EMU now (we use different logic in makeSlide - smartCalc is not used)
-			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
-			if ( opt.y  < 20 ) opt.y  = inch2Emu(opt.y);
-			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
-			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
+			// Set/Calc table width
+			// Get slide margins - start with default values, then adjust if master or slide margins exist
+			var arrMargin = [DEF_SLIDE_MARGIN_IN, DEF_SLIDE_MARGIN_IN, DEF_SLIDE_MARGIN_IN, DEF_SLIDE_MARGIN_IN];
+			// Case 1: SlideMaster margins
+			if ( inMaster && inMaster.margin ) {
+				if ( Array.isArray(inMaster.margin) ) arrMargin = inMaster.margin;
+				else if ( !isNaN(Number(inMaster.margin)) ) arrMargin = [Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin)];
+			}
+			// Case 2: Slide margins
+			else if ( slideObj.margin ) {
+				if ( Array.isArray(slideObj.margin) ) arrMargin = slideObj.margin;
+				else if ( !isNaN(Number(slideObj.margin)) ) arrMargin = [Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin)];
+			}
 
-			// STEP 4: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
-			var arrRows = $.extend(true,[],arrTabRows);
-			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
+			// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+			if ( opt.w || opt.cx ) {
+				opt.cx = getSmartParseNumber( (opt.w || opt.cx), 'X' );
+				opt.w = opt.cx;
+			}
+			else if ( opt.colW ) {
+				if ( typeof opt.colW === 'string' || typeof opt.colW === 'number' ) {
+					opt.cx = Math.floor(Number(opt.colW) * arrRows[0].length);
+					opt.w = opt.cx;
+				}
+				else if ( opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length ) {
+					console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.');
+
+					var numColWidth = Math.floor( ( (gObjPptx.pptLayout.width/EMU) - arrMargin[1] - arrMargin[3] ) / arrRows[0].length );
+					opt.colW = [];
+					for (var idx=0; idx<arrRows[0].length; idx++) { opt.colW.push( numColWidth ); }
+				}
+			}
+			else {
+				var numTabWidth = ( (gObjPptx.pptLayout.width/EMU) - arrMargin[1] - arrMargin[3] );
+				opt.cx = Math.floor(numTabWidth);
+				opt.w = opt.cx;
+			}
+
+			// STEP 4: Convert units to EMU now (we use different logic in makeSlide->table - smartCalc is not used)
+			if ( opt.x            < 20 ) opt.x  = inch2Emu(opt.x);
+			if ( opt.y            < 20 ) opt.y  = inch2Emu(opt.y);
+			if ( opt.cx           < 20 ) opt.cx = inch2Emu(opt.cx);
+			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 
 			// STEP 5: Check for fine-grained formatting, disable auto-page when found
 			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
