@@ -65,7 +65,7 @@ var gObjPptxMasters = {
 		shapes:  [
 			{ type:'text', text:'S.T.A.R. Laboratories - Confidential', x:0, y:6.8, w:'100%', h:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:9, bold:true }
 		],
-		slideNumber: { x:0.3, y:'90%' }
+		slideNumber: { x:0.3, y:'90%', color:'0088CC', fontFace:'Courier' }
 	},
 	THANKS_SLIDE: {
 		title:   'Thanks Slide to be added as final Slide',

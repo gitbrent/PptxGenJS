@@ -1935,13 +1935,11 @@ var PptxGenJS = function(){
 	 * @returns {Object[]} slideObj - The new Slide object
 	 */
 	this.addNewSlide = function addNewSlide(inMaster, inMasterOpts) {
+		var inMasterOpts = ( inMasterOpts && typeof inMasterOpts === 'object' ? inMasterOpts : {} );
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
-
-		var inMasterOpts = inMasterOpts || {};
-		if ( inMaster && inMasterOpts && inMasterOpts.bkgd ) inMaster.bkgd = inMasterOpts.bkgd; // ISSUE#7: Allow bkgd image/color override on a per-slide basic
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {};
@@ -1954,7 +1952,7 @@ var PptxGenJS = function(){
 		gObjPptx.slides[slideNum].hasSlideNumber = false; // DEPRECATED
 
 		// ==========================================================================
-		// SLIDE METHODS:
+		// PUBLIC METHODS:
 		// ==========================================================================
 
 		slideObj.getPageNumber = function() {
@@ -2218,38 +2216,29 @@ var PptxGenJS = function(){
 			// STEP 6: Auto-Paging: (via {options} and used internally)
 			// (used internally by `addSlidesForTable()` to not engage recursion - we've already paged the table data, just add this one)
 			if ( opt && opt.autoPage == false ) {
-				// A: Grab Slide object count
-				var slideObjNum = gObjPptx.slides[slideNum].data.length;
-
-				// B: Add data (NOTE: Use `extend` to avoid mutation)
-				gObjPptx.slides[slideNum].data[slideObjNum] = {
+				// Add data (NOTE: Use `extend` to avoid mutation)
+				gObjPptx.slides[slideNum].data[gObjPptx.slides[slideNum].data.length] = {
 					type:       'table',
 					arrTabRows: arrRows,
 					options:    $.extend(true,{},opt)
 				};
 			}
 			else {
-				// STEP 5: Loop over rows and create one+ tables as needed (ISSUE#21)
+				// STEP 5: Loop over rows and create 1-N tables as needed (ISSUE#21)
 				getSlidesForTableRows(arrRows,opt).forEach(function(arrRows,idx){
-					// A: We've got a the current Slide already, so add first slides' worth of rows to that, BUT, create new ones going forward!
-					if ( !gObjPptx.slides[slideNum+idx] ) {
-						gObjPptx.slides[slideNum+idx] = $.extend(true,{},gObjPptx.slides[slideNum]);
-						gObjPptx.slides[slideNum+idx].data = [];
-					}
+					// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
+					var currSlide = ( !gObjPptx.slides[slideNum+idx] ? addNewSlide(inMaster, inMasterOpts) : gObjPptx.slides[slideNum+idx].slide );
 
-					// B: Reset opt.y to option or margin on subsequent Slides (ISSUE#43, ISSUE#47, ISSUE#48)
+					// B: Reset opt.y (before copying below) to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 					if ( idx > 0 ) opt.y = inch2Emu( opt.newPageStartY || ( (opt.y/EMU) < DEF_SLIDE_MARGIN_IN[0] ? (opt.y/EMU) : DEF_SLIDE_MARGIN_IN[0] ) );
 
-					// C: Add data (NOTE: Use `extend` to avoid mutation)
-					gObjPptx.slides[slideNum+idx].data[gObjPptx.slides[slideNum+idx].data.length] = {
-						type:       'table',
-						arrTabRows: arrRows,
-						options:    $.extend(true,{},opt)
-					};
+					// C: Add this table to new Slide
+					opt.autoPage = false;
+					currSlide.addTable(arrRows, $.extend(true,{},opt));
 				});
 			}
 
-			// LAST: Return this Slide object
+			// LAST: Return this Slide
 			return this;
 		};
 
@@ -2324,11 +2313,14 @@ var PptxGenJS = function(){
 		// POST-METHODS:
 		// ==========================================================================
 
-		// C: Add 'Master Slide' attr to Slide if a valid master was provided
-		if ( inMaster && this.masters ) {
+		// Add Master-Slide objects (if any)
+		if ( inMaster && typeof inMaster === 'object' ) {
 			// Add Slide Master objects in order
 			$.each(inMaster, function(key,val){
-				// Backgrund color/image
+				// ISSUE#7: Allow bkgd image/color override on Slide-level
+				if ( key == "bkgd" && inMasterOpts.bkgd ) val = inMasterOpts.bkgd;
+
+				// Background color/image
 				if ( key == "bkgd" && typeof val === 'object' && (val.src || val.data) ) {
 					// Allow the use of only the data key (no src reqd)
 					if (!val.src) val.src = 'preencoded.png';
@@ -2386,7 +2378,7 @@ var PptxGenJS = function(){
 			if ( inMaster.slideNumber ) slideObj.slideNumber(inMaster.slideNumber);
 		}
 
-		// LAST: Return this Slide to allow command chaining
+		// LAST: Return this Slide
 		return slideObj;
 	};
 

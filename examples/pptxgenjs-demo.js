@@ -70,8 +70,8 @@ function execGenSlidesFuncs(type) {
 	pptx.setAuthor('Brent Ely');
 	pptx.setCompany('S.T.A.R. Laboratories');
 	pptx.setRevision('15');
-	pptx.setSubject('Test Suite Export');
-	pptx.setTitle('PptxGenJS Demo Presentation');
+	pptx.setSubject('PptxGenJS Test Suite Export');
+	pptx.setTitle('PptxGenJS Test Suite Presentation');
 
 	// STEP 2: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );
@@ -399,8 +399,9 @@ function genSlides_Table(pptx) {
 		var arrRows = [];
 		var arrText = [];
 		for (var idx=0; idx<gArrNamesF.length; idx++) {
-			arrRows.push( [idx, gArrNamesF[idx], gStrLorumIpsum.substring(idx*100,idx*200)] );
-			arrText.push( [gStrLorumIpsum.substring(idx*100,idx*200)] );
+			var strText = ( idx == 0 ? gStrLorumIpsum.substring(0,100) : gStrLorumIpsum.substring(idx*100,idx*200) );
+			arrRows.push( [idx, gArrNamesF[idx], strText] );
+			arrText.push( [strText] );
 		}
 
 		var slide = pptx.addNewSlide();
@@ -412,12 +413,16 @@ function genSlides_Table(pptx) {
 		slide.addTable( arrRows, { x:3.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test for correct starting Y location upon paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: Correct starting Y location upon paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
 		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: `{ newPageStartY: 0.5 }`', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:0.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
+
+		var slide = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, {bkgd:'CCFFCC'} );
+		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Master Page with Auto-Paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
 		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Auto-Paging Disabled', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
