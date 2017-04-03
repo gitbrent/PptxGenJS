@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170329";
+	var APP_REL = "20170402";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -89,6 +89,7 @@ var PptxGenJS = function(){
 		'PIE': { 'displayName':'Pie Chart', 'name':'pie' }
 	}
 	//
+	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 	{
 		var IMG_BROKEN  = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAB3CAYAAAD1oOVhAAAGAUlEQVR4Xu2dT0xcRRzHf7tAYSsc0EBSIq2xEg8mtTGebVzEqOVIolz0siRE4gGTStqKwdpWsXoyGhMuyAVJOHBgqyvLNgonDkabeCBYW/8kTUr0wsJC+Wfm0bfuvn37Znbem9mR9303mJnf/Pb7ed95M7PDI5JIJPYJV5EC7e3t1N/fT62trdqViQCIu+bVgpIHEo/Hqbe3V/sdYVKHyWSSZmZm8ilVA0oeyNjYmEnaVC2Xvr6+qg5fAOJAz4DU1dURGzFSqZRVqtMpAFIGyMjICC0vL9PExIRWKADiAYTNshYWFrRCARAOEFZcCKWtrY0GBgaUTYkBRACIE4rKZwqACALR5RQAqQCIDqcASIVAVDsFQCSAqHQKgEgCUeUUAPEBRIVTAMQnEBvK5OQkbW9vk991CoAEAMQJxc86BUACAhKUUwAkQCBBOAVAAgbi1ykAogCIH6cAiCIgsk4BEIVAZJwCIIqBVLqiBxANQFgXS0tLND4+zl08AogmIG5OSSQS1gGKwgtANAIRcQqAaAbCe6YASBWA2E6xDyeyDUl7+AKQMkDYYevm5mZHabA/Li4uUiaTsYLau8QA4gLE/hU7wajyYtv1hReDAiAOxQcHBymbzark4BkbQKom/X8dp9Npmpqasn4BIAYAYSnYp+4BBEAMUcCwNOCQsAKZnp62NtQOw8WmwT09PUo+ijaHsOMx7GppaaH6+nolH0Z10K2tLVpdXbW6UfV3mNqBdHd3U1NTk2rtlMRfW1uj2dlZAFGirkRQAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAGHqrm8caPzQ0WC1logbeiC7X3xJm0PvUmRzh45cuki1588FAmVn9BO6P3yF9utrqGH0MtW82S8UN9RA9v/4k7InjhcJFTs/TLVXLwmJV67S7vD7tHF5pKi46fYdosdOcOOGG8j1OcqefbFEJD9Q3GCwDhqT31HklS4A8VRgfYM2Op6k3bt/BQJl58J7lPvwg5JYNccepaMry0LPqFA7hCm39+NNyp2J0172b19QysGINj5CsRtpij57musOViH0QPJQXn6J9u7dlYJSFkbrMYolrwvDAJAC+WWdEpQz7FTgECeUCpzi6YxvvqXoM6eEhqnCSgDikEzUKUE7Aw7xuHctKB5OYU3dZlNR9syQdAaAcAYTC0pXF+39c09o2Ik+3EqxVKqiB7hbYAxZkk4pbBaEM+AQofv+wTrFwylBOQNABIGwavdfe4O2pg5elO+86l99nY58/VUF0byrYsjiSFluNlXYrOHcBar7+EogUADEQ0YRGHbzoKAASBkg2+9cpM1rV0tK2QOcXW7bLEFAARAXIF4w2DrDWoeUWaf4hQIgDiA8GPZ2iNfi0Q8UACkAIgrDbrJ385eDxaPLLrEsFAB5oG6lMPJQPLZZZKAACBGVhcG2Q+bmuLu2nk55e4jqPv1IeEoceiBeX7s2zCa5MAqdstl91vfXwaEGsv/rb5TtOFk6tWXOuJGh6KmnhO9sayrMninPx103JBtXblHkice58cINZP4Hyr5wpkgkdiChEmc4FWazLzenNKa/p0jncwDiqcD6BuWePk07t1asatZGoYQzSqA4nFJ7soNiP/+EUyfc25GI2GG53dHPrKo1g/1Cw4pIXLrzO+1c+/wg7tBbFDle/EbQcjFCPWQJCau5EoBoFpzXHYDwFNJcDiCaBed1ByA8hTSXA4hmwXndAQhPIc3lAKJZcF53AMJTSHM5gGgWnNcdgPAU0lwOIJoF53UHIDyFNJcfSiCdnZ0Ui8U0SxlMd7lcjubn561gh+Y1scFIU/0o/3sgeLO12E2k7UXKYumgFoAYdg8ACIAYpoBh6cAhAGKYAoalA4cAiGEKGJYOHAIghilgWDpwCIAYpoBh6cAhAGKYAoalA4cAiGEKGJYOHAIghilgWDpwCIAYpoBh6ZQ4JB6PKzviYthnNy4d9h+1M5mMlVckkUjsG5dhiBMCEMPg/wuOfrZZ/RSywQAAAABJRU5ErkJggg==';
 		var IMG_PLAYBTN = 'data:image/png;base64,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';
@@ -100,7 +101,7 @@ var PptxGenJS = function(){
 	var EMU = 914400;	// One (1) Inch - OfficeXML measures in EMU (English Metric Units)
 	var ONEPT = 12700;	// One (1) point (pt)
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
-	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
+	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -595,39 +596,6 @@ var PptxGenJS = function(){
 	}
 
 	/**
-	 * DESC: Calculate the cell height for the given text
-	 * USED: By `parseTextToLines`
-	 */
-	function calcEmuCellHeightForStr(cell, inIntWidthInches) {
-		// FORMULA for char-per-inch: (desired chars per line) / (font size [chars-per-inch]) = (reqd print area in inches)
-		var GRATIO = 2.61803398875; // "Golden Ratio"
-		var intCharPerInch = -1, intCalcGratio = 0;
-
-		// STEP 1: Calc chars-per-inch [pitch]
-		// SEE: CPL Formula from http://www.pearsonified.com/2012/01/characters-per-line.php
-		intCharPerInch = (120 / cell.opts.font_size);
-
-		// STEP 2: Calc line count
-		var intLineCnt = Math.floor( cell.text.length / (intCharPerInch * inIntWidthInches) );
-		if (intLineCnt < 1) intLineCnt = 1; // Dont allow line count to be 0!
-
-		// STEP 3: Calc cell height
-		var intCellH = ( intLineCnt * ((cell.opts.font_size * 2) / 100) );
-		if ( intLineCnt > 8 ) intCellH = (intCellH * 0.9);
-
-		// STEP 4: Add cell padding to height
-		if ( cell.opts.margin && Array.isArray(cell.opts.margin) ) {
-			intCellH += (cell.opts.margin[0]/ONEPT*(1/72)) + (cell.opts.margin[2]/ONEPT*(1/72));
-		}
-		else if ( cell.opts.margin && Number.isInteger(cell.opts.margin) ) {
-			intCellH += (cell.opts.margin/ONEPT*(1/72)) + (cell.opts.margin/ONEPT*(1/72));
-		}
-
-		// LAST: Return size
-		return inch2Emu( intCellH );
-	}
-
-	/**
 	* Magic happens here
 	*/
 	function parseTextToLines(cell, inWidth) {
@@ -677,6 +645,7 @@ var PptxGenJS = function(){
 		var arrObjTabHeadRows = opts.arrObjTabHeadRows || '';
 		var numCols = 0;
 
+		if (opts.debug) console.log('------------------------------------');
 		if (opts.debug) console.log('opts.w ............. = '+ (opts.w||'').toString());
 		if (opts.debug) console.log('opts.colW .......... = '+ (opts.colW||'').toString());
 		if (opts.debug) console.log('opts.slideMargin ... = '+ (opts.slideMargin||'').toString());
@@ -712,9 +681,9 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 2: Calc usable space/table size now that we have usable space calc'd
-		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])) );
-		if (opts.debug) console.log('emuSlideTabW (in) ............ = '+ (emuSlideTabW/EMU).toFixed(1) );
-		//if (opts.debug) console.log('emuSlideTabH (in) ............ = '+ (emuSlideTabH/EMU).toFixed(1) );
+		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])) );
+		if (opts.debug) console.log('emuSlideTabW (in) ........ = '+ (emuSlideTabW/EMU).toFixed(1) );
+		if (opts.debug) console.log('gObjPptx.pptLayout.h ..... = '+ (gObjPptx.pptLayout.height/EMU));
 
 		// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
 		if ( !opts.colW || !Array.isArray(opts.colW) ) {
@@ -731,8 +700,6 @@ var PptxGenJS = function(){
 			}
 		}
 
-		if (opts.debug) console.log('opts.colW..... = '+ opts.colW.toString());
-
 		// STEP 4: Iterate over each line and perform magic =========================
 		// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `addSlidesForTable()` or `.addTable()`
 		inArrRows.forEach(function(row,iRow){
@@ -747,11 +714,9 @@ var PptxGenJS = function(){
 				if ( emuSlideTabH < opts.h ) emuSlideTabH = opts.h;
 			}
 			else emuSlideTabH = ( opts.h ? opts.h : (gObjPptx.pptLayout.height - inch2Emu((opts.y/EMU || arrInchMargins[0]) + arrInchMargins[2])) );
-			if (opts.debug) console.log('arrObjSlides.length ............ = '+ (arrObjSlides.length));
-			if (opts.debug) console.log('gObjPptx.pptLayout.height (in).. = '+ (gObjPptx.pptLayout.height/EMU));
-			if (opts.debug) console.log('emuSlideTabH (in) .............. = '+ (emuSlideTabH/EMU).toFixed(1));
+			if (opts.debug) console.log('* Slide '+arrObjSlides.length+': emuSlideTabH (in) ........ = '+ (emuSlideTabH/EMU).toFixed(1));
 
-			// C: Parse and store each cell's text into line array (*MAGIC HAPPENS HERE*)
+			// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
 			row.forEach(function(cell,iCell){
 				// DESIGN: Cells are henceforth {objects} with `text` and `opts`
 				var lines = [];
@@ -775,19 +740,25 @@ var PptxGenJS = function(){
 				// 2: Create a cell object for each table column
 				currRow.push({ text:'', opts:cell.opts });
 
-				// 3: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
+				// 3: Parse cell contents into lines (**MAGIC HAPPENSS HERE**)
 				var lines = parseTextToLines(cell, (opts.colW[iCell]/ONEPT));
 				arrCellsLines.push( lines );
+				//if (opts.debug) console.log('Cell:'+iCell+' - lines:'+lines.length);
 
 				// 4: Keep track of max line count within all row cells
 				if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
 				var lineHeight = inch2Emu((cell.opts.font_size || opts.font_size || DEF_FONT_SIZE) * LINEH_MODIFIER / 100);
 				// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
-				if (cell.opts && cell.opts.rowspan) lineHeight = 0;
-				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[0] ) lineHeight += cell.opts.margin[0] / intMaxLineCnt;
-				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[2] ) lineHeight += cell.opts.margin[2] / intMaxLineCnt;
+				if ( cell.opts && cell.opts.rowspan ) lineHeight = 0;
+
+				// 5: Add cell margins to lineHeight (if any)
+				if ( cell.opts.margin ) {
+					if ( cell.opts.margin[0] ) lineHeight += (cell.opts.margin[0]*ONEPT) / intMaxLineCnt;
+					if ( cell.opts.margin[2] ) lineHeight += (cell.opts.margin[2]*ONEPT) / intMaxLineCnt;
+				}
+
+				// Add to array
 				arrCellsLineHeights.push( Math.round(lineHeight) );
-				if (opts.debug) console.log('lineHeight (in)....: '+ (lineHeight/EMU).toFixed(3) + ' ... (intMaxLineCnt = '+intMaxLineCnt+')');
 			});
 
 			// D: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
@@ -796,6 +767,9 @@ var PptxGenJS = function(){
 				for (var col=0; col<arrCellsLines.length; col++) {
 					// A: Commit this slide to Presenation if table Height limit is hit
 					if ( emuTabCurrH + arrCellsLineHeights[intMaxColIdx] > emuSlideTabH ) {
+						if (opts.debug) console.log('--------------- New Slide Created ---------------');
+						if (opts.debug) console.log(' (calc) '+ (emuTabCurrH/EMU).toFixed(1) +'+'+ (arrCellsLineHeights[intMaxColIdx]/EMU).toFixed(1) +' > '+ emuSlideTabH/EMU.toFixed(1));
+						if (opts.debug) console.log('--------------- New Slide Created ---------------');
 						// 1: Add the current row to table
 						// NOTE: Edge cases can occur where we create a new slide only to have no more lines
 						// ....: and then a blank row sits at the bottom of a table!
@@ -831,9 +805,12 @@ var PptxGenJS = function(){
 					if ( arrCellsLines[col][idx] ) currRow[col].text += arrCellsLines[col][idx];
 				}
 
-				// 2: Add this new rows H to overall (The cell with the longest line array is the one we use as the determiner for overall row Height)
+				// 2: Add this new rows H to overall (use cell with the most lines as the determiner for overall row Height)
 				emuTabCurrH += arrCellsLineHeights[intMaxColIdx];
 			}
+
+			if (opts.debug) console.log('-> '+iRow+ ' row done!');
+			if (opts.debug) console.log('-> emuTabCurrH (in) . = '+ (emuTabCurrH/EMU).toFixed(1));
 
 			// E: Flush row buffer - Add the current row to table, then truncate row cell array
 			// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
@@ -1816,12 +1793,22 @@ var PptxGenJS = function(){
 				+ '    <a:xfrm><a:off x="'+ numberX +'" y="'+ numberY +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
 				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 				+ '    <a:extLst>'
-				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
-				+ '      <ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
+				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
 				+ '    </a:extLst>'
-				+ '  </p:spPr>'
-				+ '  <p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p></p:txBody>'
-				+ '</p:sp>';
+				+ '  </p:spPr>';
+			// ISSUE #68: "Page number styling"
+			strSlideXml += '<p:txBody>';
+			strSlideXml += '  <a:bodyPr/>';
+			strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
+			if ( inSlide.slideNumberObj.fontFace || inSlide.slideNumberObj.fontSize || inSlide.slideNumberObj.color ) {
+				strSlideXml += '<a:defRPr sz="'+ (inSlide.slideNumberObj.fontSize || '12') +'00">';
+				if ( inSlide.slideNumberObj.color ) strSlideXml += genXmlColorSelection(inSlide.slideNumberObj.color);
+				if ( inSlide.slideNumberObj.fontFace ) strSlideXml += '<a:latin typeface="'+ inSlide.slideNumberObj.fontFace +'"/><a:cs typeface="'+ inSlide.slideNumberObj.fontFace +'"/>';
+				strSlideXml += '</a:defRPr>';
+			}
+			strSlideXml += '</a:lvl1pPr></a:lstStyle>';
+			strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p></p:txBody>'
+			strSlideXml += '</p:sp>';
 		}
 
 		// STEP 5: Loop over all Slide.data objects and add them to this slide ===============================
@@ -1956,12 +1943,14 @@ var PptxGenJS = function(){
 							}
 						});
 					});
+					/* Only useful for rowspan/colspan testing
 					if ( objTabOpts.debug ) {
 						console.table(objTableGrid);
 						var arrText = [];
 						$.each(objTableGrid, function(i,row){ var arrRow = []; $.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
 						console.table( arrText );
 					}
+					*/
 
 					// STEP 4: Build table rows/cells ============================
 					$.each(objTableGrid, function(rIdx,rowObj){
@@ -2002,17 +1991,8 @@ var PptxGenJS = function(){
 								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
 								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
-								if ( cellOpts.margin == 0 ) cellOpts.margin = [0, 0, 0, 0]; // Allow 0 (zero) as a margin - otherwise our fancy short-circuit eval doesnt allow for this condition - solve here for doc and sanity sake
-								var cellMargin  = (cellOpts.margin && Array.isArray(cellOpts.margin) ? cellOpts.margin : (cellOpts.margin || '') );
-
-								// Margin/Padding:
-								if ( cellMargin ) {
-									var arrMargin = [];
-									if ( Array.isArray(cellMargin) ) arrMargin = cellMargin;
-									else if ( !isNaN(Number(cellMargin)) ) arrMargin = [Number(cellMargin), Number(cellMargin), Number(cellMargin), Number(cellMargin)];
-									else arrMargin = [0, 0, 0, 0];
-									cellMargin = ' marL="'+ arrMargin[3]*ONEPT +'" marR="'+ arrMargin[1]*ONEPT +'" marT="'+ arrMargin[0]*ONEPT +'" marB="'+ arrMargin[2]*ONEPT +'"';
-								}
+								var cellMargin  = (cellOpts.margin || [0,0,0,0]);
+								cellMargin = ' marL="'+ cellMargin[3]*ONEPT +'" marR="'+ cellMargin[1]*ONEPT +'" marT="'+ cellMargin[0]*ONEPT +'" marB="'+ cellMargin[2]*ONEPT +'"';
 							}
 
 							// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
@@ -2616,13 +2596,11 @@ var PptxGenJS = function(){
 	 * @returns {Object[]} slideObj - The new Slide object
 	 */
 	this.addNewSlide = function addNewSlide(inMaster, inMasterOpts) {
+		var inMasterOpts = ( inMasterOpts && typeof inMasterOpts === 'object' ? inMasterOpts : {} );
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
-
-		var inMasterOpts = inMasterOpts || {};
-		if ( inMaster && inMasterOpts && inMasterOpts.bkgd ) inMaster.bkgd = inMasterOpts.bkgd; // ISSUE#7: Allow bkgd image/color override on a per-slide basic
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {};
@@ -2635,7 +2613,7 @@ var PptxGenJS = function(){
 		gObjPptx.slides[slideNum].hasSlideNumber = false; // DEPRECATED
 
 		// ==========================================================================
-		// SLIDE METHODS:
+		// PUBLIC METHODS:
 		// ==========================================================================
 
 		slideObj.getPageNumber = function() {
@@ -2826,7 +2804,7 @@ var PptxGenJS = function(){
 			var strExtn  = "mp3";
 
 			// STEP 1: REALITY-CHECK
-			if ( !strPath && !strData && strType != 'online'  ) {
+			if ( !strPath && !strData && strType != 'online' ) {
 				console.error("ERROR: `addMedia()` requires either 'data' or 'path' values!");
 				return null;
 			}
@@ -2950,33 +2928,71 @@ var PptxGenJS = function(){
 				return null;
 			}
 
-			// STEP 2: Set default options if needed
+			// STEP 2: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
+			var arrRows = $.extend(true,[],arrTabRows);
+			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
+
+			// STEP 3: Set options
 			opt.x          = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
 			opt.y          = getSmartParseNumber( (opt.y || EMU), 'Y' );
-			opt.cx         = getSmartParseNumber( (opt.w || opt.cx || (gObjPptx.pptLayout.width - (EMU*2))), 'X' );
-			// NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-			opt.cy         = opt.h || opt.cy;
+			opt.cy         = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 			if ( opt.cy ) opt.cy = getSmartParseNumber( opt.cy, 'Y' );
-			opt.w          = opt.cx;
 			opt.h          = opt.cy;
+			opt.autoPage   = ( opt.autoPage == false ? false : true );
 			opt.font_size  = opt.font_size || 12;
-			opt.margin     = opt.marginPt || opt.margin || 0;
-			opt.autoPage   = (opt.autoPage == false ? false : true);
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
+			opt.margin     = opt.marginPt || opt.margin || DEF_CELL_MARGIN_PT;
+			if ( !isNaN(opt.margin) ) opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
 			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
 			// Set default color if needed (table option > inherit from Slide > default to black)
 			if ( !opt.color ) opt.color = opt.color || this.color || '000000';
 
-			// STEP 3: Convert units to EMU now (we use different logic in makeSlide - smartCalc is not used)
-			if ( opt.x  < 20 ) opt.x  = inch2Emu(opt.x);
-			if ( opt.y  < 20 ) opt.y  = inch2Emu(opt.y);
-			if ( opt.cx < 20 ) opt.cx = inch2Emu(opt.cx);
-			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
+			// Set/Calc table width
+			// Get slide margins - start with default values, then adjust if master or slide margins exist
+			var arrTableMargin = DEF_SLIDE_MARGIN_IN;
+			// Case 1: Master margins
+			if ( inMaster && typeof inMaster.margin !== 'undefined' ) {
+				if ( Array.isArray(inMaster.margin) ) arrTableMargin = inMaster.margin;
+				else if ( !isNaN(Number(inMaster.margin)) ) arrTableMargin = [Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin)];
+			}
+			// Case 2: Table margins
+			/* FIXME: add `margin` option to slide options
+				else if ( slideObj.margin ) {
+					if ( Array.isArray(slideObj.margin) ) arrTableMargin = slideObj.margin;
+					else if ( !isNaN(Number(slideObj.margin)) ) arrTableMargin = [Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin)];
+				}
+			*/
 
-			// STEP 4: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
-			var arrRows = $.extend(true,[],arrTabRows);
-			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
+			// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+			if ( opt.w || opt.cx ) {
+				opt.cx = getSmartParseNumber( (opt.w || opt.cx), 'X' );
+				opt.w = opt.cx;
+			}
+			else if ( opt.colW ) {
+				if ( typeof opt.colW === 'string' || typeof opt.colW === 'number' ) {
+					opt.cx = Math.floor(Number(opt.colW) * arrRows[0].length);
+					opt.w = opt.cx;
+				}
+				else if ( opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length ) {
+					console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.');
+
+					var numColWidth = Math.floor( ( (gObjPptx.pptLayout.width/EMU) - arrTableMargin[1] - arrTableMargin[3] ) / arrRows[0].length );
+					opt.colW = [];
+					for (var idx=0; idx<arrRows[0].length; idx++) { opt.colW.push( numColWidth ); }
+				}
+			}
+			else {
+				var numTabWidth = ( (gObjPptx.pptLayout.width/EMU) - arrTableMargin[1] - arrTableMargin[3] );
+				opt.cx = Math.floor(numTabWidth);
+				opt.w = opt.cx;
+			}
+
+			// STEP 4: Convert units to EMU now (we use different logic in makeSlide->table - smartCalc is not used)
+			if ( opt.x            < 20 ) opt.x  = inch2Emu(opt.x);
+			if ( opt.y            < 20 ) opt.y  = inch2Emu(opt.y);
+			if ( opt.cx           < 20 ) opt.cx = inch2Emu(opt.cx);
+			if ( opt.cy && opt.cy < 20 ) opt.cy = inch2Emu(opt.cy);
 
 			// STEP 5: Check for fine-grained formatting, disable auto-page when found
 			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
@@ -2990,38 +3006,29 @@ var PptxGenJS = function(){
 			// STEP 6: Auto-Paging: (via {options} and used internally)
 			// (used internally by `addSlidesForTable()` to not engage recursion - we've already paged the table data, just add this one)
 			if ( opt && opt.autoPage == false ) {
-				// A: Grab Slide object count
-				var slideObjNum = gObjPptx.slides[slideNum].data.length;
-
-				// B: Add data (NOTE: Use `extend` to avoid mutation)
-				gObjPptx.slides[slideNum].data[slideObjNum] = {
+				// Add data (NOTE: Use `extend` to avoid mutation)
+				gObjPptx.slides[slideNum].data[gObjPptx.slides[slideNum].data.length] = {
 					type:       'table',
 					arrTabRows: arrRows,
 					options:    $.extend(true,{},opt)
 				};
 			}
 			else {
-				// STEP 5: Loop over rows and create one+ tables as needed (ISSUE#21)
+				// STEP 5: Loop over rows and create 1-N tables as needed (ISSUE#21)
 				getSlidesForTableRows(arrRows,opt).forEach(function(arrRows,idx){
-					// A: We've got a the current Slide already, so add first slides' worth of rows to that, BUT, create new ones going forward!
-					if ( !gObjPptx.slides[slideNum+idx] ) {
-						gObjPptx.slides[slideNum+idx] = $.extend(true,{},gObjPptx.slides[slideNum]);
-						gObjPptx.slides[slideNum+idx].data = [];
-					}
+					// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
+					var currSlide = ( !gObjPptx.slides[slideNum+idx] ? addNewSlide(inMaster, inMasterOpts) : gObjPptx.slides[slideNum+idx].slide );
 
-					// B: Reset opt.y to option or margin on subsequent Slides (ISSUE#43, ISSUE#47, ISSUE#48)
-					if ( idx > 0 ) opt.y = inch2Emu( opt.newPageStartY || ( (opt.y/EMU) < DEF_SLIDE_MARGIN_IN[0] ? (opt.y/EMU) : DEF_SLIDE_MARGIN_IN[0] ) );
+					// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+					if ( idx > 0 ) opt.y = inch2Emu( opt.newPageStartY || arrTableMargin[0] );
 
-					// C: Add data (NOTE: Use `extend` to avoid mutation)
-					gObjPptx.slides[slideNum+idx].data[gObjPptx.slides[slideNum+idx].data.length] = {
-						type:       'table',
-						arrTabRows: arrRows,
-						options:    $.extend(true,{},opt)
-					};
+					// C: Add this table to new Slide
+					opt.autoPage = false;
+					currSlide.addTable(arrRows, $.extend(true,{},opt));
 				});
 			}
 
-			// LAST: Return this Slide object
+			// LAST: Return this Slide
 			return this;
 		};
 
@@ -3096,11 +3103,14 @@ var PptxGenJS = function(){
 		// POST-METHODS:
 		// ==========================================================================
 
-		// C: Add 'Master Slide' attr to Slide if a valid master was provided
-		if ( inMaster && this.masters ) {
+		// Add Master-Slide objects (if any)
+		if ( inMaster && typeof inMaster === 'object' ) {
 			// Add Slide Master objects in order
 			$.each(inMaster, function(key,val){
-				// Backgrund color/image
+				// ISSUE#7: Allow bkgd image/color override on Slide-level
+				if ( key == "bkgd" && inMasterOpts.bkgd ) val = inMasterOpts.bkgd;
+
+				// Background color/image
 				if ( key == "bkgd" && typeof val === 'object' && (val.src || val.data) ) {
 					// Allow the use of only the data key (no src reqd)
 					if (!val.src) val.src = 'preencoded.png';
@@ -3158,7 +3168,7 @@ var PptxGenJS = function(){
 			if ( inMaster.slideNumber ) slideObj.slideNumber(inMaster.slideNumber);
 		}
 
-		// LAST: Return this Slide to allow command chaining
+		// LAST: Return this Slide
 		return slideObj;
 	};
 
