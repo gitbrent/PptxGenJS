@@ -315,37 +315,38 @@ function genSlides_Table(pptx) {
 	// SLIDE 5: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [{ text:'Table Examples 5', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }], { x:0.5, y:0.13, w:12.5, h:0.3 } );
-
+		slide.addTable( [ [{ text:'Table Examples 5', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
 		slide.addText(
 			'The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.',
 			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, font_size:14 }
 		);
-
 		slide.addText("[\n"
 			+ "  { text:'1st line', options:{ font_size:24, color:'99ABCC', align:'r', breakLine:true } },\n"
 			+ "  { text:'2nd line', options:{ font_size:36, color:'FFFF00', align:'c', breakLine:true } },\n"
 			+ "  { text:'3rd line', options:{ font_size:48, color:'0088CC', align:'l' } }\n"
 			+ "]",
-			{ x:0.5, y:1.1, w:11, h:1.5, margin:0.1, font_face:'Courier', font_size:14, fill:'F1F1F1', color:'333333' }
+			{ x:1, y:1.1, w:11, h:1.5, margin:0.1, font_face:'Courier', font_size:14, fill:'F1F1F1', color:'333333' }
 		);
+
+		// Textbox: Text word-level formatting
+		slide.addText('Textbox:', { x:1, y:2.8, w:3, font_size:18, font_face:'Arial', color:'0088CC' });
 
 		var arrTextObjects = [
 			{ text:'1st line', options:{ font_size:24, color:'99ABCC', align:'r', breakLine:true } },
 			{ text:'2nd line', options:{ font_size:36, color:'FFFF00', align:'c', breakLine:true } },
 			{ text:'3rd line', options:{ font_size:48, color:'0088CC', align:'l' } }
 		];
+		slide.addText( arrTextObjects, { x:2.5, y:2.8, w:9, h:2, margin:0.1, fill:'232323' } );
 
-		// EX: Text word-level formatting
-		slide.addText( arrTextObjects, { x:0.5, y:2.75, w:9, h:2, margin:0.1, fill:'232323' } );
+		// Table cell: Use the exact same code from addText to do the same word-level formatting within a cell
+		slide.addText('Table:', { x:1, y:5, w:3, font_size:18, font_face:'Arial', color:'0088CC' });
 
-		// EX 1: Use the exact same code from addText to do the same word-level formatting within a cell
-		var opts2 = { x:0.5, y:5, w:9, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6], border:{pt:'1'}, fill:'F1F1F1' }
+		var opts2 = { x:2.5, y:5, w:9, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6], border:{pt:'1'}, fill:'F1F1F1' }
 		var arrTabRows = [
 			[
-				{ text:'Cell 1A', options:{font_face:'Arial'  } },
-				{ text:'Cell 1B', options:{font_face:'Courier'} },
-				{ text: arrTextObjects, options: { fill:'232323' } }
+				{ text:'Cell 1A',       options:{font_face:'Arial'  } },
+				{ text:'Cell 1B',       options:{font_face:'Courier'} },
+				{ text: arrTextObjects, options:{fill:'232323'      } }
 			]
 		];
 		slide.addTable(arrTabRows, opts2);
@@ -417,8 +418,8 @@ function genSlides_Table(pptx) {
 		slide.addTable( arrRows, { x:3.0, y:4.0, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: `{ newPageStartY: 0.5 }`', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:0.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
+		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: `{ newPageStartY: 1.5 }`', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:1.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, {bkgd:'CCFFCC'} );
 		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Master Page with Auto-Paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );

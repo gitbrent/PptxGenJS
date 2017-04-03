@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170401";
+	var APP_REL = "20170402";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -96,6 +96,7 @@ var PptxGenJS = function(){
 	var EMU = 914400;	// One (1) Inch - OfficeXML measures in EMU (English Metric Units)
 	var ONEPT = 12700;	// One (1) point (pt)
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -442,6 +443,7 @@ var PptxGenJS = function(){
 		var arrObjTabHeadRows = opts.arrObjTabHeadRows || '';
 		var numCols = 0;
 
+		if (opts.debug) console.log('------------------------------------');
 		if (opts.debug) console.log('opts.w ............. = '+ (opts.w||'').toString());
 		if (opts.debug) console.log('opts.colW .......... = '+ (opts.colW||'').toString());
 		if (opts.debug) console.log('opts.slideMargin ... = '+ (opts.slideMargin||'').toString());
@@ -478,8 +480,8 @@ var PptxGenJS = function(){
 
 		// STEP 2: Calc usable space/table size now that we have usable space calc'd
 		emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])) );
-		if (opts.debug) console.log('emuSlideTabW (in) ............ = '+ (emuSlideTabW/EMU).toFixed(1) );
-		//if (opts.debug) console.log('emuSlideTabH (in) ............ = '+ (emuSlideTabH/EMU).toFixed(1) );
+		if (opts.debug) console.log('emuSlideTabW (in) ........ = '+ (emuSlideTabW/EMU).toFixed(1) );
+		if (opts.debug) console.log('gObjPptx.pptLayout.h ..... = '+ (gObjPptx.pptLayout.height/EMU));
 
 		// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
 		if ( !opts.colW || !Array.isArray(opts.colW) ) {
@@ -496,8 +498,6 @@ var PptxGenJS = function(){
 			}
 		}
 
-		if (opts.debug) console.log('opts.colW..... = '+ opts.colW.toString());
-
 		// STEP 4: Iterate over each line and perform magic =========================
 		// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `addSlidesForTable()` or `.addTable()`
 		inArrRows.forEach(function(row,iRow){
@@ -512,11 +512,9 @@ var PptxGenJS = function(){
 				if ( emuSlideTabH < opts.h ) emuSlideTabH = opts.h;
 			}
 			else emuSlideTabH = ( opts.h ? opts.h : (gObjPptx.pptLayout.height - inch2Emu((opts.y/EMU || arrInchMargins[0]) + arrInchMargins[2])) );
-			if (opts.debug) console.log('arrObjSlides.length ............ = '+ (arrObjSlides.length));
-			if (opts.debug) console.log('gObjPptx.pptLayout.height (in).. = '+ (gObjPptx.pptLayout.height/EMU));
-			if (opts.debug) console.log('emuSlideTabH (in) .............. = '+ (emuSlideTabH/EMU).toFixed(1));
+			if (opts.debug) console.log('* Slide '+arrObjSlides.length+': emuSlideTabH (in) ........ = '+ (emuSlideTabH/EMU).toFixed(1));
 
-			// C: Parse and store each cell's text into line array (*MAGIC HAPPENS HERE*)
+			// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
 			row.forEach(function(cell,iCell){
 				// DESIGN: Cells are henceforth {objects} with `text` and `opts`
 				var lines = [];
@@ -540,19 +538,25 @@ var PptxGenJS = function(){
 				// 2: Create a cell object for each table column
 				currRow.push({ text:'', opts:cell.opts });
 
-				// 3: Parse cell contents into lines (**MAGIC HAPENSS HERE**)
+				// 3: Parse cell contents into lines (**MAGIC HAPPENSS HERE**)
 				var lines = parseTextToLines(cell, (opts.colW[iCell]/ONEPT));
 				arrCellsLines.push( lines );
+				//if (opts.debug) console.log('Cell:'+iCell+' - lines:'+lines.length);
 
 				// 4: Keep track of max line count within all row cells
 				if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
 				var lineHeight = inch2Emu((cell.opts.font_size || opts.font_size || DEF_FONT_SIZE) * LINEH_MODIFIER / 100);
 				// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
-				if (cell.opts && cell.opts.rowspan) lineHeight = 0;
-				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[0] ) lineHeight += cell.opts.margin[0] / intMaxLineCnt;
-				if ( Array.isArray(cell.opts.margin) && cell.opts.margin[2] ) lineHeight += cell.opts.margin[2] / intMaxLineCnt;
+				if ( cell.opts && cell.opts.rowspan ) lineHeight = 0;
+
+				// 5: Add cell margins to lineHeight (if any)
+				if ( cell.opts.margin ) {
+					if ( cell.opts.margin[0] ) lineHeight += (cell.opts.margin[0]*ONEPT) / intMaxLineCnt;
+					if ( cell.opts.margin[2] ) lineHeight += (cell.opts.margin[2]*ONEPT) / intMaxLineCnt;
+				}
+
+				// Add to array
 				arrCellsLineHeights.push( Math.round(lineHeight) );
-				if (opts.debug) console.log('lineHeight (in)....: '+ (lineHeight/EMU).toFixed(3) + ' ... (intMaxLineCnt = '+intMaxLineCnt+')');
 			});
 
 			// D: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
@@ -561,6 +565,9 @@ var PptxGenJS = function(){
 				for (var col=0; col<arrCellsLines.length; col++) {
 					// A: Commit this slide to Presenation if table Height limit is hit
 					if ( emuTabCurrH + arrCellsLineHeights[intMaxColIdx] > emuSlideTabH ) {
+						if (opts.debug) console.log('--------------- New Slide Created ---------------');
+						if (opts.debug) console.log(' (calc) '+ (emuTabCurrH/EMU).toFixed(1) +'+'+ (arrCellsLineHeights[intMaxColIdx]/EMU).toFixed(1) +' > '+ emuSlideTabH/EMU.toFixed(1));
+						if (opts.debug) console.log('--------------- New Slide Created ---------------');
 						// 1: Add the current row to table
 						// NOTE: Edge cases can occur where we create a new slide only to have no more lines
 						// ....: and then a blank row sits at the bottom of a table!
@@ -596,9 +603,12 @@ var PptxGenJS = function(){
 					if ( arrCellsLines[col][idx] ) currRow[col].text += arrCellsLines[col][idx];
 				}
 
-				// 2: Add this new rows H to overall (The cell with the longest line array is the one we use as the determiner for overall row Height)
+				// 2: Add this new rows H to overall (use cell with the most lines as the determiner for overall row Height)
 				emuTabCurrH += arrCellsLineHeights[intMaxColIdx];
 			}
+
+			if (opts.debug) console.log('-> '+iRow+ ' row done!');
+			if (opts.debug) console.log('-> emuTabCurrH (in) . = '+ (emuTabCurrH/EMU).toFixed(1));
 
 			// E: Flush row buffer - Add the current row to table, then truncate row cell array
 			// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
@@ -1313,17 +1323,8 @@ var PptxGenJS = function(){
 								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
 								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
-								if ( cellOpts.margin == 0 ) cellOpts.margin = [0, 0, 0, 0]; // Allow 0 (zero) as a margin - otherwise our fancy short-circuit eval doesnt allow for this condition - solve here for doc and sanity sake
-								var cellMargin  = (cellOpts.margin && Array.isArray(cellOpts.margin) ? cellOpts.margin : (cellOpts.margin || '') );
-
-								// Margin/Padding:
-								if ( cellMargin ) {
-									var arrMargin = [];
-									if ( Array.isArray(cellMargin) ) arrMargin = cellMargin;
-									else if ( !isNaN(Number(cellMargin)) ) arrMargin = [Number(cellMargin), Number(cellMargin), Number(cellMargin), Number(cellMargin)];
-									else arrMargin = [0, 0, 0, 0];
-									cellMargin = ' marL="'+ arrMargin[3]*ONEPT +'" marR="'+ arrMargin[1]*ONEPT +'" marT="'+ arrMargin[0]*ONEPT +'" marB="'+ arrMargin[2]*ONEPT +'"';
-								}
+								var cellMargin  = (cellOpts.margin || [0,0,0,0]);
+								cellMargin = ' marL="'+ cellMargin[3]*ONEPT +'" marR="'+ cellMargin[1]*ONEPT +'" marT="'+ cellMargin[0]*ONEPT +'" marB="'+ cellMargin[2]*ONEPT +'"';
 							}
 
 							// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
@@ -2158,7 +2159,8 @@ var PptxGenJS = function(){
 			opt.autoPage   = ( opt.autoPage == false ? false : true );
 			opt.font_size  = opt.font_size || 12;
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
-			opt.margin     = opt.marginPt || opt.margin || 0;
+			opt.margin     = opt.marginPt || opt.margin || DEF_CELL_MARGIN_PT;
+			if ( !isNaN(opt.margin) ) opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
 			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
 			// Set default color if needed (table option > inherit from Slide > default to black)
@@ -2166,17 +2168,19 @@ var PptxGenJS = function(){
 
 			// Set/Calc table width
 			// Get slide margins - start with default values, then adjust if master or slide margins exist
-			var arrMargin = [DEF_SLIDE_MARGIN_IN, DEF_SLIDE_MARGIN_IN, DEF_SLIDE_MARGIN_IN, DEF_SLIDE_MARGIN_IN];
-			// Case 1: SlideMaster margins
-			if ( inMaster && inMaster.margin ) {
-				if ( Array.isArray(inMaster.margin) ) arrMargin = inMaster.margin;
-				else if ( !isNaN(Number(inMaster.margin)) ) arrMargin = [Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin)];
+			var arrTableMargin = DEF_SLIDE_MARGIN_IN;
+			// Case 1: Master margins
+			if ( inMaster && typeof inMaster.margin !== 'undefined' ) {
+				if ( Array.isArray(inMaster.margin) ) arrTableMargin = inMaster.margin;
+				else if ( !isNaN(Number(inMaster.margin)) ) arrTableMargin = [Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin)];
 			}
-			// Case 2: Slide margins
-			else if ( slideObj.margin ) {
-				if ( Array.isArray(slideObj.margin) ) arrMargin = slideObj.margin;
-				else if ( !isNaN(Number(slideObj.margin)) ) arrMargin = [Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin)];
-			}
+			// Case 2: Table margins
+			/* FIXME: add `margin` option to slide options
+				else if ( slideObj.margin ) {
+					if ( Array.isArray(slideObj.margin) ) arrTableMargin = slideObj.margin;
+					else if ( !isNaN(Number(slideObj.margin)) ) arrTableMargin = [Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin), Number(slideObj.margin)];
+				}
+			*/
 
 			// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
 			if ( opt.w || opt.cx ) {
@@ -2191,13 +2195,13 @@ var PptxGenJS = function(){
 				else if ( opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length ) {
 					console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.');
 
-					var numColWidth = Math.floor( ( (gObjPptx.pptLayout.width/EMU) - arrMargin[1] - arrMargin[3] ) / arrRows[0].length );
+					var numColWidth = Math.floor( ( (gObjPptx.pptLayout.width/EMU) - arrTableMargin[1] - arrTableMargin[3] ) / arrRows[0].length );
 					opt.colW = [];
 					for (var idx=0; idx<arrRows[0].length; idx++) { opt.colW.push( numColWidth ); }
 				}
 			}
 			else {
-				var numTabWidth = ( (gObjPptx.pptLayout.width/EMU) - arrMargin[1] - arrMargin[3] );
+				var numTabWidth = ( (gObjPptx.pptLayout.width/EMU) - arrTableMargin[1] - arrTableMargin[3] );
 				opt.cx = Math.floor(numTabWidth);
 				opt.w = opt.cx;
 			}
@@ -2233,8 +2237,8 @@ var PptxGenJS = function(){
 					// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
 					var currSlide = ( !gObjPptx.slides[slideNum+idx] ? addNewSlide(inMaster, inMasterOpts) : gObjPptx.slides[slideNum+idx].slide );
 
-					// B: Reset opt.y (before copying below) to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-					if ( idx > 0 ) opt.y = inch2Emu( opt.newPageStartY || ( (opt.y/EMU) < DEF_SLIDE_MARGIN_IN[0] ? (opt.y/EMU) : DEF_SLIDE_MARGIN_IN[0] ) );
+					// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+					if ( idx > 0 ) opt.y = inch2Emu( opt.newPageStartY || arrTableMargin[0] );
 
 					// C: Add this table to new Slide
 					opt.autoPage = false;
