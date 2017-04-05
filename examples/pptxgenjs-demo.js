@@ -321,7 +321,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 5: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 5', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
+		slide.addTable( [ [{ text:'Table Examples 5', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
 		slide.addText(
 			'The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.',
 			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, font_size:14 }
