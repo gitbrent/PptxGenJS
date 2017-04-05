@@ -381,19 +381,17 @@ function genSlides_Table(pptx) {
 			[
 				{ text:[
 						{ text:'I am a text object with bullets ', options:{color:'CC0000', bullet:{code:'2605'}} },
-						{ text:'and i am the next text object'   , options:{color:'00CD00', bullet:{code:'25BA'}, breakLine:true} },
-						{ text:'No bullet text... '              , options:{color:'696969'} },
-						{ text:'same here.'                      , options:{color:'696969'} },
+						{ text:'and i am the next text object'   , options:{color:'00CD00', bullet:{code:'25BA'}} },
 						{ text:'Final text object w/ bullet:true', options:{color:'0000AB', bullet:true} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{font_size:36, align:'c', breakLine:true} },
-					{ text:'#2', options:{font_size:60, color:'CD0101', align:'c'} }
+					{ text:'Cell', options:{font_size:36, align:'l', breakLine:true} },
+					{ text:'#2',   options:{font_size:60, align:'r', color:'CD0101'} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{align:'c', font_size:36, font_face:'Courier', color:'dd0000', breakLine:true} },
-					{ text:'#'   , options:{align:'c', font_size:60, color:'8648cd'} },
-					{ text:'3'   , options:{align:'c', font_size:60, color:'33ccef'} }
+					{ text:'Cell', options:{font_size:36, font_face:'Courier', color:'dd0000', breakLine:true} },
+					{ text:'#'   , options:{font_size:60, color:'8648cd'} },
+					{ text:'3'   , options:{font_size:60, color:'33ccef'} }
 				]}
 			],
 			{ x:0.6, y:4.75, w:12, h:2, font_size:24, colW:[8,2,2], valign:'m', border:{pt:'1'}, fill:'F1F1F1' }
@@ -744,7 +742,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Level Formatting:", { x:0.5, y:0.65, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'1st line', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+				{ text:'1st\nline', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
 				{ text:'2nd line', options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
 				{ text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
 			],
@@ -792,9 +790,8 @@ function genSlides_Text(pptx) {
 		slide.addText(
 			[
 				{ text:'I am a text object with bullets..', options:{bullet:{code:'2605'}, color:'CC0000'} },
-				{ text:' and i am the next text object.'  , options:{bullet:{code:'25BA'}, color:'00CD00', breakLine:true} },
-				{ text:'No bullet text.. '                , options:{color:'696969'} },
-				{ text:'text object #4.'                  , options:{color:'696969'} },
+				{ text:'and I am the next text object.'   , options:{bullet:{code:'25BA'}, color:'00CD00'} },
+				{ text:'Default bullet text.. '           , options:{bullet:true, color:'696969'} },
 				{ text:'Final text object w/ bullet:true.', options:{bullet:true, color:'0000AB'} }
 			],
 			{ x:8.0, y:5.15, w:'35%', h:1.4, color:'ABABAB', margin:1 }
