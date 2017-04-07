@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170404";
+	var APP_REL = "20170406";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -1438,18 +1438,17 @@ var PptxGenJS = function(){
 				paragraphPropXml += '>'+ strXmlBullet +'</a:pPr>';
 			}
 
-			// B: Add bodyProp
-			strSlideXml += genXmlBodyProperties(textObj.options) + '<a:lstStyle/>';
-
-			// C: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
+			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
 			if ( idx == 0 ) {
+				// ISSUE#69: Adding bodyProps more than once inside <p:txBody> causes "corrupt presentation" errors in PPT 2007, PPT 2010.
+				strSlideXml += genXmlBodyProperties(textObj.options) + '<a:lstStyle/>';
 				strSlideXml += '<a:p>' + paragraphPropXml;
 			}
 			else if ( idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined') ) {
 				strSlideXml += '</a:p><a:p>' + paragraphPropXml;
 			}
 
-			// D: Inherit any main options (color, font_size, etc.)
+			// C: Inherit any main options (color, font_size, etc.)
 			// We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 			$.each(slideObj.options, function(key,val){
@@ -1457,7 +1456,7 @@ var PptxGenJS = function(){
 				if ( key != 'bullet' && !textObj.options[key] ) textObj.options[key] = val;
 			});
 
-			// E: Add formatted textrun
+			// D: Add formatted textrun
 			strSlideXml += genXmlTextRun(textObj.options, textObj.text);
 		});
 
@@ -1511,9 +1510,7 @@ var PptxGenJS = function(){
 			for ( var i = 0, total_size_i = parsedText.length; i < total_size_i; i++ ) {
 				outTextData += '<a:r>' + startInfo+ '<a:t>' + decodeXmlEntities(parsedText[i]);
 				// Stop/Start <p>aragraph as long as there is more lines ahead (otherwise its closed at the end of this function)
-				if ( (i + 1) < total_size_i ) {
-					outTextData += (opts.breakLine ? CRLF : '') + '</a:t></a:r>';
-				}
+				if ( (i + 1) < total_size_i ) outTextData += (opts.breakLine ? CRLF : '') + '</a:t></a:r>';
 			}
 			xmlTextRun = outTextData;
 		}
