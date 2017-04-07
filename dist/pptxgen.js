@@ -873,7 +873,20 @@ var PptxGenJS = function(){
 			strXml += '  </a:p>';
 			strXml += '  </c:rich>';
 			strXml += '    </c:tx>';
-			strXml += '    <c:layout/>';
+//			strXml += '    <c:layout/>';
+// TODO: title is left-aligned in PPT online
+//  algn="ctr" in <a:pPr> above didnt do anyhting
+			strXml += `		<c:layout>\
+						        <c:manualLayout>\
+						          <c:xMode val="edge"/>\
+						          <c:yMode val="edge"/>\
+						          <c:x val="0.02"/>\
+						          <c:y val="0.02"/>\
+						          <c:w val="0.95"/>\
+						          <c:h val="0.12"/>\
+						        </c:manualLayout>\
+						      </c:layout>`;
+
 			strXml += '    <c:overlay val="1"/>';
 			strXml += '    <c:spPr><a:noFill/><a:effectLst/></c:spPr>';
 			strXml += '  </c:title>';
@@ -881,7 +894,24 @@ var PptxGenJS = function(){
 		}
 
 		strXml += '<c:plotArea>';
-		strXml += '  <c:layout/>';
+
+		// Use manual layout to ensure adequate space for title/legend
+		if ( rel.opts.showTitle || rel.opts.showLegend ) {
+			strXml += '<c:layout>';
+			strXml += '  <c:manualLayout>';
+			strXml += '  <c:layoutTarget val="inner"/>';
+			strXml += '    <c:xMode val="edge"/>';
+			strXml += '    <c:yMode val="edge"/>';
+			strXml += '    <c:x val="0.15"/>';
+			strXml += '    <c:y val="0.15"/>';
+			strXml += '    <c:w val="0.85"/>';
+			strXml += '    <c:h val="0.75"/>';
+			strXml += '  </c:manualLayout>';
+			strXml += '</c:layout>';
+		}
+		else {
+			strXml += '  <c:layout/>';
+		}
 
 		// A: CHART TYPES -----------------------------------------------------------
 		switch ( rel.opts.type ) {
@@ -970,7 +1000,7 @@ var PptxGenJS = function(){
 					strXml += '</c:ser>';
 				});
 				//
-				strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace [percent] between col/colGrp // TODO: FIXME: add OPTION
+				strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace [percent] between col/colGrp // TODO: FIXME: add 'barGapWidth' OPTION
 				strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('stacked') > 0 ? 100 : 0) +'"/>';
 				strXml += '  <c:axId val="2094734552"/>';
 				strXml += '  <c:axId val="2094734553"/>';
@@ -980,7 +1010,7 @@ var PptxGenJS = function(){
 				{
 					strXml += '<c:catAx>';
 					strXml += '  <c:axId val="2094734552"/>';
-					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'maxMin')) +'"/></c:scaling>';
+					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'b' : 'l') +'"/>';
 					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
@@ -1018,7 +1048,10 @@ var PptxGenJS = function(){
 				{
 					strXml += '<c:valAx>';
 					strXml += '  <c:axId val="2094734553"/>';
-					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+					strXml += '  <c:scaling>';
+					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
+					if (rel.opts.barMaxVal) strXml += '    <c:max val="'+ rel.opts.barMaxVal +'"/>';
+					strXml += '  </c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
 					strXml += '<c:majorGridlines>\
@@ -1238,10 +1271,10 @@ var PptxGenJS = function(){
 			        <c:manualLayout>\
 			          <c:xMode val="edge"/>\
 			          <c:yMode val="edge"/>\
-			          <c:x val="0.0395149"/>\
-			          <c:y val="0"/>\
-			          <c:w val="0.909933"/>\
-			          <c:h val="0.0698062"/>\
+			          <c:x val="0.05"/>\
+			          <c:y val="0.00"/>\
+			          <c:w val="0.95"/>\
+			          <c:h val="0.12"/>\
 			        </c:manualLayout>\
 			      </c:layout>\
 			      <c:overlay val="1"/>\

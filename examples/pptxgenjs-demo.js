@@ -529,9 +529,8 @@ function genSlides_Chart(pptx) {
 
 		titleColor   : '33CF22',
 		titleFontFace: 'Helvetica Neue',
-		titleFontSize: 24,
+		titleFontSize: 16,
 
-		showLegend: true,
 		showTitle : true,
 		title: 'Sales by Region'
 	};
@@ -540,6 +539,7 @@ function genSlides_Chart(pptx) {
 	// BTM-RIGHT: V/col - TITLE and LEGEND
 	var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
 		barDir: 'col',
+		barMaxVal: 5000,
 
 		catAxisLabelColor   : '0000CC',
 		catAxisLabelFontFace: 'Times',
@@ -547,10 +547,7 @@ function genSlides_Chart(pptx) {
 		catAxisOrientation  : 'minMax',
 
 		showLegend: true,
-		legendPos:  'b',
-
-		showTitle: true,
-		title    : 'Rent by State'
+		legendPos:  't'
 	};
 	slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 
