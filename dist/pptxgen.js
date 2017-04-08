@@ -2206,6 +2206,8 @@ var PptxGenJS = function(){
 					var numColWidth = Math.floor( ( (gObjPptx.pptLayout.width/EMU) - arrTableMargin[1] - arrTableMargin[3] ) / arrRows[0].length );
 					opt.colW = [];
 					for (var idx=0; idx<arrRows[0].length; idx++) { opt.colW.push( numColWidth ); }
+					opt.cx = Math.floor(numColWidth * arrRows[0].length);
+					opt.w = opt.cx;
 				}
 			}
 			else {
