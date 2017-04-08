@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170406";
+	var APP_REL = "20170408";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -192,7 +192,10 @@ var PptxGenJS = function(){
 		// STEP 3: Push the PPTX file to browser
 		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 		if ( NODEJS ) {
-			zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+			if ( callback )
+				zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+			else
+				zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
 		}
 		else {
 			zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });

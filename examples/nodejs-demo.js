@@ -44,13 +44,13 @@ runEveryTest();
 // STEP 3: Export giant demo file
 
 // A: Inline save
-//pptx.save( 'Node_Demo_'+getTimestamp() );
+pptx.save( 'Node_Demo_NoCallback'+getTimestamp() );
 
 // B: or Save using callback function
 //pptx.save( 'Node_Demo_'+getTimestamp(), function(filename){ console.log('Created: '+filename); } );
 
 // C: or use a predefined callback function
-pptx.save( 'Node_Demo_'+getTimestamp(), saveCallback );
+pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 
 // **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set

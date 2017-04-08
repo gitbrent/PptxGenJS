@@ -1,7 +1,7 @@
 /**
  * NAME: pptxgenjs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Mar 11, 2017
+ * DATE: Apr 08, 2017
  * DESC: Common test/demo slides for all library features
  * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 **/
