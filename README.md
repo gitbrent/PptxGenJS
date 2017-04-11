@@ -363,8 +363,11 @@ slide.addText(
 
 // EX: Hyperlinks
 slide.addText(
-    { text:'PptxGenJS Project', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } },
-	x:1.0, y:1.0, w:5, h:1
+    {
+        text: 'PptxGenJS Project',
+        options: { hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } }
+    },
+    x:1.0, y:1.0, w:5, h:1
 );
 
 // EX: Drop/Outer Shadow
