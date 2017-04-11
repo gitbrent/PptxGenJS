@@ -293,6 +293,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
+| `hyperlink`  | string  |         |           | add hyperlink       | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
 | `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |
@@ -332,7 +333,7 @@ slide.addText(
 // EX: Format some text
 slide.addText('Hello World!', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
 
-// EX: Multiline Text / Line Breaks - use either "\r" or "\n"
+// EX: Multiline Text / Line Breaks - use "\n" to create line breaks inside text strings
 slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
 
 // EX: Format individual words or lines by passing an array of text objects with `text` and `options`
@@ -357,6 +358,12 @@ slide.addText(
         { text:'I have a normal bullet'  , options:{bullet:true, color:'0000AB'} }
     ],
     { x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
+);
+
+// EX: Hyperlinks
+slide.addText(
+    { text:'PptxGenJS Project', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } },
+	x:1.0, y:1.0, w:5, h:1
 );
 
 // EX: Drop/Outer Shadow
@@ -843,6 +850,14 @@ The time needed to read/encode images can be completely eliminated by pre-encodi
 Pre-encode images into a base64 string (eg: 'image/png;base64,iVBORw[...]=') for use as the `data` option value.
 This will both reduce dependencies (who needs another image asset to keep track of?) and provide a performance
 boost (no time will need to be consumed reading and encoding the image).
+
+**************************************************************************************************
+# Building with Webpack/Typescript
+
+Add this to your webpack config to avoid a module resolution error:
+`node: { fs: "empty" }`
+
+[See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
 
 **************************************************************************************************
 # Issues / Suggestions
