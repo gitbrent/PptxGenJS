@@ -77,6 +77,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
+- [Building with Webpack/Typescript](#building-with-webpacktypescript)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Development Roadmap](#development-roadmap)
