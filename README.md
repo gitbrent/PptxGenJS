@@ -855,7 +855,7 @@ boost (no time will need to be consumed reading and encoding the image).
 **************************************************************************************************
 # Building with Webpack/Typescript
 
-Add this to your webpack config to avoid a module resolution error:
+Add this to your webpack config to avoid a module resolution error:  
 `node: { fs: "empty" }`
 
 [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
