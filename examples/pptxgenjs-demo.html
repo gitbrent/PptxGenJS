@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono" rel="stylesheet">
-	<!-- Uncomment these 3 for IE11 - line above isn't supported
+	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
@@ -163,6 +163,12 @@
 			pptx.save( 'tabNoSyle_'+getTimestamp() );
 		}
 
+		function table2slidesBullets() {
+			var pptx = new PptxGenJS();
+			pptx.addSlidesForTable('tableWithBullets');
+			pptx.save( 'tabBullets_'+getTimestamp() );
+		}
+
 		function table2slides1() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
@@ -283,35 +289,27 @@
 
 			$('#demo-sandbox').html('<pre class="prettyprint" style="margin:0 !important; width:auto; padding:10px; border-radius:0;">\n'
 				+ "var pptx = new PptxGenJS();\n"
-				+ "pptx.setAuthor('Brent Ely');\n"
-				+ "pptx.setRevision('15');\n"
 				+ "pptx.setLayout('LAYOUT_WIDE');\n"
 				+ "var slide = pptx.addNewSlide();\n"
-				+ "// Custom Slide sizes are supported. Just provide 3 options:\n"
+				+ "// Custom slide sizes are supported! Just provide 3 options:\n"
 				+ "// pptx.setLayout({ name:'A3', width:16.5, height:11.7 });\n"
-				+ "\n"
-				+ "// Set Slide background color and default text colors:\n"
-				+ "slide.bkgd = 'F1F1F1';\n"
-				+ "slide.color = 'CC00FF';\n"
-				+ "slide.slideNumber({ x:0.5, y:'90%' });\n"
-				+ "slide.slideNumber({ x:0.5, y:'90%', fontSize:32, fontFace:'Courier', color:'CF0101' });\n"
-				+ "\n"
-				+ "slide.addText('RECTANGLE', {shape:pptx.shapes.RECTANGLE, x:0.5, y:4.2, w:2.25, h:2.0, fill:'006699', align:'c', font_size:14});\n"
 				+ "\n"
 				+ "slide.addText(\n"
 				+ " [\n"
 				+ "  { text:'word-level\\nformatting', options:{ font_size:36, font_face:'Arial', color:'99ABCC', align:'r', breakLine:true } },\n"
-				+ "  { text:'...in the same textbox', options:{ font_size:48, font_face:'Times', color:'FFFF00', align:'c' } }\n"
+				+ "  { text:'...in the same textbox.', options:{ font_size:48, font_face:'Times', color:'FFFF00', align:'c' } }\n"
 				+ " ],\n"
-				+ " { x:0.5, y:0.5, w:8.5, h:2.5, margin:0.1, fill:'232323' }\n"
+				+ " { x:0.5, y:0.5, w:9, h:3, margin:0.2, fill:'232323' }\n"
 				+ ");\n"
 				+ "\n"
-				+ "var opts2 = {x:4.2, y:4.2, w:8, h:3, margin:0, align:'center', valign:'middle', font_size:18, border:{pt:'1'}, fill:'F1F1F1'}\n"
-				+ "var rows2 = [\n"
-				+ "	[ {text:'A1+A2', options:{rowspan:2}}, {text:'B1+B2', options:{rowspan:2}}, 'C1' ],\n"
-				+ "	[ 'C2' ]\n"
-				+ "];\n"
-				+ "slide.addTable(rows2, opts2);\n"
+				+ "slide.addText(\n"
+				+ " [\n"
+				+ "  { text:'Visit the ' },\n"
+				+ "  { text:'PptxGenJS Project', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } },\n"
+				+ "  { text:' !' },\n"
+				+ " ],\n"
+				+ " { x:0.5, y:4.0, w:9, h:1, margin:0.5, fill:'F1F1F1', font_size:18 }\n"
+				+ ");\n"
 				+ "\n"
 				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
 				+ "</pre>\n"
@@ -493,8 +491,10 @@
 					    	<legend>Shape Objects</legend>
 
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Major Shapes without Text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Borders, lines and arrow heads</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shapes: Horizaontal-Flipped, With and Without Text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shape Borders</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lines: With and Without Arrowheads</div>
 
 							<h3>Slide 2</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Misc Shapes with Text</div>
@@ -505,8 +505,10 @@
 							<legend>Text Objects</legend>
 
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Font Face/Color Combos, Bullets, Shadow</div>
-							<div class="chkRow"><div class="svgCheck"></div>Bullets: Number, text and multi-line</div>
+							<div class="chkRow"><div class="svgCheck"></div>Word-Level Formatting</div>
+							<div class="chkRow"><div class="svgCheck"></div>Multi-Line Text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Bullets: Regular and Custom</div>
+							<div class="chkRow"><div class="svgCheck"></div>Hyperlinks: With and Without Tooltip</div>
 
 							<h3>Slide 2</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Text Formatting, Colors and Alignments</div>
@@ -620,10 +622,53 @@
 					        </tr>
 					    </thead>
 					</table>
+					<div style="text-align:center; padding:20px;">
+						<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()" value="Un-Styled Table Demo">
+					</div>
 				</div>
-				<div style="text-align:center; padding:20px;">
-					<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()" value="Un-Styled Table Demo">
+
+				<!--
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Table With Bullets
 				</div>
+				<div class="sectionBox">
+					<table id="tableWithBullets" style="width:50%; font-family:Arial;">
+						<tbody>
+							<tr>
+								<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+									<ul>
+										<li><b>Bold Text</b></li>
+										<ol>
+											<li>Nested</li>
+											<li>Nested</li>
+											<li>Nested</li>
+										</ol>
+										<li><u>Underline Text</u></li>
+									</ul>
+								</td>
+								<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+									<ul>
+										<li>Level 1
+											<ul>
+												<li>Level 2
+													<ul>
+														<li><a href="https://google.com">Level 3 Link</a></li>
+														<li><a href="https://amazon.com">Level 3 Link</a></li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div style="text-align:center; padding:20px;">
+						<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesBullets()" value="Bullet Table Demo">
+					</div>
+				</div>
+				-->
 			</div>
 		</div>
 	</div>

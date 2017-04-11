@@ -44,7 +44,7 @@ runEveryTest();
 // STEP 3: Export giant demo file
 
 // A: Inline save
-pptx.save( 'Node_Demo_NoCallback'+getTimestamp() );
+//pptx.save( 'Node_Demo_NoCallback'+getTimestamp() );
 
 // B: or Save using callback function
 //pptx.save( 'Node_Demo_'+getTimestamp(), function(filename){ console.log('Created: '+filename); } );
