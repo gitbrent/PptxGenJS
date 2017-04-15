@@ -1,7 +1,7 @@
 /**
  * NAME: pptxgenjs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Mar 11, 2017
+ * DATE: Apr 10, 2017
  * DESC: Common test/demo slides for all library features
  * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 **/
@@ -736,37 +736,49 @@ function genSlides_Text(pptx) {
 		// LEFT COLUMN ------------------------------------------------------------
 
 		// 1: Multi-Line Formatting
-		slide.addText("Line-Level Formatting:", { x:0.5, y:0.65, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Word-Level Formatting:", { x:0.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
 				{ text:'1st\nline', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
 				{ text:'2nd line', options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
 				{ text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
 			],
-			{ x:0.5, y:1.1, w:6, h:2.25, margin:0.1, fill:'232323' }
+			{ x:0.5, y:0.85, w:6, h:2.25, margin:0.1, fill:'232323' }
 		);
 
 		// 2: Line-Break Test
-		slide.addText("Line-Breaks:", { x:0.5, y:3.6, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Line-Breaks:", { x:0.5, y:3.35, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
-			{ x:0.5, y:4.0, w:6, h:1.75, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
+			{ x:0.5, y:3.75, w:6, h:1.75, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
 		);
 
-		// 3: Text Effects: Shadow
+		// 3: Hyperlinks
+		slide.addText("Hyperlinks:", { x:0.5, y:5.9, w:1.75, h:0.35, color:'0088CC' });
+		slide.addText(
+			[
+				{ text:'Visit the ' },
+				{ text:'PptxGenJS Project', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } },
+				{ text:' or ' },
+				{ text:'(no tooltip)', options:{hyperlink:{url:'https://github.com/gitbrent'}} }
+			],
+			{ x:2.25, y:5.9, w:4.25, h:0.55, margin:0.1, fill:'F1F1F1', font_size:14 }
+		);
+
+		// 4: Text Effects: Shadow
 		var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
-		slide.addText("Text Shadow:", { x:0.5, y:6.2, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Text Shadow:", { x:0.5, y:6.74, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
-			{ x:0.5, y:6.6, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
+			{ x:2.1, y:6.65, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
 		);
 
 		// RIGHT COLUMN ------------------------------------------------------------
 
 		// 4: Regular bullets
 		slide.addText("Bullets:", { x:7.5, y:0.65, w:'40%', h:0.38, color:'0088CC' });
-		slide.addText(12345                  , { x:8.0, y:1.1, w:'30%', h:0.5, color:'0000DE', font_face:"Courier New", bullet:true });
-		slide.addText('String (number above)', { x:8.0, y:1.4, w:'30%', h:0.5, color:'00AA00', bullet:true });
+		slide.addText(12345                  , { x:8.0, y:1.05, w:'30%', h:0.5, color:'0000DE', font_face:"Courier New", bullet:true });
+		slide.addText('String (number above)', { x:8.0, y:1.35, w:'30%', h:0.5, color:'00AA00', bullet:true });
 
 		// 5: Bullets: Text With Line-Breaks
 		slide.addText("Bullets with line-breaks:", { x:7.5, y:2.0, w:'40%', h:0.38, color:'0088CC' });

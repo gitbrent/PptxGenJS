@@ -5,7 +5,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono" rel="stylesheet">
-	<!-- Uncomment these 3 for IE11 - line above isn't supported
+	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
@@ -161,6 +161,12 @@
 			var pptx = new PptxGenJS();
 			pptx.addSlidesForTable('tabNoStyle');
 			pptx.save( 'tabNoSyle_'+getTimestamp() );
+		}
+
+		function table2slidesBullets() {
+			var pptx = new PptxGenJS();
+			pptx.addSlidesForTable('tableWithBullets');
+			pptx.save( 'tabBullets_'+getTimestamp() );
 		}
 
 		function table2slides1() {
@@ -527,8 +533,10 @@
 					    	<legend>Shape Objects</legend>
 
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Major Shapes without Text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Borders, lines and arrow heads</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shapes: Horizaontal-Flipped, With and Without Text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shape Borders</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lines: With and Without Arrowheads</div>
 
 							<h3>Slide 2</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Misc Shapes with Text</div>
@@ -539,8 +547,10 @@
 							<legend>Text Objects</legend>
 
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Font Face/Color Combos, Bullets, Shadow</div>
-							<div class="chkRow"><div class="svgCheck"></div>Bullets: Number, text and multi-line</div>
+							<div class="chkRow"><div class="svgCheck"></div>Word-Level Formatting</div>
+							<div class="chkRow"><div class="svgCheck"></div>Multi-Line Text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Bullets: Regular and Custom</div>
+							<div class="chkRow"><div class="svgCheck"></div>Hyperlinks: With and Without Tooltip</div>
 
 							<h3>Slide 2</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Text Formatting, Colors and Alignments</div>
@@ -654,10 +664,53 @@
 					        </tr>
 					    </thead>
 					</table>
+					<div style="text-align:center; padding:20px;">
+						<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()" value="Un-Styled Table Demo">
+					</div>
 				</div>
-				<div style="text-align:center; padding:20px;">
-					<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()" value="Un-Styled Table Demo">
+
+				<!--
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Table With Bullets
 				</div>
+				<div class="sectionBox">
+					<table id="tableWithBullets" style="width:50%; font-family:Arial;">
+						<tbody>
+							<tr>
+								<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+									<ul>
+										<li><b>Bold Text</b></li>
+										<ol>
+											<li>Nested</li>
+											<li>Nested</li>
+											<li>Nested</li>
+										</ol>
+										<li><u>Underline Text</u></li>
+									</ul>
+								</td>
+								<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+									<ul>
+										<li>Level 1
+											<ul>
+												<li>Level 2
+													<ul>
+														<li><a href="https://google.com">Level 3 Link</a></li>
+														<li><a href="https://amazon.com">Level 3 Link</a></li>
+													</ul>
+												</li>
+											</ul>
+										</li>
+									</ul>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<div style="text-align:center; padding:20px;">
+						<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesBullets()" value="Bullet Table Demo">
+					</div>
+				</div>
+				-->
 			</div>
 		</div>
 	</div>

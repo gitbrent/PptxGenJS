@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.4.0";
-	var APP_REL = "20170406";
+	var APP_REL = "20170410";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -97,11 +97,12 @@ var PptxGenJS = function(){
 	//
 	var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 	var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
-	var DEF_FONT_SIZE = 12;
-	var EMU = 914400;	// One (1) Inch - OfficeXML measures in EMU (English Metric Units)
-	var ONEPT = 12700;	// One (1) point (pt)
-	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+	var EMU = 914400;  // One (1) Inch - OfficeXML measures in EMU (English Metric Units)
+	var ONEPT = 12700; // One (1) point (pt)
+	//
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
+	var DEF_FONT_SIZE = 12;
+	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -498,6 +499,38 @@ var PptxGenJS = function(){
 
 		// LAST: Default value
 		return 0;
+	}
+
+	function createHyperlinkRels(inText, slideRels) {
+		var arrTextObjects = [];
+
+		if ( typeof inText === 'string' || typeof inText === 'number' ) return;
+		// IMPORTANT: Check for isArray before typeof=object, or we'll exhaust recursion!
+		else if ( Array.isArray(inText) ) arrTextObjects = inText;
+		else if ( typeof inText === 'object' ) arrTextObjects = [inText];
+
+		arrTextObjects.forEach(function(text,idx){
+			// `text` can be an array of other `text` objects (table cell word-level formatting), so use recursion
+			if ( Array.isArray(text) ) createHyperlinkRels(text, slideRels);
+			else if ( typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId ) {
+				if ( typeof text.options.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
+				else if ( !text.options.hyperlink.url || typeof text.options.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+				else {
+					var intRels = 1;
+					gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
+					var intRelId = intRels+1;
+
+					slideRels.push({
+						type: 'hyperlink',
+						data: 'dummy',
+						rId:  intRelId,
+						Target: text.options.hyperlink.url
+					});
+
+					text.options.hyperlink.rId = intRelId;
+				}
+			}
+		});
 	}
 
 	/**
@@ -1521,12 +1554,12 @@ var PptxGenJS = function(){
 		var paraProp = '';
 		var parsedText;
 
-		// Build runProperties
+		// BEGIN runProperties
 		var startInfo = '<a:rPr lang="en-US" ';
 		startInfo += ( opts.bold      ? ' b="1"' : '' );
 		startInfo += ( opts.font_size ? ' sz="'+opts.font_size+'00"' : '' );
 		startInfo += ( opts.italic    ? ' i="1"' : '' );
-		startInfo += ( opts.underline ? ' u="sng"' : '' );
+		startInfo += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
 		// not doc in API yet: startInfo += ( opts.char_spacing ? ' spc="' + (text_info.char_spacing * 100) + '" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 		startInfo += ' dirty="0" smtClean="0">';
 		// Color and Font are children of <a:rPr>, so add them now before closing the runProperties tag
@@ -1534,6 +1567,19 @@ var PptxGenJS = function(){
 			if ( opts.color     ) startInfo += genXmlColorSelection( opts.color );
 			if ( opts.font_face ) startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0"/><a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="0"/>';
 		}
+
+		// Hyperlink support
+		if ( opts.hyperlink ) {
+			if ( typeof opts.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ");
+			else if ( !opts.hyperlink.url || typeof opts.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+			else if ( opts.hyperlink.url ) {
+				startInfo += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>';
+				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? opts.hyperlink.tooltip : '') +'" history="1" highlightClick="0" endSnd="0"/>';
+				// FIXME: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..? 20170410)
+			}
+		}
+
+		// END runProperties
 		startInfo += '</a:rPr>';
 
 		// LINE-BREAKS/MULTI-LINE: Split text into multi-p:
@@ -2337,6 +2383,9 @@ var PptxGenJS = function(){
 				else
 					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
 			}
+			else if ( rel.type.toLowerCase().indexOf('hyperlink') > -1 ) {
+				strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>';
+			}
 		});
 
 		strXml += '</Relationships>'+CRLF;
@@ -2954,6 +3003,7 @@ var PptxGenJS = function(){
 			return this;
 		};
 
+		// RECURSIVE: (sometimes)
 		// WARN: DEPRECATED: Will soon combine 2nd and 3rd arguments into single {object} (20161216-v1.1.2) (1.5 or 2.0 at the latest)
 		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
 		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
@@ -3018,6 +3068,8 @@ var PptxGenJS = function(){
 					var numColWidth = Math.floor( ( (gObjPptx.pptLayout.width/EMU) - arrTableMargin[1] - arrTableMargin[3] ) / arrRows[0].length );
 					opt.colW = [];
 					for (var idx=0; idx<arrRows[0].length; idx++) { opt.colW.push( numColWidth ); }
+					opt.cx = Math.floor(numColWidth * arrRows[0].length);
+					opt.w = opt.cx;
 				}
 			}
 			else {
@@ -3041,7 +3093,10 @@ var PptxGenJS = function(){
 				});
 			});
 
-			// STEP 6: Auto-Paging: (via {options} and used internally)
+			// STEP 6: Create hyperlink rels
+			createHyperlinkRels(arrRows, gObjPptx.slides[slideNum].rels);
+
+			// STEP 7: Auto-Paging: (via {options} and used internally)
 			// (used internally by `addSlidesForTable()` to not engage recursion - we've already paged the table data, just add this one)
 			if ( opt && opt.autoPage == false ) {
 				// Add data (NOTE: Use `extend` to avoid mutation)
@@ -3052,7 +3107,7 @@ var PptxGenJS = function(){
 				};
 			}
 			else {
-				// STEP 5: Loop over rows and create 1-N tables as needed (ISSUE#21)
+				// Loop over rows and create 1-N tables as needed (ISSUE#21)
 				getSlidesForTableRows(arrRows,opt).forEach(function(arrRows,idx){
 					// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
 					var currSlide = ( !gObjPptx.slides[slideNum+idx] ? addNewSlide(inMaster, inMasterOpts) : gObjPptx.slides[slideNum+idx].slide );
@@ -3132,6 +3187,9 @@ var PptxGenJS = function(){
 				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
 				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
 			}
+
+			// STEP 4: Create hyperlink rels
+			createHyperlinkRels(text, gObjPptx.slides[slideNum].rels);
 
 			// LAST: Return
 			return this;
