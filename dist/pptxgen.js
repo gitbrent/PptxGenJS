@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.4.0";
-	var APP_REL = "20170410";
+	var APP_VER = "1.5.0";
+	var APP_REL = "20170416";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -371,7 +371,7 @@ var PptxGenJS = function(){
 						});
 					}) );
 				}
-				else if ( rel.type != 'online' ) {
+				else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
 					// A: Loop vars
 					var data = rel.data;
 
@@ -391,7 +391,10 @@ var PptxGenJS = function(){
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 			if ( NODEJS ) {
-				zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+				if ( callback )
+					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+				else
+					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
 			}
 			else {
 				zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });
@@ -462,84 +465,6 @@ var PptxGenJS = function(){
 		if (inches > 100) return inches;
 		if ( typeof inches == 'string' ) inches = Number( inches.replace(/in*/gi,'') );
 		return Math.round(EMU * inches);
-	}
-
-	function getShapeInfo(shapeName) {
-		if ( !shapeName ) return gObjPptxShapes.RECTANGLE;
-
-		if ( typeof shapeName == 'object' && shapeName.name && shapeName.displayName && shapeName.avLst ) return shapeName;
-
-		if ( gObjPptxShapes[shapeName] ) return gObjPptxShapes[shapeName];
-
-		var objShape = gObjPptxShapes.filter(function(obj){ return obj.name == shapeName || obj.displayName; })[0];
-		if ( typeof objShape !== 'undefined' && objShape != null ) return objShape;
-
-		return gObjPptxShapes.RECTANGLE;
-	}
-
-	function getSmartParseNumber(inVal, inDir) {
-		// FIRST: Convert string numeric value if reqd
-		if ( typeof inVal == 'string' && !isNaN(Number(inVal)) ) inVal = Number(inVal);
-
-		// CASE 1: Number in inches
-		// Figure any number less than 100 is inches
-		if ( typeof inVal == 'number' && inVal < 100 ) return inch2Emu(inVal);
-
-		// CASE 2: Number is already converted to something other than inches
-		// Figure any number greater than 100 is not inches! :)  Just return it (its EMU already i guess??)
-		if ( typeof inVal == 'number' && inVal >= 100 ) return inVal;
-
-		// CASE 3: Percentage (ex: '50%')
-		if ( typeof inVal == 'string' && inVal.indexOf('%') > -1 ) {
-			if ( inDir && inDir == 'X') return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.width  );
-			if ( inDir && inDir == 'Y') return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.height );
-			// Default: Assume width (x/cx)
-			return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.width );
-		}
-
-		// LAST: Default value
-		return 0;
-	}
-
-	function createHyperlinkRels(inText, slideRels) {
-		var arrTextObjects = [];
-
-		if ( typeof inText === 'string' || typeof inText === 'number' ) return;
-		// IMPORTANT: Check for isArray before typeof=object, or we'll exhaust recursion!
-		else if ( Array.isArray(inText) ) arrTextObjects = inText;
-		else if ( typeof inText === 'object' ) arrTextObjects = [inText];
-
-		arrTextObjects.forEach(function(text,idx){
-			// `text` can be an array of other `text` objects (table cell word-level formatting), so use recursion
-			if ( Array.isArray(text) ) createHyperlinkRels(text, slideRels);
-			else if ( typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId ) {
-				if ( typeof text.options.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
-				else if ( !text.options.hyperlink.url || typeof text.options.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
-				else {
-					var intRels = 1;
-					gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
-					var intRelId = intRels+1;
-
-					slideRels.push({
-						type: 'hyperlink',
-						data: 'dummy',
-						rId:  intRelId,
-						Target: text.options.hyperlink.url
-					});
-
-					text.options.hyperlink.rId = intRelId;
-				}
-			}
-		});
-	}
-
-	/**
-	 * DESC: Replace special XML characters with HTML-encoded strings
-	 */
-	function decodeXmlEntities(inStr) {
-		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
-		if ( typeof inStr === 'undefined' || inStr == null ) return "";
-		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
 	}
 
 	function getSizeFromImage(inImgUrl) {
@@ -626,6 +551,84 @@ var PptxGenJS = function(){
 
 		// STEP 2: Continue export process if all rels have base64 `data` now
 		if ( intEmpty == 0 ) doExportPresentation();
+	}
+
+	function getShapeInfo(shapeName) {
+		if ( !shapeName ) return gObjPptxShapes.RECTANGLE;
+
+		if ( typeof shapeName == 'object' && shapeName.name && shapeName.displayName && shapeName.avLst ) return shapeName;
+
+		if ( gObjPptxShapes[shapeName] ) return gObjPptxShapes[shapeName];
+
+		var objShape = gObjPptxShapes.filter(function(obj){ return obj.name == shapeName || obj.displayName; })[0];
+		if ( typeof objShape !== 'undefined' && objShape != null ) return objShape;
+
+		return gObjPptxShapes.RECTANGLE;
+	}
+
+	function getSmartParseNumber(inVal, inDir) {
+		// FIRST: Convert string numeric value if reqd
+		if ( typeof inVal == 'string' && !isNaN(Number(inVal)) ) inVal = Number(inVal);
+
+		// CASE 1: Number in inches
+		// Figure any number less than 100 is inches
+		if ( typeof inVal == 'number' && inVal < 100 ) return inch2Emu(inVal);
+
+		// CASE 2: Number is already converted to something other than inches
+		// Figure any number greater than 100 is not inches! :)  Just return it (its EMU already i guess??)
+		if ( typeof inVal == 'number' && inVal >= 100 ) return inVal;
+
+		// CASE 3: Percentage (ex: '50%')
+		if ( typeof inVal == 'string' && inVal.indexOf('%') > -1 ) {
+			if ( inDir && inDir == 'X') return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.width  );
+			if ( inDir && inDir == 'Y') return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.height );
+			// Default: Assume width (x/cx)
+			return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.width );
+		}
+
+		// LAST: Default value
+		return 0;
+	}
+
+	/**
+	 * DESC: Replace special XML characters with HTML-encoded strings
+	 */
+	function decodeXmlEntities(inStr) {
+		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
+		if ( typeof inStr === 'undefined' || inStr == null ) return "";
+		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
+	}
+
+	function createHyperlinkRels(inText, slideRels) {
+		var arrTextObjects = [];
+
+		if ( typeof inText === 'string' || typeof inText === 'number' ) return;
+		// IMPORTANT: Check for isArray before typeof=object, or we'll exhaust recursion!
+		else if ( Array.isArray(inText) ) arrTextObjects = inText;
+		else if ( typeof inText === 'object' ) arrTextObjects = [inText];
+
+		arrTextObjects.forEach(function(text,idx){
+			// `text` can be an array of other `text` objects (table cell word-level formatting), so use recursion
+			if ( Array.isArray(text) ) createHyperlinkRels(text, slideRels);
+			else if ( typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId ) {
+				if ( typeof text.options.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
+				else if ( !text.options.hyperlink.url || typeof text.options.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+				else {
+					var intRels = 1;
+					gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
+					var intRelId = intRels+1;
+
+					slideRels.push({
+						type: 'hyperlink',
+						data: 'dummy',
+						rId:  intRelId,
+						Target: text.options.hyperlink.url
+					});
+
+					text.options.hyperlink.rId = intRelId;
+				}
+			}
+		});
 	}
 
 	/**
@@ -905,25 +908,11 @@ var PptxGenJS = function(){
 			strXml += '    </a:r>';
 			strXml += '  </a:p>';
 			strXml += '  </c:rich>';
-			strXml += '    </c:tx>';
-//			strXml += '    <c:layout/>';
-// TODO: title is left-aligned in PPT online
-//  algn="ctr" in <a:pPr> above didnt do anyhting
-			strXml += `		<c:layout>\
-						        <c:manualLayout>\
-						          <c:xMode val="edge"/>\
-						          <c:yMode val="edge"/>\
-						          <c:x val="0.02"/>\
-						          <c:y val="0.02"/>\
-						          <c:w val="0.95"/>\
-						          <c:h val="0.12"/>\
-						        </c:manualLayout>\
-						      </c:layout>`;
-
-			strXml += '    <c:overlay val="1"/>';
-			strXml += '    <c:spPr><a:noFill/><a:effectLst/></c:spPr>';
-			strXml += '  </c:title>';
-			strXml += '  <c:autoTitleDeleted val="1"/>';
+			strXml += ' </c:tx>';
+			strXml += ' <c:layout/>';
+			strXml += ' <c:overlay val="0"/>';
+			strXml += '</c:title>';
+			strXml += '<c:autoTitleDeleted val="0"/>';
 		}
 
 		strXml += '<c:plotArea>';
@@ -932,7 +921,7 @@ var PptxGenJS = function(){
 		if ( rel.opts.showTitle || rel.opts.showLegend ) {
 			strXml += '<c:layout>';
 			strXml += '  <c:manualLayout>';
-			strXml += '  <c:layoutTarget val="inner"/>';
+			strXml += '    <c:layoutTarget val="inner"/>';
 			strXml += '    <c:xMode val="edge"/>';
 			strXml += '    <c:yMode val="edge"/>';
 			strXml += '    <c:x val="0.15"/>';
@@ -1124,6 +1113,10 @@ var PptxGenJS = function(){
 				}
 
 				// Done with CHART.BAR
+				break;
+
+			case 'line':
+				// TODO: lineChart
 				break;
 
 			case 'pie':
