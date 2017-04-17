@@ -448,160 +448,184 @@ function genSlides_Table(pptx) {
 
 function genSlides_Chart(pptx) {
 
-	// SLIDE 1: Bar Charts -----------------------------------------------------------------
-	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Chart Examples: Bar Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-	var arrDataRegions = [
+	var dataChartPieStat = [
 		{
-			name  : 'Region 1',
-			labels: ['April', 'May', 'June', 'July', 'August'],
-			values: [17, 26, 53, 100, 75]
-		},
-		{
-			name  : 'Region 2',
-			labels: ['April', 'May', 'June', 'July', 'August'],
-			values: [55, 43, 70, 90, 80]
-		}
-	];
-	var arrDataHighVals = [
-		{
-			name  : 'California',
-			labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-			values: [2000, 2800, 3200, 4000, 5000]
-		},
-		{
-			name  : 'Texas',
-			labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-			values: [1400, 2000, 2500, 3000, 3800]
-		}
-	];
-
-	// TOP-LEFT: H/bar
-	var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
-		barDir: 'bar',
-		border: { pt:'1', color:'665050' },
-		fill: 'F1F1F1',
-
-		catAxisLabelColor   : 'CC0000',
-		catAxisLabelFontFace: 'Helvetica Neue',
-		catAxisLabelFontSize: 14,
-		catAxisOrientation  : 'minMax',
-
-		titleColor   : '33CF22',
-		titleFontFace: 'Helvetica Neue',
-		titleFontSize: 24
-	};
-	slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
-
-	// TOP-RIGHT: V/col
-	var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
-		barDir: 'col',
-
-		dataLabelColor   : '696969',
-		dataLabelFontFace: 'Arial',
-		dataLabelFontSize: 12,
-		showValue        : true,
-
-		catAxisLabelColor   : '0000CC',
-		catAxisLabelFontFace: 'Courier',
-		catAxisLabelFontSize: 12,
-		catAxisOrientation  : 'minMax',
-
-		showLegend: false,
-		showTitle : false,
-		title: 'Sales by Region'
-	};
-	slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
-
-	// BTM-LEFT: H/bar - TITLE and LEGEND
-	var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
-		barDir     : 'bar',
-		barGrouping: 'percentStacked',
-
-		border: { pt:'3', color:'CF0909' },
-		fill: 'F1C1C1',
-
-		catAxisLabelColor   : 'CC0000',
-		catAxisLabelFontFace: 'Helvetica Neue',
-		catAxisLabelFontSize: 14,
-		catAxisOrientation  : 'minMax',
-
-		titleColor   : '33CF22',
-		titleFontFace: 'Helvetica Neue',
-		titleFontSize: 16,
-
-		showTitle : true,
-		title: 'Sales by Region'
-	};
-	slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
-
-	// BTM-RIGHT: V/col - TITLE and LEGEND
-	var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
-		barDir: 'col',
-		barMaxVal: 5000,
-
-		catAxisLabelColor   : '0000CC',
-		catAxisLabelFontFace: 'Times',
-		catAxisLabelFontSize: 12,
-		catAxisOrientation  : 'minMax',
-
-		showLegend: true,
-		legendPos:  't'
-	};
-	slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
-
-	// SLIDE 2: Pie Charts -----------------------------------------------------------------
-	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Chart Examples: Pie Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-	var dataChartPie1 = [
-		{
-			name: 'Project Status',
+			name  : 'Project Status',
 			labels: ['Red', 'Amber', 'Green', 'Unknown'],
-			values: [10, 20, 58, 2]
+			values: [8, 20, 30, 2]
 		}
 	];
-	var optsChartPie1 = {
-		x:1.0, y:1.0, w:6, h:6,
-		dataLabelColor   : 'FFFFFF',
-		dataLabelFontSize: 14,
-		//dataLabelPosition: 'ctr',
 
-		legendPos : 't',
-
-		showLabel  : false,
-		showValue  : false,
-		showPercent: true,
-		showLegend : true,
-		showTitle  : false,
-
-		title        : 'Project Status',
-		titleColor   : '33CF22',
-		titleFontFace: 'Helvetica Neue',
-		titleFontSize: 24
-	};
-	slide.addChart(pptx.charts.PIE, dataChartPie1, optsChartPie1 );
-
-	var dataChartPie2 = [
+	var dataChartPieLocs = [
 		{
 			name  : 'Location',
-			labels: ['DE', 'GB', 'MX', 'JP', 'IN', 'US'],
-			values: [35, 40, 85, 38, 99, 101]
+			labels: ['BR', 'CN', 'DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+			values: [3, 69, 35, 40, 85, 38, 99, 101]
 		}
 	];
-	var optsChartPie2 = {
-		x:7.0, y:1.0, w:6, h:6,
-		dataLabelColor   : 'FFFFFF',
-		showLabel  : true,
-		showValue  : true,
-		showPercent: true,
-		showLegend : false,
-		showTitle  : false,
-		title: 'Resource Totals by Location'
-	};
-	slide.addChart(pptx.charts.PIE, dataChartPie2, optsChartPie2 );
 
+	// SLIDE 1: Bar Charts -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Bar Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataRegions = [
+			{
+				name  : 'Region 1',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [17, 26, 53, 100, 75]
+			},
+			{
+				name  : 'Region 2',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [55, 43, 70, 90, 80]
+			}
+		];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+
+		// TOP-LEFT: H/bar
+		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			barDir: 'bar',
+			border: { pt:'1', color:'665050' },
+			fill: 'F1F1F1',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'minMax',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+
+		// TOP-RIGHT: V/col
+		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			barDir: 'col',
+			barGapWidthPct: 0,
+
+			dataLabelColor   : '696969',
+			dataLabelFontFace: 'Arial',
+			dataLabelFontSize: 12,
+			showValue        : true,
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Courier',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			showLegend: false,
+			showTitle : false,
+			title: 'Sales by Region'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+
+		// BTM-LEFT: H/bar - TITLE and LEGEND
+		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+			barDir     : 'bar',
+			barGrouping: 'percentStacked',
+
+			border: { pt:'3', color:'CF0909' },
+			fill: 'F1C1C1',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'minMax',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 16,
+
+			showTitle : true,
+			title: 'Sales by Region'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+
+		// BTM-RIGHT: V/col - TITLE and LEGEND
+		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			barDir: 'col',
+			barMaxVal: 5000,
+			barGapWidthPct: 75,
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			showLegend: true,
+			legendPos:  't'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+	}
+
+	// SLIDE 2: Pie Charts -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Pie Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var optsChartPie1 = {
+			x:1.0, y:1.0, w:6, h:6,
+			chartColors: ['FC0000','FFCC00','009900','6600CC'],
+			dataLabelColor   : 'FFFFFF',
+			dataLabelFontSize: 14,
+			//dataLabelPosition: 'ctr',
+
+			legendPos : 'r',
+
+			showLabel  : false,
+			showValue  : false,
+			showPercent: true,
+			showLegend : true,
+			showTitle  : false,
+
+			title        : 'Project Status',
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+		slide.addChart(pptx.charts.PIE, dataChartPieStat, optsChartPie1 );
+
+		var optsChartPie2 = {
+			x:7.0, y:1.0, w:6, h:6,
+			dataLabelColor   : 'FFFFFF',
+			showLabel  : true,
+			showValue  : true,
+			showPercent: true,
+			showLegend : false,
+			showTitle  : false,
+			title: 'Resource Totals by Location'
+		};
+		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
+	}
+
+	// SLIDE 3: Pie Charts: Legends -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		// TOP-LEFT
+		slide.addChart(pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:4.0, h:4.0, showLegend:true, legendPos:'l'} );
+		// TOP-LEFT
+		slide.addChart(pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.0, h:4.0, showLegend:true, legendPos:'r'} );
+
+		// BTM-LEFT
+		slide.addChart(pptx.charts.PIE, dataChartPieStat, {x:8.0, y:0.5, w:4.0, h:4.0, showLegend:true, legendPos:'t'} );
+		// BTM-RIGHT
+		slide.addChart(pptx.charts.PIE, dataChartPieLocs, {x:8.0, y:3.5, w:4.0, h:4.0, showLegend:true, legendPos:'b'} );
+	}
 }
 
 function genSlides_Media(pptx) {

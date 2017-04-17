@@ -88,6 +88,8 @@ var PptxGenJS = function(){
 		'BAR': { 'displayName':'Bar Chart', 'name':'bar' },
 		'PIE': { 'displayName':'Pie Chart', 'name':'pie' }
 	}
+	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
+	var PIECHART_COLORS = ['4D4D4D','5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854'];
 	//
 	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 	{
@@ -894,13 +896,13 @@ var PptxGenJS = function(){
 			strXml += '  <a:lstStyle/>';
 			strXml += '  <a:p>';
 			strXml += '    <a:pPr>';
-			strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || '18') +'00" u="none">';
+			strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
 			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
 			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
 			strXml += '      </a:defRPr>';
 			strXml += '    </a:pPr>';
 			strXml += '    <a:r>';
-			strXml += '      <a:rPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || '18') +'00" u="none">';
+			strXml += '      <a:rPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
 			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
 			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
 			strXml += '      </a:rPr>';
@@ -917,17 +919,17 @@ var PptxGenJS = function(){
 
 		strXml += '<c:plotArea>';
 
-		// Use manual layout to ensure adequate space for title/legend
-		if ( rel.opts.showTitle || rel.opts.showLegend ) {
+		// Use manual layout in some cases to ensure enough space for title/legend, otherwise, result is not pretty.
+		if ( rel.opts.showLegend && rel.opts.legendPos == 't' ) {
 			strXml += '<c:layout>';
 			strXml += '  <c:manualLayout>';
 			strXml += '    <c:layoutTarget val="inner"/>';
 			strXml += '    <c:xMode val="edge"/>';
 			strXml += '    <c:yMode val="edge"/>';
-			strXml += '    <c:x val="0.15"/>';
-			strXml += '    <c:y val="0.15"/>';
-			strXml += '    <c:w val="0.85"/>';
-			strXml += '    <c:h val="0.75"/>';
+			strXml += '    <c:x val="0.01"/>';
+			strXml += '    <c:y val="0.13"/>';
+			strXml += '    <c:w val="0.99"/>';
+			strXml += '    <c:h val="0.80"/>';
 			strXml += '  </c:manualLayout>';
 			strXml += '</c:layout>';
 		}
@@ -971,7 +973,6 @@ var PptxGenJS = function(){
 					strXml += '      </c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
-					// Omit "<c:spPr></c:spPr>" block with '<a:schemeClr val="accent1"/>' etc and apps will auto-iterate over accents
 
 					// 1: "Data Labels"
 					strXml += '  <c:dLbls>';
@@ -979,7 +980,7 @@ var PptxGenJS = function(){
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/><a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
-					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || '18') +'00" u="none">';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
 					strXml += '          <a:solidFill><a:srgbClr val="'+ (rel.opts.dataLabelColor || '000000') +'"/></a:solidFill>';
 					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
 					strXml += '        </a:defRPr>';
@@ -1022,7 +1023,7 @@ var PptxGenJS = function(){
 					strXml += '</c:ser>';
 				});
 				//
-				strXml += '  <c:gapWidth val="150"/>'; // NOTE: The horizontal gap/whitespace [percent] between col/colGrp // TODO: FIXME: add 'barGapWidth' OPTION
+				strXml += '  <c:gapWidth val="'+ rel.opts.barGapWidthPct +'"/>';
 				strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('stacked') > 0 ? 100 : 0) +'"/>';
 				strXml += '  <c:axId val="2094734552"/>';
 				strXml += '  <c:axId val="2094734553"/>';
@@ -1051,7 +1052,7 @@ var PptxGenJS = function(){
 					          <a:lstStyle/>
 					          <a:p>
 					            <a:pPr>`;
-					strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.catAxisLabelFontSize || '18') +'00" u="none">';
+					strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
 					strXml += '<a:solidFill><a:srgbClr val="'+ (rel.opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
 					strXml += '<a:latin typeface="'+ (rel.opts.catAxisLabelFontFace || 'Arial') +'"/>';
 					strXml += `   </a:defRPr>
@@ -1097,7 +1098,7 @@ var PptxGenJS = function(){
 					strXml += '  <a:lstStyle/>';
 					strXml += '  <a:p>';
 					strXml += '    <a:pPr>';
-					strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.valAxisLabelFontSize || '18') +'00" u="none">';
+					strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
 					strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
 					strXml += '        <a:latin typeface="'+ (rel.opts.valAxisLabelFontFace || 'Arial') +'"/>';
 					strXml += '      </a:defRPr>';
@@ -1165,7 +1166,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:explosion val="0"/>';
 					strXml += '  <c:spPr>';
-					strXml += '    <a:solidFill><a:schemeClr val="accent'+ (idx+1) +'"/></a:solidFill>';
+					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? Math.round(idx/rel.opts.chartColors.length) : idx)] +'"/></a:solidFill>';
 					strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					strXml += '    <a:effectLst>';
 					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
@@ -1185,7 +1186,7 @@ var PptxGenJS = function(){
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/><a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
-					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || '18') +'00" u="none">';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
 					strXml += '          <a:solidFill><a:srgbClr val="'+ (rel.opts.dataLabelColor || '000000') +'"/></a:solidFill>';
 					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
 					strXml += '        </a:defRPr>';
@@ -1230,7 +1231,7 @@ var PptxGenJS = function(){
 				strXml += '<c:cat>';
 				strXml += '  <c:strRef>';
 				strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ LETTERS[obj.labels.length] +'$1' +'</c:f>';
-				// TODO: ^^^ handle >26 letters issue
+				// TODO: FIXME: ^^^ handle >26 letters issue
 				strXml += '    <c:strCache>';
 				strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
 				obj.labels.forEach(function(label,idx){
@@ -1289,27 +1290,30 @@ var PptxGenJS = function(){
 			strXml += '</c:plotArea>';
 
 			// OPTION: Legend
-			if ( rel.opts.showLegend ) {
-				// TODO: Check PPT-2013(PC ver) - this param seems to have no effect!
+			if ( rel.opts.showLegend && rel.opts.legendPos != 't' ) {
 				strXml += '<c:legend>\
 			      <c:legendPos val="'+ rel.opts.legendPos +'"/>\
-			      <c:layout>\
+			      <c:layout/>\
+				  <c:overlay val="0"/>\
+				  </c:legend>';
+			}
+			else if ( rel.opts.showLegend && rel.opts.legendPos == 't' ) {
+				strXml += '<c:legend>\
+				  <c:legendPos val="'+ rel.opts.legendPos +'"/>\
+				  <c:layout>\
 			        <c:manualLayout>\
 			          <c:xMode val="edge"/>\
 			          <c:yMode val="edge"/>\
-			          <c:x val="0.05"/>\
-			          <c:y val="0.00"/>\
-			          <c:w val="0.95"/>\
-			          <c:h val="0.12"/>\
+			          <c:x val="0.01"/>\
+			          <c:y val="0.01"/>\
+			          <c:w val="0.99"/>\
+			          <c:h val="0.13"/>\
 			        </c:manualLayout>\
 			      </c:layout>\
 			      <c:overlay val="1"/>\
 			      <c:spPr>\
 			        <a:noFill/>\
-			        <a:ln w="12700" cap="flat">\
-			          <a:noFill/>\
-			          <a:miter lim="400000"/>\
-			        </a:ln>\
+			        <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>\
 			        <a:effectLst/>\
 			      </c:spPr>\
 			      <c:txPr>\
@@ -1317,7 +1321,7 @@ var PptxGenJS = function(){
 			        <a:lstStyle/>\
 			        <a:p>\
 			          <a:pPr>\
-			            <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
+			            <a:defRPr b="0" i="0" strike="noStrike" sz="'+DEF_FONT_SIZE+'00" u="none">\
 			              <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
 			              <a:latin typeface="Arial"/>\
 			            </a:defRPr>\
@@ -1326,14 +1330,14 @@ var PptxGenJS = function(){
 			      </c:txPr>\
 			    </c:legend>';
 			}
+// TODO: legendPos == 'b'
 		}
 
 		strXml += '  <c:plotVisOnly val="1"/>';
 		strXml += '  <c:dispBlanksAs val="gap"/>';
-		//strXml += '  <c:showDLblsOverMax val="1"/>';
 		strXml += '</c:chart>';
 
-		// C: CHARTPSACE SHAPE PROPS
+		// C: CHARTSPACE SHAPE PROPS
 		strXml += '<c:spPr>';
 		strXml += '  <a:noFill/>';
 		strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
@@ -1344,7 +1348,7 @@ var PptxGenJS = function(){
 		strXml += '<c:externalData r:id="rId'+ (rel.rId-1) +'"><c:autoUpdate val="0"/></c:externalData>';
 
 		// LAST: chartSpace end
-		strXml += '</c:chartSpace>\n';
+		strXml += '</c:chartSpace>';
 
 		return strXml;
 	}
@@ -2453,13 +2457,13 @@ var PptxGenJS = function(){
 
 	function makeXmlTheme() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
-		strXml += '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">\
+		strXml += '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" name="Office Theme">\
 						<a:themeElements>\
 						  <a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>\
-						  <a:dk2><a:srgbClr val="1F497D"/></a:dk2>\
-						  <a:lt2><a:srgbClr val="EEECE1"/></a:lt2><a:accent1><a:srgbClr val="4F81BD"/></a:accent1><a:accent2><a:srgbClr val="C0504D"/></a:accent2><a:accent3>\
+						  <a:dk2><a:srgbClr val="A7A7A7"/></a:dk2>\
+						  <a:lt2><a:srgbClr val="535353"/></a:lt2><a:accent1><a:srgbClr val="4F81BD"/></a:accent1><a:accent2><a:srgbClr val="C0504D"/></a:accent2><a:accent3>\
 						  <a:srgbClr val="9BBB59"/></a:accent3><a:accent4><a:srgbClr val="8064A2"/></a:accent4><a:accent5><a:srgbClr val="4BACC6"/></a:accent5>\
-						  <a:accent6><a:srgbClr val="F79646"/></a:accent6><a:hlink><a:srgbClr val="0000FF"/></a:hlink><a:folHlink><a:srgbClr val="800080"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/></a:majorFont><a:minorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/>\
+						  <a:accent6><a:srgbClr val="F79646"/></a:accent6><a:hlink><a:srgbClr val="0000FF"/></a:hlink><a:folHlink><a:srgbClr val="800080"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Arial"/><a:ea typeface="Arial"/><a:cs typeface="Arial"/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/></a:majorFont><a:minorFont><a:latin typeface="Arial"/><a:ea typeface="Arial"/><a:cs typeface="Arial"/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/>\
 						  </a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="50000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="35000"><a:schemeClr val="phClr"><a:tint val="37000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="15000"/><a:satMod val="350000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="1"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:shade val="51000"/><a:satMod val="130000"/></a:schemeClr></a:gs><a:gs pos="80000"><a:schemeClr val="phClr"><a:shade val="93000"/><a:satMod val="130000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="94000"/><a:satMod val="135000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"><a:shade val="95000"/><a:satMod val="105000"/></a:schemeClr></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="25400" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="38100" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="20000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="38000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst><a:scene3d><a:camera prst="orthographicFront"><a:rot lat="0" lon="0" rev="0"/></a:camera><a:lightRig rig="threePt" dir="t"><a:rot lat="0" lon="0" rev="1200000"/></a:lightRig></a:scene3d><a:sp3d><a:bevelT w="63500" h="25400"/></a:sp3d></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="40000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="40000"><a:schemeClr val="phClr"><a:tint val="45000"/><a:shade val="99000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="20000"/><a:satMod val="255000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="-80000" r="50000" b="180000"/></a:path></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="80000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="30000"/><a:satMod val="200000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="50000" r="50000" b="50000"/></a:path></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/>\
 						</a:theme>';
 		return strXml;
@@ -2764,7 +2768,7 @@ var PptxGenJS = function(){
 			options.w = (options.w || '50%');
 			options.h = (options.h || '50%');
 
-			// B: Misc
+			// B: Options: misc
 			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
 			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = 'bestFit';
 			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
@@ -2773,12 +2777,16 @@ var PptxGenJS = function(){
 			// TODO: Anything other than 'standard'/'clustered' BLOWS UP PPT Online!!! 20170329
 			options.barGrouping = 'standard'; // FIXME: ^^^
 
-			// C: Chart area stuff
+			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
 			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
 			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
 			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
 			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
+
+			// D: Options: chart
+			options.chartColors = (Array.isArray(options.chartColors) ? options.chartColors : PIECHART_COLORS);
+			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
 
 			// STEP 4: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
