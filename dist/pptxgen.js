@@ -89,7 +89,7 @@ var PptxGenJS = function(){
 		'PIE': { 'displayName':'Pie Chart', 'name':'pie' }
 	}
 	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
-	var PIECHART_COLORS = ['4D4D4D','5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854'];
+	var PIECHART_COLORS = ['4D4D4D','5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854', '4D4D4D','5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854'];
 	//
 	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 	{
@@ -918,24 +918,8 @@ var PptxGenJS = function(){
 		}
 
 		strXml += '<c:plotArea>';
-
-		// Use manual layout in some cases to ensure enough space for title/legend, otherwise, result is not pretty.
-		if ( rel.opts.showLegend && rel.opts.legendPos == 't' ) {
-			strXml += '<c:layout>';
-			strXml += '  <c:manualLayout>';
-			strXml += '    <c:layoutTarget val="inner"/>';
-			strXml += '    <c:xMode val="edge"/>';
-			strXml += '    <c:yMode val="edge"/>';
-			strXml += '    <c:x val="0.01"/>';
-			strXml += '    <c:y val="0.13"/>';
-			strXml += '    <c:w val="0.99"/>';
-			strXml += '    <c:h val="0.80"/>';
-			strXml += '  </c:manualLayout>';
-			strXml += '</c:layout>';
-		}
-		else {
-			strXml += '  <c:layout/>';
-		}
+		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+		strXml += '<c:layout/>';
 
 		// A: CHART TYPES -----------------------------------------------------------
 		switch ( rel.opts.type ) {
@@ -1166,7 +1150,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:explosion val="0"/>';
 					strXml += '  <c:spPr>';
-					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? Math.round(idx/rel.opts.chartColors.length) : idx)] +'"/></a:solidFill>';
+					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
 					strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					strXml += '    <a:effectLst>';
 					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
@@ -1290,47 +1274,8 @@ var PptxGenJS = function(){
 			strXml += '</c:plotArea>';
 
 			// OPTION: Legend
-			if ( rel.opts.showLegend && rel.opts.legendPos != 't' ) {
-				strXml += '<c:legend>\
-			      <c:legendPos val="'+ rel.opts.legendPos +'"/>\
-			      <c:layout/>\
-				  <c:overlay val="0"/>\
-				  </c:legend>';
-			}
-			else if ( rel.opts.showLegend && rel.opts.legendPos == 't' ) {
-				strXml += '<c:legend>\
-				  <c:legendPos val="'+ rel.opts.legendPos +'"/>\
-				  <c:layout>\
-			        <c:manualLayout>\
-			          <c:xMode val="edge"/>\
-			          <c:yMode val="edge"/>\
-			          <c:x val="0.01"/>\
-			          <c:y val="0.01"/>\
-			          <c:w val="0.99"/>\
-			          <c:h val="0.13"/>\
-			        </c:manualLayout>\
-			      </c:layout>\
-			      <c:overlay val="1"/>\
-			      <c:spPr>\
-			        <a:noFill/>\
-			        <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>\
-			        <a:effectLst/>\
-			      </c:spPr>\
-			      <c:txPr>\
-			        <a:bodyPr rot="0"/>\
-			        <a:lstStyle/>\
-			        <a:p>\
-			          <a:pPr>\
-			            <a:defRPr b="0" i="0" strike="noStrike" sz="'+DEF_FONT_SIZE+'00" u="none">\
-			              <a:solidFill><a:srgbClr val="000000"/></a:solidFill>\
-			              <a:latin typeface="Arial"/>\
-			            </a:defRPr>\
-			          </a:pPr>\
-			        </a:p>\
-			      </c:txPr>\
-			    </c:legend>';
-			}
-// TODO: legendPos == 'b'
+			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+			if ( rel.opts.showLegend ) strXml += '<c:legend><c:legendPos val="'+ rel.opts.legendPos +'"/><c:layout/><c:overlay val="0"/></c:legend>';
 		}
 
 		strXml += '  <c:plotVisOnly val="1"/>';
