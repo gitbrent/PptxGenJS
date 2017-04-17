@@ -459,8 +459,8 @@ function genSlides_Chart(pptx) {
 	var dataChartPieLocs = [
 		{
 			name  : 'Location',
-			labels: ['BR', 'CN', 'DE', 'GB', 'MX', 'JP', 'IN', 'US'],
-			values: [   3,   69,   35,   40,   85,   38,   99,  101]
+			labels: ['CN', 'DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+			values: [  69,   35,   40,   85,   38,   99,  101]
 		}
 	];
 
@@ -503,7 +503,7 @@ function genSlides_Chart(pptx) {
 			catAxisLabelColor   : 'CC0000',
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
-			catAxisOrientation  : 'minMax',
+			catAxisOrientation  : 'maxMin',
 
 			titleColor   : '33CF22',
 			titleFontFace: 'Helvetica Neue',
@@ -514,9 +514,121 @@ function genSlides_Chart(pptx) {
 		// TOP-RIGHT: V/col
 		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
 			barDir: 'col',
-			barGapWidthPct: 0,
+			barGapWidthPct: 25,
 
 			dataLabelColor   : '696969',
+			dataLabelFontFace: 'Arial',
+			dataLabelFontSize: 12,
+			dataLabelPosition: 'outEnd',
+			showValue        : true,
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Courier',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			showLegend: false,
+			showTitle : false
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+
+		// BTM-LEFT: H/bar - TITLE and LEGEND
+		slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+			barDir     : 'bar',
+
+			border: { pt:'3', color:'CF0909' },
+			fill: 'F1C1C1',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'minMax',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 16,
+
+			showTitle : true,
+			title: 'Sales by Region'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+
+		// BTM-RIGHT: V/col - TITLE and LEGEND
+		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			barDir: 'col',
+			barMaxVal: 5000,
+			barGapWidthPct: 200,
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			showLegend: true,
+			legendPos :  't',
+			showTitle: true,
+			title    : 'Chart Title'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+	}
+
+	// SLIDE 2: Stacked Bar Charts -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Bar Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataRegions = [
+			{
+				name  : 'Region 1',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [17, 26, 53, 100, 75]
+			},
+			{
+				name  : 'Region 2',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [55, 43, 70, 90, 80]
+			}
+		];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+
+		// TOP-LEFT: H/bar
+		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			barDir: 'bar',
+			barGrouping: 'stacked',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'maxMin',
+
+			dataLabelColor   : 'FFFFFF',
+			showValue        : true,
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+
+		// TOP-RIGHT: V/col
+		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			barDir: 'col',
+			barGrouping: 'stacked',
+
+			dataLabelColor   : 'FFFFFF',
 			dataLabelFontFace: 'Arial',
 			dataLabelFontSize: 12,
 			showValue        : true,
@@ -557,13 +669,14 @@ function genSlides_Chart(pptx) {
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
 		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
 			barDir: 'col',
-			barMaxVal: 5000,
-			barGapWidthPct: 75,
+			barGrouping: 'percentStacked',
 
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Times',
 			catAxisLabelFontSize: 12,
 			catAxisOrientation  : 'minMax',
+
+			chartColors: ['5DA5DA','FAA43A'],
 
 			showLegend: true,
 			legendPos :  't',
@@ -573,29 +686,37 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 2: Pie Charts: Legend Demos -----------------------------------------------------------------
+	// SLIDE 3: Pie Charts: Legend Demos -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		// TOP-LEFT
-		slide.addText( '.', {x:0.5, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'l'} );
+		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
 
 		// TOP-RIGHT
-		slide.addText( '.', {x:8.0, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:8.0, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
+		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
 
 		// BTM-LEFT
-		slide.addText( '.', {x:0.5, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'r'} );
+		slide.addText( '.', {x:0.5, y:4.0, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.2, h:3.2, showLegend:true, legendPos:'r'} );
 
 		// BTM-RIGHT
-		slide.addText( '.', {x:8.0, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:8.0, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
+		slide.addText( '.', {x:5.6, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:5.6, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
+
+		// BOTH: TOP-RIGHT
+		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
+
+		// BOTH: BTM-RIGHT
+		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 3: Pie Charts -----------------------------------------------------------------
+	// SLIDE 4: Pie Charts -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );

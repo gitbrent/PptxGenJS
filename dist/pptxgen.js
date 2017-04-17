@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170416";
+	var APP_REL = "20170417";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -89,7 +89,7 @@ var PptxGenJS = function(){
 		'PIE': { 'displayName':'Pie Chart', 'name':'pie' }
 	}
 	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
-	var PIECHART_COLORS = ['4D4D4D','5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854', '4D4D4D','5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854'];
+	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
 	//
 	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 	{
@@ -885,7 +885,7 @@ var PptxGenJS = function(){
 		// CHARTSPACE: BEGIN vvv
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
-		strXml += '  <c:chart>';
+		strXml += '<c:chart>';
 
 		// OPTION: Title
 		if ( rel.opts.showTitle ) {
@@ -906,7 +906,7 @@ var PptxGenJS = function(){
 			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
 			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
 			strXml += '      </a:rPr>';
-			strXml += '      <a:t>'+ (rel.opts.title || '') +'</a:t>';
+			strXml += '      <a:t>'+ (decodeXmlEntities(rel.opts.title) || '') +'</a:t>';
 			strXml += '    </a:r>';
 			strXml += '  </a:p>';
 			strXml += '  </c:rich>';
@@ -951,10 +951,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
 					strXml += '      <c:f>Sheet1!$A$'+ (idx+2) +'</c:f>';
-					strXml += '      <c:strCache>';
-					strXml += '        <c:ptCount val="1"/>';
-					strXml += '        <c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt>';
-					strXml += '      </c:strCache>';
+					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
 
@@ -970,13 +967,13 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					strXml += '    <c:dLblPos val="outEnd"/>';
-					strXml += '    <c:showLegendKey   val="0"/>';
-					strXml += '    <c:showVal         val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
-					strXml += '    <c:showCatName     val="0"/>';
-					strXml += '    <c:showSerName     val="0"/>';
-					strXml += '    <c:showPercent     val="0"/>';
-					strXml += '    <c:showBubbleSize  val="0"/>';
+					strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'outEnd') +'"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
+					strXml += '    <c:showCatName val="0"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="0"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
 					strXml += '    <c:showLeaderLines val="0"/>';
 					strXml += '  </c:dLbls>';
 
@@ -1008,7 +1005,7 @@ var PptxGenJS = function(){
 				});
 				//
 				strXml += '  <c:gapWidth val="'+ rel.opts.barGapWidthPct +'"/>';
-				strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('stacked') > 0 ? 100 : 0) +'"/>';
+				strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
 				strXml += '  <c:axId val="2094734552"/>';
 				strXml += '  <c:axId val="2094734553"/>';
 				strXml += '</c:barChart>';
@@ -1025,11 +1022,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:minorTickMark val="none"/>';
 					strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 					strXml += `<c:spPr>
-					          <a:ln w="12700" cap="flat">
-					            <a:solidFill><a:srgbClr val="888888"/></a:solidFill>
-					            <a:prstDash val="solid"/>
-					            <a:round/>
-					          </a:ln>
+					          <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>
 					        </c:spPr>
 					        <c:txPr>
 					          <a:bodyPr rot="0"/>
@@ -1057,7 +1050,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:axId val="2094734553"/>';
 					strXml += '  <c:scaling>';
 					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
-					if (rel.opts.barMaxVal) strXml += '    <c:max val="'+ rel.opts.barMaxVal +'"/>';
+					if (rel.opts.barMaxVal) strXml += '<c:max val="'+ rel.opts.barMaxVal +'"/>';
 					strXml += '  </c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
@@ -1100,6 +1093,8 @@ var PptxGenJS = function(){
 				// Done with CHART.BAR
 				break;
 
+// TODO: use chartColors in BAR charts!
+
 			case 'line':
 				// TODO: lineChart
 				break;
@@ -1129,7 +1124,7 @@ var PptxGenJS = function(){
 				strXml += '      <c:f>Sheet1!$A$2</c:f>';
 				strXml += '      <c:strCache>';
 				strXml += '        <c:ptCount val="1"/>';
-				strXml += '        <c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt>';
+				strXml += '        <c:pt idx="0"><c:v>'+ decodeXmlEntities(obj.name) +'</c:v></c:pt>';
 				strXml += '      </c:strCache>';
 				strXml += '    </c:strRef>';
 				strXml += '  </c:tx>';
@@ -1176,7 +1171,7 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					strXml += '    <c:dLblPos val="'+ ( rel.opts.dataLabelPosition || 'inEnd' ) +'"/>';
+					strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'inEnd') +'"/>';
 					strXml += '    <c:showLegendKey   val="0"/>';
 					strXml += '    <c:showVal         val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
 					strXml += '    <c:showCatName     val="'+ (rel.opts.showLabel ? "1" : "0") +'"/>';
@@ -2715,12 +2710,16 @@ var PptxGenJS = function(){
 
 			// B: Options: misc
 			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
-			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = 'bestFit';
+			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
+			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = 'ctr';
 			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
 			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
-			// TODO: Anything other than 'standard'/'clustered' BLOWS UP PPT Online!!! 20170329
-			options.barGrouping = 'standard'; // FIXME: ^^^
+			if ( options.barGrouping.indexOf('tacked') > -1 ) {
+				// IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
+				options.dataLabelPosition = 'ctr';
+				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
+			}
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
