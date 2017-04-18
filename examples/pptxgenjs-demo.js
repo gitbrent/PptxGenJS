@@ -472,13 +472,13 @@ function genSlides_Chart(pptx) {
 		var arrDataRegions = [
 			{
 				name  : 'Region 1',
-				labels: ['April', 'May', 'June', 'July', 'August'],
-				values: [17, 26, 53, 100, 75]
+				labels: ['May', 'June', 'July', 'August'],
+				values: [26, 53, 100, 75]
 			},
 			{
 				name  : 'Region 2',
-				labels: ['April', 'May', 'June', 'July', 'August'],
-				values: [55, 43, 70, 90, 80]
+				labels: ['May', 'June', 'July', 'August'],
+				values: [43, 70, 90, 80]
 			}
 		];
 		var arrDataHighVals = [
@@ -497,7 +497,7 @@ function genSlides_Chart(pptx) {
 		// TOP-LEFT: H/bar
 		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
 			barDir: 'bar',
-			border: { pt:'1', color:'665050' },
+			border: { pt:'3', color:'00EE00' },
 			fill: 'F1F1F1',
 
 			catAxisLabelColor   : 'CC0000',
@@ -516,6 +516,7 @@ function genSlides_Chart(pptx) {
 			barDir: 'col',
 			barGapWidthPct: 25,
 
+			dataBorder       : { pt:'1', color:'F1F1F1' },
 			dataLabelColor   : '696969',
 			dataLabelFontFace: 'Arial',
 			dataLabelFontSize: 12,
@@ -709,11 +710,11 @@ function genSlides_Chart(pptx) {
 
 		// BOTH: TOP-RIGHT
 		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
 	// SLIDE 4: Pie Charts -----------------------------------------------------------------
@@ -724,6 +725,7 @@ function genSlides_Chart(pptx) {
 		var optsChartPie1 = {
 			x:1.0, y:1.0, w:6, h:6,
 			chartColors: ['FC0000','FFCC00','009900','6600CC'],
+			dataBorder       : { pt:'2', color:'F1F1F1' },
 			dataLabelColor   : 'FFFFFF',
 			dataLabelFontSize: 14,
 			//dataLabelPosition: 'ctr',
@@ -745,6 +747,7 @@ function genSlides_Chart(pptx) {
 
 		var optsChartPie2 = {
 			x:7.0, y:1.0, w:6, h:6,
+			dataBorder       : { pt:'3', color:'F1F1F1' },
 			dataLabelColor   : 'FFFFFF',
 			showLabel  : true,
 			showValue  : true,
@@ -755,7 +758,6 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
 	}
-
 }
 
 function genSlides_Media(pptx) {

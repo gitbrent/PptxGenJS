@@ -90,6 +90,7 @@ var PptxGenJS = function(){
 	}
 	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
+	var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
 	//
 	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 	{
@@ -954,12 +955,25 @@ var PptxGenJS = function(){
 					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
+					// Bar Fill+Border
+					strXml += '  <c:spPr>';
+					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
+					if ( rel.opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					}
+					strXml += '    <a:effectLst>';
+					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+					strXml += '      </a:outerShdw>';
+					strXml += '    </a:effectLst>';
+					strXml += '  </c:spPr>';
 
 					// 1: "Data Labels"
 					strXml += '  <c:dLbls>';
 					strXml += '    <c:numFmt formatCode="#,##0" sourceLinked="0"/>'; // FIXME: add option for numFmt
 					strXml += '    <c:txPr>';
-					strXml += '      <a:bodyPr/><a:lstStyle/>';
+					strXml += '      <a:bodyPr/>';
+					strXml += '      <a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
 					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
 					strXml += '          <a:solidFill><a:srgbClr val="'+ (rel.opts.dataLabelColor || '000000') +'"/></a:solidFill>';
@@ -969,7 +983,7 @@ var PptxGenJS = function(){
 					strXml += '    </c:txPr>';
 					strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'outEnd') +'"/>';
 					strXml += '    <c:showLegendKey val="0"/>';
-					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
+					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? '1' : '0') +'"/>';
 					strXml += '    <c:showCatName val="0"/>';
 					strXml += '    <c:showSerName val="0"/>';
 					strXml += '    <c:showPercent val="0"/>';
@@ -989,7 +1003,7 @@ var PptxGenJS = function(){
 					strXml += '  </c:strRef>';
 					strXml += '</c:cat>';
 
-					// 3: Create vals
+					// 3: "Values"
 					strXml += '  <c:val>';
 					strXml += '    <c:numRef>';
 					strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ LETTERS[obj.labels.length] +'$'+ (idx+2) +'</c:f>';
@@ -1056,11 +1070,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
 					strXml += '<c:majorGridlines>\
 								<c:spPr>\
-									<a:ln w="12700" cap="flat">\
-										<a:solidFill><a:srgbClr val="888888"/></a:solidFill>\
-										<a:prstDash val="solid"/>\
-										<a:round/>\
-									</a:ln>\
+								  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>\
 								</c:spPr>\
 								</c:majorGridlines>\
 								<c:numFmt formatCode="General" sourceLinked="0"/>\
@@ -1085,15 +1095,13 @@ var PptxGenJS = function(){
 					strXml += '<c:crossAx val="2094734552"/>';
 					strXml += '<c:crosses val="autoZero"/>';
 					strXml += '<c:crossBetween val="between"/>';
-					//strXml += '<c:majorUnit val="25"/>'; // NOTE: Not Required.	// FIXME: OPTION - auto-calc if no option. !!!
-					//strXml += '<c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// FIXME: OPTION - auto-calc if no option. !!!
+					//strXml += '<c:majorUnit val="25"/>'; // NOTE: Not Required.	// FIXME: Add OPTION?
+					//strXml += '<c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// FIXME: Add OPTION?
 					strXml += '</c:valAx>';
 				}
 
 				// Done with CHART.BAR
 				break;
-
-// TODO: use chartColors in BAR charts!
 
 			case 'line':
 				// TODO: lineChart
@@ -1128,15 +1136,15 @@ var PptxGenJS = function(){
 				strXml += '      </c:strCache>';
 				strXml += '    </c:strRef>';
 				strXml += '  </c:tx>';
-				strXml += '<c:spPr>';
-				strXml += '  <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
-				strXml += '  <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-				strXml += '  <a:effectLst>';
-				strXml += '    <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-				strXml += '      <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-				strXml += '    </a:outerShdw>';
-				strXml += '  </a:effectLst>';
-				strXml += '</c:spPr>';
+				strXml += '  <c:spPr>';
+				strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
+				strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+				strXml += '    <a:effectLst>';
+				strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+				strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+				strXml += '      </a:outerShdw>';
+				strXml += '    </a:effectLst>';
+				strXml += '  </c:spPr>';
 				strXml += '<c:explosion val="0"/>';
 
 				// 2: "Data Point" block for every data row
@@ -1146,7 +1154,9 @@ var PptxGenJS = function(){
 					strXml += '  <c:explosion val="0"/>';
 					strXml += '  <c:spPr>';
 					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
-					strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					if ( rel.opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					}
 					strXml += '    <a:effectLst>';
 					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
 					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
@@ -1172,38 +1182,34 @@ var PptxGenJS = function(){
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
 					strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'inEnd') +'"/>';
-					strXml += '    <c:showLegendKey   val="0"/>';
-					strXml += '    <c:showVal         val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
-					strXml += '    <c:showCatName     val="'+ (rel.opts.showLabel ? "1" : "0") +'"/>';
-					strXml += '    <c:showSerName     val="0"/>';
-					strXml += '    <c:showPercent     val="'+ (rel.opts.showPercent ? "1" : "0") +'"/>';
-					strXml += '    <c:showBubbleSize  val="0"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
+					strXml += '    <c:showCatName val="'+ (rel.opts.showLabel ? "1" : "0") +'"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="'+ (rel.opts.showPercent ? "1" : "0") +'"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
 					strXml += '  </c:dLbl>';
 				});
-
-				strXml += `<c:numFmt formatCode="0%" sourceLinked="0"/>
-		            <c:txPr>
-		              <a:bodyPr/>
-		              <a:lstStyle/>
-		              <a:p>
-		                <a:pPr>
-		                  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">
-		                    <a:solidFill>
-		                      <a:srgbClr val="000000"/>
-		                    </a:solidFill>
-		                    <a:latin typeface="Arial"/>
-		                  </a:defRPr>
-		                </a:pPr>
-		              </a:p>
-		            </c:txPr>
-		            <c:dLblPos val="ctr"/>
-		            <c:showLegendKey val="0"/>
-		            <c:showVal val="0"/>
-		            <c:showCatName val="1"/>
-		            <c:showSerName val="0"/>
-		            <c:showPercent val="1"/>
-		            <c:showBubbleSize val="0"/>
-		            <c:showLeaderLines val="0"/>`;
+				strXml += '<c:numFmt formatCode="0%" sourceLinked="0"/>\
+		            <c:txPr>\
+		              <a:bodyPr/>\
+		              <a:lstStyle/>\
+		              <a:p>\
+		                <a:pPr>\
+		                  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
+		                    <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>\
+		                  </a:defRPr>\
+		                </a:pPr>\
+		              </a:p>\
+		            </c:txPr>\
+		            <c:dLblPos val="ctr"/>\
+		            <c:showLegendKey val="0"/>\
+		            <c:showVal val="0"/>\
+		            <c:showCatName val="1"/>\
+		            <c:showSerName val="0"/>\
+		            <c:showPercent val="1"/>\
+		            <c:showBubbleSize val="0"/>\
+		            <c:showLeaderLines val="0"/>';
 				strXml += '</c:dLbls>';
 
 				// 2: "Categories"
@@ -1213,11 +1219,7 @@ var PptxGenJS = function(){
 				// TODO: FIXME: ^^^ handle >26 letters issue
 				strXml += '    <c:strCache>';
 				strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-				obj.labels.forEach(function(label,idx){
-					strXml += '	     <c:pt idx="'+ idx +'">';
-					strXml += '	       <c:v>'+ label +'</c:v>';
-					strXml += '	     </c:pt>';
-				});
+				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
 				strXml += '    </c:strCache>';
 				strXml += '  </c:strRef>';
 				strXml += '</c:cat>';
@@ -1226,13 +1228,10 @@ var PptxGenJS = function(){
 				strXml += '  <c:val>';
 				strXml += '    <c:numRef>';
 				strXml += '      <c:f>Sheet1!'+ '$B$2:$'+ LETTERS[obj.labels.length] +'$'+ 2 +'</c:f>';
+				// TODO: FIXME: ^^^ handle >26 letters issue
 				strXml += '      <c:numCache>';
 				strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-				obj.values.forEach(function(value,idx){
-					strXml += '	       <c:pt idx="'+ idx +'">';
-					strXml += '          <c:v>'+ value +'</c:v>';
-					strXml += '	       </c:pt>';
-				});
+				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
 				strXml += '      </c:numCache>';
 				strXml += '    </c:numRef>';
 				strXml += '  </c:val>';
@@ -1254,14 +1253,7 @@ var PptxGenJS = function(){
 			strXml += ( rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>' );
 
 			// OPTION: Border
-			if ( rel.opts.border && typeof rel.opts.border === 'object' ) {
-				strXml += '<a:ln w="'+ ( (rel.opts.border.pt || 1) * ONEPT )+ '"'+' cap="flat">';
-				strXml += genXmlColorSelection( rel.opts.border.color || '000000' );
-				strXml += '</a:ln>';
-			}
-			else {
-				strXml += '  <a:ln><a:noFill/></a:ln>';
-			}
+			strXml += ( rel.opts.border ? '<a:ln w="'+ (rel.opts.border.pt * ONEPT) +'"'+' cap="flat">'+ genXmlColorSelection( rel.opts.border.color ) +'</a:ln>' : '<a:ln><a:noFill/></a:ln>' );
 
 			// Close shapeProp/plotArea before Legend
 			strXml += '    <a:effectLst/>';
@@ -2711,13 +2703,12 @@ var PptxGenJS = function(){
 			// B: Options: misc
 			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
 			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = 'ctr';
+			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' ? 'bestFit' : 'ctr');
 			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
 			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
 			if ( options.barGrouping.indexOf('tacked') > -1 ) {
-				// IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
-				options.dataLabelPosition = 'ctr';
+				options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
 				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
 			}
 
@@ -2729,8 +2720,16 @@ var PptxGenJS = function(){
 			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
 
 			// D: Options: chart
-			options.chartColors = (Array.isArray(options.chartColors) ? options.chartColors : PIECHART_COLORS);
 			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
+			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' ? PIECHART_COLORS : BARCHART_COLORS) );
+			//
+			options.border = ( options.border && typeof options.border === 'object' ? options.border : null );
+			if ( options.border && (!options.border.pt || isNaN(options.border.pt)) ) options.border.pt = 1;
+			if ( options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length != 6) ) options.border.color = '363636';
+			//
+			options.dataBorder = ( options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null );
+			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
+			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
 
 			// STEP 4: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
