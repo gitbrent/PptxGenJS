@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170417";
+	var APP_REL = "20170418";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -970,7 +970,7 @@ var PptxGenJS = function(){
 
 					// 1: "Data Labels"
 					strXml += '  <c:dLbls>';
-					strXml += '    <c:numFmt formatCode="#,##0" sourceLinked="0"/>'; // FIXME: add option for numFmt
+					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/>';
 					strXml += '      <a:lstStyle/>';
@@ -1171,7 +1171,7 @@ var PptxGenJS = function(){
 				obj.labels.forEach(function(label,idx){
 					strXml += '<c:dLbl>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
-					strXml += '    <c:numFmt formatCode="0%" sourceLinked="0"/>'; // FIXME: add option for numFmt
+					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/><a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
@@ -1190,7 +1190,7 @@ var PptxGenJS = function(){
 					strXml += '    <c:showBubbleSize val="0"/>';
 					strXml += '  </c:dLbl>';
 				});
-				strXml += '<c:numFmt formatCode="0%" sourceLinked="0"/>\
+				strXml += '<c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>\
 		            <c:txPr>\
 		              <a:bodyPr/>\
 		              <a:lstStyle/>\
@@ -2730,6 +2730,8 @@ var PptxGenJS = function(){
 			options.dataBorder = ( options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null );
 			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
 			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
+			//
+			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' ? '0%' : '#,##0') );
 
 			// STEP 4: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};

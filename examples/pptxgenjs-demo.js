@@ -478,7 +478,7 @@ function genSlides_Chart(pptx) {
 			{
 				name  : 'Region 2',
 				labels: ['May', 'June', 'July', 'August'],
-				values: [43, 70, 90, 80]
+				values: [43.5, 70.3, 90.1, 80.05]
 			}
 		];
 		var arrDataHighVals = [
@@ -514,19 +514,19 @@ function genSlides_Chart(pptx) {
 		// TOP-RIGHT: V/col
 		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
 			barDir: 'col',
-			barGapWidthPct: 25,
-
-			dataBorder       : { pt:'1', color:'F1F1F1' },
-			dataLabelColor   : '696969',
-			dataLabelFontFace: 'Arial',
-			dataLabelFontSize: 12,
-			dataLabelPosition: 'outEnd',
-			showValue        : true,
 
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Courier',
 			catAxisLabelFontSize: 12,
 			catAxisOrientation  : 'minMax',
+
+			dataBorder         : { pt:'1', color:'F1F1F1' },
+			dataLabelColor     : '696969',
+			dataLabelFontFace  : 'Arial',
+			dataLabelFontSize  : 11,
+			dataLabelPosition  : 'outEnd',
+			dataLabelFormatCode: '#.0',
+			showValue          : true,
 
 			showLegend: false,
 			showTitle : false
@@ -559,13 +559,20 @@ function genSlides_Chart(pptx) {
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
 		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
 			barDir: 'col',
+			barGapWidthPct: 25,
 			barMaxVal: 5000,
-			barGapWidthPct: 200,
 
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Times',
-			catAxisLabelFontSize: 12,
+			catAxisLabelFontSize: 11,
 			catAxisOrientation  : 'minMax',
+
+			dataBorder         : { pt:'1', color:'F1F1F1' },
+			dataLabelColor     : 'FFFFFF',
+			dataLabelFontFace  : 'Arial',
+			dataLabelFontSize  : 10,
+			dataLabelPosition  : 'ctr',
+			showValue          : true,
 
 			showLegend: true,
 			legendPos :  't',
