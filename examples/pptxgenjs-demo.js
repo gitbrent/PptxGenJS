@@ -589,12 +589,12 @@ function genSlides_Chart(pptx) {
 
 		var arrDataRegions = [
 			{
-				name  : 'Region 1',
+				name  : 'Region 3',
 				labels: ['April', 'May', 'June', 'July', 'August'],
 				values: [17, 26, 53, 100, 75]
 			},
 			{
-				name  : 'Region 2',
+				name  : 'Region 4',
 				labels: ['April', 'May', 'June', 'July', 'August'],
 				values: [55, 43, 70, 90, 80]
 			}

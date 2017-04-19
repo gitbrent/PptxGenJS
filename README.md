@@ -318,6 +318,8 @@ Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisOrientation`   | number  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
 
+[Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)
+
 ### Chart Examples
 ```javascript
 var pptx = new PptxGenJS();

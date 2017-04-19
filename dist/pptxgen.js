@@ -882,9 +882,29 @@ var PptxGenJS = function(){
 	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
 	*/
 	function makeXmlCharts(rel) {
+		function getExcelColName(length) {
+			var strName = '';
+
+// TODO: current - only works up to Z!!!
+
+			if ( length <= 26 ) {
+				strName = LETTERS[length];
+			}
+			else {
+				strName += LETTERS[(length % LETTERS.length)];
+				console.log(strName);
+
+				var left = ( length - (LETTERS.length * ((length % LETTERS.length))) );
+				strName += LETTERS[left];
+				console.log(strName);
+			}
+
+			return strName;
+		}
+
 		// STEP 1: Create chart
-		// CHARTSPACE: BEGIN vvv
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+		// CHARTSPACE: BEGIN vvv
 		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
 		strXml += '<c:chart>';
 
@@ -994,8 +1014,7 @@ var PptxGenJS = function(){
 					// 2: "Categories"
 					strXml += '<c:cat>';
 					strXml += '  <c:strRef>';
-					strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ LETTERS[obj.labels.length] +'$1' +'</c:f>';
-					// TODO: ^^^ handle >26 letters issue
+					strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
 					strXml += '    <c:strCache>';
 					strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
 					obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
@@ -1006,7 +1025,7 @@ var PptxGenJS = function(){
 					// 3: "Values"
 					strXml += '  <c:val>';
 					strXml += '    <c:numRef>';
-					strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ LETTERS[obj.labels.length] +'$'+ (idx+2) +'</c:f>';
+					strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ getExcelColName(obj.labels.length) +'$'+ (idx+2) +'</c:f>';
 					strXml += '      <c:numCache>';
 					strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
 					obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
@@ -1215,8 +1234,7 @@ var PptxGenJS = function(){
 				// 2: "Categories"
 				strXml += '<c:cat>';
 				strXml += '  <c:strRef>';
-				strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ LETTERS[obj.labels.length] +'$1' +'</c:f>';
-				// TODO: FIXME: ^^^ handle >26 letters issue
+				strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
 				strXml += '    <c:strCache>';
 				strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
 				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
@@ -1227,8 +1245,7 @@ var PptxGenJS = function(){
 				// 3: Create vals
 				strXml += '  <c:val>';
 				strXml += '    <c:numRef>';
-				strXml += '      <c:f>Sheet1!'+ '$B$2:$'+ LETTERS[obj.labels.length] +'$'+ 2 +'</c:f>';
-				// TODO: FIXME: ^^^ handle >26 letters issue
+				strXml += '      <c:f>Sheet1!'+ '$B$2:$'+ getExcelColName(obj.labels.length) +'$'+ 2 +'</c:f>';
 				strXml += '      <c:numCache>';
 				strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
 				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
