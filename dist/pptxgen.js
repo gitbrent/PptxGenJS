@@ -1048,27 +1048,27 @@ var PptxGenJS = function(){
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
 					strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
-					strXml += `<c:spPr>
-					          <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>
-					        </c:spPr>
-					        <c:txPr>
-					          <a:bodyPr rot="0"/>
-					          <a:lstStyle/>
-					          <a:p>
-					            <a:pPr>`;
+					strXml += '  <c:spPr>';
+					strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += '  </c:spPr>';
+					strXml += '  <c:txPr>';
+					strXml += '    <a:bodyPr rot="0"/>';
+					strXml += '    <a:lstStyle/>';
+					strXml += '    <a:p>';
+					strXml += '    <a:pPr>';
 					strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
 					strXml += '<a:solidFill><a:srgbClr val="'+ (rel.opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
 					strXml += '<a:latin typeface="'+ (rel.opts.catAxisLabelFontFace || 'Arial') +'"/>';
-					strXml += `   </a:defRPr>
-					            </a:pPr>
-					          </a:p>
-					        </c:txPr>
-					        <c:crossAx val="2094734553"/>
-					        <c:crosses val="autoZero"/>
-					        <c:auto val="1"/>
-					        <c:lblAlgn val="ctr"/>
-					        <c:noMultiLvlLbl val="1"/>
-					</c:catAx>`;
+					strXml += '   </a:defRPr>';
+					strXml += '  </a:pPr>';
+					strXml += '  </a:p>';
+					strXml += '  </c:txPr>';
+					strXml += '  <c:crossAx val="2094734553"/>';
+					strXml += ' <c:crosses val="autoZero"/>';
+					strXml += ' <c:auto val="1"/>';
+					strXml += ' <c:lblAlgn val="ctr"/>';
+					strXml += ' <c:noMultiLvlLbl val="1"/>';
+					strXml += '</c:catAx>';
 				}
 
 				// C: "Value Axis"
@@ -1108,8 +1108,8 @@ var PptxGenJS = function(){
 					strXml += '<c:crossAx val="2094734552"/>';
 					strXml += '<c:crosses val="autoZero"/>';
 					strXml += '<c:crossBetween val="between"/>';
-					//strXml += '<c:majorUnit val="25"/>'; // NOTE: Not Required.	// FIXME: Add OPTION?
-					//strXml += '<c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// FIXME: Add OPTION?
+					//strXml += '<c:majorUnit val="25"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
+					//strXml += '<c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
 					strXml += '</c:valAx>';
 				}
 
@@ -1117,7 +1117,7 @@ var PptxGenJS = function(){
 				break;
 
 			case 'line':
-				// TODO: lineChart
+				// TODO: FIXME: lineChart
 				break;
 
 			case 'pie':
