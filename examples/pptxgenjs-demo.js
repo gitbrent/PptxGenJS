@@ -447,6 +447,7 @@ function genSlides_Table(pptx) {
 }
 
 function genSlides_Chart(pptx) {
+	var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
 	var dataChartPieStat = [
 		{
@@ -694,7 +695,30 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 3: Pie Charts: Legend Demos -----------------------------------------------------------------
+	// SLIDE 3: Stacked Bar Charts -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataHighVals = [
+			{
+				name  : 'TEST: getExcelColName',
+				labels: LETTERS.concat(['AA','AB','AC','AD']),
+				values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
+			}
+		];
+
+		var optsChart = {
+			x:0.5, y:0.5, w:'90%', h:'90%',
+			barDir: 'col',
+			title: 'Chart With >26 Cols'
+		};
+
+		// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
+		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
+	}
+
+	// SLIDE 4: Pie Charts: Legend Demos -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -724,7 +748,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 4: Pie Charts -----------------------------------------------------------------
+	// SLIDE 5: Pie Charts -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );

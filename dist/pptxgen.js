@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170418";
+	var APP_REL = "20170421";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -885,18 +885,12 @@ var PptxGenJS = function(){
 		function getExcelColName(length) {
 			var strName = '';
 
-// TODO: current - only works up to Z!!!
-
 			if ( length <= 26 ) {
 				strName = LETTERS[length];
 			}
 			else {
-				strName += LETTERS[(length % LETTERS.length)];
-				console.log(strName);
-
-				var left = ( length - (LETTERS.length * ((length % LETTERS.length))) );
-				strName += LETTERS[left];
-				console.log(strName);
+				strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
+				strName += LETTERS[ (length % LETTERS.length) ];
 			}
 
 			return strName;
