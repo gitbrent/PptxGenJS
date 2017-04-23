@@ -1,10 +1,10 @@
 /**
- * NAME: pptxgenjs-demo.js
- * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Apr 10, 2017
- * DESC: Common test/demo slides for all library features
- * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-**/
+* NAME: pptxgenjs-demo.js
+* AUTH: Brent Ely (https://github.com/gitbrent/)
+* DATE: Apr 23, 2017
+* DESC: Common test/demo slides for all library features
+* DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
+*/
 
 // Detect Node.js
 var NODEJS = ( typeof module !== 'undefined' && module.exports );
@@ -465,10 +465,10 @@ function genSlides_Chart(pptx) {
 		}
 	];
 
-	// SLIDE 1: Bar Charts -----------------------------------------------------------------
+	// SLIDE 1: Bar Chart -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var arrDataRegions = [
 			{
@@ -583,10 +583,10 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 2: Stacked Bar Charts -----------------------------------------------------------------
+	// SLIDE 2: Stacked Bar Chart ---------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var arrDataRegions = [
 			{
@@ -695,7 +695,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 3: Stacked Bar Charts -----------------------------------------------------------------
+	// SLIDE 3: Bar Chart - Lots of Bars --------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -718,7 +718,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	}
 
-	// SLIDE 4: Pie Charts: Legend Demos -----------------------------------------------------------------
+	// SLIDE 4: Pie Charts: Legend Demo ---------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -748,13 +748,13 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 5: Pie Charts -----------------------------------------------------------------
+	// SLIDE 5: Pie Chart -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Pie Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var optsChartPie1 = {
-			x:1.0, y:1.0, w:6, h:6,
+			x:0.5, y:1.0, w:6.0, h:6.0,
 			chartColors: ['FC0000','FFCC00','009900','6600CC'],
 			dataBorder       : { pt:'2', color:'F1F1F1' },
 			dataLabelColor   : 'FFFFFF',
@@ -774,6 +774,7 @@ function genSlides_Chart(pptx) {
 			titleFontFace: 'Helvetica Neue',
 			titleFontSize: 24
 		};
+		slide.addText( '.', {x:0.5, y:1.0, w:6.0, h:6.0, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart(pptx.charts.PIE, dataChartPieStat, optsChartPie1 );
 
 		var optsChartPie2 = {
@@ -788,6 +789,54 @@ function genSlides_Chart(pptx) {
 			title: 'Resource Totals by Location'
 		};
 		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
+	}
+
+	// SLIDE 6: Line Chart ----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataRegions = [
+			{
+				name  : 'Region 1',
+				labels: ['May', 'June', 'July', 'August'],
+				values: [26, 53, 100, 75]
+			},
+			{
+				name  : 'Region 2',
+				labels: ['May', 'June', 'July', 'August'],
+				values: [43.5, 70.3, 90.1, 80.05]
+			}
+		];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+
+		// TOP-LEFT: H/bar
+		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			barDir: 'bar',
+			border: { pt:'3', color:'00EE00' },
+			fill: 'F1F1F1',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'maxMin',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+//		slide.addChart( pptx.charts.LINE, arrDataRegions, optsChartBar1 );
 	}
 }
 

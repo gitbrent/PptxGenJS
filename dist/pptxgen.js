@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170421";
+	var APP_REL = "20170423";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -85,8 +85,9 @@ var PptxGenJS = function(){
 		'TRIANGLE': "&#x25B6;"
 	};
 	var CHART_TYPES = {
-		'BAR': { 'displayName':'Bar Chart', 'name':'bar' },
-		'PIE': { 'displayName':'Pie Chart', 'name':'pie' }
+		'BAR' : { 'displayName':'Bar Chart' , 'name':'bar'  },
+		'LINE': { 'displayName':'Line Chart', 'name':'line' },
+		'PIE' : { 'displayName':'Pie Chart' , 'name':'pie'  }
 	}
 	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
