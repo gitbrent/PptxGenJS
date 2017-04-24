@@ -16,6 +16,7 @@ var COLOR_AMB = 'F2AF00';
 var COLOR_GRN = '7AB800';
 var COLOR_CRT = 'AA0000';
 var COLOR_BLU = '0088CC';
+var COLOR_UNK = 'A9A9A9';
 //
 var ARRSTRBITES = [130];
 var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 chars/line
@@ -74,7 +75,7 @@ function execGenSlidesFuncs(type) {
 	pptx.setLayout('LAYOUT_WIDE');
 
 	pptx.setAuthor('Brent Ely');
-	pptx.setCompany('S.T.A.R. Laboratories');
+	pptx.setCompany(CUST_NAME);
 	pptx.setRevision('15');
 	pptx.setSubject('PptxGenJS Test Suite Export');
 	pptx.setTitle('PptxGenJS Test Suite Presentation');
@@ -448,6 +449,8 @@ function genSlides_Table(pptx) {
 
 function genSlides_Chart(pptx) {
 	var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+	var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var QTRS = ['Q1','Q2','Q3','Q4'];
 
 	var dataChartPieStat = [
 		{
@@ -456,7 +459,6 @@ function genSlides_Chart(pptx) {
 			values: [8, 20, 30, 2]
 		}
 	];
-
 	var dataChartPieLocs = [
 		{
 			name  : 'Location',
@@ -464,6 +466,28 @@ function genSlides_Chart(pptx) {
 			values: [  69,   35,   40,   85,   38,   99,  101]
 		}
 	];
+
+	var arrDataLineStat = [];
+	{
+		var tmpObjRed = { name:'Red', labels:QTRS, values:[] };
+		var tmpObjAmb = { name:'Amb', labels:QTRS, values:[] };
+		var tmpObjGrn = { name:'Grn', labels:QTRS, values:[] };
+		var tmpObjUnk = { name:'Unk', labels:QTRS, values:[] };
+
+		for (var idy=0; idy<QTRS.length; idy++) {
+			tmpObjRed.values.push( Math.floor(Math.random() * 20) + 1 );
+			tmpObjAmb.values.push( Math.floor(Math.random() * 50) + 1 );
+			tmpObjGrn.values.push( Math.floor(Math.random() * 99) + 1 );
+			tmpObjUnk.values.push( Math.floor(Math.random() *  5) + 1 );
+		}
+
+		arrDataLineStat.push( tmpObjRed );
+		arrDataLineStat.push( tmpObjAmb );
+		arrDataLineStat.push( tmpObjGrn );
+		arrDataLineStat.push( tmpObjUnk );
+	}
+
+	// TOP-LEFT:
 
 	// SLIDE 1: Bar Chart -----------------------------------------------------------------
 	{
@@ -529,6 +553,8 @@ function genSlides_Chart(pptx) {
 			dataLabelFormatCode: '#.0',
 			showValue          : true,
 
+			valAxisOrientation: 'maxMin',
+
 			showLegend: false,
 			showTitle : false
 		};
@@ -561,7 +587,7 @@ function genSlides_Chart(pptx) {
 		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
 			barDir: 'col',
 			barGapWidthPct: 25,
-			barMaxVal: 5000,
+			valAxisMaxVal: 5000,
 
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Times',
@@ -718,7 +744,114 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	}
 
-	// SLIDE 4: Pie Charts: Legend Demo ---------------------------------------------------
+	// SLIDE 4: Line Chart ----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataTimeline = [
+			{
+				name  : 'Proj Sales',
+				labels: MONS,
+				values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
+			},
+			{
+				name  : 'Actual Sales',
+				labels: MONS,
+				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 20102, 12789, 10123, 15121]
+			},
+			{
+				name  : 'Cost',
+				labels: MONS,
+				values: [500, 760, 745, 756, 801, 901, 900, 1285, 1910, 7078, 6112, 9212]
+			}
+		];
+
+		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24,
+			title: 'Sales Timeline'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+
+		// TOP-RIGHT:
+		var optsChartLine2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			border: { pt:'2', color:'C7C7C7' },
+			fill: 'F2F9FC',
+
+			showLegend:true,
+			legendPos:'r',
+
+			titleColor   : '0088CC',
+			titleFontFace: 'Courier',
+			titleFontSize: 16,
+			showTitle:true, title:'Title & Legend'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine2 );
+	}
+
+	// SLIDE 5: Line Chart: Line Size/Smoothing -------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+
+			lineSize  : 10,
+			lineSmooth: true,
+
+			showLegend: true,
+			legendPos : 't',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24,
+			title: 'Sales Timeline'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+	}
+
+	// SLIDE 6: Line Chart: Lots of Cats --------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var MAXVAL = 20000;
+
+		var arrDataTimeline = [];
+		for (var idx=0; idx<15; idx++) {
+			var tmpObj = {
+				name  : 'Series'+idx,
+				labels: MONS,
+				values: []
+			};
+
+			for (var idy=0; idy<MONS.length; idy++) {
+				tmpObj.values.push( Math.floor(Math.random() * MAXVAL) + 1 );
+			}
+
+			arrDataTimeline.push( tmpObj );
+		}
+
+		// FULL SLIDE:
+		var optsChartLine1 = { x:0.5, y:0.6, w:'95%', h:'85%',
+			fill: 'D1E1F1',
+
+			valAxisMaxVal: MAXVAL,
+
+			showLegend: true,
+			legendPos : 'r'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
+	}
+
+	// SLIDE 7: Pie Charts: Legend Demo ---------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -748,7 +881,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 5: Pie Chart -----------------------------------------------------------------
+	// SLIDE 8: Pie Chart -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -791,53 +924,6 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
 	}
 
-	// SLIDE 6: Line Chart ----------------------------------------------------------------
-	{
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		var arrDataRegions = [
-			{
-				name  : 'Region 1',
-				labels: ['May', 'June', 'July', 'August'],
-				values: [26, 53, 100, 75]
-			},
-			{
-				name  : 'Region 2',
-				labels: ['May', 'June', 'July', 'August'],
-				values: [43.5, 70.3, 90.1, 80.05]
-			}
-		];
-		var arrDataHighVals = [
-			{
-				name  : 'California',
-				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-				values: [2000, 2800, 3200, 4000, 5000]
-			},
-			{
-				name  : 'Texas',
-				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-				values: [1400, 2000, 2500, 3000, 3800]
-			}
-		];
-
-		// TOP-LEFT: H/bar
-		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
-			barDir: 'bar',
-			border: { pt:'3', color:'00EE00' },
-			fill: 'F1F1F1',
-
-			catAxisLabelColor   : 'CC0000',
-			catAxisLabelFontFace: 'Helvetica Neue',
-			catAxisLabelFontSize: 14,
-			catAxisOrientation  : 'maxMin',
-
-			titleColor   : '33CF22',
-			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 24
-		};
-//		slide.addChart( pptx.charts.LINE, arrDataRegions, optsChartBar1 );
-	}
 }
 
 function genSlides_Media(pptx) {

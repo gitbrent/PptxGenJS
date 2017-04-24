@@ -940,8 +940,9 @@ var PptxGenJS = function(){
 		// A: CHART TYPES -----------------------------------------------------------
 		switch ( rel.opts.type ) {
 			case 'bar':
-				strXml += '<c:barChart>';
-				strXml += '  <c:barDir val="'+ rel.opts.barDir +'"/>';
+			case 'line':
+				strXml += '<c:'+ rel.opts.type +'Chart>';
+				if ( rel.opts.type == 'bar' ) strXml += '  <c:barDir val="'+ rel.opts.barDir +'"/>';
 				strXml += '  <c:grouping val="'+ rel.opts.barGrouping + '"/>';
 				strXml += '  <c:varyColors val="0"/>';
 
@@ -970,10 +971,15 @@ var PptxGenJS = function(){
 					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
-					// Bar Fill+Border
+
+					// Bar/Line Fill and Border
+					var strSerColor = rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)];
 					strXml += '  <c:spPr>';
-					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
-					if ( rel.opts.dataBorder ) {
+					strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
+					if ( rel.opts.type == 'line' ) {
+						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					}
+					else if ( rel.opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
 					strXml += '    <a:effectLst>';
@@ -982,6 +988,20 @@ var PptxGenJS = function(){
 					strXml += '      </a:outerShdw>';
 					strXml += '    </a:effectLst>';
 					strXml += '  </c:spPr>';
+
+					// LINE CHART ONLY: `marker`
+					if ( rel.opts.type == 'line' ) {
+						strXml += '<c:marker>';
+						strXml += '  <c:symbol val="circle"/>'; // FIXME: OPTION: `dataSymbol`
+						strXml += '  <c:size val="6"/>'; // FIXME: OPTION: `dataSymbolSize`
+						strXml += '  <c:spPr>';
+	  					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
+						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						strXml += '    <a:effectLst/>';
+						strXml += '  </c:spPr>';
+						strXml += '</c:marker>';
+
+					}
 
 					// 1: "Data Labels"
 					strXml += '  <c:dLbls>';
@@ -1028,15 +1048,23 @@ var PptxGenJS = function(){
 					strXml += '    </c:numRef>';
 					strXml += '  </c:val>';
 
+					// LINE CHART ONLY: `smooth`
+					if ( rel.opts.type == 'line' ) strXml += '<c:smooth val="'+ (rel.opts.lineSmooth ? "1" : "0" ) +'"/>';
+
 					// 4: Close "SERIES"
 					strXml += '</c:ser>';
 				});
 				//
-				strXml += '  <c:gapWidth val="'+ rel.opts.barGapWidthPct +'"/>';
-				strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
+				if ( rel.opts.type == 'bar' ) {
+					strXml += '  <c:gapWidth val="'+ rel.opts.barGapWidthPct +'"/>';
+					strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
+				}
+				else if ( rel.opts.type == 'line' ) {
+					strXml += '  <c:marker val="1"/>';
+				}
 				strXml += '  <c:axId val="2094734552"/>';
 				strXml += '  <c:axId val="2094734553"/>';
-				strXml += '</c:barChart>';
+				strXml += '</c:'+ rel.opts.type +'Chart>';
 
 				// B: "Category Axis"
 				{
@@ -1078,7 +1106,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:axId val="2094734553"/>';
 					strXml += '  <c:scaling>';
 					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
-					if (rel.opts.barMaxVal) strXml += '<c:max val="'+ rel.opts.barMaxVal +'"/>';
+					if (rel.opts.valAxisMaxVal) strXml += '<c:max val="'+ rel.opts.valAxisMaxVal +'"/>';
 					strXml += '  </c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
@@ -1114,11 +1142,7 @@ var PptxGenJS = function(){
 					strXml += '</c:valAx>';
 				}
 
-				// Done with CHART.BAR
-				break;
-
-			case 'line':
-				// TODO: FIXME: lineChart
+				// Done with CHART.BAR/LINE
 				break;
 
 			case 'pie':
@@ -2744,6 +2768,8 @@ var PptxGenJS = function(){
 			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
 			//
 			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' ? '0%' : '#,##0') );
+			//
+			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
 
 			// STEP 4: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
