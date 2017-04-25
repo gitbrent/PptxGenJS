@@ -992,8 +992,8 @@ var PptxGenJS = function(){
 					// LINE CHART ONLY: `marker`
 					if ( rel.opts.type == 'line' ) {
 						strXml += '<c:marker>';
-						strXml += '  <c:symbol val="circle"/>'; // FIXME: OPTION: `dataSymbol`
-						strXml += '  <c:size val="6"/>'; // FIXME: OPTION: `dataSymbolSize`
+						strXml += '  <c:symbol val="'+ rel.opts.lineDataSymbol +'"/>';
+						strXml += '  <c:size val="6"/>'; // FIXME: OPTION: `lineDataSymbolSize`
 						strXml += '  <c:spPr>';
 	  					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
 						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -2731,8 +2731,8 @@ var PptxGenJS = function(){
 			// STEP 3: Set default options/decode user options
 			// A: Core
 			options.type = inType.name;
-			options.x = (options.x || 1);
-			options.y = (options.y || 1);
+			options.x = (typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1);
+			options.y = (typeof options.y !== 'undefined' && options.y != null && !isNaN(options.y) ? options.y : 1);
 			options.w = (options.w || '50%');
 			options.h = (options.h || '50%');
 
@@ -2747,6 +2747,8 @@ var PptxGenJS = function(){
 				options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
 				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
 			}
+			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
+			if ( ['circle','dash','diamond','dot','none','plus','square','star','triangle','x'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
