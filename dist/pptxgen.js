@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170423";
+	var APP_REL = "20170424";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -993,7 +993,9 @@ var PptxGenJS = function(){
 					if ( rel.opts.type == 'line' ) {
 						strXml += '<c:marker>';
 						strXml += '  <c:symbol val="'+ rel.opts.lineDataSymbol +'"/>';
-						strXml += '  <c:size val="6"/>'; // FIXME: OPTION: `lineDataSymbolSize`
+						strXml += '  <c:size val="'+ rel.opts.lineDataSymbolSize +'"/>';
+console.log(rel.opts.lineDataSymbolSize);
+						//strXml += '  <c:size val="6"/>';
 						strXml += '  <c:spPr>';
 	  					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
 						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -2749,6 +2751,7 @@ var PptxGenJS = function(){
 			}
 			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
 			if ( ['circle','dash','diamond','dot','none','plus','square','star','triangle','x'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
+			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);

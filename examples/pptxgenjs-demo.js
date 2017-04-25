@@ -817,23 +817,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 	}
 
-	// SLIDE 6: Line Chart: `lineDataSymbol` test
-	{
-		var intWgap = 3.25;
-		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','plus','square','star','triangle','x'];
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		opts_lineDataSymbol.forEach(function(opt,idx){
-			slide.addChart(
-				pptx.charts.LINE,
-				arrDataLineStat,
-				{ x:(idx < 4 ? idx*intWgap : (idx < 8 ? (idx-4)*intWgap : (idx-8)*intWgap)), y:(idx < 4 ? 0.5 : (idx < 8 ? 2.75 : 5.25)), w:3.25, h:2.25, lineDataSymbol:opt, showTitle:true, title:opt }
-			);
-		});
-	}
-
-	// SLIDE 7: Line Chart: Lots of Cats --------------------------------------------------
+	// SLIDE 6: Line Chart: Lots of Cats --------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -865,6 +849,25 @@ function genSlides_Chart(pptx) {
 			legendPos : 'r'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
+	}
+
+	// SLIDE 7: Line Chart: `lineDataSymbol` + `lineDataSymbolSize` test
+	{
+		var intWgap = 3.25;
+		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','plus','square','star','triangle','x'];
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		opts_lineDataSymbol.forEach(function(opt,idx){
+			slide.addChart(
+				pptx.charts.LINE,
+				arrDataLineStat,
+				{
+					x:(idx < 4 ? idx*intWgap : (idx < 8 ? (idx-4)*intWgap : (idx-8)*intWgap)), y:(idx < 4 ? 0.5 : (idx < 8 ? 2.75 : 5)), w:3.25, h:2.25,
+					lineDataSymbol:opt, showTitle:true, title:opt, lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : 6))
+				}
+			);
+		});
 	}
 
 	// SLIDE 8: Pie Charts: Legend Demo ---------------------------------------------------
