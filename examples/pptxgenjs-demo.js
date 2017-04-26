@@ -587,6 +587,8 @@ function genSlides_Chart(pptx) {
 		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
 			barDir: 'col',
 			barGapWidthPct: 25,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 50,
 			valAxisMaxVal: 5000,
 
 			catAxisLabelColor   : '0000CC',
@@ -758,7 +760,7 @@ function genSlides_Chart(pptx) {
 			{
 				name  : 'Actual Sales',
 				labels: MONS,
-				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 20102, 12789, 10123, 15121]
+				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 11102, 12789, 10123, 15121]
 			},
 			{
 				name  : 'Cost',
@@ -851,7 +853,36 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
 	}
 
-	// SLIDE 7: Line Chart: `lineDataSymbol` + `lineDataSymbolSize` test
+	// SLIDE 7: Area Chart: Misc -------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataTimeline2ser = [
+			{
+				name  : 'Actual Sales',
+				labels: MONS,
+				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121]
+			},
+			{
+				name  : 'Proj Sales',
+				labels: MONS,
+				values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
+			}
+		];
+
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, { x:0.5, y:0.6, w:'45%', h:3, showLegend:true, legendPos:'r' } );
+
+		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 50,
+			dataBorder: {pt:2, color:'FFFFFF'},
+			fill: 'D1E1F1'
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
+	}
+
+	// SLIDE 8: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize`
 	{
 		var intWgap = 4.25;
 		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
@@ -872,7 +903,7 @@ function genSlides_Chart(pptx) {
 		});
 	}
 
-	// SLIDE 8: Pie Charts: Legend Demo ---------------------------------------------------
+	// SLIDE 9: Pie Charts: All 4 Legend Options -------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -902,7 +933,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 9: Pie Chart -----------------------------------------------------------------
+	// SLIDE 10: Pie Chart -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );

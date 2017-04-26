@@ -291,6 +291,10 @@ Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
 | `barDir`        | string  |         | `col`     | bar direction         | (Bar Chart only) `h` (horizontal) or `v` (vertical). Ex: `{barDir:'v'}` |
 | `barGrouping`   | string  |         |`clustered`| bar grouping          | (Bar Chart only) `clustered` or `stacked` or `percentStacked`. |
 | `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
+TODO:
+chartColors
+chartColorsOpacity
+
 | `fill`          | string  |         |           | fill/bkgd color       | hex color code. Ex: `{ fill:'0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
@@ -316,12 +320,10 @@ Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
 | `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `valAxisMaxVal`        | number  |         |           | maximum value for Value Axis | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisOrientation`   | number  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
 
-// TODO:
-valAxisMaxVal
-
-[Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)
+Reference: [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)
 
 ### Chart Examples
 ```javascript

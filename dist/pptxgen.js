@@ -85,6 +85,7 @@ var PptxGenJS = function(){
 		'TRIANGLE': "&#x25B6;"
 	};
 	var CHART_TYPES = {
+		'AREA': { 'displayName':'Area Chart', 'name':'area' },
 		'BAR' : { 'displayName':'Bar Chart' , 'name':'bar'  },
 		'LINE': { 'displayName':'Line Chart', 'name':'line' },
 		'PIE' : { 'displayName':'Pie Chart' , 'name':'pie'  }
@@ -939,6 +940,7 @@ var PptxGenJS = function(){
 
 		// A: CHART TYPES -----------------------------------------------------------
 		switch ( rel.opts.type ) {
+			case 'area':
 			case 'bar':
 			case 'line':
 				strXml += '<c:'+ rel.opts.type +'Chart>';
@@ -972,10 +974,17 @@ var PptxGenJS = function(){
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
 
-					// Bar/Line Fill and Border
+					// Fill and Border
 					var strSerColor = rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)];
 					strXml += '  <c:spPr>';
-					strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
+
+					if ( rel.opts.chartColorsOpacity ) {
+						strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"><a:alpha val="50000"/></a:srgbClr></a:solidFill>';
+					}
+					else {
+						strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
+					}
+
 					if ( rel.opts.type == 'line' ) {
 						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
@@ -1016,7 +1025,7 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'outEnd') +'"/>';
+					if ( rel.opts.type != 'area' ) strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'outEnd') +'"/>';
 					strXml += '    <c:showLegendKey val="0"/>';
 					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? '1' : '0') +'"/>';
 					strXml += '    <c:showCatName val="0"/>';
@@ -1091,8 +1100,8 @@ var PptxGenJS = function(){
 					strXml += '   </a:defRPr>';
 					strXml += '  </a:pPr>';
 					strXml += '  </a:p>';
-					strXml += '  </c:txPr>';
-					strXml += '  <c:crossAx val="2094734553"/>';
+					strXml += ' </c:txPr>';
+					strXml += ' <c:crossAx val="2094734553"/>';
 					strXml += ' <c:crosses val="autoZero"/>';
 					strXml += ' <c:auto val="1"/>';
 					strXml += ' <c:lblAlgn val="ctr"/>';
@@ -1110,7 +1119,7 @@ var PptxGenJS = function(){
 					strXml += '  </c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
-					strXml += '<c:majorGridlines>\
+					strXml += ' <c:majorGridlines>\
 								<c:spPr>\
 								  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>\
 								</c:spPr>\
@@ -1118,11 +1127,11 @@ var PptxGenJS = function(){
 								<c:numFmt formatCode="General" sourceLinked="0"/>\
 								<c:majorTickMark val="out"/>\
 								<c:minorTickMark val="none"/>';
-					strXml += '<c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
-					strXml += '<c:spPr>';
+					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+					strXml += ' <c:spPr>';
 					strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-					strXml += '</c:spPr>';
-					strXml += '<c:txPr>';
+					strXml += ' </c:spPr>';
+					strXml += ' <c:txPr>';
 					strXml += '  <a:bodyPr rot="0"/>';
 					strXml += '  <a:lstStyle/>';
 					strXml += '  <a:p>';
@@ -1133,12 +1142,12 @@ var PptxGenJS = function(){
 					strXml += '      </a:defRPr>';
 					strXml += '    </a:pPr>';
 					strXml += '  </a:p>';
-					strXml += '</c:txPr>';
-					strXml += '<c:crossAx val="2094734552"/>';
-					strXml += '<c:crosses val="autoZero"/>';
-					strXml += '<c:crossBetween val="between"/>';
-					//strXml += '<c:majorUnit val="25"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
-					//strXml += '<c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
+					strXml += ' </c:txPr>';
+					strXml += ' <c:crossAx val="2094734552"/>';
+					strXml += ' <c:crosses val="autoZero"/>';
+					strXml += ' <c:crossBetween val="'+ ( rel.opts.type == 'area' ? 'midCat' : 'between' ) +'"/>';
+					//strXml += ' <c:majorUnit val="25"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
+					//strXml += ' <c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
 					strXml += '</c:valAx>';
 				}
 
