@@ -853,8 +853,8 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 7: Line Chart: `lineDataSymbol` + `lineDataSymbolSize` test
 	{
-		var intWgap = 3.25;
-		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','plus','square','star','triangle','x'];
+		var intWgap = 4.25;
+		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -863,8 +863,10 @@ function genSlides_Chart(pptx) {
 				pptx.charts.LINE,
 				arrDataLineStat,
 				{
-					x:(idx < 4 ? idx*intWgap : (idx < 8 ? (idx-4)*intWgap : (idx-8)*intWgap)), y:(idx < 4 ? 0.5 : (idx < 8 ? 2.75 : 5)), w:3.25, h:2.25,
-					lineDataSymbol:opt, showTitle:true, title:opt, lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : 6))
+					x:(idx < 3 ? idx*intWgap : (idx < 6 ? (idx-3)*intWgap : (idx-6)*intWgap)), y:(idx < 3 ? 0.5 : (idx < 6 ? 2.75 : 5)),
+					w:4.25, h:2.25,
+					lineDataSymbol:opt, title:opt, showTitle:true,
+					lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : null))
 				}
 			);
 		});
