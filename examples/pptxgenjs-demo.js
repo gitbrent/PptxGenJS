@@ -475,10 +475,10 @@ function genSlides_Chart(pptx) {
 		var tmpObjUnk = { name:'Unk', labels:QTRS, values:[] };
 
 		for (var idy=0; idy<QTRS.length; idy++) {
-			tmpObjRed.values.push( Math.floor(Math.random() * 20) + 1 );
+			tmpObjRed.values.push( Math.floor(Math.random() * 30) + 1 );
 			tmpObjAmb.values.push( Math.floor(Math.random() * 50) + 1 );
-			tmpObjGrn.values.push( Math.floor(Math.random() * 99) + 1 );
-			tmpObjUnk.values.push( Math.floor(Math.random() *  5) + 1 );
+			tmpObjGrn.values.push( Math.floor(Math.random() * 80) + 1 );
+			tmpObjUnk.values.push( Math.floor(Math.random() * 10) + 1 );
 		}
 
 		arrDataLineStat.push( tmpObjRed );
@@ -746,77 +746,62 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	}
 
-	// SLIDE 4: Line Chart ----------------------------------------------------------------
+	// SLIDE 4: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		var arrDataTimeline = [
-			{
-				name  : 'Proj Sales',
-				labels: MONS,
-				values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
-			},
-			{
-				name  : 'Actual Sales',
-				labels: MONS,
-				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 11102, 12789, 10123, 15121]
-			},
-			{
-				name  : 'Cost',
-				labels: MONS,
-				values: [500, 760, 745, 756, 801, 901, 900, 1285, 1910, 7078, 6112, 9212]
-			}
-		];
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart Smoothing, Line Size, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
 		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
-
-			titleColor   : '33CF22',
-			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 24,
-			title: 'Sales Timeline'
+			lineSize  : 8,
+			lineSmooth: true,
+			showLegend: true, legendPos: 't'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 
-		// TOP-RIGHT:
 		var optsChartLine2 = { x:7.0, y:0.6, w:6.0, h:3.0,
-			border: { pt:'2', color:'C7C7C7' },
-			fill: 'F2F9FC',
-
-			showLegend:true,
-			legendPos:'r',
-
-			titleColor   : '0088CC',
-			titleFontFace: 'Courier',
-			titleFontSize: 16,
-			showTitle:true, title:'Title & Legend'
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineSize  : 16,
+			lineSmooth: true,
+			showLegend: true, legendPos: 'r'
 		};
-		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine2 );
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
+
+		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineDataSymbolSize: 10,
+			showLegend: true, legendPos: 'l'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+
+		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineDataSymbolSize: 20,
+			showLegend: true, legendPos: 'b'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
 	}
 
-	// SLIDE 5: Line Chart: Line Size/Smoothing -------------------------------------------
+	// SLIDE 5: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize`
 	{
+		var intWgap = 4.25;
+		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
-		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
-			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
-
-			lineSize  : 10,
-			lineSmooth: true,
-
-			showLegend: true,
-			legendPos : 't',
-
-			titleColor   : '33CF22',
-			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 24,
-			title: 'Sales Timeline'
-		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+		opts_lineDataSymbol.forEach(function(opt,idx){
+			slide.addChart(
+				pptx.charts.LINE,
+				arrDataLineStat,
+				{
+					x:(idx < 3 ? idx*intWgap : (idx < 6 ? (idx-3)*intWgap : (idx-6)*intWgap)), y:(idx < 3 ? 0.5 : (idx < 6 ? 2.75 : 5)),
+					w:4.25, h:2.25,
+					lineDataSymbol:opt, title:opt, showTitle:true,
+					lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : null))
+				}
+			);
+		});
 	}
 
 	// SLIDE 6: Line Chart: Lots of Cats --------------------------------------------------
@@ -843,7 +828,7 @@ function genSlides_Chart(pptx) {
 
 		// FULL SLIDE:
 		var optsChartLine1 = { x:0.5, y:0.6, w:'95%', h:'85%',
-			fill: 'D1E1F1',
+			fill: 'F2F9FC',
 
 			valAxisMaxVal: MAXVAL,
 
@@ -871,39 +856,35 @@ function genSlides_Chart(pptx) {
 			}
 		];
 
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, { x:0.5, y:0.6, w:'45%', h:3, showLegend:true, legendPos:'r' } );
+		// TOP-LEFT
+		var optsChartLine1 = { x:0.5, y:0.6, w:'45%', h:3, catAxisOrientation:'maxMin', valAxisOrientation:'maxMin' };
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine1 );
 
+		// TOP-RIGHT
 		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
 			chartColors: ['0088CC', '99FFCC'],
-			chartColorsOpacity: 50,
+			chartColorsOpacity: 25,
 			dataBorder: {pt:2, color:'FFFFFF'},
 			fill: 'D1E1F1'
 		};
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
+
+		// BOTTOM-LEFT
+		var optsChartLine3 = { x:0.5, y:3.6, w:'45%', h:3,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 50
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine3 );
+
+		// BOTTOM-RIGHT
+		var optsChartLine4 = { x:7, y:3.6, w:'45%', h:3,
+			chartColors: ['CC8833', 'CCFF69'],
+			chartColorsOpacity: 75
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
 	}
 
-	// SLIDE 8: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize`
-	{
-		var intWgap = 4.25;
-		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		opts_lineDataSymbol.forEach(function(opt,idx){
-			slide.addChart(
-				pptx.charts.LINE,
-				arrDataLineStat,
-				{
-					x:(idx < 3 ? idx*intWgap : (idx < 6 ? (idx-3)*intWgap : (idx-6)*intWgap)), y:(idx < 3 ? 0.5 : (idx < 6 ? 2.75 : 5)),
-					w:4.25, h:2.25,
-					lineDataSymbol:opt, title:opt, showTitle:true,
-					lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : null))
-				}
-			);
-		});
-	}
-
-	// SLIDE 9: Pie Charts: All 4 Legend Options -------------------------------------------
+	// SLIDE 8: Pie Charts: All 4 Legend Options -------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -933,7 +914,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 10: Pie Chart -----------------------------------------------------------------
+	// SLIDE 9: Pie Chart -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );

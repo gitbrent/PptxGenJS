@@ -2771,6 +2771,7 @@ var PptxGenJS = function(){
 			// D: Options: chart
 			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
 			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' ? PIECHART_COLORS : BARCHART_COLORS) );
+			options.chartColorsOpacity = ( options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null );
 			//
 			options.border = ( options.border && typeof options.border === 'object' ? options.border : null );
 			if ( options.border && (!options.border.pt || isNaN(options.border.pt)) ) options.border.pt = 1;
