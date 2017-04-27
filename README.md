@@ -276,10 +276,12 @@ which is in front of the Image.
 ## Adding Charts
 ```javascript
 // Syntax
-slide.addChart({CHART}, {DATA}, {OPTIONS});
+slide.addChart({TYPE}, {DATA}, {OPTIONS});
 ```
 
-Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
+### Chart Types
+* Chart type can be any one of `pptx.charts`
+* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`
 
 ### Chart Area Options
 | Option          | Type    | Unit    | Default   | Description           | Possible Values  |
@@ -291,11 +293,9 @@ Chart Type is one of `pptx.charts` (currently 'bar' and 'pie').
 | `barDir`        | string  |         | `col`     | bar direction         | (Bar Chart only) `h` (horizontal) or `v` (vertical). Ex: `{barDir:'v'}` |
 | `barGrouping`   | string  |         |`clustered`| bar grouping          | (Bar Chart only) `clustered` or `stacked` or `percentStacked`. |
 | `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-TODO:
-chartColors
-chartColorsOpacity
-
-| `fill`          | string  |         |           | fill/bkgd color       | hex color code. Ex: `{ fill:'0088CC' }` |
+| `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
+| `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
+| `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
 | `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
@@ -333,38 +333,26 @@ pptx.setLayout('LAYOUT_WIDE');
 var slide = pptx.addNewSlide();
 
 // Chart Type: PIE
-var dataChartPie2 = [
-	{
-		name  : 'Location',
-		labels: ['DE', 'GB', 'MX', 'JP', 'IN', 'US'],
-		values: [35, 40, 85, 38, 99, 101]
-	}
+var dataChartPie = [{ name:'Location', labels:['DE','GB','MX','JP','IN','US'], values:[35,40,85,88,99,101] }];
+slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
+
+// Chart Type: BAR
+var arrDataRegions = [
+  {
+    name  : 'Region 1',
+    labels: ['May', 'June', 'July', 'August'],
+    values: [26, 53, 100, 75]
+  },
+  {
+    name  : 'Region 2',
+    labels: ['May', 'June', 'July', 'August'],
+    values: [43.5, 70.3, 90.1, 80.05]
+  }
 ];
-var optsChartPie2 = {
-	x:7.0, y:1.0, w:6, h:6,
-	dataLabelColor   : 'FFFFFF',
-	showLabel  : true,
-	showValue  : true,
-	showPercent: true,
-	showLegend : false,
-	showTitle  : false,
-	title: 'Resource Totals by Location'
-};
-slide.addChart(pptx.charts.PIE, dataChartPie2, optsChartPie2 );
+slide.addChart( pptx.charts.BAR, arrDataRegions, { x:1.0, y:1.0, w:6, h:6 } );
 
 pptx.save('Demo-Chart');
 ```
-
-
-
-
-
-
-
-
-
-
-
 
 
 
