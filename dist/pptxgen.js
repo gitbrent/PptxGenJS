@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.4.0";
-	var APP_REL = "20170410";
+	var APP_VER = "1.5.0";
+	var APP_REL = "20170425";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -84,6 +84,15 @@ var PptxGenJS = function(){
 		'STAR'    : "&#x2605;",
 		'TRIANGLE': "&#x25B6;"
 	};
+	var CHART_TYPES = {
+		'AREA': { 'displayName':'Area Chart', 'name':'area' },
+		'BAR' : { 'displayName':'Bar Chart' , 'name':'bar'  },
+		'LINE': { 'displayName':'Line Chart', 'name':'line' },
+		'PIE' : { 'displayName':'Pie Chart' , 'name':'pie'  }
+	}
+	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
+	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
+	var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
 	//
 	var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 	{
@@ -91,6 +100,7 @@ var PptxGenJS = function(){
 		var IMG_PLAYBTN = 'data:image/png;base64,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';
 	}
 	//
+	var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 	var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
 	var EMU = 914400;  // One (1) Inch - OfficeXML measures in EMU (English Metric Units)
 	var ONEPT = 12700; // One (1) point (pt)
@@ -116,6 +126,7 @@ var PptxGenJS = function(){
 	// C: Expose shape library to clients
 	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
+	this.charts  = CHART_TYPES;
 
 	// D: Fall back to base shapes if shapes file was not linked
 	if ( typeof gObjPptxShapes === 'undefined' ) gObjPptxShapes = BASE_SHAPES;
@@ -137,7 +148,8 @@ var PptxGenJS = function(){
 	 * DESC: Export the .pptx file
 	 */
 	function doExportPresentation(callback) {
-		var intSlideNum = 0, intRels = 0;
+		var arrChartPromises = [];
+		var intSlideNum = 0, intRels = 0, intCharts = 0;
 
 		// STEP 1: Create new JSZip file
 		var zip = new JSZip();
@@ -146,17 +158,25 @@ var PptxGenJS = function(){
 		zip.folder("_rels");
 		zip.folder("docProps");
 		zip.folder("ppt").folder("_rels");
+		zip.folder("ppt/charts").folder("_rels");
+		zip.folder("ppt/embeddings");
 		zip.folder("ppt/media");
 		zip.folder("ppt/slideLayouts").folder("_rels");
 		zip.folder("ppt/slideMasters").folder("_rels");
 		zip.folder("ppt/slides").folder("_rels");
 		zip.folder("ppt/theme");
-
+		//
 		zip.file("[Content_Types].xml", makeXmlContTypes());
 		zip.file("_rels/.rels", makeXmlRootRels());
 		zip.file("docProps/app.xml", makeXmlApp());
 		zip.file("docProps/core.xml", makeXmlCore());
 		zip.file("ppt/_rels/presentation.xml.rels", makeXmlPresentationRels());
+		//
+		zip.file("ppt/theme/theme1.xml", makeXmlTheme());
+		zip.file("ppt/presentation.xml", makeXmlPresentation());
+		zip.file("ppt/presProps.xml",    makeXmlPresProps());
+		zip.file("ppt/tableStyles.xml",  makeXmlTableStyles());
+		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
 		// Create a Layout/Master/Rel/Slide file for each SLIDE
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
@@ -169,38 +189,225 @@ var PptxGenJS = function(){
 		zip.file("ppt/slideMasters/slideMaster1.xml", makeXmlSlideMaster());
 		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlSlideMasterRel());
 
-		// Loop over all Rels (images/media) and add them
+		// Create all Rels (images, media, chart data)
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
-				var data = rel.data;
+				if ( rel.type == 'chart' ) {
+					arrChartPromises.push(new Promise(function(resolve,reject){
+						var zipExcel = new JSZip();
+						//
+						zipExcel.folder("_rels");
+						zipExcel.folder("docProps");
+						zipExcel.folder("xl/_rels");
+						zipExcel.folder("xl/theme");
+						zipExcel.folder("xl/worksheets");
+						//
+						zipExcel.file("[Content_Types].xml",
+							'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="xml" ContentType="application/xml"/><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="jpeg" ContentType="image/jpg"/><Default Extension="png" ContentType="image/png"/>'
+							+ '<Default Extension="bmp" ContentType="image/bmp"/><Default Extension="gif" ContentType="image/gif"/><Default Extension="tif" ContentType="image/tif"/><Default Extension="pdf" ContentType="application/pdf"/><Default Extension="mov" ContentType="application/movie"/><Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>'
+							+ '<Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>'
+							+ '<Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/><Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/><Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>'
+							+ '<Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/><Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/><Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>'
+							+ '<Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/></Types>\n'
+						);
+						zipExcel.file("_rels/.rels", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+							+ '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>'
+							+ '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>'
+							+ '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>'
+							+ '</Relationships>\n');
+						zipExcel.file("docProps/app.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes"/>\n');
+						zipExcel.file("docProps/core.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"/>\n');
+						zipExcel.file("xl/_rels/workbook.xml.rels",
+							'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+							+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+							+ '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>'
+							+ '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
+							+ '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>'
+							+ '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
+							+ '</Relationships>\n'
+						);
+						zipExcel.file("xl/styles.xml",
+							'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="0" formatCode="General"/></numFmts><fonts count="4"><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="10"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="18"/><color indexed="8"/>'
+							+ '<name val="Arial"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><dxfs count="0"/><tableStyles count="0"/><colors><indexedColors><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ffff0000"/><rgbColor rgb="ff00ff00"/><rgbColor rgb="ff0000ff"/>'
+							+ '<rgbColor rgb="ffffff00"/><rgbColor rgb="ffff00ff"/><rgbColor rgb="ff00ffff"/><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ff878787"/><rgbColor rgb="fff9f9f9"/></indexedColors></colors></styleSheet>\n'
+						);
+						zipExcel.file("xl/theme/theme1.xml",
+							'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" name="Office Theme"><a:themeElements><a:clrScheme name="Office Theme"><a:dk1><a:srgbClr val="000000"/></a:dk1><a:lt1><a:srgbClr val="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="A7A7A7"/></a:dk2><a:lt2><a:srgbClr val="535353"/></a:lt2><a:accent1><a:srgbClr val="4F81BD"/></a:accent1><a:accent2><a:srgbClr val="C0504D"/></a:accent2><a:accent3><a:srgbClr val="9BBB59"/></a:accent3><a:accent4><a:srgbClr val="8064A2"/></a:accent4><a:accent5><a:srgbClr val="4BACC6"/></a:accent5><a:accent6><a:srgbClr val="F79646"/></a:accent6><a:hlink><a:srgbClr val="0000FF"/></a:hlink><a:folHlink><a:srgbClr val="FF00FF"/></a:folHlink></a:clrScheme><a:fontScheme name="Office Theme"><a:majorFont><a:latin typeface="Helvetica"/><a:ea typeface="Helvetica"/><a:cs typeface="Helvetica"/></a:majorFont><a:minorFont><a:latin typeface="Arial"/><a:ea typeface="Arial"/><a:cs typeface="Arial"/></a:minorFont></a:fontScheme><a:fmtScheme name="Office Theme"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="50000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="35000"><a:schemeClr val="phClr"><a:tint val="37000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="15000"/><a:satMod val="350000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="1"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="100000"/><a:shade val="100000"/><a:satMod val="129999"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="50000"/><a:shade val="100000"/><a:satMod val="350000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"><a:shade val="95000"/><a:satMod val="104999"/></a:schemeClr></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="25400" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="38100" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst><a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="b" rotWithShape="0" blurRad="38100" dist="23000" dir="5400000"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="b" rotWithShape="0" blurRad="38100" dist="23000" dir="5400000"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="b" rotWithShape="0" blurRad="38100" dist="20000" dir="5400000"><a:srgbClr val="000000"><a:alpha val="38000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="40000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="40000"><a:schemeClr val="phClr"><a:tint val="45000"/><a:shade val="99000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="20000"/><a:satMod val="255000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="-80000" r="50000" b="180000"/></a:path></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="80000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="30000"/><a:satMod val="200000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="50000" r="50000" b="50000"/></a:path></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults><a:spDef><a:spPr><a:solidFill><a:srgbClr val="FFFFFF"/></a:solidFill><a:ln w="25400" cap="flat"><a:solidFill><a:schemeClr val="accent1"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln><a:effectLst><a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="b" rotWithShape="0" blurRad="38100" dist="23000" dir="5400000"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst><a:sp3d/></a:spPr><a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="overflow" horzOverflow="overflow" vert="horz" wrap="square" lIns="45719" tIns="45719" rIns="45719" bIns="45719" numCol="1" spcCol="38100" rtlCol="0" anchor="ctr" upright="0"><a:spAutoFit/></a:bodyPr><a:lstStyle><a:defPPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="0" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/><a:sym typeface="Arial"/></a:defRPr></a:defPPr><a:lvl1pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl1pPr><a:lvl2pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl2pPr><a:lvl3pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl3pPr><a:lvl4pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl4pPr><a:lvl5pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl5pPr><a:lvl6pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl6pPr><a:lvl7pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl7pPr><a:lvl8pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl8pPr><a:lvl9pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl9pPr></a:lstStyle><a:style><a:lnRef idx="0"/><a:fillRef idx="0"/><a:effectRef idx="0"/><a:fontRef idx="none"/></a:style></a:spDef><a:lnDef><a:spPr><a:noFill/><a:ln w="25400" cap="flat"><a:solidFill><a:schemeClr val="accent1"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln><a:effectLst><a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="b" rotWithShape="0" blurRad="38100" dist="20000" dir="5400000"><a:srgbClr val="000000"><a:alpha val="38000"/></a:srgbClr></a:outerShdw></a:effectLst><a:sp3d/></a:spPr><a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="overflow" horzOverflow="overflow" vert="horz" wrap="square" lIns="91439" tIns="45719" rIns="91439" bIns="45719" numCol="1" spcCol="38100" rtlCol="0" anchor="t" upright="0"><a:noAutofit/></a:bodyPr><a:lstStyle><a:defPPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:defPPr><a:lvl1pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl1pPr><a:lvl2pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl2pPr><a:lvl3pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl3pPr><a:lvl4pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl4pPr><a:lvl5pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl5pPr><a:lvl6pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl6pPr><a:lvl7pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl7pPr><a:lvl8pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl8pPr><a:lvl9pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl9pPr></a:lstStyle><a:style><a:lnRef idx="0"/><a:fillRef idx="0"/><a:effectRef idx="0"/><a:fontRef idx="none"/></a:style></a:lnDef><a:txDef><a:spPr><a:noFill/><a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln><a:effectLst/><a:sp3d/></a:spPr><a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="overflow" horzOverflow="overflow" vert="horz" wrap="square" lIns="45719" tIns="45719" rIns="45719" bIns="45719" numCol="1" spcCol="38100" rtlCol="0" anchor="t" upright="0"><a:spAutoFit/></a:bodyPr><a:lstStyle><a:defPPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="0" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/><a:sym typeface="Arial"/></a:defRPr></a:defPPr><a:lvl1pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl1pPr><a:lvl2pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl2pPr><a:lvl3pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl3pPr><a:lvl4pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl4pPr><a:lvl5pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl5pPr><a:lvl6pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl6pPr><a:lvl7pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl7pPr><a:lvl8pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl8pPr><a:lvl9pPr marL="0" marR="0" indent="0" algn="l" defTabSz="914400" rtl="0" fontAlgn="auto" latinLnBrk="1" hangingPunct="0"><a:lnSpc><a:spcPct val="100000"/></a:lnSpc><a:spcBef><a:spcPts val="0"/></a:spcBef><a:spcAft><a:spcPts val="0"/></a:spcAft><a:buClrTx/><a:buSzTx/><a:buFontTx/><a:buNone/><a:tabLst/><a:defRPr b="0" baseline="0" cap="none" i="0" spc="0" strike="noStrike" sz="1800" u="none" kumimoji="0" normalizeH="0"><a:ln><a:noFill/></a:ln><a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:effectLst/><a:uFillTx/></a:defRPr></a:lvl9pPr></a:lstStyle><a:style><a:lnRef idx="0"/><a:fillRef idx="0"/><a:effectRef idx="0"/><a:fontRef idx="none"/></a:style></a:txDef></a:objectDefaults></a:theme>\n'
+						);
+						zipExcel.file("xl/workbook.xml", '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><workbook xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><workbookPr date1904="1"/><bookViews><workbookView xWindow="0" yWindow="40" windowWidth="15960" windowHeight="18080"/></bookViews><sheets><sheet name="Sheet1" sheetId="1" r:id="rId4"/></sheets></workbook>\n');
 
-				// A: Users will undoubtedly pass in string in various formats, so modify as needed
-				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
-				else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
-				else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
+						// `sharedStrings.xml`
+						var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+						strSharedStrings += '<sst uniqueCount="'+ (rel.data[0].labels.length + rel.data.length) +'" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><si/>';
+						{
+							// A: Pie name comes before labels
+							if ( rel.opts.type == 'pie' ) {
+								strSharedStrings += '<si><t>'+ (rel.data[0].name || ' ') +'</t></si>';
+							}
 
-				// B: Add media
-				if ( rel.type != 'online' && rel.type != 'hyperlink' ) zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
+							// B: Lables
+							rel.data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ label +'</t></si>'; });
+
+							// C: Bar series names come after labels
+							if ( rel.opts.type == 'bar' ) {
+								rel.data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
+							}
+						}
+						strSharedStrings += '</sst>\n';
+						zipExcel.file("xl/sharedStrings.xml", strSharedStrings);
+
+						var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+						strSheetXml += '<worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
+						strSheetXml += '<sheetViews><sheetView workbookViewId="0" defaultGridColor="1"/></sheetViews>';
+						strSheetXml += '<sheetFormatPr defaultColWidth="8" defaultRowHeight="12.75" customHeight="1" outlineLevelRow="0" outlineLevelCol="0"/>';
+						strSheetXml += '<sheetData>';
+
+						if ( rel.opts.type == 'bar' ) {
+							/* EX: INPUT: `rel.data`
+								[
+									{
+										name: 'Income',
+										labels: ['2005', '2006', '2007', '2008', '2009'],
+										values: [23.5, 26.2, 30.1, 29.5, 24.6]
+									},
+									{
+										name: 'Expense',
+										labels: ['2005', '2006', '2007', '2008', '2009'],
+										values: [18.1, 22.8, 23.9, 25.1, 25]
+									}
+								]
+							*/
+							/* EX: OUTPUT: barChart Worksheet:
+								-|---A---|--B--|--C--|--D--|--E--|
+								1|       |April|  May| June| July|
+								2|Income |   17|   26|   53|   96|
+								3|Expense|   55|   43|   70|   58|
+								-|-------|-----|-----|-----|-----|
+							*/
+
+							// A: Create header row first
+							strSheetXml += '<row r="1">';
+							for (var i=1; i<=rel.data[0].values.length; i++) {
+								// if (i>26) ...
+								// TODO: deal with AB1, etc. (when there's more than A-Z rows)
+								strSheetXml += '<c r="'+ LETTERS[i] +'1" t="s">';
+								strSheetXml += '<v>'+ i +'</v>';
+								strSheetXml += '</c>';
+							}
+							strSheetXml += '</row>';
+
+							// B: Add data row(s)
+							rel.data.forEach(function(row,idx){
+								// Leading col is reserved for the label, so hard-code it, then loop over col values
+								strSheetXml += '<row r="'+ (idx+2) +'">';
+								strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
+								strSheetXml += '<v>'+ (rel.data[0].values.length + idx + 1) +'</v>';
+								strSheetXml += '</c>';
+								row.values.forEach(function(val,idy){
+									strSheetXml += '<c r="'+ LETTERS[(idy+1)] +''+ (idx+2) +'">';
+									strSheetXml += '<v>'+ val +'</v>';
+									strSheetXml += '</c>';
+								});
+								strSheetXml += '</row>';
+							});
+						}
+						else if ( rel.opts.type == 'pie' ) {
+							/* EX: INPUT: `rel.data`
+								[
+									{
+										name: 'Project Status',
+										labels: ['Red', 'Amber', 'Green', 'Unknown'],
+										values: [10, 20, 38, 2]
+									}
+								]
+							*/
+							/* EX: OUTPUT: pieChart Worksheet:
+								-|---A---|---B---|
+								1|       | Status|
+								2|Red    |     10|
+								3|Amber  |     20|
+								4|Green  |     38|
+								5|Unknown|      2|
+								-|-------|-------|
+							*/
+
+							// A: Create header row first
+							strSheetXml += '<row r="1"><c r="B1" t="s"><v>1</v></c></row>';
+
+							// B: Add data row(s)
+							for (var idx=0; idx<rel.data[0].labels.length; idx++) {
+								strSheetXml += '<row r="'+ (idx+2) +'">';
+								strSheetXml += '  <c r="A'+ (idx+2) +'" t="s">';
+								strSheetXml += '    <v>'+ (idx+2) +'</v>';
+								strSheetXml += '  </c>';
+								strSheetXml += '  <c r="B'+ (idx+2) +'">';
+								strSheetXml += '    <v>'+ rel.data[0].values[idx] +'</v>';
+								strSheetXml += '  </c>';
+								strSheetXml += '</row>';
+							}
+						}
+
+						strSheetXml += '</sheetData>';
+						strSheetXml += '</worksheet>\n';
+						zipExcel.file("xl/worksheets/sheet1.xml", strSheetXml);
+
+						// C: Add XLSX to PPTX export
+						zipExcel.generateAsync({type:'base64'})
+						.then(function(content){
+							intCharts++;
+
+							// 1: Create the embedded Excel worksheet with labels and data
+							zip.file( "ppt/embeddings/Microsoft_Excel_Sheet"+ intCharts +".xlsx", content, {base64:true} );
+
+							// 2: Create the chart.xml and rels files
+							zip.file("ppt/charts/_rels/chart"+ intCharts +".xml.rels",
+								'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+								+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+								+ '<Relationship Id="rId'+ intCharts +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Sheet'+ intCharts +'.xlsx"/>'
+								+ '</Relationships>\n'
+							);
+							zip.file("ppt/charts/chart"+ intCharts +".xml", makeXmlCharts(rel));
+
+							// 3: We're done
+							resolve();
+						})
+						.catch(function(strErr){
+							reject(strErr);
+						});
+					}) );
+				}
+				else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
+					// A: Loop vars
+					var data = rel.data;
+
+					// B: Users will undoubtedly pass in string in various formats, so modify as needed
+					if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
+					else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
+					else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
+
+					// C: Add media
+					zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
+				}
 			});
 		});
 
-		zip.file("ppt/theme/theme1.xml", makeXmlTheme());
-		zip.file("ppt/presentation.xml", makeXmlPresentation());
-		zip.file("ppt/presProps.xml",    makeXmlPresProps());
-		zip.file("ppt/tableStyles.xml",  makeXmlTableStyles());
-		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
-
-		// STEP 3: Push the PPTX file to browser
-		var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-		if ( NODEJS ) {
-			if ( callback )
-				zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
-			else
-				zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
-		}
-		else {
-			zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });
-		}
+		// STEP 3: Wait for Promises (if any) then push the PPTX file to client-browser
+		Promise.all( arrChartPromises )
+		.then(function(arrResults){
+			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
+			if ( NODEJS ) {
+				if ( callback )
+					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+				else
+					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
+			}
+			else {
+				zip.generateAsync({type:'blob'}).then(function(content){ writeFileToBrowser(strExportName, content, callback); });
+			}
+		})
+		.catch(function(strErr){
+			console.error(strErr);
+		});
 	}
 
 	function writeFileToBrowser(strExportName, content, callback) {
@@ -674,6 +881,456 @@ var PptxGenJS = function(){
 	*/
 
 	/**
+	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
+	*/
+	function makeXmlCharts(rel) {
+		function getExcelColName(length) {
+			var strName = '';
+
+			if ( length <= 26 ) {
+				strName = LETTERS[length];
+			}
+			else {
+				strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
+				strName += LETTERS[ (length % LETTERS.length) ];
+			}
+
+			return strName;
+		}
+
+		// STEP 1: Create chart
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+		// CHARTSPACE: BEGIN vvv
+		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+		strXml += '<c:chart>';
+
+		// OPTION: Title
+		if ( rel.opts.showTitle ) {
+			strXml += '<c:title>';
+			strXml += ' <c:tx>';
+			strXml += '  <c:rich>';
+			strXml += '  <a:bodyPr rot="0"/>';
+			strXml += '  <a:lstStyle/>';
+			strXml += '  <a:p>';
+			strXml += '    <a:pPr>';
+			strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
+			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
+			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
+			strXml += '      </a:defRPr>';
+			strXml += '    </a:pPr>';
+			strXml += '    <a:r>';
+			strXml += '      <a:rPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
+			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
+			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
+			strXml += '      </a:rPr>';
+			strXml += '      <a:t>'+ (decodeXmlEntities(rel.opts.title) || '') +'</a:t>';
+			strXml += '    </a:r>';
+			strXml += '  </a:p>';
+			strXml += '  </c:rich>';
+			strXml += ' </c:tx>';
+			strXml += ' <c:layout/>';
+			strXml += ' <c:overlay val="0"/>';
+			strXml += '</c:title>';
+			strXml += '<c:autoTitleDeleted val="0"/>';
+		}
+
+		strXml += '<c:plotArea>';
+		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+		strXml += '<c:layout/>';
+
+		// A: CHART TYPES -----------------------------------------------------------
+		switch ( rel.opts.type ) {
+			case 'area':
+			case 'bar':
+			case 'line':
+				strXml += '<c:'+ rel.opts.type +'Chart>';
+				if ( rel.opts.type == 'bar' ) strXml += '  <c:barDir val="'+ rel.opts.barDir +'"/>';
+				strXml += '  <c:grouping val="'+ rel.opts.barGrouping + '"/>';
+				strXml += '  <c:varyColors val="0"/>';
+
+				// A: "Series" block for every data row
+				/* EX:
+					data: [
+				     {
+				       name: 'Region 1',
+				       labels: ['April', 'May', 'June', 'July'],
+				       values: [17, 26, 53, 96]
+				     },
+				     {
+				       name: 'Region 2',
+				       labels: ['April', 'May', 'June', 'July'],
+				       values: [55, 43, 70, 58]
+				     }
+				    ]
+				*/
+				rel.data.forEach(function(obj,idx){
+					strXml += '<c:ser>';
+					strXml += '  <c:idx val="'+ idx +'"/>';
+					strXml += '  <c:order val="'+ idx +'"/>';
+					strXml += '  <c:tx>';
+					strXml += '    <c:strRef>';
+					strXml += '      <c:f>Sheet1!$A$'+ (idx+2) +'</c:f>';
+					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
+					strXml += '    </c:strRef>';
+					strXml += '  </c:tx>';
+
+					// Fill and Border
+					var strSerColor = rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)];
+					strXml += '  <c:spPr>';
+
+					if ( rel.opts.chartColorsOpacity ) {
+						strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"><a:alpha val="50000"/></a:srgbClr></a:solidFill>';
+					}
+					else {
+						strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
+					}
+
+					if ( rel.opts.type == 'line' ) {
+						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					}
+					else if ( rel.opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					}
+					strXml += '    <a:effectLst>';
+					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+					strXml += '      </a:outerShdw>';
+					strXml += '    </a:effectLst>';
+					strXml += '  </c:spPr>';
+
+					// LINE CHART ONLY: `marker`
+					if ( rel.opts.type == 'line' ) {
+						strXml += '<c:marker>';
+						strXml += '  <c:symbol val="'+ rel.opts.lineDataSymbol +'"/>';
+						if ( rel.opts.lineDataSymbolSize ) strXml += '  <c:size val="'+ rel.opts.lineDataSymbolSize +'"/>'; // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+						strXml += '  <c:spPr>';
+	  					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
+						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						strXml += '    <a:effectLst/>';
+						strXml += '  </c:spPr>';
+						strXml += '</c:marker>';
+
+					}
+
+					// 1: "Data Labels"
+					strXml += '  <c:dLbls>';
+					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+					strXml += '    <c:txPr>';
+					strXml += '      <a:bodyPr/>';
+					strXml += '      <a:lstStyle/>';
+					strXml += '      <a:p><a:pPr>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '          <a:solidFill><a:srgbClr val="'+ (rel.opts.dataLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
+					strXml += '        </a:defRPr>';
+					strXml += '      </a:pPr></a:p>';
+					strXml += '    </c:txPr>';
+					if ( rel.opts.type != 'area' ) strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'outEnd') +'"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? '1' : '0') +'"/>';
+					strXml += '    <c:showCatName val="0"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="0"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
+					strXml += '    <c:showLeaderLines val="0"/>';
+					strXml += '  </c:dLbls>';
+
+					// 2: "Categories"
+					strXml += '<c:cat>';
+					strXml += '  <c:strRef>';
+					strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
+					strXml += '    <c:strCache>';
+					strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
+					obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
+					strXml += '    </c:strCache>';
+					strXml += '  </c:strRef>';
+					strXml += '</c:cat>';
+
+					// 3: "Values"
+					strXml += '  <c:val>';
+					strXml += '    <c:numRef>';
+					strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ getExcelColName(obj.labels.length) +'$'+ (idx+2) +'</c:f>';
+					strXml += '      <c:numCache>';
+					strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
+					obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
+					strXml += '      </c:numCache>';
+					strXml += '    </c:numRef>';
+					strXml += '  </c:val>';
+
+					// LINE CHART ONLY: `smooth`
+					if ( rel.opts.type == 'line' ) strXml += '<c:smooth val="'+ (rel.opts.lineSmooth ? "1" : "0" ) +'"/>';
+
+					// 4: Close "SERIES"
+					strXml += '</c:ser>';
+				});
+				//
+				if ( rel.opts.type == 'bar' ) {
+					strXml += '  <c:gapWidth val="'+ rel.opts.barGapWidthPct +'"/>';
+					strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
+				}
+				else if ( rel.opts.type == 'line' ) {
+					strXml += '  <c:marker val="1"/>';
+				}
+				strXml += '  <c:axId val="2094734552"/>';
+				strXml += '  <c:axId val="2094734553"/>';
+				strXml += '</c:'+ rel.opts.type +'Chart>';
+
+				// B: "Category Axis"
+				{
+					strXml += '<c:catAx>';
+					strXml += '  <c:axId val="2094734552"/>';
+					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
+					strXml += '  <c:majorTickMark val="out"/>';
+					strXml += '  <c:minorTickMark val="none"/>';
+					strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+					strXml += '  <c:spPr>';
+					strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += '  </c:spPr>';
+					strXml += '  <c:txPr>';
+					strXml += '    <a:bodyPr rot="0"/>';
+					strXml += '    <a:lstStyle/>';
+					strXml += '    <a:p>';
+					strXml += '    <a:pPr>';
+					strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '<a:solidFill><a:srgbClr val="'+ (rel.opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '<a:latin typeface="'+ (rel.opts.catAxisLabelFontFace || 'Arial') +'"/>';
+					strXml += '   </a:defRPr>';
+					strXml += '  </a:pPr>';
+					strXml += '  </a:p>';
+					strXml += ' </c:txPr>';
+					strXml += ' <c:crossAx val="2094734553"/>';
+					strXml += ' <c:crosses val="autoZero"/>';
+					strXml += ' <c:auto val="1"/>';
+					strXml += ' <c:lblAlgn val="ctr"/>';
+					strXml += ' <c:noMultiLvlLbl val="1"/>';
+					strXml += '</c:catAx>';
+				}
+
+				// C: "Value Axis"
+				{
+					strXml += '<c:valAx>';
+					strXml += '  <c:axId val="2094734553"/>';
+					strXml += '  <c:scaling>';
+					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
+					if (rel.opts.valAxisMaxVal) strXml += '<c:max val="'+ rel.opts.valAxisMaxVal +'"/>';
+					strXml += '  </c:scaling>';
+					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
+					strXml += ' <c:majorGridlines>\
+								<c:spPr>\
+								  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>\
+								</c:spPr>\
+								</c:majorGridlines>\
+								<c:numFmt formatCode="General" sourceLinked="0"/>\
+								<c:majorTickMark val="out"/>\
+								<c:minorTickMark val="none"/>';
+					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+					strXml += ' <c:spPr>';
+					strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += ' </c:spPr>';
+					strXml += ' <c:txPr>';
+					strXml += '  <a:bodyPr rot="0"/>';
+					strXml += '  <a:lstStyle/>';
+					strXml += '  <a:p>';
+					strXml += '    <a:pPr>';
+					strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '        <a:latin typeface="'+ (rel.opts.valAxisLabelFontFace || 'Arial') +'"/>';
+					strXml += '      </a:defRPr>';
+					strXml += '    </a:pPr>';
+					strXml += '  </a:p>';
+					strXml += ' </c:txPr>';
+					strXml += ' <c:crossAx val="2094734552"/>';
+					strXml += ' <c:crosses val="autoZero"/>';
+					strXml += ' <c:crossBetween val="'+ ( rel.opts.type == 'area' ? 'midCat' : 'between' ) +'"/>';
+					//strXml += ' <c:majorUnit val="25"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
+					//strXml += ' <c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
+					strXml += '</c:valAx>';
+				}
+
+				// Done with CHART.BAR/LINE
+				break;
+
+			case 'pie':
+				// Use the same var name so code blocks from barChart are interchangeable
+				var obj = rel.data[0];
+
+				/* EX:
+					data: [
+					 {
+					   name: 'Project Status',
+					   labels: ['Red', 'Amber', 'Green', 'Unknown'],
+					   values: [10, 20, 38, 2]
+					 }
+					]
+				*/
+
+				// 1: Start pieChart
+				strXml += '<c:pieChart>';
+				strXml += '  <c:varyColors val="0"/>';
+				strXml += '<c:ser>';
+				strXml += '  <c:idx val="0"/>';
+				strXml += '  <c:order val="0"/>';
+				strXml += '  <c:tx>';
+				strXml += '    <c:strRef>';
+				strXml += '      <c:f>Sheet1!$A$2</c:f>';
+				strXml += '      <c:strCache>';
+				strXml += '        <c:ptCount val="1"/>';
+				strXml += '        <c:pt idx="0"><c:v>'+ decodeXmlEntities(obj.name) +'</c:v></c:pt>';
+				strXml += '      </c:strCache>';
+				strXml += '    </c:strRef>';
+				strXml += '  </c:tx>';
+				strXml += '  <c:spPr>';
+				strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
+				strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+				strXml += '    <a:effectLst>';
+				strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+				strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+				strXml += '      </a:outerShdw>';
+				strXml += '    </a:effectLst>';
+				strXml += '  </c:spPr>';
+				strXml += '<c:explosion val="0"/>';
+
+				// 2: "Data Point" block for every data row
+				obj.labels.forEach(function(label,idx){
+					strXml += '<c:dPt>';
+					strXml += '  <c:idx val="'+ idx +'"/>';
+					strXml += '  <c:explosion val="0"/>';
+					strXml += '  <c:spPr>';
+					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
+					if ( rel.opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					}
+					strXml += '    <a:effectLst>';
+					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+					strXml += '      </a:outerShdw>';
+					strXml += '    </a:effectLst>';
+					strXml += '  </c:spPr>';
+					strXml += '</c:dPt>';
+				});
+
+				// 3: "Data Label" block for every data Label
+				strXml += '<c:dLbls>';
+				obj.labels.forEach(function(label,idx){
+					strXml += '<c:dLbl>';
+					strXml += '  <c:idx val="'+ idx +'"/>';
+					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+					strXml += '    <c:txPr>';
+					strXml += '      <a:bodyPr/><a:lstStyle/>';
+					strXml += '      <a:p><a:pPr>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '          <a:solidFill><a:srgbClr val="'+ (rel.opts.dataLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
+					strXml += '        </a:defRPr>';
+					strXml += '      </a:pPr></a:p>';
+					strXml += '    </c:txPr>';
+					strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'inEnd') +'"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
+					strXml += '    <c:showCatName val="'+ (rel.opts.showLabel ? "1" : "0") +'"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="'+ (rel.opts.showPercent ? "1" : "0") +'"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
+					strXml += '  </c:dLbl>';
+				});
+				strXml += '<c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>\
+		            <c:txPr>\
+		              <a:bodyPr/>\
+		              <a:lstStyle/>\
+		              <a:p>\
+		                <a:pPr>\
+		                  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
+		                    <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>\
+		                  </a:defRPr>\
+		                </a:pPr>\
+		              </a:p>\
+		            </c:txPr>\
+		            <c:dLblPos val="ctr"/>\
+		            <c:showLegendKey val="0"/>\
+		            <c:showVal val="0"/>\
+		            <c:showCatName val="1"/>\
+		            <c:showSerName val="0"/>\
+		            <c:showPercent val="1"/>\
+		            <c:showBubbleSize val="0"/>\
+		            <c:showLeaderLines val="0"/>';
+				strXml += '</c:dLbls>';
+
+				// 2: "Categories"
+				strXml += '<c:cat>';
+				strXml += '  <c:strRef>';
+				strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
+				strXml += '    <c:strCache>';
+				strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
+				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
+				strXml += '    </c:strCache>';
+				strXml += '  </c:strRef>';
+				strXml += '</c:cat>';
+
+				// 3: Create vals
+				strXml += '  <c:val>';
+				strXml += '    <c:numRef>';
+				strXml += '      <c:f>Sheet1!'+ '$B$2:$'+ getExcelColName(obj.labels.length) +'$'+ 2 +'</c:f>';
+				strXml += '      <c:numCache>';
+				strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
+				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
+				strXml += '      </c:numCache>';
+				strXml += '    </c:numRef>';
+				strXml += '  </c:val>';
+
+				// 4: Close "SERIES"
+				strXml += '  </c:ser>';
+				strXml += '  <c:firstSliceAng val="0"/>';
+				strXml += '</c:pieChart>';
+
+				// Done with CHART.BAR
+				break;
+		}
+
+		// B: Chart Properties + Options: Fill, Border, Legend
+		{
+			strXml += '  <c:spPr>';
+
+			// OPTION: Fill
+			strXml += ( rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>' );
+
+			// OPTION: Border
+			strXml += ( rel.opts.border ? '<a:ln w="'+ (rel.opts.border.pt * ONEPT) +'"'+' cap="flat">'+ genXmlColorSelection( rel.opts.border.color ) +'</a:ln>' : '<a:ln><a:noFill/></a:ln>' );
+
+			// Close shapeProp/plotArea before Legend
+			strXml += '    <a:effectLst/>';
+			strXml += '  </c:spPr>';
+			strXml += '</c:plotArea>';
+
+			// OPTION: Legend
+			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+			if ( rel.opts.showLegend ) strXml += '<c:legend><c:legendPos val="'+ rel.opts.legendPos +'"/><c:layout/><c:overlay val="0"/></c:legend>';
+		}
+
+		strXml += '  <c:plotVisOnly val="1"/>';
+		strXml += '  <c:dispBlanksAs val="gap"/>';
+		strXml += '</c:chart>';
+
+		// C: CHARTSPACE SHAPE PROPS
+		strXml += '<c:spPr>';
+		strXml += '  <a:noFill/>';
+		strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
+		strXml += '  <a:effectLst/>';
+		strXml += '</c:spPr>';
+
+		// D: DATA (Add relID)
+		strXml += '<c:externalData r:id="rId'+ (rel.rId-1) +'"><c:autoUpdate val="0"/></c:externalData>';
+
+		// LAST: chartSpace end
+		strXml += '</c:chartSpace>';
+
+		return strXml;
+	}
+
+	/**
 	* DESC: Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
 	* EX:
 		<p:txBody>
@@ -994,8 +1651,8 @@ var PptxGenJS = function(){
 	function makeXmlContTypes() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
 		strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">';
-		strXml += ' <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>';
 		strXml += ' <Default Extension="xml" ContentType="application/xml"/>';
+		strXml += ' <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>';
 		strXml += ' <Default Extension="jpeg" ContentType="image/jpeg"/>';
 		strXml += ' <Default Extension="png" ContentType="image/png"/>';
 		strXml += ' <Default Extension="gif" ContentType="image/gif"/>';
@@ -1003,14 +1660,17 @@ var PptxGenJS = function(){
 		strXml += ' <Default Extension="mp4" ContentType="video/mp4"/>'; // same here, we have to add as it wont be added in loop below
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
-				if ( rel.type != 'image' && rel.type != 'online' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
+				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
 					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
 			});
 		});
-		strXml += ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>';
+		strXml += ' <Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>';
+		strXml += ' <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>';
+
 		strXml += ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>';
-		strXml += ' <Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>';
+		strXml += ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>';
 		strXml += ' <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
+		strXml += ' <Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>';
 		strXml += ' <Override PartName="/ppt/tableStyles.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>';
 		strXml += ' <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>';
 		strXml += ' <Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>';
@@ -1019,6 +1679,18 @@ var PptxGenJS = function(){
 			strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
 			strXml += '<Override PartName="/ppt/slides/slide'            + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
 		});
+
+		// Add charts (if any)
+		var intCharts = 0;
+		gObjPptx.slides.forEach(function(slide,idx){
+			slide.rels.forEach(function(rel,idy){
+				if ( rel.type == 'chart' ) {
+					intCharts++;
+					strXml += ' <Override PartName="/ppt/charts/chart'+ intCharts +'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+				}
+			});
+		});
+
 		strXml += '</Types>';
 
 		return strXml;
@@ -1603,6 +2275,25 @@ var PptxGenJS = function(){
 						strSlideXml += '</p:pic>';
 					}
 					break;
+
+				case 'chart':
+					strSlideXml += '<p:graphicFrame>';
+					strSlideXml += ' <p:nvGraphicFramePr>';
+					strSlideXml += '   <p:cNvPr id="'+ (idx + 2) +'" name="Chart '+ (idx + 1) +'"/>';
+					strSlideXml += '   <p:cNvGraphicFramePr/>';
+					strSlideXml += '   <p:nvPr/>';
+					strSlideXml += ' </p:nvGraphicFramePr>';
+					strSlideXml += ' <p:xfrm>'
+					strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
+					strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
+					strSlideXml += ' </p:xfrm>'
+					strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">';
+					strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">';
+					strSlideXml += '   <c:chart r:id="rId'+ (slideObj.chartRid) +'" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>';
+					strSlideXml += '  </a:graphicData>';
+					strSlideXml += ' </a:graphic>';
+					strSlideXml += '</p:graphicFrame>';
+					break;
 			}
 		});
 
@@ -1637,38 +2328,41 @@ var PptxGenJS = function(){
 			+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 			+ ' <Relationship Id="rId1" Target="../slideLayouts/slideLayout'+ inSlideNum +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"/>';
 
-		// Add any IMAGEs for this Slide
+		// Add any rels for this Slide (image/audio/video/youtube/chart)
 		gObjPptx.slides[inSlideNum-1].rels.forEach(function(rel,idx){
 			if      ( rel.type.toLowerCase().indexOf('image')  > -1 ) {
-				strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>';
+				strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>';
+			}
+			else if ( rel.type.toLowerCase().indexOf('chart')  > -1 ) {
+				strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>';
 			}
 			else if ( rel.type.toLowerCase().indexOf('audio')  > -1 ) {
 				// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
 				if ( strXml.indexOf(' Target="'+ rel.Target +'"') > -1 )
-					strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>';
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>';
 				else
-					strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"/>';
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"/>';
 			}
 			else if ( rel.type.toLowerCase().indexOf('video')  > -1 ) {
 				// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
 				if ( strXml.indexOf(' Target="'+ rel.Target +'"') > -1 )
-					strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>';
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>';
 				else
-					strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
 			}
 			else if ( rel.type.toLowerCase().indexOf('online') > -1 ) {
 				// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
 				if ( strXml.indexOf(' Target="'+ rel.Target +'"') > -1 )
-					strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/image"/>';
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/image"/>';
 				else
-					strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
 			}
 			else if ( rel.type.toLowerCase().indexOf('hyperlink') > -1 ) {
-				strXml += ' <Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>';
+				strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>';
 			}
 		});
 
-		strXml += '</Relationships>';
+		strXml += '</Relationships>'+CRLF;
 		//
 		return strXml;
 	}
@@ -1740,13 +2434,13 @@ var PptxGenJS = function(){
 
 	function makeXmlTheme() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
-		strXml += '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">\
+		strXml += '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" name="Office Theme">\
 						<a:themeElements>\
 						  <a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>\
-						  <a:dk2><a:srgbClr val="1F497D"/></a:dk2>\
-						  <a:lt2><a:srgbClr val="EEECE1"/></a:lt2><a:accent1><a:srgbClr val="4F81BD"/></a:accent1><a:accent2><a:srgbClr val="C0504D"/></a:accent2><a:accent3>\
+						  <a:dk2><a:srgbClr val="A7A7A7"/></a:dk2>\
+						  <a:lt2><a:srgbClr val="535353"/></a:lt2><a:accent1><a:srgbClr val="4F81BD"/></a:accent1><a:accent2><a:srgbClr val="C0504D"/></a:accent2><a:accent3>\
 						  <a:srgbClr val="9BBB59"/></a:accent3><a:accent4><a:srgbClr val="8064A2"/></a:accent4><a:accent5><a:srgbClr val="4BACC6"/></a:accent5>\
-						  <a:accent6><a:srgbClr val="F79646"/></a:accent6><a:hlink><a:srgbClr val="0000FF"/></a:hlink><a:folHlink><a:srgbClr val="800080"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/></a:majorFont><a:minorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/>\
+						  <a:accent6><a:srgbClr val="F79646"/></a:accent6><a:hlink><a:srgbClr val="0000FF"/></a:hlink><a:folHlink><a:srgbClr val="800080"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Arial"/><a:ea typeface="Arial"/><a:cs typeface="Arial"/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/></a:majorFont><a:minorFont><a:latin typeface="Arial"/><a:ea typeface="Arial"/><a:cs typeface="Arial"/><a:font script="Jpan" typeface="MS P????"/><a:font script="Hang" typeface="?? ??"/><a:font script="Hans" typeface="??"/><a:font script="Hant" typeface="????"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/>\
 						  </a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="50000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="35000"><a:schemeClr val="phClr"><a:tint val="37000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="15000"/><a:satMod val="350000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="1"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:shade val="51000"/><a:satMod val="130000"/></a:schemeClr></a:gs><a:gs pos="80000"><a:schemeClr val="phClr"><a:shade val="93000"/><a:satMod val="130000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="94000"/><a:satMod val="135000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"><a:shade val="95000"/><a:satMod val="105000"/></a:schemeClr></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="25400" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="38100" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="20000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="38000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst><a:scene3d><a:camera prst="orthographicFront"><a:rot lat="0" lon="0" rev="0"/></a:camera><a:lightRig rig="threePt" dir="t"><a:rot lat="0" lon="0" rev="1200000"/></a:lightRig></a:scene3d><a:sp3d><a:bevelT w="63500" h="25400"/></a:sp3d></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="40000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="40000"><a:schemeClr val="phClr"><a:tint val="45000"/><a:shade val="99000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="20000"/><a:satMod val="255000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="-80000" r="50000" b="180000"/></a:path></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="80000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="30000"/><a:satMod val="200000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="50000" r="50000" b="50000"/></a:path></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/>\
 						</a:theme>';
 		return strXml;
@@ -1932,7 +2626,8 @@ var PptxGenJS = function(){
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
-				if ( rel.type != 'online' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
+				// Read and Encode each image into base64 for use in export
+				if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
 					// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 					if ( NODEJS ) {
 						try {
@@ -1946,7 +2641,7 @@ var PptxGenJS = function(){
 					}
 					else {
 						intRels++;
-						convertImgToDataURLviaCanvas(rel, callbackImgToDataURLDone);
+						convertImgToDataURLviaCanvas(rel);
 						arrRelsDone.push(rel.path);
 					}
 				}
@@ -1995,6 +2690,121 @@ var PptxGenJS = function(){
 			if ( inObj && typeof inObj === 'object' ) gObjPptx.slides[slideNum].slideNumberObj = inObj;
 			else return gObjPptx.slides[slideNum].slideNumberObj;
 		};
+
+		/**
+		 * Generate the chart based on input data.
+		 *
+		 * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
+		 *
+		 * @param {object} renderType should belong to: 'column', 'pie'
+		 * @param {object} data a JSON object with follow the following format
+		 * {
+		 *   title: 'eSurvey chart',
+		 *   data: [
+		 *   	{
+		 *			name: 'Income',
+		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
+		 *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
+		 *		},
+		 *		{
+		 *			name: 'Expense',
+		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
+		 *			values: [18.1, 22.8, 23.9, 25.1, 25]
+		 *		}
+		 *	 ]
+		 * 	}
+		 */
+		slideObj.addChart = function ( inType, inData, inOpt ) {
+			var intRels = 1;
+			var options = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
+
+			// STEP 1: TODO: check for reqd fields, correct type, etc
+			// inType in CHART_TYPES
+			// Array.isArray(inData)
+			/*
+			if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
+				&& rel.data[0].labels && Array.isArray(rel.data[0].labels)
+				&& rel.data[0].values && Array.isArray(rel.data[0].values) ) {
+				obj = rel.data[0];
+			}
+			else {
+				console.warn("USAGE: addChart( 'pie', [ {name:'Sales', labels:['Jan','Feb'], values:[10,20]} ], {x:1, y:1} )");
+				return;
+			}
+			*/
+
+			// STEP 2: Set vars for this Slide
+			var slideObjNum = gObjPptx.slides[slideNum].data.length;
+			var slideObjRels = gObjPptx.slides[slideNum].rels;
+
+			// STEP 3: Set default options/decode user options
+			// A: Core
+			options.type = inType.name;
+			options.x = (typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1);
+			options.y = (typeof options.y !== 'undefined' && options.y != null && !isNaN(options.y) ? options.y : 1);
+			options.w = (options.w || '50%');
+			options.h = (options.h || '50%');
+
+			// B: Options: misc
+			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
+			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
+			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' ? 'bestFit' : 'ctr');
+			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
+			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
+			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
+			if ( options.barGrouping.indexOf('tacked') > -1 ) {
+				options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
+				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
+			}
+			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
+			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
+			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
+			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
+
+			// C: Options: plotArea
+			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
+			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
+			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
+			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
+			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
+
+			// D: Options: chart
+			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
+			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' ? PIECHART_COLORS : BARCHART_COLORS) );
+			options.chartColorsOpacity = ( options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null );
+			//
+			options.border = ( options.border && typeof options.border === 'object' ? options.border : null );
+			if ( options.border && (!options.border.pt || isNaN(options.border.pt)) ) options.border.pt = 1;
+			if ( options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length != 6) ) options.border.color = '363636';
+			//
+			options.dataBorder = ( options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null );
+			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
+			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
+			//
+			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' ? '0%' : '#,##0') );
+			//
+			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
+
+			// STEP 4: Set props
+			gObjPptx.slides[slideNum].data[slideObjNum] = {};
+			gObjPptx.slides[slideNum].data[slideObjNum].type    = 'chart';
+			gObjPptx.slides[slideNum].data[slideObjNum].options = options;
+
+			// STEP 5: Add new chart to this Slides Rels (rId/rels count spans all slides! Count all images to get next rId)
+			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
+			slideObjRels.push({
+				rId:  (intRels+1),
+				data: inData,
+				opts: options,
+				type: 'chart',
+				Target: '../charts/chart'+ intRels +'.xml'
+			});
+			gObjPptx.slides[slideNum].data[slideObjNum].chartRid = slideObjRels[slideObjRels.length-1].rId;
+
+			// LAST: Return
+			return this;
+		}
 
 		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
 		// FUTURE: slideObj.addImage = function(opt){

@@ -1,10 +1,10 @@
 /**
- * NAME: pptxgenjs-demo.js
- * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Apr 10, 2017
- * DESC: Common test/demo slides for all library features
- * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-**/
+* NAME: pptxgenjs-demo.js
+* AUTH: Brent Ely (https://github.com/gitbrent/)
+* DATE: Apr 23, 2017
+* DESC: Common test/demo slides for all library features
+* DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
+*/
 
 // Detect Node.js
 var NODEJS = ( typeof module !== 'undefined' && module.exports );
@@ -16,26 +16,33 @@ var COLOR_AMB = 'F2AF00';
 var COLOR_GRN = '7AB800';
 var COLOR_CRT = 'AA0000';
 var COLOR_BLU = '0088CC';
+var COLOR_UNK = 'A9A9A9';
 //
 var ARRSTRBITES = [130];
 var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 chars/line
 // FYI: 3086 chars
-var gStrLorumIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin condimentum dignissim velit vel luctus. Donec feugiat ipsum quis tempus blandit. Donec mattis mauris vel est dictum interdum. Pellentesque imperdiet nibh vitae porta ornare. Fusce non nisl lacus. Curabitur ut mattis dui. Ut pulvinar urna velit, vitae aliquam neque pulvinar eu. Fusce eget tellus eu lorem finibus mattis. Nunc blandit consequat arcu. Ut sed pharetra tortor, nec finibus ipsum. Pellentesque a est vitae ligula imperdiet rhoncus. Ut quis hendrerit tellus. Phasellus non malesuada mi. Suspendisse ullamcorper tristique odio fermentum elementum. Phasellus mattis mollis mauris, non mattis ligula dapibus quis. Quisque pretium metus massa. '
-+ 'Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus. '
-+ 'Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus. '
-+ 'Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.'
-+ 'Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra... '
-+ 'Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus. '
-+ 'Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus. '
-+ 'Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.'
-+ 'Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum. Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra.';
+var gStrLorumIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin condimentum dignissim velit vel luctus. Donec feugiat ipsum quis tempus blandit. Donec mattis mauris vel est dictum interdum. Pellentesque imperdiet nibh vitae porta ornare. Fusce non nisl lacus. Curabitur ut mattis dui. Ut pulvinar urna velit, vitae aliquam neque pulvinar eu. Fusce eget tellus eu lorem finibus mattis. Nunc blandit consequat arcu. Ut sed pharetra tortor, nec finibus ipsum. \
+	Pellentesque a est vitae ligula imperdiet rhoncus. Ut quis hendrerit tellus. Phasellus non malesuada mi. Suspendisse ullamcorper tristique odio fermentum elementum. Phasellus mattis mollis mauris, non mattis ligula dapibus quis. Quisque pretium metus massa. \
+	Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. \
+	Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis, dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus. \
+	Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus. \
+	Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, \
+	malesuada ac nibh. Vestibulum sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.\
+	Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum.\ Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra... \
+	Curabitur condimentum consequat felis, id rutrum velit cursus vel. Proin nulla est, posuere in velit at, faucibus dignissim diam. Quisque quis erat euismod, malesuada erat eu, congue nisi. Ut risus lectus, auctor at libero sit amet, accumsan ultricies est. Donec eget iaculis enim. Nunc ac egestas tellus, nec efficitur magna. Sed nec nisl ut augue laoreet sollicitudin vitae nec quam. Vestibulum pretium nisl bibendum, tempor velit eu, semper velit. Nulla facilisi. Aenean quis purus sagittis,\
+	dapibus nibh eget, ornare nunc. Donec posuere erat quis ipsum facilisis, quis porttitor dui cursus. Etiam convallis arcu sapien, vitae placerat diam molestie sit amet. Vivamus sapien augue, porta sed tortor ut, molestie ornare nisl. Nullam sed mi turpis. Donec sed finibus risus. \
+	Nunc interdum semper mauris quis vehicula. Phasellus in nisl faucibus, pellentesque massa vel, faucibus urna. Proin sed tortor lorem. Curabitur eu nisi semper, placerat tellus sed, varius nulla. Etiam luctus ac purus nec aliquet. Phasellus nisl metus, dictum ultricies justo a, laoreet consectetur risus. Vestibulum vulputate in felis ac blandit. Aliquam erat volutpat. Sed quis ultrices lectus. \
+	Curabitur at scelerisque elit, a bibendum nisi. Integer facilisis ex dolor, vel gravida metus vestibulum ac. Aliquam condimentum fermentum rhoncus. Nunc tortor arcu, condimentum non ex consequat, porttitor maximus est. Duis semper risus odio, quis feugiat sem elementum nec. Nam mattis nec dui sit amet volutpat. Sed facilisis, nunc quis porta consequat, ante mi tincidunt massa, eget euismod sapien nunc eget sem. Curabitur orci neque, eleifend at mattis quis, malesuada ac nibh. Vestibulum \
+	sed laoreet dolor, ac facilisis urna. Vestibulum luctus id nulla at auctor. Nunc pharetra massa orci, ut pharetra metus faucibus eget.\
+	Etiam eleifend, tellus id lobortis molestie, sem magna elementum dui, dapibus ullamcorper nisl enim ac urna. Nam posuere ullamcorper tellus, ac blandit nulla vestibulum nec. Vestibulum ornare, ligula quis aliquet cursus, metus nisi congue nulla, vitae posuere elit mauris at justo. Nullam ut fermentum arcu, nec laoreet ligula. Morbi quis consectetur nisl, nec consectetur justo. Curabitur eget eros hendrerit, ullamcorper dolor non, aliquam elit. Aliquam mollis justo vel aliquam interdum.\
+	Aenean bibendum rhoncus ante a commodo. Vestibulum bibendum sapien a accumsan pharetra.';
 var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenny','Lara','Kathryn'];
 var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
 var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好';
 var colors = ['FF0000','AB00CD','00FF00','00AA00','003300','330033','990099','33FFFF','AA33CC','336699'];
 var fonts = ['Arial','Courier New','Times','Verdana'];
 //
-var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+var gOptsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
 var textTitle = { font_size:14, color:'0088CC', bold:true };
 var textSubtt = { font_size:13, color:'9F9F9F' };
@@ -68,7 +75,7 @@ function execGenSlidesFuncs(type) {
 	pptx.setLayout('LAYOUT_WIDE');
 
 	pptx.setAuthor('Brent Ely');
-	pptx.setCompany('S.T.A.R. Laboratories');
+	pptx.setCompany(CUST_NAME);
 	pptx.setRevision('15');
 	pptx.setSubject('PptxGenJS Test Suite Export');
 	pptx.setTitle('PptxGenJS Test Suite Presentation');
@@ -89,7 +96,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 1: Table text alignment and cell styles
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 1', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } ); // `opts` = legacy test
+		slide.addTable( [ [{ text:'Table Examples 1', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } ); // `opts` = legacy test
 
 		// DEMO: align/valign -------------------------------------------------------------------------
 		var objOpts1 = { x:0.5, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
@@ -226,7 +233,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 3: Super rowspan/colspan demo
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 3', opts:optsTitle }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } ); // `opts` = legacy test
+		slide.addTable( [ [{ text:'Table Examples 3', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } ); // `opts` = legacy test
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
@@ -315,7 +322,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 5: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 5', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
+		slide.addTable( [ [{ text:'Table Examples 5', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
 		slide.addText(
 			'The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.',
 			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, font_size:14 }
@@ -440,11 +447,523 @@ function genSlides_Table(pptx) {
 	}
 }
 
+function genSlides_Chart(pptx) {
+	var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+	var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+	var QTRS = ['Q1','Q2','Q3','Q4'];
+
+	var dataChartPieStat = [
+		{
+			name  : 'Project Status',
+			labels: ['Red', 'Amber', 'Green', 'Unknown'],
+			values: [8, 20, 30, 2]
+		}
+	];
+	var dataChartPieLocs = [
+		{
+			name  : 'Location',
+			labels: ['CN', 'DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+			values: [  69,   35,   40,   85,   38,   99,  101]
+		}
+	];
+
+	var arrDataLineStat = [];
+	{
+		var tmpObjRed = { name:'Red', labels:QTRS, values:[] };
+		var tmpObjAmb = { name:'Amb', labels:QTRS, values:[] };
+		var tmpObjGrn = { name:'Grn', labels:QTRS, values:[] };
+		var tmpObjUnk = { name:'Unk', labels:QTRS, values:[] };
+
+		for (var idy=0; idy<QTRS.length; idy++) {
+			tmpObjRed.values.push( Math.floor(Math.random() * 30) + 1 );
+			tmpObjAmb.values.push( Math.floor(Math.random() * 50) + 1 );
+			tmpObjGrn.values.push( Math.floor(Math.random() * 80) + 1 );
+			tmpObjUnk.values.push( Math.floor(Math.random() * 10) + 1 );
+		}
+
+		arrDataLineStat.push( tmpObjRed );
+		arrDataLineStat.push( tmpObjAmb );
+		arrDataLineStat.push( tmpObjGrn );
+		arrDataLineStat.push( tmpObjUnk );
+	}
+
+	// TOP-LEFT:
+
+	// SLIDE 1: Bar Chart -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataRegions = [
+			{
+				name  : 'Region 1',
+				labels: ['May', 'June', 'July', 'August'],
+				values: [26, 53, 100, 75]
+			},
+			{
+				name  : 'Region 2',
+				labels: ['May', 'June', 'July', 'August'],
+				values: [43.5, 70.3, 90.1, 80.05]
+			}
+		];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+
+		// TOP-LEFT: H/bar
+		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			barDir: 'bar',
+			border: { pt:'3', color:'00EE00' },
+			fill: 'F1F1F1',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'maxMin',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+
+		// TOP-RIGHT: V/col
+		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			barDir: 'col',
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Courier',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			dataBorder         : { pt:'1', color:'F1F1F1' },
+			dataLabelColor     : '696969',
+			dataLabelFontFace  : 'Arial',
+			dataLabelFontSize  : 11,
+			dataLabelPosition  : 'outEnd',
+			dataLabelFormatCode: '#.0',
+			showValue          : true,
+
+			valAxisOrientation: 'maxMin',
+
+			showLegend: false,
+			showTitle : false
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+
+		// BTM-LEFT: H/bar - TITLE and LEGEND
+		slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+			barDir     : 'bar',
+
+			border: { pt:'3', color:'CF0909' },
+			fill: 'F1C1C1',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'minMax',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 16,
+
+			showTitle : true,
+			title: 'Sales by Region'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+
+		// BTM-RIGHT: V/col - TITLE and LEGEND
+		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			barDir: 'col',
+			barGapWidthPct: 25,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 50,
+			valAxisMaxVal: 5000,
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 11,
+			catAxisOrientation  : 'minMax',
+
+			dataBorder         : { pt:'1', color:'F1F1F1' },
+			dataLabelColor     : 'FFFFFF',
+			dataLabelFontFace  : 'Arial',
+			dataLabelFontSize  : 10,
+			dataLabelPosition  : 'ctr',
+			showValue          : true,
+
+			showLegend: true,
+			legendPos :  't',
+			showTitle: true,
+			title    : 'Chart Title'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+	}
+
+	// SLIDE 2: Stacked Bar Chart ---------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataRegions = [
+			{
+				name  : 'Region 3',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [17, 26, 53, 100, 75]
+			},
+			{
+				name  : 'Region 4',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [55, 43, 70, 90, 80]
+			}
+		];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+
+		// TOP-LEFT: H/bar
+		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			barDir: 'bar',
+			barGrouping: 'stacked',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'maxMin',
+
+			dataLabelColor   : 'FFFFFF',
+			showValue        : true,
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+
+		// TOP-RIGHT: V/col
+		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			barDir: 'col',
+			barGrouping: 'stacked',
+
+			dataLabelColor   : 'FFFFFF',
+			dataLabelFontFace: 'Arial',
+			dataLabelFontSize: 12,
+			showValue        : true,
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Courier',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			showLegend: false,
+			showTitle : false
+		};
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+
+		// BTM-LEFT: H/bar - TITLE and LEGEND
+		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+			barDir     : 'bar',
+			barGrouping: 'percentStacked',
+
+			border: { pt:'3', color:'CF0909' },
+			fill: 'F1C1C1',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
+			catAxisOrientation  : 'minMax',
+
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 16,
+
+			showTitle : true,
+			title: 'Sales by Region'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+
+		// BTM-RIGHT: V/col - TITLE and LEGEND
+		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			barDir: 'col',
+			barGrouping: 'percentStacked',
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			chartColors: ['5DA5DA','FAA43A'],
+
+			showLegend: true,
+			legendPos :  't',
+			showTitle: true,
+			title    : 'Chart Title'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+	}
+
+	// SLIDE 3: Bar Chart - Lots of Bars --------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataHighVals = [
+			{
+				name  : 'TEST: getExcelColName',
+				labels: LETTERS.concat(['AA','AB','AC','AD']),
+				values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
+			}
+		];
+
+		var optsChart = {
+			x:0.5, y:0.5, w:'90%', h:'90%',
+			barDir: 'col',
+			title: 'Chart With >26 Cols'
+		};
+
+		// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
+		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
+	}
+
+	// SLIDE 4: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart Smoothing, Line Size, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineSize  : 8,
+			lineSmooth: true,
+			showLegend: true, legendPos: 't'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+
+		var optsChartLine2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineSize  : 16,
+			lineSmooth: true,
+			showLegend: true, legendPos: 'r'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
+
+		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineDataSymbolSize: 10,
+			showLegend: true, legendPos: 'l'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+
+		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineDataSymbolSize: 20,
+			showLegend: true, legendPos: 'b'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
+	}
+
+	// SLIDE 5: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize`
+	{
+		var intWgap = 4.25;
+		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		opts_lineDataSymbol.forEach(function(opt,idx){
+			slide.addChart(
+				pptx.charts.LINE,
+				arrDataLineStat,
+				{
+					x:(idx < 3 ? idx*intWgap : (idx < 6 ? (idx-3)*intWgap : (idx-6)*intWgap)), y:(idx < 3 ? 0.5 : (idx < 6 ? 2.75 : 5)),
+					w:4.25, h:2.25,
+					lineDataSymbol:opt, title:opt, showTitle:true,
+					lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : null))
+				}
+			);
+		});
+	}
+
+	// SLIDE 6: Line Chart: Lots of Cats --------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var MAXVAL = 20000;
+
+		var arrDataTimeline = [];
+		for (var idx=0; idx<15; idx++) {
+			var tmpObj = {
+				name  : 'Series'+idx,
+				labels: MONS,
+				values: []
+			};
+
+			for (var idy=0; idy<MONS.length; idy++) {
+				tmpObj.values.push( Math.floor(Math.random() * MAXVAL) + 1 );
+			}
+
+			arrDataTimeline.push( tmpObj );
+		}
+
+		// FULL SLIDE:
+		var optsChartLine1 = { x:0.5, y:0.6, w:'95%', h:'85%',
+			fill: 'F2F9FC',
+
+			valAxisMaxVal: MAXVAL,
+
+			showLegend: true,
+			legendPos : 'r'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
+	}
+
+	// SLIDE 7: Area Chart: Misc -------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataTimeline2ser = [
+			{
+				name  : 'Actual Sales',
+				labels: MONS,
+				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121]
+			},
+			{
+				name  : 'Proj Sales',
+				labels: MONS,
+				values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
+			}
+		];
+
+		// TOP-LEFT
+		var optsChartLine1 = { x:0.5, y:0.6, w:'45%', h:3, catAxisOrientation:'maxMin', valAxisOrientation:'maxMin' };
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine1 );
+
+		// TOP-RIGHT
+		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 25,
+			dataBorder: {pt:2, color:'FFFFFF'},
+			fill: 'D1E1F1'
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
+
+		// BOTTOM-LEFT
+		var optsChartLine3 = { x:0.5, y:3.6, w:'45%', h:3,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 50
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine3 );
+
+		// BOTTOM-RIGHT
+		var optsChartLine4 = { x:7, y:3.6, w:'45%', h:3,
+			chartColors: ['CC8833', 'CCFF69'],
+			chartColorsOpacity: 75
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
+	}
+
+	// SLIDE 8: Pie Charts: All 4 Legend Options -------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		// TOP-LEFT
+		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
+
+		// TOP-RIGHT
+		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
+
+		// BTM-LEFT
+		slide.addText( '.', {x:0.5, y:4.0, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.2, h:3.2, showLegend:true, legendPos:'r'} );
+
+		// BTM-RIGHT
+		slide.addText( '.', {x:5.6, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:5.6, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
+
+		// BOTH: TOP-RIGHT
+		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
+
+		// BOTH: BTM-RIGHT
+		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+	}
+
+	// SLIDE 9: Pie Chart -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var optsChartPie1 = {
+			x:0.5, y:1.0, w:6.0, h:6.0,
+			chartColors: ['FC0000','FFCC00','009900','6600CC'],
+			dataBorder       : { pt:'2', color:'F1F1F1' },
+			dataLabelColor   : 'FFFFFF',
+			dataLabelFontSize: 14,
+			//dataLabelPosition: 'ctr',
+
+			legendPos : 'r',
+
+			showLabel  : false,
+			showValue  : false,
+			showPercent: true,
+			showLegend : true,
+			showTitle  : false,
+
+			title        : 'Project Status',
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+		slide.addText( '.', {x:0.5, y:1.0, w:6.0, h:6.0, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart(pptx.charts.PIE, dataChartPieStat, optsChartPie1 );
+
+		var optsChartPie2 = {
+			x:7.0, y:1.0, w:6, h:6,
+			dataBorder       : { pt:'3', color:'F1F1F1' },
+			dataLabelColor   : 'FFFFFF',
+			showLabel  : true,
+			showValue  : true,
+			showPercent: true,
+			showLegend : false,
+			showTitle  : false,
+			title: 'Resource Totals by Location'
+		};
+		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
+	}
+
+}
+
 function genSlides_Media(pptx) {
 	// SLIDE 1: Video and YouTube
 	// ======== -----------------------------------------------------------------------------------
 	var slide1 = pptx.addNewSlide();
-	slide1.addTable( [ [{ text:'Media: Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide1.addTable( [ [{ text:'Media: Video Examples', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
 	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:'media/sample.m4v' });
@@ -468,7 +987,7 @@ function genSlides_Media(pptx) {
 	// SLIDE 2: Audio / Pre-Encoded Video
 	// ======== -----------------------------------------------------------------------------------
 	var slide2 = pptx.addNewSlide();
-	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
 	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:'media/sample.mp3' });
@@ -485,7 +1004,7 @@ function genSlides_Media(pptx) {
 
 function genSlides_Image(pptx) {
 	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	slide.addText('Type: GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
 	slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
@@ -527,7 +1046,7 @@ function genSlides_Shape(pptx) {
 	// SLIDE 1: Misc Shape Types (no text)
 	// ======== -----------------------------------------------------------------------------------
 	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:'F9F9F9' });
 	slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
@@ -547,7 +1066,7 @@ function genSlides_Shape(pptx) {
 	// SLIDE 2: Misc Shape Types with Text
 	// ======== -----------------------------------------------------------------------------------
 	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 	slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE,         x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'c', font_size:14 });
 	slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE,         x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'c', font_size:14 });
@@ -567,7 +1086,7 @@ function genSlides_Text(pptx) {
 	// SLIDE 1: Line Break / Bullets
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Text Examples 1', options:optsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples 1', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 		// LEFT COLUMN ------------------------------------------------------------
 
@@ -650,7 +1169,7 @@ function genSlides_Text(pptx) {
 		slide.back = '030303';
 		slide.color = '9F9F9F';
 		// Title
-		slide.addTable( [ [{ text:'Text Examples 2', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples 2', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
 		slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );

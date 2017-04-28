@@ -48,11 +48,11 @@ h3 {
 	box-sizing: border-box;
 	cursor: pointer;
 	text-shadow: 2px 2px #efefef;
-	width: 16.66%;
+	width: 14.2%;
 	text-align: center;
 	white-space: nowrap;
 	display: inline-block; list-style-type:none;
-	padding: 15px;
+	padding: 15px 10px;
 	font-size: 14px;
 	color: #a7a7a7;
 	text-transform: uppercase;
