@@ -59,6 +59,8 @@ function getTimestamp() {
 
 function runEveryTest() {
 	execGenSlidesFuncs( ['Table', 'Text', 'Image', 'Media', 'Shape', 'Master'] );
+//	execGenSlidesFuncs( ['Table', 'Text', 'Chart', 'Image', 'Media', 'Shape', 'Master'] );
+// TODO: Fix rels issue (Charts onyl work by themselves, combining with others = load fail)
 	if ( typeof table2slides1 !== 'undefined' ) table2slides1();
 }
 
@@ -956,7 +958,6 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
 	}
-
 }
 
 function genSlides_Media(pptx) {
