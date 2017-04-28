@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170425";
+	var APP_REL = "20170428";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -647,7 +647,7 @@ var PptxGenJS = function(){
 		var strCurrLine = '';
 
 		// A: Remove leading/trailing space
-		var inStr = cell.text.trim();
+		var inStr = (cell.text || '').toString().trim();
 
 		// B: Build line array
 		$.each(inStr.split('\n'), function(i,line){
@@ -1893,7 +1893,7 @@ var PptxGenJS = function(){
 				if ( slideObj.options.rotate ) locationAttr += ' rot="' + ( (slideObj.options.rotate > 360 ? (slideObj.options.rotate - 360) : slideObj.options.rotate) * 60000 ) + '"';
 			}
 
-			// B: Add TABLE / TEXT / IMAGE / MEDIA to current Slide ----------------------------
+			// B: Add OBJECT to current Slide ----------------------------
 			switch ( slideObj.type ) {
 				case 'table':
 					// FIRST: Ensure we have rows - otherwise, bail!
@@ -2041,7 +2041,7 @@ var PptxGenJS = function(){
 								// B: Do Important/Override Opts
 								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-								$.each(['align','bold','border','color','fill','font_face','font_size','underline','valign'], function(i,name){
+								$.each(['align','bold','border','color','fill','font_face','font_size','margin','underline','valign'], function(i,name){
 									if ( objTabOpts[name] && !cellOpts[name] ) cellOpts[name] = objTabOpts[name];
 								});
 

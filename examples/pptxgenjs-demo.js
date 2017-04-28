@@ -307,17 +307,28 @@ function genSlides_Table(pptx) {
 		slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
 		slide.addTable( [['margin:[80,5,5,10]']], { x:10.5,y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
 
+		// Test margin option when using both plain and text object cells
+		var arrTextObjects = [
+			['Plain text','Cell 2',3],
+			[
+				{ text:'Text Objects', options:{ color:'99ABCC', align:'r' } },
+				{ text:'2nd cell', options:{ color:'0000EE', align:'c' } },
+				{ text:3, options:{ color:'0088CC', align:'l' } }
+			]
+		];
+		slide.addTable( arrTextObjects, { x:0.5, y:2.7, w:12.25, margin:7, fill:'F1F1F1', border:{pt:1,color:'696969'} } );
+
 		// Complex/Compound border
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 2.6;
+		var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 3.9;
 		slide.addText('Complex Cell Border:', optsSub);
 		var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
-		slide.addTable( [['Borders!']], { x:0.5, y:3.0, w:12.3, rowH:2.0, fill:'F5F5F5', color:'3D3D3D', font_size:18, border:arrBorder, align:'c', valign:'c' } );
+		slide.addTable( [['Borders!']], { x:0.5, y:4.3, w:12.3, rowH:1.5, fill:'F5F5F5', color:'3D3D3D', font_size:18, border:arrBorder, align:'c', valign:'c' } );
 
 		// Invalid char check
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 5.7;
+		var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 6.1;
 		slide.addText('Escaped Invalid Chars:', optsSub);
 		var arrTabRows3 = [['<', '>', '"', "'", '&', 'plain']];
-		slide.addTable( arrTabRows3, { x:0.5, y:6.0, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
+		slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
 
 	}
 
