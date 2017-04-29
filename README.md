@@ -43,8 +43,9 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Charts](#adding-charts)
     - [Chart Types](#chart-types)
-    - [Chart Area Options](#chart-area-options)
-    - [Chart Piece Options](#chart-piece-options)
+    - [Chart Size/Formatting Options](#chart-sizeformatting-options)
+    - [Chart Axis Options](#chart-axis-options)
+    - [Chart Data Options](#chart-data-options)
     - [Chart Examples](#chart-examples)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
@@ -284,47 +285,55 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 * Chart type can be any one of `pptx.charts`
 * Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`
 
-### Chart Area Options
+### Chart Size/Formatting Options
 | Option          | Type    | Unit    | Default   | Description           | Possible Values  |
 | :-------------- | :------ | :------ | :-------- | :-------------------- | :--------------- |
 | `x`             | number  | inches  | `1.0`     | horizontal location   | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
 | `y`             | number  | inches  | `1.0`     | vertical location     | 0-n OR 'n%'. |
 | `w`             | number  | inches  | `50%`     | width                 | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`             | number  | inches  | `50%`     | height                | 0-n OR 'n%'. |
-| `barDir`        | string  |         | `col`     | bar direction         | (Bar Chart only) `h` (horizontal) or `v` (vertical). Ex: `{barDir:'v'}` |
-| `barGrouping`   | string  |         |`clustered`| bar grouping          | (Bar Chart only) `clustered` or `stacked` or `percentStacked`. |
 | `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
 | `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
-| `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
-| `showPercent`   | boolean |         | `false`   | show data percent     | `true` or `false` |
 | `showLegend`    | boolean |         | `false`   | show chart legend     | `true` or `false` |
+| `showPercent`   | boolean |         | `false`   | show data percent     | `true` or `false` |
 | `showTitle`     | boolean |         | `false`   | show chart title      | `true` or `false` |
+| `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
 | `title`         | string  |         |           | chart title           | a string. Ex: `{ title:'Sales by Region' }` |
 | `titleColor`    | string  |         | `000000`  | title color           | hex color code. Ex: `{ titleColor:'0088CC' }` |
 | `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
 
-### Chart Piece Options
+### Chart Axis Options
 | Option                 | Type    | Unit    | Default   | Description             | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :---------------------- | :----------------------------------------- |
 | `catAxisLabelColor`    | string  |         | `000000`  | category-axis color     | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size | 1-256. Ex: `{ titleFontSize:12 }`          |
-| `dataLabelPosition`    | string  |         | `bestFit` | data label position     | `bestFit`,`b` (bottom),`ctr` (center),`inBase`,`inEnd`,`l` (left),`outEnd`,`r` (right),`t` (top) |
-| `dataLabelColor`       | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ dataLabelColor:'0088CC' }`     |
-| `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
-| `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
 | `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisMaxVal`        | number  |         |           | maximum value for Value Axis | 1-N. Ex: `{ valAxisMaxVal:125 }` |
-| `valAxisOrientation`   | number  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
+| `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
 
-Reference: [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)
+### Chart Data Options
+| Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
+| :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
+| `barDir`               | string  |         | `col`     | bar direction              | (*Bar Chart*) `h` (horizontal) or `v` (vertical). Ex: `{barDir:'v'}` |
+| `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-999. Ex: `{ barGapWidthPct:50 }` |
+| `barGrouping`          | string  |         |`clustered`| bar grouping               | (*Bar Chart*) `clustered` or `stacked` or `percentStacked`. |
+| `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
+| `dataLabelColor`       | string  |         | `000000`  | value-axis color           | hex color code. Ex: `{ dataLabelColor:'0088CC' }`     |
+| `dataLabelFormatCode`  | string  |         |           | format to show data value  | format string. Ex: `{ dataLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
+| `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }`   |
+| `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
+| `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
+| `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
 
 ### Chart Examples
 ```javascript
@@ -333,12 +342,8 @@ pptx.setLayout('LAYOUT_WIDE');
 
 var slide = pptx.addNewSlide();
 
-// Chart Type: PIE
-var dataChartPie = [{ name:'Location', labels:['DE','GB','MX','JP','IN','US'], values:[35,40,85,88,99,101] }];
-slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
-
 // Chart Type: BAR
-var arrDataRegions = [
+var dataChartBar = [
   {
     name  : 'Region 1',
     labels: ['May', 'June', 'July', 'August'],
@@ -350,7 +355,30 @@ var arrDataRegions = [
     values: [43.5, 70.3, 90.1, 80.05]
   }
 ];
-slide.addChart( pptx.charts.BAR, arrDataRegions, { x:1.0, y:1.0, w:6, h:6 } );
+slide.addChart( pptx.charts.BAR, dataChartBar, { x:1.0, y:1.0, w:12, h:6 } );
+
+// Chart Type: AREA
+// Chart Type: LINE
+var dataChartAreaLine = [
+  {
+    name  : 'Actual Sales',
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121]
+  },
+  {
+    name  : 'Projected Sales',
+    labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+    values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
+  }
+];
+slide.addChart( pptx.charts.AREA, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
+slide.addChart( pptx.charts.LINE, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
+
+// Chart Type: PIE
+var dataChartPie = [
+  { name:'Location', labels:['DE','GB','MX','JP','IN','US'], values:[35,40,85,88,99,101] }
+];
+slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
 
 pptx.save('Demo-Chart');
 ```
