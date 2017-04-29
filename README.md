@@ -42,6 +42,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Node.js](#nodejs-1)
 - [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Charts](#adding-charts)
+    - [Chart Types](#chart-types)
     - [Chart Area Options](#chart-area-options)
     - [Chart Piece Options](#chart-piece-options)
     - [Chart Examples](#chart-examples)

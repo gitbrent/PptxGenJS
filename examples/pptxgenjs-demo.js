@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Apr 23, 2017
+* DATE: Apr 28, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -58,9 +58,7 @@ function getTimestamp() {
 // ==================================================================================================================
 
 function runEveryTest() {
-	execGenSlidesFuncs( ['Table', 'Text', 'Image', 'Media', 'Shape', 'Master'] );
-//	execGenSlidesFuncs( ['Table', 'Text', 'Chart', 'Image', 'Media', 'Shape', 'Master'] );
-// TODO: Fix rels issue (Charts onyl work by themselves, combining with others = load fail)
+	execGenSlidesFuncs( ['Text', 'Chart', 'Table', 'Image', 'Media', 'Shape', 'Master'] );
 	if ( typeof table2slides1 !== 'undefined' ) table2slides1();
 }
 

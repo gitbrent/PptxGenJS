@@ -360,15 +360,15 @@ var PptxGenJS = function(){
 							zip.file( "ppt/embeddings/Microsoft_Excel_Sheet"+ intCharts +".xlsx", content, {base64:true} );
 
 							// 2: Create the chart.xml and rels files
-							zip.file("ppt/charts/_rels/chart"+ intCharts +".xml.rels",
+							zip.file("ppt/charts/_rels/"+ rel.fileName +".rels",
 								'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 								+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-								+ '<Relationship Id="rId'+ intCharts +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Sheet'+ intCharts +'.xlsx"/>'
-								+ '</Relationships>\n'
+								+ '<Relationship Id="rId'+intCharts+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Sheet'+ intCharts +'.xlsx"/>'
+								+ '</Relationships>'
 							);
-							zip.file("ppt/charts/chart"+ intCharts +".xml", makeXmlCharts(rel));
+							zip.file("ppt/charts/"+rel.fileName, makeXmlCharts(rel));
 
-							// 3: We're done
+							// 3: Done
 							resolve();
 						})
 						.catch(function(strErr){
@@ -1681,12 +1681,10 @@ var PptxGenJS = function(){
 		});
 
 		// Add charts (if any)
-		var intCharts = 0;
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
 				if ( rel.type == 'chart' ) {
-					intCharts++;
-					strXml += ' <Override PartName="/ppt/charts/chart'+ intCharts +'.xml" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+					strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
 				}
 			});
 		});
@@ -2362,7 +2360,7 @@ var PptxGenJS = function(){
 			}
 		});
 
-		strXml += '</Relationships>'+CRLF;
+		strXml += '</Relationships>';
 		//
 		return strXml;
 	}
@@ -2715,7 +2713,7 @@ var PptxGenJS = function(){
 		 * 	}
 		 */
 		slideObj.addChart = function ( inType, inData, inOpt ) {
-			var intRels = 1;
+			var intRelCharts = 1;
 			var options = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
 
 			// STEP 1: TODO: check for reqd fields, correct type, etc
@@ -2790,15 +2788,18 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].type    = 'chart';
 			gObjPptx.slides[slideNum].data[slideObjNum].options = options;
 
-			// STEP 5: Add new chart to this Slides Rels (rId/rels count spans all slides! Count all images to get next rId)
-			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
+			// STEP 5: Add new chart to this Slide Rels
+			gObjPptx.slides.forEach(function(slide,idx){
+				slide.rels.forEach(function(rel,idx){ if ( rel.type == 'chart' ) intRelCharts++; });
+			});
+
 			slideObjRels.push({
-				rId:  (intRels+1),
-				data: inData,
-				opts: options,
-				type: 'chart',
-				Target: '../charts/chart'+ intRels +'.xml'
+				rId:     (intRelCharts+1),
+				data:    inData,
+				opts:    options,
+				type:    'chart',
+				fileName:'chart'+ intRelCharts +'.xml',
+				Target:  '/ppt/charts/chart'+ intRelCharts +'.xml'
 			});
 			gObjPptx.slides[slideNum].data[slideObjNum].chartRid = slideObjRels[slideObjRels.length-1].rId;
 
