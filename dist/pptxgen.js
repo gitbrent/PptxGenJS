@@ -2761,10 +2761,10 @@ var PptxGenJS = function(){
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
-			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
-			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
 			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
+			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
 			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
+			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
 
 			// D: Options: chart
 			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
