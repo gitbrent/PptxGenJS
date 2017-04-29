@@ -3028,7 +3028,8 @@ var PptxGenJS = function(){
 			opt.autoPage   = ( opt.autoPage == false ? false : true );
 			opt.font_size  = opt.font_size || 12;
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
-			opt.margin     = opt.marginPt || opt.margin || DEF_CELL_MARGIN_PT;
+			opt.margin     = (opt.marginPt || opt.margin); // (Legacy Support/DEPRECATED)
+			opt.margin     = (opt.margin || opt.margin == 0 ? opt.margin : DEF_CELL_MARGIN_PT);
 			if ( !isNaN(opt.margin) ) opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
 			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
@@ -3285,7 +3286,8 @@ var PptxGenJS = function(){
 
 		// NOTE: Look for opts.margin first as user can override Slide Master settings if they want
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
-		opts.margin = opts.marginPt || opts.margin || 0.5;
+		opts.margin = (opts.marginPt || opts.margin); // (Legacy Support/DEPRECATED)
+		opts.margin = (opts.margin || opts.margin == 0 ? opts.margin : 0.5);
 		if ( opts && opts.margin ) {
 			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
 			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
