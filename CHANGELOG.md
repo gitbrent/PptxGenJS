@@ -4,7 +4,10 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.4.0...v1.5.0)
 
 **Fixed Bugs:**
+- Can't override margin with 0 [\#78](https://github.com/gitbrent/PptxGenJS/issues/78) ([scottmtraver](https://github.com/scottmtraver))
+
 **Implemented Enhancements:**
+- Add ability to create charts [\#51](https://github.com/gitbrent/PptxGenJS/issues/51) ([alagarrk](https://github.com/alagarrk))
 
 
 
