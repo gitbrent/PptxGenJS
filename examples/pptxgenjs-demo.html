@@ -292,25 +292,12 @@
 				+ "pptx.setLayout('LAYOUT_WIDE');\n"
 				+ "var slide = pptx.addNewSlide();\n"
 				+ "\n"
-				+ "		var arrDataRegions = [\n"
-				+ "			{\n"
-				+ "				name  : 'Region 1',\n"
-				+ "				labels: ['April', 'May', 'June', 'July', 'August'],\n"
-				+ "				values: [17, 26, 53, 100, 75]\n"
-				+ "			},\n"
-				+ "			{\n"
-				+ "				name  : 'Region 2',\n"
-				+ "				labels: ['April', 'May', 'June', 'July', 'August'],\n"
-				+ "				values: [55, 43, 70, 90, 80]\n"
-				+ "			}\n"
-				+ "		];\n"
-				+ "var optsChart = {\n"
-				+ "  x:2.0, y:1.2, w:10, h:5,\n"
-				+ "  barDir: 'col',\n"
-				+ "  barGrouping: 'percentStacked', \n"
-				+ "  title: 'Sample Chart'\n"
-				+ "};\n"
-				+ "slide.addChart(pptx.charts.BAR, arrDataRegions, optsChart);\n"
+				+ "// Image with hyperlink\n"
+				+ "slide.addImage({\n"
+				+ "  x:3.5, y:0.8, w:1.78, h:1.78,\n"
+				+ "  data:GIF_ANIM_FIRE,\n"
+				+ "  hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' }\n"
+				+ "});\n"
 				+ "\n"
 				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
 				+ "</pre>\n"
@@ -515,7 +502,8 @@
 							<h3>Slide 1</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Animated GIF (campfire icon - click to play)</div>
 							<div class="chkRow"><div class="svgCheck"></div>Four Image types using `path:'someImage'`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Two pre-encoded images (green checkmarks) using `data:[base64]`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Pre-encoded image using `data:[base64]`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Hyperlinked Image</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:49%; width:calc(50% - 20px);">

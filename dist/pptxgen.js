@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170428";
+	var APP_REL = "20170429";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -607,6 +607,7 @@ var PptxGenJS = function(){
 	function createHyperlinkRels(inText, slideRels) {
 		var arrTextObjects = [];
 
+		// Only text objects can have hyperlinks, so return if this is plain text/number
 		if ( typeof inText === 'string' || typeof inText === 'number' ) return;
 		// IMPORTANT: Check for isArray before typeof=object, or we'll exhaust recursion!
 		else if ( Array.isArray(inText) ) arrTextObjects = inText;
@@ -2213,8 +2214,12 @@ var PptxGenJS = function(){
 
 				case 'image':
 			        strSlideXml += '<p:pic>';
-					strSlideXml += '  <p:nvPicPr><p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideObj.image +'"/>';
-			        strSlideXml += '  <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>';
+					strSlideXml += '  <p:nvPicPr>'
+					strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideObj.image +'">';
+					if ( slideObj.hyperlink ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideObj.hyperlink.rId +'"/>';
+					strSlideXml += '    </p:cNvPr>';
+			        strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/>';
+					strSlideXml += '  </p:nvPicPr>';
 					strSlideXml += '<p:blipFill><a:blip r:embed="rId' + slideObj.imageRid + '" cstate="print"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>';
 					strSlideXml += '<p:spPr>'
 					strSlideXml += ' <a:xfrm' + locationAttr + '>'
@@ -2819,8 +2824,9 @@ var PptxGenJS = function(){
 				intPosY = (strImagePath.y || 0);
 				intSizeX = (strImagePath.cx || strImagePath.w || 0);
 				intSizeY = (strImagePath.cy || strImagePath.h || 0);
+				objHyperlink = (strImagePath.hyperlink || '');
 				strImageData = (strImagePath.data || '');
-				strImagePath = (strImagePath.path || ''); // This line must be last as were about to ovewrite ourself!
+				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as were about to ovewrite ourself!
 			}
 
 			// REALITY-CHECK:
@@ -2869,9 +2875,30 @@ var PptxGenJS = function(){
 				extn: strImgExtn,
 				data: (strImageData || ''),
 				rId:  (intRels+1),
-				Target: '../media/image' + intRels + '.' + strImgExtn
+				Target: '../media/image'+ intRels +'.'+ strImgExtn
 			});
 			gObjPptx.slides[slideNum].data[slideObjNum].imageRid = slideObjRels[slideObjRels.length-1].rId;
+
+			// STEP 5: (Issue#77) Hyperlink support
+			if ( typeof objHyperlink === 'object' ) {
+				if ( !objHyperlink.url || typeof objHyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+				else {
+					var intRelId = intRels+2;
+
+					slideObjRels.push({
+						type: 'hyperlink',
+						data: 'dummy',
+						rId:  intRelId,
+						Target: objHyperlink.url
+					});
+
+					objHyperlink.rId = intRelId;
+					gObjPptx.slides[slideNum].data[slideObjNum].hyperlink = objHyperlink;
+				}
+			}
+			else if ( typeof objHyperlink !== 'object' ) {
+				console.log("ERROR: `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
+			}
 
 			// LAST: Return this Slide
 			return this;

@@ -8,7 +8,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 
 ## Main Features
 * Widely Supported: Creates and downloads presentations on all current web browsers (Chrome, Edge, Firefox, etc.) and IE11
-* Full Featured: Slides can include Tables, Shapes, Images, Text and Media - plus use Master Slides
+* Full Featured: Slides can include Charts, Tables, Shapes, Images, Text and Media - plus use Master Slides
 * Easy To Use: Entire PowerPoint presentations can be created in a few lines of code
 * Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
 
@@ -729,6 +729,7 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `w`          | number  | inches | `1.0`     | width               | 0-n |
 | `h`          | number  | inches | `1.0`     | height              | 0-n |
 | `data`       | string  |        |           | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
+| `hyperlink`  | string  |        |           | add hyperlink | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
 **NOTE**  
@@ -752,6 +753,13 @@ slide.addImage({ data:'image/png;base64,iVtDafDrBF[...]=', x:3.0, y:5.0, w:6.0, 
 slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30, h:3.70 })
      .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
      .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
+
+// Image with Hyperlink
+slide.addImage({
+  x:1.0, y:1.0, w:8.0, h:4.0,
+  hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' },
+  path:'images/chart_world_peace_near.png',
+});
 
 pptx.save('Demo-Images');
 ```
