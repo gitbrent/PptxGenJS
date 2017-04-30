@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170429";
+	var APP_REL = "20170430";
 	//
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -129,7 +129,7 @@ var PptxGenJS = function(){
 	this.charts  = CHART_TYPES;
 
 	// D: Fall back to base shapes if shapes file was not linked
-	if ( typeof gObjPptxShapes === 'undefined' ) gObjPptxShapes = BASE_SHAPES;
+	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
 
 	/* ===============================================================================================
 	|
@@ -1482,7 +1482,15 @@ var PptxGenJS = function(){
 			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
 			if ( idx == 0 ) {
 				// ISSUE#69: Adding bodyProps more than once inside <p:txBody> causes "corrupt presentation" errors in PPT 2007, PPT 2010.
-				strSlideXml += genXmlBodyProperties(textObj.options) + '<a:lstStyle/>';
+				strSlideXml += genXmlBodyProperties(textObj.options);
+				// NOTE: Shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
+				// FIXME: LINE align doesnt work (code diff is substantial!)
+				if ( textObj.options.h == 0 && textObj.options.line && textObj.options.align ) {
+					strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>';
+				}
+				else {
+					strSlideXml += '<a:lstStyle/>';
+				}
 				strSlideXml += '<a:p>' + paragraphPropXml;
 			}
 			else if ( idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined') ) {
@@ -1871,26 +1879,24 @@ var PptxGenJS = function(){
 		// STEP 5: Loop over all Slide.data objects and add them to this slide ===============================
 		$.each(inSlide.data, function(idx,slideObj){
 			var x = 0, y = 0, cx = (EMU*10), cy = 0;
-			//var moreStyles = '', moreStylesAttr = '', outStyles = '', styleData = '',
-			var locationAttr = '';
-			var shapeType = null;
+			var locationAttr = '', shapeType = null;
 
 			// A: Set option vars
-			if ( slideObj.options ) {
-				if ( slideObj.options.w  || slideObj.options.w  == 0 ) slideObj.options.cx = slideObj.options.w;
-				if ( slideObj.options.h  || slideObj.options.h  == 0 ) slideObj.options.cy = slideObj.options.h;
-				//
-				if ( slideObj.options.x  || slideObj.options.x  == 0 )  x = getSmartParseNumber( slideObj.options.x , 'X' );
-				if ( slideObj.options.y  || slideObj.options.y  == 0 )  y = getSmartParseNumber( slideObj.options.y , 'Y' );
-				if ( slideObj.options.cx || slideObj.options.cx == 0 ) cx = getSmartParseNumber( slideObj.options.cx, 'X' );
-				if ( slideObj.options.cy || slideObj.options.cy == 0 ) cy = getSmartParseNumber( slideObj.options.cy, 'Y' );
-				//
-				if ( slideObj.options.shape  ) shapeType = getShapeInfo( slideObj.options.shape );
-				//
-				if ( slideObj.options.flipH  ) locationAttr += ' flipH="1"';
-				if ( slideObj.options.flipV  ) locationAttr += ' flipV="1"';
-				if ( slideObj.options.rotate ) locationAttr += ' rot="' + ( (slideObj.options.rotate > 360 ? (slideObj.options.rotate - 360) : slideObj.options.rotate) * 60000 ) + '"';
-			}
+			slideObj.options = slideObj.options || {};
+
+			if ( slideObj.options.w  || slideObj.options.w  == 0 ) slideObj.options.cx = slideObj.options.w;
+			if ( slideObj.options.h  || slideObj.options.h  == 0 ) slideObj.options.cy = slideObj.options.h;
+			//
+			if ( slideObj.options.x  || slideObj.options.x  == 0 )  x = getSmartParseNumber( slideObj.options.x , 'X' );
+			if ( slideObj.options.y  || slideObj.options.y  == 0 )  y = getSmartParseNumber( slideObj.options.y , 'Y' );
+			if ( slideObj.options.cx || slideObj.options.cx == 0 ) cx = getSmartParseNumber( slideObj.options.cx, 'X' );
+			if ( slideObj.options.cy || slideObj.options.cy == 0 ) cy = getSmartParseNumber( slideObj.options.cy, 'Y' );
+			//
+			if ( slideObj.options.shape  ) shapeType = getShapeInfo( slideObj.options.shape );
+			//
+			if ( slideObj.options.flipH  ) locationAttr += ' flipH="1"';
+			if ( slideObj.options.flipV  ) locationAttr += ' flipV="1"';
+			if ( slideObj.options.rotate ) locationAttr += ' rot="' + ( (slideObj.options.rotate > 360 ? (slideObj.options.rotate - 360) : slideObj.options.rotate) * 60000 ) + '"';
 
 			// B: Add OBJECT to current Slide ----------------------------
 			switch ( slideObj.type ) {
@@ -2155,21 +2161,16 @@ var PptxGenJS = function(){
 					strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
 					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst/></a:prstGeom>';
 
-					if ( slideObj.options ) {
-						( slideObj.options.fill ) ? strSlideXml += genXmlColorSelection(slideObj.options.fill) : strSlideXml += '<a:noFill/>';
+					// Option: FILL
+					strSlideXml += ( slideObj.options.fill ? genXmlColorSelection(slideObj.options.fill) : '<a:noFill/>' );
 
-						if ( slideObj.options.line ) {
-							var lineAttr = '';
-							if ( slideObj.options.line_size ) lineAttr += ' w="' + (slideObj.options.line_size * ONEPT) + '"';
-							strSlideXml += '<a:ln' + lineAttr + '>';
-							strSlideXml += genXmlColorSelection( slideObj.options.line );
-							if ( slideObj.options.line_head ) strSlideXml += '<a:headEnd type="' + slideObj.options.line_head + '"/>';
-							if ( slideObj.options.line_tail ) strSlideXml += '<a:tailEnd type="' + slideObj.options.line_tail + '"/>';
-							strSlideXml += '</a:ln>';
-						}
-					}
-					else {
-						strSlideXml += '<a:noFill/>';
+					// Shape Type: LINE: line color
+					if ( slideObj.options.line ) {
+						strSlideXml += '<a:ln'+ ( slideObj.options.line_size ? ' w="'+ (slideObj.options.line_size*ONEPT) +'"' : '') +'>';
+						strSlideXml += genXmlColorSelection( slideObj.options.line );
+						if ( slideObj.options.line_head ) strSlideXml += '<a:headEnd type="' + slideObj.options.line_head + '"/>';
+						if ( slideObj.options.line_tail ) strSlideXml += '<a:tailEnd type="' + slideObj.options.line_tail + '"/>';
+						strSlideXml += '</a:ln>';
 					}
 
 					// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
@@ -3016,14 +3017,29 @@ var PptxGenJS = function(){
 		}
 
 		slideObj.addShape = function( shape, opt ) {
+			var options = ( typeof opt === 'object' ? opt : {} );
+
+			if ( !shape || typeof shape !== 'object' ) {
+				console.log("ERROR: Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
+				return;
+			}
+
 			// STEP 1: Grab Slide object count
 			slideObjNum = gObjPptx.slides[slideNum].data.length;
 
 			// STEP 2: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].options = (typeof opt === 'object') ? opt : {};
-			gObjPptx.slides[slideNum].data[slideObjNum].options.shape = shape;
+			gObjPptx.slides[slideNum].data[slideObjNum].options = options;
+
+			// STEP 3: Set option defaults
+			options.shape     = shape;
+			options.x         = ( options.x || (options.x == 0 ? 0 : 1) );
+			options.y         = ( options.y || (options.y == 0 ? 0 : 1) );
+			options.w         = ( options.w || 1.0 );
+			options.h         = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
+			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
+			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
 
 			// LAST: Return
 			return this;
@@ -3204,7 +3220,12 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
 			gObjPptx.slides[slideNum].data[slideObjNum].text = text;
 
+			// STEP 4: Set options
 			gObjPptx.slides[slideNum].data[slideObjNum].options = opt;
+			if ( opt.shape && opt.shape.name == 'line' ) {
+				opt.line      = (opt.line      || '333333' );
+				opt.line_size = (opt.line_size || 1 );
+			}
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
@@ -3215,7 +3236,7 @@ var PptxGenJS = function(){
 				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
 			}
 
-			// STEP 4: Create hyperlink rels
+			// STEP 5: Create hyperlink rels
 			createHyperlinkRels(text, gObjPptx.slides[slideNum].rels);
 
 			// LAST: Return
@@ -3288,7 +3309,8 @@ var PptxGenJS = function(){
 
 			// Add Slide Numbers
 			if ( typeof inMaster.isNumbered !== 'undefined' ) slideObj.hasSlideNumber(inMaster.isNumbered); // DEPRECATED
-			if ( inMaster.slideNumber ) slideObj.slideNumber(inMaster.slideNumber);
+// TODO: ^^^ fixme - i think we cant set a BOOL - isn this an object now???
+			if ( inMaster.slideNumber && typeof inMaster.slideNumber === 'object' ) slideObj.slideNumber(inMaster.slideNumber);
 		}
 
 		// LAST: Return this Slide

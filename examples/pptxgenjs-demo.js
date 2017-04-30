@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Apr 28, 2017
+* DATE: Apr 29, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -39,8 +39,8 @@ var gStrLorumIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. P
 var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenny','Lara','Kathryn'];
 var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
 var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好';
-var colors = ['FF0000','AB00CD','00FF00','00AA00','003300','330033','990099','33FFFF','AA33CC','336699'];
-var fonts = ['Arial','Courier New','Times','Verdana'];
+//var colors = ['FF0000','AB00CD','00FF00','00AA00','003300','330033','990099','33FFFF','AA33CC','336699'];
+//var fonts = ['Arial','Courier New','Times','Verdana'];
 //
 var gOptsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
@@ -1071,6 +1071,7 @@ function genSlides_Shape(pptx) {
 	slide.addShape(pptx.shapes.LINE,              { x:4.2, y:4.8, w:5.0, h:0.0, line:'FF0000', line_size:2, line_head:'triangle' });
 	slide.addShape(pptx.shapes.LINE,              { x:4.2, y:5.2, w:5.0, h:0.0, line:'FF0000', line_size:3, line_tail:'triangle' });
 	slide.addShape(pptx.shapes.LINE,              { x:4.2, y:5.6, w:5.0, h:0.0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+	slide.addShape(pptx.shapes.LINE,              { x:5.7, y:2.7, w:2.5, rotate:(360-45) }); // DIAGONAL Line // TEST: (missing `h`, `line`, `line_size`)
 	//
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:0.4, y:4.3, w:6.0, h:3.0, fill:'0088CC', line:'000000', line_size:3 });
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:7.0, y:4.3, w:6.0, h:3.0, fill:'0088CC', line:'000000', flipH:true });
@@ -1086,12 +1087,14 @@ function genSlides_Shape(pptx) {
 	slide.addText('OVAL (rotate:90, alpha:50)', { shape:pptx.shapes.OVAL,              x:7.7, y:1.4, w:3.0, h:1.5, fill:{ type:'solid', color:'FF00CC', alpha:50 }, rotate:90, align:'c', font_size:14 });
 	slide.addText('ROUNDED-RECTANGLE',          { shape:pptx.shapes.ROUNDED_RECTANGLE, x:10 , y:2.5, w:3.0, h:1.5, fill:'00FF00', align:'c', font_size:14 });
 	//
-	slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:4.40, w:5, h:0, line:'FF0000', line_size:1 });
-	slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'l', x:4.15, y:4.80, w:5, h:0, line:'FF0000', line_size:2, line_head:'triangle' });
-	slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'r', x:4.15, y:5.20, w:5, h:0, line:'FF0000', line_size:3, line_tail:'triangle' });
-	slide.addText('LINE',              { shape:pptx.shapes.LINE,              align:'c', x:4.15, y:5.60, w:5, h:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-	slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:0.40, y:4.30, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 });
-	slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE,    align:'c', x:7.00, y:4.30, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
+	slide.addText('LINE size=1',     { shape:pptx.shapes.LINE, align:'c', x:4.15, y:4.40, w:5, h:0, line:'FF0000', line_size:1 });
+	slide.addText('LINE size=2',     { shape:pptx.shapes.LINE, align:'l', x:4.15, y:4.80, w:5, h:0, line:'FF0000', line_size:2, line_tail:'triangle' });
+	slide.addText('LINE size=3',     { shape:pptx.shapes.LINE, align:'r', x:4.15, y:5.20, w:5, h:0, line:'FF0000', line_size:3, line_head:'triangle' });
+	slide.addText('LINE size=4',     { shape:pptx.shapes.LINE, align:'c', x:4.15, y:5.60, w:5, h:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+	slide.addText('DIAGONAL',        { shape:pptx.shapes.LINE, valign:'b', x:5.65, y:2.70, w:2.5, line_size:2, rotate:(360-45) }); // TEST: (missing `h` and `line`)
+	//
+	slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.4, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 });
+	slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.0, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
 }
 
 function genSlides_Text(pptx) {
