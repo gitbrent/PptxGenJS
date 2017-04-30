@@ -1843,40 +1843,7 @@ var PptxGenJS = function(){
 		strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>';
 		strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
 
-		// STEP 4: Add slide numbers if selected
-		if ( inSlide.slideNumberObj || inSlide.hasSlideNumber ) {
-			var numberX = (EMU * 0.3); // default and/or inSlide.hasSlideNumber value
-			var numberY = (0.90 * gObjPptx.pptLayout.height); // default and/or inSlide.hasSlideNumber value
-
-			if ( inSlide.slideNumberObj && inSlide.slideNumberObj.x ) numberX = getSmartParseNumber(inSlide.slideNumberObj.x, 'X');
-			if ( inSlide.slideNumberObj && inSlide.slideNumberObj.y ) numberY = getSmartParseNumber(inSlide.slideNumberObj.y, 'Y');
-
-			strSlideXml += '<p:sp>'
-				+ '  <p:nvSpPr>'
-				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
-				+ '  <p:spPr>'
-				+ '    <a:xfrm><a:off x="'+ numberX +'" y="'+ numberY +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
-				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
-				+ '    <a:extLst>'
-				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
-				+ '    </a:extLst>'
-				+ '  </p:spPr>';
-			// ISSUE #68: "Page number styling"
-			strSlideXml += '<p:txBody>';
-			strSlideXml += '  <a:bodyPr/>';
-			strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
-			if ( inSlide.slideNumberObj.fontFace || inSlide.slideNumberObj.fontSize || inSlide.slideNumberObj.color ) {
-				strSlideXml += '<a:defRPr sz="'+ (inSlide.slideNumberObj.fontSize || '12') +'00">';
-				if ( inSlide.slideNumberObj.color ) strSlideXml += genXmlColorSelection(inSlide.slideNumberObj.color);
-				if ( inSlide.slideNumberObj.fontFace ) strSlideXml += '<a:latin typeface="'+ inSlide.slideNumberObj.fontFace +'"/><a:cs typeface="'+ inSlide.slideNumberObj.fontFace +'"/>';
-				strSlideXml += '</a:defRPr>';
-			}
-			strSlideXml += '</a:lvl1pPr></a:lstStyle>';
-			strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p></p:txBody>'
-			strSlideXml += '</p:sp>';
-		}
-
-		// STEP 5: Loop over all Slide.data objects and add them to this slide ===============================
+		// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
 		$.each(inSlide.data, function(idx,slideObj){
 			var x = 0, y = 0, cx = (EMU*10), cy = 0;
 			var locationAttr = '', shapeType = null;
@@ -2300,6 +2267,35 @@ var PptxGenJS = function(){
 					break;
 			}
 		});
+
+		// STEP 5: Add slide numbers last (if any)
+		if ( inSlide.slideNumberObj || inSlide.hasSlideNumber ) {
+			if ( !inSlide.slideNumberObj ) inSlide.slideNumberObj = { x:0.3, y:'90%' }
+
+			strSlideXml += '<p:sp>'
+				+ '  <p:nvSpPr>'
+				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
+				+ '  <p:spPr>'
+				+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(inSlide.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(inSlide.slideNumberObj.y, 'Y') +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
+				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+				+ '    <a:extLst>'
+				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
+				+ '    </a:extLst>'
+				+ '  </p:spPr>';
+			// ISSUE #68: "Page number styling"
+			strSlideXml += '<p:txBody>';
+			strSlideXml += '  <a:bodyPr/>';
+			strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
+			if ( inSlide.slideNumberObj.fontFace || inSlide.slideNumberObj.fontSize || inSlide.slideNumberObj.color ) {
+				strSlideXml += '<a:defRPr sz="'+ (inSlide.slideNumberObj.fontSize || '12') +'00">';
+				if ( inSlide.slideNumberObj.color ) strSlideXml += genXmlColorSelection(inSlide.slideNumberObj.color);
+				if ( inSlide.slideNumberObj.fontFace ) strSlideXml += '<a:latin typeface="'+ inSlide.slideNumberObj.fontFace +'"/><a:cs typeface="'+ inSlide.slideNumberObj.fontFace +'"/>';
+				strSlideXml += '</a:defRPr>';
+			}
+			strSlideXml += '</a:lvl1pPr></a:lstStyle>';
+			strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p></p:txBody>'
+			strSlideXml += '</p:sp>';
+		}
 
 		// STEP 6: Close spTree and finalize slide XML
 		strSlideXml += '</p:spTree>';
@@ -3309,8 +3305,8 @@ var PptxGenJS = function(){
 
 			// Add Slide Numbers
 			if ( typeof inMaster.isNumbered !== 'undefined' ) slideObj.hasSlideNumber(inMaster.isNumbered); // DEPRECATED
-// TODO: ^^^ fixme - i think we cant set a BOOL - isn this an object now???
 			if ( inMaster.slideNumber && typeof inMaster.slideNumber === 'object' ) slideObj.slideNumber(inMaster.slideNumber);
+			else if ( inMasterOpts.slideNumber && typeof inMasterOpts.slideNumber === 'object' ) slideObj.slideNumber(inMasterOpts.slideNumber);
 		}
 
 		// LAST: Return this Slide

@@ -1223,7 +1223,7 @@ function genSlides_Master(pptx) {
 	var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
 	var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
 
-	var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'0088CC'} );
+	var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'E2E9EC', slideNumber:{x:'50%', y:'90%', color:'0088CC'} } );
 	var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
 	var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
 }
