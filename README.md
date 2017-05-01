@@ -843,9 +843,9 @@ var gObjPptxMasters = {
   TITLE_SLIDE: {
     title:   'I am the Title Slide',
     bkgd:    { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-	objects: [
-		{ 'text':  { text:'Greetings!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-		{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
+    objects: [
+        { 'text':  { text:'Greetings!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
+        { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
     ]
   }
 };
