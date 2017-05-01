@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170430";
+	var APP_REL = "20170501";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -776,7 +776,8 @@ var PptxGenJS = function(){
 				}
 				else if ( typeof cell === 'object' ) {
 					// ARG0: `text`
-					if ( !cell.text ) cell.text = "?";
+					if ( typeof cell.text === 'number' ) cell.text = cell.text.toString();
+					else if ( typeof cell.text === 'undefined' || cell.text == null ) cell.text = "";
 
 					// ARG1: `options`
 					var opt = cell.options || cell.opts || {}; // Legacy support for `opts` (<= v1.2.0)
@@ -2019,7 +2020,7 @@ var PptxGenJS = function(){
 								// B: Do Important/Override Opts
 								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-								$.each(['align','bold','border','color','fill','font_face','font_size','margin','underline','valign'], function(i,name){
+								$.each(['align','bold','border','color','fill','font_face','font_size','margin','marginPt','underline','valign'], function(i,name){
 									if ( objTabOpts[name] && !cellOpts[name] ) cellOpts[name] = objTabOpts[name];
 								});
 
@@ -2027,7 +2028,8 @@ var PptxGenJS = function(){
 								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
 								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
 								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
-								var cellMargin  = (cellOpts.margin || [0,0,0,0]);
+								var cellMargin  = ( cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : (cellOpts.marginPt || DEF_CELL_MARGIN_PT) );
+								if ( !Array.isArray(cellMargin) && typeof cellMargin === 'number' ) cellMargin = [cellMargin,cellMargin,cellMargin,cellMargin];
 								cellMargin = ' marL="'+ cellMargin[3]*ONEPT +'" marR="'+ cellMargin[1]*ONEPT +'" marT="'+ cellMargin[0]*ONEPT +'" marB="'+ cellMargin[2]*ONEPT +'"';
 							}
 
@@ -3071,7 +3073,7 @@ var PptxGenJS = function(){
 			opt.font_size  = opt.font_size || 12;
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
 			opt.margin     = (opt.marginPt || opt.margin); // (Legacy Support/DEPRECATED)
-			opt.margin     = (opt.margin || opt.margin == 0 ? opt.margin : DEF_CELL_MARGIN_PT);
+			opt.margin     = (opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT);
 			if ( !isNaN(opt.margin) ) opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
 			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
