@@ -830,21 +830,23 @@ E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
 ```javascript
 var gObjPptxMasters = {
   MASTER_SLIDE: {
-    title:  'Slide master',
-    margin: [ 0.5, 0.25, 1.0, 0.25 ],
-    bkgd:   'FFFFFF',
-    images: [ { path:'images/logo_square.png', x:9.3, y:4.9, w:0.5, h:0.5 } ],
-    shapes: [
-      { type:'text', text:'ACME - Confidential', x:0, y:5.17, w:'100%', h:0.3, align:'center', valign:'top', color:'7F7F7F', font_size:8, bold:true },
-      { type:'line', x:0.3, y:3.85, w:5.7, h:0.0, line:'007AAA' },
-      { type:'rectangle', x:0, y:0, w:'100%', h:.65, w:5, h:3.2, fill:'003b75' }
-    ],
+    title:   'Slide Master',
+    bkgd:    'FFFFFF',
+    objects: [
+        { 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
+        { 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
+        { 'text':  { text:'Status Report', options:{ x:3.0, y:5.30, w:5.5, h:0.75 } } },
+        { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
+    ]
     slideNumber: { x:0.3, y:'90%' }
   },
   TITLE_SLIDE: {
-    title:  'I am the Title Slide',
-    bkgd:   { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-    images: [ { x:'7.4', y:'4.1', w:'2', h:'1', data:'image/png;base64,R0lGODlhPQBEAPeoAJosM[...]+0pCZbEhAAOw==' } ]
+    title:   'I am the Title Slide',
+    bkgd:    { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
+	objects: [
+		{ 'text':  { text:'Greetings!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
+		{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
+    ]
   }
 };
 ```  

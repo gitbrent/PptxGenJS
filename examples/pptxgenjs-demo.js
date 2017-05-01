@@ -82,9 +82,7 @@ function execGenSlidesFuncs(type) {
 
 	// STEP 2: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );
-	arrTypes.forEach(function(type,idx){
-		eval( 'genSlides_'+type+'(pptx)' );
-	});
+	arrTypes.forEach(function(type,idx){ eval( 'genSlides_'+type+'(pptx)' ); });
 
 	// LAST: Export Presentation
 	if ( !NODEJS ) pptx.save('Demo-'+type+'_'+getTimestamp());
@@ -1071,7 +1069,7 @@ function genSlides_Shape(pptx) {
 	slide.addShape(pptx.shapes.LINE,              { x:4.2, y:4.8, w:5.0, h:0.0, line:'FF0000', line_size:2, line_head:'triangle' });
 	slide.addShape(pptx.shapes.LINE,              { x:4.2, y:5.2, w:5.0, h:0.0, line:'FF0000', line_size:3, line_tail:'triangle' });
 	slide.addShape(pptx.shapes.LINE,              { x:4.2, y:5.6, w:5.0, h:0.0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-	slide.addShape(pptx.shapes.LINE,              { x:5.7, y:2.7, w:2.5, rotate:(360-45) }); // DIAGONAL Line // TEST: (missing `h`, `line`, `line_size`)
+	slide.addShape(pptx.shapes.LINE,              { x:5.7, y:3.3, w:2.5, rotate:(360-45) }); // DIAGONAL Line // TEST: (missing `h`, `line`, `line_size`)
 	//
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:0.4, y:4.3, w:6.0, h:3.0, fill:'0088CC', line:'000000', line_size:3 });
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE,    { x:7.0, y:4.3, w:6.0, h:3.0, fill:'0088CC', line:'000000', flipH:true });
@@ -1091,7 +1089,7 @@ function genSlides_Shape(pptx) {
 	slide.addText('LINE size=2',     { shape:pptx.shapes.LINE, align:'l', x:4.15, y:4.80, w:5, h:0, line:'FF0000', line_size:2, line_tail:'triangle' });
 	slide.addText('LINE size=3',     { shape:pptx.shapes.LINE, align:'r', x:4.15, y:5.20, w:5, h:0, line:'FF0000', line_size:3, line_head:'triangle' });
 	slide.addText('LINE size=4',     { shape:pptx.shapes.LINE, align:'c', x:4.15, y:5.60, w:5, h:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
-	slide.addText('DIAGONAL',        { shape:pptx.shapes.LINE, valign:'b', x:5.65, y:2.70, w:2.5, line_size:2, rotate:(360-45) }); // TEST: (missing `h` and `line`)
+	slide.addText('DIAGONAL',        { shape:pptx.shapes.LINE, valign:'b', x:5.7, y:3.3, w:2.5, line_size:2, rotate:(360-45) }); // TEST: (missing `h` and `line`)
 	//
 	slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.4, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 });
 	slide.addText('RIGHT-TRIANGLE',    { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.0, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
@@ -1223,9 +1221,11 @@ function genSlides_Master(pptx) {
 	var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
 	var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
 
-	var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'E2E9EC', slideNumber:{x:'50%', y:'90%', color:'0088CC'} } );
-	var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ src:'images/title_bkgd_alt.jpg' } } );
+	var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'0088CC', slideNumber:{x:'50%', y:'90%', color:'0088CC'} } );
+	var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd_alt.jpg' } } );
 	var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
+
+	//var slide7 = pptx.addNewSlide( pptx.masters.LEGACY_TEST_ONLY );
 }
 
 // ==================================================================================================================

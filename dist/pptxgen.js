@@ -64,6 +64,12 @@ var PptxGenJS = function(){
 	var APP_VER = "1.5.0";
 	var APP_REL = "20170430";
 	//
+	var MASTER_OBJECTS = {
+		'image': { name:'image' },
+		'line' : { name:'line'  },
+		'rect' : { name:'rect'  },
+		'text' : { name:'text'  }
+	}
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -102,7 +108,7 @@ var PptxGenJS = function(){
 	//
 	var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 	var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
-	var EMU = 914400;  // One (1) Inch - OfficeXML measures in EMU (English Metric Units)
+	var EMU = 914400;  // One (1) inch (OfficeXML measures in EMU (English Metric Units))
 	var ONEPT = 12700; // One (1) point (pt)
 	//
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
@@ -124,9 +130,9 @@ var PptxGenJS = function(){
 	gObjPptx.slides = [];
 
 	// C: Expose shape library to clients
+	this.charts  = CHART_TYPES;
 	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
-	this.charts  = CHART_TYPES;
 
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
@@ -2893,9 +2899,6 @@ var PptxGenJS = function(){
 					gObjPptx.slides[slideNum].data[slideObjNum].hyperlink = objHyperlink;
 				}
 			}
-			else if ( typeof objHyperlink !== 'object' ) {
-				console.log("ERROR: `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
-			}
 
 			// LAST: Return this Slide
 			return this;
@@ -3248,11 +3251,13 @@ var PptxGenJS = function(){
 			// Add Slide Master objects in order
 			$.each(inMaster, function(key,val){
 				// ISSUE#7: Allow bkgd image/color override on Slide-level
-				if ( key == "bkgd" && inMasterOpts.bkgd ) val = inMasterOpts.bkgd;
+				if ( key == 'bkgd' && inMasterOpts.bkgd ) val = inMasterOpts.bkgd;
 
 				// Background color/image
-				if ( key == "bkgd" && typeof val === 'object' && (val.src || val.data) ) {
+				// DEPRECATED `src` is replaced by `path` in v1.5.0
+				if ( key == 'bkgd' && typeof val === 'object' && (val.src || val.path || val.data) ) {
 					// Allow the use of only the data key (no src reqd)
+					val.src = val.src || val.path || null;
 					if (!val.src) val.src = 'preencoded.png';
 					var slideObjRels = gObjPptx.slides[slideNum].rels;
 					var strImgExtn = val.src.substring( val.src.indexOf('.')+1 ).toLowerCase();
@@ -3271,11 +3276,11 @@ var PptxGenJS = function(){
 					});
 					slideObj.bkgdImgRid = slideObjRels[slideObjRels.length-1].rId;
 				}
-				else if ( key == "bkgd" && val && typeof val === 'string' ) {
+				else if ( key == 'bkgd' && val && typeof val === 'string' ) {
 					slideObj.back = val;
 				}
 
-				// Images
+				// Images **DEPRECATED** (v1.5.0)
 				if ( key == "images" && Array.isArray(val) && val.length > 0 ) {
 					$.each(val, function(i,image){
 						slideObj.addImage({
@@ -3289,7 +3294,7 @@ var PptxGenJS = function(){
 					});
 				}
 
-				// Shapes
+				// Shapes **DEPRECATED** (v1.5.0)
 				if ( key == "shapes" && Array.isArray(val) && val.length > 0 ) {
 					$.each(val, function(i,shape){
 						// 1: Grab all options (x, y, color, etc.)
@@ -3299,6 +3304,17 @@ var PptxGenJS = function(){
 						if      ( shape.type == 'text'      ) slideObj.addText(shape.text, objOpts);
 						else if ( shape.type == 'line'      ) slideObj.addShape(gObjPptxShapes.LINE, objOpts);
 						else if ( shape.type == 'rectangle' ) slideObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
+					});
+				}
+
+				// Add all Slide Master objects in the order they were given (Issue#53)
+				if ( key == "objects" && Array.isArray(val) && val.length > 0 ) {
+					val.forEach(function(object,idx){
+						var key = Object.keys(object)[0];
+						if      ( MASTER_OBJECTS[key] && key == 'image' ) slideObj.addImage(object[key]);
+						else if ( MASTER_OBJECTS[key] && key == 'line'  ) slideObj.addShape(gObjPptxShapes.LINE, object[key]);
+						else if ( MASTER_OBJECTS[key] && key == 'rect'  ) slideObj.addShape(gObjPptxShapes.RECTANGLE, object[key]);
+						else if ( MASTER_OBJECTS[key] && key == 'text'  ) slideObj.addText(object[key].text, object[key].options);
 					});
 				}
 			});
