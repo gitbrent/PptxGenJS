@@ -876,11 +876,10 @@ pptx.save();
 | :------------ | :------ | :----- | :------- | :----------- | :-------------------- |
 | `bkgd`        | string  |        | `ffffff` | color        | hex color code. Ex: `{ bkgd:'0088CC' }` |
 | `bkgd`        | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
-| `images`      | array   |        |   | image(s) | object array of path OR data. Ex: `{path:'img/logo.png'}` OR `{data:'image/png;base64,tFfInmP[...]'}`|
 | `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
 | `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
 | `margin`      | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
-| `shapes`      | array   |        |          | shape(s)           | array of shape objects. Ex: (see [Shape](#shape) section) |
+| `objects`     | array   |        |          | Objects for Slide  | object with type and options. Type:`image`,`line`,`rect` or `text`. [Example](https://github.com/gitbrent/PptxGenJS#slide-master-examples) |
 | `title`       | string  |        |          | Slide title        | some title |
 
 ## Sample Slide Master File
