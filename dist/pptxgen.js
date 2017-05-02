@@ -3347,18 +3347,17 @@ var PptxGenJS = function(){
 		// REALITY-CHECK:
 		if ( $('#'+tabEleId).length == 0 ) { console.error('Table "'+tabEleId+'" does not exist!'); return; }
 
-		// NOTE: Look for opts.margin first as user can override Slide Master settings if they want
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 		opts.margin = (opts.marginPt || opts.margin); // (Legacy Support/DEPRECATED)
 		opts.margin = (opts.margin || opts.margin == 0 ? opts.margin : 0.5);
-		if ( opts && opts.margin ) {
-			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
-			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
-		}
-		else if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
+		if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
 			opts.margin = arrInchMargins;
+		}
+		else if ( opts && opts.margin ) {
+			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
+			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
 		}
 		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])) );
 		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])) );
@@ -3386,7 +3385,7 @@ var PptxGenJS = function(){
 		$.each(arrTabColW, function(i,colW){
 			( $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width') )
 				? arrColW.push( $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width') )
-				: arrColW.push( Math.round( (emuSlideTabW * (colW / intTabW * 100) ) / 100 / EMU ) );
+				: arrColW.push( Number(((emuSlideTabW * (colW / intTabW * 100) ) / 100 / EMU).toFixed(2)) );
 		});
 
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)

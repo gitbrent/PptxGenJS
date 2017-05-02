@@ -139,16 +139,18 @@
 		function buildDataTable() {
 			// STEP 1:
 			$('#tabAutoPaging tbody').empty();
+
 			// STEP 2:
 			for (var idx=0; idx<$('#numTab2SlideRows').val(); idx++) {
 				var strHtml = '<tr>'
-					+ '<td>' + (idx+1) + '</td>'
+					+ '<td style="text-align:center">' + (idx+1) + '</td>'
 					+ '<td>' + gArrNamesL[ Math.floor(Math.random()*10) ] + '</td>'
 					+ '<td>' + gArrNamesF[ Math.floor(Math.random()*10) ] + '</td>'
-					+ '<td>' + (idx+1) + '<br>' + gStrLorumIpsum.substring( 0, [Math.round(Math.random()*10)*130+1] ) + '</td>'
+					+ '<td>Text:<br>' + gStrLorumIpsum.substring( 0, (Math.floor(Math.random()*10)+2)*130 ) + '</td>'
 					+ '</tr>';
 				$('#tabAutoPaging tbody').append( strHtml );
 			}
+
 			// STEP 3: Add some style to table for testing
 			// TEST Padding
 			$('#tabAutoPaging thead th').css('padding','10px 5px');
@@ -179,7 +181,7 @@
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.debug = true;
-			objOpts.master = pptx.masters.MASTER_SLIDE;
+			if ( $('#selSlideMaster').val() ) objOpts.master = pptx.masters[ $('#selSlideMaster').val() ];
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 
 			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
@@ -255,8 +257,12 @@
 			// STEP 1: Check
 			if ( window.location.href.indexOf('file:') == 0 ) { $('.jsLocalFile').show(); }
 
-			// STEP 2: Build table-2-slide rows
+			// STEP 2: Build UI elements
 			buildDataTable();
+			var pptx = new PptxGenJS();
+			if ( pptx.masters ) {
+				Object.keys(pptx.masters).forEach(function(name,idx){ $('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>') });
+			}
 
 			// STEP 3: Populate code areas
 			$('#demo-basic').html('<pre class="prettyprint">\n'
@@ -522,7 +528,7 @@
 				</div>
 			</div>
 
-			<div id="tab4" data-title="Shapes and Text">
+			<div id="tab4" data-title="Shapes/Text">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#adding-text" target="_blank">View Documentation and Example Code</a>
@@ -568,7 +574,7 @@
 				</div>
 			</div>
 
-			<div id="tab5" data-title="Templates and Master Slides">
+			<div id="tab5" data-title="Templates/Master Slides">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#master-slides-and-corporate-branding" target="_blank">View Documentation and Example Code</a>
@@ -622,21 +628,40 @@
 					<div class="arrow active"></div>Dynamic Test Table
 				</div>
 				<div class="sectionBox">
-					<div id="auto-paging-options" style="text-align:center; margin-bottom:10px;">
-						<b>OPTIONS: </b>
-						<label for="numTab2SlideHead" style="font-size:12px">Include Header on each Slide? <code>`{ addHeaderToEach:true }`</code></label>
-						<input type="radio" name="radioHead" value="Y" checked="checked">Yes<span>&nbsp;&nbsp;&nbsp;</span>
-						<input type="radio" name="radioHead" value="N">No
-
-						<div style="display:inline-block; margin-left:50px">
-							<b>SETUP: </b>
-							<label for="numTab2SlideRows" style="font-size:12px">Table Rows:</label>
-							<input id="numTab2SlideRows" type="number" min="1" max="25" value="2" onchange="buildDataTable()">
-							<label for="numTab2SlidePadding" style="font-size:12px">Cell Padding:</label>
-							<input id="numTab2Padding" type="number" min="0" max="25" value="5"
-								onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
-						</div>
+					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
+						<fieldset style="height:auto">
+							<legend>Options</legend>
+							<div class="tableRows" style="margin:0 0 10px 10px">
+								<div>
+									<div>Show Table Header on Each Slide?</div>
+									<div>
+										<label><input type="radio" name="radioHead" value="Y" checked="checked">Yes</label>
+										<label><input type="radio" name="radioHead" value="N">No</label>
+									</div>
+								</div>
+								<div>
+									<div>Slide Master:</div>
+									<div><select id="selSlideMaster"><option selected="selected">(None)</option></select></div>
+								</div>
+							</div>
+						</fieldset>
 					</div>
+					<div class="formBox" style="width:49%; width:calc(50%); margin-right:0;">
+						<fieldset style="height:auto">
+							<legend>Setup</legend>
+							<div class="tableRows" style="margin:0 0 10px 10px">
+								<div>
+									<div><label for="numTab2SlideRows">Number of Table Rows:</label></div>
+									<div><input  id="numTab2SlideRows" type="number" min="1" max="25" value="2" onchange="buildDataTable()"></div>
+								</div>
+								<div>
+									<div><label for="numTab2Padding">Cell Padding (points):</label></div>
+									<div><input  id="numTab2Padding" type="number" min="0" max="25" value="5" onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')"></div>
+								</div>
+							</div>
+						</fieldset>
+					</div>
+
 					<table id="tabAutoPaging" class="tabCool">
 						<thead>
 							<tr>
@@ -657,9 +682,9 @@
 
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Un-Styled Table
+					<div class="arrow"></div>Un-Styled Table
 				</div>
-				<div class="sectionBox">
+				<div class="sectionBox" style="display:none">
 					<table id="tabNoStyle">
 					    <thead>
 					        <tr>

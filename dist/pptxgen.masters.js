@@ -30,7 +30,7 @@
 /*
  INSTRUCTIONS:
  =============
-  - Use the 3 pre-defined Master Slides below as examples to get started
+  - Use the pre-defined Master Slides below as examples to get started
   - Add your own objects with your selected name to be able to use them in method calls
     EX: `var slide1 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );`
 
@@ -90,7 +90,15 @@ var gObjPptxMasters = {
 			{ 'image': { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' } }
 		]
 	},
-
+	MARGIN_TEST: {
+		title:   'TableToSlides Margin Test Slide',
+		bkgd:    'F1F1F1',
+		margin:  [ 0.75, 0.6, 1.0, 0.6 ],
+		objects: [
+			{ 'rect':  { x:0, y:5.13, w:'100%', h:0.5, fill:'1abc9c' } },
+			{ 'text':  { text:'TableToSlides Margin Test Slide', options:{ x:0, y:5.13, w:'100%', h:0.5, color:'FFFFFF', font_size:12, align:'c', valign:'m' } } }
+		]
+	},
 	LEGACY_TEST_ONLY: {
 		title:   '**DO NOT COPY** - these keys are *DEPRECATED* and used only for regression testing!',
 		bkgd:   { src:'images/starlabs_bkgd.jpg' },

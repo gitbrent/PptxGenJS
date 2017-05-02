@@ -213,6 +213,10 @@ div.formBox input[type="checkbox"] {
 div.table { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
 div.table > div { display: table-cell; }
 
+div.tableRows { display: table; box-sizing: border-box; font-size: 12px; }
+div.tableRows > div { display: table-row; }
+div.tableRows > div > div { display: table-cell; padding: 3px 5px; }
+
 div.divTable { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
 div.divTable > div { display: table-row; }
 div.divTable > div > div { display: table-cell; padding: 3px 10px; }
