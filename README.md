@@ -8,7 +8,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 
 ## Main Features
 * Widely Supported: Creates and downloads presentations on all current web browsers (Chrome, Edge, Firefox, etc.) and IE11
-* Full Featured: Slides can include Charts, Tables, Shapes, Images, Text and Media - plus use Master Slides
+* Full Featured: Slides can include Charts, Images, Media, Shapes, Tables and Text (plus Master Slides/Templates)
 * Easy To Use: Entire PowerPoint presentations can be created in a few lines of code
 * Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
 
