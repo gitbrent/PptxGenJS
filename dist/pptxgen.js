@@ -647,11 +647,13 @@ var PptxGenJS = function(){
 	* Magic happens here
 	*/
 	function parseTextToLines(cell, inWidth) {
-		// Character Constant thingy
-		var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0);
-		var CPL = (inWidth*EMU / ( (cell.opts.font_size || DEF_FONT_SIZE)/CHAR ));
+		var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0); // Character Constant (An approximation of the Golden Ratio)
+		var CPL = (inWidth*EMU / ( (cell.opts.font_size || DEF_FONT_SIZE)/CHAR )); // Chars-Per-Line
 		var arrLines = [];
 		var strCurrLine = '';
+
+		// Allow a single space/whitespace as cell text
+		if ( cell.text && cell.text.trim() == '' ) return [' '];
 
 		// A: Remove leading/trailing space
 		var inStr = (cell.text || '').toString().trim();
@@ -669,7 +671,7 @@ var PptxGenJS = function(){
 			});
 			// All words for this line have been exhausted, flush buffer to new line, clear line var
 			if ( strCurrLine ) arrLines.push( $.trim(strCurrLine) + CRLF );
-			strCurrLine = "";
+			strCurrLine = '';
 		});
 
 		// C: Remove trailing linebreak
@@ -1554,7 +1556,7 @@ var PptxGenJS = function(){
 		// BEGIN runProperties
 		var startInfo = '<a:rPr lang="en-US" ';
 		startInfo += ( opts.bold      ? ' b="1"' : '' );
-		startInfo += ( opts.font_size ? ' sz="'+opts.font_size+'00"' : '' );
+		startInfo += ( opts.font_size ? ' sz="'+ Math.round(opts.font_size) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
 		startInfo += ( opts.italic    ? ' i="1"' : '' );
 		startInfo += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
 		// not doc in API yet: startInfo += ( opts.char_spacing ? ' spc="' + (text_info.char_spacing * 100) + '" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
@@ -3073,8 +3075,10 @@ var PptxGenJS = function(){
 			}
 
 			// STEP 2: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
-			var arrRows = $.extend(true,[],arrTabRows);
-			if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
+			//var arrRows = $.extend(true,[],arrTabRows);
+			//if ( !Array.isArray(arrRows[0]) ) arrRows = [ $.extend(true,[],arrTabRows) ];
+			var arrRows = arrTabRows;
+			if ( !Array.isArray(arrRows[0]) ) arrRows = [ arrTabRows ];
 
 			// STEP 3: Set options
 			opt.x          = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
@@ -3083,7 +3087,7 @@ var PptxGenJS = function(){
 			if ( opt.cy ) opt.cy = getSmartParseNumber( opt.cy, 'Y' );
 			opt.h          = opt.cy;
 			opt.autoPage   = ( opt.autoPage == false ? false : true );
-			opt.font_size  = opt.font_size || 12;
+			opt.font_size  = opt.font_size || DEF_FONT_SIZE;
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
 			opt.margin     = (opt.marginPt || opt.margin); // (Legacy Support/DEPRECATED)
 			opt.margin     = (opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT);
