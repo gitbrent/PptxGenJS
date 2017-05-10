@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170506";
+	var APP_REL = "20170510";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -2027,11 +2027,11 @@ var PptxGenJS = function(){
 								cellOpts.isTableCell = true; // Used to create textBody XML
 								cell.options = cellOpts;
 
-								// B: Do Important/Override Opts
-								// Feature: TabOpts Default Values (tabOpts being used when cellOpts dont exist):
+								// B: Apply default values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-								$.each(['align','bold','border','color','fill','font_face','font_size','margin','marginPt','underline','valign'], function(i,name){
-									if ( objTabOpts[name] && !cellOpts[name] ) cellOpts[name] = objTabOpts[name];
+								['align','bold','border','color','fill','font_face','font_size','margin','marginPt','underline','valign']
+								.forEach(function(name,idx){
+									if ( objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0 ) cellOpts[name] = objTabOpts[name];
 								});
 
 								var cellValign  = (cellOpts.valign)     ? ' anchor="'+ cellOpts.valign.replace(/^c$/i,'ctr').replace(/^m$/i,'ctr').replace('center','ctr').replace('middle','ctr').replace('top','t').replace('btm','b').replace('bottom','b') +'"' : '';
