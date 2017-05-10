@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170501";
+	var APP_REL = "20170506";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -1488,6 +1488,13 @@ var PptxGenJS = function(){
 
 			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
 			if ( idx == 0 ) {
+				// TODO: FIXME: WIP: ISSUE#79
+				/*
+				// DESIGN: `addText()` can take an array of text objects, but has options like valign, and we need to pass those
+				textObj.options.bodyProp = ( textObj.options.bodyProp || {} );
+				textObj.options.bodyProp.anchor = ( textObj.options.valign || slideObj.options.valign );
+				//console.log(textObj.options.bodyProp.anchor);
+				*/
 				// ISSUE#69: Adding bodyProps more than once inside <p:txBody> causes "corrupt presentation" errors in PPT 2007, PPT 2010.
 				strSlideXml += genXmlBodyProperties(textObj.options);
 				// NOTE: Shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
@@ -1603,9 +1610,9 @@ var PptxGenJS = function(){
 			// A: Enable or disable textwrapping none or square:
 			( objOptions.bodyProp.wrap ) ? bodyProperties += ' wrap="' + objOptions.bodyProp.wrap + '" rtlCol="0"' : bodyProperties += ' wrap="square" rtlCol="0"';
 
-			// B: Set anchorPoints bottom, center or top:
-			if ( objOptions.bodyProp.anchor    ) bodyProperties += ' anchor="' + objOptions.bodyProp.anchor + '"';
-			if ( objOptions.bodyProp.anchorCtr ) bodyProperties += ' anchorCtr="' + objOptions.bodyProp.anchorCtr + '"';
+			// B: Set anchorPoints ('t','ctr',b'):
+			if ( objOptions.bodyProp.anchor ) bodyProperties += ' anchor="' + objOptions.bodyProp.anchor + '"';
+			//if ( objOptions.bodyProp.anchorCtr ) bodyProperties += ' anchorCtr="' + objOptions.bodyProp.anchorCtr + '"';
 
 			// C: Textbox margins [padding]:
 			if ( objOptions.bodyProp.bIns || objOptions.bodyProp.bIns == 0 ) bodyProperties += ' bIns="' + objOptions.bodyProp.bIns + '"';
@@ -1616,18 +1623,21 @@ var PptxGenJS = function(){
 			// D: Close <a:bodyPr element
 			bodyProperties += '>';
 
-			// E: NEW: Add auto-fit type tags
+			// E: NEW: Add autofit type tags
 			if ( objOptions.shrinkText ) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000" />'; // MS-PPT > Format Shape > Text Options: "Shrink text on overflow"
-			else if ( objOptions.bodyProp.autoFit !== false ) bodyProperties += '<a:spAutoFit/>'; // MS-PPT > Format Shape > Text Options: "Resize shape to fit text"
+			// MS-PPT > Format Shape > Text Options: "Resize shape to fit text" [spAutoFit]
+			bodyProperties += ( objOptions.bodyProp.autoFit !== false ? '<a:spAutoFit/>' : '<a:noAutofit/>' );
 
 			// LAST: Close bodyProp
 			bodyProperties += '</a:bodyPr>';
 		}
 		else {
 			// DEFAULT:
-			bodyProperties += ' wrap="square" rtlCol="0"></a:bodyPr>';
+			bodyProperties += ' wrap="square" rtlCol="0">';
+			bodyProperties += '</a:bodyPr>';
 		}
 
+		// LAST: Return Close bodyProp
 		return ( objOptions.isTableCell ? '<a:bodyPr/>' : bodyProperties );
 	}
 
@@ -2280,6 +2290,7 @@ var PptxGenJS = function(){
 		if ( inSlide.slideNumberObj || inSlide.hasSlideNumber ) {
 			if ( !inSlide.slideNumberObj ) inSlide.slideNumberObj = { x:0.3, y:'90%' }
 
+			// TODO: FIXME: page numbers over 99 wrap in PPT-2013 (Desktop)
 			strSlideXml += '<p:sp>'
 				+ '  <p:nvSpPr>'
 				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
@@ -2307,11 +2318,13 @@ var PptxGenJS = function(){
 
 		// STEP 6: Close spTree and finalize slide XML
 		strSlideXml += '</p:spTree>';
+		/* FIXME: Remove this in 1.6.0
 		strSlideXml += '<p:extLst>';
 		strSlideXml += ' <p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">';
 		strSlideXml += '  <p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1544976994"/>';
 		strSlideXml += ' </p:ext>';
 		strSlideXml += '</p:extLst>';
+		*/
 		strSlideXml += '</p:cSld>';
 		strSlideXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>';
 		strSlideXml += '</p:sld>';
@@ -3177,7 +3190,7 @@ var PptxGenJS = function(){
 
 			// STEP 2: Set some options
 			// Set color (options > inherit from Slide > default to black)
-			opt.color = (opt.color || this.color || '000000');
+			opt.color = ( opt.color || this.color || '000000' );
 
 			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
 			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
