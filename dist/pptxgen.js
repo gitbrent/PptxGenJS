@@ -2150,7 +2150,7 @@ var PptxGenJS = function(){
 					strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
 					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst>' +
 									(slideObj.options.r ? 
-									'<a:gd name="adj" fmla="val ' + Math.round(slideObj.options.r * 1000000000 / Math.min(cx, cy)) + '" />' : 
+									'<a:gd name="adj" fmla="val ' + Math.round(slideObj.options.r * EMU * 100000 / Math.min(cx, cy)) + '" />' : 
 									'') +
 									'</a:avLst></a:prstGeom>';
 
@@ -2163,6 +2163,7 @@ var PptxGenJS = function(){
 						strSlideXml += genXmlColorSelection( slideObj.options.line );
 						if ( slideObj.options.line_head ) strSlideXml += '<a:headEnd type="' + slideObj.options.line_head + '"/>';
 						if ( slideObj.options.line_tail ) strSlideXml += '<a:tailEnd type="' + slideObj.options.line_tail + '"/>';
+						if ( slideObj.options.dash ) strSlideXml += '<a:prstDash val="' + slideObj.options.dash + '"/>';
 						strSlideXml += '</a:ln>';
 					}
 
