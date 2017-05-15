@@ -996,7 +996,8 @@ var PptxGenJS = function(){
 					}
 
 					if ( rel.opts.type == 'line' ) {
-						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
+						strXml += '<a:prstDash val="' + (rel.opts.dash || "solid") + '"/><a:round/></a:ln>';
 					}
 					else if ( rel.opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -2147,7 +2148,11 @@ var PptxGenJS = function(){
 					strSlideXml += '<p:spPr><a:xfrm' + locationAttr + '>';
 					strSlideXml += '<a:off x="'  + x  + '" y="'  + y  + '"/>';
 					strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
-					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst/></a:prstGeom>';
+					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst>' +
+									(slideObj.options.r ? 
+									'<a:gd name="adj" fmla="val ' + Math.round(slideObj.options.r * 1000000000 / Math.min(cx, cy)) + '" />' : 
+									'') +
+									'</a:avLst></a:prstGeom>';
 
 					// Option: FILL
 					strSlideXml += ( slideObj.options.fill ? genXmlColorSelection(slideObj.options.fill) : '<a:noFill/>' );
