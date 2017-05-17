@@ -262,6 +262,20 @@ pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); }
 pptx.save( 'Node_Demo', saveCallback );
 ```
 
+Saving multiple Presentations:  
+In order to generate a new, unique Presentation, one would just grab a new instance of the library, then add objects and save as normal.
+
+```javascript
+var pptx = new PptxGenJS();
+pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
+pptx.save('PptxGenJS-Presentation-1');
+
+// Create a new instance ("Reset")
+pptx = new PptxGenJS();
+pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
+pptx.save('PptxGenJS-Presentation-2');
+```
+
 
 
 
