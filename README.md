@@ -263,7 +263,7 @@ pptx.save( 'Node_Demo', saveCallback );
 ```
 
 Saving multiple Presentations:  
-In order to generate a new, unique Presentation, one would just grab a new instance of the library, then add objects and save as normal.
+* In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
 var pptx = new PptxGenJS();
