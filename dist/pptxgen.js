@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170510";
+	var APP_REL = "20170516";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -445,9 +445,11 @@ var PptxGenJS = function(){
 			a.download = strExportName;
 			a.click();
 
-			// Clean-up
-			window.URL.revokeObjectURL(url);
-			document.body.removeChild(a);
+			// Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
+			setTimeout(function(){
+				window.URL.revokeObjectURL(url);
+				document.body.removeChild(a);
+			}, 100);
 
 			// LAST: Callback (if any)
 			if ( callback ) callback(strExportName);
