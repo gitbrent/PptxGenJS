@@ -1574,9 +1574,9 @@ var PptxGenJS = function(){
 			if ( typeof opts.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ");
 			else if ( !opts.hyperlink.url || typeof opts.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
 			else if ( opts.hyperlink.url ) {
-				startInfo += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>';
+				// FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
+				//startInfo += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
 				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? opts.hyperlink.tooltip : '') +'" history="1" highlightClick="0" endSnd="0"/>';
-				// FIXME: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..? 20170410)
 			}
 		}
 
