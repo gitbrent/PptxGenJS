@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170516";
+	var APP_REL = "20170517";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -1899,11 +1899,13 @@ var PptxGenJS = function(){
 					var objTabOpts = slideObj.options;
 					var intColCnt = 0, intColW = 0;
 
+					// Calc number of columns
 					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 					// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
-					for (var tmp=0; tmp<arrTabRows[0].length; tmp++) {
-						intColCnt += ( arrTabRows[0][tmp] && arrTabRows[0][tmp].opts && arrTabRows[0][tmp].opts.colspan ) ? Number(arrTabRows[0][tmp].opts.colspan) : 1;
-					}
+					arrTabRows[0].forEach(function(cell,idx){
+						var cellOpts = cell.options || cell.opts || null; // DEPRECATED (`opts`)
+						intColCnt += ( cellOpts && cellOpts.colspan ? cellOpts.colspan : 1 );
+					});
 
 					// STEP 1: Start Table XML =============================
 					// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
