@@ -3191,8 +3191,10 @@ var PptxGenJS = function(){
 			return this;
 		};
 
-		slideObj.addText = function( text, options ) {
+		slideObj.addText = function( inText, options ) {
 			var opt = ( options && typeof options === 'object' ? options : {} );
+			var text = ( inText || '' );
+			if ( Array.isArray(text) && text.length == 0 ) text = '';
 
 			// STEP 1: Grab Slide object count
 			slideObjNum = gObjPptx.slides[slideNum].data.length;
