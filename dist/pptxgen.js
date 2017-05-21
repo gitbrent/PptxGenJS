@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170517";
+	var APP_REL = "20170521";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -127,6 +127,7 @@ var PptxGenJS = function(){
 	gObjPptx.fileName = 'Presentation';
 	gObjPptx.fileExtn = '.pptx';
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
+	gObjPptx.rtlMode = false;
 	gObjPptx.slides = [];
 
 	// C: Expose shape library to clients
@@ -2476,8 +2477,11 @@ var PptxGenJS = function(){
 
 	function makeXmlPresentation() {
 		var intCurPos = 0;
+		// REF: http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
-					+ '<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" saveSubsetFonts="1">';
+			+ '<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
+			+ 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
+			+ 'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '+ (gObjPptx.rtlMode ? 'rtl="1"' : '') +' saveSubsetFonts="1">';
 
 		// STEP 1: Build SLIDE master list
 		strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
@@ -2505,7 +2509,7 @@ var PptxGenJS = function(){
 
 		strXml += '<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>'
 				+ '</p:presentation>';
-		//
+
 		return strXml;
 	}
 
@@ -2578,6 +2582,16 @@ var PptxGenJS = function(){
 	this.getLayout = function getLayout() {
 		return gObjPptx.pptLayout;
 	};
+
+	/**
+	 * Set Right-to-Left (RTL) mode for users whose language requires this setting
+	 */
+	this.setRTL = function setRTL(inBool) {
+		if ( typeof inBool !== 'boolean' ) return;
+		else {
+			gObjPptx.rtlMode = inBool;
+		}
+	}
 
 	/**
 	 * Sets the Presentation's Slide Layout {object}: [screen4x3, screen16x9, widescreen]
