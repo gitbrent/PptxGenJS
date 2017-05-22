@@ -415,6 +415,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `y`          | number  | inches  | `1.0`     | vertical location   | 0-n OR 'n%'. |
 | `w`          | number  | inches  |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`          | number  | inches  |           | height              | 0-n OR 'n%'. |
+| `r`          | number  | inches  |           | rounding radius     | rounding radius for ROUNDED_RECTANGLE text shapes |
 | `align`      | string  |         | `left`    | alignment           | `left` or `center` or `right` |
 | `autoFit`    | boolean |         | `false`   | "Fit to Shape"      | `true` or `false` |
 | `bold`       | boolean |         | `false`   | bold text           | `true` or `false` |
@@ -422,6 +423,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `bullet`     | boolean |         | `false`   | bulleted text       | `true` or `false` |
 | `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
 | `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `dash`       | string  |         |           | outline dashes      | `solid`, `sysDot`, `sysDash`, `dash`, `dashDot`, `lgDash`, `lgDashDot`, or `lgDashDotDot` |
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
@@ -690,7 +692,9 @@ Check the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerP
 | `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
 | `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
+| `r`          | number  | inches |           | rounding radius     | rounding radius for ROUNDED_RECTANGLE shapes |
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
+| `dash`       | string  |         |           | outline dashes      | `solid`, `sysDot`, `sysDash`, `dash`, `dashDot`, `lgDash`, `lgDashDot`, or `lgDashDotDot` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{color:'0088CC'}` |
 | `fill`       | object |   |   | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
 | `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
