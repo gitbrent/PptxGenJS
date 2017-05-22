@@ -1000,7 +1000,7 @@ var PptxGenJS = function(){
 
 					if ( rel.opts.type == 'line' ) {
 						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
-						strXml += '<a:prstDash val="' + (rel.opts.dash || "solid") + '"/><a:round/></a:ln>';
+						strXml += '<a:prstDash val="' + (rel.opts.line_dash || "solid") + '"/><a:round/></a:ln>';
 					}
 					else if ( rel.opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -2153,11 +2153,9 @@ var PptxGenJS = function(){
 					strSlideXml += '<p:spPr><a:xfrm' + locationAttr + '>';
 					strSlideXml += '<a:off x="'  + x  + '" y="'  + y  + '"/>';
 					strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
-					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst>' +
-									(slideObj.options.r ? 
-									'<a:gd name="adj" fmla="val ' + Math.round(slideObj.options.r * EMU * 100000 / Math.min(cx, cy)) + '" />' : 
-									'') +
-									'</a:avLst></a:prstGeom>';
+					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst>'
+						+ (slideObj.options.rectRadius ? '<a:gd name="adj" fmla="val '+ Math.round(slideObj.options.rectRadius * EMU * 100000 / Math.min(cx, cy)) +'" />' : '')
+						+ '</a:avLst></a:prstGeom>';
 
 					// Option: FILL
 					strSlideXml += ( slideObj.options.fill ? genXmlColorSelection(slideObj.options.fill) : '<a:noFill/>' );
@@ -2166,9 +2164,9 @@ var PptxGenJS = function(){
 					if ( slideObj.options.line ) {
 						strSlideXml += '<a:ln'+ ( slideObj.options.line_size ? ' w="'+ (slideObj.options.line_size*ONEPT) +'"' : '') +'>';
 						strSlideXml += genXmlColorSelection( slideObj.options.line );
+						if ( slideObj.options.line_dash ) strSlideXml += '<a:prstDash val="' + slideObj.options.line_dash + '"/>';
 						if ( slideObj.options.line_head ) strSlideXml += '<a:headEnd type="' + slideObj.options.line_head + '"/>';
 						if ( slideObj.options.line_tail ) strSlideXml += '<a:tailEnd type="' + slideObj.options.line_tail + '"/>';
-						if ( slideObj.options.dash ) strSlideXml += '<a:prstDash val="' + slideObj.options.dash + '"/>';
 						strSlideXml += '</a:ln>';
 					}
 
@@ -3081,6 +3079,7 @@ var PptxGenJS = function(){
 			options.h         = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
 			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
 			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
+			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
 
 			// LAST: Return
 			return this;

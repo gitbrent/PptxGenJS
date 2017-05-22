@@ -415,7 +415,6 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `y`          | number  | inches  | `1.0`     | vertical location   | 0-n OR 'n%'. |
 | `w`          | number  | inches  |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`          | number  | inches  |           | height              | 0-n OR 'n%'. |
-| `r`          | number  | inches  |           | rounding radius     | rounding radius for ROUNDED_RECTANGLE text shapes |
 | `align`      | string  |         | `left`    | alignment           | `left` or `center` or `right` |
 | `autoFit`    | boolean |         | `false`   | "Fit to Shape"      | `true` or `false` |
 | `bold`       | boolean |         | `false`   | bold text           | `true` or `false` |
@@ -423,7 +422,6 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `bullet`     | boolean |         | `false`   | bulleted text       | `true` or `false` |
 | `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
 | `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
-| `dash`       | string  |         |           | outline dashes      | `solid`, `sysDot`, `sysDash`, `dash`, `dashDot`, `lgDash`, `lgDashDot`, or `lgDashDotDot` |
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
@@ -432,6 +430,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
+| `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
 | `shadow`     | object  |         |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
 | `underline`  | boolean |         | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |         |           | vertical alignment  | `top` or `middle` or `bottom` |
@@ -442,8 +441,8 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
 | `angle`      | number  | degrees |           | shadow angle        | 0-359. Ex: `{ angle:180 }`               |
 | `blur`       | number  | points  |           | blur size           | 1-256. Ex: `{ blur:3 }`                  |
-| `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
 | `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
 | `opacity`    | number  | percent |           | opacity             | 0-1. Ex: `opacity:0.75`                  |
 
 ### Text Examples
@@ -692,17 +691,17 @@ Check the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerP
 | `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
 | `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
-| `r`          | number  | inches |           | rounding radius     | rounding radius for ROUNDED_RECTANGLE shapes |
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
-| `dash`       | string  |         |           | outline dashes      | `solid`, `sysDot`, `sysDash`, `dash`, `dashDot`, `lgDash`, `lgDashDot`, or `lgDashDotDot` |
 | `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{color:'0088CC'}` |
 | `fill`       | object |   |   | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
 | `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
 | `flipV`      | boolean |        |           | flip Vertical       | `true` or `false` |
 | `line`       | string  |        |           | border line color   | hex color code. Ex: `{line:'0088CC'}` |
+| `line_dash`  | string  |       | `solid` | border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
 | `line_head`  | string  |        |           | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
 | `line_size`  | number  | points |           | border line size    | 1-256. Ex: {line_size:4} |
 | `line_tail`  | string  |        |           | border line heading | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
+| `rectRadius` | number  | inches  |          | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
 | `rotate`     | integer | degrees |          | rotation degrees    | 0-360. Ex: `{rotate:180}` |
 
 ### Shape Examples
