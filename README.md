@@ -30,6 +30,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Presentation Properties](#presentation-properties)
     - [Presentation Layouts](#presentation-layouts)
     - [Presentation Layout Options](#presentation-layout-options)
+    - [Presentation Text Direction](#presentation-text-direction)
   - [Adding a Slide](#adding-a-slide)
     - [Slide Formatting](#slide-formatting)
     - [Slide Formatting Options](#slide-formatting-options)
@@ -178,6 +179,12 @@ Custom user defined Layout sizes are supported - just supply a `name` and the si
 ```javascript
 // Defines and sets this new layout for the Presentation
 pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
+```
+
+### Presentation Text Direction
+Right-to-Left (RTL) text is supported.  Simply set the RTL mode at the Presentation-level.
+```javascript
+pptx.setRTL(true);
 ```
 
 
