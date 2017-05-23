@@ -266,12 +266,12 @@ Saving multiple Presentations:
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
-var pptx = new PptxGenJS();
+var pptx = require("pptxgenjs");
 pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-1');
 
 // Create a new instance ("Reset")
-pptx = new PptxGenJS();
+pptx = require("pptxgenjs");
 pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-2');
 ```
