@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.5.0";
-	var APP_REL = "20170521";
+	var APP_REL = "20170522";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -1431,7 +1431,7 @@ var PptxGenJS = function(){
 		// STEP 2: Loop over each text object and create paragraph props, text run, etc.
 		arrTextObjects.forEach(function(textObj,idx){
 			// Clear/Increment loop vars
-			paragraphPropXml = '<a:pPr ';
+			paragraphPropXml = '<a:pPr '+ (textObj.options.rtlMode ? ' rtl="1" ' : '');
 			strXmlBullet = '';
 			textObj.options.lineIdx = idx;
 
