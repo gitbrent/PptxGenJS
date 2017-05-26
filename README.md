@@ -438,6 +438,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
 | `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
+| `rtlMode`    | boolean |         | `false`   | enable Right-to-Left mode | `true` or `false` |
 | `shadow`     | object  |         |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
 | `underline`  | boolean |         | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |         |           | vertical alignment  | `top` or `middle` or `bottom` |
