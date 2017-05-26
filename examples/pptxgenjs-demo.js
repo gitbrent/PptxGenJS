@@ -65,8 +65,8 @@ function runEveryTest() {
 function execGenSlidesFuncs(type) {
 	// STEP 1: Instantiate new PptxGenJS object
 	if ( NODEJS ) {
-		var pptx = require("pptxgenjs");
 		//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+		var pptx = require("pptxgenjs");
 	}
 	else {
 		var pptx = new PptxGenJS();
