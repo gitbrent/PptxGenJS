@@ -344,7 +344,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 ### Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
-| `barDir`               | string  |         | `col`     | bar direction              | (*Bar Chart*) `h` (horizontal) or `v` (vertical). Ex: `{barDir:'v'}` |
+| `barDir`               | string  |         | `col`     | bar direction              | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
 | `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-999. Ex: `{ barGapWidthPct:50 }` |
 | `barGrouping`          | string  |         |`clustered`| bar grouping               | (*Bar Chart*) `clustered` or `stacked` or `percentStacked`. |
 | `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
