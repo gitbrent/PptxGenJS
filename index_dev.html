@@ -352,6 +352,8 @@
 		  body { padding: 0; }
 		  .wrapper { width: 95%; margin: 20px auto; }
 		  .flatBtn { font-size: 14px !important; padding: 4px 12px; }
+		  #Usage .contExample { display:block; }
+		  #Usage .contExampleMobile { display:none; }
 		}
 		@media print, screen and (max-width:850px) {
 		  body { padding: 0; }
@@ -384,6 +386,10 @@
 		@media print, screen and (max-width:525px) {
 			header p.view { font-size: 0.75rem; }
 			.headerTab > div > div { font-size: 16px; }
+			#Usage .code { display:none; }
+			#Usage .contExample { display:none; }
+			#Usage .contExampleMobile { display:block; }
+			#topTools > div:last-child { display:none !important; }
 		}
 		@media print {
 		  header p.view a small:before { content: 'at http://github.com/'; }
@@ -426,7 +432,7 @@
 			</ul>
 		</header>
 
-		<div style="display:table; width:100%; background:#f1f1f1;">
+		<div id="topTools" style="display:table; width:100%; background:#f1f1f1;">
 			<div style="display:table-cell; width:50%; padding:10px; vertical-align:middle;">
 				<div id="google_translate_element" style="display:inline-block"></div><script type="text/javascript">
 				function googleTranslateElementInit() {
@@ -434,7 +440,7 @@
 				}
 				</script><script async type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 			</div>
-			<div style="display:table-cell; widtH:50%; padding:10px; vertical-align:middle; text-align:right;">
+			<div style="display:table-cell; width:50%; padding:10px; vertical-align:middle; text-align:right;">
 				<!-- AddToAny BEGIN -->
 				<div class="a2a_kit a2a_kit_size_32 a2a_default_style" style="display:inline-block">
 					<a class="a2a_dd" href="https://www.addtoany.com/share" onclick="ga('send','event','Link','click','Share-Any')"></a>
@@ -596,6 +602,9 @@ pptx.save('Demo-Simple');
 						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Simple')">
 					</div>
 				</div>
+				<div class="contExampleMobile">
+					<a href="images/demo-simple-mobile.png"><img src="images/demo-simple.png" alt="demo simple"></a>
+				</div>
 
 				<!-- ======================================================================================= -->
 		        <h2>Tables Example</h2>
@@ -652,6 +661,9 @@ pptx.save('Demo-Tables');
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Run Example Code"
 						 onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Table')">
 					</div>
+				</div>
+				<div class="contExampleMobile">
+					<a href="images/demo-table-mobile.png"><img src="images/demo-table.png" alt="demo table"></a>
 				</div>
 
 				<!-- ======================================================================================= -->
@@ -736,6 +748,9 @@ pptx.save('Demo-Chart');
 						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Charts')">
 					</div>
 				</div>
+				<div class="contExampleMobile">
+					<a href="images/demo-charts-mobile.png"><img src="images/demo-charts.png" alt="demo charts"></a>
+				</div>
 
 				<!-- ======================================================================================= -->
 		        <h2>Images Example</h2>
@@ -770,6 +785,9 @@ pptx.save('Demo-Images');
 						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Images')">
 					</div>
 				</div>
+				<div class="contExampleMobile">
+					<a href="images/demo-images-mobile.png"><img src="images/demo-images.png" alt="demo images"></a>
+				</div>
 
 				<!-- ======================================================================================= -->
 		        <h2>Media Example</h2>
@@ -802,6 +820,9 @@ pptx.save('Demo-Media');
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Run Example Code"
 						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Media')">
 					</div>
+				</div>
+				<div class="contExampleMobile">
+					<a href="images/demo-media-mobile.png"><img src="images/demo-media.png" alt="demo media"></a>
 				</div>
 
 				<!-- ======================================================================================= -->
@@ -849,6 +870,9 @@ pptx.save('Demo-Shapes');
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Run Example Code"
 						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Shapes')">
 					</div>
+				</div>
+				<div class="contExampleMobile">
+					<a href="images/demo-shapes-mobile.png"><img src="images/demo-shapes.png" alt="demo shapes"></a>
 				</div>
 
 				<!-- ======================================================================================= -->
@@ -910,6 +934,9 @@ pptx.save('Demo-Text');
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Run Example Code"
 						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Text')">
 					</div>
+				</div>
+				<div class="contExampleMobile">
+					<a href="images/demo-text-mobile.png"><img src="images/demo-text.png" alt="demo text"></a>
 				</div>
 		    </article>
 
