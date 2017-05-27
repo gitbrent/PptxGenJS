@@ -6,8 +6,8 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="author" content="https://github.com/gitbrent/">
-	<meta name="keywords" content="javascript, powerpoint, pptx, javascript-powerpoint, js-powerpoint, js-create-powerpoint">
-	<meta name="description" content="JavaScript JS PowerPoint Library Generate PPT">
+	<meta name="keywords" content="javascript, powerpoint, pptx, javascript-powerpoint, js-powerpoint, js-create-powerpoint, js-powerpoint-charts">
+	<meta name="description" content="JavaScript JS PowerPoint Library that Generates PowerPoint PPTX Presentations including Charts">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
 	<style>
@@ -468,7 +468,7 @@
 							<path d="m32 0c17.7 0 32 14.3 32 32s-14.3 32-32 32-32-14.3-32-32 14.3-32 32-32z" fill="#FFD833"/><path d="m49 27.8c0-4.8-3.9-8.8-8.8-8.8-3.7 0-6.9 2.3-8.2 5.5-1.3-3.2-4.5-5.5-8.2-5.5-4.9 0-8.8 3.9-8.8 8.8v0.6c0 7.3 11.9 10.6 17 20.6 5-9.9 17-13.2 17-20.6v-0.6z" fill="#F94646"/><path d="m19 30c-0.6 0-1-0.4-1-1 0-3.9 3.1-7 7-7 0.6 0 1 0.4 1 1s-0.4 1-1 1c-2.8 0-5 2.2-5 5 0 0.6-0.4 1-1 1z" fill="#fff"/>
 							</svg>
 						</div>
-						<div>Full Featured: Slides can include Tables, Shapes, Images, Text and Media - plus use Master Slides</div>
+						<div>Full Featured: Charts, Images, Media, Shapes, Tables and Text (plus Master Slides)</div>
 					</div>
 					<div>
 						<div>
@@ -488,9 +488,9 @@
 					</div>
 				</div>
 
-				<h3>Supported write/output formats:</h3>
+				<h3>Output Formats:</h3>
 				<ul>
-					<li>PowerPoint 2007+ (.pptx), Open Office XML format, and Apple Keynote</li>
+					<li>PowerPoint 2007+ (.pptx), PowerPoint Online, Open Office XML (ooxml), and Apple Keynote (.key)</li>
 				</ul>
 
 				<h3>Download:</h3>
@@ -576,7 +576,10 @@ var pptx = require('pptxgenjs');
 <pre id="demo-simple" class="prettyprint">
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-slide.addText('Hello world!', { x:1.0, y:1.0, font_size:42, color:'00FF00' });
+slide.addText(
+  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
+  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:24, color:'0088CC', fill:'F1F1F1' }
+);
 pptx.save('Demo-Simple');
 </pre>
 		        </div>
@@ -646,6 +649,89 @@ pptx.save('Demo-Tables');
 						<h3>Demo</h3>
 						<input type="button" class="flatBtn flatBtn-blueMd" value="Run Example Code"
 						 onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Table')">
+					</div>
+				</div>
+
+				<!-- ======================================================================================= -->
+		        <h2>Charts Example</h2>
+		        <div class="code">
+<pre id="demo-charts" class="prettyprint">
+var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+var dataChartPieStat = [{
+    name: 'Project Status', labels: ['Red', 'Amber', 'Green', 'Unknown'], values: [8, 20, 30, 5]
+}];
+var dataChartPieLocs = [{ name: 'Location',
+    labels: ['CN', 'DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+    values: [  69,   35,   40,   85,   38,   99,  101]
+}];
+var dataChartBar = [
+    { name: 'Region 1', labels: ['May', 'June', 'July', 'August'], values: [26.0, 53.0, 99, 75.00] },
+    { name: 'Region 2', labels: ['May', 'June', 'July', 'August'], values: [43.5, 70.3, 90, 80.05] }
+];
+var dataChartLine = [
+    {
+        name: 'Actual Sales', labels: MONS,
+        values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121]
+    },
+    {
+        name: 'Proj Sales', labels: MONS,
+        values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
+    }
+];
+
+// Create a new Presentation
+var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
+var slide = pptx.addNewSlide();
+
+slide.addText('Charts Example', { x:0.5, y:0.15, font_size:18, font_face:'Arial', color:'0088CC' });
+
+// Chart Type: PIE
+slide.addText( '.', {x:0.5, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
+
+slide.addText( '.', {x:0.5, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+slide.addChart(
+    pptx.charts.PIE, dataChartPieStat,
+    {
+        x:0.5, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'2', color:'F1F1F1'},
+        chartColors:['FC0000','FFCC00','009900','6600CC'], dataLabelColor:'FFFFFF'
+    }
+);
+
+// Chart Type: BAR
+slide.addChart(
+    pptx.charts.BAR, dataChartBar,
+    { x:4.3, y:0.5, w:4.0, h:3.2, barDir:'bar', catAxisLabelColor:'0000CC', catAxisLabelFontFace:'Courier' }
+);
+slide.addChart(
+    pptx.charts.BAR, dataChartBar,
+    { x:8.6, y:0.5, w:4.0, h:3.2, barDir:'col', chartColors:['5DA5DA','FAA43A'], barGapWidthPct:50 }
+);
+
+// Chart Type: LINE
+slide.addChart(
+    pptx.charts.LINE, dataChartLine,
+    { x:4.3, y:4.0, w:4.0, h:3.2, chartColors:['0088CC','99FFCC'], chartColorsOpacity:25,
+    dataBorder: {pt:2, color:'FFFFFF'}, fill:'D1E1F1' }
+);
+slide.addChart(
+    pptx.charts.AREA, dataChartLine,
+    { x:8.6, y:4.0, w:4.0, h:3.2, fill:'D1E1F1', catAxisOrientation:'maxMin' }
+);
+
+pptx.save('Demo-Chart');
+</pre>
+</div>
+				<div class="contExample">
+					<div>
+						<h3>Output</h3>
+						<a href="images/demo-charts.png"><img src="images/demo-charts.png" alt="demo charts"></a>
+					</div>
+					<div>
+						<h3>Demo</h3>
+						<input type="button" class="flatBtn flatBtn-blueMd" value="Run Example Code"
+						onclick="eval($(this).parent().parent().prev('div.code').text()); ga('send','event','Link','click','Demo-Charts')">
 					</div>
 				</div>
 
