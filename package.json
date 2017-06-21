@@ -1,47 +1,54 @@
 {
-    "name": "pptxgenjs",
-	"version": "1.5.0",
-	"author": {
-		"name": "Brent Ely",
-		"url": "https://github.com/gitbrent/"
-	},
-    "description": "JavaScript framework that creates PowerPoint (pptx) presentations",
-	"homepage": "https://gitbrent.github.io/PptxGenJS/",
-	"license": "MIT",
-    "dependencies": {
-		"jquery-node": ">=0.2.0",
-		"jszip": ">=3.1.2",
-		"image-size": ">=0.5.1"
-    },
-    "main": "dist/pptxgen.js",
-    "directories": {
-        "example": "examples",
-		"libs": "dist"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/gitbrent/PptxGenJS.git"
-    },
-    "keywords": [
-		"javascript",
-		"javascript-create-powerpoint",
-		"javascript-create-pptx",
-		"javascript-pptx",
-		"javascript-powerpoint",
-		"js-create-powerpoint",
-		"js-generate-powerpoint",
-		"js-produce-powerpoint",
-		"js-powerpoint",
-		"powerpoint",
-		"powerpoint-presentation",
-		"ppt",
-		"pptx",
-		"presentations"
-    ],
-    "bugs": {
-        "url": "https://github.com/gitbrent/PptxGenJS/issues"
-    },
-	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1"
-	}
+  "name": "pptxgenjs",
+  "version": "1.5.0",
+  "author": {
+    "name": "Brent Ely",
+    "url": "https://github.com/gitbrent/"
+  },
+  "description": "JavaScript framework that creates PowerPoint (pptx) presentations",
+  "homepage": "https://gitbrent.github.io/PptxGenJS/",
+  "license": "MIT",
+  "dependencies": {
+    "jquery-node": ">=0.2.0",
+    "jszip": ">=3.1.2",
+    "image-size": ">=0.5.1"
+  },
+  "main": "dist/pptxgen.js",
+  "directories": {
+    "example": "examples",
+    "libs": "dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gitbrent/PptxGenJS.git"
+  },
+  "keywords": [
+    "javascript",
+    "javascript-create-powerpoint",
+    "javascript-create-pptx",
+    "javascript-pptx",
+    "javascript-powerpoint",
+    "js-create-powerpoint",
+    "js-generate-powerpoint",
+    "js-produce-powerpoint",
+    "js-powerpoint",
+    "powerpoint",
+    "powerpoint-presentation",
+    "ppt",
+    "pptx",
+    "presentations"
+  ],
+  "bugs": {
+    "url": "https://github.com/gitbrent/PptxGenJS/issues"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.1",
+    "gulp-ignore": "^2.0.2",
+    "gulp-sourcemaps": "^2.6.0",
+    "gulp-uglify": "^3.0.0"
+  }
 }
