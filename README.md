@@ -102,12 +102,21 @@ Use JavaScript to Create a PowerPoint presentation with your web browser right n
 
 # Installation
 ## Client-Side
-PptxGenJS requires only 2 additional JavaScript libraries:
-```javascript
-<script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
-<script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
+Download the code manually or use bower:
+```jasvascript
+bower install pptxgen
 ```
+Include the dependencies independently:
+```html
+<script src="PptxGenJS/libs/jquery.min.js"></script>
+<script src="PptxGenJS/libs/jszip.min.js"></script>
+<script src="PptxGenJS/dist/pptxgen.js"></script>
+```
+Or use the bundled version:
+```html
+<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
+```
+
 ## Node.js
 [PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
