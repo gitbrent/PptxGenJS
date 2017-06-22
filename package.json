@@ -8,12 +8,19 @@
 	"description": "JavaScript framework that creates PowerPoint (pptx) presentations",
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
+	"main": "dist/pptxgen.js",
 	"dependencies": {
 		"jquery-node": ">=0.2.0",
 		"jszip": ">=3.1.2",
 		"image-size": ">=0.5.1"
 	},
-	"main": "dist/pptxgen.js",
+	"devDependencies": {
+		"gulp": "^3.9.1",
+		"gulp-concat": "^2.6.1",
+		"gulp-ignore": "^2.0.2",
+		"gulp-sourcemaps": "^2.6.0",
+		"gulp-uglify": "^3.0.0"
+	},
 	"directories": {
 		"example": "examples",
 		"libs": "dist"
