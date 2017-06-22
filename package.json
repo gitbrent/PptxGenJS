@@ -5,42 +5,44 @@
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
 	},
-    "description": "JavaScript framework that creates PowerPoint (pptx) presentations",
+	"description": "JavaScript framework that creates PowerPoint (pptx) presentations",
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
-    "dependencies": {
+	"dependencies": {
 		"jquery-node": ">=0.2.0",
 		"jszip": ">=3.1.2",
 		"image-size": ">=0.5.1"
-    },
-    "main": "dist/pptxgen.js",
-    "directories": {
-        "example": "examples",
+	},
+	"main": "dist/pptxgen.js",
+	"directories": {
+		"example": "examples",
 		"libs": "dist"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/gitbrent/PptxGenJS.git"
-    },
-    "keywords": [
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gitbrent/PptxGenJS.git"
+	},
+	"keywords": [
 		"javascript",
 		"javascript-create-powerpoint",
 		"javascript-create-pptx",
 		"javascript-pptx",
 		"javascript-powerpoint",
+		"javascript-powerpoint-charts",
 		"js-create-powerpoint",
 		"js-generate-powerpoint",
 		"js-produce-powerpoint",
 		"js-powerpoint",
 		"powerpoint",
+		"powerpoint-charts",
 		"powerpoint-presentation",
 		"ppt",
 		"pptx",
 		"presentations"
-    ],
-    "bugs": {
-        "url": "https://github.com/gitbrent/PptxGenJS/issues"
-    },
+	],
+	"bugs": {
+		"url": "https://github.com/gitbrent/PptxGenJS/issues"
+	},
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1"
 	}
