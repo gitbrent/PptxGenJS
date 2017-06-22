@@ -24,6 +24,9 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
+    - [Include Local Scripts](#include-local-scripts)
+    - [Include Bundled Script](#include-bundled-script)
+    - [Install With Bower](#install-with-bower)
   - [Node.js](#nodejs)
 - [Presentations: Usage and Options](#presentations-usage-and-options)
   - [Creating a Presentation](#creating-a-presentation)
@@ -102,12 +105,23 @@ Use JavaScript to Create a PowerPoint presentation with your web browser right n
 
 # Installation
 ## Client-Side
-PptxGenJS requires only 2 additional JavaScript libraries:
+### Include Local Scripts
 ```javascript
 <script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
 <script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
 ```
+
+### Include Bundled Script
+```javascript
+<script lang="javascript" src="PptxGenJS/dist/pptxgen.bundle.js"></script>
+```
+
+### Install With Bower
+```javascript
+bower install pptxgen
+```
+
 ## Node.js
 [PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
