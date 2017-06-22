@@ -1,5 +1,15 @@
 # Change Log
 
+## [v1.6.0](https://github.com/gitbrent/pptxgenjs/tree/v1.6.0) (2017-07-xx)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.5.0...v1.6.0)
+
+**Fixed Bugs:**
+**Implemented Enhancements:**
+- Added bowser support, gulp build of bundle [\#107](https://github.com/gitbrent/PptxGenJS/pull/107) ([santi-git](https://github.com/santi-git))
+
+
+
+
 ## [v1.5.0](https://github.com/gitbrent/pptxgenjs/tree/v1.5.0) (2017-05-26)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.4.0...v1.5.0)
 
