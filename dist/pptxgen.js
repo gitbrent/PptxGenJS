@@ -3186,7 +3186,7 @@ var PptxGenJS = function(){
 			// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
 			arrRows.forEach(function(row,rIdx){
 				row.forEach(function(cell,cIdx){
-					if ( Array.isArray(cell.text) ) opt.autoPage = false;
+					if ( cell && cell.text && Array.isArray(cell.text) ) opt.autoPage = false;
 				});
 			});
 
