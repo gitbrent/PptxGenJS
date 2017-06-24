@@ -1110,41 +1110,71 @@ function genSlides_Text(pptx) {
 		slide.addText("Word-Level Formatting:", { x:0.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'1st\nline', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+				{ text:'1st\nline',options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
 				{ text:'2nd line', options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
-				{ text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
+				{ text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } },
+				{ text:'4th line', options:{ font_size:38, font_face:'Arial',       color:'FFFF00', align:'c' } },
+				{ text:'5th\nline',options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r' } }
 			],
-			{ x:0.5, y:0.85, w:6, h:2.25, margin:0.1, fill:'232323' }
-		);
-
-		// 2: Line-Break Test
-		slide.addText("Line-Breaks:", { x:0.5, y:3.35, w:'40%', h:0.38, color:'0088CC' });
-		slide.addText(
-			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
-			{ x:0.5, y:3.75, w:6, h:1.75, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
+			{ x:0.5, y:0.85, w:6, h:4, margin:0.1, fill:'232323' }
 		);
 
 		// 3: Hyperlinks
-		slide.addText("Hyperlinks:", { x:0.5, y:5.9, w:1.75, h:0.35, color:'0088CC' });
+		slide.addText("Hyperlinks:", { x:0.5, y:5.0, w:1.75, h:0.35, color:'0088CC' });
 		slide.addText(
 			[
 				{ text:'Visit the ' },
 				{ text:'PptxGenJS Project', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } },
 				{ text:' or ' },
-				{ text:'(no tooltip)', options:{hyperlink:{url:'https://github.com/gitbrent'}} }
+				{ text:'(link without tooltip)', options:{hyperlink:{url:'https://github.com/gitbrent'}} }
 			],
-			{ x:2.25, y:5.9, w:4.25, h:0.55, margin:0.1, fill:'F1F1F1', font_size:14 }
+			{ x:0.5, y:5.35, w:6.0, h:0.6, margin:0.1, fill:'F1F1F1', font_size:14 }
 		);
 
 		// 4: Text Effects: Shadow
 		var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
-		slide.addText("Text Shadow:", { x:0.5, y:6.74, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Text Shadow:", { x:0.5, y:6.2, w:'50%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
-			{ x:2.1, y:6.65, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
+			{ x:0.5, y:6.5, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
 		);
 
 		// RIGHT COLUMN ------------------------------------------------------------
+
+		// 2: Line-Break Test
+		slide.addText("Line-Breaks:", { x:7.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText(
+			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line\n\n\n4th line\n5th line\n\nLast Line!',
+			{ x:7.5, y:0.85, w:5.25, h:4.0, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
+		);
+
+
+	}
+
+	// SLIDE 2: Bullets
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Text Examples 2: Bullets', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+
+		// LEFT COLUMN ------------------------------------------------------------
+
+		// 1: Bullets with indent levels
+		slide.addText("Bullet Indent-Levels:", { x:0.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText(
+			[
+				{ text:'Bullet one',     options:{ font_size:24, bullet:true, color:'99ABCC'                } },
+				{ text:'Indent-Level 1', options:{ font_size:32, bullet:true, color:'FFFF00', indentLevel:1 } },
+				{ text:'Indent-Level 2', options:{ font_size:42, bullet:true, color:'0088CC', indentLevel:2 } },
+				{ text:'Indent-Level 3', options:{ font_size:48, bullet:true, color:'CC88BB', indentLevel:3 } },
+				{ text:'Indent-Level 3', options:{ font_size:48, bullet:true, color:'CC88BB', indentLevel:3 } },
+				{ text:'Indent-Level 2', options:{ font_size:42, bullet:true, color:'0088CC', indentLevel:2 } },
+				{ text:'Indent-Level 2', options:{ font_size:42, bullet:true, color:'0088CC', indentLevel:2 } },
+				{ text:'Indent-Level 1', options:{ font_size:32, bullet:true, color:'FFFF00', indentLevel:1 } },
+				{ text:'Bullet no indent', options:{ font_size:24, bullet:true, color:'99ABCC'                } },
+				{ text:'Bullet Last',    options:{ font_size:24, bullet:true, color:'99ABCC'                } }
+			],
+			{ x:0.5, y:1.0, w:6.25, h:6.0, fill:'373737' }
+		);
 
 		// 4: Regular bullets
 		slide.addText("Bullets:", { x:7.5, y:0.65, w:'40%', h:0.38, color:'0088CC' });
@@ -1152,21 +1182,21 @@ function genSlides_Text(pptx) {
 		slide.addText('String (number above)', { x:8.0, y:1.35, w:'30%', h:0.5, color:'00AA00', bullet:true });
 
 		// 5: Bullets: Text With Line-Breaks
-		slide.addText("Bullets with line-breaks:", { x:7.5, y:2.0, w:'40%', h:0.38, color:'0088CC' });
-		slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.4, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:{type:'number'} });
+		slide.addText("Bullets with line-breaks:", { x:7.5, y:2.1, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.6, w:'30%', h:1.0, color:'393939', font_size:16, fill:'F2F2F2', bullet:{type:'number'} });
 
 		// 6: Bullets: With group of {text}
-		slide.addText("Bullet with {text} objects:", { x:7.5, y:3.6, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Bullet with {text} objects:", { x:7.5, y:4.0, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
 				{ text: 'big red words... ', options:{font_size:24, color:'FF0000'} },
 				{ text: 'some green words.', options:{font_size:16, color:'00FF00'} }
 			],
-			{ x:8.0, y:4.0, w:5, h:0.5, margin:0.1, font_face:'Arial', bullet:{code:'25BA'} }
+			{ x:8.0, y:4.4, w:5.0, h:0.5, margin:0.1, font_face:'Arial', bullet:{code:'25BA'} }
 		);
 
 		// 7: Bullets: Within a {text} object
-		slide.addText("Bullet within {text} objects:", { x:7.5, y:4.8, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Bullet within {text} objects:", { x:7.5, y:5.3, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
 				{ text:'I am a text object with bullets..', options:{bullet:{code:'2605'}, color:'CC0000'} },
@@ -1174,11 +1204,11 @@ function genSlides_Text(pptx) {
 				{ text:'Default bullet text.. '           , options:{bullet:true, color:'696969'} },
 				{ text:'Final text object w/ bullet:true.', options:{bullet:true, color:'0000AB'} }
 			],
-			{ x:8.0, y:5.15, w:'35%', h:1.4, color:'ABABAB', margin:1 }
+			{ x:8.0, y:5.65, w:'35%', h:1.4, color:'ABABAB', margin:1 }
 		);
 	}
 
-	// SLIDE 2: Misc mess
+	// SLIDE 3: Text alignment, percent x/y, etc.
 	{
 		var slide = pptx.addNewSlide();
 		// Slide colors: bkgd/fore

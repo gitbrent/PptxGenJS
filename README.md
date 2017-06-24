@@ -447,6 +447,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
 | `hyperlink`  | string  |         |           | add hyperlink       | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
+| `indentLevel` | number  | level  | `0`       | bullet indent level | 1-32. Ex: `{ indentLevel:1 }` |
 | `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
 | `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |

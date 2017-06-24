@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.5.0";
-	var APP_REL = "20170522";
+	var APP_VER = "1.6.0";
+	var APP_REL = "20170623";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -1133,14 +1133,20 @@ var PptxGenJS = function(){
 					strXml += '  </c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
+
+					// TESTING: 20170527 - omitting this 'strXml' works fine in Keynote/PPT-Online!!
+					// TODO: gridLine options! (colors/style(solid/dashed) -OR- NONE (eg:omit this section)
 					strXml += ' <c:majorGridlines>\
 								<c:spPr>\
-								  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>\
+								  <a:ln w="12700" cap="flat">\
+								    <a:solidFill><a:srgbClr val="888888"/></a:solidFill>\
+								    <a:prstDash val="solid"/><a:round/>\
+								  </a:ln>\
 								</c:spPr>\
-								</c:majorGridlines>\
-								<c:numFmt formatCode="General" sourceLinked="0"/>\
-								<c:majorTickMark val="out"/>\
-								<c:minorTickMark val="none"/>';
+								</c:majorGridlines>';
+					strXml += ' <c:numFmt formatCode="General" sourceLinked="0"/>';
+					strXml += ' <c:majorTickMark val="out"/>';
+					strXml += ' <c:minorTickMark val="none"/>';
 					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 					strXml += ' <c:spPr>';
 					strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -1384,6 +1390,7 @@ var PptxGenJS = function(){
 		var tagClose = ( slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>' );
 		var strSlideXml = tagStart;
 		var strXmlBullet = '';
+		var bulletLvl0Margin = 342900;
 		var paragraphPropXml = '<a:pPr ';
 
 		// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
@@ -1456,7 +1463,11 @@ var PptxGenJS = function(){
 				}
 
 				// OPTION: indent
-				if ( textObj.options.indentLevel > 0 ) paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
+				if ( textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0 ) {
+					paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
+				}
+
+				// Set core XML for use below
 				paraPropXmlCore = paragraphPropXml;
 
 				// OPTION: bullet
@@ -1465,7 +1476,7 @@ var PptxGenJS = function(){
 				if ( typeof textObj.options.bullet === 'object' ) {
 					if ( textObj.options.bullet.type ) {
 						if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
-							paragraphPropXml += ' marL="342900" indent="-342900"';
+							paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
 							strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
 						}
 					}
@@ -1478,13 +1489,13 @@ var PptxGenJS = function(){
 							bulletCode = BULLET_TYPES['DEFAULT'];
 						}
 
-						paragraphPropXml += ' marL="342900" indent="-342900"';
+						paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
 						strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
 					}
 				}
 				// DEPRECATED: old bool value (FIXME:Drop in 2.0)
 				else if ( textObj.options.bullet == true ) {
-					paragraphPropXml += ' marL="228600" indent="-228600"';
+					paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
 					strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
 				}
 
@@ -2857,6 +2868,7 @@ var PptxGenJS = function(){
 
 		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
 		// FUTURE: slideObj.addImage = function(opt){
+		// NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
 		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
 			var intRels = 1;
 

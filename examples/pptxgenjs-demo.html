@@ -255,7 +255,13 @@
 			}
 
 			// STEP 1: Check
-			if ( window.location.href.indexOf('file:') == 0 ) { $('.jsLocalFile').show(); }
+			if ( window.location.href.indexOf('file:') == 0 ) {
+				$('.jsLocalFile').show();
+				if ( window.location.href.indexOf('brentely') > 0 ) {
+					$('#tab1sec1').click();
+					$('#tab1sec2').click();
+				}
+			}
 
 			// STEP 2: Build UI elements
 			buildDataTable();
@@ -298,12 +304,15 @@
 				+ "pptx.setLayout('LAYOUT_WIDE');\n"
 				+ "var slide = pptx.addNewSlide();\n"
 				+ "\n"
-				+ "// Image with hyperlink\n"
-				+ "slide.addImage({\n"
-				+ "  x:3.5, y:0.8, w:1.78, h:1.78,\n"
-				+ "  data:GIF_ANIM_FIRE,\n"
-				+ "  hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' }\n"
-				+ "});\n"
+				+ "// Bullets with indent levels\n"
+				+ "slide.addText(\n"
+				+ "  [\n"
+				+ "    { text:'1st line', options:{ font_size:24, bullet:true, color:'99ABCC' } },\n"
+				+ "    { text:'2nd line', options:{ font_size:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
+				+ "    { text:'3rd line', options:{ font_size:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
+				+ "  ],\n"
+				+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
+				+ ");\n"
 				+ "\n"
 				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
 				+ "</pre>\n"
@@ -340,7 +349,7 @@
 					<a href="https://github.com/gitbrent/PptxGenJS#presentations-usage-and-options" target="_blank">View Documentation and Example Code</a>
 				</div>
 
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+				<div id="tab1sec1" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Basic Presentation: Slide
 				</div>
@@ -351,7 +360,7 @@
 					</div>
 				</div>
 
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+				<div id="tab1sec2" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow"></div>Code Sandbox
 				</div>
