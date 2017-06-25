@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.6.0";
-	var APP_REL = "20170623";
+	var APP_REL = "20170625";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -2617,8 +2617,8 @@ var PptxGenJS = function(){
 	this.setLayout = function setLayout(inLayout) {
 		// Allow custom slide size (inches) [ISSUE #29]
 		if ( typeof inLayout === 'object' && inLayout.width && inLayout.height ) {
-			LAYOUTS['LAYOUT_USER'].width  = Number(inLayout.width ) * EMU;
-			LAYOUTS['LAYOUT_USER'].height = Number(inLayout.height) * EMU;
+			LAYOUTS['LAYOUT_USER'].width  = Math.round(Number(inLayout.width ) * EMU);
+			LAYOUTS['LAYOUT_USER'].height = Math.round(Number(inLayout.height) * EMU);
 
 			gObjPptx.pptLayout = LAYOUTS['LAYOUT_USER'];
 		}
