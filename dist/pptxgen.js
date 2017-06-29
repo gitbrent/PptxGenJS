@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.6.0";
-	var APP_REL = "20170625";
+	var APP_VER = "1.6.0-beta";
+	var APP_REL = "20170628";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -625,7 +625,7 @@ var PptxGenJS = function(){
 		arrTextObjects.forEach(function(text,idx){
 			// `text` can be an array of other `text` objects (table cell word-level formatting), so use recursion
 			if ( Array.isArray(text) ) createHyperlinkRels(text, slideRels);
-			else if ( typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId ) {
+			else if ( text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId ) {
 				if ( typeof text.options.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
 				else if ( !text.options.hyperlink.url || typeof text.options.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
 				else {
@@ -720,6 +720,7 @@ var PptxGenJS = function(){
 		// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 		// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 		inArrRows[0].forEach(function(cell,idx){
+			if (!cell) cell = {};
 			var cellOpts = cell.options || cell.opts || null; // DEPRECATED (`opts`)
 			numCols += ( cellOpts && cellOpts.colspan ? cellOpts.colspan : 1 );
 		});
@@ -771,6 +772,9 @@ var PptxGenJS = function(){
 
 			// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
 			row.forEach(function(cell,iCell){
+				// FIRST: REALITY-CHECK:
+				if (!cell) cell = {};
+
 				// DESIGN: Cells are henceforth {objects} with `text` and `opts`
 				var lines = [];
 
@@ -1880,8 +1884,8 @@ var PptxGenJS = function(){
 
 		// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
 		$.each(inSlide.data, function(idx,slideObj){
-			var x = 0, y = 0, cx = (EMU*10), cy = 0;
-			var locationAttr = '', shapeType = null;
+			var x = 0, y = 0, cx = getSmartParseNumber('75%','X'), cy = 0;
+			var locationAttr = "", shapeType = null;
 
 			// A: Set option vars
 			slideObj.options = slideObj.options || {};
@@ -2341,7 +2345,7 @@ var PptxGenJS = function(){
 
 		// STEP 6: Close spTree and finalize slide XML
 		strSlideXml += '</p:spTree>';
-		/* FIXME: Remove this in 1.6.0
+		/* FIXME: Remove this in 2.0.0 (commented for 1.6.0)
 		strSlideXml += '<p:extLst>';
 		strSlideXml += ' <p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">';
 		strSlideXml += '  <p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1544976994"/>';
