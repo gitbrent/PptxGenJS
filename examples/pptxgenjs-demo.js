@@ -1144,11 +1144,23 @@ function genSlides_Text(pptx) {
 		// 2: Line-Break Test
 		slide.addText("Line-Breaks:", { x:7.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
-			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line\n\n\n4th line\n5th line\n\nLast Line!',
-			{ x:7.5, y:0.85, w:5.25, h:4.0, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
+			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
+			{ x:7.5, y:0.85, w:5.25, h:1.6, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
 		);
 
+		slide.addText("Line-Spacing (text):", { x:7.5, y:2.6, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText(
+			'1st Line\n2nd Line (40pt)',
+			{ x:7.5, y:2.95, w:5.25, h:1.25, valign:'m', align:'c', fill:'f1f1f1', color:'363636', lineSpacing:40 }
+		);
 
+		slide.addText("Line-Spacing (bullets):", { x:7.5, y:4.45, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText(
+			[
+		      { text:'Line Spacing\n35pt', options:{ font_size:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
+		    ],
+			{ x:7.5, y:4.85, w:5.25, h:1.15, margin:0.1, fill:'f1f1f1' }
+		);
 	}
 
 	// SLIDE 2: Bullets

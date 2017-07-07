@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.6.0-beta";
-	var APP_REL = "20170628";
+	var APP_REL = "20170706";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -1393,7 +1393,7 @@ var PptxGenJS = function(){
 		var tagStart = ( slideObj.options.isTableCell ? '<a:txBody>'  : '<p:txBody>' );
 		var tagClose = ( slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>' );
 		var strSlideXml = tagStart;
-		var strXmlBullet = '';
+		var strXmlBullet = '', strXmlLnSpc = '';
 		var bulletLvl0Margin = 342900;
 		var paragraphPropXml = '<a:pPr ';
 
@@ -1466,6 +1466,10 @@ var PptxGenJS = function(){
 					}
 				}
 
+				if ( textObj.options.lineSpacing ) {
+					strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>';
+				}
+
 				// OPTION: indent
 				if ( textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0 ) {
 					paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
@@ -1504,7 +1508,8 @@ var PptxGenJS = function(){
 				}
 
 				// Close Paragraph-Properties --------------------
-				paragraphPropXml += '>'+ strXmlBullet +'</a:pPr>';
+				// IMPORTANT: strXmlLnSpc must precede strXmlBullet for bullet lineSpacing to work (PPT-Online)
+				paragraphPropXml += '>'+ strXmlLnSpc + strXmlBullet +'</a:pPr>';
 			}
 
 			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
@@ -3289,6 +3294,8 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
 			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
+			gObjPptx.slides[slideNum].data[slideObjNum].options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
+
 			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
 				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
 				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
