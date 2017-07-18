@@ -61,7 +61,7 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.6.0-beta";
+	var APP_VER = "1.6.0";
 	var APP_REL = "20170717";
 	//
 	var MASTER_OBJECTS = {
