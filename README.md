@@ -284,7 +284,7 @@ pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); }
 pptx.save( 'Node_Demo', saveCallback );
 // D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
 // Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.
-pptx.save( 'http', steamCallback );
+pptx.save( 'http', streamCallback );
 ```
 
 Saving multiple Presentations:  

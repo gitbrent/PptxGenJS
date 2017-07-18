@@ -42,7 +42,7 @@ function saveCallback(filename) {
 }
 
 // EX: Callback that receives the PPT binary data - use this to stream file
-function steamCallback(data) {
+function streamCallback(data) {
 	var strFilename = "Node-Presenation-Streamed.pptx";
 
 	app.get('/', function(req, res) {
@@ -74,7 +74,7 @@ runEveryTest();
 pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 // D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
-//pptx.save( 'https://github.com/gitbrent/PptxGenJS/', steamCallback );
+//pptx.save( 'https://github.com/gitbrent/PptxGenJS/', streamCallback );
 
 // **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
 // Create a new variable or reset `pptx` for an empty Presenation
