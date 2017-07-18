@@ -1,5 +1,14 @@
 # Change Log
 
+## [v1.7.0](https://github.com/gitbrent/pptxgenjs/tree/v1.7.0) (2017-09-xx)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.6.0...v1.7.0)
+
+**Fixed Bugs:**
+
+**Implemented Enhancements:**
+
+
+
 ## [v1.6.0](https://github.com/gitbrent/pptxgenjs/tree/v1.6.0) (2017-07-17)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.5.0...v1.6.0)
 
