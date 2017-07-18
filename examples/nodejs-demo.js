@@ -1,16 +1,20 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Feb 27, 2017
+ * DATE: Jul 17, 2017
  * DESC: Demonstrate PptxGenJS on Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  * EXEC: `node nodejs-demo.js`
  */
 
 // ============================================================================
+const express = require('express'); // Not core - Only required for streaming
+const app = express(); // Not core - Only required for streaming
+
 var GIF_ANIM_FIRE = "";
 var AUDIO_MP3 = "";
 var VIDEO_MP4 = "";
+var gConsoleLog = true;
 
 function getTimestamp() {
 	var dateNow = new Date();
@@ -19,7 +23,7 @@ function getTimestamp() {
 }
 // ============================================================================
 
-console.log(`
+if (gConsoleLog) console.log(`
 -------------
 STARTING TEST
 -------------`);
@@ -28,12 +32,29 @@ STARTING TEST
 //var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
 var pptx = require("pptxgenjs");
 var runEveryTest = require("../examples/pptxgenjs-demo.js");
-console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
+if (gConsoleLog) console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
 // ============================================================================
 
+// EX: Regular callback - will be sent the export filename once the file has been written to fs
 function saveCallback(filename) {
-	console.log('Good News Everyone!  File created: '+ filename);
+	if (gConsoleLog) console.log('Good News Everyone!  File created: '+ filename);
+}
+
+// EX: Callback that receives the PPT binary data - use this to stream file
+function steamCallback(data) {
+	var strFilename = "Node-Presenation-Streamed.pptx";
+
+	app.get('/', function(req, res) {
+		res.writeHead(200, { 'Content-disposition':'attachment;filename='+strFilename, 'Content-Length':data.length });
+		res.end(new Buffer(data, 'binary'));
+	});
+
+	app.listen(3000, function() {
+		console.log('PptxGenJS Node Demo app listening on port 3000!');
+		console.log('Visit: http://localhost:3000/');
+		console.log('(press Ctrl-C to quit app)');
+	});
 }
 
 // ============================================================================
@@ -52,6 +73,8 @@ runEveryTest();
 // C: or use a predefined callback function
 pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
+// D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
+//pptx.save( 'https://github.com/gitbrent/PptxGenJS/', steamCallback );
 
 // **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
 // Create a new variable or reset `pptx` for an empty Presenation
@@ -59,7 +82,7 @@ pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 // ============================================================================
 
-console.log(`
+if (gConsoleLog) console.log(`
 --------------
 TEST COMPLETE!
 --------------

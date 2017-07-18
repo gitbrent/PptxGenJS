@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.6.0-beta";
-	var APP_REL = "20170706";
+	var APP_REL = "20170717";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -403,8 +403,14 @@ var PptxGenJS = function(){
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
 			if ( NODEJS ) {
-				if ( callback )
-					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+				if ( callback ) {
+					if ( strExportName.indexOf('http') == 0 ) {
+						zip.generateAsync({type:'nodebuffer'}).then(function(content){ callback(content); });
+					}
+					else {
+						zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, callback(strExportName)); });
+					}
+				}
 				else
 					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
 			}

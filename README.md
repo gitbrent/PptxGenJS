@@ -273,6 +273,7 @@ pptx.save('Demo-Media');
 
 ### Node.js
 * Node can accept a callback function that will return the filename once the save is complete
+* Node can also be used to stream a powerpoint file - simply pass a filename that begins with "http"
 
 ```javascript
 // A: File will be saved to the local working directory (`__dirname`)
@@ -281,6 +282,9 @@ pptx.save( 'Node_Demo' );
 pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); } );
 // C: Predefined callback function
 pptx.save( 'Node_Demo', saveCallback );
+// D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
+// Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.
+pptx.save( 'http', steamCallback );
 ```
 
 Saving multiple Presentations:  
