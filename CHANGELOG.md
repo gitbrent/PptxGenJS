@@ -4,7 +4,7 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.5.0...v1.6.0)
 
 **Fixed Bugs:**
-The width or the height must be an integer not a float [\#29](https://github.com/gitbrent/PptxGenJS/issues/29) ([badlee](https://github.com/badlee))
+- The width or the height must be an integer not a float [\#29](https://github.com/gitbrent/PptxGenJS/issues/29) ([badlee](https://github.com/badlee))
 
 **Implemented Enhancements:**
 - HTTP Stream [\#35](https://github.com/gitbrent/PptxGenJS/issues/35) ([FedeMM](https://github.com/FedeMM))
