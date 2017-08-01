@@ -927,7 +927,7 @@ pptx.save();
 | `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
 | `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
 | `margin`      | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
-| `objects`     | array   |        |          | Objects for Slide  | object with type and options. Type:`image`,`line`,`rect` or `text`. [Example](https://github.com/gitbrent/PptxGenJS#slide-master-examples) |
+| `objects`     | array   |        |          | Objects for Slide  | object with type and options. Type:`chart`,`image`,`line`,`rect` or `text`. [Example](https://github.com/gitbrent/PptxGenJS#slide-master-examples) |
 | `title`       | string  |        |          | Slide title        | some title |
 
 ## Sample Slide Master File
