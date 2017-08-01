@@ -56,6 +56,7 @@ var gObjPptxMasters = {
 		bkgd:   { path:'images/starlabs_bkgd.jpg' },
 		objects: [
 			{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
+			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
 			{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 			{ 'text':
 				{ text:'Global IT & Services :: Status Report',
@@ -77,8 +78,7 @@ var gObjPptxMasters = {
 					options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12},
 					text: 'S.T.A.R. Laboratories - Confidential'
 				}
-			}
-		],
+			}		],
 		slideNumber: { x:0.6, y:7.0, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
 	},
 	THANKS_SLIDE: {

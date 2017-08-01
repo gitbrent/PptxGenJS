@@ -65,6 +65,7 @@ var PptxGenJS = function(){
 	var APP_REL = "20170731";
 	//
 	var MASTER_OBJECTS = {
+		'chart': { name:'chart' },
 		'image': { name:'image' },
 		'line' : { name:'line'  },
 		'rect' : { name:'rect'  },
@@ -156,7 +157,7 @@ var PptxGenJS = function(){
 	 */
 	function doExportPresentation(callback) {
 		var arrChartPromises = [];
-		var intSlideNum = 0, intRels = 0, intCharts = 0;
+		var intSlideNum = 0, intRels = 0;
 
 		// STEP 1: Create new JSZip file
 		var zip = new JSZip();
@@ -361,16 +362,14 @@ var PptxGenJS = function(){
 						// C: Add XLSX to PPTX export
 						zipExcel.generateAsync({type:'base64'})
 						.then(function(content){
-							intCharts++;
-
 							// 1: Create the embedded Excel worksheet with labels and data
-							zip.file( "ppt/embeddings/Microsoft_Excel_Sheet"+ intCharts +".xlsx", content, {base64:true} );
+							zip.file( "ppt/embeddings/Microsoft_Excel_Sheet"+ (rel.rId-1) +".xlsx", content, {base64:true} );
 
 							// 2: Create the chart.xml and rels files
 							zip.file("ppt/charts/_rels/"+ rel.fileName +".rels",
 								'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 								+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-								+ '<Relationship Id="rId'+intCharts+'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Sheet'+ intCharts +'.xlsx"/>'
+								+ '<Relationship Id="rId'+ (rel.rId-1) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Sheet'+ (rel.rId-1) +'.xlsx"/>'
 								+ '</Relationships>'
 							);
 							zip.file("ppt/charts/"+rel.fileName, makeXmlCharts(rel));
@@ -2788,7 +2787,7 @@ var PptxGenJS = function(){
 		 * 	}
 		 */
 		slideObj.addChart = function ( inType, inData, inOpt ) {
-			var intRelCharts = 1;
+			var intRels = 1;
 			var options = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
 
 			// STEP 1: TODO: check for reqd fields, correct type, etc
@@ -2863,18 +2862,16 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].type    = 'chart';
 			gObjPptx.slides[slideNum].data[slideObjNum].options = options;
 
-			// STEP 5: Add new chart to this Slide Rels
-			gObjPptx.slides.forEach(function(slide,idx){
-				slide.rels.forEach(function(rel,idx){ if ( rel.type == 'chart' ) intRelCharts++; });
-			});
-
+			// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+			gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
 			slideObjRels.push({
-				rId:     (intRelCharts+1),
+				rId:     (intRels+1),
 				data:    inData,
 				opts:    options,
 				type:    'chart',
-				fileName:'chart'+ intRelCharts +'.xml',
-				Target:  '/ppt/charts/chart'+ intRelCharts +'.xml'
+				fileName:'chart'+ intRels +'.xml',
+				Target:  '/ppt/charts/chart'+ intRels +'.xml'
 			});
 			gObjPptx.slides[slideNum].data[slideObjNum].chartRid = slideObjRels[slideObjRels.length-1].rId;
 
@@ -3016,14 +3013,14 @@ var PptxGenJS = function(){
 			gObjPptx.slides[slideNum].data[slideObjNum].mtype = strType;
 			gObjPptx.slides[slideNum].data[slideObjNum].media = (strPath || 'preencoded.mov');
 
-			// STEP 3: Set image properties & options
+			// STEP 3: Set media properties & options
 			gObjPptx.slides[slideNum].data[slideObjNum].options    = {};
 			gObjPptx.slides[slideNum].data[slideObjNum].options.x  = intPosX;
 			gObjPptx.slides[slideNum].data[slideObjNum].options.y  = intPosY;
 			gObjPptx.slides[slideNum].data[slideObjNum].options.cx = intSizeX;
 			gObjPptx.slides[slideNum].data[slideObjNum].options.cy = intSizeY;
 
-			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
+			// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
 
@@ -3386,7 +3383,8 @@ var PptxGenJS = function(){
 				if ( key == "objects" && Array.isArray(val) && val.length > 0 ) {
 					val.forEach(function(object,idx){
 						var key = Object.keys(object)[0];
-						if      ( MASTER_OBJECTS[key] && key == 'image' ) slideObj.addImage(object[key]);
+						if      ( MASTER_OBJECTS[key] && key == 'chart' ) slideObj.addChart( CHART_TYPES[(object.chart.type||'').toUpperCase()], object.chart.data, object.chart.opts );
+						else if ( MASTER_OBJECTS[key] && key == 'image' ) slideObj.addImage(object[key]);
 						else if ( MASTER_OBJECTS[key] && key == 'line'  ) slideObj.addShape(gObjPptxShapes.LINE, object[key]);
 						else if ( MASTER_OBJECTS[key] && key == 'rect'  ) slideObj.addShape(gObjPptxShapes.RECTANGLE, object[key]);
 						else if ( MASTER_OBJECTS[key] && key == 'text'  ) slideObj.addText(object[key].text, object[key].options);
