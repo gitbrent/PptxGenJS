@@ -1,9 +1,10 @@
 # Change Log
 
-## [v1.7.0](https://github.com/gitbrent/pptxgenjs/tree/v1.7.0) (2017-09-xx)
+## [v1.7.0](https://github.com/gitbrent/pptxgenjs/tree/v1.7.0) (2017-08-xx)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.6.0...v1.7.0)
 
 **Fixed Bugs:**
+- Unable to edit data on line chart [\#122](https://github.com/gitbrent/PptxGenJS/issues/122) ([david23zhu](https://github.com/david23zhu))
 
 **Implemented Enhancements:**
 
