@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.7.0-beta";
-	var APP_REL = "20170717";
+	var APP_REL = "20170731";
 	//
 	var MASTER_OBJECTS = {
 		'image': { name:'image' },
@@ -269,7 +269,7 @@ var PptxGenJS = function(){
 						strSheetXml += '<sheetFormatPr defaultColWidth="8" defaultRowHeight="12.75" customHeight="1" outlineLevelRow="0" outlineLevelCol="0"/>';
 						strSheetXml += '<sheetData>';
 
-						if ( rel.opts.type == 'bar' ) {
+						if ( rel.opts.type == 'area' || rel.opts.type == 'bar' || rel.opts.type == 'line' ) {
 							/* EX: INPUT: `rel.data`
 								[
 									{
