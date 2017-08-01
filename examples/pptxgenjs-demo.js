@@ -899,6 +899,9 @@ function genSlides_Chart(pptx) {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
+		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
+		slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
+
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
