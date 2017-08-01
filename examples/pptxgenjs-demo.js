@@ -1232,11 +1232,21 @@ function genSlides_Text(pptx) {
 		slide.addText( 'Textbox (top/lft)', { x:10,  y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', isTextBox:true } );
 		slide.addText( 'Textbox (btm/rgt)', { x:10,  y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', isTextBox:true } );
 
+		slide.addText('^ (50%/50%)', {x:'50%', y:'50%', w:2});
+
 		slide.addText('Plain x/y coords', { x:10, y:3.5 });
 
 		slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5 });
 
-		slide.addText('^ (50%/50%)', {x:'50%', y:'50%', w:2});
+		slide.addText(
+			[
+				{ text:'Sub'},
+				{ text:'Subscript', options:{ subscript:true } },
+				{ text:' // Super'},
+			    { text:'Superscript', options:{ superscript:true } }
+			],
+			{ x:10, y:5.5 }
+		);
 
 		// TEST: using {option}: Add text box with multiline options:
 		slide.addText(

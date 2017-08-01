@@ -1589,6 +1589,7 @@ var PptxGenJS = function(){
 		startInfo += ( opts.font_size ? ' sz="'+ Math.round(opts.font_size) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
 		startInfo += ( opts.italic    ? ' i="1"' : '' );
 		startInfo += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
+		startInfo += ( opts.subscript ? ' baseline="-40000"' : (opts.superscript  ? ' baseline="30000"' : '') );
 		// not doc in API yet: startInfo += ( opts.char_spacing ? ' spc="' + (text_info.char_spacing * 100) + '" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 		startInfo += ' dirty="0" smtClean="0">';
 		// Color and Font are children of <a:rPr>, so add them now before closing the runProperties tag
