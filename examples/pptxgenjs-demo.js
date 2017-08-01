@@ -499,8 +499,6 @@ function genSlides_Chart(pptx) {
 		arrDataLineStat.push( tmpObjUnk );
 	}
 
-	// TOP-LEFT:
-
 	// SLIDE 1: Bar Chart -----------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
