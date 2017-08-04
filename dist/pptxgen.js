@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.7.0-beta";
-	var APP_REL = "20170731";
+	var APP_REL = "20170803";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -270,7 +270,51 @@ var PptxGenJS = function(){
 						strSheetXml += '<sheetFormatPr defaultColWidth="8" defaultRowHeight="12.75" customHeight="1" outlineLevelRow="0" outlineLevelCol="0"/>';
 						strSheetXml += '<sheetData>';
 
-						if ( rel.opts.type == 'area' || rel.opts.type == 'bar' || rel.opts.type == 'line' ) {
+						if ( rel.opts.type == 'area' || rel.opts.type == 'line' ) {
+							/* EX: INPUT: `rel.data`
+							[
+								{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+								{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+								{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+							];
+							*/
+							/* EX: OUTPUT: barChart Worksheet:
+								-|---A---|--B--|--C--|--D--|
+								1|       | Red | Amb | Grn |
+								2|Jan-17 |   11|   22|   33|
+								3|Feb-17 |   55|   43|   70|
+								4|Mar-17 |   56|  143|   99|
+								5|Apr-17 |   65|    3|  120|
+								6|May-17 |   75|   93|  170|
+								-|-------|-----|-----|-----|
+							*/
+							// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+							strSheetXml += '<row r="1">';
+							for (var idx=1; idx<=rel.data.length; idx++) {
+								// TODO: FIXME: Max cols is 52
+								strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">';
+								strSheetXml += '<v>'+ idx +'</v>';
+								strSheetXml += '</c>';
+							}
+							strSheetXml += '</row>';
+
+							// B: Add data row(s)
+							for (var idx=2; idx<rel.data[0].labels.length+2; idx++) {
+								// Leading col is reserved for the label, so hard-code it, then loop over col values
+								strSheetXml += '<row r="'+ idx +'">';
+								strSheetXml += '<c r="A'+ idx +'" t="s">';
+								strSheetXml += '<v>'+ (rel.data[0].values.length + idx - 1) +'</v>';
+								strSheetXml += '</c>';
+								rel.data.forEach(function(col,idy){
+									// TODO: FIXME: Max cols is 52
+									strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ idx +'" t="s">';
+									strSheetXml += '<v>'+ rel.data[idy].values[idx] +'</v>';
+									strSheetXml += '</c>';
+								});
+								strSheetXml += '</row>';
+							}
+						}
+						else if ( rel.opts.type == 'bar' ) {
 							/* EX: INPUT: `rel.data`
 								[
 									{
@@ -296,9 +340,8 @@ var PptxGenJS = function(){
 							// A: Create header row first
 							strSheetXml += '<row r="1">';
 							for (var i=1; i<=rel.data[0].values.length; i++) {
-								// if (i>26) ...
-								// TODO: deal with AB1, etc. (when there's more than A-Z rows)
-								strSheetXml += '<c r="'+ LETTERS[i] +'1" t="s">';
+								// TODO: FIXME: Max cols is 52
+								strSheetXml += '<c r="'+ ( i < 26 ? LETTERS[i] : 'A'+LETTERS[i%LETTERS.length] ) +'1" t="s">';
 								strSheetXml += '<v>'+ i +'</v>';
 								strSheetXml += '</c>';
 							}
@@ -386,7 +429,7 @@ var PptxGenJS = function(){
 					// A: Loop vars
 					var data = rel.data;
 
-					// B: Users will undoubtedly pass in string in various formats, so modify as needed
+					// B: Users will undoubtedly pass various string formats, so modify as needed
 					if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
 					else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
 					else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
