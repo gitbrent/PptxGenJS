@@ -1290,7 +1290,7 @@ var PptxGenJS = function(){
 								  </a:ln>\
 								</c:spPr>\
 								</c:majorGridlines>';
-					strXml += ' <c:numFmt formatCode="General" sourceLinked="0"/>';
+					strXml += ' <c:numFmt formatCode="'+(rel.opts.axisLabelFormatCode ? rel.opts.axisLabelFormatCode : 'General')+'" sourceLinked="0"/>';
 					strXml += ' <c:majorTickMark val="out"/>';
 					strXml += ' <c:minorTickMark val="none"/>';
 					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
@@ -1312,7 +1312,9 @@ var PptxGenJS = function(){
 					strXml += ' <c:crossAx val="2094734552"/>';
 					strXml += ' <c:crosses val="autoZero"/>';
 					strXml += ' <c:crossBetween val="'+ ( rel.opts.type == 'area' ? 'midCat' : 'between' ) +'"/>';
-					//strXml += ' <c:majorUnit val="25"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
+					if(rel.opts.majorUnit) {
+						strXml += ' <c:majorUnit val="'+rel.opts.majorUnit+'"/>';
+					}
 					//strXml += ' <c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
 					strXml += '</c:valAx>';
 				}
