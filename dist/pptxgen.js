@@ -1149,6 +1149,29 @@ var PptxGenJS = function(){
 
 					}
 
+					if(rel.data.length === 1 && rel.opts.chartColors) {
+						// Series Data Point colors
+						obj.values.forEach(function (value, index) {
+							strXml += '  <c:dPt>';
+							strXml += '    <c:idx val="'+index+'"/>';
+							strXml += '    	<c:invertIfNegative val="1"/>';
+							strXml += '    	<c:bubble3D val="0"/>';
+							strXml += '    	<c:spPr>';
+							strXml += '    <a:solidFill>';
+							strXml += '    <a:srgbClr val="'+rel.opts.chartColors[index]+'"/>';
+							strXml += '    	</a:solidFill>';
+							strXml += '    <a:effectLst>';
+							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
+							strXml += '    	<a:srgbClr val="000000">';
+							strXml += '    	<a:alpha val="35000"/>';
+							strXml += '    	</a:srgbClr>';
+							strXml += '    </a:outerShdw>';
+							strXml += '    </a:effectLst>';
+							strXml += '    </c:spPr>';
+							strXml += '  </c:dPt>';
+						});
+					}
+
 					// 1: "Data Labels"
 					strXml += '  <c:dLbls>';
 					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
