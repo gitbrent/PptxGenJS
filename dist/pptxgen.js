@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.7.0-beta";
-	var APP_REL = "20170806";
+	var APP_VER = "1.7.0";
+	var APP_REL = "20170807";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -344,6 +344,7 @@ var PptxGenJS = function(){
 							6|May-17 |   75|   93|  170|
 							-|-------|-----|-----|-----|
 						*/
+
 						// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
 						strSheetXml += '<row r="1">';
 						strSheetXml += '<c r="A1" t="s"><v>'+ (rel.data.length + rel.data[0].labels.length) +'</v></c>';
@@ -1049,7 +1050,6 @@ var PptxGenJS = function(){
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
 						strXml += '</c:marker>';
-
 					}
 
 					// 1: "Data Labels"
