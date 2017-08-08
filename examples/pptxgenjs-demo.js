@@ -969,6 +969,92 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
 	}
+
+	// SLIDE 10: Data Series Colors, majorUnits, and axisLabelFormatCode -----------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Bar Colors & Format %', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		// TOP-LEFT
+		slide.addChart(
+			pptx.charts.BAR,
+			[
+				{
+					name  : 'Colored Series',
+					labels: ['Jan', 'Feb','Mar', 'Apr', 'May', 'Jun'],
+					values: [20, 30, 10, 25, 15, 5]
+				}
+			],
+			{ x:0.5, y:0.6, w:'45%', h:3,
+				valAxisMaxVal:100,
+				barDir: 'bar',
+				majorUnit: 50,
+				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384'],
+				barGapWidthPct: 25
+			} );
+
+		// TOP-RIGHT
+		slide.addChart(
+			pptx.charts.BAR,
+			[
+				{
+					name  : 'Too Many Colors Series',
+					labels: ['Jan', 'Feb','Mar', 'Apr', 'May', 'Jun'],
+					values: [.20, .30, .10, .25, .15, .05]
+				}
+			],
+			{ x:7, y:0.6, w:'45%', h:3,
+				valAxisMaxVal:1,
+				barDir: 'bar',
+				showValue: true,
+				dataLabelPosition: 'outEnd',
+				dataLabelFormatCode: '#%',
+				axisLabelFormatCode: '#%',
+				majorUnit: 0.2,
+				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384', '7D666A','A3C961','EF907B','9BA0A3'],
+				barGapWidthPct: 25
+			});
+
+		// BOTTOM-LEFT
+		slide.addChart(
+			pptx.charts.BAR,
+			[
+				{
+					name  : 'Two Color Series',
+					labels: ['Jan', 'Feb','Mar', 'Apr', 'May', 'Jun'],
+					values: [.20, .30, .10, .25, .15, .05]
+				}
+			],
+			{  x:0.5, y:3.6, w:'45%', h:3,
+				valAxisMaxVal:1,
+				barDir: 'bar',
+				showValue: true,
+				dataLabelPosition: 'outEnd',
+				dataLabelFormatCode: '#%',
+				axisLabelFormatCode: '#%',
+				chartColors: ['DE4216','154384'],
+				barGapWidthPct: 25
+			});
+
+		// BOTTOM-RIGHT
+		slide.addChart(
+			pptx.charts.BAR,
+			[
+				{
+					name  : 'Many values',
+					labels: 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P'.split(','),
+					values: [1.20, 2.30, 3.10, 4.25, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9, 2.2, 3.33, 6.66, 7.77, 8.88]
+				}
+			], {  x:7, y:3.6, w:'45%', h:3,
+				valAxisMaxVal:10,
+				barDir: 'bar',
+				showValue: true,
+				dataLabelPosition: 'outEnd',
+				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384', '7D666A','A3C961','EF907B','9BA0A3'],
+				barGapWidthPct: 25,
+				majorUnit: 1
+			});
+	}
 }
 
 function genSlides_Media(pptx) {
