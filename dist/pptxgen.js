@@ -290,10 +290,10 @@ var PptxGenJS = function(){
 							strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (rel.data[0].labels.length + rel.data.length + 1) +'" uniqueCount="'+ (rel.data[0].labels.length + rel.data.length +1) +'">'
 
 							// A: Add Labels
-							rel.data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ label +'</t></si>'; });
+								rel.data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ label +'</t></si>'; });
 
 							// B: Add Series
-							rel.data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
+									rel.data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
 
 							// C: Add 'blank' for A1
 							strSharedStrings += '<si><t xml:space="preserve"></t></si>';
@@ -322,54 +322,54 @@ var PptxGenJS = function(){
 						strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
 						strSheetXml += '<sheetFormatPr defaultRowHeight="15"/>';
 						strSheetXml += '<cols>';
-						strSheetXml += '<col min="10" max="100" width="20" customWidth="1"/>';
+						strSheetXml += '  <col min="10" max="100" width="20" customWidth="1"/>';
 						rel.data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
 						strSheetXml += '</cols>';
 						strSheetXml += '<sheetData>';
 
-						/* EX: INPUT: `rel.data`
-						[
-							{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
-							{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
-							{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
-						];
-						*/
-						/* EX: OUTPUT: lineChart Worksheet:
-							-|---A---|--B--|--C--|--D--|
-							1|       | Red | Amb | Grn |
-							2|Jan-17 |   11|   22|   33|
-							3|Feb-17 |   55|   43|   70|
-							4|Mar-17 |   56|  143|   99|
-							5|Apr-17 |   65|    3|  120|
-							6|May-17 |   75|   93|  170|
-							-|-------|-----|-----|-----|
-						*/
+							/* EX: INPUT: `rel.data`
+							[
+								{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+								{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+								{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+							];
+							*/
+							/* EX: OUTPUT: lineChart Worksheet:
+								-|---A---|--B--|--C--|--D--|
+								1|       | Red | Amb | Grn |
+								2|Jan-17 |   11|   22|   33|
+								3|Feb-17 |   55|   43|   70|
+								4|Mar-17 |   56|  143|   99|
+								5|Apr-17 |   65|    3|  120|
+								6|May-17 |   75|   93|  170|
+								-|-------|-----|-----|-----|
+							*/
 
-						// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-						strSheetXml += '<row r="1">';
-						strSheetXml += '<c r="A1" t="s"><v>'+ (rel.data.length + rel.data[0].labels.length) +'</v></c>';
+							// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+							strSheetXml += '<row r="1">';
+							strSheetXml += '<c r="A1" t="s"><v>'+ (rel.data.length + rel.data[0].labels.length) +'</v></c>';
 						for (var idx=1; idx<=rel.data[0].labels.length; idx++) {
-							// FIXME: Max cols is 52
-							strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
-							strSheetXml += '<v>'+ (idx-1) +'</v>';
-							strSheetXml += '</c>';
-						}
-						strSheetXml += '</row>';
-
-						// B: Add data row(s)
-						rel.data.forEach(function(row,idx){
-							// Leading col is reserved for the label, so hard-code it, then loop over col values
-							strSheetXml += '<row r="'+ (idx+2) +'">';
-							strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
-							strSheetXml += '<v>'+ (rel.data[0].values.length + idx + 1) +'</v>';
-							strSheetXml += '</c>';
-							row.values.forEach(function(val,idy){
-								strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
-								strSheetXml += '<v>'+ val +'</v>';
+								// FIXME: Max cols is 52
+								strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
+								strSheetXml += '<v>'+ (idx-1) +'</v>';
 								strSheetXml += '</c>';
-							});
+							}
 							strSheetXml += '</row>';
-						});
+
+							// B: Add data row(s)
+							rel.data.forEach(function(row,idx){
+								// Leading col is reserved for the label, so hard-code it, then loop over col values
+								strSheetXml += '<row r="'+ (idx+2) +'">';
+								strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
+								strSheetXml += '<v>'+ (rel.data[0].values.length + idx + 1) +'</v>';
+								strSheetXml += '</c>';
+								row.values.forEach(function(val,idy){
+								strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
+									strSheetXml += '<v>'+ val +'</v>';
+									strSheetXml += '</c>';
+								});
+								strSheetXml += '</row>';
+							});
 
 						strSheetXml += '</sheetData>';
 						strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>';
@@ -1050,6 +1050,29 @@ var PptxGenJS = function(){
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
 						strXml += '</c:marker>';
+					}
+
+					if(rel.data.length === 1 && rel.opts.chartColors) {
+						// Series Data Point colors
+						obj.values.forEach(function (value, index) {
+							strXml += '  <c:dPt>';
+							strXml += '    <c:idx val="'+index+'"/>';
+							strXml += '    	<c:invertIfNegative val="1"/>';
+							strXml += '    	<c:bubble3D val="0"/>';
+							strXml += '    	<c:spPr>';
+							strXml += '    <a:solidFill>';
+							strXml += '    <a:srgbClr val="'+rel.opts.chartColors[index % rel.opts.chartColors.length]+'"/>';
+							strXml += '    	</a:solidFill>';
+							strXml += '    <a:effectLst>';
+							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
+							strXml += '    	<a:srgbClr val="000000">';
+							strXml += '    	<a:alpha val="35000"/>';
+							strXml += '    	</a:srgbClr>';
+							strXml += '    </a:outerShdw>';
+							strXml += '    </a:effectLst>';
+							strXml += '    </c:spPr>';
+							strXml += '  </c:dPt>';
+						});
 					}
 
 					// 1: "Data Labels"
