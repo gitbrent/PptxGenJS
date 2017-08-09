@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// CONSTANTS
-	var APP_VER = "1.7.0-beta";
-	var APP_REL = "20170806";
+	var APP_VER = "1.7.0";
+	var APP_REL = "20170807";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -288,35 +288,27 @@ var PptxGenJS = function(){
 						{
 							var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 							strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (rel.data[0].labels.length + rel.data.length + 1) +'" uniqueCount="'+ (rel.data[0].labels.length + rel.data.length +1) +'">'
-//							strSharedStrings += '<sst uniqueCount="'+ (rel.data[0].labels.length + rel.data.length) +'" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
-							{
-								// A: Pie `name` [Series] comes before `label`s
-								if ( rel.opts.type == 'area' || rel.opts.type == 'line' || rel.opts.type == 'pie' ) {
-									rel.data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
-								}
 
-								// B: Labels
-								rel.data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ label +'</t></si>'; });
+							// A: Add Labels
+							rel.data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ label +'</t></si>'; });
 
-								// C: Bar `name` [Series] come after `label`s
-								if ( rel.opts.type == 'bar' ) {
-									rel.data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
-								}
-							}
+							// B: Add Series
+							rel.data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
+
+							// C: Add 'blank' for A1
 							strSharedStrings += '<si><t xml:space="preserve"></t></si>';
+
 							strSharedStrings += '</sst>\n';
 							zipExcel.file("xl/sharedStrings.xml", strSharedStrings);
 						}
 
 						// tables/table1.xml
 						{
-							var strTableXml = '<?xml version="1.0" encoding="UTF-8"?>';
+							var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 							strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[rel.data.length] + (rel.data[0].labels.length+1) +'" totalsRowShown="0">';
-							strTableXml += '<tableColumns count="' + (rel.data.length+1) +'">';
+							strTableXml += '<tableColumns count="' + (rel.data[0].labels.length+1) +'">';
 							strTableXml += '<tableColumn id="1" name=" "/>';
-							rel.data.forEach(function(series,idx){
-								strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ series.name +'"/>';
-							});
+							rel.data[0].labels.forEach(function(label,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ label +'"/>' });
 							strTableXml += '</tableColumns>';
 							strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>';
 							strTableXml += '</table>';
@@ -325,147 +317,59 @@ var PptxGenJS = function(){
 
 						// worksheets/sheet1.xml
 						var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-						//strSheetXml += '<worksheet xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">';
 						strSheetXml += '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
 						strSheetXml += '<dimension ref="A1:'+ LETTERS[rel.data.length] + (rel.data[0].labels.length+1) +'"/>';
 						strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
 						strSheetXml += '<sheetFormatPr defaultRowHeight="15"/>';
 						strSheetXml += '<cols>';
-						strSheetXml += '  <col min="10" max="100" width="20" customWidth="1"/>';
-						rel.data.forEach(function(){
-							strSheetXml += '  <col min="10" max="100" width="10" customWidth="1"/>';
-						});
+						strSheetXml += '<col min="10" max="100" width="20" customWidth="1"/>';
+						rel.data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
 						strSheetXml += '</cols>';
 						strSheetXml += '<sheetData>';
 
-						if ( rel.opts.type == 'area' || rel.opts.type == 'line' ) {
-							/* EX: INPUT: `rel.data`
-							[
-								{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
-								{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
-								{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
-							];
-							*/
-							/* EX: OUTPUT: lineChart Worksheet:
-								-|---A---|--B--|--C--|--D--|
-								1|       | Red | Amb | Grn |
-								2|Jan-17 |   11|   22|   33|
-								3|Feb-17 |   55|   43|   70|
-								4|Mar-17 |   56|  143|   99|
-								5|Apr-17 |   65|    3|  120|
-								6|May-17 |   75|   93|  170|
-								-|-------|-----|-----|-----|
-							*/
-							// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-							strSheetXml += '<row r="1">';
-							strSheetXml += '<c r="A1" t="s"><v>'+ (rel.data.length + rel.data[0].labels.length) +'</v></c>';
-							for (var idx=1; idx<=rel.data.length; idx++) {
-								// FIXME: Max cols is 52
-								strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
-								strSheetXml += '<v>'+ (idx-1) +'</v>';
-								strSheetXml += '</c>';
-							}
-							strSheetXml += '</row>';
+						/* EX: INPUT: `rel.data`
+						[
+							{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+							{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+							{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+						];
+						*/
+						/* EX: OUTPUT: lineChart Worksheet:
+							-|---A---|--B--|--C--|--D--|
+							1|       | Red | Amb | Grn |
+							2|Jan-17 |   11|   22|   33|
+							3|Feb-17 |   55|   43|   70|
+							4|Mar-17 |   56|  143|   99|
+							5|Apr-17 |   65|    3|  120|
+							6|May-17 |   75|   93|  170|
+							-|-------|-----|-----|-----|
+						*/
 
-							// B: Add data row(s)
-							for (var idx=2; idx<rel.data[0].labels.length+2; idx++) {
-								// Leading col is reserved for the label, so hard-code it, then loop over col values
-								strSheetXml += '<row r="'+ idx +'">';
-								strSheetXml += '<c r="A'+ idx +'" t="s">';
-								strSheetXml += '<v>'+ (rel.data.length + idx - 2) +'</v>';
-								strSheetXml += '</c>';
-								rel.data.forEach(function(col,idy){
-									// TODO: FIXME: Max cols is 52
-									strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ idx +'">';
-									strSheetXml += '<v>'+ rel.data[idy].values[idx-2] +'</v>';
-									strSheetXml += '</c>';
-								});
-								strSheetXml += '</row>';
-							}
+						// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+						strSheetXml += '<row r="1">';
+						strSheetXml += '<c r="A1" t="s"><v>'+ (rel.data.length + rel.data[0].labels.length) +'</v></c>';
+						for (var idx=1; idx<=rel.data[0].labels.length; idx++) {
+							// FIXME: Max cols is 52
+							strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
+							strSheetXml += '<v>'+ (idx-1) +'</v>';
+							strSheetXml += '</c>';
 						}
-						else if ( rel.opts.type == 'bar' ) {
-							/* EX: INPUT: `rel.data`
-								[
-									{
-										name: 'Income',
-										labels: ['2005', '2006', '2007', '2008', '2009'],
-										values: [23.5, 26.2, 30.1, 29.5, 24.6]
-									},
-									{
-										name: 'Expense',
-										labels: ['2005', '2006', '2007', '2008', '2009'],
-										values: [18.1, 22.8, 23.9, 25.1, 25]
-									}
-								]
-							*/
-							/* EX: OUTPUT: barChart Worksheet:
-								-|---A---|--B--|--C--|--D--|--E--|
-								1|       |April|  May| June| July|
-								2|Income |   17|   26|   53|   96|
-								3|Expense|   55|   43|   70|   58|
-								-|-------|-----|-----|-----|-----|
-							*/
+						strSheetXml += '</row>';
 
-							// A: Create header row first
-							strSheetXml += '<row r="1">';
-							for (var i=1; i<=rel.data[0].values.length; i++) {
-								// TODO: FIXME: Max cols is 52
-								strSheetXml += '<c r="'+ ( i < 26 ? LETTERS[i] : 'A'+LETTERS[i%LETTERS.length] ) +'1" t="s">';
-								strSheetXml += '<v>'+ i +'</v>';
+						// B: Add data row(s)
+						rel.data.forEach(function(row,idx){
+							// Leading col is reserved for the label, so hard-code it, then loop over col values
+							strSheetXml += '<row r="'+ (idx+2) +'">';
+							strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
+							strSheetXml += '<v>'+ (rel.data[0].values.length + idx + 1) +'</v>';
+							strSheetXml += '</c>';
+							row.values.forEach(function(val,idy){
+								strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
+								strSheetXml += '<v>'+ val +'</v>';
 								strSheetXml += '</c>';
-							}
-							strSheetXml += '</row>';
-
-							// B: Add data row(s)
-							rel.data.forEach(function(row,idx){
-								// Leading col is reserved for the label, so hard-code it, then loop over col values
-								strSheetXml += '<row r="'+ (idx+2) +'">';
-								strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
-								strSheetXml += '<v>'+ (rel.data[0].values.length + idx + 1) +'</v>';
-								strSheetXml += '</c>';
-								row.values.forEach(function(val,idy){
-									strSheetXml += '<c r="'+ LETTERS[(idy+1)] +''+ (idx+2) +'">';
-									strSheetXml += '<v>'+ val +'</v>';
-									strSheetXml += '</c>';
-								});
-								strSheetXml += '</row>';
 							});
-						}
-						else if ( rel.opts.type == 'pie' ) {
-							/* EX: INPUT: `rel.data`
-								[
-									{
-										name: 'Project Status',
-										labels: ['Red', 'Amber', 'Green', 'Unknown'],
-										values: [10, 20, 38, 2]
-									}
-								]
-							*/
-							/* EX: OUTPUT: pieChart Worksheet:
-								-|---A---|---B---|
-								1|       | Status|
-								2|Red    |     10|
-								3|Amber  |     20|
-								4|Green  |     38|
-								5|Unknown|      2|
-								-|-------|-------|
-							*/
-
-							// A: Create header row first
-							strSheetXml += '<row r="1"><c r="B1" t="s"><v>1</v></c></row>';
-
-							// B: Add data row(s)
-							for (var idx=0; idx<rel.data[0].labels.length; idx++) {
-								strSheetXml += '<row r="'+ (idx+2) +'">';
-								strSheetXml += '  <c r="A'+ (idx+2) +'" t="s">';
-								strSheetXml += '    <v>'+ (idx+2) +'</v>';
-								strSheetXml += '  </c>';
-								strSheetXml += '  <c r="B'+ (idx+2) +'">';
-								strSheetXml += '    <v>'+ rel.data[0].values[idx] +'</v>';
-								strSheetXml += '  </c>';
-								strSheetXml += '</row>';
-							}
-						}
+							strSheetXml += '</row>';
+						});
 
 						strSheetXml += '</sheetData>';
 						strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>';
@@ -477,13 +381,13 @@ var PptxGenJS = function(){
 						zipExcel.generateAsync({type:'base64'})
 						.then(function(content){
 							// 1: Create the embedded Excel worksheet with labels and data
-							zip.file( "ppt/embeddings/Microsoft_Excel_Sheet"+ (rel.rId-1) +".xlsx", content, {base64:true} );
+							zip.file( "ppt/embeddings/Microsoft_Excel_Worksheet"+ (rel.rId-1) +".xlsx", content, {base64:true} );
 
 							// 2: Create the chart.xml and rels files
 							zip.file("ppt/charts/_rels/"+ rel.fileName +".rels",
 								'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 								+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-								+ '<Relationship Id="rId'+ (rel.rId-1) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Sheet'+ (rel.rId-1) +'.xlsx"/>'
+								+ '<Relationship Id="rId'+ (rel.rId-1) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet'+ (rel.rId-1) +'.xlsx"/>'
 								+ '</Relationships>'
 							);
 							zip.file("ppt/charts/"+rel.fileName, makeXmlCharts(rel));
@@ -1146,7 +1050,6 @@ var PptxGenJS = function(){
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
 						strXml += '</c:marker>';
-
 					}
 
 					if(rel.data.length === 1 && rel.opts.chartColors) {
