@@ -907,6 +907,26 @@ var PptxGenJS = function(){
 		return arrObjSlides;
 	}
 
+	function createShadowElement(opts, defaults) {
+		var type    = ( opts.type    || defaults.type ),
+			blur    = ( opts.blur    || defaults.blur ) * ONEPT,
+			offset  = ( opts.offset  || defaults.offset ) * ONEPT,
+			angle   = ( opts.angle   || defaults.angle ) * 60000,
+			color   = ( opts.color   || defaults.color ),
+			opacity = ( opts.opacity || defaults.opacity ) * 100000,
+			strXml  = "";
+
+		strXml += '<a:effectLst>';
+		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
+		strXml += ' algn="bl" rotWithShape="0" blurRad="'+ blur +'" ';
+		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
+		strXml += '<a:srgbClr val="'+ color +'">';
+		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>'
+		strXml += '</a:'+ type +'Shdw>';
+		strXml += '</a:effectLst>';
+		return strXml;
+	}
+
 	/* =======================================================================================================
 	|
 	#     #  #     #  #             #####
@@ -2239,21 +2259,14 @@ var PptxGenJS = function(){
 
 					// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
 					if ( slideObj.options.shadow ) {
-						slideObj.options.shadow.type    = ( slideObj.options.shadow.type    || 'outer' );
-						slideObj.options.shadow.blur    = ( slideObj.options.shadow.blur    || 8 ) * ONEPT;
-						slideObj.options.shadow.offset  = ( slideObj.options.shadow.offset  || 4 ) * ONEPT;
-						slideObj.options.shadow.angle   = ( slideObj.options.shadow.angle   || 270 ) * 60000;
-						slideObj.options.shadow.color   = ( slideObj.options.shadow.color   || '000000' );
-						slideObj.options.shadow.opacity = ( slideObj.options.shadow.opacity || 0.75 ) * 100000;
-
-						strSlideXml += '<a:effectLst>';
-						strSlideXml += '<a:'+ slideObj.options.shadow.type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-						strSlideXml += ' algn="bl" rotWithShape="0" blurRad="'+ slideObj.options.shadow.blur +'" ';
-						strSlideXml += ' dist="'+ slideObj.options.shadow.offset +'" dir="'+ slideObj.options.shadow.angle +'">';
-						strSlideXml += '<a:srgbClr val="'+ slideObj.options.shadow.color +'">';
-						strSlideXml += '<a:alpha val="'+ slideObj.options.shadow.opacity +'"/></a:srgbClr>'
-						strSlideXml += '</a:outerShdw>';
-						strSlideXml += '</a:effectLst>';
+						strSlideXml += createShadowElement(slideObj.options.shadow, {
+							type: 'outer',
+							blur: 8,
+							offset: 4,
+							angle: 270,
+							color: '000000',
+							opacity: 0.75
+						});
 					}
 
 					/* FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
