@@ -908,22 +908,21 @@ var PptxGenJS = function(){
 	}
 
 	function createShadowElement(opts, defaults) {
-		var type    = ( opts.type    || defaults.type ),
-			blur    = ( opts.blur    || defaults.blur ) * ONEPT,
-			offset  = ( opts.offset  || defaults.offset ) * ONEPT,
-			angle   = ( opts.angle   || defaults.angle ) * 60000,
-			color   = ( opts.color   || defaults.color ),
-			opacity = ( opts.opacity || defaults.opacity ) * 100000,
+		var type            = ( opts.type    || defaults.type ),
+			blur            = ( opts.blur    || defaults.blur ) * ONEPT,
+			offset          = ( opts.offset  || defaults.offset ) * ONEPT,
+			angle           = ( opts.angle   || defaults.angle ) * 60000,
+			color           = ( opts.color   || defaults.color ),
+			opacity         = ( opts.opacity || defaults.opacity ) * 100000,
+			rotateWithShape = ( opts.rotateWithShape || defaults.rotateWithShape || 0),
 			strXml  = "";
 
-		strXml += '<a:effectLst>';
 		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-		strXml += ' algn="bl" rotWithShape="0" blurRad="'+ blur +'" ';
+		strXml += ' algn="bl" rotWithShape="'+ (+rotateWithShape) +'" blurRad="'+ blur +'" ';
 		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
 		strXml += '<a:srgbClr val="'+ color +'">';
 		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>'
 		strXml += '</a:'+ type +'Shdw>';
-		strXml += '</a:effectLst>';
 		return strXml;
 	}
 
@@ -1052,11 +1051,19 @@ var PptxGenJS = function(){
 					else if ( rel.opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					strXml += '    <a:effectLst>';
-					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-					strXml += '      </a:outerShdw>';
-					strXml += '    </a:effectLst>';
+					if ( rel.opts.lineShadow ) {
+						strXml += '<a:effectLst>';
+						strXml += createShadowElement(rel.opts.lineShadow, {
+							type: 'outer',
+							blur: 3,
+							offset: 23000 / ONEPT,
+							angle: 90,
+							color: '000000',
+							opacity: 0.35,
+							rotateWithShape: true
+						});
+						strXml += '</a:effectLst>';
+					}
 					strXml += '  </c:spPr>';
 
 					// LINE CHART ONLY: `marker`
@@ -2259,6 +2266,7 @@ var PptxGenJS = function(){
 
 					// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
 					if ( slideObj.options.shadow ) {
+						strSlideXml += '<a:effectLst>';
 						strSlideXml += createShadowElement(slideObj.options.shadow, {
 							type: 'outer',
 							blur: 8,
@@ -2267,6 +2275,7 @@ var PptxGenJS = function(){
 							color: '000000',
 							opacity: 0.75
 						});
+						strSlideXml += '</a:effectLst>';
 					}
 
 					/* FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
