@@ -57,6 +57,7 @@ var NODEJS = ( typeof module !== 'undefined' && module.exports );
 if ( NODEJS ) {
 	var gObjPptxMasters = require('../dist/pptxgen.masters.js');
 	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
+	var gObjPptxColors  = require('../dist/pptxgen.colors.js');
 }
 
 var PptxGenJS = function(){
@@ -116,6 +117,9 @@ var PptxGenJS = function(){
 	var DEF_FONT_SIZE = 12;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 
+
+	var RE_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
+
 	// A: Create internal pptx object
 	var gObjPptx = {};
 
@@ -135,6 +139,7 @@ var PptxGenJS = function(){
 	this.charts  = CHART_TYPES;
 	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
+	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
 
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
@@ -486,6 +491,17 @@ var PptxGenJS = function(){
 	function componentToHex(c) {
 		var hex = c.toString(16);
 		return hex.length == 1 ? "0" + hex : hex;
+	}
+
+	/**
+	 * DESC: Depending on the passed color string, creates either `a:schemeClr` (when scheme color) or `a:srgbClr` (when hexa representation).
+	 * color (string): hexa representation (eg. "FFFF00") or a scheme color constant (eg. colors.ACCENT1)
+	 * innerElements (optional string): Additional elements that adjust the color and are enclosed by the color element.
+	 */
+	function createColorElement(colorStr, innerElements) {
+		var tagName = RE_HEX_COLOR.test(colorStr) ? 'srgbClr' : 'schemeClr';
+		var colorAttr = ' val="' + colorStr + '"';
+		return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements +'</a:' + tagName + '>' : '<a:' + tagName + colorAttr + ' />';
 	}
 
 	/**
