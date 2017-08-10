@@ -85,6 +85,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Table-to-Slides Examples](#table-to-slides-examples)
   - [Creative Solutions](#creative-solutions)
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
+- [Scheme Colors](#scheme-colors)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Building with Webpack/Typescript](#building-with-webpacktypescript)
@@ -219,8 +220,8 @@ slide.color = '696969';
 ### Slide Formatting Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code.  |
-| `color`      | string  |        | `000000`  | default text color  | hex color code.  |
+| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code or scheme color constant. |
+| `color`      | string  |        | `000000`  | default text color  | hex color code or scheme color constant. |
 
 ### Applying Master Slides / Branding
 ```javascript
@@ -243,7 +244,7 @@ slide.slideNumber({ x:1.0, y:'90%', fontFace:'Courier', fontSize:32, color:'CF01
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
 | `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
-| `color`      | string  |        |           | text color          | hex color code. Ex: `{color:'0088CC'}` |
+| `color`      | string  |        |           | text color          | hex color code or scheme color constant. Ex: `{color:'0088CC'}` |
 | `fontFace`   | string  |        |           | font face           | any available font. Ex: `{fontFace:Arial}` |
 | `fontSize`   | number  | points |           | font size           | 8-256. Ex: `{fontSize:12}` |
 
@@ -334,7 +335,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
 | `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
-| `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
+| `fill`          | string  |         |           | fill/background color | hex color code or scheme color constant. Ex: `{ fill:'0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
 | `showLegend`    | boolean |         | `false`   | show chart legend     | `true` or `false` |
@@ -342,18 +343,18 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `showTitle`     | boolean |         | `false`   | show chart title      | `true` or `false` |
 | `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
 | `title`         | string  |         |           | chart title           | a string. Ex: `{ title:'Sales by Region' }` |
-| `titleColor`    | string  |         | `000000`  | title color           | hex color code. Ex: `{ titleColor:'0088CC' }` |
+| `titleColor`    | string  |         | `000000`  | title color           | hex color code or scheme color constant. Ex: `{ titleColor:'0088CC' }` |
 | `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
 
 ### Chart Axis Options
 | Option                 | Type    | Unit    | Default   | Description             | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :---------------------- | :----------------------------------------- |
-| `catAxisLabelColor`    | string  |         | `000000`  | category-axis color     | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
+| `catAxisLabelColor`    | string  |         | `000000`  | category-axis color     | hex color code or scheme color constant. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
-| `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
+| `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code or scheme color constant. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisMaxVal`        | number  |         |           | maximum value for Value Axis | 1-N. Ex: `{ valAxisMaxVal:125 }` |
@@ -366,7 +367,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-999. Ex: `{ barGapWidthPct:50 }` |
 | `barGrouping`          | string  |         |`clustered`| bar grouping               | (*Bar Chart*) `clustered` or `stacked` or `percentStacked`. |
 | `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-| `dataLabelColor`       | string  |         | `000000`  | value-axis color           | hex color code. Ex: `{ dataLabelColor:'0088CC' }`     |
+| `dataLabelColor`       | string  |         | `000000`  | value-axis color           | hex color code or scheme color constant. Ex: `{ dataLabelColor:'0088CC' }`     |
 | `dataLabelFormatCode`  | string  |         |           | format to show data value  | format string. Ex: `{ dataLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
 | `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`            |
@@ -446,8 +447,8 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `breakLine`  | boolean |         | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |         | `false`   | bulleted text       | `true` or `false` |
 | `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
-| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
-| `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `color`      | string  |         |           | text color          | hex color code or scheme color constant. Ex: `{ color:'0088CC' }` |
+| `fill`       | string  |         |           | fill/bkgd color     | hex color code or scheme color constant. Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
 | `hyperlink`  | string  |         |           | add hyperlink       | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
@@ -471,7 +472,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
 | `angle`      | number  | degrees |           | shadow angle        | 0-359. Ex: `{ angle:180 }`               |
 | `blur`       | number  | points  |           | blur size           | 1-256. Ex: `{ blur:3 }`                  |
-| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `color`      | string  |         |           | text color          | hex color code or scheme color constant. Ex: `{ color:'0088CC' }` |
 | `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
 | `opacity`    | number  | percent |           | opacity             | 0-1. Ex: `opacity:0.75`                  |
 
@@ -602,9 +603,9 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 | `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
 | `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}` |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
-| `color`      | string  |        |           | text color         | hex color code. Ex: `{color:'0088CC'}` |
+| `color`      | string  |        |           | text color         | hex color code or scheme color constant. Ex: `{color:'0088CC'}` |
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` |
-| `fill`       | string  |        |           | fill/bkgd color    | hex color code. Ex: `{color:'0088CC'}` |
+| `fill`       | string  |        |           | fill/bkgd color    | hex color code or scheme color constant. Ex: `{color:'0088CC'}` |
 | `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
 | `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}` |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
@@ -722,11 +723,11 @@ Check the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerP
 | `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
-| `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{color:'0088CC'}` |
+| `fill`       | string  |        |           | fill/bkgd color     | hex color code or scheme color constant. Ex: `{color:'0088CC'}` |
 | `fill`       | object |   |   | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
 | `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
 | `flipV`      | boolean |        |           | flip Vertical       | `true` or `false` |
-| `line`       | string  |        |           | border line color   | hex color code. Ex: `{line:'0088CC'}` |
+| `line`       | string  |        |           | border line color   | hex color code or scheme color constant. Ex: `{line:'0088CC'}` |
 | `line_dash`  | string  |       | `solid` | border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
 | `line_head`  | string  |        |           | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
 | `line_size`  | number  | points |           | border line size    | 1-256. Ex: {line_size:4} |
@@ -922,7 +923,7 @@ pptx.save();
 ## Slide Master Object Options
 | Option        | Type    | Unit   | Default  | Description  | Possible Values       |
 | :------------ | :------ | :----- | :------- | :----------- | :-------------------- |
-| `bkgd`        | string  |        | `ffffff` | color        | hex color code. Ex: `{ bkgd:'0088CC' }` |
+| `bkgd`        | string  |        | `ffffff` | color        | hex color code or scheme color constant. Ex: `{ bkgd:'0088CC' }` |
 | `bkgd`        | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
 | `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
 | `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
@@ -1021,6 +1022,21 @@ The shapes file contains a complete PowerPoint Shape object array thanks to the 
 
 ```javascript
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
+```
+
+**************************************************************************************************
+# Scheme Colors
+Scheme color is a variable that changes its value whenever another scheme palette is selected. Using scheme colors, design consistency can be easily preserved throughout the presentation and viewers can change color theme without any text/background contrast issues.
+
+To use a scheme color, set a color constant as a property value:
+```javascript
+slide.addText('Hello',  { color: pptx.colors.TEXT1 });
+```
+
+The colors file contains a complete PowerPoint palette definition.
+
+```javascript
+<script lang="javascript" src="PptxGenJS/dist/pptxgen.colors.js"></script>
 ```
 
 **************************************************************************************************
