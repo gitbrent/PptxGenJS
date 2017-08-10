@@ -332,7 +332,8 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `w`             | number  | inches  | `50%`     | width                 | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`             | number  | inches  | `50%`     | height                | 0-n OR 'n%'. |
 | `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-| `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
+| `chartColors`   | array   |         |           | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
+| `invertedColors`| array   |         |           | colors when value is < 0 | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
@@ -350,10 +351,13 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | Option                 | Type    | Unit    | Default   | Description             | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :---------------------- | :----------------------------------------- |
 | `axisLabelFormatCode`  | string  |         |           | format to show axis value  | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
+| `axisLineColor`        | string  |         | `888888`  | axis line color         | format string. Ex: `{ axisLineColor:'00FFFF' }` |
+| `axisLineShow`         | boolean |         | true      | show/hide axis line     | `true` or `false` |
 | `catAxisLabelColor`    | string  |         | `000000`  | category-axis color     | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
+| `gridLineColor`        | string  |         | `888888`  | grid-line color         | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`       |
 | `majorUnit`            | number  | float   | `1.0`     | axis tick steps         | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
 | `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
