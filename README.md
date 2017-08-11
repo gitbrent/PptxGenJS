@@ -352,17 +352,17 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | :--------------------- | :------ | :------ | :-------- | :---------------------- | :----------------------------------------- |
 | `axisLabelFormatCode`  | string  |         |           | format to show axis value  | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
 | `axisLineColor`        | string  |         | `888888`  | axis line color         | format string. Ex: `{ axisLineColor:'00FFFF' }` |
-| `axisLineShow`         | boolean |         | true      | show/hide axis line     | `true` or `false` |
 | `catAxisLabelColor`    | string  |         | `000000`  | category-axis color     | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
-| `gridLineColor`        | string  |         | `888888`  | grid-line color         | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`       |
-| `majorUnit`            | number  | float   | `1.0`     | axis tick steps         | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
+| `gridLineColor`        | string  |         | `888888`  | grid-line color         | hex color code. Ex: `{ gridLineColor:'0088CC' }`       |
+| `catAxisLabelPos`      | string  | string  | `nextTo`  | axis label position     | `low`, `high`, or `nextTo` . Ex: `{ tickLblPos: 'low' }`      |
 | `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisLabelFormatCode` | string |        | `General` | value-axis number format | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
+| `valAxisLineShow`      | boolean |         | true      | show/hide axis line     | `true` or `false` |
 | `valAxisMajorUnit`     | number  | float   | `1.0`     | value-axis tick steps    | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
 | `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
@@ -381,6 +381,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
+| `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series   | `true` or `false` |
 
 ### Chart Examples
 ```javascript
