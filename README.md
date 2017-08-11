@@ -347,18 +347,19 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
 
 ### Chart Axis Options
-| Option                 | Type    | Unit    | Default   | Description             | Possible Values                            |
-| :--------------------- | :------ | :------ | :-------- | :---------------------- | :----------------------------------------- |
-| `catAxisLabelColor`    | string  |         | `000000`  | category-axis color     | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
-| `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size | 1-256. Ex: `{ titleFontSize:12 }`          |
+| Option                 | Type    | Unit    | Default   | Description              | Possible Values                            |
+| :--------------------- | :------ | :------ | :-------- | :----------------------- | :----------------------------------------- |
+| `catAxisLabelColor`    | string  |         | `000000`  | category-axis color      | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
+| `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face  | font name. Ex: `{ titleFontFace:'Arial' }` |
+| `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size  | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
-| `majorUnit`            | number  | float   | `1.0`     | value-axis tick steps   | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
-| `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
-| `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
-| `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
-| `valAxisMaxVal`        | number  |         |           | maximum value for Value Axis | 1-N. Ex: `{ valAxisMaxVal:125 }` |
-| `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
+| `valAxisLabelColor`    | string  |         | `000000`  | value-axis color         | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
+| `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face     | font name. Ex: `{ titleFontFace:'Arial' }`   |
+| `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size     | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `valAxisLabelFormatCode` | string |        |           | value-axis number format | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
+| `valAxisMajorUnit`     | number  | float   | `1.0`     | value-axis tick steps    | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
+| `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
+| `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation   | `maxMin` (high->low) or `minMax` (low->high) |
 
 ### Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |

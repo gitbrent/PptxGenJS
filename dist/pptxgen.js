@@ -1170,7 +1170,7 @@ var PptxGenJS = function(){
 								  </a:ln>\
 								</c:spPr>\
 								</c:majorGridlines>';
-					strXml += ' <c:numFmt formatCode="General" sourceLinked="0"/>';
+					strXml += ' <c:numFmt formatCode="'+ (rel.opts.valAxisLabelFormatCode ? rel.opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
 					strXml += ' <c:majorTickMark val="out"/>';
 					strXml += ' <c:minorTickMark val="none"/>';
 					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
@@ -1192,7 +1192,7 @@ var PptxGenJS = function(){
 					strXml += ' <c:crossAx val="2094734552"/>';
 					strXml += ' <c:crosses val="autoZero"/>';
 					strXml += ' <c:crossBetween val="'+ ( rel.opts.type == 'area' ? 'midCat' : 'between' ) +'"/>';
-					if ( rel.opts.majorUnit ) strXml += ' <c:majorUnit val="'+ rel.opts.majorUnit +'"/>';
+					if ( rel.opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ rel.opts.valAxisMajorUnit +'"/>';
 					strXml += '</c:valAx>';
 				}
 
@@ -2872,7 +2872,7 @@ var PptxGenJS = function(){
 			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' ? '0%' : '#,##0') );
 			//
 			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
-			options.majorUnit = ( typeof options.majorUnit === 'number' ? options.majorUnit : null );
+			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );
 
 			// STEP 4: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
