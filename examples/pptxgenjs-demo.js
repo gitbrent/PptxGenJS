@@ -1081,10 +1081,10 @@ function genSlides_Chart(pptx) {
 				barDir: 'bar',
 				axisLabelFormatCode: '#%',
 				gridLineColor: 'D8D8D8',
-				axisLineColor: 'D8D8D8', // DOCTHIS - DO THIS ?
-				axisLineShow: false,
+				axisLineColor: 'D8D8D8',
+				valAxisLineShow: false,
 				barGrouping: 'stacked',
-				tickLblPos: 'low',
+				catAxisLabelPos: 'low',
 				valueBarColors: true,
 				//dataLabelPosition: 'outEnd',
 				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384', '7D666A','A3C961','EF907B','9BA0A3'],

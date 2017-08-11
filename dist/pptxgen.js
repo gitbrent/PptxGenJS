@@ -1144,7 +1144,6 @@ var PptxGenJS = function(){
 
 				// B: "Category Axis"
 				{
-					console.log('rel.opts.tickLblPos', rel.opts.tickLblPos);
 					strXml += '<c:catAx>';
 					strXml += '  <c:axId val="2094734552"/>';
 					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
@@ -1153,7 +1152,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
-					strXml += '  <c:tickLblPos val="'+ (rel.opts.tickLblPos || rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+					strXml += '  <c:tickLblPos val="'+ (rel.opts.catAxisLabelPos || rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 					strXml += '  <c:spPr>';
 					strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					strXml += '  </c:spPr>';
@@ -1204,12 +1203,14 @@ var PptxGenJS = function(){
 					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 					strXml += ' <c:spPr>';
 					strXml += '   <a:ln w="12700" cap="flat">';
-					if (rel.opts.axisLineShow) {
+
+					var showAxis = !!rel.opts.valAxisLineShow || rel.opts.valAxisLineShow === undefined;
+					if (!showAxis) {
+						strXml += '     <a:noFill/>';
+					} else {
 						strXml += '     <a:solidFill>';
 						strXml += '       <a:srgbClr val="'+(rel.opts.axisLineColor ? rel.opts.axisLineColor : "888888")+'"/>';
 						strXml += '     </a:solidFill>';
-					} else {
-						strXml += '     <a:noFill/>';
 					}
 					strXml += '     <a:prstDash val="solid"/>';
 					strXml += '     <a:round/>';
