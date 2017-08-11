@@ -332,7 +332,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `w`             | number  | inches  | `50%`     | width                 | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`             | number  | inches  | `50%`     | height                | 0-n OR 'n%'. |
 | `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-| `chartColors`   | array   |         |           | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
+| `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `invertedColors`| array   |         |           | colors when value is < 0 | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
@@ -362,7 +362,9 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
-| `valAxisMaxVal`        | number  |         |           | maximum value for Value Axis | 1-N. Ex: `{ valAxisMaxVal:125 }` |
+| `valAxisLabelFormatCode` | string |        | `General` | value-axis number format | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
+| `valAxisMajorUnit`     | number  | float   | `1.0`     | value-axis tick steps    | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
+| `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
 
 ### Chart Data Options
