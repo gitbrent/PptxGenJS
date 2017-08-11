@@ -4,7 +4,10 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.7.0...v1.8.0)
 
 **Fixed Bugs:**
+- Shadow corrections bugfix [\#136](https://github.com/gitbrent/PptxGenJS/pull/136) ([kajda90](https://github.com/kajda90))
+
 **Implemented Enhancements:**
+
 
 
 
