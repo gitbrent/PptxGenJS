@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170807";
+	var APP_REL = "20170810";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -1192,8 +1192,7 @@ var PptxGenJS = function(){
 					strXml += ' <c:crossAx val="2094734552"/>';
 					strXml += ' <c:crosses val="autoZero"/>';
 					strXml += ' <c:crossBetween val="'+ ( rel.opts.type == 'area' ? 'midCat' : 'between' ) +'"/>';
-					//strXml += ' <c:majorUnit val="25"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
-					//strXml += ' <c:minorUnit val="12.5"/>'; // NOTE: Not Required.	// TODO: Add OPTION?
+					if ( rel.opts.majorUnit ) strXml += ' <c:majorUnit val="'+ rel.opts.majorUnit +'"/>';
 					strXml += '</c:valAx>';
 				}
 
@@ -2873,6 +2872,7 @@ var PptxGenJS = function(){
 			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' ? '0%' : '#,##0') );
 			//
 			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
+			options.majorUnit = ( typeof options.majorUnit === 'number' ? options.majorUnit : null );
 
 			// STEP 4: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
