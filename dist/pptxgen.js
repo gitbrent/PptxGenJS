@@ -917,8 +917,6 @@ var PptxGenJS = function(){
 	 * @see http://officeopenxml.com/drwSp-effects.php
 	 */
 	function createShadowElement(opts, defaults) {
-		if (!opts) return '';
-
 		var type            = ( opts.type    || defaults.type ),
 			blur            = ( opts.blur    || defaults.blur ) * ONEPT,
 			offset          = ( opts.offset  || defaults.offset ) * ONEPT,
@@ -942,7 +940,7 @@ var PptxGenJS = function(){
 	 * @param {Object} shadowOpts
 	 */
 	function correctShadowOptions(shadowOpts) {
-		if ( !shadowOpts ) return;
+		if ( !shadowOpts || shadowOpts === 'none' ) return;
 		// OPT: `type`
 		if ( shadowOpts.type != 'outer' && shadowOpts.type != 'inner' ) {
 			console.warn('Warning: shadow.type options are `outer` or `inner`.');
@@ -1099,9 +1097,9 @@ var PptxGenJS = function(){
 					else if ( rel.opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					if ( rel.opts.lineShadow ) {
+					if ( rel.opts.lineShadow !== 'none' ) {
 						strXml += '<a:effectLst>';
-						strXml += createShadowElement(rel.opts.lineShadow, CHART_LINE_SHADOW_DEFAULTS);
+						strXml += createShadowElement(rel.opts.lineShadow || {}, CHART_LINE_SHADOW_DEFAULTS);
 						strXml += '</a:effectLst>';
 					}
 					strXml += '  </c:spPr>';
