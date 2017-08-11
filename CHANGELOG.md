@@ -4,6 +4,7 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.7.0...v1.8.0)
 
 **Fixed Bugs:**
+- New chart features: Bar colors and axis tested [\#132](https://github.com/gitbrent/PptxGenJS/pull/132) ([clubajax](https://github.com/clubajax))
 - Shadow corrections bugfix [\#136](https://github.com/gitbrent/PptxGenJS/pull/136) ([kajda90](https://github.com/kajda90))
 
 **Implemented Enhancements:**
