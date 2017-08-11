@@ -910,7 +910,15 @@ var PptxGenJS = function(){
 		return arrObjSlides;
 	}
 
+	/**
+	 * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
+	 * @param {Object} opts optional shadow properties
+	 * @param {Object} defaults defaults for unspecified properties in `opts`
+	 * @see http://officeopenxml.com/drwSp-effects.php
+	 */
 	function createShadowElement(opts, defaults) {
+		if (!opts) return '';
+
 		var type            = ( opts.type    || defaults.type ),
 			blur            = ( opts.blur    || defaults.blur ) * ONEPT,
 			offset          = ( opts.offset  || defaults.offset ) * ONEPT,
@@ -923,10 +931,47 @@ var PptxGenJS = function(){
 		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
 		strXml += ' algn="bl" rotWithShape="'+ (+rotateWithShape) +'" blurRad="'+ blur +'" ';
 		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
-		strXml += '<a:srgbClr val="'+ color +'">';
+		strXml += '<a:srgbClr val="'+ color +'">'; // should accept scheme colors implemented in PR #135
 		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>'
 		strXml += '</a:'+ type +'Shdw>';
 		return strXml;
+	}
+
+	/**
+	 * Checks shadow options passed by user and performs corrections if needed.
+	 * @param {Object} shadowOpts
+	 */
+	function correctShadowOptions(shadowOpts) {
+		if ( !shadowOpts ) return;
+		// OPT: `type`
+		if ( shadowOpts.type != 'outer' && shadowOpts.type != 'inner' ) {
+			console.warn('Warning: shadow.type options are `outer` or `inner`.');
+			shadowOpts.type = 'outer';
+		}
+
+		// OPT: `angle`
+		if ( shadowOpts.angle ) {
+			// A: REALITY-CHECK
+			if ( isNaN(Number(shadowOpts.angle)) || shadowOpts.angle < 0 || shadowOpts.angle > 359 ) {
+				console.warn('Warning: shadow.angle can only be 0-359');
+				shadowOpts.angle = 270;
+			}
+
+			// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+			shadowOpts.angle = Math.round(Number(shadowOpts.angle));
+		}
+
+		// OPT: `opacity`
+		if ( shadowOpts.opacity ) {
+			// A: REALITY-CHECK
+			if ( isNaN(Number(shadowOpts.opacity)) || shadowOpts.opacity < 0 || shadowOpts.opacity > 1 ) {
+				console.warn('Warning: shadow.opacity can only be 0-1');
+				shadowOpts.opacity = 0.75;
+			}
+
+			// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+			shadowOpts.opacity = Number(shadowOpts.opacity)
+		}
 	}
 
 	/* =======================================================================================================
@@ -2884,6 +2929,10 @@ var PptxGenJS = function(){
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 
+			if ( options.type === 'line' ) {
+				correctShadowOptions(options.lineShadow);
+			}
+
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
 			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
@@ -3304,37 +3353,7 @@ var PptxGenJS = function(){
 			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
 
 			// ROBUST: Set rational values for some shadow props if needed
-			if ( opt.shadow ) {
-				// OPT: `type`
-				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
-					console.warn('Warning: shadow.type options are `outer` or `inner`.');
-					opt.shadow.type = 'outer';
-				}
-
-				// OPT: `angle`
-				if ( opt.shadow.angle ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.angle)) || opt.shadow.angle < 0 || opt.shadow.angle > 359 ) {
-						console.warn('Warning: shadow.angle can only be 0-359');
-						opt.shadow.angle = 270;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.shadow.angle = Math.round(Number(opt.shadow.angle));
-				}
-
-				// OPT: `opacity`
-				if ( opt.shadow.opacity ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.opacity)) || opt.shadow.opacity < 0 || opt.shadow.opacity > 1 ) {
-						console.warn('Warning: shadow.opacity can only be 0-1');
-						opt.shadow.opacity = 0.75;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.shadow.opacity = Number(opt.shadow.opacity)
-				}
-			}
+			correctShadowOptions(opt.shadow);
 
 			// STEP 3: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
