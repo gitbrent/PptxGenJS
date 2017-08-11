@@ -1054,17 +1054,19 @@ var PptxGenJS = function(){
 
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if ( rel.data.length === 1 && rel.opts.chartColors != BARCHART_COLORS ) {
+					if (( rel.data.length === 1 || rel.opts.valueBarColors ) && rel.opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
-						obj.values.forEach(function(value,index){
+						obj.values.forEach(function (value, index) {
+							var invert = rel.opts.invertedColors ? 0 : 1;
+							var colors = value < 0 ? rel.opts.invertedColors : rel.opts.chartColors;
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+index+'"/>';
-							strXml += '    <c:invertIfNegative val="1"/>';
-							strXml += '    <c:bubble3D val="0"/>';
-							strXml += '    <c:spPr>';
+							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
+							strXml += '    	<c:bubble3D val="0"/>';
+							strXml += '    	<c:spPr>';
 							strXml += '    <a:solidFill>';
-							strXml += '     <a:srgbClr val="'+rel.opts.chartColors[index % rel.opts.chartColors.length]+'"/>';
-							strXml += '    </a:solidFill>';
+							strXml += '    <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
+							strXml += '    	</a:solidFill>';
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
 							strXml += '    	<a:srgbClr val="000000">';
