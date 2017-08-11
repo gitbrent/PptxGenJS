@@ -3273,7 +3273,7 @@ var PptxGenJS = function(){
 				// OPT: `type`
 				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
 					console.warn('Warning: shadow.type options are `outer` or `inner`.');
-					opt.type = 'outer';
+					opt.shadow.type = 'outer';
 				}
 
 				// OPT: `angle`
@@ -3285,7 +3285,7 @@ var PptxGenJS = function(){
 					}
 
 					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.angle = Math.round(Number(opt.shadow.angle));
+					opt.shadow.angle = Math.round(Number(opt.shadow.angle));
 				}
 
 				// OPT: `opacity`
@@ -3297,7 +3297,7 @@ var PptxGenJS = function(){
 					}
 
 					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.opacity = Number(opt.shadow.opacity)
+					opt.shadow.opacity = Number(opt.shadow.opacity)
 				}
 			}
 
