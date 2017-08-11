@@ -53,7 +53,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Chart Examples](#chart-examples)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
-    - [Text Shadow Options](#text-shadow-options)
+    - [Shadow Options](#shadow-options)
     - [Text Examples](#text-examples)
   - [Adding Tables](#adding-tables)
     - [Table Layout Options](#table-layout-options)
@@ -375,6 +375,8 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
+| `lineSize`             | number  | points  | `2`       | thickness of data line     | 1 and more. Ex: `{ lineSize: 1 }` |
+| `lineShadow`           | object  |         | *shadow*  | shadow of data line        | `'none'` or [shadow object](#shadow-options) |
 
 ### Chart Examples
 ```javascript
@@ -467,7 +469,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `underline`  | boolean |         | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |         |           | vertical alignment  | `top` or `middle` or `bottom` |
 
-### Text Shadow Options
+### Shadow Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                          |
 | :----------- | :------ | :------ | :-------- | :------------------ | :--------------------------------------- |
 | `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
