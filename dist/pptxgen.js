@@ -1358,7 +1358,6 @@ var PptxGenJS = function(){
 				// 4: Close "SERIES"
 				strXml += '  </c:ser>';
 				strXml += '  <c:firstSliceAng val="0"/>';
-				rel.opts.holeSize = '50';
 				if ( rel.opts.type == 'doughnut' ) strXml += '  <c:holeSize val="' + (rel.opts.holeSize || 50) + '"/>';
 				strXml += '</c:'+ rel.opts.type +'Chart>';
 

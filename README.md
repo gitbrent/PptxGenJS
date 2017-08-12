@@ -322,7 +322,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 
 ### Chart Types
 * Chart type can be any one of `pptx.charts`
-* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`
+* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
 
 ### Chart Size/Formatting Options
 | Option          | Type    | Unit    | Default   | Description           | Possible Values  |
@@ -345,6 +345,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `titleColor`    | string  |         | `000000`  | title color           | hex color code. Ex: `{ titleColor:'0088CC' }` |
 | `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
+| `holeSize`      | number  | percent | `50`      | doughnut hole size    | 1-100. Ex: `{ holeSize:50 }` |
 
 ### Chart Axis Options
 | Option                 | Type    | Unit    | Default   | Description              | Possible Values                            |
