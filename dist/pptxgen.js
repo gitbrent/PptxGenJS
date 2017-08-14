@@ -934,7 +934,7 @@ var PptxGenJS = function(){
 		var tagName = 'c:'+ type + 'Gridlines';
 		strXml =  '<'+ tagName + '>';
 		strXml += ' <c:spPr>';
-		strXml += '  <a:ln w="' + (glOpts.size || defaults.size) * ONEPT +'" cap="flat">';
+		strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
 		strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
 		strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
 		strXml += '  </a:ln>';
