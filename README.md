@@ -355,7 +355,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size  | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
 | `showCatAxisTitle`     | boolean |         | `false`  | show category (vertical) title | `true` or `false` |
-| `catAxisTitle`         | string  |         | `Axis Title` | vertical axis title   | a string. Ex: `{ catAxisTitle:'Regions' }` |
+| `catAxisTitle`         | string  |         | `Axis Title` | axis title   | a string. Ex: `{ catAxisTitle:'Regions' }` |
 | `catAxisTitleColor`    | string  |         | `000000`     | title color           | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
 | `catAxisTitleFontFace` | string  |         | `Arial`      | font face             | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
 | `catAxisTitleFontSize` | number  | points  |              | font size    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
@@ -368,7 +368,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation   | `maxMin` (high->low) or `minMax` (low->high) |
 | `showValAxisTitle`     | boolean |         | `false`  | show values (horizontal) title | `true` or `false` |
-| `valAxisTitle`         | string  |         | `Axis Title` | vertical axis title   | a string. Ex: `{ valAxisTitle:'Sales (USD)' }` |
+| `valAxisTitle`         | string  |         | `Axis Title` | axis title   | a string. Ex: `{ valAxisTitle:'Sales (USD)' }` |
 | `valAxisTitleColor`    | string  |         | `000000`     | title color           | hex color code. Ex: `{ valAxisTitleColor:'0088CC' }` |
 | `valAxisTitleFontFace` | string  |         | `Arial`      | font face             | font name. Ex: `{ valAxisTitleFontFace:'Arial' }` |
 | `valAxisTitleFontSize` | number  | points  |              | font size    | 1-256. Ex: `{ valAxisTitleFontSize:12 }` |
