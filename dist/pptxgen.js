@@ -919,9 +919,28 @@ var PptxGenJS = function(){
 			delete glOpts.size; // delete prop to used defaults
 		}
 		if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
-			console.warn('Warning: chart.gridLine.style can only be `solid` or `dashed`.');
+			console.warn('Warning: chart.gridLine.style can only be `solid`, `dash`, `dot`.');
 			delete glOpts.style;
 		}
+	}
+
+	/**
+	 * @param {Object} glOpts {size, color, style}
+	 * @param {Object} defaults {size, color, style}
+	 * @param {String} type "major"(default) | "minor"
+	 */
+	function createGridLineElement(glOpts, defaults, type) {
+		type = type || 'major';
+		var tagName = 'c:'+ type + 'Gridlines';
+		strXml =  '<'+ tagName + '>';
+		strXml += ' <c:spPr>';
+		strXml += '  <a:ln w="' + (glOpts.size || defaults.size) * ONEPT +'" cap="flat">';
+		strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
+		strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
+		strXml += '  </a:ln>';
+		strXml += ' </c:spPr>';
+		strXml += '</'+ tagName + '>';
+		return strXml;
 	}
 
 	/* =======================================================================================================
@@ -1164,6 +1183,9 @@ var PptxGenJS = function(){
 					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 					strXml += '  <c:delete val="0"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+					if ( rel.opts.catGridLine !== 'none' ) {
+						strXml += createGridLineElement(rel.opts.catGridLine, DEF_CHART_GRIDLINE);
+					}
 					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
@@ -1203,15 +1225,8 @@ var PptxGenJS = function(){
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
 
 					// TESTING: 20170527 - omitting this 'strXml' works fine in Keynote/PPT-Online!!
-					if ( rel.opts.gridLine !== 'none' ) {
-						strXml += '  <c:majorGridlines>';
-						strXml += '   <c:spPr>';
-						strXml += '    <a:ln w="' + (rel.opts.gridLine.size || DEF_CHART_GRIDLINE.size) * ONEPT +'" cap="flat">';
-						strXml += '    <a:solidFill><a:srgbClr val="' + (rel.opts.gridLine.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
-						strXml += '     <a:prstDash val="' + (rel.opts.gridLine.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>';
-						strXml += '    </a:ln>';
-						strXml += '   </c:spPr>';
-						strXml += '  </c:majorGridlines>';
+					if ( rel.opts.valGridLine !== 'none' ) {
+						strXml += createGridLineElement(rel.opts.valGridLine, DEF_CHART_GRIDLINE);
 					}
 
 					strXml += ' <c:numFmt formatCode="'+ (rel.opts.valAxisLabelFormatCode ? rel.opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
@@ -2893,8 +2908,11 @@ var PptxGenJS = function(){
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 
-			options.gridLine = options.gridLine || {};
-			correctGridLineOptions(options.gridLine);
+			// use default lines only for y-axis if nothing specified
+			options.valGridLine = options.valGridLine || {};
+			options.catGridLine = options.catGridLine || 'none';
+			correctGridLineOptions(options.catGridLine);
+			correctGridLineOptions(options.valGridLine);
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);

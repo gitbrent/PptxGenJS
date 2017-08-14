@@ -335,7 +335,6 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
-| `gridLine`      | object  |         |           | grid line style       | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
 | `showLegend`    | boolean |         | `false`   | show chart legend     | `true` or `false` |
@@ -354,6 +353,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face  | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size  | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
+| `catGridLine`          | object  |         | `none`    | category grid line style  | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `valAxisLabelColor`    | string  |         | `000000`  | value-axis color         | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face     | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size     | 1-256. Ex: `{ titleFontSize:12 }`            |
@@ -361,6 +361,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `valAxisMajorUnit`     | number  | float   | `1.0`     | value-axis tick steps    | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
 | `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation   | `maxMin` (high->low) or `minMax` (low->high) |
+| `valGridLine`          | object  |         |           | value grid line style    | _the same as `catGridLine`_ |
 
 ### Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
