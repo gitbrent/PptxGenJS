@@ -115,6 +115,7 @@ var PptxGenJS = function(){
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 	var DEF_FONT_SIZE = 12;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -907,6 +908,22 @@ var PptxGenJS = function(){
 		return arrObjSlides;
 	}
 
+	/**
+	 * Checks grid line properties and correct them if needed.
+	 * @param {Object} glOpts chart.gridLine options
+	 */
+	function correctGridLineOptions(glOpts) {
+		if ( !glOpts || glOpts === 'none' ) return;
+		if ( glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0) ) {
+			console.warn('Warning: chart.gridLine.size can only be greater than 0.');
+			delete glOpts.size; // delete prop to used defaults
+		}
+		if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
+			console.warn('Warning: chart.gridLine.style can only be `solid` or `dashed`.');
+			delete glOpts.style;
+		}
+	}
+
 	/* =======================================================================================================
 	|
 	#     #  #     #  #             #####
@@ -1186,15 +1203,17 @@ var PptxGenJS = function(){
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
 
 					// TESTING: 20170527 - omitting this 'strXml' works fine in Keynote/PPT-Online!!
-					// TODO: gridLine options! (colors/style(solid/dashed) -OR- NONE (eg:omit this section)
-					strXml += ' <c:majorGridlines>\
-								<c:spPr>\
-								  <a:ln w="12700" cap="flat">\
-								    <a:solidFill><a:srgbClr val="888888"/></a:solidFill>\
-								    <a:prstDash val="solid"/><a:round/>\
-								  </a:ln>\
-								</c:spPr>\
-								</c:majorGridlines>';
+					if ( rel.opts.gridLine !== 'none' ) {
+						strXml += '  <c:majorGridlines>';
+						strXml += '   <c:spPr>';
+						strXml += '    <a:ln w="' + (rel.opts.gridLine.size || DEF_CHART_GRIDLINE.size) * ONEPT +'" cap="flat">';
+						strXml += '    <a:solidFill><a:srgbClr val="' + (rel.opts.gridLine.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
+						strXml += '     <a:prstDash val="' + (rel.opts.gridLine.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>';
+						strXml += '    </a:ln>';
+						strXml += '   </c:spPr>';
+						strXml += '  </c:majorGridlines>';
+					}
+
 					strXml += ' <c:numFmt formatCode="'+ (rel.opts.valAxisLabelFormatCode ? rel.opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
 					strXml += ' <c:majorTickMark val="out"/>';
 					strXml += ' <c:minorTickMark val="none"/>';
@@ -2873,6 +2892,9 @@ var PptxGenJS = function(){
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
+
+			options.gridLine = options.gridLine || {};
+			correctGridLineOptions(options.gridLine);
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);

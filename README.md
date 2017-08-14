@@ -335,6 +335,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
+| `gridLine`      | object  |         |           | grid line style       | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
 | `showLegend`    | boolean |         | `false`   | show chart legend     | `true` or `false` |
