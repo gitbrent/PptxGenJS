@@ -1181,7 +1181,7 @@ var PptxGenJS = function(){
 					strXml += '<c:catAx>';
 					strXml += '  <c:axId val="2094734552"/>';
 					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
-					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:delete val="'+ (rel.opts.catAxisHidden ? 1 : 0) +'"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'b' : 'l') +'"/>';
 					if ( rel.opts.catGridLine !== 'none' ) {
 						strXml += createGridLineElement(rel.opts.catGridLine, DEF_CHART_GRIDLINE);
@@ -1220,8 +1220,9 @@ var PptxGenJS = function(){
 					strXml += '  <c:scaling>';
 					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
 					if (rel.opts.valAxisMaxVal) strXml += '<c:max val="'+ rel.opts.valAxisMaxVal +'"/>';
+					if (rel.opts.valAxisMinVal) strXml += '<c:min val="'+ rel.opts.valAxisMinVal +'"/>';
 					strXml += '  </c:scaling>';
-					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:delete val="'+ (rel.opts.valAxisHidden ? 1 : 0) +'"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
 
 					// TESTING: 20170527 - omitting this 'strXml' works fine in Keynote/PPT-Online!!
