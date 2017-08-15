@@ -114,6 +114,7 @@ var PptxGenJS = function(){
 	//
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 	var DEF_FONT_SIZE = 12;
+	var DEF_FONT_TITLE_SIZE = 18;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 
 	// A: Create internal pptx object
@@ -946,31 +947,13 @@ var PptxGenJS = function(){
 
 		// OPTION: Title
 		if ( rel.opts.showTitle ) {
-			strXml += '<c:title>';
-			strXml += ' <c:tx>';
-			strXml += '  <c:rich>';
-			strXml += '  <a:bodyPr rot="0"/>';
-			strXml += '  <a:lstStyle/>';
-			strXml += '  <a:p>';
-			strXml += '    <a:pPr>';
-			strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
-			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
-			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
-			strXml += '      </a:defRPr>';
-			strXml += '    </a:pPr>';
-			strXml += '    <a:r>';
-			strXml += '      <a:rPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
-			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
-			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
-			strXml += '      </a:rPr>';
-			strXml += '      <a:t>'+ (decodeXmlEntities(rel.opts.title) || '') +'</a:t>';
-			strXml += '    </a:r>';
-			strXml += '  </a:p>';
-			strXml += '  </c:rich>';
-			strXml += ' </c:tx>';
-			strXml += ' <c:layout/>';
-			strXml += ' <c:overlay val="0"/>';
-			strXml += '</c:title>';
+			strXml += genXmlTitle({
+				title: rel.opts.title || 'Chart Title',
+				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
+				color: rel.opts.titleColor,
+				fontFace: rel.opts.titleFontFace,
+				rotate: rel.opts.titleRotate
+			});
 			strXml += '<c:autoTitleDeleted val="0"/>';
 		}
 
@@ -1143,6 +1126,15 @@ var PptxGenJS = function(){
 				// B: "Category Axis"
 				{
 					strXml += '<c:catAx>';
+					if (rel.opts.showCatAxisTitle) {
+						strXml += genXmlTitle({
+							title: rel.opts.catAxisTitle || 'Axis Title',
+							fontSize: rel.opts.catAxisTitleFontSize,
+							color: rel.opts.catAxisTitleColor,
+							fontFace: rel.opts.catAxisTitleFontFace,
+							rotate: rel.opts.catAxisTitleRotate
+						});
+					}
 					strXml += '  <c:axId val="2094734552"/>';
 					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 					strXml += '  <c:delete val="0"/>';
@@ -1177,6 +1169,15 @@ var PptxGenJS = function(){
 				// C: "Value Axis"
 				{
 					strXml += '<c:valAx>';
+					if (rel.opts.showValAxisTitle) {
+						strXml += genXmlTitle({
+							title: rel.opts.valAxisTitle || 'Axis Title',
+							fontSize: rel.opts.valAxisTitleFontSize,
+							color: rel.opts.valAxisTitleColor,
+							fontFace: rel.opts.valAxisTitleFontFace,
+							rotate: rel.opts.valAxisTitleRotate
+						});
+					}
 					strXml += '  <c:axId val="2094734553"/>';
 					strXml += '  <c:scaling>';
 					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
@@ -1397,6 +1398,57 @@ var PptxGenJS = function(){
 		// LAST: chartSpace end
 		strXml += '</c:chartSpace>';
 
+		return strXml;
+	}
+
+	/**
+	* DESC: Convert degrees (0..360) to Powerpoint rot value
+	*/
+	function convertRotationDegrees(d) {
+		d = d || 0;
+		return (d > 360 ? (d - 360) : d) * 60000;
+	}
+
+	/**
+	* DESC: Generate the XML for title elements used for the char and axis titles
+	*/
+	function genXmlTitle(opts) {
+		var strXml = '';
+		strXml += '<c:title>';
+		strXml += ' <c:tx>';
+		strXml += '  <c:rich>';
+		if (opts.rotate !== undefined) {
+			strXml += '  <a:bodyPr rot="' + convertRotationDegrees(opts.rotate) + '"/>';
+		}
+		else {
+			strXml += '  <a:bodyPr/>';  // don't specify rotation to get default (ex. vertical for cat axis)
+		}
+		strXml += '  <a:lstStyle/>';
+		strXml += '  <a:p>';
+		strXml += '    <a:pPr>';
+		var sizeAttr = '';
+		// only set the font size if specified.  Powerpoint will handle the default size
+		if (opts.fontSize !== undefined) {
+			sizeAttr = ' sz="' + opts.fontSize + '00"';
+		}
+		strXml += '      <a:defRPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
+		strXml += '      </a:defRPr>';
+		strXml += '    </a:pPr>';
+		strXml += '    <a:r>';
+		strXml += '      <a:rPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
+		strXml += '      </a:rPr>';
+		strXml += '      <a:t>'+ (decodeXmlEntities(opts.title) || '') +'</a:t>';
+		strXml += '    </a:r>';
+		strXml += '  </a:p>';
+		strXml += '  </c:rich>';
+		strXml += ' </c:tx>';
+		strXml += ' <c:layout/>';
+		strXml += ' <c:overlay val="0"/>';
+		strXml += '</c:title>';
 		return strXml;
 	}
 
@@ -1954,7 +2006,7 @@ var PptxGenJS = function(){
 			//
 			if ( slideObj.options.flipH  ) locationAttr += ' flipH="1"';
 			if ( slideObj.options.flipV  ) locationAttr += ' flipV="1"';
-			if ( slideObj.options.rotate ) locationAttr += ' rot="' + ( (slideObj.options.rotate > 360 ? (slideObj.options.rotate - 360) : slideObj.options.rotate) * 60000 ) + '"';
+			if ( slideObj.options.rotate ) locationAttr += ' rot="' + convertRotationDegrees(slideObj.options.rotate)+ '"';
 
 			// B: Add OBJECT to current Slide ----------------------------
 			switch ( slideObj.type ) {
