@@ -916,11 +916,11 @@ var PptxGenJS = function(){
 	function correctGridLineOptions(glOpts) {
 		if ( !glOpts || glOpts === 'none' ) return;
 		if ( glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0) ) {
-			console.warn('Warning: chart.gridLine.size can only be greater than 0.');
+			console.warn('Warning: chart.gridLine.size must be greater than 0.');
 			delete glOpts.size; // delete prop to used defaults
 		}
 		if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
-			console.warn('Warning: chart.gridLine.style can only be `solid`, `dash`, `dot`.');
+			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
 			delete glOpts.style;
 		}
 	}
@@ -1225,12 +1225,7 @@ var PptxGenJS = function(){
 					strXml += '  </c:scaling>';
 					strXml += '  <c:delete val="'+ (rel.opts.valAxisHidden ? 1 : 0) +'"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
-
-					// TESTING: 20170527 - omitting this 'strXml' works fine in Keynote/PPT-Online!!
-					if ( rel.opts.valGridLine !== 'none' ) {
-						strXml += createGridLineElement(rel.opts.valGridLine, DEF_CHART_GRIDLINE);
-					}
-
+					if (rel.opts.valGridLine != 'none') strXml += createGridLineElement(rel.opts.valGridLine, DEF_CHART_GRIDLINE);
 					strXml += ' <c:numFmt formatCode="'+ (rel.opts.valAxisLabelFormatCode ? rel.opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
 					strXml += ' <c:majorTickMark val="out"/>';
 					strXml += ' <c:minorTickMark val="none"/>';
