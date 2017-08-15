@@ -335,6 +335,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
+| `holeSize`      | number  | percent | `50`      | doughnut hole size    | 1-100. Ex: `{ holeSize:50 }` |
 | `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
 | `showLegend`    | boolean |         | `false`   | show chart legend     | `true` or `false` |
@@ -346,7 +347,6 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `titleColor`    | string  |         | `000000`  | title color           | hex color code. Ex: `{ titleColor:'0088CC' }` |
 | `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
-| `holeSize`      | number  | percent | `50`      | doughnut hole size    | 1-100. Ex: `{ holeSize:50 }` |
 
 ### Chart Axis Options
 | Option                 | Type    | Unit    | Default   | Description              | Possible Values                            |
