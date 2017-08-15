@@ -92,11 +92,11 @@ var PptxGenJS = function(){
 		'TRIANGLE': "&#x25B6;"
 	};
 	var CHART_TYPES = {
-		'AREA': { 'displayName':'Area Chart', 'name':'area' },
-		'BAR' : { 'displayName':'Bar Chart' , 'name':'bar'  },
-		'LINE': { 'displayName':'Line Chart', 'name':'line' },
-		'PIE' : { 'displayName':'Pie Chart' , 'name':'pie'  },
-		'DOUGHNUT' : { 'displayName':'Pie Chart (doughnut)' , 'name':'doughnut'  }
+		'AREA'    : { 'displayName':'Area Chart',      'name':'area'     },
+		'BAR'     : { 'displayName':'Bar Chart' ,      'name':'bar'      },
+		'LINE'    : { 'displayName':'Line Chart',      'name':'line'     },
+		'PIE'     : { 'displayName':'Pie Chart' ,      'name':'pie'      },
+		'DOUGHNUT': { 'displayName':'Doughnut Chart' , 'name':'doughnut' }
 	}
 	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
