@@ -133,6 +133,10 @@ var PptxGenJS = function(){
 	gObjPptx.revision = '1';
 	gObjPptx.subject = 'PptxGenJS Presentation';
 	gObjPptx.title = 'PptxGenJS Presentation';
+	gObjPptx.masterSlideXml = '';
+	gObjPptx.layoutSlideXmls = {};
+	gObjPptx.slide2layoutMapping = [];
+	gObjPptx.properLayoutMasterInUse = false;
 	gObjPptx.fileName = 'Presentation';
 	gObjPptx.fileExtn = '.pptx';
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
@@ -195,13 +199,23 @@ var PptxGenJS = function(){
 		zip.file("ppt/tableStyles.xml",  makeXmlTableStyles());
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
+		if ( gObjPptx.properLayoutMasterInUse ) {
+			var layouts = Object.keys(gObjPptx.layoutSlideXmls);
+			for ( var idx = 0, cnt = layouts.length; idx < cnt; idx++ ) {
+				zip.file("ppt/slideLayouts/slideLayout"+ ( idx + 1 ) +".xml", gObjPptx.layoutSlideXmls[layouts[idx]]);
+				zip.file("ppt/slideLayouts/_rels/slideLayout"+ ( idx + 1 ) +".xml.rels", makeXmlSlideLayoutRel( idx + 1 ));
+			}
+		}
+
 		// Create a Layout/Master/Rel/Slide file for each SLIDE
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
 			intSlideNum++;
-			zip.file("ppt/slideLayouts/slideLayout"+ intSlideNum +".xml", makeXmlSlideLayout( intSlideNum ));
-			zip.file("ppt/slideLayouts/_rels/slideLayout"+ intSlideNum +".xml.rels", makeXmlSlideLayoutRel( intSlideNum ));
 			zip.file("ppt/slides/slide"+ intSlideNum +".xml", makeXmlSlide(gObjPptx.slides[idx]));
 			zip.file("ppt/slides/_rels/slide"+ intSlideNum +".xml.rels", makeXmlSlideRel( intSlideNum ));
+			if ( !gObjPptx.properLayoutMasterInUse ) {
+				zip.file("ppt/slideLayouts/slideLayout"+ intSlideNum +".xml", makeXmlSlideLayout( intSlideNum ));
+				zip.file("ppt/slideLayouts/_rels/slideLayout"+ intSlideNum +".xml.rels", makeXmlSlideLayoutRel( intSlideNum ));
+			}
 		}
 		zip.file("ppt/slideMasters/slideMaster1.xml", makeXmlSlideMaster());
 		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlSlideMasterRel());
@@ -955,6 +969,44 @@ var PptxGenJS = function(){
 		strXml += '</a:'+ type +'Shdw>';
 
 		return strXml;
+	}
+
+	/**
+	 * Checks shadow options passed by user and performs corrections if needed.
+	 * @param {Object} shadowOpts
+	 */
+	function correctShadowOptions(shadowOpts) {
+		if ( !shadowOpts || shadowOpts === 'none' ) return;
+
+		// OPT: `type`
+		if ( shadowOpts.type != 'outer' && shadowOpts.type != 'inner' ) {
+			console.warn('Warning: shadow.type options are `outer` or `inner`.');
+			shadowOpts.type = 'outer';
+		}
+
+		// OPT: `angle`
+		if ( shadowOpts.angle ) {
+			// A: REALITY-CHECK
+			if ( isNaN(Number(shadowOpts.angle)) || shadowOpts.angle < 0 || shadowOpts.angle > 359 ) {
+				console.warn('Warning: shadow.angle can only be 0-359');
+				shadowOpts.angle = 270;
+			}
+
+			// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+			shadowOpts.angle = Math.round(Number(shadowOpts.angle));
+		}
+
+		// OPT: `opacity`
+		if ( shadowOpts.opacity ) {
+			// A: REALITY-CHECK
+			if ( isNaN(Number(shadowOpts.opacity)) || shadowOpts.opacity < 0 || shadowOpts.opacity > 1 ) {
+				console.warn('Warning: shadow.opacity can only be 0-1');
+				shadowOpts.opacity = 0.75;
+			}
+
+			// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+			shadowOpts.opacity = Number(shadowOpts.opacity)
+		}
 	}
 
 	/* =======================================================================================================
@@ -2573,9 +2625,12 @@ var PptxGenJS = function(){
 	}
 
 	function makeXmlSlideRel(inSlideNum) {
+		var layouts = Object.keys(gObjPptx.layoutSlideXmls),
+			layoutIdx = layouts.indexOf(gObjPptx.slide2layoutMapping[inSlideNum - 1]) + 1;
+
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
 			+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-			+ ' <Relationship Id="rId1" Target="../slideLayouts/slideLayout'+ inSlideNum +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"/>';
+			+ ' <Relationship Id="rId1" Target="../slideLayouts/slideLayout'+ ( gObjPptx.properLayoutMasterInUse ? layoutIdx : inSlideNum ) +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"/>';
 
 		// Add any rels for this Slide (image/audio/video/youtube/chart)
 		gObjPptx.slides[inSlideNum-1].rels.forEach(function(rel,idx){
@@ -2617,6 +2672,9 @@ var PptxGenJS = function(){
 	}
 
 	function makeXmlSlideMaster() {
+		if ( gObjPptx.properLayoutMasterInUse ) {
+			return gObjPptx.masterSlideXml;
+		}
 		var intSlideLayoutId = 2147483649;
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
 					+ '<p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
@@ -2835,6 +2893,18 @@ var PptxGenJS = function(){
 		}
 	}
 
+	this.setMasterSlide = function(masterSlideXml) {
+		gObjPptx.masterSlideXml = masterSlideXml;
+	};
+
+	this.addLayoutSlide = function(name, layoutSlideXml) {
+		gObjPptx.layoutSlideXmls[name] = layoutSlideXml;
+	};
+
+	this.useProperLayoutMaster = function() {
+		gObjPptx.properLayoutMasterInUse = true;
+	}
+
 	/**
 	 * Sets the Presentation's Title
 	 */
@@ -2925,44 +2995,7 @@ var PptxGenJS = function(){
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
 
-		/**
-		 * Checks shadow options passed by user and performs corrections if needed.
-		 * @param {Object} shadowOpts
-		 */
-		function correctShadowOptions(shadowOpts) {
-			if ( !shadowOpts || shadowOpts === 'none' ) return;
-
-			// OPT: `type`
-			if ( shadowOpts.type != 'outer' && shadowOpts.type != 'inner' ) {
-				console.warn('Warning: shadow.type options are `outer` or `inner`.');
-				shadowOpts.type = 'outer';
-			}
-
-			// OPT: `angle`
-			if ( shadowOpts.angle ) {
-				// A: REALITY-CHECK
-				if ( isNaN(Number(shadowOpts.angle)) || shadowOpts.angle < 0 || shadowOpts.angle > 359 ) {
-					console.warn('Warning: shadow.angle can only be 0-359');
-					shadowOpts.angle = 270;
-				}
-
-				// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-				shadowOpts.angle = Math.round(Number(shadowOpts.angle));
-			}
-
-			// OPT: `opacity`
-			if ( shadowOpts.opacity ) {
-				// A: REALITY-CHECK
-				if ( isNaN(Number(shadowOpts.opacity)) || shadowOpts.opacity < 0 || shadowOpts.opacity > 1 ) {
-					console.warn('Warning: shadow.opacity can only be 0-1');
-					shadowOpts.opacity = 0.75;
-				}
-
-				// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-				shadowOpts.opacity = Number(shadowOpts.opacity)
-			}
-		}
-
+		gObjPptx.slide2layoutMapping.push(inMaster);
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {};
 		gObjPptx.slides[slideNum].slide = slideObj;
