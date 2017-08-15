@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170810";
+	var APP_REL = "20170814";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
