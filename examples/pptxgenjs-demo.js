@@ -749,7 +749,19 @@ function genSlides_Chart(pptx) {
 		var optsChart = {
 			x:0.5, y:0.5, w:'90%', h:'90%',
 			barDir: 'col',
-			title: 'Chart With >26 Cols'
+			title: 'Chart With >26 Cols',
+			showTitle: true,
+			titleFontSize: 20,
+			titleRotate: 10,
+			showCatAxisTitle: true,
+			catAxisTitle: "Letters",
+			catAxisTitleColor: "4286f4",
+			catAxisTitleFontSize: 14,
+
+			showValAxisTitle: true,
+			valAxisTitle: "Column Index",
+			valAxisTitleColor: "c11c13",
+			valAxisTitleFontSize: 16,
 		};
 
 		// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
@@ -1248,8 +1260,8 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Spacing (bullets):", { x:7.5, y:4.45, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-		      { text:'Line Spacing\n35pt', options:{ font_size:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
-		    ],
+			  { text:'Line Spacing\n35pt', options:{ font_size:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
+			],
 			{ x:7.5, y:4.85, w:5.25, h:1.15, margin:0.1, fill:'f1f1f1' }
 		);
 	}
@@ -1336,7 +1348,7 @@ function genSlides_Text(pptx) {
 				{ text:'Sub'},
 				{ text:'Subscript', options:{ subscript:true } },
 				{ text:' // Super'},
-			    { text:'Superscript', options:{ superscript:true } }
+				{ text:'Superscript', options:{ superscript:true } }
 			],
 			{ x:10, y:5.5 }
 		);

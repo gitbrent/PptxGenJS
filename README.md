@@ -342,6 +342,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `showTitle`     | boolean |         | `false`   | show chart title      | `true` or `false` |
 | `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
 | `title`         | string  |         |           | chart title           | a string. Ex: `{ title:'Sales by Region' }` |
+| `titleRotate`    | integer | degrees |          | title rotation degrees           | 0-360. Ex: `{ titleRotate:45 }` |
 | `titleColor`    | string  |         | `000000`  | title color           | hex color code. Ex: `{ titleColor:'0088CC' }` |
 | `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
@@ -354,7 +355,14 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face  | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size  | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
+| `catAxisTitle`         | string  |         | `Axis Title` | axis title   | a string. Ex: `{ catAxisTitle:'Regions' }` |
+| `catAxisTitleColor`    | string  |         | `000000`     | title color           | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
+| `catAxisTitleFontFace` | string  |         | `Arial`      | font face             | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
+| `catAxisTitleFontSize` | number  | points  |              | font size    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
+| `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees           | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
 | `catGridLine`          | object  |         | `none`    | category grid line style  | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
+| `showCatAxisTitle`     | boolean |         | `false`   | show category (vertical) title | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
+| `showValAxisTitle`     | boolean |         | `false`   | show values (horizontal) title | `true` or `false`.  Ex:`{ showValAxisTitle:true }` |
 | `valAxisHidden`        | boolean |         | `false`   | hide value-axis          | `true` or `false`   |
 | `valAxisLabelColor`    | string  |         | `000000`  | value-axis color         | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face     | font name. Ex: `{ titleFontFace:'Arial' }`   |
@@ -364,6 +372,11 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisMinVal`        | number  |         |           | value-axis minimum value | 1-N. Ex: `{ valAxisMinVal: -10 }` |
 | `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation   | `maxMin` (high->low) or `minMax` (low->high) |
+| `valAxisTitle`         | string  |         | `Axis Title` | axis title   | a string. Ex: `{ valAxisTitle:'Sales (USD)' }` |
+| `valAxisTitleColor`    | string  |         | `000000`     | title color           | hex color code. Ex: `{ valAxisTitleColor:'0088CC' }` |
+| `valAxisTitleFontFace` | string  |         | `Arial`      | font face             | font name. Ex: `{ valAxisTitleFontFace:'Arial' }` |
+| `valAxisTitleFontSize` | number  | points  |              | font size    | 1-256. Ex: `{ valAxisTitleFontSize:12 }` |
+| `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees           | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
 | `valGridLine`          | object  |         |           | value grid line style    | _the same as `catGridLine`_ |
 
 ### Chart Data Options
