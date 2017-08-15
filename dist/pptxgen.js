@@ -95,7 +95,8 @@ var PptxGenJS = function(){
 		'AREA': { 'displayName':'Area Chart', 'name':'area' },
 		'BAR' : { 'displayName':'Bar Chart' , 'name':'bar'  },
 		'LINE': { 'displayName':'Line Chart', 'name':'line' },
-		'PIE' : { 'displayName':'Pie Chart' , 'name':'pie'  }
+		'PIE' : { 'displayName':'Pie Chart' , 'name':'pie'  },
+		'DOUGHNUT' : { 'displayName':'Pie Chart (doughnut)' , 'name':'doughnut'  }
 	}
 	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
@@ -1256,6 +1257,7 @@ var PptxGenJS = function(){
 				break;
 
 			case 'pie':
+			case 'doughnut':
 				// Use the same var name so code blocks from barChart are interchangeable
 				var obj = rel.data[0];
 
@@ -1270,7 +1272,7 @@ var PptxGenJS = function(){
 				*/
 
 				// 1: Start pieChart
-				strXml += '<c:pieChart>';
+				strXml += '<c:'+ rel.opts.type +'Chart>';
 				strXml += '  <c:varyColors val="0"/>';
 				strXml += '<c:ser>';
 				strXml += '  <c:idx val="0"/>';
@@ -1329,7 +1331,9 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'inEnd') +'"/>';
+					if (rel.opts.type == 'pie') {
+						strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'inEnd') +'"/>';
+					}
 					strXml += '    <c:showLegendKey val="0"/>';
 					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
 					strXml += '    <c:showCatName val="'+ (rel.opts.showLabel ? "1" : "0") +'"/>';
@@ -1350,7 +1354,7 @@ var PptxGenJS = function(){
 		                </a:pPr>\
 		              </a:p>\
 		            </c:txPr>\
-		            <c:dLblPos val="ctr"/>\
+		            ' + (rel.opts.type == 'pie' ? '<c:dLblPos val="ctr"/>' : '') + '\
 		            <c:showLegendKey val="0"/>\
 		            <c:showVal val="0"/>\
 		            <c:showCatName val="1"/>\
@@ -1385,7 +1389,8 @@ var PptxGenJS = function(){
 				// 4: Close "SERIES"
 				strXml += '  </c:ser>';
 				strXml += '  <c:firstSliceAng val="0"/>';
-				strXml += '</c:pieChart>';
+				if ( rel.opts.type == 'doughnut' ) strXml += '  <c:holeSize val="' + (rel.opts.holeSize || 50) + '"/>';
+				strXml += '</c:'+ rel.opts.type +'Chart>';
 
 				// Done with CHART.BAR
 				break;
@@ -2943,7 +2948,7 @@ var PptxGenJS = function(){
 			// B: Options: misc
 			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
 			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' ? 'bestFit' : 'ctr');
+			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' || options.type == 'doughnut' ? 'bestFit' : 'ctr');
 			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
 			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
@@ -2971,7 +2976,7 @@ var PptxGenJS = function(){
 
 			// D: Options: chart
 			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
-			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' ? PIECHART_COLORS : BARCHART_COLORS) );
+			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' || options.type == 'doughnut' ? PIECHART_COLORS : BARCHART_COLORS) );
 			options.chartColorsOpacity = ( options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null );
 			//
 			options.border = ( options.border && typeof options.border === 'object' ? options.border : null );
@@ -2982,7 +2987,7 @@ var PptxGenJS = function(){
 			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
 			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
 			//
-			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' ? '0%' : '#,##0') );
+			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' || options.type == 'doughnut' ? '0%' : '#,##0') );
 			//
 			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
 			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );

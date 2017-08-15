@@ -64,12 +64,18 @@ function runEveryTest() {
 
 function execGenSlidesFuncs(type) {
 	// STEP 1: Instantiate new PptxGenJS object
+	var pptx;
 	if ( NODEJS ) {
-		//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
-		var pptx = require("pptxgenjs");
+		var fs = require('fs');
+		if (fs.existsSync('../dist/pptxgen.js')) {
+			pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+		}
+		else {
+			pptx = require("pptxgenjs");
+		}
 	}
 	else {
-		var pptx = new PptxGenJS();
+		pptx = new PptxGenJS();
 	}
 
 	pptx.setLayout('LAYOUT_WIDE');
@@ -1054,7 +1060,7 @@ function genSlides_Chart(pptx) {
 
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
+		slide.addChart( pptx.charts.DOUGHNUT, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
 
 		// TOP-RIGHT
 		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
