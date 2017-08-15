@@ -911,222 +911,8 @@ function genSlides_Chart(pptx) {
 		// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
 		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	}
-
-	// SLIDE 5: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
-	{
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart Smoothing, Line Size, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
-		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
-			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
-			lineSize  : 8,
-			lineSmooth: true,
-			showLegend: true, legendPos: 't'
-		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
-
-		var optsChartLine2 = { x:7.0, y:0.6, w:6.0, h:3.0,
-			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
-			lineSize  : 16,
-			lineSmooth: true,
-			showLegend: true, legendPos: 'r'
-		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
-
-		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
-			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
-			lineDataSymbolSize: 10,
-			showLegend: true, legendPos: 'l'
-		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
-
-		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
-			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
-			lineDataSymbolSize: 20,
-			showLegend: true, legendPos: 'b'
-		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
-	}
-
-	// SLIDE 6: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
-	{
-		var intWgap = 4.25;
-		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		opts_lineDataSymbol.forEach(function(opt,idx){
-			slide.addChart(
-				pptx.charts.LINE,
-				arrDataLineStat,
-				{
-					x:(idx < 3 ? idx*intWgap : (idx < 6 ? (idx-3)*intWgap : (idx-6)*intWgap)), y:(idx < 3 ? 0.5 : (idx < 6 ? 2.75 : 5)),
-					w:4.25, h:2.25,
-					lineDataSymbol:opt, title:opt, showTitle:true,
-					lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : null))
-				}
-			);
-		});
-	}
-
-	// SLIDE 7: Line Chart: Lots of Cats ---------------------------------------------------
-	{
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		var MAXVAL = 20000;
-
-		var arrDataTimeline = [];
-		for (var idx=0; idx<15; idx++) {
-			var tmpObj = {
-				name  : 'Series'+idx,
-				labels: MONS,
-				values: []
-			};
-
-			for (var idy=0; idy<MONS.length; idy++) {
-				tmpObj.values.push( Math.floor(Math.random() * MAXVAL) + 1 );
-			}
-
-			arrDataTimeline.push( tmpObj );
-		}
-
-		// FULL SLIDE:
-		var optsChartLine1 = { x:0.5, y:0.6, w:'95%', h:'85%',
-			fill: 'F2F9FC',
-
-			valAxisMaxVal: MAXVAL,
-
-			showLegend: true,
-			legendPos : 'r'
-		};
-		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
-	}
-
-	// SLIDE 8: Area Chart: Misc -----------------------------------------------------------
-	{
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		var arrDataTimeline2ser = [
-			{
-				name  : 'Actual Sales',
-				labels: MONS,
-				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121]
-			},
-			{
-				name  : 'Proj Sales',
-				labels: MONS,
-				values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
-			}
-		];
-
-		// TOP-LEFT
-		var optsChartLine1 = { x:0.5, y:0.6, w:'45%', h:3, catAxisOrientation:'maxMin', valAxisOrientation:'maxMin' };
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine1 );
-
-		// TOP-RIGHT
-		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
-			chartColors: ['0088CC', '99FFCC'],
-			chartColorsOpacity: 25,
-			dataBorder: {pt:2, color:'FFFFFF'},
-			fill: 'D1E1F1'
-		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
-
-		// BOTTOM-LEFT
-		var optsChartLine3 = { x:0.5, y:3.6, w:'45%', h:3,
-			chartColors: ['0088CC', '99FFCC'],
-			chartColorsOpacity: 50
-		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine3 );
-
-		// BOTTOM-RIGHT
-		var optsChartLine4 = { x:7, y:3.6, w:'45%', h:3,
-			chartColors: ['CC8833', 'CCFF69'],
-			chartColorsOpacity: 75
-		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
-	}
-
-	// SLIDE 9: Pie Charts: All 4 Legend Options -------------------------------------------
-	{
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
-		slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
-
-		// TOP-LEFT
-		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.DOUGHNUT, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
-
-		// TOP-RIGHT
-		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
-
-		// BTM-LEFT
-		slide.addText( '.', {x:0.5, y:4.0, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.2, h:3.2, showLegend:true, legendPos:'r'} );
-
-		// BTM-RIGHT
-		slide.addText( '.', {x:5.6, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:5.6, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
-
-		// BOTH: TOP-RIGHT
-		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
-
-		// BOTH: BTM-RIGHT
-		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
-	}
-
-	// SLIDE 10: Pie Chart ------------------------------------------------------------------
-	{
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		var optsChartPie1 = {
-			x:0.5, y:1.0, w:6.0, h:6.0,
-			chartColors: ['FC0000','FFCC00','009900','6600CC'],
-			dataBorder       : { pt:'2', color:'F1F1F1' },
-			dataLabelColor   : 'FFFFFF',
-			dataLabelFontSize: 14,
-			//dataLabelPosition: 'ctr',
-
-			legendPos : 'r',
-
-			showLabel  : false,
-			showValue  : false,
-			showPercent: true,
-			showLegend : true,
-			showTitle  : false,
-
-			title        : 'Project Status',
-			titleColor   : '33CF22',
-			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 24
-		};
-		slide.addText( '.', {x:0.5, y:1.0, w:6.0, h:6.0, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart(pptx.charts.PIE, dataChartPieStat, optsChartPie1 );
-
-		var optsChartPie2 = {
-			x:7.0, y:1.0, w:6, h:6,
-			dataBorder       : { pt:'3', color:'F1F1F1' },
-			dataLabelColor   : 'FFFFFF',
-			showLabel  : true,
-			showValue  : true,
-			showPercent: true,
-			showLegend : false,
-			showTitle  : false,
-			title: 'Resource Totals by Location'
-		};
-		slide.addChart(pptx.charts.PIE, dataChartPieLocs, optsChartPie2 );
-	}
-
-	// SLIDE 11: Data Series Colors, majorUnits, and valAxisLabelFormatCode ----------------
+	
+	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ----------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Colors, valAxisMajorUnit, v Format %', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -1214,6 +1000,221 @@ function genSlides_Chart(pptx) {
 				valAxisMajorUnit: 1
 			}
 		);
+	}
+
+	// SLIDE 6: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart Smoothing, Line Size, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineSize  : 8,
+			lineSmooth: true,
+			showLegend: true, legendPos: 't'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+
+		var optsChartLine2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineSize  : 16,
+			lineSmooth: true,
+			showLegend: true, legendPos: 'r'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
+
+		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineDataSymbolSize: 10,
+			showLegend: true, legendPos: 'l'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+
+		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			lineDataSymbolSize: 20,
+			showLegend: true, legendPos: 'b'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
+	}
+
+	// SLIDE 7: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
+	{
+		var intWgap = 4.25;
+		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		opts_lineDataSymbol.forEach(function(opt,idx){
+			slide.addChart(
+				pptx.charts.LINE,
+				arrDataLineStat,
+				{
+					x:(idx < 3 ? idx*intWgap : (idx < 6 ? (idx-3)*intWgap : (idx-6)*intWgap)), y:(idx < 3 ? 0.5 : (idx < 6 ? 2.75 : 5)),
+					w:4.25, h:2.25,
+					lineDataSymbol:opt, title:opt, showTitle:true,
+					lineDataSymbolSize:(idx==5 ? 9 : (idx==6 ? 12 : null))
+				}
+			);
+		});
+	}
+
+	// SLIDE 8: Line Chart: Lots of Cats ---------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var MAXVAL = 20000;
+
+		var arrDataTimeline = [];
+		for (var idx=0; idx<15; idx++) {
+			var tmpObj = {
+				name  : 'Series'+idx,
+				labels: MONS,
+				values: []
+			};
+
+			for (var idy=0; idy<MONS.length; idy++) {
+				tmpObj.values.push( Math.floor(Math.random() * MAXVAL) + 1 );
+			}
+
+			arrDataTimeline.push( tmpObj );
+		}
+
+		// FULL SLIDE:
+		var optsChartLine1 = { x:0.5, y:0.6, w:'95%', h:'85%',
+			fill: 'F2F9FC',
+
+			valAxisMaxVal: MAXVAL,
+
+			showLegend: true,
+			legendPos : 'r'
+		};
+		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
+	}
+
+	// SLIDE 9: Area Chart: Misc -----------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataTimeline2ser = [
+			{
+				name  : 'Actual Sales',
+				labels: MONS,
+				values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121]
+			},
+			{
+				name  : 'Proj Sales',
+				labels: MONS,
+				values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
+			}
+		];
+
+		// TOP-LEFT
+		var optsChartLine1 = { x:0.5, y:0.6, w:'45%', h:3, catAxisOrientation:'maxMin', valAxisOrientation:'maxMin' };
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine1 );
+
+		// TOP-RIGHT
+		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 25,
+			dataBorder: {pt:2, color:'FFFFFF'},
+			fill: 'D1E1F1'
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
+
+		// BOTTOM-LEFT
+		var optsChartLine3 = { x:0.5, y:3.6, w:'45%', h:3,
+			chartColors: ['0088CC', '99FFCC'],
+			chartColorsOpacity: 50
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine3 );
+
+		// BOTTOM-RIGHT
+		var optsChartLine4 = { x:7, y:3.6, w:'45%', h:3,
+			chartColors: ['CC8833', 'CCFF69'],
+			chartColorsOpacity: 75
+		};
+		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
+	}
+
+	// SLIDE 10: Pie Charts: All 4 Legend Options -------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
+		slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
+
+		// TOP-LEFT
+		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
+
+		// TOP-RIGHT
+		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
+
+		// BTM-LEFT
+		slide.addText( '.', {x:0.5, y:4.0, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.2, h:3.2, showLegend:true, legendPos:'r'} );
+
+		// BTM-RIGHT
+		slide.addText( '.', {x:5.6, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:5.6, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
+
+		// BOTH: TOP-RIGHT
+		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
+
+		// BOTH: BTM-RIGHT
+		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+	}
+
+	// SLIDE 11: Doughnut Chart ------------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var optsChartPie1 = {
+			x:0.5, y:1.0, w:6.0, h:6.0,
+			chartColors: ['FC0000','FFCC00','009900','6600CC'],
+			dataBorder       : { pt:'2', color:'F1F1F1' },
+			dataLabelColor   : 'FFFFFF',
+			dataLabelFontSize: 14,
+
+			legendPos : 'r',
+
+			showLabel  : false,
+			showValue  : false,
+			showPercent: true,
+			showLegend : true,
+			showTitle  : false,
+
+			holeSize: 70,
+
+			title        : 'Project Status',
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 24
+		};
+		slide.addText( '.', {x:0.5, y:1.0, w:6.0, h:6.0, fill:'F1F1F1', color:'F1F1F1'} );
+		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieStat, optsChartPie1 );
+
+		var optsChartPie2 = {
+			x:7.0, y:1.0, w:6, h:6,
+			dataBorder       : { pt:'3', color:'F1F1F1' },
+			dataLabelColor   : 'FFFFFF',
+			showLabel  : true,
+			showValue  : true,
+			showPercent: true,
+			showLegend : false,
+			showTitle  : false,
+			title: 'Resource Totals by Location'
+		};
+		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 }
 
