@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170810";
+	var APP_REL = "20170814";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -115,7 +115,9 @@ var PptxGenJS = function(){
 	//
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 	var DEF_FONT_SIZE = 12;
+	var DEF_FONT_TITLE_SIZE = 18;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -908,6 +910,41 @@ var PptxGenJS = function(){
 		return arrObjSlides;
 	}
 
+	/**
+	 * Checks grid line properties and correct them if needed.
+	 * @param {Object} glOpts chart.gridLine options
+	 */
+	function correctGridLineOptions(glOpts) {
+		if ( !glOpts || glOpts === 'none' ) return;
+		if ( glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0) ) {
+			console.warn('Warning: chart.gridLine.size must be greater than 0.');
+			delete glOpts.size; // delete prop to used defaults
+		}
+		if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
+			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
+			delete glOpts.style;
+		}
+	}
+
+	/**
+	 * @param {Object} glOpts {size, color, style}
+	 * @param {Object} defaults {size, color, style}
+	 * @param {String} type "major"(default) | "minor"
+	 */
+	function createGridLineElement(glOpts, defaults, type) {
+		type = type || 'major';
+		var tagName = 'c:'+ type + 'Gridlines';
+		strXml =  '<'+ tagName + '>';
+		strXml += ' <c:spPr>';
+		strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
+		strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
+		strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
+		strXml += '  </a:ln>';
+		strXml += ' </c:spPr>';
+		strXml += '</'+ tagName + '>';
+		return strXml;
+	}
+
 	/* =======================================================================================================
 	|
 	#     #  #     #  #             #####
@@ -947,31 +984,13 @@ var PptxGenJS = function(){
 
 		// OPTION: Title
 		if ( rel.opts.showTitle ) {
-			strXml += '<c:title>';
-			strXml += ' <c:tx>';
-			strXml += '  <c:rich>';
-			strXml += '  <a:bodyPr rot="0"/>';
-			strXml += '  <a:lstStyle/>';
-			strXml += '  <a:p>';
-			strXml += '    <a:pPr>';
-			strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
-			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
-			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
-			strXml += '      </a:defRPr>';
-			strXml += '    </a:pPr>';
-			strXml += '    <a:r>';
-			strXml += '      <a:rPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.titleFontSize || DEF_FONT_SIZE) +'00" u="none">';
-			strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.titleColor || '000000') +'"/></a:solidFill>';
-			strXml += '        <a:latin typeface="'+ (rel.opts.titleFontFace || 'Arial') +'"/>';
-			strXml += '      </a:rPr>';
-			strXml += '      <a:t>'+ (decodeXmlEntities(rel.opts.title) || '') +'</a:t>';
-			strXml += '    </a:r>';
-			strXml += '  </a:p>';
-			strXml += '  </c:rich>';
-			strXml += ' </c:tx>';
-			strXml += ' <c:layout/>';
-			strXml += ' <c:overlay val="0"/>';
-			strXml += '</c:title>';
+			strXml += genXmlTitle({
+				title: rel.opts.title || 'Chart Title',
+				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
+				color: rel.opts.titleColor,
+				fontFace: rel.opts.titleFontFace,
+				rotate: rel.opts.titleRotate
+			});
 			strXml += '<c:autoTitleDeleted val="0"/>';
 		}
 
@@ -1144,10 +1163,22 @@ var PptxGenJS = function(){
 				// B: "Category Axis"
 				{
 					strXml += '<c:catAx>';
+					if (rel.opts.showCatAxisTitle) {
+						strXml += genXmlTitle({
+							title: rel.opts.catAxisTitle || 'Axis Title',
+							fontSize: rel.opts.catAxisTitleFontSize,
+							color: rel.opts.catAxisTitleColor,
+							fontFace: rel.opts.catAxisTitleFontFace,
+							rotate: rel.opts.catAxisTitleRotate
+						});
+					}
 					strXml += '  <c:axId val="2094734552"/>';
 					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
-					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:delete val="'+ (rel.opts.catAxisHidden ? 1 : 0) +'"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+					if ( rel.opts.catGridLine !== 'none' ) {
+						strXml += createGridLineElement(rel.opts.catGridLine, DEF_CHART_GRIDLINE);
+					}
 					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
@@ -1178,24 +1209,24 @@ var PptxGenJS = function(){
 				// C: "Value Axis"
 				{
 					strXml += '<c:valAx>';
+					if (rel.opts.showValAxisTitle) {
+						strXml += genXmlTitle({
+							title: rel.opts.valAxisTitle || 'Axis Title',
+							fontSize: rel.opts.valAxisTitleFontSize,
+							color: rel.opts.valAxisTitleColor,
+							fontFace: rel.opts.valAxisTitleFontFace,
+							rotate: rel.opts.valAxisTitleRotate
+						});
+					}
 					strXml += '  <c:axId val="2094734553"/>';
 					strXml += '  <c:scaling>';
 					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
 					if (rel.opts.valAxisMaxVal) strXml += '<c:max val="'+ rel.opts.valAxisMaxVal +'"/>';
+					if (rel.opts.valAxisMinVal) strXml += '<c:min val="'+ rel.opts.valAxisMinVal +'"/>';
 					strXml += '  </c:scaling>';
-					strXml += '  <c:delete val="0"/>';
+					strXml += '  <c:delete val="'+ (rel.opts.valAxisHidden ? 1 : 0) +'"/>';
 					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
-
-					// TESTING: 20170527 - omitting this 'strXml' works fine in Keynote/PPT-Online!!
-					// TODO: gridLine options! (colors/style(solid/dashed) -OR- NONE (eg:omit this section)
-					strXml += ' <c:majorGridlines>\
-								<c:spPr>\
-								  <a:ln w="12700" cap="flat">\
-								    <a:solidFill><a:srgbClr val="888888"/></a:solidFill>\
-								    <a:prstDash val="solid"/><a:round/>\
-								  </a:ln>\
-								</c:spPr>\
-								</c:majorGridlines>';
+					if (rel.opts.valGridLine != 'none') strXml += createGridLineElement(rel.opts.valGridLine, DEF_CHART_GRIDLINE);
 					strXml += ' <c:numFmt formatCode="'+ (rel.opts.valAxisLabelFormatCode ? rel.opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
 					strXml += ' <c:majorTickMark val="out"/>';
 					strXml += ' <c:minorTickMark val="none"/>';
@@ -1402,6 +1433,57 @@ var PptxGenJS = function(){
 		// LAST: chartSpace end
 		strXml += '</c:chartSpace>';
 
+		return strXml;
+	}
+
+	/**
+	* DESC: Convert degrees (0..360) to Powerpoint rot value
+	*/
+	function convertRotationDegrees(d) {
+		d = d || 0;
+		return (d > 360 ? (d - 360) : d) * 60000;
+	}
+
+	/**
+	* DESC: Generate the XML for title elements used for the char and axis titles
+	*/
+	function genXmlTitle(opts) {
+		var strXml = '';
+		strXml += '<c:title>';
+		strXml += ' <c:tx>';
+		strXml += '  <c:rich>';
+		if (opts.rotate !== undefined) {
+			strXml += '  <a:bodyPr rot="' + convertRotationDegrees(opts.rotate) + '"/>';
+		}
+		else {
+			strXml += '  <a:bodyPr/>';  // don't specify rotation to get default (ex. vertical for cat axis)
+		}
+		strXml += '  <a:lstStyle/>';
+		strXml += '  <a:p>';
+		strXml += '    <a:pPr>';
+		var sizeAttr = '';
+		// only set the font size if specified.  Powerpoint will handle the default size
+		if (opts.fontSize !== undefined) {
+			sizeAttr = ' sz="' + opts.fontSize + '00"';
+		}
+		strXml += '      <a:defRPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
+		strXml += '      </a:defRPr>';
+		strXml += '    </a:pPr>';
+		strXml += '    <a:r>';
+		strXml += '      <a:rPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
+		strXml += '      </a:rPr>';
+		strXml += '      <a:t>'+ (decodeXmlEntities(opts.title) || '') +'</a:t>';
+		strXml += '    </a:r>';
+		strXml += '  </a:p>';
+		strXml += '  </c:rich>';
+		strXml += ' </c:tx>';
+		strXml += ' <c:layout/>';
+		strXml += ' <c:overlay val="0"/>';
+		strXml += '</c:title>';
 		return strXml;
 	}
 
@@ -1959,7 +2041,7 @@ var PptxGenJS = function(){
 			//
 			if ( slideObj.options.flipH  ) locationAttr += ' flipH="1"';
 			if ( slideObj.options.flipV  ) locationAttr += ' flipV="1"';
-			if ( slideObj.options.rotate ) locationAttr += ' rot="' + ( (slideObj.options.rotate > 360 ? (slideObj.options.rotate - 360) : slideObj.options.rotate) * 60000 ) + '"';
+			if ( slideObj.options.rotate ) locationAttr += ' rot="' + convertRotationDegrees(slideObj.options.rotate)+ '"';
 
 			// B: Add OBJECT to current Slide ----------------------------
 			switch ( slideObj.type ) {
@@ -2878,6 +2960,12 @@ var PptxGenJS = function(){
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
+
+			// use default lines only for y-axis if nothing specified
+			options.valGridLine = options.valGridLine || {};
+			options.catGridLine = options.catGridLine || 'none';
+			correctGridLineOptions(options.catGridLine);
+			correctGridLineOptions(options.valGridLine);
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
