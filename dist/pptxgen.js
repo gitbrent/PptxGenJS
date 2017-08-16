@@ -228,7 +228,7 @@ var PptxGenJS = function(){
 								+ '  <Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>'
 								+ '  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>'
 								+ '  <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>'
-								+ '  <Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>'
+								// + '  <Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>'
 								+ '  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
 								+ '  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
 								+ '</Types>\n'
@@ -279,44 +279,65 @@ var PptxGenJS = function(){
 								+ '<calcPr calcId="0"/><oleSize ref="A1"/>'
 								+ '</workbook>\n'
 							);
-							zipExcel.file("xl/worksheets/_rels/sheet1.xml.rels",
-								'<?xml version="1.0" encoding="UTF-8"?>'
-								+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-								+ '  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>'
-								+ '</Relationships>\n'
-							);
+							// NOT NEEDED?
+							// zipExcel.file("xl/worksheets/_rels/sheet1.xml.rels",
+							// 	'<?xml version="1.0" encoding="UTF-8"?>'
+							// 	+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+							//  + '  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>'
+							// 	+ '</Relationships>\n'
+							// );
 						}
 
-						// `sharedStrings.xml`
-						{
-							var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-							strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (rel.data[0].labels.length + rel.data.length + 1) +'" uniqueCount="'+ (rel.data[0].labels.length + rel.data.length +1) +'">'
+						// This function will help us keep track of our shared strings without
+						// resorting to complicated offsets.  Plus it will be an actual cache of strings used.
+						function SharedStrings() {
+							var map = {};
+							var values = [];
+							var idx = 1;  // 0 reserved for blank
 
-							// A: Add Labels
-							rel.data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ label +'</t></si>'; });
+							function reference(str) {
+								str = str ? str.trim() : "";
+								if (!str) {
+									return 0;
+								}
+								if (map[str] === undefined) {
+									map[str] = idx++;
+									values.push(str);
+								}
+								return map[str];
+							}
 
-							// B: Add Series
-							rel.data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
+							function asXml() {
+								var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+								strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ idx +'" uniqueCount="'+ idx +'">'
+								strSharedStrings += '<si><t xml:space="preserve"></t></si>';  // add blank in slot zero
+								values.forEach(function(label){
+									strSharedStrings += '<si><t>'+ label +'</t></si>';
+								});
+								strSharedStrings += '</sst>\n';
+								return strSharedStrings;
+							}
 
-							// C: Add 'blank' for A1
-							strSharedStrings += '<si><t xml:space="preserve"></t></si>';
-
-							strSharedStrings += '</sst>\n';
-							zipExcel.file("xl/sharedStrings.xml", strSharedStrings);
+							return {
+								reference: reference,
+								asXml: asXml
+							};
 						}
+						var sharedStrings = SharedStrings();
 
+						// TODO- THIS ISN'T USED??
 						// tables/table1.xml
-						{
-							var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-							strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[rel.data.length] + (rel.data[0].labels.length+1) +'" totalsRowShown="0">';
-							strTableXml += '<tableColumns count="' + (rel.data[0].labels.length+1) +'">';
-							strTableXml += '<tableColumn id="1" name=" "/>';
-							rel.data[0].labels.forEach(function(label,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ label +'"/>' });
-							strTableXml += '</tableColumns>';
-							strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>';
-							strTableXml += '</table>';
-							zipExcel.file("xl/tables/table1.xml", strTableXml);
-						}
+						// {
+						// 	var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+							// strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[rel.data.length] + (rel.data[0].labels.length+1) +'" totalsRowShown="0">';
+							// strTableXml += '<tableColumns count="' + (rel.data[0].labels.length+1) +'">';
+							// strTableXml += '<tableColumn id="1" name=" "/>';
+							// rel.data[0].labels.forEach(function(label,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ label +'"/>' });
+							// strTableXml += '</tableColumns>';
+							// strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>';
+							// strTableXml += '</table>';
+							// zipExcel.file("xl/tables/table1.xml", strTableXml);
+						// }
 
 						// worksheets/sheet1.xml
 						var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
@@ -326,7 +347,7 @@ var PptxGenJS = function(){
 						strSheetXml += '<sheetFormatPr defaultRowHeight="15"/>';
 						strSheetXml += '<cols>';
 						strSheetXml += '<col min="10" max="100" width="20" customWidth="1"/>';
-						rel.data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
+						rel.data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
 						strSheetXml += '</cols>';
 						strSheetXml += '<sheetData>';
 
@@ -350,23 +371,33 @@ var PptxGenJS = function(){
 
 						// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
 						strSheetXml += '<row r="1">';
-						strSheetXml += '<c r="A1" t="s"><v>'+ (rel.data.length + rel.data[0].labels.length) +'</v></c>';
-						for (var idx=1; idx<=rel.data[0].labels.length; idx++) {
+						strSheetXml += '<c r="A1" t="s"><v>'+ sharedStrings.reference("") +'</v></c>';
+						for (var idx=1; idx<=rel.data.length; idx++) {
 							// FIXME: Max cols is 52
 							strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
-							strSheetXml += '<v>'+ (idx-1) +'</v>';
+							strSheetXml += '<v>'+ sharedStrings.reference(rel.data[idx-1].name) +'</v>';
 							strSheetXml += '</c>';
 						}
 						strSheetXml += '</row>';
 
 						// B: Add data row(s)
-						rel.data.forEach(function(row,idx){
+						// Assumes that labels are same for each series
+						rel.data[0].labels.forEach(function(label,idx){
 							// Leading col is reserved for the label, so hard-code it, then loop over col values
 							strSheetXml += '<row r="'+ (idx+2) +'">';
-							strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
-							strSheetXml += '<v>'+ (rel.data[0].values.length + idx + 1) +'</v>';
-							strSheetXml += '</c>';
-							row.values.forEach(function(val,idy){
+							if (typeof label === "number") {
+								strSheetXml += '<c r="A'+ (idx+2) +'">';
+								strSheetXml += '<v>'+ label +'</v>';
+								strSheetXml += '</c>';
+							}
+							else {
+								strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
+								strSheetXml += '<v>'+ sharedStrings.reference(label) +'</v>';
+								strSheetXml += '</c>';
+							}
+							rel.data.forEach(function(row,idy) {
+								var val = row.values[idx];
+								if (val === null) return;
 								strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
 								strSheetXml += '<v>'+ val +'</v>';
 								strSheetXml += '</c>';
@@ -379,6 +410,9 @@ var PptxGenJS = function(){
 						//strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'; // Causes unreadable error in O365
 						strSheetXml += '</worksheet>\n';
 						zipExcel.file("xl/worksheets/sheet1.xml", strSheetXml);
+
+						// `sharedStrings.xml`
+						zipExcel.file("xl/sharedStrings.xml", sharedStrings.asXml());
 
 						// C: Add XLSX to PPTX export
 						zipExcel.generateAsync({type:'base64'})
@@ -980,6 +1014,7 @@ var PptxGenJS = function(){
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		// CHARTSPACE: BEGIN vvv
 		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+		strXml += '<c:date1904 val="0"/>';  // ppt defaults to 1904 dates, excel to 1900
 		strXml += '<c:chart>';
 
 		// OPTION: Title
@@ -1011,17 +1046,17 @@ var PptxGenJS = function(){
 				// A: "Series" block for every data row
 				/* EX:
 					data: [
-				     {
-				       name: 'Region 1',
-				       labels: ['April', 'May', 'June', 'July'],
-				       values: [17, 26, 53, 96]
-				     },
-				     {
-				       name: 'Region 2',
-				       labels: ['April', 'May', 'June', 'July'],
-				       values: [55, 43, 70, 58]
-				     }
-				    ]
+					 {
+					   name: 'Region 1',
+					   labels: ['April', 'May', 'June', 'July'],
+					   values: [17, 26, 53, 96]
+					 },
+					 {
+					   name: 'Region 2',
+					   labels: ['April', 'May', 'June', 'July'],
+					   values: [55, 43, 70, 58]
+					 }
+					]
 				*/
 				rel.data.forEach(function(obj,idx){
 					strXml += '<c:ser>';
@@ -1029,7 +1064,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:order val="'+ idx +'"/>';
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
-					strXml += '      <c:f>Sheet1!$A$'+ (idx+2) +'</c:f>';
+					strXml += '      <c:f>Sheet1!$'+ getExcelColName(idx+1) +'$1</c:f>';
 					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
@@ -1065,7 +1100,7 @@ var PptxGenJS = function(){
 						strXml += '  <c:symbol val="'+ rel.opts.lineDataSymbol +'"/>';
 						if ( rel.opts.lineDataSymbolSize ) strXml += '  <c:size val="'+ rel.opts.lineDataSymbolSize +'"/>'; // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
 						strXml += '  <c:spPr>';
-	  					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
+						strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
 						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
@@ -1122,22 +1157,39 @@ var PptxGenJS = function(){
 
 					// 2: "Categories"
 					strXml += '<c:cat>';
-					strXml += '  <c:strRef>';
-					strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
-					strXml += '    <c:strCache>';
-					strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-					obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
-					strXml += '    </c:strCache>';
-					strXml += '  </c:strRef>';
+					if (rel.opts.catLabelFormatCode) {
+							// catLabelFormatCode implies that we are expecting numbers here
+							strXml += '  <c:numRef>';
+							strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ (obj.labels.length+1) +'</c:f>';
+							strXml += '    <c:numCache>';
+							strXml += '      <c:formatCode>'+ rel.opts.catLabelFormatCode +'</c:formatCode>';
+							strXml += '      <c:ptCount val="'+ obj.labels.length +'"/>';
+							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
+							strXml += '    </c:numCache>';
+							strXml += '  </c:numRef>';
+					}
+					else {
+							strXml += '  <c:strRef>';
+							strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ (obj.labels.length+1) +'</c:f>';
+							strXml += '    <c:strCache>';
+							strXml += '          <c:ptCount val="'+ obj.labels.length +'"/>';
+							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
+							strXml += '    </c:strCache>';
+							strXml += '  </c:strRef>';
+					}
 					strXml += '</c:cat>';
 
 					// 3: "Values"
 					strXml += '  <c:val>';
 					strXml += '    <c:numRef>';
-					strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ getExcelColName(obj.labels.length) +'$'+ (idx+2) +'</c:f>';
+					var valcol = getExcelColName(idx+1);
+					strXml += '      <c:f>Sheet1!'+ '$'+ valcol +'$2:$'+ valcol +'$'+ (obj.labels.length+1) +'</c:f>';
 					strXml += '      <c:numCache>';
 					strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-					obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
+					obj.values.forEach(function(value,idx){
+						if (value === null) return;
+						strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>';
+					});
 					strXml += '      </c:numCache>';
 					strXml += '    </c:numRef>';
 					strXml += '  </c:val>';
@@ -1162,6 +1214,8 @@ var PptxGenJS = function(){
 
 				// B: "Category Axis"
 				{
+					//TODO - change this to c:dateAx if category labels are dates?
+					//       powerpoint seems happy to automatically do the right thing.
 					strXml += '<c:catAx>';
 					if (rel.opts.showCatAxisTitle) {
 						strXml += genXmlTitle({
@@ -1179,7 +1233,7 @@ var PptxGenJS = function(){
 					if ( rel.opts.catGridLine !== 'none' ) {
 						strXml += createGridLineElement(rel.opts.catGridLine, DEF_CHART_GRIDLINE);
 					}
-					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
+					strXml += '  <c:numFmt formatCode="'+ (rel.opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
 					strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
@@ -1187,7 +1241,7 @@ var PptxGenJS = function(){
 					strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					strXml += '  </c:spPr>';
 					strXml += '  <c:txPr>';
-					strXml += '    <a:bodyPr rot="0"/>';
+					strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
 					strXml += '    <a:lstStyle/>';
 					strXml += '    <a:p>';
 					strXml += '    <a:pPr>';
@@ -1235,7 +1289,7 @@ var PptxGenJS = function(){
 					strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					strXml += ' </c:spPr>';
 					strXml += ' <c:txPr>';
-					strXml += '  <a:bodyPr rot="0"/>';
+					strXml += '  <a:bodyPr/>';  // don't specify rot=0 so we can get the PPT default
 					strXml += '  <a:lstStyle/>';
 					strXml += '  <a:p>';
 					strXml += '    <a:pPr>';
@@ -1343,25 +1397,25 @@ var PptxGenJS = function(){
 					strXml += '  </c:dLbl>';
 				});
 				strXml += '<c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>\
-		            <c:txPr>\
-		              <a:bodyPr/>\
-		              <a:lstStyle/>\
-		              <a:p>\
-		                <a:pPr>\
-		                  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
-		                    <a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>\
-		                  </a:defRPr>\
-		                </a:pPr>\
-		              </a:p>\
-		            </c:txPr>\
-		            ' + (rel.opts.type == 'pie' ? '<c:dLblPos val="ctr"/>' : '') + '\
-		            <c:showLegendKey val="0"/>\
-		            <c:showVal val="0"/>\
-		            <c:showCatName val="1"/>\
-		            <c:showSerName val="0"/>\
-		            <c:showPercent val="1"/>\
-		            <c:showBubbleSize val="0"/>\
-		            <c:showLeaderLines val="0"/>';
+					<c:txPr>\
+					  <a:bodyPr/>\
+					  <a:lstStyle/>\
+					  <a:p>\
+						<a:pPr>\
+						  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
+							<a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>\
+						  </a:defRPr>\
+						</a:pPr>\
+					  </a:p>\
+					</c:txPr>\
+					' + (rel.opts.type == 'pie' ? '<c:dLblPos val="ctr"/>' : '') + '\
+					<c:showLegendKey val="0"/>\
+					<c:showVal val="0"/>\
+					<c:showCatName val="1"/>\
+					<c:showSerName val="0"/>\
+					<c:showPercent val="1"/>\
+					<c:showBubbleSize val="0"/>\
+					<c:showLeaderLines val="0"/>';
 				strXml += '</c:dLbls>';
 
 				// 2: "Categories"
@@ -2117,7 +2171,7 @@ var PptxGenJS = function(){
 						|      |      |  C2  |  D2  |
 						\------|------|------|------/
 					*/
- 					$.each(arrTabRows, function(rIdx,row){
+					$.each(arrTabRows, function(rIdx,row){
 						// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
 						if ( !objTableGrid[rIdx] ) objTableGrid[rIdx] = {};
 
@@ -2365,12 +2419,12 @@ var PptxGenJS = function(){
 					break;
 
 				case 'image':
-			        strSlideXml += '<p:pic>';
+					strSlideXml += '<p:pic>';
 					strSlideXml += '  <p:nvPicPr>'
 					strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideObj.image +'">';
 					if ( slideObj.hyperlink ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideObj.hyperlink.rId +'" tooltip="'+ (slideObj.hyperlink.tooltip ? decodeXmlEntities(slideObj.hyperlink.tooltip) : '') +'"/>';
 					strSlideXml += '    </p:cNvPr>';
-			        strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/>';
+					strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/>';
 					strSlideXml += '  </p:nvPicPr>';
 					strSlideXml += '<p:blipFill><a:blip r:embed="rId' + slideObj.imageRid + '" cstate="print"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>';
 					strSlideXml += '<p:spPr>'
@@ -3182,7 +3236,7 @@ var PptxGenJS = function(){
 			else {
 				// Audio/Video files consume *TWO* rId's:
 				// <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-			    // <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+				// <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
 				slideObjRels.push({
 					path: (strPath || 'preencoded'+strExtn),
 					type: strType+'/'+strExtn,

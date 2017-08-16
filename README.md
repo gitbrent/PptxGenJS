@@ -361,6 +361,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `catAxisTitleFontFace` | string  |         | `Arial`      | font face             | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
 | `catAxisTitleFontSize` | number  | points  |              | font size    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
 | `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees           | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
+| `catAxisLabelFormatCode` | string |        |              | category axis format string. also implies that you will be sending numbers as the categories | format string. Ex: `{ dataLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
 | `catGridLine`          | object  |         | `none`    | category grid line style  | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `showCatAxisTitle`     | boolean |         | `false`   | show category (vertical) title | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
 | `showValAxisTitle`     | boolean |         | `false`   | show values (horizontal) title | `true` or `false`.  Ex:`{ showValAxisTitle:true }` |
