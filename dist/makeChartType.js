@@ -2,6 +2,9 @@ var DEF_FONT_SIZE = 12;
 var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 var ONEPT = 12700; // One (1) point (pt)
+var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
+var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
+
 
 function createGridLineElement(glOpts, defaults, type) {
 	type = type || 'major';
@@ -18,6 +21,8 @@ function createGridLineElement(glOpts, defaults, type) {
 }
 
 function makeChartType (chartType, data, opts) {
+
+	console.log('makeChartType', chartType, data, opts);
 
 	function getExcelColName(length) {
 		var strName = '';
@@ -58,7 +63,12 @@ function makeChartType (chartType, data, opts) {
 				 }
 				]
 			*/
-			data.forEach(function(obj,idx){
+
+			// this needs to maintain the index depending on the region.... how????????????
+
+			data.forEach(function(obj){
+				var idx = obj.index;
+				console.log('data', idx, obj);
 				strXml += '<c:ser>';
 				strXml += '  <c:idx val="'+ idx +'"/>';
 				strXml += '  <c:order val="'+ idx +'"/>';
@@ -132,28 +142,7 @@ function makeChartType (chartType, data, opts) {
 					});
 				}
 
-				// 1: "Data Labels"
-				strXml += '  <c:dLbls>';
-				strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
-				strXml += '    <c:txPr>';
-				strXml += '      <a:bodyPr/>';
-				strXml += '      <a:lstStyle/>';
-				strXml += '      <a:p><a:pPr>';
-				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-				strXml += '          <a:solidFill><a:srgbClr val="'+ (opts.dataLabelColor || '000000') +'"/></a:solidFill>';
-				strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
-				strXml += '        </a:defRPr>';
-				strXml += '      </a:pPr></a:p>';
-				strXml += '    </c:txPr>';
-				if ( chartType != 'area' ) strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
-				strXml += '    <c:showLegendKey val="0"/>';
-				strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
-				strXml += '    <c:showCatName val="0"/>';
-				strXml += '    <c:showSerName val="0"/>';
-				strXml += '    <c:showPercent val="0"/>';
-				strXml += '    <c:showBubbleSize val="0"/>';
-				strXml += '    <c:showLeaderLines val="0"/>';
-				strXml += '  </c:dLbls>';
+
 
 				// 2: "Categories"
 				{
@@ -170,7 +159,6 @@ function makeChartType (chartType, data, opts) {
 
 				// 3: "Values"
 				{
-
 					strXml += '  <c:val>';
 					strXml += '    <c:numRef>';
 					strXml += '      <c:f>Sheet1!' + '$B$' + (idx + 2) + ':$' + getExcelColName(obj.labels.length) + '$' + (idx + 2) + '</c:f>';
@@ -187,8 +175,34 @@ function makeChartType (chartType, data, opts) {
 
 				// 4: Close "SERIES"
 				strXml += '</c:ser>';
-			});
-			//
+
+			}); // end forEach
+
+			// 1: "Data Labels"
+			{
+				strXml += '  <c:dLbls>';
+				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+				strXml += '    <c:txPr>';
+				strXml += '      <a:bodyPr/>';
+				strXml += '      <a:lstStyle/>';
+				strXml += '      <a:p><a:pPr>';
+				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+				strXml += '          <a:solidFill><a:srgbClr val="' + (opts.dataLabelColor || '000000') + '"/></a:solidFill>';
+				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
+				strXml += '        </a:defRPr>';
+				strXml += '      </a:pPr></a:p>';
+				strXml += '    </c:txPr>';
+				if (chartType != 'area') strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>';
+				strXml += '    <c:showLegendKey val="0"/>';
+				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
+				strXml += '    <c:showCatName val="0"/>';
+				strXml += '    <c:showSerName val="0"/>';
+				strXml += '    <c:showPercent val="0"/>';
+				strXml += '    <c:showBubbleSize val="0"/>';
+				strXml += '    <c:showLeaderLines val="0"/>';
+				strXml += '  </c:dLbls>';
+			}
+
 			if ( chartType == 'bar' ) {
 				strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
 				strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
@@ -199,99 +213,6 @@ function makeChartType (chartType, data, opts) {
 			strXml += '  <c:axId val="2094734552"/>';
 			strXml += '  <c:axId val="2094734553"/>';
 			strXml += '</c:'+ chartType +'Chart>';
-
-			// B: "Category Axis"
-		{
-			strXml += '<c:catAx>';
-			if (opts.showCatAxisTitle) {
-				strXml += genXmlTitle({
-					title: opts.catAxisTitle || 'Axis Title',
-					fontSize: opts.catAxisTitleFontSize,
-					color: opts.catAxisTitleColor,
-					fontFace: opts.catAxisTitleFontFace,
-					rotate: opts.catAxisTitleRotate
-				});
-			}
-			strXml += '  <c:axId val="2094734552"/>';
-			strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
-			strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
-			strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
-			if ( opts.catGridLine !== 'none' ) {
-				strXml += createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE);
-			}
-			strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
-			strXml += '  <c:majorTickMark val="out"/>';
-			strXml += '  <c:minorTickMark val="none"/>';
-			strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
-			strXml += '  <c:spPr>';
-			strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-			strXml += '  </c:spPr>';
-			strXml += '  <c:txPr>';
-			strXml += '    <a:bodyPr rot="0"/>';
-			strXml += '    <a:lstStyle/>';
-			strXml += '    <a:p>';
-			strXml += '    <a:pPr>';
-			strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-			strXml += '<a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
-			strXml += '<a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
-			strXml += '   </a:defRPr>';
-			strXml += '  </a:pPr>';
-			strXml += '  </a:p>';
-			strXml += ' </c:txPr>';
-			strXml += ' <c:crossAx val="2094734553"/>';
-			strXml += ' <c:crosses val="autoZero"/>';
-			strXml += ' <c:auto val="1"/>';
-			strXml += ' <c:lblAlgn val="ctr"/>';
-			strXml += ' <c:noMultiLvlLbl val="1"/>';
-			strXml += '</c:catAx>';
-		}
-
-			// C: "Value Axis"
-		{
-			strXml += '<c:valAx>';
-			if (opts.showValAxisTitle) {
-				strXml += genXmlTitle({
-					title: opts.valAxisTitle || 'Axis Title',
-					fontSize: opts.valAxisTitleFontSize,
-					color: opts.valAxisTitleColor,
-					fontFace: opts.valAxisTitleFontFace,
-					rotate: opts.valAxisTitleRotate
-				});
-			}
-			strXml += '  <c:axId val="2094734553"/>';
-			strXml += '  <c:scaling>';
-			strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
-			if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
-			if (opts.valAxisMinVal) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
-			strXml += '  </c:scaling>';
-			strXml += '  <c:delete val="'+ (opts.valAxisHidden ? 1 : 0) +'"/>';
-			strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'l' : 'b') +'"/>';
-			if (opts.valGridLine != 'none') strXml += createGridLineElement(opts.valGridLine, DEF_CHART_GRIDLINE);
-			strXml += ' <c:numFmt formatCode="'+ (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
-			strXml += ' <c:majorTickMark val="out"/>';
-			strXml += ' <c:minorTickMark val="none"/>';
-			strXml += ' <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
-			strXml += ' <c:spPr>';
-			strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-			strXml += ' </c:spPr>';
-			strXml += ' <c:txPr>';
-			strXml += '  <a:bodyPr rot="0"/>';
-			strXml += '  <a:lstStyle/>';
-			strXml += '  <a:p>';
-			strXml += '    <a:pPr>';
-			strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-			strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
-			strXml += '        <a:latin typeface="'+ (opts.valAxisLabelFontFace || 'Arial') +'"/>';
-			strXml += '      </a:defRPr>';
-			strXml += '    </a:pPr>';
-			strXml += '  </a:p>';
-			strXml += ' </c:txPr>';
-			strXml += ' <c:crossAx val="2094734552"/>';
-			strXml += ' <c:crosses val="autoZero"/>';
-			strXml += ' <c:crossBetween val="'+ ( chartType == 'area' ? 'midCat' : 'between' ) +'"/>';
-			if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
-			strXml += '</c:valAx>';
-		}
 
 			// Done with CHART.BAR/LINE
 			break;
@@ -434,6 +355,109 @@ function makeChartType (chartType, data, opts) {
 
 			// Done with CHART.PIE
 			break;
+	}
+
+	return strXml;
+}
+
+function makeChartAxes (chartType, opts) {
+	console.log('makeChartAxes', chartType);
+	var strXml = '';
+
+	if(chartType === 'pie' || chartType === 'doughnut'){
+		return strXml;
+	}
+	// B: "Category Axis"
+	{
+		strXml += '<c:catAx>';
+		if (opts.showCatAxisTitle) {
+			strXml += genXmlTitle({
+				title: opts.catAxisTitle || 'Axis Title',
+				fontSize: opts.catAxisTitleFontSize,
+				color: opts.catAxisTitleColor,
+				fontFace: opts.catAxisTitleFontFace,
+				rotate: opts.catAxisTitleRotate
+			});
+		}
+		strXml += '  <c:axId val="2094734552"/>';
+		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
+		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+		if ( opts.catGridLine !== 'none' ) {
+			strXml += createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE);
+		}
+		strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
+		strXml += '  <c:majorTickMark val="out"/>';
+		strXml += '  <c:minorTickMark val="none"/>';
+		strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+		strXml += '  <c:spPr>';
+		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+		strXml += '  </c:spPr>';
+		strXml += '  <c:txPr>';
+		strXml += '    <a:bodyPr rot="0"/>';
+		strXml += '    <a:lstStyle/>';
+		strXml += '    <a:p>';
+		strXml += '    <a:pPr>';
+		strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+		strXml += '<a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
+		strXml += '<a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
+		strXml += '   </a:defRPr>';
+		strXml += '  </a:pPr>';
+		strXml += '  </a:p>';
+		strXml += ' </c:txPr>';
+		strXml += ' <c:crossAx val="2094734553"/>';
+		strXml += ' <c:crosses val="autoZero"/>';
+		strXml += ' <c:auto val="1"/>';
+		strXml += ' <c:lblAlgn val="ctr"/>';
+		strXml += ' <c:noMultiLvlLbl val="1"/>';
+		strXml += '</c:catAx>';
+	}
+
+	// C: "Value Axis"
+	{
+		strXml += '<c:valAx>';
+		if (opts.showValAxisTitle) {
+			strXml += genXmlTitle({
+				title: opts.valAxisTitle || 'Axis Title',
+				fontSize: opts.valAxisTitleFontSize,
+				color: opts.valAxisTitleColor,
+				fontFace: opts.valAxisTitleFontFace,
+				rotate: opts.valAxisTitleRotate
+			});
+		}
+		strXml += '  <c:axId val="2094734553"/>';
+		strXml += '  <c:scaling>';
+		strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
+		if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
+		if (opts.valAxisMinVal) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
+		strXml += '  </c:scaling>';
+		strXml += '  <c:delete val="'+ (opts.valAxisHidden ? 1 : 0) +'"/>';
+		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'l' : 'b') +'"/>';
+		if (opts.valGridLine != 'none') strXml += createGridLineElement(opts.valGridLine, DEF_CHART_GRIDLINE);
+		strXml += ' <c:numFmt formatCode="'+ (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
+		strXml += ' <c:majorTickMark val="out"/>';
+		strXml += ' <c:minorTickMark val="none"/>';
+		strXml += ' <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+		strXml += ' <c:spPr>';
+		strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+		strXml += ' </c:spPr>';
+		strXml += ' <c:txPr>';
+		strXml += '  <a:bodyPr rot="0"/>';
+		strXml += '  <a:lstStyle/>';
+		strXml += '  <a:p>';
+		strXml += '    <a:pPr>';
+		strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:latin typeface="'+ (opts.valAxisLabelFontFace || 'Arial') +'"/>';
+		strXml += '      </a:defRPr>';
+		strXml += '    </a:pPr>';
+		strXml += '  </a:p>';
+		strXml += ' </c:txPr>';
+		strXml += ' <c:crossAx val="2094734552"/>';
+		strXml += ' <c:crosses val="autoZero"/>';
+		strXml += ' <c:crossBetween val="'+ ( chartType == 'area' ? 'midCat' : 'between' ) +'"/>';
+		if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
+		strXml += '</c:valAx>';
 	}
 
 	return strXml;

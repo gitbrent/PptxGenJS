@@ -972,6 +972,45 @@ var PptxGenJS = function(){
 			});
 			return series;
 		}
+
+		function getMainChartType (chartType) {
+			console.log('getMainChartType', chartType);
+			function has (type) {
+				return chartType.some(function (item) {
+					return item.type.name === type;
+				});
+			}
+			if (Array.isArray(chartType)) {
+				if(has('area')){
+					return 'area';
+				}
+				if(has('line') || has('bar')){
+					return 'line';
+				}
+				return 'pie'; // bail
+			}
+			return chartType.name;
+		}
+
+		function indexData (data) {
+			data.forEach(function (item, idx) {
+				item.index = idx;
+			});
+		}
+
+		function mix (o1, o2, etc) {
+			var o = {};
+			for (var i = 0; i <= arguments.length; i++){
+				var oN = arguments[i];
+				if(oN){
+					Object.keys(oN).forEach(function (key) {
+						o[key] = oN[key];
+					});
+				}
+			}
+			return o;
+		}
+
 		// STEP 1: Create chart
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		// CHARTSPACE: BEGIN vvv
@@ -1011,16 +1050,21 @@ var PptxGenJS = function(){
 
 		// A: CHART TYPES -----------------------------------------------------------
 
+		indexData(rel.data);
+
 		if (Array.isArray(rel.opts.type)) {
 			rel.opts.type.forEach(function (type) {
 				var chartType = type.type.name;
 				var data = getSeriesData(type.data, rel.data);
-				strXml += makeChartType(chartType, data, rel.opts);
+				strXml += makeChartType(chartType, data, mix(rel.opts, type.options));
 			});
 		} else {
 			var chartType = rel.opts.type.name;
 			strXml += makeChartType(chartType, rel.data, rel.opts);
 		}
+
+		strXml += makeChartAxes(getMainChartType(rel.opts.type), rel.opts);
+
 		// B: Chart Properties + Options: Fill, Border, Legend
 		{
 			strXml += '  <c:spPr>';
