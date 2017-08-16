@@ -119,6 +119,9 @@ var PptxGenJS = function(){
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 
+	/** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
+	var ALLOWED_OUTPUT_TYPES = ['base64', 'binarystring', 'uint8array', 'arraybuffer', 'blob', 'nodebuffer'];
+
 	// A: Create internal pptx object
 	var gObjPptx = {};
 
@@ -158,7 +161,7 @@ var PptxGenJS = function(){
 	/**
 	 * DESC: Export the .pptx file
 	 */
-	function doExportPresentation(callback) {
+	function doExportPresentation(callback, outputType) {
 		var arrChartPromises = [];
 		var intSlideNum = 0, intRels = 0;
 
@@ -422,7 +425,10 @@ var PptxGenJS = function(){
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-			if ( NODEJS ) {
+			if ( outputType && ALLOWED_OUTPUT_TYPES.indexOf(outputType) >= 0) {
+				zip.generateAsync({ type: outputType }).then(callback);
+			}
+			else if ( NODEJS ) {
 				if ( callback ) {
 					if ( strExportName.indexOf('http') == 0 ) {
 						zip.generateAsync({type:'nodebuffer'}).then(function(content){ callback(content); });
@@ -2830,7 +2836,7 @@ var PptxGenJS = function(){
 	 * Export the Presentation to an .pptx file
 	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
-	this.save = function save(inStrExportName, callback) {
+	this.save = function save(inStrExportName, callback, outputType) {
 		var intRels = 0, arrRelsDone = [];
 
 		// STEP 1: Set export title (if any)
@@ -2864,7 +2870,7 @@ var PptxGenJS = function(){
 		});
 
 		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-		if ( intRels == 0 ) doExportPresentation(callback);
+		if ( intRels == 0 ) doExportPresentation(callback, outputType);
 	};
 
 	/**
