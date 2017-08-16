@@ -1166,123 +1166,133 @@ function genSlides_Chart(pptx) {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-		var arrDataRegions = [
-			{
-				name  : 'Bottom 75',
-				labels: ['April', 'May', 'June', 'July', 'August'],
-				values: [.17, .26, .53, .10, .4]
-			},
-			{
-				name  : 'Deviation',
-				labels: ['April', 'May', 'June', 'July', 'August'],
-				values: [.05, .04, .02, .03, .15]
-			},
-			{
-				name  : 'Top 25',
-				labels: ['April', 'May', 'June', 'July', 'August'],
-				values: [.01, .02, .25, .35, .2]
-			},
-			{
-				name  : 'Current',
-				labels: ['April', 'May', 'June', 'July', 'August'],
-				values: [.05, .04, .02, .03, .15]
-			}
-		];
-
-
-		// TOP-RIGHT: V/col
-		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
-			barDir: 'col',
-			barGrouping: 'stacked',
-
-			catAxisLabelColor   : '0000CC',
-			catAxisLabelFontFace: 'Arial',
-			catAxisLabelFontSize: 12,
-			catAxisOrientation  : 'minMax',
-
-			showLegend: false,
-			showTitle : false,
-
-			valAxisMaxVal: 1,
-			valAxisMajorUnit: 0.2
-		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
-
-
-		// var arrDataHighVals = [
+		// var arrDataRegions = [
 		// 	{
-		// 		name  : 'California',
-		// 		labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-		// 		values: [2000, 2800, 3200, 4000, 5000]
+		// 		name  : 'Bottom 75',
+		// 		labels: ['April', 'May', 'June', 'July', 'August'],
+		// 		values: [.17, .26, .53, .10, .4]
 		// 	},
 		// 	{
-		// 		name  : 'Texas',
-		// 		labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-		// 		values: [1400, 2000, 2500, 3000, 3800]
+		// 		name  : 'Deviation',
+		// 		labels: ['April', 'May', 'June', 'July', 'August'],
+		// 		values: [.05, .04, .02, .03, .15]
+		// 	},
+		// 	{
+		// 		name  : 'Top 25',
+		// 		labels: ['April', 'May', 'June', 'July', 'August'],
+		// 		values: [.01, .02, .25, .35, .2]
+		// 	},
+		// 	{
+		// 		name  : 'Current',
+		// 		labels: ['April', 'May', 'June', 'July', 'August'],
+		// 		values: [.05, .04, .02, .03, .15]
 		// 	}
 		// ];
-		// // BTM-RIGHT: V/col - TITLE and LEGEND
-		// slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
-		// var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+		//
+		//
+		// // TOP-RIGHT: V/col
+		// var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
 		// 	barDir: 'col',
-		// 	barGrouping: 'percentStacked',
+		// 	barGrouping: 'stacked',
 		//
 		// 	catAxisLabelColor   : '0000CC',
-		// 	catAxisLabelFontFace: 'Times',
+		// 	catAxisLabelFontFace: 'Arial',
 		// 	catAxisLabelFontSize: 12,
 		// 	catAxisOrientation  : 'minMax',
 		//
-		// 	chartColors: ['5DA5DA','FAA43A'],
+		// 	showLegend: false,
+		// 	showTitle : false,
 		//
-		// 	showLegend: true,
-		// 	legendPos :  't'
+		// 	valAxisMaxVal: 1,
+		// 	valAxisMajorUnit: 0.2
 		// };
-		// slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+		//
+		// var chartTypes = [
+		// 	{
+		// 		type: pptx.charts.BAR,
+		// 		data: ['Bottom 75', 'Deviation', 'Top 25']
+		// 	}, {
+		// 		type: pptx.charts.LINE,
+		// 		data: ['Current']
+		// 	}
+		// ];
+		// slide.addChart(chartTypes , arrDataRegions, optsChartBar2 );
+
+
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+		// BTM-RIGHT: V/col - TITLE and LEGEND
+		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			barDir: 'col',
+			barGrouping: 'percentStacked',
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+
+			chartColors: ['5DA5DA','FAA43A'],
+
+			showLegend: true,
+			legendPos :  't'
+		};
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
 	// SLIDE 11: Doughnut Chart ------------------------------------------------------------------
-	{
-		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
-
-		var optsChartPie1 = {
-			x:0.5, y:1.0, w:6.0, h:6.0,
-			chartColors: ['FC0000','FFCC00','009900','6600CC'],
-			dataBorder       : { pt:'2', color:'F1F1F1' },
-			dataLabelColor   : 'FFFFFF',
-			dataLabelFontSize: 14,
-
-			legendPos : 'r',
-
-			showLabel  : false,
-			showValue  : false,
-			showPercent: true,
-			showLegend : true,
-			showTitle  : false,
-
-			holeSize: 70,
-
-			title        : 'Project Status',
-			titleColor   : '33CF22',
-			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 24
-		};
-		slide.addText( '.', {x:0.5, y:1.0, w:6.0, h:6.0, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieStat, optsChartPie1 );
-
-		var optsChartPie2 = {
-			x:7.0, y:1.0, w:6, h:6,
-			dataBorder       : { pt:'3', color:'F1F1F1' },
-			dataLabelColor   : 'FFFFFF',
-			showLabel  : true,
-			showValue  : true,
-			showPercent: true,
-			showLegend : false,
-			showTitle  : false,
-			title: 'Resource Totals by Location'
-		};
-		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
-	}
+	// {
+	// 	var slide = pptx.addNewSlide();
+	// 	slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	//
+	// 	var optsChartPie1 = {
+	// 		x:0.5, y:1.0, w:6.0, h:6.0,
+	// 		chartColors: ['FC0000','FFCC00','009900','6600CC'],
+	// 		dataBorder       : { pt:'2', color:'F1F1F1' },
+	// 		dataLabelColor   : 'FFFFFF',
+	// 		dataLabelFontSize: 14,
+	//
+	// 		legendPos : 'r',
+	//
+	// 		showLabel  : false,
+	// 		showValue  : false,
+	// 		showPercent: true,
+	// 		showLegend : true,
+	// 		showTitle  : false,
+	//
+	// 		holeSize: 70,
+	//
+	// 		title        : 'Project Status',
+	// 		titleColor   : '33CF22',
+	// 		titleFontFace: 'Helvetica Neue',
+	// 		titleFontSize: 24
+	// 	};
+	// 	slide.addText( '.', {x:0.5, y:1.0, w:6.0, h:6.0, fill:'F1F1F1', color:'F1F1F1'} );
+	// 	slide.addChart(pptx.charts.DOUGHNUT, dataChartPieStat, optsChartPie1 );
+	//
+	// 	var optsChartPie2 = {
+	// 		x:7.0, y:1.0, w:6, h:6,
+	// 		dataBorder       : { pt:'3', color:'F1F1F1' },
+	// 		dataLabelColor   : 'FFFFFF',
+	// 		showLabel  : true,
+	// 		showValue  : true,
+	// 		showPercent: true,
+	// 		showLegend : false,
+	// 		showTitle  : false,
+	// 		title: 'Resource Totals by Location'
+	// 	};
+	// 	slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
+	// }
 }
 
 function genSlides_Media(pptx) {

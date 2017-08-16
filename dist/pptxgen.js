@@ -963,6 +963,15 @@ var PptxGenJS = function(){
 	*/
 	function makeXmlCharts(rel) {
 
+		function getSeriesData (regionNames, data) {
+			var series = [];
+			data.forEach(function (region) {
+				if(regionNames.indexOf(region.name) > -1){
+					series.push(region);
+				}
+			});
+			return series;
+		}
 		// STEP 1: Create chart
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 		// CHARTSPACE: BEGIN vvv
@@ -970,7 +979,7 @@ var PptxGenJS = function(){
 		strXml += '<c:chart>';
 
 		// OPTION: Title
-		if ( rel.opts.showTitle ) {
+		if (rel.opts.showTitle) {
 			strXml += genXmlTitle({
 				title: rel.opts.title || 'Chart Title',
 				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
@@ -983,7 +992,7 @@ var PptxGenJS = function(){
 
 		strXml += '<c:plotArea>';
 		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-		if ( rel.opts.layout ) {
+		if (rel.opts.layout) {
 			strXml += '<c:layout>';
 			strXml += ' <c:manualLayout>';
 			strXml += '  <c:layoutTarget val="inner" />';
@@ -997,13 +1006,21 @@ var PptxGenJS = function(){
 			strXml += '</c:layout>';
 		}
 		else {
-		strXml += '<c:layout/>';
+			strXml += '<c:layout/>';
 		}
 
 		// A: CHART TYPES -----------------------------------------------------------
-		var chartType = rel.opts.type.name;
-		strXml += makeChartType(chartType, rel.data, rel.opts);
 
+		if (Array.isArray(rel.opts.type)) {
+			rel.opts.type.forEach(function (type) {
+				var chartType = type.type.name;
+				var data = getSeriesData(type.data, rel.data);
+				strXml += makeChartType(chartType, data, rel.opts);
+			});
+		} else {
+			var chartType = rel.opts.type.name;
+			strXml += makeChartType(chartType, rel.data, rel.opts);
+		}
 		// B: Chart Properties + Options: Fill, Border, Legend
 		{
 			strXml += '  <c:spPr>';
@@ -1044,7 +1061,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeChartType (chartType, data, opts) {
+	function XmakeChartType (chartType, data, opts) {
 
 		function getExcelColName(length) {
 			var strName = '';
