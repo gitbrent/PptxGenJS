@@ -918,6 +918,7 @@ var PptxGenJS = function(){
 				delete layoutOpts[key]; // remove invalid value so that default will be used
 			}
 		});
+	}
 
 	/**
 	 * Checks grid line properties and correct them if needed.
