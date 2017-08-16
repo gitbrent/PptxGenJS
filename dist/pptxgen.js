@@ -1002,7 +1002,7 @@ var PptxGenJS = function(){
 
 		// A: CHART TYPES -----------------------------------------------------------
 		var chartType = rel.opts.type.name;
-		strXml += makeChartType(chartType, rel);
+		strXml += makeChartType(chartType, rel.data, rel.opts);
 
 		// B: Chart Properties + Options: Fill, Border, Legend
 		{
@@ -1044,7 +1044,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeChartType (chartType, rel) {
+	function makeChartType (chartType, data, opts) {
 
 		function getExcelColName(length) {
 			var strName = '';
@@ -1059,15 +1059,15 @@ var PptxGenJS = function(){
 
 			return strName;
 		}
-		
+
 		var strXml = '';
 		switch ( chartType ) {
 			case 'area':
 			case 'bar':
 			case 'line':
 				strXml += '<c:'+ chartType +'Chart>';
-				if ( chartType == 'bar' ) strXml += '  <c:barDir val="'+ rel.opts.barDir +'"/>';
-				strXml += '  <c:grouping val="'+ rel.opts.barGrouping + '"/>';
+				if ( chartType == 'bar' ) strXml += '  <c:barDir val="'+ opts.barDir +'"/>';
+				strXml += '  <c:grouping val="'+ opts.barGrouping + '"/>';
 				strXml += '  <c:varyColors val="0"/>';
 
 				// A: "Series" block for every data row
@@ -1085,7 +1085,7 @@ var PptxGenJS = function(){
 				     }
 				    ]
 				*/
-				rel.data.forEach(function(obj,idx){
+				data.forEach(function(obj,idx){
 					strXml += '<c:ser>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:order val="'+ idx +'"/>';
@@ -1097,10 +1097,10 @@ var PptxGenJS = function(){
 					strXml += '  </c:tx>';
 
 					// Fill and Border
-					var strSerColor = rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)];
+					var strSerColor = opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)];
 					strXml += '  <c:spPr>';
 
-					if ( rel.opts.chartColorsOpacity ) {
+					if ( opts.chartColorsOpacity ) {
 						strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"><a:alpha val="50000"/></a:srgbClr></a:solidFill>';
 					}
 					else {
@@ -1108,11 +1108,11 @@ var PptxGenJS = function(){
 					}
 
 					if ( chartType == 'line' ) {
-						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
-						strXml += '<a:prstDash val="' + (rel.opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+						strXml += '<a:ln w="'+ (opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
+						strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
 					}
-					else if ( rel.opts.dataBorder ) {
-						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					else if ( opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
 					strXml += '    <a:effectLst>';
 					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
@@ -1124,10 +1124,10 @@ var PptxGenJS = function(){
 					// LINE CHART ONLY: `marker`
 					if ( chartType == 'line' ) {
 						strXml += '<c:marker>';
-						strXml += '  <c:symbol val="'+ rel.opts.lineDataSymbol +'"/>';
-						if ( rel.opts.lineDataSymbolSize ) strXml += '  <c:size val="'+ rel.opts.lineDataSymbolSize +'"/>'; // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
+						if ( opts.lineDataSymbolSize ) strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>'; // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
 						strXml += '  <c:spPr>';
-						strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
+						strXml += '    <a:solidFill><a:srgbClr val="'+ opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
 						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
@@ -1136,7 +1136,7 @@ var PptxGenJS = function(){
 
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if ( rel.data.length === 1 && rel.opts.chartColors != BARCHART_COLORS ) {
+					if ( data.length === 1 && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
 							strXml += '  <c:dPt>';
@@ -1145,7 +1145,7 @@ var PptxGenJS = function(){
 							strXml += '    <c:bubble3D val="0"/>';
 							strXml += '    <c:spPr>';
 							strXml += '    <a:solidFill>';
-							strXml += '     <a:srgbClr val="'+rel.opts.chartColors[index % rel.opts.chartColors.length]+'"/>';
+							strXml += '     <a:srgbClr val="'+opts.chartColors[index % opts.chartColors.length]+'"/>';
 							strXml += '    </a:solidFill>';
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
@@ -1161,20 +1161,20 @@ var PptxGenJS = function(){
 
 					// 1: "Data Labels"
 					strXml += '  <c:dLbls>';
-					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+					strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/>';
 					strXml += '      <a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
-					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-					strXml += '          <a:solidFill><a:srgbClr val="'+ (rel.opts.dataLabelColor || '000000') +'"/></a:solidFill>';
-					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '          <a:solidFill><a:srgbClr val="'+ (opts.dataLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					if ( chartType != 'area' ) strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'outEnd') +'"/>';
+					if ( chartType != 'area' ) strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
 					strXml += '    <c:showLegendKey val="0"/>';
-					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? '1' : '0') +'"/>';
+					strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
 					strXml += '    <c:showCatName val="0"/>';
 					strXml += '    <c:showSerName val="0"/>';
 					strXml += '    <c:showPercent val="0"/>';
@@ -1205,15 +1205,15 @@ var PptxGenJS = function(){
 					strXml += '  </c:val>';
 
 					// LINE CHART ONLY: `smooth`
-					if ( chartType == 'line' ) strXml += '<c:smooth val="'+ (rel.opts.lineSmooth ? "1" : "0" ) +'"/>';
+					if ( chartType == 'line' ) strXml += '<c:smooth val="'+ (opts.lineSmooth ? "1" : "0" ) +'"/>';
 
 					// 4: Close "SERIES"
 					strXml += '</c:ser>';
 				});
 				//
 				if ( chartType == 'bar' ) {
-					strXml += '  <c:gapWidth val="'+ rel.opts.barGapWidthPct +'"/>';
-					strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
+					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
+					strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
 				}
 				else if ( chartType == 'line' ) {
 					strXml += '  <c:marker val="1"/>';
@@ -1225,26 +1225,26 @@ var PptxGenJS = function(){
 				// B: "Category Axis"
 			{
 				strXml += '<c:catAx>';
-				if (rel.opts.showCatAxisTitle) {
+				if (opts.showCatAxisTitle) {
 					strXml += genXmlTitle({
-						title: rel.opts.catAxisTitle || 'Axis Title',
-						fontSize: rel.opts.catAxisTitleFontSize,
-						color: rel.opts.catAxisTitleColor,
-						fontFace: rel.opts.catAxisTitleFontFace,
-						rotate: rel.opts.catAxisTitleRotate
+						title: opts.catAxisTitle || 'Axis Title',
+						fontSize: opts.catAxisTitleFontSize,
+						color: opts.catAxisTitleColor,
+						fontFace: opts.catAxisTitleFontFace,
+						rotate: opts.catAxisTitleRotate
 					});
 				}
 				strXml += '  <c:axId val="2094734552"/>';
-				strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
-				strXml += '  <c:delete val="'+ (rel.opts.catAxisHidden ? 1 : 0) +'"/>';
-				strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'b' : 'l') +'"/>';
-				if ( rel.opts.catGridLine !== 'none' ) {
-					strXml += createGridLineElement(rel.opts.catGridLine, DEF_CHART_GRIDLINE);
+				strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+				strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
+				strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+				if ( opts.catGridLine !== 'none' ) {
+					strXml += createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE);
 				}
 				strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
 				strXml += '  <c:majorTickMark val="out"/>';
 				strXml += '  <c:minorTickMark val="none"/>';
-				strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+				strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 				strXml += '  <c:spPr>';
 				strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 				strXml += '  </c:spPr>';
@@ -1253,9 +1253,9 @@ var PptxGenJS = function(){
 				strXml += '    <a:lstStyle/>';
 				strXml += '    <a:p>';
 				strXml += '    <a:pPr>';
-				strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-				strXml += '<a:solidFill><a:srgbClr val="'+ (rel.opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
-				strXml += '<a:latin typeface="'+ (rel.opts.catAxisLabelFontFace || 'Arial') +'"/>';
+				strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+				strXml += '<a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
+				strXml += '<a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
 				strXml += '   </a:defRPr>';
 				strXml += '  </a:pPr>';
 				strXml += '  </a:p>';
@@ -1271,28 +1271,28 @@ var PptxGenJS = function(){
 				// C: "Value Axis"
 			{
 				strXml += '<c:valAx>';
-				if (rel.opts.showValAxisTitle) {
+				if (opts.showValAxisTitle) {
 					strXml += genXmlTitle({
-						title: rel.opts.valAxisTitle || 'Axis Title',
-						fontSize: rel.opts.valAxisTitleFontSize,
-						color: rel.opts.valAxisTitleColor,
-						fontFace: rel.opts.valAxisTitleFontFace,
-						rotate: rel.opts.valAxisTitleRotate
+						title: opts.valAxisTitle || 'Axis Title',
+						fontSize: opts.valAxisTitleFontSize,
+						color: opts.valAxisTitleColor,
+						fontFace: opts.valAxisTitleFontFace,
+						rotate: opts.valAxisTitleRotate
 					});
 				}
 				strXml += '  <c:axId val="2094734553"/>';
 				strXml += '  <c:scaling>';
-				strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
-				if (rel.opts.valAxisMaxVal) strXml += '<c:max val="'+ rel.opts.valAxisMaxVal +'"/>';
-				if (rel.opts.valAxisMinVal) strXml += '<c:min val="'+ rel.opts.valAxisMinVal +'"/>';
+				strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
+				if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
+				if (opts.valAxisMinVal) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
 				strXml += '  </c:scaling>';
-				strXml += '  <c:delete val="'+ (rel.opts.valAxisHidden ? 1 : 0) +'"/>';
-				strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
-				if (rel.opts.valGridLine != 'none') strXml += createGridLineElement(rel.opts.valGridLine, DEF_CHART_GRIDLINE);
-				strXml += ' <c:numFmt formatCode="'+ (rel.opts.valAxisLabelFormatCode ? rel.opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
+				strXml += '  <c:delete val="'+ (opts.valAxisHidden ? 1 : 0) +'"/>';
+				strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'l' : 'b') +'"/>';
+				if (opts.valGridLine != 'none') strXml += createGridLineElement(opts.valGridLine, DEF_CHART_GRIDLINE);
+				strXml += ' <c:numFmt formatCode="'+ (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
 				strXml += ' <c:majorTickMark val="out"/>';
 				strXml += ' <c:minorTickMark val="none"/>';
-				strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+				strXml += ' <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 				strXml += ' <c:spPr>';
 				strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 				strXml += ' </c:spPr>';
@@ -1301,9 +1301,9 @@ var PptxGenJS = function(){
 				strXml += '  <a:lstStyle/>';
 				strXml += '  <a:p>';
 				strXml += '    <a:pPr>';
-				strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-				strXml += '        <a:solidFill><a:srgbClr val="'+ (rel.opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
-				strXml += '        <a:latin typeface="'+ (rel.opts.valAxisLabelFontFace || 'Arial') +'"/>';
+				strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+				strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
+				strXml += '        <a:latin typeface="'+ (opts.valAxisLabelFontFace || 'Arial') +'"/>';
 				strXml += '      </a:defRPr>';
 				strXml += '    </a:pPr>';
 				strXml += '  </a:p>';
@@ -1311,7 +1311,7 @@ var PptxGenJS = function(){
 				strXml += ' <c:crossAx val="2094734552"/>';
 				strXml += ' <c:crosses val="autoZero"/>';
 				strXml += ' <c:crossBetween val="'+ ( chartType == 'area' ? 'midCat' : 'between' ) +'"/>';
-				if ( rel.opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ rel.opts.valAxisMajorUnit +'"/>';
+				if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
 				strXml += '</c:valAx>';
 			}
 
@@ -1321,7 +1321,7 @@ var PptxGenJS = function(){
 			case 'pie':
 			case 'doughnut':
 				// Use the same var name so code blocks from barChart are interchangeable
-				var obj = rel.data[0];
+				var obj = data[0];
 
 				/* EX:
 					data: [
@@ -1365,9 +1365,9 @@ var PptxGenJS = function(){
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:explosion val="0"/>';
 					strXml += '  <c:spPr>';
-					strXml += '    <a:solidFill><a:srgbClr val="'+ rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
-					if ( rel.opts.dataBorder ) {
-						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += '    <a:solidFill><a:srgbClr val="'+ opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
+					if ( opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
 					strXml += '    <a:effectLst>';
 					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
@@ -1383,28 +1383,28 @@ var PptxGenJS = function(){
 				obj.labels.forEach(function(label,idx){
 					strXml += '<c:dLbl>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
-					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+					strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/><a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
-					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-					strXml += '          <a:solidFill><a:srgbClr val="'+ (rel.opts.dataLabelColor || '000000') +'"/></a:solidFill>';
-					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '          <a:solidFill><a:srgbClr val="'+ (opts.dataLabelColor || '000000') +'"/></a:solidFill>';
+					strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
 					if (chartType == 'pie') {
-						strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'inEnd') +'"/>';
+						strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'inEnd') +'"/>';
 					}
 					strXml += '    <c:showLegendKey val="0"/>';
-					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
-					strXml += '    <c:showCatName val="'+ (rel.opts.showLabel ? "1" : "0") +'"/>';
+					strXml += '    <c:showVal val="'+ (opts.showValue ? "1" : "0") +'"/>';
+					strXml += '    <c:showCatName val="'+ (opts.showLabel ? "1" : "0") +'"/>';
 					strXml += '    <c:showSerName val="0"/>';
-					strXml += '    <c:showPercent val="'+ (rel.opts.showPercent ? "1" : "0") +'"/>';
+					strXml += '    <c:showPercent val="'+ (opts.showPercent ? "1" : "0") +'"/>';
 					strXml += '    <c:showBubbleSize val="0"/>';
 					strXml += '  </c:dLbl>';
 				});
-				strXml += '<c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>\
+				strXml += '<c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>\
 		            <c:txPr>\
 		              <a:bodyPr/>\
 		              <a:lstStyle/>\
@@ -1451,10 +1451,10 @@ var PptxGenJS = function(){
 				// 4: Close "SERIES"
 				strXml += '  </c:ser>';
 				strXml += '  <c:firstSliceAng val="0"/>';
-				if ( chartType == 'doughnut' ) strXml += '  <c:holeSize val="' + (rel.opts.holeSize || 50) + '"/>';
+				if ( chartType == 'doughnut' ) strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
 				strXml += '</c:'+ chartType +'Chart>';
 
-				// Done with CHART.BAR
+				// Done with CHART.PIE
 				break;
 		}
 
@@ -2852,7 +2852,7 @@ var PptxGenJS = function(){
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
 				// Read and Encode each image into base64 for use in export
-				if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
+				if ( rel.type != 'online' && rel.type != 'chart' && !data && $.inArray(rel.path, arrRelsDone) == -1 ) {
 					// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 					if ( NODEJS ) {
 						try {
