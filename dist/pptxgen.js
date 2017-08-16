@@ -910,6 +910,15 @@ var PptxGenJS = function(){
 		return arrObjSlides;
 	}
 
+	function correctLayoutOptions(layoutOpts) {
+		['x', 'y', 'w', 'h'].forEach(function(key) {
+			var val = layoutOpts[key];
+			if (isNaN(Number(val)) || val < 0 || val > 1) {
+				console.warn('Warning: chart.layout.' + key + ' can only be 0-1');
+				delete layoutOpts[key]; // remove invalid value so that default will be used
+			}
+		});
+
 	/**
 	 * Checks grid line properties and correct them if needed.
 	 * @param {Object} glOpts chart.gridLine options
@@ -996,7 +1005,22 @@ var PptxGenJS = function(){
 
 		strXml += '<c:plotArea>';
 		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-		strXml += '<c:layout/>';
+		if ( rel.opts.layout ) {
+			strXml += '<c:layout>';
+			strXml += ' <c:manualLayout>';
+			strXml += '  <c:layoutTarget val="inner" />';
+			strXml += '  <c:xMode val="edge" />';
+			strXml += '  <c:yMode val="edge" />';
+			strXml += '  <c:x val="' + (rel.opts.layout.x || 0) + '" />';
+			strXml += '  <c:y val="' + (rel.opts.layout.y || 0) + '" />';
+			strXml += '  <c:w val="' + (rel.opts.layout.w || 1) + '" />';
+			strXml += '  <c:h val="' + (rel.opts.layout.h || 1) + '" />';
+			strXml += ' </c:manualLayout>';
+			strXml += '</c:layout>';
+		}
+		else {
+			strXml += '<c:layout/>';
+		}
 
 		// A: CHART TYPES -----------------------------------------------------------
 		switch ( rel.opts.type ) {
@@ -2961,7 +2985,9 @@ var PptxGenJS = function(){
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 
-			// use default lines only for y-axis if nothing specified
+			correctLayoutOptions(options.layout);
+
+      // use default lines only for y-axis if nothing specified
 			options.valGridLine = options.valGridLine || {};
 			options.catGridLine = options.catGridLine || 'none';
 			correctGridLineOptions(options.catGridLine);

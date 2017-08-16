@@ -325,28 +325,29 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 * Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
 
 ### Chart Size/Formatting Options
-| Option          | Type    | Unit    | Default   | Description           | Possible Values  |
-| :-------------- | :------ | :------ | :-------- | :-------------------- | :--------------- |
-| `x`             | number  | inches  | `1.0`     | horizontal location   | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`             | number  | inches  | `1.0`     | vertical location     | 0-n OR 'n%'. |
-| `w`             | number  | inches  | `50%`     | width                 | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
-| `h`             | number  | inches  | `50%`     | height                | 0-n OR 'n%'. |
-| `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-| `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
-| `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
-| `fill`          | string  |         |           | fill/background color | hex color code. Ex: `{ fill:'0088CC' }` |
+| Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
+| :-------------- | :------ | :------ | :-------- | :--------------------------------- | :--------------- |
+| `x`             | number  | inches  | `1.0`     | horizontal location                | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`             | number  | inches  | `1.0`     | vertical location                  | 0-n OR 'n%'. |
+| `w`             | number  | inches  | `50%`     | width                              | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`             | number  | inches  | `50%`     | height                             | 0-n OR 'n%'. |
+| `border`        | object  |         |           | chart border                       | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
+| `chartColors`   | array   |         |           | data colors                        | array of hex color codes. Ex: `['0088CC','FFCC00']` |
+| `chartColorsOpacity` | number | percent | `100` | data color opacity percent         | 1-100. Ex: `{ chartColorsOpacity:50 }` |
+| `fill`          | string  |         |           | fill/background color              | hex color code. Ex: `{ fill:'0088CC' }` |
 | `holeSize`      | number  | percent | `50`      | doughnut hole size    | 1-100. Ex: `{ holeSize:50 }` |
-| `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
-| `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
-| `showLegend`    | boolean |         | `false`   | show chart legend     | `true` or `false` |
-| `showPercent`   | boolean |         | `false`   | show data percent     | `true` or `false` |
-| `showTitle`     | boolean |         | `false`   | show chart title      | `true` or `false` |
-| `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
-| `title`         | string  |         |           | chart title           | a string. Ex: `{ title:'Sales by Region' }` |
-| `titleRotate`    | integer | degrees |          | title rotation degrees           | 0-360. Ex: `{ titleRotate:45 }` |
-| `titleColor`    | string  |         | `000000`  | title color           | hex color code. Ex: `{ titleColor:'0088CC' }` |
-| `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
+| `legendPos`     | string  |         | `r`       | chart legend position              | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
+| `layout`        | object  |         |           | positioning plot within chart area | object with `x`, `y`, `w` and `h` props, all in range 0-1 (proportionally related to the chart size). Ex: `{x: 0, y: 0, w: 1, h: 1}` fully expands plot to the chart area |
+| `showLabel`     | boolean |         | `false`   | show data labels                   | `true` or `false` |
+| `showLegend`    | boolean |         | `false`   | show chart legend                  | `true` or `false` |
+| `showPercent`   | boolean |         | `false`   | show data percent                  | `true` or `false` |
+| `showTitle`     | boolean |         | `false`   | show chart title                   | `true` or `false` |
+| `showValue`     | boolean |         | `false`   | show data values                   | `true` or `false` |
+| `title`         | string  |         |           | chart title                        | a string. Ex: `{ title:'Sales by Region' }` |
+| `titleColor`    | string  |         | `000000`  | title color                        | hex color code. Ex: `{ titleColor:'0088CC' }` |
+| `titleFontFace` | string  |         | `Arial`   | font face                          | font name. Ex: `{ titleFontFace:'Arial' }` |
+| `titleFontSize` | number  | points  | `18`      | font size                          | 1-256. Ex: `{ titleFontSize:12 }` |
+| `titleRotate`   | integer | degrees |           | title rotation degrees             | 0-360. Ex: `{ titleRotate:45 }` |
 
 ### Chart Axis Options
 | Option                 | Type    | Unit    | Default   | Description              | Possible Values                            |
