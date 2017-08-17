@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Apr 29, 2017
+* DATE: Aug 15, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -505,7 +505,7 @@ function genSlides_Chart(pptx) {
 		arrDataLineStat.push( tmpObjUnk );
 	}
 
-	// SLIDE 1: Bar Chart -----------------------------------------------------------------
+	// SLIDE 1: Bar Chart ------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -790,7 +790,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 3: Stacked Bar Chart ---------------------------------------------------------
+	// SLIDE 3: Stacked Bar Chart ----------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -859,27 +859,17 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
 
-		// BTM-LEFT: H/bar - TITLE and LEGEND
+		// BTM-LEFT: H/bar - 100% layout without axis labels
 		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
-			barDir     : 'bar',
-			barGrouping: 'percentStacked',
-
-			border: { pt:'3', color:'CF0909' },
-			fill: 'F1C1C1',
-
-			catAxisLabelColor   : 'CC0000',
-			catAxisLabelFontFace: 'Helvetica Neue',
-			catAxisLabelFontSize: 14,
-			catAxisOrientation  : 'minMax',
-
-			titleColor   : '33CF22',
-			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 16,
-
-			showTitle : true,
-			title: 'Sales by Region'
+			barDir       : 'bar',
+			barGrouping  : 'percentStacked',
+			dataBorder   : { pt:'1', color:'F1F1F1' },
+			catAxisHidden: true,
+			valAxisHidden: true,
+			showTitle    : false,
+			layout       : {x:0.1, y:0.1, w:1, h:1}
 		};
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
 
 		// BTM-RIGHT: V/col - TITLE and LEGEND
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -895,14 +885,12 @@ function genSlides_Chart(pptx) {
 			chartColors: ['5DA5DA','FAA43A'],
 
 			showLegend: true,
-			legendPos :  't',
-			showTitle: true,
-			title    : 'Chart Title'
+			legendPos :  't'
 		};
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 4: Bar Chart - Lots of Bars --------------------------------------------------
+	// SLIDE 4: Bar Chart - Lots of Bars ---------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -937,7 +925,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	}
 
-	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ----------------
+	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Colors, valAxisMajorUnit, v Format %', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -1165,7 +1153,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
 	}
 
-	// SLIDE 10: Pie Charts: All 4 Legend Options -------------------------------------------
+	// SLIDE 10: Pie Charts: All 4 Legend Options ------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -1198,7 +1186,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 11: Doughnut Chart ------------------------------------------------------------------
+	// SLIDE 11: Doughnut Chart ------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -1240,6 +1228,45 @@ function genSlides_Chart(pptx) {
 			title: 'Resource Totals by Location'
 		};
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
+	}
+
+	// SLIDE 12: Tornado Chart -------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		slide.addChart(
+			pptx.charts.BAR,
+			[
+				{
+					name: 'High',
+					labels: ['London', 'Munich', 'Tokyo'],
+					values: [.20, .32, .41]
+				},
+				{
+					name: 'Low',
+					labels: ['London', 'Munich', 'Tokyo'],
+					values: [-0.11, -0.22, -0.29]
+				}
+			],
+			{
+				x:0.5, y:0.5, w:'90%', h:'90%',
+				valAxisMaxVal:1,
+				barDir: 'bar',
+				axisLabelFormatCode: '#%',
+				gridLineColor: 'D8D8D8',
+				axisLineColor: 'D8D8D8',
+				valAxisLineShow: false,
+				barGrouping: 'stacked',
+				catAxisLabelPos: 'low',
+				valueBarColors: true,
+				//dataLabelPosition: 'outEnd',
+				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384','7D666A','A3C961','EF907B','9BA0A3'],
+				invertedColors: ['0065A2','428526','C99100','51A7C1','BD3813','123970','6A575A','8BAB52','CB7A69','84888B'],
+				barGapWidthPct: 25,
+				valAxisMajorUnit: 0.2
+			}
+		);
 	}
 }
 

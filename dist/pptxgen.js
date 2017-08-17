@@ -70,7 +70,7 @@ var PptxGenJS = function(){
 		'line' : { name:'line'  },
 		'rect' : { name:'rect'  },
 		'text' : { name:'text'  }
-	}
+	};
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -97,7 +97,7 @@ var PptxGenJS = function(){
 		'LINE'    : { 'displayName':'Line Chart',      'name':'line'     },
 		'PIE'     : { 'displayName':'Pie Chart' ,      'name':'pie'      },
 		'DOUGHNUT': { 'displayName':'Doughnut Chart' , 'name':'doughnut' }
-	}
+	};
 	//var RAINBOW_COLORS = ['8A56E2','CF56E2','E256AE','E25668','E28956','E2CF56','AEE256','68E256','56E289','56E2CF','56AEE2','5668E2'];
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
 	var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
@@ -1031,7 +1031,22 @@ var PptxGenJS = function(){
 
 		strXml += '<c:plotArea>';
 		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-		strXml += '<c:layout/>';
+		if ( rel.opts.layout ) {
+			strXml += '<c:layout>';
+			strXml += ' <c:manualLayout>';
+			strXml += '  <c:layoutTarget val="inner" />';
+			strXml += '  <c:xMode val="edge" />';
+			strXml += '  <c:yMode val="edge" />';
+			strXml += '  <c:x val="' + (rel.opts.layout.x || 0) + '" />';
+			strXml += '  <c:y val="' + (rel.opts.layout.y || 0) + '" />';
+			strXml += '  <c:w val="' + (rel.opts.layout.w || 1) + '" />';
+			strXml += '  <c:h val="' + (rel.opts.layout.h || 1) + '" />';
+			strXml += ' </c:manualLayout>';
+			strXml += '</c:layout>';
+		}
+		else {
+			strXml += '<c:layout/>';
+		}
 
 		// A: CHART TYPES -----------------------------------------------------------
 		switch ( rel.opts.type ) {
@@ -1109,17 +1124,19 @@ var PptxGenJS = function(){
 
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if ( rel.data.length === 1 && rel.opts.chartColors != BARCHART_COLORS ) {
+					if (( rel.data.length === 1 || rel.opts.valueBarColors ) && rel.opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
-						obj.values.forEach(function(value,index){
+						obj.values.forEach(function (value, index) {
+							var invert = rel.opts.invertedColors ? 0 : 1;
+							var colors = value < 0 ? rel.opts.invertedColors : rel.opts.chartColors;
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+index+'"/>';
-							strXml += '    <c:invertIfNegative val="1"/>';
-							strXml += '    <c:bubble3D val="0"/>';
-							strXml += '    <c:spPr>';
+							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
+							strXml += '    	<c:bubble3D val="0"/>';
+							strXml += '    	<c:spPr>';
 							strXml += '    <a:solidFill>';
-							strXml += '     <a:srgbClr val="'+rel.opts.chartColors[index % rel.opts.chartColors.length]+'"/>';
-							strXml += '    </a:solidFill>';
+							strXml += '    <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
+							strXml += '    	</a:solidFill>';
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
 							strXml += '    	<a:srgbClr val="000000">';
@@ -1235,7 +1252,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:numFmt formatCode="'+ (rel.opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
-					strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+					strXml += '  <c:tickLblPos val="'+ (rel.opts.catAxisLabelPos || rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 					strXml += '  <c:spPr>';
 					strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					strXml += '  </c:spPr>';
@@ -1290,7 +1307,19 @@ var PptxGenJS = function(){
 					strXml += ' <c:minorTickMark val="none"/>';
 					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 					strXml += ' <c:spPr>';
-					strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += '   <a:ln w="12700" cap="flat">';
+
+					var showAxis = !!rel.opts.valAxisLineShow || rel.opts.valAxisLineShow === undefined;
+					if (!showAxis) {
+						strXml += '     <a:noFill/>';
+					} else {
+						strXml += '     <a:solidFill>';
+						strXml += '       <a:srgbClr val="'+(rel.opts.axisLineColor ? rel.opts.axisLineColor : "888888")+'"/>';
+						strXml += '     </a:solidFill>';
+					}
+					strXml += '     <a:prstDash val="solid"/>';
+					strXml += '     <a:round/>';
+					strXml += '   </a:ln>';
 					strXml += ' </c:spPr>';
 					strXml += ' <c:txPr>';
 					strXml += '  <a:bodyPr/>';  // don't specify rot=0 so we can get the PPT default
@@ -3018,8 +3047,18 @@ var PptxGenJS = function(){
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
+			// `layout` allows the override of PPT defaults to maximize space
+			if ( options.layout ) {
+				['x', 'y', 'w', 'h'].forEach(function(key) {
+					var val = options.layout[key];
+					if (isNaN(Number(val)) || val < 0 || val > 1) {
+						console.warn('Warning: chart.layout.' + key + ' can only be 0-1');
+						delete options.layout[key]; // remove invalid value so that default will be used
+					}
+				});
+			}
 
-			// use default lines only for y-axis if nothing specified
+      		// use default lines only for y-axis if nothing specified
 			options.valGridLine = options.valGridLine || {};
 			options.catGridLine = options.catGridLine || 'none';
 			correctGridLineOptions(options.catGridLine);
