@@ -220,6 +220,23 @@ var PptxGenJS = function(){
 		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlSlideMasterRel());
 
 		// Create all Rels (images, media, chart data)
+		gObjPptx.layoutDefinitions.forEach(function(layout, idx){
+			layout.rels.forEach(function(rel, idy) {
+				if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
+					// A: Loop vars
+					var data = rel.data;
+
+					// B: Users will undoubtedly pass various string formats, so modify as needed
+					if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
+					else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
+					else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
+
+					// C: Add media
+					zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
+				}
+			});
+		});
+
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
 				if ( rel.type == 'chart' ) {
@@ -1977,6 +1994,12 @@ var PptxGenJS = function(){
 					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
 			});
 		});
+		gObjPptx.layoutDefinitions.forEach(function(layout,idx){
+			layout.rels.forEach(function(rel,idy){
+				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
+					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
+			});
+		});
 		strXml += ' <Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>';
 		strXml += ' <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>';
 
@@ -1989,13 +2012,27 @@ var PptxGenJS = function(){
 		strXml += ' <Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>';
 		gObjPptx.slides.forEach(function(slide,idx){
 			strXml += '<Override PartName="/ppt/slideMasters/slideMaster'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>';
-			strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
 			strXml += '<Override PartName="/ppt/slides/slide'            + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
+			if (!gObjPptx.properLayoutMasterInUse) {
+				strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
+			}
 		});
+		if (gObjPptx.properLayoutMasterInUse) {
+			gObjPptx.layoutDefinitions.forEach(function(layout, idx) {
+				strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ getLayoutIdxForSlide( idx + 1 ) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
+			})
+		}
 
 		// Add charts (if any)
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
+				if ( rel.type == 'chart' ) {
+					strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+				}
+			});
+		});
+		gObjPptx.layoutDefinitions.forEach(function(layout,idx){
+			layout.rels.forEach(function(rel,idy){
 				if ( rel.type == 'chart' ) {
 					strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
 				}
@@ -3093,12 +3130,46 @@ var PptxGenJS = function(){
 		return strSlideXml;
 	}
 
-	function makeXmlSlideLayoutRel(inSlideNum) {
+	function makeXmlSlideLayoutRel(inLayoutNum) {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
 			strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
-			//?strXml += '  <Relationship Id="rId'+ inSlideNum +'" Target="../slideMasters/slideMaster'+ inSlideNum +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>';
-			//strXml += '  <Relationship Id="rId1" Target="../slideMasters/slideMaster'+ inSlideNum +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>';
+			//?strXml += '  <Relationship Id="rId'+ inLayoutNum +'" Target="../slideMasters/slideMaster'+ inLayoutNum +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>';
+			//strXml += '  <Relationship Id="rId1" Target="../slideMasters/slideMaster'+ inLayoutNum +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>';
 			strXml += '  <Relationship Id="rId1" Target="../slideMasters/slideMaster1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>';
+			// Add any rels for this Slide (image/audio/video/youtube/chart)
+			gObjPptx.layoutDefinitions[inLayoutNum - 1].rels.forEach(function(rel, idx){
+				if      ( rel.type.toLowerCase().indexOf('image')  > -1 ) {
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>';
+				}
+				else if ( rel.type.toLowerCase().indexOf('chart')  > -1 ) {
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>';
+				}
+				else if ( rel.type.toLowerCase().indexOf('audio')  > -1 ) {
+					// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+					if ( strXml.indexOf(' Target="'+ rel.Target +'"') > -1 )
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>';
+					else
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"/>';
+				}
+				else if ( rel.type.toLowerCase().indexOf('video')  > -1 ) {
+					// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+					if ( strXml.indexOf(' Target="'+ rel.Target +'"') > -1 )
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>';
+					else
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
+				}
+				else if ( rel.type.toLowerCase().indexOf('online') > -1 ) {
+					// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+					if ( strXml.indexOf(' Target="'+ rel.Target +'"') > -1 )
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" Type="http://schemas.microsoft.com/office/2007/relationships/image"/>';
+					else
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
+				}
+				else if ( rel.type.toLowerCase().indexOf('hyperlink') > -1 ) {
+					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>';
+				}
+			});
+
 			strXml += '</Relationships>';
 		//
 		return strXml;
@@ -4173,6 +4244,96 @@ var PptxGenJS = function(){
 		gObjPptx.layoutDefinitions[layoutNum].data = [];
 		gObjPptx.layoutDefinitions[layoutNum].rels = [];
 
+		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
+		// FUTURE: layoutObj.addImage = function(opt){
+		// NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
+		layoutObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
+			var intRels = 1;
+
+			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
+			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
+			if ( typeof strImagePath === 'object' ) {
+				intPosX = (strImagePath.x || 0);
+				intPosY = (strImagePath.y || 0);
+				intSizeX = (strImagePath.cx || strImagePath.w || 0);
+				intSizeY = (strImagePath.cy || strImagePath.h || 0);
+				objHyperlink = (strImagePath.hyperlink || '');
+				strImageData = (strImagePath.data || '');
+				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as were about to ovewrite ourself!
+			}
+
+			// REALITY-CHECK:
+			if ( !strImagePath && !strImageData ) {
+				console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
+				return null;
+			}
+			else if ( strImageData && strImageData.toLowerCase().indexOf('base64,') == -1 ) {
+				console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
+				return null;
+			}
+
+			// STEP 2: Set vars for this Slide
+			var layoutObjNum = gObjPptx.layoutDefinitions[layoutNum].data.length;
+			var layoutObjRels = gObjPptx.layoutDefinitions[layoutNum].rels;
+			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
+			var strImgExtn = 'png';
+			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
+			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
+				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
+			}
+			// Node.js can read/base64-encode any image, so take at face value
+			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
+
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum]       = {};
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].type  = 'image';
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].image = (strImagePath || 'preencoded.png');
+
+			// STEP 3: Set image properties & options
+			// FIXME: Measure actual image when no intSizeX/intSizeY params passed
+			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
+			// if ( !intSizeX || !intSizeY ) { var imgObj = getSizeFromImage(strImagePath);
+			var imgObj = { width:1, height:1 };
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options    = {};
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.x  = (intPosX  || 0);
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.y  = (intPosY  || 0);
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.cx = (intSizeX || imgObj.width );
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.cy = (intSizeY || imgObj.height);
+
+			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
+			$.each(gObjPptx.layoutDefinitions, function(i, layout){ intRels += layout.rels.length; });
+			layoutObjRels.push({
+				path: (strImagePath || 'preencoded'+strImgExtn),
+				type: 'image/'+strImgExtn,
+				extn: strImgExtn,
+				data: (strImageData || ''),
+				rId:  (intRels+1),
+				Target: '../media/image'+ intRels +'.'+ strImgExtn
+			});
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].imageRid = layoutObjRels[layoutObjRels.length-1].rId;
+
+			// STEP 5: (Issue#77) Hyperlink support
+			if ( typeof objHyperlink === 'object' ) {
+				if ( !objHyperlink.url || typeof objHyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+				else {
+					var intRelId = intRels+2;
+
+					layoutObjRels.push({
+						type: 'hyperlink',
+						data: 'dummy',
+						rId:  intRelId,
+						Target: objHyperlink.url
+					});
+
+					objHyperlink.rId = intRelId;
+					gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].hyperlink = objHyperlink;
+				}
+			}
+
+			// LAST: Return this layout
+			return this;
+		};
+
 
 		layoutObj.addShape = function( shape, opt ) {
 			var options = ( typeof opt === 'object' ? opt : {} );
@@ -4304,40 +4465,13 @@ var PptxGenJS = function(){
 					extn: strImgExtn,
 					data: (val.data || ''),
 					rId: (intRels+1),
-					Target: '../media/layout-image' + intRels + '.' + strImgExtn
+					Target: '../media/image' + intRels + '.' + strImgExtn
 				});
 				layoutObj.bkgdImgRid = layoutObjRels[layoutObjRels.length-1].rId;
 			}
 			else if ( key == 'bkgd' && val && typeof val === 'string' ) {
 				layoutObj.back = val;
 			}
-
-			// Images **DEPRECATED** (v1.5.0)
-			// if ( key == "images" && Array.isArray(val) && val.length > 0 ) {
-			// 	$.each(val, function(i,image){
-			// 		layoutObj.addImage({
-			// 			data: (image.data || ''),
-			// 			path: (image.path || image.src || ''),
-			// 			x: inch2Emu(image.x),
-			// 			y: inch2Emu(image.y),
-			// 			w: inch2Emu(image.w || image.cx),
-			// 			h: inch2Emu(image.h || image.cy)
-			// 		});
-			// 	});
-			// }
-
-			// Shapes **DEPRECATED** (v1.5.0)
-			// if ( key == "shapes" && Array.isArray(val) && val.length > 0 ) {
-			// 	$.each(val, function(i,shape){
-			// 		// 1: Grab all options (x, y, color, etc.)
-			// 		var objOpts = {};
-			// 		$.each(Object.keys(shape), function(i,key){ if ( shape[key] != 'type' ) objOpts[key] = shape[key]; });
-			// 		// 2: Create object using 'type'
-			// 		if      ( shape.type == 'text'      ) layoutObj.addText(shape.text, objOpts);
-			// 		else if ( shape.type == 'line'      ) layoutObj.addShape(gObjPptxShapes.LINE, objOpts);
-			// 		else if ( shape.type == 'rectangle' ) layoutObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
-			// 	});
-			// }
 
 			// Add all Slide Master objects in the order they were given (Issue#53)
 			if ( key == "objects" && Array.isArray(val) && val.length > 0 ) {
