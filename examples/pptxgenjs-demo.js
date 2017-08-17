@@ -1162,9 +1162,9 @@ function genSlides_Chart(pptx) {
 	// }
 
 	// SLIDE 11: Multi Type ---------------------------------------------------------
-	{
+	function slideMultiType () {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Multi Type Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		function doMultiChart () {
 
@@ -1257,11 +1257,162 @@ function genSlides_Chart(pptx) {
 			slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
 		}
 
+		function addDotChart () {
+				var options = {
+					x: 0.6, y: 0.6, w: 6.0, h: 3.0,
+					chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+					lineSize  : 0,
+					lineDataSymbolSize: 10,
+					lineDataSymbolLineSize: 10,
+					dataNoEffects: true
+				};
+				slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
+		}
+
+		function addDotChartAxis2 () {
+			var options = {
+				x: 0.6, y: 0.6, w: 6.0, h: 3.0,
+				chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+				lineSize  : 0,
+				lineDataSymbolSize: 10,
+				lineDataSymbolLineSize: 10,
+				dataNoEffects: true
+			};
+			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
+		}
+
 		doMultiChart();
 		doStandardStacked();
+		addDotChart();
+	}
+	//slideMultiType();
+
+	// SLIDE 12: Dot/Line Type ---------------------------------------------------------
+	function slideDotLine () {
+
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Dot/Line Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		function doMultiChart () {
+
+			// TOP-RIGHT: V/col
+			var optsMultiChart = {
+				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
+				barDir: 'col',
+				barGrouping: 'stacked',
+
+				catAxisLabelColor: '0000CC',
+				catAxisLabelFontFace: 'Arial',
+				catAxisLabelFontSize: 12,
+				catAxisOrientation: 'minMax',
+
+				showLegend: false,
+				showTitle: false,
+
+				valAxisMaxVal: 1,
+				valAxisMajorUnit: 0.2,
+
+				dataNoEffects: true
+			};
+
+			var chartTypes = [
+				{
+					type: pptx.charts.BAR,
+					data: [{
+						name: 'Bottom',
+						labels: ['April', 'May', 'June', 'July', 'August'],
+						values: [.17, .26, .53, .10, .4]
+					},
+						{
+							name: 'Middle',
+							labels: ['April', 'May', 'June', 'July', 'August'],
+							values: [.05, .04, .02, .03, .15]
+						},
+						{
+							name: 'Top',
+							labels: ['April', 'May', 'June', 'July', 'August'],
+							values: [.01, .02, .25, .35, .2]
+						}],
+					options: {
+						barGrouping: 'stacked'
+					}
+				}, {
+					type: pptx.charts.LINE,
+					data: [{
+						name: 'Current',
+						labels: ['April', 'May', 'June', 'July', 'August'],
+						values: [.05, .04, .02, .03, .15]
+					}],
+					options: {
+						barGrouping: 'standard'
+					}
+				}
+			];
+			slide.addChart(chartTypes, optsMultiChart);
+		}
+
+		function doStandardStacked () {
+			var arrDataHighVals = [
+				{
+					name: 'California',
+					labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+					values: [2000, 2800, 3200, 4000, 5000]
+				},
+				{
+					name: 'Texas',
+					labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+					values: [1400, 2000, 2500, 3000, 3800]
+				}
+			];
+			// BTM-RIGHT: V/col - TITLE and LEGEND
+			slide.addText('.', { x: 7.0, y: 3.8, w: 6.0, h: 3.5, fill: 'F1F1F1', color: 'F1F1F1' });
+			var optsChartBar4 = {
+				x: 7.0, y: 3.8, w: 6.0, h: 3.5,
+				barDir: 'col',
+				barGrouping: 'percentStacked',
+
+				catAxisLabelColor: '0000CC',
+				catAxisLabelFontFace: 'Times',
+				catAxisLabelFontSize: 12,
+				catAxisOrientation: 'minMax',
+
+				chartColors: ['5DA5DA', 'FAA43A'],
+
+				showLegend: true,
+				legendPos: 't'
+			};
+			slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
+		}
+
+		function addDotChart () {
+			var options = {
+				x: 0.6, y: 0.6, w: 6.0, h: 3.0,
+				chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+				lineSize  : 0,
+				lineDataSymbolSize: 10,
+				lineDataSymbolLineSize: 10,
+				dataNoEffects: true
+			};
+			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
+		}
+
+		function addDotChartAxis2 () {
+			var options = {
+				x: 0.6, y: 0.6, w: 6.0, h: 3.0,
+				chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+				lineSize  : 0,
+				lineDataSymbolSize: 10,
+				lineDataSymbolLineSize: 10,
+				dataNoEffects: true
+			};
+			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
+		}
+
+		addDotChart();
+		addDotChartAxis2();
 	}
 
-	// SLIDE 11: Doughnut Chart ------------------------------------------------------------------
+	// SLIDE 12: Doughnut Chart ------------------------------------------------------------------
 	// {
 	// 	var slide = pptx.addNewSlide();
 	// 	slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );

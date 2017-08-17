@@ -393,8 +393,10 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
+| `lineDataSize`         | number  | points  | `2`       | width of line (0 is no line)             | 0-256. Ex: `{ lineDataSize: 12 }` |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
+| `lineDataSymbolLineSize`| number | points  | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
 
 ### Chart Examples
 ```javascript

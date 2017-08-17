@@ -1176,8 +1176,15 @@ var PptxGenJS = function(){
 					}
 
 					if ( chartType == 'line' ) {
-						strXml += '<a:ln w="'+ (opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
-						strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+						if (opts.lineSize === 0){
+							strXml += '<a:ln w="28575" cap="rnd">';
+							strXml += '<a:noFill/>';
+							strXml += '<a:round/>';
+							strXml += '</a:ln>';
+						} else {
+							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill><a:srgbClr val="' + strSerColor + '"/></a:solidFill>';
+							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+						}
 					}
 					else if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -1198,10 +1205,13 @@ var PptxGenJS = function(){
 					if ( chartType == 'line' ) {
 						strXml += '<c:marker>';
 						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
-						if ( opts.lineDataSymbolSize ) strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>'; // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+						if ( opts.lineDataSymbolSize ) {
+							// Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+							strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>';
+						}
 						strXml += '  <c:spPr>';
-						strXml += '    <a:solidFill><a:srgbClr val="'+ opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)] +'"/></a:solidFill>';
-						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						strXml += '    <a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill>';
+						strXml += '    <a:ln w="'+opts.lineDataSymbolLineSize+'" cap="flat"><a:solidFill><a:srgbClr val="'+ strSerColor +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
 						strXml += '</c:marker>';
@@ -3108,6 +3118,7 @@ var PptxGenJS = function(){
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
+			options.lineDataSymbolLineSize = ( options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize ) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT );
 			// `layout` allows the override of PPT defaults to maximize space
 			if ( options.layout ) {
 				['x', 'y', 'w', 'h'].forEach(function(key) {
