@@ -1182,11 +1182,16 @@ var PptxGenJS = function(){
 					else if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					strXml += '    <a:effectLst>';
-					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-					strXml += '      </a:outerShdw>';
-					strXml += '    </a:effectLst>';
+
+					if(opts.dataNoEffects){
+						strXml += '    <a:effectLst/>';
+					} else {
+						strXml += '    <a:effectLst>';
+						strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+						strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+						strXml += '      </a:outerShdw>';
+						strXml += '    </a:effectLst>';
+					}
 					strXml += '  </c:spPr>';
 
 					// LINE CHART ONLY: `marker`
@@ -1215,13 +1220,17 @@ var PptxGenJS = function(){
 							strXml += '    <a:solidFill>';
 							strXml += '     <a:srgbClr val="'+opts.chartColors[index % opts.chartColors.length]+'"/>';
 							strXml += '    </a:solidFill>';
-							strXml += '    <a:effectLst>';
-							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
-							strXml += '    	<a:srgbClr val="000000">';
-							strXml += '    	<a:alpha val="35000"/>';
-							strXml += '    	</a:srgbClr>';
-							strXml += '    </a:outerShdw>';
-							strXml += '    </a:effectLst>';
+							if(opts.dataNoEffects){
+								strXml += '    <a:effectLst/>';
+							} else {
+								strXml += '    <a:effectLst>';
+								strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
+								strXml += '    	<a:srgbClr val="000000">';
+								strXml += '    	<a:alpha val="35000"/>';
+								strXml += '    	</a:srgbClr>';
+								strXml += '    </a:outerShdw>';
+								strXml += '    </a:effectLst>';
+							}
 							strXml += '    </c:spPr>';
 							strXml += '  </c:dPt>';
 						});
@@ -1335,11 +1344,15 @@ var PptxGenJS = function(){
 				strXml += '  <c:spPr>';
 				strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
 				strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-				strXml += '    <a:effectLst>';
-				strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-				strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-				strXml += '      </a:outerShdw>';
-				strXml += '    </a:effectLst>';
+				if(opts.dataNoEffects){
+					strXml += '    <a:effectLst/>';
+				} else {
+					strXml += '    <a:effectLst>';
+					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+					strXml += '      </a:outerShdw>';
+					strXml += '    </a:effectLst>';
+				}
 				strXml += '  </c:spPr>';
 				strXml += '<c:explosion val="0"/>';
 
@@ -1353,11 +1366,15 @@ var PptxGenJS = function(){
 					if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					strXml += '    <a:effectLst>';
-					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-					strXml += '      </a:outerShdw>';
-					strXml += '    </a:effectLst>';
+					if(opts.dataNoEffects){
+						strXml += '    <a:effectLst/>';
+					} else {
+						strXml += '    <a:effectLst>';
+						strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+						strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+						strXml += '      </a:outerShdw>';
+						strXml += '    </a:effectLst>';
+					}
 					strXml += '  </c:spPr>';
 					strXml += '</c:dPt>';
 				});

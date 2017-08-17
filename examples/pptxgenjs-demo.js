@@ -1183,7 +1183,9 @@ function genSlides_Chart(pptx) {
 				showTitle: false,
 
 				valAxisMaxVal: 1,
-				valAxisMajorUnit: 0.2
+				valAxisMajorUnit: 0.2,
+
+				dataNoEffects: true
 			};
 
 			var chartTypes = [
@@ -1256,6 +1258,7 @@ function genSlides_Chart(pptx) {
 		}
 
 		doMultiChart();
+		doStandardStacked();
 	}
 
 	// SLIDE 11: Doughnut Chart ------------------------------------------------------------------
