@@ -1295,7 +1295,7 @@ function genSlides_Chart(pptx) {
 
 		function doMultiChart () {
 
-			// TOP-RIGHT: V/col
+			// TOP-RIGHT:
 			var optsMultiChart = {
 				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
 				barDir: 'col',
@@ -1364,7 +1364,7 @@ function genSlides_Chart(pptx) {
 					values: [1400, 2000, 2500, 3000, 3800]
 				}
 			];
-			// BTM-RIGHT: V/col - TITLE and LEGEND
+			// BTM-RIGHT:
 			slide.addText('.', { x: 7.0, y: 3.8, w: 6.0, h: 3.5, fill: 'F1F1F1', color: 'F1F1F1' });
 			var optsChartBar4 = {
 				x: 7.0, y: 3.8, w: 6.0, h: 3.5,
@@ -1396,21 +1396,96 @@ function genSlides_Chart(pptx) {
 			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
 		}
 
-		function addDotChartAxis2 () {
+		function addDotChartTwoAxes () {
 			var options = {
 				x: 0.6, y: 0.6, w: 6.0, h: 3.0,
 				chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
-				lineSize  : 0,
-				lineDataSymbolSize: 10,
-				lineDataSymbolLineSize: 10,
-				dataNoEffects: true
-			};
+				lineSize  : 2,
+				// lineDataSymbolSize: 10,
+				// lineDataSymbolLineSize: 10,
+				dataNoEffects: true,
+
+				catAxisLabelColor   : 'CC0000',
+				catAxisLabelFontFace: 'Helvetica Neue',
+				catAxisLabelFontSize: 14,
+				catAxisOrientation  : 'maxMin',
+				catAxisTitle: "Housing Type",
+				catAxisTitleColor: "428442",
+				catAxisTitleFontSize: 14,
+				showCatAxisTitle: true,
+
+				showValAxisTitle: true,
+				valAxisTitle: "Column Index",
+				valAxisTitleColor: "c11c13",
+				valAxisTitleFontSize: 16,
+
+				// secCatAxisVisible: true,
+				// secValAxisVisible: true,
+				// catAxisTitle: 'Category Title',
+				// valAxisTitle: 'Value Title',
+				// secCatAxisTitle: 'Second Category Title',
+				// secValAxisTitle: 'Second Value Title',
+				//
+				// secValAxisMajorUnit: 0.4,
+				// secValAxisMinVal: 0.2,
+				// secValAxisMaxVal: 2,
+
+				valAxes:[
+					{
+						showValAxisTitle: true,
+						valAxisTitle: 'Primary Value Axis',
+						valAxisTitleColor: '',
+						valAxisTitleFontSize: 16,
+						valAxisLabelColor: '',
+						valAxisLabelFontFace: '',
+						valAxisLabelFontSize: 12,
+						valAxisMajorUnit: 20,
+						valAxisMaxVal: 200,
+						valAxisMinVal: 20
+					}, {
+						showValAxisTitle: true,
+						valAxisTitle: 'Secondary Value Axis',
+						valAxisTitleColor: 'c11c13',
+						valAxisTitleFontSize: 12,
+						valAxisLabelColor: '',
+						valAxisLabelFontFace: '',
+						valAxisLabelFontSize: 10,
+						valAxisMajorUnit: 10,
+						valAxisMaxVal: 100,
+						valAxisMinVal: 10
+					}
+				],
+
+				catAxes: [
+					{
+						catAxisLabelColor: '',
+						catAxisLabelFontFace: '',
+						catAxisLabelFontSize: 14,
+						catAxisTitle: 'Primary Category Axis',
+						catAxisTitleColor: 'FF0000',
+						catAxisTitleFontFace: 'Arial',
+						catAxisTitleFontSize: 18
+					}, {
+						catAxisLabelColor: '',
+						catAxisLabelFontFace: '',
+						catAxisLabelFontSize: 10,
+						catAxisTitle: 'Secondary Category Axis',
+						catAxisTitleColor: 'FF0000',
+						catAxisTitleFontFace: 'Arial',
+						catAxisTitleFontSize: 18
+					}
+				]
+
+		};
+
 			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
 		}
 
-		addDotChart();
-		addDotChartAxis2();
+		//addDotChart();
+		addDotChartTwoAxes();
 	}
+
+	slideDotLine();
 
 	// SLIDE 12: Doughnut Chart ------------------------------------------------------------------
 	// {
