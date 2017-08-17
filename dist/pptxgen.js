@@ -1214,9 +1214,8 @@ var PptxGenJS = function(){
 
 				// B: "Category Axis"
 				{
-					//TODO - change this to c:dateAx if category labels are dates?
-					//       powerpoint seems happy to automatically do the right thing.
-					strXml += '<c:catAx>';
+					var axType = rel.opts.catLabelFormatCode ? 'dateAx' : 'catAx';
+					strXml += '<c:'+ axType +'>';
 					if (rel.opts.showCatAxisTitle) {
 						strXml += genXmlTitle({
 							title: rel.opts.catAxisTitle || 'Axis Title',
@@ -1257,7 +1256,12 @@ var PptxGenJS = function(){
 					strXml += ' <c:auto val="1"/>';
 					strXml += ' <c:lblAlgn val="ctr"/>';
 					strXml += ' <c:noMultiLvlLbl val="1"/>';
-					strXml += '</c:catAx>';
+					if (rel.opts.catLabelFormatCode) {
+						strXml += ' <c:baseTimeUnit val="days"/>';
+						strXml += ' <c:majorTimeUnit val="days"/>';
+					}
+					if ( rel.opts.catAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ rel.opts.catAxisMajorUnit +'"/>';
+					strXml += '</c:'+ axType +'>';
 				}
 
 				// C: "Value Axis"
