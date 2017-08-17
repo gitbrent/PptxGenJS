@@ -1408,7 +1408,7 @@ function genSlides_Chart(pptx) {
 				catAxisLabelColor   : 'CC0000',
 				catAxisLabelFontFace: 'Helvetica Neue',
 				catAxisLabelFontSize: 14,
-				catAxisOrientation  : 'maxMin',
+				//catAxisOrientation  : 'maxMin',
 				catAxisTitle: "Housing Type",
 				catAxisTitleColor: "428442",
 				catAxisTitleFontSize: 14,
@@ -1430,7 +1430,7 @@ function genSlides_Chart(pptx) {
 				// secValAxisMinVal: 0.2,
 				// secValAxisMaxVal: 2,
 
-				valAxes:[
+				XvalAxes:[
 					{
 						showValAxisTitle: true,
 						valAxisTitle: 'Primary Value Axis',
@@ -1456,7 +1456,7 @@ function genSlides_Chart(pptx) {
 					}
 				],
 
-				catAxes: [
+				XcatAxes: [
 					{
 						catAxisLabelColor: '',
 						catAxisLabelFontFace: '',

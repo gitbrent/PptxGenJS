@@ -119,6 +119,11 @@ var PptxGenJS = function(){
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 
+	var AXIS_ID_VALUE_PRIMARY = '2094734552';
+	var AXIS_ID_VALUE_SECONDARY = '2094734553';
+	var AXIS_ID_CATEGORY_PRIMARY = '2094734554';
+	var AXIS_ID_CATEGORY_SECONDARY = '2094734555';
+
 	// A: Create internal pptx object
 	var gObjPptx = {};
 
@@ -1041,10 +1046,16 @@ var PptxGenJS = function(){
 			strXml += makeChartType(chartType, rel.data, rel.opts);
 		}
 
-		if(chartType !== 'pie' || chartType !== 'doughnut'){
-			strXml += makeCatAxis(rel.opts);
+		if(rel.opts.type.name !== 'pie' || rel.opts.type.name !== 'doughnut'){
+			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
 			rel.opts.hasArea = hasArea(rel.opts.type);
-			strXml += makeValueAxis(rel.opts);
+
+			if(rel.opts.valAxes){
+				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY);
+				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY);
+			} else {
+				strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY);
+			}
 		}
 
 		// B: Chart Properties + Options: Fill, Border, Legend
@@ -1310,8 +1321,11 @@ var PptxGenJS = function(){
 				else if ( chartType == 'line' ) {
 					strXml += '  <c:marker val="1"/>';
 				}
-				strXml += '  <c:axId val="2094734552"/>';
-				strXml += '  <c:axId val="2094734553"/>';
+
+				// order matters - category first
+				strXml += '  <c:axId val="'+AXIS_ID_CATEGORY_PRIMARY+'"/>';
+				strXml += '  <c:axId val="'+AXIS_ID_VALUE_PRIMARY+'"/>';
+
 				strXml += '</c:'+ chartType +'Chart>';
 
 				// Done with CHART.BAR/LINE
@@ -1468,7 +1482,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeCatAxis (opts) {
+	function makeCatAxis (opts, id) {
 		var strXml = '';
 
 		strXml += '<c:catAx>';
@@ -1481,7 +1495,8 @@ var PptxGenJS = function(){
 				rotate: opts.catAxisTitleRotate
 			});
 		}
-		strXml += '  <c:axId val="2094734552"/>';
+
+		strXml += '  <c:axId val="'+id+'"/>';
 		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
 		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
@@ -1507,7 +1522,7 @@ var PptxGenJS = function(){
 		strXml += '  </a:pPr>';
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
-		strXml += ' <c:crossAx val="2094734553"/>';
+		strXml += ' <c:crossAx val="'+id+'"/>';
 		strXml += ' <c:crosses val="autoZero"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
@@ -1517,7 +1532,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeValueAxis (opts) {
+	function makeValueAxis (opts, id) {
 		var strXml = '';
 
 		strXml += '<c:valAx>';
@@ -1530,7 +1545,7 @@ var PptxGenJS = function(){
 				rotate: opts.valAxisTitleRotate
 			});
 		}
-		strXml += '  <c:axId val="2094734553"/>';
+		strXml += '  <c:axId val="'+id+'"/>';
 		strXml += '  <c:scaling>';
 		strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
 		if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
@@ -1558,7 +1573,7 @@ var PptxGenJS = function(){
 		strXml += '    </a:pPr>';
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
-		strXml += ' <c:crossAx val="2094734552"/>';
+		strXml += ' <c:crossAx val="'+id+'"/>';
 		strXml += ' <c:crosses val="autoZero"/>';
 		strXml += ' <c:crossBetween val="'+ ( opts.hasArea ? 'midCat' : 'between' ) +'"/>';
 		if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
