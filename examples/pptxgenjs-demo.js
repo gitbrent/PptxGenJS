@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Apr 29, 2017
+* DATE: Aug 15, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -834,27 +834,17 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
 
-		// BTM-LEFT: H/bar - TITLE and LEGEND
+		// BTM-LEFT: H/bar - 100% layout without axis labels
 		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
-			barDir     : 'bar',
-			barGrouping: 'percentStacked',
-
-			border: { pt:'3', color:'CF0909' },
-			fill: 'F1C1C1',
-
-			catAxisLabelColor   : 'CC0000',
-			catAxisLabelFontFace: 'Helvetica Neue',
-			catAxisLabelFontSize: 14,
-			catAxisOrientation  : 'minMax',
-
-			titleColor   : '33CF22',
-			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 16,
-
-			showTitle : true,
-			title: 'Sales by Region'
+			barDir       : 'bar',
+			barGrouping  : 'percentStacked',
+			dataBorder   : { pt:'1', color:'F1F1F1' },
+			catAxisHidden: true,
+			valAxisHidden: true,
+			showTitle    : false,
+			layout       : {x:0.1, y:0.1, w:1, h:1}
 		};
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
 
 		// BTM-RIGHT: V/col - TITLE and LEGEND
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -870,9 +860,7 @@ function genSlides_Chart(pptx) {
 			chartColors: ['5DA5DA','FAA43A'],
 
 			showLegend: true,
-			legendPos :  't',
-			showTitle: true,
-			title    : 'Chart Title'
+			legendPos :  't'
 		};
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
@@ -911,7 +899,7 @@ function genSlides_Chart(pptx) {
 		// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
 		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	}
-	
+
 	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ----------------
 	{
 		var slide = pptx.addNewSlide();
