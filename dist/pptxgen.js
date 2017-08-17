@@ -945,6 +945,22 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
+	/**
+	 * shallow mix, returns new object
+	 */
+	function mix (o1, o2, etc) {
+		var o = {};
+		for (var i = 0; i <= arguments.length; i++){
+			var oN = arguments[i];
+			if(oN){
+				Object.keys(oN).forEach(function (key) {
+					o[key] = oN[key];
+				});
+			}
+		}
+		return o;
+	}
+
 	/* =======================================================================================================
 	|
 	#     #  #     #  #             #####
@@ -962,16 +978,6 @@ var PptxGenJS = function(){
 	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
 	*/
 	function makeXmlCharts(rel) {
-
-		function getSeriesData (regionNames, data) {
-			var series = [];
-			data.forEach(function (region) {
-				if(regionNames.indexOf(region.name) > -1){
-					series.push(region);
-				}
-			});
-			return series;
-		}
 
 		function getMainChartType (chartType) {
 			console.log('getMainChartType', chartType);
@@ -992,24 +998,6 @@ var PptxGenJS = function(){
 			return chartType.name;
 		}
 
-		function indexData (data) {
-			data.forEach(function (item, idx) {
-				item.index = idx;
-			});
-		}
-
-		function mix (o1, o2, etc) {
-			var o = {};
-			for (var i = 0; i <= arguments.length; i++){
-				var oN = arguments[i];
-				if(oN){
-					Object.keys(oN).forEach(function (key) {
-						o[key] = oN[key];
-					});
-				}
-			}
-			return o;
-		}
 
 		// STEP 1: Create chart
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
@@ -1050,12 +1038,10 @@ var PptxGenJS = function(){
 
 		// A: CHART TYPES -----------------------------------------------------------
 
-		indexData(rel.data);
-
 		if (Array.isArray(rel.opts.type)) {
 			rel.opts.type.forEach(function (type) {
 				var chartType = type.type.name;
-				var data = getSeriesData(type.data, rel.data);
+				var data = type.data;
 				strXml += makeChartType(chartType, data, mix(rel.opts, type.options));
 			});
 		} else {
@@ -3002,7 +2988,21 @@ var PptxGenJS = function(){
 		 */
 		slideObj.addChart = function ( inType, inData, inOpt ) {
 			var intRels = 1;
-			var options = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
+			var tempOpt;
+			var data = [], options;
+			if (Array.isArray(inType)) {
+				inType.forEach(function (obj) {
+					data = data.concat(obj.data)
+				});
+				tempOpt = inData || inOpt;
+			} else {
+				data = inData;
+				tempOpt = inOpt;
+			}
+			data.forEach(function (item, i) {
+				item.index = i;
+			});
+			options = ( tempOpt && typeof tempOpt === 'object' ? tempOpt : {} );
 
 			// STEP 1: TODO: check for reqd fields, correct type, etc
 			// inType in CHART_TYPES
@@ -3098,7 +3098,7 @@ var PptxGenJS = function(){
 			gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
 			slideObjRels.push({
 				rId:     (intRels+1),
-				data:    inData,
+				data:    data,
 				opts:    options,
 				type:    'chart',
 				fileName:'chart'+ intRels +'.xml',

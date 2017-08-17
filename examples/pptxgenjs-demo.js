@@ -1168,32 +1168,8 @@ function genSlides_Chart(pptx) {
 
 		function doMultiChart () {
 
-			var arrDataRegions = [
-				{
-					name: 'Bottom 75',
-					labels: ['April', 'May', 'June', 'July', 'August'],
-					values: [.17, .26, .53, .10, .4]
-				},
-				{
-					name: 'Deviation',
-					labels: ['April', 'May', 'June', 'July', 'August'],
-					values: [.05, .04, .02, .03, .15]
-				},
-				{
-					name: 'Top 25',
-					labels: ['April', 'May', 'June', 'July', 'August'],
-					values: [.01, .02, .25, .35, .2]
-				},
-				{
-					name: 'Current',
-					labels: ['April', 'May', 'June', 'July', 'August'],
-					values: [.05, .04, .02, .03, .15]
-				}
-			];
-
-
 			// TOP-RIGHT: V/col
-			var optsChartBar2 = {
+			var optsMultiChart = {
 				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
 				barDir: 'col',
 				barGrouping: 'stacked',
@@ -1213,19 +1189,37 @@ function genSlides_Chart(pptx) {
 			var chartTypes = [
 				{
 					type: pptx.charts.BAR,
-					data: ['Bottom 75', 'Deviation', 'Top 25'],
+					data: [{
+						name: 'Bottom',
+						labels: ['April', 'May', 'June', 'July', 'August'],
+						values: [.17, .26, .53, .10, .4]
+					},
+						{
+							name: 'Middle',
+							labels: ['April', 'May', 'June', 'July', 'August'],
+							values: [.05, .04, .02, .03, .15]
+						},
+						{
+							name: 'Top',
+							labels: ['April', 'May', 'June', 'July', 'August'],
+							values: [.01, .02, .25, .35, .2]
+						}],
 					options: {
 						barGrouping: 'stacked'
 					}
 				}, {
 					type: pptx.charts.LINE,
-					data: ['Current'],
+					data: [{
+						name: 'Current',
+						labels: ['April', 'May', 'June', 'July', 'August'],
+						values: [.05, .04, .02, .03, .15]
+					}],
 					options: {
 						barGrouping: 'standard'
 					}
 				}
 			];
-			slide.addChart(chartTypes, arrDataRegions, optsChartBar2);
+			slide.addChart(chartTypes, optsMultiChart);
 		}
 
 		function doStandardStacked () {
