@@ -134,7 +134,6 @@ var PptxGenJS = function(){
 	gObjPptx.subject = 'PptxGenJS Presentation';
 	gObjPptx.title = 'PptxGenJS Presentation';
 	gObjPptx.masterSlideXml = '';
-	gObjPptx.layoutSlideXmls = {};
 	gObjPptx.layoutDefinitions = [];
 	gObjPptx.slide2layoutMapping = [];
 	gObjPptx.properLayoutMasterInUse = false;
@@ -201,14 +200,9 @@ var PptxGenJS = function(){
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
 		if ( gObjPptx.properLayoutMasterInUse ) {
-			var layouts = Object.keys(gObjPptx.layoutSlideXmls);
-			for ( var idx = 0, cnt = layouts.length; idx < cnt; idx++ ) {
-				zip.file("ppt/slideLayouts/slideLayout"+ ( idx + 1 ) +".xml", gObjPptx.layoutSlideXmls[layouts[idx]]);
-				zip.file("ppt/slideLayouts/_rels/slideLayout"+ ( idx + 1 ) +".xml.rels", makeXmlSlideLayoutRel( idx + 1 ));
-			}
-
-			for (let i = 0, len = gObjPptx.layoutDefinitions.length; i < len; i++) {
-				console.log(makeXmlLayout(gObjPptx.layoutDefinitions[i]));
+			for (let i = 1, len = gObjPptx.layoutDefinitions.length; i <= len; i++) {
+				zip.file("ppt/slideLayouts/slideLayout"+ i +".xml", makeXmlLayout(gObjPptx.layoutDefinitions[i - 1]));
+				zip.file("ppt/slideLayouts/_rels/slideLayout"+ i +".xml.rels", makeXmlSlideLayoutRel( i ));
 			}
 		}
 
@@ -3110,13 +3104,23 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
+	function getLayoutIdxForSlide(inSlideNum) {
+		var layoutName = gObjPptx.slide2layoutMapping[inSlideNum - 1],
+			layoutIdx;
+		for (var i = 0, len = gObjPptx.layoutDefinitions.length; i < len; i++) {
+			if (gObjPptx.layoutDefinitions[i].name === layoutName) {
+				return i + 1;
+			}
+		}
+		throw Error('Layout "' + layoutName + '" is not specified in this presentation.');
+	}
+
 	function makeXmlSlideRel(inSlideNum) {
-		var layouts = Object.keys(gObjPptx.layoutSlideXmls),
-			layoutIdx = layouts.indexOf(gObjPptx.slide2layoutMapping[inSlideNum - 1]) + 1;
+
 
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
 			+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-			+ ' <Relationship Id="rId1" Target="../slideLayouts/slideLayout'+ ( gObjPptx.properLayoutMasterInUse ? layoutIdx : inSlideNum ) +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"/>';
+			+ ' <Relationship Id="rId1" Target="../slideLayouts/slideLayout'+ ( gObjPptx.properLayoutMasterInUse ? getLayoutIdxForSlide(inSlideNum) : inSlideNum ) +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"/>';
 
 		// Add any rels for this Slide (image/audio/video/youtube/chart)
 		gObjPptx.slides[inSlideNum-1].rels.forEach(function(rel,idx){
@@ -3381,18 +3385,6 @@ var PptxGenJS = function(){
 
 	this.setMasterSlide = function(masterSlideXml) {
 		gObjPptx.masterSlideXml = masterSlideXml;
-	};
-
-	this.addLayoutSlide = function(name, layoutSlideXml) {
-		gObjPptx.layoutSlideXmls[name] = layoutSlideXml;
-	};
-
-	this.addLayoutSlideDef = function(defObj) {
-		if (!defObj.title) throw Error('Missing layout title.');
-		//gObjPptx.layoutDefinitions[defObj.title] = defObj;
-		//console.log(gObjPptx.layoutDefinitions);
-		this.addNewLayout(defObj);
-		console.log(gObjPptx.layoutDefinitions);
 	};
 
 	this.useProperLayoutMaster = function() {
@@ -4165,10 +4157,14 @@ var PptxGenJS = function(){
 	 * Add a new layout to the Presentation
 	 * @returns {Object[]} layoutObj
 	 */
-	this.addNewLayout = function addNewLayout(layoutDef) {
+	this.addLayoutSlide = function addNewLayoutSlide(layoutDef) {
 		var layoutObj = {};
 		var layoutNum = gObjPptx.layoutDefinitions.length;
 		var layoutObjNum = 0;
+
+		if (!layoutDef.title) {
+			throw Error("Layout requires to be named. Specify `title` in its definition object.");
+		}
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.layoutDefinitions[layoutNum] = {};
@@ -4176,6 +4172,37 @@ var PptxGenJS = function(){
 		gObjPptx.layoutDefinitions[layoutNum].name = layoutDef.title
 		gObjPptx.layoutDefinitions[layoutNum].data = [];
 		gObjPptx.layoutDefinitions[layoutNum].rels = [];
+
+
+		layoutObj.addShape = function( shape, opt ) {
+			var options = ( typeof opt === 'object' ? opt : {} );
+
+			if ( !shape || typeof shape !== 'object' ) {
+				console.log("ERROR: Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
+				return;
+			}
+
+			// STEP 1: Grab Slide object count
+			layoutObjNum = gObjPptx.layoutDefinitions[layoutNum].data.length;
+
+			// STEP 2: Set props
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum] = {};
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].type = 'text';
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options = options;
+
+			// STEP 3: Set option defaults
+			options.shape     = shape;
+			options.x         = ( options.x || (options.x == 0 ? 0 : 1) );
+			options.y         = ( options.y || (options.y == 0 ? 0 : 1) );
+			options.w         = ( options.w || 1.0 );
+			options.h         = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
+			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
+			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
+			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
+
+			// LAST: Return
+			return this;
+		};
 
 		layoutObj.addText = function( inText, options ) {
 			var opt = ( options && typeof options === 'object' ? options : {} );
