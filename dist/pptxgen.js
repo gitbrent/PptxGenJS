@@ -1275,7 +1275,7 @@ var PptxGenJS = function(){
 					strXml += ' <c:noMultiLvlLbl val="1"/>';
 					if (rel.opts.catLabelFormatCode) {
 						strXml += ' <c:baseTimeUnit val="days"/>';
-						strXml += ' <c:majorTimeUnit val="days"/>';
+						strXml += ' <c:majorTimeUnit val="'+ (rel.opts.catAxisMajorTimeUnit ? rel.opts.catAxisMajorTimeUnit : "days") +'"/>';
 					}
 					if ( rel.opts.catAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ rel.opts.catAxisMajorUnit +'"/>';
 					strXml += '</c:'+ axType +'>';
