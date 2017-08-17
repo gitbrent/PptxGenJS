@@ -135,6 +135,7 @@ var PptxGenJS = function(){
 	gObjPptx.title = 'PptxGenJS Presentation';
 	gObjPptx.masterSlideXml = '';
 	gObjPptx.layoutSlideXmls = {};
+	gObjPptx.layoutDefinitions = [];
 	gObjPptx.slide2layoutMapping = [];
 	gObjPptx.properLayoutMasterInUse = false;
 	gObjPptx.fileName = 'Presentation';
@@ -204,6 +205,10 @@ var PptxGenJS = function(){
 			for ( var idx = 0, cnt = layouts.length; idx < cnt; idx++ ) {
 				zip.file("ppt/slideLayouts/slideLayout"+ ( idx + 1 ) +".xml", gObjPptx.layoutSlideXmls[layouts[idx]]);
 				zip.file("ppt/slideLayouts/_rels/slideLayout"+ ( idx + 1 ) +".xml.rels", makeXmlSlideLayoutRel( idx + 1 ));
+			}
+
+			for (let i = 0, len = gObjPptx.layoutDefinitions.length; i < len; i++) {
+				console.log(makeXmlLayout(gObjPptx.layoutDefinitions[i]));
 			}
 		}
 
@@ -2613,6 +2618,487 @@ var PptxGenJS = function(){
 		return strSlideXml;
 	}
 
+	/**
+	 * Generates the XML layout resource from a layout object
+	 * @param {Object} inSlide - The slide object to transform into XML
+	 * @return {string} strSlideXml - Slide OOXML
+	*/
+	function makeXmlLayout(inLayout) {
+		var intTableNum = 1;
+
+		// STEP 1: Start slide XML
+		var strSlideXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
+		strSlideXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1" userDrawn="1">';
+		strSlideXml += '<p:cSld name="'+ inLayout.name +'">';
+
+		// STEP 2: Add background color or background image (if any)
+		// A: Background color
+		if ( inLayout.layout.back ) strSlideXml += genXmlColorSelection(false, inLayout.layout.back);
+		// B: Add background image (using Strech) (if any)
+		if ( inLayout.layout.bkgdImgRid ) {
+			// FIXME: We should be doing this in the slideLayout...
+			strSlideXml += '<p:bg>'
+						+ '<p:bgPr><a:blipFill dpi="0" rotWithShape="1">'
+						+ '<a:blip r:embed="rId'+ inLayout.layout.bkgdImgRid +'"><a:lum/></a:blip>'
+						+ '<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>'
+						+ '<a:effectLst/></p:bgPr>'
+						+ '</p:bg>';
+		}
+
+		// STEP 3: Continue slide by starting spTree node
+		strSlideXml += '<p:spTree>';
+		strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>';
+		strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>';
+		strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
+
+		// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
+		$.each(inLayout.data, function(idx, layoutObj){
+			var x = 0, y = 0, cx = getSmartParseNumber('75%','X'), cy = 0;
+			var locationAttr = "", shapeType = null;
+
+			// A: Set option vars
+			layoutObj.options = layoutObj.options || {};
+
+			if ( layoutObj.options.w  || layoutObj.options.w  == 0 ) layoutObj.options.cx = layoutObj.options.w;
+			if ( layoutObj.options.h  || layoutObj.options.h  == 0 ) layoutObj.options.cy = layoutObj.options.h;
+			//
+			if ( layoutObj.options.x  || layoutObj.options.x  == 0 )  x = getSmartParseNumber( layoutObj.options.x , 'X' );
+			if ( layoutObj.options.y  || layoutObj.options.y  == 0 )  y = getSmartParseNumber( layoutObj.options.y , 'Y' );
+			if ( layoutObj.options.cx || layoutObj.options.cx == 0 ) cx = getSmartParseNumber( layoutObj.options.cx, 'X' );
+			if ( layoutObj.options.cy || layoutObj.options.cy == 0 ) cy = getSmartParseNumber( layoutObj.options.cy, 'Y' );
+			//
+			if ( layoutObj.options.shape  ) shapeType = getShapeInfo( layoutObj.options.shape );
+			//
+			if ( layoutObj.options.flipH  ) locationAttr += ' flipH="1"';
+			if ( layoutObj.options.flipV  ) locationAttr += ' flipV="1"';
+			if ( layoutObj.options.rotate ) locationAttr += ' rot="' + convertRotationDegrees(layoutObj.options.rotate)+ '"';
+
+			// B: Add OBJECT to current Slide ----------------------------
+			switch ( layoutObj.type ) {
+				case 'table':
+					// FIRST: Ensure we have rows - otherwise, bail!
+					if ( !layoutObj.arrTabRows || (Array.isArray(layoutObj.arrTabRows) && layoutObj.arrTabRows.length == 0) ) break;
+
+					// Set table vars
+					var objTableGrid = {};
+					var arrTabRows = layoutObj.arrTabRows;
+					var objTabOpts = layoutObj.options;
+					var intColCnt = 0, intColW = 0;
+
+					// Calc number of columns
+					// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
+					// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
+					arrTabRows[0].forEach(function(cell,idx){
+						var cellOpts = cell.options || cell.opts || null; // DEPRECATED (`opts`)
+						intColCnt += ( cellOpts && cellOpts.colspan ? cellOpts.colspan : 1 );
+					});
+
+					// STEP 1: Start Table XML =============================
+					// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
+					var strXml = '<p:graphicFrame>'
+							+ '  <p:nvGraphicFramePr>'
+							+ '    <p:cNvPr id="'+ (intTableNum*inLayout.numb + 1) +'" name="Table '+ (intTableNum*inLayout.numb) +'"/>'
+							+ '    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>'
+							+ '    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>'
+							+ '  </p:nvGraphicFramePr>'
+							+ '  <p:xfrm>'
+							+ '    <a:off  x="'+ (x  || EMU) +'"  y="'+ (y  || EMU) +'"/>'
+							+ '    <a:ext cx="'+ (cx || EMU) +'" cy="'+ (cy || EMU) +'"/>'
+							+ '  </p:xfrm>'
+							+ '  <a:graphic>'
+							+ '    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table">'
+							+ '      <a:tbl>'
+							+ '        <a:tblPr/>';
+							// + '        <a:tblPr bandRow="1"/>';
+
+					// FIXME: Support banded rows, first/last row, etc.
+					// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
+					// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
+
+					// STEP 2: Set column widths
+					// Evenly distribute cols/rows across size provided when applicable (calc them if only overall dimensions were provided)
+					// A: Col widths provided?
+					if ( Array.isArray(objTabOpts.colW) ) {
+						strXml += '<a:tblGrid>';
+						for ( var col=0; col<intColCnt; col++ ) {
+							strXml += '  <a:gridCol w="'+ Math.round(inch2Emu(objTabOpts.colW[col]) || (layoutObj.options.cx/intColCnt)) +'"/>';
+						}
+						strXml += '</a:tblGrid>';
+					}
+					// B: Table Width provided without colW? Then distribute cols
+					else {
+						intColW = ( objTabOpts.colW ? objTabOpts.colW : EMU );
+						if ( layoutObj.options.cx && !objTabOpts.colW ) intColW = Math.round( layoutObj.options.cx / intColCnt ); // FIX: Issue#12
+						strXml += '<a:tblGrid>';
+						for ( var col=0; col<intColCnt; col++ ) { strXml += '<a:gridCol w="'+ intColW +'"/>'; }
+						strXml += '</a:tblGrid>';
+					}
+
+					// STEP 3: Build our row arrays into an actual grid to match the XML we will be building next (ISSUE #36)
+					// Note row arrays can arrive "lopsided" as in row1:[1,2,3] row2:[3] when first two cols rowspan!,
+					// so a simple loop below in XML building wont suffice to build table right.
+					// We have to build an actual grid now
+					/*
+						EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
+
+						/------|------|------|------\
+						|  A0  |  B0  |  C0  |  D0  |
+						|      |  B1  |  C1  |      |
+						|      |      |  C2  |  D2  |
+						\------|------|------|------/
+					*/
+ 					$.each(arrTabRows, function(rIdx,row){
+						// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
+						if ( !objTableGrid[rIdx] ) objTableGrid[rIdx] = {};
+
+						// B: Loop over all cells
+						$(row).each(function(cIdx,cell){
+							// DESIGN: NOTE: Row cell arrays can be "uneven" (diff cell count in each) due to rowspan/colspan
+							// Therefore, for each cell we run 0->colCount to determien the correct slot for it to reside
+							// as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
+							// E.g.: the 2nd element in the row array may actually go into the 5th table grid row cell b/c of colspans!
+							for (var idx=0; (cIdx+idx)<intColCnt; idx++) {
+								var currColIdx = (cIdx + idx);
+
+								if ( !objTableGrid[rIdx][currColIdx] ) {
+									// A: Set this cell
+									objTableGrid[rIdx][currColIdx] = cell;
+
+									// B: Handle `colspan` or `rowspan` (a {cell} cant have both! FIXME: FUTURE: ROWSPAN & COLSPAN in same cell)
+									if ( cell && cell.opts && cell.opts.colspan && !isNaN(Number(cell.opts.colspan)) ) {
+										for (var idy=1; idy<Number(cell.opts.colspan); idy++) {
+											objTableGrid[rIdx][currColIdx+idy] = {"hmerge":true, text:"hmerge"};
+										}
+									}
+									else if ( cell && cell.opts && cell.opts.rowspan && !isNaN(Number(cell.opts.rowspan)) ) {
+										for (var idz=1; idz<Number(cell.opts.rowspan); idz++) {
+											if ( !objTableGrid[rIdx+idz] ) objTableGrid[rIdx+idz] = {};
+											objTableGrid[rIdx+idz][currColIdx] = {"vmerge":true, text:"vmerge"};
+										}
+									}
+
+									// C: Break out of colCnt loop now that slot has been filled
+									break;
+								}
+							}
+						});
+					});
+					/* Only useful for rowspan/colspan testing
+					if ( objTabOpts.debug ) {
+						console.table(objTableGrid);
+						var arrText = [];
+						$.each(objTableGrid, function(i,row){ var arrRow = []; $.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
+						console.table( arrText );
+					}
+					*/
+
+					// STEP 4: Build table rows/cells ============================
+					$.each(objTableGrid, function(rIdx,rowObj){
+						// A: Table Height provided without rowH? Then distribute rows
+						var intRowH = 0; // IMPORTANT: Default must be zero for auto-sizing to work
+						if ( Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx] ) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]));
+						else if ( objTabOpts.rowH && !isNaN(Number(objTabOpts.rowH)) ) intRowH = inch2Emu(Number(objTabOpts.rowH));
+						else if ( layoutObj.options.cy || layoutObj.options.h ) intRowH = ( layoutObj.options.h ? inch2Emu(layoutObj.options.h) : layoutObj.options.cy) / arrTabRows.length;
+
+						// B: Start row
+						strXml += '<a:tr h="'+ intRowH +'">';
+
+						// C: Loop over each CELL
+						$.each(rowObj, function(cIdx,cell){
+							// FIRST: Create cell if needed (handle [null] and other manner of junk values)
+							// IMPORTANT: MS-PPTX PROBLEM: using '' will cause PPT to use its own default font/size! (Arial/18 in US)
+							// SOLN: Pass a space instead to cement formatting options (Issue #20)
+							if ( typeof cell === 'undefined' || cell == null ) cell = { text:' ', options:{} };
+
+							// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
+							if ( cell.hmerge ) return;
+
+							// 2: OPTIONS: Build/set cell options (blocked for code folding) ===========================
+							{
+								var cellOpts = cell.options || cell.opts || {};
+								if ( typeof cell === 'number' || typeof cell === 'string' ) cell = { text:cell.toString() };
+								cellOpts.isTableCell = true; // Used to create textBody XML
+								cell.options = cellOpts;
+
+								// B: Apply default values (tabOpts being used when cellOpts dont exist):
+								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
+								['align','bold','border','color','fill','font_face','font_size','margin','marginPt','underline','valign']
+								.forEach(function(name,idx){
+									if ( objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0 ) cellOpts[name] = objTabOpts[name];
+								});
+
+								var cellValign  = (cellOpts.valign)     ? ' anchor="'+ cellOpts.valign.replace(/^c$/i,'ctr').replace(/^m$/i,'ctr').replace('center','ctr').replace('middle','ctr').replace('top','t').replace('btm','b').replace('bottom','b') +'"' : '';
+								var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
+								var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
+								var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
+								var cellMargin  = ( cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : (cellOpts.marginPt || DEF_CELL_MARGIN_PT) );
+								if ( !Array.isArray(cellMargin) && typeof cellMargin === 'number' ) cellMargin = [cellMargin,cellMargin,cellMargin,cellMargin];
+								cellMargin = ' marL="'+ cellMargin[3]*ONEPT +'" marR="'+ cellMargin[1]*ONEPT +'" marT="'+ cellMargin[0]*ONEPT +'" marB="'+ cellMargin[2]*ONEPT +'"';
+							}
+
+							// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
+
+							// 3: ROWSPAN: Add dummy cells for any active rowspan
+							if ( cell.vmerge ) {
+								strXml += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
+								return;
+							}
+
+							// 4: Set CELL content and properties ==================================
+							strXml += '<a:tc'+ cellColspan + cellRowspan +'>' + genXmlTextBody(cell) + '<a:tcPr'+ cellMargin + cellValign +'>';
+
+							// 5: Borders: Add any borders
+							if ( cellOpts.border && typeof cellOpts.border === 'string' ) {
+								strXml += '  <a:lnL w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnL>';
+								strXml += '  <a:lnR w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnR>';
+								strXml += '  <a:lnT w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnT>';
+								strXml += '  <a:lnB w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnB>';
+							}
+							else if ( cellOpts.border && Array.isArray(cellOpts.border) ) {
+								$.each([ {idx:3,name:'lnL'}, {idx:1,name:'lnR'}, {idx:0,name:'lnT'}, {idx:2,name:'lnB'} ], function(i,obj){
+									if ( cellOpts.border[obj.idx] ) {
+										var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[obj.idx].color) ? cellOpts.border[obj.idx].color : '666666') +'"/></a:solidFill>';
+										var intW = (cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt == 0)) ? (ONEPT * Number(cellOpts.border[obj.idx].pt)) : ONEPT;
+										strXml += '<a:'+ obj.name +' w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:'+ obj.name +'>';
+									}
+									else strXml += '<a:'+ obj.name +' w="0"><a:miter lim="400000" /></a:'+ obj.name +'>';
+								});
+							}
+							else if ( cellOpts.border && typeof cellOpts.border === 'object' ) {
+								var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
+								var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color.replace('#','') : '666666') +'"/></a:solidFill>';
+								var strAttr = '<a:prstDash val="';
+								strAttr += ((cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1) ? "sysDash" : "solid" );
+								strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>';
+								// *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
+								strXml += '<a:lnL w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strClr + strAttr +'</a:lnL>';
+								strXml += '<a:lnR w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strClr + strAttr +'</a:lnR>';
+								strXml += '<a:lnT w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strClr + strAttr +'</a:lnT>';
+								strXml += '<a:lnB w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strClr + strAttr +'</a:lnB>';
+								// *** IMPORTANT! *** LRTB order matters!
+							}
+
+							// 6: Close cell Properties & Cell
+							strXml += cellFill;
+							strXml += '  </a:tcPr>';
+							strXml += ' </a:tc>';
+
+							// LAST: COLSPAN: Add a 'merged' col for each column being merged (SEE: http://officeopenxml.com/drwTableGrid.php)
+							if ( cellOpts.colspan ) {
+								for (var tmp=1; tmp<Number(cellOpts.colspan); tmp++) { strXml += '<a:tc hMerge="1"><a:tcPr/></a:tc>'; }
+							}
+						});
+
+						// D: Complete row
+						strXml += '</a:tr>';
+					});
+
+					// STEP 5: Complete table
+					strXml += '      </a:tbl>';
+					strXml += '    </a:graphicData>';
+					strXml += '  </a:graphic>';
+					strXml += '</p:graphicFrame>';
+
+					// STEP 6: Set table XML
+					strSlideXml += strXml;
+
+					// LAST: Increment counter
+					intTableNum++;
+					break;
+
+				case 'text':
+					// Lines can have zero cy, but text should not
+					if ( !layoutObj.options.line && cy == 0 ) cy = (EMU * 0.3);
+
+					// Margin/Padding/Inset for textboxes
+					if ( layoutObj.options.margin && Array.isArray(layoutObj.options.margin) ) {
+						layoutObj.options.bodyProp.lIns = (layoutObj.options.margin[0] * ONEPT || 0);
+						layoutObj.options.bodyProp.rIns = (layoutObj.options.margin[1] * ONEPT || 0);
+						layoutObj.options.bodyProp.bIns = (layoutObj.options.margin[2] * ONEPT || 0);
+						layoutObj.options.bodyProp.tIns = (layoutObj.options.margin[3] * ONEPT || 0);
+					}
+					else if ( (layoutObj.options.margin || layoutObj.options.margin == 0) && Number.isInteger(layoutObj.options.margin) ) {
+						layoutObj.options.bodyProp.lIns = (layoutObj.options.margin * ONEPT);
+						layoutObj.options.bodyProp.rIns = (layoutObj.options.margin * ONEPT);
+						layoutObj.options.bodyProp.bIns = (layoutObj.options.margin * ONEPT);
+						layoutObj.options.bodyProp.tIns = (layoutObj.options.margin * ONEPT);
+					}
+
+					var effectsList = '';
+					if ( shapeType == null ) shapeType = getShapeInfo(null);
+
+					// A: Start SHAPE =======================================================
+					strSlideXml += '<p:sp>';
+
+					// B: The addition of the "txBox" attribute is the sole determiner of if an object is a Shape or Textbox
+					strSlideXml += '<p:nvSpPr><p:cNvPr id="'+ (idx+2) +'" name="Object '+ (idx+1) +'"/>';
+					strSlideXml += '<p:cNvSpPr' + ((layoutObj.options && layoutObj.options.isTextBox) ? ' txBox="1"/><p:nvPr/>' : '/><p:nvPr/>');
+					strSlideXml += '</p:nvSpPr>';
+					strSlideXml += '<p:spPr><a:xfrm' + locationAttr + '>';
+					strSlideXml += '<a:off x="'  + x  + '" y="'  + y  + '"/>';
+					strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
+					strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst>'
+						+ (layoutObj.options.rectRadius ? '<a:gd name="adj" fmla="val '+ Math.round(layoutObj.options.rectRadius * EMU * 100000 / Math.min(cx, cy)) +'" />' : '')
+						+ '</a:avLst></a:prstGeom>';
+
+					// Option: FILL
+					strSlideXml += ( layoutObj.options.fill ? genXmlColorSelection(layoutObj.options.fill) : '<a:noFill/>' );
+
+					// Shape Type: LINE: line color
+					if ( layoutObj.options.line ) {
+						strSlideXml += '<a:ln'+ ( layoutObj.options.line_size ? ' w="'+ (layoutObj.options.line_size*ONEPT) +'"' : '') +'>';
+						strSlideXml += genXmlColorSelection( layoutObj.options.line );
+						if ( layoutObj.options.line_dash ) strSlideXml += '<a:prstDash val="' + layoutObj.options.line_dash + '"/>';
+						if ( layoutObj.options.line_head ) strSlideXml += '<a:headEnd type="' + layoutObj.options.line_head + '"/>';
+						if ( layoutObj.options.line_tail ) strSlideXml += '<a:tailEnd type="' + layoutObj.options.line_tail + '"/>';
+						strSlideXml += '</a:ln>';
+					}
+
+					// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
+					if ( layoutObj.options.shadow ) {
+						layoutObj.options.shadow.type    = ( layoutObj.options.shadow.type    || 'outer' );
+						layoutObj.options.shadow.blur    = ( layoutObj.options.shadow.blur    || 8 ) * ONEPT;
+						layoutObj.options.shadow.offset  = ( layoutObj.options.shadow.offset  || 4 ) * ONEPT;
+						layoutObj.options.shadow.angle   = ( layoutObj.options.shadow.angle   || 270 ) * 60000;
+						layoutObj.options.shadow.color   = ( layoutObj.options.shadow.color   || '000000' );
+						layoutObj.options.shadow.opacity = ( layoutObj.options.shadow.opacity || 0.75 ) * 100000;
+
+						strSlideXml += '<a:effectLst>';
+						strSlideXml += '<a:'+ layoutObj.options.shadow.type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
+						strSlideXml += ' algn="bl" rotWithShape="0" blurRad="'+ layoutObj.options.shadow.blur +'" ';
+						strSlideXml += ' dist="'+ layoutObj.options.shadow.offset +'" dir="'+ layoutObj.options.shadow.angle +'">';
+						strSlideXml += '<a:srgbClr val="'+ layoutObj.options.shadow.color +'">';
+						strSlideXml += '<a:alpha val="'+ layoutObj.options.shadow.opacity +'"/></a:srgbClr>'
+						strSlideXml += '</a:outerShdw>';
+						strSlideXml += '</a:effectLst>';
+					}
+
+					/* FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
+					// Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
+					if ( layoutObj.options.textWrap ) {
+						strSlideXml += '<a:extLst>'
+									+ '<a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
+									+ '<ma14:wrappingTextBoxFlag xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main" val="1" />'
+									+ '</a:ext>'
+									+ '</a:extLst>';
+					}
+					*/
+
+					// B: Close Shape Properties
+					strSlideXml += '</p:spPr>';
+
+					// Add formatted text
+					strSlideXml += genXmlTextBody(layoutObj);
+
+					// LAST: Close SHAPE =======================================================
+					strSlideXml += '</p:sp>';
+					break;
+
+				case 'image':
+			        strSlideXml += '<p:pic>';
+					strSlideXml += '  <p:nvPicPr>'
+					strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ layoutObj.image +'">';
+					if ( layoutObj.hyperlink ) strSlideXml += '<a:hlinkClick r:id="rId'+ layoutObj.hyperlink.rId +'" tooltip="'+ (layoutObj.hyperlink.tooltip ? decodeXmlEntities(layoutObj.hyperlink.tooltip) : '') +'"/>';
+					strSlideXml += '    </p:cNvPr>';
+			        strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/>';
+					strSlideXml += '  </p:nvPicPr>';
+					strSlideXml += '<p:blipFill><a:blip r:embed="rId' + layoutObj.imageRid + '" cstate="print"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>';
+					strSlideXml += '<p:spPr>'
+					strSlideXml += ' <a:xfrm' + locationAttr + '>'
+					strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
+					strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
+					strSlideXml += ' </a:xfrm>'
+					strSlideXml += ' <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+					strSlideXml += '</p:spPr>';
+					strSlideXml += '</p:pic>';
+					break;
+
+				case 'media':
+					if ( layoutObj.mtype == 'online' ) {
+						strSlideXml += '<p:pic>';
+						strSlideXml += ' <p:nvPicPr>';
+						// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
+						strSlideXml += ' <p:cNvPr id="'+ (layoutObj.mediaRid+2) +'" name="Picture'+ (idx + 1) +'"/>';
+						strSlideXml += ' <p:cNvPicPr/>';
+						strSlideXml += ' <p:nvPr>';
+						strSlideXml += '  <a:videoFile r:link="rId'+ layoutObj.mediaRid +'"/>';
+						strSlideXml += ' </p:nvPr>';
+						strSlideXml += ' </p:nvPicPr>';
+						strSlideXml += ' <p:blipFill><a:blip r:embed="rId'+ (layoutObj.mediaRid+2) +'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>'; // NOTE: Preview image is required!
+						strSlideXml += ' <p:spPr>';
+						strSlideXml += '  <a:xfrm' + locationAttr + '>';
+						strSlideXml += '   <a:off x="'  + x  + '" y="'  + y  + '"/>';
+						strSlideXml += '   <a:ext cx="' + cx + '" cy="' + cy + '"/>';
+						strSlideXml += '  </a:xfrm>';
+						strSlideXml += '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
+						strSlideXml += ' </p:spPr>';
+						strSlideXml += '</p:pic>';
+					}
+					else {
+						strSlideXml += '<p:pic>';
+						strSlideXml += ' <p:nvPicPr>';
+						// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
+						strSlideXml += ' <p:cNvPr id="'+ (layoutObj.mediaRid+2) +'" name="'+ layoutObj.media.split('/').pop().split('.').shift() +'"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>';
+						strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
+						strSlideXml += ' <p:nvPr>';
+						strSlideXml += '  <a:videoFile r:link="rId'+ layoutObj.mediaRid +'"/>';
+						strSlideXml += '  <p:extLst>';
+						strSlideXml += '   <p:ext uri="{DAA4B4D4-6D71-4841-9C94-3DE7FCFB9230}">';
+						strSlideXml += '    <p14:media xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" r:embed="rId' + (layoutObj.mediaRid+1) + '"/>';
+						strSlideXml += '   </p:ext>';
+						strSlideXml += '  </p:extLst>';
+						strSlideXml += ' </p:nvPr>';
+						strSlideXml += ' </p:nvPicPr>';
+						strSlideXml += ' <p:blipFill><a:blip r:embed="rId'+ (layoutObj.mediaRid+2) +'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>'; // NOTE: Preview image is required!
+						strSlideXml += ' <p:spPr>';
+						strSlideXml += '  <a:xfrm' + locationAttr + '>';
+						strSlideXml += '   <a:off x="'  + x  + '" y="'  + y  + '"/>';
+						strSlideXml += '   <a:ext cx="' + cx + '" cy="' + cy + '"/>';
+						strSlideXml += '  </a:xfrm>';
+						strSlideXml += '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>';
+						strSlideXml += ' </p:spPr>';
+						strSlideXml += '</p:pic>';
+					}
+					break;
+
+				case 'chart':
+					strSlideXml += '<p:graphicFrame>';
+					strSlideXml += ' <p:nvGraphicFramePr>';
+					strSlideXml += '   <p:cNvPr id="'+ (idx + 2) +'" name="Chart '+ (idx + 1) +'"/>';
+					strSlideXml += '   <p:cNvGraphicFramePr/>';
+					strSlideXml += '   <p:nvPr/>';
+					strSlideXml += ' </p:nvGraphicFramePr>';
+					strSlideXml += ' <p:xfrm>'
+					strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
+					strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
+					strSlideXml += ' </p:xfrm>'
+					strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">';
+					strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">';
+					strSlideXml += '   <c:chart r:id="rId'+ (layoutObj.chartRid) +'" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>';
+					strSlideXml += '  </a:graphicData>';
+					strSlideXml += ' </a:graphic>';
+					strSlideXml += '</p:graphicFrame>';
+					break;
+			}
+		});
+
+		// STEP 6: Close spTree and finalize slide XML
+		strSlideXml += '</p:spTree>';
+		/* FIXME: Remove this in 2.0.0 (commented for 1.6.0)
+		strSlideXml += '<p:extLst>';
+		strSlideXml += ' <p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">';
+		strSlideXml += '  <p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1544976994"/>';
+		strSlideXml += ' </p:ext>';
+		strSlideXml += '</p:extLst>';
+		*/
+		strSlideXml += '</p:cSld>';
+		strSlideXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>';
+		strSlideXml += '</p:sldLayout>';
+
+		// LAST: Return
+		return strSlideXml;
+	}
+
 	function makeXmlSlideLayoutRel(inSlideNum) {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
 			strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">';
@@ -2899,6 +3385,14 @@ var PptxGenJS = function(){
 
 	this.addLayoutSlide = function(name, layoutSlideXml) {
 		gObjPptx.layoutSlideXmls[name] = layoutSlideXml;
+	};
+
+	this.addLayoutSlideDef = function(defObj) {
+		if (!defObj.title) throw Error('Missing layout title.');
+		//gObjPptx.layoutDefinitions[defObj.title] = defObj;
+		//console.log(gObjPptx.layoutDefinitions);
+		this.addNewLayout(defObj);
+		console.log(gObjPptx.layoutDefinitions);
 	};
 
 	this.useProperLayoutMaster = function() {
@@ -3664,6 +4158,175 @@ var PptxGenJS = function(){
 
 		// LAST: Return this Slide
 		return slideObj;
+	};
+
+
+	/**
+	 * Add a new layout to the Presentation
+	 * @returns {Object[]} layoutObj
+	 */
+	this.addNewLayout = function addNewLayout(layoutDef) {
+		var layoutObj = {};
+		var layoutNum = gObjPptx.layoutDefinitions.length;
+		var layoutObjNum = 0;
+
+		// A: Add this SLIDE to PRESENTATION, Add default values as well
+		gObjPptx.layoutDefinitions[layoutNum] = {};
+		gObjPptx.layoutDefinitions[layoutNum].layout = layoutObj;
+		gObjPptx.layoutDefinitions[layoutNum].name = layoutDef.title
+		gObjPptx.layoutDefinitions[layoutNum].data = [];
+		gObjPptx.layoutDefinitions[layoutNum].rels = [];
+
+		layoutObj.addText = function( inText, options ) {
+			var opt = ( options && typeof options === 'object' ? options : {} );
+			var text = ( inText || '' );
+			if ( Array.isArray(text) && text.length == 0 ) text = '';
+
+			// STEP 1: Grab Slide object count
+			layoutObjNum = gObjPptx.layoutDefinitions[layoutNum].data.length;
+
+			// STEP 2: Set some options
+			// Set color (options > inherit from Slide > default to black)
+			opt.color = ( opt.color || this.color || '000000' );
+
+			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
+			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
+			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
+
+			// ROBUST: Set rational values for some shadow props if needed
+			if ( opt.shadow ) {
+				// OPT: `type`
+				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
+					console.warn('Warning: shadow.type options are `outer` or `inner`.');
+					opt.shadow.type = 'outer';
+				}
+
+				// OPT: `angle`
+				if ( opt.shadow.angle ) {
+					// A: REALITY-CHECK
+					if ( isNaN(Number(opt.shadow.angle)) || opt.shadow.angle < 0 || opt.shadow.angle > 359 ) {
+						console.warn('Warning: shadow.angle can only be 0-359');
+						opt.shadow.angle = 270;
+					}
+
+					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+					opt.shadow.angle = Math.round(Number(opt.shadow.angle));
+				}
+
+				// OPT: `opacity`
+				if ( opt.shadow.opacity ) {
+					// A: REALITY-CHECK
+					if ( isNaN(Number(opt.shadow.opacity)) || opt.shadow.opacity < 0 || opt.shadow.opacity > 1 ) {
+						console.warn('Warning: shadow.opacity can only be 0-1');
+						opt.shadow.opacity = 0.75;
+					}
+
+					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+					opt.shadow.opacity = Number(opt.shadow.opacity)
+				}
+			}
+
+			// STEP 3: Set props
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum] = {};
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].type = 'text';
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].text = text;
+
+			// STEP 4: Set options
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options = opt;
+			if ( opt.shape && opt.shape.name == 'line' ) {
+				opt.line      = (opt.line      || '333333' );
+				opt.line_size = (opt.line_size || 1 );
+			}
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp = {};
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
+			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
+
+			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
+				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
+				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
+				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
+				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
+			}
+
+			// STEP 5: Create hyperlink rels
+			createHyperlinkRels(text, gObjPptx.layoutDefinitions[layoutNum].rels);
+
+			// LAST: Return
+			return this;
+		};
+
+
+		$.each(layoutDef, function(key, val) {
+
+			// DEPRECATED `src` is replaced by `path` in v1.5.0
+			if ( key == 'bkgd' && typeof val === 'object' && (val.src || val.path || val.data) ) {
+				// Allow the use of only the data key (no src reqd)
+				val.src = val.src || val.path || null;
+				if (!val.src) val.src = 'preencoded.png';
+				var layoutObjRels = gObjPptx.layoutDefinitions[layoutNum].rels;
+				var strImgExtn = val.src.substring( val.src.indexOf('.')+1 ).toLowerCase();
+				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
+				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
+				// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
+				var intRels = 1;
+				for ( var idx=0; idx<gObjPptx.layoutDefinitions.length; idx++ ) { intRels += gObjPptx.layoutDefinitions[idx].rels.length; }
+				layoutObjRels.push({
+					path: val.src,
+					type: 'image/'+strImgExtn,
+					extn: strImgExtn,
+					data: (val.data || ''),
+					rId: (intRels+1),
+					Target: '../media/layout-image' + intRels + '.' + strImgExtn
+				});
+				layoutObj.bkgdImgRid = layoutObjRels[layoutObjRels.length-1].rId;
+			}
+			else if ( key == 'bkgd' && val && typeof val === 'string' ) {
+				layoutObj.back = val;
+			}
+
+			// Images **DEPRECATED** (v1.5.0)
+			// if ( key == "images" && Array.isArray(val) && val.length > 0 ) {
+			// 	$.each(val, function(i,image){
+			// 		layoutObj.addImage({
+			// 			data: (image.data || ''),
+			// 			path: (image.path || image.src || ''),
+			// 			x: inch2Emu(image.x),
+			// 			y: inch2Emu(image.y),
+			// 			w: inch2Emu(image.w || image.cx),
+			// 			h: inch2Emu(image.h || image.cy)
+			// 		});
+			// 	});
+			// }
+
+			// Shapes **DEPRECATED** (v1.5.0)
+			// if ( key == "shapes" && Array.isArray(val) && val.length > 0 ) {
+			// 	$.each(val, function(i,shape){
+			// 		// 1: Grab all options (x, y, color, etc.)
+			// 		var objOpts = {};
+			// 		$.each(Object.keys(shape), function(i,key){ if ( shape[key] != 'type' ) objOpts[key] = shape[key]; });
+			// 		// 2: Create object using 'type'
+			// 		if      ( shape.type == 'text'      ) layoutObj.addText(shape.text, objOpts);
+			// 		else if ( shape.type == 'line'      ) layoutObj.addShape(gObjPptxShapes.LINE, objOpts);
+			// 		else if ( shape.type == 'rectangle' ) layoutObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
+			// 	});
+			// }
+
+			// Add all Slide Master objects in the order they were given (Issue#53)
+			if ( key == "objects" && Array.isArray(val) && val.length > 0 ) {
+				val.forEach(function(object,idx){
+					var key = Object.keys(object)[0];
+					if      ( MASTER_OBJECTS[key] && key == 'chart' ) layoutObj.addChart( CHART_TYPES[(object.chart.type||'').toUpperCase()], object.chart.data, object.chart.opts );
+					else if ( MASTER_OBJECTS[key] && key == 'image' ) layoutObj.addImage(object[key]);
+					else if ( MASTER_OBJECTS[key] && key == 'line'  ) layoutObj.addShape(gObjPptxShapes.LINE, object[key]);
+					else if ( MASTER_OBJECTS[key] && key == 'rect'  ) layoutObj.addShape(gObjPptxShapes.RECTANGLE, object[key]);
+					else if ( MASTER_OBJECTS[key] && key == 'text'  ) layoutObj.addText(object[key].text, object[key].options);
+				});
+			}
+		});
+
+		// LAST: Return this Slide
+		return layoutObj;
 	};
 
 	/**
