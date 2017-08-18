@@ -143,6 +143,7 @@ var PptxGenJS = function(){
 	gObjPptx.rtlMode = false;
 	gObjPptx.slides = [];
 	gObjPptx.imageCounter = 0;
+	gObjPptx.chartCounter = 0;
 
 	// C: Expose shape library to clients
 	this.charts  = CHART_TYPES;
@@ -226,8 +227,8 @@ var PptxGenJS = function(){
 		},
 
 		addImageDefinition: function addImageDefinition(strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData, target) {
-			var intRels = ++gObjPptx.relationCounter;
 			var resultObject = {};
+			var imageRelId = target.rels.length + 2;
 
 			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
 			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
@@ -251,8 +252,6 @@ var PptxGenJS = function(){
 				return null;
 			}
 
-			// STEP 2: Set vars for this Slide
-			var slideObjRels = target.rels;
 			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
 			var strImgExtn = 'png';
 			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
@@ -277,23 +276,23 @@ var PptxGenJS = function(){
 			resultObject.options.cy = (intSizeY || imgObj.height);
 
 			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-			slideObjRels.push({
+			target.rels.push({
 				path: (strImagePath || 'preencoded'+strImgExtn),
 				type: 'image/'+strImgExtn,
 				extn: strImgExtn,
 				data: (strImageData || ''),
-				rId:  slideObjRels.length + 2,
+				rId:  imageRelId,
 				Target: '../media/image'+ (++gObjPptx.imageCounter) +'.'+ strImgExtn
 			});
-			resultObject.imageRid = slideObjRels[slideObjRels.length-1].rId;
+			resultObject.imageRid = imageRelId;
 
 			// STEP 5: (Issue#77) Hyperlink support
 			if ( typeof objHyperlink === 'object' ) {
 				if ( !objHyperlink.url || typeof objHyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
 				else {
-					var intRelId = slideObjRels.length + 3;
+					var intRelId = imageRelId + 1;
 
-					slideObjRels.push({
+					target.rels.push({
 						type: 'hyperlink',
 						data: 'dummy',
 						rId:  intRelId,
@@ -307,6 +306,130 @@ var PptxGenJS = function(){
 
 			target.data.push(resultObject);
 			return resultObject;
+		},
+
+		/**
+		 * Generate the chart based on input data.
+		 * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
+		 *
+		 * @param {object} type should belong to: 'column', 'pie'
+		 * @param {object} data a JSON object with follow the following format
+		 * @param {object} opt
+		 * @param {object} target a slide or layout that the object should be added to
+		 * {
+		 *   title: 'eSurvey chart',
+		 *   data: [
+		 *   	{
+		 *			name: 'Income',
+		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
+		 *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
+		 *		},
+		 *		{
+		 *			name: 'Expense',
+		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
+		 *			values: [18.1, 22.8, 23.9, 25.1, 25]
+		 *		}
+		 *	 ]
+		 * 	}
+		 */
+		addChartDefinition: function addChartDefinition(type, data, opt, target) {
+			var options = ( opt && typeof opt === 'object' ? opt : {} );
+			var targetRels = target.rels;
+			var chartId = (++gObjPptx.chartCounter);
+			var chartRelId = target.rels.length + 2;
+			var resultObject = {};
+
+			// STEP 1: TODO: check for reqd fields, correct type, etc
+			// inType in CHART_TYPES
+			// Array.isArray(data)
+			/*
+			if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
+				&& rel.data[0].labels && Array.isArray(rel.data[0].labels)
+				&& rel.data[0].values && Array.isArray(rel.data[0].values) ) {
+				obj = rel.data[0];
+			}
+			else {
+				console.warn("USAGE: addChart( 'pie', [ {name:'Sales', labels:['Jan','Feb'], values:[10,20]} ], {x:1, y:1} )");
+				return;
+			}
+			*/
+
+			// STEP 3: Set default options/decode user options
+			// A: Core
+			options.type = type.name;
+			options.x = (typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1);
+			options.y = (typeof options.y !== 'undefined' && options.y != null && !isNaN(options.y) ? options.y : 1);
+			options.w = (options.w || '50%');
+			options.h = (options.h || '50%');
+
+			// B: Options: misc
+			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
+			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
+			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' || options.type == 'doughnut' ? 'bestFit' : 'ctr');
+			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
+			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
+			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
+			if ( options.barGrouping.indexOf('tacked') > -1 ) {
+				options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
+				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
+			}
+			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
+			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
+			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
+			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
+
+			// use default lines only for y-axis if nothing specified
+			options.valGridLine = options.valGridLine || {};
+			options.catGridLine = options.catGridLine || 'none';
+			correctGridLineOptions(options.catGridLine);
+			correctGridLineOptions(options.valGridLine);
+
+			if ( options.type === 'line' ) {
+				correctShadowOptions(options.lineShadow);
+			}
+
+			// C: Options: plotArea
+			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
+			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
+			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
+			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
+			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
+
+			// D: Options: chart
+			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
+			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' || options.type == 'doughnut' ? PIECHART_COLORS : BARCHART_COLORS) );
+			options.chartColorsOpacity = ( options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null );
+			//
+			options.border = ( options.border && typeof options.border === 'object' ? options.border : null );
+			if ( options.border && (!options.border.pt || isNaN(options.border.pt)) ) options.border.pt = 1;
+			if ( options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length != 6) ) options.border.color = '363636';
+			//
+			options.dataBorder = ( options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null );
+			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
+			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
+			//
+			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' || options.type == 'doughnut' ? '0%' : '#,##0') );
+			//
+			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
+			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );
+
+			// STEP 4: Set props
+			resultObject.type    = 'chart';
+			resultObject.options = options;
+
+			// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+			targetRels.push({
+				rId:     chartRelId,
+				data:    data,
+				opts:    options,
+				type:    'chart',
+				fileName:'chart'+ chartId +'.xml',
+				Target:  '/ppt/charts/chart'+ chartId +'.xml'
+			});
+			resultObject.chartRid = chartRelId;
+
+			target.data.push(resultObject);
+			return this;
 		}
 	}
 
@@ -1380,6 +1503,18 @@ var PptxGenJS = function(){
 
 			// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
 			shadowOpts.opacity = Number(shadowOpts.opacity)
+		}
+	}
+
+	function correctGridLineOptions(glOpts) {
+		if ( !glOpts || glOpts === 'none' ) return;
+		if ( glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0) ) {
+			console.warn('Warning: chart.gridLine.size must be greater than 0.');
+			delete glOpts.size; // delete prop to used defaults
+		}
+		if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
+			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
+			delete glOpts.style;
 		}
 	}
 
@@ -4007,129 +4142,9 @@ var PptxGenJS = function(){
 		 *	 ]
 		 * 	}
 		 */
-		slideObj.addChart = function ( inType, inData, inOpt ) {
-			var intRels = 1;
-			var options = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
 
-			function correctGridLineOptions(glOpts) {
-				if ( !glOpts || glOpts === 'none' ) return;
-				if ( glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0) ) {
-					console.warn('Warning: chart.gridLine.size must be greater than 0.');
-					delete glOpts.size; // delete prop to used defaults
-				}
-				if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
-					console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
-					delete glOpts.style;
-				}
-			}
-
-			// STEP 1: TODO: check for reqd fields, correct type, etc
-			// inType in CHART_TYPES
-			// Array.isArray(inData)
-			/*
-			if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
-				&& rel.data[0].labels && Array.isArray(rel.data[0].labels)
-				&& rel.data[0].values && Array.isArray(rel.data[0].values) ) {
-				obj = rel.data[0];
-			}
-			else {
-				console.warn("USAGE: addChart( 'pie', [ {name:'Sales', labels:['Jan','Feb'], values:[10,20]} ], {x:1, y:1} )");
-				return;
-			}
-			*/
-
-			// STEP 2: Set vars for this Slide
-			var slideObjNum = gObjPptx.slides[slideNum].data.length;
-			var slideObjRels = gObjPptx.slides[slideNum].rels;
-
-			// STEP 3: Set default options/decode user options
-			// A: Core
-			options.type = inType.name;
-			options.x = (typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1);
-			options.y = (typeof options.y !== 'undefined' && options.y != null && !isNaN(options.y) ? options.y : 1);
-			options.w = (options.w || '50%');
-			options.h = (options.h || '50%');
-
-			// B: Options: misc
-			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
-			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' || options.type == 'doughnut' ? 'bestFit' : 'ctr');
-			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
-			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
-			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
-			if ( options.barGrouping.indexOf('tacked') > -1 ) {
-				options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
-				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
-			}
-			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
-			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
-			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
-			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
-			// `layout` allows the override of PPT defaults to maximize space
-			if ( options.layout ) {
-				['x', 'y', 'w', 'h'].forEach(function(key) {
-					var val = options.layout[key];
-					if (isNaN(Number(val)) || val < 0 || val > 1) {
-						console.warn('Warning: chart.layout.' + key + ' can only be 0-1');
-						delete options.layout[key]; // remove invalid value so that default will be used
-					}
-				});
-			}
-
-      		// use default lines only for y-axis if nothing specified
-			options.valGridLine = options.valGridLine || {};
-			options.catGridLine = options.catGridLine || 'none';
-			correctGridLineOptions(options.catGridLine);
-			correctGridLineOptions(options.valGridLine);
-
-			if ( options.type === 'line' ) {
-				correctShadowOptions(options.lineShadow);
-			}
-
-			// C: Options: plotArea
-			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
-			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
-			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
-			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
-			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
-
-			// D: Options: chart
-			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
-			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' || options.type == 'doughnut' ? PIECHART_COLORS : BARCHART_COLORS) );
-			options.chartColorsOpacity = ( options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null );
-			//
-			options.border = ( options.border && typeof options.border === 'object' ? options.border : null );
-			if ( options.border && (!options.border.pt || isNaN(options.border.pt)) ) options.border.pt = 1;
-			if ( options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length != 6) ) options.border.color = '363636';
-			//
-			options.dataBorder = ( options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null );
-			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
-			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
-			//
-			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' || options.type == 'doughnut' ? '0%' : '#,##0') );
-			//
-			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
-			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );
-
-			// STEP 4: Set props
-			gObjPptx.slides[slideNum].data[slideObjNum] = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].type    = 'chart';
-			gObjPptx.slides[slideNum].data[slideObjNum].options = options;
-
-			// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
-			slideObjRels.push({
-				rId:     (intRels+1),
-				data:    inData,
-				opts:    options,
-				type:    'chart',
-				fileName:'chart'+ intRels +'.xml',
-				Target:  '/ppt/charts/chart'+ intRels +'.xml'
-			});
-			gObjPptx.slides[slideNum].data[slideObjNum].chartRid = slideObjRels[slideObjRels.length-1].rId;
-
-			// LAST: Return
+		slideObj.addChart = function ( type, data, opt ) {
+			gObjPptxGenerators.addChartDefinition(type, data, opt, gObjPptx.slides[slideNum]);
 			return this;
 		}
 
@@ -4502,126 +4517,8 @@ var PptxGenJS = function(){
 			else return gObjPptx.layoutDefinitions[layoutNum].slideNumberObj;
 		};
 
-			/**
-		 * Generate the chart based on input data.
-		 *
-		 * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
-		 *
-		 * @param {object} renderType should belong to: 'column', 'pie'
-		 * @param {object} data a JSON object with follow the following format
-		 * {
-		 *   title: 'eSurvey chart',
-		 *   data: [
-		 *   	{
-		 *			name: 'Income',
-		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
-		 *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
-		 *		},
-		 *		{
-		 *			name: 'Expense',
-		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
-		 *			values: [18.1, 22.8, 23.9, 25.1, 25]
-		 *		}
-		 *	 ]
-		 * 	}
-		 */
-		layoutObj.addChart = function ( inType, inData, inOpt ) {
-			var intRels = 1;
-			var options = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
-
-			// STEP 1: TODO: check for reqd fields, correct type, etc
-			// inType in CHART_TYPES
-			// Array.isArray(inData)
-			/*
-			if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
-				&& rel.data[0].labels && Array.isArray(rel.data[0].labels)
-				&& rel.data[0].values && Array.isArray(rel.data[0].values) ) {
-				obj = rel.data[0];
-			}
-			else {
-				console.warn("USAGE: addChart( 'pie', [ {name:'Sales', labels:['Jan','Feb'], values:[10,20]} ], {x:1, y:1} )");
-				return;
-			}
-			*/
-
-			// STEP 2: Set vars for this Slide
-			var layoutObjNum = gObjPptx.layoutDefinitions[layoutNum].data.length;
-			var layoutObjRels = gObjPptx.layoutDefinitions[layoutNum].rels;
-
-			// STEP 3: Set default options/decode user options
-			// A: Core
-			options.type = inType.name;
-			options.x = (typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1);
-			options.y = (typeof options.y !== 'undefined' && options.y != null && !isNaN(options.y) ? options.y : 1);
-			options.w = (options.w || '50%');
-			options.h = (options.h || '50%');
-
-			// B: Options: misc
-			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
-			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' || options.type == 'doughnut' ? 'bestFit' : 'ctr');
-			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
-			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
-			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
-			if ( options.barGrouping.indexOf('tacked') > -1 ) {
-				options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
-				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
-			}
-			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
-			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
-			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
-			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
-
-			// use default lines only for y-axis if nothing specified
-			options.valGridLine = options.valGridLine || {};
-			options.catGridLine = options.catGridLine || 'none';
-			correctGridLineOptions(options.catGridLine);
-			correctGridLineOptions(options.valGridLine);
-
-			// C: Options: plotArea
-			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
-			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
-			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
-			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
-			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
-
-			// D: Options: chart
-			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
-			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type == 'pie' || options.type == 'doughnut' ? PIECHART_COLORS : BARCHART_COLORS) );
-			options.chartColorsOpacity = ( options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null );
-			//
-			options.border = ( options.border && typeof options.border === 'object' ? options.border : null );
-			if ( options.border && (!options.border.pt || isNaN(options.border.pt)) ) options.border.pt = 1;
-			if ( options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length != 6) ) options.border.color = '363636';
-			//
-			options.dataBorder = ( options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null );
-			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
-			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
-			//
-			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' || options.type == 'doughnut' ? '0%' : '#,##0') );
-			//
-			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
-			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );
-
-			// STEP 4: Set props
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum] = {};
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].type    = 'chart';
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options = options;
-
-			// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			gObjPptx.layoutDefinitions.forEach(function(layout,idx){ intRels += layout.rels.length; });
-			layoutObjRels.push({
-				rId:     (intRels+1),
-				data:    inData,
-				opts:    options,
-				type:    'chart',
-				fileName:'chart'+ intRels +'.xml',
-				Target:  '/ppt/charts/chart'+ intRels +'.xml'
-			});
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].chartRid = layoutObjRels[layoutObjRels.length-1].rId;
-
-			// LAST: Return
+		layoutObj.addChart = function ( type, data, opt ) {
+			gObjPptxGenerators.addChartDefinition(type, data, opt, gObjPptx.layoutDefinitions[layoutNum]);
 			return this;
 		}
 
