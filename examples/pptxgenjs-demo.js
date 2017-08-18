@@ -1312,7 +1312,54 @@ function genSlides_Chart(pptx) {
 				valAxisMaxVal: 1,
 				valAxisMajorUnit: 0.2,
 
-				dataNoEffects: true
+				dataNoEffects: true,
+
+				valAxes:[
+					{
+						showValAxisTitle: true,
+						valAxisTitle: 'Primary Value Axis',
+						valAxisTitleColor: '',
+						valAxisTitleFontSize: 16,
+						valAxisLabelColor: '',
+						valAxisLabelFontFace: '',
+						valAxisLabelFontSize: 12,
+						valAxisMajorUnit: 20,
+						valAxisMaxVal: 200,
+						valAxisMinVal: 20
+					}, {
+						showValAxisTitle: true,
+						valAxisTitle: 'Secondary Value Axis',
+						catAxisOrientation  : 'maxMin',
+						valAxisTitleColor: 'c11c13',
+						valAxisTitleFontSize: 12,
+						valAxisLabelColor: '',
+						valAxisLabelFontFace: '',
+						valAxisLabelFontSize: 10,
+						valAxisMajorUnit: 10,
+						valAxisMaxVal: 100,
+						valAxisMinVal: 10
+					}
+				],
+
+				catAxes: [
+					{
+						catAxisLabelColor: '',
+						catAxisLabelFontFace: '',
+						catAxisLabelFontSize: 14,
+						catAxisTitle: 'Primary Category Axis',
+						catAxisTitleColor: 'FF0000',
+						catAxisTitleFontFace: 'Arial',
+						catAxisTitleFontSize: 18
+					}, {
+						catAxisLabelColor: '',
+						catAxisLabelFontFace: '',
+						catAxisLabelFontSize: 10,
+						catAxisTitle: 'Secondary Category Axis',
+						catAxisTitleColor: 'FF0000',
+						catAxisTitleFontFace: 'Arial',
+						catAxisTitleFontSize: 18
+					}
+				]
 			};
 
 			var chartTypes = [
@@ -1321,30 +1368,32 @@ function genSlides_Chart(pptx) {
 					data: [{
 						name: 'Bottom',
 						labels: ['April', 'May', 'June', 'July', 'August'],
-						values: [.17, .26, .53, .10, .4]
+						values: [17, 26, 53, 10, 4]
 					},
-						{
-							name: 'Middle',
-							labels: ['April', 'May', 'June', 'July', 'August'],
-							values: [.05, .04, .02, .03, .15]
-						},
-						{
-							name: 'Top',
-							labels: ['April', 'May', 'June', 'July', 'August'],
-							values: [.01, .02, .25, .35, .2]
-						}],
+					{
+						name: 'Middle',
+						labels: ['April', 'May', 'June', 'July', 'August'],
+						values: [55, 40, 20, 30, 15]
+					},
+					{
+						name: 'Top',
+						labels: ['April', 'May', 'June', 'July', 'August'],
+						values: [10, 22, 25, 35, 70]
+					}],
 					options: {
-						barGrouping: 'stacked'
+						barGrouping: 'stacked',
+						secondaryAxis: false
 					}
 				}, {
 					type: pptx.charts.LINE,
 					data: [{
 						name: 'Current',
 						labels: ['April', 'May', 'June', 'July', 'August'],
-						values: [.05, .04, .02, .03, .15]
+						values: [50, 34, 112, 45, 75]
 					}],
 					options: {
-						barGrouping: 'standard'
+						barGrouping: 'standard',
+						secondaryAxis: true
 					}
 				}
 			];
@@ -1482,7 +1531,9 @@ function genSlides_Chart(pptx) {
 		}
 
 		//addDotChart();
-		addDotChartTwoAxes();
+		//addDotChartTwoAxes();
+
+		doMultiChart();
 	}
 
 	slideDotLine();

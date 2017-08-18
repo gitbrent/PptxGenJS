@@ -997,68 +997,89 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 1: Create chart
-		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-		// CHARTSPACE: BEGIN vvv
-		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
-		strXml += '<c:chart>';
 
-		// OPTION: Title
-		if (rel.opts.showTitle) {
-			strXml += genXmlTitle({
-				title: rel.opts.title || 'Chart Title',
-				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
-				color: rel.opts.titleColor,
-				fontFace: rel.opts.titleFontFace,
-				rotate: rel.opts.titleRotate
-			});
-			strXml += '<c:autoTitleDeleted val="0"/>';
+		{
+			var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+			// CHARTSPACE: BEGIN vvv
+			strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+			strXml += '<c:chart>';
+
+			// OPTION: Title
+			if (rel.opts.showTitle) {
+				strXml += genXmlTitle({
+					title: rel.opts.title || 'Chart Title',
+					fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
+					color: rel.opts.titleColor,
+					fontFace: rel.opts.titleFontFace,
+					rotate: rel.opts.titleRotate
+				});
+				strXml += '<c:autoTitleDeleted val="0"/>';
+			}
+
+			strXml += '<c:plotArea>';
+			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+			if (rel.opts.layout) {
+				strXml += '<c:layout>';
+				strXml += ' <c:manualLayout>';
+				strXml += '  <c:layoutTarget val="inner" />';
+				strXml += '  <c:xMode val="edge" />';
+				strXml += '  <c:yMode val="edge" />';
+				strXml += '  <c:x val="' + (rel.opts.layout.x || 0) + '" />';
+				strXml += '  <c:y val="' + (rel.opts.layout.y || 0) + '" />';
+				strXml += '  <c:w val="' + (rel.opts.layout.w || 1) + '" />';
+				strXml += '  <c:h val="' + (rel.opts.layout.h || 1) + '" />';
+				strXml += ' </c:manualLayout>';
+				strXml += '</c:layout>';
+			}
+			else {
+				strXml += '<c:layout/>';
+			}
 		}
 
-		strXml += '<c:plotArea>';
-		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-		if (rel.opts.layout) {
-			strXml += '<c:layout>';
-			strXml += ' <c:manualLayout>';
-			strXml += '  <c:layoutTarget val="inner" />';
-			strXml += '  <c:xMode val="edge" />';
-			strXml += '  <c:yMode val="edge" />';
-			strXml += '  <c:x val="' + (rel.opts.layout.x || 0) + '" />';
-			strXml += '  <c:y val="' + (rel.opts.layout.y || 0) + '" />';
-			strXml += '  <c:w val="' + (rel.opts.layout.w || 1) + '" />';
-			strXml += '  <c:h val="' + (rel.opts.layout.h || 1) + '" />';
-			strXml += ' </c:manualLayout>';
-			strXml += '</c:layout>';
-		}
-		else {
-			strXml += '<c:layout/>';
-		}
+		var usesSecondaryAxis = false;
 
 		// A: CHART TYPES -----------------------------------------------------------
-
 		if (Array.isArray(rel.opts.type)) {
 			rel.opts.type.forEach(function (type) {
 				var chartType = type.type.name;
 				var data = type.data;
-				strXml += makeChartType(chartType, data, mix(rel.opts, type.options));
+				var options = mix(rel.opts, type.options);
+				var valAxisId = options.secondaryAxis ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
+				var catAxisId = options.secondaryAxis ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
+				usesSecondaryAxis = usesSecondaryAxis || options.secondaryAxis;
+				strXml += makeChartType(chartType, data, options, valAxisId, catAxisId);
 			});
 		} else {
 			var chartType = rel.opts.type.name;
-			strXml += makeChartType(chartType, rel.data, rel.opts);
+			strXml += makeChartType(chartType, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY);
 		}
 
+		// B: AXES -----------------------------------------------------------
 		if(rel.opts.type.name !== 'pie' || rel.opts.type.name !== 'doughnut'){
-			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
+
+			if(rel.opts.valAxes && !usesSecondaryAxis){
+				throw new Error('Secondary must be used by one of multiple charts');
+			}
+
+			if(rel.opts.catAxes){
+				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
+				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_SECONDARY);
+			} else {
+				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
+			}
+
+
 			rel.opts.hasArea = hasArea(rel.opts.type);
 
 			if(rel.opts.valAxes){
-				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY);
-				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY);
+				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
+				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY, AXIS_ID_CATEGORY_SECONDARY);
 			} else {
-				strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY);
+				strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_CATEGORY_SECONDARY);
 			}
 		}
 
-		// B: Chart Properties + Options: Fill, Border, Legend
+		// C: Chart Properties + Options: Fill, Border, Legend
 		{
 			strXml += '  <c:spPr>';
 
@@ -1082,14 +1103,14 @@ var PptxGenJS = function(){
 		strXml += '  <c:dispBlanksAs val="gap"/>';
 		strXml += '</c:chart>';
 
-		// C: CHARTSPACE SHAPE PROPS
+		// D: CHARTSPACE SHAPE PROPS
 		strXml += '<c:spPr>';
 		strXml += '  <a:noFill/>';
 		strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
 		strXml += '  <a:effectLst/>';
 		strXml += '</c:spPr>';
 
-		// D: DATA (Add relID)
+		// E: DATA (Add relID)
 		strXml += '<c:externalData r:id="rId'+ (rel.rId-1) +'"><c:autoUpdate val="0"/></c:externalData>';
 
 		// LAST: chartSpace end
@@ -1112,7 +1133,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeChartType (chartType, data, opts) {
+	function makeChartType (chartType, data, opts, valAxisId, catAxisId) {
 
 		console.log('makeChartType', chartType, data, opts);
 
@@ -1323,8 +1344,8 @@ var PptxGenJS = function(){
 				}
 
 				// order matters - category first
-				strXml += '  <c:axId val="'+AXIS_ID_CATEGORY_PRIMARY+'"/>';
-				strXml += '  <c:axId val="'+AXIS_ID_VALUE_PRIMARY+'"/>';
+				strXml += '  <c:axId val="'+ catAxisId +'"/>';
+				strXml += '  <c:axId val="'+ valAxisId +'"/>';
 
 				strXml += '</c:'+ chartType +'Chart>';
 
@@ -1482,7 +1503,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeCatAxis (opts, id) {
+	function makeCatAxis (opts, axisId) {
 		var strXml = '';
 
 		strXml += '<c:catAx>';
@@ -1496,7 +1517,7 @@ var PptxGenJS = function(){
 			});
 		}
 
-		strXml += '  <c:axId val="'+id+'"/>';
+		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
 		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
@@ -1522,7 +1543,7 @@ var PptxGenJS = function(){
 		strXml += '  </a:pPr>';
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
-		strXml += ' <c:crossAx val="'+id+'"/>';
+		strXml += ' <c:crossAx val="'+ axisId +'"/>';
 		strXml += ' <c:crosses val="autoZero"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
@@ -1532,8 +1553,13 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeValueAxis (opts, id) {
+	function makeValueAxis (opts, valAxisId, catAxisId) {
+
+		var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir == 'col' ? 'l' : 'b') : (opts.barDir == 'col' ? 'r' : 't');
 		var strXml = '';
+		var isRight = axisPos === 'r' || axisPos === 't';
+		var crosses = isRight ? 'max' : 'autoZero';
+		var crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY;
 
 		strXml += '<c:valAx>';
 		if (opts.showValAxisTitle) {
@@ -1545,14 +1571,14 @@ var PptxGenJS = function(){
 				rotate: opts.valAxisTitleRotate
 			});
 		}
-		strXml += '  <c:axId val="'+id+'"/>';
+		strXml += '  <c:axId val="'+ valAxisId +'"/>';
 		strXml += '  <c:scaling>';
 		strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
 		if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
 		if (opts.valAxisMinVal) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
 		strXml += '  </c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.valAxisHidden ? 1 : 0) +'"/>';
-		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'l' : 'b') +'"/>';
+		strXml += '  <c:axPos val="'+ axisPos +'"/>';
 		if (opts.valGridLine != 'none') strXml += createGridLineElement(opts.valGridLine, DEF_CHART_GRIDLINE);
 		strXml += ' <c:numFmt formatCode="'+ (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
 		strXml += ' <c:majorTickMark val="out"/>';
@@ -1573,8 +1599,8 @@ var PptxGenJS = function(){
 		strXml += '    </a:pPr>';
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
-		strXml += ' <c:crossAx val="'+id+'"/>';
-		strXml += ' <c:crosses val="autoZero"/>';
+		strXml += ' <c:crossAx val="'+ crossAxId +'"/>';
+		strXml += ' <c:crosses val="'+ crosses +'"/>';
 		strXml += ' <c:crossBetween val="'+ ( opts.hasArea ? 'midCat' : 'between' ) +'"/>';
 		if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
 		strXml += '</c:valAx>';
