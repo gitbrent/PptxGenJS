@@ -155,7 +155,7 @@ var PptxGenJS = function(){
 	// GENERATORS
 
 	var gObjPptxGenerators = {
-		textDefObject: function textDefObject(text, options) {
+		addTextDefinition: function addTextDefinition(text, options, target) {
 			var opt = ( options && typeof options === 'object' ? options : {} );
 			var resultObject = {};
 			var text = ( text || '' );
@@ -194,10 +194,13 @@ var PptxGenJS = function(){
 				resultObject.options.bodyProp.bIns = inch2Emu(opt.inset);
 			}
 
+			target.data.push(resultObject);
+			createHyperlinkRels(text || '', target.rels);
+
 			return resultObject;
 		},
 
-		shapeDefObject: function shapeDefObject(shape, opt) {
+		addShapeDefinition: function shapeDefObject(shape, opt, target) {
 			var resultObject = {};
 			var options = ( typeof opt === 'object' ? opt : {} );
 
@@ -205,7 +208,6 @@ var PptxGenJS = function(){
 				console.log("ERROR: Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
 				return;
 			}
-
 
 			resultObject.type = 'text';
 			resultObject.options = options;
@@ -218,6 +220,7 @@ var PptxGenJS = function(){
 			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
 			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
 
+			target.data.push(resultObject);
 			return resultObject;
 		}
 	}
@@ -4247,8 +4250,7 @@ var PptxGenJS = function(){
 		}
 
 		slideObj.addShape = function( shape, opt ) {
-			var shapeObject = gObjPptxGenerators.shapeDefObject(shape, opt);
-			gObjPptx.slides[slideNum].data.push(shapeObject);
+			gObjPptxGenerators.addShapeDefinition(shape, opt, gObjPptx.slides[slideNum]);
 			return this;
 		};
 
@@ -4377,10 +4379,8 @@ var PptxGenJS = function(){
 			return this;
 		};
 
-		slideObj.addText = function( inText, options ) {
-			var textObj = gObjPptxGenerators.textDefObject(inText, options);
-			gObjPptx.slides[slideNum].data.push(textObj);
-			createHyperlinkRels(inText || '', gObjPptx.slides[slideNum].rels);
+		slideObj.addText = function( text, options ) {
+			gObjPptxGenerators.addTextDefinition(text, options, gObjPptx.slides[slideNum]);
 			return this;
 		};
 
@@ -4714,15 +4714,12 @@ var PptxGenJS = function(){
 
 
 		layoutObj.addShape = function( shape, opt ) {
-			var shapeObject = gObjPptxGenerators.shapeDefObject(shape, opt);
-			gObjPptx.layoutDefinitions[layoutNum].data.push(shapeObject);
+			gObjPptxGenerators.addShapeDefinition(shape, opt, gObjPptx.layoutDefinitions[layoutNum])
 			return this;
 		};
 
-		layoutObj.addText = function( inText, options ) {
-			var textObj = gObjPptxGenerators.textDefObject(inText, options);
-			gObjPptx.layoutDefinitions[layoutNum].data.push(textObj);
-			createHyperlinkRels(inText || '', gObjPptx.layoutDefinitions[layoutNum].rels);
+		layoutObj.addText = function( text, opt ) {
+			gObjPptxGenerators.addTextDefinition(text, opt, gObjPptx.layoutDefinitions[layoutNum]);
 			return this;
 		};
 
