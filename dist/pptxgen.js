@@ -152,6 +152,52 @@ var PptxGenJS = function(){
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
 
+	// GENERATORS
+
+	var gObjPptxGenerators = {
+		textDefinitionObject: function textDefinitionObject(text, options) {
+			var opt = ( options && typeof options === 'object' ? options : {} );
+			var resultObject = {};
+			var text = ( text || '' );
+			if ( Array.isArray(text) && text.length == 0 ) text = '';
+
+			// STEP 2: Set some options
+			// Set color (options > inherit from Slide > default to black)
+			opt.color = ( opt.color || this.color || '000000' );
+
+			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
+			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
+			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
+
+			// ROBUST: Set rational values for some shadow props if needed
+			correctShadowOptions(opt.shadow);
+
+			// STEP 3: Set props
+			resultObject.type = 'text';
+			resultObject.text = text;
+
+			// STEP 4: Set options
+			resultObject.options = opt;
+			if ( opt.shape && opt.shape.name == 'line' ) {
+				opt.line      = (opt.line      || '333333' );
+				opt.line_size = (opt.line_size || 1 );
+			}
+			resultObject.options.bodyProp = {};
+			resultObject.options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
+			resultObject.options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
+			resultObject.options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
+
+			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
+				resultObject.options.bodyProp.lIns = inch2Emu(opt.inset);
+				resultObject.options.bodyProp.rIns = inch2Emu(opt.inset);
+				resultObject.options.bodyProp.tIns = inch2Emu(opt.inset);
+				resultObject.options.bodyProp.bIns = inch2Emu(opt.inset);
+			}
+
+			return resultObject;
+		}
+	}
+
 	/* ===============================================================================================
 	|
 	#     #
@@ -4332,51 +4378,9 @@ var PptxGenJS = function(){
 		};
 
 		slideObj.addText = function( inText, options ) {
-			var opt = ( options && typeof options === 'object' ? options : {} );
-			var text = ( inText || '' );
-			if ( Array.isArray(text) && text.length == 0 ) text = '';
-
-			// STEP 1: Grab Slide object count
-			slideObjNum = gObjPptx.slides[slideNum].data.length;
-
-			// STEP 2: Set some options
-			// Set color (options > inherit from Slide > default to black)
-			opt.color = ( opt.color || this.color || '000000' );
-
-			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
-			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
-			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
-
-			// ROBUST: Set rational values for some shadow props if needed
-			correctShadowOptions(opt.shadow);
-
-			// STEP 3: Set props
-			gObjPptx.slides[slideNum].data[slideObjNum] = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].text = text;
-
-			// STEP 4: Set options
-			gObjPptx.slides[slideNum].data[slideObjNum].options = opt;
-			if ( opt.shape && opt.shape.name == 'line' ) {
-				opt.line      = (opt.line      || '333333' );
-				opt.line_size = (opt.line_size || 1 );
-			}
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
-			gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
-			gObjPptx.slides[slideNum].data[slideObjNum].options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
-
-			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
-				gObjPptx.slides[slideNum].data[slideObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
-			}
-
-			// STEP 5: Create hyperlink rels
-			createHyperlinkRels(text, gObjPptx.slides[slideNum].rels);
-
-			// LAST: Return
+			var textObj = gObjPptxGenerators.textDefinitionObject(inText, options);
+			gObjPptx.slides[slideNum].data.push(textObj);
+			createHyperlinkRels(inText || '', gObjPptx.slides[slideNum].rels);
 			return this;
 		};
 
@@ -4740,81 +4744,9 @@ var PptxGenJS = function(){
 		};
 
 		layoutObj.addText = function( inText, options ) {
-			var opt = ( options && typeof options === 'object' ? options : {} );
-			var text = ( inText || '' );
-			if ( Array.isArray(text) && text.length == 0 ) text = '';
-
-			// STEP 1: Grab Slide object count
-			layoutObjNum = gObjPptx.layoutDefinitions[layoutNum].data.length;
-
-			// STEP 2: Set some options
-			// Set color (options > inherit from Slide > default to black)
-			opt.color = ( opt.color || this.color || '000000' );
-
-			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
-			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
-			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
-
-			// ROBUST: Set rational values for some shadow props if needed
-			if ( opt.shadow ) {
-				// OPT: `type`
-				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
-					console.warn('Warning: shadow.type options are `outer` or `inner`.');
-					opt.shadow.type = 'outer';
-				}
-
-				// OPT: `angle`
-				if ( opt.shadow.angle ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.angle)) || opt.shadow.angle < 0 || opt.shadow.angle > 359 ) {
-						console.warn('Warning: shadow.angle can only be 0-359');
-						opt.shadow.angle = 270;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.shadow.angle = Math.round(Number(opt.shadow.angle));
-				}
-
-				// OPT: `opacity`
-				if ( opt.shadow.opacity ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.opacity)) || opt.shadow.opacity < 0 || opt.shadow.opacity > 1 ) {
-						console.warn('Warning: shadow.opacity can only be 0-1');
-						opt.shadow.opacity = 0.75;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.shadow.opacity = Number(opt.shadow.opacity)
-				}
-			}
-
-			// STEP 3: Set props
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum] = {};
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].type = 'text';
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].text = text;
-
-			// STEP 4: Set options
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options = opt;
-			if ( opt.shape && opt.shape.name == 'line' ) {
-				opt.line      = (opt.line      || '333333' );
-				opt.line_size = (opt.line_size || 1 );
-			}
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp = {};
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
-
-			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
-				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.lIns = inch2Emu(opt.inset);
-				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.rIns = inch2Emu(opt.inset);
-				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.tIns = inch2Emu(opt.inset);
-				gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.bodyProp.bIns = inch2Emu(opt.inset);
-			}
-
-			// STEP 5: Create hyperlink rels
-			createHyperlinkRels(text, gObjPptx.layoutDefinitions[layoutNum].rels);
-
-			// LAST: Return
+			var textObj = gObjPptxGenerators.textDefinitionObject(inText, options);
+			gObjPptx.layoutDefinitions[layoutNum].data.push(textObj);
+			createHyperlinkRels(inText || '', gObjPptx.layoutDefinitions[layoutNum].rels);
 			return this;
 		};
 
