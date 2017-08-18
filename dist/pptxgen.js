@@ -1994,12 +1994,6 @@ var PptxGenJS = function(){
 					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
 			});
 		});
-		gObjPptx.layoutDefinitions.forEach(function(layout,idx){
-			layout.rels.forEach(function(rel,idy){
-				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
-					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
-			});
-		});
 		strXml += ' <Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>';
 		strXml += ' <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>';
 
@@ -3112,6 +3106,35 @@ var PptxGenJS = function(){
 					break;
 			}
 		});
+
+		// STEP 5: Add slide numbers last (if any)
+		if ( inLayout.slideNumberObj ) {
+
+			// TODO: FIXME: page numbers over 99 wrap in PPT-2013 (Desktop)
+			strSlideXml += '<p:sp>'
+				+ '  <p:nvSpPr>'
+				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
+				+ '  <p:spPr>'
+				+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(inLayout.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(inLayout.slideNumberObj.y, 'Y') +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
+				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+				+ '    <a:extLst>'
+				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
+				+ '    </a:extLst>'
+				+ '  </p:spPr>';
+			// ISSUE #68: "Page number styling"
+			strSlideXml += '<p:txBody>';
+			strSlideXml += '  <a:bodyPr/>';
+			strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
+			if ( inLayout.slideNumberObj.fontFace || inLayout.slideNumberObj.fontSize || inLayout.slideNumberObj.color ) {
+				strSlideXml += '<a:defRPr sz="'+ (inLayout.slideNumberObj.fontSize || '12') +'00">';
+				if ( inLayout.slideNumberObj.color ) strSlideXml += genXmlColorSelection(inLayout.slideNumberObj.color);
+				if ( inLayout.slideNumberObj.fontFace ) strSlideXml += '<a:latin typeface="'+ inLayout.slideNumberObj.fontFace +'"/><a:cs typeface="'+ inLayout.slideNumberObj.fontFace +'"/>';
+				strSlideXml += '</a:defRPr>';
+			}
+			strSlideXml += '</a:lvl1pPr></a:lstStyle>';
+			strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p></p:txBody>'
+			strSlideXml += '</p:sp>';
+		}
 
 		// STEP 6: Close spTree and finalize slide XML
 		strSlideXml += '</p:spTree>';
@@ -4243,6 +4266,12 @@ var PptxGenJS = function(){
 		gObjPptx.layoutDefinitions[layoutNum].name = layoutDef.title
 		gObjPptx.layoutDefinitions[layoutNum].data = [];
 		gObjPptx.layoutDefinitions[layoutNum].rels = [];
+		gObjPptx.layoutDefinitions[layoutNum].slideNumberObj = null;
+
+		layoutObj.slideNumber = function( inObj ) {
+			if ( inObj && typeof inObj === 'object' ) gObjPptx.layoutDefinitions[layoutNum].slideNumberObj = inObj;
+			else return gObjPptx.layoutDefinitions[layoutNum].slideNumberObj;
+		};
 
 		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
 		// FUTURE: layoutObj.addImage = function(opt){
@@ -4485,6 +4514,10 @@ var PptxGenJS = function(){
 				});
 			}
 		});
+
+
+		// Add Slide Numbers
+		if ( layoutDef.slideNumber && typeof layoutDef.slideNumber === 'object' ) layoutObj.slideNumber(layoutDef.slideNumber);
 
 		// LAST: Return this Slide
 		return layoutObj;
