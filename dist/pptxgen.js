@@ -157,6 +157,34 @@ var PptxGenJS = function(){
 	// GENERATORS
 
 	var gObjPptxGenerators = {
+		// DEPRECATED `src` is replaced by `path` in v1.5.0
+		addBackgroundDefinition: function addBackgroundDefinition(bkg, target) {
+			if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data) ) {
+				// Allow the use of only the data key (no src reqd)
+				bkg.src = bkg.src || bkg.path || null;
+				if (!bkg.src) bkg.src = 'preencoded.png';
+				var targetRels = target.rels;
+				var strImgExtn = bkg.src.substring( bkg.src.indexOf('.')+1 ).toLowerCase();
+				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
+				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
+				// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
+				var intRels = targetRels.length + 2;
+				targetRels.push({
+					path: bkg.src,
+					type: 'image/'+strImgExtn,
+					extn: strImgExtn,
+					data: (bkg.data || ''),
+					rId: intRels,
+					Target: '../media/image' + (++gObjPptx.imageCounter) + '.' + strImgExtn
+				});
+				target.layout.bkgdImgRid = intRels;
+			}
+			else if (bkg && typeof bkg === 'string' ) {
+				target.layout.back = bkg;
+			}
+
+		},
+
 		addTextDefinition: function addTextDefinition(text, options, target) {
 			var opt = ( options && typeof options === 'object' ? options : {} );
 			var resultObject = {};
@@ -4415,29 +4443,8 @@ var PptxGenJS = function(){
 
 				// Background color/image
 				// DEPRECATED `src` is replaced by `path` in v1.5.0
-				if ( key == 'bkgd' && typeof val === 'object' && (val.src || val.path || val.data) ) {
-					// Allow the use of only the data key (no src reqd)
-					val.src = val.src || val.path || null;
-					if (!val.src) val.src = 'preencoded.png';
-					var slideObjRels = gObjPptx.slides[slideNum].rels;
-					var strImgExtn = val.src.substring( val.src.indexOf('.')+1 ).toLowerCase();
-					if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-					if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
-					// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
-					var intRels = 1;
-					for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) { intRels += gObjPptx.slides[idx].rels.length; }
-					slideObjRels.push({
-						path: val.src,
-						type: 'image/'+strImgExtn,
-						extn: strImgExtn,
-						data: (val.data || ''),
-						rId: (intRels+1),
-						Target: '../media/image' + intRels + '.' + strImgExtn
-					});
-					slideObj.bkgdImgRid = slideObjRels[slideObjRels.length-1].rId;
-				}
-				else if ( key == 'bkgd' && val && typeof val === 'string' ) {
-					slideObj.back = val;
+				if ( key == 'bkgd' ) {
+					gObjPptxGenerators.addBackgroundDefinition(val, gObjPptx.slides[slideNum]);
 				}
 
 				// Images **DEPRECATED** (v1.5.0)
@@ -4544,30 +4551,8 @@ var PptxGenJS = function(){
 
 		$.each(layoutDef, function(key, val) {
 
-			// DEPRECATED `src` is replaced by `path` in v1.5.0
-			if ( key == 'bkgd' && typeof val === 'object' && (val.src || val.path || val.data) ) {
-				// Allow the use of only the data key (no src reqd)
-				val.src = val.src || val.path || null;
-				if (!val.src) val.src = 'preencoded.png';
-				var layoutObjRels = gObjPptx.layoutDefinitions[layoutNum].rels;
-				var strImgExtn = val.src.substring( val.src.indexOf('.')+1 ).toLowerCase();
-				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
-				// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
-				var intRels = 1;
-				for ( var idx=0; idx<gObjPptx.layoutDefinitions.length; idx++ ) { intRels += gObjPptx.layoutDefinitions[idx].rels.length; }
-				layoutObjRels.push({
-					path: val.src,
-					type: 'image/'+strImgExtn,
-					extn: strImgExtn,
-					data: (val.data || ''),
-					rId: (intRels+1),
-					Target: '../media/image' + intRels + '.' + strImgExtn
-				});
-				layoutObj.bkgdImgRid = layoutObjRels[layoutObjRels.length-1].rId;
-			}
-			else if ( key == 'bkgd' && val && typeof val === 'string' ) {
-				layoutObj.back = val;
+			if ( key == 'bkgd' ) {
+				gObjPptxGenerators.addBackgroundDefinition(val, gObjPptx.layoutDefinitions[layoutNum]);
 			}
 
 			// Add all Slide Master objects in the order they were given (Issue#53)
