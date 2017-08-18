@@ -142,6 +142,7 @@ var PptxGenJS = function(){
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
 	gObjPptx.rtlMode = false;
 	gObjPptx.slides = [];
+	gObjPptx.imageCounter = 0;
 
 	// C: Expose shape library to clients
 	this.charts  = CHART_TYPES;
@@ -200,7 +201,7 @@ var PptxGenJS = function(){
 			return resultObject;
 		},
 
-		addShapeDefinition: function shapeDefObject(shape, opt, target) {
+		addShapeDefinition: function addImageDefinition(shape, opt, target) {
 			var resultObject = {};
 			var options = ( typeof opt === 'object' ? opt : {} );
 
@@ -219,6 +220,90 @@ var PptxGenJS = function(){
 			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
 			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
 			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
+
+			target.data.push(resultObject);
+			return resultObject;
+		},
+
+		addImageDefinition: function addImageDefinition(strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData, target) {
+			var intRels = ++gObjPptx.relationCounter;
+			var resultObject = {};
+
+			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
+			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
+			if ( typeof strImagePath === 'object' ) {
+				intPosX = (strImagePath.x || 0);
+				intPosY = (strImagePath.y || 0);
+				intSizeX = (strImagePath.cx || strImagePath.w || 0);
+				intSizeY = (strImagePath.cy || strImagePath.h || 0);
+				objHyperlink = (strImagePath.hyperlink || '');
+				strImageData = (strImagePath.data || '');
+				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as were about to ovewrite ourself!
+			}
+
+			// REALITY-CHECK:
+			if ( !strImagePath && !strImageData ) {
+				console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
+				return null;
+			}
+			else if ( strImageData && strImageData.toLowerCase().indexOf('base64,') == -1 ) {
+				console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
+				return null;
+			}
+
+			// STEP 2: Set vars for this Slide
+			var slideObjRels = target.rels;
+			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
+			var strImgExtn = 'png';
+			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
+			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
+				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
+			}
+			// Node.js can read/base64-encode any image, so take at face value
+			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
+
+			resultObject.type  = 'image';
+			resultObject.image = (strImagePath || 'preencoded.png');
+
+			// STEP 3: Set image properties & options
+			// FIXME: Measure actual image when no intSizeX/intSizeY params passed
+			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
+			// if ( !intSizeX || !intSizeY ) { var imgObj = getSizeFromImage(strImagePath);
+			var imgObj = { width:1, height:1 };
+			resultObject.options    = {};
+			resultObject.options.x  = (intPosX  || 0);
+			resultObject.options.y  = (intPosY  || 0);
+			resultObject.options.cx = (intSizeX || imgObj.width );
+			resultObject.options.cy = (intSizeY || imgObj.height);
+
+			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+			slideObjRels.push({
+				path: (strImagePath || 'preencoded'+strImgExtn),
+				type: 'image/'+strImgExtn,
+				extn: strImgExtn,
+				data: (strImageData || ''),
+				rId:  slideObjRels.length + 2,
+				Target: '../media/image'+ (++gObjPptx.imageCounter) +'.'+ strImgExtn
+			});
+			resultObject.imageRid = slideObjRels[slideObjRels.length-1].rId;
+
+			// STEP 5: (Issue#77) Hyperlink support
+			if ( typeof objHyperlink === 'object' ) {
+				if ( !objHyperlink.url || typeof objHyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+				else {
+					var intRelId = slideObjRels.length + 3;
+
+					slideObjRels.push({
+						type: 'hyperlink',
+						data: 'dummy',
+						rId:  intRelId,
+						Target: objHyperlink.url
+					});
+
+					objHyperlink.rId = intRelId;
+					resultObject.hyperlink = objHyperlink;
+				}
+			}
 
 			target.data.push(resultObject);
 			return resultObject;
@@ -4052,89 +4137,7 @@ var PptxGenJS = function(){
 		// FUTURE: slideObj.addImage = function(opt){
 		// NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
 		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
-			var intRels = 1;
-
-			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
-			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
-			if ( typeof strImagePath === 'object' ) {
-				intPosX = (strImagePath.x || 0);
-				intPosY = (strImagePath.y || 0);
-				intSizeX = (strImagePath.cx || strImagePath.w || 0);
-				intSizeY = (strImagePath.cy || strImagePath.h || 0);
-				objHyperlink = (strImagePath.hyperlink || '');
-				strImageData = (strImagePath.data || '');
-				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as were about to ovewrite ourself!
-			}
-
-			// REALITY-CHECK:
-			if ( !strImagePath && !strImageData ) {
-				console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
-				return null;
-			}
-			else if ( strImageData && strImageData.toLowerCase().indexOf('base64,') == -1 ) {
-				console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
-				return null;
-			}
-
-			// STEP 2: Set vars for this Slide
-			var slideObjNum = gObjPptx.slides[slideNum].data.length;
-			var slideObjRels = gObjPptx.slides[slideNum].rels;
-			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
-			var strImgExtn = 'png';
-			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
-			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
-				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
-			}
-			// Node.js can read/base64-encode any image, so take at face value
-			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
-
-			gObjPptx.slides[slideNum].data[slideObjNum]       = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].type  = 'image';
-			gObjPptx.slides[slideNum].data[slideObjNum].image = (strImagePath || 'preencoded.png');
-
-			// STEP 3: Set image properties & options
-			// FIXME: Measure actual image when no intSizeX/intSizeY params passed
-			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
-			// if ( !intSizeX || !intSizeY ) { var imgObj = getSizeFromImage(strImagePath);
-			var imgObj = { width:1, height:1 };
-			gObjPptx.slides[slideNum].data[slideObjNum].options    = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].options.x  = (intPosX  || 0);
-			gObjPptx.slides[slideNum].data[slideObjNum].options.y  = (intPosY  || 0);
-			gObjPptx.slides[slideNum].data[slideObjNum].options.cx = (intSizeX || imgObj.width );
-			gObjPptx.slides[slideNum].data[slideObjNum].options.cy = (intSizeY || imgObj.height);
-
-			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
-			slideObjRels.push({
-				path: (strImagePath || 'preencoded'+strImgExtn),
-				type: 'image/'+strImgExtn,
-				extn: strImgExtn,
-				data: (strImageData || ''),
-				rId:  (intRels+1),
-				Target: '../media/image'+ intRels +'.'+ strImgExtn
-			});
-			gObjPptx.slides[slideNum].data[slideObjNum].imageRid = slideObjRels[slideObjRels.length-1].rId;
-
-			// STEP 5: (Issue#77) Hyperlink support
-			if ( typeof objHyperlink === 'object' ) {
-				if ( !objHyperlink.url || typeof objHyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
-				else {
-					var intRelId = intRels+2;
-
-					slideObjRels.push({
-						type: 'hyperlink',
-						data: 'dummy',
-						rId:  intRelId,
-						Target: objHyperlink.url
-					});
-
-					objHyperlink.rId = intRelId;
-					gObjPptx.slides[slideNum].data[slideObjNum].hyperlink = objHyperlink;
-				}
-			}
-
-			// LAST: Return this Slide
+			gObjPptxGenerators.addImageDefinition(strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData, gObjPptx.slides[slideNum]);
 			return this;
 		};
 
@@ -4626,89 +4629,7 @@ var PptxGenJS = function(){
 		// FUTURE: layoutObj.addImage = function(opt){
 		// NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
 		layoutObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
-			var intRels = 1;
-
-			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
-			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
-			if ( typeof strImagePath === 'object' ) {
-				intPosX = (strImagePath.x || 0);
-				intPosY = (strImagePath.y || 0);
-				intSizeX = (strImagePath.cx || strImagePath.w || 0);
-				intSizeY = (strImagePath.cy || strImagePath.h || 0);
-				objHyperlink = (strImagePath.hyperlink || '');
-				strImageData = (strImagePath.data || '');
-				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as were about to ovewrite ourself!
-			}
-
-			// REALITY-CHECK:
-			if ( !strImagePath && !strImageData ) {
-				console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
-				return null;
-			}
-			else if ( strImageData && strImageData.toLowerCase().indexOf('base64,') == -1 ) {
-				console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
-				return null;
-			}
-
-			// STEP 2: Set vars for this Slide
-			var layoutObjNum = gObjPptx.layoutDefinitions[layoutNum].data.length;
-			var layoutObjRels = gObjPptx.layoutDefinitions[layoutNum].rels;
-			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
-			var strImgExtn = 'png';
-			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
-			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
-				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
-			}
-			// Node.js can read/base64-encode any image, so take at face value
-			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
-
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum]       = {};
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].type  = 'image';
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].image = (strImagePath || 'preencoded.png');
-
-			// STEP 3: Set image properties & options
-			// FIXME: Measure actual image when no intSizeX/intSizeY params passed
-			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
-			// if ( !intSizeX || !intSizeY ) { var imgObj = getSizeFromImage(strImagePath);
-			var imgObj = { width:1, height:1 };
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options    = {};
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.x  = (intPosX  || 0);
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.y  = (intPosY  || 0);
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.cx = (intSizeX || imgObj.width );
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options.cy = (intSizeY || imgObj.height);
-
-			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			$.each(gObjPptx.layoutDefinitions, function(i, layout){ intRels += layout.rels.length; });
-			layoutObjRels.push({
-				path: (strImagePath || 'preencoded'+strImgExtn),
-				type: 'image/'+strImgExtn,
-				extn: strImgExtn,
-				data: (strImageData || ''),
-				rId:  (intRels+1),
-				Target: '../media/image'+ intRels +'.'+ strImgExtn
-			});
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].imageRid = layoutObjRels[layoutObjRels.length-1].rId;
-
-			// STEP 5: (Issue#77) Hyperlink support
-			if ( typeof objHyperlink === 'object' ) {
-				if ( !objHyperlink.url || typeof objHyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
-				else {
-					var intRelId = intRels+2;
-
-					layoutObjRels.push({
-						type: 'hyperlink',
-						data: 'dummy',
-						rId:  intRelId,
-						Target: objHyperlink.url
-					});
-
-					objHyperlink.rId = intRelId;
-					gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].hyperlink = objHyperlink;
-				}
-			}
-
-			// LAST: Return this layout
+			gObjPptxGenerators.addImageDefinition(strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData, gObjPptx.layoutDefinitions[layoutNum]);
 			return this;
 		};
 
