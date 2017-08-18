@@ -155,7 +155,7 @@ var PptxGenJS = function(){
 	// GENERATORS
 
 	var gObjPptxGenerators = {
-		textDefinitionObject: function textDefinitionObject(text, options) {
+		textDefObject: function textDefObject(text, options) {
 			var opt = ( options && typeof options === 'object' ? options : {} );
 			var resultObject = {};
 			var text = ( text || '' );
@@ -193,6 +193,30 @@ var PptxGenJS = function(){
 				resultObject.options.bodyProp.tIns = inch2Emu(opt.inset);
 				resultObject.options.bodyProp.bIns = inch2Emu(opt.inset);
 			}
+
+			return resultObject;
+		},
+
+		shapeDefObject: function shapeDefObject(shape, opt) {
+			var resultObject = {};
+			var options = ( typeof opt === 'object' ? opt : {} );
+
+			if ( !shape || typeof shape !== 'object' ) {
+				console.log("ERROR: Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
+				return;
+			}
+
+
+			resultObject.type = 'text';
+			resultObject.options = options;
+			options.shape     = shape;
+			options.x         = ( options.x || (options.x == 0 ? 0 : 1) );
+			options.y         = ( options.y || (options.y == 0 ? 0 : 1) );
+			options.w         = ( options.w || 1.0 );
+			options.h         = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
+			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
+			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
+			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
 
 			return resultObject;
 		}
@@ -4223,32 +4247,8 @@ var PptxGenJS = function(){
 		}
 
 		slideObj.addShape = function( shape, opt ) {
-			var options = ( typeof opt === 'object' ? opt : {} );
-
-			if ( !shape || typeof shape !== 'object' ) {
-				console.log("ERROR: Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
-				return;
-			}
-
-			// STEP 1: Grab Slide object count
-			slideObjNum = gObjPptx.slides[slideNum].data.length;
-
-			// STEP 2: Set props
-			gObjPptx.slides[slideNum].data[slideObjNum] = {};
-			gObjPptx.slides[slideNum].data[slideObjNum].type = 'text';
-			gObjPptx.slides[slideNum].data[slideObjNum].options = options;
-
-			// STEP 3: Set option defaults
-			options.shape     = shape;
-			options.x         = ( options.x || (options.x == 0 ? 0 : 1) );
-			options.y         = ( options.y || (options.y == 0 ? 0 : 1) );
-			options.w         = ( options.w || 1.0 );
-			options.h         = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
-			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
-			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
-			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
-
-			// LAST: Return
+			var shapeObject = gObjPptxGenerators.shapeDefObject(shape, opt);
+			gObjPptx.slides[slideNum].data.push(shapeObject);
 			return this;
 		};
 
@@ -4378,7 +4378,7 @@ var PptxGenJS = function(){
 		};
 
 		slideObj.addText = function( inText, options ) {
-			var textObj = gObjPptxGenerators.textDefinitionObject(inText, options);
+			var textObj = gObjPptxGenerators.textDefObject(inText, options);
 			gObjPptx.slides[slideNum].data.push(textObj);
 			createHyperlinkRels(inText || '', gObjPptx.slides[slideNum].rels);
 			return this;
@@ -4714,37 +4714,13 @@ var PptxGenJS = function(){
 
 
 		layoutObj.addShape = function( shape, opt ) {
-			var options = ( typeof opt === 'object' ? opt : {} );
-
-			if ( !shape || typeof shape !== 'object' ) {
-				console.log("ERROR: Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
-				return;
-			}
-
-			// STEP 1: Grab Slide object count
-			layoutObjNum = gObjPptx.layoutDefinitions[layoutNum].data.length;
-
-			// STEP 2: Set props
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum] = {};
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].type = 'text';
-			gObjPptx.layoutDefinitions[layoutNum].data[layoutObjNum].options = options;
-
-			// STEP 3: Set option defaults
-			options.shape     = shape;
-			options.x         = ( options.x || (options.x == 0 ? 0 : 1) );
-			options.y         = ( options.y || (options.y == 0 ? 0 : 1) );
-			options.w         = ( options.w || 1.0 );
-			options.h         = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
-			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
-			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
-			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
-
-			// LAST: Return
+			var shapeObject = gObjPptxGenerators.shapeDefObject(shape, opt);
+			gObjPptx.layoutDefinitions[layoutNum].data.push(shapeObject);
 			return this;
 		};
 
 		layoutObj.addText = function( inText, options ) {
-			var textObj = gObjPptxGenerators.textDefinitionObject(inText, options);
+			var textObj = gObjPptxGenerators.textDefObject(inText, options);
 			gObjPptx.layoutDefinitions[layoutNum].data.push(textObj);
 			createHyperlinkRels(inText || '', gObjPptx.layoutDefinitions[layoutNum].rels);
 			return this;
