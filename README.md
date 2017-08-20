@@ -356,6 +356,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `catAxisLabelColor`    | string  |         | `000000`  | category-axis color      | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face  | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size  | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisLineShow`      | boolean |         | true      | show/hide category-axis line | `true` or `false` |
 | `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
 | `catAxisTitle`         | string  |         | `Axis Title` | axis title   | a string. Ex: `{ catAxisTitle:'Regions' }` |
 | `catAxisTitleColor`    | string  |         | `000000`     | title color           | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
@@ -370,7 +371,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face     | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size     | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisLabelFormatCode` | string |        | `General` | value-axis number format | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
-| `valAxisLineShow`      | boolean |         | true      | show/hide axis line     | `true` or `false` |
+| `valAxisLineShow`      | boolean |         | true      | show/hide value-axis line | `true` or `false` |
 | `valAxisMajorUnit`     | number  | float   | `1.0`     | value-axis tick steps    | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
 | `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisMinVal`        | number  |         |           | value-axis minimum value | 1-N. Ex: `{ valAxisMinVal: -10 }` |
