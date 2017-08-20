@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170814";
+	var APP_REL = "20170820";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -1202,14 +1202,13 @@ var PptxGenJS = function(){
 					strXml += '  <c:tickLblPos val="'+ (rel.opts.catAxisLabelPos || rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 					strXml += ' <c:spPr>';
 					strXml += '   <a:ln w="12700" cap="flat">';
-
-					var showCatAxis = !!rel.opts.catAxisLineShow || rel.opts.catAxisLineShow === undefined;
-					if (!showCatAxis) {
-						strXml += '     <a:noFill/>';
-					} else {
-						strXml += '     <a:solidFill>';
-						strXml += '       <a:srgbClr val="'+(rel.opts.axisLineColor ? rel.opts.axisLineColor : "888888")+'"/>';
-						strXml += '     </a:solidFill>';
+					if ( !!rel.opts.catAxisLineShow || typeof rel.opts.catAxisLineShow === 'undefined' ) {
+						strXml += '<a:solidFill>';
+						strXml += '  <a:srgbClr val="'+ (rel.opts.axisLineColor ? rel.opts.axisLineColor : DEF_CHART_GRIDLINE.color) +'"/>';
+						strXml += '</a:solidFill>';
+					}
+					else {
+						strXml += '<a:noFill/>';
 					}
 					strXml += '     <a:prstDash val="solid"/>';
 					strXml += '     <a:round/>';
@@ -1262,14 +1261,13 @@ var PptxGenJS = function(){
 					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 					strXml += ' <c:spPr>';
 					strXml += '   <a:ln w="12700" cap="flat">';
-
-					var showValAxis = !!rel.opts.valAxisLineShow || rel.opts.valAxisLineShow === undefined;
-					if (!showValAxis) {
-						strXml += '     <a:noFill/>';
-					} else {
-						strXml += '     <a:solidFill>';
-						strXml += '       <a:srgbClr val="'+(rel.opts.axisLineColor ? rel.opts.axisLineColor : "888888")+'"/>';
-						strXml += '     </a:solidFill>';
+					if ( !!rel.opts.valAxisLineShow || typeof rel.opts.valAxisLineShow === 'undefined' ) {
+						strXml += '<a:solidFill>';
+						strXml += '  <a:srgbClr val="'+ (rel.opts.axisLineColor ? rel.opts.axisLineColor : DEF_CHART_GRIDLINE.color) +'"/>';
+						strXml += '</a:solidFill>';
+					}
+					else {
+						strXml += '<a:noFill/>';
 					}
 					strXml += '     <a:prstDash val="solid"/>';
 					strXml += '     <a:round/>';
