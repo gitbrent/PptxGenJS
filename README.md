@@ -352,6 +352,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 ### Chart Axis Options
 | Option                 | Type    | Unit    | Default   | Description              | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :----------------------- | :----------------------------------------- |
+| `axisLineColor`        | string  |         | `000000`  | cat/val axis line color  | hex color code. Ex: `{ axisLineColor:'0088CC' }`     |
 | `catAxisHidden`        | boolean |         | `false`   | hide category-axis       | `true` or `false`   |
 | `catAxisLabelColor`    | string  |         | `000000`  | category-axis color      | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face  | font name. Ex: `{ titleFontFace:'Arial' }` |
@@ -390,11 +391,12 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-999. Ex: `{ barGapWidthPct:50 }` |
 | `barGrouping`          | string  |         |`clustered`| bar grouping               | (*Bar Chart*) `clustered` or `stacked` or `percentStacked`. |
 | `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-| `dataLabelColor`       | string  |         | `000000`  | value-axis color           | hex color code. Ex: `{ dataLabelColor:'0088CC' }`     |
+| `dataLabelColor`       | string  |         | `000000`  | data label color           | hex color code. Ex: `{ dataLabelColor:'0088CC' }`     |
 | `dataLabelFormatCode`  | string  |         |           | format to show data value  | format string. Ex: `{ dataLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
 | `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
+| `gridLineColor`        | string  |         | `000000`  | grid line color            | hex color code. Ex: `{ gridLineColor:'0088CC' }`     |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series   | `true` or `false` |
