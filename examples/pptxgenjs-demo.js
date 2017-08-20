@@ -1016,6 +1016,7 @@ function genSlides_Chart(pptx) {
 				axisLabelFormatCode: '#%',
 				gridLineColor: 'D8D8D8',
 				axisLineColor: 'D8D8D8',
+				catAxisLineShow: false,
 				valAxisLineShow: false,
 				barGrouping: 'stacked',
 				catAxisLabelPos: 'low',
