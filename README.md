@@ -400,7 +400,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `gridLineColor`        | string  |         | `000000`  | grid line color            | hex color code. Ex: `{ gridLineColor:'0088CC' }`     |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
-| `lineShadow`           | object  |         |           | data line shadow options   | `'none'` or [shadow options](#Chart-Line-Shadow-Options) |
+| `lineShadow`           | object  |         |           | data line shadow options   | `'none'` or [shadow options](#chart-line-shadow-options) |
 | `lineSize`             | number  | points  | `2`       | thickness of data line     | 1 and more. Ex: `{ lineSize: 1 }` |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
