@@ -1204,7 +1204,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 12: Doughnut Chart ------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var optsChartPie1 = {
 			x:0.5, y:1.0, w:6.0, h:6.0,
