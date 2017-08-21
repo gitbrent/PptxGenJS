@@ -1316,63 +1316,13 @@ var PptxGenJS = function(){
 		}
 		// Create all Rels (images, media, chart data)
 		gObjPptx.layoutDefinitions.forEach(function(layout, idx){
-			layout.rels.forEach(function(rel, idy) {
-				if ( rel.type == 'chart' ) {
-					arrChartPromises.push(gObjPptxGenerators.createExcelWorksheet(rel, zip));
-				}
-				else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
-					// A: Loop vars
-					var data = rel.data;
-
-					// B: Users will undoubtedly pass various string formats, so modify as needed
-					if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
-					else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
-					else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
-
-					// C: Add media
-					zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
-				}
-			});
+			createMediaFiles(layout, zip, arrChartPromises);
 		});
-
 		gObjPptx.slides.forEach(function(slide,idx){
-			slide.rels.forEach(function(rel,idy){
-				if ( rel.type == 'chart' ) {
-					arrChartPromises.push(gObjPptxGenerators.createExcelWorksheet(rel, zip));
-				}
-				else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
-					// A: Loop vars
-					var data = rel.data;
-
-					// B: Users will undoubtedly pass various string formats, so modify as needed
-					if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
-					else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
-					else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
-
-					// C: Add media
-					zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
-				}
-			});
+			createMediaFiles(slide, zip, arrChartPromises);
 		});
-
-		if (gObjPptx.masterSlide) {
-			gObjPptx.masterSlide.rels.forEach(function(rel,idy){
-				if ( rel.type == 'chart' ) {
-					arrChartPromises.push(gObjPptxGenerators.createExcelWorksheet(rel, zip));
-				}
-				else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
-					// A: Loop vars
-					var data = rel.data;
-
-					// B: Users will undoubtedly pass various string formats, so modify as needed
-					if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
-					else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
-					else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
-
-					// C: Add media
-					zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
-				}
-			});
+		if (gObjPptx.properLayoutMasterInUse && gObjPptx.masterSlide) {
+			createMediaFiles(gObjPptx.masterSlide, zip, arrChartPromises);
 		}
 
 		// STEP 3: Wait for Promises (if any) then push the PPTX file to client-browser
@@ -1956,6 +1906,71 @@ var PptxGenJS = function(){
 			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
 			delete glOpts.style;
 		}
+	}
+
+	/**
+	 * @param {Object} glOpts {size, color, style}
+	 * @param {Object} defaults {size, color, style}
+	 * @param {String} type "major"(default) | "minor"
+	 */
+	function createGridLineElement(glOpts, defaults, type) {
+		type = type || 'major';
+		var tagName = 'c:'+ type + 'Gridlines';
+		strXml =  '<'+ tagName + '>';
+		strXml += ' <c:spPr>';
+		strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
+		strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
+		strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
+		strXml += '  </a:ln>';
+		strXml += ' </c:spPr>';
+		strXml += '</'+ tagName + '>';
+		return strXml;
+	}
+
+	function encodeImageRelations(layout, arrRelsDone) {
+		var intRels = 0;
+		layout.rels.forEach(function(rel, idy){
+			// Read and Encode each image into base64 for use in export
+			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
+				// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
+				if ( NODEJS ) {
+					try {
+						var bitmap = fs.readFileSync(rel.path);
+						rel.data = new Buffer(bitmap).toString('base64');
+					}
+					catch(ex) {
+						console.error('ERROR: Unable to read media: '+rel.path);
+						rel.data = IMG_BROKEN;
+					}
+				}
+				else {
+					intRels++;
+					convertImgToDataURLviaCanvas(rel);
+					arrRelsDone.push(rel.path);
+				}
+			}
+		});
+		return intRels;
+	}
+
+	function createMediaFiles(layout, zip, chartPromises) {
+		layout.rels.forEach(function(rel, idy) {
+			if ( rel.type == 'chart' ) {
+				chartPromises.push(gObjPptxGenerators.createExcelWorksheet(rel, zip));
+			}
+			else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
+				// A: Loop vars
+				var data = rel.data;
+
+				// B: Users will undoubtedly pass various string formats, so modify as needed
+				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
+				else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
+				else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
+
+				// C: Add media
+				zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
+			}
+		});
 	}
 
 	/* =======================================================================================================
@@ -3964,52 +3979,14 @@ var PptxGenJS = function(){
 		// B: Total all physical rels across the Presentation
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 		gObjPptx.slides.forEach(function(slide,idx){
-			slide.rels.forEach(function(rel,idy){
-				// Read and Encode each image into base64 for use in export
-				if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
-					// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-					if ( NODEJS ) {
-						try {
-							var bitmap = fs.readFileSync(rel.path);
-							rel.data = new Buffer(bitmap).toString('base64');
-						}
-						catch(ex) {
-							console.error('ERROR: Unable to read media: '+rel.path);
-							rel.data = IMG_BROKEN;
-						}
-					}
-					else {
-						intRels++;
-						convertImgToDataURLviaCanvas(rel);
-						arrRelsDone.push(rel.path);
-					}
-				}
-			});
+			intRels += encodeImageRelations(slide, arrRelsDone);
 		});
-
 		gObjPptx.layoutDefinitions.forEach(function(layout, idx){
-			layout.rels.forEach(function(rel,idy){
-				// Read and Encode each image into base64 for use in export
-				if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
-					// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-					if ( NODEJS ) {
-						try {
-							var bitmap = fs.readFileSync(rel.path);
-							rel.data = new Buffer(bitmap).toString('base64');
-						}
-						catch(ex) {
-							console.error('ERROR: Unable to read media: '+rel.path);
-							rel.data = IMG_BROKEN;
-						}
-					}
-					else {
-						intRels++;
-						convertImgToDataURLviaCanvas(rel);
-						arrRelsDone.push(rel.path);
-					}
-				}
-			});
+			intRels += encodeImageRelations(layout, arrRelsDone);
 		});
+		if (gObjPptx.masterSlide) {
+			intRels += encodeImageRelations(gObjPptx.masterSlide, arrRelsDone);
+		}
 
 		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
 		if ( intRels == 0 ) doExportPresentation(callback, outputType);
@@ -4462,7 +4439,6 @@ var PptxGenJS = function(){
 			return this;
 		};
 
-
 		layoutObj.addShape = function( shape, opt ) {
 			gObjPptxGenerators.addShapeDefinition(shape, opt, gObjPptx.layoutDefinitions[layoutNum])
 			return this;
@@ -4472,7 +4448,6 @@ var PptxGenJS = function(){
 			gObjPptxGenerators.addTextDefinition(text, opt, gObjPptx.layoutDefinitions[layoutNum]);
 			return this;
 		};
-
 
 		$.each(layoutDef, function(key, val) {
 
