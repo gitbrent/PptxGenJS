@@ -134,6 +134,10 @@ var PptxGenJS = function(){
 	gObjPptx.subject = 'PptxGenJS Presentation';
 	gObjPptx.title = 'PptxGenJS Presentation';
 	gObjPptx.masterSlideXml = '';
+	gObjPptx.master = {
+		slide: {},
+		colorMap: {}
+	};
 	gObjPptx.layoutDefinitions = [];
 	gObjPptx.slide2layoutMapping = [];
 	gObjPptx.properLayoutMasterInUse = false;
@@ -458,6 +462,29 @@ var PptxGenJS = function(){
 
 			target.data.push(resultObject);
 			return this;
+		},
+
+		createLayoutObject: function createLayoutObject(layoutDef, target) {
+			if ( layoutDef.bkgd ) {
+					gObjPptxGenerators.addBackgroundDefinition(layoutDef.bkgd, target);
+			}
+
+			// Add all Slide Master objects in the order they were given (Issue#53)
+			if ( layoutDef.objects && Array.isArray(layoutDef.objects) && layoutDef.objects.length > 0 ) {
+				layoutDef.objects.forEach(function(object, idx){
+					var key = Object.keys(object)[0];
+					if      ( MASTER_OBJECTS[key] && key == 'chart' ) gObjPptxGenerators.addChartDefinition(CHART_TYPES[(object.chart.type||'').toUpperCase()], object.chart.data, object.chart.opts, target);
+					else if ( MASTER_OBJECTS[key] && key == 'image' ) gObjPptxGenerators.addImageDefinition(object[key], null, null, null, null, null, target);
+					else if ( MASTER_OBJECTS[key] && key == 'line'  ) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes.LINE, object[key], target);
+					else if ( MASTER_OBJECTS[key] && key == 'rect'  ) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes.RECTANGLE, object[key], target);
+					else if ( MASTER_OBJECTS[key] && key == 'text'  ) gObjPptxGenerators.addTextDefinition(object[key].text, object[key].options, target);
+				});
+			}
+
+			// Add Slide Numbers
+			if ( layoutDef.slideNumber && typeof layoutDef.slideNum ) {
+				target.slideNumberObj = layoutDef.slideNumber;
+			};
 		}
 	}
 
@@ -4120,14 +4147,15 @@ var PptxGenJS = function(){
 
 		gObjPptx.slide2layoutMapping.push(inMaster);
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
-		gObjPptx.slides[slideNum] = {};
-		gObjPptx.slides[slideNum].slide = slideObj;
-		gObjPptx.slides[slideNum].name = 'Slide ' + pageNum;
-		gObjPptx.slides[slideNum].numb = pageNum;
-		gObjPptx.slides[slideNum].data = [];
-		gObjPptx.slides[slideNum].rels = [];
-		gObjPptx.slides[slideNum].slideNumberObj = null;
-		gObjPptx.slides[slideNum].hasSlideNumber = false; // DEPRECATED
+		gObjPptx.slides[slideNum] = {
+			slide: slideObj,
+			name: 'Slide ' + pageNum,
+			numb: pageNum,
+			data: [],
+			rels: [],
+			slideNumberObj: null,
+			hasSlideNumber: false
+		};
 
 		// ==========================================================================
 		// PUBLIC METHODS:
@@ -4499,8 +4527,26 @@ var PptxGenJS = function(){
 
 
 	/**
-	 * Add a new layout to the Presentation
-	 * @returns {Object[]} layoutObj
+	 * Sets a master slide and color mappings.
+	 * @param {Object} masterDef
+	 */
+	this.setMaster = function setMaster(masterDef) {
+		var slideObj = {
+			data: [],
+			rels: []
+		};
+
+		gObjPptxGenerators.createLayoutObject(masterDef.slide || {}, slideObj);
+
+		this.master = {
+			slide: slideObj,
+			colorMap: masterDef.colorMap
+		};
+	};
+
+	/**
+	 * Add a new layout to the presentation.
+	 * @returns {Object} layoutObj
 	 */
 	this.addLayoutSlide = function addNewLayoutSlide(layoutDef) {
 		var layoutObj = {};
@@ -4512,12 +4558,13 @@ var PptxGenJS = function(){
 		}
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
-		gObjPptx.layoutDefinitions[layoutNum] = {};
-		gObjPptx.layoutDefinitions[layoutNum].layout = layoutObj;
-		gObjPptx.layoutDefinitions[layoutNum].name = layoutDef.title
-		gObjPptx.layoutDefinitions[layoutNum].data = [];
-		gObjPptx.layoutDefinitions[layoutNum].rels = [];
-		gObjPptx.layoutDefinitions[layoutNum].slideNumberObj = null;
+		gObjPptx.layoutDefinitions[layoutNum] = {
+			layout: layoutObj,
+			name: layoutDef.title,
+			data: [],
+			rels: [],
+			slideNumberObj: null
+		};
 
 		layoutObj.slideNumber = function( inObj ) {
 			if ( inObj && typeof inObj === 'object' ) gObjPptx.layoutDefinitions[layoutNum].slideNumberObj = inObj;
