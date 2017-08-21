@@ -10,6 +10,7 @@
 // ============================================================================
 const express = require('express'); // Not core - Only required for streaming
 const app = express(); // Not core - Only required for streaming
+var fs = require('fs');
 
 var GIF_ANIM_FIRE = "";
 var AUDIO_MP3 = "";
@@ -29,8 +30,13 @@ STARTING TEST
 -------------`);
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
-//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
-var pptx = require("pptxgenjs");
+var pptx;
+if (fs.existsSync('../dist/pptxgen.js')) {
+	pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+}
+else {
+	pptx = require("pptxgenjs");
+}
 var runEveryTest = require("../examples/pptxgenjs-demo.js");
 if (gConsoleLog) console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
