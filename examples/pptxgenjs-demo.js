@@ -505,7 +505,7 @@ function genSlides_Chart(pptx) {
 		arrDataLineStat.push( tmpObjUnk );
 	}
 
-	// SLIDE 1: Bar Chart -----------------------------------------------------------------
+	// SLIDE 1: Bar Chart ------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -765,7 +765,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 3: Stacked Bar Chart ---------------------------------------------------------
+	// SLIDE 3: Stacked Bar Chart ----------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -865,7 +865,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
-	// SLIDE 4: Bar Chart - Lots of Bars --------------------------------------------------
+	// SLIDE 4: Bar Chart - Lots of Bars ---------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -900,7 +900,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
 	}
 
-	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ----------------
+	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Colors, valAxisMajorUnit, v Format %', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -990,10 +990,50 @@ function genSlides_Chart(pptx) {
 		);
 	}
 
-	// SLIDE 6: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
+	// SLIDE 6: Tornado Chart -------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart Smoothing, Line Size, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		slide.addChart(
+			pptx.charts.BAR,
+			[
+				{
+					name: 'High',
+					labels: ['London', 'Munich', 'Tokyo'],
+					values: [.20, .32, .41]
+				},
+				{
+					name: 'Low',
+					labels: ['London', 'Munich', 'Tokyo'],
+					values: [-0.11, -0.22, -0.29]
+				}
+			],
+			{
+				x:0.5, y:0.5, w:'90%', h:'90%',
+				valAxisMaxVal:1,
+				barDir: 'bar',
+				axisLabelFormatCode: '#%',
+				gridLineColor: 'D8D8D8',
+				axisLineColor: 'D8D8D8',
+				catAxisLineShow: false,
+				valAxisLineShow: false,
+				barGrouping: 'stacked',
+				catAxisLabelPos: 'low',
+				valueBarColors: true,
+				//dataLabelPosition: 'outEnd',
+				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384','7D666A','A3C961','EF907B','9BA0A3'],
+				invertedColors: ['0065A2','428526','C99100','51A7C1','BD3813','123970','6A575A','8BAB52','CB7A69','84888B'],
+				barGapWidthPct: 25,
+				valAxisMajorUnit: 0.2
+			}
+		);
+	}
+
+	// SLIDE 7: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Line Smoothing, Line Size, Line Shadow, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
 		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
@@ -1015,19 +1055,22 @@ function genSlides_Chart(pptx) {
 		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineDataSymbolSize: 10,
+			lineShadow: 'none',
 			showLegend: true, legendPos: 'l'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 
+		var shadowOpts = { type:'outer', color:'cd0011', blur:3, offset:12, angle:75, opacity:0.8 };
 		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineDataSymbolSize: 20,
+			lineShadow: shadowOpts,
 			showLegend: true, legendPos: 'b'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
 	}
 
-	// SLIDE 7: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
+	// SLIDE 8: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
 	{
 		var intWgap = 4.25;
 		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
@@ -1048,7 +1091,7 @@ function genSlides_Chart(pptx) {
 		});
 	}
 
-	// SLIDE 8: Line Chart: Lots of Cats ---------------------------------------------------
+	// SLIDE 9: Line Chart: Lots of Cats ---------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -1082,7 +1125,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
 	}
 
-	// SLIDE 9: Area Chart: Misc -----------------------------------------------------------
+	// SLIDE 10: Area Chart: Misc -----------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -1128,7 +1171,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
 	}
 
-	// SLIDE 10: Pie Charts: All 4 Legend Options -------------------------------------------
+	// SLIDE 11: Pie Charts: All 4 Legend Options ------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
@@ -1161,10 +1204,10 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 11: Doughnut Chart ------------------------------------------------------------------
+	// SLIDE 12: Doughnut Chart ------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Pie Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var optsChartPie1 = {
 			x:0.5, y:1.0, w:6.0, h:6.0,

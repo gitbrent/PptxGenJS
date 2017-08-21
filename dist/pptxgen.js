@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170814";
+	var APP_REL = "20170820";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -118,6 +118,8 @@ var PptxGenJS = function(){
 	var DEF_FONT_TITLE_SIZE = 18;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
+	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
 
 	/** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
 	var ALLOWED_OUTPUT_TYPES = ['base64', 'binarystring', 'uint8array', 'arraybuffer', 'blob', 'nodebuffer'];
@@ -917,37 +919,29 @@ var PptxGenJS = function(){
 	}
 
 	/**
-	 * Checks grid line properties and correct them if needed.
-	 * @param {Object} glOpts chart.gridLine options
+	 * NOTE: Used by both: text and lineChart
+	 * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
+	 * @param {Object} opts optional shadow properties
+	 * @param {Object} defaults defaults for unspecified properties in `opts`
+	 * @see http://officeopenxml.com/drwSp-effects.php
 	 */
-	function correctGridLineOptions(glOpts) {
-		if ( !glOpts || glOpts === 'none' ) return;
-		if ( glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0) ) {
-			console.warn('Warning: chart.gridLine.size must be greater than 0.');
-			delete glOpts.size; // delete prop to used defaults
-		}
-		if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
-			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
-			delete glOpts.style;
-		}
-	}
+	function createShadowElement(opts, defaults) {
+		var type            = ( opts.type            || defaults.type    ),
+			blur            = ( opts.blur            || defaults.blur    ) * ONEPT,
+			offset          = ( opts.offset          || defaults.offset  ) * ONEPT,
+			angle           = ( opts.angle           || defaults.angle   ) * 60000,
+			color           = ( opts.color           || defaults.color   ),
+			opacity         = ( opts.opacity         || defaults.opacity ) * 100000,
+			rotateWithShape = ( opts.rotateWithShape || defaults.rotateWithShape || 0),
+			strXml  = "";
 
-	/**
-	 * @param {Object} glOpts {size, color, style}
-	 * @param {Object} defaults {size, color, style}
-	 * @param {String} type "major"(default) | "minor"
-	 */
-	function createGridLineElement(glOpts, defaults, type) {
-		type = type || 'major';
-		var tagName = 'c:'+ type + 'Gridlines';
-		strXml =  '<'+ tagName + '>';
-		strXml += ' <c:spPr>';
-		strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
-		strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
-		strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
-		strXml += '  </a:ln>';
-		strXml += ' </c:spPr>';
-		strXml += '</'+ tagName + '>';
+		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
+		strXml += ' algn="bl" rotWithShape="'+ (+rotateWithShape) +'" blurRad="'+ blur +'" ';
+		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
+		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
+		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>'
+		strXml += '</a:'+ type +'Shdw>';
+
 		return strXml;
 	}
 
@@ -968,6 +962,9 @@ var PptxGenJS = function(){
 	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
 	*/
 	function makeXmlCharts(rel) {
+		/**
+		 * DESC: Calc and return excel column name (eg: 'A2')
+		 */
 		function getExcelColName(length) {
 			var strName = '';
 
@@ -981,6 +978,27 @@ var PptxGenJS = function(){
 
 			return strName;
 		}
+
+		/**
+		 * @param {Object} glOpts {size, color, style}
+		 * @param {Object} defaults {size, color, style}
+		 * @param {String} type "major"(default) | "minor"
+		 */
+		function createGridLineElement(glOpts, defaults, type) {
+			type = type || 'major';
+			var tagName = 'c:'+ type + 'Gridlines';
+			strXml =  '<'+ tagName + '>';
+			strXml += ' <c:spPr>';
+			strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
+			strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
+			strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
+			strXml += '  </a:ln>';
+			strXml += ' </c:spPr>';
+			strXml += '</'+ tagName + '>';
+			return strXml;
+		}
+
+		/* ----------------------------------------------------------------------- */
 
 		// STEP 1: Create chart
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
@@ -1073,11 +1091,11 @@ var PptxGenJS = function(){
 					else if ( rel.opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill><a:srgbClr val="'+ rel.opts.dataBorder.color +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					strXml += '    <a:effectLst>';
-					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-					strXml += '      </a:outerShdw>';
-					strXml += '    </a:effectLst>';
+					if ( rel.opts.lineShadow !== 'none' ) {
+						strXml += '<a:effectLst>';
+						strXml += createShadowElement(rel.opts.lineShadow || {}, DEF_LINE_SHADOW);
+						strXml += '</a:effectLst>';
+					}
 					strXml += '  </c:spPr>';
 
 					// LINE CHART ONLY: `marker`
@@ -1095,17 +1113,19 @@ var PptxGenJS = function(){
 
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if ( rel.data.length === 1 && rel.opts.chartColors != BARCHART_COLORS ) {
+					if (( rel.data.length === 1 || rel.opts.valueBarColors ) && rel.opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
-						obj.values.forEach(function(value,index){
+						obj.values.forEach(function (value, index) {
+							var invert = rel.opts.invertedColors ? 0 : 1;
+							var colors = value < 0 ? rel.opts.invertedColors : rel.opts.chartColors;
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+index+'"/>';
-							strXml += '    <c:invertIfNegative val="1"/>';
-							strXml += '    <c:bubble3D val="0"/>';
-							strXml += '    <c:spPr>';
+							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
+							strXml += '    	<c:bubble3D val="0"/>';
+							strXml += '    	<c:spPr>';
 							strXml += '    <a:solidFill>';
-							strXml += '     <a:srgbClr val="'+rel.opts.chartColors[index % rel.opts.chartColors.length]+'"/>';
-							strXml += '    </a:solidFill>';
+							strXml += '    <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
+							strXml += '    	</a:solidFill>';
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
 							strXml += '    	<a:srgbClr val="000000">';
@@ -1203,10 +1223,21 @@ var PptxGenJS = function(){
 					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
-					strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
-					strXml += '  <c:spPr>';
-					strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-					strXml += '  </c:spPr>';
+					strXml += '  <c:tickLblPos val="'+ (rel.opts.catAxisLabelPos || rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+					strXml += ' <c:spPr>';
+					strXml += '   <a:ln w="12700" cap="flat">';
+					if ( !!rel.opts.catAxisLineShow || typeof rel.opts.catAxisLineShow === 'undefined' ) {
+						strXml += '<a:solidFill>';
+						strXml += '  <a:srgbClr val="'+ (rel.opts.axisLineColor ? rel.opts.axisLineColor : DEF_CHART_GRIDLINE.color) +'"/>';
+						strXml += '</a:solidFill>';
+					}
+					else {
+						strXml += '<a:noFill/>';
+					}
+					strXml += '     <a:prstDash val="solid"/>';
+					strXml += '     <a:round/>';
+					strXml += '   </a:ln>';
+					strXml += ' </c:spPr>';
 					strXml += '  <c:txPr>';
 					strXml += '    <a:bodyPr rot="0"/>';
 					strXml += '    <a:lstStyle/>';
@@ -1253,7 +1284,18 @@ var PptxGenJS = function(){
 					strXml += ' <c:minorTickMark val="none"/>';
 					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 					strXml += ' <c:spPr>';
-					strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += '   <a:ln w="12700" cap="flat">';
+					if ( !!rel.opts.valAxisLineShow || typeof rel.opts.valAxisLineShow === 'undefined' ) {
+						strXml += '<a:solidFill>';
+						strXml += '  <a:srgbClr val="'+ (rel.opts.axisLineColor ? rel.opts.axisLineColor : DEF_CHART_GRIDLINE.color) +'"/>';
+						strXml += '</a:solidFill>';
+					}
+					else {
+						strXml += '<a:noFill/>';
+					}
+					strXml += '     <a:prstDash val="solid"/>';
+					strXml += '     <a:round/>';
+					strXml += '   </a:ln>';
 					strXml += ' </c:spPr>';
 					strXml += ' <c:txPr>';
 					strXml += '  <a:bodyPr rot="0"/>';
@@ -2347,20 +2389,8 @@ var PptxGenJS = function(){
 
 					// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
 					if ( slideObj.options.shadow ) {
-						slideObj.options.shadow.type    = ( slideObj.options.shadow.type    || 'outer' );
-						slideObj.options.shadow.blur    = ( slideObj.options.shadow.blur    || 8 ) * ONEPT;
-						slideObj.options.shadow.offset  = ( slideObj.options.shadow.offset  || 4 ) * ONEPT;
-						slideObj.options.shadow.angle   = ( slideObj.options.shadow.angle   || 270 ) * 60000;
-						slideObj.options.shadow.color   = ( slideObj.options.shadow.color   || '000000' );
-						slideObj.options.shadow.opacity = ( slideObj.options.shadow.opacity || 0.75 ) * 100000;
-
 						strSlideXml += '<a:effectLst>';
-						strSlideXml += '<a:'+ slideObj.options.shadow.type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-						strSlideXml += ' algn="bl" rotWithShape="0" blurRad="'+ slideObj.options.shadow.blur +'" ';
-						strSlideXml += ' dist="'+ slideObj.options.shadow.offset +'" dir="'+ slideObj.options.shadow.angle +'">';
-						strSlideXml += '<a:srgbClr val="'+ slideObj.options.shadow.color +'">';
-						strSlideXml += '<a:alpha val="'+ slideObj.options.shadow.opacity +'"/></a:srgbClr>'
-						strSlideXml += '</a:outerShdw>';
+						strSlideXml += createShadowElement(slideObj.options.shadow, DEF_TEXT_SHADOW);
 						strSlideXml += '</a:effectLst>';
 					}
 
@@ -2477,12 +2507,11 @@ var PptxGenJS = function(){
 		if ( inSlide.slideNumberObj || inSlide.hasSlideNumber ) {
 			if ( !inSlide.slideNumberObj ) inSlide.slideNumberObj = { x:0.3, y:'90%' }
 
-			// TODO: FIXME: page numbers over 99 wrap in PPT-2013 (Desktop)
 			strSlideXml += '<p:sp>'
 				+ '  <p:nvSpPr>'
 				+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
 				+ '  <p:spPr>'
-				+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(inSlide.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(inSlide.slideNumberObj.y, 'Y') +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
+				+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(inSlide.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(inSlide.slideNumberObj.y, 'Y') +'"/><a:ext cx="800000" cy="300000"/></a:xfrm>'
 				+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 				+ '    <a:extLst>'
 				+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
@@ -2884,6 +2913,44 @@ var PptxGenJS = function(){
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
 
+		/**
+		 * Checks shadow options passed by user and performs corrections if needed.
+		 * @param {Object} shadowOpts
+		 */
+		function correctShadowOptions(shadowOpts) {
+			if ( !shadowOpts || shadowOpts === 'none' ) return;
+
+			// OPT: `type`
+			if ( shadowOpts.type != 'outer' && shadowOpts.type != 'inner' ) {
+				console.warn('Warning: shadow.type options are `outer` or `inner`.');
+				shadowOpts.type = 'outer';
+			}
+
+			// OPT: `angle`
+			if ( shadowOpts.angle ) {
+				// A: REALITY-CHECK
+				if ( isNaN(Number(shadowOpts.angle)) || shadowOpts.angle < 0 || shadowOpts.angle > 359 ) {
+					console.warn('Warning: shadow.angle can only be 0-359');
+					shadowOpts.angle = 270;
+				}
+
+				// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+				shadowOpts.angle = Math.round(Number(shadowOpts.angle));
+			}
+
+			// OPT: `opacity`
+			if ( shadowOpts.opacity ) {
+				// A: REALITY-CHECK
+				if ( isNaN(Number(shadowOpts.opacity)) || shadowOpts.opacity < 0 || shadowOpts.opacity > 1 ) {
+					console.warn('Warning: shadow.opacity can only be 0-1');
+					shadowOpts.opacity = 0.75;
+				}
+
+				// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+				shadowOpts.opacity = Number(shadowOpts.opacity)
+			}
+		}
+
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {};
 		gObjPptx.slides[slideNum].slide = slideObj;
@@ -2938,6 +3005,18 @@ var PptxGenJS = function(){
 		slideObj.addChart = function ( inType, inData, inOpt ) {
 			var intRels = 1;
 			var options = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
+
+			function correctGridLineOptions(glOpts) {
+				if ( !glOpts || glOpts === 'none' ) return;
+				if ( glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0) ) {
+					console.warn('Warning: chart.gridLine.size must be greater than 0.');
+					delete glOpts.size; // delete prop to used defaults
+				}
+				if ( glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0 ) {
+					console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
+					delete glOpts.style;
+				}
+			}
 
 			// STEP 1: TODO: check for reqd fields, correct type, etc
 			// inType in CHART_TYPES
@@ -2997,6 +3076,10 @@ var PptxGenJS = function(){
 			options.catGridLine = options.catGridLine || 'none';
 			correctGridLineOptions(options.catGridLine);
 			correctGridLineOptions(options.valGridLine);
+
+			if ( options.type === 'line' ) {
+				correctShadowOptions(options.lineShadow);
+			}
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
@@ -3418,37 +3501,7 @@ var PptxGenJS = function(){
 			if ( opt.align  ) opt.align  = opt.align.toLowerCase().replace(/^c.*/i,'center').replace(/^m.*/i,'center').replace(/^l.*/i,'left').replace(/^r.*/i,'right');
 
 			// ROBUST: Set rational values for some shadow props if needed
-			if ( opt.shadow ) {
-				// OPT: `type`
-				if ( opt.shadow.type != 'outer' && opt.shadow.type != 'inner' ) {
-					console.warn('Warning: shadow.type options are `outer` or `inner`.');
-					opt.shadow.type = 'outer';
-				}
-
-				// OPT: `angle`
-				if ( opt.shadow.angle ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.angle)) || opt.shadow.angle < 0 || opt.shadow.angle > 359 ) {
-						console.warn('Warning: shadow.angle can only be 0-359');
-						opt.shadow.angle = 270;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.shadow.angle = Math.round(Number(opt.shadow.angle));
-				}
-
-				// OPT: `opacity`
-				if ( opt.shadow.opacity ) {
-					// A: REALITY-CHECK
-					if ( isNaN(Number(opt.shadow.opacity)) || opt.shadow.opacity < 0 || opt.shadow.opacity > 1 ) {
-						console.warn('Warning: shadow.opacity can only be 0-1');
-						opt.shadow.opacity = 0.75;
-					}
-
-					// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-					opt.shadow.opacity = Number(opt.shadow.opacity)
-				}
-			}
+			correctShadowOptions(opt.shadow);
 
 			// STEP 3: Set props
 			gObjPptx.slides[slideNum].data[slideObjNum] = {};
