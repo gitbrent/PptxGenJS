@@ -405,14 +405,14 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
 ### Chart Line Shadow Options
-| Option       | Type    | Unit    | Default   | Description         | Possible Values                          |
-| :----------- | :------ | :------ | :-------- | :------------------ | :--------------------------------------- |
-| `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
-| `angle`      | number  | degrees |           | shadow angle        | 0-359. Ex: `{ angle:180 }`               |
-| `blur`       | number  | points  |           | blur size           | 1-256. Ex: `{ blur:3 }`                  |
-| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
-| `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
-| `opacity`    | number  | percent |           | opacity             | 0-1. Ex: `opacity:0.75`                  |
+| Option       | Type    | Unit    | Default   | Description         | Possible Values                            |
+| :----------- | :------ | :------ | :-------- | :------------------ | :----------------------------------------- |
+| `type`       | string  |         | `outer`   | shadow type         | `outer` or `inner`. Ex: `{ type:'outer' }` |
+| `angle`      | number  | degrees | `90`      | shadow angle        | 0-359. Ex: `{ angle:90 }`                  |
+| `blur`       | number  | points  | `3`       | blur size           | 1-256. Ex: `{ blur:3 }`                    |
+| `color`      | string  |         | `000000`  | line color          | hex color code. Ex: `{ color:'0088CC' }`   |
+| `offset`     | number  | points  | `1.8`     | offset size         | 1-256. Ex: `{ offset:2 }`                  |
+| `opacity`    | number  | percent | `0.35`    | opacity             | 0-1. Ex: `{ opacity:0.35 }`                |
 
 ### Chart Examples
 ```javascript
