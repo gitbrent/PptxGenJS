@@ -50,6 +50,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Chart Size/Formatting Options](#chart-sizeformatting-options)
     - [Chart Axis Options](#chart-axis-options)
     - [Chart Data Options](#chart-data-options)
+    - [Chart Line Shadow Options](#chart-line-shadow-options)
     - [Chart Examples](#chart-examples)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
@@ -399,7 +400,19 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `gridLineColor`        | string  |         | `000000`  | grid line color            | hex color code. Ex: `{ gridLineColor:'0088CC' }`     |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
+| `lineShadow`           | object  |         |           | data line shadow options   | `'none'` or [shadow options](#Chart-Line-Shadow-Options) |
+| `lineSize`             | number  | points  | `2`       | thickness of data line     | 1 and more. Ex: `{ lineSize: 1 }` |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series   | `true` or `false` |
+
+### Chart Line Shadow Options
+| Option       | Type    | Unit    | Default   | Description         | Possible Values                          |
+| :----------- | :------ | :------ | :-------- | :------------------ | :--------------------------------------- |
+| `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
+| `angle`      | number  | degrees |           | shadow angle        | 0-359. Ex: `{ angle:180 }`               |
+| `blur`       | number  | points  |           | blur size           | 1-256. Ex: `{ blur:3 }`                  |
+| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
+| `opacity`    | number  | percent |           | opacity             | 0-1. Ex: `opacity:0.75`                  |
 
 ### Chart Examples
 ```javascript
