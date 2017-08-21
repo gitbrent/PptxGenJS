@@ -1503,13 +1503,26 @@ var PptxGenJS = function(){
 		var intEmpty = 0;
 
 		// STEP 1: Set data for this rel, count outstanding
-		$.each(gObjPptx.slides, function(i,slide){
-			$.each(slide.rels, function(i,rel){
+		gObjPptx.slides.forEach(function(slide, i) {
+			slide.rels.forEach(function(rel, i){
 				if ( rel.path == slideRel.path ) rel.data = inStr;
 				if ( !rel.data ) intEmpty++;
 			});
 		});
-
+		if (gObjPptx.properLayoutMasterInUse) {
+			gObjPptx.layoutDefinitions.forEach(function(layout, i) {
+				layout.rels.forEach(function(rel, i){
+					if ( rel.path == slideRel.path ) rel.data = inStr;
+					if ( !rel.data ) intEmpty++;
+				});
+			});
+			if (gObjPptx.masterSlide) {
+				gObjPptx.masterSlide.rels.forEach(function(rel, i) {
+					if ( rel.path == slideRel.path ) rel.data = inStr;
+					if ( !rel.data ) intEmpty++;
+				});
+			}
+		}
 		// STEP 2: Continue export process if all rels have base64 `data` now
 		if ( intEmpty == 0 ) doExportPresentation();
 	}
