@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170820";
+	var APP_REL = "20170821";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -112,6 +112,7 @@ var PptxGenJS = function(){
 	var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
 	var EMU = 914400;  // One (1) inch (OfficeXML measures in EMU (English Metric Units))
 	var ONEPT = 12700; // One (1) point (pt)
+	var JSZIP_OUTPUT_TYPES = ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']; /** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
 	//
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 	var DEF_FONT_SIZE = 12;
@@ -120,9 +121,6 @@ var PptxGenJS = function(){
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
-
-	/** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
-	var ALLOWED_OUTPUT_TYPES = ['base64', 'binarystring', 'uint8array', 'arraybuffer', 'blob', 'nodebuffer'];
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -427,8 +425,8 @@ var PptxGenJS = function(){
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-			if ( outputType && ALLOWED_OUTPUT_TYPES.indexOf(outputType) >= 0) {
-				zip.generateAsync({ type: outputType }).then(callback);
+			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0) {
+				zip.generateAsync({ type:outputType }).then(callback);
 			}
 			else if ( NODEJS ) {
 				if ( callback ) {
