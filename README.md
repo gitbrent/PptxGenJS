@@ -44,7 +44,6 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Saving a Presentation](#saving-a-presentation)
     - [Client Browser](#client-browser)
     - [Node.js](#nodejs-1)
-    - [Specific output type](#specific-output-type)
 - [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Charts](#adding-charts)
     - [Chart Types](#chart-types)
@@ -291,10 +290,6 @@ pptx.save( 'http', streamCallback );
 // E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
 pptx.save( 'jszip', saveCallback, 'base64' );
 ```
-
-### Specific output type
-When a save callback function is specified (no matter whether on a client or in Node), an extra parameter can be passed – `outputType`.
-This parameter accepts any value of [the JSZip supported formats](https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html). For example:
 
 Saving multiple Presentations:
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
