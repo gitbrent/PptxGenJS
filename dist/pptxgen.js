@@ -123,7 +123,13 @@ var PptxGenJS = function(){
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
-
+	var DEF_EMPTY_LAYOUT = {
+		slide: {},
+		name: '[ default ]',
+		data: [],
+		rels: [],
+		slideNumberObj: null
+	};
 	var LAYOUT_IDX_SERIES_BASE = 2147483649;
 
 	// A: Create internal pptx object
@@ -148,9 +154,7 @@ var PptxGenJS = function(){
 		rels: []
 	};
 	/** @type {object[]} slide layout definition objects, used for generating slide layout files */
-	gObjPptx.layoutDefinitions = [];
-	/** @type {object} determines which layout is used for a specific slide */
-	gObjPptx.slide2layoutMapping = [];
+	gObjPptx.layoutDefinitions = [DEF_EMPTY_LAYOUT];
 	/** @type {boolean} if true proper master and layouts are used, otherwise the old way of templating expected */
 	gObjPptx.properLayoutMasterInUse = false;
 	/** @type {Number} global counter for included images (used for index in their filenames) */
@@ -3797,7 +3801,7 @@ var PptxGenJS = function(){
 	 * @return {String} layout name
 	 */
 	function getLayoutIdxForSlide(slideNumber) {
-		var layoutName = gObjPptx.slide2layoutMapping[slideNumber - 1],
+		var layoutName = gObjPptx.slides[slideNumber - 1].layout,
 			layoutIdx;
 		for (var i = 0, len = gObjPptx.layoutDefinitions.length; i < len; i++) {
 			if (gObjPptx.layoutDefinitions[i].name === layoutName) {
@@ -4115,7 +4119,6 @@ var PptxGenJS = function(){
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
 
-		gObjPptx.slide2layoutMapping.push(inMaster);
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {
 			slide: slideObj,
@@ -4124,7 +4127,8 @@ var PptxGenJS = function(){
 			data: [],
 			rels: [],
 			slideNumberObj: null,
-			hasSlideNumber: false
+			hasSlideNumber: false,
+			layout: inMaster || '[ default ]'
 		};
 
 		// ==========================================================================
@@ -4522,14 +4526,11 @@ var PptxGenJS = function(){
 	 * @return {Object} this
 	 */
 	this.addLayoutSlide = function addNewLayoutSlide(layoutDef) {
-		var layoutObj = {};
-
 		if (!layoutDef.title) {
 			throw Error("Layout requires to be named. Specify `title` in its definition object.");
 		}
 
-		// A: Add this SLIDE to PRESENTATION, Add default values as well
-		layoutObj = {
+		var layoutObj = {
 			slide: {},
 			name: layoutDef.title,
 			data: [],
