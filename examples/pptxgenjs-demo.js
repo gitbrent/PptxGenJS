@@ -1289,16 +1289,16 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 12: Dot/Line Type ---------------------------------------------------------
 	function slideDotLine () {
-
+		console.log('slideDotLine');
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Dot/Line Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		function doMultiChart () {
-
+			console.log('doMultiChart');
 			// TOP-RIGHT:
 			var optsMultiChart = {
 				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
-				barDir: 'col',
+				barDir: 'bar',
 				barGrouping: 'stacked',
 
 				catAxisLabelColor: '0000CC',
@@ -1309,12 +1309,12 @@ function genSlides_Chart(pptx) {
 				showLegend: false,
 				showTitle: false,
 
-				valAxisMaxVal: 1,
-				valAxisMajorUnit: 0.2,
+				valAxisMaxVal: 100,
+				valAxisMajorUnit: 10,
 
 				dataNoEffects: true,
 
-				valAxes:[
+				XvalAxes:[
 					{
 						showValAxisTitle: true,
 						valAxisTitle: 'Primary Value Axis',
@@ -1341,7 +1341,7 @@ function genSlides_Chart(pptx) {
 					}
 				],
 
-				catAxes: [
+				XcatAxes: [
 					{
 						catAxisLabelColor: '',
 						catAxisLabelFontFace: '',
@@ -1393,14 +1393,15 @@ function genSlides_Chart(pptx) {
 					}],
 					options: {
 						barGrouping: 'standard',
-						secondaryAxis: true
+						secondaryAxis: false
 					}
 				}
 			];
 			slide.addChart(chartTypes, optsMultiChart);
 		}
 
-		function doStandardStacked () {
+		function doStackedLine () {
+			console.log('doStackedLine');
 			var arrDataHighVals = [
 				{
 					name: 'California',
@@ -1530,9 +1531,9 @@ function genSlides_Chart(pptx) {
 			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
 		}
 
+		//doStackedLine();
 		//addDotChart();
 		//addDotChartTwoAxes();
-
 		doMultiChart();
 	}
 
@@ -1582,6 +1583,8 @@ function genSlides_Chart(pptx) {
 	// 	slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	// }
 }
+
+console.log('DEMO');
 
 function genSlides_Media(pptx) {
 	// SLIDE 1: Video and YouTube
