@@ -50,6 +50,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Chart Size/Formatting Options](#chart-sizeformatting-options)
     - [Chart Axis Options](#chart-axis-options)
     - [Chart Data Options](#chart-data-options)
+    - [Chart Line Shadow Options](#chart-line-shadow-options)
     - [Chart Examples](#chart-examples)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
@@ -275,6 +276,7 @@ pptx.save('Demo-Media');
 ### Node.js
 * Node can accept a callback function that will return the filename once the save is complete
 * Node can also be used to stream a powerpoint file - simply pass a filename that begins with "http"
+* Output type can be specified by passing an optional [JSZip output type](https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html)
 
 ```javascript
 // A: File will be saved to the local working directory (`__dirname`)
@@ -286,9 +288,11 @@ pptx.save( 'Node_Demo', saveCallback );
 // D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
 // Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.
 pptx.save( 'http', streamCallback );
+// E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
+pptx.save( 'jszip', saveCallback, 'base64' );
 ```
 
-Saving multiple Presentations:  
+Saving multiple Presentations:
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
@@ -323,57 +327,96 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 
 ### Chart Types
 * Chart type can be any one of `pptx.charts`
-* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`
+* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
 
 ### Chart Size/Formatting Options
-| Option          | Type    | Unit    | Default   | Description           | Possible Values  |
-| :-------------- | :------ | :------ | :-------- | :-------------------- | :--------------- |
-| `x`             | number  | inches  | `1.0`     | horizontal location   | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`             | number  | inches  | `1.0`     | vertical location     | 0-n OR 'n%'. |
-| `w`             | number  | inches  | `50%`     | width                 | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
-| `h`             | number  | inches  | `50%`     | height                | 0-n OR 'n%'. |
-| `border`        | object  |         |           | chart border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-| `chartColors`        | array  |         |       | data color            | array of hex color codes. Ex: `['0088CC','FFCC00']` |
-| `chartColorsOpacity` | number | percent | `100` | data color opacity percent | 1-100. Ex: `{ chartColorsOpacity:50 }` |
-| `fill`          | string  |         |           | fill/background color | hex color code or [scheme color constant](#scheme-colors). Ex: `{ fill:'0088CC' }` |
-| `legendPos`     | string  |         | `r`       | chart legend position | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
-| `showLabel`     | boolean |         | `false`   | show data labels      | `true` or `false` |
-| `showLegend`    | boolean |         | `false`   | show chart legend     | `true` or `false` |
-| `showPercent`   | boolean |         | `false`   | show data percent     | `true` or `false` |
-| `showTitle`     | boolean |         | `false`   | show chart title      | `true` or `false` |
-| `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
-| `title`         | string  |         |           | chart title           | a string. Ex: `{ title:'Sales by Region' }` |
-| `titleColor`    | string  |         | `000000`  | title color           | hex color code or [scheme color constant](#scheme-colors). Ex: `{ titleColor:'0088CC' }` |
-| `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
+| Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
+| :-------------- | :------ | :------ | :-------- | :--------------------------------- | :--------------- |
+| `x`             | number  | inches  | `1.0`     | horizontal location                | 0-n OR 'n%'. (Ex: `{x:'50%'}` places object in middle of the Slide) |
+| `y`             | number  | inches  | `1.0`     | vertical location                  | 0-n OR 'n%'. |
+| `w`             | number  | inches  | `50%`     | width                              | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
+| `h`             | number  | inches  | `50%`     | height                             | 0-n OR 'n%'. |
+| `border`        | object  |         |           | chart border                       | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
+| `chartColors`   | array   |         |           | data colors                        | array of hex color codes. Ex: `['0088CC','FFCC00']` |
+| `chartColorsOpacity` | number | percent | `100` | data color opacity percent         | 1-100. Ex: `{ chartColorsOpacity:50 }` |
+| `fill`          | string  |         |           | fill/background color              | hex color code. Ex: `{ fill:'0088CC' }` |
+| `holeSize`      | number  | percent | `50`      | doughnut hole size                 | 1-100. Ex: `{ holeSize:50 }` |
+| `legendPos`     | string  |         | `r`       | chart legend position              | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
+| `layout`        | object  |         |           | positioning plot within chart area | object with `x`, `y`, `w` and `h` props, all in range 0-1 (proportionally related to the chart size). Ex: `{x: 0, y: 0, w: 1, h: 1}` fully expands plot to the chart area |
+| `showLabel`     | boolean |         | `false`   | show data labels                   | `true` or `false` |
+| `showLegend`    | boolean |         | `false`   | show chart legend                  | `true` or `false` |
+| `showPercent`   | boolean |         | `false`   | show data percent                  | `true` or `false` |
+| `showTitle`     | boolean |         | `false`   | show chart title                   | `true` or `false` |
+| `showValue`     | boolean |         | `false`   | show data values                   | `true` or `false` |
+| `title`         | string  |         |           | chart title                        | a string. Ex: `{ title:'Sales by Region' }` |
+| `titleColor`    | string  |         | `000000`  | title color                        | hex color code. Ex: `{ titleColor:'0088CC' }` |
+| `titleFontFace` | string  |         | `Arial`   | font face                          | font name. Ex: `{ titleFontFace:'Arial' }` |
+| `titleFontSize` | number  | points  | `18`      | font size                          | 1-256. Ex: `{ titleFontSize:12 }` |
+| `titleRotate`   | integer | degrees |           | title rotation degrees             | 0-360. Ex: `{ titleRotate:45 }` |
 
 ### Chart Axis Options
-| Option                 | Type    | Unit    | Default   | Description             | Possible Values                            |
-| :--------------------- | :------ | :------ | :-------- | :---------------------- | :----------------------------------------- |
-| `catAxisLabelColor`    | string  |         | `000000`  | category-axis color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{ catAxisLabelColor:'0088CC' }`   |
-| `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size | 1-256. Ex: `{ titleFontSize:12 }`          |
-| `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
-| `valAxisLabelColor`    | string  |         | `000000`  | value-axis color        | hex color code or [scheme color constant](#scheme-colors). Ex: `{ valAxisLabelColor:'0088CC' }` |
-| `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face    | font name. Ex: `{ titleFontFace:'Arial' }`   |
-| `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size    | 1-256. Ex: `{ titleFontSize:12 }`            |
-| `valAxisMaxVal`        | number  |         |           | maximum value for Value Axis | 1-N. Ex: `{ valAxisMaxVal:125 }` |
-| `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation  | `maxMin` (high->low) or `minMax` (low->high) |
+| Option                 | Type    | Unit    | Default      | Description                  | Possible Values                            |
+| :--------------------- | :------ | :------ | :----------- | :--------------------------- | :----------------------------------------- |
+| `axisLineColor`        | string  |         | `000000`     | cat/val axis line color      | hex color code. Ex: `{ axisLineColor:'0088CC' }`     |
+| `catAxisHidden`        | boolean |         | `false`      | hide category-axis           | `true` or `false`   |
+| `catAxisLabelColor`    | string  |         | `000000`     | category-axis color          | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
+| `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face      | font name. Ex: `{ titleFontFace:'Arial' }` |
+| `catAxisLabelFontSize` | number  | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line | `true` or `false` |
+| `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation    | `maxMin` (high->low) or `minMax` (low->high) |
+| `catAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ catAxisTitle:'Regions' }` |
+| `catAxisTitleColor`    | string  |         | `000000`     | title color                  | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
+| `catAxisTitleFontFace` | string  |         | `Arial`      | font face                    | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
+| `catAxisTitleFontSize` | number  | points  |              | font size                    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
+| `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
+| `catGridLine`          | object  |         | `none`       | category grid line style     | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
+| `showCatAxisTitle`     | boolean |         | `false`      | show category (vert) title   | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
+| `showValAxisTitle`     | boolean |         | `false`      | show values (horiz) title    | `true` or `false`.  Ex:`{ showValAxisTitle:true }` |
+| `valAxisHidden`        | boolean |         | `false`      | hide value-axis              | `true` or `false`   |
+| `valAxisLabelColor`    | string  |         | `000000`     | value-axis color             | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
+| `valAxisLabelFontFace` | string  |         | `Arial`      | value-axis font face         | font name. Ex: `{ titleFontFace:'Arial' }`   |
+| `valAxisLabelFontSize` | number  | points  | `18`         | value-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `valAxisLabelFormatCode` | string |        | `General`    | value-axis number format     | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
+| `valAxisLineShow`      | boolean |         | true         | show/hide value-axis line    | `true` or `false` |
+| `valAxisMajorUnit`     | number  | float   | `1.0`        | value-axis tick steps        | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
+| `valAxisMaxVal`        | number  |         |              | value-axis maximum value     | 1-N. Ex: `{ valAxisMaxVal:125 }` |
+| `valAxisMinVal`        | number  |         |              | value-axis minimum value     | 1-N. Ex: `{ valAxisMinVal: -10 }` |
+| `valAxisOrientation`   | string  |         | `minMax`     | value-axis orientation       | `maxMin` (high->low) or `minMax` (low->high) |
+| `valAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ valAxisTitle:'Sales (USD)' }` |
+| `valAxisTitleColor`    | string  |         | `000000`     | title color                  | hex color code. Ex: `{ valAxisTitleColor:'0088CC' }` |
+| `valAxisTitleFontFace` | string  |         | `Arial`      | font face                    | font name. Ex: `{ valAxisTitleFontFace:'Arial' }` |
+| `valAxisTitleFontSize` | number  | points  |              | font size                    | 1-256. Ex: `{ valAxisTitleFontSize:12 }` |
+| `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
+| `valGridLine`          | object  |         |              | value grid line style        | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 
 ### Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
-| `barDir`               | string  |         | `col`     | bar direction              | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
+| `barDir`               | string  |         | `col`     | bar direction        | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
 | `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-999. Ex: `{ barGapWidthPct:50 }` |
 | `barGrouping`          | string  |         |`clustered`| bar grouping               | (*Bar Chart*) `clustered` or `stacked` or `percentStacked`. |
 | `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
-| `dataLabelColor`       | string  |         | `000000`  | value-axis color           | hex color code or [scheme color constant](#scheme-colors). Ex: `{ dataLabelColor:'0088CC' }`     |
+| `dataLabelColor`       | string  |         | `000000`  | data label color           | hex color code. Ex: `{ dataLabelColor:'0088CC' }`     |
 | `dataLabelFormatCode`  | string  |         |           | format to show data value  | format string. Ex: `{ dataLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
 | `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
+| `gridLineColor`        | string  |         | `000000`  | grid line color            | hex color code. Ex: `{ gridLineColor:'0088CC' }`     |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
+| `lineShadow`           | object  |         |           | data line shadow options   | `'none'` or [shadow options](#chart-line-shadow-options) |
+| `lineSize`             | number  | points  | `2`       | thickness of data line     | 1 and more. Ex: `{ lineSize: 1 }` |
+| `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
+
+### Chart Line Shadow Options
+| Option       | Type    | Unit    | Default   | Description         | Possible Values                            |
+| :----------- | :------ | :------ | :-------- | :------------------ | :----------------------------------------- |
+| `type`       | string  |         | `outer`   | shadow type         | `outer` or `inner`. Ex: `{ type:'outer' }` |
+| `angle`      | number  | degrees | `90`      | shadow angle        | 0-359. Ex: `{ angle:90 }`                  |
+| `blur`       | number  | points  | `3`       | blur size           | 1-256. Ex: `{ blur:3 }`                    |
+| `color`      | string  |         | `000000`  | line color          | hex color code. Ex: `{ color:'0088CC' }`   |
+| `offset`     | number  | points  | `1.8`     | offset size         | 1-256. Ex: `{ offset:2 }`                  |
+| `opacity`    | number  | percent | `0.35`    | opacity             | 0-1. Ex: `{ opacity:0.35 }`                |
 
 ### Chart Examples
 ```javascript

@@ -148,6 +148,7 @@ h3 {
 fieldset {
     border: 1px dotted #aaa;
     background: #fff;
+	margin-bottom: 20px;
 }
 fieldset legend {
     font-size: 14px;

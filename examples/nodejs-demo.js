@@ -10,6 +10,7 @@
 // ============================================================================
 const express = require('express'); // Not core - Only required for streaming
 const app = express(); // Not core - Only required for streaming
+var fs = require('fs');
 
 var GIF_ANIM_FIRE = "";
 var AUDIO_MP3 = "";
@@ -29,8 +30,13 @@ STARTING TEST
 -------------`);
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
-//var pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
-var pptx = require("pptxgenjs");
+var pptx;
+if (fs.existsSync('../dist/pptxgen.js')) {
+	pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+}
+else {
+	pptx = require("pptxgenjs");
+}
 var runEveryTest = require("../examples/pptxgenjs-demo.js");
 if (gConsoleLog) console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
@@ -39,6 +45,15 @@ if (gConsoleLog) console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // L
 // EX: Regular callback - will be sent the export filename once the file has been written to fs
 function saveCallback(filename) {
 	if (gConsoleLog) console.log('Good News Everyone!  File created: '+ filename);
+}
+
+// EX: JSZip callback - take the specified output (`data`) and do whatever
+function jszipCallback(data) {
+	if (gConsoleLog) {
+		console.log('Done!');
+		console.log('First 100 chars of output:\n');
+		console.log( data.substring(0,100) );
+	}
 }
 
 // EX: Callback that receives the PPT binary data - use this to stream file
@@ -75,6 +90,9 @@ pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 // D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
 //pptx.save( 'https://github.com/gitbrent/PptxGenJS/', streamCallback );
+
+// E: or save using various JSZip formats ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
+//pptx.save( 'jszip', jszipCallback, 'base64' );
 
 // **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
 // Create a new variable or reset `pptx` for an empty Presenation
