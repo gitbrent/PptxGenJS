@@ -79,6 +79,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Slide Master Examples](#slide-master-examples)
   - [Slide Master Object Options](#slide-master-object-options)
   - [Sample Slide Master File](#sample-slide-master-file)
+  - [Layouting – New Approach](#layouting-–-new-approach)
 - [Table-to-Slides Feature](#table-to-slides-feature)
   - [Table-to-Slides Options](#table-to-slides-options)
   - [Table-to-Slides HTML Options](#table-to-slides-html-options)
@@ -102,7 +103,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 
 **************************************************************************************************
 # Live Demo
-Use JavaScript to Create a PowerPoint presentation with your web browser right now:  
+Use JavaScript to Create a PowerPoint presentation with your web browser right now:
 [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 # Installation
@@ -827,12 +828,12 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `hyperlink`  | string  |        |           | add hyperlink | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
-**NOTES**  
+**NOTES**
 * SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
 properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
 * Using `path` to add remote images (images from a different server) is not currently supported.
 
-**Deprecation Warning**  
+**Deprecation Warning**
 Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1, 1, 6, 3)`) are now deprecated as of 1.1.0
 
 ### Image Examples
@@ -914,7 +915,7 @@ PptxGenJS allows you to define Master Slides via objects that can then be used t
 functionality.
 
 Slide Masters are defined using the same object style used in Slides. Add these objects as a variable to a file that
-is included in the script src tags on your page, then reference them by name in your code.  
+is included in the script src tags on your page, then reference them by name in your code.
 E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
 
 ## Slide Master Examples
@@ -941,9 +942,9 @@ var gObjPptxMasters = {
     ]
   }
 };
-```  
+```
 Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
-by their key names that you created (e.g.: "TITLE_SLIDE").  
+by their key names that you created (e.g.: "TITLE_SLIDE").
 
 **TIP:**
 Pre-encode your images (base64) and add the string as the optional data key/val
@@ -975,8 +976,45 @@ pptx.save();
 | `title`       | string  |        |          | Slide title        | some title |
 
 ## Sample Slide Master File
-A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
+A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.
 Location: `PptxGenJS/dist/pptxgen.masters.js`
+
+## Layouting – New Approach
+The new approach follows the principles used in PowerPoint. That means, each slide is attached to a slide layout that is attached to the master slide. Slide layouts inherit layout specified in the master file. Thus, if you apply any layout to a slide, objects specified in master slide and the slide layout will all appear in the slide. Advantage of this principle resides in the layouts variability. PPTX generated this way includes layout definitions easily changeable by user so that they can manipulate repetitive elements globally, for all the slides at once.
+
+To enable the new approach, call the following method any time before saving presentation:
+```javascript
+pptx.useProperLayoutMaster();
+```
+
+### Master Slide
+Defining the master slide is optional. It remains empty if not specified. If you want to specify layout that will apply globally to all slides, set up the master slide as following:
+
+```javascript
+pptx.setMasterSlide({
+  bkgd: 'ff0000',
+  objects: [ { text: { text: 'Hello World', x: 1, y: 1 } } ]
+});
+```
+The configuration object is still the same as in [Slide Master Object Options](#slide-master-object-options) except for the `title` property that has no effect in this case.
+
+### Slide Layout
+Slide layout enables you to create more specific slide designs based on the master slide. The same configuration object as in the master slide is used to describe slide layout design; but this time, the `title` property is required and needs to be unique.
+
+```javascript
+pptx.addLayoutSlide({
+  title: 'welcome'
+  bkgd: 'ff0000',
+  objects: [ { text: { text: 'Hello World', x: 1, y: 1 } } ]
+});
+```
+
+Then, the defined layouts can be applied to a slide passing their name as the first argument:
+```javascript
+pptx.addNewSlide('welcome', { bkgd: '0000ff' });
+```
+
+You are not required to specify layout name for each slide. if you pass falsy (or no) value, an empty layout already defined inside the library will be used.
 
 **************************************************************************************************
 # Table-to-Slides Feature
@@ -1051,7 +1089,7 @@ Add a button to a webpage that will create a Presentation using whatever table d
  onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
 
-**SharePoint Integration**  
+**SharePoint Integration**
 
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
@@ -1095,7 +1133,7 @@ boost (no time will need to be consumed reading and encoding the image).
 **************************************************************************************************
 # Building with Webpack/Typescript
 
-Add this to your webpack config to avoid a module resolution error:  
+Add this to your webpack config to avoid a module resolution error:
 `node: { fs: "empty" }`
 
 [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
