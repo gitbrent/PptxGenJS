@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170820";
+	var APP_REL = "20170821";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -112,6 +112,7 @@ var PptxGenJS = function(){
 	var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
 	var EMU = 914400;  // One (1) inch (OfficeXML measures in EMU (English Metric Units))
 	var ONEPT = 12700; // One (1) point (pt)
+	var JSZIP_OUTPUT_TYPES = ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']; /** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
 	//
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 	var DEF_FONT_SIZE = 12;
@@ -160,7 +161,7 @@ var PptxGenJS = function(){
 	/**
 	 * DESC: Export the .pptx file
 	 */
-	function doExportPresentation(callback) {
+	function doExportPresentation(callback, outputType) {
 		var arrChartPromises = [];
 		var intSlideNum = 0, intRels = 0;
 
@@ -424,7 +425,10 @@ var PptxGenJS = function(){
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-			if ( NODEJS ) {
+			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0) {
+				zip.generateAsync({ type:outputType }).then(callback);
+			}
+			else if ( NODEJS ) {
 				if ( callback ) {
 					if ( strExportName.indexOf('http') == 0 ) {
 						zip.generateAsync({type:'nodebuffer'}).then(function(content){ callback(content); });
@@ -2859,7 +2863,7 @@ var PptxGenJS = function(){
 	 * Export the Presentation to an .pptx file
 	 * @param {string} [inStrExportName] - Filename to use for the export
 	 */
-	this.save = function save(inStrExportName, callback) {
+	this.save = function save(inStrExportName, callback, outputType) {
 		var intRels = 0, arrRelsDone = [];
 
 		// STEP 1: Set export title (if any)
@@ -2893,7 +2897,7 @@ var PptxGenJS = function(){
 		});
 
 		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-		if ( intRels == 0 ) doExportPresentation(callback);
+		if ( intRels == 0 ) doExportPresentation(callback, outputType);
 	};
 
 	/**
