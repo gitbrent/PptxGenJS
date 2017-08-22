@@ -4517,83 +4517,28 @@ var PptxGenJS = function(){
 	};
 
 	/**
-	 * Add a new slide layout to the presentation.
+	 * Adds a new slide layout to the presentation.
 	 * @param {Object} layoutDef layout definition
 	 * @return {Object} this
 	 */
 	this.addLayoutSlide = function addNewLayoutSlide(layoutDef) {
 		var layoutObj = {};
-		var layoutNum = gObjPptx.layoutDefinitions.length;
-		var layoutObjNum = 0;
 
 		if (!layoutDef.title) {
 			throw Error("Layout requires to be named. Specify `title` in its definition object.");
 		}
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
-		gObjPptx.layoutDefinitions[layoutNum] = {
-			slide: layoutObj,
+		layoutObj = {
+			slide: {},
 			name: layoutDef.title,
 			data: [],
 			rels: [],
 			slideNumberObj: null
 		};
 
-		layoutObj.slideNumber = function( inObj ) {
-			if ( inObj && typeof inObj === 'object' ) gObjPptx.layoutDefinitions[layoutNum].slideNumberObj = inObj;
-			else return gObjPptx.layoutDefinitions[layoutNum].slideNumberObj;
-		};
-
-		layoutObj.addChart = function ( type, data, opt ) {
-			gObjPptxGenerators.addChartDefinition(type, data, opt, gObjPptx.layoutDefinitions[layoutNum]);
-			return this;
-		}
-
-		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
-		// FUTURE: layoutObj.addImage = function(opt){
-		// NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
-		layoutObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
-			if (intPosX === undefined && typeof(strImagePath) === "object") {
-				intPosX = gObjPptx.layoutDefinitions[layoutNum];
-			}
-			gObjPptxGenerators.addImageDefinition(strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData, gObjPptx.layoutDefinitions[layoutNum]);
-			return this;
-		};
-
-		layoutObj.addShape = function( shape, opt ) {
-			gObjPptxGenerators.addShapeDefinition(shape, opt, gObjPptx.layoutDefinitions[layoutNum])
-			return this;
-		};
-
-		layoutObj.addText = function( text, opt ) {
-			gObjPptxGenerators.addTextDefinition(text, opt, gObjPptx.layoutDefinitions[layoutNum]);
-			return this;
-		};
-
-		$.each(layoutDef, function(key, val) {
-
-			if ( key == 'bkgd' ) {
-				gObjPptxGenerators.addBackgroundDefinition(val, gObjPptx.layoutDefinitions[layoutNum]);
-			}
-
-			// Add all Slide Master objects in the order they were given (Issue#53)
-			if ( key == "objects" && Array.isArray(val) && val.length > 0 ) {
-				val.forEach(function(object,idx){
-					var key = Object.keys(object)[0];
-					if      ( MASTER_OBJECTS[key] && key == 'chart' ) layoutObj.addChart( CHART_TYPES[(object.chart.type||'').toUpperCase()], object.chart.data, object.chart.opts );
-					else if ( MASTER_OBJECTS[key] && key == 'image' ) layoutObj.addImage(object[key]);
-					else if ( MASTER_OBJECTS[key] && key == 'line'  ) layoutObj.addShape(gObjPptxShapes.LINE, object[key]);
-					else if ( MASTER_OBJECTS[key] && key == 'rect'  ) layoutObj.addShape(gObjPptxShapes.RECTANGLE, object[key]);
-					else if ( MASTER_OBJECTS[key] && key == 'text'  ) layoutObj.addText(object[key].text, object[key].options);
-				});
-			}
-		});
-
-
-		// Add Slide Numbers
-		if ( layoutDef.slideNumber && typeof layoutDef.slideNumber === 'object' ) layoutObj.slideNumber(layoutDef.slideNumber);
-
-		// LAST: Return this Slide
+		gObjPptxGenerators.createSlideObject(layoutDef, layoutObj);
+		gObjPptx.layoutDefinitions.push(layoutObj)
 		return this;
 	};
 
