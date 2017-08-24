@@ -1073,7 +1073,6 @@ var PptxGenJS = function(){
 				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
 			}
 
-
 			rel.opts.hasArea = hasArea(rel.opts.type);
 
 			if(rel.opts.valAxes){

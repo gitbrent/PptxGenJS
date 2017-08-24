@@ -1296,8 +1296,7 @@ function genSlides_Chart(pptx) {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Dot/Line Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-		function doMultiChart () {
-			console.log('doMultiChart');
+		function doStackedLine () {
 			// TOP-RIGHT:
 			var optsMultiChart = {
 				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
@@ -1332,7 +1331,6 @@ function genSlides_Chart(pptx) {
 					}, {
 						showValAxisTitle: true,
 						valAxisTitle: 'Secondary Value Axis',
-						catAxisOrientation  : 'maxMin',
 						valAxisTitleColor: 'c11c13',
 						valAxisTitleFontSize: 12,
 						valAxisLabelColor: '',
@@ -1405,7 +1403,7 @@ function genSlides_Chart(pptx) {
 			slide.addChart(chartTypes, optsMultiChart);
 		}
 
-		function doStackedLine () {
+		function XdoStackedLine () {
 			console.log('doStackedLine');
 			var arrDataHighVals = [
 				{
@@ -1536,10 +1534,9 @@ function genSlides_Chart(pptx) {
 			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
 		}
 
-		//doStackedLine();
+		doStackedLine();
 		//addDotChart();
 		//addDotChartTwoAxes();
-		doMultiChart();
 	}
 
 	slideDotLine();
