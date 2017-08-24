@@ -1163,6 +1163,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 11: Multi Type ---------------------------------------------------------
 	function slideMultiType () {
+
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Multi Type Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1281,6 +1282,8 @@ function genSlides_Chart(pptx) {
 			slide.addChart( pptx.charts.LINE, arrDataLineStat, options );
 		}
 
+
+
 		doMultiChart();
 		doStandardStacked();
 		addDotChart();
@@ -1298,7 +1301,7 @@ function genSlides_Chart(pptx) {
 			// TOP-RIGHT:
 			var optsMultiChart = {
 				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
-				barDir: 'bar',
+				barDir: 'col',
 				barGrouping: 'stacked',
 
 				catAxisLabelColor: '0000CC',
@@ -1314,7 +1317,7 @@ function genSlides_Chart(pptx) {
 
 				dataNoEffects: true,
 
-				XvalAxes:[
+				valAxes:[
 					{
 						showValAxisTitle: true,
 						valAxisTitle: 'Primary Value Axis',
@@ -1335,13 +1338,13 @@ function genSlides_Chart(pptx) {
 						valAxisLabelColor: '',
 						valAxisLabelFontFace: '',
 						valAxisLabelFontSize: 10,
-						valAxisMajorUnit: 10,
-						valAxisMaxVal: 100,
-						valAxisMinVal: 10
+						valAxisMajorUnit: 2,
+						valAxisMaxVal: 10,
+						valAxisMinVal: 1
 					}
 				],
 
-				XcatAxes: [
+				catAxes: [
 					{
 						catAxisLabelColor: '',
 						catAxisLabelFontFace: '',
@@ -1351,6 +1354,7 @@ function genSlides_Chart(pptx) {
 						catAxisTitleFontFace: 'Arial',
 						catAxisTitleFontSize: 18
 					}, {
+						visible: false,
 						catAxisLabelColor: '',
 						catAxisLabelFontFace: '',
 						catAxisLabelFontSize: 10,
@@ -1381,19 +1385,19 @@ function genSlides_Chart(pptx) {
 						values: [10, 22, 25, 35, 70]
 					}],
 					options: {
-						barGrouping: 'stacked',
-						secondaryAxis: false
+						barGrouping: 'stacked'
 					}
 				}, {
 					type: pptx.charts.LINE,
 					data: [{
 						name: 'Current',
 						labels: ['April', 'May', 'June', 'July', 'August'],
-						values: [50, 34, 112, 45, 75]
+						values: [5, 3, 2, 4, 7]
 					}],
 					options: {
 						barGrouping: 'standard',
-						secondaryAxis: false
+						secondaryValAxis: !!optsMultiChart.valAxes,
+						secondaryCatAxis: !!optsMultiChart.catAxes
 					}
 				}
 			];

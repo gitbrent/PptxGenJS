@@ -1036,7 +1036,8 @@ var PptxGenJS = function(){
 			}
 		}
 
-		var usesSecondaryAxis = false;
+		var usesSecondaryValAxis = false;
+		//var usesSecondaryCatAxis = false;
 
 		// A: CHART TYPES -----------------------------------------------------------
 		if (Array.isArray(rel.opts.type)) {
@@ -1044,9 +1045,9 @@ var PptxGenJS = function(){
 				var chartType = type.type.name;
 				var data = type.data;
 				var options = mix(rel.opts, type.options);
-				var valAxisId = options.secondaryAxis ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
-				var catAxisId = options.secondaryAxis ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
-				usesSecondaryAxis = usesSecondaryAxis || options.secondaryAxis;
+				var valAxisId = options.secondaryValAxis ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
+				var catAxisId = options.secondaryCatAxis ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
+				usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
 				strXml += makeChartType(chartType, data, options, valAxisId, catAxisId);
 			});
 		} else {
@@ -1057,7 +1058,7 @@ var PptxGenJS = function(){
 		// B: AXES -----------------------------------------------------------
 		if(rel.opts.type.name !== 'pie' || rel.opts.type.name !== 'doughnut'){
 
-			if(rel.opts.valAxes && !usesSecondaryAxis){
+			if(rel.opts.valAxes && !usesSecondaryValAxis){
 				throw new Error('Secondary must be used by one of multiple charts');
 			}
 
