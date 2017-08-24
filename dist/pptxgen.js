@@ -63,7 +63,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170821";
+	var APP_REL = "20170822";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -113,6 +113,7 @@ var PptxGenJS = function(){
 	var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
 	var EMU = 914400;  // One (1) inch (OfficeXML measures in EMU (English Metric Units))
 	var ONEPT = 12700; // One (1) point (pt)
+	var REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 	var JSZIP_OUTPUT_TYPES = ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']; /** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
 	//
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
@@ -122,9 +123,6 @@ var PptxGenJS = function(){
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
-
-
-	var RE_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -143,9 +141,9 @@ var PptxGenJS = function(){
 
 	// C: Expose shape library to clients
 	this.charts  = CHART_TYPES;
+	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
 	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
-	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
 
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
@@ -508,9 +506,9 @@ var PptxGenJS = function(){
 	 * innerElements (optional string): Additional elements that adjust the color and are enclosed by the color element.
 	 */
 	function createColorElement(colorStr, innerElements) {
-		var tagName = RE_HEX_COLOR.test(colorStr) ? 'srgbClr' : 'schemeClr';
-		var colorAttr = ' val="' + colorStr + '"';
-		return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements +'</a:' + tagName + '>' : '<a:' + tagName + colorAttr + ' />';
+		var tagName = REGEX_HEX_COLOR.test(colorStr) ? 'srgbClr' : 'schemeClr';
+		var colorAttr = ' val="'+ colorStr +'"';
+		return innerElements ? '<a:'+ tagName + colorAttr +'>'+ innerElements +'</a:'+ tagName +'>' : '<a:'+ tagName + colorAttr +' />';
 	}
 
 	/**
@@ -1004,7 +1002,7 @@ var PptxGenJS = function(){
 			strXml =  '<'+ tagName + '>';
 			strXml += ' <c:spPr>';
 			strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
-			strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
+			strXml += '  <a:solidFill>'+ createColorElement(glOpts.color || defaults.color) +'</a:solidFill>';
 			strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
 			strXml += '  </a:ln>';
 			strXml += ' </c:spPr>';
@@ -1103,7 +1101,7 @@ var PptxGenJS = function(){
 						strXml += '<a:prstDash val="' + (rel.opts.line_dash || "solid") + '"/><a:round/></a:ln>';
 					}
 					else if ( rel.opts.dataBorder ) {
-						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(rel.opts.dataBorder.color) +'"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(rel.opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
 					if ( rel.opts.lineShadow !== 'none' ) {
 						strXml += '<a:effectLst>';
