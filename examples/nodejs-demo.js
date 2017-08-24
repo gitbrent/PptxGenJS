@@ -47,6 +47,15 @@ function saveCallback(filename) {
 	if (gConsoleLog) console.log('Good News Everyone!  File created: '+ filename);
 }
 
+// EX: JSZip callback - take the specified output (`data`) and do whatever
+function jszipCallback(data) {
+	if (gConsoleLog) {
+		console.log('Done!');
+		console.log('First 100 chars of output:\n');
+		console.log( data.substring(0,100) );
+	}
+}
+
 // EX: Callback that receives the PPT binary data - use this to stream file
 function streamCallback(data) {
 	var strFilename = "Node-Presenation-Streamed.pptx";
@@ -81,6 +90,9 @@ pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 // D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
 //pptx.save( 'https://github.com/gitbrent/PptxGenJS/', streamCallback );
+
+// E: or save using various JSZip formats ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
+//pptx.save( 'jszip', jszipCallback, 'base64' );
 
 // **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
 // Create a new variable or reset `pptx` for an empty Presenation
