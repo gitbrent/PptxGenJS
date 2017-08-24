@@ -1037,7 +1037,6 @@ var PptxGenJS = function(){
 		}
 
 		var usesSecondaryValAxis = false;
-		//var usesSecondaryCatAxis = false;
 
 		// A: CHART TYPES -----------------------------------------------------------
 		if (Array.isArray(rel.opts.type)) {
@@ -1059,12 +1058,17 @@ var PptxGenJS = function(){
 		if(rel.opts.type.name !== 'pie' || rel.opts.type.name !== 'doughnut'){
 
 			if(rel.opts.valAxes && !usesSecondaryValAxis){
-				throw new Error('Secondary must be used by one of multiple charts');
+				throw new Error('Secondary axis must be used by one of the multiple charts');
 			}
 
 			if(rel.opts.catAxes){
-				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
-				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_SECONDARY);
+				if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
+					throw new Error('There must be the same number of value and category axes.');
+				}
+				strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY);
+				if (rel.opts.catAxes[1]) {
+					strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY);
+				}
 			} else {
 				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
 			}
@@ -1074,7 +1078,9 @@ var PptxGenJS = function(){
 
 			if(rel.opts.valAxes){
 				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
-				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY, AXIS_ID_CATEGORY_SECONDARY);
+				if (rel.opts.valAxes[1]) {
+					strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY, AXIS_ID_CATEGORY_SECONDARY);
+				}
 			} else {
 				strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_CATEGORY_SECONDARY);
 			}
@@ -1517,7 +1523,7 @@ var PptxGenJS = function(){
 				rotate: opts.catAxisTitleRotate
 			});
 		}
-
+		console.log('opts.catAxisHidden', opts.catAxisHidden);
 		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';

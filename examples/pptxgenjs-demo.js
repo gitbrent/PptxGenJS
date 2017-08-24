@@ -1340,7 +1340,8 @@ function genSlides_Chart(pptx) {
 						valAxisLabelFontSize: 10,
 						valAxisMajorUnit: 2,
 						valAxisMaxVal: 10,
-						valAxisMinVal: 1
+						valAxisMinVal: 1,
+						valGridLine: 'none'
 					}
 				],
 
@@ -1354,7 +1355,7 @@ function genSlides_Chart(pptx) {
 						catAxisTitleFontFace: 'Arial',
 						catAxisTitleFontSize: 18
 					}, {
-						visible: false,
+						catAxisHidden: true,
 						catAxisLabelColor: '',
 						catAxisLabelFontFace: '',
 						catAxisLabelFontSize: 10,
