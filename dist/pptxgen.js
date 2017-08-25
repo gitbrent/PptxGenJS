@@ -1150,8 +1150,26 @@ var PptxGenJS = function(){
 			strXml += '</c:plotArea>';
 
 			// OPTION: Legend
-			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-			if ( rel.opts.showLegend ) strXml += '<c:legend><c:legendPos val="'+ rel.opts.legendPos +'"/><c:layout/><c:overlay val="0"/></c:legend>';
+			// IMPORTANT: Don't specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+			if ( rel.opts.showLegend ) {
+				strXml += '<c:legend>';
+				strXml += '<c:legendPos val="' + rel.opts.legendPos + '"/>';
+				strXml += '<c:layout/>';
+				strXml += '<c:overlay val="0"/>';
+				if(rel.opts.legendFontSize){
+					strXml += '<c:txPr>';
+					strXml += '  <a:bodyPr/>';
+					strXml += '  <a:lstStyle/>';
+					strXml += '  <a:p>';
+					strXml += '  <a:pPr>';
+					strXml += '    <a:defRPr sz="'+(Number(rel.opts.legendFontSize) * 100)+'"/>';
+					strXml += '    </a:pPr>';
+					strXml += '    <a:endParaRPr lang="en-US"/>';
+					strXml += '  </a:p>';
+					strXml += '</c:txPr>';
+				}
+				strXml += '</c:legend>';
+			}
 		}
 
 		strXml += '  <c:plotVisOnly val="1"/>';
