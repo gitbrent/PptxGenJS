@@ -1248,6 +1248,375 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 
+	// SLIDE 13: Mult Type Charts ---------------------------------------------------------
+	function slide13 () {
+		// powerpoint 2016 add secondary category axis labels
+		// https://peltiertech.com/chart-with-a-dual-category-axis/
+
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Mult Type Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		function doStackedLine () {
+			// TOP-RIGHT:
+			var opts = {
+				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
+				barDir: 'col',
+				barGrouping: 'stacked',
+				catAxisLabelColor: '0000CC',
+				catAxisLabelFontFace: 'Arial',
+				catAxisLabelFontSize: 12,
+				catAxisOrientation: 'minMax',
+				showLegend: false,
+				showTitle: false,
+				valAxisMaxVal: 100,
+				valAxisMajorUnit: 10
+			};
+
+			var labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
+			var chartTypes = [
+				{
+					type: pptx.charts.BAR,
+					data: [{
+						name: 'Bottom',
+						labels: labels,
+						values: [17, 26, 53, 10, 4]
+					},
+						{
+							name: 'Middle',
+							labels: labels,
+							values: [55, 40, 20, 30, 15]
+						},
+						{
+							name: 'Top',
+							labels: labels,
+							values: [10, 22, 25, 35, 70]
+						}],
+					options: {
+						barGrouping: 'stacked'
+					}
+				}, {
+					type: pptx.charts.LINE,
+					data: [{
+						name: 'Current',
+						labels: labels,
+						values: [25, 35, 55, 10, 5]
+					}],
+					options: {
+						barGrouping: 'standard'
+					}
+				}
+			];
+			slide.addChart(chartTypes, opts);
+		}
+
+		function doColumnAreaLine () {
+			var opts = {
+				x: 0.6, y: 0.6, w: 6.0, h: 3.0,
+				barDir: 'col',
+				catAxisLabelColor: '666666',
+				catAxisLabelFontFace: 'Arial',
+				catAxisLabelFontSize: 12,
+				catAxisOrientation: 'minMax',
+				showLegend: false,
+				showTitle: false,
+				valAxisMaxVal: 100,
+				valAxisMajorUnit: 10,
+
+				valAxes:[
+					{
+						showValAxisTitle: true,
+						valAxisTitle: 'Primary Value Axis'
+					}, {
+						showValAxisTitle: true,
+						valAxisTitle: 'Secondary Value Axis',
+						valGridLine: 'none'
+					}
+				],
+
+				catAxes: [
+					{
+						catAxisTitle: 'Primary Category Axis'
+					}, {
+						catAxisHidden: true
+					}
+				]
+			};
+
+			var labels = ['April', 'May', 'June', 'July', 'August'];
+			var chartTypes = [
+				{
+					type: pptx.charts.AREA,
+					data: [{
+						name: 'Current',
+						labels: labels,
+						values: [1, 4, 7, 2, 3]
+					}],
+					options: {
+						chartColors: ['00FFFF'],
+						barGrouping: 'standard',
+						secondaryValAxis: !!opts.valAxes,
+						secondaryCatAxis: !!opts.catAxes
+					}
+				}, {
+					type: pptx.charts.BAR,
+					data: [{
+						name: 'Bottom',
+						labels: labels,
+						values: [17, 26, 53, 10, 4]
+					}],
+					options: {
+						chartColors: ['0000FF'],
+						barGrouping: 'stacked'
+					}
+				}, {
+					type: pptx.charts.LINE,
+					data: [{
+						name: 'Current',
+						labels: labels,
+						values: [5, 3, 2, 4, 7]
+					}],
+					options: {
+						barGrouping: 'standard',
+						secondaryValAxis: !!opts.valAxes,
+						secondaryCatAxis: !!opts.catAxes
+					}
+				}
+			];
+			slide.addChart(chartTypes, opts);
+		}
+
+		function doStackedDot () {
+			// BOT-LEFT:
+			var opts = {
+				x: 0.6, y: 3.8, w: 6.0, h: 3.0,
+				barDir: 'col',
+				barGrouping: 'stacked',
+				catAxisLabelColor: '999999',
+				catAxisLabelFontFace: 'Arial',
+				catAxisLabelFontSize: 14,
+				catAxisOrientation: 'minMax',
+				showLegend: false,
+				showTitle: false,
+				valAxisMaxVal: 100,
+				valAxisMinVal: 0,
+				valAxisMajorUnit: 20,
+
+				lineSize: 0,
+				lineDataSymbolSize: 20,
+				lineDataSymbolLineSize: 2,
+				lineDataSymbolLineColor: 'FF0000',
+
+				//dataNoEffects: true,
+
+				valAxes:[
+					{
+						showValAxisTitle: true,
+						valAxisTitle: 'Primary Value Axis'
+					}, {
+						showValAxisTitle: true,
+						valAxisTitle: 'Secondary Value Axis',
+						catAxisOrientation  : 'maxMin',
+						valAxisMajorUnit: 1,
+						valAxisMaxVal: 10,
+						valAxisMinVal: 1,
+						valGridLine: 'none'
+					}
+				],
+				catAxes: [
+					{
+						catAxisTitle: 'Primary Category Axis'
+					}, {
+						catAxisHidden: true
+					}
+
+				]
+			};
+
+			var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
+			var chartTypes = [
+				{
+					type: pptx.charts.BAR,
+					data: [{
+						name: 'Bottom',
+						labels: labels,
+						values: [17, 26, 53, 10, 4]
+					},
+						{
+							name: 'Middle',
+							labels: labels,
+							values: [55, 40, 20, 30, 15]
+						},
+						{
+							name: 'Top',
+							labels: labels,
+							values: [10, 22, 25, 35, 70]
+						}],
+					options: {
+						barGrouping: 'stacked'
+					}
+				}, {
+					type: pptx.charts.LINE,
+					data: [{
+						name: 'Current',
+						labels: labels,
+						values: [5, 3, 2, 4, 7]
+					}],
+					options: {
+						barGrouping: 'standard',
+						secondaryValAxis: !!opts.valAxes,
+						secondaryCatAxis: !!opts.catAxes,
+						chartColors: ['FFFF00']
+					}
+				}
+			];
+			slide.addChart(chartTypes, opts);
+		}
+
+		function doBarCol () {
+			// BOT-RGT:
+			var opts = {
+				x: 7, y: 3.8, w: 6.0, h: 3.0,
+				barDir: 'col',
+				barGrouping: 'stacked',
+				catAxisLabelColor: '999999',
+				catAxisLabelFontFace: 'Arial',
+				catAxisLabelFontSize: 14,
+				catAxisOrientation: 'minMax',
+				showLegend: false,
+				showTitle: false,
+				valAxisMaxVal: 100,
+				valAxisMinVal: 0,
+				valAxisMajorUnit: 20,
+				valAxes:[
+					{
+						showValAxisTitle: true,
+						valAxisTitle: 'Primary Value Axis'
+					}, {
+						showValAxisTitle: true,
+						valAxisTitle: 'Secondary Value Axis',
+						catAxisOrientation  : 'maxMin',
+						valAxisMajorUnit: 1,
+						valAxisMaxVal: 10,
+						valAxisMinVal: 1,
+						valGridLine: 'none'
+					}
+				],
+				catAxes: [
+					{
+						catAxisTitle: 'Primary Category Axis'
+					}, {
+						catAxisHidden: true
+					}
+
+				]
+			};
+
+			var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
+			var chartTypes = [
+				{
+					type: pptx.charts.BAR,
+					data: [{
+						name: 'Bottom',
+						labels: labels,
+						values: [17, 26, 53, 10, 4]
+					},
+						{
+							name: 'Middle',
+							labels: labels,
+							values: [55, 40, 20, 30, 15]
+						},
+						{
+							name: 'Top',
+							labels: labels,
+							values: [10, 22, 25, 35, 70]
+						}],
+					options: {
+						barGrouping: 'stacked'
+					}
+				}, {
+					type: pptx.charts.BAR,
+					data: [{
+						name: 'Current',
+						labels: labels,
+						values: [5, 3, 2, 4, 7]
+					}],
+					options: {
+						barDir: 'bar',
+						barGrouping: 'standard',
+						secondaryValAxis: !!opts.valAxes,
+						secondaryCatAxis: !!opts.catAxes
+					}
+				}
+			];
+			slide.addChart(chartTypes, opts);
+		}
+
+		function readmeExample () {
+			// for testing - not rendered in demo
+			var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
+			var chartTypes = [
+				{
+					type: pptx.charts.BAR,
+					data: [{
+						name: 'Projected',
+						labels: labels,
+						values: [17, 26, 53, 10, 4]
+					}],
+					options: {
+						barDir: 'col'
+					}
+				}, {
+					type: pptx.charts.LINE,
+					data: [{
+						name: 'Current',
+						labels: labels,
+						values: [5, 3, 2, 4, 7]
+					}],
+					options: {
+						secondaryValAxis: true,
+						secondaryCatAxis: true
+					}
+				}
+			];
+			var multiOpts = {
+				x:1.0, y:1.0, w:6, h:6,
+				valAxisMaxVal: 100,
+				valAxisMinVal: 0,
+				valAxisMajorUnit: 20,
+				valAxes:[
+					{
+						showValAxisTitle: true,
+						valAxisTitle: 'Primary Value Axis'
+					}, {
+						showValAxisTitle: true,
+						valAxisTitle: 'Secondary Value Axis',
+						valAxisMajorUnit: 1,
+						valAxisMaxVal: 10,
+						valAxisMinVal: 1,
+						valGridLine: 'none'
+					}
+				],
+				catAxes: [
+					{
+						catAxisTitle: 'Primary Category Axis'
+					}, {
+						catAxisHidden: true
+					}
+
+				]
+			};
+
+			slide.addChart(chartTypes, multiOpts);
+		}
+
+		doBarCol();
+		doStackedDot();
+		doColumnAreaLine();
+		doStackedLine();
+
+		//readmeExample();
+	}
+
 	slide1();
 	slide2();
 	slide3();
@@ -1260,6 +1629,7 @@ function genSlides_Chart(pptx) {
 	slide10();
 	slide11();
 	slide12();
+	slide13();
 }
 
 function genSlides_Media(pptx) {

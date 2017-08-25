@@ -1190,8 +1190,6 @@ var PptxGenJS = function(){
 
 	function makeChartType (chartType, data, opts, valAxisId, catAxisId) {
 
-		console.log('makeChartType', chartType, data, opts);
-
 		function getExcelColName(length) {
 			var strName = '';
 
@@ -1236,7 +1234,6 @@ var PptxGenJS = function(){
 
 				data.forEach(function(obj){
 					var idx = obj.index;
-					console.log('data', idx, obj);
 					strXml += '<c:ser>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:order val="'+ idx +'"/>';
@@ -1258,9 +1255,13 @@ var PptxGenJS = function(){
 						strXml += '    <a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
 					}
 
-					if ( opts.type == 'line' ) {
-						strXml += '<a:ln w="'+ (opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill>' + createColorElement(strSerColor) +'</a:solidFill>';
-						strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+					if ( chartType == 'line' ) {
+						if (opts.lineSize === 0){
+							strXml += '<a:ln><a:noFill/></a:ln>';
+						} else {
+							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
+							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+						}
 					}
 					else if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -1282,7 +1283,9 @@ var PptxGenJS = function(){
 						}
 						strXml += '  <c:spPr>';
 	  					strXml += '    <a:solidFill>' + createColorElement(opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)]) +'</a:solidFill>';
-						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+
+	  					var symbolLineColor = opts.lineDataSymbolLineColor || strSerColor;
+						strXml += '    <a:ln w="' + opts.lineDataSymbolLineSize + '" cap="flat"><a:solidFill>'+ createColorElement(symbolLineColor) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
 						strXml += '</c:marker>';
@@ -1298,12 +1301,14 @@ var PptxGenJS = function(){
 							strXml += '    <c:invertIfNegative val="1"/>';
 							strXml += '    <c:bubble3D val="0"/>';
 							strXml += '    <c:spPr>';
-							strXml += '    <a:solidFill>';
-							strXml += '     <a:srgbClr val="'+opts.chartColors[index % opts.chartColors.length]+'"/>';
-							strXml += '    </a:solidFill>';
-							if(opts.dataNoEffects){
-								strXml += '    <a:effectLst/>';
+							if (opts.lineSize === 0){
+								strXml += '<a:ln><a:noFill/></a:ln>';
 							} else {
+								strXml += '    <a:solidFill>';
+								strXml += '     <a:srgbClr val="' + opts.chartColors[index % opts.chartColors.length] + '"/>';
+								strXml += '    </a:solidFill>';
+							}
+
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
 							strXml += '    	<a:srgbClr val="000000">';
@@ -1311,7 +1316,6 @@ var PptxGenJS = function(){
 							strXml += '    	</a:srgbClr>';
 							strXml += '    </a:outerShdw>';
 							strXml += '    </a:effectLst>';
-							}
 							strXml += '    </c:spPr>';
 							strXml += '  </c:dPt>';
 						});
@@ -1373,6 +1377,14 @@ var PptxGenJS = function(){
 				strXml += '    <c:showBubbleSize val="0"/>';
 				strXml += '    <c:showLeaderLines val="0"/>';
 				strXml += '  </c:dLbls>';
+
+				if ( chartType == 'bar' ) {
+					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
+					strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
+				}
+				else if ( chartType == 'line' ) {
+					strXml += '  <c:marker val="1"/>';
+				}
 
 				// order matters - category first
 				strXml += '  <c:axId val="'+ catAxisId +'"/>';
@@ -1535,7 +1547,6 @@ var PptxGenJS = function(){
 	}
 
 	function makeCatAxis (opts, axisId) {
-		console.log('makeCatAxis');
 		var strXml = '';
 
 		strXml += '<c:catAx>';
@@ -1548,7 +1559,6 @@ var PptxGenJS = function(){
 				rotate: opts.catAxisTitleRotate
 			});
 		}
-		console.log('opts.catAxisHidden', opts.catAxisHidden);
 		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
@@ -1562,7 +1572,7 @@ var PptxGenJS = function(){
 		strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 		strXml += '  <c:spPr>';
 		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-			strXml += '  </c:spPr>';
+		strXml += '  </c:spPr>';
 		strXml += '  <c:txPr>';
 		strXml += '    <a:bodyPr rot="0"/>';
 		strXml += '    <a:lstStyle/>';
@@ -1586,7 +1596,6 @@ var PptxGenJS = function(){
 	}
 
 	function makeValueAxis (opts, valAxisId) {
-		console.log('makeValueAxis');
 		var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir == 'col' ? 'l' : 'b') : (opts.barDir == 'col' ? 'r' : 't');
 		var strXml = '';
 		var isRight = axisPos === 'r' || axisPos === 't';
