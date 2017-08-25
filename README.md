@@ -404,17 +404,6 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees           | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
 | `valGridLine`          | object  |         |              | value grid line style        | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 
-| `secCatAxisVisible`    | boolean |         | `false`   | show secondary category axis       | `true` or `false`   |
-| `secCatAxisTitle`      | string  |         | `Axis Title` | show secondary category axis title   | a string. Ex: `{ secCatAxisTitle:'Regions' }` |
-
-| `secValAxisVisible`| boolean |        | `false`   | show secondary value-axis title | `true` or `false`.  Ex:`{ secValAxisTitleVisible:true }` |
-| `secValAxisMajorUnit`  | number  | float   | `1.0`     | secondary axis tick steps    | Float or whole number. Ex: `{ secValAxisMajorUnit:0.2 }`      |
-| `secValAxisMaxVal`     | number  |         |           | secondary axis maximum value | 1-N. Ex: `{ secValAxisMaxVal:125 }` |
-| `secValAxisMinVal`     | number  |         |           | secondary axis minimum value | 1-N. Ex: `{ secValAxisMinVal: -10 }` |
-| `secValAxisOrientation` | string  |        | `minMax`  | secondary axis value orientation   | `maxMin` (high->low) or `minMax` (low->high) |
-| `secValAxisTitle`         | string  |         | `Axis Title` | secondary value-axis title   | a string. Ex: `{ secValAxisTitle:'Sales (USD)' }` |
-
-
 ### Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
