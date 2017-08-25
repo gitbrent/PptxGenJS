@@ -43,16 +43,18 @@ h3 {
 	padding: 0 !important;
 	border-bottom: 1px solid #d5d5d5;
 	border-radius: 5px 5px 0 0;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
 }
 .modernTabs > ul > li {
-	box-sizing: border-box;
+	list-style-type:none;
+	padding: 15px 10px;
+}
+.modernTabs > ul > li > a{
 	cursor: pointer;
 	text-shadow: 2px 2px #efefef;
-	width: 14.2%;
-	text-align: center;
-	white-space: nowrap;
-	display: inline-block; list-style-type:none;
-	padding: 15px 10px;
+	text-decoration: none;
 	font-size: 14px;
 	color: #a7a7a7;
 	text-transform: uppercase;
