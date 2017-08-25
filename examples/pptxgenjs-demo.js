@@ -1197,7 +1197,14 @@ function genSlides_Chart(pptx) {
 
 		// BOTH: TOP-RIGHT
 		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'},
+			showLegend:true,
+			legendPos:'t',
+			legendFontSize: 14,
+			showTitle:true,
+			titleAlign: 'left',
+			titlePos: {x: 0, y: 0},
+			title:'Left Title & Large Legend'} );
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1617,19 +1624,19 @@ function genSlides_Chart(pptx) {
 		//readmeExample();
 	}
 
-	slide1();
-	slide2();
-	slide3();
-	slide4();
-	slide5();
-	slide6();
-	slide7();
-	slide8();
-	slide9();
-	slide10();
+	// slide1();
+	// slide2();
+	// slide3();
+	// slide4();
+	// slide5();
+	// slide6();
+	// slide7();
+	// slide8();
+	// slide9();
+	// slide10();
 	slide11();
-	slide12();
-	slide13();
+	// slide12();
+	// slide13();
 }
 
 function genSlides_Media(pptx) {

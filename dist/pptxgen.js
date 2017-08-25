@@ -1060,7 +1060,9 @@ var PptxGenJS = function(){
 					fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
 					color: rel.opts.titleColor,
 					fontFace: rel.opts.titleFontFace,
-					rotate: rel.opts.titleRotate
+					rotate: rel.opts.titleRotate,
+					titleAlign: rel.opts.titleAlign,
+					titlePos: rel.opts.titlePos
 				});
 				strXml += '<c:autoTitleDeleted val="0"/>';
 			}
@@ -1675,6 +1677,7 @@ var PptxGenJS = function(){
 	* DESC: Generate the XML for title elements used for the char and axis titles
 	*/
 	function genXmlTitle(opts) {
+		var align = opts.titleAlign == 'left' ? 'l' : opts.titleAlign == 'right' ? 'r' : false;
 		var strXml = '';
 		strXml += '<c:title>';
 		strXml += ' <c:tx>';
@@ -1687,7 +1690,11 @@ var PptxGenJS = function(){
 		}
 		strXml += '  <a:lstStyle/>';
 		strXml += '  <a:p>';
-		strXml += '    <a:pPr>';
+		if(align) {
+			strXml += '    <a:pPr algn="' + align + '">';
+		} else {
+			strXml += '    <a:pPr>';
+		}
 		var sizeAttr = '';
 		// only set the font size if specified.  Powerpoint will handle the default size
 		if (opts.fontSize !== undefined) {
@@ -1708,7 +1715,18 @@ var PptxGenJS = function(){
 		strXml += '  </a:p>';
 		strXml += '  </c:rich>';
 		strXml += ' </c:tx>';
-		strXml += ' <c:layout/>';
+		if (opts.titlePos) {
+			strXml += '<c:layout>';
+			strXml += '  <c:manualLayout>';
+			strXml += '    <c:xMode val="edge"/>';
+			strXml += '    <c:yMode val="edge"/>';
+			strXml += '    <c:x val="'+ opts.titlePos.x +'"/>';
+			strXml += '    <c:y val="'+ opts.titlePos.y +'"/>';
+			strXml += '  </c:manualLayout>';
+			strXml += '</c:layout>';
+		} else {
+			strXml += ' <c:layout/>';
+		}
 		strXml += ' <c:overlay val="0"/>';
 		strXml += '</c:title>';
 		return strXml;

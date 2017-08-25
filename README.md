@@ -365,9 +365,11 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `showTitle`     | boolean |         | `false`   | show chart title      | `true` or `false` |
 | `showValue`     | boolean |         | `false`   | show data values      | `true` or `false` |
 | `title`         | string  |         |           | chart title           | a string. Ex: `{ title:'Sales by Region' }` |
+| `titleAlign`    | string  |         | `center`  | chart text align      | `left` `center` or `right` Ex: `{ titleAlign:'left' }` |
 | `titleColor`    | string  |         | `000000`  | title color           | hex color code. Ex: `{ titleColor:'0088CC' }` |
 | `titleFontFace` | string  |         | `Arial`   | font face             | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `titleFontSize` | number  | points  | `18`      | font size             | 1-256. Ex: `{ titleFontSize:12 }` |
+| `titlePos`      | object  |         |           | title position        | object with x and y values. Ex: `{ titlePos:{x: 0, y: 10} }` |
 | `titleRotate`   | integer | degrees |           | title rotation degrees             | 0-360. Ex: `{ titleRotate:45 }` |
 
 ### Chart Axis Options
