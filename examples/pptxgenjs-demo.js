@@ -1624,19 +1624,106 @@ function genSlides_Chart(pptx) {
 		//readmeExample();
 	}
 
-	slide1();
-	slide2();
-	slide3();
-	slide4();
-	slide5();
-	slide6();
-	slide7();
-	slide8();
-	slide9();
-	slide10();
-	slide11();
-	slide12();
-	slide13();
+	function slide14 () {
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataRegions = [
+			{
+				name  : 'Region 3',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [17, 26, 53, 100, 75]
+			},
+			{
+				name  : 'Region 4',
+				labels: ['April', 'May', 'June', 'July', 'August'],
+				values: [55, 43, 70, 90, 80]
+			}
+		];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+
+		// TOP-LEFT: H/bar
+		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			barDir: 'bar',
+			barGrouping: 'stacked',
+
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontSize: 14,
+
+			dataLabelColor   : 'FFFFFF',
+			showValue        : true
+		};
+
+		// TOP-RIGHT: V/col
+		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			barDir: 'col',
+			barGrouping: 'stacked',
+
+			dataLabelColor   : 'FFFFFF',
+			dataLabelFontFace: 'Arial',
+			dataLabelFontSize: 12,
+			showValue        : true,
+			catAxisLabelFontSize: 12,
+
+			showLegend: false,
+			showTitle : false
+		};
+
+		// BTM-LEFT: H/bar - 100% layout without axis labels
+		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+			barDir     : 'bar',
+			barGrouping: 'stacked',
+			dataBorder   : { pt:'1', color:'F1F1F1' },
+			catAxisHidden: true,
+			valAxisHidden: true,
+			showTitle    : false,
+			layout       : {x:0.1, y:0.1, w:1, h:1}
+		};
+
+
+		// BTM-RIGHT: V/col - TITLE and LEGEND
+		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			barDir: 'col',
+			barGrouping: 'stacked',
+
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+			chartColors: ['5DA5DA','FAA43A']
+		};
+
+		//slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+		//slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
+		//slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+	}
+
+	// slide1();
+	// slide2();
+	// slide3();
+	// slide4();
+	// slide5();
+	// slide6();
+	// slide7();
+	// slide8();
+	// slide9();
+	// slide10();
+	// slide11();
+	// slide12();
+	// slide13();
+	slide14();
 }
 
 function genSlides_Media(pptx) {

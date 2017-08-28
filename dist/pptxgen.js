@@ -123,6 +123,7 @@ var PptxGenJS = function(){
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
+	var DEF_BAR_SHADOW = { opacity: 0.35, angle: 90, color: '000000', blur: 3, offset: (23000 / 12700) };
 
 	var AXIS_ID_VALUE_PRIMARY = '2094734552';
 	var AXIS_ID_VALUE_SECONDARY = '2094734553';
@@ -936,6 +937,23 @@ var PptxGenJS = function(){
 	}
 
 	/**
+	 * DESC: Calc and return excel column name (eg: 'A2')
+	 */
+	function getExcelColName(length) {
+		var strName = '';
+
+		if ( length <= 26 ) {
+			strName = LETTERS[length];
+		}
+		else {
+			strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
+			strName += LETTERS[ (length % LETTERS.length) ];
+		}
+
+		return strName;
+	}
+
+	/**
 	 * NOTE: Used by both: text and lineChart
 	 * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
 	 * @param {Object} opts optional shadow properties
@@ -957,6 +975,37 @@ var PptxGenJS = function(){
 		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
 		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
 		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>'
+		strXml += '</a:'+ type +'Shdw>';
+
+		return strXml;
+	}
+
+	/**
+	 * NOTE: Could possibly be used with shapes?
+	 * Creates ``a:outerShdw`.
+	 * @param {Object} opts optional shadow properties
+	 * @param {Object} defaults defaults for unspecified properties in `opts`
+	 * @see http://officeopenxml.com/drwSp-effects.php
+	 */
+
+	var DEF_SHAPE_SHADOW = { opacity: 0.35, angle: 90, color: '000000', blur: 3, offset: (23000 / 12700) };
+	function createShapeShadowElement(opts, defaults) {
+		if(opts === 'none'){
+			return '<a:effectLst/>';
+		}
+		var type            = 'outer',
+			blur            = ( opts.blur    || defaults.blur    ) * ONEPT,
+			offset          = ( opts.offset  || defaults.offset  ) * ONEPT,
+			angle           = ( opts.angle   || defaults.angle   ) * 60000,
+			color           = ( opts.color   || defaults.color   ),
+			opacity         = ( opts.opacity || defaults.opacity ) * 100000,
+			strXml  = "";
+
+		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
+		strXml += ' algn="bl" blurRad="'+ blur +'" ';
+		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
+		strXml += '<a:srgbClr val="'+ color +'">';
+		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>';
 		strXml += '</a:'+ type +'Shdw>';
 
 		return strXml;
@@ -995,22 +1044,6 @@ var PptxGenJS = function(){
 	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
 	*/
 	function makeXmlCharts(rel) {
-		/**
-		 * DESC: Calc and return excel column name (eg: 'A2')
-		 */
-		function getExcelColName(length) {
-			var strName = '';
-
-			if ( length <= 26 ) {
-				strName = LETTERS[length];
-			}
-			else {
-				strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
-				strName += LETTERS[ (length % LETTERS.length) ];
-			}
-
-			return strName;
-		}
 
 		function hasArea (chartType) {
 			function has (type) {
@@ -1022,25 +1055,6 @@ var PptxGenJS = function(){
 				return has('area');
 			}
 			return chartType.name === 'area';
-		}
-
-		/**
-		 * @param {Object} glOpts {size, color, style}
-		 * @param {Object} defaults {size, color, style}
-		 * @param {String} type "major"(default) | "minor"
-		 */
-		function createGridLineElement(glOpts, defaults, type) {
-			type = type || 'major';
-			var tagName = 'c:'+ type + 'Gridlines';
-			strXml =  '<'+ tagName + '>';
-			strXml += ' <c:spPr>';
-			strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
-			strXml += '  <a:solidFill>'+ createColorElement(glOpts.color || defaults.color) +'</a:solidFill>';
-			strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
-			strXml += '  </a:ln>';
-			strXml += ' </c:spPr>';
-			strXml += '</'+ tagName + '>';
-			return strXml;
 		}
 
 		/* ----------------------------------------------------------------------- */
@@ -1251,8 +1265,10 @@ var PptxGenJS = function(){
 				*/
 
 				// this needs to maintain the index depending on the region.... how????????????
-
+				// maintain the color index by region:
+				var colorIndex = -1;
 				data.forEach(function(obj){
+					colorIndex++;
 					var idx = obj.index;
 					strXml += '<c:ser>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
@@ -1265,13 +1281,14 @@ var PptxGenJS = function(){
 					strXml += '  </c:tx>';
 
 					// Fill and Border
-					var strSerColor = opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)];
-					strXml += '  <c:spPr>';
+					var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
 
-					if ( opts.chartColorsOpacity ) {
+					strXml += '  <c:spPr>';
+					if(strSerColor === 'transparent'){
+						strXml += '    <a:noFill/>';
+					} else if ( opts.chartColorsOpacity ) {
 						strXml += '    <a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
-					}
-					else {
+					} else {
 						strXml += '    <a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
 					}
 
@@ -1315,7 +1332,7 @@ var PptxGenJS = function(){
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
 					if ( data.length === 1 && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
-						obj.values.forEach(function(value,index){
+						obj.values.forEach(function(value, index){
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+index+'"/>';
 							strXml += '    <c:invertIfNegative val="1"/>';
