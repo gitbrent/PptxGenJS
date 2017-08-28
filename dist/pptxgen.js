@@ -1224,20 +1224,6 @@ var PptxGenJS = function(){
 
 	function makeChartType (chartType, data, opts, valAxisId, catAxisId) {
 
-		function getExcelColName(length) {
-			var strName = '';
-
-			if ( length <= 26 ) {
-				strName = LETTERS[length];
-			}
-			else {
-				strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
-				strName += LETTERS[ (length % LETTERS.length) ];
-			}
-
-			return strName;
-		}
-
 		var strXml = '';
 		switch ( chartType ) {
 			case 'area':
