@@ -87,6 +87,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Table-to-Slides Examples](#table-to-slides-examples)
   - [Creative Solutions](#creative-solutions)
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
+- [Scheme Colors](#scheme-colors)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
 - [Building with Webpack/Typescript](#building-with-webpacktypescript)
@@ -221,8 +222,8 @@ slide.color = '696969';
 ### Slide Formatting Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code.  |
-| `color`      | string  |        | `000000`  | default text color  | hex color code.  |
+| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code or [scheme color constant](#scheme-colors). |
+| `color`      | string  |        | `000000`  | default text color  | hex color code or [scheme color constant](#scheme-colors). |
 
 ### Applying Master Slides / Branding
 ```javascript
@@ -245,7 +246,7 @@ slide.slideNumber({ x:1.0, y:'90%', fontFace:'Courier', fontSize:32, color:'CF01
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
 | `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
-| `color`      | string  |        |           | text color          | hex color code. Ex: `{color:'0088CC'}` |
+| `color`      | string  |        |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `fontFace`   | string  |        |           | font face           | any available font. Ex: `{fontFace:Arial}` |
 | `fontSize`   | number  | points |           | font size           | 8-256. Ex: `{fontSize:12}` |
 
@@ -276,6 +277,7 @@ pptx.save('Demo-Media');
 ### Node.js
 * Node can accept a callback function that will return the filename once the save is complete
 * Node can also be used to stream a powerpoint file - simply pass a filename that begins with "http"
+* Output type can be specified by passing an optional [JSZip output type](https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html)
 
 ```javascript
 // A: File will be saved to the local working directory (`__dirname`)
@@ -287,6 +289,8 @@ pptx.save( 'Node_Demo', saveCallback );
 // D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
 // Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.
 pptx.save( 'http', streamCallback );
+// E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
+pptx.save( 'jszip', saveCallback, 'base64' );
 ```
 
 Saving multiple Presentations:
@@ -487,8 +491,8 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `breakLine`  | boolean |         | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |         | `false`   | bulleted text       | `true` or `false` |
 | `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
-| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
-| `fill`       | string  |         |           | fill/bkgd color     | hex color code. Ex: `{ color:'0088CC' }` |
+| `color`      | string  |         |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
+| `fill`       | string  |         |           | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
 | `hyperlink`  | string  |         |           | add hyperlink       | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
@@ -512,7 +516,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
 | `angle`      | number  | degrees |           | shadow angle        | 0-359. Ex: `{ angle:180 }`               |
 | `blur`       | number  | points  |           | blur size           | 1-256. Ex: `{ blur:3 }`                  |
-| `color`      | string  |         |           | text color          | hex color code. Ex: `{ color:'0088CC' }` |
+| `color`      | string  |         |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
 | `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
 | `opacity`    | number  | percent |           | opacity             | 0-1. Ex: `opacity:0.75`                  |
 
@@ -643,9 +647,9 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 | `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
 | `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}` |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
-| `color`      | string  |        |           | text color         | hex color code. Ex: `{color:'0088CC'}` |
+| `color`      | string  |        |           | text color         | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` |
-| `fill`       | string  |        |           | fill/bkgd color    | hex color code. Ex: `{color:'0088CC'}` |
+| `fill`       | string  |        |           | fill/bkgd color    | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
 | `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}` |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
@@ -763,11 +767,11 @@ Check the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerP
 | `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
 | `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
-| `fill`       | string  |        |           | fill/bkgd color     | hex color code. Ex: `{color:'0088CC'}` |
+| `fill`       | string  |        |           | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `fill`       | object |   |   | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
 | `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
 | `flipV`      | boolean |        |           | flip Vertical       | `true` or `false` |
-| `line`       | string  |        |           | border line color   | hex color code. Ex: `{line:'0088CC'}` |
+| `line`       | string  |        |           | border line color   | hex color code or [scheme color constant](#scheme-colors). Ex: `{line:'0088CC'}` |
 | `line_dash`  | string  |       | `solid` | border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
 | `line_head`  | string  |        |           | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
 | `line_size`  | number  | points |           | border line size    | 1-256. Ex: {line_size:4} |
@@ -963,7 +967,7 @@ pptx.save();
 ## Slide Master Object Options
 | Option        | Type    | Unit   | Default  | Description  | Possible Values       |
 | :------------ | :------ | :----- | :------- | :----------- | :-------------------- |
-| `bkgd`        | string  |        | `ffffff` | color        | hex color code. Ex: `{ bkgd:'0088CC' }` |
+| `bkgd`        | string  |        | `ffffff` | color        | hex color code or [scheme color constant](#scheme-colors). Ex: `{ bkgd:'0088CC' }` |
 | `bkgd`        | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
 | `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
 | `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
@@ -1099,6 +1103,21 @@ The shapes file contains a complete PowerPoint Shape object array thanks to the 
 
 ```javascript
 <script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
+```
+
+**************************************************************************************************
+# Scheme Colors
+Scheme color is a variable that changes its value whenever another scheme palette is selected. Using scheme colors, design consistency can be easily preserved throughout the presentation and viewers can change color theme without any text/background contrast issues.
+
+To use a scheme color, set a color constant as a property value:
+```javascript
+slide.addText('Hello',  { color: pptx.colors.TEXT1 });
+```
+
+The colors file contains a complete PowerPoint palette definition.
+
+```javascript
+<script lang="javascript" src="PptxGenJS/dist/pptxgen.colors.js"></script>
 ```
 
 **************************************************************************************************
