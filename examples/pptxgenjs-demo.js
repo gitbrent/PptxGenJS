@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Aug 15, 2017
+* DATE: Aug 23, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -1403,10 +1403,10 @@ function genSlides_Shape(pptx) {
 }
 
 function genSlides_Text(pptx) {
-	// SLIDE 1: Line Break / Bullets
+	// SLIDE 1: Multi-Line Formatting, Hyperlinks, Text Shadow, Line-Break
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Text Examples 1', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples: Multi-Line Formatting, Hyperlinks, Text Shadow, Line-Break', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 		// LEFT COLUMN ------------------------------------------------------------
 
@@ -1470,7 +1470,7 @@ function genSlides_Text(pptx) {
 	// SLIDE 2: Bullets
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Text Examples 2: Bullets', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples: Bullets', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
 
 		// LEFT COLUMN ------------------------------------------------------------
 
@@ -1531,7 +1531,7 @@ function genSlides_Text(pptx) {
 		slide.back = '030303';
 		slide.color = '9F9F9F';
 		// Title
-		slide.addTable( [ [{ text:'Text Examples 2', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples: Text alignment, percent x/y, etc.', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
 		slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
@@ -1572,6 +1572,27 @@ function genSlides_Text(pptx) {
 		slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
 			{ x:0, y:6.75, w:'100%', h:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
 		);
+	}
+
+	// SLIDE 4: Scheme Colors
+	{
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Text Examples: Scheme Colors', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+
+		// MISC ------------------------------------------------------------
+
+		slide.addText("TEXT1 / BACKGROUND2", { x:0.5, y:0.7, w:6.0, h:2.0, color:pptx.colors.TEXT1, fill:pptx.colors.BACKGROUND2 });
+		slide.addText("TEXT2 / BACKGROUND1", { x:7.0, y:0.7, w:6.0, h:2.0, color:pptx.colors.TEXT2, fill:pptx.colors.BACKGROUND1 });
+
+		slide.addText("ACCENT1", { x:0.5, y:3.25, w:6.0, h:1.0, color:'FFFFFF', fill:pptx.colors.ACCENT1 });
+		slide.addText("ACCENT2", { x:7.0, y:3.25, w:6.0, h:1.0, color:'FFFFFF', fill:pptx.colors.ACCENT2 });
+		slide.addText("ACCENT3", { x:0.5, y:4.70, w:6.0, h:1.0, color:'FFFFFF', fill:pptx.colors.ACCENT3 });
+		slide.addText("ACCENT4", { x:7.0, y:4.70, w:6.0, h:1.0, color:'FFFFFF', fill:pptx.colors.ACCENT4 });
+		slide.addText("ACCENT5", { x:0.5, y:6.15, w:6.0, h:1.0, color:'FFFFFF', fill:pptx.colors.ACCENT5 });
+		slide.addText("ACCENT6", { x:7.0, y:6.15, w:6.0, h:1.0, color:'FFFFFF', fill:pptx.colors.ACCENT6 });
+
+		// NEGATIVE TEST:
+		//slide.addText("NEGTEST / NEGTEST", { x:0.5, y:0.5, w:'40%', h:0.38, color:pptx.colors.NEGTEST01, fill:pptx.colors.NEGTEST02 });
 	}
 }
 
