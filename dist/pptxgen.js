@@ -936,6 +936,23 @@ var PptxGenJS = function(){
 	}
 
 	/**
+	 * DESC: Calc and return excel column name (eg: 'A2')
+	 */
+	function getExcelColName(length) {
+		var strName = '';
+
+		if ( length <= 26 ) {
+			strName = LETTERS[length];
+		}
+		else {
+			strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
+			strName += LETTERS[ (length % LETTERS.length) ];
+		}
+
+		return strName;
+	}
+
+	/**
 	 * NOTE: Used by both: text and lineChart
 	 * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
 	 * @param {Object} opts optional shadow properties
@@ -995,22 +1012,6 @@ var PptxGenJS = function(){
 	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
 	*/
 	function makeXmlCharts(rel) {
-		/**
-		 * DESC: Calc and return excel column name (eg: 'A2')
-		 */
-		function getExcelColName(length) {
-			var strName = '';
-
-			if ( length <= 26 ) {
-				strName = LETTERS[length];
-			}
-			else {
-				strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
-				strName += LETTERS[ (length % LETTERS.length) ];
-			}
-
-			return strName;
-		}
 
 		function hasArea (chartType) {
 			function has (type) {
@@ -1022,25 +1023,6 @@ var PptxGenJS = function(){
 				return has('area');
 			}
 			return chartType.name === 'area';
-		}
-
-		/**
-		 * @param {Object} glOpts {size, color, style}
-		 * @param {Object} defaults {size, color, style}
-		 * @param {String} type "major"(default) | "minor"
-		 */
-		function createGridLineElement(glOpts, defaults, type) {
-			type = type || 'major';
-			var tagName = 'c:'+ type + 'Gridlines';
-			strXml =  '<'+ tagName + '>';
-			strXml += ' <c:spPr>';
-			strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
-			strXml += '  <a:solidFill>'+ createColorElement(glOpts.color || defaults.color) +'</a:solidFill>';
-			strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
-			strXml += '  </a:ln>';
-			strXml += ' </c:spPr>';
-			strXml += '</'+ tagName + '>';
-			return strXml;
 		}
 
 		/* ----------------------------------------------------------------------- */
@@ -1189,20 +1171,6 @@ var PptxGenJS = function(){
 	}
 
 	function makeChartType (chartType, data, opts, valAxisId, catAxisId) {
-
-		function getExcelColName(length) {
-			var strName = '';
-
-			if ( length <= 26 ) {
-				strName = LETTERS[length];
-			}
-			else {
-				strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
-				strName += LETTERS[ (length % LETTERS.length) ];
-			}
-
-			return strName;
-		}
 
 		var strXml = '';
 		switch ( chartType ) {
