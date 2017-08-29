@@ -1653,13 +1653,21 @@ function genSlides_Chart(pptx) {
 			}
 		];
 
+		var single = [{
+			name  : 'Texas',
+			labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+			values: [1400, 2000, 2500, 3000, 3800]
+		}];
+
 		// TOP-LEFT: H/bar
 		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
 			barDir: 'bar',
-			barGrouping: 'stacked',
+			barGrouping: 'standard',
 
 			catAxisLabelColor   : 'CC0000',
 			catAxisLabelFontSize: 14,
+
+			lineShadow: 'none',
 
 			dataLabelColor   : 'FFFFFF',
 			showValue        : true
@@ -1688,7 +1696,16 @@ function genSlides_Chart(pptx) {
 			catAxisHidden: true,
 			valAxisHidden: true,
 			showTitle    : false,
-			layout       : {x:0.1, y:0.1, w:1, h:1}
+			layout       : {x:0.1, y:0.1, w:1, h:1},
+			// { blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+
+			lineShadow: {
+				blur: 10,
+				offset: 5,
+				angle: 45,
+				color: 'FF0000',
+				opacity: 1
+			}
 		};
 
 
@@ -1704,7 +1721,7 @@ function genSlides_Chart(pptx) {
 			chartColors: ['5DA5DA','FAA43A']
 		};
 
-		//slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+		//slide.addChart( pptx.charts.BAR, single, optsChartBar1 );
 		//slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
 		//slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );

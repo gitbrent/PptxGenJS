@@ -123,7 +123,6 @@ var PptxGenJS = function(){
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
-	var DEF_BAR_SHADOW = { opacity: 0.35, angle: 90, color: '000000', blur: 3, offset: (23000 / 12700) };
 
 	var AXIS_ID_VALUE_PRIMARY = '2094734552';
 	var AXIS_ID_VALUE_SECONDARY = '2094734553';
@@ -959,54 +958,36 @@ var PptxGenJS = function(){
 	 * @param {Object} opts optional shadow properties
 	 * @param {Object} defaults defaults for unspecified properties in `opts`
 	 * @see http://officeopenxml.com/drwSp-effects.php
+	 * 	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	 */
-	function createShadowElement(opts, defaults) {
-		var type            = ( opts.type            || defaults.type    ),
-			blur            = ( opts.blur            || defaults.blur    ) * ONEPT,
-			offset          = ( opts.offset          || defaults.offset  ) * ONEPT,
-			angle           = ( opts.angle           || defaults.angle   ) * 60000,
-			color           = ( opts.color           || defaults.color   ),
-			opacity         = ( opts.opacity         || defaults.opacity ) * 100000,
-			rotateWithShape = ( opts.rotateWithShape || defaults.rotateWithShape || 0),
-			strXml  = "";
-
-		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-		strXml += ' algn="bl" rotWithShape="'+ (+rotateWithShape) +'" blurRad="'+ blur +'" ';
-		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
-		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
-		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>'
-		strXml += '</a:'+ type +'Shdw>';
-
-		return strXml;
-	}
-
-	/**
-	 * NOTE: Could possibly be used with shapes?
-	 * Creates ``a:outerShdw`.
-	 * @param {Object} opts optional shadow properties
-	 * @param {Object} defaults defaults for unspecified properties in `opts`
-	 * @see http://officeopenxml.com/drwSp-effects.php
-	 */
-
-	var DEF_SHAPE_SHADOW = { opacity: 0.35, angle: 90, color: '000000', blur: 3, offset: (23000 / 12700) };
-	function createShapeShadowElement(opts, defaults) {
-		if(opts === 'none'){
+	function createShadowElement(options, defaults, isShape) {
+		console.log('options', isShape, options);
+		if(options === 'none'){
 			return '<a:effectLst/>';
 		}
-		var type            = 'outer',
-			blur            = ( opts.blur    || defaults.blur    ) * ONEPT,
-			offset          = ( opts.offset  || defaults.offset  ) * ONEPT,
-			angle           = ( opts.angle   || defaults.angle   ) * 60000,
-			color           = ( opts.color   || defaults.color   ),
-			opacity         = ( opts.opacity || defaults.opacity ) * 100000,
-			strXml  = "";
+		var
+			strXml = '<a:effectLst>',
+			opts = mix(defaults, options),
+			type            = isShape || !opts.type ? 'outer' : opts.type,
+			blur            = opts.blur * ONEPT,
+			offset          = opts.offset * ONEPT,
+			angle           = opts.angle * 60000,
+			color           = opts.color,
+			opacity         = opts.opacity * 100000,
+			rotateWithShape = opts.rotateWithShape || 0;
 
-		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-		strXml += ' algn="bl" blurRad="'+ blur +'" ';
+		console.log('shadow', opts);
+
+		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="'+ blur +'" ';
+		if(!isShape){
+			strXml += 'rotWithShape="'+ (+rotateWithShape) +'"';
+		}
 		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
-		strXml += '<a:srgbClr val="'+ color +'">';
+		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
 		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>';
 		strXml += '</a:'+ type +'Shdw>';
+
+		strXml += '    </a:effectLst>';
 
 		return strXml;
 	}
@@ -1289,11 +1270,10 @@ var PptxGenJS = function(){
 					else if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					if ( opts.lineShadow !== 'none' ) {
-					strXml += '    <a:effectLst>';
-						strXml += createShadowElement(opts.lineShadow || {}, DEF_LINE_SHADOW);
-					strXml += '    </a:effectLst>';
-					}
+
+					console.log('LINE SHADOW?');
+					strXml += createShadowElement(opts.lineShadow || {}, DEF_LINE_SHADOW, chartType != 'line');
+
 					strXml += '  </c:spPr>';
 
 					// LINE CHART ONLY: `marker`
@@ -1331,14 +1311,15 @@ var PptxGenJS = function(){
 								strXml += '     <a:srgbClr val="' + opts.chartColors[index % opts.chartColors.length] + '"/>';
 								strXml += '    </a:solidFill>';
 							}
-
-							strXml += '    <a:effectLst>';
-							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
-							strXml += '    	<a:srgbClr val="000000">';
-							strXml += '    	<a:alpha val="35000"/>';
-							strXml += '    	</a:srgbClr>';
-							strXml += '    </a:outerShdw>';
-							strXml += '    </a:effectLst>';
+							console.log('shape?????');
+							strXml += createShapeShadowElement('none', DEF_BAR_SHADOW);
+							// strXml += '    <a:effectLst>';
+							// strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
+							// strXml += '    	<a:srgbClr val="000000">';
+							// strXml += '    	<a:alpha val="35000"/>';
+							// strXml += '    	</a:srgbClr>';
+							// strXml += '    </a:outerShdw>';
+							// strXml += '    </a:effectLst>';
 							strXml += '    </c:spPr>';
 							strXml += '  </c:dPt>';
 						});
