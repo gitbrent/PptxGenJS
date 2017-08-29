@@ -1630,7 +1630,7 @@ function genSlides_Chart(pptx) {
 
 	function slide14 () {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Charts using shadow options', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var arrDataRegions = [{
 			name  : 'Region 2',
