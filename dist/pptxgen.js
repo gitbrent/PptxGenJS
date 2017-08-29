@@ -121,7 +121,7 @@ var PptxGenJS = function(){
 	var DEF_FONT_TITLE_SIZE = 18;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
-	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+	var DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
 
 	var AXIS_ID_VALUE_PRIMARY = '2094734552';
@@ -953,7 +953,7 @@ var PptxGenJS = function(){
 	}
 
 	/**
-	 * NOTE: Used by both: text and lineChart
+	 * NOTE: Used by both: text and chart elements
 	 * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
 	 * @param {Object} opts optional shadow properties
 	 * @param {Object} defaults defaults for unspecified properties in `opts`
@@ -961,32 +961,26 @@ var PptxGenJS = function(){
 	 * 	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	 */
 	function createShadowElement(options, defaults, isShape) {
-		console.log('options', isShape, options);
 		if(options === 'none'){
 			return '<a:effectLst/>';
 		}
 		var
 			strXml = '<a:effectLst>',
 			opts = mix(defaults, options),
-			type            = isShape || !opts.type ? 'outer' : opts.type,
+			type            = opts.type || 'outer',
 			blur            = opts.blur * ONEPT,
 			offset          = opts.offset * ONEPT,
 			angle           = opts.angle * 60000,
 			color           = opts.color,
 			opacity         = opts.opacity * 100000,
-			rotateWithShape = opts.rotateWithShape || 0;
-
-		console.log('shadow', opts);
+			rotateWithShape = opts.rotateWithShape ?  1 : 0;
 
 		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="'+ blur +'" ';
-		if(!isShape){
-			strXml += 'rotWithShape="'+ (+rotateWithShape) +'"';
-		}
+		strXml += 'rotWithShape="'+ (+rotateWithShape) +'"';
 		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
 		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
 		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>';
 		strXml += '</a:'+ type +'Shdw>';
-
 		strXml += '    </a:effectLst>';
 
 		return strXml;
@@ -1271,8 +1265,7 @@ var PptxGenJS = function(){
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
 
-					console.log('LINE SHADOW?');
-					strXml += createShadowElement(opts.lineShadow || {}, DEF_LINE_SHADOW, chartType != 'line');
+					strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 
 					strXml += '  </c:spPr>';
 
@@ -1311,15 +1304,7 @@ var PptxGenJS = function(){
 								strXml += '     <a:srgbClr val="' + opts.chartColors[index % opts.chartColors.length] + '"/>';
 								strXml += '    </a:solidFill>';
 							}
-							console.log('shape?????');
-							strXml += createShapeShadowElement('none', DEF_BAR_SHADOW);
-							// strXml += '    <a:effectLst>';
-							// strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
-							// strXml += '    	<a:srgbClr val="000000">';
-							// strXml += '    	<a:alpha val="35000"/>';
-							// strXml += '    	</a:srgbClr>';
-							// strXml += '    </a:outerShdw>';
-							// strXml += '    </a:effectLst>';
+							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 							strXml += '    </c:spPr>';
 							strXml += '  </c:dPt>';
 						});
@@ -1432,15 +1417,8 @@ var PptxGenJS = function(){
 				strXml += '  <c:spPr>';
 				strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
 				strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-				if(opts.dataNoEffects){
-					strXml += '    <a:effectLst/>';
-				} else {
-				strXml += '    <a:effectLst>';
-				strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-				strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-				strXml += '      </a:outerShdw>';
-				strXml += '    </a:effectLst>';
-				}
+				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+
 				strXml += '  </c:spPr>';
 				strXml += '<c:explosion val="0"/>';
 
@@ -1454,11 +1432,7 @@ var PptxGenJS = function(){
 					if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					strXml += '    <a:effectLst>';
-					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-					strXml += '      </a:outerShdw>';
-					strXml += '    </a:effectLst>';
+					strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 					strXml += '  </c:spPr>';
 					strXml += '</c:dPt>';
 				});
@@ -3084,37 +3058,32 @@ var PptxGenJS = function(){
 		 * @param {Object} shadowOpts
 		 */
 		function correctShadowOptions(shadowOpts) {
+			// { blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 			if ( !shadowOpts || shadowOpts === 'none' ) return;
 
-			// OPT: `type`
-			if ( shadowOpts.type != 'outer' && shadowOpts.type != 'inner' ) {
-				console.warn('Warning: shadow.type options are `outer` or `inner`.');
-				shadowOpts.type = 'outer';
-			}
+			var ranges = {
+				type: ['inner', 'outer'],
+				angle: [0, 359],
+				opacity: [0, 1],
+				offset: [1, 256],
+				blur: [1, 256]
+			};
 
-			// OPT: `angle`
-			if ( shadowOpts.angle ) {
-				// A: REALITY-CHECK
-				if ( isNaN(Number(shadowOpts.angle)) || shadowOpts.angle < 0 || shadowOpts.angle > 359 ) {
-					console.warn('Warning: shadow.angle can only be 0-359');
-					shadowOpts.angle = 270;
+			Object.keys(shadowOpts).forEach(function (key) {
+				if(!ranges[key]) return;
+				var value = shadowOpts[key];
+				if(typeof ranges[key][0] === 'string'){
+					if (value != ranges[key][0] && value !== ranges[key][1]) {
+						console.warn('Warning: shadow.' + key + ' options are:', ranges[key].join(', '));
+						shadowOpts[key] = ranges[key][0];
+					}
+				}else {
+					if ( isNaN(Number(value)) || value < ranges[key][0] || value > ranges[key][1]) {
+						console.warn('Warning: shadow.' + key + ' options should be between:', ranges[key].join('-'));
+						shadowOpts[key] = ranges[key][0];
+					}
 				}
-
-				// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-				shadowOpts.angle = Math.round(Number(shadowOpts.angle));
-			}
-
-			// OPT: `opacity`
-			if ( shadowOpts.opacity ) {
-				// A: REALITY-CHECK
-				if ( isNaN(Number(shadowOpts.opacity)) || shadowOpts.opacity < 0 || shadowOpts.opacity > 1 ) {
-					console.warn('Warning: shadow.opacity can only be 0-1');
-					shadowOpts.opacity = 0.75;
-				}
-
-				// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-				shadowOpts.opacity = Number(shadowOpts.opacity)
-			}
+			});
 		}
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
@@ -3263,9 +3232,12 @@ var PptxGenJS = function(){
 			correctGridLineOptions(options.catGridLine);
 			correctGridLineOptions(options.valGridLine);
 
-			if ( options.type === 'line' ) {
-				correctShadowOptions(options.lineShadow);
+			if (options.lineShadow) {
+				console.warn('`lineShadow` is decremented. Please use `shadow`');
+				options.shadow = options.lineShadow;
 			}
+
+			correctShadowOptions(options.shadow);
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
