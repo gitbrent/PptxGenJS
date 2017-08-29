@@ -341,10 +341,16 @@
 
 		<div id="navTabs" class="modernTabs">
 			<ul>
-				<li class="active" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab1').addClass('active');">Introduction</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab2').addClass('active');">Tables</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab7').addClass('active');">Charts</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab3').addClass('active');">Images &amp; Media</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab4').addClass('active');">Shapes &amp; Text</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab5').addClass('active');">Templates</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab6').addClass('active');">Table To Slides</li>
+				<li id="tab1-b" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab1').addClass('active');"><a href="#tab1">Introduction</a></li>
+				<li id="tab2-b" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab2').addClass('active');"><a href="#tab2">Tables</a></li>
+				<li id="tab7-b" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab7').addClass('active');"><a href="#tab7">Charts</a></li>
+				<li id="tab3-b" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab3').addClass('active');"><a href="#tab3">Images &amp; Media</a></li>
+				<li id="tab4-b" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab4').addClass('active');"><a href="#tab4">Shapes &amp; Text</a></li>
+				<li id="tab5-b" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab5').addClass('active');"><a href="#tab5">Templates</a></li>
+				<li id="tab6-b" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab6').addClass('active');"><a href="#tab6">Table To Slides</a></li>
 			</ul>
 
-			<div id="tab1" class="active" data-title="Intro">
+			<div id="tab1" class="section" data-title="Intro">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#presentations-usage-and-options" target="_blank">View Documentation and Example Code</a>
@@ -379,7 +385,7 @@
 				</div>
 			</div>
 
-			<div id="tab2" data-title="Tables">
+			<div id="tab2" class="section" data-title="Tables">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#adding-tables" target="_blank">View Documentation and Example Code</a>
@@ -437,7 +443,7 @@
 				</div>
 			</div>
 
-			<div id="tab7" data-title="Charts">
+			<div id="tab7" class="section" data-title="Charts">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#adding-charts" target="_blank">View Documentation and Example Code</a>
@@ -502,7 +508,7 @@
 				</div>
 			</div>
 
-			<div id="tab3" data-title="Images/Media">
+			<div id="tab3" class="section" data-title="Images/Media">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#adding-images" target="_blank">View Documentation and Example Code</a>
@@ -545,7 +551,7 @@
 				</div>
 			</div>
 
-			<div id="tab4" data-title="Shapes/Text">
+			<div id="tab4" class="section" data-title="Shapes/Text">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#adding-text" target="_blank">View Documentation and Example Code</a>
@@ -596,7 +602,7 @@
 				</div>
 			</div>
 
-			<div id="tab5" data-title="Templates/Master Slides">
+			<div id="tab5" class="section" data-title="Templates/Master Slides">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#master-slides-and-corporate-branding" target="_blank">View Documentation and Example Code</a>
@@ -639,7 +645,7 @@
 				</div>
 			</div>
 
-			<div id="tab6" data-title="Table to Slides">
+			<div id="tab6" class="section" data-title="Table to Slides">
 				<div class="topDocLink">
 					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
 					<a href="https://github.com/gitbrent/PptxGenJS#table-to-slides-feature" target="_blank">View Documentation and Example Code</a>
@@ -766,5 +772,12 @@
 			</div>
 		</div>
 	</div>
+	<script>
+		var current = location.hash || '#tab1';
+		$().find('ul > li').removeClass('active');
+		$().find('div.section').removeClass('active');
+		$(current + '-b').addClass('active');
+		$(current).addClass('active');
+	</script>
 </body>
 </html>
