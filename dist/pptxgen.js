@@ -4035,13 +4035,6 @@ var PptxGenJS = function(useProperLayoutMaster){
 	}
 
 	/**
-	 * Turns on the new way of processing master slide and slide layouts.
-	 */
-	this.useProperLayoutMaster = function() {
-		gObjPptx.properLayoutMasterInUse = true;
-	}
-
-	/**
 	 * Sets the Presentation's Title
 	 */
 	this.setTitle = function setTitle(inStrTitle) {

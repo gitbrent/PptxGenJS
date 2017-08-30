@@ -982,9 +982,9 @@ Location: `PptxGenJS/dist/pptxgen.masters.js`
 ## Layouting – New Approach
 The new approach follows the principles used in PowerPoint. That means, each slide is attached to a slide layout that is attached to the master slide. Slide layouts inherit layout specified in the master file. Thus, if you apply any layout to a slide, objects specified in master slide and the slide layout will all appear in the slide. Advantage of this principle resides in the layouts variability. PPTX generated this way includes layout definitions easily changeable by user so that they can manipulate repetitive elements globally, for all the slides at once.
 
-To enable the new approach, call the following method any time before saving presentation:
+To enable the new approach, pass `true` as the first constructor argument:
 ```javascript
-pptx.useProperLayoutMaster();
+var pptx = new PptxGenJS(true);
 ```
 
 ### Master Slide
