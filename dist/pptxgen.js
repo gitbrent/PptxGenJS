@@ -60,7 +60,7 @@ if ( NODEJS ) {
 	var gObjPptxColors  = require('../dist/pptxgen.colors.js');
 }
 
-var PptxGenJS = function(){
+var PptxGenJS = function(useProperLayoutMaster){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
 	var APP_REL = "20170822";
@@ -156,7 +156,7 @@ var PptxGenJS = function(){
 	/** @type {object[]} slide layout definition objects, used for generating slide layout files */
 	gObjPptx.layoutDefinitions = [DEF_EMPTY_LAYOUT];
 	/** @type {boolean} if true proper master and layouts are used, otherwise the old way of templating expected */
-	gObjPptx.properLayoutMasterInUse = false;
+	gObjPptx.properLayoutMasterInUse = useProperLayoutMaster;
 	/** @type {Number} global counter for included images (used for index in their filenames) */
 	gObjPptx.imageCounter = 0;
 	/** @type {Number} global counter for included charts (used for index in their filenames) */
@@ -4702,4 +4702,5 @@ if ( NODEJS ) {
 
 	// B: Export module
 	module.exports = new PptxGenJS();
+	module.exports.factory = PptxGenJS;
 }
