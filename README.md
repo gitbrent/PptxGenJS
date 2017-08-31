@@ -937,8 +937,8 @@ var gObjPptxMasters = {
     title:   'I am the Title Slide',
     bkgd:    { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
     objects: [
-      { 'text':  { text:'Greetings!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-      { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
+      { text:  { text:'Greetings!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
+      { image: { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
     ]
   }
 };
@@ -979,6 +979,18 @@ pptx.save();
 A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.
 Location: `PptxGenJS/dist/pptxgen.masters.js`
 
+
+
+=======================================================================================================================================
+
+=======================================================================================================================================
+
+=======================================================================================================================================
+
+=======================================================================================================================================
+
+
+
 ## Layouting – New Approach
 The new approach follows the principles used in PowerPoint. That means, each slide is attached to a slide layout that is attached to the master slide. Slide layouts inherit layout specified in the master file. Thus, if you apply any layout to a slide, objects specified in master slide and the slide layout will all appear in the slide. Advantage of this principle resides in the layouts variability. PPTX generated this way includes layout definitions easily changeable by user so that they can manipulate repetitive elements globally, for all the slides at once.
 
@@ -993,7 +1005,7 @@ Defining the master slide is optional. It remains empty if not specified. If you
 ```javascript
 pptx.setMasterSlide({
   bkgd: 'ff0000',
-  objects: [ { text: { text: 'Hello World', x: 1, y: 1 } } ]
+  objects: [ { text: { text:'Master Slide Title', options:{ x:1.0, y:0.5, color:'FFFFFF' } } } ]
 });
 ```
 The configuration object is still the same as in [Slide Master Object Options](#slide-master-object-options) except for the `title` property that has no effect in this case.
@@ -1003,9 +1015,9 @@ Slide layout enables you to create more specific slide designs based on the mast
 
 ```javascript
 pptx.addLayoutSlide({
-  title: 'welcome'
+  title: 'welcome',
   bkgd: 'ff0000',
-  objects: [ { text: { text: 'Hello World', x: 1, y: 1 } } ]
+  objects: [ { text: { text: 'Hello World', options:{ x: 1, y: 1 } } } ]
 });
 ```
 

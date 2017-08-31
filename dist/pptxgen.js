@@ -63,7 +63,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170828";
+	var APP_REL = "20170830";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -124,10 +124,10 @@ var PptxGenJS = function(){
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
 	var DEF_EMPTY_LAYOUT = {
+		name : 'DEF_EMPTY_LAYOUT',
 		slide: {},
-		name: '[ default ]',
-		data: [],
-		rels: [],
+		data : [],
+		rels : [],
 		slideNumberObj: null
 	};
 	var LAYOUT_IDX_SERIES_BASE = 2147483649;
@@ -150,13 +150,14 @@ var PptxGenJS = function(){
 	/** @type {object} master slide layout object */
 	gObjPptx.masterSlide = {
 		slide: {},
-		data: [],
-		rels: []
+		data : [],
+		rels : [],
+		slideNumberObj: null
 	};
 	/** @type {object[]} slide layout definition objects, used for generating slide layout files */
 	gObjPptx.layoutDefinitions = [DEF_EMPTY_LAYOUT];
 	/** @type {boolean} if true proper master and layouts are used, otherwise the old way of templating expected */
-	gObjPptx.properLayoutMasterInUse = false;
+	gObjPptx.properLayoutMasterInUse = true;
 	/** @type {Number} global counter for included images (used for index in their filenames) */
 	gObjPptx.imageCounter = 0;
 	/** @type {Number} global counter for included charts (used for index in their filenames) */
@@ -174,8 +175,7 @@ var PptxGenJS = function(){
 	// GENERATORS
 
 	/**
-	 * @type {Object}
-	 * Gathers methods for generating objects by API-specified definition.
+	 * DESC: Gathers methods for generating Slide/Layout objects by API-specified definition.
 	 */
 	var gObjPptxGenerators = {
 		/**
@@ -185,7 +185,7 @@ var PptxGenJS = function(){
 		 * DEPRECATED `src` is replaced by `path` in v1.5.0
 		 */
 		addBackgroundDefinition: function addBackgroundDefinition(bkg, target) {
-			if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data) ) {
+			if ( typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data) ) {
 				// Allow the use of only the data key (no src reqd)
 				bkg.src = bkg.src || bkg.path || null;
 				if (!bkg.src) bkg.src = 'preencoded.png';
@@ -205,7 +205,7 @@ var PptxGenJS = function(){
 				});
 				target.slide.bkgdImgRid = intRels;
 			}
-			else if (bkg && typeof bkg === 'string' ) {
+			else if ( bkg && typeof bkg === 'string' ) {
 				target.slide.back = bkg;
 			}
 		},
@@ -516,6 +516,8 @@ var PptxGenJS = function(){
 			return resultObject;
 		},
 
+		/* ===== */
+
 		/**
 		 * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
 		 * The following object is expected as a slide definition:
@@ -534,13 +536,14 @@ var PptxGenJS = function(){
 		 *
 		 */
 		createSlideObject: function createSlideObject(slideDef, target) {
+			// STEP 1: Add background
 			if ( slideDef.bkgd ) {
-					gObjPptxGenerators.addBackgroundDefinition(slideDef.bkgd, target);
+				gObjPptxGenerators.addBackgroundDefinition(slideDef.bkgd, target);
 			}
 
-			// Add all Slide Master objects in the order they were given (Issue#53)
+			// STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
 			if ( slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0 ) {
-				slideDef.objects.forEach(function(object, idx){
+				slideDef.objects.forEach(function(object,idx){
 					var key = Object.keys(object)[0];
 					if      ( MASTER_OBJECTS[key] && key == 'chart' ) gObjPptxGenerators.addChartDefinition(CHART_TYPES[(object.chart.type||'').toUpperCase()], object.chart.data, object.chart.opts, target);
 					else if ( MASTER_OBJECTS[key] && key == 'image' ) gObjPptxGenerators.addImageDefinition(object[key], target);
@@ -550,8 +553,8 @@ var PptxGenJS = function(){
 				});
 			}
 
-			// Add Slide Numbers
-			if ( slideDef.slideNumber && typeof slideDef.slideNum ) {
+			// STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
+			if ( slideDef.slideNumber && typeof slideDef.slideNumber === 'object' ) {
 				target.slideNumberObj = slideDef.slideNumber;
 			};
 		},
@@ -1014,18 +1017,18 @@ var PptxGenJS = function(){
 						strSlideXml += ' </a:graphic>';
 						strSlideXml += '</p:graphicFrame>';
 						break;
-					}
-				});
+				}
+			});
 
 			// STEP 5: Add slide numbers last (if any)
 			if ( slideObject.slideNumberObj ) {
+				if ( !slideObject.slideNumberObj ) slideObject.slideNumberObj = { x:0.3, y:'90%' }
 
-				// TODO: FIXME: page numbers over 99 wrap in PPT-2013 (Desktop)
 				strSlideXml += '<p:sp>'
 					+ '  <p:nvSpPr>'
 					+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
 					+ '  <p:spPr>'
-					+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(slideObject.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(slideObject.slideNumberObj.y, 'Y') +'"/><a:ext cx="400000" cy="300000"/></a:xfrm>'
+					+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(slideObject.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(slideObject.slideNumberObj.y, 'Y') +'"/><a:ext cx="800000" cy="300000"/></a:xfrm>'
 					+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 					+ '    <a:extLst>'
 					+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
@@ -1042,8 +1045,13 @@ var PptxGenJS = function(){
 					strSlideXml += '</a:defRPr>';
 				}
 				strSlideXml += '</a:lvl1pPr></a:lstStyle>';
-				strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p></p:txBody>'
-				strSlideXml += '</p:sp>';
+
+				// FIXME:
+				// TODO: slide numbers not showing by default
+				//strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p>'
+				strSlideXml += '<a:p><a:fld id="'+SLDNUMFLDID+'" type="slidenum"><a:rPr lang="en-US" smtClean="0"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>';
+
+				strSlideXml += '</p:txBody></p:sp>';
 			}
 
 			// STEP 6: Close spTree and finalize slide XML
@@ -1373,10 +1381,9 @@ var PptxGenJS = function(){
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
 		if ( gObjPptx.properLayoutMasterInUse ) {
-			for (let i = 1, len = gObjPptx.layoutDefinitions.length; i <= len; i++) {
-// TODO: let wont work in IE11!
-				zip.file("ppt/slideLayouts/slideLayout"+ i +".xml", makeXmlLayout(gObjPptx.layoutDefinitions[i - 1]));
-				zip.file("ppt/slideLayouts/_rels/slideLayout"+ i +".xml.rels", makeXmlSlideLayoutRel( i ));
+			for ( var idx=1; idx<=gObjPptx.layoutDefinitions.length; idx++ ) {
+				zip.file("ppt/slideLayouts/slideLayout"+ idx +".xml", makeXmlLayout(gObjPptx.layoutDefinitions[idx - 1]));
+				zip.file("ppt/slideLayouts/_rels/slideLayout"+ idx +".xml.rels", makeXmlSlideLayoutRel( idx ));
 			}
 		}
 
@@ -1410,7 +1417,7 @@ var PptxGenJS = function(){
 			createMediaFiles(gObjPptx.masterSlide, zip, arrChartPromises);
 		}
 
-		// STEP 3: Wait for Promises (if any) then push the PPTX file to client-browser
+		// STEP 3: Wait for Promises (if any) then generate the PPTX file
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
@@ -1592,11 +1599,11 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 1: Set data for this rel, count outstanding
-		gObjPptx.slides.forEach(function(slide, i) {
+		gObjPptx.slides.forEach(function(slide,i) {
 			slide.rels.forEach(clbk);
 		});
 		if (gObjPptx.properLayoutMasterInUse) {
-			gObjPptx.layoutDefinitions.forEach(function(layout, i) {
+			gObjPptx.layoutDefinitions.forEach(function(layout,i) {
 				layout.rels.forEach(clbk);
 			});
 			gObjPptx.masterSlide.rels.forEach(clbk);
@@ -2020,7 +2027,8 @@ var PptxGenJS = function(){
 
 	function encodeImageRelations(layout, arrRelsDone) {
 		var intRels = 0;
-		layout.rels.forEach(function(rel, idy){
+
+		layout.rels.forEach(function(rel,idy){
 			// Read and Encode each image into base64 for use in export
 			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
 				// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
@@ -2041,6 +2049,7 @@ var PptxGenJS = function(){
 				}
 			}
 		});
+
 		return intRels;
 	}
 
@@ -3059,7 +3068,7 @@ var PptxGenJS = function(){
 		});
 
 		if (gObjPptx.properLayoutMasterInUse) {
-			gObjPptx.layoutDefinitions.forEach(function(layout, idx) {
+			gObjPptx.layoutDefinitions.forEach(function(layout,idx) {
 				strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ ( idx + 1 ) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
 				layout.rels.forEach(function(rel){
 					if ( rel.type == 'chart' ) {
@@ -3293,10 +3302,12 @@ var PptxGenJS = function(){
 	function makeXmlSlideRel(slideNumber) {
 		return gObjPptxGenerators.slideObjectRelationsToXml(
 			gObjPptx.slides[slideNumber - 1],
-			[{ target: '../slideLayouts/slideLayout'+ ( gObjPptx.properLayoutMasterInUse ? getLayoutIdxForSlide(slideNumber) : slideNumber ) +'.xml', type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"}]
+			[{
+				target: '../slideLayouts/slideLayout'+ getLayoutIdxForSlide(slideNumber) +'.xml',
+				type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
+			}]
 		);
 	}
-
 
 	/**
 	 * Generates XML string for the master file.
@@ -3319,17 +3330,21 @@ var PptxGenJS = function(){
 	/**
 	 * For the passed slide number, resolves name of a layout that is used for.
 	 * @param {Number} slideNumber
-	 * @return {String} layout name
+	 * @return {Number} slide number
 	 */
 	function getLayoutIdxForSlide(slideNumber) {
-		var layoutName = gObjPptx.slides[slideNumber - 1].layout,
-			layoutIdx;
-		for (var i = 0, len = gObjPptx.layoutDefinitions.length; i < len; i++) {
+		var layoutName = gObjPptx.slides[slideNumber - 1].layout;
+		var layoutIdx = -1;
+
+		for (var i=0; i<gObjPptx.layoutDefinitions.length; i++) {
 			if (gObjPptx.layoutDefinitions[i].name === layoutName) {
-				return i + 1;
+				return (i + 1);
 			}
 		}
-		throw Error('Layout "' + layoutName + '" is not specified in this presentation.');
+
+		// IMPORTANT: Return 1 (for `slideLayout1.xml`) as lack of a def means legacy (deprecated) master was used
+		// meaning all of its objects are in Layout1 and every slide that references it uses this layout.
+		return 1;
 	}
 
 	/**
@@ -3559,10 +3574,11 @@ var PptxGenJS = function(){
 
 	/**
 	 * Turns on the new way of processing master slide and slide layouts.
-	 */
+	 *
 	this.useProperLayoutMaster = function() {
 		gObjPptx.properLayoutMasterInUse = true;
 	}
+	*/
 
 	/**
 	 * Sets the Presentation's Title
@@ -3613,12 +3629,13 @@ var PptxGenJS = function(){
 		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
 
 		// STEP 2: Read/Encode Images
+
 		// B: Total all physical rels across the Presentation
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 		gObjPptx.slides.forEach(function(slide,idx){
 			intRels += encodeImageRelations(slide, arrRelsDone);
 		});
-		if (this.properLayoutMasterInUse) {
+		if ( gObjPptx.properLayoutMasterInUse ) {
 			gObjPptx.layoutDefinitions.forEach(function(layout,idx){
 				intRels += encodeImageRelations(layout, arrRelsDone);
 			});
@@ -3693,7 +3710,6 @@ var PptxGenJS = function(){
 		 *	 ]
 		 * 	}
 		 */
-
 		slideObj.addChart = function ( type, data, opt ) {
 			gObjPptxGenerators.addChartDefinition(type, data, opt, gObjPptx.slides[slideNum]);
 			return this;
@@ -3958,6 +3974,9 @@ var PptxGenJS = function(){
 
 		// ==========================================================================
 		// POST-METHODS:
+		// DEPRECATED - REMOVE in 2.0.0 (20170829)
+		// (new `defineSlideMaster()` is a better soln and produces *Actual* layout slides, not merely adding objs to Slide!)
+		// for now this function in parallel with defineSlideMaster() providing backwards compatibility
 		// ==========================================================================
 
 		// Add Master-Slide objects (if any)
@@ -4024,42 +4043,28 @@ var PptxGenJS = function(){
 	};
 
 	/**
-	 * Sets a master slide and color mappings.
-	 * @param {Object} masterDef
+	 * Adds a new slide master [layout] to the presentation.
+	 * @param {Object} inObjMasterDef - layout definition
 	 * @return {Object} this
 	 */
-	this.setMasterSlide = function setMasterSlide(masterDef) {
-		var slideObj = {
-			slide: masterDef,
-			data: [],
-			rels: []
-		};
+	this.defineSlideMaster = function defineSlideMaster(inObjMasterDef) {
+		if ( !inObjMasterDef.title ) { throw Error("defineSlideMaster() object argument requires a `title` value."); }
 
-		gObjPptxGenerators.createSlideObject(masterDef || {}, slideObj);
-		gObjPptx.masterSlide = slideObj;
-		return this;
-	};
-
-	/**
-	 * Adds a new slide layout to the presentation.
-	 * @param {Object} layoutDef layout definition
-	 * @return {Object} this
-	 */
-	this.addLayoutSlide = function addNewLayoutSlide(layoutDef) {
-		if (!layoutDef.title) {
-			throw Error("Layout requires to be named. Specify `title` in its definition object.");
-		}
-
-		var layoutObj = {
+		var objLayout = {
+			name : inObjMasterDef.title,
 			slide: {},
-			name: layoutDef.title,
-			data: [],
-			rels: [],
+			data : [],
+			rels : [],
 			slideNumberObj: null
 		};
 
-		gObjPptxGenerators.createSlideObject(layoutDef, layoutObj);
-		gObjPptx.layoutDefinitions.push(layoutObj)
+		// STEP 1: Create the Slide Master/Layout
+		gObjPptxGenerators.createSlideObject(inObjMasterDef, objLayout);
+
+		// STEP 2: Add it to layout defs
+		gObjPptx.layoutDefinitions.push(objLayout);
+
+		// LAST:
 		return this;
 	};
 
