@@ -66,9 +66,8 @@ function getTimestamp() {
 // ==================================================================================================================
 
 function runEveryTest() {
-//	execGenSlidesFuncs( ['Text', 'Chart', 'Table', 'Image', 'Media', 'Shape', 'Master', 'SetMaster'] );
-// TODO: FIXME: ^^^
-	execGenSlidesFuncs( ['SetMaster'] );
+	execGenSlidesFuncs( ['Text', 'Chart', 'Table', 'Image', 'Media', 'Shape', 'Master'] );
+
 	if ( typeof table2slides1 !== 'undefined' ) table2slides1();
 }
 
@@ -88,13 +87,55 @@ function execGenSlidesFuncs(type) {
 		pptx = new PptxGenJS();
 	}
 
-	pptx.setLayout('LAYOUT_WIDE');
-
 	pptx.setAuthor('Brent Ely');
 	pptx.setCompany(CUST_NAME);
 	pptx.setRevision('15');
 	pptx.setSubject('PptxGenJS Test Suite Export');
 	pptx.setTitle('PptxGenJS Test Suite Presentation');
+
+	pptx.setLayout('LAYOUT_WIDE');
+
+	// Reproductions of the 3 Master Slides from the old `pptxgen.masters.js` file (`gObjPptxMasters` items)
+	pptx.defineSlideMaster({
+		title: 'TITLE_SLIDE',
+		bkgd: { path:'images/starlabs_bkgd.jpg' },
+		objects: [
+			{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
+			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
+			{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
+			{ 'text':
+				{ text:'Global IT & Services :: Status Report',
+				options:{ x:3.0, y:5.30, w:5.5, h:0.75, font_face:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
+			},
+			{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
+		]
+	});
+	pptx.defineSlideMaster({
+		title: 'MASTER_SLIDE',
+		bkgd: 'FFFFFF',
+		margin:  [ 0.5, 0.25, 1.0, 0.25 ],
+		objects: [
+			{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
+			{ 'image': { x:12.30, y:0.30, w:0.70, h:0.70, data:checkGreen } },
+			{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
+			{ 'text':
+				{
+					options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12},
+					text: 'S.T.A.R. Laboratories - Confidential'
+				}
+			}
+		],
+		slideNumber: { x:0.6, y:7.0, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
+	});
+	pptx.defineSlideMaster({
+		title: 'THANKS_SLIDE',
+		bkgd: '36ABFF',
+		objects: [
+			{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
+			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
+			{ 'image': { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' } }
+		]
+	});
 
 	// STEP 2: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );
@@ -454,7 +495,7 @@ function genSlides_Table(pptx) {
 		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: `{ newPageStartY: 1.5 }`', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:1.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
-		var slide = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, {bkgd:'CCFFCC'} );
+		var slide = pptx.addNewSlide('MASTER_SLIDE', {bkgd:'CCFFCC'});
 		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Master Page with Auto-Paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
@@ -1581,66 +1622,23 @@ function genSlides_Text(pptx) {
 	}
 }
 
-function genSlides_SetMaster(pptx) {
-	// Reproductions of the 3 Master Slides from the old `pptxgen.masters.js` file (`gObjPptxMasters` items)
-	pptx.defineSlideMaster({
-		title: 'TITLE_SLIDE',
-		bkgd: { path:'images/starlabs_bkgd.jpg' },
-		objects: [
-			{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
-			{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-			{ 'text':
-				{ text:'Global IT & Services :: Status Report',
-				options:{ x:3.0, y:5.30, w:5.5, h:0.75, font_face:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
-			},
-			{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
-		]
-	});
-	pptx.defineSlideMaster({
-		title: 'MASTER_SLIDE',
-		bkgd: 'FFFFFF',
-		margin:  [ 0.5, 0.25, 1.0, 0.25 ],
-		objects: [
-			{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
-			{ 'image': { x:12.30, y:0.30, w:0.70, h:0.70, data:checkGreen } },
-			{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
-			{ 'text':
-				{
-					options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12},
-					text: 'S.T.A.R. Laboratories - Confidential'
-				}
-			}
-		],
-		slideNumber: { x:0.6, y:7.0, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
-	});
-	pptx.defineSlideMaster({
-		title: 'THANKS_SLIDE',
-		bkgd: '36ABFF',
-		objects: [
-			{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-			{ 'image': { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' } }
-		]
-	});
-
-// TODO: SlideNumber not working yet - its on Master, but has to be turned on via Ribbon (Footer>show numbers)
-
-	var slide1 = pptx.addNewSlide( 'TITLE_SLIDE'  );
-	var slide2 = pptx.addNewSlide( 'MASTER_SLIDE' );
-	var slide3 = pptx.addNewSlide( 'THANKS_SLIDE' );
-}
-
 function genSlides_Master(pptx) {
-	var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
-	var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
-	var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
+	var slide1 = pptx.addNewSlide( 'TITLE_SLIDE'  );
+	var slide2 = pptx.addNewSlide( 'MASTER_SLIDE' ); slide2.addText('MASTER_SLIDE 1', {x:2, y:2});
+	var slide3 = pptx.addNewSlide( 'MASTER_SLIDE' ); slide3.addText('MASTER_SLIDE 2', {x:2, y:2});
+	var slide4 = pptx.addNewSlide( 'THANKS_SLIDE' );
 
-	var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'0088CC', slideNumber:{x:'50%', y:'90%', color:'0088CC'} } );
-	var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd_alt.jpg' } } );
-	var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33'} );
+	// LEGACY-TEST-ONLY: To check deprecated functionality
+	if ( pptx.masters ) {
+		var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
+		var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
+		var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
 
-	//var slide7 = pptx.addNewSlide( pptx.masters.LEGACY_TEST_ONLY );
+		var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'0088CC', slideNumber:{x:'50%', y:'90%', color:'0088CC'} } );
+		var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd_alt.jpg' } } );
+		var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33' } );
+		//var slide7 = pptx.addNewSlide( pptx.masters.LEGACY_TEST_ONLY );
+	}
 }
 
 // ==================================================================================================================

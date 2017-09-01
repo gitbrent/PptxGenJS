@@ -55,15 +55,16 @@ var NODEJS = ( typeof module !== 'undefined' && module.exports );
 
 // [Node.js] <script> includes
 if ( NODEJS ) {
-	var gObjPptxMasters = require('../dist/pptxgen.masters.js');
-	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
 	var gObjPptxColors  = require('../dist/pptxgen.colors.js');
+	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
+	// LEGACY-TEST-ONLY:
+//	var gObjPptxMasters = require('../dist/pptxgen.masters.js');
 }
 
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170830";
+	var APP_REL = "20170831";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -113,6 +114,7 @@ var PptxGenJS = function(){
 	var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
 	var EMU = 914400;  // One (1) inch (OfficeXML measures in EMU (English Metric Units))
 	var ONEPT = 12700; // One (1) point (pt)
+	var LAYOUT_IDX_SERIES_BASE = 2147483649;
 	var REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 	var JSZIP_OUTPUT_TYPES = ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']; /** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
 	//
@@ -123,14 +125,6 @@ var PptxGenJS = function(){
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
-	var DEF_EMPTY_LAYOUT = {
-		name : 'DEF_EMPTY_LAYOUT',
-		slide: {},
-		data : [],
-		rels : [],
-		slideNumberObj: null
-	};
-	var LAYOUT_IDX_SERIES_BASE = 2147483649;
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -146,7 +140,6 @@ var PptxGenJS = function(){
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
 	gObjPptx.rtlMode = false;
 	gObjPptx.slides = [];
-
 	/** @type {object} master slide layout object */
 	gObjPptx.masterSlide = {
 		slide: {},
@@ -154,29 +147,34 @@ var PptxGenJS = function(){
 		rels : [],
 		slideNumberObj: null
 	};
-	/** @type {object[]} slide layout definition objects, used for generating slide layout files */
-	gObjPptx.layoutDefinitions = [DEF_EMPTY_LAYOUT];
-	/** @type {boolean} if true proper master and layouts are used, otherwise the old way of templating expected */
-	gObjPptx.properLayoutMasterInUse = true;
-	/** @type {Number} global counter for included images (used for index in their filenames) */
-	gObjPptx.imageCounter = 0;
 	/** @type {Number} global counter for included charts (used for index in their filenames) */
 	gObjPptx.chartCounter = 0;
+	/** @type {Number} global counter for included images (used for index in their filenames) */
+	gObjPptx.imageCounter = 0;
+	/** @type {object[]} slide layout definition objects, used for generating slide layout files */
+	gObjPptx.slideLayouts = [{
+		name : 'BLANK',
+		slide: {},
+		data : [],
+		rels : [],
+		slideNumberObj: null
+	}];
 
 	// C: Expose shape library to clients
 	this.charts  = CHART_TYPES;
 	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
-	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
+	/* LEGACY/DEPRECATED testing only - REMOVE in 2.0 (or sooner!)
+	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
+	*/
 
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
 
-	// GENERATORS
+	/* =============================================================================================== */
+	/* =============================================================================================== */
 
-	/**
-	 * DESC: Gathers methods for generating Slide/Layout objects by API-specified definition.
-	 */
+	// GENERATORS (Slide/Layout)
 	var gObjPptxGenerators = {
 		/**
 		 * Adds a background image or color to a slide definition.
@@ -1026,13 +1024,14 @@ var PptxGenJS = function(){
 
 				strSlideXml += '<p:sp>'
 					+ '  <p:nvSpPr>'
-					+ '  <p:cNvPr id="25" name="Shape 25"/><p:cNvSpPr/><p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr></p:nvSpPr>'
+					+ '    <p:cNvPr id="25" name="Slide Number Placeholder 24"/>'
+					+ '    <p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr>'
+					+ '    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>'
+					+ '  </p:nvSpPr>'
 					+ '  <p:spPr>'
 					+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(slideObject.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(slideObject.slideNumberObj.y, 'Y') +'"/><a:ext cx="800000" cy="300000"/></a:xfrm>'
 					+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
-					+ '    <a:extLst>'
-					+ '      <a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext>'
-					+ '    </a:extLst>'
+					+ '    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>'
 					+ '  </p:spPr>';
 				// ISSUE #68: "Page number styling"
 				strSlideXml += '<p:txBody>';
@@ -1049,7 +1048,9 @@ var PptxGenJS = function(){
 				// FIXME:
 				// TODO: slide numbers not showing by default
 				//strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p>'
-				strSlideXml += '<a:p><a:fld id="'+SLDNUMFLDID+'" type="slidenum"><a:rPr lang="en-US" smtClean="0"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>';
+				strSlideXml += '<a:p><a:fld id="'+SLDNUMFLDID+'" type="slidenum">'
+					+ '<a:rPr lang="en-US" smtClean="0"/><a:t></a:t></a:fld>'
+					+ '<a:endParaRPr lang="en-US" /></a:p>';
 
 				strSlideXml += '</p:txBody></p:sp>';
 			}
@@ -1380,42 +1381,29 @@ var PptxGenJS = function(){
 		zip.file("ppt/tableStyles.xml",  makeXmlTableStyles());
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
-		if ( gObjPptx.properLayoutMasterInUse ) {
-			for ( var idx=1; idx<=gObjPptx.layoutDefinitions.length; idx++ ) {
-				zip.file("ppt/slideLayouts/slideLayout"+ idx +".xml", makeXmlLayout(gObjPptx.layoutDefinitions[idx - 1]));
+		for ( var idx=1; idx<=gObjPptx.slideLayouts.length; idx++ ) {
+				zip.file("ppt/slideLayouts/slideLayout"+ idx +".xml", makeXmlLayout(gObjPptx.slideLayouts[idx - 1]));
 				zip.file("ppt/slideLayouts/_rels/slideLayout"+ idx +".xml.rels", makeXmlSlideLayoutRel( idx ));
 			}
-		}
 
 		// Create a Layout/Master/Rel/Slide file for each SLIDE
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
 			intSlideNum++;
 			zip.file("ppt/slides/slide"+ intSlideNum +".xml", makeXmlSlide(gObjPptx.slides[idx]));
 			zip.file("ppt/slides/_rels/slide"+ intSlideNum +".xml.rels", makeXmlSlideRel( intSlideNum ));
-			if ( !gObjPptx.properLayoutMasterInUse ) {
-				zip.file("ppt/slideLayouts/slideLayout"+ intSlideNum +".xml", makeXmlSlideLayout( intSlideNum ));
-				zip.file("ppt/slideLayouts/_rels/slideLayout"+ intSlideNum +".xml.rels", makeXmlSlideLayoutRel( intSlideNum ));
-			}
 		}
 
-		if (gObjPptx.properLayoutMasterInUse) {
-			zip.file("ppt/slideMasters/slideMaster1.xml", makeXmlMaster(gObjPptx.masterSlide));
-			zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlMasterRel(gObjPptx.masterSlide));
-		}
-		else {
-			zip.file("ppt/slideMasters/slideMaster1.xml", makeXmlSlideMaster());
-			zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlSlideMasterRel());
-		}
+		zip.file("ppt/slideMasters/slideMaster1.xml", makeXmlMaster(gObjPptx.masterSlide));
+		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlMasterRel(gObjPptx.masterSlide));
+
 		// Create all Rels (images, media, chart data)
-		gObjPptx.layoutDefinitions.forEach(function(layout, idx){
+		gObjPptx.slideLayouts.forEach(function(layout,idx){
 			createMediaFiles(layout, zip, arrChartPromises);
 		});
 		gObjPptx.slides.forEach(function(slide,idx){
 			createMediaFiles(slide, zip, arrChartPromises);
 		});
-		if (gObjPptx.properLayoutMasterInUse) {
-			createMediaFiles(gObjPptx.masterSlide, zip, arrChartPromises);
-		}
+		createMediaFiles(gObjPptx.masterSlide, zip, arrChartPromises);
 
 		// STEP 3: Wait for Promises (if any) then generate the PPTX file
 		Promise.all( arrChartPromises )
@@ -1602,12 +1590,11 @@ var PptxGenJS = function(){
 		gObjPptx.slides.forEach(function(slide,i) {
 			slide.rels.forEach(clbk);
 		});
-		if (gObjPptx.properLayoutMasterInUse) {
-			gObjPptx.layoutDefinitions.forEach(function(layout,i) {
-				layout.rels.forEach(clbk);
-			});
-			gObjPptx.masterSlide.rels.forEach(clbk);
-		}
+		gObjPptx.slideLayouts.forEach(function(layout,i) {
+			layout.rels.forEach(clbk);
+		});
+		gObjPptx.masterSlide.rels.forEach(clbk);
+
 		// STEP 2: Continue export process if all rels have base64 `data` now
 		if ( intEmpty == 0 ) doExportPresentation();
 	}
@@ -1756,7 +1743,8 @@ var PptxGenJS = function(){
 			if ( Array.isArray(opts.slideMargin) ) arrInchMargins = opts.slideMargin;
 			else if ( !isNaN(opts.slideMargin) ) arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin];
 		}
-		else if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
+//		else if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
+		else if ( opts && opts.master && opts.master.margin ) {
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
 		}
@@ -3056,9 +3044,6 @@ var PptxGenJS = function(){
 		gObjPptx.slides.forEach(function(slide, idx){
 			strXml += '<Override PartName="/ppt/slideMasters/slideMaster'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>';
 			strXml += '<Override PartName="/ppt/slides/slide'            + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
-			if (!gObjPptx.properLayoutMasterInUse) {
-				strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
-			}
 			// add charts if any
 			slide.rels.forEach(function(rel){
 				if ( rel.type == 'chart' ) {
@@ -3067,8 +3052,7 @@ var PptxGenJS = function(){
 			});
 		});
 
-		if (gObjPptx.properLayoutMasterInUse) {
-			gObjPptx.layoutDefinitions.forEach(function(layout,idx) {
+		gObjPptx.slideLayouts.forEach(function(layout,idx) {
 				strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ ( idx + 1 ) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
 				layout.rels.forEach(function(rel){
 					if ( rel.type == 'chart' ) {
@@ -3076,14 +3060,13 @@ var PptxGenJS = function(){
 					}
 				});
 			});
-			gObjPptx.masterSlide.rels.forEach(function(rel) {
+		gObjPptx.masterSlide.rels.forEach(function(rel) {
 				if ( rel.type == 'chart' ) {
 					strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
 				}
 				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
 					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
 			});
-		}
 
 		strXml += '</Types>';
 
@@ -3173,7 +3156,7 @@ var PptxGenJS = function(){
 
 	/**
 	 * (The old way of creating layouts.)
-	 */
+	 *
 	function makeXmlSlideLayout() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
 		strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" type="title" preserve="1">'+CRLF
@@ -3197,6 +3180,7 @@ var PptxGenJS = function(){
 		//
 		return strXml;
 	}
+	*/
 
 	// XML-GEN: Next 5 functions run 1-N times (once for each Slide)
 
@@ -3223,10 +3207,9 @@ var PptxGenJS = function(){
 	 * @return {String} complete XML string ready to be saved as a file
 	*/
 	function makeXmlLayout(slideLayoutObject) {
-		var strSlideXml = gObjPptxGenerators.slideObjectToXml(slideLayoutObject);
 		var strXml =  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
 			strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1" userDrawn="1">';
- 			strXml += strSlideXml;
+ 			strXml += gObjPptxGenerators.slideObjectToXml(slideLayoutObject);
 			strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>';
 			strXml += '</p:sldLayout>';
 		return strXml;
@@ -3240,8 +3223,8 @@ var PptxGenJS = function(){
 	function makeXmlMaster(slideObject) {
 		var strSlideXml = gObjPptxGenerators.slideObjectToXml(slideObject);
 
-		// pass layouts as static rels because they are not referrenced any time
-		var layoutDefs = gObjPptx.layoutDefinitions.map(function(layoutDef, idx) {
+		// NOTE: Pass layouts as static rels because they are not referrenced any time
+		var layoutDefs = gObjPptx.slideLayouts.map(function(layoutDef,idx){
 			return '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slideObject.rels.length + idx + 1) + '" />';
 		});
 
@@ -3250,6 +3233,7 @@ var PptxGenJS = function(){
 		strXml += strSlideXml;
 		strXml += '<p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink" />'
 		strXml += '<p:sldLayoutIdLst>' + layoutDefs.join('') + '</p:sldLayoutIdLst>';
+		strXml += '<p:hf sldNum="0" hdr="0" ftr="0" dt="0" />';
 		strXml += '<p:txStyles>'
 			+ ' <p:titleStyle>'
 			+ '  <a:lvl1pPr algn="ctr" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:spcBef><a:spcPct val="0"/></a:spcBef><a:buNone/><a:defRPr sz="4400" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mj-lt"/><a:ea typeface="+mj-ea"/><a:cs typeface="+mj-cs"/></a:defRPr></a:lvl1pPr>'
@@ -3289,8 +3273,10 @@ var PptxGenJS = function(){
 	 */
 	function makeXmlSlideLayoutRel(layoutNumber) {
 		return gObjPptxGenerators.slideObjectRelationsToXml(
-			gObjPptx.properLayoutMasterInUse ? gObjPptx.layoutDefinitions[layoutNumber - 1] : gObjPptx.slides[layoutNumber - 1],
-			[{ target: "../slideMasters/slideMaster1.xml", type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"}]
+			gObjPptx.slideLayouts[layoutNumber - 1],
+			[{
+				target:"../slideMasters/slideMaster1.xml", type:"http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"
+			}]
 		);
 	}
 
@@ -3316,7 +3302,7 @@ var PptxGenJS = function(){
 	 */
 	function makeXmlMasterRel(masterSlideObject) {
 		var relCount = masterSlideObject.rels.length
-		var defaultRels = gObjPptx.layoutDefinitions.map(function(layoutDef, idx) {
+		var defaultRels = gObjPptx.slideLayouts.map(function(layoutDef, idx) {
 			return { target: '../slideLayouts/slideLayout'+ (idx + 1) +'.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' };
 		});
 		defaultRels.push({ target: '../theme/theme1.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme' });
@@ -3336,8 +3322,8 @@ var PptxGenJS = function(){
 		var layoutName = gObjPptx.slides[slideNumber - 1].layout;
 		var layoutIdx = -1;
 
-		for (var i=0; i<gObjPptx.layoutDefinitions.length; i++) {
-			if (gObjPptx.layoutDefinitions[i].name === layoutName) {
+		for (var i=0; i<gObjPptx.slideLayouts.length; i++) {
+			if (gObjPptx.slideLayouts[i].name === layoutName) {
 				return (i + 1);
 			}
 		}
@@ -3347,9 +3333,10 @@ var PptxGenJS = function(){
 		return 1;
 	}
 
+	// TODO: REMOVE !!!
 	/**
 	 * (the old way of generating master)
-	 */
+	 *
 	function makeXmlSlideMaster() {
 		var intSlideLayoutId = 2147483649;
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
@@ -3402,7 +3389,7 @@ var PptxGenJS = function(){
 
 	/**
 	 * (the old way of generating master relations)
-	 */
+	 *
 	function makeXmlSlideMasterRel() {
 		// FIXME: create a slideLayout for each SLDIE
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
@@ -3415,6 +3402,7 @@ var PptxGenJS = function(){
 		//
 		return strXml;
 	}
+*/
 
 	// XML-GEN: Last 5 functions create root /ppt files
 
@@ -3573,14 +3561,6 @@ var PptxGenJS = function(){
 	}
 
 	/**
-	 * Turns on the new way of processing master slide and slide layouts.
-	 *
-	this.useProperLayoutMaster = function() {
-		gObjPptx.properLayoutMasterInUse = true;
-	}
-	*/
-
-	/**
 	 * Sets the Presentation's Title
 	 */
 	this.setTitle = function setTitle(inStrTitle) {
@@ -3629,18 +3609,13 @@ var PptxGenJS = function(){
 		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
 
 		// STEP 2: Read/Encode Images
-
-		// B: Total all physical rels across the Presentation
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
-		gObjPptx.slides.forEach(function(slide,idx){
-			intRels += encodeImageRelations(slide, arrRelsDone);
-		});
-		if ( gObjPptx.properLayoutMasterInUse ) {
-			gObjPptx.layoutDefinitions.forEach(function(layout,idx){
-				intRels += encodeImageRelations(layout, arrRelsDone);
-			});
-			intRels += encodeImageRelations(gObjPptx.masterSlide, arrRelsDone);
-		}
+		// A: Slide rels
+		gObjPptx.slides.forEach(function(slide,idx){ intRels += encodeImageRelations(slide, arrRelsDone); });
+		// B: Layout rels
+		gObjPptx.slideLayouts.forEach(function(layout,idx){ intRels += encodeImageRelations(layout, arrRelsDone); });
+		// C: Master Slide rels
+		intRels += encodeImageRelations(gObjPptx.masterSlide, arrRelsDone);
 
 		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
 		if ( intRels == 0 ) doExportPresentation(callback, outputType);
@@ -3651,6 +3626,7 @@ var PptxGenJS = function(){
 	 * @returns {Object[]} slideObj - The new Slide object
 	 */
 	this.addNewSlide = function addNewSlide(inMaster, inMasterOpts) {
+		// DEPRECATED: moving to only `inMaster` soon (deprecated in 1.8.0)
 		var inMasterOpts = ( inMasterOpts && typeof inMasterOpts === 'object' ? inMasterOpts : {} );
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
@@ -3974,12 +3950,16 @@ var PptxGenJS = function(){
 
 		// ==========================================================================
 		// POST-METHODS:
+		// ==========================================================================
+
+		// NOTE: Use legacy method to add Slide Number as a regular object (an actual Footer slideNum is created and can be enabled in PPT, but i cannot make it show by default arg!, so i'm cheating)
+		var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == inMaster })[0];
+		if ( objLayout && objLayout.slideNumberObj && !slideObj.slideNumber() ) gObjPptx.slides[slideNum].slideNumberObj = objLayout.slideNumberObj;
+
+		// Add Master-Slide objects (if any)
 		// DEPRECATED - REMOVE in 2.0.0 (20170829)
 		// (new `defineSlideMaster()` is a better soln and produces *Actual* layout slides, not merely adding objs to Slide!)
 		// for now this function in parallel with defineSlideMaster() providing backwards compatibility
-		// ==========================================================================
-
-		// Add Master-Slide objects (if any)
 		if ( inMaster && typeof inMaster === 'object' ) {
 			// Add Slide Master objects in order
 			$.each(inMaster, function(key,val){
@@ -4062,7 +4042,7 @@ var PptxGenJS = function(){
 		gObjPptxGenerators.createSlideObject(inObjMasterDef, objLayout);
 
 		// STEP 2: Add it to layout defs
-		gObjPptx.layoutDefinitions.push(objLayout);
+		gObjPptx.slideLayouts.push(objLayout);
 
 		// LAST:
 		return this;
@@ -4087,7 +4067,7 @@ var PptxGenJS = function(){
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 		opts.margin = (opts.marginPt || opts.margin); // (Legacy Support/DEPRECATED)
 		opts.margin = (opts.margin || opts.margin == 0 ? opts.margin : 0.5);
-		if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
+		if ( opts && opts.master && opts.master.margin ) {
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
 			opts.margin = arrInchMargins;
@@ -4205,7 +4185,7 @@ var PptxGenJS = function(){
 		getSlidesForTableRows( arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts )
 		.forEach(function(arrTabRows,i){
 			// A: Create new Slide
-			var newSlide = ( opts.master && gObjPptxMasters ? api.addNewSlide(opts.master) : api.addNewSlide() );
+			var newSlide = ( opts.master ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
 			// B: Add table to Slide
 			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), cx:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
