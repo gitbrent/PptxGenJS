@@ -26,7 +26,7 @@ function getTimestamp() {
 
 if (gConsoleLog) console.log(`
 -------------
-STARTING TEST
+STARTING DEMO
 -------------`);
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
