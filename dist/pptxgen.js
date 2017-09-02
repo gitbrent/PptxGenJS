@@ -57,14 +57,14 @@ var NODEJS = ( typeof module !== 'undefined' && module.exports );
 if ( NODEJS ) {
 	var gObjPptxColors  = require('../dist/pptxgen.colors.js');
 	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
-	// LEGACY-TEST-ONLY:
-//	var gObjPptxMasters = require('../dist/pptxgen.masters.js');
+	/* LEGACY/DEPRECATED testing only - REMOVE in 2.0 (or sooner!) */
+	//var gObjPptxMasters = require('../dist/pptxgen.masters.js');
 }
 
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170831";
+	var APP_REL = "20170901";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -157,6 +157,7 @@ var PptxGenJS = function(){
 		slide: {},
 		data : [],
 		rels : [],
+		margin: DEF_SLIDE_MARGIN_IN,
 		slideNumberObj: null
 	}];
 
@@ -164,9 +165,8 @@ var PptxGenJS = function(){
 	this.charts  = CHART_TYPES;
 	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
-	/* LEGACY/DEPRECATED testing only - REMOVE in 2.0 (or sooner!)
-	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
-	*/
+	/* LEGACY/DEPRECATED testing only - REMOVE in 2.0 (or sooner!) */
+	//this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
@@ -1743,7 +1743,6 @@ var PptxGenJS = function(){
 			if ( Array.isArray(opts.slideMargin) ) arrInchMargins = opts.slideMargin;
 			else if ( !isNaN(opts.slideMargin) ) arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin];
 		}
-//		else if ( opts && opts.master && opts.master.margin && gObjPptxMasters) {
 		else if ( opts && opts.master && opts.master.margin ) {
 			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
 			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
@@ -4035,6 +4034,7 @@ var PptxGenJS = function(){
 			slide: {},
 			data : [],
 			rels : [],
+			margin: inObjMasterDef.margin || DEF_SLIDE_MARGIN_IN,
 			slideNumberObj: null
 		};
 
@@ -4051,6 +4051,7 @@ var PptxGenJS = function(){
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * "Auto-Paging is the future!" --Elon Musk
+	 *
 	 * @param {string} tabEleId - The HTML Element ID of the table
 	 * @param {array} inOpts - An array of options (e.g.: tabsize)
 	 */
@@ -4067,10 +4068,22 @@ var PptxGenJS = function(){
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 		opts.margin = (opts.marginPt || opts.margin); // (Legacy Support/DEPRECATED)
 		opts.margin = (opts.margin || opts.margin == 0 ? opts.margin : 0.5);
-		if ( opts && opts.master && opts.master.margin ) {
-			if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
-			else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
-			opts.margin = arrInchMargins;
+
+		if ( opts.master ) {
+			if ( typeof opts.master === 'string' ) {
+				var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == opts.master })[0];
+				if ( objLayout && objLayout.margin ) {
+					if ( Array.isArray(objLayout.margin) ) arrInchMargins = objLayout.margin;
+					else if ( !isNaN(objLayout.margin) ) arrInchMargins = [objLayout.margin, objLayout.margin, objLayout.margin, objLayout.margin];
+					opts.margin = arrInchMargins;
+				}
+			}
+			// LEGACY SUPPORT: DEPRECATED:
+			else if ( typeof opts.master === 'object' && opts.master.margin ) {
+				if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
+				else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
+				opts.margin = arrInchMargins;
+			}
 		}
 		else if ( opts && opts.margin ) {
 			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
@@ -4100,9 +4113,9 @@ var PptxGenJS = function(){
 
 		// STEP 2: Calc/Set column widths by using same column width percent from HTML table
 		$.each(arrTabColW, function(i,colW){
-			( $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width') )
-				? arrColW.push( $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width') )
-				: arrColW.push( Number(((emuSlideTabW * (colW / intTabW * 100) ) / 100 / EMU).toFixed(2)) );
+			var intMinWidth = $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width');
+			var intCalcWidth = Number(((emuSlideTabW * (colW / intTabW * 100) ) / 100 / EMU).toFixed(2));
+			arrColW.push( (intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth) );
 		});
 
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
@@ -4188,7 +4201,7 @@ var PptxGenJS = function(){
 			var newSlide = ( opts.master ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
 			// B: Add table to Slide
-			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), cx:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
+			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), w:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
 
 			// C: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
