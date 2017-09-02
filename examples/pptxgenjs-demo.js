@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Aug 23, 2017
+* DATE: Sep 01, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -1564,11 +1564,11 @@ function genSlides_Text(pptx) {
 		slide.addText( 'Textbox (top/lft)', { x:10,  y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', isTextBox:true } );
 		slide.addText( 'Textbox (btm/rgt)', { x:10,  y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', isTextBox:true } );
 
-		slide.addText('^ (50%/50%)', {x:'50%', y:'50%', w:2});
+		slide.addText('^ (50%/50%)', { x:'50%', y:'50%', w:2 });
 
-		slide.addText('Plain x/y coords', { x:10, y:3.5 });
+		slide.addText('Plain x/y coords', { x:10, y:3.5, w:3 });
 
-		slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5 });
+		slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5, w:3 });
 
 		slide.addText(
 			[
