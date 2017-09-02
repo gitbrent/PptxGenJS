@@ -911,58 +911,15 @@ Generating sample slides like those shown above is great for demonstrating libra
 but the reality is most of us will be required to produce presentations that have a certain design or
 corporate branding.
 
-PptxGenJS allows you to define Master Slides via objects that can then be used to provide branding
+PptxGenJS allows you to define Slide Master Layouts via objects that can then be used to provide branding
 functionality.
 
-Slide Masters are defined using the same object style used in Slides. Add these objects as a variable to a file that
-is included in the script src tags on your page, then reference them by name in your code.
-E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
+Slide Masters are created by calling the `defineSlideMaster()` method along with an options object
+(same style used in Slides).  Once defined, you can pass the Master title to `addNewSlide()` and that Slide will
+use the Layout previously defined.  See the demo under /examples for several working examples.
 
-## Slide Master Examples
-`pptxgenjs.masters.js` contents:
-```javascript
-var gObjPptxMasters = {
-  MASTER_SLIDE: {
-    title:   'Slide Master',
-    bkgd:    'FFFFFF',
-    objects: [
-      { 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-      { 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-      { 'text':  { text:'Status Report', options:{ x:3.0, y:5.30, w:5.5, h:0.75 } } },
-      { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
-    ],
-    slideNumber: { x:0.3, y:'90%' }
-  },
-  TITLE_SLIDE: {
-    title:   'I am the Title Slide',
-    bkgd:    { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-    objects: [
-      { text:  { text:'Greetings!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-      { image: { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
-    ]
-  }
-};
-```
-Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
-by their key names that you created (e.g.: "TITLE_SLIDE").
-
-**TIP:**
-Pre-encode your images (base64) and add the string as the optional data key/val
-(see the `TITLE_SLIDE.images` object above)
-
-```javascript
-var pptx = new PptxGenJS();
-
-var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
-slide1.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
-// NOTE: Base master slide properties can be overridden on a selective basis:
-// Here we can set a new background color or image on-the-fly
-var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC' } );
-var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd.jpg' } } );
-var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ data:'image/png;base64,tFfInmP[...]=' } } );
-
-pptx.save();
-```
+The defined Masters become first-class Layouts in the exported PowerPoint presentation and can be changed
+via View > Slide Master and will affect the Slides created using that layout.
 
 ## Slide Master Object Options
 | Option        | Type    | Unit   | Default  | Description  | Possible Values       |
@@ -973,60 +930,36 @@ pptx.save();
 | `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
 | `margin`      | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
 | `objects`     | array   |        |          | Objects for Slide  | object with type and options. Type:`chart`,`image`,`line`,`rect` or `text`. [Example](https://github.com/gitbrent/PptxGenJS#slide-master-examples) |
-| `title`       | string  |        |          | Slide title        | some title |
+| `title`       | string  |        |          | Layout title/name  | some title |
 
-## Sample Slide Master File
-A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.
-Location: `PptxGenJS/dist/pptxgen.masters.js`
+**TIP:**
+Pre-encode your images (base64) and add the string as the optional data key/val (see `bkgd` above)
 
-
-
-=======================================================================================================================================
-
-=======================================================================================================================================
-
-=======================================================================================================================================
-
-=======================================================================================================================================
-
-
-
-## Layouting – New Approach
-The new approach follows the principles used in PowerPoint. That means, each slide is attached to a slide layout that is attached to the master slide. Slide layouts inherit layout specified in the master file. Thus, if you apply any layout to a slide, objects specified in master slide and the slide layout will all appear in the slide. Advantage of this principle resides in the layouts variability. PPTX generated this way includes layout definitions easily changeable by user so that they can manipulate repetitive elements globally, for all the slides at once.
-
-To enable the new approach, call the following method any time before saving presentation:
+## Slide Master Examples
 ```javascript
-pptx.useProperLayoutMaster();
-```
+var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
 
-### Master Slide
-Defining the master slide is optional. It remains empty if not specified. If you want to specify layout that will apply globally to all slides, set up the master slide as following:
-
-```javascript
-pptx.setMasterSlide({
-  bkgd: 'ff0000',
-  objects: [ { text: { text:'Master Slide Title', options:{ x:1.0, y:0.5, color:'FFFFFF' } } } ]
+pptx.defineSlideMaster({
+  title: 'MASTER_SLIDE',
+  bkgd:  'FFFFFF',
+  objects: [
+    { 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
+    { 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
+    { 'text':  { text:'Status Report', options:{ x:3.0, y:5.30, w:5.5, h:0.75 } } },
+    { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
+  ],
+  slideNumber: { x:0.3, y:'90%' }
 });
-```
-The configuration object is still the same as in [Slide Master Object Options](#slide-master-object-options) except for the `title` property that has no effect in this case.
 
-### Slide Layout
-Slide layout enables you to create more specific slide designs based on the master slide. The same configuration object as in the master slide is used to describe slide layout design; but this time, the `title` property is required and needs to be unique.
+var slide = pptx.addNewSlide('MASTER_SLIDE');
+slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
 
-```javascript
-pptx.addLayoutSlide({
-  title: 'welcome',
-  bkgd: 'ff0000',
-  objects: [ { text: { text: 'Hello World', options:{ x: 1, y: 1 } } } ]
-});
+pptx.save();
 ```
 
-Then, the defined layouts can be applied to a slide passing their name as the first argument:
-```javascript
-pptx.addNewSlide('welcome', { bkgd: '0000ff' });
-```
 
-You are not required to specify layout name for each slide. if you pass falsy (or no) value, an empty layout already defined inside the library will be used.
+
 
 **************************************************************************************************
 # Table-to-Slides Feature
