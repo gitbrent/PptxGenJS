@@ -173,44 +173,52 @@
 
 		// Table-to-Slides Demos =======================================================================
 
-		function table2slides1() {
-			// FIRST: Instantiate new PptxGenJS instance
-			var pptx = new PptxGenJS();
-
-			// STEP 1: Set slide size/layout
-			pptx.setLayout('LAYOUT_16x9');
+		function addMasterDefs(pptx) {
+			// 1:
 			pptx.defineSlideMaster({
 				title: 'TITLE_SLIDE',
-				bkgd: { path:'images/starlabs_bkgd.jpg' },
+				bkgd: { data:BKGD_STARLABS },
 				objects: [
 					{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
 					{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
 					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-					{ 'text':
-						{ text:'Global IT & Services :: Status Report',
+					{ 'text':  { text:'Global IT & Services :: Status Report',
 						options:{ x:3.0, y:5.30, w:5.5, h:0.75, font_face:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
 					},
 					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
 				]
 			});
+
+			// 2:
 			pptx.defineSlideMaster({
 				title: 'MASTER_SLIDE',
 				bkgd: 'EEEEEE',
 				margin:  [ 0.5, 0.25, 1.0, 0.25 ],
 				objects: [
-					{ 'rect': { x:0, y:'90%', w:'100%', h:0.6, fill:'003b75' } },
-					{ 'text': { options: {x:0, y:'90%', w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12}, text:'S.T.A.R. Labs' } }
+					{ 'rect': { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
+					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:'90%', w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12} } }
 				]
 			});
+
+			// 3:
 			pptx.defineSlideMaster({
 				title: 'THANKS_SLIDE',
 				bkgd: '36ABFF',
 				objects: [
 					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
 					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' } }
+					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS } }
 				]
 			});
+		}
+
+		function table2slides1() {
+			// FIRST: Instantiate new PptxGenJS instance
+			var pptx = new PptxGenJS();
+
+			// STEP 1: Add Master Slide defs / Set slide size/layout
+			addMasterDefs(pptx);
+			pptx.setLayout('LAYOUT_WIDE');
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
@@ -229,55 +237,22 @@
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
 
-			// STEP 1: Set slide size/layout
-			pptx.setLayout('LAYOUT_16x9');
-			pptx.defineSlideMaster({
-				title: 'TITLE_SLIDE',
-				bkgd: { path:'images/starlabs_bkgd.jpg' },
-				objects: [
-					{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-					{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
-					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-					{ 'text':
-						{ text:'Global IT & Services :: Status Report',
-						options:{ x:3.0, y:5.30, w:5.5, h:0.75, font_face:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
-					},
-					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
-				]
-			});
-			pptx.defineSlideMaster({
-				title: 'MASTER_SLIDE',
-				bkgd: 'EEEEEE',
-				margin:  [ 0.5, 0.25, 1.0, 0.25 ],
-				objects: [
-					{ 'rect': { x:0, y:'90%', w:'100%', h:0.6, fill:'003b75' } },
-					{ 'text': { options: {x:0, y:'90%', w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12}, text:'S.T.A.R. Labs' } }
-				]
-			});
-			pptx.defineSlideMaster({
-				title: 'THANKS_SLIDE',
-				bkgd: '36ABFF',
-				objects: [
-					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' } }
-				]
-			});
+			// STEP 1: Add Master Slide defs / Set slide size/layout
+			addMasterDefs(pptx);
+			pptx.setLayout('LAYOUT_WIDE');
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			// Add a master slide to have a pre-defined style applied (eg: std corp title, logo etc.)
-			//objOpts.master = 'MASTER_SLIDE';
+			//if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
 			// Set custom margins (you can also define them in a Master Slide)
 			objOpts.margin = 1.0;
-
-			// OPTIONS: Add header to each slide
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 
 			// Add any dynamic content to gnerated Slides
 			// things that cant be pre-defined like a title that varies as you generate sections of tables, etc.
 			objOpts.addText = { text:"Some dynamic title here", options:{ x:1, y:0.5, color:'0088CC', font_face:'Arial', font_size:16 } };
-			// You can do this for all other stypes as well: .addShape(), .addTable() and .addImage()
+			// You can do this for all other types as well: .addShape(), .addTable() and .addImage()
 
 			// STEP 3: Create all Slides from table data
 			pptx.addSlidesForTable('tabAutoPaging', objOpts);
@@ -290,46 +265,15 @@
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
 
-			// STEP 1: Set slide size/layout
-			pptx.setLayout('LAYOUT_16x9');
-			pptx.defineSlideMaster({
-				title: 'TITLE_SLIDE',
-				bkgd: { path:'images/starlabs_bkgd.jpg' },
-				objects: [
-					{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-					{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
-					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-					{ 'text':
-						{ text:'Global IT & Services :: Status Report',
-						options:{ x:3.0, y:5.30, w:5.5, h:0.75, font_face:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
-					},
-					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
-				]
-			});
-			pptx.defineSlideMaster({
-				title: 'MASTER_SLIDE',
-				bkgd: 'EEEEEE',
-				margin:  [ 0.5, 0.25, 1.0, 0.25 ],
-				objects: [
-					{ 'rect': { x:0, y:'90%', w:'100%', h:0.6, fill:'003b75' } },
-					{ 'text': { options: {x:0, y:'90%', w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12}, text:'S.T.A.R. Labs' } }
-				]
-			});
-			pptx.defineSlideMaster({
-				title: 'THANKS_SLIDE',
-				bkgd: '36ABFF',
-				objects: [
-					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' } }
-				]
-			});
+			// STEP 1: Add Master Slide defs / Set slide size/layout
+			addMasterDefs(pptx);
+			pptx.setLayout('LAYOUT_WIDE');
 
 			// STEP 2: Add options (Master Slide, location, width, etc)
 			var objOpts = {};
 			objOpts.master = 'MASTER_SLIDE';
 			objOpts.x = 0.25;
-			objOpts.y = 1.5;
+			objOpts.y = 1.0;
 			//objOpts.w = 6.5;
 			//objOpts.h = 3.5;
 
