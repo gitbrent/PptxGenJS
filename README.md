@@ -76,9 +76,8 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Media Examples](#media-examples)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Slide Masters](#slide-masters)
-  - [Slide Master Examples](#slide-master-examples)
   - [Slide Master Object Options](#slide-master-object-options)
-  - [Sample Slide Master File](#sample-slide-master-file)
+  - [Slide Master Examples](#slide-master-examples)
 - [Table-to-Slides Feature](#table-to-slides-feature)
   - [Table-to-Slides Options](#table-to-slides-options)
   - [Table-to-Slides HTML Options](#table-to-slides-html-options)
@@ -102,7 +101,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 
 **************************************************************************************************
 # Live Demo
-Use JavaScript to Create a PowerPoint presentation with your web browser right now:  
+Use JavaScript to Create a PowerPoint presentation with your web browser right now:
 [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 # Installation
@@ -827,12 +826,12 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `hyperlink`  | string  |        |           | add hyperlink | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
-**NOTES**  
+**NOTES**
 * SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
 properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
 * Using `path` to add remote images (images from a different server) is not currently supported.
 
-**Deprecation Warning**  
+**Deprecation Warning**
 Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1, 1, 6, 3)`) are now deprecated as of 1.1.0
 
 ### Image Examples
@@ -910,58 +909,15 @@ Generating sample slides like those shown above is great for demonstrating libra
 but the reality is most of us will be required to produce presentations that have a certain design or
 corporate branding.
 
-PptxGenJS allows you to define Master Slides via objects that can then be used to provide branding
+PptxGenJS allows you to define Slide Master Layouts via objects that can then be used to provide branding
 functionality.
 
-Slide Masters are defined using the same object style used in Slides. Add these objects as a variable to a file that
-is included in the script src tags on your page, then reference them by name in your code.  
-E.g.: `<script lang="javascript" src="pptxgenjs.masters.js"></script>`
+Slide Masters are created by calling the `defineSlideMaster()` method along with an options object
+(same style used in Slides).  Once defined, you can pass the Master title to `addNewSlide()` and that Slide will
+use the Layout previously defined.  See the demo under /examples for several working examples.
 
-## Slide Master Examples
-`pptxgenjs.masters.js` contents:
-```javascript
-var gObjPptxMasters = {
-  MASTER_SLIDE: {
-    title:   'Slide Master',
-    bkgd:    'FFFFFF',
-    objects: [
-      { 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-      { 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-      { 'text':  { text:'Status Report', options:{ x:3.0, y:5.30, w:5.5, h:0.75 } } },
-      { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
-    ],
-    slideNumber: { x:0.3, y:'90%' }
-  },
-  TITLE_SLIDE: {
-    title:   'I am the Title Slide',
-    bkgd:    { data:'image/png;base64,R0lGONlhotPQBMAPyoAPosR[...]+0pEZbEhAAOw==' },
-    objects: [
-      { 'text':  { text:'Greetings!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-      { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
-    ]
-  }
-};
-```  
-Every object added to the global master slide variable `gObjPptxMasters` can then be referenced
-by their key names that you created (e.g.: "TITLE_SLIDE").  
-
-**TIP:**
-Pre-encode your images (base64) and add the string as the optional data key/val
-(see the `TITLE_SLIDE.images` object above)
-
-```javascript
-var pptx = new PptxGenJS();
-
-var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
-slide1.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
-// NOTE: Base master slide properties can be overridden on a selective basis:
-// Here we can set a new background color or image on-the-fly
-var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:'0088CC' } );
-var slide3 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'images/title_bkgd.jpg' } } );
-var slide4 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ data:'image/png;base64,tFfInmP[...]=' } } );
-
-pptx.save();
-```
+The defined Masters become first-class Layouts in the exported PowerPoint presentation and can be changed
+via View > Slide Master and will affect the Slides created using that layout.
 
 ## Slide Master Object Options
 | Option        | Type    | Unit   | Default  | Description  | Possible Values       |
@@ -972,11 +928,36 @@ pptx.save();
 | `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
 | `margin`      | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
 | `objects`     | array   |        |          | Objects for Slide  | object with type and options. Type:`chart`,`image`,`line`,`rect` or `text`. [Example](https://github.com/gitbrent/PptxGenJS#slide-master-examples) |
-| `title`       | string  |        |          | Slide title        | some title |
+| `title`       | string  |        |          | Layout title/name  | some title |
 
-## Sample Slide Master File
-A sample masters file is included in the distribution folder and contain a couple of different slides to get you started.  
-Location: `PptxGenJS/dist/pptxgen.masters.js`
+**TIP:**
+Pre-encode your images (base64) and add the string as the optional data key/val (see `bkgd` above)
+
+## Slide Master Examples
+```javascript
+var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
+
+pptx.defineSlideMaster({
+  title: 'MASTER_SLIDE',
+  bkgd:  'FFFFFF',
+  objects: [
+    { 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
+    { 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
+    { 'text':  { text:'Status Report', options:{ x:3.0, y:5.30, w:5.5, h:0.75 } } },
+    { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
+  ],
+  slideNumber: { x:0.3, y:'90%' }
+});
+
+var slide = pptx.addNewSlide('MASTER_SLIDE');
+slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
+
+pptx.save();
+```
+
+
+
 
 **************************************************************************************************
 # Table-to-Slides Feature
@@ -1051,7 +1032,7 @@ Add a button to a webpage that will create a Presentation using whatever table d
  onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
 ```
 
-**SharePoint Integration**  
+**SharePoint Integration**
 
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
 to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
@@ -1095,7 +1076,7 @@ boost (no time will need to be consumed reading and encoding the image).
 **************************************************************************************************
 # Building with Webpack/Typescript
 
-Add this to your webpack config to avoid a module resolution error:  
+Add this to your webpack config to avoid a module resolution error:
 `node: { fs: "empty" }`
 
 [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)

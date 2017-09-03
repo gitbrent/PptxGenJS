@@ -26,7 +26,7 @@
 	<script type="text/javascript" src="../libs/promise.min.js"></script>     <!-- optional if not using IE11 -->
 	<script type="text/javascript" src="../dist/pptxgen.colors.js"></script>  <!-- optional if you dont need PPT Color Schemes -->
 	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need non-core Shapes -->
-	<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> <!-- optional if you dont need Slide Masters/Templates -->
+	<!--<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> DEPRECATED/LEGACY-TEST-ONLY -->
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
 	<!-- ^^^ PptxGenJS libraries ^^^ -->
 
@@ -172,17 +172,68 @@
 			pptx.save( 'tabBullets_'+getTimestamp() );
 		}
 
+		/* DESC: Test for backward compatibility with Slide Masters defined in `pptxgen.masters.js` */
+		function testOnly_LegacyMasterSlides() {
+			// TEST-ONLY: DO NOT USE/COPY ME!!
+			var pptx = new PptxGenJS();
+			pptx.setLayout('LAYOUT_WIDE');
+			var slide = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
+			pptx.save('Demo-LegacyMasterSlides_'+getTimestamp());
+		}
+
+		// Table-to-Slides Demos =======================================================================
+
+		function addMasterDefs(pptx) {
+			// 1:
+			pptx.defineSlideMaster({
+				title: 'TITLE_SLIDE',
+				bkgd: { data:BKGD_STARLABS },
+				objects: [
+					{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
+					{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
+					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
+					{ 'text':  { text:'Global IT & Services :: Status Report',
+						options:{ x:3.0, y:5.30, w:5.5, h:0.75, font_face:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
+					},
+					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
+				]
+			});
+
+			// 2:
+			pptx.defineSlideMaster({
+				title: 'MASTER_SLIDE',
+				bkgd: 'EEEEEE',
+				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
+				objects: [
+					{ 'rect': { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
+					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:'90%', w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12} } }
+				]
+			});
+
+			// 3:
+			pptx.defineSlideMaster({
+				title: 'THANKS_SLIDE',
+				bkgd: '36ABFF',
+				objects: [
+					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
+					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
+					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS } }
+				]
+			});
+		}
+
 		function table2slides1() {
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
 
-			// STEP 1: Set slide size/layout
-			pptx.setLayout('LAYOUT_16x9');
+			// STEP 1: Add Master Slide defs / Set slide size/layout
+			addMasterDefs(pptx);
+			pptx.setLayout('LAYOUT_WIDE');
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.debug = true;
-			if ( $('#selSlideMaster').val() ) objOpts.master = pptx.masters[ $('#selSlideMaster').val() ];
+			if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 
 			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
@@ -196,23 +247,22 @@
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
 
-			// STEP 1: Set slide size/layout
-			pptx.setLayout('LAYOUT_16x9');
+			// STEP 1: Add Master Slide defs / Set slide size/layout
+			addMasterDefs(pptx);
+			pptx.setLayout('LAYOUT_WIDE');
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			// Add a master slide to have a pre-defined style applied (eg: std corp title, logo etc.)
-			//objOpts.master = pptx.masters.MASTER_SLIDE;
+			//if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
 			// Set custom margins (you can also define them in a Master Slide)
 			objOpts.margin = 1.0;
-
-			// OPTIONS: Add header to each slide
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 
 			// Add any dynamic content to gnerated Slides
 			// things that cant be pre-defined like a title that varies as you generate sections of tables, etc.
 			objOpts.addText = { text:"Some dynamic title here", options:{ x:1, y:0.5, color:'0088CC', font_face:'Arial', font_size:16 } };
-			// You can do this for all other stypes as well: .addShape(), .addTable() and .addImage()
+			// You can do this for all other types as well: .addShape(), .addTable() and .addImage()
 
 			// STEP 3: Create all Slides from table data
 			pptx.addSlidesForTable('tabAutoPaging', objOpts);
@@ -225,14 +275,15 @@
 			// FIRST: Instantiate new PptxGenJS instance
 			var pptx = new PptxGenJS();
 
-			// STEP 1: Set slide size/layout
-			pptx.setLayout('LAYOUT_16x9');
+			// STEP 1: Add Master Slide defs / Set slide size/layout
+			addMasterDefs(pptx);
+			pptx.setLayout('LAYOUT_WIDE');
 
 			// STEP 2: Add options (Master Slide, location, width, etc)
 			var objOpts = {};
-			objOpts.master = pptx.masters.MASTER_SLIDE;
+			objOpts.master = 'MASTER_SLIDE';
 			objOpts.x = 0.25;
-			objOpts.y = 1.5;
+			objOpts.y = 1.0;
 			//objOpts.w = 6.5;
 			//objOpts.h = 3.5;
 
@@ -267,9 +318,9 @@
 			// STEP 2: Build UI elements
 			buildDataTable();
 			var pptx = new PptxGenJS();
-			if ( pptx.masters ) {
-				Object.keys(pptx.masters).forEach(function(name,idx){ $('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>') });
-			}
+			['TITLE_SLIDE','MASTER_SLIDE','THANKS_SLIDE'].forEach(function(name,idx){
+				$('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>');
+			});
 
 			// STEP 3: Populate code areas
 			$('#demo-basic').html('<pre class="prettyprint">\n'
@@ -610,33 +661,40 @@
 
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Slide Masters / Slide Templates
+					<div class="arrow active"></div>Slide Masters / Templates / Layouts
 				</div>
 				<div class="sectionBox">
 					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
 						<fieldset>
-					    	<legend>As Defined</legend>
+					    	<legend>Misc Tests</legend>
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.TITLE_SLIDE</div>
+							<div class="chkRow"><div class="svgCheck"></div>TITLE_SLIDE</div>
 
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.MASTER_SLIDE</div>
+							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
 
 							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.THANKS_SLIDE</div>
+							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
+
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="svgCheck"></div>THANKS_SLIDE</div>
 						</fieldset>
 					</div>
 					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
 						<fieldset style="height:auto">
-					    	<legend>Options Overidden</legend>
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.TITLE_SLIDE plus `bkgd` and `slideNumber`</div>
-
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.MASTER_SLIDE with background image override</div>
-
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="svgCheck"></div>pptx.masters.THANKS_SLIDE with background color override</div>
+					    	<legend>Example</legend>
+							<h3>Creating Slide Masters is easy!</h3>
+							<p></p>
+							<div style="margin-left:10px">
+								<code>pptx.defineSlideMaster({</code>
+								<code>  title: 'DEMO_MASTER',</code>
+								<code>  bkgd: '36ABFF',</code>
+								<code>  objects: [</code>
+								<code>    {rect: { x:0, y:3, w:'100%', h:2.0, fill:'ffffff' }},</code>
+								<code>    {text: { text:'Hello World!!', options:{x:4, y:4} }}</code>
+								<code>  ]</code>
+								<code>});</code>
+							</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
