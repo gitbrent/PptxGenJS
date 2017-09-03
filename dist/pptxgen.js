@@ -2204,9 +2204,9 @@ var PptxGenJS = function(){
 						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(rel.opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
 					if ( rel.opts.lineShadow !== 'none' ) {
-						strXml += '<a:effectLst>';
+					strXml += '    <a:effectLst>';
 						strXml += createShadowElement(rel.opts.lineShadow || {}, DEF_LINE_SHADOW);
-						strXml += '</a:effectLst>';
+					strXml += '    </a:effectLst>';
 					}
 					strXml += '  </c:spPr>';
 
@@ -2225,18 +2225,16 @@ var PptxGenJS = function(){
 
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if (( rel.data.length === 1 || rel.opts.valueBarColors ) && rel.opts.chartColors != BARCHART_COLORS ) {
+					if ( rel.data.length === 1 && rel.opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function (value, index) {
-							var invert = rel.opts.invertedColors ? 0 : 1;
-							var colors = value < 0 ? rel.opts.invertedColors : rel.opts.chartColors;
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+index+'"/>';
-							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
+							strXml += '    <c:invertIfNegative val="1"/>';
 							strXml += '    	<c:bubble3D val="0"/>';
 							strXml += '    	<c:spPr>';
 							strXml += '    <a:solidFill>';
-							strXml += '    <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
+							strXml += '     <a:srgbClr val="'+rel.opts.chartColors[index % rel.opts.chartColors.length]+'"/>';
 							strXml += '    	</a:solidFill>';
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
@@ -2335,8 +2333,8 @@ var PptxGenJS = function(){
 					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
 					strXml += '  <c:majorTickMark val="out"/>';
 					strXml += '  <c:minorTickMark val="none"/>';
-					strXml += '  <c:tickLblPos val="'+ (rel.opts.catAxisLabelPos || rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
-					strXml += ' <c:spPr>';
+					strXml += '  <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+					strXml += '  <c:spPr>';
 					strXml += '   <a:ln w="12700" cap="flat">';
 					if ( !!rel.opts.catAxisLineShow || typeof rel.opts.catAxisLineShow === 'undefined' ) {
 						strXml += '<a:solidFill>';
@@ -2349,7 +2347,7 @@ var PptxGenJS = function(){
 					strXml += '     <a:prstDash val="solid"/>';
 					strXml += '     <a:round/>';
 					strXml += '   </a:ln>';
-					strXml += ' </c:spPr>';
+					strXml += '  </c:spPr>';
 					strXml += '  <c:txPr>';
 					strXml += '    <a:bodyPr rot="0"/>';
 					strXml += '    <a:lstStyle/>';

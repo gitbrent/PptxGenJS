@@ -78,8 +78,8 @@ function execGenSlidesFuncs(type) {
 		var fs = require('fs');
 		if (fs.existsSync('../dist/pptxgen.js')) {
 			pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
-		}
-		else {
+	}
+	else {
 			pptx = require("pptxgenjs");
 		}
 	}
@@ -887,8 +887,8 @@ function genSlides_Chart(pptx) {
 
 		// BTM-LEFT: H/bar - 100% layout without axis labels
 		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
-			barDir       : 'bar',
-			barGrouping  : 'percentStacked',
+			barDir     : 'bar',
+			barGrouping: 'percentStacked',
 			dataBorder   : { pt:'1', color:'F1F1F1' },
 			catAxisHidden: true,
 			valAxisHidden: true,
@@ -1487,8 +1487,8 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Spacing (bullets):", { x:7.5, y:4.45, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-			  { text:'Line Spacing\n35pt', options:{ font_size:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
-			],
+		      { text:'Line Spacing\n35pt', options:{ font_size:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
+		    ],
 			{ x:7.5, y:4.85, w:5.25, h:1.15, margin:0.1, fill:'f1f1f1' }
 		);
 	}
@@ -1575,7 +1575,7 @@ function genSlides_Text(pptx) {
 				{ text:'Sub'},
 				{ text:'Subscript', options:{ subscript:true } },
 				{ text:' // Super'},
-				{ text:'Superscript', options:{ superscript:true } }
+			    { text:'Superscript', options:{ superscript:true } }
 			],
 			{ x:10, y:5.5 }
 		);

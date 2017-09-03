@@ -291,7 +291,7 @@ pptx.save( 'http', streamCallback );
 pptx.save( 'jszip', saveCallback, 'base64' );
 ```
 
-Saving multiple Presentations:
+Saving multiple Presentations:  
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
@@ -329,7 +329,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 * Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
 
 ### Chart Size/Formatting Options
-| Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
+| Option          | Type    | Unit    | Default   | Description           | Possible Values  |
 | :-------------- | :------ | :------ | :-------- | :--------------------------------- | :--------------- |
 | `x`             | number  | inches  | `1.0`     | horizontal location                | 0-n OR 'n%'. (Ex: `{x:'50%'}` places object in middle of the Slide) |
 | `y`             | number  | inches  | `1.0`     | vertical location                  | 0-n OR 'n%'. |
@@ -339,7 +339,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `chartColors`   | array   |         |           | data colors                        | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent         | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color              | hex color code. Ex: `{ fill:'0088CC' }` |
-| `holeSize`      | number  | percent | `50`      | doughnut hole size                 | 1-100. Ex: `{ holeSize:50 }` |
+| `holeSize`      | number  | percent | `50`      | doughnut hole size    | 1-100. Ex: `{ holeSize:50 }` |
 | `legendPos`     | string  |         | `r`       | chart legend position              | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `layout`        | object  |         |           | positioning plot within chart area | object with `x`, `y`, `w` and `h` props, all in range 0-1 (proportionally related to the chart size). Ex: `{x: 0, y: 0, w: 1, h: 1}` fully expands plot to the chart area |
 | `showLabel`     | boolean |         | `false`   | show data labels                   | `true` or `false` |
@@ -354,44 +354,44 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `titleRotate`   | integer | degrees |           | title rotation degrees             | 0-360. Ex: `{ titleRotate:45 }` |
 
 ### Chart Axis Options
-| Option                 | Type    | Unit    | Default      | Description                  | Possible Values                            |
+| Option                 | Type    | Unit    | Default   | Description              | Possible Values                            |
 | :--------------------- | :------ | :------ | :----------- | :--------------------------- | :----------------------------------------- |
 | `axisLineColor`        | string  |         | `000000`     | cat/val axis line color      | hex color code. Ex: `{ axisLineColor:'0088CC' }`     |
-| `catAxisHidden`        | boolean |         | `false`      | hide category-axis           | `true` or `false`   |
-| `catAxisLabelColor`    | string  |         | `000000`     | category-axis color          | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
-| `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face      | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `catAxisLabelFontSize` | number  | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisHidden`        | boolean |         | `false`   | hide category-axis       | `true` or `false`   |
+| `catAxisLabelColor`    | string  |         | `000000`  | category-axis color      | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
+| `catAxisLabelFontFace` | string  |         | `Arial`   | category-axis font face  | font name. Ex: `{ titleFontFace:'Arial' }` |
+| `catAxisLabelFontSize` | number  | points  | `18`      | category-axis font size  | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line | `true` or `false` |
-| `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation    | `maxMin` (high->low) or `minMax` (low->high) |
-| `catAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ catAxisTitle:'Regions' }` |
-| `catAxisTitleColor`    | string  |         | `000000`     | title color                  | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
-| `catAxisTitleFontFace` | string  |         | `Arial`      | font face                    | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
-| `catAxisTitleFontSize` | number  | points  |              | font size                    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
-| `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
-| `catGridLine`          | object  |         | `none`       | category grid line style     | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
+| `catAxisOrientation`   | string  |         | `minMax`  | category-axis orientation | `maxMin` (high->low) or `minMax` (low->high) |
+| `catAxisTitle`         | string  |         | `Axis Title` | axis title   | a string. Ex: `{ catAxisTitle:'Regions' }` |
+| `catAxisTitleColor`    | string  |         | `000000`     | title color           | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
+| `catAxisTitleFontFace` | string  |         | `Arial`      | font face             | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
+| `catAxisTitleFontSize` | number  | points  |              | font size    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
+| `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees           | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
+| `catGridLine`          | object  |         | `none`    | category grid line style  | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `showCatAxisTitle`     | boolean |         | `false`      | show category (vert) title   | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
 | `showValAxisTitle`     | boolean |         | `false`      | show values (horiz) title    | `true` or `false`.  Ex:`{ showValAxisTitle:true }` |
-| `valAxisHidden`        | boolean |         | `false`      | hide value-axis              | `true` or `false`   |
-| `valAxisLabelColor`    | string  |         | `000000`     | value-axis color             | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
-| `valAxisLabelFontFace` | string  |         | `Arial`      | value-axis font face         | font name. Ex: `{ titleFontFace:'Arial' }`   |
-| `valAxisLabelFontSize` | number  | points  | `18`         | value-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`            |
-| `valAxisLabelFormatCode` | string |        | `General`    | value-axis number format     | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
+| `valAxisHidden`        | boolean |         | `false`   | hide value-axis          | `true` or `false`   |
+| `valAxisLabelColor`    | string  |         | `000000`  | value-axis color         | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
+| `valAxisLabelFontFace` | string  |         | `Arial`   | value-axis font face     | font name. Ex: `{ titleFontFace:'Arial' }`   |
+| `valAxisLabelFontSize` | number  | points  | `18`      | value-axis font size     | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `valAxisLabelFormatCode` | string |        | `General` | value-axis number format | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
 | `valAxisLineShow`      | boolean |         | true         | show/hide value-axis line    | `true` or `false` |
-| `valAxisMajorUnit`     | number  | float   | `1.0`        | value-axis tick steps        | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
-| `valAxisMaxVal`        | number  |         |              | value-axis maximum value     | 1-N. Ex: `{ valAxisMaxVal:125 }` |
-| `valAxisMinVal`        | number  |         |              | value-axis minimum value     | 1-N. Ex: `{ valAxisMinVal: -10 }` |
-| `valAxisOrientation`   | string  |         | `minMax`     | value-axis orientation       | `maxMin` (high->low) or `minMax` (low->high) |
-| `valAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ valAxisTitle:'Sales (USD)' }` |
-| `valAxisTitleColor`    | string  |         | `000000`     | title color                  | hex color code. Ex: `{ valAxisTitleColor:'0088CC' }` |
-| `valAxisTitleFontFace` | string  |         | `Arial`      | font face                    | font name. Ex: `{ valAxisTitleFontFace:'Arial' }` |
-| `valAxisTitleFontSize` | number  | points  |              | font size                    | 1-256. Ex: `{ valAxisTitleFontSize:12 }` |
-| `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
+| `valAxisMajorUnit`     | number  | float   | `1.0`     | value-axis tick steps    | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
+| `valAxisMaxVal`        | number  |         |           | value-axis maximum value | 1-N. Ex: `{ valAxisMaxVal:125 }` |
+| `valAxisMinVal`        | number  |         |           | value-axis minimum value | 1-N. Ex: `{ valAxisMinVal: -10 }` |
+| `valAxisOrientation`   | string  |         | `minMax`  | value-axis orientation   | `maxMin` (high->low) or `minMax` (low->high) |
+| `valAxisTitle`         | string  |         | `Axis Title` | axis title   | a string. Ex: `{ valAxisTitle:'Sales (USD)' }` |
+| `valAxisTitleColor`    | string  |         | `000000`     | title color           | hex color code. Ex: `{ valAxisTitleColor:'0088CC' }` |
+| `valAxisTitleFontFace` | string  |         | `Arial`      | font face             | font name. Ex: `{ valAxisTitleFontFace:'Arial' }` |
+| `valAxisTitleFontSize` | number  | points  |              | font size    | 1-256. Ex: `{ valAxisTitleFontSize:12 }` |
+| `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees           | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
 | `valGridLine`          | object  |         |              | value grid line style        | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 
 ### Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
-| `barDir`               | string  |         | `col`     | bar direction        | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
+| `barDir`               | string  |         | `col`     | bar direction              | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
 | `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-999. Ex: `{ barGapWidthPct:50 }` |
 | `barGrouping`          | string  |         |`clustered`| bar grouping               | (*Bar Chart*) `clustered` or `stacked` or `percentStacked`. |
 | `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
