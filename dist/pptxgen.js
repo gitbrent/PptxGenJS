@@ -165,8 +165,8 @@ var PptxGenJS = function(){
 	this.charts  = CHART_TYPES;
 	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
-	/* LEGACY/DEPRECATED testing only - REMOVE in 2.0 (or sooner!) */
-	//this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
+	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
+	/* LEGACY/DEPRECATED ^^^ - WILL BE REMOVED in 2.0 */
 
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
@@ -1557,9 +1557,6 @@ var PptxGenJS = function(){
 			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
 			catch(ex) {
 				this.onerror();
-				if ( window.location.href.indexOf('file:') == 0 ) {
-					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files! (use '--allow-file-access-from-files' flag with Chrome, etc.)");
-				}
 				return;
 			}
 			canvas = null;
@@ -1567,7 +1564,7 @@ var PptxGenJS = function(){
 		image.onerror = function(){
 			try {
 				if ( typeof window !== 'undefined' && window.location.href.indexOf('file:') == 0 ) {
-					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files! (use '--allow-file-access-from-files' flag with Chrome, etc.)");
+					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files!\n(use '--allow-file-access-from-files' flag with Chrome, etc.)");
 				}
 				console.error('Unable to load image: "'+ slideRel.path +'"\nPlease check the image URL:\n'+ ( slideRel.path.indexOf('/') == 0 ? slideRel.path : window.location.href.substring(0,window.location.href.lastIndexOf('/')+1) + slideRel.path ) );
 			} catch(ex){}

@@ -1629,7 +1629,7 @@ function genSlides_Master(pptx) {
 	var slide4 = pptx.addNewSlide( 'THANKS_SLIDE' );
 
 	// LEGACY-TEST-ONLY: To check deprecated functionality
-	if ( pptx.masters ) {
+	if ( pptx.masters && Object.keys(pptx.masters).length > 0 ) {
 		var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
 		var slide2 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE );
 		var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );

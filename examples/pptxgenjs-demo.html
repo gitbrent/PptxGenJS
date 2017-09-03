@@ -26,6 +26,7 @@
 	<script type="text/javascript" src="../libs/promise.min.js"></script>     <!-- optional if not using IE11 -->
 	<script type="text/javascript" src="../dist/pptxgen.colors.js"></script>  <!-- optional if you dont need PPT Color Schemes -->
 	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need non-core Shapes -->
+	<!--<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> DEPRECATED/LEGACY-TEST-ONLY -->
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
 	<!-- ^^^ PptxGenJS libraries ^^^ -->
 
@@ -169,6 +170,15 @@
 			var pptx = new PptxGenJS();
 			pptx.addSlidesForTable('tableWithBullets');
 			pptx.save( 'tabBullets_'+getTimestamp() );
+		}
+
+		/* DESC: Test for backward compatibility with Slide Masters defined in `pptxgen.masters.js` */
+		function testOnly_LegacyMasterSlides() {
+			// TEST-ONLY: DO NOT USE/COPY ME!!
+			var pptx = new PptxGenJS();
+			pptx.setLayout('LAYOUT_WIDE');
+			var slide = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
+			pptx.save('Demo-LegacyMasterSlides_'+getTimestamp());
 		}
 
 		// Table-to-Slides Demos =======================================================================
