@@ -8,6 +8,12 @@ h3 {
 	font-weight: 100;
     margin: 15px 0 2px 8px;
 }
+code {
+	display: block;
+	color: #999;
+	font-family: 'Roboto Mono', monospace;
+	white-space: pre;
+}
 
 .github-fork-ribbon:before {
     background-color: #ff7c00;
