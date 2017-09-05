@@ -1222,7 +1222,7 @@ var PptxGenJS = function(){
 					strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data[0].labels.length + data.length + 1) +'" uniqueCount="'+ (data[0].labels.length + data.length +1) +'">'
 
 					// A: Add Labels
-					data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ label +'</t></si>'; });
+					data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ escapeXmlEntities(label) +'</t></si>'; });
 
 					// B: Add Series
 					data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
@@ -1240,7 +1240,7 @@ var PptxGenJS = function(){
 					strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'" totalsRowShown="0">';
 					strTableXml += '<tableColumns count="' + (data[0].labels.length+1) +'">';
 					strTableXml += '<tableColumn id="1" name=" "/>';
-					data[0].labels.forEach(function(label,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ label +'"/>' });
+					data[0].labels.forEach(function(label,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ escapeXmlEntities(label) +'"/>' });
 					strTableXml += '</tableColumns>';
 					strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>';
 					strTableXml += '</table>';
@@ -1640,6 +1640,18 @@ var PptxGenJS = function(){
 		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 		if ( typeof inStr === 'undefined' || inStr == null ) return "";
 		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
+	}
+
+	function escapeXmlEntities(unsafe) {
+	    return unsafe.replace(/[<>&'"]/g, function (c) {
+	        switch (c) {
+	            case '<': return '&lt;';
+	            case '>': return '&gt;';
+	            case '&': return '&amp;';
+	            case '\'': return '&apos;';
+	            case '"': return '&quot;';
+	        }
+	    });
 	}
 
 	function createHyperlinkRels(inText, slideRels) {
@@ -2279,7 +2291,7 @@ var PptxGenJS = function(){
 					strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
 					strXml += '    <c:strCache>';
 					strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-					obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
+					obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ escapeXmlEntities(label) +'</c:v></c:pt>'; });
 					strXml += '    </c:strCache>';
 					strXml += '  </c:strRef>';
 					strXml += '</c:cat>';
@@ -2545,7 +2557,7 @@ var PptxGenJS = function(){
 				strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
 				strXml += '    <c:strCache>';
 				strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ label +'</c:v></c:pt>'; });
+				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ escapeXmlEntities(label) +'</c:v></c:pt>'; });
 				strXml += '    </c:strCache>';
 				strXml += '  </c:strRef>';
 				strXml += '</c:cat>';
