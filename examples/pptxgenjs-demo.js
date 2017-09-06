@@ -1305,7 +1305,7 @@ function genSlides_Chart(pptx) {
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Mult Type Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Multi-Type Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		function doStackedLine () {
 			// TOP-RIGHT:
