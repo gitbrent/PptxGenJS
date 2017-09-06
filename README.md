@@ -47,10 +47,12 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Charts](#adding-charts)
     - [Chart Types](#chart-types)
+    - [Multi Chart Types](#multi-chart-types)
     - [Chart Size/Formatting Options](#chart-sizeformatting-options)
     - [Chart Axis Options](#chart-axis-options)
     - [Chart Data Options](#chart-data-options)
     - [Chart Line Shadow Options](#chart-line-shadow-options)
+    - [Chart Multi-Type Options](#chart-multi-type-options)
     - [Chart Examples](#chart-examples)
   - [Adding Text](#adding-text)
     - [Text Options](#text-options)
@@ -328,6 +330,21 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 * Chart type can be any one of `pptx.charts`
 * Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
 
+### Multi Chart Types
+* Chart types can be any one of `pptx.charts`, although `pptx.charts.AREA`, `pptx.charts.BAR`, and `pptx.charts.LINE` will give the best results.
+* There should be at least two chart-types. There should always be two value axes and category axes.
+* Multi Charts have a different function signature than standard. There are two parameters:
+ * `chartTypes`: array of objects, each with `type`, `data`, and `options` objects.
+ * `options`: Standard options as used with single charts. Can include axes options.
+* Columns makes the most sense in general. Line charts cannot be rotated to match up with horizontal bars (a PowerPoint limitation).
+* Can optionally have a secondary value axis.
+* If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
+* Standard options are used, and the chart-type-options are mixed in to each.
+```javascript
+// Syntax
+slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
+```
+
 ### Chart Size/Formatting Options
 | Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
 | :-------------- | :------ | :------ | :-------- | :--------------------------------- | :--------------- |
@@ -400,11 +417,14 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
+| `dataNoEffects`        | boolean |         | `false`   | whether to omit effects on data | (*Doughnut/Pie Charts*) `true` or `false` |
 | `gridLineColor`        | string  |         | `000000`  | grid line color            | hex color code. Ex: `{ gridLineColor:'0088CC' }`     |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
+| `lineDataSymbolLineSize`| number | points  | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
+| `lineDataSymbolLineColor`| number | points  | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
 | `lineShadow`           | object  |         |           | data line shadow options   | `'none'` or [shadow options](#chart-line-shadow-options) |
-| `lineSize`             | number  | points  | `2`       | thickness of data line     | 1 and more. Ex: `{ lineSize: 1 }` |
+| `lineSize`             | number  | points  | `2`       | thickness of data line (0 is no line) | 0-256. Ex: `{ lineSize: 1 }` |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
 ### Chart Line Shadow Options
@@ -416,6 +436,14 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 | `color`      | string  |         | `000000`  | line color          | hex color code. Ex: `{ color:'0088CC' }`   |
 | `offset`     | number  | points  | `1.8`     | offset size         | 1-256. Ex: `{ offset:2 }`                  |
 | `opacity`    | number  | percent | `0.35`    | opacity             | 0-1. Ex: `{ opacity:0.35 }`                |
+
+### Chart Multi-Type Options
+| Option             | Type    | Default  | Description                                             | Possible Values   |
+| :----------------- | :------ | :------- | :------------------------------------------------------ | :---------------- |
+| `catAxes`          | array   |          | array of two axis options objects | See example below   |                   |
+| `secondaryCatAxis` | boolean | `false`  | If data should use secondary category axis (or primary) | `true` or `false` |
+| `secondaryValAxis` | boolean | `false`  | If data should use secondary value axis (or primary)    | `true` or `false` |
+| `valAxes`          | array   |          | array of two axis options objects | See example below   |                   |
 
 ### Chart Examples
 ```javascript
@@ -461,6 +489,58 @@ var dataChartPie = [
   { name:'Location', labels:['DE','GB','MX','JP','IN','US'], values:[35,40,85,88,99,101] }
 ];
 slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
+
+// Chart Type: Multi-Type
+// NOTE: use the same labels for all types
+var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
+var chartTypes = [
+	{
+		type: pptx.charts.BAR,
+		data: [{
+			name: 'Projected',
+			labels: labels,
+			values: [17, 26, 53, 10, 4]
+		}],
+		options: { barDir: 'col' }
+	},
+	{
+		type: pptx.charts.LINE,
+		data: [{
+			name: 'Current',
+			labels: labels,
+			values: [5, 3, 2, 4, 7]
+		}],
+		options: {
+			// NOTE: both are required, when using a secondary axis:
+			secondaryValAxis: true,
+			secondaryCatAxis: true
+		}
+	}
+];
+var multiOpts = {
+	x:1.0, y:1.0, w:6, h:6,
+	showLegend: false,
+	valAxisMaxVal: 100,
+	valAxisMinVal: 0,
+	valAxisMajorUnit: 20,
+	valAxes:[
+		{
+			showValAxisTitle: true,
+			valAxisTitle: 'Primary Value Axis'
+		},
+		{
+			showValAxisTitle: true,
+			valAxisTitle: 'Secondary Value Axis',
+			valAxisMajorUnit: 1,
+			valAxisMaxVal: 10,
+			valAxisMinVal: 1,
+			valGridLine: 'none'
+		}
+	],
+	catAxes: [{ catAxisTitle: 'Primary Category Axis' }, { catAxisHidden: true }]
+};
+
+slide.addChart(chartTypes, multiOpts);
 
 pptx.save('Demo-Chart');
 ```
