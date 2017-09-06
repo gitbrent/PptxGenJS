@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170901";
+	var APP_REL = "20170905";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -418,17 +418,13 @@ var PptxGenJS = function(){
 		 * 	}
 		 */
 		addChartDefinition: function addChartDefinition(type, data, opt, target) {
-//			var options = ( opt && typeof opt === 'object' ? opt : {} );
 			var targetRels = target.rels;
 			var chartId = (++gObjPptx.chartCounter);
 			var chartRelId = target.rels.length + 1;
 			var resultObject = {};
-
 			// DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
 			// EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
-
-// TODO:
-			// Multi-Charts
+			// Multi-Type Charts
 			var tmpOpt;
 			var tmpData = [], options;
 			if (Array.isArray(type)) {
@@ -445,12 +441,8 @@ var PptxGenJS = function(){
 				tmpData = data;
 				tmpOpt = opt;
 			}
-			// index data
-			tmpData.forEach(function(item, i){
-				item.index = i;
-			});
+			tmpData.forEach(function(item,i){ item.index = i; });
 			options = ( tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {} );
-// TODO: ^^^
 
 			// STEP 1: TODO: check for reqd fields, correct type, etc
 			// inType in CHART_TYPES
@@ -467,7 +459,7 @@ var PptxGenJS = function(){
 			}
 			*/
 
-			// STEP 3: Set default options/decode user options
+			// STEP 2: Set default options/decode user options
 			// A: Core
 			options.type = type;
 			options.x = (typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1);
@@ -2397,22 +2389,24 @@ var PptxGenJS = function(){
 
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if ( data.length === 1 && opts.chartColors != BARCHART_COLORS ) {
+					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
+							var invert = opts.invertedColors ? 0 : 1;
+							var colors = (value < 0 ? opts.invertedColors : opts.chartColors);
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+index+'"/>';
-							strXml += '    <c:invertIfNegative val="1"/>';
+							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
 							strXml += '    <c:bubble3D val="0"/>';
 							strXml += '    <c:spPr>';
-							if (opts.lineSize === 0){
+							if ( opts.lineSize === 0 ){
 								strXml += '<a:ln><a:noFill/></a:ln>';
-							} else {
+							}
+							else {
 								strXml += '    <a:solidFill>';
-								strXml += '     <a:srgbClr val="' + opts.chartColors[index % opts.chartColors.length] + '"/>';
+								strXml += '     <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
 								strXml += '    </a:solidFill>';
 							}
-
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
 							strXml += '    	<a:srgbClr val="000000">';
