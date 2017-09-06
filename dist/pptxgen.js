@@ -524,7 +524,6 @@ var PptxGenJS = function(){
 			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
 			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
 			//
-//			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type.name == 'pie' || options.type.name == 'doughnut' ? '0%' : '#,##0') );
 			options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type.name == 'pie' || options.type.name == 'doughnut') ? '0%' : '#,##0';
 			//
 			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
