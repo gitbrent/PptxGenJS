@@ -102,7 +102,7 @@ pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 if (gConsoleLog) console.log(`
 --------------
-TEST COMPLETE!
+DEMO COMPLETE!
 --------------
  * Files saved to...: ${__dirname}
 `);
