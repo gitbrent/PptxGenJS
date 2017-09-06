@@ -1311,7 +1311,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 
-	// SLIDE 13: Multi-Charts ---------------------------------------------------------
+	// SLIDE 13: Multi-Type Charts ---------------------------------------------------------
 	function slide13 () {
 		// powerpoint 2016 add secondary category axis labels
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
