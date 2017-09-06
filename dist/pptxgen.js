@@ -175,10 +175,19 @@ var PptxGenJS = function(){
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
 
-	/* =============================================================================================== */
-	/* =============================================================================================== */
+	/* ===============================================================================================
+	|
+	 #####
+	#     # ###### #    # ###### #####    ##   #####  ####  #####   ####
+	#       #      ##   # #      #    #  #  #    #   #    # #    # #
+	#  #### #####  # #  # #####  #    # #    #   #   #    # #    #  ####
+	#     # #      #  # # #      #####  ######   #   #    # #####       #
+	#     # #      #   ## #      #   #  #    #   #   #    # #   #  #    #
+	 #####  ###### #    # ###### #    # #    #   #    ####  #    #  ####
+	|
+	==================================================================================================
+	*/
 
-	// GENERATORS (Slide/Layout)
 	var gObjPptxGenerators = {
 		/**
 		 * Adds a background image or color to a slide definition.
@@ -2200,7 +2209,7 @@ var PptxGenJS = function(){
 		var usesSecondaryValAxis = false;
 
 		// A: CHART TYPES -----------------------------------------------------------
-		if (Array.isArray(rel.opts.type)) {
+		if ( Array.isArray(rel.opts.type) ) {
 			rel.opts.type.forEach(function (type) {
 				var chartType = type.type.name;
 				var data = type.data;
@@ -2210,27 +2219,28 @@ var PptxGenJS = function(){
 				usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
 				strXml += makeChartType(chartType, data, options, valAxisId, catAxisId);
 			});
-		} else {
+		}
+		else {
 			var chartType = rel.opts.type.name;
 			strXml += makeChartType(chartType, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
 		}
 
 		// B: AXES -----------------------------------------------------------
 		if ( rel.opts.type.name !== 'pie' && rel.opts.type.name !== 'doughnut' ) {
-
-			if(rel.opts.valAxes && !usesSecondaryValAxis){
+			if ( rel.opts.valAxes && !usesSecondaryValAxis ) {
 				throw new Error('Secondary axis must be used by one of the multiple charts');
 			}
 
-			if(rel.opts.catAxes){
-				if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
+			if ( rel.opts.catAxes ) {
+				if ( !rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length ) {
 					throw new Error('There must be the same number of value and category axes.');
 				}
 				strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY);
-				if (rel.opts.catAxes[1]) {
+				if ( rel.opts.catAxes[1] ) {
 					strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY);
 				}
-			} else {
+			}
+			else {
 				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
 			}
 
@@ -2263,7 +2273,25 @@ var PptxGenJS = function(){
 
 			// OPTION: Legend
 			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-			if ( rel.opts.showLegend ) strXml += '<c:legend><c:legendPos val="'+ rel.opts.legendPos +'"/><c:layout/><c:overlay val="0"/></c:legend>';
+			if ( rel.opts.showLegend ) {
+				strXml += '<c:legend>';
+				strXml += '<c:legendPos val="'+ rel.opts.legendPos +'"/>';
+				strXml += '<c:layout/>';
+				strXml += '<c:overlay val="0"/>';
+				if ( rel.opts.legendFontSize ) {
+					strXml += '<c:txPr>';
+					strXml += '  <a:bodyPr/>';
+					strXml += '  <a:lstStyle/>';
+					strXml += '  <a:p>';
+					strXml += '  <a:pPr>';
+					strXml += '    <a:defRPr sz="'+ (Number(rel.opts.legendFontSize) * 100) +'"/>';
+					strXml += '    </a:pPr>';
+					strXml += '    <a:endParaRPr lang="en-US"/>';
+					strXml += '  </a:p>';
+					strXml += '</c:txPr>';
+				}
+				strXml += '</c:legend>';
+			}
 		}
 
 		strXml += '  <c:plotVisOnly val="1"/>';
@@ -2755,11 +2783,12 @@ var PptxGenJS = function(){
 	* DESC: Generate the XML for title elements used for the char and axis titles
 	*/
 	function genXmlTitle(opts) {
+		var align = ( opts.titleAlign == 'left' ? 'l' : (opts.titleAlign == 'right' ? 'r' : false) );
 		var strXml = '';
 		strXml += '<c:title>';
 		strXml += ' <c:tx>';
 		strXml += '  <c:rich>';
-		if (opts.rotate !== undefined) {
+		if ( opts.rotate ) {
 			strXml += '  <a:bodyPr rot="' + convertRotationDegrees(opts.rotate) + '"/>';
 		}
 		else {
@@ -2767,19 +2796,19 @@ var PptxGenJS = function(){
 		}
 		strXml += '  <a:lstStyle/>';
 		strXml += '  <a:p>';
-		strXml += '    <a:pPr>';
-		var sizeAttr = '';
-		// only set the font size if specified.  Powerpoint will handle the default size
-		if (opts.fontSize !== undefined) {
-			sizeAttr = ' sz="' + opts.fontSize + '00"';
+		strXml += ( align ? '<a:pPr algn="'+ align +'">' : '<a:pPr>' );
+ 		var sizeAttr = '';
+		if ( opts.fontSize ) {
+			// only set the font size if specified.  Powerpoint will handle the default size
+			sizeAttr = 'sz="'+ opts.fontSize +'00"';
 		}
-		strXml += '      <a:defRPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '      <a:defRPr b="0" i="0" strike="noStrike" '+ sizeAttr +' u="none">';
 		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
 		strXml += '      </a:defRPr>';
 		strXml += '    </a:pPr>';
 		strXml += '    <a:r>';
-		strXml += '      <a:rPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '      <a:rPr b="0" i="0" strike="noStrike" '+ sizeAttr +' u="none">';
 		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
 		strXml += '      </a:rPr>';
@@ -2788,7 +2817,19 @@ var PptxGenJS = function(){
 		strXml += '  </a:p>';
 		strXml += '  </c:rich>';
 		strXml += ' </c:tx>';
-		strXml += ' <c:layout/>';
+		if ( opts.titlePos && opts.titlePos.x && opts.titlePos.y ) {
+			strXml += '<c:layout>';
+			strXml += '  <c:manualLayout>';
+			strXml += '    <c:xMode val="edge"/>';
+			strXml += '    <c:yMode val="edge"/>';
+			strXml += '    <c:x val="'+ opts.titlePos.x +'"/>';
+			strXml += '    <c:y val="'+ opts.titlePos.y +'"/>';
+			strXml += '  </c:manualLayout>';
+			strXml += '</c:layout>';
+		}
+		else {
+			strXml += ' <c:layout/>';
+		}
 		strXml += ' <c:overlay val="0"/>';
 		strXml += '</c:title>';
 		return strXml;

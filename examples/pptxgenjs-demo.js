@@ -1248,7 +1248,19 @@ function genSlides_Chart(pptx) {
 
 		// BOTH: TOP-RIGHT
 		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'t', showTitle:true, title:'Title & Legend'} );
+		// DEMO: `legendFontSize`, `titleAlign`, `titlePos`
+		slide.addChart( pptx.charts.PIE, dataChartPieLocs,
+		{
+			x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'},
+			showLegend: true,
+			legendPos: 't',
+			showTitle: true,
+			title:'Left Title & Large Legend',
+
+			legendFontSize: 14,
+			titleAlign: 'left',
+			titlePos: {x: 0, y: 0}
+		});
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
