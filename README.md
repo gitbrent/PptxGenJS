@@ -497,50 +497,50 @@ slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
 // NOTE: use the same labels for all types
 var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
 var chartTypes = [
-	{
-		type: pptx.charts.BAR,
-		data: [{
-			name: 'Projected',
-			labels: labels,
-			values: [17, 26, 53, 10, 4]
-		}],
-		options: { barDir: 'col' }
-	},
-	{
-		type: pptx.charts.LINE,
-		data: [{
-			name: 'Current',
-			labels: labels,
-			values: [5, 3, 2, 4, 7]
-		}],
-		options: {
-			// NOTE: both are required, when using a secondary axis:
-			secondaryValAxis: true,
-			secondaryCatAxis: true
-		}
-	}
+  {
+    type: pptx.charts.BAR,
+    data: [{
+      name: 'Projected',
+      labels: labels,
+      values: [17, 26, 53, 10, 4]
+    }],
+    options: { barDir: 'col' }
+  },
+  {
+    type: pptx.charts.LINE,
+    data: [{
+      name: 'Current',
+      labels: labels,
+      values: [5, 3, 2, 4, 7]
+    }],
+    options: {
+      // NOTE: both are required, when using a secondary axis:
+      secondaryValAxis: true,
+      secondaryCatAxis: true
+    }
+  }
 ];
 var multiOpts = {
-	x:1.0, y:1.0, w:6, h:6,
-	showLegend: false,
-	valAxisMaxVal: 100,
-	valAxisMinVal: 0,
-	valAxisMajorUnit: 20,
-	valAxes:[
-		{
-			showValAxisTitle: true,
-			valAxisTitle: 'Primary Value Axis'
-		},
-		{
-			showValAxisTitle: true,
-			valAxisTitle: 'Secondary Value Axis',
-			valAxisMajorUnit: 1,
-			valAxisMaxVal: 10,
-			valAxisMinVal: 1,
-			valGridLine: 'none'
-		}
-	],
-	catAxes: [{ catAxisTitle: 'Primary Category Axis' }, { catAxisHidden: true }]
+  x:1.0, y:1.0, w:6, h:6,
+  showLegend: false,
+  valAxisMaxVal: 100,
+  valAxisMinVal: 0,
+  valAxisMajorUnit: 20,
+  valAxes:[
+    {
+      showValAxisTitle: true,
+      valAxisTitle: 'Primary Value Axis'
+    },
+    {
+      showValAxisTitle: true,
+      valAxisTitle: 'Secondary Value Axis',
+      valAxisMajorUnit: 1,
+      valAxisMaxVal: 10,
+      valAxisMinVal: 1,
+      valGridLine: 'none'
+    }
+  ],
+  catAxes: [{ catAxisTitle: 'Primary Category Axis' }, { catAxisHidden: true }]
 };
 
 slide.addChart(chartTypes, multiOpts);
