@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170901";
+	var APP_REL = "20170905";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -125,6 +125,10 @@ var PptxGenJS = function(){
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
+	var AXIS_ID_VALUE_PRIMARY = '2094734552';
+	var AXIS_ID_VALUE_SECONDARY = '2094734553';
+	var AXIS_ID_CATEGORY_PRIMARY = '2094734554';
+	var AXIS_ID_CATEGORY_SECONDARY = '2094734555';
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -171,10 +175,19 @@ var PptxGenJS = function(){
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
 
-	/* =============================================================================================== */
-	/* =============================================================================================== */
+	/* ===============================================================================================
+	|
+	 #####
+	#     # ###### #    # ###### #####    ##   #####  ####  #####   ####
+	#       #      ##   # #      #    #  #  #    #   #    # #    # #
+	#  #### #####  # #  # #####  #    # #    #   #   #    # #    #  ####
+	#     # #      #  # # #      #####  ######   #   #    # #####       #
+	#     # #      #   ## #      #   #  #    #   #   #    # #   #  #    #
+	 #####  ###### #    # ###### #    # #    #   #    ####  #    #  ####
+	|
+	==================================================================================================
+	*/
 
-	// GENERATORS (Slide/Layout)
 	var gObjPptxGenerators = {
 		/**
 		 * Adds a background image or color to a slide definition.
@@ -414,11 +427,31 @@ var PptxGenJS = function(){
 		 * 	}
 		 */
 		addChartDefinition: function addChartDefinition(type, data, opt, target) {
-			var options = ( opt && typeof opt === 'object' ? opt : {} );
 			var targetRels = target.rels;
 			var chartId = (++gObjPptx.chartCounter);
 			var chartRelId = target.rels.length + 1;
 			var resultObject = {};
+			// DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
+			// EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
+			// Multi-Type Charts
+			var tmpOpt;
+			var tmpData = [], options;
+			if (Array.isArray(type)) {
+				// For multi-charts there needs to be data for each type,
+				// as well as a single data source for non-series operations.
+				// The data is indexed below to keep the data in order when segmented
+				// into types.
+				type.forEach(function(obj) {
+					tmpData = tmpData.concat(obj.data)
+				});
+				tmpOpt = data || opt;
+			}
+			else {
+				tmpData = data;
+				tmpOpt = opt;
+			}
+			tmpData.forEach(function(item,i){ item.index = i; });
+			options = ( tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {} );
 
 			// STEP 1: TODO: check for reqd fields, correct type, etc
 			// inType in CHART_TYPES
@@ -435,9 +468,9 @@ var PptxGenJS = function(){
 			}
 			*/
 
-			// STEP 3: Set default options/decode user options
+			// STEP 2: Set default options/decode user options
 			// A: Core
-			options.type = type.name;
+			options.type = type;
 			options.x = (typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1);
 			options.y = (typeof options.y !== 'undefined' && options.y != null && !isNaN(options.y) ? options.y : 1);
 			options.w = (options.w || '50%');
@@ -446,7 +479,7 @@ var PptxGenJS = function(){
 			// B: Options: misc
 			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
 			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type == 'pie' || options.type == 'doughnut' ? 'bestFit' : 'ctr');
+			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type.name == 'pie' || options.type.name == 'doughnut' ? 'bestFit' : 'ctr');
 			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
 			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
@@ -458,6 +491,17 @@ var PptxGenJS = function(){
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
+			options.lineDataSymbolLineSize = ( options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize ) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT );
+			// `layout` allows the override of PPT defaults to maximize space
+			if ( options.layout ) {
+				['x', 'y', 'w', 'h'].forEach(function(key) {
+					var val = options.layout[key];
+					if (isNaN(Number(val)) || val < 0 || val > 1) {
+						console.warn('Warning: chart.layout.' + key + ' can only be 0-1');
+						delete options.layout[key]; // remove invalid value so that default will be used
+					}
+				});
+			}
 
 			// use default lines only for y-axis if nothing specified
 			options.valGridLine = options.valGridLine || {};
@@ -489,7 +533,7 @@ var PptxGenJS = function(){
 			if ( options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)) ) options.dataBorder.pt = 0.75;
 			if ( options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6) ) options.dataBorder.color = 'F9F9F9';
 			//
-			options.dataLabelFormatCode = ( options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type == 'pie' || options.type == 'doughnut' ? '0%' : '#,##0') );
+			options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type.name == 'pie' || options.type.name == 'doughnut') ? '0%' : '#,##0';
 			//
 			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
 			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );
@@ -501,7 +545,7 @@ var PptxGenJS = function(){
 			// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
 			targetRels.push({
 				rId:     chartRelId,
-				data:    data,
+				data:    tmpData,
 				opts:    options,
 				type:    'chart',
 				globalId: chartId,
@@ -1474,6 +1518,23 @@ var PptxGenJS = function(){
 	}
 
 	/**
+	 * DESC: Calc and return excel column name (eg: 'A2')
+	 */
+	function getExcelColName(length) {
+		var strName = '';
+
+		if ( length <= 26 ) {
+			strName = LETTERS[length];
+		}
+		else {
+			strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
+			strName += LETTERS[ (length % LETTERS.length) ];
+		}
+
+		return strName;
+	}
+
+	/**
 	 * DESC: Convert component value to hex value
 	 */
 	function componentToHex(c) {
@@ -2069,6 +2130,22 @@ var PptxGenJS = function(){
 		});
 	}
 
+	/**
+	 * shallow mix, returns new object
+	 */
+	function mix (o1, o2, etc) {
+		var o = {};
+		for (var i = 0; i <= arguments.length; i++){
+			var oN = arguments[i];
+			if(oN){
+				Object.keys(oN).forEach(function (key) {
+					o[key] = oN[key];
+				});
+			}
+		}
+		return o;
+	}
+
 	/* =======================================================================================================
 	|
 	#     #  #     #  #             #####
@@ -2086,89 +2163,192 @@ var PptxGenJS = function(){
 	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
 	*/
 	function makeXmlCharts(rel) {
-		/**
-		 * DESC: Calc and return excel column name (eg: 'A2')
-		 */
-		function getExcelColName(length) {
-			var strName = '';
-
-			if ( length <= 26 ) {
-				strName = LETTERS[length];
+		// HELPER FUNCS:
+		function hasArea (chartType) {
+			function has (type) {
+				return chartType.some(function (item) {
+					return item.type.name === type;
+				});
 			}
-			else {
-				strName += LETTERS[ Math.floor(length/LETTERS.length)-1 ];
-				strName += LETTERS[ (length % LETTERS.length) ];
+			if (Array.isArray(chartType)) {
+				return has('area');
 			}
-
-			return strName;
-		}
-
-		/**
-		 * @param {Object} glOpts {size, color, style}
-		 * @param {Object} defaults {size, color, style}
-		 * @param {String} type "major"(default) | "minor"
-		 */
-		function createGridLineElement(glOpts, defaults, type) {
-			type = type || 'major';
-			var tagName = 'c:'+ type + 'Gridlines';
-			strXml =  '<'+ tagName + '>';
-			strXml += ' <c:spPr>';
-			strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
-			strXml += '  <a:solidFill>'+ createColorElement(glOpts.color || defaults.color) +'</a:solidFill>';
-			strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
-			strXml += '  </a:ln>';
-			strXml += ' </c:spPr>';
-			strXml += '</'+ tagName + '>';
-			return strXml;
+			return chartType.name === 'area';
 		}
 
 		/* ----------------------------------------------------------------------- */
 
 		// STEP 1: Create chart
-		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-		// CHARTSPACE: BEGIN vvv
-		strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
-		strXml += '<c:chart>';
 
-		// OPTION: Title
-		if ( rel.opts.showTitle ) {
-			strXml += genXmlTitle({
-				title: rel.opts.title || 'Chart Title',
-				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
-				color: rel.opts.titleColor,
-				fontFace: rel.opts.titleFontFace,
-				rotate: rel.opts.titleRotate
-			});
-			strXml += '<c:autoTitleDeleted val="0"/>';
+		{
+			var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+			// CHARTSPACE: BEGIN vvv
+			strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+			strXml += '<c:chart>';
+
+			// OPTION: Title
+			if ( rel.opts.showTitle ) {
+				strXml += genXmlTitle({
+					title: rel.opts.title || 'Chart Title',
+					fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
+					color: rel.opts.titleColor,
+					fontFace: rel.opts.titleFontFace,
+					rotate: rel.opts.titleRotate
+				});
+				strXml += '<c:autoTitleDeleted val="0"/>';
+			}
+
+			strXml += '<c:plotArea>';
+			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+			if ( rel.opts.layout ) {
+				strXml += '<c:layout>';
+				strXml += ' <c:manualLayout>';
+				strXml += '  <c:layoutTarget val="inner" />';
+				strXml += '  <c:xMode val="edge" />';
+				strXml += '  <c:yMode val="edge" />';
+				strXml += '  <c:x val="' + (rel.opts.layout.x || 0) + '" />';
+				strXml += '  <c:y val="' + (rel.opts.layout.y || 0) + '" />';
+				strXml += '  <c:w val="' + (rel.opts.layout.w || 1) + '" />';
+				strXml += '  <c:h val="' + (rel.opts.layout.h || 1) + '" />';
+				strXml += ' </c:manualLayout>';
+				strXml += '</c:layout>';
+			}
+			else {
+				strXml += '<c:layout/>';
+			}
 		}
 
-		strXml += '<c:plotArea>';
-		// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-		if ( rel.opts.layout ) {
-			strXml += '<c:layout>';
-			strXml += ' <c:manualLayout>';
-			strXml += '  <c:layoutTarget val="inner" />';
-			strXml += '  <c:xMode val="edge" />';
-			strXml += '  <c:yMode val="edge" />';
-			strXml += '  <c:x val="' + (rel.opts.layout.x || 0) + '" />';
-			strXml += '  <c:y val="' + (rel.opts.layout.y || 0) + '" />';
-			strXml += '  <c:w val="' + (rel.opts.layout.w || 1) + '" />';
-			strXml += '  <c:h val="' + (rel.opts.layout.h || 1) + '" />';
-			strXml += ' </c:manualLayout>';
-			strXml += '</c:layout>';
-		}
-		else {
-			strXml += '<c:layout/>';
-		}
+		var usesSecondaryValAxis = false;
 
 		// A: CHART TYPES -----------------------------------------------------------
-		switch ( rel.opts.type ) {
+		if ( Array.isArray(rel.opts.type) ) {
+			rel.opts.type.forEach(function (type) {
+				var chartType = type.type.name;
+				var data = type.data;
+				var options = mix(rel.opts, type.options);
+				var valAxisId = options.secondaryValAxis ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
+				var catAxisId = options.secondaryCatAxis ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
+				usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
+				strXml += makeChartType(chartType, data, options, valAxisId, catAxisId);
+			});
+		}
+		else {
+			var chartType = rel.opts.type.name;
+			strXml += makeChartType(chartType, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
+		}
+
+		// B: AXES -----------------------------------------------------------
+		if ( rel.opts.type.name !== 'pie' && rel.opts.type.name !== 'doughnut' ) {
+			if ( rel.opts.valAxes && !usesSecondaryValAxis ) {
+				throw new Error('Secondary axis must be used by one of the multiple charts');
+			}
+
+			if ( rel.opts.catAxes ) {
+				if ( !rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length ) {
+					throw new Error('There must be the same number of value and category axes.');
+				}
+				strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY);
+				if ( rel.opts.catAxes[1] ) {
+					strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY);
+				}
+			}
+			else {
+				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
+			}
+
+			rel.opts.hasArea = hasArea(rel.opts.type);
+
+			if(rel.opts.valAxes){
+				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
+				if (rel.opts.valAxes[1]) {
+					strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY, AXIS_ID_CATEGORY_SECONDARY);
+				}
+			} else {
+				strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_CATEGORY_SECONDARY);
+			}
+		}
+
+		// C: Chart Properties + Options: Fill, Border, Legend
+		{
+			strXml += '  <c:spPr>';
+
+			// OPTION: Fill
+			strXml += ( rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>' );
+
+			// OPTION: Border
+			strXml += ( rel.opts.border ? '<a:ln w="'+ (rel.opts.border.pt * ONEPT) +'"'+' cap="flat">'+ genXmlColorSelection( rel.opts.border.color ) +'</a:ln>' : '<a:ln><a:noFill/></a:ln>' );
+
+			// Close shapeProp/plotArea before Legend
+			strXml += '    <a:effectLst/>';
+			strXml += '  </c:spPr>';
+			strXml += '</c:plotArea>';
+
+			// OPTION: Legend
+			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
+			if ( rel.opts.showLegend ) {
+				strXml += '<c:legend>';
+				strXml += '<c:legendPos val="'+ rel.opts.legendPos +'"/>';
+				strXml += '<c:layout/>';
+				strXml += '<c:overlay val="0"/>';
+				if ( rel.opts.legendFontSize ) {
+					strXml += '<c:txPr>';
+					strXml += '  <a:bodyPr/>';
+					strXml += '  <a:lstStyle/>';
+					strXml += '  <a:p>';
+					strXml += '  <a:pPr>';
+					strXml += '    <a:defRPr sz="'+ (Number(rel.opts.legendFontSize) * 100) +'"/>';
+					strXml += '    </a:pPr>';
+					strXml += '    <a:endParaRPr lang="en-US"/>';
+					strXml += '  </a:p>';
+					strXml += '</c:txPr>';
+				}
+				strXml += '</c:legend>';
+			}
+		}
+
+		strXml += '  <c:plotVisOnly val="1"/>';
+		strXml += '  <c:dispBlanksAs val="gap"/>';
+		strXml += '</c:chart>';
+
+		// D: CHARTSPACE SHAPE PROPS
+		strXml += '<c:spPr>';
+		strXml += '  <a:noFill/>';
+		strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
+		strXml += '  <a:effectLst/>';
+		strXml += '</c:spPr>';
+
+		// E: DATA (Add relID)
+		strXml += '<c:externalData r:id="rId1"><c:autoUpdate val="0"/></c:externalData>';
+
+		// LAST: chartSpace end
+		strXml += '</c:chartSpace>';
+
+		return strXml;
+	}
+
+	function createGridLineElement(glOpts, defaults, type) {
+		type = type || 'major';
+		var tagName = 'c:'+ type + 'Gridlines';
+		strXml =  '<'+ tagName + '>';
+		strXml += ' <c:spPr>';
+		strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
+		strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
+		strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
+		strXml += '  </a:ln>';
+		strXml += ' </c:spPr>';
+		strXml += '</'+ tagName + '>';
+		return strXml;
+	}
+
+	function makeChartType (chartType, data, opts, valAxisId, catAxisId) {
+		var strXml = '';
+		switch ( chartType ) {
 			case 'area':
 			case 'bar':
 			case 'line':
-				strXml += '<c:'+ rel.opts.type +'Chart>';
-				if ( rel.opts.type == 'bar' ) strXml += '  <c:barDir val="'+ rel.opts.barDir +'"/>';
-				strXml += '  <c:grouping val="'+ rel.opts.barGrouping + '"/>';
+				strXml += '<c:'+ chartType +'Chart>';
+				if ( chartType == 'bar' ) strXml += '  <c:barDir val="'+ opts.barDir +'"/>';
+				strXml += '  <c:grouping val="'+ opts.barGrouping + '"/>';
 				strXml += '  <c:varyColors val="0"/>';
 
 				// A: "Series" block for every data row
@@ -2186,7 +2366,9 @@ var PptxGenJS = function(){
 				     }
 				    ]
 				*/
-				rel.data.forEach(function(obj,idx){
+
+				data.forEach(function(obj){
+					var idx = obj.index;
 					strXml += '<c:ser>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:order val="'+ idx +'"/>';
@@ -2198,38 +2380,47 @@ var PptxGenJS = function(){
 					strXml += '  </c:tx>';
 
 					// Fill and Border
-					var strSerColor = rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)];
+					var strSerColor = opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)];
 					strXml += '  <c:spPr>';
 
-					if ( rel.opts.chartColorsOpacity ) {
+					if ( opts.chartColorsOpacity ) {
 						strXml += '    <a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
 					}
 					else {
 						strXml += '    <a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
 					}
 
-					if ( rel.opts.type == 'line' ) {
-						strXml += '<a:ln w="'+ (rel.opts.lineSize * ONEPT) +'" cap="flat"><a:solidFill>' + createColorElement(strSerColor) +'</a:solidFill>';
-						strXml += '<a:prstDash val="' + (rel.opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+					if ( chartType == 'line' ) {
+						if (opts.lineSize === 0){
+							strXml += '<a:ln><a:noFill/></a:ln>';
+						} else {
+							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
+							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+						}
 					}
-					else if ( rel.opts.dataBorder ) {
-						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(rel.opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					else if ( opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					if ( rel.opts.lineShadow !== 'none' ) {
-						strXml += '<a:effectLst>';
-						strXml += createShadowElement(rel.opts.lineShadow || {}, DEF_LINE_SHADOW);
-						strXml += '</a:effectLst>';
+					if ( opts.lineShadow !== 'none' ) {
+					strXml += '    <a:effectLst>';
+						strXml += createShadowElement(opts.lineShadow || {}, DEF_LINE_SHADOW);
+					strXml += '    </a:effectLst>';
 					}
 					strXml += '  </c:spPr>';
 
 					// LINE CHART ONLY: `marker`
-					if ( rel.opts.type == 'line' ) {
+					if ( chartType == 'line' ) {
 						strXml += '<c:marker>';
-						strXml += '  <c:symbol val="'+ rel.opts.lineDataSymbol +'"/>';
-						if ( rel.opts.lineDataSymbolSize ) strXml += '  <c:size val="'+ rel.opts.lineDataSymbolSize +'"/>'; // Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
+						if ( opts.lineDataSymbolSize ) {
+							// Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+							strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>';
+						}
 						strXml += '  <c:spPr>';
-	  					strXml += '    <a:solidFill>' + createColorElement(rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)]) +'</a:solidFill>';
-						strXml += '    <a:ln w="9525" cap="flat"><a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+	  					strXml += '    <a:solidFill>' + createColorElement(opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)]) +'</a:solidFill>';
+
+	  					var symbolLineColor = opts.lineDataSymbolLineColor || strSerColor;
+						strXml += '    <a:ln w="' + opts.lineDataSymbolLineSize + '" cap="flat"><a:solidFill>'+ createColorElement(symbolLineColor) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
 						strXml += '</c:marker>';
@@ -2237,19 +2428,24 @@ var PptxGenJS = function(){
 
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if (( rel.data.length === 1 || rel.opts.valueBarColors ) && rel.opts.chartColors != BARCHART_COLORS ) {
+					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
-						obj.values.forEach(function (value, index) {
-							var invert = rel.opts.invertedColors ? 0 : 1;
-							var colors = value < 0 ? rel.opts.invertedColors : rel.opts.chartColors;
+						obj.values.forEach(function(value,index){
+							var invert = opts.invertedColors ? 0 : 1;
+							var colors = (value < 0 ? opts.invertedColors : opts.chartColors);
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+index+'"/>';
 							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
-							strXml += '    	<c:bubble3D val="0"/>';
-							strXml += '    	<c:spPr>';
-							strXml += '    <a:solidFill>';
-							strXml += '    <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
-							strXml += '    	</a:solidFill>';
+							strXml += '    <c:bubble3D val="0"/>';
+							strXml += '    <c:spPr>';
+							if ( opts.lineSize === 0 ){
+								strXml += '<a:ln><a:noFill/></a:ln>';
+							}
+							else {
+								strXml += '    <a:solidFill>';
+								strXml += '     <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
+								strXml += '    </a:solidFill>';
+							}
 							strXml += '    <a:effectLst>';
 							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
 							strXml += '    	<a:srgbClr val="000000">';
@@ -2262,183 +2458,76 @@ var PptxGenJS = function(){
 						});
 					}
 
-					// 1: "Data Labels"
-					strXml += '  <c:dLbls>';
-					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
-					strXml += '    <c:txPr>';
-					strXml += '      <a:bodyPr/>';
-					strXml += '      <a:lstStyle/>';
-					strXml += '      <a:p><a:pPr>';
-					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-					strXml += '          <a:solidFill>'+ createColorElement(rel.opts.dataLabelColor || '000000') +'</a:solidFill>';
-					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
-					strXml += '        </a:defRPr>';
-					strXml += '      </a:pPr></a:p>';
-					strXml += '    </c:txPr>';
-					if ( rel.opts.type != 'area' ) strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'outEnd') +'"/>';
-					strXml += '    <c:showLegendKey val="0"/>';
-					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? '1' : '0') +'"/>';
-					strXml += '    <c:showCatName val="0"/>';
-					strXml += '    <c:showSerName val="0"/>';
-					strXml += '    <c:showPercent val="0"/>';
-					strXml += '    <c:showBubbleSize val="0"/>';
-					strXml += '    <c:showLeaderLines val="0"/>';
-					strXml += '  </c:dLbls>';
-
 					// 2: "Categories"
-					strXml += '<c:cat>';
-					strXml += '  <c:strRef>';
-					strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
-					strXml += '    <c:strCache>';
-					strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-					obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ escapeXmlEntities(label) +'</c:v></c:pt>'; });
-					strXml += '    </c:strCache>';
-					strXml += '  </c:strRef>';
-					strXml += '</c:cat>';
+					{
+						strXml += '<c:cat>';
+						strXml += '  <c:strRef>';
+						strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
+						strXml += '    <c:strCache>';
+						strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
+						obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ escapeXmlEntities(label) +'</c:v></c:pt>'; });
+						strXml += '    </c:strCache>';
+						strXml += '  </c:strRef>';
+						strXml += '</c:cat>';
+					}
 
 					// 3: "Values"
-					strXml += '  <c:val>';
-					strXml += '    <c:numRef>';
-					strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ getExcelColName(obj.labels.length) +'$'+ (idx+2) +'</c:f>';
-					strXml += '      <c:numCache>';
-					strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-					obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
-					strXml += '      </c:numCache>';
-					strXml += '    </c:numRef>';
-					strXml += '  </c:val>';
+					{
+						strXml += '  <c:val>';
+						strXml += '    <c:numRef>';
+						strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ getExcelColName(obj.labels.length) +'$'+ (idx+2) +'</c:f>';
+						strXml += '      <c:numCache>';
+						strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
+						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
+						strXml += '      </c:numCache>';
+						strXml += '    </c:numRef>';
+						strXml += '  </c:val>';
+					}
 
 					// LINE CHART ONLY: `smooth`
-					if ( rel.opts.type == 'line' ) strXml += '<c:smooth val="'+ (rel.opts.lineSmooth ? "1" : "0" ) +'"/>';
+					if ( chartType == 'line' ) strXml += '<c:smooth val="'+ (opts.lineSmooth ? "1" : "0" ) +'"/>';
 
 					// 4: Close "SERIES"
 					strXml += '</c:ser>';
-				});
-				//
-				if ( rel.opts.type == 'bar' ) {
-					strXml += '  <c:gapWidth val="'+ rel.opts.barGapWidthPct +'"/>';
-					strXml += '  <c:overlap val="'+ (rel.opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
+
+				}); // end forEach
+
+				// 1: "Data Labels"
+				strXml += '  <c:dLbls>';
+				strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+				strXml += '    <c:txPr>';
+				strXml += '      <a:bodyPr/>';
+				strXml += '      <a:lstStyle/>';
+				strXml += '      <a:p><a:pPr>';
+				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+				strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || '000000') +'</a:solidFill>';
+				strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
+				strXml += '        </a:defRPr>';
+				strXml += '      </a:pPr></a:p>';
+				strXml += '    </c:txPr>';
+				if ( opts.type != 'area' ) strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+				strXml += '    <c:showLegendKey val="0"/>';
+				strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
+				strXml += '    <c:showCatName val="0"/>';
+				strXml += '    <c:showSerName val="0"/>';
+				strXml += '    <c:showPercent val="0"/>';
+				strXml += '    <c:showBubbleSize val="0"/>';
+				strXml += '    <c:showLeaderLines val="0"/>';
+				strXml += '  </c:dLbls>';
+
+				if ( chartType == 'bar' ) {
+					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
+					strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
 				}
-				else if ( rel.opts.type == 'line' ) {
+				else if ( chartType == 'line' ) {
 					strXml += '  <c:marker val="1"/>';
 				}
-				strXml += '  <c:axId val="2094734552"/>';
-				strXml += '  <c:axId val="2094734553"/>';
-				strXml += '</c:'+ rel.opts.type +'Chart>';
 
-				// B: "Category Axis"
-				{
-					strXml += '<c:catAx>';
-					if (rel.opts.showCatAxisTitle) {
-						strXml += genXmlTitle({
-							title: rel.opts.catAxisTitle || 'Axis Title',
-							fontSize: rel.opts.catAxisTitleFontSize,
-							color: rel.opts.catAxisTitleColor,
-							fontFace: rel.opts.catAxisTitleFontFace,
-							rotate: rel.opts.catAxisTitleRotate
-						});
-					}
-					strXml += '  <c:axId val="2094734552"/>';
-					strXml += '  <c:scaling><c:orientation val="'+ (rel.opts.catAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
-					strXml += '  <c:delete val="'+ (rel.opts.catAxisHidden ? 1 : 0) +'"/>';
-					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'b' : 'l') +'"/>';
-					if ( rel.opts.catGridLine !== 'none' ) {
-						strXml += createGridLineElement(rel.opts.catGridLine, DEF_CHART_GRIDLINE);
-					}
-					strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
-					strXml += '  <c:majorTickMark val="out"/>';
-					strXml += '  <c:minorTickMark val="none"/>';
-					strXml += '  <c:tickLblPos val="'+ (rel.opts.catAxisLabelPos || rel.opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
-					strXml += ' <c:spPr>';
-					strXml += '   <a:ln w="12700" cap="flat">';
-					if ( !!rel.opts.catAxisLineShow || typeof rel.opts.catAxisLineShow === 'undefined' ) {
-						strXml += '<a:solidFill>';
-						strXml += '  <a:srgbClr val="'+ (rel.opts.axisLineColor ? rel.opts.axisLineColor : DEF_CHART_GRIDLINE.color) +'"/>';
-						strXml += '</a:solidFill>';
-					}
-					else {
-						strXml += '<a:noFill/>';
-					}
-					strXml += '     <a:prstDash val="solid"/>';
-					strXml += '     <a:round/>';
-					strXml += '   </a:ln>';
-					strXml += ' </c:spPr>';
-					strXml += '  <c:txPr>';
-					strXml += '    <a:bodyPr rot="0"/>';
-					strXml += '    <a:lstStyle/>';
-					strXml += '    <a:p>';
-					strXml += '    <a:pPr>';
-					strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-					strXml += '<a:solidFill>'+ createColorElement(rel.opts.catAxisLabelColor || '000000') +'</a:solidFill>';
-					strXml += '<a:latin typeface="'+ (rel.opts.catAxisLabelFontFace || 'Arial') +'"/>';
-					strXml += '   </a:defRPr>';
-					strXml += '  </a:pPr>';
-					strXml += '  </a:p>';
-					strXml += ' </c:txPr>';
-					strXml += ' <c:crossAx val="2094734553"/>';
-					strXml += ' <c:crosses val="autoZero"/>';
-					strXml += ' <c:auto val="1"/>';
-					strXml += ' <c:lblAlgn val="ctr"/>';
-					strXml += ' <c:noMultiLvlLbl val="1"/>';
-					strXml += '</c:catAx>';
-				}
+				// order matters - category first
+				strXml += '  <c:axId val="'+ catAxisId +'"/>';
+				strXml += '  <c:axId val="'+ valAxisId +'"/>';
 
-				// C: "Value Axis"
-				{
-					strXml += '<c:valAx>';
-					if (rel.opts.showValAxisTitle) {
-						strXml += genXmlTitle({
-							title: rel.opts.valAxisTitle || 'Axis Title',
-							fontSize: rel.opts.valAxisTitleFontSize,
-							color: rel.opts.valAxisTitleColor,
-							fontFace: rel.opts.valAxisTitleFontFace,
-							rotate: rel.opts.valAxisTitleRotate
-						});
-					}
-					strXml += '  <c:axId val="2094734553"/>';
-					strXml += '  <c:scaling>';
-					strXml += '    <c:orientation val="'+ (rel.opts.valAxisOrientation || (rel.opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
-					if (rel.opts.valAxisMaxVal) strXml += '<c:max val="'+ rel.opts.valAxisMaxVal +'"/>';
-					if (rel.opts.valAxisMinVal) strXml += '<c:min val="'+ rel.opts.valAxisMinVal +'"/>';
-					strXml += '  </c:scaling>';
-					strXml += '  <c:delete val="'+ (rel.opts.valAxisHidden ? 1 : 0) +'"/>';
-					strXml += '  <c:axPos val="'+ (rel.opts.barDir == 'col' ? 'l' : 'b') +'"/>';
-					if (rel.opts.valGridLine != 'none') strXml += createGridLineElement(rel.opts.valGridLine, DEF_CHART_GRIDLINE);
-					strXml += ' <c:numFmt formatCode="'+ (rel.opts.valAxisLabelFormatCode ? rel.opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
-					strXml += ' <c:majorTickMark val="out"/>';
-					strXml += ' <c:minorTickMark val="none"/>';
-					strXml += ' <c:tickLblPos val="'+ (rel.opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
-					strXml += ' <c:spPr>';
-					strXml += '   <a:ln w="12700" cap="flat">';
-					if ( !!rel.opts.valAxisLineShow || typeof rel.opts.valAxisLineShow === 'undefined' ) {
-						strXml += '<a:solidFill>';
-						strXml += '  <a:srgbClr val="'+ (rel.opts.axisLineColor ? rel.opts.axisLineColor : DEF_CHART_GRIDLINE.color) +'"/>';
-						strXml += '</a:solidFill>';
-					}
-					else {
-						strXml += '<a:noFill/>';
-					}
-					strXml += '     <a:prstDash val="solid"/>';
-					strXml += '     <a:round/>';
-					strXml += '   </a:ln>';
-					strXml += ' </c:spPr>';
-					strXml += ' <c:txPr>';
-					strXml += '  <a:bodyPr rot="0"/>';
-					strXml += '  <a:lstStyle/>';
-					strXml += '  <a:p>';
-					strXml += '    <a:pPr>';
-					strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-					strXml += '        <a:solidFill>'+ createColorElement(rel.opts.valAxisLabelColor || '000000') +'</a:solidFill>';
-					strXml += '        <a:latin typeface="'+ (rel.opts.valAxisLabelFontFace || 'Arial') +'"/>';
-					strXml += '      </a:defRPr>';
-					strXml += '    </a:pPr>';
-					strXml += '  </a:p>';
-					strXml += ' </c:txPr>';
-					strXml += ' <c:crossAx val="2094734552"/>';
-					strXml += ' <c:crosses val="autoZero"/>';
-					strXml += ' <c:crossBetween val="'+ ( rel.opts.type == 'area' ? 'midCat' : 'between' ) +'"/>';
-					if ( rel.opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ rel.opts.valAxisMajorUnit +'"/>';
-					strXml += '</c:valAx>';
-				}
+				strXml += '</c:'+ chartType +'Chart>';
 
 				// Done with CHART.BAR/LINE
 				break;
@@ -2446,7 +2535,7 @@ var PptxGenJS = function(){
 			case 'pie':
 			case 'doughnut':
 				// Use the same var name so code blocks from barChart are interchangeable
-				var obj = rel.data[0];
+				var obj = data[0];
 
 				/* EX:
 					data: [
@@ -2458,8 +2547,8 @@ var PptxGenJS = function(){
 					]
 				*/
 
-				// 1: Start pieChart
-				strXml += '<c:'+ rel.opts.type +'Chart>';
+				// 1: Start Chart
+				strXml += '<c:'+ chartType +'Chart>';
 				strXml += '  <c:varyColors val="0"/>';
 				strXml += '<c:ser>';
 				strXml += '  <c:idx val="0"/>';
@@ -2476,11 +2565,16 @@ var PptxGenJS = function(){
 				strXml += '  <c:spPr>';
 				strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
 				strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-				strXml += '    <a:effectLst>';
-				strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-				strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-				strXml += '      </a:outerShdw>';
-				strXml += '    </a:effectLst>';
+				if ( opts.dataNoEffects ) {
+					strXml += '    <a:effectLst/>';
+				}
+				else {
+					strXml += '    <a:effectLst>';
+					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
+					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
+					strXml += '      </a:outerShdw>';
+					strXml += '    </a:effectLst>';
+				}
 				strXml += '  </c:spPr>';
 				strXml += '<c:explosion val="0"/>';
 
@@ -2490,9 +2584,9 @@ var PptxGenJS = function(){
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:explosion val="0"/>';
 					strXml += '  <c:spPr>';
-					strXml += '    <a:solidFill>'+ createColorElement(rel.opts.chartColors[(idx+1 > rel.opts.chartColors.length ? (Math.floor(Math.random() * rel.opts.chartColors.length)) : idx)]) +'</a:solidFill>';
-					if ( rel.opts.dataBorder ) {
-						strXml += '<a:ln w="'+ (rel.opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(rel.opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+					strXml += '    <a:solidFill>'+ createColorElement(opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)]) +'</a:solidFill>';
+					if ( opts.dataBorder ) {
+						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
 					strXml += '    <a:effectLst>';
 					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
@@ -2508,28 +2602,28 @@ var PptxGenJS = function(){
 				obj.labels.forEach(function(label,idx){
 					strXml += '<c:dLbl>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
-					strXml += '    <c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+					strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 					strXml += '    <c:txPr>';
 					strXml += '      <a:bodyPr/><a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
-					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (rel.opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-					strXml += '          <a:solidFill>'+ createColorElement(rel.opts.dataLabelColor || '000000') +'</a:solidFill>';
-					strXml += '          <a:latin typeface="'+ (rel.opts.dataLabelFontFace || 'Arial') +'"/>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || '000000') +'</a:solidFill>';
+					strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					if (rel.opts.type == 'pie') {
-						strXml += '    <c:dLblPos val="'+ (rel.opts.dataLabelPosition || 'inEnd') +'"/>';
+					if (chartType == 'pie') {
+						strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'inEnd') +'"/>';
 					}
 					strXml += '    <c:showLegendKey val="0"/>';
-					strXml += '    <c:showVal val="'+ (rel.opts.showValue ? "1" : "0") +'"/>';
-					strXml += '    <c:showCatName val="'+ (rel.opts.showLabel ? "1" : "0") +'"/>';
+					strXml += '    <c:showVal val="'+ (opts.showValue ? "1" : "0") +'"/>';
+					strXml += '    <c:showCatName val="'+ (opts.showLabel ? "1" : "0") +'"/>';
 					strXml += '    <c:showSerName val="0"/>';
-					strXml += '    <c:showPercent val="'+ (rel.opts.showPercent ? "1" : "0") +'"/>';
+					strXml += '    <c:showPercent val="'+ (opts.showPercent ? "1" : "0") +'"/>';
 					strXml += '    <c:showBubbleSize val="0"/>';
 					strXml += '  </c:dLbl>';
 				});
-				strXml += '<c:numFmt formatCode="'+ rel.opts.dataLabelFormatCode +'" sourceLinked="0"/>\
+				strXml += '<c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>\
 		            <c:txPr>\
 		              <a:bodyPr/>\
 		              <a:lstStyle/>\
@@ -2541,7 +2635,7 @@ var PptxGenJS = function(){
 		                </a:pPr>\
 		              </a:p>\
 		            </c:txPr>\
-		            ' + (rel.opts.type == 'pie' ? '<c:dLblPos val="ctr"/>' : '') + '\
+		            ' + (chartType == 'pie' ? '<c:dLblPos val="ctr"/>' : '') + '\
 		            <c:showLegendKey val="0"/>\
 		            <c:showVal val="0"/>\
 		            <c:showCatName val="1"/>\
@@ -2576,49 +2670,115 @@ var PptxGenJS = function(){
 				// 4: Close "SERIES"
 				strXml += '  </c:ser>';
 				strXml += '  <c:firstSliceAng val="0"/>';
-				if ( rel.opts.type == 'doughnut' ) strXml += '  <c:holeSize val="' + (rel.opts.holeSize || 50) + '"/>';
-				strXml += '</c:'+ rel.opts.type +'Chart>';
+				if ( chartType == 'doughnut' ) strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
+				strXml += '</c:'+ chartType +'Chart>';
 
-				// Done with CHART.BAR
+				// Done with CHART.PIE
 				break;
 		}
 
-		// B: Chart Properties + Options: Fill, Border, Legend
-		{
-			strXml += '  <c:spPr>';
+		return strXml;
+	}
 
-			// OPTION: Fill
-			strXml += ( rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>' );
+	function makeCatAxis (opts, axisId) {
+		var strXml = '';
 
-			// OPTION: Border
-			strXml += ( rel.opts.border ? '<a:ln w="'+ (rel.opts.border.pt * ONEPT) +'"'+' cap="flat">'+ genXmlColorSelection( rel.opts.border.color ) +'</a:ln>' : '<a:ln><a:noFill/></a:ln>' );
-
-			// Close shapeProp/plotArea before Legend
-			strXml += '    <a:effectLst/>';
-			strXml += '  </c:spPr>';
-			strXml += '</c:plotArea>';
-
-			// OPTION: Legend
-			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
-			if ( rel.opts.showLegend ) strXml += '<c:legend><c:legendPos val="'+ rel.opts.legendPos +'"/><c:layout/><c:overlay val="0"/></c:legend>';
+		strXml += '<c:catAx>';
+		if (opts.showCatAxisTitle) {
+			strXml += genXmlTitle({
+				title: opts.catAxisTitle || 'Axis Title',
+				fontSize: opts.catAxisTitleFontSize,
+				color: opts.catAxisTitleColor,
+				fontFace: opts.catAxisTitleFontFace,
+				rotate: opts.catAxisTitleRotate
+			});
 		}
+		strXml += '  <c:axId val="'+ axisId +'"/>';
+		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
+		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+		if ( opts.catGridLine !== 'none' ) {
+			strXml += createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE);
+		}
+		strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
+		strXml += '  <c:majorTickMark val="out"/>';
+		strXml += '  <c:minorTickMark val="none"/>';
+		strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+		strXml += '  <c:spPr>';
+		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+		strXml += '  </c:spPr>';
+		strXml += '  <c:txPr>';
+		strXml += '    <a:bodyPr rot="0"/>';
+		strXml += '    <a:lstStyle/>';
+		strXml += '    <a:p>';
+		strXml += '    <a:pPr>';
+		strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+		strXml += '<a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
+		strXml += '<a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
+		strXml += '   </a:defRPr>';
+		strXml += '  </a:pPr>';
+		strXml += '  </a:p>';
+		strXml += ' </c:txPr>';
+		strXml += ' <c:crossAx val="'+ axisId +'"/>';
+		strXml += ' <c:crosses val="autoZero"/>';
+		strXml += ' <c:auto val="1"/>';
+		strXml += ' <c:lblAlgn val="ctr"/>';
+		strXml += ' <c:noMultiLvlLbl val="1"/>';
+		strXml += '</c:catAx>';
 
-		strXml += '  <c:plotVisOnly val="1"/>';
-		strXml += '  <c:dispBlanksAs val="gap"/>';
-		strXml += '</c:chart>';
+		return strXml;
+	}
 
-		// C: CHARTSPACE SHAPE PROPS
+	function makeValueAxis (opts, valAxisId) {
+		var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir == 'col' ? 'l' : 'b') : (opts.barDir == 'col' ? 'r' : 't');
+		var strXml = '';
+		var isRight = axisPos === 'r' || axisPos === 't';
+		var crosses = isRight ? 'max' : 'autoZero';
+		var crossAxId = valAxisId === AXIS_ID_VALUE_PRIMARY ? AXIS_ID_CATEGORY_PRIMARY : AXIS_ID_CATEGORY_SECONDARY;
+
+		strXml += '<c:valAx>';
+		if (opts.showValAxisTitle) {
+			strXml += genXmlTitle({
+				title: opts.valAxisTitle || 'Axis Title',
+				fontSize: opts.valAxisTitleFontSize,
+				color: opts.valAxisTitleColor,
+				fontFace: opts.valAxisTitleFontFace,
+				rotate: opts.valAxisTitleRotate
+			});
+		}
+		strXml += '  <c:axId val="'+ valAxisId +'"/>';
+		strXml += '  <c:scaling>';
+		strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
+		if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
+		if (opts.valAxisMinVal) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
+		strXml += '  </c:scaling>';
+		strXml += '  <c:delete val="'+ (opts.valAxisHidden ? 1 : 0) +'"/>';
+		strXml += '  <c:axPos val="'+ axisPos +'"/>';
+		if (opts.valGridLine != 'none') strXml += createGridLineElement(opts.valGridLine, DEF_CHART_GRIDLINE);
+		strXml += ' <c:numFmt formatCode="'+ (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
+		strXml += ' <c:majorTickMark val="out"/>';
+		strXml += ' <c:minorTickMark val="none"/>';
+		strXml += ' <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 		strXml += '<c:spPr>';
-		strXml += '  <a:noFill/>';
-		strXml += '  <a:ln w="12700" cap="flat"><a:noFill/><a:miter lim="400000"/></a:ln>';
-		strXml += '  <a:effectLst/>';
+		strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 		strXml += '</c:spPr>';
-
-		// D: DATA (Add relID)
-		strXml += '<c:externalData r:id="rId1"><c:autoUpdate val="0"/></c:externalData>';
-
-		// LAST: chartSpace end
-		strXml += '</c:chartSpace>';
+		strXml += ' <c:txPr>';
+		strXml += '  <a:bodyPr rot="0"/>';
+		strXml += '  <a:lstStyle/>';
+		strXml += '  <a:p>';
+		strXml += '    <a:pPr>';
+		strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:latin typeface="'+ (opts.valAxisLabelFontFace || 'Arial') +'"/>';
+		strXml += '      </a:defRPr>';
+		strXml += '    </a:pPr>';
+		strXml += '  </a:p>';
+		strXml += ' </c:txPr>';
+		strXml += ' <c:crossAx val="'+ crossAxId +'"/>';
+		strXml += ' <c:crosses val="'+ crosses +'"/>';
+		strXml += ' <c:crossBetween val="'+ ( opts.hasArea ? 'midCat' : 'between' ) +'"/>';
+		if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
+		strXml += '</c:valAx>';
 
 		return strXml;
 	}
@@ -2635,11 +2795,12 @@ var PptxGenJS = function(){
 	* DESC: Generate the XML for title elements used for the char and axis titles
 	*/
 	function genXmlTitle(opts) {
+		var align = ( opts.titleAlign == 'left' ? 'l' : (opts.titleAlign == 'right' ? 'r' : false) );
 		var strXml = '';
 		strXml += '<c:title>';
 		strXml += ' <c:tx>';
 		strXml += '  <c:rich>';
-		if (opts.rotate !== undefined) {
+		if ( opts.rotate ) {
 			strXml += '  <a:bodyPr rot="' + convertRotationDegrees(opts.rotate) + '"/>';
 		}
 		else {
@@ -2647,19 +2808,19 @@ var PptxGenJS = function(){
 		}
 		strXml += '  <a:lstStyle/>';
 		strXml += '  <a:p>';
-		strXml += '    <a:pPr>';
-		var sizeAttr = '';
-		// only set the font size if specified.  Powerpoint will handle the default size
-		if (opts.fontSize !== undefined) {
-			sizeAttr = ' sz="' + opts.fontSize + '00"';
+		strXml += ( align ? '<a:pPr algn="'+ align +'">' : '<a:pPr>' );
+ 		var sizeAttr = '';
+		if ( opts.fontSize ) {
+			// only set the font size if specified.  Powerpoint will handle the default size
+			sizeAttr = 'sz="'+ opts.fontSize +'00"';
 		}
-		strXml += '      <a:defRPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '      <a:defRPr b="0" i="0" strike="noStrike" '+ sizeAttr +' u="none">';
 		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
 		strXml += '      </a:defRPr>';
 		strXml += '    </a:pPr>';
 		strXml += '    <a:r>';
-		strXml += '      <a:rPr b="0" i="0" strike="noStrike"'+ sizeAttr +' u="none">';
+		strXml += '      <a:rPr b="0" i="0" strike="noStrike" '+ sizeAttr +' u="none">';
 		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
 		strXml += '      </a:rPr>';
@@ -2668,7 +2829,19 @@ var PptxGenJS = function(){
 		strXml += '  </a:p>';
 		strXml += '  </c:rich>';
 		strXml += ' </c:tx>';
-		strXml += ' <c:layout/>';
+		if ( opts.titlePos && opts.titlePos.x && opts.titlePos.y ) {
+			strXml += '<c:layout>';
+			strXml += '  <c:manualLayout>';
+			strXml += '    <c:xMode val="edge"/>';
+			strXml += '    <c:yMode val="edge"/>';
+			strXml += '    <c:x val="'+ opts.titlePos.x +'"/>';
+			strXml += '    <c:y val="'+ opts.titlePos.y +'"/>';
+			strXml += '  </c:manualLayout>';
+			strXml += '</c:layout>';
+		}
+		else {
+			strXml += ' <c:layout/>';
+		}
 		strXml += ' <c:overlay val="0"/>';
 		strXml += '</c:title>';
 		return strXml;
