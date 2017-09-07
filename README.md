@@ -747,7 +747,7 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 ### Table Cell Formatting
 * Table cells can be either a plain text string or an object with text and options properties
 * When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
-* Cell borders can be removed (aka: borderless table) by passing a `pt` value of `0` (Ex: `border:{ pt:0 }`)
+* Cell borders can be removed (aka: borderless table) by passing a 'none' (Ex: `border:'none'`)
 
 Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
 as the `text` value allows fine-grained control over the text inside cells.

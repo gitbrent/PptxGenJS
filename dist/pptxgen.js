@@ -118,6 +118,7 @@ var PptxGenJS = function(){
 	var REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 	var JSZIP_OUTPUT_TYPES = ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']; /** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
 	//
+	var DEF_CELL_BORDER = { color:"666666" };
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 	var DEF_FONT_SIZE = 12;
 	var DEF_FONT_TITLE_SIZE = 18;
@@ -828,7 +829,13 @@ var PptxGenJS = function(){
 								strXml += '<a:tc'+ cellColspan + cellRowspan +'>' + genXmlTextBody(cell) + '<a:tcPr'+ cellMargin + cellValign +'>';
 
 								// 5: Borders: Add any borders
-								if ( cellOpts.border && typeof cellOpts.border === 'string' ) {
+								if ( cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none' ) {
+									strXml += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>';
+									strXml += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>';
+									strXml += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>';
+									strXml += '  <a:lnB w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnB>';
+								}
+								else if ( cellOpts.border && typeof cellOpts.border === 'string' ) {
 									strXml += '  <a:lnL w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnL>';
 									strXml += '  <a:lnR w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnR>';
 									strXml += '  <a:lnT w="'+ ONEPT +'" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="'+ cellOpts.border +'"/></a:solidFill></a:lnT>';
@@ -837,7 +844,7 @@ var PptxGenJS = function(){
 								else if ( cellOpts.border && Array.isArray(cellOpts.border) ) {
 									$.each([ {idx:3,name:'lnL'}, {idx:1,name:'lnR'}, {idx:0,name:'lnT'}, {idx:2,name:'lnB'} ], function(i,obj){
 										if ( cellOpts.border[obj.idx] ) {
-											var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[obj.idx].color) ? cellOpts.border[obj.idx].color : '666666') +'"/></a:solidFill>';
+											var strC = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border[obj.idx].color) ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +'"/></a:solidFill>';
 											var intW = (cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt == 0)) ? (ONEPT * Number(cellOpts.border[obj.idx].pt)) : ONEPT;
 											strXml += '<a:'+ obj.name +' w="'+ intW +'" cap="flat" cmpd="sng" algn="ctr">'+ strC +'</a:'+ obj.name +'>';
 										}
@@ -846,7 +853,7 @@ var PptxGenJS = function(){
 								}
 								else if ( cellOpts.border && typeof cellOpts.border === 'object' ) {
 									var intW = (cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ) ? (ONEPT * Number(cellOpts.border.pt)) : ONEPT;
-									var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color.replace('#','') : '666666') +'"/></a:solidFill>';
+									var strClr = '<a:solidFill><a:srgbClr val="'+ ((cellOpts.border.color) ? cellOpts.border.color.replace('#','') : DEF_CELL_BORDER.color) +'"/></a:solidFill>';
 									var strAttr = '<a:prstDash val="';
 									strAttr += ((cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1) ? "sysDash" : "solid" );
 									strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>';
