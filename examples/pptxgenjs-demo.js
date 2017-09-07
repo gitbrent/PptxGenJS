@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 01, 2017
+* DATE: Sep 06, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -771,6 +771,7 @@ function genSlides_Chart(pptx) {
 			catAxisTitleFontSize: 14,
 			showCatAxisTitle: true,
 
+			valAxisOrientation: 'maxMin',
 			valGridLine: 'none',
 			valAxisHidden: true,
 			catGridLine: { color: "cc6699", style: "dash", size: 1 },
@@ -1025,17 +1026,21 @@ function genSlides_Chart(pptx) {
 			pptx.charts.BAR,
 			[
 				{
-					name  : 'Many values',
-					labels: 'A,B,C,D,E,F,G,H,I,J,K,L,M,N,O,P'.split(','),
-					values: [1.20, 2.30, 3.10, 4.25, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9, 2.2, 3.33, 6.66, 7.77, 8.88]
+					name  : 'Escaped XML Chars',
+					labels: ['Es', 'cap', 'ed', 'XML', 'Chars', "'", '"', '&', '<', '>'],
+					values: [1.20, 2.30, 3.10, 4.25, 2.15, 6.05, 8.01, 2.02, 9.9, 0.9]
 				}
-			], {  x:7, y:3.6, w:'45%', h:3,
-				valAxisMaxVal:10,
+			],
+			{
+				x:7, y:3.6, w:'45%', h:3,
 				barDir: 'bar',
 				showValue: true,
 				dataLabelPosition: 'outEnd',
-				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384', '7D666A','A3C961','EF907B','9BA0A3'],
+				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384','7D666A','A3C961','EF907B','9BA0A3'],
 				barGapWidthPct: 25,
+				catAxisOrientation: 'maxMin',
+				valAxisOrientation: 'maxMin',
+				valAxisMaxVal: 10,
 				valAxisMajorUnit: 1
 			}
 		);
