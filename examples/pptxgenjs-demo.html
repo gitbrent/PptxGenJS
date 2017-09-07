@@ -571,7 +571,7 @@
 				<div class="sectionBox">
 					<div class="jsLocalFile" style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px; display:none;">
 						NOTE: Web browsers will not allow local file access, meaning images using
-						<code>path:</code> cannot be read if running this locally!
+						`path:` cannot be read if running this locally!
 						<br>
 						(Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files)
 					</div>
@@ -591,9 +591,13 @@
 							<legend>Media Objects</legend>
 							<h3>Slide 1</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
+							<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
 							<h3>Slide 2</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Misc Audio formats</div>
-							<div style="color:red; padding:10px 0 0 30px">* Only Node.js can read/encode media.<br>(Use pre-encoded base64 with client browsers)</div>
+							<div style="color:red; padding:2px 0 0 40px">
+								* Only Node.js can read/encode media using `path`<br>
+								* Alternatively, use `data` with pre-encoded base64
+							</div>
 						</fieldset>
 					</div>
 					<div id="buttonBarBtm" style="clear:both">
