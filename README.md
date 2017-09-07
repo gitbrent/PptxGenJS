@@ -947,6 +947,7 @@ pptx.save('Demo-Images');
 
 ### Image Sizing
 The `sizing` option provides cropping and scaling an image to a specified area. The property expects an object with the following structure:
+
 | Property     | Type    | Unit   | Default           | Description                                   | Possible Values  |
 | :----------- | :------ | :----- | :---------------- | :-------------------------------------------- | :--------------- |
 | `type`       | string  |        |                   | sizing algorithm                              | `'crop'`, `'contain'` or `'cover'` |
