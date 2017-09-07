@@ -997,7 +997,7 @@ var PptxGenJS = function(){
 						strSlideXml += '  </p:nvPicPr>';
 						strSlideXml += '<p:blipFill>';
 						strSlideXml += '  <a:blip r:embed="rId' + slideItemObj.imageRid + '" cstate="print"/>';
-						if (sizing) {
+						if (sizing && sizing.type) {
 							var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X') : cx,
 								boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y') : cy,
 								boxX = getSmartParseNumber(sizing.x || 0, 'X'),

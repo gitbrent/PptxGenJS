@@ -73,6 +73,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Adding Images](#adding-images)
     - [Image Options](#image-options)
     - [Image Examples](#image-examples)
+    - [Image Sizing](#image-sizing)
   - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
     - [Media Options](#media-options)
     - [Media Examples](#media-examples)
@@ -909,6 +910,7 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `data`       | string  |        |           | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
 | `hyperlink`  | string  |        |           | add hyperlink | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
+| `sizing`     | object  |        |           | transforms image    | See [Image Sizing](#image-sizing) |
 
 **NOTES**
 * SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
@@ -943,7 +945,39 @@ slide.addImage({
 pptx.save('Demo-Images');
 ```
 
+### Image Sizing
+The `sizing` option provides cropping and scaling an image to a specified area. The property expects an object with the following structure:
+| Property     | Type    | Unit   | Default           | Description                                   | Possible Values  |
+| :----------- | :------ | :----- | :---------------- | :-------------------------------------------- | :--------------- |
+| `type`       | string  |        |                   | sizing algorithm                              | `'crop'`, `'contain'` or `'cover'` |
+| `w`          | number  | inches | `w` of the image  | area width                                    | 0-n |
+| `h`          | number  | inches | `h` of the image  | area height                                   | 0-n |
+| `x`          | number  | inches | `0`               | area horizontal position related to the image | 0-n (effective for `crop` only) |
+| `y`          | number  | inches | `0`               | area vertical position related to the image   | 0-n (effective for `crop` only)|
 
+Particular `type` values behave as follows:
+* `contain` works as CSS property `background-size` — shrinks the image (ratio preserved) to the area given by `w` and `h` so that the image is completely visible. If the area's ratio differs from the image ratio, an empty space will surround the image.
+* `cover` works as CSS property `background-size` — shrinks the image (ratio preserved) to the area given by `w` and `h` so that the area is completely filled. If the area's ratio differs from the image ratio, the image is centered to the area and cropped.
+* `crop` cuts off a part specified by image-related coordinates `x`, `y` and size `w`, `h`.
+
+NOTES:
+* If you specify an area size larger than the image for the `contain` and `cover` type, then the image will be stretched, not shrunken.
+* In case of the `crop` option, if the specified area reaches out of the image, then the covered empty space will be a part of the image.
+* When the `sizing` property is used, its `w` and `h` values represent the effective image size. For example, in the following snippet, width and height of the image will both equal to 2 inches and its top-left corner will be located at [1 inch, 1 inch]:
+```javascript
+slide.addImage({
+  path: '...',
+  w: 4,
+  h: 3,
+  x: 1,
+  y: 1,
+  sizing: {
+    type: 'contain',
+    w: 2,
+    h: 2
+  }
+});
+```
 **************************************************************************************************
 ## Adding Media (Audio/Video/YouTube)
 Syntax:
