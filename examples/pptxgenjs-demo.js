@@ -557,7 +557,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 1: Bar Chart ------------------------------------------------------------------
-	function slide1 () {
+	function slide1() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -679,7 +679,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 2: Bar Chart Grid/Axis Options ------------------------------------------------
-	function slide2 () {
+	function slide2() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart Grid/Axis Options', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -818,7 +818,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 3: Stacked Bar Chart ----------------------------------------------------------
-	function slide3 () {
+	function slide3() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -918,7 +918,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 4: Bar Chart - Lots of Bars ---------------------------------------------------
-	function slide4 () {
+	function slide4() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -926,7 +926,7 @@ function genSlides_Chart(pptx) {
 			{
 				name  : 'TEST: getExcelColName',
 				labels: LETTERS.concat(['AA','AB','AC','AD']),
-				values: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
+				values: [-5,-3,1,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
 			}
 		];
 
@@ -942,6 +942,9 @@ function genSlides_Chart(pptx) {
 			catAxisTitleColor: "4286f4",
 			catAxisTitleFontSize: 14,
 
+			chartColors: ['EE1122'],
+			invertedColors: ['0088CC'],
+
 			showValAxisTitle: true,
 			valAxisTitle: "Column Index",
 			valAxisTitleColor: "c11c13",
@@ -953,7 +956,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ------
-	function slide5 () {
+	function slide5() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bar Colors, valAxisMajorUnit, v Format %', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1047,7 +1050,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 6: Tornado Chart -------------------------------------------------------------
-	function slide6 () {
+	function slide6() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1087,7 +1090,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 7: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
-	function slide7 () {
+	function slide7() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Line Smoothing, Line Size, Line Shadow, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1127,7 +1130,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 8: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
-	function slide8 () {
+	function slide8() {
 		var intWgap = 4.25;
 		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
 		var slide = pptx.addNewSlide();
@@ -1148,7 +1151,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 9: Line Chart: Lots of Cats ---------------------------------------------------
-	function slide9 () {
+	function slide9() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1182,7 +1185,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 10: Area Chart: Misc -----------------------------------------------------------
-	function slide10 () {
+	function slide10() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1228,7 +1231,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 11: Pie Charts: All 4 Legend Options ------------------------------------------
-	function slide11 () {
+	function slide11() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1273,7 +1276,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 12: Doughnut Chart ------------------------------------------------------------
-	function slide12 () {
+	function slide12() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1317,7 +1320,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 13: Multi-Type Charts ---------------------------------------------------------
-	function slide13 () {
+	function slide13() {
 		// powerpoint 2016 add secondary category axis labels
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
@@ -1688,6 +1691,7 @@ function genSlides_Chart(pptx) {
 		//readmeExample();
 	}
 
+	// RUN ALL SLIDE DEMOS -----
 	slide1();
 	slide2();
 	slide3();
