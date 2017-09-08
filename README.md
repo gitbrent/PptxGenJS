@@ -581,6 +581,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
 | `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |
+| `lang`       | string  |         | `en-US`   | language setting    | Ex: `{ lang:'zh-TW' }` |
 | `lineSpacing`| number  | points  |           | line spacing points | 1-256. Ex: `{ lineSpacing:28 }` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
 | `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
