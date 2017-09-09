@@ -51,7 +51,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Chart Size/Formatting Options](#chart-sizeformatting-options)
     - [Chart Axis Options](#chart-axis-options)
     - [Chart Data Options](#chart-data-options)
-    - [Chart Line Shadow Options](#chart-line-shadow-options)
+    - [Chart Element Shadow Options](#chart-element-shadow-options)
     - [Chart Multi-Type Options](#chart-multi-type-options)
     - [Chart Examples](#chart-examples)
   - [Adding Text](#adding-text)
@@ -426,17 +426,17 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
 | `lineDataSymbolLineSize`| number | points  | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
 | `lineDataSymbolLineColor`| number | points  | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
-| `lineShadow`           | object  |         |           | data line shadow options   | `'none'` or [shadow options](#chart-line-shadow-options) |
+| `shadow`               | object  |         |           | data element shadow options   | `'none'` or [shadow options](#chart-element-shadow-options) |
 | `lineSize`             | number  | points  | `2`       | thickness of data line (0 is no line) | 0-256. Ex: `{ lineSize: 1 }` |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
-### Chart Line Shadow Options
+### Chart Element Shadow Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                            |
 | :----------- | :------ | :------ | :-------- | :------------------ | :----------------------------------------- |
 | `type`       | string  |         | `outer`   | shadow type         | `outer` or `inner`. Ex: `{ type:'outer' }` |
 | `angle`      | number  | degrees | `90`      | shadow angle        | 0-359. Ex: `{ angle:90 }`                  |
 | `blur`       | number  | points  | `3`       | blur size           | 1-256. Ex: `{ blur:3 }`                    |
-| `color`      | string  |         | `000000`  | line color          | hex color code. Ex: `{ color:'0088CC' }`   |
+| `color`      | string  |         | `000000`  | shadow color        | hex color code. Ex: `{ color:'0088CC' }`   |
 | `offset`     | number  | points  | `1.8`     | offset size         | 1-256. Ex: `{ offset:2 }`                  |
 | `opacity`    | number  | percent | `0.35`    | opacity             | 0-1. Ex: `{ opacity:0.35 }`                |
 
