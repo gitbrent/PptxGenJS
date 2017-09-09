@@ -1194,13 +1194,13 @@ JavaScript ES6 features and remove many instances of jQuery utility functions.
 **************************************************************************************************
 # Unimplemented Features
 
-The PptxgenJS library is not designed to replicate all the functionality of PowerPoint, meaning several features
+The PptxGenJS library is not designed to replicate all the functionality of PowerPoint, meaning several features
 are not on the development roadmap.
 
 These include:
 * Animations
 * Cross-Slide Links
-* Importing Existing Templates
+* Importing Existing Presentations and/or Templates
 * Outlines
 * SmartArt
 
@@ -1209,6 +1209,8 @@ These include:
 
 * [Officegen Project](https://github.com/Ziv-Barber/officegen) - For the Shape definitions and XML code
 * [Dzmitry Dulko](https://github.com/DzmitryDulko) - For getting the project published on NPM
+* [kajda90](https://github.com/kajda90) - For the new Master Slide Layouts
+* PPTX Chart Experts: [Mike Wilcox](https://github.com/clubajax), [kajda90](https://github.com/kajda90), [Matt King](https://github.com/kyrrigle)
 * Everyone who has submitted an Issue or Pull Request. :-)
 
 **************************************************************************************************
