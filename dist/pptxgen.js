@@ -2349,6 +2349,7 @@ var PptxGenJS = function(){
 
 	function makeChartType(chartType, data, opts, valAxisId, catAxisId) {
 		var strXml = '';
+
 		switch ( chartType ) {
 			case 'area':
 			case 'bar':
@@ -2374,7 +2375,7 @@ var PptxGenJS = function(){
 				    ]
 				*/
 
-				// maintain the color index by region:
+				// NOTE: Maintain the color index by region
 				var colorIndex = -1;
 				data.forEach(function(obj){
 					colorIndex++;
@@ -2443,20 +2444,20 @@ var PptxGenJS = function(){
 					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
-							var invert = opts.invertedColors ? 0 : 1;
-							var colors = (value < 0 ? opts.invertedColors : opts.chartColors);
+							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
+
 							strXml += '  <c:dPt>';
-							strXml += '    <c:idx val="'+index+'"/>';
-							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
+							strXml += '    <c:idx val="'+ index +'"/>';
+							strXml += '    	<c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
 							strXml += '    <c:bubble3D val="0"/>';
 							strXml += '    <c:spPr>';
 							if ( opts.lineSize === 0 ){
 								strXml += '<a:ln><a:noFill/></a:ln>';
 							}
 							else {
-								strXml += '    <a:solidFill>';
-								strXml += '     <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
-								strXml += '    </a:solidFill>';
+								strXml += '<a:solidFill>';
+								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
+								strXml += '</a:solidFill>';
 							}
 							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 							strXml += '    </c:spPr>';
