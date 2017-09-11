@@ -4,13 +4,12 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css">
 	<link type="text/css" rel="stylesheet" href="pptxgenjs-demo.css">
 
 	<!-- NOTE:
@@ -37,6 +36,22 @@
 
 	<script type="text/javascript">
 		// ==================================================================================================================
+
+		function doNav(intTab) {
+			location.href = 'pptxgenjs-demo.html#tab'+intTab;
+
+			doNavRestore();
+		}
+
+		function doNavRestore() {
+			if ( window.location.href.toLowerCase().indexOf('#tab') > -1 ) {
+				var tabNum = window.location.href.toLowerCase().split('#tab')[1];
+
+				$('#navTabs').find('> div, li').removeClass('active');
+				$('#navTabs li#nav'+tabNum).addClass('active');
+				$('#tab'+tabNum).addClass('active');
+			}
+		}
 
 		function doTestSimple() {
 			var pptx = new PptxGenJS();
@@ -306,9 +321,9 @@
 				return;
 			}
 
-			// STEP 1: Check
+			// STEP 1: Show Local File warning message
 			if ( window.location.href.indexOf('file:') == 0 ) {
-				$('.jsLocalFile').show();
+				$('#jsLocalFile').show();
 				if ( window.location.href.indexOf('brentely') > 0 ) {
 					$('#tab1sec1').click();
 					$('#tab1sec2').click();
@@ -369,38 +384,66 @@
 				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
 				+ "</pre>\n"
 			);
+
+			// STEP 4: Show version
+			{
+				var pptx = new PptxGenJS();
+
+				$('#getVersion').append( pptx.getVersion() );
+
+				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.charts) +"'>pptx.charts = "+ Object.keys(pptx.charts).length +'</span>');
+				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.colors) +"'>pptx.colors = "+ Object.keys(pptx.colors).length +'</span>');
+				$('#infoBar > div:last-child').append('<span>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span>');
+			}
+
+			// LAST: Nav across sessions
+			doNavRestore();
 		});
 	</script>
 </head>
 <body>
-	<a href="https://github.com/GitBrent/PptxGenJS" class="github-fork-ribbon" title="Fork me on GitHub">Fork me on GitHub</a>
+	<div data="anchors">
+		<a href="#tab1"></a><a href="#tab2"></a><a href="#tab3"></a><a href="#tab4"></a><a href="#tab5"></a><a href="#tab6"></a><a href="#tab7"></a>
+	</div>
 
-	<div id="contBody" style="padding:20px 100px; margin:auto;">
+	<div id="contBody">
 		<div id="contTitle" class="table">
 			<div>
 				<div class="bigTitle">
 					<a href="https://github.com/GitBrent/PptxGenJS" target="_blank" title="GitHub Project Page">PptxGenJS</a>
 				</div>
 				<div class="subTitle">
-					JavaScript PowerPoint Framework - Presentation Demos
+					JavaScript PowerPoint Generation Library: Presentation Demos
 				</div>
 			</div>
-			<div style="text-align:right; vertical-align:bottom;">
-				<input type="button" class="flatBtn flatBtn-blueMd" value="Run All Demos" onclick="runEveryTest()">
+			<div style="vertical-align:middle;">
+				<div id="contBtns" class="flex">
+					<div style="flex:2 0 auto">
+						<button id="btnRun" type="button" class="flatBtn shadow flatBtn-blueMd" onclick="runEveryTest()">Run All Demos</button>
+					</div>
+					<div style="flex:1 0 auto">
+						<button id="btnGit" type="button" class="flatBtn small flatBtn-nsOrange" onclick="window.open('https://github.com/gitbrent/PptxGenJS')">GitHub Site</button>
+					</div>
+					<div style="flex:1 0 auto; text-align:right;">
+						<button id="btnDoc" type="button" class="flatBtn small flatBtn-nsPurple" onclick="window.open('https://github.com/gitbrent/PptxGenJS#pptxgenjs')">View Documentation</button>
+					</div>
+				</div>
 			</div>
 		</div>
 
 		<div id="navTabs" class="modernTabs">
 			<ul>
-				<li class="active" onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab1').addClass('active');">Introduction</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab2').addClass('active');">Tables</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab7').addClass('active');">Charts</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab3').addClass('active');">Images &amp; Media</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab4').addClass('active');">Shapes &amp; Text</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab5').addClass('active');">Templates</li><li onclick="$('#navTabs').find('> div, li').removeClass('active'); $(this).addClass('active'); $('#tab6').addClass('active');">Table To Slides</li>
+				<li id="nav1" class="active" onclick="doNav(1)">Introduction</li><li id="nav2" onclick="doNav(2)">Charts</li><li id="nav3" onclick="doNav(3)">Images &amp; Media</li><li id="nav4" onclick="doNav(4)">Shapes &amp; Text</li><li id="nav5" onclick="doNav(5)">Tables</li><li id="nav6" onclick="doNav(6)">Table To Slides</li><li id="nav7" onclick="doNav(7)">Templates</li>
 			</ul>
 
 			<div id="tab1" class="active" data-title="Intro">
-				<div class="topDocLink">
-					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#presentations-usage-and-options" target="_blank">View Documentation and Example Code</a>
+				<div id="infoBar" class="table" style="color:#aaa">
+					<div style="width:50%">
+						Library Version: <span id="getVersion"></span>
+					</div>
+					<div style="width:50%; text-align:right">
+					</div>
 				</div>
-
 				<div id="tab1sec1" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Basic Presentation: Slide
@@ -417,8 +460,8 @@
 					<div class="arrow"></div>Code Sandbox
 				</div>
 				<div class="sectionBox" style="display:none">
-					<div style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px;">
-						Code below is editable (use shift-return to create a new line)
+					<div class="highlightBox">
+						Code below is editable - Test snippets of code from the demos/readme!
 					</div>
 					<div class="code" style="text-align:left; margin-bottom:15px">
 						<div id="demo-sandbox" contenteditable="true" style="background:#f1f1f1;"></div>
@@ -430,18 +473,158 @@
 				</div>
 			</div>
 
-			<div id="tab2" data-title="Tables">
-				<div class="topDocLink">
-					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#adding-tables" target="_blank">View Documentation and Example Code</a>
+			<div id="tab2" data-title="Charts">
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Charts
 				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+							<legend>Bar Chart</legend>
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Vertical/Horizontal bars</div>
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Grid/Axis options</div>
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Stacked/PercentStacked Bars</div>
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Lots of Bars</div>
+							<h3>Slide 5</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Bar colors, majorUnit, Number Format</div>
+						</fieldset>
+						<fieldset>
+							<legend>Tornado Chart</legend>
+							<h3>Slide 6</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Tornado Type</div>
+						</fieldset>
+						<fieldset>
+							<legend>Line Chart</legend>
+							<h3>Slide 7</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Line Smoothing, Shadow, Size, Symbol Size</div>
+							<h3>Slide 8</h3>
+							<div class="chkRow"><div class="svgCheck"></div>lineDataSymbol and SymbolSize</div>
+							<h3>Slide 9</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Lots of Categories</div>
+						</fieldset>
+						<fieldset>
+							<legend>Area Chart</legend>
+							<h3>Slide 10</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Opacity and other options</div>
+						</fieldset>
+						<fieldset>
+							<legend>Pie Chart</legend>
+							<h3>Slide 11</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Various options</div>
+							<h3>Slide 12</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Doughnut Type</div>
+						</fieldset>
+						<fieldset>
+							<legend>Multi-Type Charts</legend>
+							<h3>Slide 13</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Various Mixed Chart Types</div>
+						</fieldset>
+						<fieldset>
+							<legend>Chart Options</legend>
+							<h3>Slide 14</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Shadows and Transparent Color</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Chart')">
+					</div>
+				</div>
+			</div>
 
+			<div id="tab3" data-title="Images/Media">
+				<div id="jsLocalFile" class="highlightBox" style="display:none;">
+					<div style="font-size:1.5em">LOCAL FILE NOTES</div>
+					<ul>
+						<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read if running this locally!</li>
+						<li>Some slide images will show the missing image icon</li>
+						<li>Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
+					</ul>
+				</div>
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Images &amp; Media
+				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+							<legend>Image Objects</legend>
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Animated GIF (campfire icon - click to play)</div>
+							<div class="chkRow"><div class="svgCheck"></div>Four Image types using `path:'someImage'`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Pre-encoded image using `data:[base64]`</div>
+							<div class="chkRow"><div class="svgCheck"></div>Hyperlinked Image</div>
+						</fieldset>
+						<fieldset>
+							<legend>Media Objects</legend>
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
+							<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Misc Audio formats</div>
+							<div style="color:red; padding:2px 0 0 40px">
+								* Only Node.js can read/encode media using `path`<br>
+								* Alternatively, use `data` with pre-encoded base64
+							</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab4" data-title="Shapes/Text">
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Shapes &amp; Text
+				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+							<legend>Shape Objects</legend>
+
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shapes: Flipped, With and Without Text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Shape Borders</div>
+							<div class="chkRow"><div class="svgCheck"></div>Lines: With and Without Arrowheads</div>
+
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Same Shapes with Text</div>
+						</fieldset>
+						<fieldset>
+							<legend>Text Objects</legend>
+
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Word-Level Formatting</div>
+							<div class="chkRow"><div class="svgCheck"></div>Multi-Line Text</div>
+							<div class="chkRow"><div class="svgCheck"></div>Hyperlinks: With and Without Tooltip</div>
+
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Bullets: Regular and Custom</div>
+
+							<h3>Slide 5</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Text alignment, percent x/y, etc</div>
+
+							<h3>Slide 6</h3>
+							<div class="chkRow"><div class="svgCheck"></div>Scheme Colors</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Shape','Text'])">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab5" data-title="Tables">
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Tables
 				</div>
 				<div class="sectionBox">
-					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
+					<div class="sectionCont">
 						<fieldset>
 					    	<legend>Table Layout/Format</legend>
 
@@ -456,8 +639,6 @@
 							<h3>Slide 3</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Extreme Colspans/Rowspans</div>
 						</fieldset>
-					</div>
-					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Cell Formatting</legend>
 							<h3>Slide 4</h3>
@@ -469,8 +650,6 @@
 							<h3>Slide 6</h3>
 							<div class="chkRow"><div class="svgCheck"></div>Cell Text Formatting Examples 2</div>
 						</fieldset>
-					</div>
-					<div class="formBox" style="width:32%; width:calc(33.33% - 20px);">
 						<fieldset style="height:auto">
 							<legend>Table Auto-Paging</legend>
 							<h3>Slide 7-n</h3>
@@ -482,245 +661,33 @@
 							<div class="chkRow"><div class="svgCheck"></div>Three Tables with various `lineWeight`</div>
 						</fieldset>
 					</div>
-					<div id="buttonBarBtm" style="clear:both">
+					<div>
 						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Table')">
 					</div>
 				</div>
 			</div>
 
-			<div id="tab7" data-title="Charts">
-				<div class="topDocLink">
-					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#adding-charts" target="_blank">View Documentation and Example Code</a>
-				</div>
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Charts
-				</div>
-				<div class="sectionBox">
-					<div class="formBox" style="width:31%; width:calc(33% - 20px);">
-						<fieldset>
-							<legend>Bar Chart</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Vertical bars</div>
-							<div class="chkRow"><div class="svgCheck"></div>Horizontal bars</div>
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Grid/Axis options</div>
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Stacked Bars</div>
-							<div class="chkRow"><div class="svgCheck"></div>PercentStacked Bars</div>
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of Bars</div>
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Bar colors, majorUnit, Number Format</div>
-						</fieldset>
-					</div>
-					<div class="formBox" style="width:31%; width:calc(33% - 20px);">
-						<fieldset>
-							<legend>Tornado Chart</legend>
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Tornado Type</div>
-						</fieldset>
-
-						<fieldset>
-							<legend>Line Chart</legend>
-							<h3>Slide 7</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Line Smoothing, Shadow, Size, Symbol Size</div>
-							<h3>Slide 8</h3>
-							<div class="chkRow"><div class="svgCheck"></div>lineDataSymbol and SymbolSize</div>
-							<h3>Slide 9</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of Categories</div>
-						</fieldset>
-					</div>
-					<div class="formBox" style="width:31%; width:calc(33% - 20px);">
-						<fieldset>
-							<legend>Area Chart</legend>
-							<h3>Slide 10</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Opacity and other options</div>
-						</fieldset>
-
-						<fieldset>
-							<legend>Pie Chart</legend>
-							<h3>Slide 11</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Various options</div>
-							<h3>Slide 12</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Doughnut Type</div>
-						</fieldset>
-
-						<fieldset>
-							<legend>Multi-Type Charts</legend>
-							<h3>Slide 13</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Various Mixed Chart Types</div>
-						</fieldset>
-					</div>
-					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Chart')">
-					</div>
-				</div>
-			</div>
-
-			<div id="tab3" data-title="Images/Media">
-				<div class="topDocLink">
-					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#adding-images" target="_blank">View Documentation and Example Code</a>
-				</div>
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Images &amp; Media
-				</div>
-				<div class="sectionBox">
-					<div class="jsLocalFile" style="margin:0 0 10px 0; padding:4px 8px; background:#fffccc; color:#9c9c9f; font-size:13px; display:none;">
-						NOTE: Web browsers will not allow local file access, meaning images using
-						`path:` cannot be read if running this locally!
-						<br>
-						(Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files)
-					</div>
-
-					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset>
-							<legend>Image Objects</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Animated GIF (campfire icon - click to play)</div>
-							<div class="chkRow"><div class="svgCheck"></div>Four Image types using `path:'someImage'`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Pre-encoded image using `data:[base64]`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Hyperlinked Image</div>
-						</fieldset>
-					</div>
-					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset>
-							<legend>Media Objects</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
-							<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Misc Audio formats</div>
-							<div style="color:red; padding:2px 0 0 40px">
-								* Only Node.js can read/encode media using `path`<br>
-								* Alternatively, use `data` with pre-encoded base64
-							</div>
-						</fieldset>
-					</div>
-					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
-					</div>
-				</div>
-			</div>
-
-			<div id="tab4" data-title="Shapes/Text">
-				<div class="topDocLink">
-					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#adding-text" target="_blank">View Documentation and Example Code</a>
-				</div>
-
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Shapes &amp; Text
-				</div>
-				<div class="sectionBox">
-					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
-					    	<legend>Shape Objects</legend>
-
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
-							<div class="chkRow"><div class="svgCheck"></div>Shapes: Horizaontal-Flipped, With and Without Text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Shape Borders</div>
-							<div class="chkRow"><div class="svgCheck"></div>Lines: With and Without Arrowheads</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Same Shapes with Text</div>
-						</fieldset>
-					</div>
-					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
-							<legend>Text Objects</legend>
-
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Word-Level Formatting</div>
-							<div class="chkRow"><div class="svgCheck"></div>Multi-Line Text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Hyperlinks: With and Without Tooltip</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Bullets: Regular and Custom</div>
-
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Text alignment, percent x/y, etc</div>
-
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Scheme Colors</div>
-						</fieldset>
-					</div>
-
-					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Shape','Text'])">
-					</div>
-				</div>
-			</div>
-
-			<div id="tab5" data-title="Templates/Master Slides">
-				<div class="topDocLink">
-					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#master-slides-and-corporate-branding" target="_blank">View Documentation and Example Code</a>
-				</div>
-
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Slide Masters / Templates / Layouts
-				</div>
-				<div class="sectionBox">
-					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
-						<fieldset>
-					    	<legend>Misc Tests</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>TITLE_SLIDE</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
-
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
-
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>THANKS_SLIDE</div>
-						</fieldset>
-					</div>
-					<div class="formBox" style="width:47%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
-					    	<legend>Example</legend>
-							<h3>Creating Slide Masters is easy!</h3>
-							<p></p>
-							<div style="margin-left:10px">
-								<code>pptx.defineSlideMaster({</code>
-								<code>  title: 'DEMO_MASTER',</code>
-								<code>  bkgd: '36ABFF',</code>
-								<code>  objects: [</code>
-								<code>    {rect: { x:0, y:3, w:'100%', h:2.0, fill:'ffffff' }},</code>
-								<code>    {text: { text:'Hello World!!', options:{x:4, y:4} }}</code>
-								<code>  ]</code>
-								<code>});</code>
-							</div>
-						</fieldset>
-					</div>
-					<div id="buttonBarBtm" style="clear:both">
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Master')">
-					</div>
-				</div>
-			</div>
-
 			<div id="tab6" data-title="Table to Slides">
-				<div class="topDocLink">
-					<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 505 505" style="enable-background:new 0 0 505 505;" xml:space="preserve"><circle style="fill:#54C0EB;" cx="252.5" cy="252.5" r="252.5"/><polygon style="fill:#FFFFFF;" points="328.1,86.1 328.1,139.7 381.7,139.7 381.7,418.9 128.4,418.9 128.4,86.1 "/><polygon style="fill:#E6E9EE;" points="328.1,86.1 381.7,139.7 328.1,139.7 "/><g><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 285,213.8 322.5,176.4"/><polygon style="fill:#FFD05B;" points="330.5,204.6 293,242.1 321.3,250.1 358.8,212.6"/></g><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="80.8"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="59.6"/><circle style="fill:#FF7058;" cx="232.3" cy="302.9" r="37.9"/><circle style="fill:#FFFFFF;" cx="232.3" cy="302.9" r="16.7"/><path style="fill:#324A5E;" d="M329.5,198.6L228.7,299.3c-2,2-2,5.1,0,7.1s5.1,2,7.1,0l100.8-100.8c2-2,2-5.1,0-7.1 C334.6,196.6,331.4,196.6,329.5,198.6z"/></svg>
-					<a href="https://github.com/gitbrent/PptxGenJS#table-to-slides-feature" target="_blank">View Documentation and Example Code</a>
-				</div>
-
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Dynamic Test Table
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Basic Functionality and Options
 				</div>
 				<div class="sectionBox">
-					<div class="formBox" style="width:49%; width:calc(50% - 20px);">
-						<fieldset style="height:auto">
-							<legend>Options</legend>
+					<div class="sectionCont">
+						<fieldset>
+							<legend>Demo Table</legend>
+							<div class="tableRows" style="margin:0 0 10px 10px">
+								<div>
+									<div><label for="numTab2SlideRows">Number of Table Rows:</label></div>
+									<div><input  id="numTab2SlideRows" type="number" min="1" max="25" value="2" onchange="buildDataTable()"></div>
+								</div>
+								<div>
+									<div><label for="numTab2Padding">Cell Padding (points):</label></div>
+									<div><input  id="numTab2Padding" type="number" min="0" max="25" value="5" onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')"></div>
+								</div>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>Output Options</legend>
 							<div class="tableRows" style="margin:0 0 10px 10px">
 								<div>
 									<div>Show Table Header on Each Slide?</div>
@@ -732,21 +699,6 @@
 								<div>
 									<div>Slide Master:</div>
 									<div><select id="selSlideMaster"><option selected="selected">(None)</option></select></div>
-								</div>
-							</div>
-						</fieldset>
-					</div>
-					<div class="formBox" style="width:49%; width:calc(50%); margin-right:0;">
-						<fieldset style="height:auto">
-							<legend>Setup</legend>
-							<div class="tableRows" style="margin:0 0 10px 10px">
-								<div>
-									<div><label for="numTab2SlideRows">Number of Table Rows:</label></div>
-									<div><input  id="numTab2SlideRows" type="number" min="1" max="25" value="2" onchange="buildDataTable()"></div>
-								</div>
-								<div>
-									<div><label for="numTab2Padding">Cell Padding (points):</label></div>
-									<div><input  id="numTab2Padding" type="number" min="0" max="25" value="5" onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')"></div>
 								</div>
 							</div>
 						</fieldset>
@@ -763,16 +715,17 @@
 						</thead>
 						<tbody></tbody>
 					</table>
-					<div style="text-align:center; padding:20px;">
-						<input type="button" class="flatBtn flatBtn-nsBlue"   onclick="table2slides1()" style="margin-right:20px" value="Demo using Slide Master">
-						<input type="button" class="flatBtn flatBtn-nsTeal"   onclick="table2slides2()" style="margin-right:20px" value="Demo using Custom Shapes">
-						<input type="button" class="flatBtn flatBtn-nsYellow" onclick="table2slides3()" value="Demo using Slide Master+Options">
+
+					<div style="text-align:center; padding:20px 20px 0 20px;">
+						<button type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slides1()">Demo using Slide Master</button>
+						<button type="button" class="flatBtn flatBtn-nsOrange" onclick="table2slides2()">Demo using Custom Shapes</button>
+						<button type="button" class="flatBtn flatBtn-nsPurple" onclick="table2slides3()">Demo using Slide Master+Options</button>
 					</div>
 				</div>
 
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow"></div>Un-Styled Table
+					<div class="arrow"></div>Other Table-to-Slides Demos
 				</div>
 				<div class="sectionBox" style="display:none">
 					<table id="tabNoStyle">
@@ -781,15 +734,36 @@
 					            <th>Name</th>
 					            <th>Email</th>
 					            <th>Company</th>
+								<th>Feedback</th>
 					        </tr>
 					    </thead>
+						<tbody>
+							<tr>
+								<td>Elon Musk</td>
+								<td>Elon@tesla.com</td>
+								<td>Tesla Motors, Space-X</td>
+								<td>PptxGenJS is almost as good as rockets that can land themselves</td>
+							</tr>
+							<tr>
+								<td>Tim Cook</td>
+								<td>tim@apple.com</td>
+								<td>Apple Inc.</td>
+								<td>Jony Ive said the Keynote team needs to hire you</td>
+							</tr>
+							<tr>
+								<td>Satya Nadella</td>
+								<td>ceo@microsoft.com</td>
+								<td>Microsoft Inc.</td>
+								<td>The PowerPoint team needs to hire you</td>
+							</tr>
+						</tbody>
 					</table>
-					<div style="text-align:center; padding:20px;">
-						<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()" value="Un-Styled Table Demo">
+					<div style="text-align:center; padding:20px 20px 0 20px;">
+						<button type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()">Un-Styled Table Demo</button>
 					</div>
 				</div>
 
-				<!--
+				<!-- FUTURE:
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Table With Bullets
@@ -831,6 +805,49 @@
 					</div>
 				</div>
 				-->
+			</div>
+
+			<div id="tab7" data-title="Templates/Master Slides">
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Slide Masters / Templates / Layouts
+				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+					    	<legend>Misc Tests</legend>
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="svgCheck"></div>TITLE_SLIDE</div>
+
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
+
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
+
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="svgCheck"></div>THANKS_SLIDE</div>
+						</fieldset>
+						<fieldset>
+					    	<legend>Example</legend>
+							<h3>Creating Slide Masters is easy!</h3>
+							<p></p>
+							<div style="margin-left:10px">
+								<code>pptx.defineSlideMaster({</code>
+								<code>  title: 'CORP_MASTER',</code>
+								<code>  bkgd: 'F1F1F1',</code>
+								<code>  objects: [</code>
+								<code>    {rect: { x:0, y:0, w:'100%', h:0.5, fill:'0088CC' }},</code>
+								<code>    {text: { text:'S.T.A.R. Laboratories', options:{x:0.17, y:0.1, color:'FFFFFF'} }}</code>
+								<code>  ]</code>
+								<code>});</code>
+							</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Master')">
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>

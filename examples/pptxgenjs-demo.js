@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 06, 2017
+* DATE: Sep 08, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -101,7 +101,7 @@ function execGenSlidesFuncs(type) {
 		bkgd: { path:'images/starlabs_bkgd.jpg' },
 		objects: [
 			{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
+			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
 			{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 			{ 'text':
 				{ text:'Global IT & Services :: Status Report',
@@ -125,7 +125,7 @@ function execGenSlidesFuncs(type) {
 				}
 			}
 		],
-		slideNumber: { x:0.6, y:7.0, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
+		slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
 	});
 	pptx.defineSlideMaster({
 		title: 'THANKS_SLIDE',
@@ -1114,11 +1114,12 @@ function genSlides_Chart(pptx) {
 		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineDataSymbolSize: 10,
-			lineShadow: 'none',
+			shadow: 'none',
 			showLegend: true, legendPos: 'l'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 
+		// QA: DEMO: Test legacy option `lineShadow`
 		var shadowOpts = { type:'outer', color:'cd0011', blur:3, offset:12, angle:75, opacity:0.8 };
 		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
@@ -1314,7 +1315,12 @@ function genSlides_Chart(pptx) {
 			showPercent: true,
 			showLegend : false,
 			showTitle  : false,
-			title: 'Resource Totals by Location'
+			title: 'Resource Totals by Location',
+			shadow: {
+				offset: 20,
+				blur: 20,
+				type: 'inner'
+			}
 		};
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
@@ -1691,6 +1697,115 @@ function genSlides_Chart(pptx) {
 		//readmeExample();
 	}
 
+	// SLIDE 14: Charts Options: Shadow, Transparent Colors --------------------------------
+	function slide14() {
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataRegions = [{
+			name  : 'Region 2',
+			labels: ['April', 'May', 'June', 'July', 'August'],
+			values: [0, 30, 53, 10, 25]
+		}, {
+			name  : 'Region 3',
+			labels: ['April', 'May', 'June', 'July', 'August'],
+			values: [17, 26, 53, 100, 75]
+		}, {
+			name  : 'Region 4',
+			labels: ['April', 'May', 'June', 'July', 'August'],
+			values: [55, 43, 70, 90, 80]
+		}, {
+			name  : 'Region 5',
+			labels: ['April', 'May', 'June', 'July', 'August'],
+			values: [55, 43, 70, 90, 80]
+		}];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
+		var single = [{
+			name  : 'Texas',
+			labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+			values: [1400, 2000, 2500, 3000, 3800]
+		}];
+
+		// TOP-LEFT: H/bar
+		var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+			showTitle: true,
+			title: 'Large blue shadow',
+			barDir: 'bar',
+			barGrouping: 'standard',
+			dataLabelColor   : 'FFFFFF',
+			showValue        : true,
+			shadow: {
+				type: 'outer',
+				blur: 10,
+				offset: 5,
+				angle: 45,
+				color: '0059B1',
+				opacity: 1
+			}
+		};
+
+		var pieOptions = { x:7.0, y:0.6, w:6.0, h:3.0,
+			showTitle: true,
+			title: 'Rotated cyan shadow',
+			dataLabelColor   : 'FFFFFF',
+			shadow: {
+				type: 'outer',
+				blur: 10,
+				offset: 5,
+				angle: 180,
+				color: '00FFFF',
+				opacity: 1
+			}
+		};
+
+		// BTM-LEFT: H/bar - 100% layout without axis labels
+		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+			showTitle: true,
+			title: 'No shadow, transparent colors',
+			barDir     : 'bar',
+			barGrouping: 'stacked',
+			chartColors: ['transparent', '5DA5DA', 'transparent', 'FAA43A'],
+			shadow: 'none'
+		};
+
+		// BTM-RIGHT: V/col - TITLE and LEGEND
+		var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			barDir: 'col',
+			barGrouping: 'stacked',
+			showTitle: true,
+			title: 'Red glowing shadow',
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 12,
+			catAxisOrientation  : 'minMax',
+			chartColors: ['5DA5DA','FAA43A'],
+			shadow: {
+				type: 'outer',
+				blur: 20,
+				offset: 1,
+				angle: 90,
+				color: 'A70000',
+				opacity: 1
+			}
+		};
+
+		slide.addChart( pptx.charts.BAR, single, optsChartBar1 );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, pieOptions );
+		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
+		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+	}
+
 	// RUN ALL SLIDE DEMOS -----
 	slide1();
 	slide2();
@@ -1705,6 +1820,7 @@ function genSlides_Chart(pptx) {
 	slide11();
 	slide12();
 	slide13();
+	slide14();
 }
 
 function genSlides_Media(pptx) {
@@ -2033,10 +2149,10 @@ function genSlides_Text(pptx) {
 }
 
 function genSlides_Master(pptx) {
-	var slide1 = pptx.addNewSlide( 'TITLE_SLIDE'  );
-	var slide2 = pptx.addNewSlide( 'MASTER_SLIDE' ); slide2.addText('MASTER_SLIDE 1', {x:2, y:2});
-	var slide3 = pptx.addNewSlide( 'MASTER_SLIDE' ); slide3.addText('MASTER_SLIDE 2', {x:2, y:2});
-	var slide4 = pptx.addNewSlide( 'THANKS_SLIDE' );
+	var slide1 = pptx.addNewSlide('TITLE_SLIDE' );
+	var slide2 = pptx.addNewSlide('MASTER_SLIDE'); slide2.addText('Slide 2 - using MASTER_SLIDE', {x:2, y:2});
+	var slide3 = pptx.addNewSlide('MASTER_SLIDE'); slide3.addText('Slide 3 - using MASTER_SLIDE', {x:2, y:2});
+	var slide4 = pptx.addNewSlide('THANKS_SLIDE');
 
 	// LEGACY-TEST-ONLY: To check deprecated functionality
 	if ( pptx.masters && Object.keys(pptx.masters).length > 0 ) {

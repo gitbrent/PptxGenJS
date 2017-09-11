@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170907";
+	var APP_REL = "20170908";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -124,7 +124,7 @@ var PptxGenJS = function(){
 	var DEF_FONT_TITLE_SIZE = 18;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
-	var DEF_LINE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+	var DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
 	var AXIS_ID_VALUE_PRIMARY = '2094734552';
 	var AXIS_ID_VALUE_SECONDARY = '2094734553';
@@ -512,9 +512,12 @@ var PptxGenJS = function(){
 			correctGridLineOptions(options.catGridLine);
 			correctGridLineOptions(options.valGridLine);
 
-			if ( options.type === 'line' ) {
-				correctShadowOptions(options.lineShadow);
+			if ( options.lineShadow ) {
+				console.warn('`lineShadow` is deprecated - please switch to `shadow`');
+				options.shadow = options.lineShadow;
 			}
+
+			correctShadowOptions(options.shadow);
 
 			// C: Options: plotArea
 			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
@@ -1994,23 +1997,30 @@ var PptxGenJS = function(){
 	 * @param {Object} opts optional shadow properties
 	 * @param {Object} defaults defaults for unspecified properties in `opts`
 	 * @see http://officeopenxml.com/drwSp-effects.php
+	 * 	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	 */
-	function createShadowElement(opts, defaults) {
-		var type            = ( opts.type            || defaults.type    ),
-			blur            = ( opts.blur            || defaults.blur    ) * ONEPT,
-			offset          = ( opts.offset          || defaults.offset  ) * ONEPT,
-			angle           = ( opts.angle           || defaults.angle   ) * 60000,
-			color           = ( opts.color           || defaults.color   ),
-			opacity         = ( opts.opacity         || defaults.opacity ) * 100000,
-			rotateWithShape = ( opts.rotateWithShape || defaults.rotateWithShape || 0),
-			strXml  = "";
+	 function createShadowElement(options, defaults, isShape) {
+ 		if(options === 'none'){
+ 			return '<a:effectLst/>';
+ 		}
+ 		var
+ 			strXml = '<a:effectLst>',
+ 			opts = mix(defaults, options),
+ 			type            = opts.type || 'outer',
+ 			blur            = opts.blur * ONEPT,
+ 			offset          = opts.offset * ONEPT,
+ 			angle           = opts.angle * 60000,
+ 			color           = opts.color,
+ 			opacity         = opts.opacity * 100000,
+ 			rotateWithShape = opts.rotateWithShape ?  1 : 0;
 
-		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-		strXml += ' algn="bl" rotWithShape="'+ (+rotateWithShape) +'" blurRad="'+ blur +'" ';
-		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
-		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
-		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>'
-		strXml += '</a:'+ type +'Shdw>';
+ 		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="'+ blur +'" ';
+ 		strXml += 'rotWithShape="'+ (+rotateWithShape) +'"';
+ 		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
+ 		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
+ 		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>';
+ 		strXml += '</a:'+ type +'Shdw>';
+ 		strXml += '</a:effectLst>';
 
 		return strXml;
 	}
@@ -2195,7 +2205,9 @@ var PptxGenJS = function(){
 					fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
 					color: rel.opts.titleColor,
 					fontFace: rel.opts.titleFontFace,
-					rotate: rel.opts.titleRotate
+					rotate: rel.opts.titleRotate,
+					titleAlign: rel.opts.titleAlign,
+					titlePos: rel.opts.titlePos
 				});
 				strXml += '<c:autoTitleDeleted val="0"/>';
 			}
@@ -2342,8 +2354,9 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeChartType (chartType, data, opts, valAxisId, catAxisId) {
+	function makeChartType(chartType, data, opts, valAxisId, catAxisId) {
 		var strXml = '';
+
 		switch ( chartType ) {
 			case 'area':
 			case 'bar':
@@ -2369,7 +2382,10 @@ var PptxGenJS = function(){
 				    ]
 				*/
 
+				// NOTE: Maintain the color index by region
+				var colorIndex = -1;
 				data.forEach(function(obj){
+					colorIndex++;
 					var idx = obj.index;
 					strXml += '<c:ser>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
@@ -2382,10 +2398,13 @@ var PptxGenJS = function(){
 					strXml += '  </c:tx>';
 
 					// Fill and Border
-					var strSerColor = opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)];
-					strXml += '  <c:spPr>';
+					var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
 
-					if ( opts.chartColorsOpacity ) {
+					strXml += '  <c:spPr>';
+					if ( strSerColor == 'transparent' ) {
+						strXml += '    <a:noFill/>';
+					}
+					else if ( opts.chartColorsOpacity ) {
 						strXml += '    <a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
 					}
 					else {
@@ -2393,9 +2412,10 @@ var PptxGenJS = function(){
 					}
 
 					if ( chartType == 'line' ) {
-						if (opts.lineSize === 0){
+						if ( opts.lineSize == 0) {
 							strXml += '<a:ln><a:noFill/></a:ln>';
-						} else {
+						}
+						else {
 							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
 							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
 						}
@@ -2403,11 +2423,9 @@ var PptxGenJS = function(){
 					else if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					if ( opts.lineShadow !== 'none' ) {
-					strXml += '    <a:effectLst>';
-						strXml += createShadowElement(opts.lineShadow || {}, DEF_LINE_SHADOW);
-					strXml += '    </a:effectLst>';
-					}
+
+					strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+
 					strXml += '  </c:spPr>';
 
 					// LINE CHART ONLY: `marker`
@@ -2433,28 +2451,22 @@ var PptxGenJS = function(){
 					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
-							var invert = opts.invertedColors ? 0 : 1;
-							var colors = (value < 0 ? opts.invertedColors : opts.chartColors);
+							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
+
 							strXml += '  <c:dPt>';
-							strXml += '    <c:idx val="'+index+'"/>';
-							strXml += '    	<c:invertIfNegative val="'+invert+'"/>';
+							strXml += '    <c:idx val="'+ index +'"/>';
+							strXml += '    	<c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
 							strXml += '    <c:bubble3D val="0"/>';
 							strXml += '    <c:spPr>';
 							if ( opts.lineSize === 0 ){
 								strXml += '<a:ln><a:noFill/></a:ln>';
 							}
 							else {
-								strXml += '    <a:solidFill>';
-								strXml += '     <a:srgbClr val="'+(colors[index % colors.length])+'"/>';
-								strXml += '    </a:solidFill>';
+								strXml += '<a:solidFill>';
+								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
+								strXml += '</a:solidFill>';
 							}
-							strXml += '    <a:effectLst>';
-							strXml += '    <a:outerShdw blurRad="38100" dist="23000" dir="5400000" algn="tl">';
-							strXml += '    	<a:srgbClr val="000000">';
-							strXml += '    	<a:alpha val="35000"/>';
-							strXml += '    	</a:srgbClr>';
-							strXml += '    </a:outerShdw>';
-							strXml += '    </a:effectLst>';
+							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 							strXml += '    </c:spPr>';
 							strXml += '  </c:dPt>';
 						});
@@ -2568,14 +2580,10 @@ var PptxGenJS = function(){
 				strXml += '    <a:solidFill><a:schemeClr val="accent1"/></a:solidFill>';
 				strXml += '    <a:ln w="9525" cap="flat"><a:solidFill><a:srgbClr val="F9F9F9"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 				if ( opts.dataNoEffects ) {
-					strXml += '    <a:effectLst/>';
+					strXml += '<a:effectLst/>';
 				}
 				else {
-					strXml += '    <a:effectLst>';
-					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-					strXml += '      </a:outerShdw>';
-					strXml += '    </a:effectLst>';
+					strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 				}
 				strXml += '  </c:spPr>';
 				strXml += '<c:explosion val="0"/>';
@@ -2590,11 +2598,7 @@ var PptxGenJS = function(){
 					if ( opts.dataBorder ) {
 						strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 					}
-					strXml += '    <a:effectLst>';
-					strXml += '      <a:outerShdw sx="100000" sy="100000" kx="0" ky="0" algn="tl" rotWithShape="1" blurRad="38100" dist="23000" dir="5400000">';
-					strXml += '        <a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr>';
-					strXml += '      </a:outerShdw>';
-					strXml += '    </a:effectLst>';
+					strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 					strXml += '  </c:spPr>';
 					strXml += '</c:dPt>';
 				});
@@ -2682,7 +2686,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeCatAxis (opts, axisId) {
+	function makeCatAxis(opts, axisId) {
 		var strXml = '';
 
 		strXml += '<c:catAx>';
@@ -2731,7 +2735,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeValueAxis (opts, valAxisId) {
+	function makeValueAxis(opts, valAxisId) {
 		var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir == 'col' ? 'l' : 'b') : (opts.barDir == 'col' ? 'r' : 't');
 		var strXml = '';
 		var isRight = axisPos === 'r' || axisPos === 't';
