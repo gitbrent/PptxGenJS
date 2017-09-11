@@ -10,7 +10,6 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	-->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-fork-ribbon-css/0.2.0/gh-fork-ribbon.min.css">
 	<link type="text/css" rel="stylesheet" href="pptxgenjs-demo.css">
 
 	<!-- NOTE:
@@ -386,16 +385,28 @@
 				+ "</pre>\n"
 			);
 
+			// STEP 4: Show version
+			{
+				var pptx = new PptxGenJS();
+
+				$('#getVersion').append( pptx.getVersion() );
+
+				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.charts) +"'>pptx.charts = "+ Object.keys(pptx.charts).length +'</span>');
+				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.colors) +"'>pptx.colors = "+ Object.keys(pptx.colors).length +'</span>');
+				$('#infoBar > div:last-child').append('<span>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span>');
+			}
+
 			// LAST: Nav across sessions
 			doNavRestore();
 		});
 	</script>
 </head>
 <body>
-	<a href="https://github.com/GitBrent/PptxGenJS" class="github-fork-ribbon" title="Fork me on GitHub">Fork me on GitHub</a>
-	<a href="#tab1"><a href="#tab2"><a href="#tab3"><a href="#tab4"><a href="#tab5"><a href="#tab6"><a href="#tab7">
+	<div data="anchors">
+		<a href="#tab1"></a><a href="#tab2"></a><a href="#tab3"></a><a href="#tab4"></a><a href="#tab5"></a><a href="#tab6"></a><a href="#tab7"></a>
+	</div>
 
-	<div id="contBody" style="padding:20px 100px; margin:auto;">
+	<div id="contBody">
 		<div id="contTitle" class="table">
 			<div>
 				<div class="bigTitle">
@@ -405,9 +416,18 @@
 					JavaScript PowerPoint Generation Library: Presentation Demos
 				</div>
 			</div>
-			<div style="text-align:right; vertical-align:bottom;">
-				<button id="btnRun" type="button" class="flatBtn flatBtn-blueMd" onclick="runEveryTest()">Run All Demos</button>
-				<button id="btnDoc" type="button" class="flatBtn flatBtn-gray" onclick="window.open('https://github.com/gitbrent/PptxGenJS#pptxgenjs')">View Documentation</button>
+			<div style="vertical-align:middle;">
+				<div id="contBtns" class="flex">
+					<div style="flex:2 0 auto">
+						<button id="btnRun" type="button" class="flatBtn shadow flatBtn-blueMd" onclick="runEveryTest()">Run All Demos</button>
+					</div>
+					<div style="flex:1 0 auto">
+						<button id="btnGit" type="button" class="flatBtn small flatBtn-nsOrange" onclick="window.open('https://github.com/gitbrent/PptxGenJS')">GitHub Site</button>
+					</div>
+					<div style="flex:1 0 auto; text-align:right;">
+						<button id="btnDoc" type="button" class="flatBtn small flatBtn-nsPurple" onclick="window.open('https://github.com/gitbrent/PptxGenJS#pptxgenjs')">View Documentation</button>
+					</div>
+				</div>
 			</div>
 		</div>
 
@@ -417,6 +437,13 @@
 			</ul>
 
 			<div id="tab1" class="active" data-title="Intro">
+				<div id="infoBar" class="table" style="color:#aaa">
+					<div style="width:50%">
+						Library Version: <span id="getVersion"></span>
+					</div>
+					<div style="width:50%; text-align:right">
+					</div>
+				</div>
 				<div id="tab1sec1" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Basic Presentation: Slide

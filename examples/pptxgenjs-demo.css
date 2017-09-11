@@ -15,11 +15,14 @@ code {
 	white-space: pre;
 }
 
-#contTitle > div:last-child { padding-right: 20px; }
-#contTitle button { float:right; clear:both; min-width:200px;  }
-
-#btnRun { padding: 14px 30px; margin: 0 0 10px 0 !important; }
-#btnDoc { padding:  6px 30px; margin: 0 0 0 0 !important; }
+#contBody {
+	padding: 20px 8%;
+	margin: auto;
+}
+#contTitle button.small { margin: 0 0 0 0 !important; }
+#contTitle #contBtns { width: 250px; flex-wrap: wrap; float: right; }
+#contTitle #btnRun { padding: 16px 20px; margin: 0 0 10px 0 !important; width: 100%; min-width: 235px; }
+#infoBar span { padding: 0px 30px; }
 
 .github-fork-ribbon:before {
     background-color: #ff7c00;
@@ -110,7 +113,6 @@ code {
 }
 .modernTabs > div.active { display: block; }
 .modernTabs > div > .subTitle:first-child { margin-top: 0; }
-
 .modernTabs > div > .sectionTitle:first-child { margin-top: 0; }
 
 #tab6 button { margin: 0 20px 20px 0 !important; }
@@ -204,19 +206,28 @@ fieldset .svgCheck {
 
 .flatBtn {
     display: inline-block;
-    font-family: Arial,Verdana,sans-serif;
-    font-size: 12px !important;
+	font-family: "Open Sans", "Segoe UI", sans-serif !important;
+	font-size: 11px !important;
+	letter-spacing: 0.25px;
     color: #ffffff !important;
     border: 0 !important;
-    padding: 8px 30px;
-    margin: 0;
+	padding: 8px 20px !important;
+	margin: 0 !important;
     white-space: nowrap;
     text-decoration: none;
     text-transform: uppercase;
     border-radius: 4px;
     box-sizing: border-box;
     cursor: pointer;
-    box-shadow: 0 2px 0 #c7c7c7;
+    box-shadow: none;
+}
+.flatBtn.small {
+	padding: 5px 10px !important;
+	font-size: 11px !important;
+	box-shadow: none;
+}
+.flatBtn.shadow {
+	box-shadow: 0 2px 5px 0 rgba(0,0,0,0.4) !important;
 }
 .flatBtn-green,		.flatBtn-green:hover	{ background-color: #27AE60 !important; }
 .flatBtn-blueMd,	.flatBtn-blueMd:hover	{ background-color: #199FD2 !important; }
@@ -243,6 +254,9 @@ fieldset .svgCheck {
 	vertical-align: middle;
 	margin-right: 5px;
 }
+
+.flex { display: flex; }
+.flex > div { flex: 1 0 auto; }
 
 div.table { display: table; box-sizing: border-box; width: 100%; font-size: 12px; }
 div.table > div { display: table-cell; }
