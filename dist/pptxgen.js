@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// CONSTANTS
 	var APP_VER = "1.8.0-beta";
-	var APP_REL = "20170908";
+	var APP_REL = "20170910";
 	//
 	var MASTER_OBJECTS = {
 		'chart': { name:'chart' },
@@ -120,6 +120,7 @@ var PptxGenJS = function(){
 	//
 	var DEF_CELL_BORDER = { color:"666666" };
 	var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
+	var DEF_FONT_COLOR = '000000';
 	var DEF_FONT_SIZE = 12;
 	var DEF_FONT_TITLE_SIZE = 18;
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
@@ -172,7 +173,7 @@ var PptxGenJS = function(){
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
 	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 	/* LEGACY/DEPRECATED ^^^ - WILL BE REMOVED in 2.0 */
-
+	// Declare only after `this.colors` is initialized
 	var SCHEME_COLOR_NAMES = Object.keys(this.colors).map(function(clrKey) {return this.colors[clrKey]}.bind(this));
 
 	// D: Fall back to base shapes if shapes file was not linked
@@ -1561,9 +1562,9 @@ var PptxGenJS = function(){
 	 */
 	function createColorElement(colorStr, innerElements) {
 		var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
-		if (!isHexaRgb && SCHEME_COLOR_NAMES.indexOf(colorStr) === -1) {
-			console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB, black is used as a fallback. 6-digit RGB or these values are accepted: ' + SCHEME_COLOR_NAMES.join(', '));
-			colorStr = '000000';
+		if ( !isHexaRgb && SCHEME_COLOR_NAMES.indexOf(colorStr) === -1 ) {
+			console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "'+DEF_FONT_COLOR+'" is used as a fallback. Pass 6-digit RGB or these `pptx.colors` values:\n' + SCHEME_COLOR_NAMES.join(', '));
+			colorStr = DEF_FONT_COLOR;
 		}
 		var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
 		var colorAttr = ' val="'+ colorStr +'"';
