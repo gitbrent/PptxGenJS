@@ -101,7 +101,7 @@ function execGenSlidesFuncs(type) {
 		bkgd: { path:'images/starlabs_bkgd.jpg' },
 		objects: [
 			{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
+			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
 			{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 			{ 'text':
 				{ text:'Global IT & Services :: Status Report',
@@ -125,7 +125,7 @@ function execGenSlidesFuncs(type) {
 				}
 			}
 		],
-		slideNumber: { x:0.6, y:7.0, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
+		slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
 	});
 	pptx.defineSlideMaster({
 		title: 'THANKS_SLIDE',
@@ -2149,10 +2149,10 @@ function genSlides_Text(pptx) {
 }
 
 function genSlides_Master(pptx) {
-	var slide1 = pptx.addNewSlide( 'TITLE_SLIDE'  );
-	var slide2 = pptx.addNewSlide( 'MASTER_SLIDE' ); slide2.addText('MASTER_SLIDE 1', {x:2, y:2});
-	var slide3 = pptx.addNewSlide( 'MASTER_SLIDE' ); slide3.addText('MASTER_SLIDE 2', {x:2, y:2});
-	var slide4 = pptx.addNewSlide( 'THANKS_SLIDE' );
+	var slide1 = pptx.addNewSlide('TITLE_SLIDE' );
+	var slide2 = pptx.addNewSlide('MASTER_SLIDE'); slide2.addText('Slide 2 - using MASTER_SLIDE', {x:2, y:2});
+	var slide3 = pptx.addNewSlide('MASTER_SLIDE'); slide3.addText('Slide 3 - using MASTER_SLIDE', {x:2, y:2});
+	var slide4 = pptx.addNewSlide('THANKS_SLIDE');
 
 	// LEGACY-TEST-ONLY: To check deprecated functionality
 	if ( pptx.masters && Object.keys(pptx.masters).length > 0 ) {

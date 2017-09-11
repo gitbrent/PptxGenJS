@@ -4,7 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
@@ -402,12 +402,12 @@
 					<a href="https://github.com/GitBrent/PptxGenJS" target="_blank" title="GitHub Project Page">PptxGenJS</a>
 				</div>
 				<div class="subTitle">
-					JavaScript PowerPoint Framework - Presentation Demos
+					JavaScript PowerPoint Generation Library: Presentation Demos
 				</div>
 			</div>
 			<div style="text-align:right; vertical-align:bottom;">
-				<button type="button" class="flatBtn flatBtn-green" onclick="window.open('https://github.com/gitbrent/PptxGenJS#pptxgenjs')">View Documentation</button>
-				<button type="button" class="flatBtn flatBtn-blueMd" onclick="runEveryTest()">Run All Demos</button>
+				<button id="btnRun" type="button" class="flatBtn flatBtn-blueMd" onclick="runEveryTest()">Run All Demos</button>
+				<button id="btnDoc" type="button" class="flatBtn flatBtn-gray" onclick="window.open('https://github.com/gitbrent/PptxGenJS#pptxgenjs')">View Documentation</button>
 			</div>
 		</div>
 
@@ -807,11 +807,11 @@
 							<p></p>
 							<div style="margin-left:10px">
 								<code>pptx.defineSlideMaster({</code>
-								<code>  title: 'DEMO_MASTER',</code>
-								<code>  bkgd: '36ABFF',</code>
+								<code>  title: 'CORP_MASTER',</code>
+								<code>  bkgd: 'F1F1F1',</code>
 								<code>  objects: [</code>
-								<code>    {rect: { x:0, y:3, w:'100%', h:2.0, fill:'ffffff' }},</code>
-								<code>    {text: { text:'Hello World!!', options:{x:4, y:4} }}</code>
+								<code>    {rect: { x:0, y:0, w:'100%', h:0.5, fill:'0088CC' }},</code>
+								<code>    {text: { text:'S.T.A.R. Laboratories', options:{x:0.17, y:0.1, color:'FFFFFF'} }}</code>
 								<code>  ]</code>
 								<code>});</code>
 							</div>

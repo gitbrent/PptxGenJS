@@ -16,11 +16,15 @@ code {
 }
 
 #contTitle > div:last-child { padding-right: 20px; }
-#contTitle button { float:right; clear:both; min-width:200px; margin: 0 0 10px 0 !important; }
+#contTitle button { float:right; clear:both; min-width:200px;  }
+
+#btnRun { padding: 14px 30px; margin: 0 0 10px 0 !important; }
+#btnDoc { padding:  6px 30px; margin: 0 0 0 0 !important; }
 
 .github-fork-ribbon:before {
     background-color: #ff7c00;
 }
+
 .highlightBox {
 	margin: 0 0 10px 0;
 	padding: 10px;
@@ -216,6 +220,9 @@ fieldset .svgCheck {
 }
 .flatBtn-green,		.flatBtn-green:hover	{ background-color: #27AE60 !important; }
 .flatBtn-blueMd,	.flatBtn-blueMd:hover	{ background-color: #199FD2 !important; }
+.flatBtn-purpleDk,  .flatBtn-purpleDk:hover	{ background-color: #8F44AD !important; }
+.flatBtn-gray,      .flatBtn-gray:hover		{ background-color: #BBBBBB !important; }
+.flatBtn-grayLt,    .flatBtn-grayLT:hover	{ background-color: #DDDDDD !important; }
 .flatBtn-nsTeal,	.flatBtn-nsTeal:hover	{ background-color: #1ABC9C !important; }
 .flatBtn-nsBlue,	.flatBtn-nsBlue:hover	{ background-color: #3498DB !important; }
 .flatBtn-nsPurple,	.flatBtn-nsPurple:hover	{ background-color: #9B59B6 !important; }
@@ -224,6 +231,7 @@ fieldset .svgCheck {
 .flatBtn-nsOrange,	.flatBtn-nsOrange:hover	{ background-color: #E67E22 !important; }
 .flatBtn-nsRed,		.flatBtn-nsRed:hover	{ background-color: #E74C3C !important; }
 .flatBtn-nsBlueLt,	.flatBtn-nsBlueLt:hover	{ background-color: #1FA6D5 !important; }
+.flatBtn-modGray,   .flatBtn-modGray:hover  { background: linear-gradient(#fcfcfc, #eee) !important; color:#999 !important; border:1px solid #d5d5d5 !important; }
 
 .topDocLink {
 	font-family: Roboto, "Segoe UI", Helvetica, Arial, sans-serif;
