@@ -44,6 +44,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Saving a Presentation](#saving-a-presentation)
     - [Client Browser](#client-browser)
     - [Node.js](#nodejs-1)
+    - [Saving Multiple Presentations](#saving-multiple-presentations)
 - [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Charts](#adding-charts)
     - [Chart Types](#chart-types)
@@ -280,20 +281,26 @@ pptx.save('Demo-Media');
 * Output type can be specified by passing an optional [JSZip output type](https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html)
 
 ```javascript
-// A: File will be saved to the local working directory (`__dirname`)
-pptx.save( 'Node_Demo' );
-// B: Inline callback function
-pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); } );
-// C: Predefined callback function
-pptx.save( 'Node_Demo', saveCallback );
-// D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
-// Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.
-pptx.save( 'http', streamCallback );
-// E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
-pptx.save( 'jszip', saveCallback, 'base64' );
+// Example A: File will be saved to the local working directory (`__dirname`)
+pptx.save('Node_Demo');
+
+// Example B: Inline callback function
+pptx.save('Node_Demo', function(filename){ console.log('Created: '+filename); });
+
+// Example C: Predefined callback function
+pptx.save('Node_Demo', saveCallback);
+
+// Example D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
+// (Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.)
+pptx.save('http', streamCallback);
+
+// Example E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
+pptx.save('jszip', saveCallback, 'base64');
 ```
 
-Saving multiple Presentations:
+### Saving Multiple Presentations
+
+Client-Side:
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
@@ -307,6 +314,8 @@ pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-2');
 ```
 
+Node.js:
+* Multiple presentations are a bit more complicated in Node - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83)
 
 
 
