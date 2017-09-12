@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 10, 2017
+* DATE: Sep 12, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -1022,7 +1022,7 @@ function genSlides_Chart(pptx) {
 					values: [.20, .30, .10, .25, .15, .05]
 				}
 			],
-			{  x:0.5, y:3.6, w:'45%', h:3,
+			{  x:0.5, y:4.0, w:'45%', h:3,
 				valAxisMaxVal:1,
 				barDir: 'bar',
 				showValue: true,
@@ -1045,7 +1045,7 @@ function genSlides_Chart(pptx) {
 				}
 			],
 			{
-				x:7, y:3.6, w:'45%', h:3,
+				x:7, y:4, w:'45%', h:3,
 				barDir: 'bar',
 				showValue: true,
 				dataLabelPosition: 'outEnd',
@@ -1227,14 +1227,14 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
 
 		// BOTTOM-LEFT
-		var optsChartLine3 = { x:0.5, y:3.6, w:'45%', h:3,
+		var optsChartLine3 = { x:0.5, y:4.0, w:'45%', h:3,
 			chartColors: ['0088CC', '99FFCC'],
 			chartColorsOpacity: 50
 		};
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine3 );
 
 		// BOTTOM-RIGHT
-		var optsChartLine4 = { x:7, y:3.6, w:'45%', h:3,
+		var optsChartLine4 = { x:7, y:4.0, w:'45%', h:3,
 			chartColors: ['CC8833', 'CCFF69'],
 			chartColorsOpacity: 75
 		};
@@ -1343,7 +1343,7 @@ function genSlides_Chart(pptx) {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Multi-Type Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-		function doStackedLine () {
+		function doStackedLine() {
 			// TOP-RIGHT:
 			var opts = {
 				x: 7.0, y: 0.6, w: 6.0, h: 3.0,
@@ -1399,7 +1399,7 @@ function genSlides_Chart(pptx) {
 			slide.addChart(chartTypes, opts);
 		}
 
-		function doColumnAreaLine () {
+		function doColumnAreaLine() {
 			var opts = {
 				x: 0.6, y: 0.6, w: 6.0, h: 3.0,
 				barDir: 'col',
@@ -1475,10 +1475,10 @@ function genSlides_Chart(pptx) {
 			slide.addChart(chartTypes, opts);
 		}
 
-		function doStackedDot () {
+		function doStackedDot() {
 			// BOT-LEFT:
 			var opts = {
-				x: 0.6, y: 3.8, w: 6.0, h: 3.0,
+				x: 0.6, y: 4.0, w: 6.0, h: 3.0,
 				barDir: 'col',
 				barGrouping: 'stacked',
 				catAxisLabelColor: '999999',
@@ -1562,10 +1562,10 @@ function genSlides_Chart(pptx) {
 			slide.addChart(chartTypes, opts);
 		}
 
-		function doBarCol () {
+		function doBarCol() {
 			// BOT-RGT:
 			var opts = {
-				x: 7, y: 3.8, w: 6.0, h: 3.0,
+				x: 7, y: 4.0, w: 6.0, h: 3.0,
 				barDir: 'col',
 				barGrouping: 'stacked',
 				catAxisLabelColor: '999999',
@@ -1641,7 +1641,7 @@ function genSlides_Chart(pptx) {
 			slide.addChart(chartTypes, opts);
 		}
 
-		function readmeExample () {
+		function readmeExample() {
 			// for testing - not rendered in demo
 			var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
 			var chartTypes = [
@@ -1703,7 +1703,6 @@ function genSlides_Chart(pptx) {
 		doStackedDot();
 		doColumnAreaLine();
 		doStackedLine();
-
 		//readmeExample();
 	}
 
