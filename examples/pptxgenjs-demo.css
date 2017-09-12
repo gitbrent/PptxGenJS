@@ -21,21 +21,20 @@ code {
 }
 #contTitle button.small { margin: 0 0 0 0 !important; }
 #contTitle #contBtns { width: 250px; flex-wrap: wrap; float: right; }
-#contTitle #btnRun { padding: 16px 20px; margin: 0 0 10px 0 !important; width: 100%; min-width: 235px; }
-#infoBar span { padding: 0px 30px; }
-
-.github-fork-ribbon:before {
-    background-color: #ff7c00;
+#contTitle #btnRun {
+	padding: 14px 20px !important;
+	margin: 0 0 10px 0 !important;
+	width: 100%;
+	min-width: 235px;
+	font-size: 15px !important;
+	letter-spacing: 1px;
 }
 
-.highlightBox {
-	margin: 0 0 10px 0;
-	padding: 10px;
-	background: #fffccc;
-	border: 1px solid #ccc;
-	color: #888;
-	font-size: 13px;
-}
+#contTitle { margin: 0 0 30px 0; }
+.bigTitle { font-family:'Roboto'; font-size:42px; font-weight:100; color:#0088cc; margin:0 0 10px 0; }
+.subTitle { font-family:'Open Sans'; font-size:16px; color:#aaa; margin:0; }
+.bigTitle a { text-decoration:none; color:inherit; }
+.bigTitle a:hover { text-decoration: underline; }
 
 .sectionTitle {
     font-size: 18px;
@@ -47,7 +46,6 @@ code {
     -ms-user-select: none;      /* IE 10+ */
     user-select: none;          /* Likely future */
 }
-
 .arrow {
     display: inline-block;
     height: 12px; width : 12px;
@@ -60,6 +58,14 @@ code {
 .arrow.active {
     transform: rotate(135deg);
     margin-bottom: 3px;
+}
+.highlightBox {
+	margin: 0 0 10px 0;
+	padding: 10px;
+	background: #fffccc;
+	border: 1px solid #ccc;
+	color: #888;
+	font-size: 13px;
 }
 
 /* FLEXBOX TABS */
@@ -115,6 +121,8 @@ code {
 .modernTabs > div > .subTitle:first-child { margin-top: 0; }
 .modernTabs > div > .sectionTitle:first-child { margin-top: 0; }
 
+#tab1 #infoBar { font-family: 'Roboto Mono'; color:#4df100; }
+#tab1 #infoBar > div:last-child span { padding: 0px 30px; }
 #tab6 button { margin: 0 20px 20px 0 !important; }
 
 fieldset {
@@ -197,12 +205,6 @@ fieldset .svgCheck {
 .tabCool tbody td:nth-child(1), .tabCool tbody td:nth-child(2) { white-space: nowrap; }
 
 #tabNoStyle { text-align: left; }
-
-#contTitle { margin: 0 0 30px 0; }
-.bigTitle { font-family:'Roboto'; font-size:42px; font-weight:100; color:#0088cc; margin:0 0 10px 0; }
-.subTitle { font-family:'Roboto'; font-size:18px; font-weight:300; color:#c7c7c7; margin:0; }
-.bigTitle a { text-decoration:none; color:inherit; }
-.bigTitle a:hover { text-decoration: underline; }
 
 .flatBtn {
     display: inline-block;

@@ -9,6 +9,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans"   rel="stylesheet">
 	-->
 	<link type="text/css" rel="stylesheet" href="pptxgenjs-demo.css">
 
@@ -413,7 +414,7 @@
 					<a href="https://github.com/GitBrent/PptxGenJS" target="_blank" title="GitHub Project Page">PptxGenJS</a>
 				</div>
 				<div class="subTitle">
-					JavaScript PowerPoint Generation Library: Presentation Demos
+					JavaScript PowerPoint Generation Library :: Presentation Demos
 				</div>
 			</div>
 			<div style="vertical-align:middle;">
@@ -437,11 +438,11 @@
 			</ul>
 
 			<div id="tab1" class="active" data-title="Intro">
-				<div id="infoBar" class="table" style="color:#aaa">
-					<div style="width:50%">
+				<div id="infoBar" class="table">
+					<div style="width:40%">
 						Library Version: <span id="getVersion"></span>
 					</div>
-					<div style="width:50%; text-align:right">
+					<div style="width:60%; text-align:right">
 					</div>
 				</div>
 				<div id="tab1sec1" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
@@ -537,11 +538,11 @@
 
 			<div id="tab3" data-title="Images/Media">
 				<div id="jsLocalFile" class="highlightBox" style="display:none;">
-					<div style="font-size:1.5em">LOCAL FILE NOTES</div>
+					<div style="font-size:1.5em">LOCAL FILE ACCESS DETECTED</div>
 					<ul>
-						<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read if running this locally!</li>
-						<li>Some slide images will show the missing image icon</li>
-						<li>Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
+						<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read when running this locally</li>
+						<li>Note that some demo slide images will show the missing image icon</li>
+						<li>ProTip: Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
 					</ul>
 				</div>
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">

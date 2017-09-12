@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 08, 2017
+* DATE: Sep 10, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -66,7 +66,7 @@ function getTimestamp() {
 // ==================================================================================================================
 
 function runEveryTest() {
-	execGenSlidesFuncs( ['Text', 'Chart', 'Table', 'Image', 'Media', 'Shape', 'Master'] );
+	execGenSlidesFuncs( ['Master', 'Chart', 'Image', 'Media', 'Shape', 'Text', 'Table'] );
 
 	if ( typeof table2slides1 !== 'undefined' ) table2slides1();
 }
@@ -87,18 +87,28 @@ function execGenSlidesFuncs(type) {
 		pptx = new PptxGenJS();
 	}
 
+	// STEP 2: Set Presentation props (as QA test only - these are not required)
 	pptx.setAuthor('Brent Ely');
 	pptx.setCompany(CUST_NAME);
 	pptx.setRevision('15');
 	pptx.setSubject('PptxGenJS Test Suite Export');
 	pptx.setTitle('PptxGenJS Test Suite Presentation');
 
+	// STEP 3: Set layout
 	pptx.setLayout('LAYOUT_WIDE');
 
-	// Reproductions of the 3 Master Slides from the old `pptxgen.masters.js` file (`gObjPptxMasters` items)
+	// STEP 4: Reproductions of the 3 Master Slides from the old `pptxgen.masters.js` file (`gObjPptxMasters` items)
+	var objBkdg = { path:'images/starlabs_bkgd.jpg' };
+	var objImg  = { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' };
+	// NOTE: Fallback to pre-encoded for local file users as I dont want them to see "junk" (plus Node demo will encode so QA testing isnt impacted by this)
+	if ( !NODEJS && window.location.href.indexOf('file:') == 0 ) {
+		objBkdg = { data:BKGD_STARLABS };
+		objImg  = { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS };
+	}
+
 	pptx.defineSlideMaster({
 		title: 'TITLE_SLIDE',
-		bkgd: { path:'images/starlabs_bkgd.jpg' },
+		bkgd: objBkdg,
 		objects: [
 			{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
 			{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
@@ -133,11 +143,11 @@ function execGenSlidesFuncs(type) {
 		objects: [
 			{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
 			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
-			{ 'image': { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' } }
+			{ 'image': objImg}
 		]
 	});
 
-	// STEP 2: Run requested test
+	// STEP 5: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );
 	arrTypes.forEach(function(type,idx){ eval( 'genSlides_'+type+'(pptx)' ); });
 
