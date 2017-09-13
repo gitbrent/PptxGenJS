@@ -2731,6 +2731,7 @@ var PptxGenJS = function(){
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
 		strXml += ' <c:noMultiLvlLbl val="1"/>';
+        if ( opts.catAxisLabelFrequency ) strXml += ' <c:tickLblSkip val="' +  opts.catAxisLabelFrequency + '"/>';
 		strXml += '</c:catAx>';
 
 		return strXml;

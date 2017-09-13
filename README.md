@@ -391,6 +391,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `catAxisLabelColor`    | string  |         | `000000`     | category-axis color          | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face      | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | number  | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisLabelFrequency`| number  |         |               | category-axis label frequency | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
 | `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line | `true` or `false` |
 | `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation    | `maxMin` (high->low) or `minMax` (low->high) |
 | `catAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ catAxisTitle:'Regions' }` |
