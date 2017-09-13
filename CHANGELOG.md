@@ -1,6 +1,6 @@
 # Change Log
 
-## [v1.8.0](https://github.com/gitbrent/pptxgenjs/tree/v1.8.0) (2017-09-xx)
+## [v1.8.0](https://github.com/gitbrent/pptxgenjs/tree/v1.8.0) (2017-09-12)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.7.0...v1.8.0)
 
 **Fixed Bugs:**
@@ -27,8 +27,6 @@
 - Chart: Escape Labels XML [\#171](https://github.com/gitbrent/PptxGenJS/pull/171) ([kyrrigle](https://github.com/kyrrigle))
 - Add new 'lang' text option to enable Chinese Word fonts [\#174](https://github.com/gitbrent/PptxGenJS/issues/174) ([eddyclock](https://github.com/eddyclock))
 - Add color validation to createColorElement() [\#178](https://github.com/gitbrent/PptxGenJS/pull/178) ([kajda90](https://github.com/kajda90))
-
-
 
 
 
