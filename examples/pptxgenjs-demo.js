@@ -1858,6 +1858,11 @@ function genSlides_Media(pptx) {
 		slide1.addText('Online: YouTube', { x:9.4, y:3.6, w:3.00, h:0.4, color:'0088CC' });
 		// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
 		slide1.addMedia({ x:9.4, y:4.0, w:3.00, h:2.25, type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc' });
+
+		slide1.addText(
+			'**NOTE** YouTube videos will issue a content warning in desktop PPT (they only work in PPT Online/O365)',
+			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'c', font_size:12 }
+		);
 	}
 
 	// SLIDE 2: Audio / Pre-Encoded Video
@@ -1885,11 +1890,11 @@ function genSlides_Image(pptx) {
 	slide.addText('Type: GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
 	slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
 
-	slide.addText('Type: JPG', { x:0.5, y:3.0, w:2.5, h:0.4, color:'0088CC' });
-	slide.addImage({ path:'images/cc_logo.jpg', x:0.5, y:3.5, w:5.0, h:3.7 });
+	slide.addText('Type: JPG', { x:0.5, y:2.7, w:2.5, h:0.4, color:'0088CC' });
+	slide.addImage({ path:'images/cc_logo.jpg', x:0.5, y:3.2, w:5.0, h:3.7 });
 
-	slide.addText('Type: PNG', { x:6.6, y:3.0, w:2.5, h:0.4, color:'0088CC' });
-	slide.addImage({ path:'images/cc_license_comp.png', x:6.6, y:3.5, w:6.3, h:3.7 });
+	slide.addText('Type: PNG', { x:6.6, y:2.7, w:2.5, h:0.4, color:'0088CC' });
+	slide.addImage({ path:'images/cc_license_comp.png', x:6.6, y:3.2, w:6.3, h:3.7 });
 
 	slide.addText('Type: Anim-GIF', { x:3.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
 	if (NODEJS) slide.addImage({ x:3.5, y:0.8, w:1.78, h:1.78, path:'images/anim_campfire.gif' });
