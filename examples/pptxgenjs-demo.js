@@ -805,10 +805,11 @@ function genSlides_Chart(pptx) {
 			valAxisMinVal: 1000,
 			valAxisMaxVal: 5000,
 
-			catAxisLabelColor   : '0000CC',
-			catAxisLabelFontFace: 'Times',
-			catAxisLabelFontSize: 11,
-			catAxisOrientation  : 'minMax',
+			catAxisLabelColor    : '0000CC',
+			catAxisLabelFontFace : 'Times',
+			catAxisLabelFontSize : 11,
+			catAxisLabelFrequency: 1,
+			catAxisOrientation   : 'minMax',
 
 			dataBorder         : { pt:'1', color:'F1F1F1' },
 			dataLabelColor     : 'FFFFFF',

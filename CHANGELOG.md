@@ -4,7 +4,9 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.8.0...v1.9.0)
 
 **Fixed Bugs:**
+
 **Implemented Enhancements:**
+- New chart option: catAxisLabelFrequency [\#184](https://github.com/gitbrent/PptxGenJS/pull/184) ([kajda90](https://github.com/kajda90))
 
 
 

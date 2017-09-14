@@ -390,14 +390,14 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `catAxisHidden`        | boolean |         | `false`      | hide category-axis           | `true` or `false`   |
 | `catAxisLabelColor`    | string  |         | `000000`     | category-axis color          | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face      | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `catAxisLabelFontSize` | number  | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
-| `catAxisLabelFrequency`| number  |         |               | category-axis label frequency | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
+| `catAxisLabelFontSize` | integer | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels"| 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
 | `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line | `true` or `false` |
 | `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation    | `maxMin` (high->low) or `minMax` (low->high) |
 | `catAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ catAxisTitle:'Regions' }` |
 | `catAxisTitleColor`    | string  |         | `000000`     | title color                  | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
 | `catAxisTitleFontFace` | string  |         | `Arial`      | font face                    | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
-| `catAxisTitleFontSize` | number  | points  |              | font size                    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
+| `catAxisTitleFontSize` | integer | points  |              | font size                    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
 | `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
 | `catGridLine`          | object  |         | `none`       | category grid line style     | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `showCatAxisTitle`     | boolean |         | `false`      | show category (vert) title   | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
@@ -405,10 +405,10 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `valAxisHidden`        | boolean |         | `false`      | hide value-axis              | `true` or `false`   |
 | `valAxisLabelColor`    | string  |         | `000000`     | value-axis color             | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`      | value-axis font face         | font name. Ex: `{ titleFontFace:'Arial' }`   |
-| `valAxisLabelFontSize` | number  | points  | `18`         | value-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `valAxisLabelFontSize` | integer | points  | `18`         | value-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisLabelFormatCode` | string |        | `General`    | value-axis number format     | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
 | `valAxisLineShow`      | boolean |         | true         | show/hide value-axis line    | `true` or `false` |
-| `valAxisMajorUnit`     | number  | float   | `1.0`        | value-axis tick steps        | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
+| `valAxisMajorUnit`     | number  |         | `1.0`        | value-axis tick steps        | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
 | `valAxisMaxVal`        | number  |         |              | value-axis maximum value     | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisMinVal`        | number  |         |              | value-axis minimum value     | 1-N. Ex: `{ valAxisMinVal: -10 }` |
 | `valAxisOrientation`   | string  |         | `minMax`     | value-axis orientation       | `maxMin` (high->low) or `minMax` (low->high) |
