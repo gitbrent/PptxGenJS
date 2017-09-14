@@ -8,6 +8,7 @@
 
 // Detect Node.js
 var NODEJS = ( typeof module !== 'undefined' && module.exports );
+if (NODEJS) { var LOGO_STARLABS; }
 // Constants
 var CUST_NAME = 'S.T.A.R. Laboratories';
 var USER_NAME = 'Barry Allen';
@@ -82,6 +83,8 @@ function execGenSlidesFuncs(type) {
 		else {
 			pptx = require("pptxgenjs");
 		}
+		var base64Images = require('./images/base64Images.js');
+		LOGO_STARLABS = base64Images.LOGO_STARLABS();
 	}
 	else {
 		pptx = new PptxGenJS();
@@ -1907,7 +1910,7 @@ function genSlides_Image(pptx) {
 
 		// TOP: 3
 		slide.addText('Pre-Encoded PNG', { x:6.83, y:0.6, w:3.0, h:0.4, color:'0088CC' });
-		slide.addImage({ x:7.5, y:1.1, w:1.0, h:1.0, data:PNG_GREENCIRCLE_CHECK });
+		slide.addImage({ x:7.5, y:1.1, w:1.0, h:1.0, data:checkGreen });
 
 		// TOP: 4
 		slide.addText('Hyperlink Image', { x:9.99, y:0.6, w:3.0, h:0.4, color:'0088CC' });
