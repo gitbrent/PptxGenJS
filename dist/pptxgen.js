@@ -322,7 +322,7 @@ var PptxGenJS = function(){
 		 */
 		addImageDefinition: function addImageDefinition(strImagePath, intPosX, intPosY, intWidth, intHeight, strImageData, target) {
 			var resultObject = {};
-
+			var sizing = null;
 			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
 			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
 			if ( typeof strImagePath === 'object' ) {
@@ -331,6 +331,7 @@ var PptxGenJS = function(){
 				intPosY = (strImagePath.y || 0);
 				intWidth = (strImagePath.cx || strImagePath.w || 0);
 				intHeight = (strImagePath.cy || strImagePath.h || 0);
+				sizing = strImagePath.sizing || null;
 				objHyperlink = (strImagePath.hyperlink || '');
 				strImageData = (strImagePath.data || '');
 				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as were about to ovewrite ourself!
@@ -369,7 +370,8 @@ var PptxGenJS = function(){
 				x: (intPosX  || 0),
 				y: (intPosY  || 0),
 				cx: (intWidth || imgObj.width),
-				cy: (intHeight || imgObj.height)
+				cy: (intHeight || imgObj.height),
+				sizing: sizing
 			};
 
 			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -988,6 +990,10 @@ var PptxGenJS = function(){
 						break;
 
 					case 'image':
+						var sizing = slideItemObj.options.sizing,
+							width = cx,
+							height = cy;
+
 						strSlideXml += '<p:pic>';
 						strSlideXml += '  <p:nvPicPr>'
 						strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideItemObj.image +'">';
@@ -995,11 +1001,26 @@ var PptxGenJS = function(){
 						strSlideXml += '    </p:cNvPr>';
 						strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/>';
 						strSlideXml += '  </p:nvPicPr>';
-						strSlideXml += '<p:blipFill><a:blip r:embed="rId' + slideItemObj.imageRid + '" cstate="print"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>';
+						strSlideXml += '<p:blipFill>';
+						strSlideXml += '  <a:blip r:embed="rId' + slideItemObj.imageRid + '" cstate="print"/>';
+						if (sizing && sizing.type) {
+							var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X') : cx,
+								boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y') : cy,
+								boxX = getSmartParseNumber(sizing.x || 0, 'X'),
+								boxY = getSmartParseNumber(sizing.y || 0, 'Y');
+
+								strSlideXml += gObjPptxGenerators.imageSizingXml[sizing.type]({w: width, h: height}, {w: boxW, h: boxH, x: boxX, y: boxY});
+							width = boxW;
+							height = boxH;
+						}
+						else {
+							strSlideXml += '  <a:stretch><a:fillRect/></a:stretch>';
+						}
+						strSlideXml += '</p:blipFill>';
 						strSlideXml += '<p:spPr>'
 						strSlideXml += ' <a:xfrm' + locationAttr + '>'
 						strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
-						strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
+						strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
 						strSlideXml += ' </a:xfrm>'
 						strSlideXml += ' <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 						strSlideXml += '</p:spPr>';
@@ -1180,6 +1201,41 @@ var PptxGenJS = function(){
 
 			strXml += '</Relationships>';
 			return strXml;
+		},
+
+		imageSizingXml: {
+			cover: function(imgSize, boxDim) {
+				var imgRatio = imgSize.h / imgSize.w,
+					boxRatio = boxDim.h / boxDim.w,
+					isBoxBased = boxRatio > imgRatio,
+					width = isBoxBased ? (boxDim.h / imgRatio) : boxDim.w,
+					height = isBoxBased ? boxDim.h : (boxDim.w * imgRatio),
+					hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
+					vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
+				return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>';
+			},
+			contain: function(imgSize, boxDim) {
+				var imgRatio = imgSize.h / imgSize.w,
+					boxRatio = boxDim.h / boxDim.w,
+					widthBased = boxRatio > imgRatio;
+					width =  widthBased ? boxDim.w : (boxDim.h / imgRatio),
+					height = widthBased ? (boxDim.w * imgRatio) : boxDim.h,
+					hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
+					vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
+				return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>';
+
+			},
+			crop: function(imageSize, boxDim) {
+				var l = boxDim.x,
+					r = imageSize.w - (boxDim.x + boxDim.w),
+					t = boxDim.y,
+					b = imageSize.h - (boxDim.y + boxDim.h),
+					lPerc = Math.round(1e5 * (l / imageSize.w)),
+					rPerc = Math.round(1e5 * (r / imageSize.w)),
+					tPerc = Math.round(1e5 * (t / imageSize.h)),
+					bPerc = Math.round(1e5 * (b / imageSize.h));
+				return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '" /><a:stretch/>';
+			}
 		},
 
 		/**
