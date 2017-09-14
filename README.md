@@ -44,6 +44,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Saving a Presentation](#saving-a-presentation)
     - [Client Browser](#client-browser)
     - [Node.js](#nodejs-1)
+    - [Saving Multiple Presentations](#saving-multiple-presentations)
 - [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Charts](#adding-charts)
     - [Chart Types](#chart-types)
@@ -51,7 +52,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Chart Size/Formatting Options](#chart-sizeformatting-options)
     - [Chart Axis Options](#chart-axis-options)
     - [Chart Data Options](#chart-data-options)
-    - [Chart Line Shadow Options](#chart-line-shadow-options)
+    - [Chart Element Shadow Options](#chart-element-shadow-options)
     - [Chart Multi-Type Options](#chart-multi-type-options)
     - [Chart Examples](#chart-examples)
   - [Adding Text](#adding-text)
@@ -281,20 +282,26 @@ pptx.save('Demo-Media');
 * Output type can be specified by passing an optional [JSZip output type](https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html)
 
 ```javascript
-// A: File will be saved to the local working directory (`__dirname`)
-pptx.save( 'Node_Demo' );
-// B: Inline callback function
-pptx.save( 'Node_Demo', function(filename){ console.log('Created: '+filename); } );
-// C: Predefined callback function
-pptx.save( 'Node_Demo', saveCallback );
-// D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
-// Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.
-pptx.save( 'http', streamCallback );
-// E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
-pptx.save( 'jszip', saveCallback, 'base64' );
+// Example A: File will be saved to the local working directory (`__dirname`)
+pptx.save('Node_Demo');
+
+// Example B: Inline callback function
+pptx.save('Node_Demo', function(filename){ console.log('Created: '+filename); });
+
+// Example C: Predefined callback function
+pptx.save('Node_Demo', saveCallback);
+
+// Example D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback
+// (Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.)
+pptx.save('http', streamCallback);
+
+// Example E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
+pptx.save('jszip', saveCallback, 'base64');
 ```
 
-Saving multiple Presentations:
+### Saving Multiple Presentations
+
+Client-Side:
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
@@ -308,6 +315,8 @@ pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-2');
 ```
 
+Node.js:
+* Multiple presentations are a bit more complicated in Node - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83)
 
 
 
@@ -358,6 +367,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent         | 1-100. Ex: `{ chartColorsOpacity:50 }` |
 | `fill`          | string  |         |           | fill/background color              | hex color code. Ex: `{ fill:'0088CC' }` |
 | `holeSize`      | number  | percent | `50`      | doughnut hole size                 | 1-100. Ex: `{ holeSize:50 }` |
+| `invertedColors`| array   |         |           | data colors for negative numbers   | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `legendFontSize`| number  | points  | `10`      | legend font size                   | 1-256. Ex: `{ legendFontSize: 13 }`|
 | `legendPos`     | string  |         | `r`       | chart legend position              | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `layout`        | object  |         |           | positioning plot within chart area | object with `x`, `y`, `w` and `h` props, all in range 0-1 (proportionally related to the chart size). Ex: `{x: 0, y: 0, w: 1, h: 1}` fully expands plot to the chart area |
@@ -381,13 +391,14 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `catAxisHidden`        | boolean |         | `false`      | hide category-axis           | `true` or `false`   |
 | `catAxisLabelColor`    | string  |         | `000000`     | category-axis color          | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
 | `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face      | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `catAxisLabelFontSize` | number  | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisLabelFontSize` | integer | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels"| 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
 | `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line | `true` or `false` |
 | `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation    | `maxMin` (high->low) or `minMax` (low->high) |
 | `catAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ catAxisTitle:'Regions' }` |
 | `catAxisTitleColor`    | string  |         | `000000`     | title color                  | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
 | `catAxisTitleFontFace` | string  |         | `Arial`      | font face                    | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
-| `catAxisTitleFontSize` | number  | points  |              | font size                    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
+| `catAxisTitleFontSize` | integer | points  |              | font size                    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
 | `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
 | `catGridLine`          | object  |         | `none`       | category grid line style     | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `showCatAxisTitle`     | boolean |         | `false`      | show category (vert) title   | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
@@ -395,10 +406,10 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `valAxisHidden`        | boolean |         | `false`      | hide value-axis              | `true` or `false`   |
 | `valAxisLabelColor`    | string  |         | `000000`     | value-axis color             | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontFace` | string  |         | `Arial`      | value-axis font face         | font name. Ex: `{ titleFontFace:'Arial' }`   |
-| `valAxisLabelFontSize` | number  | points  | `18`         | value-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`            |
+| `valAxisLabelFontSize` | integer | points  | `18`         | value-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisLabelFormatCode` | string |        | `General`    | value-axis number format     | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
 | `valAxisLineShow`      | boolean |         | true         | show/hide value-axis line    | `true` or `false` |
-| `valAxisMajorUnit`     | number  | float   | `1.0`        | value-axis tick steps        | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
+| `valAxisMajorUnit`     | number  |         | `1.0`        | value-axis tick steps        | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
 | `valAxisMaxVal`        | number  |         |              | value-axis maximum value     | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisMinVal`        | number  |         |              | value-axis minimum value     | 1-N. Ex: `{ valAxisMinVal: -10 }` |
 | `valAxisOrientation`   | string  |         | `minMax`     | value-axis orientation       | `maxMin` (high->low) or `minMax` (low->high) |
@@ -427,17 +438,17 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
 | `lineDataSymbolLineSize`| number | points  | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
 | `lineDataSymbolLineColor`| number | points  | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
-| `lineShadow`           | object  |         |           | data line shadow options   | `'none'` or [shadow options](#chart-line-shadow-options) |
+| `shadow`               | object  |         |           | data element shadow options   | `'none'` or [shadow options](#chart-element-shadow-options) |
 | `lineSize`             | number  | points  | `2`       | thickness of data line (0 is no line) | 0-256. Ex: `{ lineSize: 1 }` |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
-### Chart Line Shadow Options
+### Chart Element Shadow Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                            |
 | :----------- | :------ | :------ | :-------- | :------------------ | :----------------------------------------- |
 | `type`       | string  |         | `outer`   | shadow type         | `outer` or `inner`. Ex: `{ type:'outer' }` |
 | `angle`      | number  | degrees | `90`      | shadow angle        | 0-359. Ex: `{ angle:90 }`                  |
 | `blur`       | number  | points  | `3`       | blur size           | 1-256. Ex: `{ blur:3 }`                    |
-| `color`      | string  |         | `000000`  | line color          | hex color code. Ex: `{ color:'0088CC' }`   |
+| `color`      | string  |         | `000000`  | shadow color        | hex color code. Ex: `{ color:'0088CC' }`   |
 | `offset`     | number  | points  | `1.8`     | offset size         | 1-256. Ex: `{ offset:2 }`                  |
 | `opacity`    | number  | percent | `0.35`    | opacity             | 0-1. Ex: `{ opacity:0.35 }`                |
 
@@ -561,16 +572,16 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 ```
 
 ### Text Options
-| Option       | Type    | Unit    | Default   | Description         | Possible Values  |
-| :----------- | :------ | :------ | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches  | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| Option       | Type    | Unit    | Default   | Description         | Possible Values                                                                    |
+| :----------- | :------ | :------ | :-------- | :------------------ | :--------------------------------------------------------------------------------- |
+| `x`          | number  | inches  | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide)        |
 | `y`          | number  | inches  | `1.0`     | vertical location   | 0-n OR 'n%'. |
 | `w`          | number  | inches  |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
 | `h`          | number  | inches  |           | height              | 0-n OR 'n%'. |
 | `align`      | string  |         | `left`    | alignment           | `left` or `center` or `right` |
 | `autoFit`    | boolean |         | `false`   | "Fit to Shape"      | `true` or `false` |
 | `bold`       | boolean |         | `false`   | bold text           | `true` or `false` |
-| `breakLine`  | boolean |         | `false`   | appends a line break | `true` or `false` (only applies when used in text object options) Ex: `{text:'hi', options:{breakLine:true}}` |
+| `breakLine`  | boolean |         | `false`   | appends a line break | `true` or `false` (only applies when used in text options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |         | `false`   | bulleted text       | `true` or `false` |
 | `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
 | `color`      | string  |         |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
@@ -578,10 +589,11 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
 | `hyperlink`  | string  |         |           | add hyperlink       | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
-| `indentLevel` | number  | level  | `0`       | bullet indent level | 1-32. Ex: `{ indentLevel:1 }` |
+| `indentLevel`| number  | level   | `0`       | bullet indent level | 1-32. Ex: `{ indentLevel:1 }` |
 | `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
 | `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |
+| `lang`       | string  |         | `en-US`   | language setting    | Ex: `{ lang:'zh-TW' }` (Set this when using non-English fonts like Chinese) |
 | `lineSpacing`| number  | points  |           | line spacing points | 1-256. Ex: `{ lineSpacing:28 }` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
 | `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
@@ -692,23 +704,23 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 ```
 
 ### Table Layout Options
-| Option       | Type    | Unit   | Default   | Description            | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :--------------------- | :--------------- |
+| Option       | Type    | Unit   | Default   | Description            | Possible Values                                                             |
+| :----------- | :------ | :----- | :-------- | :--------------------- | :-------------------------------------------------------------------------- |
 | `x`          | number  | inches | `1.0`     | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`          | number  | inches | `1.0`     | vertical location      | 0-n OR 'n%'. |
-| `w`          | number  | inches |           | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
-| `h`          | number  | inches |           | height                 | 0-n OR 'n%'. |
-| `colW`       | integer | inches |           | width for every column | Ex: Width for every column in table (uniform) `2.0` |
-| `colW`       | array   | inches |           | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]` |
-| `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0` |
-| `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]` |
+| `y`          | number  | inches | `1.0`     | vertical location      | 0-n OR 'n%'.                                                                |
+| `w`          | number  | inches |           | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)      |
+| `h`          | number  | inches |           | height                 | 0-n OR 'n%'.                                                                |
+| `colW`       | integer | inches |           | width for every column | Ex: Width for every column in table (uniform) `2.0`                         |
+| `colW`       | array   | inches |           | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]`                 |
+| `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
+| `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
 
 ### Table Auto-Paging Options
-| Option          | Type    | Default   | Description            | Possible Values                          |
-| :-------------- | :------ | :-------- | :--------------------- | :--------------------------------------- |
-| `autoPage`      | boolean | `true`    | auto-page table        | `true` or `false`  |
-| `lineWeight`    | float   | 0         | line weight value      | -1.0 to 1.0. Ex: `{lineWeight:0.5}` |
-| `newPageStartY` | object  |           | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
+| Option          | Type    | Default | Description            | Possible Values                                            |
+| :-------------- | :------ | :------ | :--------------------- | :--------------------------------------------------------- |
+| `autoPage`      | boolean | `true`  | auto-page table        | `true` or `false`. Ex: `{autoPage:false}`                  |
+| `lineWeight`    | float   | 0       | line weight value      | -1.0 to 1.0. Ex: `{lineWeight:0.5}`                        |
+| `newPageStartY` | object  |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
 
 ### Table Auto-Paging Notes
 Tables will auto-page by default and the table on new Slides will use the current Slide's top `margin` value as the starting point for `y`.
@@ -723,23 +735,23 @@ you may place a table halfway down a Slide, but you wouldn't that to be the star
 tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
 
 ### Table Formatting Options
-| Option       | Type    | Unit   | Default   | Description        | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :----------------- | :--------------- |
-| `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` (or `l` `c` `r`) |
-| `bold`       | boolean |        | `false`   | bold text          | `true` or `false` |
-| `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}` |
-| `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order. |
+| Option       | Type    | Unit   | Default   | Description        | Possible Values                                                                   |
+| :----------- | :------ | :----- | :-------- | :----------------- | :-------------------------------------------------------------------------------- |
+| `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` (or `l` `c` `r`)                                    |
+| `bold`       | boolean |        | `false`   | bold text          | `true` or `false`                                                                 |
+| `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}`               |
+| `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order.                      |
 | `color`      | string  |        |           | text color         | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
-| `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` |
+| `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}`                                                            |
 | `fill`       | string  |        |           | fill/bkgd color    | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
-| `font_face`  | string  |        |           | font face          | Ex: 'Arial' |
-| `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}` |
-| `italic`     | boolean |        | `false`   | italic text        | `true` or `false` |
-| `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`) |
-| `margin`     | array   | points |           | margin             | array of integer values in TRBL order. Ex: `margin:[5,10,5,10]` |
-| `rowspan`    | integer |        |           | row span           | 2-n. Ex: `{rowspan:2}` |
-| `underline`  | boolean |        | `false`   | underline text     | `true` or `false` |
-| `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`) |
+| `font_face`  | string  |        |           | font face          | Ex: `{font_face:'Arial'}`                                                         |
+| `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}`                                                       |
+| `italic`     | boolean |        | `false`   | italic text        | `true` or `false`                                                                 |
+| `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`)                              |
+| `margin`     | array   | points |           | margin             | array of integer values in TRBL order. Ex: `margin:[5,10,5,10]`                   |
+| `rowspan`    | integer |        |           | row span           | 2-n. Ex: `{rowspan:2}`                                                            |
+| `underline`  | boolean |        | `false`   | underline text     | `true` or `false`                                                                 |
+| `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`)                                    |
 
 ### Table Formatting Notes
 * **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
@@ -843,24 +855,24 @@ slide.addText("some string", {SHAPE, OPTIONS});
 Check the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerPoint shapes available.
 
 ### Shape Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n OR 'n%'. |
-| `w`          | number  | inches |           | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide) |
-| `h`          | number  | inches |           | height              | 0-n OR 'n%'. |
-| `align`      | string  |        | `left`    | alignment           | `left` or `center` or `right` |
-| `fill`       | string  |        |           | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
-| `fill`       | object |   |   | fill/bkgd color | object with `type`, `color` and optional `alpha` keys. Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
-| `flipH`      | boolean |        |           | flip Horizontal     | `true` or `false` |
-| `flipV`      | boolean |        |           | flip Vertical       | `true` or `false` |
-| `line`       | string  |        |           | border line color   | hex color code or [scheme color constant](#scheme-colors). Ex: `{line:'0088CC'}` |
-| `line_dash`  | string  |       | `solid` | border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
-| `line_head`  | string  |        |           | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
-| `line_size`  | number  | points |           | border line size    | 1-256. Ex: {line_size:4} |
-| `line_tail`  | string  |        |           | border line heading | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
-| `rectRadius` | number  | inches  |          | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
-| `rotate`     | integer | degrees |          | rotation degrees    | 0-360. Ex: `{rotate:180}` |
+| Option       | Type    | Unit   | Default | Description         | Possible Values                                                             |
+| :----------- | :------ | :----- | :------ | :------------------ | :-------------------------------------------------------------------------- |
+| `x`          | number  | inches | `1.0`   | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`          | number  | inches | `1.0`   | vertical location   | 0-n OR 'n%'.                                                                |
+| `w`          | number  | inches |         | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)      |
+| `h`          | number  | inches |         | height              | 0-n OR 'n%'.                                                                |
+| `align`      | string  |        | `left`  | alignment           | `left` or `center` or `right`                                               |
+| `fill`       | string  |        |         | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
+| `fill`       | object  |        |         | fill/bkgd color  | object with `type`, `color`, `alpha` (opt). Ex: `fill:{type:'solid', color:'0088CC', alpha:25}` |
+| `flipH`      | boolean |        |         | flip Horizontal     | `true` or `false` |
+| `flipV`      | boolean |        |         | flip Vertical       | `true` or `false` |
+| `line`       | string  |        |         | border line color   | hex color code or [scheme color constant](#scheme-colors). Ex: `{line:'0088CC'}` |
+| `line_dash`  | string  |        | `solid` | border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
+| `line_head`  | string  |        |         | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
+| `line_size`  | number  | points |         | border line size    | 1-256. Ex: {line_size:4} |
+| `line_tail`  | string  |        |         | border line heading | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
+| `rectRadius` | number  | inches |         | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
+| `rotate`     | integer | degrees|         | rotation degrees    | 0-360. Ex: `{rotate:180}` |
 
 ### Shape Examples
 ```javascript
@@ -1093,18 +1105,18 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 *NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
 
 ## Table-to-Slides Options
-| Option       | Type    | Unit   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :------------------ | :--------------- |
-| `x`          | number  | inches | horizontal location | 0-256. Table will be placed here on each Slide |
-| `y`          | number  | inches | vertical location   | 0-256. Table will be placed here on each Slide |
-| `w`          | number  | inches | width               | 0-256. Default is (100% - Slide margins) |
-| `h`          | number  | inches | height              | 0-256. Default is (100% - Slide margins) |
-| `master`     | string  |        | master slide name   | Any pre-defined Master Slide. EX: `{ master:pptx.masters.TITLE_SLIDE }`
-| `addHeaderToEach` | boolean |   | add table headers to each slide | EX: `addHeaderToEach:true` |
-| `addImage`   | string  |        | add an image to each slide | Use the established syntax. EX: `{ addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } }` |
-| `addShape`   | string  |        | add a shape to each slide  | Use the established syntax. |
-| `addTable`   | string  |        | add a table to each slide  | Use the established syntax. |
-| `addText`    | string  |        | add text to each slide     | Use the established syntax. |
+| Option            | Type    | Unit   | Description                     | Possible Values  |
+| :---------------- | :------ | :----- | :------------------------------ | :--------------------------------------------- |
+| `x`               | number  | inches | horizontal location             | 0-256. Table will be placed here on each Slide |
+| `y`               | number  | inches | vertical location               | 0-256. Table will be placed here on each Slide |
+| `w`               | number  | inches | width                           | 0-256. Default is (100% - Slide margins) |
+| `h`               | number  | inches | height                          | 0-256. Default is (100% - Slide margins) |
+| `master`          | string  |        | master slide name               | Any pre-defined Master Slide. Ex: `{ master:pptx.masters.TITLE_SLIDE }` |
+| `addHeaderToEach` | boolean |        | add table headers to each slide | Ex: `addHeaderToEach:true` |
+| `addImage`        | string  |        | add an image to each slide      | Ex: `{ addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } }` |
+| `addShape`        | string  |        | add a shape to each slide       | Use the established syntax. |
+| `addTable`        | string  |        | add a table to each slide       | Use the established syntax. |
+| `addText`         | string  |        | add text to each slide          | Use the established syntax. |
 
 ## Table-to-Slides HTML Options
 A minimum column width can be specified by adding a `data-pptx-min-width` attribute to any given `<th>` tag.
@@ -1214,7 +1226,7 @@ Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is al
 Sometimes implementing a new library can be a difficult task and the slightest mistake will keep something from working. We've all been there!
 
 If you are having issues getting a presentation to generate, check out the demos in the `examples` directory. There
-are demos for both nodejs and client-browsers that contain working examples of every available library feature.
+are demos for both Nodejs and client-browsers that contain working examples of every available library feature.
 
 * Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/)
 * Use Ask Question on [StackOverflow](http://stackoverflow.com/) - be sure to tag it with "PptxGenJS"
@@ -1222,19 +1234,19 @@ are demos for both nodejs and client-browsers that contain working examples of e
 **************************************************************************************************
 # Development Roadmap
 
-Version 2.0 will be released in late 2017 and will drop support for IE11 as we move to adopt more
+Version 2.0 will be released in late 2017/early 2018 and will drop support for IE11 as we move to adopt more
 JavaScript ES6 features and remove many instances of jQuery utility functions.
 
 **************************************************************************************************
 # Unimplemented Features
 
-The PptxgenJS library is not designed to replicate all the functionality of PowerPoint, meaning several features
+The PptxGenJS library is not designed to replicate all the functionality of PowerPoint, meaning several features
 are not on the development roadmap.
 
 These include:
 * Animations
 * Cross-Slide Links
-* Importing Existing Templates
+* Importing Existing Presentations and/or Templates
 * Outlines
 * SmartArt
 
@@ -1243,6 +1255,8 @@ These include:
 
 * [Officegen Project](https://github.com/Ziv-Barber/officegen) - For the Shape definitions and XML code
 * [Dzmitry Dulko](https://github.com/DzmitryDulko) - For getting the project published on NPM
+* [kajda90](https://github.com/kajda90) - For the new Master Slide Layouts
+* PPTX Chart Experts: [kajda90](https://github.com/kajda90), [Matt King](https://github.com/kyrrigle), [Mike Wilcox](https://github.com/clubajax)
 * Everyone who has submitted an Issue or Pull Request. :-)
 
 **************************************************************************************************
