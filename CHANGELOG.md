@@ -6,6 +6,7 @@
 **Fixed Bugs:**
 
 **Implemented Enhancements:**
+- New image option: sizing [\#177](https://github.com/gitbrent/PptxGenJS/pull/177) ([kajda90](https://github.com/kajda90))
 - New chart option: catAxisLabelFrequency [\#184](https://github.com/gitbrent/PptxGenJS/pull/184) ([kajda90](https://github.com/kajda90))
 
 
