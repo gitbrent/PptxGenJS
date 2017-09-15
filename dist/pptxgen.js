@@ -2939,7 +2939,7 @@ var PptxGenJS = function(){
 	* @returns XML string containing the param object's text and formatting
 	*/
 	function genXmlTextBody(slideObj) {
-		// FIRST: Shapes without text, etc. may be sent here during buidl, but have no text to render so return empty string
+		// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
 		if ( !slideObj.text ) return '';
 
 		// Create options if needed
@@ -2967,7 +2967,7 @@ var PptxGenJS = function(){
 			slideObj.text = [ {text:slideObj.text.toString(), options:(slideObj.options || {})} ];
 		}
 
-		// Grab options, format line-breaks, etc.
+		// STEP 2: Grab options, format line-breaks, etc.
 		if ( Array.isArray(slideObj.text) ) {
 			slideObj.text.forEach(function(obj,idx){
 				// A: Set options
@@ -2996,12 +2996,33 @@ var PptxGenJS = function(){
 			});
 		}
 
-		// STEP 2: Loop over each text object and create paragraph props, text run, etc.
+		// STEP 3: Add bodyProperties
+		{
+			// A: 'bodyPr'
+			strSlideXml += genXmlBodyProperties(slideObj.options);
+
+			// B: 'lstStyle'
+			// NOTE: Shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
+			// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
+			if ( slideObj.options.h == 0 && slideObj.options.line && slideObj.options.align ) {
+				strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>';
+			}
+			else {
+				strSlideXml += '<a:lstStyle/>';
+			}
+		}
+
+		// STEP 4: Loop over each text object and create paragraph props, text run, etc.
 		arrTextObjects.forEach(function(textObj,idx){
 			// Clear/Increment loop vars
 			paragraphPropXml = '<a:pPr '+ (textObj.options.rtlMode ? ' rtl="1" ' : '');
 			strXmlBullet = '';
 			textObj.options.lineIdx = idx;
+
+			// Inherit pPr-type options from parent shape's `options`
+			textObj.options.align = textObj.options.align || slideObj.options.align;
+			textObj.options.lineSpacing = textObj.options.lineSpacing || slideObj.options.lineSpacing;
+			textObj.options.indentLevel = textObj.options.indentLevel || slideObj.options.indentLevel
 
 			// A: Build paragraphProperties
 			{
@@ -3071,23 +3092,7 @@ var PptxGenJS = function(){
 
 			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
 			if ( idx == 0 ) {
-				// TODO: FIXME: WIP: ISSUE#79
-				/*
-				// DESIGN: `addText()` can take an array of text objects, but has options like valign, and we need to pass those
-				textObj.options.bodyProp = ( textObj.options.bodyProp || {} );
-				textObj.options.bodyProp.anchor = ( textObj.options.valign || slideObj.options.valign );
-				//console.log(textObj.options.bodyProp.anchor);
-				*/
-				// ISSUE#69: Adding bodyProps more than once inside <p:txBody> causes "corrupt presentation" errors in PPT 2007, PPT 2010.
-				strSlideXml += genXmlBodyProperties(textObj.options);
-				// NOTE: Shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
-				// FIXME: LINE align doesnt work (code diff is substantial!)
-				if ( textObj.options.h == 0 && textObj.options.line && textObj.options.align ) {
-					strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>';
-				}
-				else {
-					strSlideXml += '<a:lstStyle/>';
-				}
+				// Add paragraphProperties right after <p> before textrun(s) begin
 				strSlideXml += '<a:p>' + paragraphPropXml;
 			}
 			else if ( idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined') ) {
@@ -3106,10 +3111,10 @@ var PptxGenJS = function(){
 			strSlideXml += genXmlTextRun(textObj.options, textObj.text);
 		});
 
-		// STEP 3: Close paragraphProperties and the current open paragraph
+		// STEP 5: Close paragraphProperties and the current open paragraph
 		strSlideXml += '</a:p>';
 
-		// STEP 4: Close the textBody
+		// STEP 6: Close the textBody
 		strSlideXml += tagClose;
 
 		// LAST: Return XML
@@ -3117,6 +3122,8 @@ var PptxGenJS = function(){
 	}
 
 	/**
+	* DESC: Builds <a:r></a:r> text runs for <a:p> paragraphs in textBody
+	* EX:
 	<a:r>
 	  <a:rPr lang="en-US" sz="2800" dirty="0" smtClean="0">
 		<a:solidFill>
@@ -3124,7 +3131,7 @@ var PptxGenJS = function(){
 		  </a:srgbClr>
 		</a:solidFill>
 		<a:latin typeface="Courier New" pitchFamily="34" charset="0"/>
-		<a:cs typeface="Courier New" pitchFamily="34" charset="0"/>
+		<a:cs typeface="Courier New" pitchFamily="34" charset="-120"/>
 	  </a:rPr>
 	  <a:t>Misc font/color, size = 28</a:t>
 	</a:r>
