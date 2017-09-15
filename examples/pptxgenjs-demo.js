@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 12, 2017
+* DATE: Sep 14, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -2135,14 +2135,20 @@ function genSlides_Text(pptx) {
 
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
 		slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
-		slide.addText( 'Textbox (top/lft)', { x:10,  y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', isTextBox:true } );
-		slide.addText( 'Textbox (btm/rgt)', { x:10,  y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', isTextBox:true } );
+		slide.addText(
+			[{ text:'(top/lft)', options:{ font_size:12 } }, { text:'Textbox', options:{ bold:true } }],
+			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', margin:15 }
+		);
+		slide.addText(
+			[{ text:'Textbox' }, { text:'(btm/rgt)', options:{ font_size:12 } }],
+			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', margin:0 }
+		);
 
 		slide.addText('^ (50%/50%)', { x:'50%', y:'50%', w:2 });
 
-		slide.addText('Plain x/y coords', { x:10, y:3.5, w:3 });
+		slide.addText('Plain x/y coords', { x:10, y:4.35, w:3 });
 
-		slide.addText('Escaped chars: \' " & < >', { x:10, y:4.5, w:3 });
+		slide.addText('Escaped chars: \' " & < >', { x:10, y:5.35, w:3 });
 
 		slide.addText(
 			[
@@ -2151,7 +2157,7 @@ function genSlides_Text(pptx) {
 				{ text:' // Super'},
 				{ text:'Superscript', options:{ superscript:true } }
 			],
-			{ x:10, y:5.5 }
+			{ x:10, y:6.3 }
 		);
 
 		// TEST: using {option}: Add text box with multiline options:
@@ -2160,18 +2166,14 @@ function genSlides_Text(pptx) {
 				{ text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
 				{ text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
 			],
-			{ x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
+			{ x:0.5, y:4.3, w:8.5, h:2.5, margin:0.1, fill:'232323' }
 		);
 
 		var objOptions = {
-			x:0, y:6.25, w:'100%', h:0.5, align:'c',
+			x:0, y:7, w:'100%', h:0.5, align:'c',
 			font_face:'Arial', font_size:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
 		};
 		slide.addText('Arial 32pt, green, bold, italic, underline, margin:0, ctr', objOptions);
-
-		slide.addText('Footer Bar: PptxGenJS version ' + pptx.getVersion() + ' (width:100%, valign:ctr)',
-			{ x:0, y:6.75, w:'100%', h:0.75, fill:'f7f7f7', color:'666666', align:'center', valign:'middle' }
-		);
 	}
 
 	// SLIDE 4: Scheme Colors
