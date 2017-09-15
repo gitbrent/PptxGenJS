@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170912";
+	var APP_REL = "20170914";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3146,7 +3146,11 @@ var PptxGenJS = function(){
 		// Color and Font are children of <a:rPr>, so add them now before closing the runProperties tag
 		if ( opts.color || opts.font_face ) {
 			if ( opts.color ) startInfo += genXmlColorSelection( opts.color );
-			if ( opts.font_face ) startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0"/><a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="0"/><a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-120"/>';
+			if ( opts.font_face ) {
+				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174)
+				startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0"/>'
+							+ '<a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="-120"/>'
+							+ '<a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-120"/>';
 		}
 
 		// Hyperlink support
