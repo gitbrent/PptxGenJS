@@ -4,6 +4,7 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.8.0...v1.9.0)
 
 **Fixed Bugs:**
+- Vertical align and line break bug since update [\#79](https://github.com/gitbrent/PptxGenJS/issues/79) ([mirkoint](https://github.com/mirkoint))
 
 **Implemented Enhancements:**
 - New image option: sizing [\#177](https://github.com/gitbrent/PptxGenJS/pull/177) ([kajda90](https://github.com/kajda90))
