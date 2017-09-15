@@ -3151,6 +3151,7 @@ var PptxGenJS = function(){
 				startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0"/>'
 							+ '<a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="-120"/>'
 							+ '<a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-120"/>';
+			}
 		}
 
 		// Hyperlink support
