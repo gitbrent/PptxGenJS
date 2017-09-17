@@ -48,7 +48,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Presentations: Adding Objects](#presentations-adding-objects)
   - [Adding Charts](#adding-charts)
     - [Chart Types](#chart-types)
-    - [Multi Chart Types](#multi-chart-types)
+    - [Multi-Type Charts](#multi-type-charts)
     - [Chart Size/Formatting Options](#chart-sizeformatting-options)
     - [Chart Axis Options](#chart-axis-options)
     - [Chart Data Options](#chart-data-options)
