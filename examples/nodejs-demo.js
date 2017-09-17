@@ -37,7 +37,7 @@ if (fs.existsSync('../dist/pptxgen.js')) {
 else {
 	pptx = require("pptxgenjs");
 }
-var runEveryTest = require("../examples/pptxgenjs-demo.js");
+var demo = require("../examples/pptxgenjs-demo.js");
 if (gConsoleLog) console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
 // ============================================================================
@@ -74,8 +74,13 @@ function streamCallback(data) {
 
 // ============================================================================
 
-// STEP 2: Run all test funcs
-runEveryTest();
+// STEP 2: Run specified test, or all test funcs
+if ( process.argv.length == 3 ) {
+	demo.execGenSlidesFuncs(process.argv[2]);
+}
+else {
+	demo.runEveryTest();
+}
 
 // STEP 3: Export giant demo file
 

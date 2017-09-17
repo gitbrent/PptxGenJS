@@ -2226,5 +2226,8 @@ function genSlides_Master(pptx) {
 // ==================================================================================================================
 
 if ( typeof module !== 'undefined' && module.exports ) {
-	module.exports = runEveryTest;
+	module.exports = {
+		execGenSlidesFuncs: execGenSlidesFuncs,
+		runEveryTest: runEveryTest
+	}
 }
