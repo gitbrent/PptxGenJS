@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 14, 2017
+* DATE: Sep 16, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -834,7 +834,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 3: Stacked Bar Chart ----------------------------------------------------------
 	function slide3() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var arrDataRegions = [
 			{
@@ -908,7 +908,12 @@ function genSlides_Chart(pptx) {
 			catAxisHidden: true,
 			valAxisHidden: true,
 			showTitle    : false,
-			layout       : {x:0.1, y:0.1, w:1, h:1}
+			layout       : {x:0.1, y:0.1, w:1, h:1},
+			showDataTable:           true,
+			showDataTableKeys:       true,
+			showDataTableHorzBorder: false,
+			showDataTableVertBorder: false,
+			showDataTableOutline:    false
 		};
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
 
@@ -922,11 +927,12 @@ function genSlides_Chart(pptx) {
 			catAxisLabelFontFace: 'Times',
 			catAxisLabelFontSize: 12,
 			catAxisOrientation  : 'minMax',
-
 			chartColors: ['5DA5DA','FAA43A'],
-
 			showLegend: true,
-			legendPos :  't'
+			legendPos :  't',
+
+			showDataTable:     true,
+			showDataTableKeys: false
 		};
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}

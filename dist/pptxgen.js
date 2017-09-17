@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170914";
+	var APP_REL = "20170916";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -136,16 +136,16 @@ var PptxGenJS = function(){
 	var gObjPptx = {};
 
 	// B: Set Presentation Property Defaults
-	gObjPptx.author = 'PptxGenJS';
-	gObjPptx.company = 'PptxGenJS';
-	gObjPptx.revision = '1';
-	gObjPptx.subject = 'PptxGenJS Presentation';
-	gObjPptx.title = 'PptxGenJS Presentation';
-	gObjPptx.fileName = 'Presentation';
-	gObjPptx.fileExtn = '.pptx';
+	gObjPptx.author    = 'PptxGenJS';
+	gObjPptx.company   = 'PptxGenJS';
+	gObjPptx.revision  = '1';
+	gObjPptx.subject   = 'PptxGenJS Presentation';
+	gObjPptx.title     = 'PptxGenJS Presentation';
+	gObjPptx.fileName  = 'Presentation';
+	gObjPptx.fileExtn  = '.pptx';
 	gObjPptx.pptLayout = LAYOUTS['LAYOUT_16x9'];
-	gObjPptx.rtlMode = false;
-	gObjPptx.slides = [];
+	gObjPptx.rtlMode   = false;
+	gObjPptx.slides    = [];
 	/** @type {object} master slide layout object */
 	gObjPptx.masterSlide = {
 		slide: {},
@@ -174,7 +174,7 @@ var PptxGenJS = function(){
 	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
 	/* LEGACY/DEPRECATED ^^^ - WILL BE REMOVED in 2.0 */
 	// Declare only after `this.colors` is initialized
-	var SCHEME_COLOR_NAMES = Object.keys(this.colors).map(function(clrKey) {return this.colors[clrKey]}.bind(this));
+	var SCHEME_COLOR_NAMES = Object.keys(this.colors).map(function(clrKey){return this.colors[clrKey]}.bind(this));
 
 	// D: Fall back to base shapes if shapes file was not linked
 	gObjPptxShapes = ( gObjPptxShapes || this.shapes );
@@ -443,7 +443,7 @@ var PptxGenJS = function(){
 			var tmpOpt;
 			var tmpData = [], options;
 			if (Array.isArray(type)) {
-				// For multi-charts there needs to be data for each type,
+				// For multi-type charts there needs to be data for each type,
 				// as well as a single data source for non-series operations.
 				// The data is indexed below to keep the data in order when segmented
 				// into types.
@@ -460,7 +460,7 @@ var PptxGenJS = function(){
 			options = ( tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {} );
 
 			// STEP 1: TODO: check for reqd fields, correct type, etc
-			// inType in CHART_TYPES
+			// `type` exists in CHART_TYPES
 			// Array.isArray(data)
 			/*
 			if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
@@ -523,11 +523,16 @@ var PptxGenJS = function(){
 			correctShadowOptions(options.shadow);
 
 			// C: Options: plotArea
-			options.showLabel   = (options.showLabel   == true || options.showLabel   == false ? options.showLabel   : false);
-			options.showLegend  = (options.showLegend  == true || options.showLegend  == false ? options.showLegend  : false);
-			options.showPercent = (options.showPercent == true || options.showPercent == false ? options.showPercent : true );
-			options.showTitle   = (options.showTitle   == true || options.showTitle   == false ? options.showTitle   : false);
-			options.showValue   = (options.showValue   == true || options.showValue   == false ? options.showValue   : false);
+			options.showDataTable           = (options.showDataTable           == true || options.showDataTable           == false ? options.showDataTable           : false);
+			options.showDataTableHorzBorder = (options.showDataTableHorzBorder == true || options.showDataTableHorzBorder == false ? options.showDataTableHorzBorder : true );
+			options.showDataTableVertBorder = (options.showDataTableVertBorder == true || options.showDataTableVertBorder == false ? options.showDataTableVertBorder : true );
+			options.showDataTableOutline    = (options.showDataTableOutline    == true || options.showDataTableOutline    == false ? options.showDataTableOutline    : true );
+			options.showDataTableKeys       = (options.showDataTableKeys       == true || options.showDataTableKeys       == false ? options.showDataTableKeys       : true );
+			options.showLabel     = (options.showLabel     == true || options.showLabel     == false ? options.showLabel     : false);
+			options.showLegend    = (options.showLegend    == true || options.showLegend    == false ? options.showLegend    : false);
+			options.showPercent   = (options.showPercent   == true || options.showPercent   == false ? options.showPercent   : true );
+			options.showTitle     = (options.showTitle     == true || options.showTitle     == false ? options.showTitle     : false);
+			options.showValue     = (options.showValue     == true || options.showValue     == false ? options.showValue     : false);
 
 			// D: Options: chart
 			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
@@ -2248,7 +2253,6 @@ var PptxGenJS = function(){
 		/* ----------------------------------------------------------------------- */
 
 		// STEP 1: Create chart
-
 		{
 			var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 			// CHARTSPACE: BEGIN vvv
@@ -2329,18 +2333,49 @@ var PptxGenJS = function(){
 
 			rel.opts.hasArea = hasArea(rel.opts.type);
 
-			if(rel.opts.valAxes){
+			if ( rel.opts.valAxes ) {
 				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
-				if (rel.opts.valAxes[1]) {
+				if ( rel.opts.valAxes[1] ) {
 					strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY, AXIS_ID_CATEGORY_SECONDARY);
 				}
-			} else {
+			}
+			else {
 				strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_CATEGORY_SECONDARY);
 			}
 		}
 
-		// C: Chart Properties + Options: Fill, Border, Legend
+		// C: Chart Properties and plotArea Options: Border, Data Table, Fill, Legend
 		{
+			// NOTE: DataTable goes between '</c:valAx>' and '<c:spPr>'
+			if ( rel.opts.showDataTable ) {
+				strXml += '<c:dTable>';
+				strXml += '  <c:showHorzBorder val="'+ (rel.opts.showDataTableHorzBorder == false ? 0 : 1) +'"/>';
+				strXml += '  <c:showVertBorder val="'+ (rel.opts.showDataTableVertBorder == false ? 0 : 1) +'"/>';
+				strXml += '  <c:showOutline    val="'+ (rel.opts.showDataTableOutline    == false ? 0 : 1) +'"/>';
+				strXml += '  <c:showKeys       val="'+ (rel.opts.showDataTableKeys       == false ? 0 : 1) +'"/>';
+				strXml += '  <c:spPr>';
+				strXml += '    <a:noFill/>';
+				strXml += '    <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln>';
+				strXml += '    <a:effectLst/>';
+				strXml += '  </c:spPr>';
+				strXml += '  <c:txPr>\
+					          <a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="ellipsis" vert="horz" wrap="square" anchor="ctr" anchorCtr="1"/>\
+					          <a:lstStyle/>\
+					          <a:p>\
+					            <a:pPr rtl="0">\
+					              <a:defRPr sz="1197" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">\
+					                <a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>\
+					                <a:latin typeface="+mn-lt"/>\
+					                <a:ea typeface="+mn-ea"/>\
+					                <a:cs typeface="+mn-cs"/>\
+					              </a:defRPr>\
+					            </a:pPr>\
+					            <a:endParaRPr lang="en-US"/>\
+					          </a:p>\
+					        </c:txPr>\
+					      </c:dTable>';
+			}
+
 			strXml += '  <c:spPr>';
 
 			// OPTION: Fill
@@ -3676,7 +3711,7 @@ var PptxGenJS = function(){
 	 * Gets the version of this library
 	 */
 	this.getVersion = function getVersion() {
-		return APP_VER;
+		return APP_VER +'.'+ APP_REL;
 	};
 
 	/**
