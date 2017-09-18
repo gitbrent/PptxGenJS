@@ -2274,6 +2274,7 @@ var PptxGenJS = function(){
 			var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 			// CHARTSPACE: BEGIN vvv
 			strXml += '<c:chartSpace xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">';
+			strXml += '<c:date1904 val="0"/>';  // ppt defaults to 1904 dates, excel to 1900
 			strXml += '<c:chart>';
 
 			// OPTION: Title
@@ -2511,13 +2512,13 @@ var PptxGenJS = function(){
 
 					strXml += '  <c:spPr>';
 					if ( strSerColor == 'transparent' ) {
-						strXml += '    <a:noFill/>';
+						strXml += '<a:noFill/>';
 					}
 					else if ( opts.chartColorsOpacity ) {
-						strXml += '    <a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
+						strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
 					}
 					else {
-						strXml += '    <a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
+						strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
 					}
 
 					if ( chartType == 'line' ) {
@@ -2584,13 +2585,26 @@ var PptxGenJS = function(){
 					// 2: "Categories"
 					{
 						strXml += '<c:cat>';
-						strXml += '  <c:strRef>';
-						strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
-						strXml += '    <c:strCache>';
-						strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-						obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });
-						strXml += '    </c:strCache>';
-						strXml += '  </c:strRef>';
+						if ( opts.catLabelFormatCode ) {
+							// Use 'numRef' as catLabelFormatCode implies that we are expecting numbers here
+							strXml += '  <c:numRef>';
+							strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
+							strXml += '    <c:numCache>';
+							strXml += '      <c:formatCode>'+ opts.catLabelFormatCode +'</c:formatCode>';
+							strXml += '      <c:ptCount val="'+ obj.labels.length +'"/>';
+							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });
+							strXml += '    </c:numCache>';
+							strXml += '  </c:numRef>';
+						}
+						else {
+							strXml += '  <c:strRef>';
+							strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
+							strXml += '    <c:strCache>';
+							strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
+							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });
+							strXml += '    </c:strCache>';
+							strXml += '  </c:strRef>';
+						}
 						strXml += '</c:cat>';
 					}
 
@@ -2798,24 +2812,25 @@ var PptxGenJS = function(){
 	function makeCatAxis(opts, axisId) {
 		var strXml = '';
 
-		strXml += '<c:catAx>';
-		if (opts.showCatAxisTitle) {
+		// Start cat axis tag
+		strXml += '<c:'+ (opts.catLabelFormatCode ? 'dateAx' : 'catAx') +'>';
+
+		if ( opts.showCatAxisTitle ) {
 			strXml += genXmlTitle({
-				title: opts.catAxisTitle || 'Axis Title',
+				title:    opts.catAxisTitle || 'Axis Title',
 				fontSize: opts.catAxisTitleFontSize,
-				color: opts.catAxisTitleColor,
+				color:    opts.catAxisTitleColor,
 				fontFace: opts.catAxisTitleFontFace,
-				rotate: opts.catAxisTitleRotate
+				rotate:   opts.catAxisTitleRotate
 			});
 		}
+
 		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
 		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
-		if ( opts.catGridLine !== 'none' ) {
-			strXml += createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE);
-		}
-		strXml += '  <c:numFmt formatCode="General" sourceLinked="0"/>';
+		strXml += ( opts.catGridLine !== 'none' ? createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE) : '' );
+		strXml += '  <c:numFmt formatCode="'+ (opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
 		strXml += '  <c:majorTickMark val="out"/>';
 		strXml += '  <c:minorTickMark val="none"/>';
 		strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
@@ -2823,7 +2838,7 @@ var PptxGenJS = function(){
 		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 		strXml += '  </c:spPr>';
 		strXml += '  <c:txPr>';
-		strXml += '    <a:bodyPr rot="0"/>';
+		strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
 		strXml += '    <a:lstStyle/>';
 		strXml += '    <a:p>';
 		strXml += '    <a:pPr>';
@@ -2840,7 +2855,25 @@ var PptxGenJS = function(){
 		strXml += ' <c:lblAlgn val="ctr"/>';
 		strXml += ' <c:noMultiLvlLbl val="1"/>';
         if ( opts.catAxisLabelFrequency ) strXml += ' <c:tickLblSkip val="' +  opts.catAxisLabelFrequency + '"/>';
-		strXml += '</c:catAx>';
+
+		// Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
+		if ( opts.catLabelFormatCode ) {
+			['catAxisBaseTimeUnit','catAxisMajorTimeUnit','catAxisMinorTimeUnit'].forEach(function(opt,idx){
+				// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
+				if ( opts[opt] && (typeof opts[opt] !== 'string' || ['days','months','years'].indexOf(opt.toLowerCase()) == -1) ) {
+					console.warn("`"+opt+"` must be one of: 'days','months','years' !");
+					opts[opt] = null;
+				}
+			});
+			if ( opts.catAxisBaseTimeUnit )  strXml += ' <c:baseTimeUnit  val="'+ opts.catAxisBaseTimeUnit.toLowerCase()  +'"/>';
+			if ( opts.catAxisMajorTimeUnit ) strXml += ' <c:majorTimeUnit val="'+ opts.catAxisMajorTimeUnit.toLowerCase() +'"/>';
+			if ( opts.catAxisMinorTimeUnit ) strXml += ' <c:minorTimeUnit val="'+ opts.catAxisMinorTimeUnit.toLowerCase() +'"/>';
+			if ( opts.catAxisMajorUnit )     strXml += ' <c:majorUnit     val="'+ opts.catAxisMajorUnit +'"/>';
+			if ( opts.catAxisMinorUnit )     strXml += ' <c:minorUnit     val="'+ opts.catAxisMinorUnit +'"/>';
+		}
+
+		// Close cat axis tag
+		strXml += '</c:'+ (opts.catLabelFormatCode ? 'dateAx' : 'catAx') +'>';
 
 		return strXml;
 	}
@@ -2879,7 +2912,7 @@ var PptxGenJS = function(){
 		strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 		strXml += '</c:spPr>';
 		strXml += ' <c:txPr>';
-		strXml += '  <a:bodyPr rot="0"/>';
+		strXml += '  <a:bodyPr/>'; // don't specify rot=0 so we can get the PPT default
 		strXml += '  <a:lstStyle/>';
 		strXml += '  <a:p>';
 		strXml += '    <a:pPr>';
@@ -3994,7 +4027,7 @@ var PptxGenJS = function(){
 			else {
 				// Audio/Video files consume *TWO* rId's:
 				// <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-			    // <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+				// <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
 				slideObjRels.push({
 					path: (strPath || 'preencoded'+strExtn),
 					type: strType+'/'+strExtn,

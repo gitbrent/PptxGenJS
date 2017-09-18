@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 16, 2017
+* DATE: Sep 17, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -976,7 +976,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ------
 	function slide5() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Colors, valAxisMajorUnit, v Format %', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisMajorUnit`, `valAxisLabelFormatCode`', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		// TOP-LEFT
 		slide.addChart(
@@ -984,13 +984,15 @@ function genSlides_Chart(pptx) {
 			[
 				{
 					name  : 'Colored Series',
-					labels: ['Jan', 'Feb','Mar', 'Apr', 'May', 'Jun'],
+					labels: [38000, 38365, 38730, 40000, 40365, 40730],
 					values: [20, 30, 10, 25, 15, 5]
 				}
 			],
-			{ x:0.5, y:0.6, w:'45%', h:3,
+			{
+				x:0.5, y:0.6, w:'45%', h:3,
 				valAxisMaxVal:100,
 				barDir: 'bar',
+				catLabelFormatCode: "mm-yyyy",
 				valAxisMajorUnit: 50,
 				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384'],
 				barGapWidthPct: 25
@@ -998,19 +1000,22 @@ function genSlides_Chart(pptx) {
 		);
 
 		// TOP-RIGHT
+		// NOTE: Labels are ppt/excel dates (days past 1900)
 		slide.addChart(
 			pptx.charts.BAR,
 			[
 				{
 					name  : 'Too Many Colors Series',
-					labels: ['Jan', 'Feb','Mar', 'Apr', 'May', 'Jun'],
+					labels: [37987,38018,38047,38078,38108,38139],
 					values: [.20, .30, .10, .25, .15, .05]
 				}
 			],
-			{ x:7, y:0.6, w:'45%', h:3,
+			{
+				x:7, y:0.6, w:'45%', h:3,
 				valAxisMaxVal:1,
 				barDir: 'bar',
 				showValue: true,
+				catLabelFormatCode: "mmm-yy",
 				dataLabelPosition: 'outEnd',
 				dataLabelFormatCode: '#%',
 				valAxisLabelFormatCode: '#%',

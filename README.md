@@ -391,22 +391,27 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `titleRotate`   | integer | degrees |           | title rotation degrees             | 0-360. Ex: `{ titleRotate:45 }` |
 
 ### Chart Axis Options
-| Option                 | Type    | Unit    | Default      | Description                  | Possible Values                            |
-| :--------------------- | :------ | :------ | :----------- | :--------------------------- | :----------------------------------------- |
-| `axisLineColor`        | string  |         | `000000`     | cat/val axis line color      | hex color code. Ex: `{ axisLineColor:'0088CC' }`     |
-| `catAxisHidden`        | boolean |         | `false`      | hide category-axis           | `true` or `false`   |
-| `catAxisLabelColor`    | string  |         | `000000`     | category-axis color          | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
-| `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face      | font name. Ex: `{ titleFontFace:'Arial' }` |
-| `catAxisLabelFontSize` | integer | points  | `18`         | category-axis font size      | 1-256. Ex: `{ titleFontSize:12 }`          |
-| `catAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels"| 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
-| `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line | `true` or `false` |
-| `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation    | `maxMin` (high->low) or `minMax` (low->high) |
-| `catAxisTitle`         | string  |         | `Axis Title` | axis title                   | a string. Ex: `{ catAxisTitle:'Regions' }` |
-| `catAxisTitleColor`    | string  |         | `000000`     | title color                  | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
-| `catAxisTitleFontFace` | string  |         | `Arial`      | font face                    | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
-| `catAxisTitleFontSize` | integer | points  |              | font size                    | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
-| `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
-| `catGridLine`          | object  |         | `none`       | category grid line style     | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
+| Option                 | Type    | Unit    | Default      | Description                   | Possible Values                                  |
+| :--------------------- | :------ | :------ | :----------- | :---------------------------- | :----------------------------------------------- |
+| `axisLineColor`        | string  |         | `000000`     | cat/val axis line color       | hex color code. Ex: `{ axisLineColor:'0088CC' }` |
+| `catAxisBaseTimeUnit`  | string  |         |              | category-axis base time unit  | `days` `months` or `years` |
+| `catAxisHidden`        | boolean |         | `false`      | hide category-axis            | `true` or `false`   |
+| `catAxisLabelColor`    | string  |         | `000000`     | category-axis color           | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
+| `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }` |
+| `catAxisLabelFontSize` | integer | points  | `18`         | category-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `catAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels" | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
+| `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line  | `true` or `false` |
+| `catAxisMajorTimeUnit` | string  |         |              | category-axis major time unit | `days` `months` or `years` |
+| `catAxisMinorTimeUnit` | string  |         |              | category-axis minor time unit | `days` `months` or `years` |
+| `catAxisMajorUnit`     | integer |         |              | category-axis major unit      | Positive integer. Ex: `{ catAxisMajorUnit:12 }`   |
+| `catAxisMinorUnit`     | integer |         |              | category-axis minor unit      | Positive integer. Ex: `{ catAxisMinorUnit:1 }`   |
+| `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation     | `maxMin` (high->low) or `minMax` (low->high) |
+| `catAxisTitle`         | string  |         | `Axis Title` | axis title                    | a string. Ex: `{ catAxisTitle:'Regions' }` |
+| `catAxisTitleColor`    | string  |         | `000000`     | title color                   | hex color code. Ex: `{ catAxisTitleColor:'0088CC' }` |
+| `catAxisTitleFontFace` | string  |         | `Arial`      | font face                     | font name. Ex: `{ catAxisTitleFontFace:'Arial' }` |
+| `catAxisTitleFontSize` | integer | points  |              | font size                     | 1-256. Ex: `{ catAxisTitleFontSize:12 }` |
+| `catAxisTitleRotate`   | integer | degrees |              | title rotation degrees        | 0-360. Ex: `{ catAxisTitleRotate:45 }` |
+| `catGridLine`          | object  |         | `none`       | category grid line style      | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `showCatAxisTitle`     | boolean |         | `false`      | show category (vert) title   | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
 | `showValAxisTitle`     | boolean |         | `false`      | show values (horiz) title    | `true` or `false`.  Ex:`{ showValAxisTitle:true }` |
 | `valAxisHidden`        | boolean |         | `false`      | hide value-axis              | `true` or `false`   |
