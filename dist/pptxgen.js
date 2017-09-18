@@ -1428,7 +1428,7 @@ var PptxGenJS = function(){
 					strSheetXml += '</c>';
 					row.values.forEach(function(val,idy){
 						strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
-						strSheetXml += '<v>'+ val +'</v>';
+						strSheetXml += '<v>'+ (val || '') +'</v>';
 						strSheetXml += '</c>';
 					});
 					strSheetXml += '</row>';
@@ -2615,7 +2615,7 @@ var PptxGenJS = function(){
 						strXml += '      <c:f>Sheet1!'+ '$B$'+ (idx+2) +':$'+ getExcelColName(obj.labels.length) +'$'+ (idx+2) +'</c:f>';
 						strXml += '      <c:numCache>';
 						strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
+						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
 						strXml += '      </c:numCache>';
 						strXml += '    </c:numRef>';
 						strXml += '  </c:val>';
@@ -2791,7 +2791,7 @@ var PptxGenJS = function(){
 				strXml += '      <c:f>Sheet1!'+ '$B$2:$'+ getExcelColName(obj.labels.length) +'$'+ 2 +'</c:f>';
 				strXml += '      <c:numCache>';
 				strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
+				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
 				strXml += '      </c:numCache>';
 				strXml += '    </c:numRef>';
 				strXml += '  </c:val>';
