@@ -9,6 +9,7 @@
 // Detect Node.js
 var NODEJS = ( typeof module !== 'undefined' && module.exports );
 if (NODEJS) { var LOGO_STARLABS; }
+
 // Constants
 var CUST_NAME = 'S.T.A.R. Laboratories';
 var USER_NAME = 'Barry Allen';
@@ -18,9 +19,9 @@ var COLOR_GRN = '7AB800';
 var COLOR_CRT = 'AA0000';
 var COLOR_BLU = '0088CC';
 var COLOR_UNK = 'A9A9A9';
-//
 var ARRSTRBITES = [130];
 var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 chars/line
+// Lorem and base64 images
 {
 	// FYI: 3086 chars
 	var gStrLorumIpsum = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin condimentum dignissim velit vel luctus. Donec feugiat ipsum quis tempus blandit. Donec mattis mauris vel est dictum interdum. Pellentesque imperdiet nibh vitae porta ornare. Fusce non nisl lacus. Curabitur ut mattis dui. Ut pulvinar urna velit, vitae aliquam neque pulvinar eu. Fusce eget tellus eu lorem finibus mattis. Nunc blandit consequat arcu. Ut sed pharetra tortor, nec finibus ipsum. \
@@ -48,13 +49,10 @@ var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 c
 var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenny','Lara','Kathryn'];
 var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
 var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好';
-//var colors = ['FF0000','AB00CD','00FF00','00AA00','003300','330033','990099','33FFFF','AA33CC','336699'];
-//var fonts = ['Arial','Courier New','Times','Verdana'];
-//
 var gOptsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
-var optsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
-var textTitle = { font_size:14, color:'0088CC', bold:true };
-var textSubtt = { font_size:13, color:'9F9F9F' };
+var gOptsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
+var gDemoTitleText = { font_size:14, color:'0088CC', bold:true };
+var gDemoTitleOpts = { font_size:13, color:'9F9F9F' };
 
 // ==================================================================================================================
 
@@ -248,7 +246,7 @@ function genSlides_Table(pptx) {
 		);
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Colspans/Rowspans:', optsSub);
 
 		var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'m' };
@@ -304,7 +302,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( [ [{ text:'Table Examples 3', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } ); // `opts` = legacy test
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Extreme Colspans/Rowspans:', optsSub);
 
 		var optsRowspan2 = {rowspan:2, fill:'99FFCC'};
@@ -364,7 +362,7 @@ function genSlides_Table(pptx) {
 		);
 
 		// Cell Margins
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Cell Margins:', optsSub);
 
 		slide.addTable( [['margin:0']],           { x:0.5, y:1.1, margin:0,           w:1.2, fill:'FFFCCC' } );
@@ -388,13 +386,13 @@ function genSlides_Table(pptx) {
 		slide.addTable( arrTextObjects, { x:0.5, y:2.7, w:12.25, margin:7, fill:'F1F1F1', border:{pt:1,color:'696969'} } );
 
 		// Complex/Compound border
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 3.9;
+		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 3.9;
 		slide.addText('Complex Cell Border:', optsSub);
 		var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
 		slide.addTable( [['Borders!']], { x:0.5, y:4.3, w:12.3, rowH:1.5, fill:'F5F5F5', color:'3D3D3D', font_size:18, border:arrBorder, align:'c', valign:'c' } );
 
 		// Invalid char check
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle)); optsSub.y = 6.1;
+		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 6.1;
 		slide.addText('Escaped Invalid Chars:', optsSub);
 		var arrTabRows3 = [['<', '>', '"', "'", '&', 'plain']];
 		slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
@@ -446,7 +444,7 @@ function genSlides_Table(pptx) {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [{ text:'Table Examples 6', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }], { x:0.5, y:0.13, w:12.5, h:0.3 } );
 
-		var optsSub = JSON.parse(JSON.stringify(optsSubTitle));
+		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Table Cell Word-Level Formatting:', optsSub);
 
 		// EX 1:
@@ -493,38 +491,38 @@ function genSlides_Table(pptx) {
 		}
 
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Auto-Paging Example', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Example', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:0.5, y:0.6, colW:[0.75,1.75,10], margin:2, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Smaller Table Area', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Smaller Table Area', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: Correct starting Y location upon paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: Correct starting Y location upon paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Test: `{ newPageStartY: 1.5 }`', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: `{ newPageStartY: 1.5 }`', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:1.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide('MASTER_SLIDE', {bkgd:'CCFFCC'});
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Master Page with Auto-Paging', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Master Page with Auto-Paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'Auto-Paging Disabled', options:textSubtt}], {x:0.5, y:0.13, w:'90%'} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Disabled', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF', autoPage:false } );
 
 		// lineWeight option demos
 		var slide = pptx.addNewSlide();
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:0', options:textSubtt}], {x:0.5, y:0.13, w:3} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'lineWeight:0', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:3} );
 		slide.addTable( arrText, { x:0.50, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true } );
 
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:0.5', options:textSubtt}], {x:5.0, y:0.13, w:3} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'lineWeight:0.5', options:gDemoTitleOpts}], {x:5.0, y:0.13, w:3} );
 		slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:0.5 } );
 
-		slide.addText( [{text:'Table Examples: ', options:textTitle},{text:'lineWeight:-0.5', options:textSubtt}], {x:9.0, y:0.13, w:3} );
+		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'lineWeight:-0.5', options:gDemoTitleOpts}], {x:9.0, y:0.13, w:3} );
 		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:-0.5 } );
 	}
 }
@@ -1141,10 +1139,11 @@ function genSlides_Chart(pptx) {
 
 		// QA: DEMO: Test legacy option `lineShadow`
 		var shadowOpts = { type:'outer', color:'cd0011', blur:3, offset:12, angle:75, opacity:0.8 };
+		//lineShadow: shadowOpts,
 		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineDataSymbolSize: 20,
-			lineShadow: shadowOpts,
+			shadow: shadowOpts,
 			showLegend: true, legendPos: 'b'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
@@ -1257,7 +1256,7 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
-		slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
+		if (NODEJS) slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
 
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
