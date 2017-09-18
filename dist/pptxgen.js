@@ -252,7 +252,7 @@ var PptxGenJS = function(){
 
 			// STEP 2: Set some options
 			// Set color (options > inherit from Slide > default to black)
-			opt.color = ( opt.color || target.slide.color || '000000' );
+			opt.color = ( opt.color || target.slide.color || DEF_FONT_COLOR );
 
 			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
 			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
@@ -2637,7 +2637,7 @@ var PptxGenJS = function(){
 				strXml += '      <a:lstStyle/>';
 				strXml += '      <a:p><a:pPr>';
 				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-				strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || '000000') +'</a:solidFill>';
+				strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
 				strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
 				strXml += '        </a:defRPr>';
 				strXml += '      </a:pPr></a:p>';
@@ -2736,7 +2736,7 @@ var PptxGenJS = function(){
 					strXml += '      <a:bodyPr/><a:lstStyle/>';
 					strXml += '      <a:p><a:pPr>';
 					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-					strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || '000000') +'</a:solidFill>';
+					strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
 					strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
@@ -2843,7 +2843,7 @@ var PptxGenJS = function(){
 		strXml += '    <a:p>';
 		strXml += '    <a:pPr>';
 		strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-		strXml += '<a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || '000000') +'"/></a:solidFill>';
+		strXml += '<a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
 		strXml += '<a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
 		strXml += '   </a:defRPr>';
 		strXml += '  </a:pPr>';
@@ -2917,7 +2917,7 @@ var PptxGenJS = function(){
 		strXml += '  <a:p>';
 		strXml += '    <a:pPr>';
 		strXml += '      <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.valAxisLabelColor || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.valAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.valAxisLabelFontFace || 'Arial') +'"/>';
 		strXml += '      </a:defRPr>';
 		strXml += '    </a:pPr>';
@@ -2964,13 +2964,13 @@ var PptxGenJS = function(){
 			sizeAttr = 'sz="'+ opts.fontSize +'00"';
 		}
 		strXml += '      <a:defRPr b="0" i="0" strike="noStrike" '+ sizeAttr +' u="none">';
-		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || DEF_FONT_COLOR) +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
 		strXml += '      </a:defRPr>';
 		strXml += '    </a:pPr>';
 		strXml += '    <a:r>';
 		strXml += '      <a:rPr b="0" i="0" strike="noStrike" '+ sizeAttr +' u="none">';
-		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || '000000') +'"/></a:solidFill>';
+		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || DEF_FONT_COLOR) +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
 		strXml += '      </a:rPr>';
 		strXml += '      <a:t>'+ (decodeXmlEntities(opts.title) || '') +'</a:t>';
@@ -4101,7 +4101,7 @@ var PptxGenJS = function(){
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
 			else if ( opt.lineWeight < -1 ) opt.lineWeight = -1;
 			// Set default color if needed (table option > inherit from Slide > default to black)
-			if ( !opt.color ) opt.color = opt.color || this.color || '000000';
+			if ( !opt.color ) opt.color = opt.color || this.color || DEF_FONT_COLOR;
 
 			// Set/Calc table width
 			// Get slide margins - start with default values, then adjust if master or slide margins exist
