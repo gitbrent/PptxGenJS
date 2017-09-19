@@ -95,11 +95,12 @@ var PptxGenJS = function(){
 		'TRIANGLE': "&#x25B6;"
 	};
 	var CHART_TYPES = {
-		'AREA'    : { 'displayName':'Area Chart',      'name':'area'     },
-		'BAR'     : { 'displayName':'Bar Chart' ,      'name':'bar'      },
-		'LINE'    : { 'displayName':'Line Chart',      'name':'line'     },
-		'PIE'     : { 'displayName':'Pie Chart' ,      'name':'pie'      },
-		'DOUGHNUT': { 'displayName':'Doughnut Chart' , 'name':'doughnut' }
+		'AREA'    : { 'displayName':'Area Chart',     'name':'area'     },
+		'BAR'     : { 'displayName':'Bar Chart' ,     'name':'bar'      },
+		'DOUGHNUT': { 'displayName':'Doughnut Chart', 'name':'doughnut' },
+		'LINE'    : { 'displayName':'Line Chart',     'name':'line'     },
+		'PIE'     : { 'displayName':'Pie Chart' ,     'name':'pie'      },
+		'SCATTER' : { 'displayName':'Scatter Chart',  'name':'scatter'  }
 	};
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
 	var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
@@ -1384,6 +1385,8 @@ var PptxGenJS = function(){
 				strSheetXml += '<dimension ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'"/>';
 				strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
 				strSheetXml += '<sheetFormatPr defaultRowHeight="15"/>';
+
+// TODO: if scatter - new block all the way to /sheetData
 				strSheetXml += '<cols>';
 				strSheetXml += '<col min="10" max="100" width="20" customWidth="1"/>';
 				data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
@@ -2313,9 +2316,9 @@ var PptxGenJS = function(){
 
 		var usesSecondaryValAxis = false;
 
-		// A: CHART TYPES -----------------------------------------------------------
+		// A: Create Chart XML -----------------------------------------------------------
 		if ( Array.isArray(rel.opts.type) ) {
-			rel.opts.type.forEach(function (type) {
+			rel.opts.type.forEach(function(type){
 				var chartType = type.type.name;
 				var data = type.data;
 				var options = mix(rel.opts, type.options);
@@ -2330,7 +2333,7 @@ var PptxGenJS = function(){
 			strXml += makeChartType(chartType, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
 		}
 
-		// B: AXES -----------------------------------------------------------
+		// B: Axes -----------------------------------------------------------
 		if ( rel.opts.type.name !== 'pie' && rel.opts.type.name !== 'doughnut' ) {
 			if ( rel.opts.valAxes && !usesSecondaryValAxis ) {
 				throw new Error('Secondary axis must be used by one of the multiple charts');
@@ -2471,12 +2474,19 @@ var PptxGenJS = function(){
 			case 'area':
 			case 'bar':
 			case 'line':
+			case 'scatter':
+				// 1: Start Chart
 				strXml += '<c:'+ chartType +'Chart>';
-				if ( chartType == 'bar' ) strXml += '  <c:barDir val="'+ opts.barDir +'"/>';
-				strXml += '  <c:grouping val="'+ opts.barGrouping + '"/>';
-				strXml += '  <c:varyColors val="0"/>';
+				if ( chartType == 'bar' ) {
+					strXml += '<c:barDir val="'+ opts.barDir +'"/>';
+					strXml += '<c:grouping val="'+ opts.barGrouping + '"/>';
+				}
+				else if ( chartType == 'scatter' ) {
+					strXml += '<c:scatterStyle val="lineMarker"/>';
+				}
+				strXml += '<c:varyColors val="0"/>';
 
-				// A: "Series" block for every data row
+				// 2: "Series" block for every data row
 				/* EX:
 					data: [
 				     {
@@ -2491,9 +2501,7 @@ var PptxGenJS = function(){
 				     }
 				    ]
 				*/
-
-				// NOTE: Maintain the color index by region
-				var colorIndex = -1;
+				var colorIndex = -1; // Maintain the color index by region
 				data.forEach(function(obj){
 					colorIndex++;
 					var idx = obj.index;
@@ -2538,8 +2546,8 @@ var PptxGenJS = function(){
 
 					strXml += '  </c:spPr>';
 
-					// LINE CHART ONLY: `marker`
-					if ( chartType == 'line' ) {
+					// The `marker` tag is used by LINE and SCATTER
+					if ( chartType == 'line' || chartType == 'scatter' ) {
 						strXml += '<c:marker>';
 						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
 						if ( opts.lineDataSymbolSize ) {
@@ -2629,7 +2637,7 @@ var PptxGenJS = function(){
 
 				}); // end forEach
 
-				// 1: "Data Labels"
+				// 3: "Data Labels"
 				strXml += '  <c:dLbls>';
 				strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 				strXml += '    <c:txPr>';
@@ -2642,7 +2650,7 @@ var PptxGenJS = function(){
 				strXml += '        </a:defRPr>';
 				strXml += '      </a:pPr></a:p>';
 				strXml += '    </c:txPr>';
-				if ( opts.type != 'area' ) strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+				if ( opts.type != 'area' ) strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
 				strXml += '    <c:showLegendKey val="0"/>';
 				strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
 				strXml += '    <c:showCatName val="0"/>';
@@ -2652,6 +2660,7 @@ var PptxGenJS = function(){
 				strXml += '    <c:showLeaderLines val="0"/>';
 				strXml += '  </c:dLbls>';
 
+				// 4: More chart options
 				if ( chartType == 'bar' ) {
 					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
 					strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
@@ -2660,13 +2669,14 @@ var PptxGenJS = function(){
 					strXml += '  <c:marker val="1"/>';
 				}
 
-				// order matters - category first
+				// 5: Add axisId (NOTE: order matters! (category comes first))
 				strXml += '  <c:axId val="'+ catAxisId +'"/>';
 				strXml += '  <c:axId val="'+ valAxisId +'"/>';
 
+				// 6: Close Chart tag
 				strXml += '</c:'+ chartType +'Chart>';
 
-				// Done with CHART.BAR/LINE
+				// end switch
 				break;
 
 			case 'pie':
@@ -2851,6 +2861,7 @@ var PptxGenJS = function(){
 		strXml += ' </c:txPr>';
 		strXml += ' <c:crossAx val="'+ axisId +'"/>';
 		strXml += ' <c:crosses val="autoZero"/>';
+		//strXml += ' <c:crossBetween val="midCat"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
 		strXml += ' <c:noMultiLvlLbl val="1"/>';
