@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170917";
+	var APP_REL = "20170918";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -432,7 +432,7 @@ var PptxGenJS = function(){
 		 * {
 		 *   title: 'eSurvey chart',
 		 *   data: [
-		 *   	{
+		 *		{
 		 *			name: 'Income',
 		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
 		 *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
@@ -443,7 +443,7 @@ var PptxGenJS = function(){
 		 *			values: [18.1, 22.8, 23.9, 25.1, 25]
 		 *		}
 		 *	 ]
-		 * 	}
+		 *	}
 		 */
 		addChartDefinition: function addChartDefinition(type, data, opt, target) {
 			var targetRels = target.rels;
@@ -2076,30 +2076,30 @@ var PptxGenJS = function(){
 	 * @param {Object} opts optional shadow properties
 	 * @param {Object} defaults defaults for unspecified properties in `opts`
 	 * @see http://officeopenxml.com/drwSp-effects.php
-	 * 	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+	 *	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 	 */
-	 function createShadowElement(options, defaults, isShape) {
- 		if(options === 'none'){
- 			return '<a:effectLst/>';
- 		}
- 		var
- 			strXml = '<a:effectLst>',
- 			opts = mix(defaults, options),
- 			type            = opts.type || 'outer',
- 			blur            = opts.blur * ONEPT,
- 			offset          = opts.offset * ONEPT,
- 			angle           = opts.angle * 60000,
- 			color           = opts.color,
- 			opacity         = opts.opacity * 100000,
- 			rotateWithShape = opts.rotateWithShape ?  1 : 0;
+	function createShadowElement(options, defaults, isShape) {
+		if ( options === 'none' ) {
+			return '<a:effectLst/>';
+		}
+		var
+			strXml = '<a:effectLst>',
+			opts   = mix(defaults, options),
+			type            = opts.type || 'outer',
+			blur            = opts.blur * ONEPT,
+			offset          = opts.offset * ONEPT,
+			angle           = opts.angle * 60000,
+			color           = opts.color,
+			opacity         = opts.opacity * 100000,
+			rotateWithShape = opts.rotateWithShape ?  1 : 0;
 
- 		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="'+ blur +'" ';
- 		strXml += 'rotWithShape="'+ (+rotateWithShape) +'"';
- 		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
- 		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
- 		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>';
- 		strXml += '</a:'+ type +'Shdw>';
- 		strXml += '</a:effectLst>';
+		strXml += '<a:'+ type +'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="'+ blur +'" ';
+		strXml += 'rotWithShape="'+ (+rotateWithShape) +'"';
+		strXml += ' dist="'+ offset +'" dir="'+ angle +'">';
+		strXml += '<a:srgbClr val="'+ color +'">'; // TODO: should accept scheme colors implemented in Issue #135
+		strXml += '<a:alpha val="'+ opacity +'"/></a:srgbClr>';
+		strXml += '</a:'+ type +'Shdw>';
+		strXml += '</a:effectLst>';
 
 		return strXml;
 	}
@@ -2547,9 +2547,9 @@ var PptxGenJS = function(){
 							strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>';
 						}
 						strXml += '  <c:spPr>';
-	  					strXml += '    <a:solidFill>' + createColorElement(opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)]) +'</a:solidFill>';
+						strXml += '    <a:solidFill>' + createColorElement(opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)]) +'</a:solidFill>';
 
-	  					var symbolLineColor = opts.lineDataSymbolLineColor || strSerColor;
+						var symbolLineColor = opts.lineDataSymbolLineColor || strSerColor;
 						strXml += '    <a:ln w="' + opts.lineDataSymbolLineSize + '" cap="flat"><a:solidFill>'+ createColorElement(symbolLineColor) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 						strXml += '    <a:effectLst/>';
 						strXml += '  </c:spPr>';
@@ -2565,7 +2565,7 @@ var PptxGenJS = function(){
 
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+ index +'"/>';
-							strXml += '    	<c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
+							strXml += '      <c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
 							strXml += '    <c:bubble3D val="0"/>';
 							strXml += '    <c:spPr>';
 							if ( opts.lineSize === 0 ){
@@ -2958,7 +2958,7 @@ var PptxGenJS = function(){
 		strXml += '  <a:lstStyle/>';
 		strXml += '  <a:p>';
 		strXml += ( align ? '<a:pPr algn="'+ align +'">' : '<a:pPr>' );
- 		var sizeAttr = '';
+		var sizeAttr = '';
 		if ( opts.fontSize ) {
 			// only set the font size if specified.  Powerpoint will handle the default size
 			sizeAttr = 'sz="'+ opts.fontSize +'00"';
@@ -3523,7 +3523,7 @@ var PptxGenJS = function(){
 	function makeXmlLayout(slideLayoutObject) {
 		var strXml =  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
 			strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1" userDrawn="1">';
- 			strXml += gObjPptxGenerators.slideObjectToXml(slideLayoutObject);
+			strXml += gObjPptxGenerators.slideObjectToXml(slideLayoutObject);
 			strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>';
 			strXml += '</p:sldLayout>';
 		return strXml;
@@ -3920,7 +3920,7 @@ var PptxGenJS = function(){
 		 * {
 		 *   title: 'eSurvey chart',
 		 *   data: [
-		 *   	{
+		 *		{
 		 *			name: 'Income',
 		 *			labels: ['2005', '2006', '2007', '2008', '2009'],
 		 *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
@@ -3931,7 +3931,7 @@ var PptxGenJS = function(){
 		 *			values: [18.1, 22.8, 23.9, 25.1, 25]
 		 *		}
 		 *	 ]
-		 * 	}
+		 * }
 		 */
 		slideObj.addChart = function ( type, data, opt ) {
 			gObjPptxGenerators.addChartDefinition(type, data, opt, gObjPptx.slides[slideNum]);
