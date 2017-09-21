@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170918";
+	var APP_REL = "20170920";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -812,15 +812,10 @@ var PptxGenJS = function(){
 
 							// C: Loop over each CELL
 							$.each(rowObj, function(cIdx,cell){
-								// FIRST: Create cell if needed (handle [null] and other manner of junk values)
-								// IMPORTANT: MS-PPTX PROBLEM: using '' will cause PPT to use its own default font/size! (Arial/18 in US)
-								// SOLN: Pass a space instead to cement formatting options (Issue #20)
-								if ( typeof cell === 'undefined' || cell == null ) cell = { text:' ', options:{} };
-
 								// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 								if ( cell.hmerge ) return;
 
-								// 2: OPTIONS: Build/set cell options (blocked for code folding) ===========================
+								// 2: OPTIONS: Build/set cell options ===========================
 								{
 									var cellOpts = cell.options || cell.opts || {};
 									if ( typeof cell === 'number' || typeof cell === 'string' ) cell = { text:cell.toString() };
@@ -3025,7 +3020,7 @@ var PptxGenJS = function(){
 	*/
 	function genXmlTextBody(slideObj) {
 		// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
-		if ( !slideObj.text ) return '';
+		if ( !slideObj.options.isTableCell && (typeof slideObj.text === 'undefined' || slideObj.text == null) ) return '';
 
 		// Create options if needed
 		if ( !slideObj.options ) slideObj.options = {};
@@ -3196,7 +3191,18 @@ var PptxGenJS = function(){
 			strSlideXml += genXmlTextRun(textObj.options, textObj.text);
 		});
 
-		// STEP 5: Close paragraphProperties and the current open paragraph
+		// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
+		// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not horoning opts
+		if ( slideObj.options.isTableCell && (slideObj.options.font_size || slideObj.options.font_face) ) {
+			strSlideXml += '<a:endParaRPr lang="'+ ( slideObj.options.lang ? slideObj.options.lang : 'en-US' ) +'" '
+				+ (slideObj.options.font_size ? ' sz="'+ Math.round(slideObj.options.font_size) +'00"' : '') + ' dirty="0">';
+			if ( slideObj.options.font_face ) {
+				strSlideXml += '  <a:latin typeface="'+ slideObj.options.font_face +'" charset="0" />';
+				strSlideXml += '  <a:ea    typeface="'+ slideObj.options.font_face +'" charset="0" />';
+				strSlideXml += '  <a:cs    typeface="'+ slideObj.options.font_face +'" charset="0" />';
+			}
+			strSlideXml += '</a:endParaRPr>';
+		}
 		strSlideXml += '</a:p>';
 
 		// STEP 6: Close the textBody
