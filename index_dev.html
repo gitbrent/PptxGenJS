@@ -6,7 +6,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="author" content="https://github.com/gitbrent/">
-	<meta name="keywords" content="javascript, powerpoint, pptx, javascript-powerpoint, js-powerpoint, js-create-powerpoint, js-powerpoint-charts">
+	<meta name="keywords" content="javascript, powerpoint, pptx, javascript-powerpoint, javascript-powerpoint-charts, js-powerpoint, js-create-powerpoint, js-powerpoint-charts">
 	<meta name="description" content="JavaScript JS PowerPoint Library that Generates PowerPoint PPTX Presentations including Charts">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -401,9 +401,10 @@
 
 	<script async src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script><!-- Google Code Prettify -->
 	<script async type="text/javascript" src="js/jquery-3.1.1.slim.min.js"></script>
-	<script async type="text/javascript" src="js/jszip.min.js"></script>
-	<script async type="text/javascript" src="js/pptxgen.shapes.min.js"></script>
-	<script async type="text/javascript" src="js/pptxgen.min.js"></script>
+	<!-- vvv PptxGenJS vvv -->
+	<script async type="text/javascript" src="js/promise.min.js"></script>
+	<script async type="text/javascript" src="js/pptxgen.shapes.js"></script>
+	<script async type="text/javascript" src="js/pptxgen.bundle.js"></script>
 	<script async type="text/javascript" src="js/scale.fix.js"></script>
 
 	<!-- analytics -->
@@ -543,15 +544,22 @@
 					<li><a href="https://github.com/Stuk/jszip" target="_blank">jszip.js</a> (creates the pptx export zip file)</li>
 					<li><a href="https://github.com/eligrey/FileSaver.js/" target="_blank">FileSaver.js</a> (pushes the export file to client browsers)</li>
 	            </ul>-->
-				<p>
-					Include these 3 scripts in an HTML page, and you are ready to create a PowerPoint presentation.<br>
-					(IE11 support reqiures the 'promise.min.js' library as well.)
-				</p>
+				<h4>Include Local Scripts</h4>
 				<div class="code">
 <pre class="prettyprint">&lt;script type="text/javascript" src="PptxGenJS/libs/jquery.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="PptxGenJS/libs/jszip.min.js"&gt;&lt;/script&gt;
 &lt;script type="text/javascript" src="PptxGenJS/dist/pptxgen.js"&gt;&lt;/script&gt;</pre>
 		        </div>
+
+				<h4>Include Bundled Script</h4>
+				<div class="code">
+					<pre class="prettyprint">&lt;script type="text/javascript" src="PptxGenJS/dist/pptxgen.bundle.js"&gt;&lt;/script&gt;</pre>
+				</div>
+
+				<h4>Install With Bower</h4>
+				<div class="code">
+					<pre class="prettyprint">bower install pptxgen</pre>
+				</div>
 
 				<h3>Node.js</h3>
 				<p>
@@ -575,9 +583,18 @@ var pptx = require('pptxgenjs');
 				<ol>
 					<li>Create a new PptxGenJS presentation</li>
 					<li>Add a slide</li>
-					<li>Add one or more objects to the slide (text, tables, shapes, images)</li>
+					<li>Add one or more objects to the slide (charts, images, shapes, tables, text)</li>
 					<li>Export the Presentation</li>
 				</ol>
+
+				<h3>Additional Features</h3>
+				<ul>
+					<li>Define any size Slide (e.g.: A4)</li>
+					<li>Supports corporate/brand Slide Master designs</li>
+					<li>Supports RTL (right-to-left) text</li>
+					<li>Supports Asian and other international language/fonts</li>
+					<li>Node.js can use callbacks, powerpoint streaming, and more.</li>
+				</ul>
 
 				<!-- ======================================================================================= -->
 		        <h2>
@@ -620,7 +637,7 @@ slide.addText('Tables Example', { x:0.5, y:0.25, font_size:18, font_face:'Arial'
 // TABLE 1: Simple array (if there is only one row of data, you can just use a simple array)
 var arrRows = [ 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 ];
 var tabOpts = { x:0.5, y:1.0, w:9.0 };
-var celOpts = { color:'363636', fill:'F7F7F7', font_size:14 };
+var celOpts = { color:'363636', fill:'F7F7F7', font_size:14, border:{pt:1,color:'FFFFFF'} };
 slide.addTable( arrRows, tabOpts, celOpts );
 
 // TABLE 2: Multi-row Array (data structure: rows are arrays of cells)
