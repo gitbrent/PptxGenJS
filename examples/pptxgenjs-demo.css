@@ -289,3 +289,4 @@ div.divTable input[type="number"], div.divTable input[type="text"] { width: 100%
 
 #tabInheritStyle thead th { background: #a7a7a7; color: white; font-weight: normal; }
 #tabInheritStyle tbody td { background: #eee; color: #666; }
+#tabInheritStyle th, #tabInheritStyle td { border: 1px solid white; padding: 4px 8px; }
