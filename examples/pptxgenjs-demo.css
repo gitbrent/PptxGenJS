@@ -149,6 +149,12 @@ fieldset .svgCheck {
 	background: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iMjRweCIgaGVpZ2h0PSIxNHB4IiB2aWV3Qm94PSIwIDAgNjEyIDYxMiIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CgkJCQkJCQkJCTxwb2x5Z29uIHBvaW50cz0iNTczLjc1LDAgMTgzLjQ4NSw1MTYuOTY4IDM3LjY1NywzODAuNzAyIDAsNDIyLjU0OCAxODkuNDUyLDYxMiA2MTIsMzguODQzIiBmaWxsPSIjMDA4OGNjIi8+CgkJCQkJCQkJPC9zdmc+");
 }
 
+fieldset.demoFset { padding: 10px 20px; }
+fieldset .demoBtns { padding-top: 20px; text-align: center; }
+
+#miscTabDemos fieldset { margin-top: 25px; }
+#miscTabDemos fieldset:first-child { margin-top: 0px; }
+
 .sectionBox {
     padding: 25px;
     margin: 0 0 10px;
@@ -280,3 +286,6 @@ div.divTable input[type="number"], div.divTable input[type="text"] { width: 100%
     font-family: 'Roboto Mono', monospace;
     font-size: 14px;
 }
+
+#tabInheritStyle thead th { background: #a7a7a7; color: white; font-weight: normal; }
+#tabInheritStyle tbody td { background: #eee; color: #666; }
