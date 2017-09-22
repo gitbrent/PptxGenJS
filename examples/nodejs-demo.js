@@ -26,7 +26,7 @@ function getTimestamp() {
 
 if (gConsoleLog) console.log(`
 -------------
-STARTING TEST
+STARTING DEMO
 -------------`);
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
@@ -37,21 +37,20 @@ if (fs.existsSync('../dist/pptxgen.js')) {
 else {
 	pptx = require("pptxgenjs");
 }
-var runEveryTest = require("../examples/pptxgenjs-demo.js");
+var demo = require("../examples/pptxgenjs-demo.js");
 if (gConsoleLog) console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
 // ============================================================================
 
 // EX: Regular callback - will be sent the export filename once the file has been written to fs
 function saveCallback(filename) {
-	if (gConsoleLog) console.log('Good News Everyone!  File created: '+ filename);
+	if (gConsoleLog) console.log('saveCallback: Good News Everyone! File created: '+ filename);
 }
 
 // EX: JSZip callback - take the specified output (`data`) and do whatever
 function jszipCallback(data) {
 	if (gConsoleLog) {
-		console.log('Done!');
-		console.log('First 100 chars of output:\n');
+		console.log('jszipCallback: First 100 chars of output:\n');
 		console.log( data.substring(0,100) );
 	}
 }
@@ -74,8 +73,13 @@ function streamCallback(data) {
 
 // ============================================================================
 
-// STEP 2: Run all test funcs
-runEveryTest();
+// STEP 2: Run specified test, or all test funcs
+if ( process.argv.length == 3 ) {
+	demo.execGenSlidesFuncs(process.argv[2]);
+}
+else {
+	demo.runEveryTest();
+}
 
 // STEP 3: Export giant demo file
 
@@ -89,7 +93,7 @@ runEveryTest();
 pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 // D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
-//pptx.save( 'https://github.com/gitbrent/PptxGenJS/', streamCallback );
+//pptx.save( 'http', streamCallback );
 
 // E: or save using various JSZip formats ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
 //pptx.save( 'jszip', jszipCallback, 'base64' );
@@ -102,7 +106,7 @@ pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 if (gConsoleLog) console.log(`
 --------------
-TEST COMPLETE!
+DEMO COMPLETE!
 --------------
  * Files saved to...: ${__dirname}
 `);
