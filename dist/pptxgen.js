@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170918";
+	var APP_REL = "20170924";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -523,9 +523,9 @@ var PptxGenJS = function(){
 				});
 			}
 
-			// use default lines only for y-axis if nothing specified
-			options.valGridLine = options.valGridLine || {};
-			options.catGridLine = options.catGridLine || 'none';
+			// Set gridline defaults
+			options.catGridLine = options.catGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : 'none');
+			options.valGridLine = options.valGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : {});
 			correctGridLineOptions(options.catGridLine);
 			correctGridLineOptions(options.valGridLine);
 
@@ -1265,6 +1265,16 @@ var PptxGenJS = function(){
 		 */
 		createExcelWorksheet: function createExcelWorksheet(chartObject, zip) {
 			var data = chartObject.data;
+
+			// NOTE: Scatter charts dont have `labels`, but we rely on them for sharedStrings, etc. So, create when needed!
+			if ( chartObject.opts.type.name == 'scatter' && !data[0].labels ) {
+				data[0].labels = [];
+				data[0].values.forEach(function(val,idx){
+					if ( idx == 0 ) data[0].labels.push('X-Axis');
+					else data[0].labels.push('Y-Axis '+idx);
+				});
+			}
+
 			return new Promise(function(resolve, reject) {
 				var zipExcel = new JSZip();
 
@@ -1385,58 +1395,100 @@ var PptxGenJS = function(){
 				strSheetXml += '<dimension ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'"/>';
 				strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
 				strSheetXml += '<sheetFormatPr defaultRowHeight="15"/>';
+				if ( chartObject.opts.type.name == 'scatter' ) {
+					strSheetXml += '<cols>';
+					data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
+					strSheetXml += '</cols>';
+					/* EX: INPUT: `data`
+					[
+						{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
+						{ name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9] },
+						{ name:'Y-Axis 2', values:[33,32,42,53,63] }
+					];
+					*/
+					/* EX: OUTPUT: scatterChart Worksheet:
+						-|----A-----|------B-----|
+						1| X-Values | Y-Values 1 |
+						2|    11    |     22     |
+						-|----------|------------|
+					*/
+					strSheetXml += '<sheetData>';
 
-// TODO: if scatter - new block all the way to /sheetData
-				strSheetXml += '<cols>';
-				strSheetXml += '<col min="10" max="100" width="20" customWidth="1"/>';
-				data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
-				strSheetXml += '</cols>';
-				strSheetXml += '<sheetData>';
-
-				/* EX: INPUT: `data`
-				[
-					{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
-					{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
-					{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
-				];
-				*/
-				/* EX: OUTPUT: lineChart Worksheet:
-					-|---A---|--B--|--C--|--D--|
-					1|       | Red | Amb | Grn |
-					2|Jan-17 |   11|   22|   33|
-					3|Feb-17 |   55|   43|   70|
-					4|Mar-17 |   56|  143|   99|
-					5|Apr-17 |   65|    3|  120|
-					6|May-17 |   75|   93|  170|
-					-|-------|-----|-----|-----|
-				*/
-
-				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-				strSheetXml += '<row r="1">';
-				strSheetXml += '<c r="A1" t="s"><v>'+ (data.length + data[0].labels.length) +'</v></c>';
-				for (var idx=1; idx<=data[0].labels.length; idx++) {
-					// FIXME: Max cols is 52
-					strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
-					strSheetXml += '<v>'+ (idx-1) +'</v>';
-					strSheetXml += '</c>';
-				}
-				strSheetXml += '</row>';
-
-				// B: Add data row(s)
-				data.forEach(function(row,idx){
-					// Leading col is reserved for the label, so hard-code it, then loop over col values
-					strSheetXml += '<row r="'+ (idx+2) +'">';
-					strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
-					strSheetXml += '<v>'+ (data[0].values.length + idx + 1) +'</v>';
-					strSheetXml += '</c>';
-					row.values.forEach(function(val,idy){
-						strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
-						strSheetXml += '<v>'+ (val || '') +'</v>';
+					// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+					strSheetXml += '<row r="1" spans="1:'+ data.length +'">';
+					strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
+					for (var idx=1; idx<data.length; idx++) {
+						strSheetXml += '<c r="'+ (idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length]) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
+						strSheetXml += '<v>'+ idx +'</v>';
 						strSheetXml += '</c>';
-					});
+					}
 					strSheetXml += '</row>';
-				});
 
+					// B: Add row for each X-Axis value (Y-Axis* value is optional)
+					data[0].values.forEach(function(val,idx){
+						// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
+						strSheetXml += '<row r="'+ (idx+2) +'" spans="1:'+ data.length +'">';
+						strSheetXml += '<c r="A'+ (idx+2) +'"><v>'+ val +'</v></c>';
+						// Add Y-Axis 1->N
+						for (var idy=1; idy<data.length; idy++) {
+							strSheetXml += '<c r="'+ ( idy < 26 ? LETTERS[idy] : 'A'+LETTERS[idy%LETTERS.length] ) +''+ (idx+2) +'">';
+							strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
+							strSheetXml += '</c>';
+						};
+						strSheetXml += '</row>';
+					});
+				}
+				else {
+					strSheetXml += '<cols>';
+					strSheetXml += '<col min="10" max="100" width="20" customWidth="1"/>';
+					data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
+					strSheetXml += '</cols>';
+					strSheetXml += '<sheetData>';
+
+					/* EX: INPUT: `data`
+					[
+						{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+						{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+						{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+					];
+					*/
+					/* EX: OUTPUT: lineChart Worksheet:
+						-|---A---|--B--|--C--|--D--|
+						1|       | Red | Amb | Grn |
+						2|Jan-17 |   11|   22|   33|
+						3|Feb-17 |   55|   43|   70|
+						4|Mar-17 |   56|  143|   99|
+						5|Apr-17 |   65|    3|  120|
+						6|May-17 |   75|   93|  170|
+						-|-------|-----|-----|-----|
+					*/
+
+					// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+					strSheetXml += '<row r="1">';
+					strSheetXml += '<c r="A1" t="s"><v>'+ (data.length + data[0].labels.length) +'</v></c>';
+					for (var idx=1; idx<=data[0].labels.length; idx++) {
+						// FIXME: Max cols is 52
+						strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
+						strSheetXml += '<v>'+ (idx-1) +'</v>';
+						strSheetXml += '</c>';
+					}
+					strSheetXml += '</row>';
+
+					// B: Add data row(s)
+					data.forEach(function(row,idx){
+						// Leading col is reserved for the label, so hard-code it, then loop over col values
+						strSheetXml += '<row r="'+ (idx+2) +'">';
+						strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
+						strSheetXml += '<v>'+ (data[0].values.length + idx + 1) +'</v>';
+						strSheetXml += '</c>';
+						row.values.forEach(function(val,idy){
+							strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
+							strSheetXml += '<v>'+ (val || '') +'</v>';
+							strSheetXml += '</c>';
+						});
+						strSheetXml += '</row>';
+					});
+				}
 				strSheetXml += '</sheetData>';
 				strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>';
 				//strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'; // Causes unreadable error in O365
@@ -2335,6 +2387,7 @@ var PptxGenJS = function(){
 
 		// B: Axes -----------------------------------------------------------
 		if ( rel.opts.type.name !== 'pie' && rel.opts.type.name !== 'doughnut' ) {
+			// Param check
 			if ( rel.opts.valAxes && !usesSecondaryValAxis ) {
 				throw new Error('Secondary axis must be used by one of the multiple charts');
 			}
@@ -2474,15 +2527,11 @@ var PptxGenJS = function(){
 			case 'area':
 			case 'bar':
 			case 'line':
-			case 'scatter':
 				// 1: Start Chart
 				strXml += '<c:'+ chartType +'Chart>';
 				if ( chartType == 'bar' ) {
 					strXml += '<c:barDir val="'+ opts.barDir +'"/>';
 					strXml += '<c:grouping val="'+ opts.barGrouping + '"/>';
-				}
-				else if ( chartType == 'scatter' ) {
-					strXml += '<c:scatterStyle val="lineMarker"/>';
 				}
 				strXml += '<c:varyColors val="0"/>';
 
@@ -2546,8 +2595,8 @@ var PptxGenJS = function(){
 
 					strXml += '  </c:spPr>';
 
-					// The `marker` tag is used by LINE and SCATTER
-					if ( chartType == 'line' || chartType == 'scatter' ) {
+					// 'c:marker' tag: `lineDataSymbol`
+					if ( chartType == 'line' ) {
 						strXml += '<c:marker>';
 						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
 						if ( opts.lineDataSymbolSize ) {
@@ -2629,13 +2678,12 @@ var PptxGenJS = function(){
 						strXml += '  </c:val>';
 					}
 
-					// LINE CHART ONLY: `smooth`
+					// Option: `smooth`
 					if ( chartType == 'line' ) strXml += '<c:smooth val="'+ (opts.lineSmooth ? "1" : "0" ) +'"/>';
 
 					// 4: Close "SERIES"
 					strXml += '</c:ser>';
-
-				}); // end forEach
+				});
 
 				// 3: "Data Labels"
 				strXml += '  <c:dLbls>';
@@ -2674,6 +2722,169 @@ var PptxGenJS = function(){
 				strXml += '  <c:axId val="'+ valAxisId +'"/>';
 
 				// 6: Close Chart tag
+				strXml += '</c:'+ chartType +'Chart>';
+
+				// end switch
+				break;
+
+			case 'scatter':
+				/*
+					`data` = [
+						{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10,11,12] },
+						{ name:'Y-Value 1', values:[13, 20, 21, 25] },
+						{ name:'Y-Value 2', values:[ 1,  2,  5,  9] }
+					];
+				*/
+
+				// 1: Start Chart
+				strXml += '<c:'+ chartType +'Chart>';
+				strXml += '<c:scatterStyle val="lineMarker"/>';
+				strXml += '<c:varyColors val="0"/>';
+
+				// 2: Series: (One for each Y-Axis)
+				var colorIndex = -1;
+				data.filter(function(obj,idx){ return idx > 0; }).forEach(function(obj,idx){
+					colorIndex++;
+					strXml += '<c:ser>';
+					strXml += '  <c:idx val="'+ idx +'"/>';
+					strXml += '  <c:order val="'+ idx +'"/>';
+					strXml += '  <c:tx>';
+					strXml += '    <c:strRef>';
+					strXml += '      <c:f>Sheet1!$'+ LETTERS[(idx+1)] +'$'+ (idx+1) +'</c:f>';
+					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
+					strXml += '    </c:strRef>';
+					strXml += '  </c:tx>';
+
+					// 'c:spPr': Fill, Border, Line, LineStyle (dash, etc.), Shadow
+					strXml += '  <c:spPr>';
+					{
+						var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
+
+						if ( strSerColor == 'transparent' ) {
+							strXml += '<a:noFill/>';
+						}
+						else if ( opts.chartColorsOpacity ) {
+							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
+						}
+						else {
+							strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
+						}
+
+						if ( opts.lineSize == 0) {
+							strXml += '<a:ln><a:noFill/></a:ln>';
+						}
+						else {
+							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
+							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+						}
+
+						// Shadow
+						strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+					}
+					strXml += '  </c:spPr>';
+
+					// 'c:marker' tag: `lineDataSymbol`
+					{
+						strXml += '<c:marker>';
+						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
+						if ( opts.lineDataSymbolSize ) {
+							// Defaults to "auto" otherwise (but this is usually too small, so there is a default)
+							strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>';
+						}
+						strXml += '  <c:spPr>';
+						strXml += '    <a:solidFill>' + createColorElement(opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)]) +'</a:solidFill>';
+						var symbolLineColor = opts.lineDataSymbolLineColor || strSerColor;
+						strXml += '    <a:ln w="' + opts.lineDataSymbolLineSize + '" cap="flat"><a:solidFill>'+ createColorElement(symbolLineColor) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						strXml += '    <a:effectLst/>';
+						strXml += '  </c:spPr>';
+						strXml += '</c:marker>';
+					}
+
+					// Color bar chart bars various colors
+					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
+					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
+						// Series Data Point colors
+						obj.values.forEach(function(value,index){
+							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
+
+							strXml += '  <c:dPt>';
+							strXml += '    <c:idx val="'+ index +'"/>';
+							strXml += '      <c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
+							strXml += '    <c:bubble3D val="0"/>';
+							strXml += '    <c:spPr>';
+							if ( opts.lineSize === 0 ){
+								strXml += '<a:ln><a:noFill/></a:ln>';
+							}
+							else {
+								strXml += '<a:solidFill>';
+								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
+								strXml += '</a:solidFill>';
+							}
+							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+							strXml += '    </c:spPr>';
+							strXml += '  </c:dPt>';
+						});
+					}
+
+					// 3: "Values": Scatter Chart has 2: `xVal` and `yVal`
+					{
+						// X-Axis is always the same
+						strXml += '<c:xVal>';
+						strXml += '  <c:numRef>';
+						strXml += '    <c:f>Sheet1!$A$2:$A$'+ data[0].values.length +'</c:f>';
+						strXml += '    <c:numCache>';
+						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
+						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+						strXml += '    </c:numCache>';
+						strXml += '  </c:numRef>';
+						strXml += '</c:xVal>';
+
+						// Y-Axis vals are this object's `values`
+						strXml += '<c:yVal>';
+						strXml += '  <c:numRef>';
+						strXml += '    <c:f>Sheet1!$'+ getExcelColName(idx) +'$2:$'+ getExcelColName(idx) +'$'+ obj.values.length +'</c:f>';
+						strXml += '    <c:numCache>';
+						strXml += '      <c:ptCount val="'+ obj.values.length +'"/>';
+						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+						strXml += '    </c:numCache>';
+						strXml += '  </c:numRef>';
+						strXml += '</c:yVal>';
+					}
+
+					// Option: `smooth`
+					strXml += '<c:smooth val="'+ (opts.lineSmooth ? "1" : "0" ) +'"/>';
+
+					// 4: Close "SERIES"
+					strXml += '</c:ser>';
+				});
+
+				// 3: Data Labels
+				strXml += '  <c:dLbls>';
+				strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+				strXml += '    <c:txPr>';
+				strXml += '      <a:bodyPr/>';
+				strXml += '      <a:lstStyle/>';
+				strXml += '      <a:p><a:pPr>';
+				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+				strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
+				strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
+				strXml += '        </a:defRPr>';
+				strXml += '      </a:pPr></a:p>';
+				strXml += '    </c:txPr>';
+				strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+				strXml += '    <c:showLegendKey val="0"/>';
+				strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
+				strXml += '    <c:showCatName val="0"/>';
+				strXml += '    <c:showSerName val="0"/>';
+				strXml += '    <c:showPercent val="0"/>';
+				strXml += '    <c:showBubbleSize val="0"/>';
+				strXml += '  </c:dLbls>';
+
+				// 4: Add axisId (NOTE: order matters! (category comes first))
+				strXml += '  <c:axId val="'+ catAxisId +'"/>';
+				strXml += '  <c:axId val="'+ valAxisId +'"/>';
+
+				// 5: Close Chart tag
 				strXml += '</c:'+ chartType +'Chart>';
 
 				// end switch
@@ -2812,7 +3023,7 @@ var PptxGenJS = function(){
 				if ( chartType == 'doughnut' ) strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
 				strXml += '</c:'+ chartType +'Chart>';
 
-				// Done with CHART.PIE
+				// Done with Doughnut/Pie
 				break;
 		}
 
@@ -2841,9 +3052,15 @@ var PptxGenJS = function(){
 		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
 		strXml += ( opts.catGridLine !== 'none' ? createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE) : '' );
 		strXml += '  <c:numFmt formatCode="'+ (opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
-		strXml += '  <c:majorTickMark val="out"/>';
-		strXml += '  <c:minorTickMark val="none"/>';
-		strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+		if ( opts.type.name === 'scatter' ) {
+			strXml += '  <c:majorTickMark val="none"/>';
+			strXml += '  <c:minorTickMark val="none"/>';
+		}
+		else {
+			strXml += '  <c:majorTickMark val="out"/>';
+			strXml += '  <c:minorTickMark val="none"/>';
+			strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+		}
 		strXml += '  <c:spPr>';
 		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
 		strXml += '  </c:spPr>';
@@ -2852,9 +3069,9 @@ var PptxGenJS = function(){
 		strXml += '    <a:lstStyle/>';
 		strXml += '    <a:p>';
 		strXml += '    <a:pPr>';
-		strXml += '<a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-		strXml += '<a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
-		strXml += '<a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
+		strXml += '    <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+		strXml += '      <a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
+		strXml += '      <a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
 		strXml += '   </a:defRPr>';
 		strXml += '  </a:pPr>';
 		strXml += '  </a:p>';
