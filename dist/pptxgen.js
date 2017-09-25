@@ -1267,15 +1267,6 @@ var PptxGenJS = function(){
 		createExcelWorksheet: function createExcelWorksheet(chartObject, zip) {
 			var data = chartObject.data;
 
-			// NOTE: Scatter charts dont have `labels`, but we rely on them for sharedStrings, etc. So, create when needed!
-			if ( chartObject.opts.type.name == 'scatter' && !data[0].labels ) {
-				data[0].labels = [];
-				data[0].values.forEach(function(val,idx){
-					if ( idx == 0 ) data[0].labels.push('X-Axis');
-					else data[0].labels.push('Y-Axis '+idx);
-				});
-			}
-
 			return new Promise(function(resolve, reject) {
 				var zipExcel = new JSZip();
 
@@ -1328,9 +1319,9 @@ var PptxGenJS = function(){
 						'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 						+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 						+ '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>'
-						+ '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>'
-						+ '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
 						+ '<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>'
+						+ '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>'
+						+ '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>'
 						+ '</Relationships>\n'
 					);
 					zipExcel.file("xl/styles.xml",
@@ -1352,9 +1343,9 @@ var PptxGenJS = function(){
 						+ '</workbook>\n'
 					);
 					zipExcel.file("xl/worksheets/_rels/sheet1.xml.rels",
-						'<?xml version="1.0" encoding="UTF-8"?>'
+						'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 						+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-						+ '  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>'
+						+ '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>'
 						+ '</Relationships>\n'
 					);
 				}
@@ -1362,13 +1353,18 @@ var PptxGenJS = function(){
 				// `sharedStrings.xml`
 				{
 					var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-					strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data[0].labels.length + data.length + 1) +'" uniqueCount="'+ (data[0].labels.length + data.length +1) +'">'
 
 					// A: Add Labels
-					data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ decodeXmlEntities(label) +'</t></si>'; });
+					if ( chartObject.opts.type.name === 'scatter' ) {
+						strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data.length+1) +'" uniqueCount="'+ (data.length+1) +'">'
+					}
+					else {
+						strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data[0].labels.length + data.length + 1) +'" uniqueCount="'+ (data[0].labels.length + data.length +1) +'">'
+						data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ decodeXmlEntities(label) +'</t></si>'; });
+					}
 
 					// B: Add Series
-					data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ') +'</t></si>'; });
+					data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ (objData.name || ' ').replace('X-Axis','X-Values') +'</t></si>'; });
 
 					// C: Add 'blank' for A1
 					strSharedStrings += '<si><t xml:space="preserve"></t></si>';
@@ -1380,10 +1376,17 @@ var PptxGenJS = function(){
 				// tables/table1.xml
 				{
 					var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-					strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'" totalsRowShown="0">';
-					strTableXml += '<tableColumns count="' + (data[0].labels.length+1) +'">';
-					strTableXml += '<tableColumn id="1" name=" "/>';
-					data[0].labels.forEach(function(label,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ decodeXmlEntities(label) +'"/>' });
+					if ( chartObject.opts.type.name == 'scatter' ) {
+						strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
+						strTableXml += '<tableColumns count="' + (data.length) +'">';
+						data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'"/>' });
+					}
+					else {
+						strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'" totalsRowShown="0">';
+						strTableXml += '<tableColumns count="' + (data[0].labels.length+1) +'">';
+						strTableXml += '<tableColumn id="1" name=" "/>';
+						data[0].labels.forEach(function(label,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ decodeXmlEntities(label) +'"/>' });
+					}
 					strTableXml += '</tableColumns>';
 					strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0"/>';
 					strTableXml += '</table>';
@@ -1393,12 +1396,18 @@ var PptxGenJS = function(){
 				// worksheets/sheet1.xml
 				var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 				strSheetXml += '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
-				strSheetXml += '<dimension ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'"/>';
-				strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1"/></sheetView></sheetViews>';
-				strSheetXml += '<sheetFormatPr defaultRowHeight="15"/>';
+				if ( chartObject.opts.type.name === 'scatter' ) {
+					strSheetXml += '<dimension ref="A1:'+ LETTERS[(data.length-1)] + (data[0].values.length+1) +'" />';
+				}
+				else {
+					strSheetXml += '<dimension ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'" />';
+				}
+
+				strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
+				strSheetXml += '<sheetFormatPr baseColWidth="10" defaultRowHeight="16" />';
 				if ( chartObject.opts.type.name == 'scatter' ) {
 					strSheetXml += '<cols>';
-					data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
+					data.forEach(function(obj,idx){ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
 					strSheetXml += '</cols>';
 					/* EX: INPUT: `data`
 					[
@@ -1442,7 +1451,7 @@ var PptxGenJS = function(){
 				else {
 					strSheetXml += '<cols>';
 					strSheetXml += '<col min="10" max="100" width="20" customWidth="1"/>';
-					data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1"/>' });
+					data[0].labels.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1" />' });
 					strSheetXml += '</cols>';
 					strSheetXml += '<sheetData>';
 
@@ -1491,8 +1500,9 @@ var PptxGenJS = function(){
 					});
 				}
 				strSheetXml += '</sheetData>';
-				strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3"/>';
-				//strSheetXml += '<tableParts count="1"><tablePart r:id="rId1"/></tableParts>'; // Causes unreadable error in O365
+				strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />';
+// TODO: below uncommented for test (!!!)
+				strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>'; // Causes unreadable error in O365
 				strSheetXml += '</worksheet>\n';
 				zipExcel.file("xl/worksheets/sheet1.xml", strSheetXml);
 
