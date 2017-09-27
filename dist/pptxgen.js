@@ -2662,7 +2662,7 @@ var PptxGenJS = function(){
 						if ( opts.catLabelFormatCode ) {
 							// Use 'numRef' as catLabelFormatCode implies that we are expecting numbers here
 							strXml += '  <c:numRef>';
-							strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ obj.labels.length +'</c:f>';
+							strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ (obj.labels.length+1) +'</c:f>';
 							strXml += '    <c:numCache>';
 							strXml += '      <c:formatCode>'+ opts.catLabelFormatCode +'</c:formatCode>';
 							strXml += '      <c:ptCount val="'+ obj.labels.length +'"/>';
@@ -2672,7 +2672,7 @@ var PptxGenJS = function(){
 						}
 						else {
 							strXml += '  <c:strRef>';
-							strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ obj.labels.length +'</c:f>';
+							strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ (obj.labels.length+1) +'</c:f>';
 							strXml += '    <c:strCache>';
 							strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
 							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });

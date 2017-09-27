@@ -1340,27 +1340,49 @@ function genSlides_Chart(pptx) {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Scatter Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-		var arrDataScatter = [
-			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10,11,12] },
+		var arrDataScatter1 = [
+			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
 			{ name:'Y-Value 1', values:[13, 20, 21, 25] },
 			{ name:'Y-Value 2', values:[21, 22, 25, 49] }
 		];
 
-		var optsChartScat1 = { x:0.5, y:0.5, w:'90%', h:'90%',
-			showLegend: true,
-			legendPos : 't',
+		var arrDataScatter2 = [
+			{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
+			{ name:'Airplane', values:[33, 20, 51, 65] },
+			{ name:'Train',    values:[99, 88, 77, 89] },
+			{ name:'Bus',      values:[21, 22, 25, 49] }
+		];
 
+		// TOP-LEFT
+		var optsChartScat1 = { x:0.5, y:0.6, w:'45%', h:3,
 			valAxisTitle        : "Renters",
 			valAxisTitleColor   : "428442",
 			valAxisTitleFontSize: 14,
 			showValAxisTitle    : true,
+
+			lineSize: 0,
 
 			catAxisTitle        : "Last 12 Months",
 			catAxisTitleColor   : "428442",
 			catAxisTitleFontSize: 14,
 			showCatAxisTitle    : true
 		};
-		slide.addChart( pptx.charts.SCATTER, arrDataScatter, optsChartScat1 );
+		slide.addChart( pptx.charts.SCATTER, arrDataScatter1, optsChartScat1 );
+
+		// TOP-RIGHT
+		var optsChartScat2 = { x:7, y:0.6, w:'45%', h:3,
+			fill: 'f1f1f1',
+			showLegend: true,
+			legendPos : 'b',
+
+			lineSize  : 8,
+			lineSmooth: true,
+			lineDataSymbolSize: 12,
+
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			chartColorsOpacity: 25
+		};
+		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat2 );
 
 	}
 
