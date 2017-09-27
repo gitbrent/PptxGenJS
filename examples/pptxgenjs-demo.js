@@ -1335,10 +1335,10 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 
-	// SLIDE 13: Scatter Chart -------------------------------------------------------------
+	// SLIDE 13: XY Scatter Chart -------------------------------------------------------------
 	function slide13() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Scatter Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var arrDataScatter1 = [
 			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
@@ -1348,9 +1348,9 @@ function genSlides_Chart(pptx) {
 
 		var arrDataScatter2 = [
 			{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
-			{ name:'Airplane', values:[33, 20, 51, 65] },
-			{ name:'Train',    values:[99, 88, 77, 89] },
-			{ name:'Bus',      values:[21, 22, 25, 49] }
+			{ name:'Airplane', values:[33, 20, 51, 65, 71, 75] },
+			{ name:'Train',    values:[99, 88, 77, 89, 99, 99] },
+			{ name:'Bus',      values:[21, 22, 25, 49, 59, 69] }
 		];
 
 		// TOP-LEFT
@@ -1362,7 +1362,7 @@ function genSlides_Chart(pptx) {
 
 			lineSize: 0,
 
-			catAxisTitle        : "Last 12 Months",
+			catAxisTitle        : "Last 10 Months",
 			catAxisTitleColor   : "428442",
 			catAxisTitleFontSize: 14,
 			showCatAxisTitle    : true
@@ -1370,7 +1370,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.SCATTER, arrDataScatter1, optsChartScat1 );
 
 		// TOP-RIGHT
-		var optsChartScat2 = { x:7, y:0.6, w:'45%', h:3,
+		var optsChartScat2 = { x:7.0, y:0.6, w:'45%', h:3,
 			fill: 'f1f1f1',
 			showLegend: true,
 			legendPos : 'b',
@@ -1378,12 +1378,27 @@ function genSlides_Chart(pptx) {
 			lineSize  : 8,
 			lineSmooth: true,
 			lineDataSymbolSize: 12,
+			lineDataSymbolLineColor: 'FFFFFF',
 
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			chartColorsOpacity: 25
 		};
 		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat2 );
 
+		// BOTTOM-LEFT
+		var optsChartScat3 = { x:0.5, y:4.0, w:'45%', h:3,
+			fill: 'f2f9fc',
+			catAxisOrientation: 'maxMin',
+			valAxisOrientation: 'maxMin',
+			showCatAxisTitle: false,
+			showValAxisTitle: false,
+			lineSize: 0
+		};
+		slide.addChart( pptx.charts.SCATTER, arrDataScatter1, optsChartScat3 );
+
+		// BOTTOM-RIGHT
+		var optsChartScat4 = { x:7.0, y:4.0, w:'45%', h:3 };
+		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat4 );
 	}
 
 	// SLIDE 14: Multi-Type Charts ---------------------------------------------------------
