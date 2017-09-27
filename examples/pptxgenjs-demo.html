@@ -163,7 +163,7 @@
 					+ '<td style="text-align:center">' + (idx+1) + '</td>'
 					+ '<td>' + gArrNamesL[ Math.floor(Math.random()*10) ] + '</td>'
 					+ '<td>' + gArrNamesF[ Math.floor(Math.random()*10) ] + '</td>'
-					+ '<td>Text:<br>' + gStrLorumIpsum.substring( 0, (Math.floor(Math.random()*10)+2)*130 ) + '</td>'
+					+ '<td>Text:<br>' + gStrLoremIpsum.substring( 0, (Math.floor(Math.random()*10)+2)*130 ) + '</td>'
 					+ '</tr>';
 				$('#tabAutoPaging tbody').append( strHtml );
 			}
@@ -176,10 +176,10 @@
 			$('#tabAutoPaging tbody tr:last-child td:last-child').css('font-size','16px');
 		}
 
-		function table2slidesNoStyle() {
+		function table2slidesDemoForTab(inTabId) {
 			var pptx = new PptxGenJS();
-			pptx.addSlidesForTable('tabNoStyle');
-			pptx.save( 'tabNoSyle_'+getTimestamp() );
+			pptx.addSlidesForTable(inTabId);
+			pptx.save( inTabId+'_'+getTimestamp() );
 		}
 
 		function table2slidesBullets() {
@@ -743,44 +743,81 @@
 					</div>
 				</div>
 
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow"></div>Other Table-to-Slides Demos
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow"></div>Other Demos
 				</div>
-				<div class="sectionBox" style="display:none">
-					<table id="tabNoStyle">
-					    <thead>
-					        <tr>
-					            <th>Name</th>
-					            <th>Email</th>
-					            <th>Company</th>
-								<th>Feedback</th>
-					        </tr>
-					    </thead>
-						<tbody>
-							<tr>
-								<td>Elon Musk</td>
-								<td>Elon@tesla.com</td>
-								<td>Tesla Motors, Space-X</td>
-								<td>PptxGenJS is almost as good as rockets that can land themselves</td>
-							</tr>
-							<tr>
-								<td>Tim Cook</td>
-								<td>tim@apple.com</td>
-								<td>Apple Inc.</td>
-								<td>Jony Ive said the Keynote team needs to hire you</td>
-							</tr>
-							<tr>
-								<td>Satya Nadella</td>
-								<td>ceo@microsoft.com</td>
-								<td>Microsoft Inc.</td>
-								<td>The PowerPoint team needs to hire you</td>
-							</tr>
-						</tbody>
-					</table>
-					<div style="text-align:center; padding:20px 20px 0 20px;">
-						<button type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesNoStyle()">Un-Styled Table Demo</button>
-					</div>
+				<div id="miscTabDemos" class="sectionBox" style="display:none">
+					<fieldset class="demoFset">
+						<legend>Plain/Unstyled Table</legend>
+
+						<table id="tabNoStyle">
+						    <thead>
+						        <tr>
+						            <th>Name</th>
+						            <th>Email</th>
+						            <th>Company</th>
+									<th>Feedback</th>
+						        </tr>
+						    </thead>
+							<tbody>
+								<tr>
+									<td>Elon Musk</td>
+									<td>Elon@tesla.com</td>
+									<td>Tesla Motors &amp; SpaceX</td>
+									<td>PptxGenJS is almost as good as rockets that can land themselves</td>
+								</tr>
+								<tr>
+									<td>Tim Cook</td>
+									<td>tim@apple.com</td>
+									<td>Apple Inc.</td>
+									<td>Jony Ive said the Keynote team needs to hire you</td>
+								</tr>
+								<tr>
+									<td>Satya Nadella</td>
+									<td>ceo@microsoft.com</td>
+									<td>Microsoft Inc.</td>
+									<td>The PowerPoint team needs to hire you</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="demoBtns">
+							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabNoStyle')">Table-to-Slides Demo</button>
+						</div>
+					</fieldset>
+
+					<fieldset class="demoFset">
+						<legend>Inherited Style</legend>
+
+						<table id="tabInheritStyle" cellspacing="0" cellpadding="3">
+						    <thead>
+						        <tr>
+									<th>Company</th>
+						            <th>Contact</th>
+									<th>Feedback</th>
+						        </tr>
+						    </thead>
+							<tbody>
+								<tr>
+									<td>Tesla &amp; SpaceX</td>
+									<td>Elon@tesla.com</td>
+									<td>PptxGenJS is almost as good as rockets that can land themselves</td>
+								</tr>
+								<tr>
+									<td>Apple Inc.</td>
+									<td>tim@apple.com</td>
+									<td>Jony Ive said the Keynote team needs to hire you</td>
+								</tr>
+								<tr>
+									<td>Microsoft Inc.</td>
+									<td>ceo@microsoft.com</td>
+									<td>The PowerPoint team needs to hire you</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="demoBtns">
+							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabInheritStyle')">Table-to-Slides Demo</button>
+						</div>
+					</fieldset>
 				</div>
 
 				<!-- FUTURE:
