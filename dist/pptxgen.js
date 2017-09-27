@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170924";
+	var APP_REL = "20170926";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -1505,10 +1505,11 @@ var PptxGenJS = function(){
 				}
 				strSheetXml += '</sheetData>';
 				strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />';
-// TODO: below uncommented for test (!!!)
-// BUG: only works for scatter at present!
 				// Link the `table1.xml` file to define an actual Table in Excel
-//				strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
+				// NOTE: This onyl works with scatter charts - all others give a "cannot find linked file" error
+				// ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
+				// ....: Leaving this so nobody foolishly attempts to add this in the future
+				// strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
 				strSheetXml += '</worksheet>\n';
 				zipExcel.file("xl/worksheets/sheet1.xml", strSheetXml);
 
@@ -2540,6 +2541,8 @@ var PptxGenJS = function(){
 	}
 
 	function makeChartType(chartType, data, opts, valAxisId, catAxisId) {
+		// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
+		// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 		var strXml = '';
 
 		switch ( chartType ) {
@@ -2770,7 +2773,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:order val="'+ idx +'"/>';
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
-					strXml += '      <c:f>Sheet1!$'+ LETTERS[(idx+1)] +'$'+ (idx+1) +'</c:f>';
+					strXml += '      <c:f>Sheet1!$'+ LETTERS[(idx+1)] +'$1</c:f>';
 					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
@@ -2851,7 +2854,7 @@ var PptxGenJS = function(){
 						// X-Axis is always the same
 						strXml += '<c:xVal>';
 						strXml += '  <c:numRef>';
-						strXml += '    <c:f>Sheet1!$A$2:$A$'+ data[0].values.length +'</c:f>';
+						strXml += '    <c:f>Sheet1!$A$2:$A$'+ (data[0].values.length+1) +'</c:f>';
 						strXml += '    <c:numCache>';
 						strXml += '      <c:formatCode>General</c:formatCode>';
 						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
@@ -2863,7 +2866,7 @@ var PptxGenJS = function(){
 						// Y-Axis vals are this object's `values`
 						strXml += '<c:yVal>';
 						strXml += '  <c:numRef>';
-						strXml += '    <c:f>Sheet1!$'+ getExcelColName(idx) +'$2:$'+ getExcelColName(idx) +'$'+ obj.values.length +'</c:f>';
+						strXml += '    <c:f>Sheet1!$'+ getExcelColName(idx+1) +'$2:$'+ getExcelColName(idx+1) +'$'+ (data[0].values.length+1) +'</c:f>';
 						strXml += '    <c:numCache>';
 						strXml += '      <c:formatCode>General</c:formatCode>';
 						// NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
@@ -2936,7 +2939,7 @@ var PptxGenJS = function(){
 				strXml += '  <c:order val="0"/>';
 				strXml += '  <c:tx>';
 				strXml += '    <c:strRef>';
-				strXml += '      <c:f>Sheet1!$A$2</c:f>';
+				strXml += '      <c:f>Sheet1!$B$1</c:f>';
 				strXml += '      <c:strCache>';
 				strXml += '        <c:ptCount val="1"/>';
 				strXml += '        <c:pt idx="0"><c:v>'+ decodeXmlEntities(obj.name) +'</c:v></c:pt>';
@@ -3021,7 +3024,7 @@ var PptxGenJS = function(){
 				// 2: "Categories"
 				strXml += '<c:cat>';
 				strXml += '  <c:strRef>';
-				strXml += '    <c:f>Sheet1!'+ '$B$1:$'+ getExcelColName(obj.labels.length) +'$1' +'</c:f>';
+				strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ (obj.labels.length+1) +'</c:f>';
 				strXml += '    <c:strCache>';
 				strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
 				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });
@@ -3032,7 +3035,7 @@ var PptxGenJS = function(){
 				// 3: Create vals
 				strXml += '  <c:val>';
 				strXml += '    <c:numRef>';
-				strXml += '      <c:f>Sheet1!'+ '$B$2:$'+ getExcelColName(obj.labels.length) +'$'+ 2 +'</c:f>';
+				strXml += '      <c:f>Sheet1!'+ '$B$2:$B$'+ (obj.labels.length+1) +'</c:f>';
 				strXml += '      <c:numCache>';
 				strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
 				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });

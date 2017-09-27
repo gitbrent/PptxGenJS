@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 17, 2017
+* DATE: Sep 26, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -1349,8 +1349,37 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 
-	// SLIDE 13: Multi-Type Charts ---------------------------------------------------------
+	// SLIDE 13: Scatter Chart -------------------------------------------------------------
 	function slide13() {
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Scatter Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataScatter = [
+			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10,11,12] },
+			{ name:'Y-Value 1', values:[13, 20, 21, 25] },
+			{ name:'Y-Value 2', values:[21, 22, 25, 49] }
+		];
+
+		var optsChartScat1 = { x:0.5, y:0.5, w:'90%', h:'90%',
+			showLegend: true,
+			legendPos : 't',
+
+			valAxisTitle        : "Renters",
+			valAxisTitleColor   : "428442",
+			valAxisTitleFontSize: 14,
+			showValAxisTitle    : true,
+
+			catAxisTitle        : "Last 12 Months",
+			catAxisTitleColor   : "428442",
+			catAxisTitleFontSize: 14,
+			showCatAxisTitle    : true
+		};
+		slide.addChart( pptx.charts.SCATTER, arrDataScatter, optsChartScat1 );
+
+	}
+
+	// SLIDE 14: Multi-Type Charts ---------------------------------------------------------
+	function slide14() {
 		// powerpoint 2016 add secondary category axis labels
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
@@ -1720,8 +1749,8 @@ function genSlides_Chart(pptx) {
 		//readmeExample();
 	}
 
-	// SLIDE 14: Charts Options: Shadow, Transparent Colors --------------------------------
-	function slide14() {
+	// SLIDE 15: Charts Options: Shadow, Transparent Colors --------------------------------
+	function slide15() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1830,6 +1859,8 @@ function genSlides_Chart(pptx) {
 	}
 
 	// RUN ALL SLIDE DEMOS -----
+	slide13();
+/*
 	slide1();
 	slide2();
 	slide3();
@@ -1844,6 +1875,8 @@ function genSlides_Chart(pptx) {
 	slide12();
 	slide13();
 	slide14();
+	slide15();
+*/
 }
 
 function genSlides_Media(pptx) {
