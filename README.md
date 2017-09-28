@@ -134,6 +134,7 @@ npm install pptxgenjs
 
 var pptx = require("pptxgenjs");
 ```
+* Desktop: Compatible with Electron applications!
 
 **************************************************************************************************
 # Presentations: Usage and Options
