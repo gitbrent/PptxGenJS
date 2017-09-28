@@ -2577,7 +2577,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
 					strXml += '      <c:f>Sheet1!$'+ getExcelColName(idx+1) +'$1</c:f>';
-					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
+					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ decodeXmlEntities(obj.name) +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
 
