@@ -2646,9 +2646,9 @@ var PptxGenJS = function(){
 								strXml += '<a:ln><a:noFill/></a:ln>';
 							}
 							else {
-								strXml += '<a:solidFill>';
+								strXml += '<a:ln><a:solidFill>';
 								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
-								strXml += '</a:solidFill>';
+								strXml += '</a:solidFill></a:ln>';
 							}
 							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 							strXml += '    </c:spPr>';
