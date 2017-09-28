@@ -53,9 +53,6 @@ Number.isInteger = Number.isInteger || function(value) {
 // Detect Node.js
 var NODEJS = ( typeof module !== 'undefined' && module.exports );
 
-// Detect electron
-var isElectron = require('is-electron')
-
 // [Node.js] <script> includes
 if ( NODEJS ) {
 	var gObjPptxColors  = require('../dist/pptxgen.colors.js');
@@ -4736,12 +4733,15 @@ var PptxGenJS = function(){
 
 // [Node.js] support
 if ( NODEJS ) {
-	// A: Load depdendencies
+	// A: Set vars
+	var isElectron = require("is-electron");
+
+	// B: Load depdendencies
 	var fs = require("fs");
-	var $ = isElectron() ? require("jquery") : require("jquery-node")	
+	var $ = isElectron() ? require("jquery") : require("jquery-node");
 	var JSZip = require("jszip");
 	var sizeOf = require("image-size");
 
-	// B: Export module
+	// C: Export module
 	module.exports = new PptxGenJS();
 }
