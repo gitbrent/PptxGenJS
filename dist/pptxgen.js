@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170927";
+	var APP_REL = "20170928";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2646,9 +2646,11 @@ var PptxGenJS = function(){
 								strXml += '<a:ln><a:noFill/></a:ln>';
 							}
 							else {
-								strXml += '<a:ln><a:solidFill>';
-								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
-								strXml += '</a:solidFill></a:ln>';
+								strXml += '<a:ln>';
+								strXml += '  <a:solidFill>';
+								strXml += '   <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
+								strXml += '  </a:solidFill>';
+								strXml += '</a:ln>';
 							}
 							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
 							strXml += '    </c:spPr>';
