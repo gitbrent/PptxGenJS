@@ -2409,13 +2409,13 @@ var PptxGenJS = function(){
 				if ( !rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length ) {
 					throw new Error('There must be the same number of value and category axes.');
 				}
-				strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY);
+				strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
 				if ( rel.opts.catAxes[1] ) {
-					strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY);
+					strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY);
 				}
 			}
 			else {
-				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY);
+				strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
 			}
 
 			rel.opts.hasArea = hasArea(rel.opts.type);
@@ -3051,7 +3051,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeCatAxis(opts, axisId) {
+	function makeCatAxis(opts, axisId, valueAxisId) {
 		var strXml = '';
 
 		// Build cat axis tag
@@ -3098,7 +3098,7 @@ var PptxGenJS = function(){
 		strXml += '  <a:endParaRPr lang="'+ (opts.lang || 'en-US') +'"/>';
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
-		strXml += ' <c:crossAx val="'+ axisId +'"/>';
+		strXml += ' <c:crossAx val="'+ valueAxisId +'"/>';
 		strXml += ' <c:crosses val="autoZero"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
