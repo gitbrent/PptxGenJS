@@ -218,7 +218,7 @@ var slide = pptx.addNewSlide();
 
 ### Slide Formatting
 ```javascript
-slide.bkgd  = 'F1F1F1';
+slide.back  = 'F1F1F1';
 slide.color = '696969';
 ```
 
