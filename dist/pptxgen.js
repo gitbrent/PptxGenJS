@@ -3082,7 +3082,7 @@ var PptxGenJS = function(){
 		else {
 			strXml += '  <c:majorTickMark val="out"/>';
 			strXml += '  <c:minorTickMark val="none"/>';
-			strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+			strXml += '  <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 		}
 		strXml += '  <c:spPr>';
 		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -3165,7 +3165,7 @@ var PptxGenJS = function(){
 		else {
 			strXml += ' <c:majorTickMark val="out"/>';
 			strXml += ' <c:minorTickMark val="none"/>';
-			strXml += ' <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+			strXml += ' <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 		}
 		strXml += '<c:spPr>';
 		strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';

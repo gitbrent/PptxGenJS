@@ -401,6 +401,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | integer | points  | `18`         | category-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels" | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
+| `catAxisLabelPos`      | string  | string  | `nextTo`     | axis label position     | `low`, `high`, or `nextTo` . Ex: `{ catAxisLabelPos: 'low' }`      |
 | `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line  | `true` or `false` |
 | `catAxisMajorTimeUnit` | string  |         |              | category-axis major time unit | `days` `months` or `years` |
 | `catAxisMinorTimeUnit` | string  |         |              | category-axis minor time unit | `days` `months` or `years` |
