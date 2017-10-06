@@ -2637,8 +2637,6 @@ var PptxGenJS = function(){
 						obj.values.forEach(function(value,index){
 							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
 
-							console.log('bar', chartType, value, index, arrColors[index % arrColors.length]);
-
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+ index +'"/>';
 							strXml += '      <c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
