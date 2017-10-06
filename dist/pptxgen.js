@@ -2637,6 +2637,8 @@ var PptxGenJS = function(){
 						obj.values.forEach(function(value,index){
 							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
 
+							console.log('bar', chartType, value, index, arrColors[index % arrColors.length]);
+
 							strXml += '  <c:dPt>';
 							strXml += '    <c:idx val="'+ index +'"/>';
 							strXml += '      <c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
@@ -2644,6 +2646,11 @@ var PptxGenJS = function(){
 							strXml += '    <c:spPr>';
 							if ( opts.lineSize === 0 ){
 								strXml += '<a:ln><a:noFill/></a:ln>';
+							}
+							else if (chartType === 'bar') {
+								strXml += '<a:solidFill>';
+								strXml += '  <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
+								strXml += '</a:solidFill>';
 							}
 							else {
 								strXml += '<a:ln>';
@@ -2825,6 +2832,7 @@ var PptxGenJS = function(){
 					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
+
 							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
 
 							strXml += '  <c:dPt>';
@@ -2882,26 +2890,28 @@ var PptxGenJS = function(){
 				});
 
 				// 3: Data Labels
-				strXml += '  <c:dLbls>';
-				strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
-				strXml += '    <c:txPr>';
-				strXml += '      <a:bodyPr/>';
-				strXml += '      <a:lstStyle/>';
-				strXml += '      <a:p><a:pPr>';
-				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-				strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
-				strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
-				strXml += '        </a:defRPr>';
-				strXml += '      </a:pPr></a:p>';
-				strXml += '    </c:txPr>';
-				strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
-				strXml += '    <c:showLegendKey val="0"/>';
-				strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
-				strXml += '    <c:showCatName val="0"/>';
-				strXml += '    <c:showSerName val="0"/>';
-				strXml += '    <c:showPercent val="0"/>';
-				strXml += '    <c:showBubbleSize val="0"/>';
-				strXml += '  </c:dLbls>';
+				{
+					strXml += '  <c:dLbls>';
+					strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+					strXml += '    <c:txPr>';
+					strXml += '      <a:bodyPr/>';
+					strXml += '      <a:lstStyle/>';
+					strXml += '      <a:p><a:pPr>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+					strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
+					strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
+					strXml += '        </a:defRPr>';
+					strXml += '      </a:pPr></a:p>';
+					strXml += '    </c:txPr>';
+					strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
+					strXml += '    <c:showCatName val="0"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="0"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
+					strXml += '  </c:dLbls>';
+				}
 
 				// 4: Add axisId (NOTE: order matters! (category comes first))
 				strXml += '  <c:axId val="'+ catAxisId +'"/>';
