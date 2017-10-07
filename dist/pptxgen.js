@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.9.0-beta";
-	var APP_REL = "20170928";
+	var APP_REL = "20171006";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2645,6 +2645,11 @@ var PptxGenJS = function(){
 							if ( opts.lineSize === 0 ){
 								strXml += '<a:ln><a:noFill/></a:ln>';
 							}
+							else if (chartType === 'bar') {
+								strXml += '<a:solidFill>';
+								strXml += '  <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
+								strXml += '</a:solidFill>';
+							}
 							else {
 								strXml += '<a:ln>';
 								strXml += '  <a:solidFill>';
@@ -2825,6 +2830,7 @@ var PptxGenJS = function(){
 					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
+
 							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
 
 							strXml += '  <c:dPt>';
@@ -2882,26 +2888,28 @@ var PptxGenJS = function(){
 				});
 
 				// 3: Data Labels
-				strXml += '  <c:dLbls>';
-				strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
-				strXml += '    <c:txPr>';
-				strXml += '      <a:bodyPr/>';
-				strXml += '      <a:lstStyle/>';
-				strXml += '      <a:p><a:pPr>';
-				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-				strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
-				strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
-				strXml += '        </a:defRPr>';
-				strXml += '      </a:pPr></a:p>';
-				strXml += '    </c:txPr>';
-				strXml += '    <c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
-				strXml += '    <c:showLegendKey val="0"/>';
-				strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
-				strXml += '    <c:showCatName val="0"/>';
-				strXml += '    <c:showSerName val="0"/>';
-				strXml += '    <c:showPercent val="0"/>';
-				strXml += '    <c:showBubbleSize val="0"/>';
-				strXml += '  </c:dLbls>';
+				{
+					strXml += '  <c:dLbls>';
+					strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+					strXml += '    <c:txPr>';
+					strXml += '      <a:bodyPr/>';
+					strXml += '      <a:lstStyle/>';
+					strXml += '      <a:p><a:pPr>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+					strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
+					strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
+					strXml += '        </a:defRPr>';
+					strXml += '      </a:pPr></a:p>';
+					strXml += '    </c:txPr>';
+					strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
+					strXml += '    <c:showCatName val="0"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="0"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
+					strXml += '  </c:dLbls>';
+				}
 
 				// 4: Add axisId (NOTE: order matters! (category comes first))
 				strXml += '  <c:axId val="'+ catAxisId +'"/>';
@@ -3082,7 +3090,7 @@ var PptxGenJS = function(){
 		else {
 			strXml += '  <c:majorTickMark val="out"/>';
 			strXml += '  <c:minorTickMark val="none"/>';
-			strXml += '  <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+			strXml += '  <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 		}
 		strXml += '  <c:spPr>';
 		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -3165,7 +3173,7 @@ var PptxGenJS = function(){
 		else {
 			strXml += ' <c:majorTickMark val="out"/>';
 			strXml += ' <c:minorTickMark val="none"/>';
-			strXml += ' <c:tickLblPos val="'+ (opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+			strXml += ' <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 		}
 		strXml += '<c:spPr>';
 		strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
