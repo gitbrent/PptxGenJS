@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Sep 26, 2017
+* DATE: Oct 06, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -969,19 +969,22 @@ function genSlides_Chart(pptx) {
 			pptx.charts.BAR,
 			[
 				{
-					name  : 'Colored Series',
-					labels: [38000, 38365, 38730, 40000, 40365, 40730],
+					name  : 'Labels are Excel Date Values',
+					labels: [37987,38018,38047,38078,38108,38139],
 					values: [20, 30, 10, 25, 15, 5]
 				}
 			],
 			{
 				x:0.5, y:0.6, w:'45%', h:3,
-				valAxisMaxVal:100,
 				barDir: 'bar',
-				catLabelFormatCode: "mm-yyyy",
-				valAxisMajorUnit: 50,
 				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384'],
-				barGapWidthPct: 25
+				catLabelFormatCode: "yyyy-mm",
+				valAxisMajorUnit: 15,
+				valAxisMaxVal: 45,
+				showTitle: true,
+				titleFontSize: 14,
+				titleColor: '0088CC',
+				title: 'Bar Charts Can Be Multi-Color'
 			}
 		);
 
@@ -1022,14 +1025,14 @@ function genSlides_Chart(pptx) {
 				}
 			],
 			{  x:0.5, y:4.0, w:'45%', h:3,
-				valAxisMaxVal:1,
 				barDir: 'bar',
 				showValue: true,
 				dataLabelPosition: 'outEnd',
 				dataLabelFormatCode: '#%',
 				valAxisLabelFormatCode: '0.#0',
-				chartColors: ['DE4216','154384'],
-				barGapWidthPct: 25
+				chartColors: ['0077BF','4E9D2D','ECAA00'],
+				valAxisMaxVal: .40,
+				barGapWidthPct: 50
 			}
 		);
 
