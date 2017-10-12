@@ -63,8 +63,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// APP
-	var APP_VER = "1.9.0";
-	var APP_REL = "20171010";
+	var APP_VER = "1.10.0-beta";
+	var APP_REL = "20171011";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2711,29 +2711,31 @@ var PptxGenJS = function(){
 				});
 
 				// 3: "Data Labels"
-				strXml += '  <c:dLbls>';
-				strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
-				strXml += '    <c:txPr>';
-				strXml += '      <a:bodyPr/>';
-				strXml += '      <a:lstStyle/>';
-				strXml += '      <a:p><a:pPr>';
-				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
-				strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
-				strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
-				strXml += '        </a:defRPr>';
-				strXml += '      </a:pPr></a:p>';
-				strXml += '    </c:txPr>';
-				if ( opts.type != 'area' ) strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
-				strXml += '    <c:showLegendKey val="0"/>';
-				strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
-				strXml += '    <c:showCatName val="0"/>';
-				strXml += '    <c:showSerName val="0"/>';
-				strXml += '    <c:showPercent val="0"/>';
-				strXml += '    <c:showBubbleSize val="0"/>';
-				strXml += '    <c:showLeaderLines val="0"/>';
-				strXml += '  </c:dLbls>';
+				{
+					strXml += '  <c:dLbls>';
+					strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+					strXml += '    <c:txPr>';
+					strXml += '      <a:bodyPr/>';
+					strXml += '      <a:lstStyle/>';
+					strXml += '      <a:p><a:pPr>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+					strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
+					strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
+					strXml += '        </a:defRPr>';
+					strXml += '      </a:pPr></a:p>';
+					strXml += '    </c:txPr>';
+					if ( opts.type != 'area' ) strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
+					strXml += '    <c:showCatName val="0"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="0"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
+					strXml += '    <c:showLeaderLines val="0"/>';
+					strXml += '  </c:dLbls>';
+				}
 
-				// 4: More chart options
+				// 4: Add more chart options (gapWidth, line Marker, etc.)
 				if ( chartType == 'bar' ) {
 					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
 					strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
