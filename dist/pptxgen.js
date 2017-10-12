@@ -97,6 +97,7 @@ var PptxGenJS = function(){
 	var CHART_TYPES = {
 		'AREA'    : { 'displayName':'Area Chart',     'name':'area'     },
 		'BAR'     : { 'displayName':'Bar Chart' ,     'name':'bar'      },
+		'BUBBLE'  : { 'displayName':'Bubble Chart',   'name':'bubble'   },
 		'DOUGHNUT': { 'displayName':'Doughnut Chart', 'name':'doughnut' },
 		'LINE'    : { 'displayName':'Line Chart',     'name':'line'     },
 		'PIE'     : { 'displayName':'Pie Chart' ,     'name':'pie'      },
@@ -2922,6 +2923,32 @@ var PptxGenJS = function(){
 
 				// end switch
 				break;
+
+			case 'bubble':
+				/*
+					`data` = [
+						{ name:'X-Axis',     values:[1,2,3,4,5,6,7,8,9,10,11,12] },
+						{ name:'Y-Values 1', values:[13, 20, 21, 25], sizes:[10, 5, 20, 15] },
+						{ name:'Y-Values 2', values:[ 1,  2,  5,  9], sizes:[ 5, 3,  9,  3] }
+					];
+				*/
+
+				// 1: Start Chart
+				strXml += '<c:'+ chartType +'Chart>';
+				strXml += '<c:varyColors val="0"/>';
+
+				// TODO:
+
+
+				// 5: Close Chart tag
+				strXml += '</c:'+ chartType +'Chart>';
+
+				// end switch
+				break;
+
+
+			// 1: Start Chart
+			strXml += '<c:'+ chartType +'Chart>';
 
 			case 'pie':
 			case 'doughnut':

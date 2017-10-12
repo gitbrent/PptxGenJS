@@ -1404,8 +1404,14 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat4 );
 	}
 
-	// SLIDE 14: Multi-Type Charts ---------------------------------------------------------
+	// SLIDE 14: Bubble Charts ---------------------------------------------------------
 	function slide14() {
+		var slide = pptx.addNewSlide();
+		slide.addTable( [ [{ text:'Chart Examples: Bubble Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	}
+
+	// SLIDE 15: Multi-Type Charts ---------------------------------------------------------
+	function slide15() {
 		// powerpoint 2016 add secondary category axis labels
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
@@ -1775,8 +1781,8 @@ function genSlides_Chart(pptx) {
 		//readmeExample();
 	}
 
-	// SLIDE 15: Charts Options: Shadow, Transparent Colors --------------------------------
-	function slide15() {
+	// SLIDE 16: Charts Options: Shadow, Transparent Colors --------------------------------
+	function slide16() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
@@ -1900,6 +1906,7 @@ function genSlides_Chart(pptx) {
 	slide13();
 	slide14();
 	slide15();
+	slide16();
 }
 
 function genSlides_Media(pptx) {
