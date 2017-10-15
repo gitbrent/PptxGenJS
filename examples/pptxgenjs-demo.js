@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Oct 06, 2017
+* DATE: Oct 14, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -1408,6 +1408,27 @@ function genSlides_Chart(pptx) {
 	function slide14() {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Bubble Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+
+		var arrDataBubble1 = [
+			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
+			{ name:'Y-Value 1', values:[13,20,21,25], sizes:[6,7,8,9] },
+			{ name:'Y-Value 2', values:[21,22,25,49], sizes:[2,3,4,5] }
+		];
+
+		// TOP-LEFT
+		var optsChartBubble1 = { x:0.5, y:0.6, w:'45%', h:3,
+			valAxisTitle        : "Renters",
+			valAxisTitleColor   : "428442",
+			valAxisTitleFontSize: 14,
+			showValAxisTitle    : true,
+			catAxisTitle        : "Last 10 Months",
+			catAxisTitleColor   : "428442",
+			catAxisTitleFontSize: 14,
+			showCatAxisTitle    : true
+		};
+		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1 );
+
+
 	}
 
 	// SLIDE 15: Multi-Type Charts ---------------------------------------------------------
