@@ -3050,6 +3050,9 @@ var PptxGenJS = function(){
 						if ( opts.lineSize == 0) {
 							strXml += '<a:ln><a:noFill/></a:ln>';
 						}
+						else if ( opts.dataBorder ) {
+							strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						}
 						else {
 							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
 							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
