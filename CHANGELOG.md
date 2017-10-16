@@ -4,7 +4,12 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.9.0...v1.10.0)
 
 **Fixed Bugs:**
+- Fixed bug that was preventing 'chartColorsOpacity' from being anything other than 50 percent. ([gitbrent](https://github.com/gitbrent))
+
 **Implemented Enhancements:**
+- New chart type: bubble charts [\#208](https://github.com/gitbrent/PptxGenJS/issues/208) ([shrikantbhongade](https://github.com/shrikantbhongade))
+
+
 
 
 
