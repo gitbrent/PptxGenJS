@@ -392,9 +392,9 @@
 
 				$('#getVersion').append( pptx.getVersion() );
 
-				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.charts) +"'>pptx.charts = "+ Object.keys(pptx.charts).length +'</span>');
-				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.colors) +"'>pptx.colors = "+ Object.keys(pptx.colors).length +'</span>');
-				$('#infoBar > div:last-child').append('<span>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span>');
+				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.charts) +"'><div class='iconSvg size24 check'></div>pptx.charts = "+ Object.keys(pptx.charts).length +'</span>');
+				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +'</span>');
+				$('#infoBar > div:last-child').append('<span><div class="iconSvg size24 check"></div>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span>');
 			}
 
 			// LAST: Nav across sessions
@@ -445,8 +445,8 @@
 
 			<div id="tab1" class="active" data-title="Intro">
 				<div id="infoBar" class="table">
-					<div style="width:40%">
-						Library Version: <span id="getVersion"></span>
+					<div style="width:40%; color:#66A7F7">
+						<div class="iconSvg size24 info"></div>Library Version: <span id="getVersion"></span>
 					</div>
 					<div style="width:60%; text-align:right">
 					</div>
@@ -489,56 +489,61 @@
 						<fieldset>
 							<legend>Bar Chart</legend>
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Vertical/Horizontal bars</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Vertical/Horizontal bars</div>
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Grid/Axis options</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Grid/Axis options</div>
 							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Stacked/PercentStacked Bars</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Stacked/PercentStacked Bars</div>
 							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of Bars</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Lots of Bars</div>
 							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Bar colors, majorUnit, Number Format</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Bar colors, majorUnit, Number Format</div>
 						</fieldset>
 						<fieldset>
 							<legend>Tornado Chart</legend>
 							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Tornado Type</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Tornado Type</div>
 						</fieldset>
 						<fieldset>
 							<legend>Line Chart</legend>
 							<h3>Slide 7</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Line Smoothing, Shadow, Size, Symbol Size</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Line Smoothing, Shadow, Size, Symbol Size</div>
 							<h3>Slide 8</h3>
-							<div class="chkRow"><div class="svgCheck"></div>lineDataSymbol and SymbolSize</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>lineDataSymbol and SymbolSize</div>
 							<h3>Slide 9</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Lots of Categories</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Lots of Categories</div>
 						</fieldset>
 						<fieldset>
 							<legend>Area Chart</legend>
 							<h3>Slide 10</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Opacity and other options</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Opacity and other options</div>
 						</fieldset>
 						<fieldset>
 							<legend>Pie Chart</legend>
 							<h3>Slide 11</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Various options</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Various options</div>
 							<h3>Slide 12</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Doughnut Type</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Doughnut Type</div>
 						</fieldset>
 						<fieldset>
 							<legend>X Y (Scatter) Chart</legend>
 							<h3>Slide 13</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Various Options</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Various Options</div>
+						</fieldset>
+						<fieldset>
+							<legend>Bubble Chart</legend>
+							<h3>Slide 14</h3>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Various Options</div>
 						</fieldset>
 						<fieldset>
 							<legend>Multi-Type Charts</legend>
-							<h3>Slide 14</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Various Mixed Chart Types</div>
+							<h3>Slide 15</h3>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Various Mixed Chart Types</div>
 						</fieldset>
 						<fieldset>
 							<legend>Chart Options</legend>
-							<h3>Slide 15</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Shadows and Transparent Color</div>
+							<h3>Slide 16</h3>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Shadows and Transparent Color</div>
 						</fieldset>
 					</div>
 					<div>
@@ -564,26 +569,26 @@
 						<fieldset>
 							<legend>Image Types</legend>
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Animated GIF (campfire icon - click to play)</div>
-							<div class="chkRow"><div class="svgCheck"></div>Four Image types using `path:'someImage'`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Pre-encoded image using `data:[base64]`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Hyperlinked Image</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Animated GIF (campfire icon - click to play)</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Four Image types using `path:'someImage'`</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Pre-encoded image using `data:[base64]`</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Hyperlinked Image</div>
 						</fieldset>
 						<fieldset>
 							<legend>Image Sizing</legend>
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Sizing: Contain</div>
-							<div class="chkRow"><div class="svgCheck"></div>Sizing: Cover</div>
-							<div class="chkRow"><div class="svgCheck"></div>Sizing: Crop</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Sizing: Contain</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Sizing: Cover</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Sizing: Crop</div>
 						</fieldset>
 						<fieldset>
 							<legend>Media Objects</legend>
 							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
 							<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
 
 							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Misc Audio formats</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Misc Audio formats</div>
 							<div style="color:red; padding:2px 0 0 40px">
 								* Only Node.js can read/encode media using `path`<br>
 								* Alternatively, use `data` with pre-encoded base64
@@ -606,30 +611,30 @@
 							<legend>Shape Objects</legend>
 
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
-							<div class="chkRow"><div class="svgCheck"></div>Shapes: Flipped, With and Without Text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Shape Borders</div>
-							<div class="chkRow"><div class="svgCheck"></div>Lines: With and Without Arrowheads</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Shapes: Flipped, With and Without Text</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Shape Borders</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Lines: With and Without Arrowheads</div>
 
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Same Shapes with Text</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Same Shapes with Text</div>
 						</fieldset>
 						<fieldset>
 							<legend>Text Objects</legend>
 
 							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Word-Level Formatting</div>
-							<div class="chkRow"><div class="svgCheck"></div>Multi-Line Text</div>
-							<div class="chkRow"><div class="svgCheck"></div>Hyperlinks: With and Without Tooltip</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Word-Level Formatting</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Multi-Line Text</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Hyperlinks: With and Without Tooltip</div>
 
 							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Bullets: Regular and Custom</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Bullets: Regular and Custom</div>
 
 							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Text alignment, percent x/y, etc</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Text alignment, percent x/y, etc</div>
 
 							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Scheme Colors</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Scheme Colors</div>
 						</fieldset>
 					</div>
 					<div>
@@ -649,36 +654,36 @@
 					    	<legend>Table Layout/Format</legend>
 
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Text Alignment</div>
-							<div class="chkRow"><div class="svgCheck"></div>Cell Styles</div>
-							<div class="chkRow"><div class="svgCheck"></div>Row Height / Col Width</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Text Alignment</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Cell Styles</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Row Height / Col Width</div>
 
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Colspans/Rowspans</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Colspans/Rowspans</div>
 
 							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Extreme Colspans/Rowspans</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Extreme Colspans/Rowspans</div>
 						</fieldset>
 						<fieldset style="height:auto">
 							<legend>Cell Formatting</legend>
 							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Cell Margins</div>
-							<div class="chkRow"><div class="svgCheck"></div>Complex Cell Borders</div>
-							<div class="chkRow"><div class="svgCheck"></div>Escaped Special Characters</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Cell Margins</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Complex Cell Borders</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Escaped Special Characters</div>
 							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Cell Text Formatting Overview</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Cell Text Formatting Overview</div>
 							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Cell Text Formatting Examples 2</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Cell Text Formatting Examples 2</div>
 						</fieldset>
 						<fieldset style="height:auto">
 							<legend>Table Auto-Paging</legend>
 							<h3>Slide 7-n</h3>
-							<div class="chkRow"><div class="svgCheck"></div>Test basic functionality</div>
-							<div class="chkRow"><div class="svgCheck"></div>Test with small table dimensions</div>
-							<div class="chkRow"><div class="svgCheck"></div>Test with correct starting `{y:4.0}`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Test with `{ newPageStartY:0.5 }`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Test with `{ autoPage:false }`</div>
-							<div class="chkRow"><div class="svgCheck"></div>Three Tables with various `lineWeight`</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Test basic functionality</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Test with small table dimensions</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Test with correct starting `{y:4.0}`</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Test with `{ newPageStartY:0.5 }`</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Test with `{ autoPage:false }`</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>Three Tables with various `lineWeight`</div>
 						</fieldset>
 					</div>
 					<div>
@@ -874,16 +879,16 @@
 						<fieldset>
 					    	<legend>Misc Tests</legend>
 							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="svgCheck"></div>TITLE_SLIDE</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>TITLE_SLIDE</div>
 
 							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>MASTER_SLIDE</div>
 
 							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="svgCheck"></div>MASTER_SLIDE</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>MASTER_SLIDE</div>
 
 							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="svgCheck"></div>THANKS_SLIDE</div>
+							<div class="chkRow"><div class="iconSvg size16 info"></div>THANKS_SLIDE</div>
 						</fieldset>
 						<fieldset>
 					    	<legend>Example</legend>

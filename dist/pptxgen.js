@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.10.0-beta";
-	var APP_REL = "20171011";
+	var APP_REL = "20171015";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -85,7 +85,7 @@ var PptxGenJS = function(){
 		'RECTANGLE': { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
 		'LINE'     : { 'displayName': 'Line',      'name': 'line', 'avLst': {} }
 	};
-	// NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two peices of code that use these before implementing these as options
+	// NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
 	// Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp
 	// and i'm not sure if anyone will even use these... so, skipping for now.
 	var BULLET_TYPES = {
@@ -97,6 +97,7 @@ var PptxGenJS = function(){
 	var CHART_TYPES = {
 		'AREA'    : { 'displayName':'Area Chart',     'name':'area'     },
 		'BAR'     : { 'displayName':'Bar Chart' ,     'name':'bar'      },
+		'BUBBLE'  : { 'displayName':'Bubble Chart',   'name':'bubble'   },
 		'DOUGHNUT': { 'displayName':'Doughnut Chart', 'name':'doughnut' },
 		'LINE'    : { 'displayName':'Line Chart',     'name':'line'     },
 		'PIE'     : { 'displayName':'Pie Chart' ,     'name':'pie'      },
@@ -1264,7 +1265,9 @@ var PptxGenJS = function(){
 
 			return new Promise(function(resolve, reject) {
 				var zipExcel = new JSZip();
+				var intBubbleCols = (((data.length-1)*2)+1) // 1 for "X-Values", then 2 for every Y-Axis
 
+				// A: Add folders
 				zipExcel.folder("_rels");
 				zipExcel.folder("docProps");
 				zipExcel.folder("xl/_rels");
@@ -1273,6 +1276,7 @@ var PptxGenJS = function(){
 				zipExcel.folder("xl/worksheets");
 				zipExcel.folder("xl/worksheets/_rels");
 
+				// B: Add core contents
 				{
 					zipExcel.file("[Content_Types].xml",
 						'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
@@ -1346,24 +1350,38 @@ var PptxGenJS = function(){
 					);
 				}
 
-				// `sharedStrings.xml`
+				// sharedStrings.xml
 				{
 					// A: Start XML
 					var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-					if ( chartObject.opts.type.name === 'scatter' ) {
-						strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data.length+1) +'" uniqueCount="'+ (data.length+1) +'">'
+					if ( chartObject.opts.type.name === 'bubble') {
+						strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (intBubbleCols+1) +'" uniqueCount="'+ (intBubbleCols+1) +'">';
+					}
+					else if ( chartObject.opts.type.name === 'scatter' ) {
+						strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data.length+1) +'" uniqueCount="'+ (data.length+1) +'">';
 					}
 					else {
-						strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data[0].labels.length+data.length+1) +'" uniqueCount="'+ (data[0].labels.length+data.length+1) +'">'
+						strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="'+ (data[0].labels.length+data.length+1) +'" uniqueCount="'+ (data[0].labels.length+data.length+1) +'">';
 						// B: Add 'blank' for A1
 						strSharedStrings += '<si><t xml:space="preserve"></t></si>';
 					}
 
 					// C: Add `name`/Series
-					data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ decodeXmlEntities((objData.name || ' ').replace('X-Axis','X-Values')) +'</t></si>'; });
+					if ( chartObject.opts.type.name === 'bubble') {
+						data.forEach(function(objData,idx){
+							if ( idx == 0 ) strSharedStrings += '<si><t>'+ 'X-Axis' +'</t></si>';
+							else {
+								strSharedStrings += '<si><t>'+ decodeXmlEntities(objData.name || ' ') +'</t></si>';
+								strSharedStrings += '<si><t>'+ decodeXmlEntities('Size '+idx) +'</t></si>';
+							}
+						});
+					}
+					else {
+						data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ decodeXmlEntities((objData.name || ' ').replace('X-Axis','X-Values')) +'</t></si>'; });
+					}
 
 					// D: Add `labels`/Categories
-					if ( chartObject.opts.type.name != 'scatter' ) {
+					if ( chartObject.opts.type.name != 'bubble' && chartObject.opts.type.name != 'scatter' ) {
 						data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ decodeXmlEntities(label) +'</t></si>'; });
 					}
 
@@ -1374,7 +1392,14 @@ var PptxGenJS = function(){
 				// tables/table1.xml
 				{
 					var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-					if ( chartObject.opts.type.name == 'scatter' ) {
+					if ( chartObject.opts.type.name == 'bubble' ) {
+						/*
+						strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
+						strTableXml += '<tableColumns count="' + (data.length) +'">';
+						data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'" />' });
+						*/
+					}
+					else if ( chartObject.opts.type.name == 'scatter' ) {
 						strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
 						strTableXml += '<tableColumns count="' + (data.length) +'">';
 						data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'" />' });
@@ -1392,121 +1417,177 @@ var PptxGenJS = function(){
 				}
 
 				// worksheets/sheet1.xml
-				var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-				strSheetXml += '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
-				if ( chartObject.opts.type.name === 'scatter' ) {
-					strSheetXml += '<dimension ref="A1:'+ LETTERS[(data.length-1)] + (data[0].values.length+1) +'" />';
-				}
-				else {
-					strSheetXml += '<dimension ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'" />';
-				}
-
-				strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
-				strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
-				if ( chartObject.opts.type.name == 'scatter' ) {
-					strSheetXml += '<cols>';
-					strSheetXml += '<col min="1" max="'+ data.length +'" width="11" customWidth="1" />';
-					//data.forEach(function(obj,idx){ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
-					strSheetXml += '</cols>';
-					/* EX: INPUT: `data`
-					[
-						{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
-						{ name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9] },
-						{ name:'Y-Axis 2', values:[33,32,42,53,63] }
-					];
-					*/
-					/* EX: OUTPUT: scatterChart Worksheet:
-						-|----A-----|------B-----|
-						1| X-Values | Y-Values 1 |
-						2|    11    |     22     |
-						-|----------|------------|
-					*/
-					strSheetXml += '<sheetData>';
-
-					// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-					strSheetXml += '<row r="1" spans="1:'+ data.length +'">';
-					strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
-					for (var idx=1; idx<data.length; idx++) {
-						strSheetXml += '<c r="'+ (idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length]) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
-						strSheetXml += '<v>'+ idx +'</v>';
-						strSheetXml += '</c>';
+				{
+					var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+					strSheetXml += '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
+					if ( chartObject.opts.type.name === 'bubble' ) {
+						strSheetXml += '<dimension ref="A1:'+ LETTERS[(intBubbleCols-1)] + (data[0].values.length+1) +'" />';
 					}
-					strSheetXml += '</row>';
-
-					// B: Add row for each X-Axis value (Y-Axis* value is optional)
-					data[0].values.forEach(function(val,idx){
-						// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
-						strSheetXml += '<row r="'+ (idx+2) +'" spans="1:'+ data.length +'">';
-						strSheetXml += '<c r="A'+ (idx+2) +'"><v>'+ val +'</v></c>';
-						// Add Y-Axis 1->N
-						for (var idy=1; idy<data.length; idy++) {
-							strSheetXml += '<c r="'+ ( idy < 26 ? LETTERS[idy] : 'A'+LETTERS[idy%LETTERS.length] ) +''+ (idx+2) +'">';
-							strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
-							strSheetXml += '</c>';
-						};
-						strSheetXml += '</row>';
-					});
-				}
-				else {
-					strSheetXml += '<cols>';
-					strSheetXml += '<col min="1" max="1" width="11" customWidth="1" />';
-					//data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1" />' });
-					strSheetXml += '</cols>';
-					strSheetXml += '<sheetData>';
-
-					/* EX: INPUT: `data`
-					[
-						{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
-						{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
-						{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
-					];
-					*/
-					/* EX: OUTPUT: lineChart Worksheet:
-						-|---A---|--B--|--C--|--D--|
-						1|       | Red | Amb | Grn |
-						2|Jan-17 |   11|   22|   33|
-						3|Feb-17 |   55|   43|   70|
-						4|Mar-17 |   56|  143|   99|
-						5|Apr-17 |   65|    3|  120|
-						6|May-17 |   75|   93|  170|
-						-|-------|-----|-----|-----|
-					*/
-
-					// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-					strSheetXml += '<row r="1" spans="1:'+ (data.length+1) +'">';
-					strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
-					for (var idx=1; idx<=data.length; idx++) {
-						// FIXME: Max cols is 52
-						strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
-						strSheetXml += '<v>'+ idx +'</v>';
-						strSheetXml += '</c>';
+					else if ( chartObject.opts.type.name === 'scatter' ) {
+						strSheetXml += '<dimension ref="A1:'+ LETTERS[(data.length-1)] + (data[0].values.length+1) +'" />';
 					}
-					strSheetXml += '</row>';
+					else {
+						strSheetXml += '<dimension ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'" />';
+					}
 
-					// B: Add data row(s) for each category
-					data[0].labels.forEach(function(cat,idx){
-						// Leading col is reserved for the label, so hard-code it, then loop over col values
-						strSheetXml += '<row r="'+ (idx+2) +'" spans="1:'+ (data.length+1) +'">';
-						strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
-						strSheetXml += '<v>'+ (data.length+idx+1) +'</v>';
-						strSheetXml += '</c>';
-						for (var idy=0; idy<data.length; idy++) {
-							strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
-							strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
+					strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
+					strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
+					if ( chartObject.opts.type.name == 'bubble' ) {
+						strSheetXml += '<cols>';
+						strSheetXml += '<col min="1" max="'+ data.length +'" width="11" customWidth="1" />';
+						strSheetXml += '</cols>';
+						/* EX: INPUT: `data`
+						[
+							{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
+							{ name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9], sizes:[ 4, 5, 6, 7, 8] },
+							{ name:'Y-Axis 2', values:[33,32,42,53,63], sizes:[11,12,13,14,15] }
+						];
+						*/
+						/* EX: OUTPUT: bubbleChart Worksheet:
+							-|----A-----|------B-----|------C-----|------D-----|------E-----|
+							1| X-Values | Y-Values 1 | Y-Sizes 1  | Y-Values 2 | Y-Sizes 2  |
+							2|    11    |     22     |      4     |     33     |      8     |
+							-|----------|------------|------------|------------|------------|
+						*/
+						strSheetXml += '<sheetData>';
+
+						// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+						strSheetXml += '<row r="1" spans="1:'+ intBubbleCols +'">';
+						strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
+						for (var idx=1; idx<intBubbleCols; idx++) {
+							strSheetXml += '<c r="'+ (idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length]) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
+							strSheetXml += '<v>'+ idx +'</v>';
 							strSheetXml += '</c>';
 						}
 						strSheetXml += '</row>';
-					});
+
+						// B: Add row for each X-Axis value (Y-Axis* value is optional)
+						data[0].values.forEach(function(val,idx){
+							// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
+							strSheetXml += '<row r="'+ (idx+2) +'" spans="1:'+ intBubbleCols +'">';
+							strSheetXml += '<c r="A'+ (idx+2) +'"><v>'+ val +'</v></c>';
+							// Add Y-Axis 1->N (idy=0 = Xaxis)
+							var idxColLtr = 1;
+							for (var idy=1; idy<data.length; idy++) {
+								// y-value
+								strSheetXml += '<c r="'+ ( idxColLtr < 26 ? LETTERS[idxColLtr] : 'A'+LETTERS[idxColLtr%LETTERS.length] ) +''+ (idx+2) +'">';
+								strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
+								strSheetXml += '</c>';
+								idxColLtr++;
+								// y-size
+								strSheetXml += '<c r="'+ ( idxColLtr < 26 ? LETTERS[idxColLtr] : 'A'+LETTERS[idxColLtr%LETTERS.length] ) +''+ (idx+2) +'">';
+								strSheetXml += '<v>'+ (data[idy].sizes[idx] || '') +'</v>';
+								strSheetXml += '</c>';
+								idxColLtr++;
+							};
+							strSheetXml += '</row>';
+						});
+					}
+					else if ( chartObject.opts.type.name == 'scatter' ) {
+						strSheetXml += '<cols>';
+						strSheetXml += '<col min="1" max="'+ data.length +'" width="11" customWidth="1" />';
+						//data.forEach(function(obj,idx){ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
+						strSheetXml += '</cols>';
+						/* EX: INPUT: `data`
+						[
+							{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
+							{ name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9] },
+							{ name:'Y-Axis 2', values:[33,32,42,53,63] }
+						];
+						*/
+						/* EX: OUTPUT: scatterChart Worksheet:
+							-|----A-----|------B-----|
+							1| X-Values | Y-Values 1 |
+							2|    11    |     22     |
+							-|----------|------------|
+						*/
+						strSheetXml += '<sheetData>';
+
+						// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+						strSheetXml += '<row r="1" spans="1:'+ data.length +'">';
+						strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
+						for (var idx=1; idx<data.length; idx++) {
+							strSheetXml += '<c r="'+ (idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length]) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
+							strSheetXml += '<v>'+ idx +'</v>';
+							strSheetXml += '</c>';
+						}
+						strSheetXml += '</row>';
+
+						// B: Add row for each X-Axis value (Y-Axis* value is optional)
+						data[0].values.forEach(function(val,idx){
+							// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
+							strSheetXml += '<row r="'+ (idx+2) +'" spans="1:'+ data.length +'">';
+							strSheetXml += '<c r="A'+ (idx+2) +'"><v>'+ val +'</v></c>';
+							// Add Y-Axis 1->N
+							for (var idy=1; idy<data.length; idy++) {
+								strSheetXml += '<c r="'+ ( idy < 26 ? LETTERS[idy] : 'A'+LETTERS[idy%LETTERS.length] ) +''+ (idx+2) +'">';
+								strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
+								strSheetXml += '</c>';
+							};
+							strSheetXml += '</row>';
+						});
+					}
+					else {
+						strSheetXml += '<cols>';
+						strSheetXml += '<col min="1" max="1" width="11" customWidth="1" />';
+						//data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1" />' });
+						strSheetXml += '</cols>';
+						strSheetXml += '<sheetData>';
+
+						/* EX: INPUT: `data`
+						[
+							{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+							{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+							{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+						];
+						*/
+						/* EX: OUTPUT: lineChart Worksheet:
+							-|---A---|--B--|--C--|--D--|
+							1|       | Red | Amb | Grn |
+							2|Jan-17 |   11|   22|   33|
+							3|Feb-17 |   55|   43|   70|
+							4|Mar-17 |   56|  143|   99|
+							5|Apr-17 |   65|    3|  120|
+							6|May-17 |   75|   93|  170|
+							-|-------|-----|-----|-----|
+						*/
+
+						// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+						strSheetXml += '<row r="1" spans="1:'+ (data.length+1) +'">';
+						strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
+						for (var idx=1; idx<=data.length; idx++) {
+							// FIXME: Max cols is 52
+							strSheetXml += '<c r="'+ ( idx < 26 ? LETTERS[idx] : 'A'+LETTERS[idx%LETTERS.length] ) +'1" t="s">'; // NOTE: use `t="s"` for label cols!
+							strSheetXml += '<v>'+ idx +'</v>';
+							strSheetXml += '</c>';
+						}
+						strSheetXml += '</row>';
+
+						// B: Add data row(s) for each category
+						data[0].labels.forEach(function(cat,idx){
+							// Leading col is reserved for the label, so hard-code it, then loop over col values
+							strSheetXml += '<row r="'+ (idx+2) +'" spans="1:'+ (data.length+1) +'">';
+							strSheetXml += '<c r="A'+ (idx+2) +'" t="s">';
+							strSheetXml += '<v>'+ (data.length+idx+1) +'</v>';
+							strSheetXml += '</c>';
+							for (var idy=0; idy<data.length; idy++) {
+								strSheetXml += '<c r="'+ ( (idy+1) < 26 ? LETTERS[(idy+1)] : 'A'+LETTERS[(idy+1)%LETTERS.length] ) +''+ (idx+2) +'">';
+								strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
+								strSheetXml += '</c>';
+							}
+							strSheetXml += '</row>';
+						});
+					}
+					strSheetXml += '</sheetData>';
+					strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />';
+					// Link the `table1.xml` file to define an actual Table in Excel
+					// NOTE: This onyl works with scatter charts - all others give a "cannot find linked file" error
+					// ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
+					// ....: Leaving this so nobody foolishly attempts to add this in the future
+					// strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
+					strSheetXml += '</worksheet>\n';
+					zipExcel.file("xl/worksheets/sheet1.xml", strSheetXml);
 				}
-				strSheetXml += '</sheetData>';
-				strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />';
-				// Link the `table1.xml` file to define an actual Table in Excel
-				// NOTE: This onyl works with scatter charts - all others give a "cannot find linked file" error
-				// ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
-				// ....: Leaving this so nobody foolishly attempts to add this in the future
-				// strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
-				strSheetXml += '</worksheet>\n';
-				zipExcel.file("xl/worksheets/sheet1.xml", strSheetXml);
 
 				// C: Add XLSX to PPTX export
 				zipExcel.generateAsync({type:'base64'})
@@ -2319,13 +2400,14 @@ var PptxGenJS = function(){
 	*/
 
 	/**
-	* @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
-	*/
+	 * Main entry point method for create charts
+	 * @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
+	 */
 	function makeXmlCharts(rel) {
 		// HELPER FUNCS:
-		function hasArea (chartType) {
-			function has (type) {
-				return chartType.some(function (item) {
+		function hasArea(chartType) {
+			function has(type) {
+				return chartType.some(function(item) {
 					return item.type.name === type;
 				});
 			}
@@ -2521,20 +2603,16 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function createGridLineElement(glOpts, defaults, type) {
-		type = type || 'major';
-		var tagName = 'c:'+ type + 'Gridlines';
-		strXml =  '<'+ tagName + '>';
-		strXml += ' <c:spPr>';
-		strXml += '  <a:ln w="' + Math.round((glOpts.size || defaults.size) * ONEPT) +'" cap="flat">';
-		strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || defaults.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
-		strXml += '   <a:prstDash val="' + (glOpts.style || defaults.style) + '"/><a:round/>';
-		strXml += '  </a:ln>';
-		strXml += ' </c:spPr>';
-		strXml += '</'+ tagName + '>';
-		return strXml;
-	}
-
+	/**
+	 * Create XML string for any given chart type
+	 * @example: <c:bubbleChart> or <c:lineChart>
+	 *
+	 * @param {String} CHART_TYPES key
+	 * @param {String} data
+	 * @param {String} opts
+	 * @param {String} valAxisId
+	 * @param {String} catAxisId
+	 */
 	function makeChartType(chartType, data, opts, valAxisId, catAxisId) {
 		// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 		// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
@@ -2589,7 +2667,7 @@ var PptxGenJS = function(){
 						strXml += '<a:noFill/>';
 					}
 					else if ( opts.chartColorsOpacity ) {
-						strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
+						strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="'+opts.chartColorsOpacity+'000"/>') +'</a:solidFill>';
 					}
 					else {
 						strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
@@ -2791,7 +2869,7 @@ var PptxGenJS = function(){
 							strXml += '<a:noFill/>';
 						}
 						else if ( opts.chartColorsOpacity ) {
-							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
+							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="'+opts.chartColorsOpacity+'000"/>') +'</a:solidFill>';
 						}
 						else {
 							strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
@@ -2918,6 +2996,158 @@ var PptxGenJS = function(){
 				strXml += '  <c:axId val="'+ valAxisId +'"/>';
 
 				// 5: Close Chart tag
+				strXml += '</c:'+ chartType +'Chart>';
+
+				// end switch
+				break;
+
+			case 'bubble':
+				/*
+					`data` = [
+						{ name:'X-Axis',     values:[1,2,3,4,5,6,7,8,9,10,11,12] },
+						{ name:'Y-Values 1', values:[13, 20, 21, 25], sizes:[10, 5, 20, 15] },
+						{ name:'Y-Values 2', values:[ 1,  2,  5,  9], sizes:[ 5, 3,  9,  3] }
+					];
+				*/
+
+				// 1: Start Chart
+				strXml += '<c:'+ chartType +'Chart>';
+				strXml += '<c:varyColors val="0"/>';
+
+				// 2: Series: (One for each Y-Axis)
+				var colorIndex = -1;
+				var idxColLtr = 1;
+				data.filter(function(obj,idx){ return idx > 0; }).forEach(function(obj,idx){
+					colorIndex++;
+					strXml += '<c:ser>';
+					strXml += '  <c:idx val="'+ idx +'"/>';
+					strXml += '  <c:order val="'+ idx +'"/>';
+
+					// A: `<c:tx>`
+					strXml += '  <c:tx>';
+					strXml += '    <c:strRef>';
+					strXml += '      <c:f>Sheet1!$'+ LETTERS[idxColLtr] +'$1</c:f>';
+					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
+					strXml += '    </c:strRef>';
+					strXml += '  </c:tx>';
+
+					// B: '<c:spPr>': Fill, Border, Line, LineStyle (dash, etc.), Shadow
+					{
+						strXml += '<c:spPr>';
+
+						var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
+
+						if ( strSerColor == 'transparent' ) {
+							strXml += '<a:noFill/>';
+						}
+						else if ( opts.chartColorsOpacity ) {
+							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="'+opts.chartColorsOpacity+'000"/>') +'</a:solidFill>';
+						}
+						else {
+							strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
+						}
+
+						if ( opts.lineSize == 0) {
+							strXml += '<a:ln><a:noFill/></a:ln>';
+						}
+						else if ( opts.dataBorder ) {
+							strXml += '<a:ln w="'+ (opts.dataBorder.pt * ONEPT) +'" cap="flat"><a:solidFill>'+ createColorElement(opts.dataBorder.color) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+						}
+						else {
+							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
+							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+						}
+
+						// Shadow
+						strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
+
+						strXml += '</c:spPr>';
+					}
+
+					// C: '<c:dLbls>' "Data Labels"
+					// Let it be defaulted for now
+
+					// D: '<c:xVal>'/'<c:yVal>' "Values": Scatter Chart has 2: `xVal` and `yVal`
+					{
+						// X-Axis is always the same
+						strXml += '<c:xVal>';
+						strXml += '  <c:numRef>';
+						strXml += '    <c:f>Sheet1!$A$2:$A$'+ (data[0].values.length+1) +'</c:f>';
+						strXml += '    <c:numCache>';
+						strXml += '      <c:formatCode>General</c:formatCode>';
+						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
+						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+						strXml += '    </c:numCache>';
+						strXml += '  </c:numRef>';
+						strXml += '</c:xVal>';
+
+						// Y-Axis vals are this object's `values`
+						strXml += '<c:yVal>';
+						strXml += '  <c:numRef>';
+						strXml += '    <c:f>Sheet1!$'+ getExcelColName(idxColLtr) +'$2:$'+ getExcelColName(idxColLtr) +'$'+ (data[0].values.length+1) +'</c:f>';
+						idxColLtr++;
+						strXml += '    <c:numCache>';
+						strXml += '      <c:formatCode>General</c:formatCode>';
+						// NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
+						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
+						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (obj.values[idx] || '') +'</c:v></c:pt>'; });
+						strXml += '    </c:numCache>';
+						strXml += '  </c:numRef>';
+						strXml += '</c:yVal>';
+					}
+
+					// E: '<c:bubbleSize>'
+					strXml += '  <c:bubbleSize>';
+					strXml += '    <c:numRef>';
+					strXml += '      <c:f>Sheet1!'+ '$'+ getExcelColName(idxColLtr) +'$2:$'+ getExcelColName(idx+2) +'$'+ (obj.sizes.length+1) +'</c:f>';
+					idxColLtr++;
+					strXml += '      <c:numCache>';
+					strXml += '        <c:formatCode>General</c:formatCode>';
+					strXml += '	       <c:ptCount val="'+ obj.sizes.length +'"/>';
+					obj.sizes.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+					strXml += '      </c:numCache>';
+					strXml += '    </c:numRef>';
+					strXml += '  </c:bubbleSize>';
+					strXml += '  <c:bubble3D val="0"/>';
+
+					// F: Close "SERIES"
+					strXml += '</c:ser>';
+				});
+
+				// 3: Data Labels
+				{
+					strXml += '  <c:dLbls>';
+					strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+					strXml += '    <c:txPr>';
+					strXml += '      <a:bodyPr/>';
+					strXml += '      <a:lstStyle/>';
+					strXml += '      <a:p><a:pPr>';
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+					strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
+					strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
+					strXml += '        </a:defRPr>';
+					strXml += '      </a:pPr></a:p>';
+					strXml += '    </c:txPr>';
+					strXml += '    <c:dLblPos val="ctr"/>';
+					strXml += '    <c:showLegendKey val="0"/>';
+					strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
+					strXml += '    <c:showCatName val="0"/>';
+					strXml += '    <c:showSerName val="0"/>';
+					strXml += '    <c:showPercent val="0"/>';
+					strXml += '    <c:showBubbleSize val="0"/>';
+					strXml += '  </c:dLbls>';
+				}
+
+				// 4: Add bubble options
+				//strXml += '  <c:bubbleScale val="100"/>';
+				//strXml += '  <c:showNegBubbles val="0"/>';
+				// Commented out to let it default to PPT until we create options
+
+				// 5: Add axisId (NOTE: order matters! (category comes first))
+				strXml += '  <c:axId val="'+ catAxisId +'"/>';
+				strXml += '  <c:axId val="'+ valAxisId +'"/>';
+
+				// 6: Close Chart tag
 				strXml += '</c:'+ chartType +'Chart>';
 
 				// end switch
@@ -3063,7 +3293,7 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-	function makeCatAxis(opts, axisId, valueAxisId) {
+	function makeCatAxis(opts, axisId, valAxisId) {
 		var strXml = '';
 
 		// Build cat axis tag
@@ -3110,7 +3340,7 @@ var PptxGenJS = function(){
 		strXml += '  <a:endParaRPr lang="'+ (opts.lang || 'en-US') +'"/>';
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
-		strXml += ' <c:crossAx val="'+ valueAxisId +'"/>';
+		strXml += ' <c:crossAx val="'+ valAxisId +'"/>';
 		strXml += ' <c:crosses val="autoZero"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
