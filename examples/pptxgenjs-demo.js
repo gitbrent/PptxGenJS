@@ -1423,7 +1423,8 @@ function genSlides_Chart(pptx) {
 		var optsChartBubble1 = { x:0.5, y:0.6, w:'45%', h:3,
 			chartColors: ['4477CC','ED7D31'],
 			chartColorsOpacity: 40,
-			dataBorder: {pt:1, color:'FFFFFF'}
+			dataBorder: {pt:1, color:'FFFFFF'},
+			showValue: true
 		};
 		slide.addText( '.', {x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1 );
@@ -1451,12 +1452,12 @@ function genSlides_Chart(pptx) {
 			valAxisOrientation: 'maxMin',
 			showCatAxisTitle: false,
 			showValAxisTitle: false,
-			lineSize: 0
+			dataBorder: {pt:2, color:'FFFFFF'}
 		};
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble3 );
 
 		// BOTTOM-RIGHT
-		var optsChartBubble4 = { x:7.0, y:4.0, w:'45%', h:3 };
+		var optsChartBubble4 = { x:7.0, y:4.0, w:'45%', h:3, lineSize:0 };
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble4 );
 	}
 
