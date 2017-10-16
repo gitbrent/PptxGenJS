@@ -1294,8 +1294,7 @@ function genSlides_Chart(pptx) {
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
-		var optsChartPie1 = {
-			x:0.5, y:1.0, w:6.0, h:6.0,
+		var optsChartPie1 = { x:0.5, y:1.0, w:6.0, h:6.0,
 			chartColors: ['FC0000','FFCC00','009900','6600CC'],
 			dataBorder       : { pt:'2', color:'F1F1F1' },
 			dataLabelColor   : 'FFFFFF',
@@ -1348,7 +1347,6 @@ function genSlides_Chart(pptx) {
 			{ name:'Y-Value 1', values:[13, 20, 21, 25] },
 			{ name:'Y-Value 2', values:[21, 22, 25, 49] }
 		];
-
 		var arrDataScatter2 = [
 			{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
 			{ name:'Airplane', values:[33, 20, 51, 65, 71, 75] },
@@ -1414,6 +1412,12 @@ function genSlides_Chart(pptx) {
 			{ name:'Y-Value 1', values:[1.3,6,3.5,2.5,7.5,5], sizes:[1,4,2,3,7,4] },
 			{ name:'Y-Value 2', values:[3,9,5,7,9,10], sizes:[9,7,10,2,4,5] }
 		];
+		var arrDataBubble2 = [
+			{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
+			{ name:'Airplane', values:[33, 20, 51, 65, 71, 75], sizes:[10,10,12,12,15,20] },
+			{ name:'Train',    values:[99, 88, 77, 89, 99, 99], sizes:[20,20,22,22,25,30] },
+			{ name:'Bus',      values:[21, 22, 25, 49, 59, 69], sizes:[11,11,13,13,16,21] }
+		];
 
 		// TOP-LEFT
 		var optsChartBubble1 = { x:0.5, y:0.6, w:'45%', h:3,
@@ -1421,9 +1425,39 @@ function genSlides_Chart(pptx) {
 			chartColorsOpacity: 40,
 			dataBorder: {pt:1, color:'FFFFFF'}
 		};
+		slide.addText( '.', {x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1 );
 
+		// TOP-RIGHT
+		var optsChartBubble2 = { x:7.0, y:0.6, w:'45%', h:3,
+			fill: 'f1f1f1',
+			showLegend: true,
+			legendPos : 'b',
 
+			lineSize  : 8,
+			lineSmooth: true,
+			lineDataSymbolSize: 12,
+			lineDataSymbolLineColor: 'FFFFFF',
+
+			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
+			chartColorsOpacity: 25
+		};
+		slide.addChart( pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble2 );
+
+		// BOTTOM-LEFT
+		var optsChartBubble3 = { x:0.5, y:4.0, w:'45%', h:3,
+			fill: 'f2f9fc',
+			catAxisOrientation: 'maxMin',
+			valAxisOrientation: 'maxMin',
+			showCatAxisTitle: false,
+			showValAxisTitle: false,
+			lineSize: 0
+		};
+		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble3 );
+
+		// BOTTOM-RIGHT
+		var optsChartBubble4 = { x:7.0, y:4.0, w:'45%', h:3 };
+		slide.addChart( pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble4 );
 	}
 
 	// SLIDE 15: Multi-Type Charts ---------------------------------------------------------
