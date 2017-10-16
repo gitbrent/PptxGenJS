@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.10.0-beta";
-	var APP_REL = "20171014";
+	var APP_REL = "20171015";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -85,7 +85,7 @@ var PptxGenJS = function(){
 		'RECTANGLE': { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
 		'LINE'     : { 'displayName': 'Line',      'name': 'line', 'avLst': {} }
 	};
-	// NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two peices of code that use these before implementing these as options
+	// NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
 	// Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp
 	// and i'm not sure if anyone will even use these... so, skipping for now.
 	var BULLET_TYPES = {
@@ -2400,13 +2400,14 @@ var PptxGenJS = function(){
 	*/
 
 	/**
+	 * Main entry point method for create charts
 	 * @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
 	 */
 	function makeXmlCharts(rel) {
 		// HELPER FUNCS:
-		function hasArea (chartType) {
-			function has (type) {
-				return chartType.some(function (item) {
+		function hasArea(chartType) {
+			function has(type) {
+				return chartType.some(function(item) {
 					return item.type.name === type;
 				});
 			}
@@ -3020,6 +3021,8 @@ var PptxGenJS = function(){
 					strXml += '<c:ser>';
 					strXml += '  <c:idx val="'+ idx +'"/>';
 					strXml += '  <c:order val="'+ idx +'"/>';
+
+					// A: `<c:tx>`
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
 					strXml += '      <c:f>Sheet1!$'+ LETTERS[(idx+1)] +'$1</c:f>';
@@ -3027,9 +3030,10 @@ var PptxGenJS = function(){
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
 
-					// 'c:spPr': Fill, Border, Line, LineStyle (dash, etc.), Shadow
-					strXml += '  <c:spPr>';
+					// B: '<c:spPr>': Fill, Border, Line, LineStyle (dash, etc.), Shadow
 					{
+						strXml += '<c:spPr>';
+
 						var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
 
 						if ( strSerColor == 'transparent' ) {
@@ -3052,54 +3056,14 @@ var PptxGenJS = function(){
 
 						// Shadow
 						strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
-					}
-					strXml += '  </c:spPr>';
 
-					// 'c:marker' tag: `lineDataSymbol`
-					{
-						strXml += '<c:marker>';
-						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
-						if ( opts.lineDataSymbolSize ) {
-							// Defaults to "auto" otherwise (but this is usually too small, so there is a default)
-							strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>';
-						}
-						strXml += '  <c:spPr>';
-						strXml += '    <a:solidFill>' + createColorElement(opts.chartColors[(idx+1 > opts.chartColors.length ? (Math.floor(Math.random() * opts.chartColors.length)) : idx)]) +'</a:solidFill>';
-						var symbolLineColor = opts.lineDataSymbolLineColor || strSerColor;
-						strXml += '    <a:ln w="' + opts.lineDataSymbolLineSize + '" cap="flat"><a:solidFill>'+ createColorElement(symbolLineColor) +'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-						strXml += '    <a:effectLst/>';
-						strXml += '  </c:spPr>';
-						strXml += '</c:marker>';
+						strXml += '</c:spPr>';
 					}
 
-					// Color bar chart bars various colors
-					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
-						// Series Data Point colors
-						obj.values.forEach(function(value,index){
+					// C: '<c:dLbls>' "Data Labels"
+					// TODO: ?? can omit?
 
-							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
-
-							strXml += '  <c:dPt>';
-							strXml += '    <c:idx val="'+ index +'"/>';
-							strXml += '      <c:invertIfNegative val="'+ (opts.invertedColors ? 0 : 1) +'"/>';
-							strXml += '    <c:bubble3D val="0"/>';
-							strXml += '    <c:spPr>';
-							if ( opts.lineSize === 0 ){
-								strXml += '<a:ln><a:noFill/></a:ln>';
-							}
-							else {
-								strXml += '<a:solidFill>';
-								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'" />';
-								strXml += '</a:solidFill>';
-							}
-							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
-							strXml += '    </c:spPr>';
-							strXml += '  </c:dPt>';
-						});
-					}
-
-					// 3: "Values": Scatter Chart has 2: `xVal` and `yVal`
+					// D: '<c:xVal>' '<c:yVal>' "Values": Scatter Chart has 2: `xVal` and `yVal`
 					{
 						// X-Axis is always the same
 						strXml += '<c:xVal>';
@@ -3127,10 +3091,20 @@ var PptxGenJS = function(){
 						strXml += '</c:yVal>';
 					}
 
-					// Option: `smooth`
-					strXml += '<c:smooth val="'+ (opts.lineSmooth ? "1" : "0" ) +'"/>';
+					// E: '<c:bubbleSize>'
+					strXml += '  <c:bubbleSize>';
+					strXml += '    <c:numRef>';
+					strXml += '      <c:f>Sheet1!'+ '$'+ getExcelColName(idx+2) +'$2:$'+ getExcelColName(idx+2) +'$'+ (obj.sizes.length+1) +'</c:f>';
+					strXml += '      <c:numCache>';
+					strXml += '        <c:formatCode>General</c:formatCode>';
+					strXml += '	       <c:ptCount val="'+ obj.sizes.length +'"/>';
+					obj.sizes.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+					strXml += '      </c:numCache>';
+					strXml += '    </c:numRef>';
+					strXml += '  </c:bubbleSize>';
+					strXml += '  <c:bubble3D val="0"/>';
 
-					// 4: Close "SERIES"
+					// F: Close "SERIES"
 					strXml += '</c:ser>';
 				});
 
