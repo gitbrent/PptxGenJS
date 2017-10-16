@@ -2667,7 +2667,7 @@ var PptxGenJS = function(){
 						strXml += '<a:noFill/>';
 					}
 					else if ( opts.chartColorsOpacity ) {
-						strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
+						strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="'+opts.chartColorsOpacity+'000"/>') +'</a:solidFill>';
 					}
 					else {
 						strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
@@ -2869,7 +2869,7 @@ var PptxGenJS = function(){
 							strXml += '<a:noFill/>';
 						}
 						else if ( opts.chartColorsOpacity ) {
-							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
+							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="'+opts.chartColorsOpacity+'000"/>') +'</a:solidFill>';
 						}
 						else {
 							strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
@@ -3041,7 +3041,7 @@ var PptxGenJS = function(){
 							strXml += '<a:noFill/>';
 						}
 						else if ( opts.chartColorsOpacity ) {
-							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="50000"/>') +'</a:solidFill>';
+							strXml += '<a:solidFill>'+ createColorElement(strSerColor, '<a:alpha val="'+opts.chartColorsOpacity+'000"/>') +'</a:solidFill>';
 						}
 						else {
 							strXml += '<a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
