@@ -1467,18 +1467,18 @@ var PptxGenJS = function(){
 							strSheetXml += '<row r="'+ (idx+2) +'" spans="1:'+ intBubbleCols +'">';
 							strSheetXml += '<c r="A'+ (idx+2) +'"><v>'+ val +'</v></c>';
 							// Add Y-Axis 1->N (idy=0 = Xaxis)
-							var idz = 1;
+							var idxColLtr = 1;
 							for (var idy=1; idy<data.length; idy++) {
 								// y-value
-								strSheetXml += '<c r="'+ ( idz < 26 ? LETTERS[idz] : 'A'+LETTERS[idz%LETTERS.length] ) +''+ (idx+2) +'">';
+								strSheetXml += '<c r="'+ ( idxColLtr < 26 ? LETTERS[idxColLtr] : 'A'+LETTERS[idxColLtr%LETTERS.length] ) +''+ (idx+2) +'">';
 								strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
 								strSheetXml += '</c>';
-								idz++;
+								idxColLtr++;
 								// y-size
-								strSheetXml += '<c r="'+ ( idz < 26 ? LETTERS[idz] : 'A'+LETTERS[idz%LETTERS.length] ) +''+ (idx+2) +'">';
+								strSheetXml += '<c r="'+ ( idxColLtr < 26 ? LETTERS[idxColLtr] : 'A'+LETTERS[idxColLtr%LETTERS.length] ) +''+ (idx+2) +'">';
 								strSheetXml += '<v>'+ (data[idy].sizes[idx] || '') +'</v>';
 								strSheetXml += '</c>';
-								idz++;
+								idxColLtr++;
 							};
 							strSheetXml += '</row>';
 						});
@@ -3016,6 +3016,7 @@ var PptxGenJS = function(){
 
 				// 2: Series: (One for each Y-Axis)
 				var colorIndex = -1;
+				var idxColLtr = 1;
 				data.filter(function(obj,idx){ return idx > 0; }).forEach(function(obj,idx){
 					colorIndex++;
 					strXml += '<c:ser>';
@@ -3025,7 +3026,7 @@ var PptxGenJS = function(){
 					// A: `<c:tx>`
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
-					strXml += '      <c:f>Sheet1!$'+ LETTERS[(idx+1)] +'$1</c:f>';
+					strXml += '      <c:f>Sheet1!$'+ LETTERS[idxColLtr] +'$1</c:f>';
 					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ obj.name +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
@@ -3061,9 +3062,9 @@ var PptxGenJS = function(){
 					}
 
 					// C: '<c:dLbls>' "Data Labels"
-					// TODO: ?? can omit?
+					// Let it be defaulted for now
 
-					// D: '<c:xVal>' '<c:yVal>' "Values": Scatter Chart has 2: `xVal` and `yVal`
+					// D: '<c:xVal>'/'<c:yVal>' "Values": Scatter Chart has 2: `xVal` and `yVal`
 					{
 						// X-Axis is always the same
 						strXml += '<c:xVal>';
@@ -3080,7 +3081,8 @@ var PptxGenJS = function(){
 						// Y-Axis vals are this object's `values`
 						strXml += '<c:yVal>';
 						strXml += '  <c:numRef>';
-						strXml += '    <c:f>Sheet1!$'+ getExcelColName(idx+1) +'$2:$'+ getExcelColName(idx+1) +'$'+ (data[0].values.length+1) +'</c:f>';
+						strXml += '    <c:f>Sheet1!$'+ getExcelColName(idxColLtr) +'$2:$'+ getExcelColName(idxColLtr) +'$'+ (data[0].values.length+1) +'</c:f>';
+						idxColLtr++;
 						strXml += '    <c:numCache>';
 						strXml += '      <c:formatCode>General</c:formatCode>';
 						// NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
@@ -3094,7 +3096,8 @@ var PptxGenJS = function(){
 					// E: '<c:bubbleSize>'
 					strXml += '  <c:bubbleSize>';
 					strXml += '    <c:numRef>';
-					strXml += '      <c:f>Sheet1!'+ '$'+ getExcelColName(idx+2) +'$2:$'+ getExcelColName(idx+2) +'$'+ (obj.sizes.length+1) +'</c:f>';
+					strXml += '      <c:f>Sheet1!'+ '$'+ getExcelColName(idxColLtr) +'$2:$'+ getExcelColName(idx+2) +'$'+ (obj.sizes.length+1) +'</c:f>';
+					idxColLtr++;
 					strXml += '      <c:numCache>';
 					strXml += '        <c:formatCode>General</c:formatCode>';
 					strXml += '	       <c:ptCount val="'+ obj.sizes.length +'"/>';
