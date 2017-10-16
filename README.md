@@ -339,7 +339,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 
 ### Chart Types
 * Chart type can be any one of `pptx.charts`
-* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.LINE`, `pptx.charts.SCATTER`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
+* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.BUBBLE`, `pptx.charts.LINE`, `pptx.charts.SCATTER`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
 
 ### Multi-Type Charts
 * Chart types can be any one of `pptx.charts`, although `pptx.charts.AREA`, `pptx.charts.BAR`, and `pptx.charts.LINE` will give the best results.
@@ -525,6 +525,15 @@ var dataChartScatter = [
 	{ name:'Y-Value 2', values:[21, 22, 25, 49] }
 ];
 slide.addChart( pptx.charts.SCATTER, dataChartScatter, { x:1.0, y:1.0, w:6, h:4 } );
+
+// Chart Type: BUBBLE
+var dataChartBubble = [
+	{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
+	{ name:'Airplane', values:[33, 20, 51, 65, 71, 75], sizes:[10,10,12,12,15,20] },
+	{ name:'Train',    values:[99, 88, 77, 89, 99, 99], sizes:[20,20,22,22,25,30] },
+	{ name:'Bus',      values:[21, 22, 25, 49, 59, 69], sizes:[11,11,13,13,16,21] }
+];
+slide.addChart( pptx.charts.BUBBLE, dataChartBubble, { x:1.0, y:1.0, w:6, h:4 } );
 
 // Chart Type: Multi-Type
 // NOTE: use the same labels for all types
