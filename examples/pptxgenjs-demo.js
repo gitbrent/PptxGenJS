@@ -1410,21 +1410,16 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: Bubble Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 		var arrDataBubble1 = [
-			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
-			{ name:'Y-Value 1', values:[13,20,21,25], sizes:[6,7,8,9] },
-			{ name:'Y-Value 2', values:[21,22,25,49], sizes:[2,3,4,5] }
+			{ name:'X-Axis',    values:[0.3,0.6,0.9,1.2,1.5,1.7] },
+			{ name:'Y-Value 1', values:[1.3,6,3.5,2.5,7.5,5], sizes:[1,4,2,3,7,4] },
+			{ name:'Y-Value 2', values:[3,9,5,7,9,10], sizes:[9,7,10,2,4,5] }
 		];
 
 		// TOP-LEFT
 		var optsChartBubble1 = { x:0.5, y:0.6, w:'45%', h:3,
-			valAxisTitle        : "Renters",
-			valAxisTitleColor   : "428442",
-			valAxisTitleFontSize: 14,
-			showValAxisTitle    : true,
-			catAxisTitle        : "Last 10 Months",
-			catAxisTitleColor   : "428442",
-			catAxisTitleFontSize: 14,
-			showCatAxisTitle    : true
+			chartColors: ['4477CC','ED7D31'],
+			chartColorsOpacity: 40,
+			dataBorder: {pt:1, color:'FFFFFF'}
 		};
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1 );
 
