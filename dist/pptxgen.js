@@ -3349,6 +3349,8 @@ var PptxGenJS = function(){
 		strXml += ' <c:crosses val="autoZero"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
+		if(opts.spacing)
+			strXml += ' <c:lblOffset val="'+opts.spacing+'"/>';
 		strXml += ' <c:noMultiLvlLbl val="1"/>';
         if ( opts.catAxisLabelFrequency ) strXml += ' <c:tickLblSkip val="' +  opts.catAxisLabelFrequency + '"/>';
 
