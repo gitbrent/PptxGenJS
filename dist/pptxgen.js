@@ -3325,7 +3325,12 @@ var PptxGenJS = function(){
 			strXml += '  <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 		}
 		strXml += '  <c:spPr>';
-		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+		if(opts.noLine){
+			strXml += '    <a:ln w="12700" cap="flat"><a:noFill/><a:prstDash val="solid"/><a:round/></a:ln>';
+		}
+		else{
+			strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+		}
 		strXml += '  </c:spPr>';
 		strXml += '  <c:txPr>';
 		strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
@@ -3344,6 +3349,8 @@ var PptxGenJS = function(){
 		strXml += ' <c:crosses val="autoZero"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
+		if(opts.spacing)
+			strXml += ' <c:lblOffset val="'+opts.spacing+'"/>';
 		strXml += ' <c:noMultiLvlLbl val="1"/>';
         if ( opts.catAxisLabelFrequency ) strXml += ' <c:tickLblSkip val="' +  opts.catAxisLabelFrequency + '"/>';
 
