@@ -433,6 +433,10 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
 | `valGridLine`          | object  |         |              | value grid line style        | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 
+
+boolean
+TODO
+
 ### Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
@@ -453,6 +457,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `lineDataSymbolLineColor`| number | points | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
 | `shadow`               | object  |         |           | data element shadow options   | `'none'` or [shadow options](#chart-element-shadow-options) |
 | `lineSize`             | number  | points  | `2`       | thickness of data line (0 is no line) | 0-256. Ex: `{ lineSize: 1 }` |
+| `lineSmooth`           | boolean |         | `false`   | whether to smooth lines | `true` or `false` | Ex: `{ lineSmooth: true }` |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
 ### Chart Element Shadow Options
