@@ -35,7 +35,10 @@ var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 c
 var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenny','Lara','Kathryn'];
 var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
 var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好';
-var gOptsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+var gOptsTabOpts = { x:0.4, y:0.13, w:12.5, colW:[9,3.5] };
+var gOptsTextL = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+var gOptsOptsR = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0], align:'right' };
+var gOptsTextR = { text:'PptxGenJS', options:gOptsOptsR };
 var gOptsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, font_face:'Arial', color:'0088CC', fill:'FFFFFF' };
 var gDemoTitleText = { font_size:14, color:'0088CC', bold:true };
 var gDemoTitleOpts = { font_size:13, color:'9F9F9F' };
@@ -156,7 +159,8 @@ function genSlides_Table(pptx) {
 	// SLIDE 1: Table text alignment and cell styles
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 1', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } ); // `opts` = legacy test
+		// NOTE using `opts` below as legacy text
+		slide.addTable( [ [{ text:'Table Examples 1', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
 		var objOpts1 = { x:0.5, y:0.7, font_size:18, font_face:'Arial', color:'0088CC' };
@@ -293,7 +297,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 3: Super rowspan/colspan demo
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 3', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } ); // `opts` = legacy test
+		slide.addTable( [ [{ text:'Table Examples 3', opts:gOptsTextL }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } ); // `opts` = legacy test
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
@@ -350,10 +354,7 @@ function genSlides_Table(pptx) {
 	{
 		var slide = pptx.addNewSlide();
 		// 2: Slide title
-		slide.addTable(
-			[ [{ text:'Table Examples 4', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-			{ x:0.5, y:0.13, w:12.5, h:0.3 }
-		);
+		slide.addTable( [ [{ text:'Table Examples 4', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// Cell Margins
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
@@ -396,7 +397,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 5: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 5', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5, h:0.3 } );
+		slide.addTable( [ [{ text:'Table Examples 5', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 		slide.addText(
 			'The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.',
 			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, font_size:14 }
@@ -436,7 +437,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 6: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [{ text:'Table Examples 6', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }], { x:0.5, y:0.13, w:12.5, h:0.3 } );
+		slide.addTable( [ [{ text:'Table Examples 6', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Table Cell Word-Level Formatting:', optsSub);
@@ -564,7 +565,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 1: Bar Chart ------------------------------------------------------------------
 	function slide1() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataRegions = [
 			{
@@ -686,7 +687,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 2: Bar Chart Grid/Axis Options ------------------------------------------------
 	function slide2() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Chart Grid/Axis Options', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart Grid/Axis Options', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataRegions = [
 			{
@@ -826,7 +827,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 3: Stacked Bar Chart ----------------------------------------------------------
 	function slide3() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataRegions = [
 			{
@@ -932,7 +933,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 4: Bar Chart - Lots of Bars ---------------------------------------------------
 	function slide4() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataHighVals = [
 			{
@@ -970,7 +971,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ------
 	function slide5() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisMajorUnit`, `valAxisLabelFormatCode`', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisMajorUnit`, `valAxisLabelFormatCode`', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP-LEFT
 		slide.addChart(
@@ -1072,7 +1073,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 6: Tornado Chart -------------------------------------------------------------
 	function slide6() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		slide.addChart(
 			pptx.charts.BAR,
@@ -1112,7 +1113,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 7: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
 	function slide7() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Smoothing, Line Size, Line Shadow, Symbol Size', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Line Smoothing, Line Size, Line Shadow, Symbol Size', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		slide.addText( '..', { x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
 		var optsChartLine1 = { x:0.5, y:0.6, w:6.0, h:3.0,
@@ -1156,7 +1157,7 @@ function genSlides_Chart(pptx) {
 		var intWgap = 4.25;
 		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		opts_lineDataSymbol.forEach(function(opt,idx){
 			slide.addChart(
@@ -1175,7 +1176,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 9: Line Chart: Lots of Cats ---------------------------------------------------
 	function slide9() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var MAXVAL = 20000;
 
@@ -1209,7 +1210,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 10: Area Chart: Misc -----------------------------------------------------------
 	function slide10() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataTimeline2ser = [
 			{
@@ -1256,7 +1257,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 11: Pie Charts: All 4 Legend Options ------------------------------------------
 	function slide11() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
 		if (NODEJS) slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
@@ -1301,7 +1302,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 12: Doughnut Chart ------------------------------------------------------------
 	function slide12() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var optsChartPie1 = { x:0.5, y:1.0, w:6.0, h:6.0,
 			chartColors: ['FC0000','FFCC00','009900','6600CC'],
@@ -1349,7 +1350,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 13: XY Scatter Chart -------------------------------------------------------------
 	function slide13() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataScatter1 = [
 			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
@@ -1414,7 +1415,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 14: Bubble Charts ---------------------------------------------------------
 	function slide14() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Bubble Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Bubble Charts', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataBubble1 = [
 			{ name:'X-Axis',    values:[0.3,0.6,0.9,1.2,1.5,1.7] },
@@ -1476,7 +1477,7 @@ function genSlides_Chart(pptx) {
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Examples: Multi-Type Charts', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Examples: Multi-Type Charts', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		function doStackedLine() {
 			// TOP-RIGHT:
@@ -1844,7 +1845,7 @@ function genSlides_Chart(pptx) {
 	// SLIDE 16: Charts Options: Shadow, Transparent Colors --------------------------------
 	function slide16() {
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataRegions = [{
 			name  : 'Region 2',
@@ -1973,7 +1974,7 @@ function genSlides_Media(pptx) {
 	// SLIDE 1: Video and YouTube
 	// ======== -----------------------------------------------------------------------------------
 	var slide1 = pptx.addNewSlide();
-	slide1.addTable( [ [{ text:'Media: Video Examples', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide1.addTable( [ [{ text:'Media: Video Examples', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
 	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:'media/sample.m4v' });
@@ -2005,7 +2006,7 @@ function genSlides_Media(pptx) {
 	// SLIDE 2: Audio / Pre-Encoded Video
 	// ======== -----------------------------------------------------------------------------------
 	var slide2 = pptx.addNewSlide();
-	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
 	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:'media/sample.mp3' });
@@ -2030,7 +2031,7 @@ function genSlides_Image(pptx) {
 	// ======== -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1
 		slide.addText('Type: GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
@@ -2072,7 +2073,7 @@ function genSlides_Image(pptx) {
 	// ======== -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Image Examples: Image Sizing', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Image Examples: Image Sizing', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1
 		slide.addText('Sizing: None',      { x:0.5, y:0.6, w:3.0, h:0.3, color:'0088CC' });
@@ -2096,7 +2097,7 @@ function genSlides_Shape(pptx) {
 	// SLIDE 1: Misc Shape Types (no text)
 	// ======== -----------------------------------------------------------------------------------
 	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:'F9F9F9' });
 	slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
@@ -2117,7 +2118,7 @@ function genSlides_Shape(pptx) {
 	// SLIDE 2: Misc Shape Types with Text
 	// ======== -----------------------------------------------------------------------------------
 	var slide = pptx.addNewSlide();
-	slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+	slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE,         x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'c', font_size:14 });
 	slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE,         x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'c', font_size:14 });
@@ -2139,7 +2140,8 @@ function genSlides_Text(pptx) {
 	// SLIDE 1: Multi-Line Formatting, Hyperlinks, Text Shadow, Line-Break
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Text Examples: Multi-Line Formatting, Hyperlinks, Text Shadow, Line-Break', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+		// NOTE: not using `gOptsTabOpts` here to test legacy `cx`
+		slide.addTable( [ [{ text:'Text Examples: Multi-Line Formatting, Hyperlinks, Text Shadow, Line-Break', options:gOptsTextL },gOptsTextR] ], { x:0.5, y:0.13, cx:12.6 } );
 
 		// LEFT COLUMN ------------------------------------------------------------
 
@@ -2203,7 +2205,7 @@ function genSlides_Text(pptx) {
 	// SLIDE 2: Bullets
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Text Examples: Bullets', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples: Bullets', options:gOptsTextL },gOptsTextR] ], { x:0.5, y:0.13, cx:12.5 } );
 
 		// LEFT COLUMN ------------------------------------------------------------
 
@@ -2264,7 +2266,7 @@ function genSlides_Text(pptx) {
 		slide.back = '030303';
 		slide.color = '9F9F9F';
 		// Title
-		slide.addTable( [ [{ text:'Text Examples: Text alignment, percent x/y, etc.', options:gOptsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples: Text alignment, percent x/y, etc.', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
 		slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
@@ -2312,7 +2314,7 @@ function genSlides_Text(pptx) {
 	// SLIDE 4: Scheme Colors
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Text Examples: Scheme Colors', options:gOptsTitle }] ], { x:0.5, y:0.13, cx:12.5 } );
+		slide.addTable( [ [{ text:'Text Examples: Scheme Colors', options:gOptsTextL },gOptsTextR] ], { x:0.5, y:0.13, cx:12.5 } );
 
 		// MISC ------------------------------------------------------------
 
