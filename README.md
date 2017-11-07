@@ -92,7 +92,9 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Scheme Colors](#scheme-colors)
 - [Performance Considerations](#performance-considerations)
   - [Pre-Encode Large Images](#pre-encode-large-images)
-- [Building with Webpack/Typescript](#building-with-webpacktypescript)
+- [Integration with Other Libraries](#integration-with-other-libraries)
+  - [Integration with Angular](#integration-with-angular)
+  - [Integration with Webpack/Typescript](#integration-with-webpacktypescript)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Development Roadmap](#development-roadmap)
@@ -1240,7 +1242,15 @@ This will both reduce dependencies (who needs another image asset to keep track 
 boost (no time will need to be consumed reading and encoding the image).
 
 **************************************************************************************************
-# Building with Webpack/Typescript
+# Integration with Other Libraries
+
+## Integration with Angular
+
+Some modifications can be made to the library to accommodate building with Angular.
+
+[See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
+
+## Integration with Webpack/Typescript
 
 Add this to your webpack config to avoid a module resolution error:
 `node: { fs: "empty" }`
