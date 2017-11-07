@@ -3325,7 +3325,15 @@ var PptxGenJS = function(){
 			strXml += '  <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 		}
 		strXml += '  <c:spPr>';
-		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+		strXml += '    <a:ln w="12700" cap="flat">';
+		if ( opts.catAxisLineShow === false ) {
+			strXml += '    <a:noFill/>';
+		} else {
+			strXml += '    <a:solidFill><a:srgbClr val="888888"/></a:solidFill>';
+		}
+		strXml += '      <a:prstDash val="solid"/>';
+		strXml += '      <a:round/>';
+		strXml += '    </a:ln>';
 		strXml += '  </c:spPr>';
 		strXml += '  <c:txPr>';
 		strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
@@ -3407,9 +3415,17 @@ var PptxGenJS = function(){
 			strXml += ' <c:minorTickMark val="none"/>';
 			strXml += ' <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 		}
-		strXml += '<c:spPr>';
-		strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-		strXml += '</c:spPr>';
+		strXml += ' <c:spPr>';
+		strXml += '   <a:ln w="12700" cap="flat">';
+		if ( opts.valAxisLineShow === false ) {
+			strXml += '   <a:noFill/>';
+		} else {
+			strXml += '   <a:solidFill><a:srgbClr val="888888"/></a:solidFill>';
+		}
+		strXml += '     <a:prstDash val="solid"/>';
+		strXml += '     <a:round/>';
+		strXml += '   </a:ln>';
+		strXml += ' </c:spPr>';
 		strXml += ' <c:txPr>';
 		strXml += '  <a:bodyPr/>'; // don't specify rot=0 so we can get the PPT default
 		strXml += '  <a:lstStyle/>';
