@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Oct 14, 2017
+* DATE: Nov 06, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -131,6 +131,14 @@ function execGenSlidesFuncs(type) {
 			{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
 			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
 			{ 'image': objImg}
+		]
+	});
+	// Only used for Issues, ad-hoc slides etc (for screencaps)
+	pptx.defineSlideMaster({
+		title: 'DEMO_SLIDE',
+		objects: [
+			{ 'rect':  { x:0.0, y:7.1, w:'100%', h:0.4, fill:'f1f1f1' } },
+			{ 'text':  { text:'PptxGenJS - JavaScript PowerPoint Library - (github.com/gitbrent/PptxGenJS)', options:{ x:0.0, y:7.1, w:'100%', h:0.4, color:'6c6c6c', font_size:10, align:'c' } } }
 		]
 	});
 
@@ -1232,7 +1240,8 @@ function genSlides_Chart(pptx) {
 		// BOTTOM-LEFT
 		var optsChartLine3 = { x:0.5, y:4.0, w:'45%', h:3,
 			chartColors: ['0088CC', '99FFCC'],
-			chartColorsOpacity: 50
+			chartColorsOpacity: 50,
+			valAxisLabelFormatCode: '#,K'
 		};
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine3 );
 
