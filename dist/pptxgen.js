@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.10.0-beta";
-	var APP_REL = "20171015";
+	var APP_REL = "20171106";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2708,9 +2708,9 @@ var PptxGenJS = function(){
 						strXml += '</c:marker>';
 					}
 
-					// Color bar chart bars various colors
+					// Color chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
+					if ( chartType == 'bar' && ( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
 							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
