@@ -1248,7 +1248,7 @@ boost (no time will need to be consumed reading and encoding the image).
 
 Some modifications can be made to the library to accommodate building with Angular.
 
-[See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
+[See Issue #220 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
 
 ## Integration with Webpack/Typescript
 
@@ -1279,8 +1279,7 @@ are demos for both Nodejs and client-browsers that contain working examples of e
 **************************************************************************************************
 # Development Roadmap
 
-Version 2.0 will be released in late 2017/early 2018 and will drop support for IE11 as we move to adopt more
-JavaScript ES6 features and remove many instances of jQuery utility functions.
+Version 2.0 will be released in 2018 and will break Node (and probably other library) integration as the PptxGenJS export is updated to a constructor.
 
 **************************************************************************************************
 # Unimplemented Features
