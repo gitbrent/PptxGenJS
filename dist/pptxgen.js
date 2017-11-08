@@ -4962,7 +4962,7 @@ var PptxGenJS = function(){
 			var newSlide = ( opts.master ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
 			// B: Add table to Slide
-			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(opts.y || arrInchMargins[0]), w:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
+			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(( i == 0 ? opts.y : opts.newPageStartY || opts.y ) || arrInchMargins[0]), w:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
 
 			// C: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
