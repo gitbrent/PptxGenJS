@@ -2565,13 +2565,23 @@ var PptxGenJS = function(){
 				strXml += '<c:legendPos val="'+ rel.opts.legendPos +'"/>';
 				strXml += '<c:layout/>';
 				strXml += '<c:overlay val="0"/>';
-				if ( rel.opts.legendFontSize ) {
+				if ( rel.opts.legendFontSize || rel.opts.legendColor ) {
 					strXml += '<c:txPr>';
 					strXml += '  <a:bodyPr/>';
 					strXml += '  <a:lstStyle/>';
 					strXml += '  <a:p>';
-					strXml += '  <a:pPr>';
-					strXml += '    <a:defRPr sz="'+ (Number(rel.opts.legendFontSize) * 100) +'"/>';
+					strXml += '    <a:pPr>';
+					if ( rel.opts.legendFontSize ) {
+						strXml += '      <a:defRPr sz="'+ (Number(rel.opts.legendFontSize) * 100) +'">';
+					} else {
+						strXml += '      <a:defRPr>';
+					}
+					if ( rel.opts.legendColor ) {
+						strXml += '        <a:solidFill>';
+						strXml += '          <a:srgbClr val="'+ ( rel.opts.legendColor ) +'"/>';
+						strXml += '        </a:solidFill>';
+					}
+					strXml += '      </a:defRPr>';
 					strXml += '    </a:pPr>';
 					strXml += '    <a:endParaRPr lang="en-US"/>';
 					strXml += '  </a:p>';
