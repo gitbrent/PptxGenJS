@@ -4977,14 +4977,18 @@ var PptxGenJS = function(){
 		opts.colW = arrColW;
 
 		getSlidesForTableRows( arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts )
-		.forEach(function(arrTabRows,i){
+		.forEach(function(arrTabRows,idx){
 			// A: Create new Slide
 			var newSlide = ( opts.master ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
-			// B: Add table to Slide
-			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:(( i == 0 ? opts.y : opts.newPageStartY || opts.y ) || arrInchMargins[0]), w:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
+			// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+			if ( idx == 0 ) opts.y = opts.y;
+			if ( idx > 0 ) opts.y = (opts.newPageStartY || arrInchMargins[0]);
 
-			// C: Add any additional objects
+			// C: Add table to Slide
+			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:opts.y, w:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
+
+			// D: Add any additional objects
 			if ( opts.addImage ) newSlide.addImage({ path:opts.addImage.url, x:opts.addImage.x, y:opts.addImage.y, w:opts.addImage.w, h:opts.addImage.h });
 			if ( opts.addShape ) newSlide.addShape( opts.addShape.shape, (opts.addShape.opts || {}) );
 			if ( opts.addTable ) newSlide.addTable( opts.addTable.rows,  (opts.addTable.opts || {}) );
