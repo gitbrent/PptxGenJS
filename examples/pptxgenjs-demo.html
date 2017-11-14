@@ -4,6 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
+	<meta name="date" content="20171107">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
@@ -40,7 +41,6 @@
 
 		function doNav(intTab) {
 			location.href = 'pptxgenjs-demo.html#tab'+intTab;
-
 			doNavRestore();
 		}
 
@@ -222,7 +222,7 @@
 				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
 				objects: [
 					{ 'rect': { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
-					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:'90%', w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12} } }
+					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12} } }
 				]
 			});
 
@@ -251,6 +251,7 @@
 			//objOpts.debug = true;
 			if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
+			if ( $('#checkStartY') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
 
 			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
 			pptx.addSlidesForTable('tabAutoPaging', objOpts);
@@ -697,7 +698,7 @@
 					<div class="arrow active"></div>Basic Functionality and Options
 				</div>
 				<div class="sectionBox">
-					<div class="sectionCont">
+					<div class="sectionCont" style="flex-wrap:nowrap">
 						<fieldset>
 							<legend>Demo Table</legend>
 							<div class="tableRows" style="margin:0 0 10px 10px">
@@ -712,17 +713,39 @@
 							</div>
 						</fieldset>
 						<fieldset>
-							<legend>Output Options</legend>
+							<legend>Auto-Paging Options (<a href="https://github.com/gitbrent/PptxGenJS#table-auto-paging-options">?</a>)</legend>
 							<div class="tableRows" style="margin:0 0 10px 10px">
 								<div>
-									<div>Show Table Header on Each Slide?</div>
+									<div>
+										<div class="codeSnip">addHeaderToEach</div>
+									</div>
+									<div>
+										Show Table Header on Each Slide?
+									</div>
 									<div>
 										<label><input type="radio" name="radioHead" value="Y" checked="checked">Yes</label>
 										<label><input type="radio" name="radioHead" value="N">No</label>
 									</div>
 								</div>
 								<div>
-									<div>Slide Master:</div>
+									<div>
+										<div class="codeSnip">newPageStartY</div>
+									</div>
+									<div>
+										<label for="numTab2SlideStartY">Y location for table on subsequent slides</label>
+									</div>
+									<div style="white-space:nowrap">
+										<label for="checkStartY" style="margin-right:3px"><input id="checkStartY" type="checkbox" onclick="$('#contStartY').toggle()">Enable?</label>
+										<span id="contStartY" style="display:none"><input id="numTab2SlideStartY" type="number" min="0" max="10" step="0.5" value="1.5"></span>
+									</div>
+								</div>
+							</div>
+						</fieldset>
+						<fieldset>
+							<legend>Slide Master (<a href="https://github.com/gitbrent/PptxGenJS#master-slides-and-corporate-branding">?</a>)</legend>
+							<div class="tableRows" style="margin:0 0 10px 10px">
+								<div>
+									<div>Master Name:</div>
 									<div><select id="selSlideMaster"><option selected="selected">(None)</option></select></div>
 								</div>
 							</div>

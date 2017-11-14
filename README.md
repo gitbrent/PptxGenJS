@@ -758,7 +758,7 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | :-------------- | :------ | :------ | :--------------------- | :--------------------------------------------------------- |
 | `autoPage`      | boolean | `true`  | auto-page table        | `true` or `false`. Ex: `{autoPage:false}`                  |
 | `lineWeight`    | float   | 0       | line weight value      | -1.0 to 1.0. Ex: `{lineWeight:0.5}`                        |
-| `newPageStartY` | object  |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
+| `newPageStartY` | number/string  |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
 
 ### Table Auto-Paging Notes
 Tables will auto-page by default and the table on new Slides will use the current Slide's top `margin` value as the starting point for `y`.

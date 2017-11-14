@@ -5,7 +5,10 @@
 
 **Fixed Bugs:**
 - Fixed bug that was preventing 'chartColorsOpacity' from being anything other than 50 percent. ([gitbrent](https://github.com/gitbrent))
+- The `newPageStartY` option isnt being honored by `addSlidesForTable()` [\#222](https://github.com/gitbrent/PptxGenJS/issues/222) ([shaunvdp](https://github.com/shaunvdp))
 - Line chart with one series displays broken [\#225](https://github.com/gitbrent/PptxGenJS/issues/225) ([andrei-cs](https://github.com/andrei-cs))
+- The `*AxisLineShow` chart options do not work [\#231](https://github.com/gitbrent/PptxGenJS/pull/231) ([mconlin](https://github.com/mconlin))
+
 
 **Implemented Enhancements:**
 - New chart type: bubble charts [\#208](https://github.com/gitbrent/PptxGenJS/issues/208) ([shrikantbhongade](https://github.com/shrikantbhongade))
