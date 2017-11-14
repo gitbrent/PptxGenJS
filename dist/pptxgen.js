@@ -2573,16 +2573,8 @@ var PptxGenJS = function(){
 					strXml += '  <a:lstStyle/>';
 					strXml += '  <a:p>';
 					strXml += '    <a:pPr>';
-					if ( rel.opts.legendFontSize ) {
-						strXml += '      <a:defRPr sz="'+ (Number(rel.opts.legendFontSize) * 100) +'">';
-					} else {
-						strXml += '      <a:defRPr>';
-					}
-					if ( rel.opts.legendColor ) {
-						strXml += '        <a:solidFill>';
-						strXml += '          <a:srgbClr val="'+ ( rel.opts.legendColor ) +'"/>';
-						strXml += '        </a:solidFill>';
-					}
+					strXml += ( rel.opts.legendFontSize ? '<a:defRPr sz="'+ (Number(rel.opts.legendFontSize) * 100) +'">' : '<a:defRPr>' );
+					if ( rel.opts.legendColor ) strXml += genXmlColorSelection(rel.opts.legendColor);
 					strXml += '      </a:defRPr>';
 					strXml += '    </a:pPr>';
 					strXml += '    <a:endParaRPr lang="en-US"/>';
