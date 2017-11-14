@@ -373,6 +373,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `holeSize`      | number  | percent | `50`      | doughnut hole size                 | 1-100. Ex: `{ holeSize:50 }` |
 | `invertedColors`| array   |         |           | data colors for negative numbers   | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `legendFontSize`| number  | points  | `10`      | legend font size                   | 1-256. Ex: `{ legendFontSize: 13 }`|
+| `legendColor`   | string  |         | `000000`  | legend text color                  | hex color code. Ex: `{ legendColor: '0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position              | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `layout`        | object  |         |           | positioning plot within chart area | object with `x`, `y`, `w` and `h` props, all in range 0-1 (proportionally related to the chart size). Ex: `{x: 0, y: 0, w: 1, h: 1}` fully expands chart within the plot area |
 | `showDataTable`           | boolean |     | `false`   | show Data Table under the chart     | `true` or `false` (Not available for Pie/Doughnut charts) |

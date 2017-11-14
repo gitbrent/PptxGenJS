@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Nov 06, 2017
+* DATE: Nov 13, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -676,10 +676,12 @@ function genSlides_Chart(pptx) {
 			dataLabelPosition  : 'ctr',
 			showValue          : true,
 
-			showLegend: true,
-			legendPos :  't',
-			showTitle: true,
-			title    : 'Chart Title'
+			showLegend : true,
+			legendPos  :  't',
+			legendColor: 'FF0000',
+			showTitle  : true,
+			titleColor : 'FF0000',
+			title      : 'Red Title and Legend'
 		};
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
