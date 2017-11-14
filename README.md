@@ -1247,7 +1247,8 @@ boost (no time will need to be consumed reading and encoding the image).
 
 ## Integration with Angular
 
-Some modifications can be made to the library to accommodate building with Angular.
+Set the Angular option to enable Angular integration. (This flag will allow the library to use blob file saving instead of detecting Angular as a NodeJS app (aka: avoid using `fs.writeFile`).
+`pptx.setAngular(true);`
 
 [See Issue #220 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
 

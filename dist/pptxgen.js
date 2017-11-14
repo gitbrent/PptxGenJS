@@ -147,11 +147,12 @@ var PptxGenJS = function(){
 		gObjPptx.title     = 'PptxGenJS Presentation';
 
 		// PptxGenJS props
-		gObjPptx.saveCallback = null;
+		gObjPptx.isAngular    = false;
 		gObjPptx.fileName     = 'Presentation';
 		gObjPptx.fileExtn     = '.pptx';
 		gObjPptx.pptLayout    = LAYOUTS['LAYOUT_16x9'];
 		gObjPptx.rtlMode      = false;
+		gObjPptx.saveCallback = null;
 
 		// PptxGenJS data
 		/** @type {object} master slide layout object */
@@ -1694,7 +1695,7 @@ var PptxGenJS = function(){
 			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0) {
 				zip.generateAsync({ type:outputType }).then(gObjPptx.saveCallback);
 			}
-			else if ( NODEJS ) {
+			else if ( NODEJS && !gObjPptx.isAngular ) {
 				if ( gObjPptx.saveCallback ) {
 					if ( strExportName.indexOf('http') == 0 ) {
 						zip.generateAsync({type:'nodebuffer'}).then(function(content){ gObjPptx.saveCallback(content); });
@@ -4331,6 +4332,13 @@ var PptxGenJS = function(){
 	 */
 	this.setTitle = function setTitle(inStrTitle) {
 		gObjPptx.title = inStrTitle || 'PptxGenJS Presentation';
+	};
+
+	/**
+	 * Sets the Presentation Option: `angular` (isAngular)
+	 */
+	this.setAngular = function setAngular(inBool) {
+		gObjPptx.isAngular = inBool || false;
 	};
 
 	/**
