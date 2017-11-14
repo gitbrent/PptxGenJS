@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.10.0-beta";
-	var APP_REL = "20171106";
+	var APP_REL = "20171113";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -548,6 +548,8 @@ var PptxGenJS = function(){
 			options.showPercent   = (options.showPercent   == true || options.showPercent   == false ? options.showPercent   : true );
 			options.showTitle     = (options.showTitle     == true || options.showTitle     == false ? options.showTitle     : false);
 			options.showValue     = (options.showValue     == true || options.showValue     == false ? options.showValue     : false);
+			options.catAxisLineShow = (typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true);
+			options.valAxisLineShow = (typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true);
 
 			// D: Options: chart
 			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
@@ -3325,7 +3327,11 @@ var PptxGenJS = function(){
 			strXml += '  <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
 		}
 		strXml += '  <c:spPr>';
-		strXml += '    <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+		strXml += '    <a:ln w="12700" cap="flat">';
+		strXml += ( opts.catAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="'+ DEF_CHART_GRIDLINE.color +'"/></a:solidFill>' );
+		strXml += '      <a:prstDash val="solid"/>';
+		strXml += '      <a:round/>';
+		strXml += '    </a:ln>';
 		strXml += '  </c:spPr>';
 		strXml += '  <c:txPr>';
 		strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
@@ -3407,9 +3413,13 @@ var PptxGenJS = function(){
 			strXml += ' <c:minorTickMark val="none"/>';
 			strXml += ' <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
 		}
-		strXml += '<c:spPr>';
-		strXml += '  <a:ln w="12700" cap="flat"><a:solidFill><a:srgbClr val="888888"/></a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
-		strXml += '</c:spPr>';
+		strXml += ' <c:spPr>';
+		strXml += '   <a:ln w="12700" cap="flat">';
+		strXml += ( opts.valAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="'+ DEF_CHART_GRIDLINE.color +'"/></a:solidFill>' );
+		strXml += '     <a:prstDash val="solid"/>';
+		strXml += '     <a:round/>';
+		strXml += '   </a:ln>';
+		strXml += ' </c:spPr>';
 		strXml += ' <c:txPr>';
 		strXml += '  <a:bodyPr/>'; // don't specify rot=0 so we can get the PPT default
 		strXml += '  <a:lstStyle/>';

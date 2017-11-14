@@ -1012,6 +1012,8 @@ function genSlides_Chart(pptx) {
 				x:7, y:0.6, w:'45%', h:3,
 				valAxisMaxVal:1,
 				barDir: 'bar',
+				catAxisLineShow: false,
+				valAxisLineShow: false,
 				showValue: true,
 				catLabelFormatCode: "mmm-yy",
 				dataLabelPosition: 'outEnd',
@@ -1091,7 +1093,7 @@ function genSlides_Chart(pptx) {
 			],
 			{
 				x:0.5, y:0.5, w:'90%', h:'90%',
-				valAxisMaxVal:1,
+				valAxisMaxVal: 1,
 				barDir: 'bar',
 				axisLabelFormatCode: '#%',
 				gridLineColor: 'D8D8D8',
