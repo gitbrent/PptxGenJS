@@ -9,9 +9,9 @@
 - Line chart with one series displays broken [\#225](https://github.com/gitbrent/PptxGenJS/issues/225) ([andrei-cs](https://github.com/andrei-cs))
 - The `*AxisLineShow` chart options do not work [\#231](https://github.com/gitbrent/PptxGenJS/pull/231) ([mconlin](https://github.com/mconlin))
 
-
 **Implemented Enhancements:**
 - New chart type: bubble charts [\#208](https://github.com/gitbrent/PptxGenJS/issues/208) ([shrikantbhongade](https://github.com/shrikantbhongade))
+- New Chart option: Legend Text Color [\#233](https://github.com/gitbrent/PptxGenJS/issues/233) ([mconlin](https://github.com/mconlin))
 
 
 
