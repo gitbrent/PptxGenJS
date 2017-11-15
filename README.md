@@ -758,12 +758,9 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | :-------------- | :------ | :------ | :--------------------- | :--------------------------------------------------------- |
 | `autoPage`      | boolean | `true`  | auto-page table        | `true` or `false`. Ex: `{autoPage:false}`                  |
 | `lineWeight`    | float   | 0       | line weight value      | -1.0 to 1.0. Ex: `{lineWeight:0.5}`                        |
-| `newPageStartY` | number/string  |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
+| `newPageStartY` | number/string |   | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
 
-### Table Auto-Paging Notes
-Tables will auto-page by default and the table on new Slides will use the current Slide's top `margin` value as the starting point for `y`.
-Tables will retain their existing `x`, `w`, and `colW` values as they are continued onto subsequent Slides.
-
+Option Details:  
 * `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
 * `lineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
 then increase lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides, then
@@ -771,6 +768,12 @@ reduce the lineWeight value. Also helpful when using some fonts that do not have
 * `newPageStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
 you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
 tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
+
+### Table Auto-Paging Notes
+* New slides will be created as tables overflow. The table will start at either `newPageStartY` (if present) or the Slide's top `margin`.
+* Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides.
+* Auto-paging is not an exact science! Try using different `lineWeight` and Slide margin values if your tables are overflowing the Slide.
+* There are many examples of auto-paging in the `examples` folder.
 
 ### Table Formatting Options
 | Option       | Type    | Unit   | Default   | Description        | Possible Values                                                                   |
