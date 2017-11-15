@@ -1247,7 +1247,7 @@ boost (no time will need to be consumed reading and encoding the image).
 
 ## Integration with Angular
 
-Set the browser option to enable Angular/Webpack integration. (This flag will allow the library to use blob file saving instead of detecting your app as a NodeJS app (aka: avoid using `fs.writeFile`).
+Set the browser mode option so the library will use blob file saving instead of detecting your app as a Node.js app (aka: avoid using `fs.writeFile`).
 `pptx.setBrowser(true);`
 
 [See Issue #220 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
