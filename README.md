@@ -1254,10 +1254,8 @@ Set the browser mode option so the library will use blob file saving instead of 
 
 ## Integration with Webpack/Typescript
 
-Add this to your webpack config to avoid a module resolution error:  
-`node: { fs: "empty" }`
-Set browser mode so files will save as blobs via browser:  
-`pptx.setBrowser(true);`
+* Add to webpack config to avoid a module resolution error: `node: { fs: "empty" }`  
+* Set browser mode so files will save as blobs via browser: `pptx.setBrowser(true);`
 
 [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
 
