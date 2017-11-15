@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Nov 13, 2017
+* DATE: Nov 14, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -2156,7 +2156,7 @@ function genSlides_Text(pptx) {
 				{ text:'1st\nline',options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
 				{ text:'2nd line', options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
 				{ text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } },
-				{ text:'4th line', options:{ font_size:38, font_face:'Arial',       color:'FFFF00', align:'c' } },
+				{ text:'4th line', options:{ font_size:38, font_face:'Arial',       color:'FFFF00', align:'c', strike:true } },
 				{ text:'5th\nline',options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r' } }
 			],
 			{ x:0.5, y:0.85, w:6, h:4, margin:0.1, fill:'232323' }

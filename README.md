@@ -637,6 +637,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
 | `rtlMode`    | boolean |         | `false`   | enable Right-to-Left mode | `true` or `false` |
 | `shadow`     | object  |         |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
+| `strike`     | boolean |         | `false`   | text strikethrough  | `true` or `false` |
 | `subscript`  | boolean |         | `false`   | subscript text      | `true` or `false` |
 | `superscript`| boolean |         | `false`   | superscript text    | `true` or `false` |
 | `underline`  | boolean |         | `false`   | underline text      | `true` or `false` |

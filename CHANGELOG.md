@@ -12,6 +12,8 @@
 **Implemented Enhancements:**
 - New chart type: bubble charts [\#208](https://github.com/gitbrent/PptxGenJS/issues/208) ([shrikantbhongade](https://github.com/shrikantbhongade))
 - New Chart option: Legend Text Color [\#233](https://github.com/gitbrent/PptxGenJS/issues/233) ([mconlin](https://github.com/mconlin))
+- New Text option: `strike` [\#238](https://github.com/gitbrent/PptxGenJS/issues/238) ([adrienco88](https://github.com/adrienco88))
+
 
 
 ## [v1.9.0](https://github.com/gitbrent/pptxgenjs/tree/v1.9.0) (2017-10-10)
