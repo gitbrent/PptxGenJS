@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.10.0-beta";
-	var APP_REL = "20171113";
+	var APP_REL = "20171114";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -147,7 +147,7 @@ var PptxGenJS = function(){
 		gObjPptx.title     = 'PptxGenJS Presentation';
 
 		// PptxGenJS props
-		gObjPptx.isAngular    = false;
+		gObjPptx.isBrowser    = false;
 		gObjPptx.fileName     = 'Presentation';
 		gObjPptx.fileExtn     = '.pptx';
 		gObjPptx.pptLayout    = LAYOUTS['LAYOUT_16x9'];
@@ -1695,7 +1695,7 @@ var PptxGenJS = function(){
 			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0) {
 				zip.generateAsync({ type:outputType }).then(gObjPptx.saveCallback);
 			}
-			else if ( NODEJS && !gObjPptx.isAngular ) {
+			else if ( NODEJS && !gObjPptx.isBrowser ) {
 				if ( gObjPptx.saveCallback ) {
 					if ( strExportName.indexOf('http') == 0 ) {
 						zip.generateAsync({type:'nodebuffer'}).then(function(content){ gObjPptx.saveCallback(content); });
@@ -4335,10 +4335,10 @@ var PptxGenJS = function(){
 	};
 
 	/**
-	 * Sets the Presentation Option: `angular` (isAngular)
+	 * Sets the Presentation Option: `isBrowser` (For Angular/Webpack, etc. as they are detected as NODE)
 	 */
-	this.setAngular = function setAngular(inBool) {
-		gObjPptx.isAngular = inBool || false;
+	this.setBrowser = function setBrowser(inBool) {
+		gObjPptx.isBrowser = inBool || false;
 	};
 
 	/**

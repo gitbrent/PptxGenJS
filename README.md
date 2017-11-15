@@ -1247,15 +1247,17 @@ boost (no time will need to be consumed reading and encoding the image).
 
 ## Integration with Angular
 
-Set the Angular option to enable Angular integration. (This flag will allow the library to use blob file saving instead of detecting Angular as a NodeJS app (aka: avoid using `fs.writeFile`).
-`pptx.setAngular(true);`
+Set the browser option to enable Angular/Webpack integration. (This flag will allow the library to use blob file saving instead of detecting your app as a NodeJS app (aka: avoid using `fs.writeFile`).
+`pptx.setBrowser(true);`
 
 [See Issue #220 for more information](https://github.com/gitbrent/PptxGenJS/issues/220)
 
 ## Integration with Webpack/Typescript
 
-Add this to your webpack config to avoid a module resolution error:
+Add this to your webpack config to avoid a module resolution error:  
 `node: { fs: "empty" }`
+Set browser mode so files will save as blobs via browser:  
+`pptx.setBrowser(true);`
 
 [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
 
