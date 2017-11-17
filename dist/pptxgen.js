@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "1.11.0-beta";
-	var APP_REL = "20171115";
+	var APP_REL = "20171116";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -1665,9 +1665,9 @@ var PptxGenJS = function(){
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
 		for ( var idx=1; idx<=gObjPptx.slideLayouts.length; idx++ ) {
-				zip.file("ppt/slideLayouts/slideLayout"+ idx +".xml", makeXmlLayout(gObjPptx.slideLayouts[idx - 1]));
-				zip.file("ppt/slideLayouts/_rels/slideLayout"+ idx +".xml.rels", makeXmlSlideLayoutRel( idx ));
-			}
+			zip.file("ppt/slideLayouts/slideLayout"+ idx +".xml", makeXmlLayout(gObjPptx.slideLayouts[idx - 1]));
+			zip.file("ppt/slideLayouts/_rels/slideLayout"+ idx +".xml.rels", makeXmlSlideLayoutRel( idx ));
+		}
 
 		// Create a Layout/Master/Rel/Slide file for each SLIDE
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
@@ -3570,7 +3570,7 @@ var PptxGenJS = function(){
 			slideObj.text.forEach(function(obj,idx){
 				// A: Set options
 				obj.options = obj.options || slideObj.options || {};
-				if ( idx == 0 && !obj.options.bullet && slideObj.options.bullet ) obj.options.bullet = slideObj.options.bullet;
+				if ( idx == 0 && obj.options && !obj.options.bullet && slideObj.options.bullet ) obj.options.bullet = slideObj.options.bullet;
 
 				// B: Cast to text-object and fix line-breaks (if needed)
 				if ( typeof obj.text === 'string' || typeof obj.text === 'number' ) {
