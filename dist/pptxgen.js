@@ -2780,7 +2780,7 @@ var PptxGenJS = function(){
 						strXml += '      <c:numCache>';
 						strXml += '        <c:formatCode>General</c:formatCode>';
 						strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
 						strXml += '      </c:numCache>';
 						strXml += '    </c:numRef>';
 						strXml += '  </c:val>';
