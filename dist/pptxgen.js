@@ -2780,7 +2780,7 @@ var PptxGenJS = function(){
 						strXml += '      <c:numCache>';
 						strXml += '        <c:formatCode>General</c:formatCode>';
 						strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ value +'</c:v></c:pt>'; });
+						obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || value == 0 ? value : '') +'</c:v></c:pt>'; });
 						strXml += '      </c:numCache>';
 						strXml += '    </c:numRef>';
 						strXml += '  </c:val>';
@@ -3081,7 +3081,7 @@ var PptxGenJS = function(){
 						strXml += '    <c:numCache>';
 						strXml += '      <c:formatCode>General</c:formatCode>';
 						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
-						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || value == 0 ? value : '') +'</c:v></c:pt>'; });
 						strXml += '    </c:numCache>';
 						strXml += '  </c:numRef>';
 						strXml += '</c:xVal>';
@@ -3095,7 +3095,7 @@ var PptxGenJS = function(){
 						strXml += '      <c:formatCode>General</c:formatCode>';
 						// NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
 						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
-						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (obj.values[idx] || '') +'</c:v></c:pt>'; });
+						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (obj.values[idx] || obj.values[idx] == 0 ? obj.values[idx] : '') +'</c:v></c:pt>'; });
 						strXml += '    </c:numCache>';
 						strXml += '  </c:numRef>';
 						strXml += '</c:yVal>';
@@ -3280,7 +3280,7 @@ var PptxGenJS = function(){
 				strXml += '      <c:f>Sheet1!'+ '$B$2:$B$'+ (obj.labels.length+1) +'</c:f>';
 				strXml += '      <c:numCache>';
 				strXml += '	       <c:ptCount val="'+ obj.labels.length +'"/>';
-				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+				obj.values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || value == 0 ? value : '') +'</c:v></c:pt>'; });
 				strXml += '      </c:numCache>';
 				strXml += '    </c:numRef>';
 				strXml += '  </c:val>';
