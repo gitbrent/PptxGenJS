@@ -4,6 +4,8 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.10.0...v1.11.0)
 
 **Fixed Bugs:**
+- Values of 0 (zero) in series are missing in line chart [\#240](https://github.com/gitbrent/PptxGenJS/issues/240) ([andrei-cs](https://github.com/andrei-cs))
+
 **Implemented Enhancements:**
 
 
