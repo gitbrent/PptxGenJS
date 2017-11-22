@@ -134,7 +134,9 @@ bower install pptxgen
 ```javascript
 npm install pptxgenjs
 
-var pptx = require("pptxgenjs");
+var {
+  PptxGenJS 
+} = require("pptxgenjs");
 ```
 * Desktop: Compatible with Electron applications!
 
@@ -166,7 +168,10 @@ var pptx = new PptxGenJS();
 ```
 Node.js:
 ```javascript
-var pptx = require("pptxgenjs");
+var {
+  PptxGenJS 
+} = require("pptxgenjs");
+var pptx = new PptxGenJS()
 ```
 
 ### Presentation Properties
@@ -319,9 +324,21 @@ pptx.save('PptxGenJS-Presentation-2');
 ```
 
 Node.js:
-* Multiple presentations are a bit more complicated in Node - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83)
+* In order to generate a new, unique Presentation destructure the require statement to get the PptxGenJS constructor. Then just create a new instance of the library, add objects and save as normal.
 
+```javascript
+var {
+  PptxGenJS 
+} = require('pptxgenjs');
 
+var pptx1 = new PptxGenJS();
+pptx1.addNewSlide().addText('Presentation 1', {x:1, y:1});
+pptx1.save('PptxGenJS-Presentation-1');
+
+var pptx2 = new PptxGenJS();
+pptx2.addNewSlide().addText('Presentation 2', {x:1, y:1});
+pptx2.save('PptxGenJS-Presentation-2');
+```
 
 **************************************************************************************************
 # Presentations: Adding Objects
