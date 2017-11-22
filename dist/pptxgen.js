@@ -5010,5 +5010,12 @@ if ( NODEJS ) {
 	var sizeOf = require("image-size");
 
 	// C: Export module
-	module.exports = new PptxGenJS();
+	var instance = new PptxGenJS();
+	//As an internal work around for Issue #83 before the 2.0 release, mutate the returned object
+	//to add a PptxGenJS key. In this way users can destructure the result of the require
+	//statement thereby gaining the ability to create multiple instance on their own AND preserving
+	//backward compatibility. Only doing this in the case of NODEJS
+	instance.PptxGenJS = PptxGenJS;
+
+	module.exports = instance;
 }
