@@ -1,10 +1,11 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Jul 17, 2017
+ * DATE: Nov 24, 2017
  * DESC: Demonstrate PptxGenJS on Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  * EXEC: `node nodejs-demo.js`
+ * EXEC: `node nodejs-demo.js Media`
  */
 
 // ============================================================================
@@ -30,15 +31,18 @@ STARTING DEMO
 -------------`);
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
-var pptx;
+var PptxGenJS;
 if (fs.existsSync('../dist/pptxgen.js')) {
-	pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+	// for LOCAL TESTING
+	PptxGenJS = require('../dist/pptxgen.js');
+	if (gConsoleLog) console.log('FYI: Local library loaded (TEST MODE)');
 }
 else {
-	pptx = require("pptxgenjs");
+	PptxGenJS = require("pptxgenjs");
 }
+var pptx = new PptxGenJS();
+
 var demo = require("../examples/pptxgenjs-demo.js");
-if (gConsoleLog) console.log(` * pptxgenjs version: ${pptx.getVersion()}`); // Loaded okay?
 
 // ============================================================================
 
@@ -81,7 +85,7 @@ else {
 	demo.runEveryTest();
 }
 
-// STEP 3: Export giant demo file
+// STEP 3: Export demo file
 
 // A: Inline save
 //pptx.save( 'Node_Demo_NoCallback'+getTimestamp() );
@@ -90,7 +94,7 @@ else {
 //pptx.save( 'Node_Demo_'+getTimestamp(), function(filename){ console.log('Created: '+filename); } );
 
 // C: or use a predefined callback function
-pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
+//pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 
 // D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
 //pptx.save( 'http', streamCallback );
@@ -99,8 +103,11 @@ pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
 //pptx.save( 'jszip', jszipCallback, 'base64' );
 
 // **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
-// Create a new variable or reset `pptx` for an empty Presenation
-// EX: pptx = require("pptxgenjs");
+// HOWTO: Create a new Presenation
+var pptx = new PptxGenJS();
+var slide = pptx.addNewSlide();
+slide.addText( 'New Presentation', {x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'FFFCCC'} );
+pptx.save( 'PptxGenJS_Demo_Node2_'+getTimestamp(), saveCallback );
 
 // ============================================================================
 

@@ -1,7 +1,11 @@
 # Change Log
 
-## [v1.11.0](https://github.com/gitbrent/pptxgenjs/tree/v1.11.0) (2017-12-??)
-[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.10.0...v1.11.0)
+## [v2.0.0](https://github.com/gitbrent/pptxgenjs/tree/v2.0.0) (2017-12-??)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.10.0...v2.0.0)
+
+**BREAKING CHANGES**
+- NodeJS instantiation is now standard (see Issue [\#83](https://github.com/gitbrent/PptxGenJS/issues/83) and `examples/nodejs-demo.js`) which now allows new instances/presentations
+- `getVersion()` is now `version`
 
 **Fixed Bugs:**
 - Values of 0 (zero) in series are missing in line chart [\#240](https://github.com/gitbrent/PptxGenJS/issues/240) ([andrei-cs](https://github.com/andrei-cs))

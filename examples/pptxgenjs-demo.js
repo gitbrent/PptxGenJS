@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Nov 14, 2017
+* DATE: Nov 24, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -63,19 +63,22 @@ function execGenSlidesFuncs(type) {
 	// STEP 1: Instantiate new PptxGenJS object
 	var pptx;
 	if ( NODEJS ) {
+		var PptxGenJsLib;
 		var fs = require('fs');
 		if (fs.existsSync('../dist/pptxgen.js')) {
-			pptx = require('../dist/pptxgen.js'); // for LOCAL TESTING
+			PptxGenJsLib = require('../dist/pptxgen.js'); // for LOCAL TESTING
 		}
 		else {
-			pptx = require("pptxgenjs");
+			PptxGenJsLib = require("pptxgenjs");
 		}
+		pptx = new PptxGenJsLib();
 		var base64Images = require('./images/base64Images.js');
 		LOGO_STARLABS = base64Images.LOGO_STARLABS();
 	}
 	else {
 		pptx = new PptxGenJS();
 	}
+	if (console.log) console.log(` * pptxgenjs version: ${pptx.version}`); // Loaded okay?
 
 	// STEP 2: Set Presentation props (as QA test only - these are not required)
 	pptx.setAuthor('Brent Ely');
@@ -150,7 +153,12 @@ function execGenSlidesFuncs(type) {
 	arrTypes.forEach(function(type,idx){ eval( 'genSlides_'+type+'(pptx)' ); });
 
 	// LAST: Export Presentation
-	if ( !NODEJS ) pptx.save('Demo-'+type+'_'+getTimestamp());
+	if ( NODEJS ) {
+		pptx.save('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
+	}
+	else {
+		pptx.save('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
+	}
 }
 
 // ==================================================================================================================

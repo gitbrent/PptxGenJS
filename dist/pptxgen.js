@@ -63,8 +63,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// APP
-	var APP_VER = "1.11.0-beta";
-	var APP_REL = "20171120";
+	var APP_VER = "2.0.0-beta";
+	var APP_REL = "20171124";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -4277,17 +4277,15 @@ var PptxGenJS = function(){
 	*/
 
 	/**
+	 * Library version
+	 */
+	this.version = APP_VER +'.'+ APP_REL;
+
+	/**
 	 * Expose a couple private helper functions from above
 	 */
 	this.inch2Emu = inch2Emu;
 	this.rgbToHex = rgbToHex;
-
-	/**
-	 * Gets the version of this library
-	 */
-	this.getVersion = function getVersion() {
-		return APP_VER +'.'+ APP_REL;
-	};
 
 	/**
 	 * Gets the Presentation's Slide Layout {object} from `LAYOUTS`
@@ -5010,5 +5008,5 @@ if ( NODEJS ) {
 	var sizeOf = require("image-size");
 
 	// C: Export module
-	module.exports = new PptxGenJS();
+	module.exports = PptxGenJS;
 }

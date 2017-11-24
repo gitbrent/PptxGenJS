@@ -4,7 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<meta name="date" content="20171107">
+	<meta name="date" content="20171124">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
@@ -18,7 +18,7 @@
 		1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
 			$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
 			(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
-		2) IE11 will show an "Active-X blocked on this page, do you want to allow?" secuirty dialog when run locally (run from server to remedy)
+		2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
  	-->
 
 	<!-- vvv PptxGenJS libraries (jquery/jszip/pptxgen are required) vvv -->
@@ -387,11 +387,11 @@
 				+ "</pre>\n"
 			);
 
-			// STEP 4: Show version
+			// STEP 4: Show library info
 			{
 				var pptx = new PptxGenJS();
 
-				$('#getVersion').append( pptx.getVersion() );
+				$('#pptxVersion').append( pptx.version );
 
 				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.charts) +"'><div class='iconSvg size24 circle check'></div>pptx.charts = "+ Object.keys(pptx.charts).length +'</span>');
 				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +'</span>');
@@ -447,7 +447,7 @@
 			<div id="tab1" class="active" data-title="Intro">
 				<div id="infoBar" class="table">
 					<div style="width:40%; color:#66A7F7">
-						<div class="iconSvg size24 info"></div>Library Version: <span id="getVersion"></span>
+						<div class="iconSvg size24 info"></div>Library Version: <span id="pptxVersion"></span>
 					</div>
 					<div style="width:60%; text-align:right">
 					</div>
