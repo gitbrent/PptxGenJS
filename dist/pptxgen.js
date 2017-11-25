@@ -78,8 +78,8 @@ var PptxGenJS = function(){
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
 		'LAYOUT_16x10': { name: 'screen16x10', width:  9144000, height: 5715000 },
-		'LAYOUT_WIDE' : { name: 'custom',      width: 12191996, height: 6858000 },
-		'LAYOUT_USER' : { name: 'custom',      width: 12191996, height: 6858000 }
+		'LAYOUT_WIDE' : { name: 'custom',      width: 12192000, height: 6858000 },
+		'LAYOUT_USER' : { name: 'custom',      width: 12192000, height: 6858000 }
 	};
 	var BASE_SHAPES = {
 		'RECTANGLE': { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
@@ -4201,34 +4201,34 @@ var PptxGenJS = function(){
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
 			+ '<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
 			+ 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
-			+ 'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '+ (gObjPptx.rtlMode ? 'rtl="1"' : '') +' saveSubsetFonts="1">';
+			+ 'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '+ (gObjPptx.rtlMode ? 'rtl="1"' : '') +' saveSubsetFonts="1" autoCompressPictures="0">';
 
 		// STEP 1: Build SLIDE master list
-		strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
+		strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1" /></p:sldMasterIdLst>';
 		strXml += '<p:sldIdLst>';
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
-			strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>';
+			strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '" />';
 		}
 		strXml += '</p:sldIdLst>';
 
 		// STEP 2: Build SLIDE text styles
-		strXml += '<p:sldSz cx="'+ gObjPptx.pptLayout.width +'" cy="'+ gObjPptx.pptLayout.height +'" type="'+ gObjPptx.pptLayout.name +'"/>'
-				+ '<p:notesSz cx="'+ gObjPptx.pptLayout.height +'" cy="' + gObjPptx.pptLayout.width + '"/>'
+		strXml += '<p:sldSz cx="'+ gObjPptx.pptLayout.width +'" cy="'+ gObjPptx.pptLayout.height +'" type="'+ gObjPptx.pptLayout.name +'" />'
+				+ '<p:notesSz cx="'+ gObjPptx.pptLayout.height +'" cy="' + gObjPptx.pptLayout.width + '" />'
 				+ '<p:defaultTextStyle>';
 				+ '  <a:defPPr><a:defRPr lang="en-US"/></a:defPPr>';
 		for ( var idx=1; idx<10; idx++ ) {
 			strXml += '  <a:lvl' + idx + 'pPr marL="' + intCurPos + '" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">'
 					+ '    <a:defRPr sz="1800" kern="1200">'
-					+ '      <a:solidFill><a:schemeClr val="tx1"/></a:solidFill>'
-					+ '      <a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>'
+					+ '      <a:solidFill><a:schemeClr val="tx1" /></a:solidFill>'
+					+ '      <a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" />'
 					+ '    </a:defRPr>'
 					+ '  </a:lvl' + idx + 'pPr>';
 			intCurPos += 457200;
 		}
 		strXml += '</p:defaultTextStyle>';
 
-		strXml += '<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>'
-				+ '</p:presentation>';
+		//strXml += '<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>';
+		strXml += '</p:presentation>';
 
 		return strXml;
 	}
