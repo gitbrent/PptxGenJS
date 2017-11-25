@@ -4069,7 +4069,7 @@ var PptxGenJS = function(){
 	function makeXmlMaster(slideObject) {
 		var strSlideXml = gObjPptxGenerators.slideObjectToXml(slideObject);
 
-		// NOTE: Pass layouts as static rels because they are not referrenced any time
+		// NOTE: Pass layouts as static rels because they are not referenced any time
 		var layoutDefs = gObjPptx.slideLayouts.map(function(layoutDef,idx){
 			return '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slideObject.rels.length + idx + 1) + '" />';
 		});
@@ -4082,7 +4082,7 @@ var PptxGenJS = function(){
 		strXml += '<p:hf sldNum="0" hdr="0" ftr="0" dt="0" />';
 		strXml += '<p:txStyles>'
 			+ ' <p:titleStyle>'
-			+ '  <a:lvl1pPr algn="ctr" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:spcBef><a:spcPct val="0"/></a:spcBef><a:buNone/><a:defRPr sz="4400" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mj-lt"/><a:ea typeface="+mj-ea"/><a:cs typeface="+mj-cs"/></a:defRPr></a:lvl1pPr>'
+			+ '  <a:lvl1pPr algn="ctr" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:spcBef><a:spcPct val="0"/></a:spcBef><a:buNone/><a:defRPr sz="4400" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mj-lt" /><a:ea typeface="+mj-ea" /><a:cs typeface="+mj-cs" /></a:defRPr></a:lvl1pPr>'
 			+ ' </p:titleStyle>'
 			+ ' <p:bodyStyle>'
 			+ '  <a:lvl1pPr marL="342900" indent="-342900" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:spcBef><a:spcPct val="20000"/></a:spcBef><a:buFont typeface="Arial" pitchFamily="34" charset="0"/><a:buChar char="?"/><a:defRPr sz="3200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl1pPr>'
@@ -4107,7 +4107,7 @@ var PptxGenJS = function(){
 			+ '  <a:lvl8pPr marL="3200400" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl8pPr>'
 			+ '  <a:lvl9pPr marL="3657600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl9pPr>'
 			+ ' </p:otherStyle>'
-			+ '</p:txStyles>'
+			+ '</p:txStyles>';
 		strXml += '</p:sldMaster>';
 		return strXml;
 	}
