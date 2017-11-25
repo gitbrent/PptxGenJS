@@ -660,9 +660,9 @@ var PptxGenJS = function(){
 
 			// STEP 3: Continue slide by starting spTree node
 			strSlideXml += '<p:spTree>';
-			strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>';
-			strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>';
-			strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
+			strSlideXml += '<p:nvGrpSpPr><p:cNvPr id="1" name="" /><p:cNvGrpSpPr /><p:nvPr /></p:nvGrpSpPr>';
+			strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0" /><a:ext cx="0" cy="0" />';
+			strSlideXml += '<a:chOff x="0" y="0" /><a:chExt cx="0" cy="0" /></a:xfrm></p:grpSpPr>';
 
 			// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
 			slideObject.data.forEach(function(slideItemObj, idx) {
@@ -4040,7 +4040,7 @@ var PptxGenJS = function(){
 		var strSlideXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
 		strSlideXml += '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
 		strSlideXml += gObjPptxGenerators.slideObjectToXml(inSlide);
-		strSlideXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>';
+		strSlideXml += '<p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr>';
 		strSlideXml += '</p:sld>';
 
 		// LAST: Return
@@ -4054,10 +4054,10 @@ var PptxGenJS = function(){
 	*/
 	function makeXmlLayout(slideLayoutObject) {
 		var strXml =  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
-			strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1" userDrawn="1">';
-			strXml += gObjPptxGenerators.slideObjectToXml(slideLayoutObject);
-			strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>';
-			strXml += '</p:sldLayout>';
+		strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">';
+		strXml += gObjPptxGenerators.slideObjectToXml(slideLayoutObject);
+		strXml += '<p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr>';
+		strXml += '</p:sldLayout>';
 		return strXml;
 	}
 
