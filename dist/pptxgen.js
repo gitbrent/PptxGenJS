@@ -3765,9 +3765,9 @@ var PptxGenJS = function(){
 			if ( opts.color ) startInfo += genXmlColorSelection( opts.color );
 			if ( opts.font_face ) {
 				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174)
-				startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0"/>'
-							+ '<a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="-120"/>'
-							+ '<a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-120"/>';
+				startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0" />'
+					+ '<a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="-120" />'
+					+ '<a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-120" />';
 			}
 		}
 
@@ -4183,7 +4183,7 @@ var PptxGenJS = function(){
 
 	function makeXmlTheme() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
-		strXml += '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" name="Office Theme">\
+		strXml += '<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">\
 						<a:themeElements>\
 						  <a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>\
 						  <a:dk2><a:srgbClr val="A7A7A7"/></a:dk2>\
