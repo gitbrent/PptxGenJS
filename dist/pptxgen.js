@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20171124";
+	var APP_REL = "20171125";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3887,27 +3887,24 @@ var PptxGenJS = function(){
 		strXml += ' <Default Extension="xml" ContentType="application/xml"/>';
 		strXml += ' <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>';
 		strXml += ' <Default Extension="jpeg" ContentType="image/jpeg"/>';
+
+		// STEP 1: Add standard/any media types used in Presenation
 		strXml += ' <Default Extension="png" ContentType="image/png"/>';
 		strXml += ' <Default Extension="gif" ContentType="image/gif"/>';
-		strXml += ' <Default Extension="m4v" ContentType="video/mp4"/>'; // hard-coded as extn!=type
-		strXml += ' <Default Extension="mp4" ContentType="video/mp4"/>'; // same here, we have to add as it wont be added in loop below
+		strXml += ' <Default Extension="m4v" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
+		strXml += ' <Default Extension="mp4" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
 		gObjPptx.slides.forEach(function(slide,idx){
 			slide.rels.forEach(function(rel,idy){
-				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
+				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 ) {
 					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
+				}
 			});
 		});
 		strXml += ' <Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>';
 		strXml += ' <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>';
 
-		strXml += ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>';
-		strXml += ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>';
+		// STEP 2: Add presentation and slide master(s)/slide(s)
 		strXml += ' <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
-		strXml += ' <Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>';
-		strXml += ' <Override PartName="/ppt/tableStyles.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>';
-		strXml += ' <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>';
-		strXml += ' <Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>';
-
 		gObjPptx.slides.forEach(function(slide, idx){
 			strXml += '<Override PartName="/ppt/slideMasters/slideMaster'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>';
 			strXml += '<Override PartName="/ppt/slides/slide'            + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
@@ -3919,22 +3916,32 @@ var PptxGenJS = function(){
 			});
 		});
 
+		// STEP 3: Core PPT
+		strXml += ' <Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>';
+		strXml += ' <Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>';
+		strXml += ' <Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>';
+		strXml += ' <Override PartName="/ppt/tableStyles.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>';
+
+		// STEP 4: Add Slide Layouts
 		gObjPptx.slideLayouts.forEach(function(layout,idx) {
-				strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ ( idx + 1 ) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
-				layout.rels.forEach(function(rel){
-					if ( rel.type == 'chart' ) {
-						strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
-					}
-				});
-			});
-		gObjPptx.masterSlide.rels.forEach(function(rel) {
+			strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ ( idx + 1 ) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
+			layout.rels.forEach(function(rel){
 				if ( rel.type == 'chart' ) {
 					strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
 				}
-				if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
-					strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
 			});
+		});
+		gObjPptx.masterSlide.rels.forEach(function(rel) {
+			if ( rel.type == 'chart' ) {
+				strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+			}
+			if ( rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1 )
+				strXml += ' <Default Extension="'+ rel.extn +'" ContentType="'+ rel.type +'"/>';
+		});
 
+		// STEP 5: Finish XML (Resume core)
+		strXml += ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>';
+		strXml += ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>';
 		strXml += '</Types>';
 
 		return strXml;
