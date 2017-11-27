@@ -8,6 +8,7 @@
 - `getVersion()` is now `version`
 
 **Fixed Bugs:**
+- Master Slide slide number doesn't show using "New Slide" PPT Function [\#229](https://github.com/gitbrent/PptxGenJS/issues/229) ([ineran](https://github.com/ineran))
 - Values of 0 (zero) in series are missing in line chart [\#240](https://github.com/gitbrent/PptxGenJS/issues/240) ([andrei-cs](https://github.com/andrei-cs))
 
 **Implemented Enhancements:**
