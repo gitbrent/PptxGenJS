@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20171125";
+	var APP_REL = "20171126";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -608,7 +608,6 @@ var PptxGenJS = function(){
 		 * }
 		 * @param {Object} slideDef slide definition
 		 * @param {Object} target empty slide object that should be updated by the passed definition
-		 *
 		 */
 		createSlideObject: function createSlideObject(slideDef, target) {
 			// STEP 1: Add background
@@ -1141,14 +1140,9 @@ var PptxGenJS = function(){
 					strSlideXml += '</a:defRPr>';
 				}
 				strSlideXml += '</a:lvl1pPr></a:lstStyle>';
-
-				// FIXME:
-				// TODO: slide numbers not showing by default
-				//strSlideXml += '<a:p><a:pPr/><a:fld id="'+SLDNUMFLDID+'" type="slidenum"/></a:p>'
 				strSlideXml += '<a:p><a:fld id="'+SLDNUMFLDID+'" type="slidenum">'
 					+ '<a:rPr lang="en-US" smtClean="0"/><a:t></a:t></a:fld>'
 					+ '<a:endParaRPr lang="en-US" /></a:p>';
-
 				strSlideXml += '</p:txBody></p:sp>';
 			}
 
@@ -1664,12 +1658,12 @@ var PptxGenJS = function(){
 		zip.file("ppt/tableStyles.xml",  makeXmlTableStyles());
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
+		// Create a Layout/Master/Rel/Slide file for each SLIDE
 		for ( var idx=1; idx<=gObjPptx.slideLayouts.length; idx++ ) {
 			zip.file("ppt/slideLayouts/slideLayout"+ idx +".xml", makeXmlLayout(gObjPptx.slideLayouts[idx - 1]));
 			zip.file("ppt/slideLayouts/_rels/slideLayout"+ idx +".xml.rels", makeXmlSlideLayoutRel( idx ));
 		}
 
-		// Create a Layout/Master/Rel/Slide file for each SLIDE
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
 			intSlideNum++;
 			zip.file("ppt/slides/slide"+ intSlideNum +".xml", makeXmlSlide(gObjPptx.slides[idx]));
@@ -4031,54 +4025,55 @@ var PptxGenJS = function(){
 	// XML-GEN: Next 5 functions run 1-N times (once for each Slide)
 
 	/**
-	 * Generates the XML slide resource from a Slide object
-	 * @param {Object} inSlide - The slide object to transform into XML
-	 * @return {string} strSlideXml - Slide OOXML
+	 * Generates XML for the slide file
+	 * @param {Object} objSlide - the slide object to transform into XML
+	 * @return {string} strXml - slide OOXML
 	*/
-	function makeXmlSlide(inSlide) {
+	function makeXmlSlide(objSlide) {
 		// STEP 1: Generate slide XML - wrap generated text in full XML envelope
-		var strSlideXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
-		strSlideXml += '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
-		strSlideXml += gObjPptxGenerators.slideObjectToXml(inSlide);
-		strSlideXml += '<p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr>';
-		strSlideXml += '</p:sld>';
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
+		strXml += '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
+		strXml += gObjPptxGenerators.slideObjectToXml(objSlide);
+		strXml += '<p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr>';
+		strXml += '</p:sld>';
 
 		// LAST: Return
-		return strSlideXml;
-	}
-
-	/**
-	 * Generates the XML layout resource from a layout object
-	 * @param {Object} slideLayoutObject slide object that represents layout
-	 * @return {String} complete XML string ready to be saved as a file
-	*/
-	function makeXmlLayout(slideLayoutObject) {
-		var strXml =  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
-		strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">';
-		strXml += gObjPptxGenerators.slideObjectToXml(slideLayoutObject);
-		strXml += '<p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr>';
-		strXml += '</p:sldLayout>';
 		return strXml;
 	}
 
 	/**
-	 * Generates XML for the master file..
-	 * @param {Object} slideObject slide object that represents master slide layout
-	 * @return {String} complete XML string ready to be saved as a file
+	 * Generates the XML layout resource from a layout object
+	 * @param {Object} objSlideLayout - slide object that represents layout
+	 * @return {string} strXml - slide OOXML
 	*/
-	function makeXmlMaster(slideObject) {
-		var strSlideXml = gObjPptxGenerators.slideObjectToXml(slideObject);
+	function makeXmlLayout(objSlideLayout) {
+		// STEP 1: Generate slide XML - wrap generated text in full XML envelope
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
+		strXml += '<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">';
+		strXml += gObjPptxGenerators.slideObjectToXml(objSlideLayout);
+		strXml += '<p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr>';
+		strXml += '</p:sldLayout>';
 
+		// LAST: Return
+		return strXml;
+	}
+
+	/**
+	 * Generates XML for the master file
+	 * @param {Object} objSlide - slide object that represents master slide layout
+	 * @return {string} strXml - slide OOXML
+	*/
+	function makeXmlMaster(objSlide) {
 		// NOTE: Pass layouts as static rels because they are not referenced any time
 		var layoutDefs = gObjPptx.slideLayouts.map(function(layoutDef,idx){
-			return '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slideObject.rels.length + idx + 1) + '" />';
+			return '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (objSlide.rels.length + idx + 1) + '" />';
 		});
 
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF;
 		strXml += '<p:sldMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
-		strXml += strSlideXml;
+		strXml += gObjPptxGenerators.slideObjectToXml(objSlide);
 		strXml += '<p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink" />'
-		strXml += '<p:sldLayoutIdLst>' + layoutDefs.join('') + '</p:sldLayoutIdLst>';
+		strXml += '<p:sldLayoutIdLst>'+ layoutDefs.join('') +'</p:sldLayoutIdLst>';
 		strXml += '<p:hf sldNum="0" hdr="0" ftr="0" dt="0" />';
 		strXml += '<p:txStyles>'
 			+ ' <p:titleStyle>'
@@ -4109,12 +4104,14 @@ var PptxGenJS = function(){
 			+ ' </p:otherStyle>'
 			+ '</p:txStyles>';
 		strXml += '</p:sldMaster>';
+
+		// LAST: Return
 		return strXml;
 	}
 
 	/**
 	 * Generates XML string for a slide layout relation file.
-	 * @param {Number} layoutNumber 1-indexed number of a layout that relations are generated for
+	 * @param {Number} layoutNumber - 1-indexed number of a layout that relations are generated for
 	 * @return {String} complete XML string ready to be saved as a file
 	 */
 	function makeXmlSlideLayoutRel(layoutNumber) {
@@ -4429,7 +4426,6 @@ var PptxGenJS = function(){
 			data: [],
 			rels: [],
 			slideNumberObj: null,
-			hasSlideNumber: false,
 			layout: inMaster || '[ default ]'
 		};
 
@@ -4441,14 +4437,20 @@ var PptxGenJS = function(){
 			return pageNum;
 		};
 
-		// WARN: DEPRECATED: (leaves in 1.5 or 2.0 at latest)
-		slideObj.hasSlideNumber = function( inBool ) {
-			if ( inBool ) gObjPptx.slides[slideNum].hasSlideNumber = inBool;
-			else return gObjPptx.slides[slideNum].hasSlideNumber;
-		};
 		slideObj.slideNumber = function( inObj ) {
-			if ( inObj && typeof inObj === 'object' ) gObjPptx.slides[slideNum].slideNumberObj = inObj;
-			else return gObjPptx.slides[slideNum].slideNumberObj;
+			if ( inObj && typeof inObj === 'object' ) {
+				// A:
+				gObjPptx.slides[slideNum].slideNumberObj = inObj;
+
+				// B: Add slideNumber to slideMaster1.xml
+				if ( !gObjPptx.masterSlide.slideNumberObj ) gObjPptx.masterSlide.slideNumberObj = inObj;
+
+				// C: Add slideNumber to `BLANK` (default) layout
+				if ( !gObjPptx.slideLayouts[0].slideNumberObj ) gObjPptx.slideLayouts[0].slideNumberObj = inObj;
+			}
+			else {
+				return gObjPptx.slides[slideNum].slideNumberObj;
+			}
 		};
 
 		/**
@@ -4742,7 +4744,9 @@ var PptxGenJS = function(){
 		// POST-METHODS:
 		// ==========================================================================
 
-		// NOTE: Use legacy method to add Slide Number as a regular object (an actual Footer slideNum is created and can be enabled in PPT, but i cannot make it show by default arg!, so i'm cheating)
+		// NOTE: Slide Numbers: In order for Slide Numbers to work normally, they need to be in all 3 files: master/layout/slide
+		// `defineSlideMaster` and `slideObj.slideNumber` will add {slideNumber} to `gObjPptx.masterSlide` and `gObjPptx.slideLayouts`
+		// so, lastly, add to the Slide now.
 		var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == inMaster })[0];
 		if ( objLayout && objLayout.slideNumberObj && !slideObj.slideNumber() ) gObjPptx.slides[slideNum].slideNumberObj = objLayout.slideNumberObj;
 
@@ -4754,11 +4758,11 @@ var PptxGenJS = function(){
 			// Add Slide Master objects in order
 			$.each(inMaster, function(key,val){
 				// ISSUE#7: Allow bkgd image/color override on Slide-level
-				if ( key == 'bkgd' && inMasterOpts.bkgd ) val = inMasterOpts.bkgd;
+				if ( key == "bkgd" && inMasterOpts.bkgd ) val = inMasterOpts.bkgd;
 
 				// Background color/image
 				// DEPRECATED `src` is replaced by `path` in v1.5.0
-				if ( key == 'bkgd' ) {
+				if ( key == "bkgd" ) {
 					gObjPptxGenerators.addBackgroundDefinition(val, gObjPptx.slides[slideNum]);
 				}
 
@@ -4803,7 +4807,6 @@ var PptxGenJS = function(){
 			});
 
 			// Add Slide Numbers
-			if ( typeof inMaster.isNumbered !== 'undefined' ) slideObj.hasSlideNumber(inMaster.isNumbered); // DEPRECATED
 			if ( inMaster.slideNumber && typeof inMaster.slideNumber === 'object' ) slideObj.slideNumber(inMaster.slideNumber);
 			else if ( inMasterOpts.slideNumber && typeof inMasterOpts.slideNumber === 'object' ) slideObj.slideNumber(inMasterOpts.slideNumber);
 		}
@@ -4826,7 +4829,7 @@ var PptxGenJS = function(){
 			data : [],
 			rels : [],
 			margin: inObjMasterDef.margin || DEF_SLIDE_MARGIN_IN,
-			slideNumberObj: null
+			slideNumberObj: inObjMasterDef.slideNumber || null
 		};
 
 		// STEP 1: Create the Slide Master/Layout
@@ -4834,6 +4837,9 @@ var PptxGenJS = function(){
 
 		// STEP 2: Add it to layout defs
 		gObjPptx.slideLayouts.push(objLayout);
+
+		// STEP 3: Add slideNumber to master slide (if any)
+		if ( objLayout.slideNumberObj && !gObjPptx.masterSlide.slideNumberObj ) gObjPptx.masterSlide.slideNumberObj = objLayout.slideNumberObj;
 
 		// LAST:
 		return this;

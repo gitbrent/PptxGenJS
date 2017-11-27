@@ -118,7 +118,6 @@ var gObjPptxMasters = {
 	LEGACY_TEST_ONLY: {
 		title:   '**DO NOT COPY** - these keys are *DEPRECATED* and used only for regression testing!',
 		bkgd:   { src:'images/starlabs_bkgd.jpg' },
-		isNumbered: true,
 		shapes:  [
 			{ type:'rectangle', x:0.0, y:4.4, w:'100%', h:2.0, fill:'ffffff' },
 			{ type:'text', text:'(DEPRECATED TEST ONLY)', x:0.0, y:0.25, w:'100%', h:1, font_face:'Arial', color:'FF1133', font_size:24, align:'c' }
