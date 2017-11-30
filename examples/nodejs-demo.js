@@ -1,17 +1,18 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Nov 24, 2017
+ * DATE: Nov 29, 2017
  * DESC: Demonstrate PptxGenJS on Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  * EXEC: `node nodejs-demo.js`
- * EXEC: `node nodejs-demo.js Media`
+ * EXEC: `node nodejs-demo.js All`
+ * EXEC: `node nodejs-demo.js Text`
  */
 
 // ============================================================================
 const express = require('express'); // Not core - Only required for streaming
 const app = express(); // Not core - Only required for streaming
-var fs = require('fs');
+const fs = require('fs');
 
 var GIF_ANIM_FIRE = "";
 var AUDIO_MP3 = "";
@@ -28,21 +29,23 @@ function getTimestamp() {
 if (gConsoleLog) console.log(`
 -------------
 STARTING DEMO
--------------`);
+-------------
+`);
 
 // STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
 var PptxGenJS;
 if (fs.existsSync('../dist/pptxgen.js')) {
 	// for LOCAL TESTING
 	PptxGenJS = require('../dist/pptxgen.js');
-	if (gConsoleLog) console.log('FYI: Local library loaded (TEST MODE)');
+	if (gConsoleLog) console.log('-=TEST MODE=- (../dist/pptxgen.js)');
 }
 else {
 	PptxGenJS = require("pptxgenjs");
 }
 var pptx = new PptxGenJS();
-
 var demo = require("../examples/pptxgenjs-demo.js");
+
+if (gConsoleLog) console.log(` * save location: ${__dirname}`);
 
 // ============================================================================
 
@@ -79,22 +82,27 @@ function streamCallback(data) {
 
 // STEP 2: Run specified test, or all test funcs
 if ( process.argv.length == 3 ) {
-	demo.execGenSlidesFuncs(process.argv[2]);
-}
-else {
-	demo.runEveryTest();
+	if ( process.argv[2] == 'All' || process.argv[2] == 'all' ) demo.runEveryTest();
+	else demo.execGenSlidesFuncs(process.argv[2]);
 }
 
-// STEP 3: Export demo file
+// STEP 3: Export another demo file
+// HOWTO: Create a new Presenation
+var pptx = new PptxGenJS();
+if (gConsoleLog && process.argv.length != 3) console.log(` * pptxgenjs ver: ${pptx.version}`); // Loaded okay?
+
+var exportName = 'PptxGenJS_Demo_Node2_'+getTimestamp();
+var slide = pptx.addNewSlide();
+slide.addText( 'New Node Presentation', {x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'FFFCCC'} );
 
 // A: Inline save
-//pptx.save( 'Node_Demo_NoCallback'+getTimestamp() );
+pptx.save( exportName ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName);
 
 // B: or Save using callback function
-//pptx.save( 'Node_Demo_'+getTimestamp(), function(filename){ console.log('Created: '+filename); } );
+//pptx.save( exportName, function(filename){ console.log('Inline callback here! -> '+exportName); } ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName);
 
 // C: or use a predefined callback function
-//pptx.save( 'Node_Demo_Callback_'+getTimestamp(), saveCallback );
+//pptx.save( exportName, saveCallback ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName);
 
 // D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
 //pptx.save( 'http', streamCallback );
@@ -103,11 +111,6 @@ else {
 //pptx.save( 'jszip', jszipCallback, 'base64' );
 
 // **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
-// HOWTO: Create a new Presenation
-var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
-slide.addText( 'New Presentation', {x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'FFFCCC'} );
-pptx.save( 'PptxGenJS_Demo_Node2_'+getTimestamp(), saveCallback );
 
 // ============================================================================
 
@@ -115,5 +118,4 @@ if (gConsoleLog) console.log(`
 --------------
 DEMO COMPLETE!
 --------------
- * Files saved to...: ${__dirname}
 `);

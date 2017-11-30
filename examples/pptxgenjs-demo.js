@@ -1,7 +1,7 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Nov 24, 2017
+* DATE: Nov 29, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 */
@@ -78,7 +78,7 @@ function execGenSlidesFuncs(type) {
 	else {
 		pptx = new PptxGenJS();
 	}
-	if (console.log) console.log(` * pptxgenjs version: ${pptx.version}`); // Loaded okay?
+	if (console.log) console.log(` * pptxgenjs ver: ${pptx.version}`); // Loaded okay?
 
 	// STEP 2: Set Presentation props (as QA test only - these are not required)
 	pptx.setAuthor('Brent Ely');
@@ -155,6 +155,7 @@ function execGenSlidesFuncs(type) {
 	// LAST: Export Presentation
 	if ( NODEJS ) {
 		pptx.save('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
+		console.log('\nDemo file created:\n * '+'PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
 	}
 	else {
 		pptx.save('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
