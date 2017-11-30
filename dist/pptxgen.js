@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20171126";
+	var APP_REL = "20171129";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -350,7 +350,7 @@ var PptxGenJS = function(){
 				sizing = strImagePath.sizing || null;
 				objHyperlink = (strImagePath.hyperlink || '');
 				strImageData = (strImagePath.data || '');
-				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as were about to ovewrite ourself!
+				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as this clobbers the var!
 			}
 
 			var imageRelId = target.rels.length + 1;
@@ -1699,7 +1699,8 @@ var PptxGenJS = function(){
 					}
 				}
 				else {
-					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content); });
+					// Starting in late 2017 (Node ~8.9.1), `fs` requires a callback so use a dummy func
+					zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, function(){} ); });
 				}
 			}
 			else {
