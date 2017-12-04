@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20171129";
+	var APP_REL = "20171203";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -403,15 +403,15 @@ var PptxGenJS = function(){
 
 			// STEP 5: (Issue#77) Hyperlink support
 			if ( typeof objHyperlink === 'object' ) {
-				if ( !objHyperlink.url || typeof objHyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+				if ( !objHyperlink.url && !objHyperlink.slide ) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'");
 				else {
 					var intRelId = imageRelId + 1;
 
 					target.rels.push({
 						type: 'hyperlink',
-						data: 'dummy',
+						data: (objHyperlink.slide ? 'slide' : 'dummy'),
 						rId:  intRelId,
-						Target: objHyperlink.url
+						Target: objHyperlink.url || objHyperlink.slide
 					});
 
 					objHyperlink.rId = intRelId;
@@ -1015,7 +1015,8 @@ var PptxGenJS = function(){
 						strSlideXml += '<p:pic>';
 						strSlideXml += '  <p:nvPicPr>'
 						strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideItemObj.image +'">';
-						if ( slideItemObj.hyperlink ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'"/>';
+						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.url   ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" />';
+						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.slide ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" action="ppaction://hlinksldjump" />';
 						strSlideXml += '    </p:cNvPr>';
 						strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/>';
 						strSlideXml += '  </p:nvPicPr>';
@@ -1204,7 +1205,12 @@ var PptxGenJS = function(){
 						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
 				}
 				else if ( rel.type.toLowerCase().indexOf('hyperlink') > -1 ) {
-					strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>';
+					if ( rel.data == 'slide' ) {
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="slide'+ rel.Target +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>';
+					}
+					else {
+						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>';
+					}
 				}
 			});
 
@@ -1960,7 +1966,7 @@ var PptxGenJS = function(){
 			if ( Array.isArray(text) ) createHyperlinkRels(text, slideRels);
 			else if ( text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId ) {
 				if ( typeof text.options.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
-				else if ( !text.options.hyperlink.url || typeof text.options.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+				else if ( !text.options.hyperlink.url && !text.options.hyperlink.slide ) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'");
 				else {
 					var intRels = 1;
 					gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
@@ -1968,9 +1974,9 @@ var PptxGenJS = function(){
 
 					slideRels.push({
 						type: 'hyperlink',
-						data: 'dummy',
+						data: (text.options.hyperlink.slide ? 'slide' : 'dummy'),
 						rId:  intRelId,
-						Target: text.options.hyperlink.url
+						Target: text.options.hyperlink.url || text.options.hyperlink.slide
 					});
 
 					text.options.hyperlink.rId = intRelId;
@@ -3769,11 +3775,14 @@ var PptxGenJS = function(){
 		// Hyperlink support
 		if ( opts.hyperlink ) {
 			if ( typeof opts.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ");
-			else if ( !opts.hyperlink.url || typeof opts.hyperlink.url !== 'string' ) console.log("ERROR: 'hyperlink.url is required and/or should be a string'");
+			else if ( !opts.hyperlink.url && !opts.hyperlink.slide ) console.log("ERROR: 'hyperlink requires either `url` or `slide`'");
 			else if ( opts.hyperlink.url ) {
 				// FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 				//startInfo += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" history="1" highlightClick="0" endSnd="0"/>';
+				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" history="1" highlightClick="0" endSnd="0" />';
+			}
+			else if ( opts.hyperlink.slide ) {
+				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" action="ppaction://hlinksldjump" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" />';
 			}
 		}
 

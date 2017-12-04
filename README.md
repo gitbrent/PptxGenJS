@@ -622,7 +622,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
 | `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
-| `hyperlink`  | string  |         |           | add hyperlink       | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
+| `hyperlink`  | string  |         |           | add hyperlink       | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `indentLevel`| number  | level   | `0`       | bullet indent level | 1-32. Ex: `{ indentLevel:1 }` |
 | `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
 | `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
@@ -697,13 +697,21 @@ slide.addText(
     { x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
 );
 
-// EX: Hyperlinks
+// EX: Hyperlink: Web
 slide.addText(
     [{
         text: 'PptxGenJS Project',
         options: { hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } }
     }],
     { x:1.0, y:1.0, w:5, h:1 }
+);
+// EX: Hyperlink: Slide in Presentation
+slide.addText(
+    [{
+        text: 'Slide #2',
+        options: { hyperlink:{ slide:'2', tooltip:'Go to Summary Slide' } }
+    }],
+    { x:1.0, y:2.5, w:5, h:1 }
 );
 
 // EX: Drop/Outer Shadow
@@ -951,16 +959,16 @@ Animated GIFs can be included in Presentations in one of two ways:
 * Client Browsers: pre-encode the gif and add it using the `data` option (encoding images into GIFs is beyond any current browser)
 
 ### Image Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`     | horizontal location | 0-n |
-| `y`          | number  | inches | `1.0`     | vertical location   | 0-n |
-| `w`          | number  | inches | `1.0`     | width               | 0-n |
-| `h`          | number  | inches | `1.0`     | height              | 0-n |
-| `data`       | string  |        |           | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
-| `hyperlink`  | string  |        |           | add hyperlink | object with `url` and optionally `tooltip`. Ex: `{ hyperlink:{url:'https://github.com'} }` |
-| `path`       | string  |        |           | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
-| `sizing`     | object  |        |           | transforms image    | See [Image Sizing](#image-sizing) |
+| Option       | Type    | Unit   | Default  | Description         | Possible Values  |
+| :----------- | :------ | :----- | :------- | :------------------ | :--------------- |
+| `x`          | number  | inches | `1.0`    | horizontal location | 0-n |
+| `y`          | number  | inches | `1.0`    | vertical location   | 0-n |
+| `w`          | number  | inches | `1.0`    | width               | 0-n |
+| `h`          | number  | inches | `1.0`    | height              | 0-n |
+| `data`       | string  |        |          | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
+| `hyperlink`  | string  |        |          | add hyperlink | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
+| `path`       | string  |        |          | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
+| `sizing`     | object  |        |          | transforms image    | See [Image Sizing](#image-sizing) |
 
 **NOTES**
 * SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
