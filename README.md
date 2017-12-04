@@ -1299,7 +1299,6 @@ are not on the development roadmap.
 
 These include:
 * Animations
-* Cross-Slide Links
 * Importing Existing Presentations and/or Templates
 * Outlines
 * SmartArt
