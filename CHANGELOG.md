@@ -11,6 +11,7 @@
 - Master Slide slide number doesn't show using "New Slide" PPT Function [\#229](https://github.com/gitbrent/PptxGenJS/issues/229) ([ineran](https://github.com/ineran))
 - Values of 0 (zero) in series are missing in line chart [\#240](https://github.com/gitbrent/PptxGenJS/issues/240) ([andrei-cs](https://github.com/andrei-cs))
 - Node: "DeprecationWarning: Calling an asynchronous function without callback is deprecated." [\#252](https://github.com/gitbrent/PptxGenJS/issues/252) ([the-yadu](https://github.com/the-yadu))
+- The UP_DOWN_ARROW shape appears to have duplicate keys [\#253](https://github.com/gitbrent/PptxGenJS/issues/253) ([heavysixer](https://github.com/heavysixer))
 
 **Implemented Enhancements:**
 - Is it possible to link from one slide to another? [\#251](https://github.com/gitbrent/PptxGenJS/issues/251) ([heavysixer](https://github.com/heavysixer))
