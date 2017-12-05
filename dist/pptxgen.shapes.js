@@ -1337,8 +1337,6 @@ var gObjPptxShapes = {
 		'name': 'upDownArrow',
 		'avLst': {
 			'adj1': 50000,
-			'adj1': 50000,
-			'adj2': 50000,
 			'adj2': 50000
 		}
 	},
