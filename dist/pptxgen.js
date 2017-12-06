@@ -277,6 +277,8 @@ var PptxGenJS = function(){
 			resultObject.options.bodyProp = {};
 			resultObject.options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
 			resultObject.options.bodyProp.anchor = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
+			resultObject.options.bodyProp.rot = (opt.rot || '0'); // VALS: degree * 60,000
+            		resultObject.options.bodyProp.vert = (opt.vert || 'horz'); // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 			resultObject.options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
 
 			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
@@ -3822,7 +3824,9 @@ var PptxGenJS = function(){
 			// B: Set anchorPoints ('t','ctr',b'):
 			if ( objOptions.bodyProp.anchor ) bodyProperties += ' anchor="' + objOptions.bodyProp.anchor + '"';
 			//if ( objOptions.bodyProp.anchorCtr ) bodyProperties += ' anchorCtr="' + objOptions.bodyProp.anchorCtr + '"';
-
+			if ( objOptions.bodyProp.rot ) bodyProperties += ' rot="' + objOptions.bodyProp.rot + '"';	
+			if ( objOptions.bodyProp.vert ) bodyProperties += ' vert="' + objOptions.bodyProp.vert + '"';	
+			
 			// C: Textbox margins [padding]:
 			if ( objOptions.bodyProp.bIns || objOptions.bodyProp.bIns == 0 ) bodyProperties += ' bIns="' + objOptions.bodyProp.bIns + '"';
 			if ( objOptions.bodyProp.lIns || objOptions.bodyProp.lIns == 0 ) bodyProperties += ' lIns="' + objOptions.bodyProp.lIns + '"';
