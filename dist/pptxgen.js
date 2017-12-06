@@ -1137,7 +1137,7 @@ var PptxGenJS = function(){
 				if ( slideObject.slideNumberObj.fontFace || slideObject.slideNumberObj.fontSize || slideObject.slideNumberObj.color ) {
 					strSlideXml += '<a:defRPr sz="'+ (slideObject.slideNumberObj.fontSize || '12') +'00">';
 					if ( slideObject.slideNumberObj.color ) strSlideXml += genXmlColorSelection(slideObject.slideNumberObj.color);
-					if ( slideObject.slideNumberObj.fontFace ) strSlideXml += '<a:latin typeface="'+ slideObject.slideNumberObj.fontFace +'"/><a:cs typeface="'+ slideObject.slideNumberObj.fontFace +'"/>';
+					if ( slideObject.slideNumberObj.fontFace ) strSlideXml += '<a:latin typeface="'+ slideObject.slideNumberObj.fontFace +'"/><a:ea typeface="'+ slideObject.slideNumberObj.fontFace +'"/><a:cs typeface="'+ slideObject.slideNumberObj.fontFace +'"/>';
 					strSlideXml += '</a:defRPr>';
 				}
 				strSlideXml += '</a:lvl1pPr></a:lstStyle>';
@@ -3741,7 +3741,6 @@ var PptxGenJS = function(){
 		  </a:srgbClr>
 		</a:solidFill>
 		<a:latin typeface="Courier New" pitchFamily="34" charset="0"/>
-		<a:cs typeface="Courier New" pitchFamily="34" charset="-120"/>
 	  </a:rPr>
 	  <a:t>Misc font/color, size = 28</a:t>
 	</a:r>
@@ -3765,10 +3764,10 @@ var PptxGenJS = function(){
 		if ( opts.color || opts.font_face ) {
 			if ( opts.color ) startInfo += genXmlColorSelection( opts.color );
 			if ( opts.font_face ) {
-				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174)
+				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174); ea must come first (see Issue #174)
 				startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0" />'
-					+ '<a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="-120" />'
-					+ '<a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-120" />';
+					+ '<a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-122" />'
+					+ '<a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="-120" />';
 			}
 		}
 
