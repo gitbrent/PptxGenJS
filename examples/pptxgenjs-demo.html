@@ -391,14 +391,17 @@
 
 			// STEP 4: Show library info
 			{
-				var pptx = new PptxGenJS();
-
-				$('#pptxVersion').append( pptx.version );
-				if ( typeof Promise !== 'function' ) { $('#pptxVersion').after('<div style="color:red">Promise undefined! (IE11 requires promise.js)<div>') }
-
-				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.charts) +"'><div class='iconSvg size24 circle check'></div>pptx.charts = "+ Object.keys(pptx.charts).length +'</span>');
-				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +'</span>');
-				$('#infoBar > div:last-child').append('<span><div class="iconSvg size24 circle check"></div>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span>');
+				if ( typeof Promise !== 'function' ) {
+					$('#pptxVersion').after('<div style="color:red">Promise undefined! (IE11 requires promise.js)<div>');
+				}
+				else {
+					// NOTE: Tooltips (span title below) only works with quote (not single quote)
+					var pptx = new PptxGenJS();
+					$('#infoBar').append('<div style="flex:2 0 auto; color:#66A7F7"><div class="iconSvg size24 info"></div>Library Version: <span>'+pptx.version+'</span></div>');
+					$('#infoBar').append("<div style='flex:1 0 auto; text-align:right;'><span style='cursor:help' title='"+ JSON.stringify(pptx.charts) +"'><div class='iconSvg size24 circle check'></div>pptx.charts = "+ Object.keys(pptx.charts).length +"</span></div>");
+					$('#infoBar').append("<div style='flex:1 0 auto; text-align:right;'><span style='cursor:help' title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +"</span></div>");
+					$('#infoBar').append('<div style="flex:1 0 auto; text-align:right;"><span><div class="iconSvg size24 circle check"></div>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span></div>');
+				}
 			}
 
 			// LAST: Nav across sessions
@@ -448,13 +451,8 @@
 			</ul>
 
 			<div id="tab1" class="active" data-title="Intro">
-				<div id="infoBar" class="table">
-					<div style="width:40%; color:#66A7F7">
-						<div class="iconSvg size24 info"></div>Library Version: <span id="pptxVersion"></span>
-					</div>
-					<div style="width:60%; text-align:right">
-					</div>
-				</div>
+				<div id="infoBar" class="flex"></div>
+
 				<div id="tab1sec1" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
 					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Basic Presentation: Slide
