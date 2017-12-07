@@ -394,6 +394,7 @@
 				var pptx = new PptxGenJS();
 
 				$('#pptxVersion').append( pptx.version );
+				if ( typeof Promise !== 'function' ) { $('#pptxVersion').after('<div style="color:red">Promise undefined! (IE11 requires promise.js)<div>') }
 
 				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.charts) +"'><div class='iconSvg size24 circle check'></div>pptx.charts = "+ Object.keys(pptx.charts).length +'</span>');
 				$('#infoBar > div:last-child').append("<span title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +'</span>');
