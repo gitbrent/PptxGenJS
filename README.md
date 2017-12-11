@@ -639,6 +639,8 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `superscript`| boolean |         | `false`   | superscript text    | `true` or `false` |
 | `underline`  | boolean |         | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |         |           | vertical alignment  | `top` or `middle` or `bottom` |
+| `rot`        | number  |         |           | rotation            | degree * 60,000  |
+| `vert`       | string  |         |           | orientation	     | 'eaVert', 'horz', 'mongolianVert', 'vert', 'vert270' , 'wordArtVert', 'wordArtVertRtl' |
 
 ### Text Shadow Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                          |
