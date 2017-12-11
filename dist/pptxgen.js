@@ -5038,5 +5038,5 @@ if ( NODEJS ) {
 	var sizeOf = require("image-size");
 
 	// C: Export module
-	module.exports = new PptxGenJS();
+	module.exports = PptxGenJS;
 }
