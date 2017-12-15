@@ -632,6 +632,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `lineSpacing`| number  | points  |           | line spacing points | 1-256. Ex: `{ lineSpacing:28 }` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
 | `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
+| `rotate`     | integer | degrees | `0`       | text rotation degrees | 0-360. Ex: `{rotate:180}` |
 | `rtlMode`    | boolean |         | `false`   | enable Right-to-Left mode | `true` or `false` |
 | `shadow`     | object  |         |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
 | `strike`     | boolean |         | `false`   | text strikethrough  | `true` or `false` |
@@ -639,6 +640,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `superscript`| boolean |         | `false`   | superscript text    | `true` or `false` |
 | `underline`  | boolean |         | `false`   | underline text      | `true` or `false` |
 | `valign`     | string  |         |           | vertical alignment  | `top` or `middle` or `bottom` |
+| `vert`       | string  |   | `horz` | text direction | `eaVert` or `horz` or `mongolianVert` or `vert` or `vert270` or `wordArtVert` or `wordArtVertRtl` |
 
 ### Text Shadow Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                          |
