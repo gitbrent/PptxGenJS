@@ -64,7 +64,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20171214";
+	var APP_REL = "20180101";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -4217,23 +4217,23 @@ var PptxGenJS = function(){
 			+ 'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '+ (gObjPptx.rtlMode ? 'rtl="1"' : '') +' saveSubsetFonts="1" autoCompressPictures="0">';
 
 		// STEP 1: Build SLIDE master list
-		strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1" /></p:sldMasterIdLst>';
+		strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
 		strXml += '<p:sldIdLst>';
 		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
-			strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '" />';
+			strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>';
 		}
 		strXml += '</p:sldIdLst>';
 
 		// STEP 2: Build SLIDE text styles
-		strXml += '<p:sldSz cx="'+ gObjPptx.pptLayout.width +'" cy="'+ gObjPptx.pptLayout.height +'" type="'+ gObjPptx.pptLayout.name +'" />'
-				+ '<p:notesSz cx="'+ gObjPptx.pptLayout.height +'" cy="' + gObjPptx.pptLayout.width + '" />'
+		strXml += '<p:sldSz cx="'+ gObjPptx.pptLayout.width +'" cy="'+ gObjPptx.pptLayout.height +'" type="'+ gObjPptx.pptLayout.name +'"/>'
+				+ '<p:notesSz cx="'+ gObjPptx.pptLayout.height +'" cy="' + gObjPptx.pptLayout.width + '"/>'
 				+ '<p:defaultTextStyle>';
 				+ '  <a:defPPr><a:defRPr lang="en-US"/></a:defPPr>';
 		for ( var idx=1; idx<10; idx++ ) {
 			strXml += '  <a:lvl' + idx + 'pPr marL="' + intCurPos + '" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">'
 					+ '    <a:defRPr sz="1800" kern="1200">'
-					+ '      <a:solidFill><a:schemeClr val="tx1" /></a:solidFill>'
-					+ '      <a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" />'
+					+ '      <a:solidFill><a:schemeClr val="tx1"/></a:solidFill>'
+					+ '      <a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>'
 					+ '    </a:defRPr>'
 					+ '  </a:lvl' + idx + 'pPr>';
 			intCurPos += 457200;
@@ -4247,6 +4247,7 @@ var PptxGenJS = function(){
 	}
 
 	function makeXmlPresProps() {
+		/*
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
 					+ '<p:presentationPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
 					+ '  <p:extLst>'
@@ -4255,6 +4256,10 @@ var PptxGenJS = function(){
 					+ '    <p:ext uri="{FD5EFAAD-0ECE-453E-9831-46B23BE46B34}"><p15:chartTrackingRefBased xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main" val="0" /></p:ext>'
 					+ '  </p:extLst>'
 					+ '</p:presentationPr>';
+		*/
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
+					+ '<p:presentationPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"/>'
+
 		return strXml;
 	}
 
