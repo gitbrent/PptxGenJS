@@ -6,7 +6,7 @@
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2017 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2018 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
 |*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
@@ -57,8 +57,6 @@ var NODEJS = ( typeof module !== 'undefined' && module.exports );
 if ( NODEJS ) {
 	var gObjPptxColors  = require('../dist/pptxgen.colors.js');
 	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
-	/* LEGACY/DEPRECATED testing only - REMOVE in 2.0 (or sooner!) */
-	//var gObjPptxMasters = require('../dist/pptxgen.masters.js');
 }
 
 var PptxGenJS = function(){
@@ -1145,19 +1143,12 @@ var PptxGenJS = function(){
 				strSlideXml += '</a:lvl1pPr></a:lstStyle>';
 				strSlideXml += '<a:p><a:fld id="'+SLDNUMFLDID+'" type="slidenum">'
 					+ '<a:rPr lang="en-US" smtClean="0"/><a:t></a:t></a:fld>'
-					+ '<a:endParaRPr lang="en-US" /></a:p>';
+					+ '<a:endParaRPr lang="en-US"/></a:p>';
 				strSlideXml += '</p:txBody></p:sp>';
 			}
 
 			// STEP 6: Close spTree and finalize slide XML
 			strSlideXml += '</p:spTree>';
-			/* FIXME: Remove this in 2.0.0 (commented for 1.6.0)
-			strSlideXml += '<p:extLst>';
-			strSlideXml += ' <p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">';
-			strSlideXml += '  <p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1544976994"/>';
-			strSlideXml += ' </p:ext>';
-			strSlideXml += '</p:extLst>';
-			*/
 			strSlideXml += '</p:cSld>';
 
 			// LAST: Return
@@ -2239,7 +2230,7 @@ var PptxGenJS = function(){
 		}
 		var
 			strXml = '<a:effectLst>',
-			opts   = mix(defaults, options),
+			opts   = getMix(defaults, options),
 			type            = opts.type || 'outer',
 			blur            = opts.blur * ONEPT,
 			offset          = opts.offset * ONEPT,
@@ -2379,17 +2370,13 @@ var PptxGenJS = function(){
 	/**
 	 * shallow mix, returns new object
 	 */
-	function mix (o1, o2, etc) {
-		var o = {};
-		for (var i = 0; i <= arguments.length; i++){
+	function getMix(o1, o2, etc) {
+		var objMix = {};
+		for (var i=0; i<=arguments.length; i++){
 			var oN = arguments[i];
-			if(oN){
-				Object.keys(oN).forEach(function (key) {
-					o[key] = oN[key];
-				});
-			}
+			if ( oN ) Object.keys(oN).forEach(function(key){ objMix[key] = oN[key]; });
 		}
-		return o;
+		return objMix;
 	}
 
 	/* =======================================================================================================
@@ -2474,7 +2461,7 @@ var PptxGenJS = function(){
 			rel.opts.type.forEach(function(type){
 				var chartType = type.type.name;
 				var data = type.data;
-				var options = mix(rel.opts, type.options);
+				var options = getMix(rel.opts, type.options);
 				var valAxisId = options.secondaryValAxis ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
 				var catAxisId = options.secondaryCatAxis ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
 				usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
@@ -2497,9 +2484,9 @@ var PptxGenJS = function(){
 				if ( !rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length ) {
 					throw new Error('There must be the same number of value and category axes.');
 				}
-				strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
+				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]), AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
 				if ( rel.opts.catAxes[1] ) {
-					strXml += makeCatAxis(mix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY);
+					strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]), AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY);
 				}
 			}
 			else {
@@ -2509,9 +2496,9 @@ var PptxGenJS = function(){
 			rel.opts.hasArea = hasArea(rel.opts.type);
 
 			if ( rel.opts.valAxes ) {
-				strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
+				strXml += makeValueAxis(getMix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
 				if ( rel.opts.valAxes[1] ) {
-					strXml += makeValueAxis(mix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY, AXIS_ID_CATEGORY_SECONDARY);
+					strXml += makeValueAxis(getMix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY, AXIS_ID_CATEGORY_SECONDARY);
 				}
 			}
 			else {
@@ -3713,7 +3700,7 @@ var PptxGenJS = function(){
 		});
 
 		// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
-		// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not horoning opts
+		// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring opts
 		if ( slideObj.options.isTableCell && (slideObj.options.font_size || slideObj.options.font_face) ) {
 			strSlideXml += '<a:endParaRPr lang="'+ ( slideObj.options.lang ? slideObj.options.lang : 'en-US' ) +'" '
 				+ (slideObj.options.font_size ? ' sz="'+ Math.round(slideObj.options.font_size) +'00"' : '') + ' dirty="0">';
@@ -3723,6 +3710,9 @@ var PptxGenJS = function(){
 				strSlideXml += '  <a:cs    typeface="'+ slideObj.options.font_face +'" charset="0" />';
 			}
 			strSlideXml += '</a:endParaRPr>';
+		}
+		else {
+			strSlideXml += '<a:endParaRPr lang="'+ (slideObj.options.lang || 'en-US') +'" dirty="0"/>'; // NOTE: Added 20180101 to address PPT-2007 issues
 		}
 		strSlideXml += '</a:p>';
 
