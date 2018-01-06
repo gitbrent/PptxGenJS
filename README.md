@@ -1168,7 +1168,9 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 | `addText`         | string  |        | add text to each slide          | Use the established syntax. |
 
 ## Table-to-Slides HTML Options
-A minimum column width can be specified by adding a `data-pptx-min-width` attribute to any given `<th>` tag.
+Add an `data` attribute to the table's `<th>` tag to manually size columns (inches)
+* minimum column width can be specified by using the `data-pptx-min-width` attribute
+* fixed column width can be specified by using the `data-pptx-width` attribute
 
 Example:
 ```HTML
@@ -1178,7 +1180,7 @@ Example:
       <th data-pptx-min-width="0.6" style="width: 5%">Row</th>
       <th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
       <th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-      <th                           style="width:75%">Description</th>
+	  <th data-pptx-width="8.5"     style="width:75%">Description</th>
     </tr>
   </thead>
   <tbody></tbody>
@@ -1188,6 +1190,7 @@ Example:
 ## Table-to-Slides Notes
 * Default `x`, `y` and `margin` value is 0.5 inches, the table will take up all remaining space by default (h:100%, w:100%)
 * Your Master Slides should already have defined margins, so a Master Slide name is the only option you'll need most of the time
+* Hidden tables wont auto-size their columns correctly (as the properties are not accurate)
 
 ## Table-to-Slides Examples
 ```javascript
