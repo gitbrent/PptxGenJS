@@ -322,6 +322,7 @@ pptx.save('PptxGenJS-Presentation-2');
 
 Node.js:
 * See `examples/nodejs-demo.js` for a working demo with multiple presentations, callbacks, streaming, etc.
+* (Note: New 2.0.0 feature that breaks backwards compatibility)
 
 ```javascript
 PptxGenJS = require("pptxgenjs");
