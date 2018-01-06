@@ -1180,7 +1180,7 @@ Example:
       <th data-pptx-min-width="0.6" style="width: 5%">Row</th>
       <th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
       <th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-	  <th data-pptx-width="8.5"     style="width:75%">Description</th>
+      <th data-pptx-width="8.5"     style="width:75%">Description</th>
     </tr>
   </thead>
   <tbody></tbody>
