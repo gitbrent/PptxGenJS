@@ -234,10 +234,10 @@ slide.color = '696969';
 ### Applying Master Slides / Branding
 ```javascript
 // Create a new Slide that will inherit properties from a pre-defined master page (margins, logos, text, background, etc.)
-var slide1 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE );
+var slide1 = pptx.addNewSlide('TITLE_SLIDE');
 
 // The background color can be overridden on a per-slide basis:
-var slide2 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE, {bkgd:'FFFCCC'} );
+var slide2 = pptx.addNewSlide('TITLE_SLIDE', {bkgd:'FFFCCC'});
 ```
 
 ### Adding Slide Numbers
@@ -1158,14 +1158,14 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 | :---------------- | :------ | :----- | :------------------------------ | :--------------------------------------------- |
 | `x`               | number  | inches | horizontal location             | 0-256. Table will be placed here on each Slide |
 | `y`               | number  | inches | vertical location               | 0-256. Table will be placed here on each Slide |
-| `w`               | number  | inches | width                           | 0-256. Default is (100% - Slide margins) |
-| `h`               | number  | inches | height                          | 0-256. Default is (100% - Slide margins) |
-| `master`          | string  |        | master slide name               | Any pre-defined Master Slide. Ex: `{ master:pptx.masters.TITLE_SLIDE }` |
-| `addHeaderToEach` | boolean |        | add table headers to each slide | Ex: `addHeaderToEach:true` |
+| `w`               | number  | inches | width                           | 0-256. Default is (100% - Slide margins)       |
+| `h`               | number  | inches | height                          | 0-256. Default is (100% - Slide margins)       |
+| `master`          | string  |        | master slide to use             | [Slide Masters](#slide-masters) name. Ex: `{ master:'TITLE_SLIDE' }` |
+| `addHeaderToEach` | boolean |        | add table headers to each slide | Ex: `addHeaderToEach:true`   |
 | `addImage`        | string  |        | add an image to each slide      | Ex: `{ addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } }` |
-| `addShape`        | string  |        | add a shape to each slide       | Use the established syntax. |
-| `addTable`        | string  |        | add a table to each slide       | Use the established syntax. |
-| `addText`         | string  |        | add text to each slide          | Use the established syntax. |
+| `addShape`        | string  |        | add a shape to each slide       | Use the established syntax   |
+| `addTable`        | string  |        | add a table to each slide       | Use the established syntax   |
+| `addText`         | string  |        | add text to each slide          | Use the established syntax   |
 
 ## Table-to-Slides HTML Options
 Add an `data` attribute to the table's `<th>` tag to manually size columns (inches)
@@ -1198,7 +1198,7 @@ Example:
 pptx.addSlidesForTable( 'myHtmlTableID' );
 
 // Optionally, include a Master Slide name for pre-defined margins, background, logo, etc.
-pptx.addSlidesForTable( 'myHtmlTableID', { master:pptx.masters.MASTER_SLIDE } );
+pptx.addSlidesForTable( 'myHtmlTableID', { master:'MASTER_SLIDE' } );
 
 // Optionally, add images/shapes/text/tables to each Slide
 pptx.addSlidesForTable( 'myHtmlTableID', { addText:{ text:"Dynamic Title", options:{x:1, y:0.5, color:'0088CC'} } } );
@@ -1211,8 +1211,7 @@ professional looking Presentations with a single line of code which can be embed
 
 Add a button to a webpage that will create a Presentation using whatever table data is present:
 ```html
-<input type="button" value="Export to PPTX"
- onclick="{ var pptx = new PptxGenJS(); pptx.addSlidesForTable('tableId',{ master:pptx.masters.MASTER_SLIDE }); pptx.save(); }">
+<input type="button" value="Export to PPTX" onclick="{ var pptx=new PptxGenJS(); pptx.addSlidesForTable('tableId'); pptx.save(); }">
 ```
 
 **SharePoint Integration**
