@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20180101";
+	var APP_REL = "20180105";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -4917,9 +4917,10 @@ var PptxGenJS = function(){
 
 		// STEP 2: Calc/Set column widths by using same column width percent from HTML table
 		$.each(arrTabColW, function(i,colW){
-			var intMinWidth = $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width');
 			var intCalcWidth = Number(((emuSlideTabW * (colW / intTabW * 100) ) / 100 / EMU).toFixed(2));
-			arrColW.push( (intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth) );
+			var intMinWidth = $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-min-width');
+			var intSetWidth = $('#'+tabEleId+' thead tr:first-child th:nth-child('+ (i+1) +')').data('pptx-width');
+			arrColW.push( (intSetWidth ? intSetWidth : (intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)) );
 		});
 
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
