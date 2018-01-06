@@ -309,18 +309,33 @@ Client-Side:
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
-var pptx = require("pptxgenjs");
+// Presenation 1:
+var pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-1');
 
-// Create a new instance ("Reset")
-pptx = require("pptxgenjs");
+// Presenation 2:
+pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-2');
 ```
 
 Node.js:
-* Multiple presentations are a bit more complicated in Node - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83)
+* See `examples/nodejs-demo.js` for a working demo with multiple presentations, callbacks, streaming, etc.
+
+```javascript
+PptxGenJS = require("pptxgenjs");
+
+// Presenation 1:
+var pptx = new PptxGenJS();
+pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
+pptx.save('PptxGenJS-NodePres-1');
+
+// Presenation 2:
+var pptx = new PptxGenJS();
+pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
+pptx.save('PptxGenJS-NodePres-2');
+```
 
 
 
