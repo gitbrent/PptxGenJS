@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20180105";
+	var APP_REL = "20180107";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -252,8 +252,7 @@ var PptxGenJS = function(){
 			if ( Array.isArray(text) && text.length == 0 ) text = '';
 
 			// STEP 2: Set some options
-			// Set color (options > inherit from Slide > default to black)
-			opt.color = ( opt.color || target.slide.color || DEF_FONT_COLOR );
+			opt.color = ( opt.color || target.slide.color || DEF_FONT_COLOR ); // Set color (options > inherit from Slide > default to black)
 
 			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
 			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
@@ -829,7 +828,7 @@ var PptxGenJS = function(){
 
 									// B: Apply default values (tabOpts being used when cellOpts dont exist):
 									// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-									['align','bold','border','color','fill','font_face','font_size','margin','marginPt','underline','valign']
+									['align','bold','border','color','fill','fontFace','font_size','margin','marginPt','underline','valign']
 									.forEach(function(name,idx){
 										if ( objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0 ) cellOpts[name] = objTabOpts[name];
 									});
@@ -3701,13 +3700,13 @@ var PptxGenJS = function(){
 
 		// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
 		// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring opts
-		if ( slideObj.options.isTableCell && (slideObj.options.font_size || slideObj.options.font_face) ) {
+		if ( slideObj.options.isTableCell && (slideObj.options.font_size || slideObj.options.fontFace) ) {
 			strSlideXml += '<a:endParaRPr lang="'+ ( slideObj.options.lang ? slideObj.options.lang : 'en-US' ) +'" '
 				+ (slideObj.options.font_size ? ' sz="'+ Math.round(slideObj.options.font_size) +'00"' : '') + ' dirty="0">';
-			if ( slideObj.options.font_face ) {
-				strSlideXml += '  <a:latin typeface="'+ slideObj.options.font_face +'" charset="0" />';
-				strSlideXml += '  <a:ea    typeface="'+ slideObj.options.font_face +'" charset="0" />';
-				strSlideXml += '  <a:cs    typeface="'+ slideObj.options.font_face +'" charset="0" />';
+			if ( slideObj.options.fontFace ) {
+				strSlideXml += '  <a:latin typeface="'+ slideObj.options.fontFace +'" charset="0" />';
+				strSlideXml += '  <a:ea    typeface="'+ slideObj.options.fontFace +'" charset="0" />';
+				strSlideXml += '  <a:cs    typeface="'+ slideObj.options.fontFace +'" charset="0" />';
 			}
 			strSlideXml += '</a:endParaRPr>';
 		}
@@ -3753,13 +3752,13 @@ var PptxGenJS = function(){
 		// not doc in API yet: startInfo += ( opts.char_spacing ? ' spc="' + (text_info.char_spacing * 100) + '" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 		startInfo += ' dirty="0" smtClean="0">';
 		// Color and Font are children of <a:rPr>, so add them now before closing the runProperties tag
-		if ( opts.color || opts.font_face ) {
+		if ( opts.color || opts.fontFace ) {
 			if ( opts.color ) startInfo += genXmlColorSelection( opts.color );
-			if ( opts.font_face ) {
+			if ( opts.fontFace ) {
 				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174); ea must come first (see Issue #174)
-				startInfo += '<a:latin typeface="' + opts.font_face + '" pitchFamily="34" charset="0" />'
-					+ '<a:ea typeface="' + opts.font_face + '" pitchFamily="34" charset="-122" />'
-					+ '<a:cs typeface="' + opts.font_face + '" pitchFamily="34" charset="-120" />';
+				startInfo += '<a:latin typeface="' + opts.fontFace + '" pitchFamily="34" charset="0" />'
+					+ '<a:ea typeface="' + opts.fontFace + '" pitchFamily="34" charset="-122" />'
+					+ '<a:cs typeface="' + opts.fontFace + '" pitchFamily="34" charset="-120" />';
 			}
 		}
 
