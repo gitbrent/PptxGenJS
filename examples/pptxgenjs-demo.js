@@ -1,9 +1,10 @@
 /**
 * NAME: pptxgenjs-demo.js
 * AUTH: Brent Ely (https://github.com/gitbrent/)
-* DATE: Nov 29, 2017
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
+* VER.: 2.0.0
+* REL.: 20180107
 */
 
 // Detect Node.js
@@ -39,9 +40,9 @@ var gOptsTabOpts = { x:0.4, y:0.13, w:12.5, colW:[9,3.5] };
 var gOptsTextL = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 var gOptsOptsR = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0], align:'right' };
 var gOptsTextR = { text:'PptxGenJS', options:gOptsOptsR };
-var gOptsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, font_size:18, fontFace:'Arial', color:'0088CC', fill:'FFFFFF' };
-var gDemoTitleText = { font_size:14, color:'0088CC', bold:true };
-var gDemoTitleOpts = { font_size:13, color:'9F9F9F' };
+var gOptsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, fontSize:18, fontFace:'Arial', color:'0088CC', fill:'FFFFFF' };
+var gDemoTitleText = { fontSize:14, color:'0088CC', bold:true };
+var gDemoTitleOpts = { fontSize:13, color:'9F9F9F' };
 
 // ==================================================================================================================
 
@@ -108,7 +109,7 @@ function execGenSlidesFuncs(type) {
 			{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 			{ 'text':
 				{ text:'Global IT & Services :: Status Report',
-				options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
+				options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', color:'363636', fontSize:20, valign:'m', margin:0 } }
 			},
 			{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
 		]
@@ -123,7 +124,7 @@ function execGenSlidesFuncs(type) {
 			{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
 			{ 'text':
 				{
-					options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12},
+					options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12},
 					text: 'S.T.A.R. Laboratories - Confidential'
 				}
 			}
@@ -135,7 +136,7 @@ function execGenSlidesFuncs(type) {
 		bkgd: '36ABFF',
 		objects: [
 			{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
+			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
 			{ 'image': objImg}
 		]
 	});
@@ -144,7 +145,7 @@ function execGenSlidesFuncs(type) {
 		title: 'DEMO_SLIDE',
 		objects: [
 			{ 'rect':  { x:0.0, y:7.1, w:'100%', h:0.4, fill:'f1f1f1' } },
-			{ 'text':  { text:'PptxGenJS - JavaScript PowerPoint Library - (github.com/gitbrent/PptxGenJS)', options:{ x:0.0, y:7.1, w:'100%', h:0.4, color:'6c6c6c', font_size:10, align:'c' } } }
+			{ 'text':  { text:'PptxGenJS - JavaScript PowerPoint Library - (github.com/gitbrent/PptxGenJS)', options:{ x:0.0, y:7.1, w:'100%', h:0.4, color:'6c6c6c', fontSize:10, align:'c' } } }
 		]
 	});
 
@@ -172,7 +173,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( [ [{ text:'Table Examples 1', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
-		var objOpts1 = { x:0.5, y:0.7, font_size:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts1 = { x:0.5, y:0.7, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Cell Text Alignment:', objOpts1);
 
 		var arrTabRows = [
@@ -194,12 +195,12 @@ function genSlides_Table(pptx) {
 		];
 		slide.addTable(
 			arrTabRows, { x:0.5, y:1.1, w:5.0 },
-			{ rowH:0.75, fill:'F7F7F7', font_size:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
+			{ rowH:0.75, fill:'F7F7F7', fontSize:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
 		);
 		// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
 		// DEMO: cell styles --------------------------------------------------------------------------
-		var objOpts2 = { x:6.0, y:0.7, font_size:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts2 = { x:6.0, y:0.7, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Cell Styles:', objOpts2);
 
 		var arrTabRows = [
@@ -209,9 +210,9 @@ function genSlides_Table(pptx) {
 				{ text: 'Pink',   options: { fill:'AACCFF', color:'E140FE' } }
 			],
 			[
-				{ text: '12pt', options: { fill:'FF0000', font_size:12 } },
-				{ text: '20pt', options: { fill:'00FF00', font_size:20 } },
-				{ text: '28pt', options: { fill:'0000FF', font_size:28 } }
+				{ text: '12pt', options: { fill:'FF0000', fontSize:12 } },
+				{ text: '20pt', options: { fill:'00FF00', fontSize:20 } },
+				{ text: '28pt', options: { fill:'0000FF', fontSize:28 } }
 			],
 			[
 				{ text: 'Bold',      options: { fill:'003366', bold:true } },
@@ -221,11 +222,11 @@ function genSlides_Table(pptx) {
 		];
 		slide.addTable(
 			arrTabRows, { x:6.0, y:1.1, w:7.0 },
-			{ rowH:0.75, fill:'F7F7F7', color:'FFFFFF', font_size:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
+			{ rowH:0.75, fill:'F7F7F7', color:'FFFFFF', fontSize:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
 		);
 
 		// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
-		var objOpts3 = { x:0.5, y:3.6, font_size:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts3 = { x:0.5, y:3.6, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Row/Col Heights/Widths:', objOpts3);
 
 		var arrTabRows = [
@@ -237,7 +238,7 @@ function genSlides_Table(pptx) {
 				x:0.5, y:4.0,
 				rowH: [1, 2], colW: [1, 2, 2.5, 3, 4],
 				fill:'F7F7F7', color:'6c6c6c',
-				font_size:14, valign:'center', align:'ctr',
+				fontSize:14, valign:'center', align:'ctr',
 				border:{pt:'1', color:'BBCCDD'}
 			}
 		);
@@ -256,7 +257,7 @@ function genSlides_Table(pptx) {
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Colspans/Rowspans:', optsSub);
 
-		var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', font_size:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'m' };
+		var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', fontSize:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'m' };
 		var arrTabRows1 = [
 			[
 				{ text:'A1\nA2', options:{rowspan:2, fill:'99FFCC'} }
@@ -273,7 +274,7 @@ function genSlides_Table(pptx) {
 		// (e.g.: there are 5 elements in the first row, and 6 in the second)
 		slide.addTable( arrTabRows1, tabOpts1 );
 
-		var tabOpts2 = { x:0.5, y:3.3, w:12.4, h:1.5, font_size:14, fontFace:'Courier', align:'center', valign:'middle', fill:'F9F9F9', border:{pt:'1',color:'c7c7c7'}};
+		var tabOpts2 = { x:0.5, y:3.3, w:12.4, h:1.5, fontSize:14, fontFace:'Courier', align:'center', valign:'middle', fill:'F9F9F9', border:{pt:'1',color:'c7c7c7'}};
 		var arrTabRows2 = [
 			[
 				{ text:'A1\n--\nA2', options:{rowspan:2, fill:'99FFCC'} },
@@ -286,7 +287,7 @@ function genSlides_Table(pptx) {
 		];
 		slide.addTable( arrTabRows2, tabOpts2 );
 
-		var tabOpts3 = {x:0.5, y:5.15, w:6.25, h:2, margin:0.25, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F1F1F1' }
+		var tabOpts3 = {x:0.5, y:5.15, w:6.25, h:2, margin:0.25, align:'center', valign:'middle', fontSize:16, border:{pt:'1',color:'c7c7c7'}, fill:'F1F1F1' }
 		var arrTabRows3 = [
 			[ {text:'A1\nA2\nA3', options:{rowspan:3, fill:'FFFCCC'}}, {text:'B1\nB2', options:{rowspan:2, fill:'FFFCCC'}}, 'C1' ],
 			[ 'C2' ],
@@ -294,7 +295,7 @@ function genSlides_Table(pptx) {
 		];
 		slide.addTable(arrTabRows3, tabOpts3);
 
-		var tabOpts4 = {x:7.4, y:5.15, w:5.5, h:2, margin:0, align:'center', valign:'middle', font_size:16, border:{pt:'1',color:'c7c7c7'}, fill:'F2F9FC' }
+		var tabOpts4 = {x:7.4, y:5.15, w:5.5, h:2, margin:0, align:'center', valign:'middle', fontSize:16, border:{pt:'1',color:'c7c7c7'}, fill:'F2F9FC' }
 		var arrTabRows4 = [
 			[ 'A1', {text:'B1\nB2', options:{rowspan:2, fill:'FFFCCC'}}, {text:'C1\nC2\nC3', options:{rowspan:3, fill:'FFFCCC'}} ],
 			[ 'A2' ],
@@ -354,7 +355,7 @@ function genSlides_Table(pptx) {
 			]
 		];
 
-		var taboptions5 = { x:0.6, y:1.3, w:'90%', h:5.5, margin:0, font_size:14, align:'c', valign:'m', border:{pt:'1'} };
+		var taboptions5 = { x:0.6, y:1.3, w:'90%', h:5.5, margin:0, fontSize:14, align:'c', valign:'m', border:{pt:'1'} };
 
 		slide.addTable(arrTabRows5, taboptions5);
 	}
@@ -393,7 +394,7 @@ function genSlides_Table(pptx) {
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 3.9;
 		slide.addText('Complex Cell Border:', optsSub);
 		var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
-		slide.addTable( [['Borders!']], { x:0.5, y:4.3, w:12.3, rowH:1.5, fill:'F5F5F5', color:'3D3D3D', font_size:18, border:arrBorder, align:'c', valign:'c' } );
+		slide.addTable( [['Borders!']], { x:0.5, y:4.3, w:12.3, rowH:1.5, fill:'F5F5F5', color:'3D3D3D', fontSize:18, border:arrBorder, align:'c', valign:'c' } );
 
 		// Invalid char check
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 6.1;
@@ -409,28 +410,28 @@ function genSlides_Table(pptx) {
 		slide.addTable( [ [{ text:'Table Examples 5', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 		slide.addText(
 			'The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.',
-			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, font_size:14 }
+			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, fontSize:14 }
 		);
 		slide.addText("[\n"
-			+ "  { text:'1st line', options:{ font_size:24, color:'99ABCC', align:'r', breakLine:true } },\n"
-			+ "  { text:'2nd line', options:{ font_size:36, color:'FFFF00', align:'c', breakLine:true } },\n"
-			+ "  { text:'3rd line', options:{ font_size:48, color:'0088CC', align:'l' } }\n"
+			+ "  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'r', breakLine:true } },\n"
+			+ "  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'c', breakLine:true } },\n"
+			+ "  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'l' } }\n"
 			+ "]",
-			{ x:1, y:1.1, w:11, h:1.5, margin:0.1, fontFace:'Courier', font_size:14, fill:'F1F1F1', color:'333333' }
+			{ x:1, y:1.1, w:11, h:1.5, margin:0.1, fontFace:'Courier', fontSize:14, fill:'F1F1F1', color:'333333' }
 		);
 
 		// Textbox: Text word-level formatting
-		slide.addText('Textbox:', { x:1, y:2.8, w:3, font_size:18, fontFace:'Arial', color:'0088CC' });
+		slide.addText('Textbox:', { x:1, y:2.8, w:3, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
 		var arrTextObjects = [
-			{ text:'1st line', options:{ font_size:24, color:'99ABCC', align:'r', breakLine:true } },
-			{ text:'2nd line', options:{ font_size:36, color:'FFFF00', align:'c', breakLine:true } },
-			{ text:'3rd line', options:{ font_size:48, color:'0088CC', align:'l' } }
+			{ text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'r', breakLine:true } },
+			{ text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'c', breakLine:true } },
+			{ text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'l' } }
 		];
 		slide.addText( arrTextObjects, { x:2.5, y:2.8, w:9, h:2, margin:0.1, fill:'232323' } );
 
 		// Table cell: Use the exact same code from addText to do the same word-level formatting within a cell
-		slide.addText('Table:', { x:1, y:5, w:3, font_size:18, fontFace:'Arial', color:'0088CC' });
+		slide.addText('Table:', { x:1, y:5, w:3, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
 		var opts2 = { x:2.5, y:5, w:9, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6], border:{pt:'1'}, fill:'F1F1F1' }
 		var arrTabRows = [
@@ -459,7 +460,7 @@ function genSlides_Table(pptx) {
 		var arrTabRows = [
 			[{ text:arrCell1 }, { text:arrCell2, options:{valign:'m'} }, { text:arrCell3, options:{valign:'m'} }, { text:arrCell4, options:{valign:'b'} }]
 		];
-		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:3, font_size:24, border:{pt:'1'}, fill:'F1F1F1' } );
+		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:3, fontSize:24, border:{pt:'1'}, fill:'F1F1F1' } );
 
 		// EX 2:
 		slide.addTable(
@@ -470,16 +471,16 @@ function genSlides_Table(pptx) {
 					{ text:'Final text object w/ bullet:true', options:{color:'0000AB', bullet:true} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{font_size:36, align:'l', breakLine:true} },
-					{ text:'#2',   options:{font_size:60, align:'r', color:'CD0101'} }
+					{ text:'Cell', options:{fontSize:36, align:'l', breakLine:true} },
+					{ text:'#2',   options:{fontSize:60, align:'r', color:'CD0101'} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{font_size:36, fontFace:'Courier', color:'dd0000', breakLine:true} },
-					{ text:'#'   , options:{font_size:60, color:'8648cd'} },
-					{ text:'3'   , options:{font_size:60, color:'33ccef'} }
+					{ text:'Cell', options:{fontSize:36, fontFace:'Courier', color:'dd0000', breakLine:true} },
+					{ text:'#'   , options:{fontSize:60, color:'8648cd'} },
+					{ text:'3'   , options:{fontSize:60, color:'33ccef'} }
 				]}
 			],
-			{ x:0.6, y:4.75, w:12, h:2, font_size:24, colW:[8,2,2], valign:'m', border:{pt:'1'}, fill:'F1F1F1' }
+			{ x:0.6, y:4.75, w:12, h:2, fontSize:24, colW:[8,2,2], valign:'m', border:{pt:'1'}, fill:'F1F1F1' }
 		);
 	}
 
@@ -2012,7 +2013,7 @@ function genSlides_Media(pptx) {
 
 		slide1.addText(
 			'**NOTE** YouTube videos will issue a content warning in desktop PPT (they only work in PPT Online/O365)',
-			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'c', font_size:12 }
+			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'c', fontSize:12 }
 		);
 	}
 
@@ -2133,11 +2134,11 @@ function genSlides_Shape(pptx) {
 	var slide = pptx.addNewSlide();
 	slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
-	slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE,         x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'c', font_size:14 });
-	slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE,         x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'c', font_size:14 });
-	slide.addText('OVAL (alpha:25)',            { shape:pptx.shapes.OVAL,              x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC', alpha:25 }, align:'c', font_size:14 });
-	slide.addText('OVAL (rotate:90, alpha:50)', { shape:pptx.shapes.OVAL,              x:7.7, y:1.4, w:3.0, h:1.5, fill:{ type:'solid', color:'FF00CC', alpha:50 }, rotate:90, align:'c', font_size:14 });
-	slide.addText('ROUNDED-RECTANGLE\nline_dash:dash\nrectRadius:10', { shape:pptx.shapes.ROUNDED_RECTANGLE, x:10 , y:2.5, w:3.0, h:1.5, r:0.2, fill:'00FF00', align:'c', font_size:14, line:'000000', line_size:1, line_dash:'dash', rectRadius:10 });
+	slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE,         x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'c', fontSize:14 });
+	slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE,         x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'c', fontSize:14 });
+	slide.addText('OVAL (alpha:25)',            { shape:pptx.shapes.OVAL,              x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC', alpha:25 }, align:'c', fontSize:14 });
+	slide.addText('OVAL (rotate:90, alpha:50)', { shape:pptx.shapes.OVAL,              x:7.7, y:1.4, w:3.0, h:1.5, fill:{ type:'solid', color:'FF00CC', alpha:50 }, rotate:90, align:'c', fontSize:14 });
+	slide.addText('ROUNDED-RECTANGLE\nline_dash:dash\nrectRadius:10', { shape:pptx.shapes.ROUNDED_RECTANGLE, x:10 , y:2.5, w:3.0, h:1.5, r:0.2, fill:'00FF00', align:'c', fontSize:14, line:'000000', line_size:1, line_dash:'dash', rectRadius:10 });
 	//
 	slide.addText('LINE size=1',     { shape:pptx.shapes.LINE, align:'c', x:4.15, y:4.40, w:5, h:0, line:'FF0000', line_size:1, line_dash:'lgDash' });
 	slide.addText('LINE size=2',     { shape:pptx.shapes.LINE, align:'l', x:4.15, y:4.80, w:5, h:0, line:'FF0000', line_size:2, line_tail:'triangle' });
@@ -2162,11 +2163,11 @@ function genSlides_Text(pptx) {
 		slide.addText("Word-Level Formatting:", { x:0.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'1st\nline',options:{ font_size:24, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-				{ text:'2nd line', options:{ font_size:36, fontFace:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
-				{ text:'3rd line', options:{ font_size:48, fontFace:'Verdana',     color:'0088CC', align:'l' } },
-				{ text:'4th line', options:{ font_size:38, fontFace:'Arial',       color:'FFFF00', align:'c', strike:true } },
-				{ text:'5th\nline',options:{ font_size:36, fontFace:'Courier New', color:'99ABCC', align:'r' } }
+				{ text:'1st\nline',options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+				{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
+				{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'l' } },
+				{ text:'4th line', options:{ fontSize:38, fontFace:'Arial',       color:'FFFF00', align:'c', strike:true } },
+				{ text:'5th\nline',options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'r' } }
 			],
 			{ x:0.5, y:0.85, w:6, h:4, margin:0.1, fill:'232323' }
 		);
@@ -2180,7 +2181,7 @@ function genSlides_Text(pptx) {
 				{ text:' or ' },
 				{ text:'(link without tooltip)', options:{hyperlink:{url:'https://github.com/gitbrent'}} }
 			],
-			{ x:0.5, y:5.35, w:6.0, h:0.6, margin:0.1, fill:'F1F1F1', font_size:14 }
+			{ x:0.5, y:5.35, w:6.0, h:0.6, margin:0.1, fill:'F1F1F1', fontSize:14 }
 		);
 
 		// 4: Text Effects: Shadow
@@ -2188,7 +2189,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Text Shadow:", { x:0.5, y:6.2, w:'50%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
-			{ x:0.5, y:6.5, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
+			{ x:0.5, y:6.5, w:12, h:0.6, fontSize:32, color:'0088cc', shadow:shadowOpts }
 		);
 
 		// RIGHT COLUMN ------------------------------------------------------------
@@ -2197,7 +2198,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Breaks:", { x:7.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
-			{ x:7.5, y:0.85, w:5.25, h:1.6, valign:'middle', align:'ctr', color:'6c6c6c', font_size:16, fill:'F2F2F2' }
+			{ x:7.5, y:0.85, w:5.25, h:1.6, valign:'middle', align:'ctr', color:'6c6c6c', fontSize:16, fill:'F2F2F2' }
 		);
 
 		slide.addText("Line-Spacing (text):", { x:7.5, y:2.6, w:'40%', h:0.38, color:'0088CC' });
@@ -2209,7 +2210,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Spacing (bullets):", { x:7.5, y:4.45, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'Line Spacing\n35pt', options:{ font_size:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
+				{ text:'Line Spacing\n35pt', options:{ fontSize:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
 			],
 			{ x:7.5, y:4.85, w:5.25, h:1.15, margin:0.1, fill:'f1f1f1' }
 		);
@@ -2226,16 +2227,16 @@ function genSlides_Text(pptx) {
 		slide.addText("Bullet Indent-Levels:", { x:0.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'Bullet one',     options:{ font_size:24, bullet:true, color:'99ABCC'                } },
-				{ text:'Indent-Level 1', options:{ font_size:32, bullet:true, color:'FFFF00', indentLevel:1 } },
-				{ text:'Indent-Level 2', options:{ font_size:42, bullet:true, color:'0088CC', indentLevel:2 } },
-				{ text:'Indent-Level 3', options:{ font_size:48, bullet:true, color:'CC88BB', indentLevel:3 } },
-				{ text:'Indent-Level 3', options:{ font_size:48, bullet:true, color:'CC88BB', indentLevel:3 } },
-				{ text:'Indent-Level 2', options:{ font_size:42, bullet:true, color:'0088CC', indentLevel:2 } },
-				{ text:'Indent-Level 2', options:{ font_size:42, bullet:true, color:'0088CC', indentLevel:2 } },
-				{ text:'Indent-Level 1', options:{ font_size:32, bullet:true, color:'FFFF00', indentLevel:1 } },
-				{ text:'Bullet no indent', options:{ font_size:24, bullet:true, color:'99ABCC'                } },
-				{ text:'Bullet Last',    options:{ font_size:24, bullet:true, color:'99ABCC'                } }
+				{ text:'Bullet one',     options:{ fontSize:24, bullet:true, color:'99ABCC'                } },
+				{ text:'Indent-Level 1', options:{ fontSize:32, bullet:true, color:'FFFF00', indentLevel:1 } },
+				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:'0088CC', indentLevel:2 } },
+				{ text:'Indent-Level 3', options:{ fontSize:48, bullet:true, color:'CC88BB', indentLevel:3 } },
+				{ text:'Indent-Level 3', options:{ fontSize:48, bullet:true, color:'CC88BB', indentLevel:3 } },
+				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:'0088CC', indentLevel:2 } },
+				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:'0088CC', indentLevel:2 } },
+				{ text:'Indent-Level 1', options:{ fontSize:32, bullet:true, color:'FFFF00', indentLevel:1 } },
+				{ text:'Bullet no indent', options:{ fontSize:24, bullet:true, color:'99ABCC'                } },
+				{ text:'Bullet Last',    options:{ fontSize:24, bullet:true, color:'99ABCC'                } }
 			],
 			{ x:0.5, y:1.0, w:6.25, h:6.0, fill:'373737' }
 		);
@@ -2247,14 +2248,14 @@ function genSlides_Text(pptx) {
 
 		// 5: Bullets: Text With Line-Breaks
 		slide.addText("Bullets with line-breaks:", { x:7.5, y:2.1, w:'40%', h:0.38, color:'0088CC' });
-		slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.6, w:'30%', h:1.0, color:'393939', font_size:16, fill:'F2F2F2', bullet:{type:'number'} });
+		slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.6, w:'30%', h:1.0, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} });
 
 		// 6: Bullets: With group of {text}
 		slide.addText("Bullet with {text} objects:", { x:7.5, y:4.0, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text: 'big red words... ', options:{font_size:24, color:'FF0000'} },
-				{ text: 'some green words.', options:{font_size:16, color:'00FF00'} }
+				{ text: 'big red words... ', options:{fontSize:24, color:'FF0000'} },
+				{ text: 'some green words.', options:{fontSize:16, color:'00FF00'} }
 			],
 			{ x:8.0, y:4.4, w:5.0, h:0.5, margin:0.1, fontFace:'Arial', bullet:{code:'25BA'} }
 		);
@@ -2284,11 +2285,11 @@ function genSlides_Text(pptx) {
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
 		slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
 		slide.addText(
-			[{ text:'(top/lft)', options:{ font_size:12 } }, { text:'Textbox', options:{ bold:true } }],
+			[{ text:'(top/lft)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
 			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', margin:15 }
 		);
 		slide.addText(
-			[{ text:'Textbox' }, { text:'(btm/rgt)', options:{ font_size:12 } }],
+			[{ text:'Textbox' }, { text:'(btm/rgt)', options:{ fontSize:12 } }],
 			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', margin:0 }
 		);
 
@@ -2311,17 +2312,17 @@ function genSlides_Text(pptx) {
 		// TEST: using {option}: Add text box with multiline options:
 		slide.addText(
 			[
-				{ text:'word-level\nformatting', options:{ font_size:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-				{ text:'...in the same textbox', options:{ font_size:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
+				{ text:'word-level\nformatting', options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+				{ text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
 			],
 			{ x:0.5, y:4.3, w:8.5, h:2.5, margin:0.1, fill:'232323' }
 		);
 
 		var objOptions = {
 			x:0, y:7, w:'100%', h:0.5, align:'c',
-			fontFace:'Arial', font_size:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
+			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
 		};
-		slide.addText('Arial 32pt, green, bold, italic, underline, margin:0, ctr', objOptions);
+		slide.addText('Text: Arial, 24, green, bold, italic, underline, margin:0', objOptions);
 	}
 
 	// SLIDE 4: Scheme Colors

@@ -1317,7 +1317,8 @@ Please note that version 2.0.0 enabled some much needed cleanup, but may break y
 While the changes may only impact cosmetic properties, it's recommended you test your solutions thoroughly before upgrading PptxGenJS to the 2.0 version.
 
 *All Users:*
-* `font_face` is now `fontFace` in all methods
+* Option `font_face` renamed to `fontFace` in all methods
+* Option `font_size` renamed to `fontSize` in all methods
 
 *Node Users:*
 * The library is now instantiated via the conventional way, so creating [multiple presentations](#saving-multiple-presentations) is easy now! (See [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83))

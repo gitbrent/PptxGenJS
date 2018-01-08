@@ -828,7 +828,7 @@ var PptxGenJS = function(){
 
 									// B: Apply default values (tabOpts being used when cellOpts dont exist):
 									// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-									['align','bold','border','color','fill','fontFace','font_size','margin','marginPt','underline','valign']
+									['align','bold','border','color','fill','fontFace','fontSize','margin','marginPt','underline','valign']
 									.forEach(function(name,idx){
 										if ( objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0 ) cellOpts[name] = objTabOpts[name];
 									});
@@ -1982,7 +1982,7 @@ var PptxGenJS = function(){
 	*/
 	function parseTextToLines(cell, inWidth) {
 		var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0); // Character Constant (An approximation of the Golden Ratio)
-		var CPL = (inWidth*EMU / ( (cell.opts.font_size || DEF_FONT_SIZE)/CHAR )); // Chars-Per-Line
+		var CPL = (inWidth*EMU / ( (cell.opts.fontSize || DEF_FONT_SIZE)/CHAR )); // Chars-Per-Line
 		var arrLines = [];
 		var strCurrLine = '';
 
@@ -2136,7 +2136,7 @@ var PptxGenJS = function(){
 
 				// 4: Keep track of max line count within all row cells
 				if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
-				var lineHeight = inch2Emu((cell.opts.font_size || opts.font_size || DEF_FONT_SIZE) * LINEH_MODIFIER / 100);
+				var lineHeight = inch2Emu((cell.opts.fontSize || opts.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER / 100);
 				// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 				if ( cell.opts && cell.opts.rowspan ) lineHeight = 0;
 
@@ -3686,7 +3686,7 @@ var PptxGenJS = function(){
 				strSlideXml += '</a:p><a:p>' + paragraphPropXml;
 			}
 
-			// C: Inherit any main options (color, font_size, etc.)
+			// C: Inherit any main options (color, fontSize, etc.)
 			// We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 			$.each(slideObj.options, function(key,val){
@@ -3700,9 +3700,9 @@ var PptxGenJS = function(){
 
 		// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
 		// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring opts
-		if ( slideObj.options.isTableCell && (slideObj.options.font_size || slideObj.options.fontFace) ) {
+		if ( slideObj.options.isTableCell && (slideObj.options.fontSize || slideObj.options.fontFace) ) {
 			strSlideXml += '<a:endParaRPr lang="'+ ( slideObj.options.lang ? slideObj.options.lang : 'en-US' ) +'" '
-				+ (slideObj.options.font_size ? ' sz="'+ Math.round(slideObj.options.font_size) +'00"' : '') + ' dirty="0">';
+				+ (slideObj.options.fontSize ? ' sz="'+ Math.round(slideObj.options.fontSize) +'00"' : '') + ' dirty="0">';
 			if ( slideObj.options.fontFace ) {
 				strSlideXml += '  <a:latin typeface="'+ slideObj.options.fontFace +'" charset="0" />';
 				strSlideXml += '  <a:ea    typeface="'+ slideObj.options.fontFace +'" charset="0" />';
@@ -3744,7 +3744,7 @@ var PptxGenJS = function(){
 		// BEGIN runProperties
 		var startInfo = '<a:rPr lang="'+ ( opts.lang ? opts.lang : 'en-US' ) +'" '+ ( opts.lang ? ' altLang="en-US"' : '' );
 		startInfo += ( opts.bold      ? ' b="1"' : '' );
-		startInfo += ( opts.font_size ? ' sz="'+ Math.round(opts.font_size) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+		startInfo += ( opts.fontSize  ? ' sz="'+ Math.round(opts.fontSize) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
 		startInfo += ( opts.italic    ? ' i="1"' : '' );
 		startInfo += ( opts.strike    ? ' strike="sngStrike"' : '' );
 		startInfo += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
@@ -4642,7 +4642,7 @@ var PptxGenJS = function(){
 			if ( opt.cy ) opt.cy = getSmartParseNumber( opt.cy, 'Y' );
 			opt.h          = opt.cy;
 			opt.autoPage   = ( opt.autoPage == false ? false : true );
-			opt.font_size  = opt.font_size || DEF_FONT_SIZE;
+			opt.fontSize   = opt.fontSize || DEF_FONT_SIZE;
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
 			opt.margin     = (opt.marginPt || opt.margin); // (Legacy Support/DEPRECATED)
 			opt.margin     = (opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT);
@@ -4938,10 +4938,10 @@ var PptxGenJS = function(){
 
 					// B: Create option object
 					var objOpts = {
-						font_size: $(cell).css('font-size').replace(/\D/gi,''),
-						bold:      (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
-						color:     rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
-						fill:      rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
+						fontSize: $(cell).css('font-size').replace(/\D/gi,''),
+						bold:     (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
+						color:    rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
+						fill:     rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
 					};
 					if ( $.inArray($(cell).css('text-align'), ['left','center','right','start','end']) > -1 ) objOpts.align = $(cell).css('text-align').replace('start','left').replace('end','right');
 					if ( $.inArray($(cell).css('vertical-align'), ['top','middle','bottom']) > -1 ) objOpts.valign = $(cell).css('vertical-align');
