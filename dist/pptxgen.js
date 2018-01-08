@@ -268,8 +268,8 @@ var PptxGenJS = function(){
 			// STEP 4: Set options
 			resultObject.options = opt;
 			if ( opt.shape && opt.shape.name == 'line' ) {
-				opt.line      = (opt.line      || '333333' );
-				opt.line_size = (opt.line_size || 1 );
+				opt.line     = (opt.line     || '333333' );
+				opt.lineSize = (opt.lineSize || 1 );
 			}
 			resultObject.options.bodyProp = {};
 			resultObject.options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
@@ -309,14 +309,14 @@ var PptxGenJS = function(){
 
 			resultObject.type = 'text';
 			resultObject.options = options;
-			options.shape     = shape;
-			options.x         = ( options.x || (options.x == 0 ? 0 : 1) );
-			options.y         = ( options.y || (options.y == 0 ? 0 : 1) );
-			options.w         = ( options.w || 1.0 );
-			options.h         = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
-			options.line      = ( options.line || (shape.name == 'line' ? '333333' : null) );
-			options.line_size = ( options.line_size || (shape.name == 'line' ? 1 : null) );
-			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.line_dash || '') < 0 ) options.line_dash = 'solid';
+			options.shape    = shape;
+			options.x        = ( options.x || (options.x == 0 ? 0 : 1) );
+			options.y        = ( options.y || (options.y == 0 ? 0 : 1) );
+			options.w        = ( options.w || 1.0 );
+			options.h        = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
+			options.line     = ( options.line || (shape.name == 'line' ? '333333' : null) );
+			options.lineSize = ( options.lineSize || (shape.name == 'line' ? 1 : null) );
+			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.lineDash || '') < 0 ) options.lineDash = 'solid';
 
 			target.data.push(resultObject);
 			return resultObject;
@@ -958,11 +958,11 @@ var PptxGenJS = function(){
 
 						// Shape Type: LINE: line color
 						if ( slideItemObj.options.line ) {
-							strSlideXml += '<a:ln'+ ( slideItemObj.options.line_size ? ' w="'+ (slideItemObj.options.line_size*ONEPT) +'"' : '') +'>';
+							strSlideXml += '<a:ln'+ ( slideItemObj.options.lineSize ? ' w="'+ (slideItemObj.options.lineSize*ONEPT) +'"' : '') +'>';
 							strSlideXml += genXmlColorSelection( slideItemObj.options.line );
-							if ( slideItemObj.options.line_dash ) strSlideXml += '<a:prstDash val="' + slideItemObj.options.line_dash + '"/>';
-							if ( slideItemObj.options.line_head ) strSlideXml += '<a:headEnd type="' + slideItemObj.options.line_head + '"/>';
-							if ( slideItemObj.options.line_tail ) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.line_tail + '"/>';
+							if ( slideItemObj.options.lineDash ) strSlideXml += '<a:prstDash val="' + slideItemObj.options.lineDash + '"/>';
+							if ( slideItemObj.options.lineHead ) strSlideXml += '<a:headEnd type="' + slideItemObj.options.lineHead + '"/>';
+							if ( slideItemObj.options.lineTail ) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.lineTail + '"/>';
 							strSlideXml += '</a:ln>';
 						}
 
@@ -2673,7 +2673,7 @@ var PptxGenJS = function(){
 						}
 						else {
 							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
-							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+							strXml += '<a:prstDash val="' + (opts.lineDash || "solid") + '"/><a:round/></a:ln>';
 						}
 					}
 					else if ( opts.dataBorder ) {
@@ -2874,7 +2874,7 @@ var PptxGenJS = function(){
 						}
 						else {
 							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
-							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+							strXml += '<a:prstDash val="' + (opts.lineDash || "solid") + '"/><a:round/></a:ln>';
 						}
 
 						// Shadow
@@ -3049,7 +3049,7 @@ var PptxGenJS = function(){
 						}
 						else {
 							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
-							strXml += '<a:prstDash val="' + (opts.line_dash || "solid") + '"/><a:round/></a:ln>';
+							strXml += '<a:prstDash val="' + (opts.lineDash || "solid") + '"/><a:round/></a:ln>';
 						}
 
 						// Shadow

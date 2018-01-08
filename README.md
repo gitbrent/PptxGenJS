@@ -933,9 +933,9 @@ Check the `pptxgen.shapes.js` file for a complete list of the hundreds of PowerP
 | `flipH`      | boolean |        |         | flip Horizontal     | `true` or `false` |
 | `flipV`      | boolean |        |         | flip Vertical       | `true` or `false` |
 | `line`       | string  |        |         | border line color   | hex color code or [scheme color constant](#scheme-colors). Ex: `{line:'0088CC'}` |
-| `line_dash`  | string  |        | `solid` | border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
-| `line_head`  | string  |        |         | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
-| `line_size`  | number  | points |         | border line size    | 1-256. Ex: {line_size:4} |
+| `lineDash`   | string  |        | `solid` | border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
+| `line_head`   | string  |        |         | border line ending  | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
+| `lineSize`   | number  | points |         | border line size    | 1-256. Ex: {lineSize:4} |
 | `line_tail`  | string  |        |         | border line heading | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none` |
 | `rectRadius` | number  | inches |         | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
 | `rotate`     | integer | degrees|         | rotation degrees    | 0-360. Ex: `{rotate:180}` |
@@ -948,10 +948,10 @@ pptx.setLayout('LAYOUT_WIDE');
 var slide = pptx.addNewSlide();
 
 // LINE
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.40, w:5, h:0, line:'FF0000', line_size:1 });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.80, w:5, h:0, line:'FF0000', line_size:2, line_head:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.20, w:5, h:0, line:'FF0000', line_size:3, line_tail:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.60, w:5, h:0, line:'FF0000', line_size:4, line_head:'triangle', line_tail:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.40, w:5, h:0, line:'FF0000', lineSize:1 });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.80, w:5, h:0, line:'FF0000', lineSize:2, line_head:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.20, w:5, h:0, line:'FF0000', lineSize:3, line_tail:'triangle' });
+slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.60, w:5, h:0, line:'FF0000', lineSize:4, line_head:'triangle', line_tail:'triangle' });
 // DIAGONAL LINE
 slide.addShape(pptx.shapes.LINE,      { x:0, y:0, w:5.0, h:0, line:'FF0000', rotate:45 });
 // RECTANGLE
@@ -960,7 +960,7 @@ slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, w:5, h:3, fill:'FF0000' 
 slide.addShape(pptx.shapes.OVAL,      { x:4.15, y:0.75, w:5, h:2, fill:{ type:'solid', color:'0088CC', alpha:25 } });
 
 // Adding text to Shapes:
-slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', line_size:3 });
+slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', lineSize:3 });
 slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.00, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
 
 pptx.save('Demo-Shapes');
@@ -1139,7 +1139,7 @@ pptx.defineSlideMaster({
   title: 'MASTER_SLIDE',
   bkgd:  'FFFFFF',
   objects: [
-    { 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
+    { 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', lineSize:5 } },
     { 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
     { 'text':  { text:'Status Report', options:{ x:3.0, y:5.30, w:5.5, h:0.75 } } },
     { 'image': { x:11.3, y:6.40, w:1.67, h:0.75, path:'images/logo.png' } }
@@ -1317,11 +1317,19 @@ Please note that version 2.0.0 enabled some much needed cleanup, but may break y
 While the changes may only impact cosmetic properties, it's recommended you test your solutions thoroughly before upgrading PptxGenJS to the 2.0 version.
 
 All Users:
-* Option `font_face` renamed to `fontFace` in all methods
-* Option `font_size` renamed to `fontSize` in all methods
+* Option names are now caseCase across all methods:
+ * `font_face` renamed to `fontFace`
+ * `font_size` renamed to `fontSize`
+ * `line_dash` renamed to `lineDash`
+ * `line_head` renamed to `lineHead`
+ * `line_size` renamed to `lineSize`
+ * `line_tail` renamed to `lineTail`
 
 Node Users:
-* *Major Change* `require('pptxgenjs')` no longer returns a singleton instance. Starting now, use `pptx = new PptxGenJS();` to get a single instance (so creating [multiple presentations](#saving-multiple-presentations) is much easier now - See [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
+* **Major Change**
+ * `require('pptxgenjs')` no longer returns a singleton instance.
+ * Starting now, use `pptx = new PptxGenJS();` to get a single instance
+ * Creating [multiple presentations](#saving-multiple-presentations) is much easier now - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
 
 **************************************************************************************************
 # Development Roadmap
