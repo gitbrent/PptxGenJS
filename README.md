@@ -98,6 +98,8 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Version 2.0 Breaking Changes](#version-20-breaking-changes)
+  - [All Users](#all-users)
+  - [Node Users](#node-users)
 - [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
 - [Support Us](#support-us)
