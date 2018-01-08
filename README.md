@@ -98,7 +98,6 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Version 2.0 Breaking Changes](#version-20-breaking-changes)
-- [Development Roadmap](#development-roadmap)
 - [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
 - [Support Us](#support-us)
@@ -1317,24 +1316,19 @@ Please note that version 2.0.0 enabled some much needed cleanup, but may break y
 While the changes may only impact cosmetic properties, it's recommended you test your solutions thoroughly before upgrading PptxGenJS to the 2.0 version.
 
 All Users:
-* Option names are now caseCase across all methods:
- * `font_face` renamed to `fontFace`
- * `font_size` renamed to `fontSize`
- * `line_dash` renamed to `lineDash`
- * `line_head` renamed to `lineHead`
- * `line_size` renamed to `lineSize`
- * `line_tail` renamed to `lineTail`
+Option names are now caseCase across all methods:
+* `font_face` renamed to `fontFace`
+* `font_size` renamed to `fontSize`
+* `line_dash` renamed to `lineDash`
+* `line_head` renamed to `lineHead`
+* `line_size` renamed to `lineSize`
+* `line_tail` renamed to `lineTail`
 
 Node Users:
-* **Major Change**
- * `require('pptxgenjs')` no longer returns a singleton instance.
- * Starting now, use `pptx = new PptxGenJS();` to get a single instance
- * Creating [multiple presentations](#saving-multiple-presentations) is much easier now - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
-
-**************************************************************************************************
-# Development Roadmap
-
-Version 2.0 will be released in 2018 and will break Node (and probably other library) integration as the PptxGenJS export is updated to a constructor.
+**Major Change**
+* `require('pptxgenjs')` no longer returns a singleton instance.
+* Starting now, use `pptx = new PptxGenJS();` to get a single instance
+* Creating [multiple presentations](#saving-multiple-presentations) is much easier now - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
 
 **************************************************************************************************
 # Unimplemented Features
