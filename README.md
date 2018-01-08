@@ -1316,12 +1316,12 @@ Please note that version 2.0.0 enabled some much needed cleanup, but may break y
 
 While the changes may only impact cosmetic properties, it's recommended you test your solutions thoroughly before upgrading PptxGenJS to the 2.0 version.
 
-*All Users:*
+All Users:
 * Option `font_face` renamed to `fontFace` in all methods
 * Option `font_size` renamed to `fontSize` in all methods
 
-*Node Users:*
-* The library is now instantiated via the conventional way, so creating [multiple presentations](#saving-multiple-presentations) is easy now! (See [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83))
+Node Users:
+* *Major Change* `require('pptxgenjs')` no longer returns a singleton instance. Starting now, use `pptx = new PptxGenJS();` to get a single instance (so creating [multiple presentations](#saving-multiple-presentations) is much easier now - See [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
 
 **************************************************************************************************
 # Development Roadmap
