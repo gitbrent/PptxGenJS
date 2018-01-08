@@ -37,8 +37,8 @@ var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenn
 var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
 var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好';
 var gOptsTabOpts = { x:0.4, y:0.13, w:12.5, colW:[9,3.5] };
-var gOptsTextL = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
-var gOptsOptsR = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0], align:'right' };
+var gOptsTextL = { color:'9F9F9F', margin:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
+var gOptsOptsR = { color:'9F9F9F', margin:3, border:[0,0,{pt:'1',color:'CFCFCF'},0], align:'right' };
 var gOptsTextR = { text:'PptxGenJS', options:gOptsOptsR };
 var gOptsSubTitle = { x:0.5, y:0.7, cx:4, cy:0.3, fontSize:18, fontFace:'Arial', color:'0088CC', fill:'FFFFFF' };
 var gDemoTitleText = { fontSize:14, color:'0088CC', bold:true };
@@ -217,7 +217,7 @@ function genSlides_Table(pptx) {
 			[
 				{ text: 'Bold',      options: { fill:'003366', bold:true } },
 				{ text: 'Underline', options: { fill:'336699', underline:true } },
-				{ text: '10pt Pad',  options: { fill:'6699CC', marginPt:10 } }
+				{ text: '10pt Pad',  options: { fill:'6699CC', margin:10 } }
 			]
 		];
 		slide.addTable(
@@ -249,7 +249,7 @@ function genSlides_Table(pptx) {
 		var slide = pptx.addNewSlide();
 		// 2: Slide title
 		slide.addTable(
-			[ [{ text:'Table Examples 2 [QA: this tables x,y,w,h all using %]', options:{ color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
+			[ [{ text:'Table Examples 2 [QA: this tables x,y,w,h all using %]', options:{ color:'9F9F9F', margin:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
 			{ x:'5%', y:'2%', w:'90%', h:'4%' }
 		);
 
@@ -376,7 +376,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
 		slide.addTable( [['margin:[80,5,5,10]']], { x:10.5,y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
 
-		slide.addTable( [{text:'number zero:', options:{margin:5}}, {text:0, options:{marginPt:5}}], { x:0.5, y:1.9, w:3, fill:'f2f9fc', border:'none', colW:[2,1] } );
+		slide.addTable( [{text:'number zero:', options:{margin:5}}, {text:0, options:{margin:5}}], { x:0.5, y:1.9, w:3, fill:'f2f9fc', border:'none', colW:[2,1] } );
 		slide.addTable( [{text:'text-obj margin:0', options:{margin:0}}], { x:4.0, y:1.9, w:2, fill:'f2f9fc' } );
 
 		// Test margin option when using both plain and text object cells

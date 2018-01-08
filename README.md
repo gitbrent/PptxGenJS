@@ -1327,6 +1327,10 @@ Option names are now caseCase across all methods:
 * `line_size` renamed to `lineSize`
 * `line_tail` renamed to `lineTail`
 
+Options deprecated in early 1.0 versions (hopefully nobody still uses these):
+* `marginPt` renamed to `margin`
+
+
 ## Node Users
 
 **Major Change**

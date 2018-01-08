@@ -828,7 +828,7 @@ var PptxGenJS = function(){
 
 									// B: Apply default values (tabOpts being used when cellOpts dont exist):
 									// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-									['align','bold','border','color','fill','fontFace','fontSize','margin','marginPt','underline','valign']
+									['align','bold','border','color','fill','fontFace','fontSize','margin','underline','valign']
 									.forEach(function(name,idx){
 										if ( objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0 ) cellOpts[name] = objTabOpts[name];
 									});
@@ -837,7 +837,7 @@ var PptxGenJS = function(){
 									var cellColspan = (cellOpts.colspan)    ? ' gridSpan="'+ cellOpts.colspan +'"' : '';
 									var cellRowspan = (cellOpts.rowspan)    ? ' rowSpan="'+ cellOpts.rowspan +'"' : '';
 									var cellFill    = ((cell.optImp && cell.optImp.fill)  || cellOpts.fill ) ? ' <a:solidFill><a:srgbClr val="'+ ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#','')) +'"/></a:solidFill>' : '';
-									var cellMargin  = ( cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : (cellOpts.marginPt || DEF_CELL_MARGIN_PT) );
+									var cellMargin  = ( cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT );
 									if ( !Array.isArray(cellMargin) && typeof cellMargin === 'number' ) cellMargin = [cellMargin,cellMargin,cellMargin,cellMargin];
 									cellMargin = ' marL="'+ cellMargin[3]*ONEPT +'" marR="'+ cellMargin[1]*ONEPT +'" marT="'+ cellMargin[0]*ONEPT +'" marB="'+ cellMargin[2]*ONEPT +'"';
 								}
@@ -3666,7 +3666,6 @@ var PptxGenJS = function(){
 						strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
 					}
 				}
-				// DEPRECATED: old bool value (FIXME:Drop in 2.0)
 				else if ( textObj.options.bullet == true ) {
 					paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
 					strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
@@ -4644,7 +4643,6 @@ var PptxGenJS = function(){
 			opt.autoPage   = ( opt.autoPage == false ? false : true );
 			opt.fontSize   = opt.fontSize || DEF_FONT_SIZE;
 			opt.lineWeight = ( typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0 );
-			opt.margin     = (opt.marginPt || opt.margin); // (Legacy Support/DEPRECATED)
 			opt.margin     = (opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT);
 			if ( !isNaN(opt.margin) ) opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 			if ( opt.lineWeight > 1 ) opt.lineWeight = 1;
@@ -4869,7 +4867,6 @@ var PptxGenJS = function(){
 		if ( $('#'+tabEleId).length == 0 ) { console.error('Table "'+tabEleId+'" does not exist!'); return; }
 
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
-		opts.margin = (opts.marginPt || opts.margin); // (Legacy Support/DEPRECATED)
 		opts.margin = (opts.margin || opts.margin == 0 ? opts.margin : 0.5);
 
 		if ( opts.master ) {
