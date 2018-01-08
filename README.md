@@ -1330,9 +1330,9 @@ Option names are now caseCase across all methods:
 ## Node Users
 
 **Major Change**
-* `require('pptxgenjs')` no longer returns a singleton instance.
-* Starting now, use `pptx = new PptxGenJS();` to get a single instance
-* Creating [multiple presentations](#saving-multiple-presentations) is much easier now - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
+* `require('pptxgenjs')` no longer returns a singleton instance
+* `pptx = new PptxGenJS()` will create a single, unique instance
+* Advantage: Creating [multiple presentations](#saving-multiple-presentations) is much easier now - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
 
 **************************************************************************************************
 # Unimplemented Features
