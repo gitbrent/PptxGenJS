@@ -1,11 +1,11 @@
 # Change Log
 
-## [v2.0.0](https://github.com/gitbrent/pptxgenjs/tree/v2.0.0) (2017-12-??)
+## [v2.0.0](https://github.com/gitbrent/pptxgenjs/tree/v2.0.0) (2018-01-??)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.10.0...v2.0.0)
 
 **BREAKING CHANGES**
 - NodeJS instantiation is now standard (see Issue [\#83](https://github.com/gitbrent/PptxGenJS/issues/83) and `examples/nodejs-demo.js`) which now allows new instances/presentations
-- `getVersion()` is now `version`
+- (See "Version 2.0 Breaking Changes" in the README for a complete list)
 
 **Fixed Bugs:**
 - Master Slide slide number doesn't show using "New Slide" PPT Function [\#229](https://github.com/gitbrent/PptxGenJS/issues/229) ([ineran](https://github.com/ineran))
