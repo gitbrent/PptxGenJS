@@ -97,6 +97,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Integration with Webpack/Typescript](#integration-with-webpacktypescript)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
+- [Version 2.0 Breaking Changes](#version-20-breaking-changes)
 - [Development Roadmap](#development-roadmap)
 - [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
@@ -637,7 +638,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
 | `color`      | string  |         |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
-| `font_face`  | string  |         |           | font face           | Ex: 'Arial' |
+| `fontFace`   | string  |         |           | font face           | Ex: `{ fontFace:'Arial'}` |
 | `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
 | `hyperlink`  | string  |         |           | add hyperlink       | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `indentLevel`| number  | level   | `0`       | bullet indent level | 1-32. Ex: `{ indentLevel:1 }` |
@@ -683,11 +684,11 @@ slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
 // EX: More formatting options
 slide.addText(
     'Arial, 32pt, green, bold, underline, 0 inset',
-    { x:0.5, y:5.0, w:'90%', margin:0.5, font_face:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
+    { x:0.5, y:5.0, w:'90%', margin:0.5, fontFace:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
 );
 
 // EX: Format some text
-slide.addText('Hello World!', { x:2, y:4, font_face:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+slide.addText('Hello World!', { x:2, y:4, fontFace:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
 
 // EX: Multiline Text / Line Breaks - use "\n" to create line breaks inside text strings
 slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
@@ -747,8 +748,8 @@ slide.addText(
 // Line-breaks work as well
 slide.addText(
     [
-        { text:'word-level\nformatting', options:{ font_size:36, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-        { text:'...in the same textbox', options:{ font_size:48, font_face:'Arial', color:'FFFF00', align:'c' } }
+        { text:'word-level\nformatting', options:{ font_size:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+        { text:'...in the same textbox', options:{ font_size:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
     ],
     { x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
 );
@@ -809,7 +810,7 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 | `color`      | string  |        |           | text color         | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}`                                                            |
 | `fill`       | string  |        |           | fill/bkgd color    | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
-| `font_face`  | string  |        |           | font face          | Ex: `{font_face:'Arial'}`                                                         |
+| `fontFace`   | string  |        |           | font face          | Ex: `{fontFace:'Arial'}`                                                         |
 | `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}`                                                       |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false`                                                                 |
 | `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`)                              |
@@ -859,9 +860,9 @@ slide.addText( arrObjText, { x:0.5, y:2.75, w:9, h:2, margin:0.1, fill:'232323' 
 // EX B: Pass the same objects as a cell's `text` value
 var arrTabRows = [
     [
-        { text:'Cell 1 A',  options:{font_face:'Arial'  } },
-        { text:'Cell 1 B',  options:{font_face:'Courier'} },
-        { text: arrObjText, options:{fill:'232323'}       }
+        { text:'Cell 1 A',  options:{fontFace:'Arial'  } },
+        { text:'Cell 1 B',  options:{fontFace:'Courier'} },
+        { text: arrObjText, options:{fill:'232323'}      }
     ]
 ];
 slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
@@ -871,7 +872,7 @@ slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, font_face:'Arial', color:'0088CC' });
+slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, fontFace:'Arial', color:'0088CC' });
 
 // TABLE 1: Single-row table
 // --------
@@ -892,9 +893,9 @@ slide.addTable( rows, tabOpts );
 // --------
 var rows = [
     [
-        { text:'Top Lft', options:{ valign:'t', align:'l', font_face:'Arial'   } },
-        { text:'Top Ctr', options:{ valign:'t', align:'c', font_face:'Verdana' } },
-        { text:'Top Rgt', options:{ valign:'t', align:'r', font_face:'Courier' } }
+        { text:'Top Lft', options:{ valign:'t', align:'l', fontFace:'Arial'   } },
+        { text:'Top Ctr', options:{ valign:'t', align:'c', fontFace:'Verdana' } },
+        { text:'Top Rgt', options:{ valign:'t', align:'r', fontFace:'Courier' } }
     ],
 ];
 var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', font_size:18, color:'6f9fc9', valign:'m'} };
@@ -1306,6 +1307,20 @@ are demos for both Nodejs and client-browsers that contain working examples of e
 
 * Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/)
 * Use Ask Question on [StackOverflow](http://stackoverflow.com/) - be sure to tag it with "PptxGenJS"
+
+**************************************************************************************************
+# Version 2.0 Breaking Changes
+
+Please note that version 2.0.0 enabled some much needed cleanup, but may break your previous code...
+(however, a quick search-and-replace will fix any issues).
+
+While the changes may only impact cosmetic properties, it's recommended you test your solutions thoroughly before upgrading PptxGenJS to the 2.0 version.
+
+*All Users:*
+* `font_face` is now `fontFace` in all methods
+
+*Node Users:*
+* The library is now instantiated via the conventional way, so creating [multiple presentations](#saving-multiple-presentations) is easy now! (See [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83))
 
 **************************************************************************************************
 # Development Roadmap
