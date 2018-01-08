@@ -1315,7 +1315,7 @@ Please note that version 2.0.0 enabled some much needed cleanup, but may break y
 
 While the changes may only impact cosmetic properties, it's recommended you test your solutions thoroughly before upgrading PptxGenJS to the 2.0 version.
 
-All Users:  
+## All Users
 
 Option names are now caseCase across all methods:
 * `font_face` renamed to `fontFace`
@@ -1325,7 +1325,7 @@ Option names are now caseCase across all methods:
 * `line_size` renamed to `lineSize`
 * `line_tail` renamed to `lineTail`
 
-Node Users:  
+## Node Users
 
 **Major Change**
 * `require('pptxgenjs')` no longer returns a singleton instance.
