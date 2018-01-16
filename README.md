@@ -161,8 +161,8 @@ That's really all there is to it!
 
 **************************************************************************************************
 ## Creating a Presentation
-A Presentation is a single `.pptx` file.  When creating more than one Presentation, declare the pptx again to
-start with a new, empty Presentation.
+A Presentation is a single `.pptx` file.  See [multiple presentations](#saving-multiple-presentations) for
+information on creating more than a single PPT file.
 
 Client Browser:
 ```javascript
