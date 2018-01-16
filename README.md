@@ -637,10 +637,11 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `breakLine`  | boolean |         | `false`   | appends a line break | `true` or `false` (only applies when used in text options) Ex: `{text:'hi', options:{breakLine:true}}` |
 | `bullet`     | boolean |         | `false`   | bulleted text       | `true` or `false` |
 | `bullet`     | object  |         |           | bullet options (number type or choose any unicode char) | object with `type` or `code`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}` |
+| `charSpacing`| number  | points  |           | character spacing   | 1-256. Ex: `{ charSpacing:12 }` |
 | `color`      | string  |         |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
 | `fontFace`   | string  |         |           | font face           | Ex: `{ fontFace:'Arial'}` |
-| `font_size`  | number  | points  |           | font size           | 1-256. Ex: `{ font_size:12 }` |
+| `fontSize`   | number  | points  |           | font size           | 1-256. Ex: `{ fontSize:12 }` |
 | `hyperlink`  | string  |         |           | add hyperlink       | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `indentLevel`| number  | level   | `0`       | bullet indent level | 1-32. Ex: `{ indentLevel:1 }` |
 | `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |

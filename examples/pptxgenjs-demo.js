@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.0.0
-* REL.: 20180107
+* REL.: 20180115
 */
 
 // Detect Node.js
@@ -2283,7 +2283,12 @@ function genSlides_Text(pptx) {
 		slide.addTable( [ [{ text:'Text Examples: Text alignment, percent x/y, etc.', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
-		slide.addText( 'Textbox (ctr/ctr)', { x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true } );
+		slide.addText([
+				{ text:'Textbox align (ctr/ctr)', options:{ fontSize:32 } },
+				{ text:'Character Spacing 16', options:{ fontSize:16, charSpacing:16 } }
+			],
+			{ x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true }
+		);
 		slide.addText(
 			[{ text:'(top/lft)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
 			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', margin:15 }
@@ -2312,7 +2317,7 @@ function genSlides_Text(pptx) {
 		// TEST: using {option}: Add text box with multiline options:
 		slide.addText(
 			[
-				{ text:'word-level\nformatting', options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+				{ text:'word-level\nformatting', options:{ fontSize:32, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
 				{ text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
 			],
 			{ x:0.5, y:4.3, w:8.5, h:2.5, margin:0.1, fill:'232323' }
