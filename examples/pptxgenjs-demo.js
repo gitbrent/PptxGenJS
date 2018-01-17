@@ -1154,9 +1154,8 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 
-		// QA: DEMO: Test legacy option `lineShadow`
+		// QA: DEMO: Test shadow option
 		var shadowOpts = { type:'outer', color:'cd0011', blur:3, offset:12, angle:75, opacity:0.8 };
-		//lineShadow: shadowOpts,
 		var optsChartLine2 = { x:7.0, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineDataSymbolSize: 20,

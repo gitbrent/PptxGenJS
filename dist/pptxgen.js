@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20180115";
+	var APP_REL = "20180116";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -123,6 +123,7 @@ var PptxGenJS = function(){
 	var DEF_FONT_COLOR = '000000';
 	var DEF_FONT_SIZE = 12;
 	var DEF_FONT_TITLE_SIZE = 18;
+	var DEF_SLIDE_BKGD = 'FFFFFF';
 	var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 	var DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
 	var DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
@@ -185,8 +186,6 @@ var PptxGenJS = function(){
 	this.charts  = CHART_TYPES;
 	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
 	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
-	this.masters = ( typeof gObjPptxMasters !== 'undefined' ? gObjPptxMasters : {} );
-	/* LEGACY/DEPRECATED ^^^ - WILL BE REMOVED in 2.0 */
 	// Declare only after `this.colors` is initialized
 	var SCHEME_COLOR_NAMES = Object.keys(this.colors).map(function(clrKey){return this.colors[clrKey]}.bind(this));
 
@@ -211,11 +210,10 @@ var PptxGenJS = function(){
 		 * Adds a background image or color to a slide definition.
 		 * @param {String|Object} bkg color string or an object with image definition
 		 * @param {Object} target slide object that the background is set to
-		 * DEPRECATED `src` is replaced by `path` in v1.5.0
 		 */
 		addBackgroundDefinition: function addBackgroundDefinition(bkg, target) {
 			if ( typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data) ) {
-				// Allow the use of only the data key (no src reqd)
+				// Allow the use of only the data key (`path` isnt reqd)
 				bkg.src = bkg.src || bkg.path || null;
 				if (!bkg.src) bkg.src = 'preencoded.png';
 				var targetRels = target.rels;
@@ -325,32 +323,23 @@ var PptxGenJS = function(){
 		/**
 		 * Adds an image object to a slide definition.
 		 * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
-		 * @param {String|Object} strImagePath image path or object options
-		 * @param {Number|Object} intPosX x-position or slide object that the image should be addded to
-		 * @param {Number} intPosY
-		 * @param {Number} intSizeX
-		 * @param {Number} intWidth
-		 * @param {Number} intHeight
-		 * @param {String} strImageData base64 encoded representation of the image
+		 * @param {Object} image object containing `path`/`data`, `x`, `y`, etc.
 		 * @param {Object} target slide that the image should be added to (if not specified as the 2nd arg)
 		 * @return {Object} image object
 		 */
-		addImageDefinition: function addImageDefinition(strImagePath, intPosX, intPosY, intWidth, intHeight, strImageData, target) {
+		//addImageDefinition: function addImageDefinition(strImagePath, intPosX, intPosY, intWidth, intHeight, strImageData, target) {
+		addImageDefinition: function addImageDefinition(objImage, target) {
 			var resultObject = {};
 			var sizing = null;
 			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
-			// FIXME: FUTURE: DEPRECATED: Only allow object param in 1.5 or 2.0
-			if ( typeof strImagePath === 'object' ) {
-				target = intPosX; // if the opts are an object, the second arg is supposed to be a target
-				intPosX = (strImagePath.x || 0);
-				intPosY = (strImagePath.y || 0);
-				intWidth = (strImagePath.cx || strImagePath.w || 0);
-				intHeight = (strImagePath.cy || strImagePath.h || 0);
-				sizing = strImagePath.sizing || null;
-				objHyperlink = (strImagePath.hyperlink || '');
-				strImageData = (strImagePath.data || '');
-				strImagePath = (strImagePath.path || ''); // IMPORTANT: This line must be last as this clobbers the var!
-			}
+			intPosX = (objImage.x || 0);
+			intPosY = (objImage.y || 0);
+			intWidth = (objImage.w || 0);
+			intHeight = (objImage.h || 0);
+			sizing = objImage.sizing || null;
+			objHyperlink = (objImage.hyperlink || '');
+			strImageData = (objImage.data || '');
+			strImagePath = (objImage.path || '');
 
 			var imageRelId = target.rels.length + 1;
 
@@ -529,12 +518,6 @@ var PptxGenJS = function(){
 			options.valGridLine = options.valGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : {});
 			correctGridLineOptions(options.catGridLine);
 			correctGridLineOptions(options.valGridLine);
-
-			if ( options.lineShadow ) {
-				console.warn('`lineShadow` is deprecated - please switch to `shadow`');
-				options.shadow = options.lineShadow;
-			}
-
 			correctShadowOptions(options.shadow);
 
 			// C: Options: plotArea
@@ -641,11 +624,12 @@ var PptxGenJS = function(){
 			var strSlideXml = slideObject.name ? '<p:cSld name="'+ slideObject.name +'">' : '<p:cSld>';
 			var intTableNum = 1;
 
-			// Background color
+			// STEP 1: Add background
 			if ( slideObject.slide.back ) {
 				strSlideXml += genXmlColorSelection(false, slideObject.slide.back);
 			}
-			// B: Add background image (using Strech) (if any)
+
+			// STEP 2: Add background image (using Strech) (if any)
 			if ( slideObject.slide.bkgdImgRid ) {
 				// FIXME: We should be doing this in the slideLayout...
 				strSlideXml += '<p:bg>'
@@ -4486,14 +4470,11 @@ var PptxGenJS = function(){
 			return this;
 		}
 
-		// WARN: DEPRECATED: Will soon take a single {object} as argument (per current docs 20161120)
-		// FUTURE: slideObj.addImage = function(opt){
-		// NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
-		slideObj.addImage = function( strImagePath, intPosX, intPosY, intSizeX, intSizeY, strImageData ) {
-			if (intPosX === undefined && typeof(strImagePath) === "object") {
-				intPosX = gObjPptx.slides[slideNum];
-			}
-			gObjPptxGenerators.addImageDefinition(strImagePath, intPosX || gObjPptx.slides[slideNum], intPosY, intSizeX, intSizeY, strImageData, gObjPptx.slides[slideNum]);
+		/**
+		 * NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
+		 */
+		slideObj.addImage = function( objImage ) {
+			gObjPptxGenerators.addImageDefinition(objImage, gObjPptx.slides[slideNum]);
 			return this;
 		};
 
@@ -4753,67 +4734,6 @@ var PptxGenJS = function(){
 		// so, lastly, add to the Slide now.
 		var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == inMaster })[0];
 		if ( objLayout && objLayout.slideNumberObj && !slideObj.slideNumber() ) gObjPptx.slides[slideNum].slideNumberObj = objLayout.slideNumberObj;
-
-		// Add Master-Slide objects (if any)
-		// DEPRECATED - REMOVE in 2.0.0 (20170829)
-		// (new `defineSlideMaster()` is a better soln and produces *Actual* layout slides, not merely adding objs to Slide!)
-		// for now this function in parallel with defineSlideMaster() providing backwards compatibility
-		if ( inMaster && typeof inMaster === 'object' ) {
-			// Add Slide Master objects in order
-			$.each(inMaster, function(key,val){
-				// ISSUE#7: Allow bkgd image/color override on Slide-level
-				if ( key == "bkgd" && inMasterOpts.bkgd ) val = inMasterOpts.bkgd;
-
-				// Background color/image
-				// DEPRECATED `src` is replaced by `path` in v1.5.0
-				if ( key == "bkgd" ) {
-					gObjPptxGenerators.addBackgroundDefinition(val, gObjPptx.slides[slideNum]);
-				}
-
-				// Images **DEPRECATED** (v1.5.0)
-				if ( key == "images" && Array.isArray(val) && val.length > 0 ) {
-					$.each(val, function(i,image){
-						slideObj.addImage({
-							data: (image.data || ''),
-							path: (image.path || image.src || ''),
-							x: inch2Emu(image.x),
-							y: inch2Emu(image.y),
-							w: inch2Emu(image.w || image.cx),
-							h: inch2Emu(image.h || image.cy)
-						});
-					});
-				}
-
-				// Shapes **DEPRECATED** (v1.5.0)
-				if ( key == "shapes" && Array.isArray(val) && val.length > 0 ) {
-					$.each(val, function(i,shape){
-						// 1: Grab all options (x, y, color, etc.)
-						var objOpts = {};
-						$.each(Object.keys(shape), function(i,key){ if ( shape[key] != 'type' ) objOpts[key] = shape[key]; });
-						// 2: Create object using 'type'
-						if      ( shape.type == 'text'      ) slideObj.addText(shape.text, objOpts);
-						else if ( shape.type == 'line'      ) slideObj.addShape(gObjPptxShapes.LINE, objOpts);
-						else if ( shape.type == 'rectangle' ) slideObj.addShape(gObjPptxShapes.RECTANGLE, objOpts);
-					});
-				}
-
-				// Add all Slide Master objects in the order they were given (Issue#53)
-				if ( key == "objects" && Array.isArray(val) && val.length > 0 ) {
-					val.forEach(function(object,idx){
-						var key = Object.keys(object)[0];
-						if      ( MASTER_OBJECTS[key] && key == 'chart' ) slideObj.addChart( CHART_TYPES[(object.chart.type||'').toUpperCase()], object.chart.data, object.chart.opts );
-						else if ( MASTER_OBJECTS[key] && key == 'image' ) slideObj.addImage(object[key]);
-						else if ( MASTER_OBJECTS[key] && key == 'line'  ) slideObj.addShape(gObjPptxShapes.LINE, object[key]);
-						else if ( MASTER_OBJECTS[key] && key == 'rect'  ) slideObj.addShape(gObjPptxShapes.RECTANGLE, object[key]);
-						else if ( MASTER_OBJECTS[key] && key == 'text'  ) slideObj.addText(object[key].text, object[key].options);
-					});
-				}
-			});
-
-			// Add Slide Numbers
-			if ( inMaster.slideNumber && typeof inMaster.slideNumber === 'object' ) slideObj.slideNumber(inMaster.slideNumber);
-			else if ( inMasterOpts.slideNumber && typeof inMasterOpts.slideNumber === 'object' ) slideObj.slideNumber(inMasterOpts.slideNumber);
-		}
 
 		// LAST: Return this Slide
 		return slideObj;
