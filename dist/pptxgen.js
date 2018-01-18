@@ -684,7 +684,7 @@ var PptxGenJS = function(){
 						// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 						// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 						arrTabRows[0].forEach(function(cell,idx){
-							var cellOpts = cell.options || cell.opts || null; // DEPRECATED (`opts`)
+							var cellOpts = cell.options || cell.opts || null;
 							intColCnt += ( cellOpts && cellOpts.colspan ? cellOpts.colspan : 1 );
 						});
 
@@ -2036,7 +2036,7 @@ var PptxGenJS = function(){
 		// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 		inArrRows[0].forEach(function(cell,idx){
 			if (!cell) cell = {};
-			var cellOpts = cell.options || cell.opts || null; // DEPRECATED (`opts`)
+			var cellOpts = cell.options || cell.opts || null;
 			numCols += ( cellOpts && cellOpts.colspan ? cellOpts.colspan : 1 );
 		});
 

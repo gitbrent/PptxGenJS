@@ -169,8 +169,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 1: Table text alignment and cell styles
 	{
 		var slide = pptx.addNewSlide();
-		// NOTE using `opts` below as legacy text
-		slide.addTable( [ [{ text:'Table Examples 1', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
 		var objOpts1 = { x:0.5, y:0.7, fontSize:18, fontFace:'Arial', color:'0088CC' };
@@ -307,7 +306,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 3: Super rowspan/colspan demo
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 3', opts:gOptsTextL }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } ); // `opts` = legacy test
+		slide.addTable( [ [{ text:'Table Examples 3', options:gOptsTextL }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } );
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
@@ -364,7 +363,7 @@ function genSlides_Table(pptx) {
 	{
 		var slide = pptx.addNewSlide();
 		// 2: Slide title
-		slide.addTable( [ [{ text:'Table Examples 4', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Table Examples 4', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// Cell Margins
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
@@ -407,7 +406,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 5: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 5', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Table Examples 5', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 		slide.addText(
 			'The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.',
 			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, fontSize:14 }
@@ -447,7 +446,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 6: Cell Word-Level Formatting
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 6', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Table Examples 6', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Table Cell Word-Level Formatting:', optsSub);
