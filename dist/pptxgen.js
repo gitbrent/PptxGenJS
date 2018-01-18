@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.0.0-beta";
-	var APP_REL = "20180116";
+	var APP_REL = "20180117";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -183,9 +183,9 @@ var PptxGenJS = function(){
 	}
 
 	// C: Expose shape library to clients
-	this.charts  = CHART_TYPES;
-	this.colors  = ( typeof gObjPptxColors  !== 'undefined' ? gObjPptxColors  : {} );
-	this.shapes  = ( typeof gObjPptxShapes  !== 'undefined' ? gObjPptxShapes  : BASE_SHAPES );
+	this.charts = CHART_TYPES;
+	this.colors = ( typeof gObjPptxColors !== 'undefined' ? gObjPptxColors : {} );
+	this.shapes = ( typeof gObjPptxShapes !== 'undefined' ? gObjPptxShapes : BASE_SHAPES );
 	// Declare only after `this.colors` is initialized
 	var SCHEME_COLOR_NAMES = Object.keys(this.colors).map(function(clrKey){return this.colors[clrKey]}.bind(this));
 
@@ -4399,13 +4399,12 @@ var PptxGenJS = function(){
 	 * Add a new Slide to the Presentation
 	 * @returns {Object[]} slideObj - The new Slide object
 	 */
-	this.addNewSlide = function addNewSlide(inMaster, inMasterOpts) {
-		// DEPRECATED: moving to only `inMaster` soon (deprecated in 1.8.0)
-		var inMasterOpts = ( inMasterOpts && typeof inMasterOpts === 'object' ? inMasterOpts : {} );
+	this.addNewSlide = function addNewSlide(inMasterName) {
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
 		var slideObjNum = 0;
 		var pageNum  = (slideNum + 1);
+		var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == inMasterName })[0];
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {
@@ -4415,7 +4414,7 @@ var PptxGenJS = function(){
 			data: [],
 			rels: [],
 			slideNumberObj: null,
-			layout: inMaster || '[ default ]'
+			layout: inMasterName || '[ default ]'
 		};
 
 		// ==========================================================================
@@ -4635,9 +4634,9 @@ var PptxGenJS = function(){
 			// Get slide margins - start with default values, then adjust if master or slide margins exist
 			var arrTableMargin = DEF_SLIDE_MARGIN_IN;
 			// Case 1: Master margins
-			if ( inMaster && typeof inMaster.margin !== 'undefined' ) {
-				if ( Array.isArray(inMaster.margin) ) arrTableMargin = inMaster.margin;
-				else if ( !isNaN(Number(inMaster.margin)) ) arrTableMargin = [Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin), Number(inMaster.margin)];
+			if ( objLayout && typeof objLayout.margin !== 'undefined' ) {
+				if ( Array.isArray(objLayout.margin) ) arrTableMargin = objLayout.margin;
+				else if ( !isNaN(Number(objLayout.margin)) ) arrTableMargin = [Number(objLayout.margin), Number(objLayout.margin), Number(objLayout.margin), Number(objLayout.margin)];
 			}
 			// Case 2: Table margins
 			/* FIXME: add `margin` option to slide options
@@ -4705,7 +4704,7 @@ var PptxGenJS = function(){
 				// Loop over rows and create 1-N tables as needed (ISSUE#21)
 				getSlidesForTableRows(arrRows,opt).forEach(function(arrRows,idx){
 					// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-					var currSlide = ( !gObjPptx.slides[slideNum+idx] ? addNewSlide(inMaster, inMasterOpts) : gObjPptx.slides[slideNum+idx].slide );
+					var currSlide = ( !gObjPptx.slides[slideNum+idx] ? addNewSlide(inMasterName) : gObjPptx.slides[slideNum+idx].slide );
 
 					// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 					if ( idx > 0 ) opt.y = inch2Emu( opt.newPageStartY || arrTableMargin[0] );
@@ -4732,7 +4731,6 @@ var PptxGenJS = function(){
 		// NOTE: Slide Numbers: In order for Slide Numbers to work normally, they need to be in all 3 files: master/layout/slide
 		// `defineSlideMaster` and `slideObj.slideNumber` will add {slideNumber} to `gObjPptx.masterSlide` and `gObjPptx.slideLayouts`
 		// so, lastly, add to the Slide now.
-		var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == inMaster })[0];
 		if ( objLayout && objLayout.slideNumberObj && !slideObj.slideNumber() ) gObjPptx.slides[slideNum].slideNumberObj = objLayout.slideNumberObj;
 
 		// LAST: Return this Slide
@@ -4789,19 +4787,11 @@ var PptxGenJS = function(){
 		var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 		opts.margin = (opts.margin || opts.margin == 0 ? opts.margin : 0.5);
 
-		if ( opts.master ) {
-			if ( typeof opts.master === 'string' ) {
-				var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == opts.master })[0];
-				if ( objLayout && objLayout.margin ) {
-					if ( Array.isArray(objLayout.margin) ) arrInchMargins = objLayout.margin;
-					else if ( !isNaN(objLayout.margin) ) arrInchMargins = [objLayout.margin, objLayout.margin, objLayout.margin, objLayout.margin];
-					opts.margin = arrInchMargins;
-				}
-			}
-			// LEGACY SUPPORT: DEPRECATED:
-			else if ( typeof opts.master === 'object' && opts.master.margin ) {
-				if ( Array.isArray(opts.master.margin) ) arrInchMargins = opts.master.margin;
-				else if ( !isNaN(opts.master.margin) ) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin];
+		if ( opts.master && typeof opts.master === 'string' ) {
+			var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == opts.master })[0];
+			if ( objLayout && objLayout.margin ) {
+				if ( Array.isArray(objLayout.margin) ) arrInchMargins = objLayout.margin;
+				else if ( !isNaN(objLayout.margin) ) arrInchMargins = [objLayout.margin, objLayout.margin, objLayout.margin, objLayout.margin];
 				opts.margin = arrInchMargins;
 			}
 		}
@@ -4809,6 +4799,7 @@ var PptxGenJS = function(){
 			if ( Array.isArray(opts.margin) ) arrInchMargins = opts.margin;
 			else if ( !isNaN(opts.margin) ) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin];
 		}
+
 		var emuSlideTabW = ( opts.w ? inch2Emu(opts.w) : (gObjPptx.pptLayout.width  - inch2Emu(arrInchMargins[1] + arrInchMargins[3])) );
 		var emuSlideTabH = ( opts.h ? inch2Emu(opts.h) : (gObjPptx.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])) );
 
