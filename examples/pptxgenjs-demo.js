@@ -245,10 +245,7 @@ function genSlides_Table(pptx) {
 	{
 		var slide = pptx.addNewSlide();
 		// 2: Slide title
-		slide.addTable(
-			[ [{ text:'Table Examples 2 [QA: this tables x,y,w,h all using %]', options:{ color:'9F9F9F', margin:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] } }] ],
-			{ x:'5%', y:'2%', w:'90%', h:'4%' }
-		);
+		slide.addTable([ [{ text:'Table Examples 2', options:gOptsTextL },gOptsTextR] ], { x:'4%', y:'2%', w:'95%', h:'4%' }); // QA: this table's x,y,w,h all using %
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
@@ -304,7 +301,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 3: Super rowspan/colspan demo
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Table Examples 3', options:gOptsTextL }] ], { x:0.5, y:0.13, w:'94%', h:0.3 } );
+		slide.addTable( [ [{ text:'Table Examples 3', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
