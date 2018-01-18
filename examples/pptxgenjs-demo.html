@@ -4,7 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<meta name="date" content="20171124">
+	<meta name="date" content="20180117">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
@@ -55,6 +55,7 @@
 			}
 		}
 
+		/* DESC: old/undocumented/unused */
 		function doTestSimple() {
 			var pptx = new PptxGenJS();
 			var slide = pptx.addNewSlide();
@@ -67,9 +68,9 @@
 			slide.addTable( [ [{ text:'Simple Example', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 			//slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
-			slide.addText('Hello 45! ', { x:0.5, y:0.5, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'00AAFF', blur:2, offset:10, angle: 45, opacity:0.25} });
-			slide.addText('Hello 180!', { x:0.5, y:1.0, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'ceAA00', blur:2, offset:10, angle:180, opacity:0.5} });
-			slide.addText('Hello 355!', { x:0.5, y:1.5, w:6, h:1, font_size:36, color:'0000FF', shadow:{type:'outer', color:'aaAA33', blur:2, offset:10, angle:355, opacity:0.75} });
+			slide.addText('Hello 45! ', { x:0.5, y:0.5, w:6, h:1, fontSize:36, color:'0000FF', shadow:{type:'outer', color:'00AAFF', blur:2, offset:10, angle: 45, opacity:0.25} });
+			slide.addText('Hello 180!', { x:0.5, y:1.0, w:6, h:1, fontSize:36, color:'0000FF', shadow:{type:'outer', color:'ceAA00', blur:2, offset:10, angle:180, opacity:0.5} });
+			slide.addText('Hello 355!', { x:0.5, y:1.5, w:6, h:1, fontSize:36, color:'0000FF', shadow:{type:'outer', color:'aaAA33', blur:2, offset:10, angle:355, opacity:0.75} });
 
 			// Bullet Test: Number
 			slide.addText(999, { x:0.5, y:2.0, w:'50%', h:1, color:'0000DE', bullet:true });
@@ -84,9 +85,9 @@
 			// Fine-grained Formatting/word-level/line-level Formatting
 			slide.addText(
 				[
-					{ text:'right line', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-					{ text:'ctr line',   options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
-					{ text:'left line',  options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
+					{ text:'right line', options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+					{ text:'ctr line',   options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
+					{ text:'left line',  options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'l' } }
 				],
 				{ x:0.5, y:3.0, w:8.5, h:4, margin:0.1, fill:'232323' }
 			);
@@ -103,15 +104,15 @@
 
 			slide.addText(
 				'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
-				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'c', font_size:18, color:'0088CC', fill:'F1F1F1' }
+				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'c', fontSize:18, color:'0088CC', fill:'F1F1F1' }
 			);
 
 			slide.addText("Line-Level Formatting:", { x:0.5, y:1.5, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				[
-					{ text:'1st line', options:{ font_size:24, font_face:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-					{ text:'2nd line', options:{ font_size:36, font_face:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
-					{ text:'3rd line', options:{ font_size:48, font_face:'Verdana',     color:'0088CC', align:'l' } }
+					{ text:'1st line', options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+					{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
+					{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'l' } }
 				],
 				{ x:0.5, y:2.0, w:6, h:2.25, margin:0.1, fill:'232323' }
 			);
@@ -119,13 +120,13 @@
 			slide.addText("Bullets: Normal", { x:8.0, y:1.5, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				'Line 1\nLine 2\nLine 3',
-				{ x:8.0, y:2.0, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:true }
+				{ x:8.0, y:2.0, w:'30%', h:1, color:'393939', fontSize:16, fill:'F2F2F2', bullet:true }
 			);
 
 			slide.addText("Bullets: Numbered", { x:8.0, y:3.4, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				'Line 1\nLine 2\nLine 3',
-				{ x:8.0, y:3.9, w:'30%', h:1, color:'393939', font_size:16, fill:'F2F2F2', bullet:{type:'number'} }
+				{ x:8.0, y:3.9, w:'30%', h:1, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} }
 			);
 
 			slide.addText("Bullets: Custom", { x:8.0, y:5.3, w:'40%', h:0.38, color:'0088CC' });
@@ -136,7 +137,7 @@
 			slide.addText("Text Shadow:", { x:0.5, y:6.0, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
-				{ x:0.5, y:6.4, w:12, h:0.6, font_size:32, color:'0088cc', shadow:shadowOpts }
+				{ x:0.5, y:6.4, w:12, h:0.6, fontSize:32, color:'0088cc', shadow:shadowOpts }
 			);
 
 			pptx.save('Demo-Text');
@@ -145,7 +146,7 @@
 		function doTablePagingLogicCheck() {
 			var pptx = new PptxGenJS();
 			var slide = pptx.addNewSlide();
-			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'c', font_size:18, color:'0088CC', fill:'F2F9FC' });
+			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'c', fontSize:18, color:'0088CC', fill:'F2F9FC' });
 
 			var numMargin = 1.25;
 			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:'FFFCCC' });
@@ -210,7 +211,7 @@
 					{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
 					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 					{ 'text':  { text:'Global IT & Services :: Status Report',
-						options:{ x:3.0, y:5.30, w:5.5, h:0.75, font_face:'Arial', color:'363636', font_size:20, valign:'m', margin:0 } }
+						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', color:'363636', fontSize:20, valign:'m', margin:0 } }
 					},
 					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
 				]
@@ -224,7 +225,7 @@
 				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
 				objects: [
 					{ 'rect': { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
-					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', font_size:12} } }
+					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12} } }
 				]
 			});
 
@@ -234,7 +235,7 @@
 				bkgd: '36ABFF',
 				objects: [
 					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, font_face:'Arial', color:'FFFFFF', font_size:60, align:'c' } } },
+					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
 					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS } }
 				]
 			});
@@ -272,45 +273,22 @@
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
-			// Add a master slide to have a pre-defined style applied (eg: std corp title, logo etc.)
-			//if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
-			// Set custom margins (you can also define them in a Master Slide)
-			objOpts.margin = 1.0;
+			//objOpts.debug = true;
+			if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
+			if ( $('#checkStartY') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
 
-			// Add any dynamic content to gnerated Slides
-			// things that cant be pre-defined like a title that varies as you generate sections of tables, etc.
-			objOpts.addText = { text:"Some dynamic title here", options:{ x:1, y:0.5, color:'0088CC', font_face:'Arial', font_size:16 } };
-			// You can do this for all other types as well: .addShape(), .addTable() and .addImage()
+			// STEP 3: Add a custom shape (text in this case) to each Slide
+			// EXAMPLE: Add any dynamic content to each generated Slide
+			// DESC: Add something you cant predefine in a master - like a username/timestamp for each slide, etc.
+			// NOTE: You can do this for all other types as well: .addShape(), .addTable() and .addImage()
+			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:1.1, y:0.6, color:'0088CC', fontFace:'Arial', fontSize:12 } };
 
-			// STEP 3: Create all Slides from table data
+			// STEP 4: Pass table to addSlidesForTable function to produce 1-N slides
 			pptx.addSlidesForTable('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
-			pptx.save('Table2SlideCustomText');
-		}
-
-		function table2slides3() {
-			// FIRST: Instantiate new PptxGenJS instance
-			var pptx = new PptxGenJS();
-
-			// STEP 1: Add Master Slide defs / Set slide size/layout
-			addMasterDefs(pptx);
-			pptx.setLayout('LAYOUT_WIDE');
-
-			// STEP 2: Add options (Master Slide, location, width, etc)
-			var objOpts = {};
-			objOpts.master = 'MASTER_SLIDE';
-			objOpts.x = 0.25;
-			objOpts.y = 1.0;
-			//objOpts.w = 6.5;
-			//objOpts.h = 3.5;
-
-			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
-			pptx.addSlidesForTable('tabAutoPaging', objOpts);
-
-			// LAST: Export Presentation
-			pptx.save('Table2SlideDemo3');
+			pptx.save('Table2Slides-with-dynamic-text');
 		}
 
 		// ==================================================================================================================
@@ -352,7 +330,7 @@
 				+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
 				+ "slide.addText(\n"
 				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
-				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:24, color:'0088CC', fill:'F1F1F1' }\n"
+				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
 				+ ");\n"
 				+ '\n'
 				+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
@@ -378,9 +356,9 @@
 				+ "// Bullets with indent levels\n"
 				+ "slide.addText(\n"
 				+ "  [\n"
-				+ "    { text:'1st line', options:{ font_size:24, bullet:true, color:'99ABCC' } },\n"
-				+ "    { text:'2nd line', options:{ font_size:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
-				+ "    { text:'3rd line', options:{ font_size:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
+				+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
+				+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
+				+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
 				+ "  ],\n"
 				+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
 				+ ");\n"
@@ -699,13 +677,13 @@
 					<div class="arrow active"></div>Basic Functionality and Options
 				</div>
 				<div class="sectionBox">
-					<div class="sectionCont" style="flex-wrap:nowrap">
+					<div id="contAutoPagingOptions" class="sectionCont" style="flex-wrap:nowrap">
 						<fieldset>
 							<legend>Demo Table</legend>
 							<div class="tableRows" style="margin:0 0 10px 10px">
 								<div>
 									<div><label for="numTab2SlideRows">Number of Table Rows:</label></div>
-									<div><input  id="numTab2SlideRows" type="number" min="1" max="25" value="2" onchange="buildDataTable()"></div>
+									<div><input  id="numTab2SlideRows" type="number" min="1" max="25" value="3" onchange="buildDataTable()"></div>
 								</div>
 								<div>
 									<div><label for="numTab2Padding">Cell Padding (points):</label></div>
@@ -714,7 +692,7 @@
 							</div>
 						</fieldset>
 						<fieldset>
-							<legend>Auto-Paging Options (<a href="https://github.com/gitbrent/PptxGenJS#table-auto-paging-options">?</a>)</legend>
+							<legend><a href="https://github.com/gitbrent/PptxGenJS#table-auto-paging-options" title="View Docs"><div class="iconSvg size24 lightbulb"></div></a>Options: Auto-Paging</legend>
 							<div class="tableRows" style="margin:0 0 10px 10px">
 								<div>
 									<div>
@@ -743,7 +721,7 @@
 							</div>
 						</fieldset>
 						<fieldset>
-							<legend>Slide Master (<a href="https://github.com/gitbrent/PptxGenJS#master-slides-and-corporate-branding">?</a>)</legend>
+							<legend><a href="https://github.com/gitbrent/PptxGenJS#master-slides-and-corporate-branding" title="View Docs"><div class="iconSvg size24 lightbulb"></div></a>Option: Master</legend>
 							<div class="tableRows" style="margin:0 0 10px 10px">
 								<div>
 									<div>Master Name:</div>
@@ -765,10 +743,9 @@
 						<tbody></tbody>
 					</table>
 
-					<div style="text-align:center; padding:20px 20px 0 20px;">
-						<button type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slides1()">Demo using Slide Master</button>
-						<button type="button" class="flatBtn flatBtn-nsOrange" onclick="table2slides2()">Demo using Custom Shapes</button>
-						<button type="button" class="flatBtn flatBtn-nsPurple" onclick="table2slides3()">Demo using Slide Master+Options</button>
+					<div id="contAutoPagingBtns" style="text-align:center; padding:20px 20px 0 20px;">
+						<button type="button" class="flatBtn flatBtn-nsBlue"   onclick="table2slides1()">Demo Table Above</button>
+						<button type="button" class="flatBtn flatBtn-nsOrange" onclick="table2slides2()">Demo Table Above (add dynamic text)</button>
 					</div>
 				</div>
 
