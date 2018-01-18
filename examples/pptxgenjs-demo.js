@@ -193,8 +193,7 @@ function genSlides_Table(pptx) {
 			]
 		];
 		slide.addTable(
-			arrTabRows, { x:0.5, y:1.1, w:5.0 },
-			{ rowH:0.75, fill:'F7F7F7', fontSize:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
+			arrTabRows, { x:0.5, y:1.1, w:5.0, rowH:0.75, fill:'F7F7F7', fontSize:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
 		);
 		// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
@@ -220,8 +219,7 @@ function genSlides_Table(pptx) {
 			]
 		];
 		slide.addTable(
-			arrTabRows, { x:6.0, y:1.1, w:7.0 },
-			{ rowH:0.75, fill:'F7F7F7', color:'FFFFFF', fontSize:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
+			arrTabRows, { x:6.0, y:1.1, w:7.0, rowH:0.75, fill:'F7F7F7', color:'FFFFFF', fontSize:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
 		);
 
 		// DEMO: Row/Col Width/Heights ----------------------------------------------------------------

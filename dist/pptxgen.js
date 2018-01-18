@@ -2104,8 +2104,8 @@ var PptxGenJS = function(){
 					else if ( typeof cell.text === 'undefined' || cell.text == null ) cell.text = "";
 
 					// ARG1: `options`
-					var opt = cell.options || cell.opts || {}; // Legacy support for `opts` (<= v1.2.0)
-					cell.opts = opt; // This odd soln is needed until `opts` can be safely discarded (DEPRECATED)
+					var opt = cell.options || cell.opts || {};
+					cell.opts = opt;
 				}
 				// Capture some table options for use in other functions
 				cell.opts.lineWeight = opts.lineWeight;
@@ -4155,8 +4155,8 @@ var PptxGenJS = function(){
 			}
 		}
 
-		// IMPORTANT: Return 1 (for `slideLayout1.xml`) as lack of a def means legacy (deprecated) master was used
-		// meaning all of its objects are in Layout1 and every slide that references it uses this layout.
+		// IMPORTANT: Return 1 (for `slideLayout1.xml`) when no def is found
+		// So all objects are in Layout1 and every slide that references it uses this layout.
 		return 1;
 	}
 
@@ -4594,13 +4594,11 @@ var PptxGenJS = function(){
 		};
 
 		// RECURSIVE: (sometimes)
-		// WARN: DEPRECATED: Will soon combine 2nd and 3rd arguments into single {object} (20161216-v1.1.2) (1.5 or 2.0 at the latest)
 		// FUTURE: slideObj.addTable = function(arrTabRows, inOpt){
-		// TODO: Move to gObjPptxGenerators
-		// TODO: dont forget to update "this.color" to "target.slide.color" !!!
-		slideObj.addTable = function( arrTabRows, inOpt, tabOpt ) {
+		// FIXME: Move to gObjPptxGenerators (as every other object uses a generator #consistency)
+		// TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
+		slideObj.addTable = function( arrTabRows, inOpt ) {
 			var opt = ( inOpt && typeof inOpt === 'object' ? inOpt : {} );
-			for (var attr in tabOpt) { opt[attr] = tabOpt[attr]; } // FIXME: DEPRECATED: merge opts for now for non-breaking fix (20161216)
 
 			// STEP 1: REALITY-CHECK
 			if ( arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows) ) {
