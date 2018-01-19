@@ -4896,7 +4896,7 @@ var PptxGenJS = function(){
 		});
 
 		// STEP 4: NOTE: `margin` is "cell margin (pt)" everywhere else tables are used, so explicitly convert to "slide margin" here
-		if (opts.margin) {
+		if ( opts.margin ) {
 			opts.slideMargin = opts.margin;
 			delete(opts.margin);
 		}
@@ -4911,8 +4911,9 @@ var PptxGenJS = function(){
 			var newSlide = ( opts.master ? api.addNewSlide(opts.master) : api.addNewSlide() );
 
 			// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if ( idx == 0 ) opts.y = opts.y;
-			if ( idx > 0 ) opts.y = (opts.newPageStartY || arrInchMargins[0]);
+			if ( idx == 0 ) opts.y = opts.y || arrInchMargins[0];
+			if ( idx > 0 ) opts.y = opts.newPageStartY || arrInchMargins[0];
+			if (opts.debug) console.log('opts.newPageStartY:'+ opts.newPageStartY +' / arrInchMargins[0]:'+ arrInchMargins[0] +' => opts.y = '+ opts.y );
 
 			// C: Add table to Slide
 			newSlide.addTable(arrTabRows, {x:(opts.x || arrInchMargins[3]), y:opts.y, w:(emuSlideTabW/EMU), colW:arrColW, autoPage:false});
