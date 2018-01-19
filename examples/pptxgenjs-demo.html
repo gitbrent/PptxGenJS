@@ -251,10 +251,10 @@
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
-			//objOpts.debug = true;
+			//objOpts.debug = true; // DEBUG:
 			if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('#checkStartY').prop('checked') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
 
 			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
 			pptx.addSlidesForTable('tabAutoPaging', objOpts);
@@ -315,7 +315,7 @@
 			// STEP 2: Build UI elements
 			buildDataTable();
 			var pptx = new PptxGenJS();
-			['TITLE_SLIDE','MASTER_SLIDE','THANKS_SLIDE'].forEach(function(name,idx){
+			['MASTER_SLIDE','THANKS_SLIDE','TITLE_SLIDE'].forEach(function(name,idx){
 				$('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>');
 			});
 
