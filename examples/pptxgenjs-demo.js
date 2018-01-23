@@ -79,7 +79,7 @@ function execGenSlidesFuncs(type) {
 	else {
 		pptx = new PptxGenJS();
 	}
-	if (console.log) console.log(` * pptxgenjs ver: ${pptx.version}`); // Loaded okay?
+	if (console.log) console.log(' * pptxgenjs ver: '+ pptx.version); // Loaded okay?
 
 	// STEP 2: Set Presentation props (as QA test only - these are not required)
 	pptx.setAuthor('Brent Ely');
