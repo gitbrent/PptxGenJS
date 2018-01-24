@@ -1,6 +1,6 @@
 # Change Log
 
-## [v2.0.0](https://github.com/gitbrent/pptxgenjs/tree/v2.0.0) (2018-01-??)
+## [v2.0.0](https://github.com/gitbrent/pptxgenjs/tree/v2.0.0) (2018-01-23)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v1.10.0...v2.0.0)
 
 **BREAKING CHANGES**
@@ -12,13 +12,12 @@
 - Values of 0 (zero) in series are missing in line chart [\#240](https://github.com/gitbrent/PptxGenJS/issues/240) ([andrei-cs](https://github.com/andrei-cs))
 - Node: "DeprecationWarning: Calling an asynchronous function without callback is deprecated." [\#252](https://github.com/gitbrent/PptxGenJS/issues/252) ([the-yadu](https://github.com/the-yadu))
 - The UP_DOWN_ARROW shape appears to have duplicate keys [\#253](https://github.com/gitbrent/PptxGenJS/issues/253) ([heavysixer](https://github.com/heavysixer))
+- Local demo can not run in IE [\#273](https://github.com/gitbrent/PptxGenJS/issues/273) ([IvanTao](https://github.com/IvanTao))
 
 **Implemented Enhancements:**
 - Is it possible to link from one slide to another? [\#251](https://github.com/gitbrent/PptxGenJS/issues/251) ([heavysixer](https://github.com/heavysixer))
 - Add rot and vert options to text body properties [\#254](https://github.com/gitbrent/PptxGenJS/issues/254) ([level46](https://github.com/level46))
 - Add Character Spacing option [\#265](https://github.com/gitbrent/PptxGenJS/issues/265) ([nguyenhuuphuc83](https://github.com/nguyenhuuphuc83))
-
-
 
 
 

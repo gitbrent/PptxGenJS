@@ -2257,7 +2257,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Bullet within {text} objects:", { x:7.5, y:5.3, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'I am a text object with bullets..', options:{bullet:{code:'2605'}, color:'CC0000'} },
+				{ text:'I am a text object with bullets..', options:{bullet:{code:'25BA'}, color:'CC0000'} },
 				{ text:'and I am the next text object.'   , options:{bullet:{code:'25BA'}, color:'00CD00'} },
 				{ text:'Default bullet text.. '           , options:{bullet:true, color:'696969'} },
 				{ text:'Final text object w/ bullet:true.', options:{bullet:true, color:'0000AB'} }

@@ -1,6 +1,6 @@
 {
 	"name": "pptxgenjs",
-	"version": "1.11.0-beta",
+	"version": "2.0.0",
 	"author": {
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
@@ -40,12 +40,13 @@
 		"javascript-pptx",
 		"javascript-powerpoint",
 		"javascript-powerpoint-charts",
+		"javascript-powerpoint-online",
 		"js-create-powerpoint",
 		"js-create-pptx",
 		"js-generate-powerpoint",
 		"js-pptx",
-		"js-produce-powerpoint",
 		"js-powerpoint",
+		"js-powerpoint-library",
 		"powerpoint",
 		"powerpoint-charts",
 		"powerpoint-presentation",
