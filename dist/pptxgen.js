@@ -1831,7 +1831,7 @@ var PptxGenJS = function(){
 		// B: Set onload event
 		image.onload = function(){
 			// First: Check for any errors: This is the best method (try/catch wont work, etc.)
-			if (this.width + this.height == 0) { this.onerror(); return; }
+			if (this.width + this.height == 0) { this.onerror('h/w=0'); return; }
 			var canvas = document.createElement('CANVAS');
 			var ctx = canvas.getContext('2d');
 			canvas.height = this.height;
@@ -1842,18 +1842,20 @@ var PptxGenJS = function(){
 			// when the canvas.toDataURL call executes below.
 			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
 			catch(ex) {
-				this.onerror();
+				this.onerror(ex);
 				return;
 			}
 			canvas = null;
 		};
-		image.onerror = function(){
+		image.onerror = function(ex){
 			try {
 				if ( typeof window !== 'undefined' && window.location.href.indexOf('file:') == 0 ) {
 					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files!\n(use '--allow-file-access-from-files' flag with Chrome, etc.)");
 				}
-				console.error('Unable to load image: "'+ slideRel.path +'"\nPlease check the image URL:\n'+ ( slideRel.path.indexOf('/') == 0 ? slideRel.path : window.location.href.substring(0,window.location.href.lastIndexOf('/')+1) + slideRel.path ) );
-			} catch(ex){}
+				console.error('Unable to load image: "'+ slideRel.path );
+				console.error(ex||'');
+			}
+			catch(ex){}
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			callbackImgToDataURLDone(IMG_BROKEN, slideRel);
 		};
