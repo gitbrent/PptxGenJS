@@ -2,3 +2,4 @@
 *.icloud
 node_modules/*
 package-lock.json
+website/*
