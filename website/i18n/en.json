@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "A website for testing",
+    "tagline": "Create PowerPoint presentations using JavaScript",
     "doc1": "Getting Started",
     "doc11": "Latin-ish",
     "Example Page": "Example Page",
@@ -14,7 +14,6 @@
     "Docs": "Docs",
     "API": "API",
     "Help": "Help",
-    "Blog": "Blog",
     "Docusaurus": "Docusaurus",
     "First Category": "First Category",
     "Second Category": "Second Category",

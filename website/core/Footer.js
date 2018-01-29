@@ -1,5 +1,6 @@
 /**
  * Copyright (c) 2017-present, Facebook, Inc.
+ * Copyright (c) 2017-present, Brent Ely
  *
  * This source code is licensed under the MIT license found in the
  * LICENSE file in the root directory of this source tree.
@@ -51,19 +52,17 @@ class Footer extends React.Component {
 							User Showcase
 						</a>
 						<a
-							href="http://stackoverflow.com/questions/tagged/"
+							href="http://stackoverflow.com/questions/tagged/pptxgenjs"
 							target="_blank">
 							Stack Overflow
 						</a>
-						<a href="https://discordapp.com/">Project Chat</a>
-						<a href="https://twitter.com/" target="_blank">
-							Twitter
-						</a>
+
 					</div>
 					<div>
 						<h5>More</h5>
+						<a href="https://www.flaticon.com/packs/creativity">SVG Icons</a>
 						<a href={this.props.config.baseUrl + 'blog'}>Blog</a>
-						<a href="https://github.com/">GitHub</a>
+						<a href="https://github.com/gitbrent/pptxgenjs">GitHub</a>
 						<a
 							className="github-button"
 							href={this.props.config.repoUrl}
@@ -77,17 +76,6 @@ class Footer extends React.Component {
 					</div>
 				</section>
 
-				<a
-					href="https://code.facebook.com/projects/"
-					target="_blank"
-					className="fbOpenSource">
-					<img
-						src={this.props.config.baseUrl + 'img/oss_logo.png'}
-						alt="Facebook Open Source"
-						width="170"
-						height="45"
-					/>
-				</a>
 				<section className="copyright">
 					Copyright &copy; {currentYear} Brent Ely
 				</section>

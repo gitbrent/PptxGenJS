@@ -6,214 +6,199 @@
  */
 
 const React = require('react');
-
 const CompLibrary = require('../../core/CompLibrary.js');
 const MarkdownBlock = CompLibrary.MarkdownBlock; /* Used to read markdown */
 const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
-
 const siteConfig = require(process.cwd() + '/siteConfig.js');
 
 function imgUrl(img) {
-  return siteConfig.baseUrl + 'img/' + img;
+	return siteConfig.baseUrl + 'img/' + img;
 }
 
 function docUrl(doc, language) {
-  return siteConfig.baseUrl + 'docs/' + (language ? language + '/' : '') + doc;
+	return siteConfig.baseUrl + 'docs/' + (language ? language + '/' : '') + doc;
 }
 
 function pageUrl(page, language) {
-  return siteConfig.baseUrl + (language ? language + '/' : '') + page;
+	return siteConfig.baseUrl + (language ? language + '/' : '') + page;
 }
 
 class Button extends React.Component {
-  render() {
-    return (
-      <div className="pluginWrapper buttonWrapper">
-        <a className="button" href={this.props.href} target={this.props.target}>
-          {this.props.children}
-        </a>
-      </div>
-    );
-  }
+	render() {
+		return (
+			<div className="pluginWrapper buttonWrapper">
+				<a className="button" href={this.props.href} target={this.props.target}>
+					{this.props.children}
+				</a>
+			</div>
+		);
+	}
 }
 
 Button.defaultProps = {
-  target: '_self',
+	target: '_self',
 };
 
 const SplashContainer = props => (
-  <div className="homeContainer">
-    <div className="homeSplashFade">
-      <div className="wrapper homeWrapper">{props.children}</div>
-    </div>
-  </div>
+	<div className="homeContainer">
+		<div className="homeSplashFade">
+			<div className="wrapper homeWrapper">{props.children}</div>
+		</div>
+	</div>
 );
 
 const Logo = props => (
-  <div className="projectLogo">
-    <img src={props.img_src} />
-  </div>
+	<div className="projectLogo">
+		<img src={props.img_src} />
+	</div>
 );
 
 const ProjectTitle = props => (
-  <h2 className="projectTitle">
-    {siteConfig.title}
-    <small>{siteConfig.tagline}</small>
-  </h2>
+	<h2 className="projectTitle">
+		{siteConfig.title}
+		<small>{siteConfig.tagline}</small>
+	</h2>
 );
 
 const PromoSection = props => (
-  <div className="section promoSection">
-    <div className="promoRow">
-      <div className="pluginRowBlock">{props.children}</div>
-    </div>
-  </div>
+	<div className="section promoSection">
+		<div className="promoRow">
+			<div className="pluginRowBlock">{props.children}</div>
+		</div>
+	</div>
 );
 
+/* ========== */
+
+function MakeLeftBulletText(strText) {
+	return '<p style="text-align:left">&bull; '+ strText +'</p>';
+}
+
+/* ========== */
+
 class HomeSplash extends React.Component {
-  render() {
-    let language = this.props.language || '';
-    return (
-      <SplashContainer>
-        <Logo img_src={imgUrl('docusaurus.svg')} />
-        <div className="inner">
-          <ProjectTitle />
-          <PromoSection>
-            <Button href="#try">Try It Out</Button>
-            <Button href={docUrl('doc1.html', language)}>Example Link</Button>
-            <Button href={docUrl('doc2.html', language)}>Example Link 2</Button>
-          </PromoSection>
-        </div>
-      </SplashContainer>
-    );
-  }
+	render() {
+		let language = this.props.language || '';
+		return (
+			<SplashContainer>
+				<Logo img_src={imgUrl('pptxgenjs.svg')} />
+				<div className="inner">
+					<ProjectTitle />
+					<PromoSection>
+						<Button href="#try">Try It Out</Button>
+						<Button href={docUrl('doc1.html', language)}>Get Started</Button>
+					</PromoSection>
+				</div>
+			</SplashContainer>
+		);
+	}
 }
 
 const Block = props => (
-  <Container
-    padding={['bottom', 'top']}
-    id={props.id}
-    background={props.background}>
-    <GridBlock align="center" contents={props.children} layout={props.layout} />
-  </Container>
+	<Container
+		padding={['bottom', 'top']}
+		id={props.id}
+		background={props.background}>
+		<GridBlock align="center" contents={props.children} layout={props.layout} />
+	</Container>
 );
 
 const Features = props => (
-  <Block layout="fourColumn">
-    {[
-      {
-        content: 'This is the content of my feature',
-        image: imgUrl('docusaurus.svg'),
-        imageAlign: 'top',
-        title: 'Feature One',
-      },
-      {
-        content: 'The content of my second feature',
-        image: imgUrl('docusaurus.svg'),
-        imageAlign: 'top',
-        title: 'Feature Two',
-      },
-    ]}
-  </Block>
+	<Block background="light" layout="fourColumn">
+		{[
+			{
+				content: 'Works with all current web browsers (Chrome, Edge, Firefox, etc.) and IE11',
+				image: imgUrl('circle-handshake.svg'),
+				imageAlign: 'top',
+				title: 'Widely Supported',
+			},
+			{
+				content: 'Charts, Images, Media, Shapes, Tables and Text (plus Master Slides)',
+				image: imgUrl('circle-art.svg'),
+				imageAlign: 'top',
+				title: 'Full Featured',
+			},
+			{
+				content: 'Entire PowerPoint presentations can be created in a few lines of code',
+				image: imgUrl('circle-magic.svg'),
+				imageAlign: 'top',
+				title: 'Easy To Use',
+			},
+			{
+				content: 'Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included',
+				image: imgUrl('circle-blueprint.svg'),
+				imageAlign: 'top',
+				title: 'Modern',
+			},
+		]}
+	</Block>
 );
 
 const FeatureCallout = props => (
-  <div
-    className="productShowcaseSection paddingBottom"
-    style={{textAlign: 'center'}}>
-    <h2>Feature Callout</h2>
-    <MarkdownBlock>These are features of this project</MarkdownBlock>
-  </div>
-);
-
-const LearnHow = props => (
-  <Block background="light">
-    {[
-      {
-        content: 'Talk about learning how to use this',
-        image: imgUrl('docusaurus.svg'),
-        imageAlign: 'right',
-        title: 'Learn How',
-      },
-    ]}
-  </Block>
+	<Block background="white">
+		{[
+			{
+				image: imgUrl('pptxgenjs.svg'),
+				imageAlign: 'right',
+				title: 'Additional Features',
+				content: '<ul style="text-align:left;">'
+					+ '<li>'+'Support for all major PowerPoint shapes, including charts'+'</li>'
+					+ '<li>'+'Define any size Slide (e.g.: A4)'+'</li>'
+					+ '<li>'+'Supports corporate/brand Slide Master designs'+'</li>'
+					+ '<li>'+'Supports RTL (right-to-left) text'+'</li>'
+					+ '<li>'+'Supports Chinese and other international language/fonts'+'</li>'
+					+ '<li>'+'Node.js can utilize callbacks, binary streaming, and more'+'</li>'
+					+ '<li>'+'Works with Electron applications'+'</li>'
+					+ '</ul>'
+			},
+		]}
+	</Block>
 );
 
 const TryOut = props => (
-  <Block id="try">
-    {[
-      {
-        content: 'Talk about trying this out',
-        image: imgUrl('docusaurus.svg'),
-        imageAlign: 'left',
-        title: 'Try it Out',
-      },
-    ]}
-  </Block>
+	<Block background="light" id="try">
+		{[
+			{
+				title: 'Try it Out',
+				image: imgUrl('demo-simple.png'),
+				imageAlign: 'left',
+				content: 'Live demo',
+			},
+		]}
+	</Block>
 );
 
-const Description = props => (
-  <Block background="dark">
-    {[
-      {
-        content: 'This is another description of how this project is useful',
-        image: imgUrl('docusaurus.svg'),
-        imageAlign: 'right',
-        title: 'Description',
-      },
-    ]}
-  </Block>
+const LearnMore = props => (
+	<Block background="white">
+		{[
+			{
+				title: 'Learn More',
+				image: imgUrl('docusaurus.svg'),
+				imageAlign: 'right',
+				content: 'Here is a ton of docs and examples!',
+			},
+		]}
+	</Block>
 );
 
-const Showcase = props => {
-  if ((siteConfig.users || []).length === 0) {
-    return null;
-  }
-  const showcase = siteConfig.users
-    .filter(user => {
-      return user.pinned;
-    })
-    .map((user, i) => {
-      return (
-        <a href={user.infoLink} key={i}>
-          <img src={user.image} title={user.caption} />
-        </a>
-      );
-    });
-
-  return (
-    <div className="productShowcaseSection paddingBottom">
-      <h2>{"Who's Using This?"}</h2>
-      <p>This project is used by all these people</p>
-      <div className="logos">{showcase}</div>
-      <div className="more-users">
-        <a className="button" href={pageUrl('users.html', props.language)}>
-          More {siteConfig.title} Users
-        </a>
-      </div>
-    </div>
-  );
-};
 
 class Index extends React.Component {
-  render() {
-    let language = this.props.language || '';
+	render() {
+		let language = this.props.language || '';
 
-    return (
-      <div>
-        <HomeSplash language={language} />
-        <div className="mainContainer">
-          <Features />
-          <FeatureCallout />
-          <LearnHow />
-          <TryOut />
-          <Description />
-          <Showcase language={language} />
-        </div>
-      </div>
-    );
-  }
+		return (
+			<div>
+				<HomeSplash language={language} />
+				<div className="mainContainer">
+					<Features />
+					<FeatureCallout />
+					<TryOut />
+					<LearnMore />
+				</div>
+			</div>
+		);
+	}
 }
 
 module.exports = Index;

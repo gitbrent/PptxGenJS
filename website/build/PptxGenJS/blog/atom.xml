@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://gitbrent.github.io/blog</id>
-    <title>PptxGenJS Home Blog</title>
+    <title>PptxGenJS Blog</title>
     <updated>2017-10-24T06:00:00Z</updated>
     <generator>Feed for Node.js</generator>
     <link rel="alternate" href="https://gitbrent.github.io/blog"/>
-    <subtitle>The best place to stay up-to-date with the latest PptxGenJS Home news and events.</subtitle>
+    <subtitle>The best place to stay up-to-date with the latest PptxGenJS news and events.</subtitle>
     <logo>https://gitbrent.github.ioimg/pptxgenjs.svg</logo>
     <rights>Copyright © 2018 Brent Ely</rights>
     <entry>
