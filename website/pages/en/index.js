@@ -12,6 +12,25 @@ const Container = CompLibrary.Container;
 const GridBlock = CompLibrary.GridBlock;
 const siteConfig = require(process.cwd() + '/siteConfig.js');
 
+/* ========== */
+
+function MakeLeftBulletText(strText) {
+	return '<p style="text-align:left">&bull; '+ strText +'</p>';
+}
+
+// NOTE: Code is only recognized if lines have leading tabs (?)
+const tryCodeBlock = `
+	var pptx = new PptxGenJS();
+	var slide = pptx.addNewSlide();
+	slide.addText(
+	  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
+	  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:24, color:'0088CC', fill:'F1F1F1' }
+	);
+	pptx.save('Demo-Simple');
+`;
+
+/* ========== */
+
 function imgUrl(img) {
 	return siteConfig.baseUrl + 'img/' + img;
 }
@@ -71,12 +90,6 @@ const PromoSection = props => (
 
 /* ========== */
 
-function MakeLeftBulletText(strText) {
-	return '<p style="text-align:left">&bull; '+ strText +'</p>';
-}
-
-/* ========== */
-
 class HomeSplash extends React.Component {
 	render() {
 		let language = this.props.language || '';
@@ -100,7 +113,7 @@ const Block = props => (
 		padding={['bottom', 'top']}
 		id={props.id}
 		background={props.background}>
-		<GridBlock align="center" contents={props.children} layout={props.layout} />
+		<GridBlock align={props.align||"center"} contents={props.children} layout={props.layout} />
 	</Container>
 );
 
@@ -114,19 +127,19 @@ const Features = props => (
 				title: 'Widely Supported',
 			},
 			{
-				content: 'Charts, Images, Media, Shapes, Tables and Text (plus Master Slides)',
+				content: 'Create charts, images, media, shapes, tables, text and utilize Master Slides',
 				image: imgUrl('circle-art.svg'),
 				imageAlign: 'top',
 				title: 'Full Featured',
 			},
 			{
-				content: 'Entire PowerPoint presentations can be created in a few lines of code',
+				content: 'Entire PowerPoint presentations can be created using just a few lines of code',
 				image: imgUrl('circle-magic.svg'),
 				imageAlign: 'top',
 				title: 'Easy To Use',
 			},
 			{
-				content: 'Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included',
+				content: 'Pure JavaScript solution that works with browsers, Node, Angular, Electron and more',
 				image: imgUrl('circle-blueprint.svg'),
 				imageAlign: 'top',
 				title: 'Modern',
@@ -136,20 +149,20 @@ const Features = props => (
 );
 
 const FeatureCallout = props => (
-	<Block background="white">
+	<Block background="white" id="features">
 		{[
 			{
-				image: imgUrl('pptxgenjs.svg'),
+				image: imgUrl('sample-charts.png'),
 				imageAlign: 'right',
 				title: 'Additional Features',
 				content: '<ul style="text-align:left;">'
-					+ '<li>'+'Support for all major PowerPoint shapes, including charts'+'</li>'
-					+ '<li>'+'Define any size Slide (e.g.: A4)'+'</li>'
-					+ '<li>'+'Supports corporate/brand Slide Master designs'+'</li>'
-					+ '<li>'+'Supports RTL (right-to-left) text'+'</li>'
-					+ '<li>'+'Supports Chinese and other international language/fonts'+'</li>'
-					+ '<li>'+'Node.js can utilize callbacks, binary streaming, and more'+'</li>'
-					+ '<li>'+'Works with Electron applications'+'</li>'
+					+ '<li>'+'Support for all major PowerPoint chart types'+'</li>'
+					+ '<li>'+'Support for custom Slide sizes (A4, etc.)'+'</li>'
+					+ '<li>'+'Support for corporate/brand Slide Master designs'+'</li>'
+					+ '<li>'+'Support for RTL (right-to-left) text'+'</li>'
+					+ '<li>'+'Support for Chinese and other international language/fonts'+'</li>'
+					+ '<li>'+'Compatible with Angular, Electron and other application frameworks'+'</li>'
+					+ '<li>'+'Node-based applications can use callbacks, binary streaming, and other advanced export types'+'</li>'
 					+ '</ul>'
 			},
 		]}
@@ -157,31 +170,37 @@ const FeatureCallout = props => (
 );
 
 const TryOut = props => (
-	<Block background="light" id="try">
+	<Block background="light" id="try" align="left" layout="twoColumn">
 		{[
 			{
-				title: 'Try it Out',
-				image: imgUrl('demo-simple.png'),
-				imageAlign: 'left',
-				content: 'Live demo',
+				title: 'Live Demo: Create a simple pptx presentation',
+				content: tryCodeBlock,
+			},
+			{
+				title: '',
+				content: `<Button class="button" href="javascript:eval(document.getElementById('try').getElementsByClassName('hljs')[0].innerText); if(ga)ga('send','event','Link','click','Demo-Simple');">Try It Out</Button>`,
 			},
 		]}
 	</Block>
 );
 
 const LearnMore = props => (
-	<Block background="white">
+	<Block background="white" id="learn">
 		{[
 			{
 				title: 'Learn More',
-				image: imgUrl('docusaurus.svg'),
-				imageAlign: 'right',
-				content: 'Here is a ton of docs and examples!',
+				image: imgUrl('questions.svg'),
+				imageAlign: 'left',
+				content: ''
+					+ '<ul style="text-align:left">'
+					+ '<li>View sample code and PowerPoint presentations</li>'
+					+ '<li>View API documentation</li>'
+					+ '<li>View the project on GitHub</li>'
+					+ '</ul>'
 			},
 		]}
 	</Block>
 );
-
 
 class Index extends React.Component {
 	render() {

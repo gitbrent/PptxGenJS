@@ -1825,3 +1825,7 @@ footer .copyright {
 
 @media only screen and (min-width: 1500px) {
 }
+
+#features h2, #learn h2 { margin-top: 0px; }
+#features img { max-height: 400px; }
+#learn img { max-height: 200px; }

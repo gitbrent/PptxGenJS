@@ -37,32 +37,33 @@ class Footer extends React.Component {
 					<div>
 						<h5>Docs</h5>
 						<a href={this.docUrl('doc1.html', this.props.language)}>
-							Getting Started (or other categories)
+							Getting Started With PptxGenJS
 						</a>
 						<a href={this.docUrl('doc2.html', this.props.language)}>
-							Guides (or other categories)
+							PowerPoint Library API Reference
 						</a>
 						<a href={this.docUrl('doc3.html', this.props.language)}>
-							API Reference (or other categories)
+							PowerPoint JavaScript Code Samples
 						</a>
 					</div>
 					<div>
 						<h5>Community</h5>
-						<a href={this.pageUrl('users.html', this.props.language)}>
-							User Showcase
+						<a
+							href="https://github.com/gitbrent/pptxgenjs/issues"
+							target="_blank">
+							GitHub Issues
 						</a>
 						<a
 							href="http://stackoverflow.com/questions/tagged/pptxgenjs"
 							target="_blank">
 							Stack Overflow
 						</a>
-
 					</div>
 					<div>
 						<h5>More</h5>
-						<a href="https://www.flaticon.com/packs/creativity">SVG Icons</a>
+						<a href="https://github.com/gitbrent/pptxgenjs">GitHub Project</a>
 						<a href={this.props.config.baseUrl + 'blog'}>Blog</a>
-						<a href="https://github.com/gitbrent/pptxgenjs">GitHub</a>
+						<a href="https://www.flaticon.com/packs/creativity">Site Icons</a>
 						<a
 							className="github-button"
 							href={this.props.config.repoUrl}

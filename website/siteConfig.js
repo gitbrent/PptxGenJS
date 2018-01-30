@@ -22,9 +22,11 @@ const siteConfig = {
 	baseUrl: '/PptxGenJS/' /* base url for your project */,
 	projectName: 'PptxGenJS',
 	headerLinks: [
-		{doc: 'doc1', label: 'Docs'},
+		{href: 'https://gitbrent.github.io/PptxGenJS/releases', label: 'Download'},
+		{doc: 'doc1', label: 'Get Started'},
 		{doc: 'doc4', label: 'API'},
 		{page: 'help', label: 'Help'},
+		{href: 'https://gitbrent.github.io/PptxGenJS/', label: 'GitHub'},
 	],
 	users,
 	/* path to images for header/footer */

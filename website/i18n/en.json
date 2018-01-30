@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "Create PowerPoint presentations using JavaScript",
+    "tagline": "JavaScript library that creates PowerPoint presentations",
     "doc1": "Getting Started",
     "doc11": "Latin-ish",
     "Example Page": "Example Page",
@@ -11,13 +11,16 @@
     "doc3": "This is document number 3",
     "doc4": "Other Document",
     "doc5": "Fifth Document",
-    "Docs": "Docs",
+    "Download": "Download",
+    "Get Started": "Get Started",
     "API": "API",
     "Help": "Help",
-    "Docusaurus": "Docusaurus",
-    "First Category": "First Category",
-    "Second Category": "Second Category",
-    "Brents House": "Brents House"
+    "GitHub": "GitHub",
+    "Getting Started": "Getting Started",
+    "Setup": "Setup",
+    "Usage": "Usage",
+    "Notes": "Notes",
+    "First Category": "First Category"
   },
   "pages-strings": {
     "Help Translate|recruit community translators for your project": "Help Translate",
