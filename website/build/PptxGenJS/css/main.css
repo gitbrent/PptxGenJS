@@ -71,7 +71,7 @@ article p img, article iframe {
 }
 
 a {
-  color: #DE4B2C;
+  color: #de4b2c;
   text-decoration: none;
 }
 
@@ -117,7 +117,7 @@ blockquote {
 h1, h2, h3, h4 {
   font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-weight: 300;
-  color: #DE4B2C;
+  color: #de4b2c;
 }
 
 h4 {
@@ -131,7 +131,7 @@ header h2 {
 
 .homeContainer {
   background: #fff;
-  color: #DE4B2C;
+  color: #de4b2c;
   text-align: center;
 }
 
@@ -235,7 +235,7 @@ header h2 {
   text-align: left;
 }
 .container .wrapper h2 {
-  color: #DE4B2C;
+  color: #de4b2c;
   font-size: 22px;
   line-height: 1em;
   margin-top: 20px;
@@ -249,13 +249,13 @@ header h2 {
   padding: 10px 0;
 }
 .container .wrapper h3 {
-  color: #DE4B2C;
+  color: #de4b2c;
   font-size: 18px;
   margin-top: 10px;
   padding: 10px 0;
 }
 .container .wrapper h4 {
-  color: #DE4B2C;
+  color: #de4b2c;
   font-size: 16px;
   font-weight: 300;
   margin: 0;
@@ -342,7 +342,7 @@ header h2 {
   padding-top: 1em;
 }
 .mainContainer .wrapper .post .docPagination {
-  background: #DE4B2C;
+  background: #de4b2c;
   bottom: 0px;
   left: 0px;
   position: absolute;
@@ -515,7 +515,7 @@ header h2 {
 }
 .fixedHeaderContainer {
   box-sizing: border-box;
-  background: #DE4B2C;
+  background: #de4b2c;
   color: #fff;
   min-height: 50px;
   padding: 9px 0;
@@ -599,9 +599,9 @@ header h2 {
 }
 .button {
   margin: 4px;
-  border: 1px solid #DE4B2C;
+  border: 1px solid #de4b2c;
   border-radius: 3px;
-  color: #DE4B2C;
+  color: #de4b2c;
   display: inline-block;
   font-size: 14px;
   font-weight: 400;
@@ -612,7 +612,7 @@ header h2 {
   transition: background 0.3s, color 0.3s;
 }
 .button:hover {
-  background: #DE4B2C;
+  background: #de4b2c;
   color: #fff;
 }
 
@@ -669,19 +669,19 @@ input[type="search"] {
   right: 0 !important;
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--category-header {
-  background: #DE4B2C;
+  background: #de4b2c;
   color: white;
   font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   font-weight: 400;
   font-size: 14px;
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--category-header .algolia-docsearch-suggestion--highlight {
-  background-color: #DE4B2C;
+  background-color: #de4b2c;
   color: #fff;
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--title .algolia-docsearch-suggestion--highlight,
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--subcategory-column .algolia-docsearch-suggestion--highlight {
-  color: #DE4B2C;
+  color: #de4b2c;
 }
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion__secondary,
 .navSearchWrapper .aa-dropdown-menu .algolia-docsearch-suggestion--subcategory-column {
@@ -743,7 +743,7 @@ pre code {
   display:block;
   margin: 20px 0;
   padding:0.5em;
-  border-left: 4px solid #DE4B2C;
+  border-left: 4px solid #de4b2c;
   font-family: "SFMono-Regular",source-code-pro,Menlo,Monaco,Consolas,"Roboto Mono","Droid Sans Mono","Liberation Mono",Consolas,"Courier New",Courier,monospace;
   font-size: 13px;
   overflow-x:auto;
@@ -977,7 +977,7 @@ pre code {
   margin-top: 50px;
   width: 100%;
   padding: 0;
-  background: #205C3B;
+  background: #bf360c;
   color: #fff;
 }
 .navigationSlider .slidingNav.slidingNavActive ul {
@@ -990,7 +990,7 @@ pre code {
   margin: 0;
 }
 .navigationSlider .slidingNav ul li a {
-  color: #DE4B2C;
+  color: #de4b2c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1005,7 +1005,7 @@ pre code {
 }
 .navigationSlider .slidingNav ul li a:focus,
 .navigationSlider .slidingNav ul li a:hover {
-  background: #DE4B2C;
+  background: #de4b2c;
 }
 
 .languages-icon {
@@ -1025,7 +1025,7 @@ pre code {
 }
 ul#languages-dropdown-items {
   display: flex;
-  background-color: #DE4B2C;
+  background-color: #de4b2c;
   flex-direction: column;
   min-width: 120px;
   pointer-events: all;
@@ -1107,7 +1107,7 @@ ul#languages li {
     width: 100%;
   }
   .reactNavSearchWrapper input#search_input_react:focus, .reactNavSearchWrapper input#search_input_react:active {
-    background-color: #DE4B2C;
+    background-color: #de4b2c;
     color: #fff;
   }
   .reactNavSearchWrapper .algolia-docsearch-suggestion--subcategory-inline {
@@ -1139,7 +1139,7 @@ ul#languages li {
 
   ul#languages-dropdown-items {
     display: flex;
-    background-color: #DE4B2C;
+    background-color: #de4b2c;
     flex-direction: row;
   }
 }
@@ -1370,10 +1370,10 @@ nav.toc .toggleNav .navGroup h3 i:not(:empty) {
   transition: color 0.2s;
 }
 nav.toc .toggleNav .navGroup h3:hover {
-  color: #DE4B2C;
+  color: #de4b2c;
 }
 nav.toc .toggleNav .navGroup h3:hover i:not(:empty) {
-  color: #DE4B2C;
+  color: #de4b2c;
 }
 nav.toc .toggleNav .navGroup.navGroupActive {
   background: #e0e0e0;
@@ -1385,7 +1385,7 @@ nav.toc .toggleNav .navGroup.navGroupActive ul {
   padding-top: 10px;
 }
 nav.toc .toggleNav .navGroup.navGroupActive h3 {
-  background: #DE4B2C;
+  background: #de4b2c;
   color: #fff;
 }
 nav.toc .toggleNav ul {
@@ -1408,10 +1408,10 @@ nav.toc .toggleNav ul li a {
   transition: color 0.3s;
 }
 nav.toc .toggleNav ul li a:hover, nav.toc .toggleNav ul li a:focus {
-  color: #DE4B2C;
+  color: #de4b2c;
 }
 nav.toc .toggleNav ul li a.navItemActive {
-  color: #DE4B2C;
+  color: #de4b2c;
 }
 .docsSliderActive nav.toc .navBreadcrumb {
   background: #c6c6c6;
@@ -1630,7 +1630,7 @@ h6:hover .header-link {
   padding-bottom: 80px;
 }
 .productShowcaseSection h2 {
-  color: #DE4B2C;
+  color: #de4b2c;
   font-size: 30px;
   line-height: 1em;
   margin-top: 20px;
@@ -1674,7 +1674,7 @@ h6:hover .header-link {
   margin: 0 auto;
 }
 .showcaseSection .prose h1 {
-  color: #DE4B2C;
+  color: #de4b2c;
   font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen,Ubuntu,Cantarell,"Fira Sans","Droid Sans","Helvetica Neue",Arial,sans-serif;
   text-align: center;
   padding: 1.4em 0 0.4em;

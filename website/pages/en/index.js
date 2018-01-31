@@ -23,8 +23,8 @@ const tryCodeBlock = `
 	var pptx = new PptxGenJS();
 	var slide = pptx.addNewSlide();
 	slide.addText(
-	  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
-	  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', font_size:24, color:'0088CC', fill:'F1F1F1' }
+	    "BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好",
+	    { x:0, y:1, w:'100%', h:2, align:'c', color:'0088CC', fill:'F1F1F1', fontSize:24 }
 	);
 	pptx.save('Demo-Simple');
 `;
@@ -100,7 +100,7 @@ class HomeSplash extends React.Component {
 					<ProjectTitle />
 					<PromoSection>
 						<Button href="#try">Try It Out</Button>
-						<Button href={docUrl('doc1.html', language)}>Get Started</Button>
+						<Button href={docUrl('setup1.html', language)}>Get Started</Button>
 					</PromoSection>
 				</div>
 			</SplashContainer>
@@ -178,7 +178,8 @@ const TryOut = props => (
 			},
 			{
 				title: '',
-				content: `<Button class="button" href="javascript:eval(document.getElementById('try').getElementsByClassName('hljs')[0].innerText); if(ga)ga('send','event','Link','click','Demo-Simple');">Try It Out</Button>`,
+				content: '<p>Any desktop or mobile browser that is capable of downloading files can execute the code above to create a presentation.</p><br/>'
+				+`<Button class="button" href="javascript:" onclick="eval(document.getElementById('try').getElementsByClassName('hljs')[0].innerText); if(ga)ga('send','event','Link','click','Demo-Simple');">Try It Out</Button>`,
 			},
 		]}
 	</Block>
@@ -191,10 +192,9 @@ const LearnMore = props => (
 				title: 'Learn More',
 				image: imgUrl('questions.svg'),
 				imageAlign: 'left',
-				content: ''
-					+ '<ul style="text-align:left">'
+				content: '<ul style="text-align:left">'
 					+ '<li>View sample code and PowerPoint presentations</li>'
-					+ '<li>View API documentation</li>'
+					+ '<li><a href="'+ docUrl('apiref1.html', '') +'">View API documentation</a></li>'
 					+ '<li>View the project on GitHub</li>'
 					+ '</ul>'
 			},
@@ -215,6 +215,7 @@ class Index extends React.Component {
 					<TryOut />
 					<LearnMore />
 				</div>
+				<script>hljs.initHighlightingOnLoad();</script>
 			</div>
 		);
 	}

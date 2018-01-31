@@ -1,11 +1,7 @@
 {
-  "docs": {
-    "Getting Started": ["doc1"],
-    "Setup": ["doc2", "doc3"],
-	"Usage": ["doc4"],
-    "Notes": ["doc11"]
-  },
-  "docs-other": {
-    "First Category": ["exampledoc4", "exampledoc5"]
-  }
+	"docs": {
+		"Get Started": ["setup1"],
+		"Usage": ["usage-basic-create", "usage-pres-options", "usage-add-slide", "usage-saving"],
+		"API Reference": ["api-charts", "api-tables", "api-text"]
+	}
 }
