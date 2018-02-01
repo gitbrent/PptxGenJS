@@ -35,13 +35,13 @@ class Footer extends React.Component {
 					</a>
 					<div>
 						<h5>Docs</h5>
-						<a href={this.docUrl('setup1.html', this.props.language)}>
+						<a href={this.docUrl('installation.html', this.props.language)}>
 							Getting Started With PptxGenJS
 						</a>
-						<a href={this.docUrl('apiref1.html', this.props.language)}>
+						<a href={this.docUrl('usage-basic-create.html', this.props.language)}>
 							PowerPoint Library API Reference
 						</a>
-						<a href={this.docUrl('apiref1.html', this.props.language)}>
+						<a href={this.docUrl('usage-basic-create.html', this.props.language)}>
 							PowerPoint JavaScript Code Samples
 						</a>
 					</div>

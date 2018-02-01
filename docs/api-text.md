@@ -2,14 +2,21 @@
 id: api-text
 title: Adding Text
 ---
+**************************************************************************************************
+Table of Contents
+- [Text Options](#text-options)
+- [Text Shadow Options](#text-shadow-options)
+- [Text Examples](#text-examples)
+**************************************************************************************************
+
+## Syntax
 ```javascript
-// Syntax
 slide.addText('TEXT', {OPTIONS});
 slide.addText('Line 1\nLine 2', {OPTIONS});
 slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 ```
 
-### Text Options
+## Text Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                                                                    |
 | :----------- | :------ | :------ | :-------- | :------------------ | :--------------------------------------------------------------------------------- |
 | `x`          | number  | inches  | `1.0`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide)        |
@@ -46,7 +53,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `valign`     | string  |         |           | vertical alignment  | `top` or `middle` or `bottom` |
 | `vert`       | string  |   | `horz` | text direction | `eaVert` or `horz` or `mongolianVert` or `vert` or `vert270` or `wordArtVert` or `wordArtVertRtl` |
 
-### Text Shadow Options
+## Text Shadow Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                          |
 | :----------- | :------ | :------ | :-------- | :------------------ | :--------------------------------------- |
 | `type`       | string  |         | outer     | shadow type         | `outer` or `inner`                       |
@@ -56,7 +63,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `offset`     | number  | points  |           | offset size         | 1-256. Ex: `{ offset:8 }`                |
 | `opacity`    | number  | percent |           | opacity             | 0-1. Ex: `opacity:0.75`                  |
 
-### Text Examples
+## Text Examples
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();

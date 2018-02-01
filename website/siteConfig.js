@@ -14,8 +14,8 @@ const siteConfig = {
 	gaTrackingId: 'UA-75147115-1',
 	headerLinks: [
 		{href: 'https://gitbrent.github.io/PptxGenJS/releases', label: 'Download'},
-		{doc: 'setup1', label: 'Get Started'},
-		{doc: 'api-charts', label: 'API'},
+		{doc: 'installation', label: 'Get Started'},
+		{doc: 'usage-basic-create', label: 'API'},
 		{page: 'help', label: 'Help'},
 		{href: 'https://gitbrent.github.io/PptxGenJS/', label: 'GitHub'},
 	],
@@ -29,7 +29,7 @@ const siteConfig = {
 	copyright: 'Copyright © '+ new Date().getFullYear() +' Brent Ely',
 	projectName: 'PptxGenJS',
 	highlight: {
-		theme: 'monokai-sublime',
+		theme: 'hybrid',
 		defaultLang: 'javascript',
 	},
 	scripts: [

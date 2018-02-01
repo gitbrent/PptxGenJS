@@ -2,16 +2,29 @@
 id: api-charts
 title: Adding Charts
 ---
+**************************************************************************************************
+Table of Contents
+- [Syntax](#Syntax)
+- [Chart Types](#chart-types)
+- [Multi-Type Charts](#multi-type-charts)
+- [Chart Size/Formatting Options](#chart-sizeformatting-options)
+- [Chart Axis Options](#chart-axis-options)
+- [Chart Data Options](#chart-data-options)
+- [Chart Element Shadow Options](#chart-element-shadow-options)
+- [Chart Multi-Type Options](#chart-multi-type-options)
+- [Chart Examples](#chart-examples)
+**************************************************************************************************
+
+## Syntax
 ```javascript
-// Syntax
 slide.addChart({TYPE}, {DATA}, {OPTIONS});
 ```
 
-### Chart Types
+## Chart Types
 * Chart type can be any one of `pptx.charts`
 * Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.BUBBLE`, `pptx.charts.LINE`, `pptx.charts.SCATTER`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
 
-### Multi-Type Charts
+## Multi-Type Charts
 * Chart types can be any one of `pptx.charts`, although `pptx.charts.AREA`, `pptx.charts.BAR`, and `pptx.charts.LINE` will give the best results.
 * There should be at least two chart-types. There should always be two value axes and category axes.
 * Multi Charts have a different function signature than standard. There are two parameters:
@@ -22,12 +35,12 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 * If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
 * Standard options are used, and the chart-type-options are mixed in to each.
 
+## Syntax
 ```javascript
-// Syntax
 slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 ```
 
-### Chart Size/Formatting Options
+## Chart Size/Formatting Options
 | Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
 | :-------------- | :------ | :------ | :-------- | :--------------------------------- | :--------------- |
 | `x`             | number  | inches  | `1.0`     | horizontal location                | 0-n OR 'n%'. (Ex: `{x:'50%'}` places object in middle of the Slide) |
@@ -62,7 +75,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `titlePos`      | object  |         |           | title position                     | object with x and y values. Ex: `{ titlePos:{x: 0, y: 10} }` |
 | `titleRotate`   | integer | degrees |           | title rotation degrees             | 0-360. Ex: `{ titleRotate:45 }` |
 
-### Chart Axis Options
+## Chart Axis Options
 | Option                 | Type    | Unit    | Default      | Description                   | Possible Values                                  |
 | :--------------------- | :------ | :------ | :----------- | :---------------------------- | :----------------------------------------------- |
 | `axisLineColor`        | string  |         | `000000`     | cat/val axis line color       | hex color code. Ex: `{ axisLineColor:'0088CC' }` |
@@ -104,7 +117,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
 | `valGridLine`          | object  |         |              | value grid line style        | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 
-### Chart Data Options
+## Chart Data Options
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
 | `barDir`               | string  |         | `col`     | bar direction        | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
@@ -127,7 +140,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `shadow`               | object  |         |           | data element shadow options   | `'none'` or [shadow options](#chart-element-shadow-options) |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
-### Chart Element Shadow Options
+## Chart Element Shadow Options
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                            |
 | :----------- | :------ | :------ | :-------- | :------------------ | :----------------------------------------- |
 | `type`       | string  |         | `outer`   | shadow type         | `outer` or `inner`. Ex: `{ type:'outer' }` |
@@ -137,7 +150,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `offset`     | number  | points  | `1.8`     | offset size         | 1-256. Ex: `{ offset:2 }`                  |
 | `opacity`    | number  | percent | `0.35`    | opacity             | 0-1. Ex: `{ opacity:0.35 }`                |
 
-### Chart Multi-Type Options
+## Chart Multi-Type Options
 | Option             | Type    | Default  | Description                                             | Possible Values   |
 | :----------------- | :------ | :------- | :------------------------------------------------------ | :---------------- |
 | `catAxes`          | array   |          | array of two axis options objects | See example below   |                   |
@@ -145,7 +158,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `secondaryValAxis` | boolean | `false`  | If data should use secondary value axis (or primary)    | `true` or `false` |
 | `valAxes`          | array   |          | array of two axis options objects | See example below   |                   |
 
-### Chart Examples
+## Chart Examples
 ```javascript
 var pptx = new PptxGenJS();
 pptx.setLayout('LAYOUT_WIDE');

@@ -2,24 +2,35 @@
 id: usage-add-slide
 title: Adding a Slide
 ---
-Syntax:
+**************************************************************************************************
+Table of Contents
+- [Syntax](#Syntax)
+- [Slide Formatting](#slide-formatting)
+- [Slide Formatting Options](#slide-formatting-options)
+- [Applying Master Slides / Branding](#applying-master-slides--branding)
+- [Adding Slide Numbers](#adding-slide-numbers)
+- [Slide Number Options](#slide-number-options)
+- [Slide Return Value](#slide-return-value)
+**************************************************************************************************
+
+## Syntax
 ```javascript
 var slide = pptx.addNewSlide();
 ```
 
-### Slide Formatting
+## Slide Formatting
 ```javascript
 slide.back  = 'F1F1F1';
 slide.color = '696969';
 ```
 
-### Slide Formatting Options
+## Slide Formatting Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code or [scheme color constant](#scheme-colors). |
 | `color`      | string  |        | `000000`  | default text color  | hex color code or [scheme color constant](#scheme-colors). |
 
-### Applying Master Slides / Branding
+## Applying Master Slides / Branding
 ```javascript
 // Create a new Slide that will inherit properties from a pre-defined master page (margins, logos, text, background, etc.)
 var slide1 = pptx.addNewSlide('TITLE_SLIDE');
@@ -28,14 +39,16 @@ var slide1 = pptx.addNewSlide('TITLE_SLIDE');
 var slide2 = pptx.addNewSlide('TITLE_SLIDE', {bkgd:'FFFCCC'});
 ```
 
-### Adding Slide Numbers
+## Adding Slide Numbers
 ```javascript
+// EX: Basic Slide Numbers
 slide.slideNumber({ x:1.0, y:'90%' });
-// Slide Numbers can be styled:
+
+// EX: Custom styled Slide Numbers
 slide.slideNumber({ x:1.0, y:'90%', fontFace:'Courier', fontSize:32, color:'CF0101' });
 ```
 
-### Slide Number Options
+## Slide Number Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
@@ -44,7 +57,7 @@ slide.slideNumber({ x:1.0, y:'90%', fontFace:'Courier', fontSize:32, color:'CF01
 | `fontFace`   | string  |        |           | font face           | any available font. Ex: `{fontFace:Arial}` |
 | `fontSize`   | number  | points |           | font size           | 8-256. Ex: `{fontSize:12}` |
 
-### Slide Return Value
+## Slide Return Value
 The Slide object returns a reference to itself, so calls can be chained.
 
 Example:

@@ -100,7 +100,7 @@ class HomeSplash extends React.Component {
 					<ProjectTitle />
 					<PromoSection>
 						<Button href="#try">Try It Out</Button>
-						<Button href={docUrl('setup1.html', language)}>Get Started</Button>
+						<Button href={docUrl('installation.html', language)}>Get Started</Button>
 					</PromoSection>
 				</div>
 			</SplashContainer>
@@ -194,7 +194,7 @@ const LearnMore = props => (
 				imageAlign: 'left',
 				content: '<ul style="text-align:left">'
 					+ '<li>View sample code and PowerPoint presentations</li>'
-					+ '<li><a href="'+ docUrl('apiref1.html', '') +'">View API documentation</a></li>'
+					+ '<li><a href="'+ docUrl('usage-basic-create.html', '') +'">View API documentation</a></li>'
 					+ '<li>View the project on GitHub</li>'
 					+ '</ul>'
 			},

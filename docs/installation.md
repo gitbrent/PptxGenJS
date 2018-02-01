@@ -1,5 +1,5 @@
 ---
-id: setup1
+id: installation
 title: Installation
 ---
 

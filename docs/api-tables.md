@@ -2,13 +2,26 @@
 id: api-tables
 title: Adding Tables
 ---
+**************************************************************************************************
+Table of Contents
+- [Syntax](#syntax)
+- [Table Layout Options](#table-layout-options)
+- [Table Auto-Paging Options](#table-auto-paging-options)
+- [Table Auto-Paging Notes](#table-auto-paging-notes)
+- [Table Formatting Options](#table-formatting-options)
+- [Table Formatting Notes](#table-formatting-notes)
+- [Table Cell Formatting](#table-cell-formatting)
+- [Table Cell Formatting Examples](#table-cell-formatting-examples)
+- [Table Examples](#table-examples)
+**************************************************************************************************
+
+## Syntax
 ```javascript
-// Syntax
 slide.addTable( [rows] );
 slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 ```
 
-### Table Layout Options
+## Table Layout Options
 | Option       | Type    | Unit   | Default   | Description            | Possible Values                                                             |
 | :----------- | :------ | :----- | :-------- | :--------------------- | :-------------------------------------------------------------------------- |
 | `x`          | number  | inches | `1.0`     | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
@@ -20,14 +33,14 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `rowH`       | integer | inches |           | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
 | `rowH`       | array   | inches |           | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
 
-### Table Auto-Paging Options
+## Table Auto-Paging Options
 | Option          | Type    | Default | Description            | Possible Values                                            |
 | :-------------- | :------ | :------ | :--------------------- | :--------------------------------------------------------- |
 | `autoPage`      | boolean | `true`  | auto-page table        | `true` or `false`. Ex: `{autoPage:false}`                  |
 | `lineWeight`    | float   | 0       | line weight value      | -1.0 to 1.0. Ex: `{lineWeight:0.5}`                        |
 | `newPageStartY` | number/string |   | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}` |
 
-Option Details:  
+### Option Details
 * `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
 * `lineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
 then increase lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides, then
@@ -36,13 +49,13 @@ reduce the lineWeight value. Also helpful when using some fonts that do not have
 you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
 tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
 
-### Table Auto-Paging Notes
+## Table Auto-Paging Notes
 * New slides will be created as tables overflow. The table will start at either `newPageStartY` (if present) or the Slide's top `margin`.
 * Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides.
 * Auto-paging is not an exact science! Try using different `lineWeight` and Slide margin values if your tables are overflowing the Slide.
 * There are many examples of auto-paging in the `examples` folder.
 
-### Table Formatting Options
+## Table Formatting Options
 | Option       | Type    | Unit   | Default   | Description        | Possible Values                                                                   |
 | :----------- | :------ | :----- | :-------- | :----------------- | :-------------------------------------------------------------------------------- |
 | `align`      | string  |        | `left`    | alignment          | `left` or `center` or `right` (or `l` `c` `r`)                                    |
@@ -61,21 +74,21 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 | `underline`  | boolean |        | `false`   | underline text     | `true` or `false`                                                                 |
 | `valign`     | string  |        |           | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`)                                    |
 
-### Table Formatting Notes
+## Table Formatting Notes
 * **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
 * You can selectively override formatting at a cell-level providing any **Formatting Option** in the cell `options`
 
-### Table Cell Formatting
+## Table Cell Formatting
 * Table cells can be either a plain text string or an object with text and options properties
 * When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
 * Cell borders can be removed (aka: borderless table) by passing a 'none' (Ex: `border:'none'`)
 
 Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
 as the `text` value allows fine-grained control over the text inside cells.
-* Available formatting options are here: [Text Options](#text-options)
+* Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
 * See below for examples or view the `examples/pptxgenjs-demo.html` page for lots more
 
-### Table Cell Formatting Examples
+## Table Cell Formatting Examples
 ```javascript
 // TABLE 1: Cell-level Formatting
 var rows = [];
@@ -110,7 +123,7 @@ var arrTabRows = [
 slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
 ```
 
-### Table Examples
+## Table Examples
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();

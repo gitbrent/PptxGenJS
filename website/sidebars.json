@@ -1,7 +1,8 @@
 {
 	"docs": {
-		"Get Started": ["setup1"],
+		"Get Started": ["installation"],
 		"Usage": ["usage-basic-create", "usage-pres-options", "usage-add-slide", "usage-saving"],
-		"API Reference": ["api-charts", "api-tables", "api-text"]
+		"Features": ["integration", "masters", "shapes-and-schemes", "table2slides"],
+		"API Reference": ["api-charts", "api-images", "api-media", "api-shapes", "api-tables", "api-text"]
 	}
 }

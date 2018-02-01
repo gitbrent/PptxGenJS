@@ -4,11 +4,13 @@ title: Create a Presentation
 ---
 PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
+## Steps
 1. Create a new Presentation
 2. Add a Slide
 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 4. Save the Presentation
 
+## Example
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();

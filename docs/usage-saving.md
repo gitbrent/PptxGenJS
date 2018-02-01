@@ -2,17 +2,24 @@
 id: usage-saving
 title: Saving Presentations
 ---
+**************************************************************************************************
+Table of Contents
+- [Client Browser](#client-browser)
+- [Node.js](#nodejs-1)
+- [Saving Multiple Presentations](#saving-multiple-presentations)
+**************************************************************************************************
+
 Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
 examples of which can be found below.
 
-### Client Browser
+## Client Browser
 * Simply provide a filename
 
 ```javascript
 pptx.save('Demo-Media');
 ```
 
-### Node.js
+## Node.js
 * Node can accept a callback function that will return the filename once the save is complete
 * Node can also be used to stream a powerpoint file - simply pass a filename that begins with "http"
 * Output type can be specified by passing an optional [JSZip output type](https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html)
@@ -35,14 +42,16 @@ pptx.save('http', streamCallback);
 pptx.save('jszip', saveCallback, 'base64');
 ```
 
-### Saving Multiple Presentations
+## Saving Multiple Presentations
 
-Client-Side:
+### Client-Side:
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
+var pptx = null;
+
 // Presenation 1:
-var pptx = new PptxGenJS();
+pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-1');
 
@@ -52,20 +61,20 @@ pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-2');
 ```
 
-Node.js:
+### Node.js:
 * See `examples/nodejs-demo.js` for a working demo with multiple presentations, callbacks, streaming, etc.
-* (Note: New 2.0.0 feature that breaks backwards compatibility)
 
 ```javascript
-PptxGenJS = require("pptxgenjs");
+var PptxGenJS = require("pptxgenjs");
+var pptx = null;
 
 // Presenation 1:
-var pptx = new PptxGenJS();
+pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
 pptx.save('PptxGenJS-NodePres-1');
 
 // Presenation 2:
-var pptx = new PptxGenJS();
+pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-NodePres-2');
 ```
