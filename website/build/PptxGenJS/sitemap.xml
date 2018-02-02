@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:mobile="http://www.google.com/schemas/sitemap-mobile/1.0" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+<url> <loc>https://gitbrent.github.io/help.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/en/help.html" /> </url>
+<url> <loc>https://gitbrent.github.io/index.html</loc> <changefreq>weekly</changefreq> <priority>0.5</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/en/index.html" /> </url>
+<url> <loc>https://gitbrent.github.io/blog/2017/10/24/new-version-1.0.0.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://gitbrent.github.io/blog/2017/09/26/adding-rss.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://gitbrent.github.io/blog/2017/09/25/testing-rss.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://gitbrent.github.io/blog/2017/04/10/blog-post-two.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://gitbrent.github.io/blog/2016/03/11/blog-post.html</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://gitbrent.github.io/docs/api-charts.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/api-charts.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/api-images.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/api-images.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/api-media.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/api-media.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/api-shapes.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/api-shapes.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/api-tables.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/api-tables.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/api-text.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/api-text.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/installation.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/installation.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/integration.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/integration.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/masters.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/masters.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/shapes-and-schemes.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/shapes-and-schemes.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/table2slides.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/table2slides.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/usage-add-slide.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/usage-add-slide.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/usage-basic-create.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/usage-basic-create.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/usage-pres-options.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/usage-pres-options.html" /> </url>
+<url> <loc>https://gitbrent.github.io/docs/usage-saving.html</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://gitbrent.github.io/docs/usage-saving.html" /> </url>
+</urlset>
