@@ -26,22 +26,10 @@ const tryCodeBlock = `
 	    "BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好",
 	    { x:0, y:1, w:'100%', h:2, align:'c', color:'0088CC', fill:'F1F1F1', fontSize:24 }
 	);
-	pptx.save('Demo-Simple');
+	pptx.save('PptxGenJS-Demo');
 `;
 
 /* ========== */
-
-function imgUrl(img) {
-	return siteConfig.baseUrl + 'img/' + img;
-}
-
-function docUrl(doc, language) {
-	return siteConfig.baseUrl + 'docs/' + (language ? language + '/' : '') + doc;
-}
-
-function pageUrl(page, language) {
-	return siteConfig.baseUrl + (language ? language + '/' : '') + page;
-}
 
 class Button extends React.Component {
 	render() {
@@ -58,6 +46,18 @@ class Button extends React.Component {
 Button.defaultProps = {
 	target: '_self',
 };
+
+function imgUrl(img) {
+	return siteConfig.baseUrl + 'img/' + img;
+}
+
+function docUrl(doc, language) {
+	return siteConfig.baseUrl + 'docs/' + (language ? language + '/' : '') + doc;
+}
+
+function pageUrl(page, language) {
+	return siteConfig.baseUrl + (language ? language + '/' : '') + page;
+}
 
 const SplashContainer = props => (
 	<div className="homeContainer">
@@ -88,8 +88,18 @@ const PromoSection = props => (
 	</div>
 );
 
-/* ========== */
+const Block = props => (
+	<Container
+		padding={['bottom', 'top']}
+		id={props.id}
+		background={props.background}>
+		<GridBlock align={props.align||"center"} contents={props.children} layout={props.layout} />
+	</Container>
+);
 
+/* ============================== */
+
+// 1: Top
 class HomeSplash extends React.Component {
 	render() {
 		let language = this.props.language || '';
@@ -108,16 +118,8 @@ class HomeSplash extends React.Component {
 	}
 }
 
-const Block = props => (
-	<Container
-		padding={['bottom', 'top']}
-		id={props.id}
-		background={props.background}>
-		<GridBlock align={props.align||"center"} contents={props.children} layout={props.layout} />
-	</Container>
-);
-
-const Features = props => (
+// 2:
+const FeatureBullets = props => (
 	<Block background="light" layout="fourColumn">
 		{[
 			{
@@ -148,11 +150,12 @@ const Features = props => (
 	</Block>
 );
 
+// 3:
 const FeatureCallout = props => (
-	<Block background="white" id="features">
+	<Block background="white" id="FeatureBullets">
 		{[
 			{
-				image: imgUrl('sample-charts.png'),
+				image: imgUrl('feature-callout.png'),
 				imageAlign: 'right',
 				title: 'Additional Features',
 				content: '<ul style="text-align:left;">'
@@ -161,15 +164,16 @@ const FeatureCallout = props => (
 					+ '<li>'+'Support for corporate/brand Slide Master designs'+'</li>'
 					+ '<li>'+'Support for RTL (right-to-left) text'+'</li>'
 					+ '<li>'+'Support for Chinese and other international language/fonts'+'</li>'
-					+ '<li>'+'Compatible with Angular, Electron and other application frameworks'+'</li>'
-					+ '<li>'+'Node-based applications can use callbacks, binary streaming, and other advanced export types'+'</li>'
+					+ '<li>'+'Compatible with Node, Angular, Electron and other application frameworks'+'</li>'
+					+ '<li>'+'Node and other libraries/apps can use advanced export types such as callbacks and binary streaming'+'</li>'
 					+ '</ul>'
 			},
 		]}
 	</Block>
 );
 
-const TryOut = props => (
+// 4:
+const TryOutLiveDemo = props => (
 	<Block background="light" id="try" align="left" layout="twoColumn">
 		{[
 			{
@@ -185,23 +189,28 @@ const TryOut = props => (
 	</Block>
 );
 
+// 5:
+// TODO: <li>View sample code and PowerPoint presentations</li>
 const LearnMore = props => (
 	<Block background="white" id="learn">
 		{[
 			{
 				title: 'Learn More',
-				image: imgUrl('questions.svg'),
+				image: imgUrl('learn-more.png'),
 				imageAlign: 'left',
 				content: '<ul style="text-align:left">'
-					+ '<li>View sample code and PowerPoint presentations</li>'
-					+ '<li><a href="'+ docUrl('usage-basic-create.html', '') +'">View API documentation</a></li>'
-					+ '<li>View the project on GitHub</li>'
+					+ '<li><a href="'+ docUrl('installation.html', '') +'">Installing PptxGenJS</a></li>'
+					+ '<li><a href="'+ docUrl('usage-basic-create.html', '') +'">Creating a Presentation</a></li>'
+					+ '<li><a href="'+ docUrl('masters.html', '') +'">Master Slides and Layouts</a></li>'
+					+ '<li><a href="'+ docUrl('api-tables.html', '') +'">View Table API and sample code</a></li>'
+					+ '<li><a href="'+ docUrl('table2slides.html', '') +'">Converting HTML tables to presentations</a></li>'
 					+ '</ul>'
 			},
 		]}
 	</Block>
 );
 
+// DEFINE PAGE
 class Index extends React.Component {
 	render() {
 		let language = this.props.language || '';
@@ -210,9 +219,9 @@ class Index extends React.Component {
 			<div>
 				<HomeSplash language={language} />
 				<div className="mainContainer">
-					<Features />
+					<FeatureBullets />
 					<FeatureCallout />
-					<TryOut />
+					<TryOutLiveDemo />
 					<LearnMore />
 				</div>
 				<script>hljs.initHighlightingOnLoad();</script>

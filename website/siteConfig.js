@@ -15,8 +15,7 @@ const siteConfig = {
 	headerLinks: [
 		{href: 'https://gitbrent.github.io/PptxGenJS/releases', label: 'Download'},
 		{doc: 'installation', label: 'Get Started'},
-		{doc: 'usage-basic-create', label: 'API'},
-		{page: 'help', label: 'Help'},
+		{doc: 'usage-basic-create', label: 'API Documentation'},
 		{href: 'https://gitbrent.github.io/PptxGenJS/', label: 'GitHub'},
 	],
 	headerIcon: 'img/pptxgenjs.svg',
