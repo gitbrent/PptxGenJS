@@ -1,0 +1,187 @@
+<html lang="en"><head><meta charset="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Adding Tables · PptxGenJS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta property="og:title" content="Adding Tables · PptxGenJS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://gitbrent.github.io/PptxGenJS/index.html"/><meta property="og:description" content="**************************************************************************************************"/><link rel="shortcut icon" href="/PptxGenJS/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/hybrid.min.css"/><script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.0.0/dist/pptxgen.bundle.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script><link rel="stylesheet" href="/PptxGenJS/css/main.css"/></head><body class="sideNavVisible"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/PptxGenJS/"><img class="logo" src="/PptxGenJS/img/pptxgenjs.svg"/><h2 class="headerTitle">PptxGenJS</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li><a href="https://gitbrent.github.io/PptxGenJS/releases" target="_self">Download</a></li><li><a href="/PptxGenJS/docs/installation.html" target="_self">Get Started</a></li><li><a href="/PptxGenJS/docs/usage-basic-create.html" target="_self">API</a></li><li><a href="/PptxGenJS/en/help.html" target="_self">Help</a></li><li><a href="https://gitbrent.github.io/PptxGenJS/" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="container docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><i></i></div><h2><i>›</i><span>API Reference</span></h2></div><div class="navGroups"><div class="navGroup navGroupActive"><h3>Get Started</h3><ul><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/installation.html">Installation</a></li></ul></div><div class="navGroup navGroupActive"><h3>Usage</h3><ul><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-basic-create.html">Create a Presentation</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-pres-options.html">Presentation Options</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-add-slide.html">Adding a Slide</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-saving.html">Saving Presentations</a></li></ul></div><div class="navGroup navGroupActive"><h3>Features</h3><ul><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/integration.html">Library Integration</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/masters.html">Master Slides</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/shapes-and-schemes.html">Shapes and Schemes</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/table2slides.html">Table-to-Slides</a></li></ul></div><div class="navGroup navGroupActive"><h3>API Reference</h3><ul><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-charts.html">Adding Charts</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-images.html">Adding Images</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-media.html">Adding Media</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-shapes.html">Adding Shapes</a></li><li class="navListItem navListItemActive"><a class="navItem navItemActive" href="/PptxGenJS/docs/api-tables.html">Adding Tables</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-text.html">Adding Text</a></li></ul></div></div></section></div><script>
+          var toggler = document.getElementById('navToggler');
+          var nav = document.getElementById('docsNav');
+          toggler.onclick = function() {
+            nav.classList.toggle('docsSliderActive');
+          };
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1>Adding Tables</h1></header><article><div><span><hr>
+<p>Table of Contents</p>
+<ul>
+<li><a href="#syntax">Syntax</a></li>
+<li><a href="#table-layout-options">Table Layout Options</a></li>
+<li><a href="#table-auto-paging-options">Table Auto-Paging Options</a></li>
+<li><a href="#table-auto-paging-notes">Table Auto-Paging Notes</a></li>
+<li><a href="#table-formatting-options">Table Formatting Options</a></li>
+<li><a href="#table-formatting-notes">Table Formatting Notes</a></li>
+<li><a href="#table-cell-formatting">Table Cell Formatting</a></li>
+<li><a href="#table-cell-formatting-examples">Table Cell Formatting Examples</a></li>
+<li><a href="#table-examples">Table Examples</a></li>
+</ul>
+<hr>
+<h2><a class="anchor" aria-hidden="true" name="syntax"></a><a href="#syntax" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Syntax</h2>
+<pre><code class="hljs css javascript">slide.addTable( [rows] );
+slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" name="table-layout-options"></a><a href="#table-layout-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Layout Options</h2>
+<table>
+<thead>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Unit</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>x</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"><code>1.0</code></td><td style="text-align:left">horizontal location</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{x:'50%'}</code> will place object in the middle of the Slide)</td></tr>
+<tr><td style="text-align:left"><code>y</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"><code>1.0</code></td><td style="text-align:left">vertical location</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
+<tr><td style="text-align:left"><code>w</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">width</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{w:'50%'}</code> will make object 50% width of the Slide)</td></tr>
+<tr><td style="text-align:left"><code>h</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">height</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
+<tr><td style="text-align:left"><code>colW</code></td><td style="text-align:left">integer</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">width for every column</td><td style="text-align:left">Ex: Width for every column in table (uniform) <code>2.0</code></td></tr>
+<tr><td style="text-align:left"><code>colW</code></td><td style="text-align:left">array</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">column widths in order</td><td style="text-align:left">Ex: Width for each of 5 columns <code>[1.0, 2.0, 2.5, 1.5, 1.0]</code></td></tr>
+<tr><td style="text-align:left"><code>rowH</code></td><td style="text-align:left">integer</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">height for every row</td><td style="text-align:left">Ex: Height for every row in table (uniform) <code>2.0</code></td></tr>
+<tr><td style="text-align:left"><code>rowH</code></td><td style="text-align:left">array</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">row heights in order</td><td style="text-align:left">Ex: Height for each of 5 rows <code>[1.0, 2.0, 2.5, 1.5, 1.0]</code></td></tr>
+</tbody>
+</table>
+<h2><a class="anchor" aria-hidden="true" name="table-auto-paging-options"></a><a href="#table-auto-paging-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Auto-Paging Options</h2>
+<table>
+<thead>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>autoPage</code></td><td style="text-align:left">boolean</td><td style="text-align:left"><code>true</code></td><td style="text-align:left">auto-page table</td><td style="text-align:left"><code>true</code> or <code>false</code>. Ex: <code>{autoPage:false}</code></td></tr>
+<tr><td style="text-align:left"><code>lineWeight</code></td><td style="text-align:left">float</td><td style="text-align:left">0</td><td style="text-align:left">line weight value</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{lineWeight:0.5}</code></td></tr>
+<tr><td style="text-align:left"><code>newPageStartY</code></td><td style="text-align:left">number/string</td><td style="text-align:left"></td><td style="text-align:left">starting <code>y</code> value for tables on new Slides</td><td style="text-align:left">0-n OR 'n%'. Ex:<code>{newPageStartY:0.5}</code></td></tr>
+</tbody>
+</table>
+<h3><a class="anchor" aria-hidden="true" name="option-details"></a><a href="#option-details" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Option Details</h3>
+<ul>
+<li><code>autoPage</code>: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.</li>
+<li><code>lineWeight</code>: adjusts the calculated height of lines. If too much empty space is left under each table,
+then increase lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides, then
+reduce the lineWeight value. Also helpful when using some fonts that do not have the usual golden ratio.</li>
+<li><code>newPageStartY</code>: provides the ability to specify where new tables will be placed on new Slides. For example,
+you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
+tables. Use this option to ensure there is no wasted space and to guarantee a professional look.</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" name="table-auto-paging-notes"></a><a href="#table-auto-paging-notes" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Auto-Paging Notes</h2>
+<ul>
+<li>New slides will be created as tables overflow. The table will start at either <code>newPageStartY</code> (if present) or the Slide's top <code>margin</code>.</li>
+<li>Tables will retain their existing <code>x</code>, <code>w</code>, and <code>colW</code> values as they are rendered onto subsequent Slides.</li>
+<li>Auto-paging is not an exact science! Try using different <code>lineWeight</code> and Slide margin values if your tables are overflowing the Slide.</li>
+<li>There are many examples of auto-paging in the <code>examples</code> folder.</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" name="table-formatting-options"></a><a href="#table-formatting-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Formatting Options</h2>
+<table>
+<thead>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Unit</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>align</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>left</code></td><td style="text-align:left">alignment</td><td style="text-align:left"><code>left</code> or <code>center</code> or <code>right</code> (or <code>l</code> <code>c</code> <code>r</code>)</td></tr>
+<tr><td style="text-align:left"><code>bold</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">bold text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>border</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">cell border</td><td style="text-align:left">object with <code>pt</code> and <code>color</code> values. Ex: <code>{pt:'1', color:'f1f1f1'}</code></td></tr>
+<tr><td style="text-align:left"><code>border</code></td><td style="text-align:left">array</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">cell border</td><td style="text-align:left">array of objects with <code>pt</code> and <code>color</code> values in TRBL order.</td></tr>
+<tr><td style="text-align:left"><code>color</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">text color</td><td style="text-align:left">hex color code or <a href="#scheme-colors">scheme color constant</a>. Ex: <code>{color:'0088CC'}</code></td></tr>
+<tr><td style="text-align:left"><code>colspan</code></td><td style="text-align:left">integer</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">column span</td><td style="text-align:left">2-n. Ex: <code>{colspan:2}</code></td></tr>
+<tr><td style="text-align:left"><code>fill</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">fill/bkgd color</td><td style="text-align:left">hex color code or <a href="#scheme-colors">scheme color constant</a>. Ex: <code>{color:'0088CC'}</code></td></tr>
+<tr><td style="text-align:left"><code>fontFace</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">font face</td><td style="text-align:left">Ex: <code>{fontFace:'Arial'}</code></td></tr>
+<tr><td style="text-align:left"><code>font_size</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">font size</td><td style="text-align:left">1-256. Ex: <code>{font_size:12}</code></td></tr>
+<tr><td style="text-align:left"><code>italic</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">italic text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>margin</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">margin</td><td style="text-align:left">0-99 (ProTip: use the same value from CSS <code>padding</code>)</td></tr>
+<tr><td style="text-align:left"><code>margin</code></td><td style="text-align:left">array</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">margin</td><td style="text-align:left">array of integer values in TRBL order. Ex: <code>margin:[5,10,5,10]</code></td></tr>
+<tr><td style="text-align:left"><code>rowspan</code></td><td style="text-align:left">integer</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">row span</td><td style="text-align:left">2-n. Ex: <code>{rowspan:2}</code></td></tr>
+<tr><td style="text-align:left"><code>underline</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">underline text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>valign</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">vertical alignment</td><td style="text-align:left"><code>top</code> or <code>middle</code> or <code>bottom</code> (or <code>t</code> <code>m</code> <code>b</code>)</td></tr>
+</tbody>
+</table>
+<h2><a class="anchor" aria-hidden="true" name="table-formatting-notes"></a><a href="#table-formatting-notes" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Formatting Notes</h2>
+<ul>
+<li><strong>Formatting Options</strong> passed to <code>slide.addTable()</code> apply to every cell in the table</li>
+<li>You can selectively override formatting at a cell-level providing any <strong>Formatting Option</strong> in the cell <code>options</code></li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" name="table-cell-formatting"></a><a href="#table-cell-formatting" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Cell Formatting</h2>
+<ul>
+<li>Table cells can be either a plain text string or an object with text and options properties</li>
+<li>When using an object, any of the formatting options above can be passed in <code>options</code> and will apply to that cell only</li>
+<li>Cell borders can be removed (aka: borderless table) by passing a 'none' (Ex: <code>border:'none'</code>)</li>
+</ul>
+<p>Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
+as the <code>text</code> value allows fine-grained control over the text inside cells.</p>
+<ul>
+<li>Available formatting options are here: <a href="/PptxGenJS/docs/api-text.html#text-options">Text Options</a></li>
+<li>See below for examples or view the <code>examples/pptxgenjs-demo.html</code> page for lots more</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" name="table-cell-formatting-examples"></a><a href="#table-cell-formatting-examples" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Cell Formatting Examples</h2>
+<pre><code class="hljs css javascript"><span class="hljs-comment">// TABLE 1: Cell-level Formatting</span>
+<span class="hljs-keyword">var</span> rows = [];
+<span class="hljs-comment">// Row One: cells will be formatted according to any options provided to `addTable()`</span>
+rows.push( [<span class="hljs-string">'First'</span>, <span class="hljs-string">'Second'</span>, <span class="hljs-string">'Third'</span>] );
+<span class="hljs-comment">// Row Two: set/override formatting for each cell</span>
+rows.push([
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'1st'</span>, <span class="hljs-attr">options</span>:{<span class="hljs-attr">color</span>:<span class="hljs-string">'ff0000'</span>} },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'2nd'</span>, <span class="hljs-attr">options</span>:{<span class="hljs-attr">color</span>:<span class="hljs-string">'00ff00'</span>} },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'3rd'</span>, <span class="hljs-attr">options</span>:{<span class="hljs-attr">color</span>:<span class="hljs-string">'0000ff'</span>} }
+]);
+slide.addTable( rows, { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">9.0</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'363636'</span> } );
+
+<span class="hljs-comment">// TABLE 2: Using word-level formatting inside cells</span>
+<span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> An array of text/options objects provides fine-grained control over formatting</span>
+<span class="hljs-keyword">var</span> arrObjText = [
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'Red '</span>,   <span class="hljs-attr">options</span>:{<span class="hljs-attr">color</span>:<span class="hljs-string">'FF0000'</span>} },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'Green '</span>, <span class="hljs-attr">options</span>:{<span class="hljs-attr">color</span>:<span class="hljs-string">'00FF00'</span>} },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'Blue'</span>,   <span class="hljs-attr">options</span>:{<span class="hljs-attr">color</span>:<span class="hljs-string">'0000FF'</span>} }
+];
+<span class="hljs-comment">// EX A: Pass an array of text objects to `addText()`</span>
+slide.addText( arrObjText, { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">2.75</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">9</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">margin</span>:<span class="hljs-number">0.1</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'232323'</span> } );
+
+<span class="hljs-comment">// EX B: Pass the same objects as a cell's `text` value</span>
+<span class="hljs-keyword">var</span> arrTabRows = [
+    [
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'Cell 1 A'</span>,  <span class="hljs-attr">options</span>:{<span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Arial'</span>  } },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'Cell 1 B'</span>,  <span class="hljs-attr">options</span>:{<span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Courier'</span>} },
+        { <span class="hljs-attr">text</span>: arrObjText, <span class="hljs-attr">options</span>:{<span class="hljs-attr">fill</span>:<span class="hljs-string">'232323'</span>}      }
+    ]
+];
+slide.addTable( arrTabRows, { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">5</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">9</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">colW</span>:[<span class="hljs-number">1.5</span>,<span class="hljs-number">1.5</span>,<span class="hljs-number">6</span>] } );
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" name="table-examples"></a><a href="#table-examples" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Examples</h2>
+<pre><code class="hljs css javascript"><span class="hljs-keyword">var</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
+<span class="hljs-keyword">var</span> slide = pptx.addNewSlide();
+slide.addText(<span class="hljs-string">'Demo-03: Table'</span>, { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">0.25</span>, <span class="hljs-attr">font_size</span>:<span class="hljs-number">18</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Arial'</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'0088CC'</span> });
+
+<span class="hljs-comment">// TABLE 1: Single-row table</span>
+<span class="hljs-comment">// --------</span>
+<span class="hljs-keyword">var</span> rows = [ <span class="hljs-string">'Cell 1'</span>, <span class="hljs-string">'Cell 2'</span>, <span class="hljs-string">'Cell 3'</span> ];
+<span class="hljs-keyword">var</span> tabOpts = { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">9.0</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F7F7F7'</span>, <span class="hljs-attr">font_size</span>:<span class="hljs-number">14</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'363636'</span> };
+slide.addTable( rows, tabOpts );
+
+<span class="hljs-comment">// TABLE 2: Multi-row table (each rows array element is an array of cells)</span>
+<span class="hljs-comment">// --------</span>
+<span class="hljs-keyword">var</span> rows = [
+    [<span class="hljs-string">'A1'</span>, <span class="hljs-string">'B1'</span>, <span class="hljs-string">'C1'</span>],
+    [<span class="hljs-string">'A2'</span>, <span class="hljs-string">'B2'</span>, <span class="hljs-string">'C2'</span>]
+];
+<span class="hljs-keyword">var</span> tabOpts = { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">2.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">9.0</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F7F7F7'</span>, <span class="hljs-attr">font_size</span>:<span class="hljs-number">18</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'6f9fc9'</span> };
+slide.addTable( rows, tabOpts );
+
+<span class="hljs-comment">// TABLE 3: Formatting at a cell level - use this to selectively override table's cell options</span>
+<span class="hljs-comment">// --------</span>
+<span class="hljs-keyword">var</span> rows = [
+    [
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'Top Lft'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">valign</span>:<span class="hljs-string">'t'</span>, <span class="hljs-attr">align</span>:<span class="hljs-string">'l'</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Arial'</span>   } },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'Top Ctr'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">valign</span>:<span class="hljs-string">'t'</span>, <span class="hljs-attr">align</span>:<span class="hljs-string">'c'</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Verdana'</span> } },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'Top Rgt'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">valign</span>:<span class="hljs-string">'t'</span>, <span class="hljs-attr">align</span>:<span class="hljs-string">'r'</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Courier'</span> } }
+    ],
+];
+<span class="hljs-keyword">var</span> tabOpts = { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">4.5</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">9.0</span>, <span class="hljs-attr">rowH</span>:<span class="hljs-number">0.6</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F7F7F7'</span>, <span class="hljs-attr">font_size</span>:<span class="hljs-number">18</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'6f9fc9'</span>, <span class="hljs-attr">valign</span>:<span class="hljs-string">'m'</span>} };
+slide.addTable( rows, tabOpts );
+
+<span class="hljs-comment">// Multiline Text / Line Breaks - use either "\r" or "\n"</span>
+slide.addTable( [<span class="hljs-string">'Line 1\nLine 2\nLine 3'</span>], { <span class="hljs-attr">x</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">3</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">4</span> });
+
+pptx.save(<span class="hljs-string">'Demo-Tables'</span>);
+</code></pre>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="api-shapes.html">← Adding Shapes</a><a class="docs-next button" href="api-text.html">Adding Text →</a></div></div></div></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/PptxGenJS/" class="nav-home"><img src="/PptxGenJS/img/pptxgenjs.svg" alt="PptxGenJS" width="66" height="58"/></a><div><h5>Docs</h5><a href="/PptxGenJS/docs/en/installation.html">Getting Started With PptxGenJS</a><a href="/PptxGenJS/docs/en/usage-basic-create.html">PowerPoint Library API Reference</a><a href="/PptxGenJS/docs/en/usage-basic-create.html">PowerPoint JavaScript Code Samples</a></div><div><h5>Community</h5><a href="https://github.com/gitbrent/pptxgenjs/issues" target="_blank">GitHub Issues</a><a href="http://stackoverflow.com/questions/tagged/pptxgenjs" target="_blank">Stack Overflow</a></div><div><h5>More</h5><a href="https://github.com/gitbrent/pptxgenjs">GitHub Project</a><a href="/PptxGenJS/blog">Blog</a><a href="https://www.flaticon.com/packs/creativity">Site Icons</a></div></section><section class="copyright">Copyright © 2018 Brent Ely</section></footer></div><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-75147115-1', 'auto');
+              ga('send', 'pageview');
+            </script></body></html>
