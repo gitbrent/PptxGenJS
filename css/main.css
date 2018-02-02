@@ -1827,5 +1827,17 @@ footer .copyright {
 }
 
 #features h2, #learn h2 { margin-top: 0px; }
-#features img { max-height: 400px; }
-#learn img { max-height: 200px; }
+#features img, #learn img { max-height: 400px; }
+
+.blockContent button.button {
+	background: #fff;
+	color: #de4b2c;
+}
+.blockContent button.button:hover {
+  background: #de4b2c;
+  color: #fff;
+}
+
+.imageAlignSide .blockImage {
+  margin-right: 0px;
+}
