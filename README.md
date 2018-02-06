@@ -21,6 +21,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  (*generated with [DocToc](https://github.com/thlorenz/doctoc)*)
 
+- [Documentation](#documentation)
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
@@ -106,6 +107,13 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+**************************************************************************************************
+# Documentation
+
+There's more than just the README!  
+* View the online [API Reference](https://gitbrent.github.io/PptxGenJS/docs/installation.html)
+
 
 **************************************************************************************************
 # Live Demo
