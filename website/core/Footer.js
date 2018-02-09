@@ -5,9 +5,23 @@
  * LICENSE file in the root directory of this source tree.
  */
 
+/*
+NOTE: FIXME:
+
+`onClick` binding does not work. I used sample code from react.com and Docusaurus strips all `onclick` events apparretny;
+<button onClick={(e) => this.handleClick(e)}>YOYOYO</button>
+*/
+
 const React = require('react');
 
 class Footer extends React.Component {
+	/*
+	constructor(props) {
+		super(props);
+		this.handleClick = this.handleClick.bind(this);
+	}
+	*/
+
 	docUrl(doc, language) {
 		const baseUrl = this.props.config.baseUrl;
 		return baseUrl + 'docs/' + (language ? language + '/' : '') + doc;
@@ -17,6 +31,12 @@ class Footer extends React.Component {
 		const baseUrl = this.props.config.baseUrl;
 		return baseUrl + (language ? language + '/' : '') + doc;
 	}
+
+	/*
+	handleClick() {
+		console.log('The link was clicked.');
+	}
+	*/
 
 	render() {
 		const currentYear = new Date().getFullYear();
@@ -35,10 +55,14 @@ class Footer extends React.Component {
 					</a>
 					<div>
 						<h5>Docs</h5>
-						<a href={this.docUrl('installation.html', this.props.language)}>
+						<a
+							href={this.docUrl('installation.html', this.props.language)}
+							onClick={()=>ga('send','event','Link','click','Link-installation')}>
 							Getting Started With PptxGenJS
 						</a>
-						<a href={this.docUrl('usage-basic-create.html', this.props.language)}>
+						<a
+							href={this.docUrl('usage-basic-create.html', this.props.language)}
+							onClick={this.handleClick}>
 							PowerPoint Library API Reference
 						</a>
 						<a href={this.docUrl('usage-basic-create.html', this.props.language)}>
