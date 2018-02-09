@@ -199,11 +199,21 @@ const LearnMore = props => (
 				image: imgUrl('learn-more.png'),
 				imageAlign: 'left',
 				content: '<ul style="text-align:left">'
-					+ '<li><a href="'+ docUrl('installation.html', '') +'">Installing PptxGenJS</a></li>'
-					+ '<li><a href="'+ docUrl('usage-basic-create.html', '') +'">Creating a Presentation</a></li>'
-					+ '<li><a href="'+ docUrl('masters.html', '') +'">Master Slides and Layouts</a></li>'
-					+ '<li><a href="'+ docUrl('api-tables.html', '') +'">View Table API and sample code</a></li>'
-					+ '<li><a href="'+ docUrl('table2slides.html', '') +'">Converting HTML tables to presentations</a></li>'
+					+ '<li><a href="'+ docUrl('installation.html', '') +'" '
+					+ ' onclick="if(ga)ga(\'send\',\'event\',\'Link\',\'click\',\'LearnMore-installation\')">'
+					+ 'Installing PptxGenJS</a></li>'
+					+ '<li><a href="'+ docUrl('usage-basic-create.html', '') +'" '
+					+ ' onclick="if(ga)ga(\'send\',\'event\',\'Link\',\'click\',\'LearnMore-usage-basic-create\')">'
+					+ 'Creating a Presentation</a></li>'
+					+ '<li><a href="'+ docUrl('masters.html', '') +'" '
+					+ ' onclick="if(ga)ga(\'send\',\'event\',\'Link\',\'click\',\'LearnMore-masters\')">'
+					+ 'Master Slides and Layouts</a></li>'
+					+ '<li><a href="'+ docUrl('api-tables.html', '') +'" '
+					+ ' onclick="if(ga)ga(\'send\',\'event\',\'Link\',\'click\',\'LearnMore-api-tables\')">'
+					+ 'View Table API and sample code</a></li>'
+					+ '<li><a href="'+ docUrl('table2slides.html', '') +'" '
+					+ ' onclick="if(ga)ga(\'send\',\'event\',\'Link\',\'click\',\'LearnMore-table2slides\')">'
+					+ 'Converting HTML tables to presentations</a></li>'
 					+ '</ul>'
 			},
 		]}
