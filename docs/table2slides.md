@@ -1,18 +1,19 @@
 ---
 id: table2slides
-title: Table-to-Slides
+sidebar_label: HTML-to-PowerPoint
+title: HTML to PowerPoint
 ---
 **************************************************************************************************
 Table of Contents
-- [Syntax](#syntax)
-- [Table-to-Slides Options](#table-to-slides-options)
-- [Table-to-Slides HTML Options](#table-to-slides-html-options)
-- [Table-to-Slides Notes](#table-to-slides-notes)
-- [Table-to-Slides Examples](#table-to-slides-examples)
-- [Creative Solutions](#creative-solutions)
+- [HTML to PowerPoint Syntax](#html-to-powerpoint-syntax)
+- [HTML to PowerPoint Options](#html-to-powerpoint-options)
+- [HTML to PowerPoint Table Options](#html-to-powerpoint-html-options)
+- [HTML to PowerPoint Notes](#html-to-powerpoint-notes)
+- [HTML to PowerPoint Examples](#html-to-powerpoint-examples)
+- [HTML to PowerPoint Creative Solutions](#creative-solutions)
 **************************************************************************************************
 
-## Table-to-Slides Syntax
+## HTML to PowerPoint Syntax
 ```javascript
 slide.addSlidesForTable(htmlElementID);
 slide.addSlidesForTable(htmlElementID, {OPTIONS});
@@ -24,7 +25,7 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 
 *NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
 
-## Table-to-Slides Options
+## HTML to PowerPoint Options
 | Option            | Type    | Unit   | Description                     | Possible Values  |
 | :---------------- | :------ | :----- | :------------------------------ | :--------------------------------------------- |
 | `x`               | number  | inches | horizontal location             | 0-256. Table will be placed here on each Slide |
@@ -38,7 +39,7 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 | `addTable`        | string  |        | add a table to each slide       | Use the established syntax   |
 | `addText`         | string  |        | add text to each slide          | Use the established syntax   |
 
-## Table-to-Slides HTML Options
+## HTML to PowerPoint Table Options
 Add an `data` attribute to the table's `<th>` tag to manually size columns (inches)
 * minimum column width can be specified by using the `data-pptx-min-width` attribute
 * fixed column width can be specified by using the `data-pptx-width` attribute
@@ -58,12 +59,12 @@ Example:
 </table>
 ```
 
-## Table-to-Slides Notes
+## HTML to PowerPoint Notes
 * Default `x`, `y` and `margin` value is 0.5 inches, the table will take up all remaining space by default (h:100%, w:100%)
 * Your Master Slides should already have defined margins, so a Master Slide name is the only option you'll need most of the time
 * Hidden tables wont auto-size their columns correctly (as the properties are not accurate)
 
-## Table-to-Slides Examples
+## HTML to PowerPoint Examples
 ```javascript
 // Pass table element ID to addSlidesForTable function to produce 1-N slides
 pptx.addSlidesForTable( 'myHtmlTableID' );
@@ -76,16 +77,17 @@ pptx.addSlidesForTable( 'myHtmlTableID', { addText:{ text:"Dynamic Title", optio
 pptx.addSlidesForTable( 'myHtmlTableID', { addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } } );
 ```
 
-## Creative Solutions
+## HTML to PowerPoint Creative Solutions
 Design a Master Slide that already contains: slide layout, margins, logos, etc., then you can produce
 professional looking Presentations with a single line of code which can be embedded into a link or a button:
 
 Add a button to a webpage that will create a Presentation using whatever table data is present:
 ```html
-<input type="button" value="Export to PPTX" onclick="{ var pptx=new PptxGenJS(); pptx.addSlidesForTable('tableId'); pptx.save(); }">
+<button onclick="{ var pptx=new PptxGenJS(); pptx.addSlidesForTable('tableId'); pptx.save(); }"
+ type="button">Export to PPTX</button>
 ```
 
 **SharePoint Integration**
 
 Placing a button like this into a WebPart is a great way to add "Export to PowerPoint" functionality
-to SharePoint. (You'd also need to add the 4 `<script>` includes in the same or another WebPart)
+to SharePoint. (You'd also need to add the PptxGenJS bundle `<script>` in that/another WebPart)
