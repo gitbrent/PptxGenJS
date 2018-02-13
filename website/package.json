@@ -9,9 +9,7 @@
     "rename-version": "docusaurus-rename-version"
   },
   "devDependencies": {
-    "docusaurus": "^1.0.6"
-  },
-  "dependencies": {
+    "docusaurus": "^1.0.6",
     "gulp-clean-css": "^3.9.2",
     "gulp-string-replace": "^1.0.0"
   }
