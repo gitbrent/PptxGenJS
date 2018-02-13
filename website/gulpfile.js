@@ -13,7 +13,37 @@ var cssSrch2 = '<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/hi
 var jvsSrch1 = /\<script type="text\/javascript" src="https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/highlight.*.min.js"\>\<\/script\>/;
 var jvsSrch2 = 'pptxgen.bundle.js">';
 
-gulp.task('min-css', function(){
+/* ========== */
+var arrDeployTasks = ['deploy-html','deploy-index','deploy-img','deploy-help','deploy-sitemap'];
+
+gulp.task('deploy-html', ()=>{
+	return gulp.src('./build/PptxGenJS/docs/*.html').pipe(gulp.dest('../docs/'));
+});
+
+gulp.task('deploy-index', ()=>{
+	return gulp.src('../index.perf.html', {base:'./'}).pipe(gulp.dest('../index.html'));
+});
+
+gulp.task('deploy-img', ()=>{
+	return gulp.src('./build/PptxGenJS/img/*.*').pipe(gulp.dest('../img/'));
+});
+
+gulp.task('deploy-help', ()=>{
+	return gulp.src('./build/PptxGenJS/help.html').pipe(gulp.dest('../'));
+});
+
+gulp.task('deploy-sitemap', ()=>{
+	return gulp.src('./build/PptxGenJS/sitemap.xml').pipe(gulp.dest('../'));
+});
+
+gulp.task('deploy', arrDeployTasks, ()=>{
+	console.log('Deploy tasks run:'+ arrDeployTasks.length );
+	console.log('DONE!');
+});
+
+/* ========== */
+
+gulp.task('min-css', ()=>{
 	// STEP 1: Inline both css files
 	return gulp.src(['../css/hybrid.min.css', './build/PptxGenJS/css/main.css'])
 		.pipe(concat('style.bundle.css'))
