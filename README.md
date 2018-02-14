@@ -13,7 +13,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 * Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
 
 ## Additional Features
-* Use the unique [Table-to-Slides](#table-to-slides-feature) feature to copy an HTML table into 1 or more Slides with a single command
+* Use the unique [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to copy an HTML table into 1 or more Slides with a single command
 
 **************************************************************************************************
 
@@ -83,12 +83,12 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Slide Masters](#slide-masters)
   - [Slide Master Object Options](#slide-master-object-options)
   - [Slide Master Examples](#slide-master-examples)
-- [Table-to-Slides Feature](#table-to-slides-feature)
-  - [Table-to-Slides Options](#table-to-slides-options)
-  - [Table-to-Slides HTML Options](#table-to-slides-html-options)
-  - [Table-to-Slides Notes](#table-to-slides-notes)
-  - [Table-to-Slides Examples](#table-to-slides-examples)
-  - [Creative Solutions](#creative-solutions)
+- [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
+  - [HTML-to-PowerPoint Options](#html-to-powerpoint-options)
+  - [HTML-to-PowerPoint Table Options](#html-to-powerpoint-table-options)
+  - [HTML-to-PowerPoint Notes](#html-to-powerpoint-notes)
+  - [HTML-to-PowerPoint Examples](#html-to-powerpoint-examples)
+  - [HTML-to-PowerPoint Creative Solutions](#html-to-powerpoint-creative-solutions)
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
 - [Scheme Colors](#scheme-colors)
 - [Performance Considerations](#performance-considerations)
@@ -148,7 +148,7 @@ npm install pptxgenjs
 
 var pptx = require("pptxgenjs");
 ```
-* Desktop: Compatible with Electron applications!
+* Desktop: Compatible with Electron applications
 
 **************************************************************************************************
 # Presentations: Usage and Options
@@ -1168,7 +1168,7 @@ pptx.save();
 
 
 **************************************************************************************************
-# Table-to-Slides Feature
+# HTML-to-PowerPoint Feature
 Syntax:
 ```javascript
 slide.addSlidesForTable(htmlElementID);
@@ -1181,7 +1181,7 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 
 *NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
 
-## Table-to-Slides Options
+## HTML-to-PowerPoint Options
 | Option            | Type    | Unit   | Description                     | Possible Values  |
 | :---------------- | :------ | :----- | :------------------------------ | :--------------------------------------------- |
 | `x`               | number  | inches | horizontal location             | 0-256. Table will be placed here on each Slide |
@@ -1195,7 +1195,7 @@ Any variety of HTML tables can be turned into a series of slides (auto-paging) b
 | `addTable`        | string  |        | add a table to each slide       | Use the established syntax   |
 | `addText`         | string  |        | add text to each slide          | Use the established syntax   |
 
-## Table-to-Slides HTML Options
+## HTML-to-PowerPoint Table Options
 Add an `data` attribute to the table's `<th>` tag to manually size columns (inches)
 * minimum column width can be specified by using the `data-pptx-min-width` attribute
 * fixed column width can be specified by using the `data-pptx-width` attribute
@@ -1215,12 +1215,12 @@ Example:
 </table>
 ```
 
-## Table-to-Slides Notes
+## HTML-to-PowerPoint Notes
 * Default `x`, `y` and `margin` value is 0.5 inches, the table will take up all remaining space by default (h:100%, w:100%)
 * Your Master Slides should already have defined margins, so a Master Slide name is the only option you'll need most of the time
 * Hidden tables wont auto-size their columns correctly (as the properties are not accurate)
 
-## Table-to-Slides Examples
+## HTML-to-PowerPoint Examples
 ```javascript
 // Pass table element ID to addSlidesForTable function to produce 1-N slides
 pptx.addSlidesForTable( 'myHtmlTableID' );
