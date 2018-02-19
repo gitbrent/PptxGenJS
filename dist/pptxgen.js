@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.1.0-beta";
-	var APP_REL = "20180123";
+	var APP_REL = "20180213";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -685,7 +685,7 @@ var PptxGenJS = function(){
 						// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 						arrTabRows[0].forEach(function(cell,idx){
 							var cellOpts = cell.options || cell.opts || null;
-							intColCnt += ( cellOpts && cellOpts.colspan ? cellOpts.colspan : 1 );
+							intColCnt += ( cellOpts && cellOpts.colspan ? Number(cellOpts.colspan) : 1 );
 						});
 
 						// STEP 1: Start Table XML =============================
@@ -4902,6 +4902,7 @@ var PptxGenJS = function(){
 			opts.slideMargin = opts.margin;
 			delete(opts.margin);
 		}
+
 		// STEP 5: Break table into Slides as needed
 		// Pass head-rows as there is an option to add to each table and the parse func needs this daa to fulfill that option
 		opts.arrObjTabHeadRows = arrObjTabHeadRows || '';
