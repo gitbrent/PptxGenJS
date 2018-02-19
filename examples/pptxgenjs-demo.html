@@ -794,7 +794,7 @@
 					<fieldset class="demoFset">
 						<legend>Inherited Style</legend>
 
-						<table id="tabInheritStyle" cellspacing="0" cellpadding="3">
+						<table id="tabInheritStyle" class="tabHtmlToPpt" cellspacing="0" cellpadding="3">
 						    <thead>
 						        <tr>
 									<th>Company</th>
@@ -822,6 +822,46 @@
 						</table>
 						<div class="demoBtns">
 							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabInheritStyle')">Table-to-Slides Demo</button>
+						</div>
+					</fieldset>
+
+
+					<fieldset class="demoFset">
+						<legend>Colspan</legend>
+						<table id="tabColspan" class="tabHtmlToPpt">
+							<thead>
+								<tr>
+									<th class="tg-header">First Name</th>
+									<th class="tg-header">Last Name</th>
+									<th class="tg-header">Count</th>
+									<th class="tg-header">Something</th>
+									<th class="tg-header" colspan="2">Colspan Column</th>
+									<th class="tg-header">Fin</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Jill</td>
+									<td>Smith</td>
+									<td>50</td>
+									<td>1</td>
+									<td>2</td>
+									<td>3</td>
+									<td>4</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>Jackson</td>
+									<td>94</td>
+									<td></td>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="demoBtns">
+							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
 						</div>
 					</fieldset>
 				</div>
