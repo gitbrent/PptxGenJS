@@ -4,12 +4,17 @@ var gulp       = require('gulp'),
     ignore     = require('gulp-ignore'),
     uglify     = require('gulp-uglify');
 
-gulp.task('build', function () {
-    gulp.src(['libs/*', 'dist/pptxgen.js'])
+gulp.task('default', function(){
+	gulp.src(['libs/*', 'dist/pptxgen.js'])
         .pipe(concat('pptxgen.bundle.js'))
         .pipe(sourcemaps.init())
         .pipe(ignore.exclude(["**/*.map"]))
         .pipe(uglify())
         .pipe(sourcemaps.write('./'))
+        .pipe(gulp.dest('dist/'));
+
+    gulp.src(['dist/pptxgen.js'])
+        .pipe(concat('pptxgen.min.js'))
+        .pipe(uglify())
         .pipe(gulp.dest('dist/'));
 });
