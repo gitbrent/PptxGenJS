@@ -1175,11 +1175,13 @@ slide.addSlidesForTable(htmlElementID);
 slide.addSlidesForTable(htmlElementID, {OPTIONS});
 ```
 
-Any variety of HTML tables can be turned into a series of slides (auto-paging) by providing the table's ID.
-* Reproduces an HTML table - background colors, borders, fonts, padding, etc.
-* Slide margins are based on either the Master Slide provided or options
+Reproduces an HTML table into 1 or more slides (auto-paging).
+* Supported cell styling includes background colors, borders, fonts, padding, etc.
+* Slide margin settings can be set using options, or by providing a Master Slide definition
 
-*NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
+Notes:
+* CSS styles are only supported down to the cell level (word-level formatting is not supported)
+* Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)
 
 ## HTML-to-PowerPoint Options
 | Option            | Type    | Unit   | Description                     | Possible Values  |
