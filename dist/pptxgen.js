@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.1.0-beta";
-	var APP_REL = "20180213";
+	var APP_REL = "20180220";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2309,7 +2309,7 @@ var PptxGenJS = function(){
 
 		layout.rels.forEach(function(rel,idy){
 			// Read and Encode each image into base64 for use in export
-			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && $.inArray(rel.path, arrRelsDone) == -1 ) {
+			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1 ) {
 				// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 				if ( NODEJS ) {
 					try {
@@ -4317,7 +4317,7 @@ var PptxGenJS = function(){
 
 			gObjPptx.pptLayout = LAYOUTS['LAYOUT_USER'];
 		}
-		else if ( $.inArray(inLayout, Object.keys(LAYOUTS)) > -1 ) {
+		else if ( Object.keys(LAYOUTS).indexOf(inLayout) > -1 ) {
 			gObjPptx.pptLayout = LAYOUTS[inLayout];
 		}
 		else {
@@ -4851,8 +4851,8 @@ var PptxGenJS = function(){
 						color:    rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
 						fill:     rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
 					};
-					if ( $.inArray($(cell).css('text-align'), ['left','center','right','start','end']) > -1 ) objOpts.align = $(cell).css('text-align').replace('start','left').replace('end','right');
-					if ( $.inArray($(cell).css('vertical-align'), ['top','middle','bottom']) > -1 ) objOpts.valign = $(cell).css('vertical-align');
+					if ( ['left','center','right','start','end'].indexOf($(cell).css('text-align')) > -1 ) objOpts.align = $(cell).css('text-align').replace('start','left').replace('end','right');
+					if ( ['top','middle','bottom'].indexOf($(cell).css('vertical-align')) > -1 ) objOpts.valign = $(cell).css('vertical-align');
 
 					// C: Add padding [margin] (if any)
 					// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
