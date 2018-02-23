@@ -21,13 +21,12 @@
 		2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
  	-->
 
-	<!-- vvv PptxGenJS libraries (jquery/jszip/pptxgen are required) vvv -->
+	<!-- vvv PptxGenJS libraries (jquery/jszip/pptxgen are required - or use bundle) vvv -->
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../libs/jszip.min.js"></script>
 	<script type="text/javascript" src="../libs/promise.min.js"></script>     <!-- optional if not using IE11 -->
 	<script type="text/javascript" src="../dist/pptxgen.colors.js"></script>  <!-- optional if you dont need PPT Color Schemes -->
 	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need non-core Shapes -->
-	<!--<script type="text/javascript" src="../dist/pptxgen.masters.js"></script> DEPRECATED/LEGACY-TEST-ONLY -->
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
 	<!--<script type="text/javascript" src="../dist/pptxgen.bundle.js"></script>-->
 	<!-- ^^^ PptxGenJS libraries ^^^ -->
@@ -420,11 +419,11 @@
 		<div id="navTabs" class="modernTabs">
 			<ul>
 				<li id="nav1" class="active" onclick="doNav(1)">Introduction</li>
-				<li id="nav2" onclick="doNav(2)">Charts</li>
-				<li id="nav3" onclick="doNav(3)">Images &amp; Media</li>
-				<li id="nav4" onclick="doNav(4)">Shapes &amp; Text</li>
-				<li id="nav5" onclick="doNav(5)">Tables</li>
-				<li id="nav6" onclick="doNav(6)">Table To Slides</li>
+				<li id="nav2" onclick="doNav(2)">HTML to PPTX</li>
+				<li id="nav3" onclick="doNav(3)">Charts</li>
+				<li id="nav4" onclick="doNav(4)">Images &amp; Media</li>
+				<li id="nav5" onclick="doNav(5)">Shapes &amp; Text</li>
+				<li id="nav6" onclick="doNav(6)">Tables</li>
 				<li id="nav7" onclick="doNav(7)">Templates</li>
 			</ul>
 
@@ -460,219 +459,23 @@
 				</div>
 			</div>
 
-			<div id="tab2" data-title="Charts">
+			<div id="tab2" data-title="HTML to PowerPoint">
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Charts
+					HTML to PowerPoint
 				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-							<legend>Bar Chart</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Vertical/Horizontal bars</div>
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Grid/Axis options</div>
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Stacked/PercentStacked Bars</div>
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lots of Bars</div>
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Bar colors, majorUnit, Number Format</div>
-						</fieldset>
-						<fieldset>
-							<legend>Tornado Chart</legend>
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Tornado Type</div>
-						</fieldset>
-						<fieldset>
-							<legend>Line Chart</legend>
-							<h3>Slide 7</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Line Smoothing, Shadow, Size, Symbol Size</div>
-							<h3>Slide 8</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>lineDataSymbol and SymbolSize</div>
-							<h3>Slide 9</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lots of Categories</div>
-						</fieldset>
-						<fieldset>
-							<legend>Area Chart</legend>
-							<h3>Slide 10</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Opacity and other options</div>
-						</fieldset>
-						<fieldset>
-							<legend>Pie Chart</legend>
-							<h3>Slide 11</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various options</div>
-							<h3>Slide 12</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Doughnut Type</div>
-						</fieldset>
-						<fieldset>
-							<legend>X Y (Scatter) Chart</legend>
-							<h3>Slide 13</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Options</div>
-						</fieldset>
-						<fieldset>
-							<legend>Bubble Chart</legend>
-							<h3>Slide 14</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Options</div>
-						</fieldset>
-						<fieldset>
-							<legend>Multi-Type Charts</legend>
-							<h3>Slide 15</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Mixed Chart Types</div>
-						</fieldset>
-						<fieldset>
-							<legend>Chart Options</legend>
-							<h3>Slide 16</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shadows and Transparent Color</div>
-						</fieldset>
-					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Chart')">
-					</div>
-				</div>
-			</div>
-
-			<div id="tab3" data-title="Images/Media">
-				<div id="jsLocalFile" class="highlightBox" style="display:none;">
-					<div style="font-size:1.5em">LOCAL FILE ACCESS DETECTED</div>
+				<div style="font-size:120%; color:#696969;">
+					Reproduces an HTML table into 1 or more slides (auto-paging).
 					<ul>
-						<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read when running this locally</li>
-						<li>Note that some demo slide images will show the missing image icon</li>
-						<li>ProTip: Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
+						<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
+						<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
+					</ul>
+					Notes:
+					<ul>
+						<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
+						<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
 					</ul>
 				</div>
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Images &amp; Media
-				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-							<legend>Image Types</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (campfire icon - click to play)</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Four Image types using `path:'someImage'`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded image using `data:[base64]`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinked Image</div>
-						</fieldset>
-						<fieldset>
-							<legend>Image Sizing</legend>
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Contain</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Cover</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Crop</div>
-						</fieldset>
-						<fieldset>
-							<legend>Media Objects</legend>
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
-							<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
 
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats</div>
-							<div style="color:red; padding:2px 0 0 40px">
-								* Only Node.js can read/encode media using `path`<br>
-								* Alternatively, use `data` with pre-encoded base64
-							</div>
-						</fieldset>
-					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
-					</div>
-				</div>
-			</div>
-
-			<div id="tab4" data-title="Shapes/Text">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Shapes &amp; Text
-				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-							<legend>Shape Objects</legend>
-
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shapes: Flipped, With and Without Text</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shape Borders</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lines: With and Without Arrowheads</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Same Shapes with Text</div>
-						</fieldset>
-						<fieldset>
-							<legend>Text Objects</legend>
-
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Word-Level Formatting</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Multi-Line Text</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinks: With and Without Tooltip</div>
-
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Bullets: Regular and Custom</div>
-
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Text alignment, percent x/y, etc</div>
-
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Scheme Colors</div>
-						</fieldset>
-					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Shape','Text'])">
-					</div>
-				</div>
-			</div>
-
-			<div id="tab5" data-title="Tables">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Tables
-				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-					    	<legend>Table Layout/Format</legend>
-
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Text Alignment</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Styles</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Row Height / Col Width</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Colspans/Rowspans</div>
-
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Extreme Colspans/Rowspans</div>
-						</fieldset>
-						<fieldset style="height:auto">
-							<legend>Cell Formatting</legend>
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Margins</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Complex Cell Borders</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Escaped Special Characters</div>
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Text Formatting Overview</div>
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Text Formatting Examples 2</div>
-						</fieldset>
-						<fieldset style="height:auto">
-							<legend>Table Auto-Paging</legend>
-							<h3>Slide 7-n</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test basic functionality</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with small table dimensions</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with correct starting `{y:4.0}`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with `{ newPageStartY:0.5 }`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with `{ autoPage:false }`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Three Tables with various `lineWeight`</div>
-						</fieldset>
-					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Table')">
-					</div>
-				</div>
-			</div>
-
-			<div id="tab6" data-title="Table to Slides">
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Basic Functionality and Options
 				</div>
@@ -908,6 +711,218 @@
 					</div>
 				</div>
 				-->
+			</div>
+
+			<div id="tab3" data-title="Charts">
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Charts
+				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+							<legend>Bar Chart</legend>
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Vertical/Horizontal bars</div>
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Grid/Axis options</div>
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Stacked/PercentStacked Bars</div>
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lots of Bars</div>
+							<h3>Slide 5</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Bar colors, majorUnit, Number Format</div>
+						</fieldset>
+						<fieldset>
+							<legend>Tornado Chart</legend>
+							<h3>Slide 6</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Tornado Type</div>
+						</fieldset>
+						<fieldset>
+							<legend>Line Chart</legend>
+							<h3>Slide 7</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Line Smoothing, Shadow, Size, Symbol Size</div>
+							<h3>Slide 8</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>lineDataSymbol and SymbolSize</div>
+							<h3>Slide 9</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lots of Categories</div>
+						</fieldset>
+						<fieldset>
+							<legend>Area Chart</legend>
+							<h3>Slide 10</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Opacity and other options</div>
+						</fieldset>
+						<fieldset>
+							<legend>Pie Chart</legend>
+							<h3>Slide 11</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various options</div>
+							<h3>Slide 12</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Doughnut Type</div>
+						</fieldset>
+						<fieldset>
+							<legend>X Y (Scatter) Chart</legend>
+							<h3>Slide 13</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Options</div>
+						</fieldset>
+						<fieldset>
+							<legend>Bubble Chart</legend>
+							<h3>Slide 14</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Options</div>
+						</fieldset>
+						<fieldset>
+							<legend>Multi-Type Charts</legend>
+							<h3>Slide 15</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Mixed Chart Types</div>
+						</fieldset>
+						<fieldset>
+							<legend>Chart Options</legend>
+							<h3>Slide 16</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shadows and Transparent Color</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Chart')">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab4" data-title="Images/Media">
+				<div id="jsLocalFile" class="highlightBox" style="display:none;">
+					<div style="font-size:1.5em">LOCAL FILE ACCESS DETECTED</div>
+					<ul>
+						<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read when running this locally</li>
+						<li>Note that some demo slide images will show the missing image icon</li>
+						<li>ProTip: Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
+					</ul>
+				</div>
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Images &amp; Media
+				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+							<legend>Image Types</legend>
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (campfire icon - click to play)</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Four Image types using `path:'someImage'`</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded image using `data:[base64]`</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinked Image</div>
+						</fieldset>
+						<fieldset>
+							<legend>Image Sizing</legend>
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Contain</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Cover</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Crop</div>
+						</fieldset>
+						<fieldset>
+							<legend>Media Objects</legend>
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
+							<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
+
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats</div>
+							<div style="color:red; padding:2px 0 0 40px">
+								* Only Node.js can read/encode media using `path`<br>
+								* Alternatively, use `data` with pre-encoded base64
+							</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab5" data-title="Shapes/Text">
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Shapes &amp; Text
+				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+							<legend>Shape Objects</legend>
+
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shapes: Flipped, With and Without Text</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shape Borders</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lines: With and Without Arrowheads</div>
+
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Same Shapes with Text</div>
+						</fieldset>
+						<fieldset>
+							<legend>Text Objects</legend>
+
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Word-Level Formatting</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Multi-Line Text</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinks: With and Without Tooltip</div>
+
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Bullets: Regular and Custom</div>
+
+							<h3>Slide 5</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Text alignment, percent x/y, etc</div>
+
+							<h3>Slide 6</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Scheme Colors</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Shape','Text'])">
+					</div>
+				</div>
+			</div>
+
+			<div id="tab6" data-title="Tables">
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow active"></div>Tables
+				</div>
+				<div class="sectionBox">
+					<div class="sectionCont">
+						<fieldset>
+					    	<legend>Table Layout/Format</legend>
+
+							<h3>Slide 1</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Text Alignment</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Styles</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Row Height / Col Width</div>
+
+							<h3>Slide 2</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Colspans/Rowspans</div>
+
+							<h3>Slide 3</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Extreme Colspans/Rowspans</div>
+						</fieldset>
+						<fieldset style="height:auto">
+							<legend>Cell Formatting</legend>
+							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Margins</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Complex Cell Borders</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Escaped Special Characters</div>
+							<h3>Slide 5</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Text Formatting Overview</div>
+							<h3>Slide 6</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Text Formatting Examples 2</div>
+						</fieldset>
+						<fieldset style="height:auto">
+							<legend>Table Auto-Paging</legend>
+							<h3>Slide 7-n</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test basic functionality</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with small table dimensions</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with correct starting `{y:4.0}`</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with `{ newPageStartY:0.5 }`</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with `{ autoPage:false }`</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Three Tables with various `lineWeight`</div>
+						</fieldset>
+					</div>
+					<div>
+						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Table')">
+					</div>
+				</div>
 			</div>
 
 			<div id="tab7" data-title="Templates/Master Slides">
