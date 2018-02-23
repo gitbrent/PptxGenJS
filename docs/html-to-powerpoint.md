@@ -1,10 +1,11 @@
 ---
-id: table2slides
+id: html-to-powerpoint
 sidebar_label: HTML-to-PowerPoint
 title: HTML to PowerPoint
 ---
 **************************************************************************************************
 Table of Contents
+- [HTML to PowerPoint](#html-to-powerpoint)
 - [HTML to PowerPoint Syntax](#html-to-powerpoint-syntax)
 - [HTML to PowerPoint Options](#html-to-powerpoint-options)
 - [HTML to PowerPoint Table Options](#html-to-powerpoint-html-options)
@@ -13,17 +14,21 @@ Table of Contents
 - [HTML to PowerPoint Creative Solutions](#creative-solutions)
 **************************************************************************************************
 
+## HTML to PowerPoint
+
+Reproduces an HTML table into 1 or more slides (auto-paging).
+* Supported cell styling includes background colors, borders, fonts, padding, etc.
+* Slide margin settings can be set using options, or by providing a Master Slide definition
+
+Notes:
+* CSS styles are only supported down to the cell level (word-level formatting is not supported)
+* Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)
+
 ## HTML to PowerPoint Syntax
 ```javascript
 slide.addSlidesForTable(htmlElementID);
 slide.addSlidesForTable(htmlElementID, {OPTIONS});
 ```
-
-Any variety of HTML tables can be turned into a series of slides (auto-paging) by providing the table's ID.
-* Reproduces an HTML table - background colors, borders, fonts, padding, etc.
-* Slide margins are based on either the Master Slide provided or options
-
-*NOTE: Nested tables are not supported in PowerPoint, so only the string contents of a single level deep table cell will be reproduced*
 
 ## HTML to PowerPoint Options
 | Option            | Type    | Unit   | Description                     | Possible Values  |
@@ -76,6 +81,13 @@ pptx.addSlidesForTable( 'myHtmlTableID', { master:'MASTER_SLIDE' } );
 pptx.addSlidesForTable( 'myHtmlTableID', { addText:{ text:"Dynamic Title", options:{x:1, y:0.5, color:'0088CC'} } } );
 pptx.addSlidesForTable( 'myHtmlTableID', { addImage:{ path:"images/logo.png", x:10, y:0.5, w:1.2, h:0.75 } } );
 ```
+
+### HTML Table
+![alt-text](/PptxGenJS/docs/assets/ex-html-to-powerpoint-1.png)
+
+### Resulting Slides
+![alt-text](/PptxGenJS/docs/assets/ex-html-to-powerpoint-2.png)
+
 
 ## HTML to PowerPoint Creative Solutions
 Design a Master Slide that already contains: slide layout, margins, logos, etc., then you can produce
