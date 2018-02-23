@@ -1,9 +1,11 @@
 # Change Log
 
-## [v2.1.0](https://github.com/gitbrent/pptxgenjs/tree/v2.1.0) (2018-02-??)
+## [v2.1.0](https://github.com/gitbrent/pptxgenjs/tree/v2.1.0) (2018-03-??)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.0.0...v2.1.0)
 
 **Fixed Bugs:**
+- HTML-to-PowerPoint is creating many extra columns with colspan [\#284](https://github.com/gitbrent/PptxGenJS/issues/284) ([svaak](https://github.com/svaak))
+
 **Implemented Enhancements:**
 
 
