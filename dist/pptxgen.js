@@ -55,8 +55,8 @@ var NODEJS = ( typeof module !== 'undefined' && module.exports );
 
 // [Node.js] <script> includes
 if ( NODEJS ) {
-	var gObjPptxColors  = require('../dist/pptxgen.colors.js');
-	var gObjPptxShapes  = require('../dist/pptxgen.shapes.js');
+	var gObjPptxColors = require('../dist/pptxgen.colors.js');
+	var gObjPptxShapes = require('../dist/pptxgen.shapes.js');
 }
 
 var PptxGenJS = function(){
