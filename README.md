@@ -88,7 +88,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [HTML-to-PowerPoint Table Options](#html-to-powerpoint-table-options)
   - [HTML-to-PowerPoint Notes](#html-to-powerpoint-notes)
   - [HTML-to-PowerPoint Examples](#html-to-powerpoint-examples)
-  - [HTML-to-PowerPoint Creative Solutions](#html-to-powerpoint-creative-solutions)
+  - [Creative Solutions](#creative-solutions)
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
 - [Scheme Colors](#scheme-colors)
 - [Performance Considerations](#performance-considerations)
