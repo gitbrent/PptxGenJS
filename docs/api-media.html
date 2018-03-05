@@ -8,6 +8,9 @@
 <p>Table of Contents</p>
 <ul>
 <li><a href="#syntax">Syntax</a></li>
+<li><a href="#supported-formats">Supported Formats</a></li>
+<li><a href="#video-notes">Video Notes</a></li>
+<li><a href="#data-options">Data Options</a></li>
 <li><a href="#media-options">Media Options</a></li>
 <li><a href="#media-examples">Media Examples</a></li>
 </ul>
@@ -15,15 +18,31 @@
 <h2><a class="anchor" aria-hidden="true" name="syntax"></a><a href="#syntax" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Syntax</h2>
 <pre><code class="hljs css javascript">slide.addMedia({OPTIONS});
 </code></pre>
-<p>Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) are supported.</p>
+<p><strong>IMPORTANT NOTE:</strong>  <br>
+Adding media is predominately a Node.js feature. Why? Because no web browser can encode media files
+into base64, which is the format needed to create the PPTX export file.</p>
+<p>Support for <a href="/PptxGenJS/docs/api-images.html">Adding Images</a> can be accomplished in browsers because a shadow canvas element
+is created, filled using an image path, and then converted to base64 using a built-in canvas method.  No
+such methods exist for media, hence, the inability to support this functionality outside of Node.</p>
+<p>You can try to pre-encode media into base64 and pass it using the <code>data</code> option, but it is a
+hit-or-miss situation based upon recent feedback.</p>
+<h2><a class="anchor" aria-hidden="true" name="supported-formats"></a><a href="#supported-formats" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Supported Formats</h2>
 <ul>
-<li>PowerPoint <a href="https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows">supported audio/video formats</a></li>
-<li>Node.js: use either <code>data</code> or <code>path</code> options (Node can encode any media into base64)</li>
-<li>Browsers: pre-encode the media into base64 and add it using the <code>data</code> option (current browsers cannot encode media)</li>
+<li>Video (mpg, mov, mp4, m4v, etc.)</li>
+<li>Audio (mp3, wav, etc.)</li>
+<li>(Here are the Microsoft Office <a href="https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows">supported Audio and Video formats</a>)</li>
 </ul>
-<p>Online video (YouTube embeds, etc.) is supported in both client browser and in Node.js</p>
+<h2><a class="anchor" aria-hidden="true" name="video-notes"></a><a href="#video-notes" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Video Notes</h2>
 <ul>
-<li>Currently, only PowerPoint Online can display YouTube videos</li>
+<li>YouTube works great in Microsoft Office online.  Other video sites... not so much (YMMV).</li>
+<li>Online video linked to in the presentation (YouTube, etc.) is supported in both client browser and in Node.js</li>
+<li>Not all platforms support all formats! MacOS can show MPG files whereas Windows probably will not, and some AVI
+files may work and some may not.  Video codecs are weird and painful like that.</li>
+</ul>
+<h2><a class="anchor" aria-hidden="true" name="data-options"></a><a href="#data-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Data Options</h2>
+<ul>
+<li>Node.js: use either <code>data</code> or <code>path</code> options (Node can encode any media into base64)</li>
+<li>Browsers: pre-encode the media and add it using the <code>data</code> option (this may not always work for various reasons)</li>
 </ul>
 <h2><a class="anchor" aria-hidden="true" name="media-options"></a><a href="#media-options" aria-hidden="true" class="hash-link" ><svg aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Media Options</h2>
 <table>

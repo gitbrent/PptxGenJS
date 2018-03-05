@@ -5,6 +5,9 @@ title: Adding Media
 **************************************************************************************************
 Table of Contents
 - [Syntax](#syntax)
+- [Supported Formats](#supported-formats)
+- [Video Notes](#video-notes)
+- [Data Options](#data-options)
 - [Media Options](#media-options)
 - [Media Examples](#media-examples)
 **************************************************************************************************
@@ -14,13 +17,31 @@ Table of Contents
 slide.addMedia({OPTIONS});
 ```
 
-Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) are supported.
-* PowerPoint [supported audio/video formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows)
-* Node.js: use either `data` or `path` options (Node can encode any media into base64)
-* Browsers: pre-encode the media into base64 and add it using the `data` option (current browsers cannot encode media)
+**IMPORTANT NOTE:**  
+Adding media is predominately a Node.js feature. Why? Because no web browser can encode media files
+into base64, which is the format needed to create the PPTX export file.
 
-Online video (YouTube embeds, etc.) is supported in both client browser and in Node.js
-* Currently, only PowerPoint Online can display YouTube videos
+Support for [Adding Images](/PptxGenJS/docs/api-images.html) can be accomplished in browsers because a shadow canvas element
+is created, filled using an image path, and then converted to base64 using a built-in canvas method.  No
+such methods exist for media, hence, the inability to support this functionality outside of Node.
+
+You can try to pre-encode media into base64 and pass it using the `data` option, but it is a
+hit-or-miss situation based upon recent feedback.
+
+## Supported Formats
+* Video (mpg, mov, mp4, m4v, etc.)
+* Audio (mp3, wav, etc.)
+* (Here are the Microsoft Office [supported Audio and Video formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
+
+## Video Notes
+* YouTube works great in Microsoft Office online.  Other video sites... not so much (YMMV).
+* Online video linked to in the presentation (YouTube, etc.) is supported in both client browser and in Node.js
+* Not all platforms support all formats! MacOS can show MPG files whereas Windows probably will not, and some AVI
+files may work and some may not.  Video codecs are weird and painful like that.
+
+## Data Options
+* Node.js: use either `data` or `path` options (Node can encode any media into base64)
+* Browsers: pre-encode the media and add it using the `data` option (this may not always work for various reasons)
 
 ## Media Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
