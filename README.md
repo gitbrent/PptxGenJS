@@ -1194,8 +1194,8 @@ pptx.save();
 # HTML-to-PowerPoint Feature
 Syntax:
 ```javascript
-slide.addSlidesForTable(htmlElementID);
-slide.addSlidesForTable(htmlElementID, {OPTIONS});
+pptx.addSlidesForTable(htmlElementID);
+pptx.addSlidesForTable(htmlElementID, {OPTIONS});
 ```
 
 Reproduces an HTML table into 1 or more slides (auto-paging).
