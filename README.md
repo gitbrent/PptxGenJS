@@ -1092,7 +1092,7 @@ hit-or-miss situation based upon recent feedback.
 ### Supported Formats
 * Video (mpg, mov, mp4, m4v, etc.)
 * Audio (mp3, wav, etc.)
-* (Here are the Microsoft Office [supported Audio and Video formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
+* (Reference: [Video and Audio file formats supported in PowerPoint](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
 
 ### Video Notes
 * YouTube works great in Microsoft Office online.  Other video sites... not so much (YMMV).
