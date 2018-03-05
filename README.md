@@ -77,6 +77,8 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Image Examples](#image-examples)
     - [Image Sizing](#image-sizing)
   - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
+    - [Supported Formats](#supported-formats)
+    - [Data Options](#data-options)
     - [Media Options](#media-options)
     - [Media Examples](#media-examples)
 - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
@@ -1075,9 +1077,23 @@ Syntax:
 slide.addMedia({OPTIONS});
 ```
 
-Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) are supported (list of [supported formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
-* Using Node.js: use either `data` or `path` options (Node can encode any media into base64)
-* Client Browsers: pre-encode the media and add it using the `data` option (encoding video/audio is beyond any current browser)
+**IMPORTANT NOTES**
+Adding media is predominately a Node.js feature. Why? Because no web browser can encode media files
+into base64, which is the format needed to create the file in the PPTX export.
+
+Support for [Adding Images](#adding-images) can be accomplished in browsers because a canvas element can be created,
+filled using an image path, and then converted to base64 using a built-in canvas method.  No such methods
+exist for media, hence, the inability to support this functionality outside of Node.
+
+You can try to pre-encode media into base64 and pass it using the `data` option, but it is a
+hit-or-miss situation based upon recent feedback.
+
+### Supported Formats
+Both Video (mpg, mov, mp4, m4v, etc.) and Audio (mp3, wav, etc.) files are supported (Microsoft Office [supported formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
+
+### Data Options
+* Node.js: use either `data` or `path` options (Node can encode any media into base64)
+* Browsers: pre-encode the media and add it using the `data` option (this may not always work for various reasons)
 
 Online video (YouTube embeds, etc.) is supported in both client browser and in Node.js
 
