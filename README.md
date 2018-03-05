@@ -1092,9 +1092,10 @@ hit-or-miss situation based upon recent feedback.
 ### Supported Formats
 * Video (mpg, mov, mp4, m4v, etc.)
 * Audio (mp3, wav, etc.)
-* View Microsoft Office [supported formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
+* (Here are the Microsoft Office [supported Audio and Video formats](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
 
 ### Video Notes
+* YouTube works great in Microsoft Office online.  Other video sites... not so much (YMMV).
 * Online video linked to in the presentation (YouTube, etc.) is supported in both client browser and in Node.js
 * Not all platforms support all formats! MacOS can show MPG files whereas Windows probably will not, and some AVI
 files may work and some may not.  Video codecs are weird and painful like that.
