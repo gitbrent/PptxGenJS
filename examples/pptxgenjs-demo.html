@@ -464,10 +464,11 @@
 					HTML to PowerPoint
 				</div>
 				<div style="font-size:120%; color:#696969;">
-					Reproduces an HTML table into 1 or more slides (auto-paging).
+					Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <div class="codeSnip">pptx.addSlidesForTable('tableId');</div>
 					<ul>
 						<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
 						<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
+						<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html">HTML to PowerPoint documentation</a> for full details and examples</li>
 					</ul>
 					Notes:
 					<ul>
@@ -628,7 +629,6 @@
 						</div>
 					</fieldset>
 
-
 					<fieldset class="demoFset">
 						<legend>Colspan</legend>
 						<table id="tabColspan" class="tabHtmlToPpt">
@@ -665,6 +665,33 @@
 						</table>
 						<div class="demoBtns">
 							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
+						</div>
+					</fieldset>
+
+					<fieldset class="demoFset">
+						<legend>Rowspan</legend>
+						<table id="tabRowspan" class="tabHtmlToPpt">
+							<thead>
+								<tr>
+									<th class="tg-header">Last Name</th>
+									<th class="tg-header">First Name</th>
+									<th class="tg-header">Count</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td rowspan="2">Smith</td>
+									<td>Liz</td>
+									<td>50</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>94</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="demoBtns">
+							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
 						</div>
 					</fieldset>
 				</div>

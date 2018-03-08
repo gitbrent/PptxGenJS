@@ -4863,8 +4863,9 @@ var PptxGenJS = function(){
 						});
 					}
 
-					// D: Add colspan (if any)
+					// D: Add colspan/rowspan (if any)
 					if ( $(cell).attr('colspan') ) objOpts.colspan = $(cell).attr('colspan');
+					if ( $(cell).attr('rowspan') ) objOpts.rowspan = $(cell).attr('rowspan');
 
 					// E: Add border (if any)
 					if ( $(cell).css('border-top-width') || $(cell).css('border-right-width') || $(cell).css('border-bottom-width') || $(cell).css('border-left-width') ) {
