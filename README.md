@@ -988,12 +988,12 @@ Syntax:
 slide.addImage({OPTIONS});
 ```
 
-**Image Notes**
+**Image Notes**  
 * SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
 properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
 * Using `path` to add remote images (images from a different server) is not currently supported due to browser security restrictions (a tainted canvas cannot be exported). Pre-encode any non-local images into base64 and pass them using `data`.
 
-**Animated GIF Support**
+**Animated GIF Support**  
 Animated GIFs can be included in Presentations in one of two ways:
 * Using Node.js: use either `data` or `path` options (Node can encode any image into base64)
 * Client Browsers: pre-encode the gif and add it using the `data` option (encoding images into GIFs is beyond any current browser)
