@@ -988,6 +988,12 @@ Syntax:
 slide.addImage({OPTIONS});
 ```
 
+**Image Notes**
+* SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
+properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
+* Using `path` to add remote images (images from a different server) is not currently supported due to browser security restrictions (a tainted canvas cannot be exported). Pre-encode any non-local images into base64 and pass them using `data`.
+
+**Animated GIF Support**
 Animated GIFs can be included in Presentations in one of two ways:
 * Using Node.js: use either `data` or `path` options (Node can encode any image into base64)
 * Client Browsers: pre-encode the gif and add it using the `data` option (encoding images into GIFs is beyond any current browser)
@@ -1003,14 +1009,6 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `hyperlink`  | string  |        |          | add hyperlink | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `path`       | string  |        |          | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 | `sizing`     | object  |        |          | transforms image    | See [Image Sizing](#image-sizing) |
-
-**NOTES**
-* SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
-properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
-* Using `path` to add remote images (images from a different server) is not currently supported.
-
-**Deprecation Warning**
-Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1, 1, 6, 3)`) are now deprecated as of 1.1.0
 
 ### Image Examples
 ```javascript
@@ -1059,18 +1057,13 @@ NOTES:
 * When the `sizing` property is used, its `w` and `h` values represent the effective image size. For example, in the following snippet, width and height of the image will both equal to 2 inches and its top-left corner will be located at [1 inch, 1 inch]:
 ```javascript
 slide.addImage({
-  path: '...',
-  w: 4,
-  h: 3,
-  x: 1,
-  y: 1,
-  sizing: {
-    type: 'contain',
-    w: 2,
-    h: 2
-  }
+  path: '...', w:4, h:3, x:1, y:1,
+  sizing: { type:'contain', w:2, h:2 }
 });
 ```
+
+
+
 **************************************************************************************************
 ## Adding Media (Audio/Video/YouTube)
 Syntax:
