@@ -165,7 +165,7 @@ PptxGenJS PowerPoint presentations are created via JavaScript by following 4 bas
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-slide.addText('Hello World!', { x:1.5, y:1.5, font_size:18, color:'363636' });
+slide.addText('Hello World!', { x:1.5, y:1.5, fontSize:18, color:'363636' });
 pptx.save('Sample Presentation');
 ```
 That's really all there is to it!
@@ -692,26 +692,26 @@ var slide = pptx.addNewSlide();
 slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
 
 // EX: Basic formatting
-slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', font_size:64 });
-slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
+slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', fontSize:64 });
+slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', fontSize:90 });
 
 // EX: More formatting options
 slide.addText(
     'Arial, 32pt, green, bold, underline, 0 inset',
-    { x:0.5, y:5.0, w:'90%', margin:0.5, fontFace:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
+    { x:0.5, y:5.0, w:'90%', margin:0.5, fontFace:'Arial', fontSize:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
 );
 
 // EX: Format some text
-slide.addText('Hello World!', { x:2, y:4, fontFace:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+slide.addText('Hello World!', { x:2, y:4, fontFace:'Arial', fontSize:42, color:'00CC00', bold:true, italic:true, underline:true } );
 
 // EX: Multiline Text / Line Breaks - use "\n" to create line breaks inside text strings
-slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
+slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', fontSize:90 });
 
 // EX: Format individual words or lines by passing an array of text objects with `text` and `options`
 slide.addText(
     [
-        { text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
-        { text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
+        { text:'word-level', options:{ fontSize:36, color:'99ABCC', align:'r', breakLine:true } },
+        { text:'formatting', options:{ fontSize:48, color:'FFFF00', align:'c' } }
     ],
     { x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
 );
@@ -725,7 +725,7 @@ slide.addText(
     [
         { text:'I have a star bullet'    , options:{bullet:{code:'2605'}, color:'CC0000'} },
         { text:'I have a triangle bullet', options:{bullet:{code:'25BA'}, color:'00CD00'} },
-        { text:'no bullets on this line' , options:{font_size:12} },
+        { text:'no bullets on this line' , options:{fontSize:12} },
         { text:'I have a normal bullet'  , options:{bullet:true, color:'0000AB'} }
     ],
     { x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
@@ -752,7 +752,7 @@ slide.addText(
 slide.addText(
     'Outer Shadow',
     {
-        x:0.5, y:6.0, font_size:36, color:'0088CC',
+        x:0.5, y:6.0, fontSize:36, color:'0088CC',
         shadow: {type:'outer', color:'696969', blur:3, offset:10, angle:45}
     }
 );
@@ -762,8 +762,8 @@ slide.addText(
 // Line-breaks work as well
 slide.addText(
     [
-        { text:'word-level\nformatting', options:{ font_size:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-        { text:'...in the same textbox', options:{ font_size:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
+        { text:'word-level\nformatting', options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+        { text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
     ],
     { x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
 );
@@ -825,7 +825,7 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}`                                                            |
 | `fill`       | string  |        |           | fill/bkgd color    | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `fontFace`   | string  |        |           | font face          | Ex: `{fontFace:'Arial'}`                                                         |
-| `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}`                                                       |
+| `fontSize`  | number  | points |           | font size          | 1-256. Ex: `{fontSize:12}`                                                       |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false`                                                                 |
 | `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`)                              |
 | `margin`     | array   | points |           | margin             | array of integer values in TRBL order. Ex: `margin:[5,10,5,10]`                   |
@@ -886,12 +886,12 @@ slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, fontFace:'Arial', color:'0088CC' });
+slide.addText('Demo-03: Table', { x:0.5, y:0.25, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
 // TABLE 1: Single-row table
 // --------
 var rows = [ 'Cell 1', 'Cell 2', 'Cell 3' ];
-var tabOpts = { x:0.5, y:1.0, w:9.0, fill:'F7F7F7', font_size:14, color:'363636' };
+var tabOpts = { x:0.5, y:1.0, w:9.0, fill:'F7F7F7', fontSize:14, color:'363636' };
 slide.addTable( rows, tabOpts );
 
 // TABLE 2: Multi-row table (each rows array element is an array of cells)
@@ -900,7 +900,7 @@ var rows = [
     ['A1', 'B1', 'C1'],
     ['A2', 'B2', 'C2']
 ];
-var tabOpts = { x:0.5, y:2.0, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9' };
+var tabOpts = { x:0.5, y:2.0, w:9.0, fill:'F7F7F7', fontSize:18, color:'6f9fc9' };
 slide.addTable( rows, tabOpts );
 
 // TABLE 3: Formatting at a cell level - use this to selectively override table's cell options
@@ -912,7 +912,7 @@ var rows = [
         { text:'Top Rgt', options:{ valign:'t', align:'r', fontFace:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', font_size:18, color:'6f9fc9', valign:'m'} };
+var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', fontSize:18, color:'6f9fc9', valign:'m'} };
 slide.addTable( rows, tabOpts );
 
 // Multiline Text / Line Breaks - use either "\r" or "\n"
@@ -1175,7 +1175,7 @@ pptx.defineSlideMaster({
 });
 
 var slide = pptx.addNewSlide('MASTER_SLIDE');
-slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
+slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, fontSize:18 });
 
 pptx.save();
 ```
