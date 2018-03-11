@@ -6,6 +6,7 @@
 **Fixed Bugs:**
 - HTML-to-PowerPoint is creating many extra columns with colspan [\#284](https://github.com/gitbrent/PptxGenJS/issues/284) ([svaak](https://github.com/svaak))
 - HTML-to-PowerPoint rowspan is not working ([gitbrent](https://github.com/gitbrent))
+- Fix docs/examples to use new fontSize, remove unsupported font_size [\#297](https://github.com/gitbrent/PptxGenJS/issues/297) ([pstoll](https://github.com/pstoll))
 
 **Implemented Enhancements:**
 
