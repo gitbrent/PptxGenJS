@@ -56,7 +56,7 @@ pptx.defineSlideMaster({
 });
 
 var slide = pptx.addNewSlide('MASTER_SLIDE');
-slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, font_size:18 });
+slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, fontSize:18 });
 
 pptx.save();
 ```

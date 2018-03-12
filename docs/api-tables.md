@@ -66,7 +66,7 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 | `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}`                                                            |
 | `fill`       | string  |        |           | fill/bkgd color    | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `fontFace`   | string  |        |           | font face          | Ex: `{fontFace:'Arial'}`                                                         |
-| `font_size`  | number  | points |           | font size          | 1-256. Ex: `{font_size:12}`                                                       |
+| `fontSize`   | number  | points |           | font size          | 1-256. Ex: `{fontSize:12}`                                                       |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false`                                                                 |
 | `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`)                              |
 | `margin`     | array   | points |           | margin             | array of integer values in TRBL order. Ex: `margin:[5,10,5,10]`                   |
@@ -127,12 +127,12 @@ slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
-slide.addText('Demo-03: Table', { x:0.5, y:0.25, font_size:18, fontFace:'Arial', color:'0088CC' });
+slide.addText('Demo-03: Table', { x:0.5, y:0.25, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
 // TABLE 1: Single-row table
 // --------
 var rows = [ 'Cell 1', 'Cell 2', 'Cell 3' ];
-var tabOpts = { x:0.5, y:1.0, w:9.0, fill:'F7F7F7', font_size:14, color:'363636' };
+var tabOpts = { x:0.5, y:1.0, w:9.0, fill:'F7F7F7', fontSize:14, color:'363636' };
 slide.addTable( rows, tabOpts );
 
 // TABLE 2: Multi-row table (each rows array element is an array of cells)
@@ -141,7 +141,7 @@ var rows = [
     ['A1', 'B1', 'C1'],
     ['A2', 'B2', 'C2']
 ];
-var tabOpts = { x:0.5, y:2.0, w:9.0, fill:'F7F7F7', font_size:18, color:'6f9fc9' };
+var tabOpts = { x:0.5, y:2.0, w:9.0, fill:'F7F7F7', fontSize:18, color:'6f9fc9' };
 slide.addTable( rows, tabOpts );
 
 // TABLE 3: Formatting at a cell level - use this to selectively override table's cell options
@@ -153,7 +153,7 @@ var rows = [
         { text:'Top Rgt', options:{ valign:'t', align:'r', fontFace:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', font_size:18, color:'6f9fc9', valign:'m'} };
+var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', fontSize:18, color:'6f9fc9', valign:'m'} };
 slide.addTable( rows, tabOpts );
 
 // Multiline Text / Line Breaks - use either "\r" or "\n"

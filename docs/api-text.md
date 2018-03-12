@@ -72,26 +72,26 @@ var slide = pptx.addNewSlide();
 slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
 
 // EX: Basic formatting
-slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', font_size:64 });
-slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', font_size:90 });
+slide.addText('Hello',  { x:0.5, y:0.7, w:3, color:'0000FF', fontSize:64 });
+slide.addText('World!', { x:2.7, y:1.0, w:5, color:'DDDD00', fontSize:90 });
 
 // EX: More formatting options
 slide.addText(
     'Arial, 32pt, green, bold, underline, 0 inset',
-    { x:0.5, y:5.0, w:'90%', margin:0.5, fontFace:'Arial', font_size:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
+    { x:0.5, y:5.0, w:'90%', margin:0.5, fontFace:'Arial', fontSize:32, color:'00CC00', bold:true, underline:true, isTextBox:true }
 );
 
 // EX: Format some text
-slide.addText('Hello World!', { x:2, y:4, fontFace:'Arial', font_size:42, color:'00CC00', bold:true, italic:true, underline:true } );
+slide.addText('Hello World!', { x:2, y:4, fontFace:'Arial', fontSize:42, color:'00CC00', bold:true, italic:true, underline:true } );
 
 // EX: Multiline Text / Line Breaks - use "\n" to create line breaks inside text strings
-slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', font_size:90 });
+slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', fontSize:90 });
 
 // EX: Format individual words or lines by passing an array of text objects with `text` and `options`
 slide.addText(
     [
-        { text:'word-level', options:{ font_size:36, color:'99ABCC', align:'r', breakLine:true } },
-        { text:'formatting', options:{ font_size:48, color:'FFFF00', align:'c' } }
+        { text:'word-level', options:{ fontSize:36, color:'99ABCC', align:'r', breakLine:true } },
+        { text:'formatting', options:{ fontSize:48, color:'FFFF00', align:'c' } }
     ],
     { x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
 );
@@ -105,7 +105,7 @@ slide.addText(
     [
         { text:'I have a star bullet'    , options:{bullet:{code:'2605'}, color:'CC0000'} },
         { text:'I have a triangle bullet', options:{bullet:{code:'25BA'}, color:'00CD00'} },
-        { text:'no bullets on this line' , options:{font_size:12} },
+        { text:'no bullets on this line' , options:{fontSize:12} },
         { text:'I have a normal bullet'  , options:{bullet:true, color:'0000AB'} }
     ],
     { x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
@@ -132,7 +132,7 @@ slide.addText(
 slide.addText(
     'Outer Shadow',
     {
-        x:0.5, y:6.0, font_size:36, color:'0088CC',
+        x:0.5, y:6.0, fontSize:36, color:'0088CC',
         shadow: {type:'outer', color:'696969', blur:3, offset:10, angle:45}
     }
 );
@@ -142,8 +142,8 @@ slide.addText(
 // Line-breaks work as well
 slide.addText(
     [
-        { text:'word-level\nformatting', options:{ font_size:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-        { text:'...in the same textbox', options:{ font_size:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
+        { text:'word-level\nformatting', options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
+        { text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
     ],
     { x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
 );
