@@ -370,13 +370,14 @@ var PptxGenJS = function(){
 			// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
 			// if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
 			var imgObj = { width:1, height:1 };
-			resultObject.options = {
-				x: (intPosX  || 0),
-				y: (intPosY  || 0),
-				cx: (intWidth || imgObj.width),
-				cy: (intHeight || imgObj.height),
-				sizing: sizing
-			};
+      resultObject.options = {
+        x: (intPosX || 0),
+        y: (intPosY || 0),
+        cx: (intWidth || imgObj.width),
+        cy: (intHeight || imgObj.height),
+        rounding: (objImage.rounding || false),
+        sizing: sizing
+      };
 
 			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
 			target.rels.push({
@@ -991,9 +992,10 @@ var PptxGenJS = function(){
 						break;
 
 					case 'image':
-						var sizing = slideItemObj.options.sizing,
-							width = cx,
-							height = cy;
+            var sizing = slideItemObj.options.sizing,
+              rounding = slideItemObj.options.rounding,
+              width = cx,
+              height = cy;
 
 						strSlideXml += '<p:pic>';
 						strSlideXml += '  <p:nvPicPr>'
@@ -1024,7 +1026,7 @@ var PptxGenJS = function(){
 						strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
 						strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
 						strSlideXml += ' </a:xfrm>'
-						strSlideXml += ' <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+						strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>'
 						strSlideXml += '</p:spPr>';
 						strSlideXml += '</p:pic>';
 						break;

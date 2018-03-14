@@ -95,6 +95,9 @@ var exportName = 'PptxGenJS_Demo_Node2_'+getTimestamp();
 var slide = pptx.addNewSlide();
 slide.addText( 'New Node Presentation', {x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'FFFCCC'} );
 
+slide.addImage({ path: 'images/monkey.jpg', x: 1, y: 1.5, w: 2, h: 2 });
+slide.addImage({ path: 'images/monkey.jpg', x: 3.5, y: 1.5, w: 2, h: 2, rounding: true });
+
 // A: Inline save
 pptx.save( exportName ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName);
 
