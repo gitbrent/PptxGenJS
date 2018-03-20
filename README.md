@@ -1018,6 +1018,7 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `data`       | string  |        |          | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
 | `hyperlink`  | string  |        |          | add hyperlink | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `path`       | string  |        |          | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
+| `rounding`   | boolean |        | `false`  | image rounding      | Shapes an image into a circle |
 | `sizing`     | object  |        |          | transforms image    | See [Image Sizing](#image-sizing) |
 
 ### Image Examples
