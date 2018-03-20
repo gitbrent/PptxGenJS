@@ -10,6 +10,7 @@
 
 **Implemented Enhancements:**
 - Add Text Outline functionality [\#298](https://github.com/gitbrent/PptxGenJS/issues/298) ([stevenljacobsen](https://github.com/stevenljacobsen))
+- Adding rounded corners to images [\#309](https://github.com/gitbrent/PptxGenJS/issues/309) ([hoangpq](https://github.com/hoangpq))
 
 
 

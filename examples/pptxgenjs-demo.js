@@ -2080,7 +2080,7 @@ function genSlides_Image(pptx) {
 	// ======== -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
-		slide.addTable( [ [{ text:'Image Examples: Image Sizing', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Image Examples: Image Sizing/Rounding', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1
 		slide.addText('Sizing: None',      { x:0.5, y:0.6, w:3.0, h:0.3, color:'0088CC' });
@@ -2097,6 +2097,10 @@ function genSlides_Image(pptx) {
 		// TOP: 4
 		slide.addText('Sizing: `crop`',    { x:10.0, y:4.25, w:3.0, h:0.3, color:'0088CC' });
 		slide.addImage({ data:LOGO_STARLABS, x:10.0, y:4.65, w:5.0, h:2.5, sizing:{ type:'crop', w:3, h:1.5, x:0.5, y:0.5 } });
+
+		// TOP-RIGHT:
+		slide.addText('Rounding: `true`',         { x:10, y:0.6, w:3, h:0.3, color:'0088CC' });
+		slide.addImage({ path:'images/cc_logo.jpg', x:10, y:1.1, w:2, h:2, rounding:true });
 	}
 }
 

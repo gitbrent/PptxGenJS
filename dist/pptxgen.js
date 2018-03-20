@@ -375,6 +375,7 @@ var PptxGenJS = function(){
 				y: (intPosY  || 0),
 				cx: (intWidth || imgObj.width),
 				cy: (intHeight || imgObj.height),
+				rounding: (objImage.rounding || false),
 				sizing: sizing
 			};
 
@@ -992,6 +993,7 @@ var PptxGenJS = function(){
 
 					case 'image':
 						var sizing = slideItemObj.options.sizing,
+							rounding = slideItemObj.options.rounding,
 							width = cx,
 							height = cy;
 
@@ -1024,7 +1026,7 @@ var PptxGenJS = function(){
 						strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
 						strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
 						strSlideXml += ' </a:xfrm>'
-						strSlideXml += ' <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+						strSlideXml += ' <a:prstGeom prst="'+ (rounding ? 'ellipse' : 'rect') +'"><a:avLst/></a:prstGeom>'
 						strSlideXml += '</p:spPr>';
 						strSlideXml += '</p:pic>';
 						break;
