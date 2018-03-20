@@ -662,6 +662,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `lang`       | string  |         | `en-US`   | language setting    | Ex: `{ lang:'zh-TW' }` (Set this when using non-English fonts like Chinese) |
 | `lineSpacing`| number  | points  |           | line spacing points | 1-256. Ex: `{ lineSpacing:28 }` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
+| `outline`    | object  |         |           | text outline options | Options: `color` & `size`. Ex: `outline:{ size:1.5, color:'FF0000' }` |
 | `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
 | `rotate`     | integer | degrees | `0`       | text rotation degrees | 0-360. Ex: `{rotate:180}` |
 | `rtlMode`    | boolean |         | `false`   | enable Right-to-Left mode | `true` or `false` |
@@ -754,6 +755,15 @@ slide.addText(
     {
         x:0.5, y:6.0, fontSize:36, color:'0088CC',
         shadow: {type:'outer', color:'696969', blur:3, offset:10, angle:45}
+    }
+);
+
+// EX: Text Outline
+slide.addText(
+    'Text Outline',
+    {
+        x:0.5, y:6.0, fontSize:36, color:'0088CC',
+        outline: {size:1.5, color:'696969'}
     }
 );
 
