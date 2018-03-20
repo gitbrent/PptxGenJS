@@ -9,6 +9,7 @@
 - Fix docs/examples to use new fontSize, remove unsupported font_size [\#297](https://github.com/gitbrent/PptxGenJS/issues/297) ([pstoll](https://github.com/pstoll))
 
 **Implemented Enhancements:**
+- Add Text Outline functionality [\#298](https://github.com/gitbrent/PptxGenJS/issues/298) ([stevenljacobsen](https://github.com/stevenljacobsen))
 
 
 
