@@ -371,10 +371,11 @@ var PptxGenJS = function(){
 			// if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
 			var imgObj = { width:1, height:1 };
 			resultObject.options = {
-				x: (intPosX  || 0),
-				y: (intPosY  || 0),
+				x: (intPosX || 0),
+				y: (intPosY || 0),
 				cx: (intWidth || imgObj.width),
 				cy: (intHeight || imgObj.height),
+				rounding: (objImage.rounding || false),
 				sizing: sizing
 			};
 
@@ -992,8 +993,9 @@ var PptxGenJS = function(){
 
 					case 'image':
 						var sizing = slideItemObj.options.sizing,
-							width = cx,
-							height = cy;
+						  rounding = slideItemObj.options.rounding,
+						  width = cx,
+						  height = cy;
 
 						strSlideXml += '<p:pic>';
 						strSlideXml += '  <p:nvPicPr>'
@@ -1024,7 +1026,7 @@ var PptxGenJS = function(){
 						strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
 						strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
 						strSlideXml += ' </a:xfrm>'
-						strSlideXml += ' <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
+						strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>'
 						strSlideXml += '</p:spPr>';
 						strSlideXml += '</p:pic>';
 						break;
