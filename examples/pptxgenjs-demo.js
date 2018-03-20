@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.0.0
-* REL.: 20180115
+* REL.: 20180319
 */
 
 // Detect Node.js
@@ -2178,12 +2178,9 @@ function genSlides_Text(pptx) {
 		);
 
 		// 4: Text Effects: Shadow
-		var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.8 };
-		slide.addText("Text Shadow:", { x:0.5, y:6.2, w:'50%', h:0.38, color:'0088CC' });
-		slide.addText(
-			'Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)',
-			{ x:0.5, y:6.5, w:12, h:0.6, fontSize:32, color:'0088cc', shadow:shadowOpts }
-		);
+		var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.6 };
+		slide.addText("Text Shadow:", { x:0.5, y:6.2, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Text Shadow", { x:0.5, y:6.5, w:'40%', h:0.6, fontSize:32, color:'0088cc', shadow:shadowOpts });
 
 		// RIGHT COLUMN ------------------------------------------------------------
 
@@ -2207,6 +2204,9 @@ function genSlides_Text(pptx) {
 			],
 			{ x:7.5, y:4.85, w:5.25, h:1.15, margin:0.1, fill:'f1f1f1' }
 		);
+
+		slide.addText("Text Outline:", { x:7.5, y:6.2, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Text Outline", { x:7.5, y:6.5, w:'40%', h:0.6, fontSize:32, color:'0088cc', outline:{size:1.5, color:'00DD00'} });
 	}
 
 	// SLIDE 2: Bullets

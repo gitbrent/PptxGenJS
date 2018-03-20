@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.1.0-beta";
-	var APP_REL = "20180220";
+	var APP_REL = "20180319";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3721,7 +3721,7 @@ var PptxGenJS = function(){
 	  <a:t>Misc font/color, size = 28</a:t>
 	</a:r>
 	*/
-	function genXmlTextRun(opts, text_string) {
+	function genXmlTextRun(opts, inStrText) {
 		var xmlTextRun = '';
 		var paraProp = '';
 		var parsedText;
@@ -3736,8 +3736,11 @@ var PptxGenJS = function(){
 		startInfo += ( opts.subscript ? ' baseline="-40000"' : (opts.superscript ? ' baseline="30000"' : '') );
 		startInfo += ( opts.charSpacing ? ' spc="'+ (opts.charSpacing * 100) +'" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 		startInfo += ' dirty="0" smtClean="0">';
-		// Color and Font are children of <a:rPr>, so add them now before closing the runProperties tag
-		if ( opts.color || opts.fontFace ) {
+		// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
+		if ( opts.color || opts.fontFace || opts.outline ) {
+			if ( opts.outline && typeof opts.outline === 'object' ) {
+				startInfo += ('<a:ln w="'+ Math.round((opts.outline.size||0.75) * ONEPT) +'">'+ genXmlColorSelection(opts.outline.color||'FFFFFF') +'</a:ln>');
+			}
 			if ( opts.color ) startInfo += genXmlColorSelection( opts.color );
 			if ( opts.fontFace ) {
 				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174); ea must come first (see Issue #174)
@@ -3765,7 +3768,7 @@ var PptxGenJS = function(){
 		startInfo += '</a:rPr>';
 
 		// LINE-BREAKS/MULTI-LINE: Split text into multi-p:
-		parsedText = text_string.split(CRLF);
+		parsedText = inStrText.split(CRLF);
 		if ( parsedText.length > 1 ) {
 			var outTextData = '';
 			for ( var i = 0, total_size_i = parsedText.length; i < total_size_i; i++ ) {
@@ -3778,7 +3781,7 @@ var PptxGenJS = function(){
 		else {
 			// Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
 			// The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
-			xmlTextRun = ( (opts.align && opts.lineIdx > 0) ? paraProp : '') + '<a:r>' + startInfo+ '<a:t>' + decodeXmlEntities(text_string);
+			xmlTextRun = ( (opts.align && opts.lineIdx > 0) ? paraProp : '') + '<a:r>' + startInfo+ '<a:t>' + decodeXmlEntities(inStrText);
 		}
 
 		// Return paragraph with text run
