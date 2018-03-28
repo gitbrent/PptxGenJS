@@ -50,8 +50,8 @@ Number.isInteger = Number.isInteger || function(value) {
 	return typeof value === "number" && isFinite(value) && Math.floor(value) === value;
 };
 
-// Detect Node.js
-var NODEJS = ( typeof module !== 'undefined' && module.exports );
+// Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
+var NODEJS = ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && require('fs') );
 
 // [Node.js] <script> includes
 if ( NODEJS ) {
@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.1.0-beta";
-	var APP_REL = "20180319";
+	var APP_REL = "20180327";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
