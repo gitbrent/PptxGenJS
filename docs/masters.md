@@ -60,3 +60,11 @@ slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5,
 
 pptx.save();
 ```
+
+### Slide Master Demo
+There are several Master Slides defined in the Demo: `examples/pptxgenjs-demo.html`
+![PptxGenJS Master Slide Demo](/PptxGenJS/docs/assets/ex-master-slide-demo.png)
+
+### Slide Master Output
+Using the 'MASTER_SLIDE' defined above to produce a Slide:
+![Master Slide Demo Presentation](/PptxGenJS/docs/assets/ex-master-slide-output.png)

@@ -1846,3 +1846,9 @@ footer .copyright {
 .imageAlignSide .blockImage {
   margin-right: 0px;
 }
+
+article p img {
+	border: 1px solid #696969;
+	box-shadow: 3px 2px 3px 0px #bdbdbd;
+	margin-top: 5px;
+}

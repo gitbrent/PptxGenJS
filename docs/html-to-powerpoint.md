@@ -83,10 +83,10 @@ pptx.addSlidesForTable( 'myHtmlTableID', { addImage:{ path:"images/logo.png", x:
 ```
 
 ### HTML Table
-![alt-text](/PptxGenJS/docs/assets/ex-html-to-powerpoint-1.png)
+![HTML-to-PowerPoint Table](/PptxGenJS/docs/assets/ex-html-to-powerpoint-1.png)
 
 ### Resulting Slides
-![alt-text](/PptxGenJS/docs/assets/ex-html-to-powerpoint-2.png)
+![HTML-to-PowerPoint Presentation](/PptxGenJS/docs/assets/ex-html-to-powerpoint-2.png)
 
 
 ## HTML to PowerPoint Creative Solutions
