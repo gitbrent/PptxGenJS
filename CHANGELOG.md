@@ -1,6 +1,6 @@
 # Change Log
 
-## [v2.1.0](https://github.com/gitbrent/pptxgenjs/tree/v2.1.0) (2018-04-??)
+## [v2.1.0](https://github.com/gitbrent/pptxgenjs/tree/v2.1.0) (2018-03-??)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.0.0...v2.1.0)
 
 **Fixed Bugs:**
@@ -9,9 +9,9 @@
 - Fix docs/examples to use new fontSize, remove unsupported font_size [\#297](https://github.com/gitbrent/PptxGenJS/issues/297) ([pstoll](https://github.com/pstoll))
 
 **Implemented Enhancements:**
+- Mis-detecting Existence of Node.js [\#277](https://github.com/gitbrent/PptxGenJS/issues/277) ([adrianirwin](https://github.com/adrianirwin)) ([DSheffield](https://github.com/DSheffield))
 - Add Text Outline functionality [\#298](https://github.com/gitbrent/PptxGenJS/issues/298) ([stevenljacobsen](https://github.com/stevenljacobsen))
 - Adding rounded corners to images [\#309](https://github.com/gitbrent/PptxGenJS/issues/309) ([hoangpq](https://github.com/hoangpq))
-
 
 
 
