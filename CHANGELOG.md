@@ -1,6 +1,6 @@
 # Change Log
 
-## [v2.1.0](https://github.com/gitbrent/pptxgenjs/tree/v2.1.0) (2018-03-??)
+## [v2.1.0](https://github.com/gitbrent/pptxgenjs/tree/v2.1.0) (2018-04-02)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.0.0...v2.1.0)
 
 **Fixed Bugs:**

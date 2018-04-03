@@ -1,11 +1,11 @@
 {
 	"name": "pptxgenjs",
-	"version": "2.1.0-beta",
+	"version": "2.1.0",
 	"author": {
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
 	},
-	"description": "JavaScript library that creates PowerPoint presentations (pptx)",
+	"description": "JavaScript library that creates PowerPoint presentations",
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
 	"main": "dist/pptxgen.js",
@@ -33,7 +33,6 @@
 		"url": "git+https://github.com/gitbrent/PptxGenJS.git"
 	},
 	"keywords": [
-		"javascript",
 		"javascript-create-powerpoint",
 		"javascript-create-pptx",
 		"javascript-generate-pptx",
@@ -44,15 +43,10 @@
 		"js-create-powerpoint",
 		"js-create-pptx",
 		"js-generate-powerpoint",
-		"js-pptx",
+		"js-generate-powerpoint-charts",
 		"js-powerpoint",
-		"js-powerpoint-library",
-		"powerpoint",
-		"powerpoint-charts",
-		"powerpoint-presentation",
-		"ppt",
-		"pptx",
-		"presentations"
+		"js-powerpoint-pptx",
+		"js-powerpoint-library"
 	],
 	"bugs": {
 		"url": "https://github.com/gitbrent/PptxGenJS/issues"
