@@ -4,11 +4,11 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.0.0
-* REL.: 20180319
+* REL.: 20180416
 */
 
 // Detect Node.js
-var NODEJS = ( typeof module !== 'undefined' && module.exports );
+var NODEJS = ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && require('fs') );
 if (NODEJS) { var LOGO_STARLABS; }
 
 // Constants
