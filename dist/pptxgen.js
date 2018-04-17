@@ -61,8 +61,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// APP
-	var APP_VER = "2.1.0";
-	var APP_REL = "20180402";
+	var APP_VER = "2.2.0-beta";
+	var APP_REL = "20180415";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2309,7 +2309,7 @@ var PptxGenJS = function(){
 	function encodeImageRelations(layout, arrRelsDone) {
 		var intRels = 0;
 
-		layout.rels.forEach(function(rel,idy){
+		layout.rels.forEach(function(rel){
 			// Read and Encode each image into base64 for use in export
 			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1 ) {
 				// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
@@ -2319,7 +2319,8 @@ var PptxGenJS = function(){
 						rel.data = new Buffer(bitmap).toString('base64');
 					}
 					catch(ex) {
-						console.error('ERROR: Unable to read media: '+rel.path);
+						console.error('ERROR....: Unable to read media: "'+rel.path+'"');
+						console.error('DETAILS..: '+ex);
 						rel.data = IMG_BROKEN;
 					}
 				}
