@@ -21,6 +21,7 @@
 		"gulp": "^3.9.1",
 		"gulp-concat": "^2.6.1",
 		"gulp-ignore": "^2.0.2",
+		"gulp-insert": "^0.5.0",
 		"gulp-sourcemaps": "^2.6.0",
 		"gulp-uglify": "^3.0.0"
 	},
