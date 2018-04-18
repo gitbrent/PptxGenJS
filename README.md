@@ -663,6 +663,8 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `lineSpacing`| number  | points  |           | line spacing points | 1-256. Ex: `{ lineSpacing:28 }` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
 | `outline`    | object  |         |           | text outline options | Options: `color` & `size`. Ex: `outline:{ size:1.5, color:'FF0000' }` |
+| `paraSpaceAfter`  | number  | points  |      | paragraph spacing   | Paragraph Spacing: After.  Ex: `{ paraSpaceAfter:12 }` |
+| `paraSpaceBefore` | number  | points  |      | paragraph spacing   | Paragraph Spacing: Before. Ex: `{ paraSpaceBefore:12 }` |
 | `rectRadius` | number  | inches  |           | rounding radius     | rounding radius for `ROUNDED_RECTANGLE` text shapes |
 | `rotate`     | integer | degrees | `0`       | text rotation degrees | 0-360. Ex: `{rotate:180}` |
 | `rtlMode`    | boolean |         | `false`   | enable Right-to-Left mode | `true` or `false` |

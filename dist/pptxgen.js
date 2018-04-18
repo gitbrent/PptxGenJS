@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_REL = "20180415";
+	var APP_REL = "20180417";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3526,7 +3526,7 @@ var PptxGenJS = function(){
 		var tagStart = ( slideObj.options.isTableCell ? '<a:txBody>'  : '<p:txBody>' );
 		var tagClose = ( slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>' );
 		var strSlideXml = tagStart;
-		var strXmlBullet = '', strXmlLnSpc = '';
+		var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
 		var bulletLvl0Margin = 342900;
 		var paragraphPropXml = '<a:pPr ';
 
@@ -3598,7 +3598,9 @@ var PptxGenJS = function(){
 			// Inherit pPr-type options from parent shape's `options`
 			textObj.options.align = textObj.options.align || slideObj.options.align;
 			textObj.options.lineSpacing = textObj.options.lineSpacing || slideObj.options.lineSpacing;
-			textObj.options.indentLevel = textObj.options.indentLevel || slideObj.options.indentLevel
+			textObj.options.indentLevel = textObj.options.indentLevel || slideObj.options.indentLevel;
+			textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || slideObj.options.paraSpaceBefore;
+			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || slideObj.options.paraSpaceAfter;
 
 			// A: Build paragraphProperties
 			{
@@ -3627,6 +3629,14 @@ var PptxGenJS = function(){
 				// OPTION: indent
 				if ( textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0 ) {
 					paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
+				}
+
+				// OPTION: Paragraph Spacing: Before/After
+				if ( textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0 ) {
+					strXmlParaSpc += '<a:spcBef><a:spcPts val="'+ (textObj.options.paraSpaceBefore * 100) +'"/></a:spcBef>';
+				}
+				if ( textObj.options.paraSpaceAfter  && !isNaN(Number(textObj.options.paraSpaceAfter))  && textObj.options.paraSpaceAfter  > 0 ) {
+					strXmlParaSpc += '<a:spcAft><a:spcPts val="'+ (textObj.options.paraSpaceAfter * 100) +'"/></a:spcAft>';
 				}
 
 				// Set core XML for use below
@@ -3662,7 +3672,7 @@ var PptxGenJS = function(){
 
 				// Close Paragraph-Properties --------------------
 				// IMPORTANT: strXmlLnSpc must precede strXmlBullet for bullet lineSpacing to work (PPT-Online)
-				paragraphPropXml += '>'+ strXmlLnSpc + strXmlBullet +'</a:pPr>';
+				paragraphPropXml += '>'+ strXmlParaSpc + strXmlLnSpc + strXmlBullet +'</a:pPr>';
 			}
 
 			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
