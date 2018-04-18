@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_REL = "20180417";
+	var APP_BLD = "20180417";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -4294,7 +4294,7 @@ var PptxGenJS = function(){
 	/**
 	 * Library version
 	 */
-	this.version = APP_VER +'.'+ APP_REL;
+	this.version = APP_VER +'.'+ APP_BLD;
 
 	/**
 	 * Expose a couple private helper functions from above
