@@ -114,6 +114,12 @@ slide.addText(
     { x:8.0, y:5.0, w:'30%', h:1.4, color:'ABABAB', margin:1 }
 );
 
+// EX: Paragraph Spacing
+slide.addText(
+    'Paragraph spacing - before:12pt / after:24pt',
+    { x:1.5, y:1.5, w:6, h:2, fill:'F1F1F1', paraSpaceBefore:12, paraSpaceAfter:24 }
+);
+
 // EX: Hyperlink: Web
 slide.addText(
     [{
