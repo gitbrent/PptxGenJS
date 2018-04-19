@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180417";
+	var APP_BLD = "20180419";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -301,7 +301,7 @@ var PptxGenJS = function(){
 			var options = ( typeof opt === 'object' ? opt : {} );
 
 			if ( !shape || typeof shape !== 'object' ) {
-				console.log("ERROR: Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
+				console.error("Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ");
 				return;
 			}
 
@@ -310,8 +310,8 @@ var PptxGenJS = function(){
 			options.shape    = shape;
 			options.x        = ( options.x || (options.x == 0 ? 0 : 1) );
 			options.y        = ( options.y || (options.y == 0 ? 0 : 1) );
-			options.w        = ( options.w || 1.0 );
-			options.h        = ( options.h || (shape.name == 'line' ? 0 : 1.0) );
+			options.w        = ( options.w || (options.w == 0 ? 0 : 1) );
+			options.h        = ( options.h || (options.h == 0 ? 0 : 1) );
 			options.line     = ( options.line || (shape.name == 'line' ? '333333' : null) );
 			options.lineSize = ( options.lineSize || (shape.name == 'line' ? 1 : null) );
 			if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(options.lineDash || '') < 0 ) options.lineDash = 'solid';
