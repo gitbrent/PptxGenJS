@@ -1826,6 +1826,7 @@ var PptxGenJS = function(){
 		image.src = inImgUrl;
 	}
 
+// TODO: vvv
 	function convertImgToDataURLviaCanvas(slideRel) {
 		// A: Create
 		var image = new Image();
@@ -1866,18 +1867,18 @@ var PptxGenJS = function(){
 		image.src = slideRel.path;
 	}
 
-	function callbackImgToDataURLDone(inStr, slideRel) {
+	function callbackImgToDataURLDone(base64Data, slideRel) {
 		var intEmpty = 0;
-		var clbk = function(rel, i){
-			if ( rel.path == slideRel.path ) rel.data = inStr;
+		var clbk = function(rel){
+			if ( rel.path == slideRel.path ) rel.data = base64Data;
 			if ( !rel.data ) intEmpty++;
 		}
 
 		// STEP 1: Set data for this rel, count outstanding
-		gObjPptx.slides.forEach(function(slide,i) {
+		gObjPptx.slides.forEach(function(slide) {
 			slide.rels.forEach(clbk);
 		});
-		gObjPptx.slideLayouts.forEach(function(layout,i) {
+		gObjPptx.slideLayouts.forEach(function(layout) {
 			layout.rels.forEach(clbk);
 		});
 		gObjPptx.masterSlide.rels.forEach(clbk);
@@ -1885,6 +1886,38 @@ var PptxGenJS = function(){
 		// STEP 2: Continue export process if all rels have base64 `data` now
 		if ( intEmpty == 0 ) doExportPresentation();
 	}
+
+	function convertImgToDataURL(slideRel) {
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function() {
+			var reader = new FileReader();
+			reader.onloadend = function(){ callbackImgToDataURLDone(reader.result, slideRel); }
+			reader.readAsDataURL(xhr.response);
+		};
+		xhr.onerror = function(ex) {
+			// TODO: xhr.error/catch whatever! then return
+			console.error('Unable to load image: "'+ slideRel.path );
+			console.error(ex||'');
+			// Return a predefined "Broken image" graphic so the user will see something on the slide
+			callbackImgToDataURLDone(IMG_BROKEN, slideRel);
+		};
+		xhr.open('GET', slideRel.path);
+		xhr.responseType = 'blob';
+		xhr.send();
+	}
+
+// TEST
+/*
+	var imgUrl1 = 'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png';
+	var imgUrl2 = 'https://www.gravatar.com/avatar/d50c83cc0c6523b4d3f6085295c953e0';
+	var imgLocal = 'images/sample_logo.png';
+
+	convertImgToDataURL(imgLocal, function(dataUrl){
+		console.log('RESULT:', dataUrl)
+	});
+*/
+
+// TODO: ^^^
 
 	function getShapeInfo(shapeName) {
 		if ( !shapeName ) return gObjPptxShapes.RECTANGLE;
@@ -2326,7 +2359,8 @@ var PptxGenJS = function(){
 				}
 				else {
 					intRels++;
-					convertImgToDataURLviaCanvas(rel);
+					convertImgToDataURL(rel);
+//					convertImgToDataURLviaCanvas(rel);
 					arrRelsDone.push(rel.path);
 				}
 			}
@@ -4522,11 +4556,12 @@ var PptxGenJS = function(){
 				return null;
 			}
 			// Client-Browser: Cant base64 anything except png basically!
+/*
 			if ( typeof window !== 'undefined' && window.location.href.indexOf('file:') == 0 && !strData && strType != 'online' ) {
 				console.error('ERROR: Client browsers cannot encode media - use pre-encoded base64 `data` or use Node.js')
 				return null;
 			}
-
+*/
 			// STEP 2: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
 			var slideObjRels = gObjPptx.slides[slideNum].rels;
