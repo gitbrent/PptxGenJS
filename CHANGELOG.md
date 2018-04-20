@@ -7,6 +7,10 @@
 - Shapes: How to add vertical lines [\#272](https://github.com/gitbrent/PptxGenJS/issues/272) ([simonjcarr](https://github.com/simonjcarr))
 
 **Implemented Enhancements:**
+- Mis-detecting Existence of Node.js [\#277](https://github.com/gitbrent/PptxGenJS/issues/277) ([adrianirwin](https://github.com/adrianirwin)) ([DSheffield](https://github.com/DSheffield))
+
+
+
 
 
 
