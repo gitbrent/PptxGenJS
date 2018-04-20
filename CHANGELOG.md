@@ -4,7 +4,7 @@
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.1.0...v2.2.0)
 
 **Fixed Bugs:**
-- Shapes: How to add vertical lines [\#272](https://github.com/gitbrent/PptxGenJS/issues/272)([simonjcarr](https://github.com/simonjcarr))
+- Shapes: How to add vertical lines [\#272](https://github.com/gitbrent/PptxGenJS/issues/272) ([simonjcarr](https://github.com/simonjcarr))
 
 **Implemented Enhancements:**
 
