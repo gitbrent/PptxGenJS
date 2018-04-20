@@ -4949,14 +4949,23 @@ var PptxGenJS = function(){
 
 // [Node.js] support
 if ( NODEJS ) {
-	// A: Set vars
-	var isElectron = require("is-electron");
+	var $ = null;
+	var fs = null;
+	var JSZip = null;
+	var sizeOf = null;
 
-	// B: Load depdendencies
-	var fs = require("fs");
-	var $ = isElectron() ? require("jquery") : require("jquery-node");
-	var JSZip = require("jszip");
-	var sizeOf = require("image-size");
+	// A: jQuery depdendency
+	// NOTE: try `jquery-node` first then all other cases load `jquery`
+	try { $ = require("jquery-node"); } catch(ex){}
+	if ( !$ ) {
+		try { $ = require("jquery"); }
+		catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
+	}
+
+	// B: Other dependencies
+	try { fs = require("fs"); } catch(ex){ console.error("Unable to load `fs`"); throw 'LIB-MISSING-FS'; }
+	try { JSZip = require("jszip"); } catch(ex){ console.error("Unable to load `jszip`"); throw 'LIB-MISSING-JSZIP'; }
+	try { sizeOf = require("image-size"); } catch(ex){ console.error("Unable to load `image-size`"); throw 'LIB-MISSING-IMGSIZE'; }
 
 	// C: Export module
 	module.exports = PptxGenJS;
