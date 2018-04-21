@@ -4,7 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<meta name="date" content="20180117">
+	<meta name="date" content="20180420">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
@@ -12,35 +12,28 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans"   rel="stylesheet">
 	-->
-	<link type="text/css" rel="stylesheet" href="pptxgenjs-demo.css">
+	<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.css">
 
 	<!-- NOTE:
-		1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
-			$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
-			(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
-		2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
+	1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
+		$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
+		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
+	2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
  	-->
 
-	<!-- vvv PptxGenJS libraries (jquery/jszip/pptxgen are required - or use bundle) vvv -->
-	<script type="text/javascript" src="../libs/jquery.min.js"></script>
-	<script type="text/javascript" src="../libs/jszip.min.js"></script>
-	<script type="text/javascript" src="../libs/promise.min.js"></script>     <!-- optional if not using IE11 -->
-	<script type="text/javascript" src="../dist/pptxgen.colors.js"></script>  <!-- optional if you dont need PPT Color Schemes -->
-	<script type="text/javascript" src="../dist/pptxgen.shapes.js"></script>  <!-- optional if you dont need non-core Shapes -->
-	<script type="text/javascript" src="../dist/pptxgen.js"></script>
-	<!--<script type="text/javascript" src="../dist/pptxgen.bundle.js"></script>-->
-	<!-- ^^^ PptxGenJS libraries ^^^ -->
-
-	<script type="text/javascript" src="../examples/pptxgenjs-demo.js"></script>
-	<script type="text/javascript" src="images/base64Images.js"></script>
-	<script type="text/javascript" src="media/base64media.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.colors.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.shapes.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.bundle.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/images/base64Images.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/media/base64media.js"></script>
 	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 
 	<script type="text/javascript">
 		// ==================================================================================================================
 
 		function doNav(intTab) {
-			location.href = 'pptxgenjs-demo.html#tab'+intTab;
+			location.href = '#tab'+intTab;
 			doNavRestore();
 		}
 
@@ -300,6 +293,17 @@
 			else if ( typeof PptxGenJS === 'undefined' ) {
 				alert("Oops!\n\n`PptxGenJS` is undefined - maybe a bad link to the 'pptxgen.js' file or something...?\n");
 				return;
+			}
+
+			// If you're me: Load newest/local copy for dev/test work :-)
+			if ( window.location.href.toLowerCase().indexOf('gitbrent') > -1 ) {
+				// Dynamically load library as SharePoint Online is *BAD* about caching
+				$.getScript("../SiteAssets/pptxgenjs/dist/pptxgen.js", function(){
+					console.log('DEBUG: local file loaded: pptxgen.js');
+				});
+				$.getScript("../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js", function(){
+					console.log('DEBUG: local file loaded: pptxgenjs-demo.js');
+				});
 			}
 
 			// STEP 1: Show Local File warning message
@@ -813,51 +817,54 @@
 			</div>
 
 			<div id="tab4" data-title="Images/Media">
-				<div id="jsLocalFile" class="highlightBox" style="display:none;">
-					<div style="font-size:1.5em">LOCAL FILE ACCESS DETECTED</div>
-					<ul>
-						<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read when running this locally</li>
-						<li>Note that some demo slide images will show the missing image icon</li>
-						<li>ProTip: Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
-					</ul>
-				</div>
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
 					<div class="arrow active"></div>Images &amp; Media
 				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-							<legend>Image Types</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (campfire icon - click to play)</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Four Image types using `path:'someImage'`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded image using `data:[base64]`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinked Image</div>
-						</fieldset>
-						<fieldset>
-							<legend>Image Sizing/Rounding</legend>
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Image Rounding</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Contain</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Cover</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Crop</div>
-						</fieldset>
-						<fieldset>
-							<legend>Media Objects</legend>
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
-							<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
-
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats</div>
-							<div style="color:red; padding:2px 0 0 40px">
-								* Only Node.js can read/encode media using `path`<br>
-								* Alternatively, use `data` with pre-encoded base64
-							</div>
-						</fieldset>
+				<div>
+					<div id="jsLocalFile" class="highlightBox" style="margin-bottom:20px; display:none;">
+						<div style="font-size:1.5em">LOCAL FILE ACCESS DETECTED</div>
+						<ul>
+							<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read when running this locally</li>
+							<li>Note that some demo slide images will show the missing image icon</li>
+							<li>ProTip: Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
+						</ul>
 					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
+
+					<div class="sectionBox">
+						<div class="sectionCont">
+							<fieldset>
+								<legend>Image Types</legend>
+								<h3>Slide 1</h3>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (campfire icon - click to play)</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Four Image types using `path:'someImage'`</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded image using `data:[base64]`</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinked Image</div>
+							</fieldset>
+							<fieldset>
+								<legend>Image Sizing/Rounding</legend>
+								<h3>Slide 2</h3>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Image Rounding</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Contain</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Cover</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Crop</div>
+							</fieldset>
+							<fieldset>
+								<legend>Media Objects</legend>
+								<h3>Slide 3</h3>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
+								<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
+
+								<h3>Slide 4</h3>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats</div>
+								<div style="color:red; padding:2px 0 0 40px">
+									* Only Node.js can read/encode media using `path`<br>
+									* Alternatively, use `data` with pre-encoded base64
+								</div>
+							</fieldset>
+						</div>
+						<div>
+							<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
+						</div>
 					</div>
 				</div>
 			</div>
