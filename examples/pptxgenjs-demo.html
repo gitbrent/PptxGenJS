@@ -21,13 +21,18 @@
 	2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
  	-->
 
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/images/base64Images.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/media/base64media.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.colors.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.shapes.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.bundle.js"></script>
+<!--
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/images/base64Images.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/media/base64media.js"></script>
-	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+-->
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
+
 
 	<script type="text/javascript">
 		// ==================================================================================================================
@@ -200,7 +205,7 @@
 				bkgd: { data:BKGD_STARLABS },
 				objects: [
 					{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-					{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
+					//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
 					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 					{ 'text':  { text:'Global IT & Services :: Status Report',
 						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', color:'363636', fontSize:20, valign:'m', margin:0 } }
@@ -294,18 +299,22 @@
 				alert("Oops!\n\n`PptxGenJS` is undefined - maybe a bad link to the 'pptxgen.js' file or something...?\n");
 				return;
 			}
-
+/*
 			// If you're me: Load newest/local copy for dev/test work :-)
 			if ( window.location.href.toLowerCase().indexOf('gitbrent') > -1 ) {
 				// Dynamically load library as SharePoint Online is *BAD* about caching
 				$.getScript("../SiteAssets/pptxgenjs/dist/pptxgen.js", function(){
-					console.log('DEBUG: local file loaded: pptxgen.js');
-				});
-				$.getScript("../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js", function(){
-					console.log('DEBUG: local file loaded: pptxgenjs-demo.js');
+					console.log('DEBUG: local file loaded: `dist/pptxgen.js`');
+					$.getScript("../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js", function(){
+						console.log('DEBUG: local file loaded: `examples/pptxgenjs-demo.js`');
+					})
+					.fail(function(err){
+						console.error(err.statusText);
+						console.log(err);
+					});
 				});
 			}
-
+*/
 			// STEP 1: Show Local File warning message
 			if ( window.location.href.indexOf('file:') == 0 ) {
 				$('#jsLocalFile').show();

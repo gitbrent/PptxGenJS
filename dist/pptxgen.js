@@ -217,10 +217,10 @@ var PptxGenJS = function(){
 				bkg.src = bkg.src || bkg.path || null;
 				if (!bkg.src) bkg.src = 'preencoded.png';
 				var targetRels = target.rels;
-				var strImgExtn = bkg.src.substring( bkg.src.indexOf('.')+1 ).toLowerCase();
-				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
-				// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
+				var strImgExtn = bkg.src.split('.').pop() || 'png';
+				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
+//				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
+
 				var intRels = targetRels.length + 1;
 				targetRels.push({
 					path: bkg.src,
@@ -354,13 +354,16 @@ var PptxGenJS = function(){
 			}
 
 			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
-			var strImgExtn = 'png';
+// TODO: FIXME: not with FileReader - jpg are getting content wraning now!!!
+//			var strImgExtn = 'png';
+			var strImgExtn = strImagePath.split('.').pop() || 'png';
 			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
 			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
 				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
 			}
 			// Node.js can read/base64-encode any image, so take at face value
-			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
+//			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
+if (strImagePath) console.log(strImagePath +' -> '+ strImgExtn);
 
 			resultObject.type  = 'image';
 			resultObject.image = (strImagePath || 'preencoded.png');
