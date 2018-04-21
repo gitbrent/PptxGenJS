@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-* VER.: 2.0.0
-* REL.: 20180416
+* VER.: 2.2.0-beta
+* BLD.: 20180421
 */
 
 // Detect Node.js
@@ -93,7 +93,7 @@ function execGenSlidesFuncs(type) {
 
 	// STEP 4: Reproductions of the 3 Master Slides from the old `pptxgen.masters.js` file (`gObjPptxMasters` items)
 	var objBkdg = { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/starlabs_bkgd.jpg' };
-	var objImg  = { x:4.6, y:3.5, w:4, h:1.8, path:'images/starlabs_logo.png' };
+	var objImg  = { x:4.6, y:3.5, w:4, h:1.8, path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/starlabs_logo.png' };
 	// NOTE: Fallback to pre-encoded for local file users as I dont want them to see "junk" (plus Node demo will encode so QA testing isnt impacted by this)
 	if ( !NODEJS && window.location.href.indexOf('file:') == 0 ) {
 		objBkdg = { data:BKGD_STARLABS };
@@ -1267,7 +1267,7 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
-		if (NODEJS) slide.addImage({ path:'images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
+		if (NODEJS) slide.addImage({ path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif', x:0.5, y:1.0, w:1.2, h:1.2 });
 
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1984,19 +1984,19 @@ function genSlides_Media(pptx) {
 	slide1.addTable( [ [{ text:'Media: Video Examples', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:'media/sample.m4v' });
+	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.m4v' });
 
 	slide1.addText('Video: mpg', { x:5.5, y:0.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:5.5, y:1.0, w:3.00, h:2.05, type:'video', path:'media/sample.mpg' });
+	slide1.addMedia({ x:5.5, y:1.0, w:3.00, h:2.05, type:'video', path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.mpg' });
 
 	slide1.addText('Video: mov', { x:9.4, y:0.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:9.4, y:1.0, w:3.00, h:1.71, type:'video', path:'media/sample.mov' });
+	slide1.addMedia({ x:9.4, y:1.0, w:3.00, h:1.71, type:'video', path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.mov' });
 
 	slide1.addText('Video: mp4', { x:0.5, y:3.6, w:4.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:0.5, y:4.0, w:4.00, h:3.00, type:'video', path:'media/sample.mp4'});
+	slide1.addMedia({ x:0.5, y:4.0, w:4.00, h:3.00, type:'video', path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.mp4'});
 
 	slide1.addText('Video: avi', { x:5.5, y:3.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:'media/sample.avi' });
+	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.avi' });
 
 	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
 	if ( NODEJS ) {
@@ -2016,10 +2016,10 @@ function genSlides_Media(pptx) {
 	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
-	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:'media/sample.mp3' });
+	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.mp3' });
 
 	slide2.addText('Audio: wav', { x:0.5, y:2.6, w:4.00, h:0.4, color:'0088CC' });
-	slide2.addMedia({ x:0.5, y:3.0, w:4.00, h:0.3, type:'audio', path:'media/sample.wav' });
+	slide2.addMedia({ x:0.5, y:3.0, w:4.00, h:0.3, type:'audio', path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.wav' });
 
 	//slide2.addText('Audio: Pre-Encoded mp3', { x:5.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
 	//slide2.addMedia({ x:5.5, y:1.0, w:4.00, h:0.3, type:'audio', data:AUDIO_MP3 }); // Keynote=pass,O365=fail
@@ -2046,7 +2046,7 @@ function genSlides_Image(pptx) {
 
 		// TOP: 2
 		slide.addText('Type: Anim-GIF', { x:3.66, y:0.6, w:2.5, h:0.4, color:'0088CC' });
-		if (NODEJS) slide.addImage({ x:3.8, y:0.7, w:1.78, h:1.78, path:'images/anim_campfire.gif' });
+		if (NODEJS) slide.addImage({ x:3.8, y:0.7, w:1.78, h:1.78, path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/anim_campfire.gif' });
 		else        slide.addImage({ x:3.8, y:0.7, w:1.78, h:1.78, data:GIF_ANIM_FIRE });
 
 		// TOP: 3
@@ -2068,7 +2068,7 @@ function genSlides_Image(pptx) {
 
 		// BOTTOM-RIGHT:
 		slide.addText('Type: PNG', { x:6.6, y:2.7, w:2.5, h:0.4, color:'0088CC' });
-		slide.addImage({ path:'images/cc_license_comp.png', x:6.6, y:3.2, w:6.3, h:3.7 });
+		slide.addImage({ path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_license_comp.png', x:6.6, y:3.2, w:6.3, h:3.7 });
 
 		// TEST: Ensure framework corrects for missing all header (Please DO NOT pass base64 data without the header! This is a junky test)
 		//slide.addImage({ x:5.2, y:2.6, w:0.8, h:0.8, data:'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
@@ -2100,7 +2100,7 @@ function genSlides_Image(pptx) {
 
 		// TOP-RIGHT:
 		slide.addText('Rounding: `true`',         { x:10, y:0.6, w:3, h:0.3, color:'0088CC' });
-		slide.addImage({ path:'images/cc_logo.jpg', x:10, y:1.1, w:2, h:2, rounding:true });
+		slide.addImage({ path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg', x:10, y:1.1, w:2, h:2, rounding:true });
 	}
 }
 
