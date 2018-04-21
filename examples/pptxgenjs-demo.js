@@ -2041,7 +2041,7 @@ function genSlides_Image(pptx) {
 
 		// TOP: 1
 		slide.addText('Type: GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
-		slide.addImage({ path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif', x:0.6, y:1.1, w:1.2, h:1.2 });
+		slide.addImage({ path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif', x:0.6, y:1.1, w:1.2, h:1.2 });
 
 		// TOP: 2
 		slide.addText('Type: Anim-GIF', { x:3.66, y:0.6, w:2.5, h:0.4, color:'0088CC' });
@@ -2080,7 +2080,7 @@ function genSlides_Image(pptx) {
 		// TEST: Ensure framework corrects for missing all header (Please DO NOT pass base64 data without the header! This is a junky test)
 		//slide.addImage({ x:5.2, y:2.6, w:0.8, h:0.8, data:'iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAMAAABEpIrGAAAAA3NCSVQICAjb4U/gAAAACXBIWXMAAAjcAAAI3AGf6F88AAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAAANVQTFRF////JLaSIJ+AIKqKKa2FKLCIJq+IJa6HJa6JJa6IJa6IJa2IJa6IJa6IJa6IJa6IJa6IJa6IJq6IKK+JKK+KKrCLLrGNL7KOMrOPNrSRN7WSPLeVQrmYRLmZSrycTr2eUb6gUb+gWsKlY8Wqbsmwb8mwdcy0d8y1e863g9G7hdK8htK9i9TAjNTAjtXBktfEntvKoNzLquDRruHTtePWt+TYv+fcx+rhyOvh0e7m1e/o2fHq4PTu5PXx5vbx7Pj18fr49fv59/z7+Pz7+f38/P79/f7+dNHCUgAAABF0Uk5TAAcIGBktSYSXmMHI2uPy8/XVqDFbAAABB0lEQVQ4y42T13qDMAyFZUKMbebp3mmbrnTvlY60TXn/R+oFGAyYzz1Xx/wylmWJqBLjUkVpGinJGXXliwSVEuG3sBdkaCgLPJMPQnQUDmo+jGFRPKz2WzkQl//wQvQoLPII0KuAiMjP+gMyn4iEFU1eAQCCiCU2fpCfFBVjxG18f35VOk7Swndmt9pKUl2++fG4qL2iqMPXpi8r1SKitDDne/rT8vPbRh2d6oC7n6PCLNx/bsEM0Edc5DdLAHD9tWueF9VJjmdP68DZ77iRkDKuuT19Hx3mx82MpVmo1Yfv+WXrSrxZ6slpiyes77FKif88t7Nh3C3nbFp327sHxz167uHtH/8/eds7gGsUQbkAAAAASUVORK5CYII=' });
 		// NEGATIVE-TEST:
-		//slide.addImage({ data:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/doh_this_isnt_base64_data.gif',  x:0.5, y:0.5, w:1.0, h:1.0 });
+		//slide.addImage({ data:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/doh_this_isnt_base64_data.gif',  x:0.5, y:0.5, w:1.0, h:1.0 });
 	}
 
 	// SLIDE 2: Image Sizing -----------------------------------------------------------------------------------
@@ -2368,7 +2368,7 @@ function genSlides_Master(pptx) {
 		var slide3 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE );
 
 		var slide4 = pptx.addNewSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'0088CC', slideNumber:{x:'50%', y:'90%', color:'0088CC'} } );
-		var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/title_bkgd_alt.jpg' } } );
+		var slide5 = pptx.addNewSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/title_bkgd_alt.jpg' } } );
 		var slide6 = pptx.addNewSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33' } );
 		//var slide7 = pptx.addNewSlide( pptx.masters.LEGACY_TEST_ONLY );
 	}
