@@ -26,13 +26,23 @@
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/media/base64media.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.colors.js"></script>
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.shapes.js"></script>
+
+	<!-- RELEASE (CDN)
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.bundle.js"></script>
-<!--
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.js"></script>
--->
+	-->
+	<!-- OFFICE.COM TESTING:
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/jquery.min.js"></script>
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/JSZip.js"></script>
 	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
 	<script type="text/javascript" src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
-
+	-->
+	<!-- LOCAL TESTING:
+	-->
+	<script type="text/javascript" src="../libs/jquery.min.js"></script>
+	<script type="text/javascript" src="../libs/jszip.min.js"></script>
+	<script type="text/javascript" src="../dist/pptxgen.js"></script>
+	<script type="text/javascript" src="../examples/pptxgenjs-demo.js"></script>
 
 	<script type="text/javascript">
 		// ==================================================================================================================
@@ -299,7 +309,8 @@
 				alert("Oops!\n\n`PptxGenJS` is undefined - maybe a bad link to the 'pptxgen.js' file or something...?\n");
 				return;
 			}
-/*
+
+			/* FIXME: Abadoned: jquery cant parse `pptxgenjs-demo.js` for some reason...
 			// If you're me: Load newest/local copy for dev/test work :-)
 			if ( window.location.href.toLowerCase().indexOf('gitbrent') > -1 ) {
 				// Dynamically load library as SharePoint Online is *BAD* about caching
@@ -314,7 +325,8 @@
 					});
 				});
 			}
-*/
+			*/
+
 			// STEP 1: Show Local File warning message
 			if ( window.location.href.indexOf('file:') == 0 ) {
 				$('#jsLocalFile').show();
