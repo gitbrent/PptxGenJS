@@ -219,7 +219,6 @@ var PptxGenJS = function(){
 				var targetRels = target.rels;
 				var strImgExtn = bkg.src.split('.').pop() || 'png';
 				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
-//				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
 
 				var intRels = targetRels.length + 1;
 				targetRels.push({
@@ -353,18 +352,14 @@ var PptxGenJS = function(){
 				return null;
 			}
 
-			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
-// TODO: FIXME: not with FileReader - jpg are getting content wraning now!!!
-//			var strImgExtn = 'png';
+			// STEP 1: Set extension
 			var strImgExtn = strImagePath.split('.').pop() || 'png';
 			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
 			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
 				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
 			}
-			// Node.js can read/base64-encode any image, so take at face value
-//			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
-if (strImagePath) console.log(strImagePath +' -> '+ strImgExtn);
 
+			// STEP 2: Set type/path
 			resultObject.type  = 'image';
 			resultObject.image = (strImagePath || 'preencoded.png');
 
@@ -1830,6 +1825,7 @@ if (strImagePath) console.log(strImagePath +' -> '+ strImgExtn);
 	}
 
 // TODO: vvv
+
 	function convertImgToDataURLviaCanvas(slideRel) {
 		// A: Create
 		var image = new Image();
