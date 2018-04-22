@@ -32,17 +32,17 @@
 	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.js"></script>
 	-->
 	<!-- OFFICE.COM TESTING:
-	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/jquery.min.js"></script>
-	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/JSZip.js"></script>
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
 	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
 	<script type="text/javascript" src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
-	-->
-	<!-- LOCAL TESTING:
 	-->
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../libs/jszip.min.js"></script>
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
 	<script type="text/javascript" src="../examples/pptxgenjs-demo.js"></script>
+	<!-- LOCAL TESTING:
+	-->
 
 	<script type="text/javascript">
 		// ==================================================================================================================
@@ -327,13 +327,10 @@
 			}
 			*/
 
-			// STEP 1: Show Local File warning message
-			if ( window.location.href.indexOf('file:') == 0 ) {
-				$('#jsLocalFile').show();
-				if ( window.location.href.indexOf('brentely') > 0 ) {
-					$('#tab1sec1').click();
-					$('#tab1sec2').click();
-				}
+			// STEP 1: Set UI (if you're me)
+			if ( window.location.href.indexOf('brentely') > 0 ) {
+				$('#tab1sec1').click();
+				$('#tab1sec2').click();
 			}
 
 			// STEP 2: Build UI elements
@@ -842,22 +839,13 @@
 					<div class="arrow active"></div>Images &amp; Media
 				</div>
 				<div>
-					<div id="jsLocalFile" class="highlightBox" style="margin-bottom:20px; display:none;">
-						<div style="font-size:1.5em">LOCAL FILE ACCESS DETECTED</div>
-						<ul>
-							<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read when running this locally</li>
-							<li>Note that some demo slide images will show the missing image icon</li>
-							<li>ProTip: Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
-						</ul>
-					</div>
-
 					<div class="sectionBox">
 						<div class="sectionCont">
 							<fieldset>
 								<legend>Image Types</legend>
 								<h3>Slide 1</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (campfire icon - click to play)</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Four Image types using `path:'someImage'`</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (shows in Presenation mode)</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Various image types from local/CDN URLs</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded image using `data:[base64]`</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinked Image</div>
 							</fieldset>
@@ -877,10 +865,6 @@
 
 								<h3>Slide 4</h3>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats</div>
-								<div style="color:red; padding:2px 0 0 40px">
-									* Only Node.js can read/encode media using `path`<br>
-									* Alternatively, use `data` with pre-encoded base64
-								</div>
 							</fieldset>
 						</div>
 						<div>

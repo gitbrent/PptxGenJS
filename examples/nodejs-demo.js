@@ -1,7 +1,7 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: Nov 29, 2017
+ * DATE: 20180421
  * DESC: Demonstrate PptxGenJS on Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  * EXEC: `node nodejs-demo.js`
@@ -13,10 +13,6 @@
 const express = require('express'); // Not core - Only required for streaming
 const app = express(); // Not core - Only required for streaming
 const fs = require('fs');
-
-var GIF_ANIM_FIRE = "";
-var AUDIO_MP3 = "";
-var VIDEO_MP4 = "";
 var gConsoleLog = true;
 
 function getTimestamp() {
