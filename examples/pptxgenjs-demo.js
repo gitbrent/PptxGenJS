@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.2.0-beta
-* BLD.: 20180421
+* BLD.: 20180422
 */
 
 // Detect Node.js
