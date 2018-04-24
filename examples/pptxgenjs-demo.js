@@ -2097,7 +2097,7 @@ function genSlides_Media(pptx) {
 	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:(NODEJS ? gPaths.sample_avi.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_avi.path) });
 
 	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
-	if ( $('#chkYoutube').prop('checked') ) {
+	if ( !NODEJS && $ && $('#chkYoutube').prop('checked') ) {
 		slide1.addText('Online: YouTube', { x:9.4, y:3.6, w:3.00, h:0.4, color:'0088CC' });
 		// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
 		slide1.addMedia({ x:9.4, y:4.0, w:3.00, h:2.25, type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc' });
