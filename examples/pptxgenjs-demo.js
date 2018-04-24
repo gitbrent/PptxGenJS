@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.2.0-beta
-* BLD.: 20180423
+* BLD.: 20180424
 */
 
 // Detect Node.js
@@ -183,7 +183,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
-		var objOpts1 = { x:0.5, y:0.7, fontSize:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts1 = { x:0.5, y:0.7, w:4, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Cell Text Alignment:', objOpts1);
 
 		var arrTabRows = [
@@ -209,7 +209,7 @@ function genSlides_Table(pptx) {
 		// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
 		// DEMO: cell styles --------------------------------------------------------------------------
-		var objOpts2 = { x:6.0, y:0.7, fontSize:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts2 = { x:6.0, y:0.7, w:4, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Cell Styles:', objOpts2);
 
 		var arrTabRows = [
@@ -2329,7 +2329,7 @@ function genSlides_Text(pptx) {
 				{ text:' // Super'},
 				{ text:'Superscript', options:{ superscript:true } }
 			],
-			{ x:10, y:6.3 }
+			{ x:10, y:6.3, w:3.3 }
 		);
 
 		// TEST: using {option}: Add text box with multiline options:
