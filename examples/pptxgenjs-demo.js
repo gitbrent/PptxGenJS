@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.2.0-beta
-* BLD.: 20180422
+* BLD.: 20180423
 */
 
 // Detect Node.js
@@ -1988,57 +1988,6 @@ function genSlides_Chart(pptx) {
 	slide16();
 }
 
-function genSlides_Media(pptx) {
-	// SLIDE 1: Video and YouTube
-	// ======== -----------------------------------------------------------------------------------
-	var slide1 = pptx.addNewSlide();
-	slide1.addTable( [ [{ text:'Media: Video Examples', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
-
-	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:(NODEJS ? gPaths.sample_m4v.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_m4v.path) });
-
-	slide1.addText('Video: mpg', { x:5.5, y:0.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:5.5, y:1.0, w:3.00, h:2.05, type:'video', path:(NODEJS ? gPaths.sample_mpg.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mpg.path) });
-
-	slide1.addText('Video: mov', { x:9.4, y:0.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:9.4, y:1.0, w:3.00, h:1.71, type:'video', path:(NODEJS ? gPaths.sample_mov.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mov.path) });
-
-	slide1.addText('Video: mp4', { x:0.5, y:3.6, w:4.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:0.5, y:4.0, w:4.00, h:3.00, type:'video', path:(NODEJS ? gPaths.sample_mp4.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mp4.path) });
-
-	slide1.addText('Video: avi', { x:5.5, y:3.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:(NODEJS ? gPaths.sample_avi.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_avi.path) });
-
-	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
-	if ( NODEJS ) {
-		slide1.addText('Online: YouTube', { x:9.4, y:3.6, w:3.00, h:0.4, color:'0088CC' });
-		// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
-		slide1.addMedia({ x:9.4, y:4.0, w:3.00, h:2.25, type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc' });
-
-		slide1.addText(
-			'**NOTE** YouTube videos will issue a content warning in desktop PPT (they only work in PPT Online/O365)',
-			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'c', fontSize:12 }
-		);
-	}
-
-	// SLIDE 2: Audio / Pre-Encoded Video
-	// ======== -----------------------------------------------------------------------------------
-	var slide2 = pptx.addNewSlide();
-	slide2.addTable( [ [{ text:'Media: Audio and Pre-Encoded Audio/Video Examples', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
-
-	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
-	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_mp3.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mp3.path) });
-
-	slide2.addText('Audio: wav', { x:0.5, y:2.6, w:4.00, h:0.4, color:'0088CC' });
-	slide2.addMedia({ x:0.5, y:3.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_wav.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_wav.path) });
-
-	if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
-		// TEST USING LOCAL FILES (OFFICE.COM)
-		slide2.addText('Audio: MP3 (path:"../media")', { x:0.5, y:4.6, w:4.0, h:0.4, color:'0088CC' });
-		slide2.addMedia({ x:0.5, y:5.0, w:4.0, h:0.3, type:'audio', path:'../SiteAssets/pptxgenjs/examples/media/sample.mp3' });
-	}
-}
-
 function genSlides_Image(pptx) {
 	// NOTE:
 	// Images can be pre-encoded into base64, so they do not have to be on the webserver etc. (saves generation time and resources!)
@@ -2124,6 +2073,55 @@ function genSlides_Image(pptx) {
 		// TOP-RIGHT:
 		slide.addText('Rounding: `true`',  { x:10.0, y:0.60, w:3.0, h:0.3, color:'0088CC' });
 		slide.addImage({ path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path), x:10, y:1.1, w:2, h:2, rounding:true });
+	}
+}
+
+function genSlides_Media(pptx) {
+	// SLIDE 1: Video and YouTube -----------------------------------------------------------------------------------
+	var slide1 = pptx.addNewSlide();
+	slide1.addTable( [ [{ text:'Media: Misc Video Formats; YouTube', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+
+	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:(NODEJS ? gPaths.sample_m4v.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_m4v.path) });
+
+	slide1.addText('Video: mpg', { x:5.5, y:0.6, w:3.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:5.5, y:1.0, w:3.00, h:2.05, type:'video', path:(NODEJS ? gPaths.sample_mpg.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mpg.path) });
+
+	slide1.addText('Video: mov', { x:9.4, y:0.6, w:3.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:9.4, y:1.0, w:3.00, h:1.71, type:'video', path:(NODEJS ? gPaths.sample_mov.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mov.path) });
+
+	slide1.addText('Video: mp4', { x:0.5, y:3.6, w:4.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:0.5, y:4.0, w:4.00, h:3.00, type:'video', path:(NODEJS ? gPaths.sample_mp4.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mp4.path) });
+
+	slide1.addText('Video: avi', { x:5.5, y:3.6, w:3.00, h:0.4, color:'0088CC' });
+	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:(NODEJS ? gPaths.sample_avi.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_avi.path) });
+
+	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
+	if ( $('#chkYoutube').prop('checked') ) {
+		slide1.addText('Online: YouTube', { x:9.4, y:3.6, w:3.00, h:0.4, color:'0088CC' });
+		// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
+		slide1.addMedia({ x:9.4, y:4.0, w:3.00, h:2.25, type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc' });
+
+		slide1.addText(
+			'**NOTE** YouTube videos will issue a content warning in desktop PPT (they only work in PPT Online/O365)',
+			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'c', fontSize:12 }
+		);
+	}
+
+	// SLIDE 2: Audio -----------------------------------------------------------------------------------
+	var slide2 = pptx.addNewSlide();
+	slide2.addTable( [ [{ text:'Media: Misc Audio Formats', opts:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+
+	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
+	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_mp3.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mp3.path) });
+
+	slide2.addText('Audio: wav', { x:0.5, y:2.6, w:4.00, h:0.4, color:'0088CC' });
+	slide2.addMedia({ x:0.5, y:3.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_wav.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_wav.path) });
+
+	if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
+		// TEST USING LOCAL FILES (OFFICE.COM)
+		slide2.addText('Audio: MP3 (path:"../media")', { x:0.5, y:4.6, w:4.0, h:0.4, color:'0088CC' });
+		slide2.addMedia({ x:0.5, y:5.0, w:4.0, h:0.3, type:'audio', path:'../SiteAssets/pptxgenjs/examples/media/sample.mp3' });
 	}
 }
 
