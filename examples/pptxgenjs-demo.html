@@ -12,7 +12,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans"   rel="stylesheet">
 	-->
-	<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.css">
+	<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/pptxgenjs-demo.css">
 
 	<!-- NOTE:
 	1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
@@ -21,15 +21,14 @@
 	2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
  	-->
 
-	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/images/base64Images.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/media/base64media.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.colors.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.shapes.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/base64Images.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/base64media.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/dist/pptxgen.colors.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/dist/pptxgen.shapes.js"></script>
 
 	<!-- RELEASE (CDN)
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.bundle.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/dist/pptxgen.bundle.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/pptxgenjs-demo.js"></script>
 	-->
 	<!-- OFFICE.COM TESTING:
 	<script type="text/javascript" src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
@@ -39,6 +38,7 @@
 	-->
 	<!-- LOCAL TESTING:
 	-->
+	<script type="text/javascript" src="../libs/promise.min.js"></script>
 	<script type="text/javascript" src="../libs/jquery.min.js"></script>
 	<script type="text/javascript" src="../libs/jszip.min.js"></script>
 	<script type="text/javascript" src="../dist/pptxgen.js"></script>
@@ -407,6 +407,8 @@
 			doNavRestore();
 		});
 	</script>
+	<!-- Add source highlighting once script above populates code everywhere -->
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 </head>
 <body>
 	<div data="anchors">
@@ -842,33 +844,44 @@
 					<div class="sectionBox">
 						<div class="sectionCont">
 							<fieldset>
-								<legend>Image Types</legend>
+								<legend>Images: Various Types</legend>
 								<h3>Slide 1</h3>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (shows in Presenation mode)</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Various image types from local/CDN URLs</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded image using `data:[base64]`</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinked Image</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Images from local and remote CDN URLs</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded images (using `data:[base64]`)</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Images with hyperlinks/tooltips</div>
 							</fieldset>
 							<fieldset>
-								<legend>Image Sizing/Rounding</legend>
+								<legend>Images: Sizing and Rounding</legend>
 								<h3>Slide 2</h3>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Image Rounding</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Contain</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Cover</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Crop</div>
 							</fieldset>
+						</div>
+						<div class="sectionCont">
 							<fieldset>
-								<legend>Media Objects</legend>
+								<legend>Media: Video</legend>
 								<h3>Slide 3</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
-								<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
-
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Various formats&nbsp;&nbsp;
+									<span style="color:red; background:#fffccc;">(most OS's wont have every format codec - YMMV)</span>
+								</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>
+									YouTube&nbsp;&nbsp;
+									<span style="color:red; background:#fffccc;">(only supported in PowerPoint Online)</span>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend>Media: Audio</legend>
 								<h3>Slide 4</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats (mp3, wav)</div>
 							</fieldset>
 						</div>
 						<div>
-							<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
+							<input type="button" class="flatBtn flatBtn-green" style="margin-right:10px !important" value="Generate Demo: Images" onclick="execGenSlidesFuncs(['Image'])">
+							<input type="button" class="flatBtn flatBtn-green" style="margin-right:10px !important" value="Generate Demo: Media" onclick="execGenSlidesFuncs(['Media'])">
+							<input type="button" class="flatBtn flatBtn-blueMd" value="Generate Demo: Images and Media" onclick="execGenSlidesFuncs(['Images','Media'])">
 						</div>
 					</div>
 				</div>

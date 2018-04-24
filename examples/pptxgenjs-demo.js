@@ -2045,7 +2045,7 @@ function genSlides_Image(pptx) {
 	// This also has the benefit of being able to be any type (path:images can only be exported as PNG)
 	// Image source: either `data` or `path` is required
 
-	// SLIDE 1: Misc Image Types -----------------------------------------------------------------------------------
+	// SLIDE 1: Image Types -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -2084,8 +2084,8 @@ function genSlides_Image(pptx) {
 			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
 		}
 		else if ( typeof window !== 'undefined' ) {
-			slide.addText('Type: PNG (path:"wikimedia.org")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'11FF33' });
-			slide.addImage({ path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png', x:6.6, y:3.2, w:4.9, h:3.9 });
+			slide.addText('Type: PNG (path:"wikimedia.org")', { x:6.83, y:2.7, w:4.5, h:0.4, color:'11FF33' });
+			slide.addImage({ path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png', x:6.9, y:3.2, w:4.9, h:3.9 });
 			//slide.addImage({ path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_license_comp.png', x:6.6, y:3.2, w:6.3, h:3.7 });
 		}
 		else {
