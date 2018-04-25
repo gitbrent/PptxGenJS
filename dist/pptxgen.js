@@ -1842,7 +1842,8 @@ var PptxGenJS = function(){
 		image.src = inImgUrl;
 	}
 
-	function encodeImageRelations(layout, arrRelsDone) {
+	/* Encode Image/Audio/Video into base64 */
+	function encodeSlideMediaRels(layout, arrRelsDone) {
 		var intRels = 0;
 
 		layout.rels.forEach(function(rel){
@@ -4373,13 +4374,13 @@ var PptxGenJS = function(){
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 
 		// A: Slide rels
-		gObjPptx.slides.forEach(function(slide,idx){ intRels += encodeImageRelations(slide, arrRelsDone); });
+		gObjPptx.slides.forEach(function(slide,idx){ intRels += encodeSlideMediaRels(slide, arrRelsDone); });
 
 		// B: Layout rels
-		gObjPptx.slideLayouts.forEach(function(layout,idx){ intRels += encodeImageRelations(layout, arrRelsDone); });
+		gObjPptx.slideLayouts.forEach(function(layout,idx){ intRels += encodeSlideMediaRels(layout, arrRelsDone); });
 
 		// C: Master Slide rels
-		intRels += encodeImageRelations(gObjPptx.masterSlide, arrRelsDone);
+		intRels += encodeSlideMediaRels(gObjPptx.masterSlide, arrRelsDone);
 
 		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
 		if ( intRels == 0 ) doExportPresentation(outputType);
