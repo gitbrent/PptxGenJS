@@ -36,6 +36,9 @@ const siteConfig = {
 		'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js',
 	],
 	repoUrl: 'https://github.com/gitbrent/PptxGenJS',
+	onPageNav: 'separate',
+	twitter: true,
+	twitterImage: 'img/pptxgenjs.png',
 };
 
 module.exports = siteConfig;

@@ -14,7 +14,11 @@ var jvsSrch1 = /\<script type="text\/javascript" src="https:\/\/cdnjs.cloudflare
 var jvsSrch2 = 'pptxgen.bundle.js">';
 
 /* ========== */
-var arrDeployTasks = ['deploy-html','deploy-index','deploy-img','deploy-help','deploy-sitemap'];
+var arrDeployTasks = ['deploy-css','deploy-html','deploy-index','deploy-img','deploy-help','deploy-sitemap'];
+
+gulp.task('deploy-css', ()=>{
+	return gulp.src('./build/PptxGenJS/css/*.css').pipe(gulp.dest('../css/'));
+});
 
 gulp.task('deploy-html', ()=>{
 	return gulp.src('./build/PptxGenJS/docs/*.html').pipe(gulp.dest('../docs/'));
