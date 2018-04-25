@@ -4,7 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<meta name="date" content="20180420">
+	<meta name="date" content="20180424">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
@@ -12,7 +12,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans"   rel="stylesheet">
 	-->
-	<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.css">
+	<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/pptxgenjs-demo.css">
 
 	<!-- NOTE:
 	1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
@@ -21,13 +21,29 @@
 	2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
  	-->
 
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.colors.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.shapes.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/dist/pptxgen.bundle.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/pptxgenjs-demo.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/images/base64Images.js"></script>
-	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/01a1ca06/examples/media/base64media.js"></script>
-	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/base64Images.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/media/base64media.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/dist/pptxgen.colors.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/dist/pptxgen.shapes.js"></script>
+
+	<!-- RELEASE (CDN)
+	TODO: move from master to 2.2.0 upon release!
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.bundle.js"></script>
+	<script type="text/javascript" src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/examples/pptxgenjs-demo.js"></script>
+	-->
+	<!-- OFFICE365 TESTING:
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
+	<script type="text/javascript" src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
+	-->
+	<!-- LOCAL TESTING:
+	-->
+	<script type="text/javascript" src="../libs/promise.min.js"></script>
+	<script type="text/javascript" src="../libs/jquery.min.js"></script>
+	<script type="text/javascript" src="../libs/jszip.min.js"></script>
+	<script type="text/javascript" src="../dist/pptxgen.js"></script>
+	<script type="text/javascript" src="../examples/pptxgenjs-demo.js"></script>
 
 	<script type="text/javascript">
 		// ==================================================================================================================
@@ -200,7 +216,7 @@
 				bkgd: { data:BKGD_STARLABS },
 				objects: [
 					{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-					{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
+					//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
 					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 					{ 'text':  { text:'Global IT & Services :: Status Report',
 						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', color:'363636', fontSize:20, valign:'m', margin:0 } }
@@ -295,24 +311,27 @@
 				return;
 			}
 
+			/* FIXME: Abadoned: jquery cant parse `pptxgenjs-demo.js` for some reason...
 			// If you're me: Load newest/local copy for dev/test work :-)
 			if ( window.location.href.toLowerCase().indexOf('gitbrent') > -1 ) {
 				// Dynamically load library as SharePoint Online is *BAD* about caching
 				$.getScript("../SiteAssets/pptxgenjs/dist/pptxgen.js", function(){
-					console.log('DEBUG: local file loaded: pptxgen.js');
-				});
-				$.getScript("../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js", function(){
-					console.log('DEBUG: local file loaded: pptxgenjs-demo.js');
+					console.log('DEBUG: local file loaded: `dist/pptxgen.js`');
+					$.getScript("../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js", function(){
+						console.log('DEBUG: local file loaded: `examples/pptxgenjs-demo.js`');
+					})
+					.fail(function(err){
+						console.error(err.statusText);
+						console.log(err);
+					});
 				});
 			}
+			*/
 
-			// STEP 1: Show Local File warning message
-			if ( window.location.href.indexOf('file:') == 0 ) {
-				$('#jsLocalFile').show();
-				if ( window.location.href.indexOf('brentely') > 0 ) {
-					$('#tab1sec1').click();
-					$('#tab1sec2').click();
-				}
+			// STEP 1: Set UI (if you're me)
+			if ( window.location.href.indexOf('brentely') > 0 ) {
+				$('#tab1sec1').click();
+				$('#tab1sec2').click();
 			}
 
 			// STEP 2: Build UI elements
@@ -389,6 +408,8 @@
 			doNavRestore();
 		});
 	</script>
+	<!-- Add source highlighting once script above populates code everywhere -->
+	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 </head>
 <body>
 	<div data="anchors">
@@ -821,49 +842,50 @@
 					<div class="arrow active"></div>Images &amp; Media
 				</div>
 				<div>
-					<div id="jsLocalFile" class="highlightBox" style="margin-bottom:20px; display:none;">
-						<div style="font-size:1.5em">LOCAL FILE ACCESS DETECTED</div>
-						<ul>
-							<li>Web browsers will not allow local file access, meaning images using `path:` cannot be read when running this locally</li>
-							<li>Note that some demo slide images will show the missing image icon</li>
-							<li>ProTip: Use the <tt>--allow-file-access-from-files</tt> flag with Chrome, et al. to test with local image files</li>
-						</ul>
-					</div>
-
 					<div class="sectionBox">
 						<div class="sectionCont">
 							<fieldset>
-								<legend>Image Types</legend>
+								<legend>Images: Various Types</legend>
 								<h3>Slide 1</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (campfire icon - click to play)</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Four Image types using `path:'someImage'`</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded image using `data:[base64]`</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinked Image</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (shows in Presenation mode)</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Images from local and remote CDN URLs</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded images (using `data:[base64]`)</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Images with hyperlinks/tooltips</div>
 							</fieldset>
 							<fieldset>
-								<legend>Image Sizing/Rounding</legend>
+								<legend>Images: Sizing and Rounding</legend>
 								<h3>Slide 2</h3>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Image Rounding</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Contain</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Cover</div>
 								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Crop</div>
 							</fieldset>
+						</div>
+						<div class="sectionCont">
 							<fieldset>
-								<legend>Media Objects</legend>
+								<legend>Media: Video</legend>
 								<h3>Slide 3</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Video formats (avi, mp4, mov, etc.) and YouTube</div>
-								<div style="color:red; padding:2px 0 0 40px">* YouTube is only supported in <b>PowerPoint Online</b></div>
-
-								<h3>Slide 4</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats</div>
-								<div style="color:red; padding:2px 0 0 40px">
-									* Only Node.js can read/encode media using `path`<br>
-									* Alternatively, use `data` with pre-encoded base64
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Various formats&nbsp;&nbsp;
+									<span style="color:red; background:#fffccc;">(most OS's wont have every format codec - YMMV)</span>
 								</div>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>YouTube&nbsp;&nbsp;
+									<span style="color:red; background:#fffccc;">(only supported in PowerPoint Online)</span>
+								</div>
+								<div class="chkRow">
+									<div style="margin-left:20px"><input id="chkYoutube" type="checkbox"><label for="chkYoutube">Include YouTube demo?</label></div>
+									<div style="margin-left:20px; color:#d7d7d7;">(open in PowerPoint Online or a content warning will show in desktop app)</div>
+								</div>
+							</fieldset>
+							<fieldset>
+								<legend>Media: Audio</legend>
+								<h3>Slide 4</h3>
+								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats (mp3, wav)</div>
 							</fieldset>
 						</div>
 						<div>
-							<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Image','Media'])">
+							<input type="button" class="flatBtn flatBtn-green" style="margin-right:10px !important" value="Generate Demo: Images" onclick="execGenSlidesFuncs(['Image'])">
+							<input type="button" class="flatBtn flatBtn-green" style="margin-right:10px !important" value="Generate Demo: Media" onclick="execGenSlidesFuncs(['Media'])">
+							<input type="button" class="flatBtn flatBtn-blueMd" value="Generate Demo: Images and Media" onclick="execGenSlidesFuncs(['Image','Media'])">
 						</div>
 					</div>
 				</div>

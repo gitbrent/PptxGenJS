@@ -62,7 +62,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180419";
+	var APP_BLD = "20180424";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -217,10 +217,9 @@ var PptxGenJS = function(){
 				bkg.src = bkg.src || bkg.path || null;
 				if (!bkg.src) bkg.src = 'preencoded.png';
 				var targetRels = target.rels;
-				var strImgExtn = bkg.src.substring( bkg.src.indexOf('.')+1 ).toLowerCase();
-				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg';
-				if ( strImgExtn == 'gif' ) strImgExtn = 'png'; // MS-PPT: canvas.toDataURL for gif comes out image/png, and PPT will show "needs repair" unless we do this
-				// FIXME: The next few lines are copies from .addImage above. A bad idea thats already bit me once! So of course it's makred as future :)
+				var strImgExtn = bkg.src.split('.').pop() || 'png';
+				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
+
 				var intRels = targetRels.length + 1;
 				targetRels.push({
 					path: bkg.src,
@@ -353,15 +352,14 @@ var PptxGenJS = function(){
 				return null;
 			}
 
-			// Every image encoded via canvas>base64 is png (as of early 2017 no browser will produce other mime types)
-			var strImgExtn = 'png';
+			// STEP 1: Set extension
+			var strImgExtn = strImagePath.split('.').pop() || 'png';
 			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
 			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
 				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
 			}
-			// Node.js can read/base64-encode any image, so take at face value
-			if ( NODEJS && strImagePath.indexOf('.') > -1 ) strImgExtn = strImagePath.split('.').pop();
 
+			// STEP 2: Set type/path
 			resultObject.type  = 'image';
 			resultObject.image = (strImagePath || 'preencoded.png');
 
@@ -1658,12 +1656,8 @@ var PptxGenJS = function(){
 		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlMasterRel(gObjPptx.masterSlide));
 
 		// Create all Rels (images, media, chart data)
-		gObjPptx.slideLayouts.forEach(function(layout,idx){
-			createMediaFiles(layout, zip, arrChartPromises);
-		});
-		gObjPptx.slides.forEach(function(slide,idx){
-			createMediaFiles(slide, zip, arrChartPromises);
-		});
+		gObjPptx.slideLayouts.forEach(function(layout){ createMediaFiles(layout, zip, arrChartPromises); });
+		gObjPptx.slides.forEach(function(slide){ createMediaFiles(slide, zip, arrChartPromises); });
 		createMediaFiles(gObjPptx.masterSlide, zip, arrChartPromises);
 
 		// STEP 3: Wait for Promises (if any) then generate the PPTX file
@@ -1739,6 +1733,26 @@ var PptxGenJS = function(){
 		gObjPptx.saveCallback = null;
 	}
 
+	function createMediaFiles(layout, zip, chartPromises) {
+		layout.rels.forEach(function(rel){
+			if ( rel.type == 'chart' ) {
+				chartPromises.push(gObjPptxGenerators.createExcelWorksheet(rel, zip));
+			}
+			else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
+				// A: Loop vars
+				var data = rel.data;
+
+				// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
+				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
+				else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
+				else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
+
+				// C: Add media
+				zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
+			}
+		});
+	}
+
 	/**
 	 * DESC: Calc and return excel column name (eg: 'A2')
 	 */
@@ -1796,6 +1810,8 @@ var PptxGenJS = function(){
 		return Math.round(EMU * inches);
 	}
 
+	// IMAGE METHODS:
+
 	function getSizeFromImage(inImgUrl) {
 		if ( NODEJS ) {
 			try {
@@ -1826,61 +1842,66 @@ var PptxGenJS = function(){
 		image.src = inImgUrl;
 	}
 
-	function convertImgToDataURLviaCanvas(slideRel) {
-		// A: Create
-		var image = new Image();
+	function encodeImageRelations(layout, arrRelsDone) {
+		var intRels = 0;
 
-		// B: Set onload event
-		image.onload = function(){
-			// First: Check for any errors: This is the best method (try/catch wont work, etc.)
-			if (this.width + this.height == 0) { this.onerror('h/w=0'); return; }
-			var canvas = document.createElement('CANVAS');
-			var ctx = canvas.getContext('2d');
-			canvas.height = this.height;
-			canvas.width  = this.width;
-			ctx.drawImage(this, 0, 0);
-			// Users running on local machine will get the following error:
-			// "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
-			// when the canvas.toDataURL call executes below.
-			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
-			catch(ex) {
-				this.onerror(ex);
-				return;
-			}
-			canvas = null;
-		};
-		image.onerror = function(ex){
-			try {
-				if ( typeof window !== 'undefined' && window.location.href.indexOf('file:') == 0 ) {
-					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files!\n(use '--allow-file-access-from-files' flag with Chrome, etc.)");
+		layout.rels.forEach(function(rel){
+			// Read and Encode each image into base64 for use in export
+			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1 ) {
+				// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
+				if ( NODEJS ) {
+					try {
+						var bitmap = fs.readFileSync(rel.path);
+						rel.data = new Buffer(bitmap).toString('base64');
+					}
+					catch(ex) {
+						console.error('ERROR....: Unable to read media: "'+rel.path+'"');
+						console.error('DETAILS..: '+ex);
+						rel.data = IMG_BROKEN;
+					}
 				}
-				console.error('Unable to load image: "'+ slideRel.path );
-				console.error(ex||'');
+				else {
+					intRels++;
+					convertImgToDataURL(rel);
+					arrRelsDone.push(rel.path);
+				}
 			}
-			catch(ex){}
+		});
+
+		return intRels;
+	}
+
+	/* `FileReader()` + `readAsDataURL` = Ablity to read any file into base64! */
+	function convertImgToDataURL(slideRel) {
+		var xhr = new XMLHttpRequest();
+		xhr.onload = function() {
+			var reader = new FileReader();
+			reader.onloadend = function(){ callbackImgToDataURLDone(reader.result, slideRel); }
+			reader.readAsDataURL(xhr.response);
+		};
+		xhr.onerror = function(ex) {
+			// TODO: xhr.error/catch whatever! then return
+			console.error('Unable to load image: "'+ slideRel.path );
+			console.error(ex||'');
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			callbackImgToDataURLDone(IMG_BROKEN, slideRel);
 		};
-
-		// C: Load image
-		image.src = slideRel.path;
+		xhr.open('GET', slideRel.path);
+		xhr.responseType = 'blob';
+		xhr.send();
 	}
 
-	function callbackImgToDataURLDone(inStr, slideRel) {
+	function callbackImgToDataURLDone(base64Data, slideRel) {
 		var intEmpty = 0;
-		var clbk = function(rel, i){
-			if ( rel.path == slideRel.path ) rel.data = inStr;
+		var funcCallback = function(rel){
+			if ( rel.path == slideRel.path ) rel.data = base64Data;
 			if ( !rel.data ) intEmpty++;
 		}
 
 		// STEP 1: Set data for this rel, count outstanding
-		gObjPptx.slides.forEach(function(slide,i) {
-			slide.rels.forEach(clbk);
-		});
-		gObjPptx.slideLayouts.forEach(function(layout,i) {
-			layout.rels.forEach(clbk);
-		});
-		gObjPptx.masterSlide.rels.forEach(clbk);
+		gObjPptx.slides.forEach(function(slide){ slide.rels.forEach(funcCallback); });
+		gObjPptx.slideLayouts.forEach(function(layout){ layout.rels.forEach(funcCallback); });
+		gObjPptx.masterSlide.rels.forEach(funcCallback);
 
 		// STEP 2: Continue export process if all rels have base64 `data` now
 		if ( intEmpty == 0 ) doExportPresentation();
@@ -2304,55 +2325,6 @@ var PptxGenJS = function(){
 		strXml += ' </c:spPr>';
 		strXml += '</'+ tagName + '>';
 		return strXml;
-	}
-
-	function encodeImageRelations(layout, arrRelsDone) {
-		var intRels = 0;
-
-		layout.rels.forEach(function(rel){
-			// Read and Encode each image into base64 for use in export
-			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1 ) {
-				// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-				if ( NODEJS ) {
-					try {
-						var bitmap = fs.readFileSync(rel.path);
-						rel.data = new Buffer(bitmap).toString('base64');
-					}
-					catch(ex) {
-						console.error('ERROR....: Unable to read media: "'+rel.path+'"');
-						console.error('DETAILS..: '+ex);
-						rel.data = IMG_BROKEN;
-					}
-				}
-				else {
-					intRels++;
-					convertImgToDataURLviaCanvas(rel);
-					arrRelsDone.push(rel.path);
-				}
-			}
-		});
-
-		return intRels;
-	}
-
-	function createMediaFiles(layout, zip, chartPromises) {
-		layout.rels.forEach(function(rel, idy) {
-			if ( rel.type == 'chart' ) {
-				chartPromises.push(gObjPptxGenerators.createExcelWorksheet(rel, zip));
-			}
-			else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
-				// A: Loop vars
-				var data = rel.data;
-
-				// B: Users will undoubtedly pass various string formats, so modify as needed
-				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
-				else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
-				else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
-
-				// C: Add media
-				zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
-			}
-		});
 	}
 
 	/**
@@ -4497,6 +4469,7 @@ var PptxGenJS = function(){
 
 		slideObj.addMedia = function( opt ) {
 			var intRels  = 1;
+			var intImages = ++gObjPptx.imageCounter;
 			var intPosX  = (opt.x || 0);
 			var intPosY  = (opt.y || 0);
 			var intSizeX = (opt.w || 2);
@@ -4521,11 +4494,6 @@ var PptxGenJS = function(){
 				console.error('ERROR: online videos require `link` value')
 				return null;
 			}
-			// Client-Browser: Cant base64 anything except png basically!
-			if ( typeof window !== 'undefined' && window.location.href.indexOf('file:') == 0 && !strData && strType != 'online' ) {
-				console.error('ERROR: Client browsers cannot encode media - use pre-encoded base64 `data` or use Node.js')
-				return null;
-			}
 
 			// STEP 2: Set vars for this Slide
 			var slideObjNum = gObjPptx.slides[slideNum].data.length;
@@ -4548,7 +4516,7 @@ var PptxGenJS = function(){
 
 			// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			$.each(gObjPptx.slides, function(i,slide){ intRels += slide.rels.length; });
+			gObjPptx.slides.forEach(function(slide){ intRels += slide.rels.length; });
 
 			if ( strType == 'online' ) {
 				slideObjRels.push({
@@ -4579,8 +4547,8 @@ var PptxGenJS = function(){
 					type: strType+'/'+strExtn,
 					extn: strExtn,
 					data: (strData || ''),
-					rId:  (intRels+1),
-					Target: '../media/media' + intRels + '.' + strExtn
+					rId:  (intRels+0),
+					Target: '../media/media' + intImages + '.' + strExtn
 				});
 				gObjPptx.slides[slideNum].data[slideObjNum].mediaRid = slideObjRels[slideObjRels.length-1].rId;
 				slideObjRels.push({
@@ -4588,8 +4556,8 @@ var PptxGenJS = function(){
 					type: strType+'/'+strExtn,
 					extn: strExtn,
 					data: (strData || ''),
-					rId:  (intRels+2),
-					Target: '../media/media' + intRels + '.' + strExtn
+					rId:  (intRels+1),
+					Target: '../media/media' + intImages + '.' + strExtn
 				});
 				// Add preview/overlay image
 				slideObjRels.push({
@@ -4597,8 +4565,8 @@ var PptxGenJS = function(){
 					path: 'preencoded.png',
 					type: 'image/png',
 					extn: 'png',
-					rId:  (intRels+3),
-					Target: '../media/image' + intRels + '.png'
+					rId:  (intRels+2),
+					Target: '../media/image' + intImages + '.png'
 				});
 			}
 
