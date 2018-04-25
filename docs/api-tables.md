@@ -2,18 +2,6 @@
 id: api-tables
 title: Adding Tables
 ---
-**************************************************************************************************
-Table of Contents
-- [Syntax](#syntax)
-- [Table Layout Options](#table-layout-options)
-- [Table Auto-Paging Options](#table-auto-paging-options)
-- [Table Auto-Paging Notes](#table-auto-paging-notes)
-- [Table Formatting Options](#table-formatting-options)
-- [Table Formatting Notes](#table-formatting-notes)
-- [Table Cell Formatting](#table-cell-formatting)
-- [Table Cell Formatting Examples](#table-cell-formatting-examples)
-- [Table Examples](#table-examples)
-**************************************************************************************************
 
 ## Syntax
 ```javascript

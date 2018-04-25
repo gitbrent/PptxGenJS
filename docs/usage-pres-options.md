@@ -2,13 +2,6 @@
 id: usage-pres-options
 title: Presentation Options
 ---
-**************************************************************************************************
-Table of Contents
-- [Presentation Properties](#presentation-properties)
-- [Presentation Layouts](#presentation-layouts)
-- [Presentation Layout Options](#presentation-layout-options)
-- [Presentation Text Direction](#presentation-text-direction)
-**************************************************************************************************
 
 A "Presentation" is a single `.pptx` file.  See [multiple presentations](/PptxGenJS/docs/usage-saving.html#saving-multiple-presentations) for information
 on creating more than a one PPT file at a time.

@@ -2,11 +2,6 @@
 id: shapes-and-schemes
 title: Shapes and Schemes
 ---
-**************************************************************************************************
-Table of Contents
-- [PowerPoint Shapes](#powerpoint-shape-library)
-- [PowerPoint Scheme Colors](#powerpoint-scheme-colors)
-**************************************************************************************************
 
 ## PowerPoint Shapes
 If you are planning on creating Shapes (basically anything other than Text, Tables or Rectangles), then you'll want to

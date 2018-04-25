@@ -2,13 +2,6 @@
 id: api-shapes
 title: Adding Shapes
 ---
-**************************************************************************************************
-Table of Contents
-- [Syntax](#syntax)
-- [Shape Options](#shape-options)
-- [Shape Examples](#shape-examples)
-**************************************************************************************************
-
 ## Syntax
 
 ### Plain/no text

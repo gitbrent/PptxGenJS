@@ -2,24 +2,19 @@
 id: api-images
 title: Adding Images
 ---
-**************************************************************************************************
-Table of Contents
-- [Syntax](#syntax)
-- [Image Options](#image-options)
-- [Image Examples](#image-examples)
-- [Image Sizing](#image-sizing)
-- [Performance Considerations](#performance-considerations)
-- [Pre-Encode Large Images](#pre-encode-large-images)
-**************************************************************************************************
-
 ## Syntax
 ```javascript
 slide.addImage({OPTIONS});
 ```
 
-Animated GIFs can be included in Presentations in one of two ways:
-* Using Node.js: use either `data` or `path` options (Node can encode any image into base64)
-* Client Browsers: pre-encode the gif and add it using the `data` option (encoding images into GIFs is beyond any current browser)
+## Usage
+Either provide a URL location or base64 data to create an image.  
+* `path` can be either a local or remote URL
+* `data` is a base64 string representing an encoded image
+
+## Supported Formats
+* Image (png, jpg, gif and animated gif, etc.)
+* Note: SVG images are not supported in PowerPoint or PowerPoint Online
 
 ## Image Options
 | Option       | Type    | Unit   | Default  | Description         | Possible Values  |
@@ -34,30 +29,21 @@ Animated GIFs can be included in Presentations in one of two ways:
 | `rounding`   | boolean |        | `false`  | image rounding      | Shapes an image into a circle |
 | `sizing`     | object  |        |          | transforms image    | See [Image Sizing](#image-sizing) |
 
-**NOTES**
-* SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
-properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
-* Using `path` to add remote images (images from a different server) is not currently supported.
-
-**Deprecation Warning**
-Old positional parameters (e.g.: `slide.addImage('images/chart.png', 1, 1, 6, 3)`) are now deprecated as of 1.1.0
-
 ## Image Examples
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
-// Image by path
-slide.addImage({ path:'images/chart_world_peace_near.png', x:1.0, y:1.0, w:8.0, h:4.0 });
-// Image by data (base64-encoding)
+// EX: Image by local URL
+slide.addImage({ path:'images/chart_world_peace_near.png', x:1, y:1, w:8.0, h:4.0 });
+
+// EX: Image from remote URL
+slide.addImage({ path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg', x:1, y:1, w:6, h:4 })
+
+// EX: Image by data (pre-encoded base64)
 slide.addImage({ data:'image/png;base64,iVtDafDrBF[...]=', x:3.0, y:5.0, w:6.0, h:3.0 });
 
-// NOTE: Slide API calls return the same slide, so you can chain calls:
-slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30, h:3.70 })
-     .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
-     .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
-
-// Image with Hyperlink
+// EX: Image with Hyperlink
 slide.addImage({
   x:1.0, y:1.0, w:8.0, h:4.0,
   hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' },
@@ -89,16 +75,8 @@ NOTES:
 * When the `sizing` property is used, its `w` and `h` values represent the effective image size. For example, in the following snippet, width and height of the image will both equal to 2 inches and its top-left corner will be located at [1 inch, 1 inch]:
 ```javascript
 slide.addImage({
-  path: '...',
-  w: 4,
-  h: 3,
-  x: 1,
-  y: 1,
-  sizing: {
-    type: 'contain',
-    w: 2,
-    h: 2
-  }
+  path: '...', w:4, h:3, x:1, y:1,
+  sizing: { type:'contain', w:2, h:2 }
 });
 ```
 

@@ -3,16 +3,6 @@ id: html-to-powerpoint
 sidebar_label: HTML-to-PowerPoint
 title: HTML to PowerPoint
 ---
-**************************************************************************************************
-Table of Contents
-- [HTML to PowerPoint](#html-to-powerpoint)
-- [HTML to PowerPoint Syntax](#html-to-powerpoint-syntax)
-- [HTML to PowerPoint Options](#html-to-powerpoint-options)
-- [HTML to PowerPoint Table Options](#html-to-powerpoint-html-options)
-- [HTML to PowerPoint Notes](#html-to-powerpoint-notes)
-- [HTML to PowerPoint Examples](#html-to-powerpoint-examples)
-- [HTML to PowerPoint Creative Solutions](#creative-solutions)
-**************************************************************************************************
 
 ## HTML to PowerPoint
 

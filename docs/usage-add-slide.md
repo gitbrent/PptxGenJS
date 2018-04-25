@@ -2,16 +2,6 @@
 id: usage-add-slide
 title: Adding a Slide
 ---
-**************************************************************************************************
-Table of Contents
-- [Syntax](#Syntax)
-- [Slide Formatting](#slide-formatting)
-- [Slide Formatting Options](#slide-formatting-options)
-- [Applying Master Slides / Branding](#applying-master-slides--branding)
-- [Adding Slide Numbers](#adding-slide-numbers)
-- [Slide Number Options](#slide-number-options)
-- [Slide Return Value](#slide-return-value)
-**************************************************************************************************
 
 ## Syntax
 ```javascript

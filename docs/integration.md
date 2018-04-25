@@ -2,11 +2,6 @@
 id: integration
 title: Library Integration
 ---
-**************************************************************************************************
-Table of Contents
-- [Integration with Angular](#integration-with-angular)
-- [Integration with Webpack/Typescript](#integration-with-webpacktypescript)
-**************************************************************************************************
 
 ## Integration with Angular
 

@@ -2,12 +2,6 @@
 id: api-text
 title: Adding Text
 ---
-**************************************************************************************************
-Table of Contents
-- [Text Options](#text-options)
-- [Text Shadow Options](#text-shadow-options)
-- [Text Examples](#text-examples)
-**************************************************************************************************
 
 ## Syntax
 ```javascript

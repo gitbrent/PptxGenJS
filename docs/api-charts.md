@@ -2,19 +2,6 @@
 id: api-charts
 title: Adding Charts
 ---
-**************************************************************************************************
-Table of Contents
-- [Syntax](#Syntax)
-- [Chart Types](#chart-types)
-- [Multi-Type Charts](#multi-type-charts)
-- [Chart Size/Formatting Options](#chart-sizeformatting-options)
-- [Chart Axis Options](#chart-axis-options)
-- [Chart Data Options](#chart-data-options)
-- [Chart Element Shadow Options](#chart-element-shadow-options)
-- [Chart Multi-Type Options](#chart-multi-type-options)
-- [Chart Examples](#chart-examples)
-**************************************************************************************************
-
 ## Syntax
 ```javascript
 slide.addChart({TYPE}, {DATA}, {OPTIONS});

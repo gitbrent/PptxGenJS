@@ -2,12 +2,6 @@
 id: masters
 title: Master Slides
 ---
-**************************************************************************************************
-Table of Contents
-- [Slide Masters](#slide-masters)
-- [Slide Master Options](#slide-master-options)
-- [Slide Master Examples](#slide-master-examples)
-**************************************************************************************************
 
 ## Slide Masters
 Generating sample slides like those shown in the Examples section are great for demonstrating library features,

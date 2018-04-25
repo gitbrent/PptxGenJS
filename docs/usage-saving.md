@@ -2,12 +2,6 @@
 id: usage-saving
 title: Saving Presentations
 ---
-**************************************************************************************************
-Table of Contents
-- [Client Browser](#client-browser)
-- [Node.js](#nodejs-1)
-- [Saving Multiple Presentations](#saving-multiple-presentations)
-**************************************************************************************************
 
 Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
 examples of which can be found below.
