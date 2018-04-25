@@ -35,7 +35,7 @@ files may work and some may not.  Video codecs are weird and painful like that.
 | `link`       | string  |        |           | online url/link     | link to online video. Ex: `link:'https://www.youtube.com/embed/blahBlah'` |
 | `type`       | string  |        |           | media type          | media type: `audio` or `video` (reqs: `data` or `path`) or `online` (reqs:`link`) |
 
-### Media Examples
+## Media Examples
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
