@@ -1000,15 +1000,13 @@ Syntax:
 slide.addImage({OPTIONS});
 ```
 
-**Image Notes**  
-* SVG images are not currently supported in PowerPoint or PowerPoint Online (even when encoded into base64). PptxGenJS does
-properly encode and include SVG images, so they will begin showing once Microsoft adds support for this image type.
-* Using `path` to add remote images (images from a different server) is not currently supported due to browser security restrictions (a tainted canvas cannot be exported). Pre-encode any non-local images into base64 and pass them using `data`.
+Either provide a URL location or base64 data to create an image.  
+* `path` can be either a local or remote URL
+* `data` is a base64 string representing an encoded image
 
-**Animated GIF Support**  
-Animated GIFs can be included in Presentations in one of two ways:
-* Using Node.js: use either `data` or `path` options (Node can encode any image into base64)
-* Client Browsers: pre-encode the gif and add it using the `data` option (encoding images into GIFs is beyond any current browser)
+**Image Notes**  
+* Animated GIFs are supported (they animate in Presentation Mode)
+* SVG images are not currently supported in PowerPoint or PowerPoint Online (even when pre-encoded into base64).
 
 ### Image Options
 | Option       | Type    | Unit   | Default  | Description         | Possible Values  |
@@ -1028,17 +1026,16 @@ Animated GIFs can be included in Presentations in one of two ways:
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
-// Image by path
-slide.addImage({ path:'images/chart_world_peace_near.png', x:1.0, y:1.0, w:8.0, h:4.0 });
-// Image by data (base64-encoding)
+// EX: Image by local URL
+slide.addImage({ path:'images/chart_world_peace_near.png', x:1, y:1, w:8.0, h:4.0 });
+
+// EX: Image from remote URL
+slide.addImage({ path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg', x:1, y:1, w:6, h:4 })
+
+// EX: Image by data (pre-encoded base64)
 slide.addImage({ data:'image/png;base64,iVtDafDrBF[...]=', x:3.0, y:5.0, w:6.0, h:3.0 });
 
-// NOTE: Slide API calls return the same slide, so you can chain calls:
-slide.addImage({ path:'images/cc_license_comp_chart.png', x:6.6, y:0.75, w:6.30, h:3.70 })
-     .addImage({ path:'images/cc_logo.jpg',               x:0.5, y:3.50, w:5.00, h:3.70 })
-     .addImage({ path:'images/cc_symbols_trans.png',      x:6.6, y:4.80, w:6.30, h:2.30 });
-
-// Image with Hyperlink
+// EX: Image with Hyperlink
 slide.addImage({
   x:1.0, y:1.0, w:8.0, h:4.0,
   hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' },
