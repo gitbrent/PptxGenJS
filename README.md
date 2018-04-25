@@ -1000,13 +1000,14 @@ Syntax:
 slide.addImage({OPTIONS});
 ```
 
+### Usage
 Either provide a URL location or base64 data to create an image.  
 * `path` can be either a local or remote URL
 * `data` is a base64 string representing an encoded image
 
-**Image Notes**  
-* Animated GIFs are supported (they animate in Presentation Mode)
-* SVG images are not currently supported in PowerPoint or PowerPoint Online (even when pre-encoded into base64).
+### Supported Formats
+* Image (png, jpg, gif and animated gif, etc.)
+* Note: SVG images are not supported in PowerPoint or PowerPoint Online
 
 ### Image Options
 | Option       | Type    | Unit   | Default  | Description         | Possible Values  |
@@ -1081,31 +1082,20 @@ Syntax:
 slide.addMedia({OPTIONS});
 ```
 
-**IMPORTANT NOTE:**  
-Adding media is predominately a Node.js feature. Why? Because no web browser can encode media files
-into base64, which is the format needed to create the PPTX export file.
-
-Support for [Adding Images](#adding-images) can be accomplished in browsers because a shadow canvas element
-is created, filled using an image path, and then converted to base64 using a built-in canvas method.  No
-such methods exist for media, hence, the inability to support this functionality outside of Node.
-
-You can try to pre-encode media into base64 and pass it using the `data` option, but it is a
-hit-or-miss situation based upon recent feedback.
+### Usage
+Either provide a URL location or base64 data to create media.  
+* `path` can be either a local or remote URL
+* `data` is a base64 string representing an encoded media (hit-or-miss situation based upon recent feedback)
 
 ### Supported Formats
 * Video (mpg, mov, mp4, m4v, etc.)
 * Audio (mp3, wav, etc.)
 * (Reference: [Video and Audio file formats supported in PowerPoint](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
 
-### Video Notes
-* YouTube works great in Microsoft Office online.  Other video sites... not so much (YMMV).
-* Online video linked to in the presentation (YouTube, etc.) is supported in both client browser and in Node.js
+### Media Notes
 * Not all platforms support all formats! MacOS can show MPG files whereas Windows probably will not, and some AVI
 files may work and some may not.  Video codecs are weird and painful like that.
-
-### Data Options
-* Node.js: use either `data` or `path` options (Node can encode any media into base64)
-* Browsers: pre-encode the media and add it using the `data` option (this may not always work for various reasons)
+* YouTube videos work great in Microsoft Office online... other video sites, not so much (YMMV).
 
 ### Media Options
 | Option       | Type    | Unit   | Default   | Description         | Possible Values  |
@@ -1124,11 +1114,14 @@ files may work and some may not.  Video codecs are weird and painful like that.
 var pptx = new PptxGenJS();
 var slide = pptx.addNewSlide();
 
-// Media by path (Node.js only)
+// EX: Media by path
+slide.addMedia({ type:'video', path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/2.1.0/examples/media/sample.mov', x:1.0, y:1.0, w:3.0, h:2.0 });
 slide.addMedia({ type:'audio', path:'../media/sample.mp3', x:1.0, y:1.0, w:3.0, h:0.5 });
-// Media by data (client browser or Node.js)
+
+// EX: Media by data (does not always work well - use URL instead)
 slide.addMedia({ type:'audio', data:'audio/mp3;base64,iVtDafDrBF[...]=', x:3.0, y:1.0, w:6.0, h:3.0 });
-// Online by link (client browser or Node.js)
+
+// EX: YouTube video
 slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:1.0, y:4.0, w:8.0, h:4.5 });
 
 pptx.save('Demo-Media');
