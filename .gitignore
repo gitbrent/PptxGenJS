@@ -6,6 +6,13 @@ bower_components/
 *.icloud
 *.lock
 
+dist/*
+examples/*
+libs/*
+CHANGELOG.md
+gulpfile.js
+package.json
+
 lib/core/metadata.js
 lib/core/MetadataBlog.js
 website/translated_docs
