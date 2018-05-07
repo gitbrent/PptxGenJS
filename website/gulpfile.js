@@ -17,7 +17,7 @@ var jvsSrch2 = 'pptxgen.bundle.js">';
 var arrDeployTasks = ['deploy-css','deploy-html','deploy-index','deploy-img','deploy-help','deploy-sitemap'];
 
 gulp.task('deploy-css', ()=>{
-	return gulp.src('./build/PptxGenJS/css/*.css').pipe(gulp.dest('../css/'));
+	return gulp.src('./build/PptxGenJS/css/main.css').pipe(gulp.dest('../css/'));
 });
 
 gulp.task('deploy-html', ()=>{
