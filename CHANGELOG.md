@@ -5,6 +5,7 @@
 
 **Fixed Bugs:**
 - Shapes: How to add vertical lines [\#272](https://github.com/gitbrent/PptxGenJS/issues/272) ([simonjcarr](https://github.com/simonjcarr))
+- autoFit is missing 'Shrink text on overflow' variation? [\#330](https://github.com/gitbrent/PptxGenJS/issues/330) ([cdutson](https://github.com/cdutson))
 
 **Implemented Enhancements:**
 - New Feature! `addImage()` and `addMedia()` methods now accept URLs [\#325](https://github.com/gitbrent/PptxGenJS/pull/325) ([gitbrent](https://github.com/gitbrent))
