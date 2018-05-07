@@ -669,6 +669,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `rotate`     | integer | degrees | `0`       | text rotation degrees | 0-360. Ex: `{rotate:180}` |
 | `rtlMode`    | boolean |         | `false`   | enable Right-to-Left mode | `true` or `false` |
 | `shadow`     | object  |         |           | text shadow options | see options below. Ex: `shadow:{ type:'outer' }` |
+| `shrinkText` | boolean |         | `false`   | shrink text option  | whether to shrink text to fit textbox. Ex: `{ shrinkText:true }` |
 | `strike`     | boolean |         | `false`   | text strikethrough  | `true` or `false` |
 | `subscript`  | boolean |         | `false`   | subscript text      | `true` or `false` |
 | `superscript`| boolean |         | `false`   | superscript text    | `true` or `false` |
