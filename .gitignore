@@ -10,7 +10,6 @@ dist/*
 examples/*
 libs/*
 CHANGELOG.md
-package.json
 
 lib/core/metadata.js
 lib/core/MetadataBlog.js
@@ -20,6 +19,7 @@ website/build/PptxGenJS/*
 website/yarn.lock
 website/node_modules
 !website/gulpfile.js
+!website/package.json
 
 website/i18n/*
 !website/i18n/en.json
