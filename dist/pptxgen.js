@@ -331,14 +331,14 @@ var PptxGenJS = function(){
 			var resultObject = {};
 			var sizing = null;
 			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
-			intPosX = (objImage.x || 0);
-			intPosY = (objImage.y || 0);
-			intWidth = (objImage.w || 0);
-			intHeight = (objImage.h || 0);
-			sizing = objImage.sizing || null;
-			objHyperlink = (objImage.hyperlink || '');
-			strImageData = (objImage.data || '');
-			strImagePath = (objImage.path || '');
+			var intPosX = (objImage.x || 0);
+			var intPosY = (objImage.y || 0);
+			var intWidth = (objImage.w || 0);
+			var intHeight = (objImage.h || 0);
+			var sizing = objImage.sizing || null;
+			var objHyperlink = (objImage.hyperlink || '');
+			var strImageData = (objImage.data || '');
+			var strImagePath = (objImage.path || '');
 
 			var imageRelId = target.rels.length + 1;
 
