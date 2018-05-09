@@ -322,14 +322,12 @@ var PptxGenJS = function(){
 		/**
 		 * Adds an image object to a slide definition.
 		 * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
-		 * @param {Object} image object containing `path`/`data`, `x`, `y`, etc.
-		 * @param {Object} target slide that the image should be added to (if not specified as the 2nd arg)
+		 * @param {Object} objImage - object containing `path`/`data`, `x`, `y`, etc.
+		 * @param {Object} target - slide that the image should be added to (if not specified as the 2nd arg)
 		 * @return {Object} image object
 		 */
-		//addImageDefinition: function addImageDefinition(strImagePath, intPosX, intPosY, intWidth, intHeight, strImageData, target) {
 		addImageDefinition: function addImageDefinition(objImage, target) {
 			var resultObject = {};
-			var sizing = null;
 			// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
 			var intPosX = (objImage.x || 0);
 			var intPosY = (objImage.y || 0);
