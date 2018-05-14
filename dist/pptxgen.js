@@ -3792,9 +3792,9 @@ var PptxGenJS = function(){
 
 		if ( objOptions && objOptions.bodyProp ) {
 			// A: Enable or disable textwrapping none or square:
-			( objOptions.bodyProp.wrap ) ? bodyProperties += ' wrap="' + objOptions.bodyProp.wrap + '" rtlCol="0"' : bodyProperties += ' wrap="square" rtlCol="0"';
+			( objOptions.bodyProp.wrap ) ? bodyProperties += ' wrap="'+ objOptions.bodyProp.wrap +'" rtlCol="0"' : bodyProperties += ' wrap="square" rtlCol="0"';
 
-			// B: Set anchorPoints :
+			// B: Set anchorPoints:
 			if ( objOptions.bodyProp.anchor ) bodyProperties += ' anchor="'+ objOptions.bodyProp.anchor +'"'; // VALS: [t,ctr,b]
 			if ( objOptions.bodyProp.rot    ) bodyProperties += ' rot="'   + convertRotationDegrees(objOptions.bodyProp.rot) +'"'; // VALS: degree * 60,000
 			if ( objOptions.bodyProp.vert   ) bodyProperties += ' vert="'  + objOptions.bodyProp.vert   +'"'; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
