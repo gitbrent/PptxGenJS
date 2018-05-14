@@ -721,6 +721,38 @@
 							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
 						</div>
 					</fieldset>
+
+					<fieldset class="demoFset">
+						<legend>Rowspan plus Colspan</legend>
+						<table id="tabRowColspan" class="tabHtmlToPpt">
+							<thead>
+								<tr>
+									<th class="tg-header" colspan="2">Name</th>
+									<th class="tg-header" rowspan="2">Count</th>
+								</tr>
+								<tr>
+									<th class="tg-header">Last</th>
+									<th class="tg-header">First</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Smith</td>
+									<td>Liz</td>
+									<td>50</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>Williams</td>
+									<td>94</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="demoBtns">
+							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowColspan')">Rowspan Demo</button>
+							<button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>
+						</div>
+					</fieldset>
 				</div>
 
 				<!-- FUTURE:
