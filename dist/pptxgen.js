@@ -51,7 +51,19 @@ Number.isInteger = Number.isInteger || function(value) {
 };
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
-var NODEJS = ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && require('fs') );
+var NODEJS = false;
+{
+	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
+	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+		try {
+			require.resolve('fs');
+			NODEJS = true;
+		}
+		catch (ex) {
+			NODEJS = false;
+		}
+	}
+}
 
 // [Node.js] <script> includes
 if ( NODEJS ) {
@@ -62,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180424";
+	var APP_BLD = "20180513";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
