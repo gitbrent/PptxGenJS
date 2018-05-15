@@ -4,7 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<meta name="date" content="20180424">
+	<meta name="date" content="20180514">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
@@ -188,9 +188,9 @@
 			$('#tabAutoPaging tbody tr:last-child td:last-child').css('font-size','16px');
 		}
 
-		function table2slidesDemoForTab(inTabId) {
+		function table2slidesDemoForTab(inTabId,inOpts) {
 			var pptx = new PptxGenJS();
-			pptx.addSlidesForTable(inTabId);
+			pptx.addSlidesForTable(inTabId,(inOpts||null));
 			pptx.save( inTabId+'_'+getTimestamp() );
 		}
 
@@ -749,7 +749,7 @@
 							</tbody>
 						</table>
 						<div class="demoBtns">
-							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowColspan')">Rowspan Demo</button>
+							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowColspan',{addHeaderToEach:true})">Rowspan+Colspan Demo</button>
 							<button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>
 						</div>
 					</fieldset>
