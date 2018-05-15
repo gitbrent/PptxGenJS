@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180513";
+	var APP_BLD = "20180514";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -740,7 +740,7 @@ var PptxGenJS = function(){
 
 						// STEP 3: Build our row arrays into an actual grid to match the XML we will be building next (ISSUE #36)
 						// Note row arrays can arrive "lopsided" as in row1:[1,2,3] row2:[3] when first two cols rowspan!,
-						// so a simple loop below in XML building wont suffice to build table right.
+						// so a simple loop below in XML building wont suffice to build table correctly.
 						// We have to build an actual grid now
 						/*
 							EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
@@ -787,6 +787,7 @@ var PptxGenJS = function(){
 								}
 							});
 						});
+
 						/* Only useful for rowspan/colspan testing
 						if ( objTabOpts.debug ) {
 							console.table(objTableGrid);
@@ -2199,15 +2200,7 @@ var PptxGenJS = function(){
 						// 5: Empty current row's text (continue adding lines where we left off below)
 						$.each(currRow,function(i,cell){ cell.text = ''; });
 						// 6: Auto-Paging Options: addHeaderToEach
-						if ( opts.addHeaderToEach && arrObjTabHeadRows ) {
-							var headRow = [];
-							$.each(arrObjTabHeadRows[0], function(iCell,cell){
-								headRow.push({ text:cell.text, opts:cell.opts });
-								var lines = parseTextToLines(cell,(opts.colW[iCell]/ONEPT));
-								if ( lines.length > intMaxLineCnt ) { intMaxLineCnt = lines.length; intMaxColIdx = iCell; }
-							});
-							arrRows.push( $.extend(true, [], headRow) );
-						}
+						if ( opts.addHeaderToEach && arrObjTabHeadRows ) arrRows = arrRows.concat(arrObjTabHeadRows);
 					}
 
 					// B: Add next line of text to this cell
@@ -4904,7 +4897,7 @@ var PptxGenJS = function(){
 		opts.arrObjTabHeadRows = arrObjTabHeadRows || '';
 		opts.colW = arrColW;
 
-		getSlidesForTableRows( arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts )
+		getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts)
 		.forEach(function(arrTabRows,idx){
 			// A: Create new Slide
 			var newSlide = ( opts.master ? api.addNewSlide(opts.master) : api.addNewSlide() );
