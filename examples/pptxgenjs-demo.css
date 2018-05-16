@@ -2,7 +2,7 @@
  * FILE: examples > pptxgenjs-demo.css
  * AUTH: gitbrent
  * VER.: 1.5.0
- * REL.: 20180117
+ * REL.: 20180515
  */
 
 body { font-family:"Open Sans",Arial,Verdana,sans-serif; background:#f7f7f7; color:#4488CC; font-size:11px; }
@@ -165,9 +165,6 @@ fieldset .svgCheck {
 
 fieldset.demoFset { padding: 10px 20px; }
 fieldset .demoBtns { padding-top: 20px; text-align: center; }
-
-#miscTabDemos fieldset { margin-top: 25px; }
-#miscTabDemos fieldset:first-child { margin-top: 0px; }
 
 #contAutoPagingOptions .iconSvg { margin: -6px 6px 0 0; cursor: help; }
 #contAutoPagingBtns button { width:35%; }
