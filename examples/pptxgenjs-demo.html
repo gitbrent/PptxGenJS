@@ -406,6 +406,9 @@
 				}
 			}
 
+			// STEP 5: Demo setup
+			$('#tabCellLotsoText').text( gStrLoremIpsum.substring(0,3000) );
+
 			// LAST: Nav across sessions
 			doNavRestore();
 		});
@@ -581,178 +584,211 @@
 				</div>
 
 				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow"></div>Other Demos
+					<div class="arrow"></div>Table Styles
 				</div>
-				<div id="miscTabDemos" class="sectionBox" style="display:none">
-					<fieldset class="demoFset">
-						<legend>Plain/Unstyled Table</legend>
+				<div id="html2PptxTabs-styles" class="sectionBox" style="display:none">
+					<div class="sectionCont">
+						<fieldset class="demoFset">
+							<legend>Plain/Unstyled Table</legend>
 
-						<table id="tabNoStyle">
-						    <thead>
-						        <tr>
-						            <th>Name</th>
-						            <th>Email</th>
-						            <th>Company</th>
-									<th>Feedback</th>
-						        </tr>
-						    </thead>
-							<tbody>
-								<tr>
-									<td>Elon Musk</td>
-									<td>Elon@tesla.com</td>
-									<td>Tesla Motors &amp; SpaceX</td>
-									<td>PptxGenJS is almost as good as rockets that can land themselves</td>
-								</tr>
-								<tr>
-									<td>Tim Cook</td>
-									<td>tim@apple.com</td>
-									<td>Apple Inc.</td>
-									<td>Jony Ive said the Keynote team needs to hire you</td>
-								</tr>
-								<tr>
-									<td>Satya Nadella</td>
-									<td>ceo@microsoft.com</td>
-									<td>Microsoft Inc.</td>
-									<td>The PowerPoint team needs to hire you</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="demoBtns">
-							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabNoStyle')">Table-to-Slides Demo</button>
-						</div>
-					</fieldset>
+							<table id="tabNoStyle">
+							    <thead>
+							        <tr>
+							            <th>Name</th>
+							            <th>Email</th>
+							            <th>Company</th>
+										<th>Feedback</th>
+							        </tr>
+							    </thead>
+								<tbody>
+									<tr>
+										<td>Elon Musk</td>
+										<td>Elon@tesla.com</td>
+										<td>Tesla Motors &amp; SpaceX</td>
+										<td>PptxGenJS is almost as good as rockets that can land themselves</td>
+									</tr>
+									<tr>
+										<td>Tim Cook</td>
+										<td>tim@apple.com</td>
+										<td>Apple Inc.</td>
+										<td>Jony Ive said the Keynote team needs to hire you</td>
+									</tr>
+									<tr>
+										<td>Satya Nadella</td>
+										<td>ceo@microsoft.com</td>
+										<td>Microsoft Inc.</td>
+										<td>The PowerPoint team needs to hire you</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="demoBtns">
+								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabNoStyle')">Table-to-Slides Demo</button>
+							</div>
+						</fieldset>
 
-					<fieldset class="demoFset">
-						<legend>Inherited Style</legend>
+						<fieldset class="demoFset">
+							<legend>Inherited Style</legend>
 
-						<table id="tabInheritStyle" class="tabHtmlToPpt" cellspacing="0" cellpadding="3">
-						    <thead>
-						        <tr>
-									<th>Company</th>
-						            <th>Contact</th>
-									<th>Feedback</th>
-						        </tr>
-						    </thead>
-							<tbody>
-								<tr>
-									<td>Tesla &amp; SpaceX</td>
-									<td>Elon@tesla.com</td>
-									<td>PptxGenJS is almost as good as rockets that can land themselves</td>
-								</tr>
-								<tr>
-									<td>Apple Inc.</td>
-									<td>tim@apple.com</td>
-									<td>Jony Ive said the Keynote team needs to hire you</td>
-								</tr>
-								<tr>
-									<td>Microsoft Inc.</td>
-									<td>ceo@microsoft.com</td>
-									<td>The PowerPoint team needs to hire you</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="demoBtns">
-							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabInheritStyle')">Table-to-Slides Demo</button>
-						</div>
-					</fieldset>
+							<table id="tabInheritStyle" class="tabHtmlToPpt" cellspacing="0" cellpadding="3">
+							    <thead>
+							        <tr>
+										<th>Company</th>
+							            <th>Contact</th>
+										<th>Feedback</th>
+							        </tr>
+							    </thead>
+								<tbody>
+									<tr>
+										<td>Tesla &amp; SpaceX</td>
+										<td>Elon@tesla.com</td>
+										<td>PptxGenJS is almost as good as rockets that can land themselves</td>
+									</tr>
+									<tr>
+										<td>Apple Inc.</td>
+										<td>tim@apple.com</td>
+										<td>Jony Ive said the Keynote team needs to hire you</td>
+									</tr>
+									<tr>
+										<td>Microsoft Inc.</td>
+										<td>ceo@microsoft.com</td>
+										<td>The PowerPoint team needs to hire you</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="demoBtns">
+								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabInheritStyle')">Table-to-Slides Demo</button>
+							</div>
+						</fieldset>
+					</div>
+				</div>
 
-					<fieldset class="demoFset">
-						<legend>Colspan</legend>
-						<table id="tabColspan" class="tabHtmlToPpt">
-							<thead>
-								<tr>
-									<th class="tg-header">First Name</th>
-									<th class="tg-header">Last Name</th>
-									<th class="tg-header">Count</th>
-									<th class="tg-header">Something</th>
-									<th class="tg-header" colspan="2">Colspan Column</th>
-									<th class="tg-header">Fin</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Jill</td>
-									<td>Smith</td>
-									<td>50</td>
-									<td>1</td>
-									<td>2</td>
-									<td>3</td>
-									<td>4</td>
-								</tr>
-								<tr>
-									<td>Eve</td>
-									<td>Jackson</td>
-									<td>94</td>
-									<td></td>
-									<td></td>
-									<td></td>
-									<td></td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="demoBtns">
-							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
-						</div>
-					</fieldset>
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow"></div>Rowspans/Colspans
+				</div>
+				<div id="html2PptxTabs-spans" class="sectionBox" style="display:none">
+					<div class="sectionCont">
+						<fieldset class="demoFset">
+							<legend>Colspan</legend>
+							<table id="tabColspan" class="tabHtmlToPpt">
+								<thead>
+									<tr>
+										<th class="tg-header">First Name</th>
+										<th class="tg-header">Last Name</th>
+										<th class="tg-header" colspan="2">Colspan Column</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Jill</td>
+										<td>Smith</td>
+										<td>59</td>
+									</tr>
+									<tr>
+										<td>Eve</td>
+										<td>Pilgrim</td>
+										<td>94</td>
+									</tr>
+									<tr>
+										<td>Scott</td>
+										<td>Jackson</td>
+										<td>101</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="demoBtns">
+								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
+							</div>
+						</fieldset>
 
-					<fieldset class="demoFset">
-						<legend>Rowspan</legend>
-						<table id="tabRowspan" class="tabHtmlToPpt">
-							<thead>
-								<tr>
-									<th class="tg-header">Last Name</th>
-									<th class="tg-header">First Name</th>
-									<th class="tg-header">Count</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td rowspan="2">Smith</td>
-									<td>Liz</td>
-									<td>50</td>
-								</tr>
-								<tr>
-									<td>Eve</td>
-									<td>94</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="demoBtns">
-							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
-						</div>
-					</fieldset>
+						<fieldset class="demoFset">
+							<legend>Rowspan</legend>
+							<table id="tabRowspan" class="tabHtmlToPpt">
+								<thead>
+									<tr>
+										<th class="tg-header">Last Name</th>
+										<th class="tg-header">First Name</th>
+										<th class="tg-header">Count</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td rowspan="3">Smith</td>
+										<td>Liz</td>
+										<td>50</td>
+									</tr>
+									<tr>
+										<td>Eve</td>
+										<td>94</td>
+									</tr>
+									<tr>
+										<td>Scott</td>
+										<td>101</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="demoBtns">
+								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
+							</div>
+						</fieldset>
 
-					<fieldset class="demoFset">
-						<legend>Rowspan plus Colspan</legend>
-						<table id="tabRowColspan" class="tabHtmlToPpt">
-							<thead>
-								<tr>
-									<th class="tg-header" colspan="2">Name</th>
-									<th class="tg-header" rowspan="2">Count</th>
-								</tr>
-								<tr>
-									<th class="tg-header">Last</th>
-									<th class="tg-header">First</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Smith</td>
-									<td>Liz</td>
-									<td>50</td>
-								</tr>
-								<tr>
-									<td>Eve</td>
-									<td>Williams</td>
-									<td>94</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="demoBtns">
-							<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowColspan',{addHeaderToEach:true})">Rowspan+Colspan Demo</button>
-							<button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>
-						</div>
-					</fieldset>
+						<fieldset class="demoFset">
+							<legend>Rowspan plus Colspan</legend>
+							<table id="tabRowColspan" class="tabHtmlToPpt">
+								<thead>
+									<tr>
+										<th class="tg-header" colspan="2">Name</th>
+										<th class="tg-header" rowspan="2">Count</th>
+									</tr>
+									<tr>
+										<th class="tg-header">Last</th>
+										<th class="tg-header">First</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Smith</td>
+										<td>Liz</td>
+										<td>50</td>
+									</tr>
+									<tr>
+										<td>Eve</td>
+										<td>Williams</td>
+										<td>94</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="demoBtns">
+								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowColspan',{addHeaderToEach:true})">Rowspan+Colspan Demo</button>
+								<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
+							</div>
+						</fieldset>
+					</div>
+				</div>
+
+				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					<div class="arrow"></div>Auto-Paging
+				</div>
+				<div id="html2PptxTabs-spans" class="sectionBox" style="display:none">
+					<div class="sectionCont">
+						<fieldset class="demoFset">
+							<legend>Scenario: One cell with large amount of text</legend>
+							<table id="tabLotsoText" class="tabHtmlToPpt">
+								<thead>
+									<tr>
+										<th class="tg-header">Executive Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td id="tabCellLotsoText">99</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="demoBtns">
+								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabLotsoText',{'addHeaderToEach':true})">Lots-o-Text Demo</button>
+							</div>
+						</fieldset>
+					</div>
 				</div>
 
 				<!-- FUTURE:
