@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180514";
+	var APP_BLD = "20180515";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -1044,14 +1044,15 @@ var PptxGenJS = function(){
 						if ( slideItemObj.mtype == 'online' ) {
 							strSlideXml += '<p:pic>';
 							strSlideXml += ' <p:nvPicPr>';
-							// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
+							// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preview image rId, PowerPoint throws error!
 							strSlideXml += ' <p:cNvPr id="'+ (slideItemObj.mediaRid+2) +'" name="Picture'+ (idx + 1) +'"/>';
 							strSlideXml += ' <p:cNvPicPr/>';
 							strSlideXml += ' <p:nvPr>';
 							strSlideXml += '  <a:videoFile r:link="rId'+ slideItemObj.mediaRid +'"/>';
 							strSlideXml += ' </p:nvPr>';
 							strSlideXml += ' </p:nvPicPr>';
-							strSlideXml += ' <p:blipFill><a:blip r:embed="rId'+ (slideItemObj.mediaRid+2) +'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>'; // NOTE: Preview image is required!
+							// NOTE: `blip` is diferent than videos; also there's no preview "p:extLst" above but exists in videos
+							strSlideXml += ' <p:blipFill><a:blip r:embed="rId'+ (slideItemObj.mediaRid+1) +'"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>'; // NOTE: Preview image is required!
 							strSlideXml += ' <p:spPr>';
 							strSlideXml += '  <a:xfrm' + locationAttr + '>';
 							strSlideXml += '   <a:off x="'  + x  + '" y="'  + y  + '"/>';
@@ -4495,7 +4496,7 @@ var PptxGenJS = function(){
 			}
 			// Online Video: requires `link`
 			if ( strType == 'online' && !strLink ) {
-				console.error('ERROR: online videos require `link` value')
+				console.error('addMedia() error: online videos require `link` value')
 				return null;
 			}
 
@@ -4523,19 +4524,21 @@ var PptxGenJS = function(){
 			gObjPptx.slides.forEach(function(slide){ intRels += slide.rels.length; });
 
 			if ( strType == 'online' ) {
+				// Add video
 				slideObjRels.push({
 					path: (strPath || 'preencoded'+strExtn),
+					data: 'dummy',
 					type: 'online',
 					extn: strExtn,
-					data: 'dummy',
 					rId:  (intRels+1),
 					Target: strLink
 				});
 				gObjPptx.slides[slideNum].data[slideObjNum].mediaRid = slideObjRels[slideObjRels.length-1].rId;
+
 				// Add preview/overlay image
 				slideObjRels.push({
-					data: IMG_PLAYBTN,
 					path: 'preencoded.png',
+					data: IMG_PLAYBTN,
 					type: 'image/png',
 					extn: 'png',
 					rId:  (intRels+2),
