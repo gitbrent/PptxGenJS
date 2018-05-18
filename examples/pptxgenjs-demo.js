@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.2.0-beta
-* BLD.: 20180424
+* BLD.: 20180517
 */
 
 // Detect Node.js
@@ -1997,6 +1997,7 @@ function genSlides_Image(pptx) {
 	// SLIDE 1: Image Types -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
+		slide.slideNumber({ x:'50%', y:'95%', color:'0088CC' });
 		slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1
@@ -2052,6 +2053,7 @@ function genSlides_Image(pptx) {
 	// SLIDE 2: Image Sizing -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
+		slide.slideNumber({ x:'50%', y:'95%', w:1, h:1, color:'0088CC' });
 		slide.addTable( [ [{ text:'Image Examples: Image Sizing/Rounding', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1

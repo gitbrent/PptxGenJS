@@ -258,7 +258,7 @@ var slide2 = pptx.addNewSlide('TITLE_SLIDE', {bkgd:'FFFCCC'});
 ```javascript
 slide.slideNumber({ x:1.0, y:'90%' });
 // Slide Numbers can be styled:
-slide.slideNumber({ x:1.0, y:'90%', fontFace:'Courier', fontSize:32, color:'CF0101' });
+slide.slideNumber({ x:1.0, y:'90%', w:1.0, h:1.0, fontFace:'Courier', fontSize:32, color:'CF0101' });
 ```
 
 ### Slide Number Options
@@ -266,6 +266,8 @@ slide.slideNumber({ x:1.0, y:'90%', fontFace:'Courier', fontSize:32, color:'CF01
 | :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
 | `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
 | `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
+| `w`          | number  | inches | `0.3`     | slide object width  | 0-n. Ex: `{w:1.5}` |
+| `h`          | number  | inches | `0.5`     | slide object height | 0-n. Ex: `{h:1.0}` |
 | `color`      | string  |        |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 | `fontFace`   | string  |        |           | font face           | any available font. Ex: `{fontFace:Arial}` |
 | `fontSize`   | number  | points |           | font size           | 8-256. Ex: `{fontSize:12}` |

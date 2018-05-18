@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180515";
+	var APP_BLD = "20180517";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -1121,7 +1121,10 @@ var PptxGenJS = function(){
 					+ '    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>'
 					+ '  </p:nvSpPr>'
 					+ '  <p:spPr>'
-					+ '    <a:xfrm><a:off x="'+ getSmartParseNumber(slideObject.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(slideObject.slideNumberObj.y, 'Y') +'"/><a:ext cx="800000" cy="300000"/></a:xfrm>'
+					+ '    <a:xfrm>'
+					+ '      <a:off x="'+ getSmartParseNumber(slideObject.slideNumberObj.x, 'X') +'" y="'+ getSmartParseNumber(slideObject.slideNumberObj.y, 'Y') +'"/>'
+					+ '      <a:ext cx="'+ (slideObject.slideNumberObj.w ? getSmartParseNumber(slideObject.slideNumberObj.w, 'X') : 800000) +'" cy="'+ (slideObject.slideNumberObj.h ? getSmartParseNumber(slideObject.slideNumberObj.h, 'Y') : 300000) +'"/>'
+					+ '    </a:xfrm>'
 					+ '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
 					+ '    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>'
 					+ '  </p:spPr>';
