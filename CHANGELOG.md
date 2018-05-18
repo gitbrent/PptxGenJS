@@ -14,6 +14,7 @@
 - Make Node detection more robust [\#277](https://github.com/gitbrent/PptxGenJS/issues/277) ([adrianirwin](https://github.com/adrianirwin)) ([DSheffield](https://github.com/DSheffield))
 - Updated pptxgenjs-demo files to use CDNs instead of local files ([gitbrent](https://github.com/gitbrent))
 - Updated Node.js detection to increase reliability for Angular users et al. ([gitbrent](https://github.com/gitbrent))
+- Add `w` and `h` attributes to `slideNumber()` [\#336](https://github.com/gitbrent/PptxGenJS/issues/336) ([s7726](https://github.com/s7726))
 
 
 
