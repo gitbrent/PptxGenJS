@@ -940,8 +940,14 @@ var PptxGenJS = function(){
 						strSlideXml += '<p:sp>';
 
 						// B: The addition of the "txBox" attribute is the sole determiner of if an object is a Shape or Textbox
-						strSlideXml += '<p:nvSpPr><p:cNvPr id="'+ (idx+2) +'" name="Object '+ (idx+1) +'"/>';
-						strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"/><p:nvPr/>' : '/><p:nvPr/>');
+						strSlideXml += '<p:nvSpPr><p:cNvPr id="'+ (idx+2) +'" name="' + (slideItemObj.options.objectType ? slideItemObj.options.objectType : 'Object') + ' ' + (idx+1) +'"/>';
+						// strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"/><p:nvPr/>' : '/><p:nvPr/>');
+
+						// Add custom object type if passed by user
+						// Useful for setting titles for 508 compliance
+						var textDrawingProperties = (slideItemObj.options && slideItemObj.options.type) ? '<p:nvPr><p:ph type="' + slideItemObj.options.type + '" /></p:nvPr>' : '<p:nvPr/>';
+
+						strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"' : '') + '/>' + textDrawingProperties;
 						strSlideXml += '</p:nvSpPr>';
 						strSlideXml += '<p:spPr><a:xfrm' + locationAttr + '>';
 						strSlideXml += '<a:off x="'  + x  + '" y="'  + y  + '"/>';
