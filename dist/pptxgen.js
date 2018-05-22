@@ -349,6 +349,7 @@ var PptxGenJS = function(){
 			var objHyperlink = (objImage.hyperlink || '');
 			var strImageData = (objImage.data || '');
 			var strImagePath = (objImage.path || '');
+			var strImageDescription = (objImage.description || '');
 
 			var imageRelId = target.rels.length + 1;
 
@@ -384,7 +385,9 @@ var PptxGenJS = function(){
 				cx: (intWidth || imgObj.width),
 				cy: (intHeight || imgObj.height),
 				rounding: (objImage.rounding || false),
-				sizing: sizing
+				sizing: sizing,
+				// Add alt text provided or use image name as fallback
+				description: (strImageDescription || resultObject.image)
 			};
 
 			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -937,8 +940,14 @@ var PptxGenJS = function(){
 						strSlideXml += '<p:sp>';
 
 						// B: The addition of the "txBox" attribute is the sole determiner of if an object is a Shape or Textbox
-						strSlideXml += '<p:nvSpPr><p:cNvPr id="'+ (idx+2) +'" name="Object '+ (idx+1) +'"/>';
-						strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"/><p:nvPr/>' : '/><p:nvPr/>');
+						strSlideXml += '<p:nvSpPr><p:cNvPr id="'+ (idx+2) +'" name="' + (slideItemObj.options.objectType ? slideItemObj.options.objectType : 'Object') + ' ' + (idx+1) +'"/>';
+						// strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"/><p:nvPr/>' : '/><p:nvPr/>');
+
+						// Add custom object type if passed by user
+						// Useful for setting titles for 508 compliance
+						var textDrawingProperties = (slideItemObj.options && slideItemObj.options.type) ? '<p:nvPr><p:ph type="' + slideItemObj.options.type + '" /></p:nvPr>' : '<p:nvPr/>';
+
+						strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"' : '') + '/>' + textDrawingProperties;
 						strSlideXml += '</p:nvSpPr>';
 						strSlideXml += '<p:spPr><a:xfrm' + locationAttr + '>';
 						strSlideXml += '<a:off x="'  + x  + '" y="'  + y  + '"/>';
@@ -1008,7 +1017,8 @@ var PptxGenJS = function(){
 
 						strSlideXml += '<p:pic>';
 						strSlideXml += '  <p:nvPicPr>'
-						strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideItemObj.image +'">';
+						// Add alt text for image
+						strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideItemObj.options.description +'">';
 						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.url   ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" />';
 						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.slide ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" action="ppaction://hlinksldjump" />';
 						strSlideXml += '    </p:cNvPr>';
