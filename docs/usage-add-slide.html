@@ -16,8 +16,8 @@
 <pre><code class="hljs css javascript"><span class="hljs-keyword">var</span> slide = pptx.addNewSlide();
 </code></pre>
 <p>See <a href="/PptxGenJS/docs/usage-slide-options.html">Slide Options</a> for features such as Slide Numbers.</p>
-<hr>
 <h2><a class="anchor" aria-hidden="true" id="slide-templates-master-slides"></a><a href="#slide-templates-master-slides" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Slide Templates/Master Slides</h2>
+<hr>
 <h3><a class="anchor" aria-hidden="true" id="master-slide-syntax"></a><a href="#master-slide-syntax" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Master Slide Syntax</h3>
 <pre><code class="hljs css javascript"><span class="hljs-keyword">var</span> slide = pptx.addNewSlide(<span class="hljs-string">'MASTER_NAME'</span>);
 </code></pre>
@@ -29,8 +29,8 @@
 <span class="hljs-comment">// The background color can be overridden on a per-slide basis:</span>
 <span class="hljs-keyword">var</span> slide2 = pptx.addNewSlide(<span class="hljs-string">'TITLE_SLIDE'</span>, {<span class="hljs-attr">bkgd</span>:<span class="hljs-string">'FFFCCC'</span>});
 </code></pre>
-<hr>
 <h2><a class="anchor" aria-hidden="true" id="default-slide-colors"></a><a href="#default-slide-colors" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Default Slide Colors</h2>
+<hr>
 <h3><a class="anchor" aria-hidden="true" id="default-slide-color-options"></a><a href="#default-slide-color-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Default Slide Color Options</h3>
 <table>
 <thead>
@@ -48,8 +48,8 @@ slide.back  = <span class="hljs-string">'F1F1F1'</span>;
 <span class="hljs-comment">// Set slide default font color</span>
 slide.color = <span class="hljs-string">'696969'</span>;
 </code></pre>
-<hr>
 <h2><a class="anchor" aria-hidden="true" id="slides-return-themselves"></a><a href="#slides-return-themselves" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Slides Return Themselves</h2>
+<hr>
 <p>The Slide object returns a reference to itself, so calls can be chained.</p>
 <p>Example:</p>
 <pre><code class="hljs css javascript">slide.addImage({ <span class="hljs-attr">path</span>:<span class="hljs-string">'img1.png'</span>, <span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">2</span> }).addImage({ <span class="hljs-attr">path</span>:<span class="hljs-string">'img2.jpg'</span>, <span class="hljs-attr">x</span>:<span class="hljs-number">5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">3</span> });

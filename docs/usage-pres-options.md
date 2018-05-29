@@ -3,9 +3,13 @@ id: usage-pres-options
 title: Presentation Options
 ---
 
-## Presentation Properties
-There are several optional PowerPoint metadata properties that can be set:
+## Metadata
+**************************************************************************************************
 
+### Metadata Properties
+There are several optional PowerPoint metadata properties that can be set.
+
+### Metadata Properties Examples
 ```javascript
 pptx.setAuthor('Brent Ely');
 pptx.setCompany('S.T.A.R. Laboratories');
@@ -14,13 +18,21 @@ pptx.setSubject('Annual Report');
 pptx.setTitle('PptxGenJS Sample Presentation');
 ```
 
-## Presentation Layouts
-Setting the Layout (applies to all Slides in the Presentation):
+
+
+
+
+## Slide Layouts (Sizes)
+**************************************************************************************************
+
+### Slide Layout Syntax
 ```javascript
-pptx.setLayout('LAYOUT_WIDE');
+pptx.setLayout('LAYOUT_NAME');
 ```
 
-## Presentation Layout Options
+* Note: Layout Options apply to all the Slides in the current Presentation.
+
+### Slide Layout Options
 | Layout Name    | Default  | Layout Slide Size                 |
 | :------------- | :------- | :-------------------------------- |
 | `LAYOUT_16x9`  | Yes      | 10 x 5.625 inches                 |
@@ -32,13 +44,22 @@ pptx.setLayout('LAYOUT_WIDE');
 Custom user defined Layout sizes are supported - just supply a `name` and the size in inches.
 * Defining a new Layout using an object will also set this new size as the current Presentation Layout
 
+### Slide Layout Examples
 ```javascript
 // Defines and sets this new layout for the Presentation
 pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
 ```
 
-## Presentation Text Direction
+
+
+## Text Direction
+**************************************************************************************************
+
+### Text Direction Options
 Right-to-Left (RTL) text is supported.  Simply set the RTL mode at the Presentation-level.
+
+### Text Direction Examples
 ```javascript
+// Set right-to-left text
 pptx.setRTL(true);
 ```

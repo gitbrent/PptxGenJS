@@ -6,6 +6,7 @@ title: Saving Presentations
 Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
 examples of which can be found below.
 
+**************************************************************************************************
 ## Client Browser
 * Simply provide a filename
 
@@ -13,6 +14,7 @@ examples of which can be found below.
 pptx.save('Demo-Media');
 ```
 
+**************************************************************************************************
 ## Node.js
 * Node can accept a callback function that will return the filename once the save is complete
 * Node can also be used to stream a powerpoint file - simply pass a filename that begins with "http"
@@ -36,6 +38,7 @@ pptx.save('http', streamCallback);
 pptx.save('jszip', saveCallback, 'base64');
 ```
 
+**************************************************************************************************
 ## Saving Multiple Presentations
 
 ### Client-Side:

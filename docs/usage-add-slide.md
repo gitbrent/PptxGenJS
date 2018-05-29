@@ -10,8 +10,8 @@ var slide = pptx.addNewSlide();
 
 See [Slide Options](/PptxGenJS/docs/usage-slide-options.html) for features such as Slide Numbers.
 
-**************************************************************************************************
 ## Slide Templates/Master Slides
+**************************************************************************************************
 
 ### Master Slide Syntax
 ```javascript
@@ -31,8 +31,8 @@ var slide2 = pptx.addNewSlide('TITLE_SLIDE', {bkgd:'FFFCCC'});
 
 
 
-**************************************************************************************************
 ## Default Slide Colors
+**************************************************************************************************
 
 ### Default Slide Color Options
 | Option       | Type    | Default   | Description         | Possible Values  |
@@ -49,8 +49,10 @@ slide.back  = 'F1F1F1';
 slide.color = '696969';
 ```
 
-**************************************************************************************************
+
+
 ## Slides Return Themselves
+**************************************************************************************************
 The Slide object returns a reference to itself, so calls can be chained.
 
 Example:
