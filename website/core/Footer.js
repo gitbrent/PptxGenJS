@@ -56,16 +56,17 @@ class Footer extends React.Component {
 					<div>
 						<h5>Docs</h5>
 						<a
-							href={this.docUrl('quick-start.html', this.props.language)}
-							onClick={()=>ga('send','event','Link','click','Link-quickstart')}>
+							href={this.docUrl('quick-start.html')}
+							onClick={()=>ga('send','event','Link','click','link-footer-GetStarted')}>
 							Getting Started With PptxGenJS
 						</a>
 						<a
-							href={this.docUrl('installation.html', this.props.language)}
-							onClick={this.handleClick}>
+							href={this.docUrl('installation.html')}
+							onClick={()=>ga('send','event','Link','click','link-footer-LibraryApi')}>
 							PowerPoint Library API Reference
 						</a>
-						<a href={this.docUrl('usage-pres-create.html', this.props.language)}>
+						<a href={this.docUrl('usage-pres-create.html')}
+							onClick={()=>ga('send','event','Link','click','link-footer-CodeSamples')}>
 							PowerPoint JavaScript Code Samples
 						</a>
 					</div>
