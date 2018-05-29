@@ -14,8 +14,8 @@ const siteConfig = {
 	gaTrackingId: 'UA-75147115-1',
 	headerLinks: [
 		{href: 'https://github.com/gitbrent/PptxGenJS/releases', label: 'Download'},
-		{doc: 'installation', label: 'Get Started'},
-		{doc: 'usage-basic-create', label: 'API Documentation'},
+		{doc: 'quick-start', label: 'Get Started'},
+		{doc: 'installation', label: 'API Documentation'},
 		{href: 'https://github.com/gitbrent/PptxGenJS/', label: 'GitHub'},
 	],
 	headerIcon: 'img/pptxgenjs.svg',

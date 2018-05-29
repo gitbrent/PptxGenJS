@@ -1,8 +1,8 @@
 ---
-id: usage-basic-create
-title: Creating a Presentation
+id: quick-start
+title: Quick Start Guide
 ---
-PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
+PptxGenJS PowerPoint presentations are created via JavaScript by following 4 steps:
 
 ## Steps
 1. Create a new Presentation
