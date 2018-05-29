@@ -44,12 +44,12 @@ pptx.save('jszip', saveCallback, 'base64');
 ```javascript
 var pptx = null;
 
-// Presenation 1:
+// Presentation 1:
 pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-1');
 
-// Presenation 2:
+// Presentation 2:
 pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-2');
@@ -62,12 +62,12 @@ pptx.save('PptxGenJS-Presentation-2');
 var PptxGenJS = require("pptxgenjs");
 var pptx = null;
 
-// Presenation 1:
+// Presentation 1:
 pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
 pptx.save('PptxGenJS-NodePres-1');
 
-// Presenation 2:
+// Presentation 2:
 pptx = new PptxGenJS();
 pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-NodePres-2');

@@ -8,19 +8,19 @@ title: Adding a Slide
 var slide = pptx.addNewSlide();
 ```
 
-## Slide Formatting
+See [Slide Options](/PptxGenJS/docs/usage-slide-options.html) for features such as Slide Numbers.
+
+**************************************************************************************************
+## Slide Templates/Master Slides
+
+### Master Slide Syntax
 ```javascript
-slide.back  = 'F1F1F1';
-slide.color = '696969';
+var slide = pptx.addNewSlide('MASTER_NAME');
 ```
 
-## Slide Formatting Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `bkgd`       | string  |        | `FFFFFF`  | background color    | hex color code or [scheme color constant](#scheme-colors). |
-| `color`      | string  |        | `000000`  | default text color  | hex color code or [scheme color constant](#scheme-colors). |
+(See [Master Slides](/PptxGenJS/docs/masters.html) for more about creating masters/templates)
 
-## Applying Master Slides / Branding
+### Master Slide Examples
 ```javascript
 // Create a new Slide that will inherit properties from a pre-defined master page (margins, logos, text, background, etc.)
 var slide1 = pptx.addNewSlide('TITLE_SLIDE');
@@ -29,31 +29,31 @@ var slide1 = pptx.addNewSlide('TITLE_SLIDE');
 var slide2 = pptx.addNewSlide('TITLE_SLIDE', {bkgd:'FFFCCC'});
 ```
 
-## Adding Slide Numbers
-```javascript
-// EX: Basic Slide Numbers
-slide.slideNumber({ x:1.0, y:'90%' });
 
-// EX: Custom styled Slide Numbers
-slide.slideNumber({ x:1.0, y:'90%', fontFace:'Courier', fontSize:32, color:'CF0101' });
+
+**************************************************************************************************
+## Default Slide Colors
+
+### Default Slide Color Options
+| Option       | Type    | Default   | Description         | Possible Values  |
+| :----------- | :------ | :-------- | :------------------ | :--------------- |
+| `bkgd`       | string  | `FFFFFF`  | background color    | hex color code or [scheme color constant](#scheme-colors). |
+| `color`      | string  | `000000`  | default text color  | hex color code or [scheme color constant](#scheme-colors). |
+
+### Default Slide Color Examples
+```javascript
+// Set slide background color
+slide.back  = 'F1F1F1';
+
+// Set slide default font color
+slide.color = '696969';
 ```
 
-## Slide Number Options
-| Option       | Type    | Unit   | Default   | Description         | Possible Values  |
-| :----------- | :------ | :----- | :-------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `0.3`     | horizontal location | 0-n OR 'n%'. (Ex: `{x:'10%'}` places number 10% from left edge) |
-| `y`          | number  | inches | `90%`     | vertical location   | 0-n OR 'n%'. (Ex: `{y:'90%'}` places number 90% down the Slide) |
-| `color`      | string  |        |           | text color          | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
-| `fontFace`   | string  |        |           | font face           | any available font. Ex: `{fontFace:Arial}` |
-| `fontSize`   | number  | points |           | font size           | 8-256. Ex: `{fontSize:12}` |
-
-## Slide Return Value
+**************************************************************************************************
+## Slides Return Themselves
 The Slide object returns a reference to itself, so calls can be chained.
 
 Example:
 ```javascript
-slide
-.addImage({ path:'images/logo1.png', x:1, y:2, w:3, h:3 })
-.addImage({ path:'images/logo2.jpg', x:5, y:3, w:3, h:3 })
-.addImage({ path:'images/logo3.png', x:9, y:4, w:3, h:3 });
+slide.addImage({ path:'img1.png', x:1, y:2 }).addImage({ path:'img2.jpg', x:5, y:3 });
 ```
