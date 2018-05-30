@@ -21,7 +21,6 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  (*generated with [DocToc](https://github.com/thlorenz/doctoc)*)
 
-- [Documentation](#documentation)
 - [Live Demo](#live-demo)
 - [Installation](#installation)
   - [Client-Side](#client-side)
@@ -29,19 +28,20 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
     - [Include Bundled Script](#include-bundled-script)
     - [Install With Bower](#install-with-bower)
   - [Node.js](#nodejs)
-- [Presentations: Usage and Options](#presentations-usage-and-options)
+- [Quick Start Guide](#quick-start-guide)
+- [Library API](#library-api)
   - [Presentation Creation/Options](#presentation-creationoptions)
   - [Slide Creation/Options](#slide-creationoptions)
   - [Saving a Presentation](#saving-a-presentation)
+  - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Adding Charts](#adding-charts)
   - [Adding Text](#adding-text)
   - [Adding Tables](#adding-tables)
   - [Adding Shapes](#adding-shapes)
   - [Adding Images](#adding-images)
   - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
-- [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
+  - [Scheme Colors](#scheme-colors)
 - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
-- [Scheme Colors](#scheme-colors)
 - [Integration with Other Libraries](#integration-with-other-libraries)
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
 - [Issues / Suggestions](#issues--suggestions)
@@ -55,13 +55,6 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [License](#license)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
-
-**************************************************************************************************
-# Documentation
-
-There's more than just the README!  
-* View the online [API Reference](https://gitbrent.github.io/PptxGenJS/docs/installation.html)
-
 
 **************************************************************************************************
 # Live Demo
@@ -99,7 +92,7 @@ var pptx = require("pptxgenjs");
 * Desktop: Compatible with Electron applications
 
 **************************************************************************************************
-# Presentations: Usage and Options
+# Quick Start Guide
 PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
 1. Create a new Presentation
@@ -114,6 +107,10 @@ slide.addText('Hello World!', { x:1.5, y:1.5, fontSize:18, color:'363636' });
 pptx.save('Sample Presentation');
 ```
 That's really all there is to it!
+
+
+**************************************************************************************************
+# Library API
 
 **************************************************************************************************
 ## Presentation Creation/Options
@@ -135,6 +132,12 @@ That's really all there is to it!
 ## Saving a Presentation
 
 [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving.html)
+
+
+**************************************************************************************************
+## Master Slides and Corporate Branding
+
+[Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters.html)
 
 
 **************************************************************************************************
@@ -174,21 +177,15 @@ That's really all there is to it!
 
 
 **************************************************************************************************
-# Master Slides and Corporate Branding
+## Scheme Colors
 
-[Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters.html)
+[Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
 
 
 **************************************************************************************************
 # HTML-to-PowerPoint Feature
 
 [HTML-to-PowerPoint](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html)
-
-
-**************************************************************************************************
-# Scheme Colors
-
-[Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
 
 
 **************************************************************************************************
