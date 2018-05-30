@@ -112,73 +112,39 @@ That's really all there is to it!
 **************************************************************************************************
 # Library API
 
-**************************************************************************************************
 ## Presentation Creation/Options
-
 [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)
-
 [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)
 
-
-**************************************************************************************************
 ## Slide Creation/Options
-
 [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)
-
 [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
 
-
-**************************************************************************************************
 ## Saving a Presentation
-
 [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving.html)
 
-
-**************************************************************************************************
 ## Master Slides and Corporate Branding
-
 [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters.html)
 
-
-**************************************************************************************************
 ## Adding Charts
-
 [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts.html)
 
-
-**************************************************************************************************
 ## Adding Text
-
 [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
 
-
-**************************************************************************************************
 ## Adding Tables
-
 [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)
 
-
-**************************************************************************************************
 ## Adding Shapes
-
 [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html)
 
-
-**************************************************************************************************
 ## Adding Images
-
 [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images.html)
 
-
-**************************************************************************************************
 ## Adding Media (Audio/Video/YouTube)
-
 [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media.html)
 
-
-**************************************************************************************************
 ## Scheme Colors
-
 [Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
 
 
