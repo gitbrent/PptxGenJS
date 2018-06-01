@@ -2401,6 +2401,10 @@ var PptxGenJS = function(){
 				});
 				strXml += '<c:autoTitleDeleted val="0"/>';
 			}
+			//NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
++			else {
++				strXml += '<c:autoTitleDeleted val="1"/>';
++			}
 
 			strXml += '<c:plotArea>';
 			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
