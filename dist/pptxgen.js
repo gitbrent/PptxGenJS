@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180518";
+	var APP_BLD = "20180605";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2769,7 +2769,7 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					if ( opts.type != 'area' ) strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+					if ( opts.type.name != 'area' ) strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
 					strXml += '    <c:showLegendKey val="0"/>';
 					strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
 					strXml += '    <c:showCatName val="0"/>';
