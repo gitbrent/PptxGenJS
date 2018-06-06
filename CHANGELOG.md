@@ -1,6 +1,6 @@
 # Change Log
 
-## [v2.2.0](https://github.com/gitbrent/pptxgenjs/tree/v2.2.0) (2018-??-??)
+## [v2.2.0](https://github.com/gitbrent/pptxgenjs/tree/v2.2.0) (2018-06-??)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.1.0...v2.2.0)
 
 **Fixed Bugs:**
@@ -9,7 +9,8 @@
 - Rowspan, Colspan, and Multi-Row Headers Not Working [\#331](https://github.com/gitbrent/PptxGenJS/pull/331) ([skellman](https://github.com/skellman))([dwright-novetta](https://github.com/dwright-novetta))
 - Isolate variables to the local scope [\#334](https://github.com/gitbrent/PptxGenJS/pull/334) ([edvinasbartkus](https://github.com/edvinasbartkus))
 - `addMedia` of type='online' not working? [\#335](https://github.com/gitbrent/PptxGenJS/issues/335) ([lndev1](https://github.com/lndev1))
-
+- Fixed Error thrown while rendering Area Chart [\#342](https://github.com/gitbrent/PptxGenJS/pull/342) ([KrishnaTejaReddyV](https://github.com/KrishnaTejaReddyV))
+- Fixed Title display on showTitle = false error [\#344](https://github.com/gitbrent/PptxGenJS/pull/344) ([KrishnaTejaReddyV](https://github.com/KrishnaTejaReddyV))
 
 **Implemented Enhancements:**
 - New Feature! `addImage()` and `addMedia()` methods now accept URLs [\#325](https://github.com/gitbrent/PptxGenJS/pull/325) ([gitbrent](https://github.com/gitbrent))
