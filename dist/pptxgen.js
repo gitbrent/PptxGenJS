@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0-beta";
-	var APP_BLD = "20180517";
+	var APP_BLD = "20180518";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2401,10 +2401,10 @@ var PptxGenJS = function(){
 				});
 				strXml += '<c:autoTitleDeleted val="0"/>';
 			}
-			//NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
-+			else {
-+				strXml += '<c:autoTitleDeleted val="1"/>';
-+			}
+			else {
+				// NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
+				strXml += '<c:autoTitleDeleted val="1"/>';
+			}
 
 			strXml += '<c:plotArea>';
 			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
