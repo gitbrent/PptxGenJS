@@ -6,6 +6,5 @@ npm-debug.log
 bower_components/
 .icloud
 *.icloud
-package-lock.json
 /.idea
 website/
