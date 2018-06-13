@@ -15,7 +15,7 @@ class Help extends React.Component {
   render() {
     const supportLinks = [
       {
-        content: 'Learn more using the [documentation on this site.](/PptxGenJS/docs/usage-basic-create.html)',
+        content: 'Learn more using the [documentation on this site.](/PptxGenJS/docs/installation.html)',
         title: 'Browse Docs',
       },
       {
