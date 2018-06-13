@@ -4405,14 +4405,13 @@ var PptxGenJS = function(){
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
 		var slideObjNum = 0;
-		var pageNum  = (slideNum + 1);
 		var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == inMasterName })[0];
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {
 			slide: slideObj,
-			name: 'Slide ' + pageNum,
-			numb: pageNum,
+			name: 'Slide ' + slideNum,
+			numb: slideNum,
 			data: [],
 			rels: [],
 			slideNumberObj: null,
@@ -4424,7 +4423,7 @@ var PptxGenJS = function(){
 		// ==========================================================================
 
 		slideObj.getPageNumber = function() {
-			return pageNum;
+			return slideNum;
 		};
 
 		slideObj.slideNumber = function( inObj ) {
