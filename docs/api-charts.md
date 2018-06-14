@@ -28,7 +28,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 ```
 
 ## Notes
-* Zero values can be hidden using Microsoft formatting specs (see ![Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
+* Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
 
 ## Chart Size/Formatting Options
 | Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
