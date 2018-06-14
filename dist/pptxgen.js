@@ -156,6 +156,7 @@ var PptxGenJS = function(){
 		gObjPptx.revision  = '1';
 		gObjPptx.subject   = 'PptxGenJS Presentation';
 		gObjPptx.title     = 'PptxGenJS Presentation';
+		gObjPptx.slideNumberFrom = '1';
 
 		// PptxGenJS props
 		gObjPptx.isBrowser    = false;
@@ -4188,7 +4189,7 @@ var PptxGenJS = function(){
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
 			+ '<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" '
 			+ 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" '
-			+ 'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '+ (gObjPptx.rtlMode ? 'rtl="1"' : '') +' saveSubsetFonts="1" autoCompressPictures="0">';
+			+ 'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" '+ (gObjPptx.rtlMode ? 'rtl="1"' : '') +' firstSlideNum="'+gObjPptx.slideNumberFrom+'" saveSubsetFonts="1" autoCompressPictures="0">';
 
 		// STEP 1: Build SLIDE master list
 		strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
@@ -4331,6 +4332,16 @@ var PptxGenJS = function(){
 	this.setTitle = function setTitle(inStrTitle) {
 		gObjPptx.title = inStrTitle || 'PptxGenJS Presentation';
 	};
+	
+	/**
+	 * Sets the Presentation's start number for slides
+	 * NOTE: PowerPoint requires `StartSLideNo` be: number only (without decimals) otherwise, PPT will throw errors upon opening Presentation.
+	 */
+	this.setSlideNumberFrom = function setTitle(slideNumberFrom) {
+		if(isNaN(slideNumberFrom) === false && Number(slideNumberFrom) >= 0 && slideNumberFrom == Math.floor(slideNumberFrom)){
+			gObjPptx.slideNumberFrom = slideNumberFrom || '1';
+		} 
+	};
 
 	/**
 	 * Sets the Presentation Option: `isBrowser` (For Angular/Webpack, etc. as they are detected as NODE)
@@ -4405,13 +4416,14 @@ var PptxGenJS = function(){
 		var slideObj = {};
 		var slideNum = gObjPptx.slides.length;
 		var slideObjNum = 0;
+		var pageNum  = (slideNum + 1);
 		var objLayout = gObjPptx.slideLayouts.filter(function(layout){ return layout.name == inMasterName })[0];
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		gObjPptx.slides[slideNum] = {
 			slide: slideObj,
-			name: 'Slide ' + slideNum,
-			numb: slideNum,
+			name: 'Slide ' + pageNum,
+			numb: pageNum,
 			data: [],
 			rels: [],
 			slideNumberObj: null,
@@ -4423,7 +4435,7 @@ var PptxGenJS = function(){
 		// ==========================================================================
 
 		slideObj.getPageNumber = function() {
-			return slideNum;
+			return pageNum;
 		};
 
 		slideObj.slideNumber = function( inObj ) {
