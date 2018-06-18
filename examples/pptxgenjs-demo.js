@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-* VER.: 2.2.0-beta
-* BLD.: 20180517
+* VER.: 2.2.0
+* BLD.: 20180617
 */
 
 // Detect Node.js
@@ -73,7 +73,8 @@ function getTimestamp() {
 function runEveryTest() {
 	execGenSlidesFuncs( ['Master', 'Chart', 'Image', 'Media', 'Shape', 'Text', 'Table'] );
 
-	if ( typeof table2slides1 !== 'undefined' ) table2slides1();
+	// Dont run this automatically as Html2Pptx needs table to be visible as of 2.2.0
+	// if ( typeof table2slides1 !== 'undefined' ) table2slides1();
 }
 
 function execGenSlidesFuncs(type) {
