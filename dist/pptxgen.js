@@ -4939,7 +4939,7 @@ if ( NODEJS ) {
 	// A: jQuery depdendency
 	try {
 		var jsdom = require("jsdom");
-		var { window } = new jsdom.JSDOM(`<!DOCTYPE html>`);
+		var { window } = new jsdom.JSDOM('<!DOCTYPE html>');
 		$ = require("jquery")(window);
 	} catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
 
