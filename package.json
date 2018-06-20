@@ -10,11 +10,11 @@
 	"license": "MIT",
 	"main": "dist/pptxgen.js",
 	"dependencies": {
-		"express": "^4.15.3",
-		"image-size": ">=0.5.1",
+		"express": "^4.16.3",
+		"image-size": "^0.6.3",
 		"jquery": "^3.3.1",
 		"jsdom": "^11.11.0",
-		"jszip": ">=3.1.2"
+		"jszip": "^3.1.5"
 	},
 	"devDependencies": {
 		"gulp": "^3.9.1",
