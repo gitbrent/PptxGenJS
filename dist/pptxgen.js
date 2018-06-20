@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180619";
+	var APP_BLD = "20180620";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -4939,8 +4939,8 @@ if ( NODEJS ) {
 	// A: jQuery depdendency
 	try {
 		var jsdom = require("jsdom");
-		var { window } = new jsdom.JSDOM('<!DOCTYPE html>');
-		$ = require("jquery")(window);
+		var dom = new jsdom.JSDOM("<!DOCTYPE html>");
+		$ = require("jquery")(dom.window);
 	} catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
