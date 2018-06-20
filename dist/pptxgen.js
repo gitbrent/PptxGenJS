@@ -73,7 +73,7 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// APP
-	var APP_VER = "2.2.0";
+	var APP_VER = "2.3.0-beta";
 	var APP_BLD = "20180617";
 
 	// CONSTANTS
@@ -1679,7 +1679,7 @@ var PptxGenJS = function(){
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0) {
+			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0 ) {
 				zip.generateAsync({ type:outputType }).then(gObjPptx.saveCallback);
 			}
 			else if ( NODEJS && !gObjPptx.isBrowser ) {
