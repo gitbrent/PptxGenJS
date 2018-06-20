@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180617";
+	var APP_BLD = "20180619";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -4937,12 +4937,11 @@ if ( NODEJS ) {
 	var sizeOf = null;
 
 	// A: jQuery depdendency
-	// NOTE: try `jquery-node` first then all other cases load `jquery`
-	try { $ = require("jquery-node"); } catch(ex){}
-	if ( !$ ) {
-		try { $ = require("jquery"); }
-		catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
-	}
+	try {
+		const jsdom = require("jsdom");
+		const { window } = new jsdom.JSDOM(`<!DOCTYPE html>`);
+		$ = require("jquery")(window);
+	} catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
 	try { fs = require("fs"); } catch(ex){ console.error("Unable to load `fs`"); throw 'LIB-MISSING-FS'; }
