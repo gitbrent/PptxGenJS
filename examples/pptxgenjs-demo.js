@@ -139,6 +139,18 @@ function execGenSlidesFuncs(type) {
 					options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12},
 					text: 'S.T.A.R. Laboratories - Confidential'
 				}
+			},
+			{ 'placeholder':
+				{
+					options: { type: 'title', x: 0.6, y: 0.2, w: 12, h: 1.0, idx: 10 },
+					text: ''
+				}
+			},
+			{ 'placeholder':
+				{
+					options: { x: 0.6, y: 1.5, w: 12, h: 5.25, idx: 11 },
+					text : '',
+				}
 			}
 		],
 		slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
@@ -148,8 +160,9 @@ function execGenSlidesFuncs(type) {
 		bkgd: '36ABFF',
 		objects: [
 			{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
-			{ 'image': objImg }
+			{ 'placeholder':  { text:'', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c', idx:10, type:'body' } } },
+			{ 'image': objImg },
+			{ 'placeholder': { text:'Custom placeholder text', options:{ x:0.0, y:1.9, w:'100%', h:1, fontFace:'Comic Sans', color:'FFFFFF', fontSize:32, align:'c', idx: 11, type: 'body' } } }
 		]
 	});
 	// Only used for Issues, ad-hoc slides etc (for screencaps)
@@ -2375,9 +2388,32 @@ function genSlides_Text(pptx) {
 
 function genSlides_Master(pptx) {
 	var slide1 = pptx.addNewSlide('TITLE_SLIDE');
-	var slide2 = pptx.addNewSlide('MASTER_SLIDE'); slide2.addText('Slide 2 - using MASTER_SLIDE', {x:2, y:2});
-	var slide3 = pptx.addNewSlide('MASTER_SLIDE'); slide3.addText('Slide 3 - using MASTER_SLIDE', {x:2, y:2});
-	var slide4 = pptx.addNewSlide('THANKS_SLIDE');
+	var slide2 = pptx.addNewSlide('MASTER_SLIDE');
+	slide2.addText('Empty Placeholder', { placeholder:10 });
+	var slide3 = pptx.addNewSlide('MASTER_SLIDE');
+	slide3.addText('Text Placeholder', { placeholder:10 });
+	slide3.addText(
+		[
+			{ text:'Filled placeholder',  options:{ bullet:true, valign: 'top'                } },
+			{ text:'with different text', options:{ bullet:true, indentLevel:1 } },
+			{ text:'can override colors', options:{ bullet:true, indentLevel:2, color:'0000AB' } },
+		],
+		{ placeholder: 11, valign: 'top' }
+	);
+	var slide4 = pptx.addNewSlide('MASTER_SLIDE');
+	slide4.addText('Image Placeholder', { placeholder:10 });
+	slide4.addImage({ placeholder: 11, path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path) });
+	var slide5 = pptx.addNewSlide('MASTER_SLIDE');
+	slide5.addText('Chart Placeholder', { placeholder:10 });
+	var dataChartPieLocs = [
+		{
+			name  : 'Location',
+			labels: ['CN', 'DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+			values: [  69,   35,   40,   85,   38,   99,  101]
+		}
+	];
+	slide5.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'r', placeholder: 11} );
+	var slide6 = pptx.addNewSlide('THANKS_SLIDE'); slide6.addText('Thank You!', { placeholder: 10 });
 
 	// LEGACY-TEST-ONLY: To check deprecated functionality
 	/*

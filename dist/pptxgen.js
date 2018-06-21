@@ -78,11 +78,12 @@ var PptxGenJS = function(){
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
-		'chart': { name:'chart' },
-		'image': { name:'image' },
-		'line' : { name:'line'  },
-		'rect' : { name:'rect'  },
-		'text' : { name:'text'  }
+		'chart'      : { name:'chart'       },
+		'image'      : { name:'image'       },
+		'line'       : { name:'line'        },
+		'rect'       : { name:'rect'        },
+		'text'       : { name:'text'        },
+		'placeholder': { name:'placeholder' }
 	};
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
@@ -94,6 +95,14 @@ var PptxGenJS = function(){
 	var BASE_SHAPES = {
 		'RECTANGLE': { 'displayName': 'Rectangle', 'name': 'rect', 'avLst': {} },
 		'LINE'     : { 'displayName': 'Line',      'name': 'line', 'avLst': {} }
+	};
+	var PLACEHOLDER_TYPES = {
+		'title': { name: 'title' },
+		'body' : { name: 'body'  },
+		'image': { name: 'pic'   },
+		'chart': { name: 'chart' },
+		'table': { name: 'tbl'   },
+		'media': { name: 'media' }
 	};
 	// NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
 	// Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp
@@ -254,14 +263,17 @@ var PptxGenJS = function(){
 		 * @param {Object} opt
 		 * @param {Object} target slide object that the text should be added to
 		 */
-		addTextDefinition: function addTextDefinition(text, opt, target) {
+		addTextDefinition: function addTextDefinition(text, opt, target, isPlaceholder) {
 			var opt = ( opt && typeof opt === 'object' ? opt : {} );
 			var resultObject = {};
 			var text = ( text || '' );
 			if ( Array.isArray(text) && text.length == 0 ) text = '';
 
 			// STEP 2: Set some options
-			opt.color = ( opt.color || target.slide.color || DEF_FONT_COLOR ); // Set color (options > inherit from Slide > default to black)
+			// Placeholders should inherit their colors or override them, so don't default them
+			if (!opt.placeholder) {
+				opt.color = ( opt.color || target.slide.color || DEF_FONT_COLOR ); // Set color (options > inherit from Slide > default to black)
+			}
 
 			// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
 			if ( opt.valign ) opt.valign = opt.valign.toLowerCase().replace(/^c.*/i,'ctr').replace(/^m.*/i,'ctr').replace(/^t.*/i,'t').replace(/^b.*/i,'b');
@@ -271,7 +283,7 @@ var PptxGenJS = function(){
 			correctShadowOptions(opt.shadow);
 
 			// STEP 3: Set props
-			resultObject.type = 'text';
+			resultObject.type = isPlaceholder ? 'placeholder' : 'text';
 			resultObject.text = text;
 
 			// STEP 4: Set options
@@ -282,7 +294,7 @@ var PptxGenJS = function(){
 			}
 			resultObject.options.bodyProp = {};
 			resultObject.options.bodyProp.autoFit = (opt.autoFit || false); // If true, shape will collapse to text size (Fit To Shape)
-			resultObject.options.bodyProp.anchor  = (opt.valign || 'ctr'); // VALS: [t,ctr,b]
+			resultObject.options.bodyProp.anchor  = (opt.valign || (!opt.placeholder ? 'ctr' : null)); // VALS: [t,ctr,b]
 			resultObject.options.bodyProp.rot     = (opt.rotate || null); // VALS: degree * 60,000
 			resultObject.options.bodyProp.vert    = (opt.vert || null); // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 			resultObject.options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
@@ -298,6 +310,16 @@ var PptxGenJS = function(){
 			createHyperlinkRels(text || '', target.rels);
 
 			return resultObject;
+		},
+
+		/**
+		 * Adds a placeholder object to a slide definition.
+		 * @param {String} text
+		 * @param {Object} opt
+		 * @param {Object} target slide object that the text should be added to
+		 */
+		addPlaceholderDefinition: function addPlaceholderDefinition(text, opt, target) {
+			return gObjPptxGenerators.addTextDefinition(text, opt, target, true);
 		},
 
 		/**
@@ -384,7 +406,8 @@ var PptxGenJS = function(){
 				cx: (intWidth || imgObj.width),
 				cy: (intHeight || imgObj.height),
 				rounding: (objImage.rounding || false),
-				sizing: sizing
+				sizing: sizing,
+				placeholder: objImage.placeholder
 			};
 
 			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -614,7 +637,8 @@ var PptxGenJS = function(){
 					else if ( MASTER_OBJECTS[key] && key == 'image' ) gObjPptxGenerators.addImageDefinition(object[key], target);
 					else if ( MASTER_OBJECTS[key] && key == 'line'  ) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes.LINE, object[key], target);
 					else if ( MASTER_OBJECTS[key] && key == 'rect'  ) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes.RECTANGLE, object[key], target);
-					else if ( MASTER_OBJECTS[key] && key == 'text'  ) gObjPptxGenerators.addTextDefinition(object[key].text, object[key].options, target);
+					else if ( MASTER_OBJECTS[key] && key == 'text'  ) gObjPptxGenerators.addTextDefinition(object[key].text, object[key].options, target, false);
+					else if ( MASTER_OBJECTS[key] && key == 'placeholder' ) gObjPptxGenerators.addPlaceholderDefinition(object[key].text, object[key].options, target);
 				});
 			}
 
@@ -657,8 +681,12 @@ var PptxGenJS = function(){
 
 			// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
 			slideObject.data.forEach(function(slideItemObj, idx) {
-				var x = 0, y = 0, cx = getSmartParseNumber('75%','X'), cy = 0;
+				var x = 0, y = 0, cx = getSmartParseNumber('75%','X'), cy = 0, placeholderObj;
 				var locationAttr = "", shapeType = null;
+
+				if (slideObject.layoutObj && slideObject.layoutObj.data) {
+					placeholderObj = slideObject.layoutObj.data.filter(function(layoutObj){ return layoutObj.options.idx === slideItemObj.options.placeholder})[0];
+				}
 
 				// A: Set option vars
 				slideItemObj.options = slideItemObj.options || {};
@@ -670,6 +698,14 @@ var PptxGenJS = function(){
 				if ( slideItemObj.options.y  || slideItemObj.options.y  == 0 )  y = getSmartParseNumber( slideItemObj.options.y , 'Y' );
 				if ( slideItemObj.options.cx || slideItemObj.options.cx == 0 ) cx = getSmartParseNumber( slideItemObj.options.cx, 'X' );
 				if ( slideItemObj.options.cy || slideItemObj.options.cy == 0 ) cy = getSmartParseNumber( slideItemObj.options.cy, 'Y' );
+
+				// If using a placeholder then inherit it's position
+				if (placeholderObj) {
+					if ( placeholderObj.options.x  || placeholderObj.options.x  == 0  )  x = getSmartParseNumber( placeholderObj.options.x , 'X' );
+					if ( placeholderObj.options.y  || placeholderObj.options.y  == 0  )  y = getSmartParseNumber( placeholderObj.options.y , 'Y' );
+					if ( placeholderObj.options.cx || placeholderObj.options.cx  == 0 ) cx = getSmartParseNumber( placeholderObj.options.cx, 'X' );
+					if ( placeholderObj.options.cy || placeholderObj.options.cy  == 0 ) cy = getSmartParseNumber( placeholderObj.options.cy, 'Y' );
+				}
 				//
 				if ( slideItemObj.options.shape  ) shapeType = getShapeInfo( slideItemObj.options.shape );
 				//
@@ -913,6 +949,7 @@ var PptxGenJS = function(){
 						break;
 
 					case 'text':
+					case 'placeholder':
 						// Lines can have zero cy, but text should not
 						if ( !slideItemObj.options.line && cy == 0 ) cy = (EMU * 0.3);
 
@@ -938,9 +975,12 @@ var PptxGenJS = function(){
 
 						// B: The addition of the "txBox" attribute is the sole determiner of if an object is a Shape or Textbox
 						strSlideXml += '<p:nvSpPr><p:cNvPr id="'+ (idx+2) +'" name="Object '+ (idx+1) +'"/>';
-						strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"/><p:nvPr/>' : '/><p:nvPr/>');
-						strSlideXml += '</p:nvSpPr>';
-						strSlideXml += '<p:spPr><a:xfrm' + locationAttr + '>';
+						strSlideXml += '<p:cNvSpPr' + ((slideItemObj.options && slideItemObj.options.isTextBox) ? ' txBox="1"/>' : '/>');
+						strSlideXml += '<p:nvPr>';
+						strSlideXml += slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj);
+						strSlideXml += '</p:nvPr>';
+						strSlideXml += '</p:nvSpPr><p:spPr>';
+						strSlideXml += '<a:xfrm' + locationAttr + '>';
 						strSlideXml += '<a:off x="'  + x  + '" y="'  + y  + '"/>';
 						strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
 						strSlideXml += '<a:prstGeom prst="' + shapeType.name + '"><a:avLst>'
@@ -1012,7 +1052,8 @@ var PptxGenJS = function(){
 						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.url   ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" />';
 						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.slide ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" action="ppaction://hlinksldjump" />';
 						strSlideXml += '    </p:cNvPr>';
-						strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/>';
+						strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
+						strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
 						strSlideXml += '  </p:nvPicPr>';
 						strSlideXml += '<p:blipFill>';
 						strSlideXml += '  <a:blip r:embed="rId' + slideItemObj.imageRid + '" cstate="print"/>';
@@ -1094,8 +1135,8 @@ var PptxGenJS = function(){
 						strSlideXml += ' <p:nvGraphicFramePr>';
 						strSlideXml += '   <p:cNvPr id="'+ (idx + 2) +'" name="Chart '+ (idx + 1) +'"/>';
 						strSlideXml += '   <p:cNvGraphicFramePr/>';
-						strSlideXml += '   <p:nvPr/>';
-						strSlideXml += ' </p:nvGraphicFramePr>';
+						strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
+                        strSlideXml += ' </p:nvGraphicFramePr>';
 						strSlideXml += ' <p:xfrm>'
 						strSlideXml += '  <a:off  x="' + x  + '"  y="' + y  + '"/>'
 						strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
@@ -1857,7 +1898,21 @@ var PptxGenJS = function(){
 		image.src = inImgUrl;
 	}
 
-	/* Encode Image/Audio/Video into base64 */
+	function addPlaceholdersToSlides(slide) {
+		var slidePlaceholderIdxs = slide.data.filter(function (slideObj) { return slideObj.options.placeholder; })
+			.map(function (slideObj) { return slideObj.options.placeholder; });
+		var slideLayoutPlaceholders = slide.layoutObj.data.filter(function (slideLayoutObj) {
+			return slideLayoutObj.type === MASTER_OBJECTS.placeholder.name;
+		});
+
+		// Determine if the slide has all placeholders from the slide master, otherwise add them as empty text shapes
+		slideLayoutPlaceholders.forEach(function (placeholderObj) {
+			if (slidePlaceholderIdxs.indexOf(placeholderObj.options.idx) > -1) return;
+			gObjPptxGenerators.addTextDefinition('', { placeholder: placeholderObj.options.idx }, slide, false);
+		});
+	}
+
+    /* Encode Image/Audio/Video into base64 */
 	function encodeSlideMediaRels(layout, arrRelsDone) {
 		var intRels = 0;
 
@@ -3510,9 +3565,6 @@ var PptxGenJS = function(){
 		var tagStart = ( slideObj.options.isTableCell ? '<a:txBody>'  : '<p:txBody>' );
 		var tagClose = ( slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>' );
 		var strSlideXml = tagStart;
-		var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
-		var bulletLvl0Margin = 342900;
-		var paragraphPropXml = '<a:pPr ';
 
 		// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
 		/* CASES:
@@ -3567,6 +3619,11 @@ var PptxGenJS = function(){
 			if ( slideObj.options.h == 0 && slideObj.options.line && slideObj.options.align ) {
 				strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>';
 			}
+			else if ( slideObj.type === 'placeholder' ) {
+				strSlideXml += '<a:lstStyle>';
+				strSlideXml += genXmlParagraphProperties(slideObj, true);
+				strSlideXml += '</a:lstStyle>';
+			}
 			else {
 				strSlideXml += '<a:lstStyle/>';
 			}
@@ -3574,90 +3631,18 @@ var PptxGenJS = function(){
 
 		// STEP 4: Loop over each text object and create paragraph props, text run, etc.
 		arrTextObjects.forEach(function(textObj,idx){
-			// Clear/Increment loop vars
-			paragraphPropXml = '<a:pPr '+ (textObj.options.rtlMode ? ' rtl="1" ' : '');
-			strXmlBullet = '';
+            // Clear/Increment loop vars
 			textObj.options.lineIdx = idx;
 
-			// Inherit pPr-type options from parent shape's `options`
-			textObj.options.align = textObj.options.align || slideObj.options.align;
-			textObj.options.lineSpacing = textObj.options.lineSpacing || slideObj.options.lineSpacing;
-			textObj.options.indentLevel = textObj.options.indentLevel || slideObj.options.indentLevel;
-			textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || slideObj.options.paraSpaceBefore;
-			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || slideObj.options.paraSpaceAfter;
+            // Inherit pPr-type options from parent shape's `options`
+            textObj.options.align = textObj.options.align || slideObj.options.align;
+            textObj.options.lineSpacing = textObj.options.lineSpacing || slideObj.options.lineSpacing;
+            textObj.options.indentLevel = textObj.options.indentLevel || slideObj.options.indentLevel;
+            textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || slideObj.options.paraSpaceBefore;
+            textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || slideObj.options.paraSpaceAfter;
 
-			// A: Build paragraphProperties
-			{
-				// OPTION: align
-				if ( textObj.options.align ) {
-					switch ( textObj.options.align ) {
-						case 'r':
-						case 'right':
-							paragraphPropXml += 'algn="r"';
-							break;
-						case 'c':
-						case 'ctr':
-						case 'center':
-							paragraphPropXml += 'algn="ctr"';
-							break;
-						case 'justify':
-							paragraphPropXml += 'algn="just"';
-							break;
-					}
-				}
-
-				if ( textObj.options.lineSpacing ) {
-					strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>';
-				}
-
-				// OPTION: indent
-				if ( textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0 ) {
-					paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
-				}
-
-				// OPTION: Paragraph Spacing: Before/After
-				if ( textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0 ) {
-					strXmlParaSpc += '<a:spcBef><a:spcPts val="'+ (textObj.options.paraSpaceBefore * 100) +'"/></a:spcBef>';
-				}
-				if ( textObj.options.paraSpaceAfter  && !isNaN(Number(textObj.options.paraSpaceAfter))  && textObj.options.paraSpaceAfter  > 0 ) {
-					strXmlParaSpc += '<a:spcAft><a:spcPts val="'+ (textObj.options.paraSpaceAfter * 100) +'"/></a:spcAft>';
-				}
-
-				// Set core XML for use below
-				paraPropXmlCore = paragraphPropXml;
-
-				// OPTION: bullet
-				// NOTE: OOXML uses the unicode character set for Bullets
-				// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
-				if ( typeof textObj.options.bullet === 'object' ) {
-					if ( textObj.options.bullet.type ) {
-						if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
-							paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-							strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
-						}
-					}
-					else if ( textObj.options.bullet.code ) {
-						var bulletCode = '&#x'+ textObj.options.bullet.code +';';
-
-						// Check value for hex-ness (s/b 4 char hex)
-						if ( /^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false ) {
-							console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
-							bulletCode = BULLET_TYPES['DEFAULT'];
-						}
-
-						paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-						strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
-					}
-				}
-				else if ( textObj.options.bullet == true ) {
-					paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-					strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
-				}
-
-				// Close Paragraph-Properties --------------------
-				// IMPORTANT: strXmlLnSpc must precede strXmlBullet for bullet lineSpacing to work (PPT-Online)
-				paragraphPropXml += '>'+ strXmlParaSpc + strXmlLnSpc + strXmlBullet +'</a:pPr>';
-			}
+			textObj.options.lineIdx = idx;
+			var paragraphPropXml = genXmlParagraphProperties(textObj, false);
 
 			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
 			if ( idx == 0 ) {
@@ -3704,6 +3689,143 @@ var PptxGenJS = function(){
 		return strSlideXml;
 	}
 
+	function genXmlParagraphProperties(textObj, isDefault) {
+        var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
+        var bulletLvl0Margin = 342900;
+        var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
+
+        var paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '');
+
+        // A: Build paragraphProperties
+        {
+            // OPTION: align
+            if ( textObj.options.align ) {
+                switch ( textObj.options.align ) {
+                    case 'r':
+                    case 'right':
+                        paragraphPropXml += ' algn="r"';
+                        break;
+                    case 'c':
+                    case 'ctr':
+                    case 'center':
+                        paragraphPropXml += ' algn="ctr"';
+                        break;
+                    case 'justify':
+                        paragraphPropXml += ' algn="just"';
+                        break;
+                }
+            }
+
+            if ( textObj.options.lineSpacing ) {
+                strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>';
+            }
+
+            // OPTION: indent
+            if ( textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0 ) {
+                paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
+            }
+
+            // OPTION: Paragraph Spacing: Before/After
+            if ( textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0 ) {
+                strXmlParaSpc += '<a:spcBef><a:spcPts val="'+ (textObj.options.paraSpaceBefore * 100) +'"/></a:spcBef>';
+            }
+            if ( textObj.options.paraSpaceAfter  && !isNaN(Number(textObj.options.paraSpaceAfter))  && textObj.options.paraSpaceAfter  > 0 ) {
+                strXmlParaSpc += '<a:spcAft><a:spcPts val="'+ (textObj.options.paraSpaceAfter * 100) +'"/></a:spcAft>';
+            }
+
+            // Set core XML for use below
+            paraPropXmlCore = paragraphPropXml;
+
+            // OPTION: bullet
+            // NOTE: OOXML uses the unicode character set for Bullets
+            // EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
+            if ( typeof textObj.options.bullet === 'object' ) {
+                if ( textObj.options.bullet.type ) {
+                    if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
+                        paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
+                        strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
+                    }
+                }
+                else if ( textObj.options.bullet.code ) {
+                    var bulletCode = '&#x'+ textObj.options.bullet.code +';';
+
+                    // Check value for hex-ness (s/b 4 char hex)
+                    if ( /^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false ) {
+                        console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
+                        bulletCode = BULLET_TYPES['DEFAULT'];
+                    }
+
+                    paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
+                    strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
+                }
+            }
+            else if ( textObj.options.bullet == true ) {
+                paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
+                strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
+            } else {
+            	strXmlBullet = '<a:buNone/>';
+			}
+
+            // Close Paragraph-Properties --------------------
+            // IMPORTANT: strXmlLnSpc must precede strXmlBullet for bullet lineSpacing to work (PPT-Online)
+            paragraphPropXml += '>'+ strXmlParaSpc + strXmlLnSpc + strXmlBullet;
+            if (isDefault) {
+                paragraphPropXml += genXmlTextRunProperties(textObj.options, true);
+            }
+            paragraphPropXml += '</' + tag + '>';
+        }
+
+        return paragraphPropXml;
+	}
+
+	function genXmlTextRunProperties(opts, isDefault) {
+		var runProps = '';
+		var runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr';
+
+        // BEGIN runProperties
+		runProps += '<' + runPropsTag + ' lang="'+ ( opts.lang ? opts.lang : 'en-US' ) +'" '+ ( opts.lang ? ' altLang="en-US"' : '' );
+        runProps += ( opts.bold      ? ' b="1"' : '' );
+        runProps += ( opts.fontSize  ? ' sz="'+ Math.round(opts.fontSize) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+        runProps += ( opts.italic    ? ' i="1"' : '' );
+        runProps += ( opts.strike    ? ' strike="sngStrike"' : '' );
+        runProps += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
+        runProps += ( opts.subscript ? ' baseline="-40000"' : (opts.superscript ? ' baseline="30000"' : '') );
+        runProps += ( opts.charSpacing ? ' spc="'+ (opts.charSpacing * 100) +'" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
+        runProps += ' dirty="0" smtClean="0">';
+		// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
+		if ( opts.color || opts.fontFace || opts.outline ) {
+			if ( opts.outline && typeof opts.outline === 'object' ) {
+                runProps += ('<a:ln w="'+ Math.round((opts.outline.size||0.75) * ONEPT) +'">'+ genXmlColorSelection(opts.outline.color||'FFFFFF') +'</a:ln>');
+			}
+			if ( opts.color ) runProps += genXmlColorSelection( opts.color );
+			if ( opts.fontFace ) {
+				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174); ea must come first (see Issue #174)
+                runProps += '<a:latin typeface="' + opts.fontFace + '" pitchFamily="34" charset="0" />'
+					+ '<a:ea typeface="' + opts.fontFace + '" pitchFamily="34" charset="-122" />'
+					+ '<a:cs typeface="' + opts.fontFace + '" pitchFamily="34" charset="-120" />';
+			}
+		}
+
+		// Hyperlink support
+		if ( opts.hyperlink ) {
+			if ( typeof opts.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ");
+			else if ( !opts.hyperlink.url && !opts.hyperlink.slide ) console.log("ERROR: 'hyperlink requires either `url` or `slide`'");
+			else if ( opts.hyperlink.url ) {
+				// FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
+				//startInfo += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
+                runProps += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" history="1" highlightClick="0" endSnd="0" />';
+			}
+			else if ( opts.hyperlink.slide ) {
+                runProps += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" action="ppaction://hlinksldjump" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" />';
+			}
+		}
+
+		// END runProperties
+		runProps += '</' + runPropsTag + '>';
+
+		return runProps;
+	}
+
 	/**
 	* DESC: Builds <a:r></a:r> text runs for <a:p> paragraphs in textBody
 	* EX:
@@ -3723,46 +3845,8 @@ var PptxGenJS = function(){
 		var paraProp = '';
 		var parsedText;
 
-		// BEGIN runProperties
-		var startInfo = '<a:rPr lang="'+ ( opts.lang ? opts.lang : 'en-US' ) +'" '+ ( opts.lang ? ' altLang="en-US"' : '' );
-		startInfo += ( opts.bold      ? ' b="1"' : '' );
-		startInfo += ( opts.fontSize  ? ' sz="'+ Math.round(opts.fontSize) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
-		startInfo += ( opts.italic    ? ' i="1"' : '' );
-		startInfo += ( opts.strike    ? ' strike="sngStrike"' : '' );
-		startInfo += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
-		startInfo += ( opts.subscript ? ' baseline="-40000"' : (opts.superscript ? ' baseline="30000"' : '') );
-		startInfo += ( opts.charSpacing ? ' spc="'+ (opts.charSpacing * 100) +'" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
-		startInfo += ' dirty="0" smtClean="0">';
-		// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
-		if ( opts.color || opts.fontFace || opts.outline ) {
-			if ( opts.outline && typeof opts.outline === 'object' ) {
-				startInfo += ('<a:ln w="'+ Math.round((opts.outline.size||0.75) * ONEPT) +'">'+ genXmlColorSelection(opts.outline.color||'FFFFFF') +'</a:ln>');
-			}
-			if ( opts.color ) startInfo += genXmlColorSelection( opts.color );
-			if ( opts.fontFace ) {
-				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174); ea must come first (see Issue #174)
-				startInfo += '<a:latin typeface="' + opts.fontFace + '" pitchFamily="34" charset="0" />'
-					+ '<a:ea typeface="' + opts.fontFace + '" pitchFamily="34" charset="-122" />'
-					+ '<a:cs typeface="' + opts.fontFace + '" pitchFamily="34" charset="-120" />';
-			}
-		}
-
-		// Hyperlink support
-		if ( opts.hyperlink ) {
-			if ( typeof opts.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ");
-			else if ( !opts.hyperlink.url && !opts.hyperlink.slide ) console.log("ERROR: 'hyperlink requires either `url` or `slide`'");
-			else if ( opts.hyperlink.url ) {
-				// FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
-				//startInfo += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" history="1" highlightClick="0" endSnd="0" />';
-			}
-			else if ( opts.hyperlink.slide ) {
-				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" action="ppaction://hlinksldjump" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" />';
-			}
-		}
-
-		// END runProperties
-		startInfo += '</a:rPr>';
+		// ADD runProperties
+		var startInfo = genXmlTextRunProperties(opts, false);
 
 		// LINE-BREAKS/MULTI-LINE: Split text into multi-p:
 		parsedText = inStrText.split(CRLF);
@@ -3857,6 +3941,21 @@ var PptxGenJS = function(){
 		}
 
 		return outText;
+	}
+
+	function genXmlPlaceholder(placeholderObj) {
+		var strXml = '';
+		if (placeholderObj) {
+			var placeholderIdx = placeholderObj && placeholderObj.options && (placeholderObj.options.idx || placeholderObj.options.placeholder);
+			var placeholderType = placeholderObj && placeholderObj.options && placeholderObj.options.type;
+
+			strXml += '<p:ph'
+				+ (placeholderIdx ? ' idx="' + placeholderIdx + '"' : '')
+				+ (placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ' type="' + PLACEHOLDER_TYPES[placeholderType].name + '"' : '')
+				+ (placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : '')
+				+ '/>';
+		}
+		return strXml;
 	}
 
 	// XML-GEN: First 6 functions create the base /ppt files
@@ -4377,11 +4476,16 @@ var PptxGenJS = function(){
 	this.save = function save(inStrExportName, funcCallback, outputType) {
 		var intRels = 0, arrRelsDone = [];
 
-		// STEP 1: Set export properties
+		// STEP 1: Add empty placeholder objects to slides that don't already have them
+		gObjPptx.slides.forEach(function(slide, idx) {
+			if (slide.layoutObj) addPlaceholdersToSlides(slide);
+		});
+
+		// STEP 2: Set export properties
 		if ( funcCallback ) gObjPptx.saveCallback = funcCallback;
 		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
 
-		// STEP 2: Read/Encode Images
+		// STEP 3: Read/Encode Images
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 
 		// A: Slide rels
@@ -4393,7 +4497,7 @@ var PptxGenJS = function(){
 		// C: Master Slide rels
 		intRels += encodeSlideMediaRels(gObjPptx.masterSlide, arrRelsDone);
 
-		// STEP 3: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
+		// STEP 4: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
 		if ( intRels == 0 ) doExportPresentation(outputType);
 	};
 
@@ -4416,7 +4520,8 @@ var PptxGenJS = function(){
 			data: [],
 			rels: [],
 			slideNumberObj: null,
-			layout: inMasterName || '[ default ]'
+			layout: inMasterName || '[ default ]',
+			layoutObj: objLayout
 		};
 
 		// ==========================================================================
@@ -4718,7 +4823,7 @@ var PptxGenJS = function(){
 		};
 
 		slideObj.addText = function( text, options ) {
-			gObjPptxGenerators.addTextDefinition(text, options, gObjPptx.slides[slideNum]);
+			gObjPptxGenerators.addTextDefinition(text, options, gObjPptx.slides[slideNum], false);
 			return this;
 		};
 
