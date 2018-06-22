@@ -71,8 +71,6 @@ if ( NODEJS ) {
 	var gObjPptxShapes = require('../dist/pptxgen.shapes.js');
 }
 
-console.log('### THE LINKED IS HERE ###');
-
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.2.0";
@@ -1210,7 +1208,6 @@ var PptxGenJS = function(){
 						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>';
 				}
 				else if ( rel.type.toLowerCase().indexOf('hyperlink') > -1 ) {
-					console.log('in hyperlink');
 					if ( rel.data == 'slide' ) {
 						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="slide'+ rel.Target +'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>';
 					}
@@ -4205,7 +4202,7 @@ var PptxGenJS = function(){
 				  type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
 			  },
 				{
-					target: '../notesSlides/notesSlide'+ getLayoutIdxForSlide(slideNumber) +'.xml',
+					target: '../notesSlides/notesSlide'+ slideNumber +'.xml',
 					type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide'
 				}
 		]
@@ -4241,7 +4238,7 @@ var PptxGenJS = function(){
 	function makeXmlNotesMasterRel() {
 		return '<?xml version="1.0" encoding="UTF-8"?>'+CRLF
            + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-           + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme2.xml"/>'
+           + '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>'
            + '</Relationships>';
 	}
 
