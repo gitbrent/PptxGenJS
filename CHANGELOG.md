@@ -1,5 +1,15 @@
 # Change Log
 
+## [v2.3.0](https://github.com/gitbrent/pptxgenjs/tree/v2.3.0) (2018-??-??)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.2.0...v2.3.0)
+
+**Fixed Bugs:**
+- Remove jquery-node dependency (fixes XSS Vulnerability Security Warning) [\#350](https://github.com/gitbrent/PptxGenJS/issues/350) ([TinkerJack](https://github.com/TinkerJack))
+
+**Implemented Enhancements:**
+
+
+
 ## [v2.2.0](https://github.com/gitbrent/pptxgenjs/tree/v2.2.0) (2018-06-17)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.1.0...v2.2.0)
 

@@ -1711,7 +1711,7 @@ var PptxGenJS = function(){
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0) {
+			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0 ) {
 				zip.generateAsync({ type:outputType }).then(gObjPptx.saveCallback);
 			}
 			else if ( NODEJS && !gObjPptx.isBrowser ) {
@@ -5052,12 +5052,11 @@ if ( NODEJS ) {
 	var sizeOf = null;
 
 	// A: jQuery depdendency
-	// NOTE: try `jquery-node` first then all other cases load `jquery`
-	try { $ = require("jquery-node"); } catch(ex){}
-	if ( !$ ) {
-		try { $ = require("jquery"); }
-		catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
-	}
+	try {
+		var jsdom = require("jsdom");
+		var dom = new jsdom.JSDOM("<!DOCTYPE html>");
+		$ = require("jquery")(dom.window);
+	} catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
 	try { fs = require("fs"); } catch(ex){ console.error("Unable to load `fs`"); throw 'LIB-MISSING-FS'; }
