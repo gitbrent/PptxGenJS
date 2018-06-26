@@ -2581,7 +2581,7 @@ var PptxGenJS = function(){
 		}
 
 		strXml += '  <c:plotVisOnly val="1"/>';
-		strXml += '  <c:dispBlanksAs val="gap"/>';
+		strXml += '  <c:dispBlanksAs val="' + (rel.opts.displayBlankAs ? rel.opts.displayBlankAs : 'gap') + '"/>';
 		if ( rel.opts.type.name === 'scatter' ) strXml += '<c:showDLblsOverMax val="1"/>';
 
 		strXml += '</c:chart>';
