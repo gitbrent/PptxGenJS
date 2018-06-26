@@ -73,8 +73,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// APP
-	var APP_VER = "2.2.0";
-	var APP_BLD = "20180617";
+	var APP_VER = "2.3.0-beta";
+	var APP_BLD = "20180625";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -262,6 +262,7 @@ var PptxGenJS = function(){
 		 * @param {String} text
 		 * @param {Object} opt
 		 * @param {Object} target slide object that the text should be added to
+		 * @since: 1.0.0
 		 */
 		addTextDefinition: function addTextDefinition(text, opt, target, isPlaceholder) {
 			var opt = ( opt && typeof opt === 'object' ? opt : {} );
@@ -313,10 +314,29 @@ var PptxGenJS = function(){
 		},
 
 		/**
+		 * Adds Notes to a slide.
+		 * @param {String} notes
+		 * @param {Object} opt (*unused*)
+		 * @param {Object} target slide object
+		 * @since 2.3.0
+		 */
+		addNotesDefinition: function addNotesDefinition(notes, opt, target) {
+			var opt = ( opt && typeof opt === 'object' ? opt : {} );
+			var resultObject = {};
+
+			resultObject.type = 'notes';
+			resultObject.text = notes;
+
+			target.data.push(resultObject);
+
+			return resultObject;
+		},
+
+		/**
 		 * Adds a placeholder object to a slide definition.
 		 * @param {String} text
 		 * @param {Object} opt
-		 * @param {Object} target slide object that the text should be added to
+		 * @param {Object} target slide object that the placeholder should be added to
 		 */
 		addPlaceholderDefinition: function addPlaceholderDefinition(text, opt, target) {
 			return gObjPptxGenerators.addTextDefinition(text, opt, target, true);
@@ -1244,6 +1264,9 @@ var PptxGenJS = function(){
 						strXml += '<Relationship Id="rId'+ rel.rId +'" Target="'+ rel.Target +'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>';
 					}
 				}
+				else if ( res.type.toLowerCase().indexOf('notesSlide') > -1 ) {
+					strXml += '<Relationship Id="rId'+ rel.rId + '" Target="'+ rel.Target +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>';
+				}
 			});
 
 			defaultRels.forEach(function(rel, idx) {
@@ -1667,7 +1690,7 @@ var PptxGenJS = function(){
 	 */
 	function doExportPresentation(outputType) {
 		var arrChartPromises = [];
-		var intSlideNum = 0, intRels = 0;
+		var intSlideNum = 0, intRels = 0, intNotesRels = 0;
 
 		// STEP 1: Create new JSZip file
 		var zip = new JSZip();
@@ -1683,6 +1706,8 @@ var PptxGenJS = function(){
 		zip.folder("ppt/slideMasters").folder("_rels");
 		zip.folder("ppt/slides").folder("_rels");
 		zip.folder("ppt/theme");
+		zip.folder("ppt/notesMasters").folder("_rels");
+		zip.folder("ppt/notesSlides").folder("_rels");
 		//
 		zip.file("[Content_Types].xml", makeXmlContTypes());
 		zip.file("_rels/.rels", makeXmlRootRels());
@@ -1697,19 +1722,26 @@ var PptxGenJS = function(){
 		zip.file("ppt/viewProps.xml",    makeXmlViewProps());
 
 		// Create a Layout/Master/Rel/Slide file for each SLIDE
-		for ( var idx=1; idx<=gObjPptx.slideLayouts.length; idx++ ) {
+		for (var idx = 1; idx <= gObjPptx.slideLayouts.length; idx++) {
 			zip.file("ppt/slideLayouts/slideLayout"+ idx +".xml", makeXmlLayout(gObjPptx.slideLayouts[idx - 1]));
 			zip.file("ppt/slideLayouts/_rels/slideLayout"+ idx +".xml.rels", makeXmlSlideLayoutRel( idx ));
 		}
 
-		for ( var idx=0; idx<gObjPptx.slides.length; idx++ ) {
+		for (var idx = 0; idx < gObjPptx.slides.length; idx++) {
 			intSlideNum++;
-			zip.file("ppt/slides/slide"+ intSlideNum +".xml", makeXmlSlide(gObjPptx.slides[idx]));
-			zip.file("ppt/slides/_rels/slide"+ intSlideNum +".xml.rels", makeXmlSlideRel( intSlideNum ));
+			zip.file('ppt/slides/slide' + intSlideNum + '.xml', makeXmlSlide(gObjPptx.slides[idx]));
+			zip.file('ppt/slides/_rels/slide' + intSlideNum + '.xml.rels', makeXmlSlideRel(intSlideNum));
+
+			// Here we will create all slide notes related items. Notes of empty strings
+			// are created for slides which do not have notes specified, to keep track of _rels.
+			zip.file('ppt/notesSlides/notesSlide' + intSlideNum + '.xml', makeXmlNotesSlide(gObjPptx.slides[idx]));
+			zip.file('ppt/notesSlides/_rels/notesSlide' + intSlideNum + '.xml.rels', makeXmlNotesSlideRel(intSlideNum));
 		}
 
 		zip.file("ppt/slideMasters/slideMaster1.xml", makeXmlMaster(gObjPptx.masterSlide));
 		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", makeXmlMasterRel(gObjPptx.masterSlide));
+		zip.file('ppt/notesMasters/notesMaster1.xml', makeXmlNotesMaster());
+		zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', makeXmlNotesMasterRel());
 
 		// Create all Rels (images, media, chart data)
 		gObjPptx.slideLayouts.forEach(function(layout){ createMediaFiles(layout, zip, arrChartPromises); });
@@ -1720,7 +1752,7 @@ var PptxGenJS = function(){
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
-			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0) {
+			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0 ) {
 				zip.generateAsync({ type:outputType }).then(gObjPptx.saveCallback);
 			}
 			else if ( NODEJS && !gObjPptx.isBrowser ) {
@@ -3984,6 +4016,7 @@ var PptxGenJS = function(){
 
 		// STEP 2: Add presentation and slide master(s)/slide(s)
 		strXml += ' <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
+		strXml += ' <Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>';
 		gObjPptx.slides.forEach(function(slide, idx){
 			strXml += '<Override PartName="/ppt/slideMasters/slideMaster'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>';
 			strXml += '<Override PartName="/ppt/slides/slide'            + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
@@ -4003,13 +4036,19 @@ var PptxGenJS = function(){
 
 		// STEP 4: Add Slide Layouts
 		gObjPptx.slideLayouts.forEach(function(layout,idx) {
-			strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ ( idx + 1 ) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
+			strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
 			layout.rels.forEach(function(rel){
 				if ( rel.type == 'chart' ) {
 					strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
 				}
 			});
 		});
+
+		// STEP 5: Add notes slide(s)
+		gObjPptx.slides.forEach(function(slide, idx) {
+			strXml += ' <Override PartName="/ppt/notesSlides/notesSlide'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>';
+		});
+
 		gObjPptx.masterSlide.rels.forEach(function(rel) {
 			if ( rel.type == 'chart' ) {
 				strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
@@ -4045,7 +4084,7 @@ var PptxGenJS = function(){
 		strXml += '<PresentationFormat>On-screen Show</PresentationFormat>';
 		strXml += '<Paragraphs>0</Paragraphs>';
 		strXml += '<Slides>'+ gObjPptx.slides.length +'</Slides>';
-		strXml += '<Notes>0</Notes>';
+		strXml += '<Notes>'+ gObjPptx.slides.length +'</Notes>';
 		strXml += '<HiddenSlides>0</HiddenSlides>';
 		strXml += '<MMClips>0</MMClips>';
 		strXml += '<ScaleCrop>false</ScaleCrop>';
@@ -4102,6 +4141,7 @@ var PptxGenJS = function(){
 				+ '  <Relationship Id="rId'+ (intRelNum+1) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>'
 				+ '  <Relationship Id="rId'+ (intRelNum+2) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>'
 				+ '  <Relationship Id="rId'+ (intRelNum+3) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>'
+				+ '  <Relationship Id="rId'+ (intRelNum+4) +'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>'
 				+ '</Relationships>';
 
 		return strXml;
@@ -4123,6 +4163,48 @@ var PptxGenJS = function(){
 		strXml += '</p:sld>';
 
 		// LAST: Return
+		return strXml;
+	}
+
+	function getNotesFromSlide(objSlide) {
+		var notesStr = '';
+		objSlide.data.forEach(function (data) {
+			if (data.type === 'notes') {
+				notesStr += data.text;
+			}
+		});
+		return notesStr;
+	}
+
+	function makeXmlNotesSlide(objSlide) {
+		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
+		strXml += '<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
+		strXml += '<p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name="" /><p:cNvGrpSpPr />'
+						+ '<p:nvPr /></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0" />'
+						+ '<a:ext cx="0" cy="0" /><a:chOff x="0" y="0" /><a:chExt cx="0" cy="0" />'
+						+ '</a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Slide Image Placeholder 1" />'
+						+ '<p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1" /></p:cNvSpPr>'
+						+ '<p:nvPr><p:ph type="sldImg" /></p:nvPr></p:nvSpPr><p:spPr />'
+						+ '</p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Notes Placeholder 2" />'
+						+ '<p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr>'
+						+ '<p:ph type="body" idx="1" /></p:nvPr></p:nvSpPr><p:spPr />'
+						+ '<p:txBody><a:bodyPr /><a:lstStyle /><a:p><a:r>'
+						+ '<a:rPr lang="en-US" dirty="0" smtClean="0" /><a:t>'
+						+ getNotesFromSlide(objSlide)
+						+ '</a:t></a:r><a:endParaRPr lang="en-US" dirty="0" /></a:p></p:txBody>'
+						+ '</p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Number Placeholder 3" />'
+						+ '<p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr>'
+						+ '<p:ph type="sldNum" sz="quarter" idx="10" /></p:nvPr></p:nvSpPr>'
+						+ '<p:spPr /><p:txBody><a:bodyPr /><a:lstStyle /><a:p>'
+						+ '<a:fld id="'
+						+ SLDNUMFLDID
+						+ '" type="slidenum">'
+						+ '<a:rPr lang="en-US" smtClean="0" /><a:t>'
+						+ objSlide.numb
+						+ '</a:t></a:fld><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp>'
+						+ '</p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">'
+						+ '<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991" />'
+						+ '</p:ext></p:extLst></p:cSld><p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr></p:notes>';
 		return strXml;
 	}
 
@@ -4194,6 +4276,10 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
+	function makeXmlNotesMaster() {
+		return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF+'<p:notesMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1" /></p:bgRef></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name="" /><p:cNvGrpSpPr /><p:nvPr /></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0" /><a:ext cx="0" cy="0" /><a:chOff x="0" y="0" /><a:chExt cx="0" cy="0" /></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Header Placeholder 1" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="hdr" sz="quarter" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0" /><a:ext cx="2971800" cy="458788" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" /><a:lstStyle><a:lvl1pPr algn="l"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Date Placeholder 2" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="dt" idx="1" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3884613" y="0" /><a:ext cx="2971800" cy="458788" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" /><a:lstStyle><a:lvl1pPr algn="r"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:fld id="{5282F153-3F37-0F45-9E97-73ACFA13230C}" type="datetimeFigureOut"><a:rPr lang="en-US" smtClean="0" /><a:t>6/20/18</a:t></a:fld><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Image Placeholder 3" /><p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1" /></p:cNvSpPr><p:nvPr><p:ph type="sldImg" idx="2" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="685800" y="1143000" /><a:ext cx="5486400" cy="3086100" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom><a:noFill /><a:ln w="12700"><a:solidFill><a:prstClr val="black" /></a:solidFill></a:ln></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="ctr" /><a:lstStyle /><a:p><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="5" name="Notes Placeholder 4" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="body" sz="quarter" idx="3" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="685800" y="4400550" /><a:ext cx="5486400" cy="3600450" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" /><a:lstStyle /><a:p><a:pPr lvl="0" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Click to edit Master text styles</a:t></a:r></a:p><a:p><a:pPr lvl="1" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Second level</a:t></a:r></a:p><a:p><a:pPr lvl="2" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Third level</a:t></a:r></a:p><a:p><a:pPr lvl="3" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Fourth level</a:t></a:r></a:p><a:p><a:pPr lvl="4" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Fifth level</a:t></a:r><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="6" name="Footer Placeholder 5" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="ftr" sz="quarter" idx="4" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="8685213" /><a:ext cx="2971800" cy="458787" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="b" /><a:lstStyle><a:lvl1pPr algn="l"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="7" name="Slide Number Placeholder 6" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="sldNum" sz="quarter" idx="5" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3884613" y="8685213" /><a:ext cx="2971800" cy="458787" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="b" /><a:lstStyle><a:lvl1pPr algn="r"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:fld id="{CE5E9CC1-C706-0F49-92D6-E571CC5EEA8F}" type="slidenum"><a:rPr lang="en-US" smtClean="0" /><a:t>‹#›</a:t></a:fld><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp></p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}"><p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991" /></p:ext></p:extLst></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink" /><p:notesStyle><a:lvl1pPr marL="0" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl1pPr><a:lvl2pPr marL="457200" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl2pPr><a:lvl3pPr marL="914400" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl3pPr><a:lvl4pPr marL="1371600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl4pPr><a:lvl5pPr marL="1828800" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl5pPr><a:lvl6pPr marL="2286000" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl6pPr><a:lvl7pPr marL="2743200" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl7pPr><a:lvl8pPr marL="3200400" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl8pPr><a:lvl9pPr marL="3657600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl9pPr></p:notesStyle></p:notesMaster>';
+	}
+
 	/**
 	 * Generates XML string for a slide layout relation file.
 	 * @param {Number} layoutNumber - 1-indexed number of a layout that relations are generated for
@@ -4216,11 +4302,25 @@ var PptxGenJS = function(){
 	function makeXmlSlideRel(slideNumber) {
 		return gObjPptxGenerators.slideObjectRelationsToXml(
 			gObjPptx.slides[slideNumber - 1],
-			[{
-				target: '../slideLayouts/slideLayout'+ getLayoutIdxForSlide(slideNumber) +'.xml',
-				type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
-			}]
+			[
+				{
+					target: '../slideLayouts/slideLayout'+ getLayoutIdxForSlide(slideNumber) +'.xml',
+					type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout"
+				},
+				{
+					target: '../notesSlides/notesSlide'+ slideNumber +'.xml',
+					type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"
+				}
+		]
 		);
+	}
+
+	function makeXmlNotesSlideRel(slideNumber) {
+		return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
+			+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+			+   '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="../notesMasters/notesMaster1.xml"/>'
+			+   '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide' + slideNumber + '.xml"/>'
+			+ '</Relationships>';
 	}
 
 	/**
@@ -4239,6 +4339,13 @@ var PptxGenJS = function(){
 			masterSlideObject,
 			defaultRels
 		);
+	}
+
+	function makeXmlNotesMasterRel() {
+		return '<?xml version="1.0" encoding="UTF-8"?>'+CRLF
+			+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+			+   '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>'
+			+ '</Relationships>';
 	}
 
 	/**
@@ -4297,7 +4404,10 @@ var PptxGenJS = function(){
 		}
 		strXml += '</p:sldIdLst>';
 
-		// STEP 2: Build SLIDE text styles
+		// Step 2: Add NOTES master list
+		strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (gObjPptx.slides.length + 2 + 4) + '"/></p:notesMasterIdLst>'; // length+2+4 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic)
+
+		// STEP 3: Build SLIDE text styles
 		strXml += '<p:sldSz cx="'+ gObjPptx.pptLayout.width +'" cy="'+ gObjPptx.pptLayout.height +'" type="'+ gObjPptx.pptLayout.name +'"/>'
 				+ '<p:notesSz cx="'+ gObjPptx.pptLayout.height +'" cy="' + gObjPptx.pptLayout.width + '"/>'
 				+ '<p:defaultTextStyle>';
@@ -4693,6 +4803,11 @@ var PptxGenJS = function(){
 			return this;
 		}
 
+		slideObj.addNotes = function( notes, options ) {
+			gObjPptxGenerators.addNotesDefinition(notes, options, gObjPptx.slides[slideNum]);
+			return this;
+		};
+
 		slideObj.addShape = function( shape, opt ) {
 			gObjPptxGenerators.addShapeDefinition(shape, opt, gObjPptx.slides[slideNum]);
 			return this;
@@ -5042,12 +5157,11 @@ if ( NODEJS ) {
 	var sizeOf = null;
 
 	// A: jQuery depdendency
-	// NOTE: try `jquery-node` first then all other cases load `jquery`
-	try { $ = require("jquery-node"); } catch(ex){}
-	if ( !$ ) {
-		try { $ = require("jquery"); }
-		catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
-	}
+	try {
+		var jsdom = require("jsdom");
+		var dom = new jsdom.JSDOM("<!DOCTYPE html>");
+		$ = require("jquery")(dom.window);
+	} catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
 	try { fs = require("fs"); } catch(ex){ console.error("Unable to load `fs`"); throw 'LIB-MISSING-FS'; }
