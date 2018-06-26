@@ -73,8 +73,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// APP
-	var APP_VER = "2.2.0";
-	var APP_BLD = "20180617";
+	var APP_VER = "2.3.0-beta";
+	var APP_BLD = "20180625";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3909,7 +3909,7 @@ var PptxGenJS = function(){
 
 		// STEP 2: Add presentation and slide master(s)/slide(s)
 		strXml += ' <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>';
-		strXml += '<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>';
+		strXml += ' <Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>';
 		gObjPptx.slides.forEach(function(slide, idx){
 			strXml += '<Override PartName="/ppt/slideMasters/slideMaster'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>';
 			strXml += '<Override PartName="/ppt/slides/slide'            + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
@@ -3929,7 +3929,7 @@ var PptxGenJS = function(){
 
 		// STEP 4: Add Slide Layouts
 		gObjPptx.slideLayouts.forEach(function(layout,idx) {
-			strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ ( idx + 1 ) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
+			strXml += '<Override PartName="/ppt/slideLayouts/slideLayout'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>';
 			layout.rels.forEach(function(rel){
 				if ( rel.type == 'chart' ) {
 					strXml += ' <Override PartName="'+ rel.Target +'" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
@@ -3937,9 +3937,9 @@ var PptxGenJS = function(){
 			});
 		});
 
-		// Step 5: Add notes slide(s)
+		// STEP 5: Add notes slide(s)
 		gObjPptx.slides.forEach(function(slide, idx) {
-			strXml += '<Override PartName="/ppt/notesSlides/notesSlide'  + (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>';
+			strXml += ' <Override PartName="/ppt/notesSlides/notesSlide'+ (idx+1) +'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>';
 		});
 
 		gObjPptx.masterSlide.rels.forEach(function(rel) {
@@ -4202,18 +4202,18 @@ var PptxGenJS = function(){
 				},
 				{
 					target: '../notesSlides/notesSlide'+ slideNumber +'.xml',
-					type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide'
+					type: "http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"
 				}
 		]
 		);
 	}
 
 	function makeXmlNotesSlideRel(slideNumber) {
-		return  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
-					+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-					+   '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="../notesMasters/notesMaster1.xml"/>'
-					+   '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide' + slideNumber + '.xml"/>'
-					+ '</Relationships>';
+		return '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF
+			+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+			+   '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="../notesMasters/notesMaster1.xml"/>'
+			+   '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide' + slideNumber + '.xml"/>'
+			+ '</Relationships>';
 	}
 
 	/**
@@ -4236,9 +4236,9 @@ var PptxGenJS = function(){
 
 	function makeXmlNotesMasterRel() {
 		return '<?xml version="1.0" encoding="UTF-8"?>'+CRLF
-					+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-					+   '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>'
-					+ '</Relationships>';
+			+ '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+			+   '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>'
+			+ '</Relationships>';
 	}
 
 	/**
@@ -4298,7 +4298,7 @@ var PptxGenJS = function(){
 		strXml += '</p:sldIdLst>';
 
 		// Step 2: Add NOTES master list
-		strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId5" /></p:notesMasterIdLst>';
+		strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (gObjPptx.slides.length + 2 + 4) + '"/></p:notesMasterIdLst>'; // length+2+4 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic)
 
 		// STEP 3: Build SLIDE text styles
 		strXml += '<p:sldSz cx="'+ gObjPptx.pptLayout.width +'" cy="'+ gObjPptx.pptLayout.height +'" type="'+ gObjPptx.pptLayout.name +'"/>'
@@ -4824,7 +4824,7 @@ var PptxGenJS = function(){
 			return this;
 		};
 
-		slideObj.addNotes = function(notes, options) {
+		slideObj.addNotes = function( notes, options ) {
 			gObjPptxGenerators.addNotesDefinition(notes, options, gObjPptx.slides[slideNum]);
 			return this;
 		};
