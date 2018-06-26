@@ -253,6 +253,7 @@ var PptxGenJS = function(){
 		 * @param {String} text
 		 * @param {Object} opt
 		 * @param {Object} target slide object that the text should be added to
+		 * @since: 1.0.0
 		 */
 		addTextDefinition: function addTextDefinition(text, opt, target) {
 			var opt = ( opt && typeof opt === 'object' ? opt : {} );
@@ -300,7 +301,14 @@ var PptxGenJS = function(){
 			return resultObject;
 		},
 
-		addNotesDefinition: function addNotesDefinition(notes, options, target) {
+		/**
+		 * Adds Notes to a slide.
+		 * @param {String} notes
+		 * @param {Object} opt (*unused*)
+		 * @param {Object} target slide object
+		 * @since 2.3.0
+		 */
+		addNotesDefinition: function addNotesDefinition(notes, opt, target) {
 			var opt = ( opt && typeof opt === 'object' ? opt : {} );
 			var resultObject = {};
 
@@ -4690,6 +4698,11 @@ var PptxGenJS = function(){
 			return this;
 		}
 
+		slideObj.addNotes = function( notes, options ) {
+			gObjPptxGenerators.addNotesDefinition(notes, options, gObjPptx.slides[slideNum]);
+			return this;
+		};
+
 		slideObj.addShape = function( shape, opt ) {
 			gObjPptxGenerators.addShapeDefinition(shape, opt, gObjPptx.slides[slideNum]);
 			return this;
@@ -4821,11 +4834,6 @@ var PptxGenJS = function(){
 
 		slideObj.addText = function( text, options ) {
 			gObjPptxGenerators.addTextDefinition(text, options, gObjPptx.slides[slideNum]);
-			return this;
-		};
-
-		slideObj.addNotes = function( notes, options ) {
-			gObjPptxGenerators.addNotesDefinition(notes, options, gObjPptx.slides[slideNum]);
 			return this;
 		};
 
