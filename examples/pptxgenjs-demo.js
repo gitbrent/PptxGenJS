@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-* VER.: 2.2.0
-* BLD.: 20180617
+* VER.: 2.3.0
+* BLD.: 20180626
 */
 
 // Detect Node.js
@@ -577,6 +577,8 @@ function genSlides_Chart(pptx) {
 		arrDataLineStat.push( tmpObjGrn );
 		arrDataLineStat.push( tmpObjUnk );
 	}
+	// Create a gap for testing `displayBlanksAs` in line charts (2.3.0)
+	arrDataLineStat[2].values = [55, null, null, 55];
 
 	// SLIDE 1: Bar Chart ------------------------------------------------------------------
 	function slide1() {
@@ -1156,6 +1158,7 @@ function genSlides_Chart(pptx) {
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineDataSymbolSize: 10,
 			shadow: 'none',
+			//displayBlanksAs: 'gap', //uncomment only for test - looks broken otherwise!
 			showLegend: true, legendPos: 'l'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
