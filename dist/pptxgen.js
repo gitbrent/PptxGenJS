@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180625";
+	var APP_BLD = "20180627";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -529,7 +529,7 @@ var PptxGenJS = function(){
 			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
-			if ( ['gap','span'].indexOf(options.displayBlanksAs || '') < 0 ) options.displayBlanksAs = 'gap';
+			if ( ['gap','span'].indexOf(options.displayBlanksAs || '') < 0 ) options.displayBlanksAs = 'span';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 			options.lineDataSymbolLineSize = ( options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize ) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT );
 			// `layout` allows the override of PPT defaults to maximize space
@@ -2582,7 +2582,7 @@ var PptxGenJS = function(){
 		}
 
 		strXml += '  <c:plotVisOnly val="1"/>';
-		strXml += '  <c:dispBlanksAs val="'+ options.displayBlanksAs +'"/>';
+		strXml += '  <c:dispBlanksAs val="'+ rel.opts.displayBlanksAs +'"/>';
 		if ( rel.opts.type.name === 'scatter' ) strXml += '<c:showDLblsOverMax val="1"/>';
 
 		strXml += '</c:chart>';
