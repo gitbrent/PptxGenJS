@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180627";
+	var APP_BLD = "20180702";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3609,7 +3609,7 @@ var PptxGenJS = function(){
 		arrTextObjects.forEach(function(textObj,idx){
 			// Clear/Increment loop vars
 			paragraphPropXml = '<a:pPr '+ (textObj.options.rtlMode ? ' rtl="1" ' : '');
-			strXmlBullet = '';
+			strXmlBullet = '', strXmlParaSpc = '';
 			textObj.options.lineIdx = idx;
 
 			// Inherit pPr-type options from parent shape's `options`
