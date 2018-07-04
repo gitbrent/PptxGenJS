@@ -4444,7 +4444,9 @@ var PptxGenJS = function(){
 	};
 
 	/**
-	 * Sets the Presentation Option: `isBrowser` (For Angular/Webpack, etc. as they are detected as NODE)
+	 * Sets the Presentation Option: `isBrowser`
+	 * Target: Angular/React/Webpack, etc.
+	 * This setting affects how files are saved: using `fs` for Node.js or browser libs
 	 */
 	this.setBrowser = function setBrowser(inBool) {
 		gObjPptx.isBrowser = inBool || false;
