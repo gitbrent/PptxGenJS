@@ -3297,7 +3297,13 @@ var PptxGenJS = function(){
 		var strXml = '';
 
 		// Build cat axis tag
-		strXml += '<c:'+ (opts.catLabelFormatCode ? 'dateAx' : 'catAx') +'>';
+		// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
+		if(opts.type.name == 'scatter' || opts.type.name == 'bubble'){
+		    strXml += '<c:valAx>';
+		}
+		else{
+		    strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>';
+		}
 		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
@@ -3313,7 +3319,13 @@ var PptxGenJS = function(){
 				title:    opts.catAxisTitle || 'Axis Title'
 			});
 		}
-		strXml += '  <c:numFmt formatCode="'+ (opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
+		//NOTE: Adding Val Axis Formatting if scatter or bubble charts
+		if(opts.type.name == 'scatter' || opts.type.name == 'bubble'){
+		    strXml += ' <c:numFmt formatCode="'+ (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
+		}
+		else{
+		    strXml += '  <c:numFmt formatCode="'+ (opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
+		}
 		if ( opts.type.name === 'scatter' ) {
 			strXml += '  <c:majorTickMark val="none"/>';
 			strXml += '  <c:minorTickMark val="none"/>';
@@ -3368,7 +3380,13 @@ var PptxGenJS = function(){
 		}
 
 		// Close cat axis tag
-		strXml += '</c:'+ (opts.catLabelFormatCode ? 'dateAx' : 'catAx') +'>';
+		//NOTE: Added closing tag of val or cat axis based on chart type
+		if(opts.type.name == 'scatter' || opts.type.name == 'bubble'){
+		    strXml += '</c:valAx>';
+		}
+		else{
+		    strXml += '</c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>';
+		}
 
 		return strXml;
 	}
