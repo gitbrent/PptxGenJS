@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180702";
+	var APP_BLD = "20180706";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3384,8 +3384,8 @@ var PptxGenJS = function(){
 		strXml += '  <c:axId val="'+ valAxisId +'"/>';
 		strXml += '  <c:scaling>';
 		strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
-		if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
-		if (opts.valAxisMinVal) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
+		if (opts.valAxisMaxVal || opts.valAxisMaxVal == 0) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
+		if (opts.valAxisMinVal || opts.valAxisMinVal == 0) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
 		strXml += '  </c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.valAxisHidden ? 1 : 0) +'"/>';
 		strXml += '  <c:axPos val="'+ axisPos +'"/>';
