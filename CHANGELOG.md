@@ -7,7 +7,8 @@
 - Remove jquery-node dependency (fixes XSS Vulnerability Security Warning) [\#350](https://github.com/gitbrent/PptxGenJS/issues/350) ([TinkerJack](https://github.com/TinkerJack))
 - Cannot set valAxisMinVal to 0 [\#357](https://github.com/gitbrent/PptxGenJS/issues/357) ([GiridharGNair](https://github.com/GiridharGNair))
 - Multiple paragraph spacings if newline character occur in text [\#368](https://github.com/gitbrent/PptxGenJS/issues/368) ([vpetzel](https://github.com/vpetzel))
-
+- Rotate working incorrectly [\#370](https://github.com/gitbrent/PptxGenJS/issues/370) ([michaelcbrook](https://github.com/michaelcbrook))
+ 
 **Implemented Enhancements:**
 - New Feature: Speaker Notes [\#239](https://github.com/gitbrent/PptxGenJS/issues/239) [\#361](https://github.com/gitbrent/PptxGenJS/pull/361) ([travispwingo](https://github.com/travispwingo))
 - New Chart Option: `displayBlanksAs` [\#365](https://github.com/gitbrent/PptxGenJS/pull/365) ([guipas](https://github.com/guipas))
