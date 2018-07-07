@@ -4,7 +4,7 @@ title: Slide Methods
 ---
 
 ## Page Number
-Returns the page number/slide number for the given Slide.
+Returns the page/slide number for the given Slide.
 
 ### Page Number Syntax
 ```javascript
@@ -36,4 +36,14 @@ slide.slideNumber({ x:1.0, y:'90%' });
 
 // EX: Styled Slide Numbers
 slide.slideNumber({ x:'50%', y:'90%', fontFace:'Courier', fontSize:32, color:'CF0101' });
+```
+
+
+
+## Slide Hiding
+Hide a given Slide.
+
+### Slide Hiding Syntax
+```javascript
+slide.hidden = true;
 ```
