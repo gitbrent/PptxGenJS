@@ -4074,7 +4074,7 @@ var PptxGenJS = function(){
 				notesStr += data.text;
 			}
 		});
-		return notesStr;
+		return notesStr.replace(/\r*\n/g, CRLF);
 	}
 
 	function makeXmlNotesSlide(objSlide) {
