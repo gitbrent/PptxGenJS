@@ -181,7 +181,7 @@ function genSlides_Table(pptx) {
 	// SLIDE 1: Table text alignment and cell styles
 	{
 		var slide = pptx.addNewSlide();
-		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
+		slide.addNotes('API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
