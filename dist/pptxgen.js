@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180625";
+	var APP_BLD = "20180706";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -552,6 +552,7 @@ var PptxGenJS = function(){
 			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
+			if ( ['gap','span'].indexOf(options.displayBlanksAs || '') < 0 ) options.displayBlanksAs = 'span';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 			options.lineDataSymbolLineSize = ( options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize ) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT );
 			// `layout` allows the override of PPT defaults to maximize space
@@ -1069,8 +1070,8 @@ var PptxGenJS = function(){
 						strSlideXml += '<p:pic>';
 						strSlideXml += '  <p:nvPicPr>'
 						strSlideXml += '    <p:cNvPr id="'+ (idx + 2) +'" name="Object '+ (idx + 1) +'" descr="'+ slideItemObj.image +'">';
-						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.url   ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" />';
-						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.slide ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? decodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" action="ppaction://hlinksldjump" />';
+						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.url   ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" />';
+						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.slide ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" action="ppaction://hlinksldjump" />';
 						strSlideXml += '    </p:cNvPr>';
 						strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
 						strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
@@ -1429,18 +1430,18 @@ var PptxGenJS = function(){
 						data.forEach(function(objData,idx){
 							if ( idx == 0 ) strSharedStrings += '<si><t>'+ 'X-Axis' +'</t></si>';
 							else {
-								strSharedStrings += '<si><t>'+ decodeXmlEntities(objData.name || ' ') +'</t></si>';
-								strSharedStrings += '<si><t>'+ decodeXmlEntities('Size '+idx) +'</t></si>';
+								strSharedStrings += '<si><t>'+ encodeXmlEntities(objData.name || ' ') +'</t></si>';
+								strSharedStrings += '<si><t>'+ encodeXmlEntities('Size '+idx) +'</t></si>';
 							}
 						});
 					}
 					else {
-						data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ decodeXmlEntities((objData.name || ' ').replace('X-Axis','X-Values')) +'</t></si>'; });
+						data.forEach(function(objData,idx){ strSharedStrings += '<si><t>'+ encodeXmlEntities((objData.name || ' ').replace('X-Axis','X-Values')) +'</t></si>'; });
 					}
 
 					// D: Add `labels`/Categories
 					if ( chartObject.opts.type.name != 'bubble' && chartObject.opts.type.name != 'scatter' ) {
-						data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ decodeXmlEntities(label) +'</t></si>'; });
+						data[0].labels.forEach(function(label,idx){ strSharedStrings += '<si><t>'+ encodeXmlEntities(label) +'</t></si>'; });
 					}
 
 					strSharedStrings += '</sst>\n';
@@ -1466,7 +1467,7 @@ var PptxGenJS = function(){
 						strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length] + (data[0].labels.length+1) +'" totalsRowShown="0">';
 						strTableXml += '<tableColumns count="' + (data.length+1) +'">';
 						strTableXml += '<tableColumn id="1" name=" " />';
-						data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ decodeXmlEntities(obj.name) +'" />' });
+						data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+2) +'" name="'+ encodeXmlEntities(obj.name) +'" />' });
 					}
 					strTableXml += '</tableColumns>';
 					strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0" />';
@@ -2050,7 +2051,7 @@ var PptxGenJS = function(){
 	/**
 	 * DESC: Replace special XML characters with HTML-encoded strings
 	 */
-	function decodeXmlEntities(inStr) {
+	function encodeXmlEntities(inStr) {
 		// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 		if ( typeof inStr === 'undefined' || inStr == null ) return "";
 		return inStr.toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/\'/g,'&apos;');
@@ -2636,7 +2637,7 @@ var PptxGenJS = function(){
 		}
 
 		strXml += '  <c:plotVisOnly val="1"/>';
-		strXml += '  <c:dispBlanksAs val="gap"/>';
+		strXml += '  <c:dispBlanksAs val="'+ rel.opts.displayBlanksAs +'"/>';
 		if ( rel.opts.type.name === 'scatter' ) strXml += '<c:showDLblsOverMax val="1"/>';
 
 		strXml += '</c:chart>';
@@ -2709,7 +2710,7 @@ var PptxGenJS = function(){
 					strXml += '  <c:tx>';
 					strXml += '    <c:strRef>';
 					strXml += '      <c:f>Sheet1!$'+ getExcelColName(idx+1) +'$1</c:f>';
-					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ decodeXmlEntities(obj.name) +'</c:v></c:pt></c:strCache>';
+					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ encodeXmlEntities(obj.name) +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
 
@@ -2805,7 +2806,7 @@ var PptxGenJS = function(){
 							strXml += '    <c:numCache>';
 							strXml += '      <c:formatCode>'+ opts.catLabelFormatCode +'</c:formatCode>';
 							strXml += '      <c:ptCount val="'+ obj.labels.length +'"/>';
-							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });
+							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ encodeXmlEntities(label) +'</c:v></c:pt>'; });
 							strXml += '    </c:numCache>';
 							strXml += '  </c:numRef>';
 						}
@@ -2814,7 +2815,7 @@ var PptxGenJS = function(){
 							strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ (obj.labels.length+1) +'</c:f>';
 							strXml += '    <c:strCache>';
 							strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });
+							obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ encodeXmlEntities(label) +'</c:v></c:pt>'; });
 							strXml += '    </c:strCache>';
 							strXml += '  </c:strRef>';
 						}
@@ -3233,7 +3234,7 @@ var PptxGenJS = function(){
 				strXml += '      <c:f>Sheet1!$B$1</c:f>';
 				strXml += '      <c:strCache>';
 				strXml += '        <c:ptCount val="1"/>';
-				strXml += '        <c:pt idx="0"><c:v>'+ decodeXmlEntities(obj.name) +'</c:v></c:pt>';
+				strXml += '        <c:pt idx="0"><c:v>'+ encodeXmlEntities(obj.name) +'</c:v></c:pt>';
 				strXml += '      </c:strCache>';
 				strXml += '    </c:strRef>';
 				strXml += '  </c:tx>';
@@ -3318,7 +3319,7 @@ var PptxGenJS = function(){
 				strXml += '    <c:f>Sheet1!'+ '$A$2:$A$'+ (obj.labels.length+1) +'</c:f>';
 				strXml += '    <c:strCache>';
 				strXml += '	     <c:ptCount val="'+ obj.labels.length +'"/>';
-				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ decodeXmlEntities(label) +'</c:v></c:pt>'; });
+				obj.labels.forEach(function(label,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ encodeXmlEntities(label) +'</c:v></c:pt>'; });
 				strXml += '    </c:strCache>';
 				strXml += '  </c:strRef>';
 				strXml += '</c:cat>';
@@ -3438,8 +3439,8 @@ var PptxGenJS = function(){
 		strXml += '  <c:axId val="'+ valAxisId +'"/>';
 		strXml += '  <c:scaling>';
 		strXml += '    <c:orientation val="'+ (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
-		if (opts.valAxisMaxVal) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
-		if (opts.valAxisMinVal) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
+		if (opts.valAxisMaxVal || opts.valAxisMaxVal == 0) strXml += '<c:max val="'+ opts.valAxisMaxVal +'"/>';
+		if (opts.valAxisMinVal || opts.valAxisMinVal == 0) strXml += '<c:min val="'+ opts.valAxisMinVal +'"/>';
 		strXml += '  </c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.valAxisHidden ? 1 : 0) +'"/>';
 		strXml += '  <c:axPos val="'+ axisPos +'"/>';
@@ -3535,7 +3536,7 @@ var PptxGenJS = function(){
 		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || DEF_FONT_COLOR) +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.fontFace || 'Arial') +'"/>';
 		strXml += '      </a:rPr>';
-		strXml += '      <a:t>'+ (decodeXmlEntities(opts.title) || '') +'</a:t>';
+		strXml += '      <a:t>'+ (encodeXmlEntities(opts.title) || '') +'</a:t>';
 		strXml += '    </a:r>';
 		strXml += '  </a:p>';
 		strXml += '  </c:rich>';
@@ -3663,7 +3664,9 @@ var PptxGenJS = function(){
 
 		// STEP 4: Loop over each text object and create paragraph props, text run, etc.
 		arrTextObjects.forEach(function(textObj,idx){
-            // Clear/Increment loop vars
+			// Clear/Increment loop vars
+			paragraphPropXml = '<a:pPr '+ (textObj.options.rtlMode ? ' rtl="1" ' : '');
+			strXmlBullet = '', strXmlParaSpc = '';
 			textObj.options.lineIdx = idx;
 
             // Inherit pPr-type options from parent shape's `options`
@@ -3845,10 +3848,10 @@ var PptxGenJS = function(){
 			else if ( opts.hyperlink.url ) {
 				// FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 				//startInfo += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-                runProps += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" history="1" highlightClick="0" endSnd="0" />';
+				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" invalidUrl="" action="" tgtFrame="" tooltip="'+ (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +'" history="1" highlightClick="0" endSnd="0" />';
 			}
 			else if ( opts.hyperlink.slide ) {
-                runProps += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" action="ppaction://hlinksldjump" tooltip="'+ (opts.hyperlink.tooltip ? decodeXmlEntities(opts.hyperlink.tooltip) : '') +'" />';
+				startInfo += '<a:hlinkClick r:id="rId'+ opts.hyperlink.rId +'" action="ppaction://hlinksldjump" tooltip="'+ (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +'" />';
 			}
 		}
 
@@ -3885,7 +3888,7 @@ var PptxGenJS = function(){
 		if ( parsedText.length > 1 ) {
 			var outTextData = '';
 			for ( var i = 0, total_size_i = parsedText.length; i < total_size_i; i++ ) {
-				outTextData += '<a:r>' + startInfo+ '<a:t>' + decodeXmlEntities(parsedText[i]);
+				outTextData += '<a:r>' + startInfo+ '<a:t>' + encodeXmlEntities(parsedText[i]);
 				// Stop/Start <p>aragraph as long as there is more lines ahead (otherwise its closed at the end of this function)
 				if ( (i + 1) < total_size_i ) outTextData += (opts.breakLine ? CRLF : '') + '</a:t></a:r>';
 			}
@@ -3894,7 +3897,7 @@ var PptxGenJS = function(){
 		else {
 			// Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
 			// The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
-			xmlTextRun = ( (opts.align && opts.lineIdx > 0) ? paraProp : '') + '<a:r>' + startInfo+ '<a:t>' + decodeXmlEntities(inStrText);
+			xmlTextRun = ( (opts.align && opts.lineIdx > 0) ? paraProp : '') + '<a:r>' + startInfo+ '<a:t>' + encodeXmlEntities(inStrText);
 		}
 
 		// Return paragraph with text run
@@ -3913,7 +3916,6 @@ var PptxGenJS = function(){
 
 			// B: Set anchorPoints:
 			if ( objOptions.bodyProp.anchor ) bodyProperties += ' anchor="'+ objOptions.bodyProp.anchor +'"'; // VALS: [t,ctr,b]
-			if ( objOptions.bodyProp.rot    ) bodyProperties += ' rot="'   + convertRotationDegrees(objOptions.bodyProp.rot) +'"'; // VALS: degree * 60,000
 			if ( objOptions.bodyProp.vert   ) bodyProperties += ' vert="'  + objOptions.bodyProp.vert   +'"'; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 
 			// C: Textbox margins [padding]:
@@ -4115,10 +4117,10 @@ var PptxGenJS = function(){
 	function makeXmlCore() {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
 		strXml += '<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">';
-		strXml += '<dc:title>'+ decodeXmlEntities(gObjPptx.title) +'</dc:title>';
-		strXml += '<dc:subject>'+ decodeXmlEntities(gObjPptx.subject) +'</dc:subject>';
-		strXml += '<dc:creator>'+ decodeXmlEntities(gObjPptx.author) +'</dc:creator>';
-		strXml += '<cp:lastModifiedBy>'+ decodeXmlEntities(gObjPptx.author) +'</cp:lastModifiedBy>';
+		strXml += '<dc:title>'+ encodeXmlEntities(gObjPptx.title) +'</dc:title>';
+		strXml += '<dc:subject>'+ encodeXmlEntities(gObjPptx.subject) +'</dc:subject>';
+		strXml += '<dc:creator>'+ encodeXmlEntities(gObjPptx.author) +'</dc:creator>';
+		strXml += '<cp:lastModifiedBy>'+ encodeXmlEntities(gObjPptx.author) +'</cp:lastModifiedBy>';
 		strXml += '<cp:revision>'+ gObjPptx.revision +'</cp:revision>';
 		strXml += '<dcterms:created xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:created>';
 		strXml += '<dcterms:modified xsi:type="dcterms:W3CDTF">'+ new Date().toISOString() +'</dcterms:modified>';
@@ -4157,7 +4159,7 @@ var PptxGenJS = function(){
 	function makeXmlSlide(objSlide) {
 		// STEP 1: Generate slide XML - wrap generated text in full XML envelope
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'+CRLF;
-		strXml += '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">';
+		strXml += '<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"'+ (objSlide.slide.hidden ? ' show="0"' : '') +'>';
 		strXml += gObjPptxGenerators.slideObjectToXml(objSlide);
 		strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>';
 		strXml += '</p:sld>';
@@ -4173,7 +4175,7 @@ var PptxGenJS = function(){
 				notesStr += data.text;
 			}
 		});
-		return notesStr;
+		return notesStr.replace(/\r*\n/g, CRLF);
 	}
 
 	function makeXmlNotesSlide(objSlide) {
@@ -4190,7 +4192,7 @@ var PptxGenJS = function(){
 						+ '<p:ph type="body" idx="1" /></p:nvPr></p:nvSpPr><p:spPr />'
 						+ '<p:txBody><a:bodyPr /><a:lstStyle /><a:p><a:r>'
 						+ '<a:rPr lang="en-US" dirty="0" smtClean="0" /><a:t>'
-						+ getNotesFromSlide(objSlide)
+						+ encodeXmlEntities(getNotesFromSlide(objSlide))
 						+ '</a:t></a:r><a:endParaRPr lang="en-US" dirty="0" /></a:p></p:txBody>'
 						+ '</p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Number Placeholder 3" />'
 						+ '<p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr>'
@@ -4542,7 +4544,9 @@ var PptxGenJS = function(){
 	};
 
 	/**
-	 * Sets the Presentation Option: `isBrowser` (For Angular/Webpack, etc. as they are detected as NODE)
+	 * Sets the Presentation Option: `isBrowser`
+	 * Target: Angular/React/Webpack, etc.
+	 * This setting affects how files are saved: using `fs` for Node.js or browser libs
 	 */
 	this.setBrowser = function setBrowser(inBool) {
 		gObjPptx.isBrowser = inBool || false;
@@ -5156,7 +5160,7 @@ if ( NODEJS ) {
 	var JSZip = null;
 	var sizeOf = null;
 
-	// A: jQuery depdendency
+	// A: jQuery dependency
 	try {
 		var jsdom = require("jsdom");
 		var dom = new jsdom.JSDOM("<!DOCTYPE html>");
