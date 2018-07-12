@@ -272,7 +272,7 @@ var PptxGenJS = function(){
 
 			// STEP 2: Set some options
 			// Placeholders should inherit their colors or override them, so don't default them
-			if (!opt.placeholder) {
+			if ( !opt.placeholder ) {
 				opt.color = ( opt.color || target.slide.color || DEF_FONT_COLOR ); // Set color (options > inherit from Slide > default to black)
 			}
 
@@ -298,7 +298,7 @@ var PptxGenJS = function(){
 			resultObject.options.bodyProp.anchor  = (opt.valign || (!opt.placeholder ? 'ctr' : null)); // VALS: [t,ctr,b]
 			resultObject.options.bodyProp.rot     = (opt.rotate || null); // VALS: degree * 60,000
 			resultObject.options.bodyProp.vert    = (opt.vert || null); // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
-			resultObject.options.lineSpacing = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
+			resultObject.options.lineSpacing      = (opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null);
 
 			if ( (opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0 ) {
 				resultObject.options.bodyProp.lIns = inch2Emu(opt.inset);
@@ -1899,6 +1899,21 @@ var PptxGenJS = function(){
 		return Math.round(EMU * inches);
 	}
 
+	function addPlaceholdersToSlides(slide) {
+		var slidePlaceholderIdxs = slide.data.filter(function (slideObj) { return slideObj.options.placeholder; })
+			.map(function (slideObj) { return slideObj.options.placeholder; });
+		var slideLayoutPlaceholders = slide.layoutObj.data.filter(function (slideLayoutObj) {
+			return slideLayoutObj.type === MASTER_OBJECTS.placeholder.name;
+		});
+
+		// Determine if the slide has all placeholders from the slide master, otherwise add them as empty text shapes
+		slideLayoutPlaceholders.forEach(function (placeholderObj) {
+			if (slidePlaceholderIdxs.indexOf(placeholderObj.options.idx) > -1) return;
+			gObjPptxGenerators.addTextDefinition('', { placeholder: placeholderObj.options.idx }, slide, false);
+// TODO: idx
+		});
+	}
+
 	// IMAGE METHODS:
 
 	function getSizeFromImage(inImgUrl) {
@@ -1929,20 +1944,6 @@ var PptxGenJS = function(){
 
 		// C: Load image
 		image.src = inImgUrl;
-	}
-
-	function addPlaceholdersToSlides(slide) {
-		var slidePlaceholderIdxs = slide.data.filter(function (slideObj) { return slideObj.options.placeholder; })
-			.map(function (slideObj) { return slideObj.options.placeholder; });
-		var slideLayoutPlaceholders = slide.layoutObj.data.filter(function (slideLayoutObj) {
-			return slideLayoutObj.type === MASTER_OBJECTS.placeholder.name;
-		});
-
-		// Determine if the slide has all placeholders from the slide master, otherwise add them as empty text shapes
-		slideLayoutPlaceholders.forEach(function (placeholderObj) {
-			if (slidePlaceholderIdxs.indexOf(placeholderObj.options.idx) > -1) return;
-			gObjPptxGenerators.addTextDefinition('', { placeholder: placeholderObj.options.idx }, slide, false);
-		});
 	}
 
     /* Encode Image/Audio/Video into base64 */
