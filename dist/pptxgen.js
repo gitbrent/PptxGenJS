@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180706";
+	var APP_BLD = "20180711";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -705,7 +705,7 @@ var PptxGenJS = function(){
 				var x = 0, y = 0, cx = getSmartParseNumber('75%','X'), cy = 0, placeholderObj;
 				var locationAttr = "", shapeType = null;
 
-				if (slideObject.layoutObj && slideObject.layoutObj.data) {
+				if (slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder) {
 					placeholderObj = slideObject.layoutObj.data.filter(function(layoutObj){ return layoutObj.options.idx === slideItemObj.options.placeholder})[0];
 				}
 
