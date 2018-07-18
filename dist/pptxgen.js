@@ -189,6 +189,9 @@ var PptxGenJS = function(){
 		/** @type {Number} global counter for included images (used for index in their filenames) */
 		gObjPptx.imageCounter = 0;
 
+		/** @type {object} this Presentations Placeholders */
+		gObjPptx.placeholderIdxs = {};
+
 		/** @type {object[]} this Presentations Slides (Slide objects) */
 		gObjPptx.slides = [];
 
@@ -1900,9 +1903,10 @@ var PptxGenJS = function(){
 	}
 
 	function addPlaceholdersToSlides(slide) {
-		var slidePlaceholderIdxs = slide.data.filter(function (slideObj) { return slideObj.options.placeholder; })
-			.map(function (slideObj) { return slideObj.options.placeholder; });
-		var slideLayoutPlaceholders = slide.layoutObj.data.filter(function (slideLayoutObj) {
+		var slidePlaceholderIdxs = slide.data
+			.filter(function(slideObj){ return slideObj.options.placeholder; })
+			.map(function(slideObj){ return slideObj.options.placeholder; });
+		var slideLayoutPlaceholders = slide.layoutObj.data.filter(function(slideLayoutObj){
 			return slideLayoutObj.type === MASTER_OBJECTS.placeholder.name;
 		});
 
@@ -1911,6 +1915,7 @@ var PptxGenJS = function(){
 			if (slidePlaceholderIdxs.indexOf(placeholderObj.options.idx) > -1) return;
 			gObjPptxGenerators.addTextDefinition('', { placeholder: placeholderObj.options.idx }, slide, false);
 // TODO: idx
+// SOLN: gObjPptx.placeholderIdxs
 		});
 	}
 
@@ -4592,7 +4597,7 @@ var PptxGenJS = function(){
 		var intRels = 0, arrRelsDone = [];
 
 		// STEP 1: Add empty placeholder objects to slides that don't already have them
-		gObjPptx.slides.forEach(function(slide, idx) {
+		gObjPptx.slides.forEach(function(slide,idx){
 			if (slide.layoutObj) addPlaceholdersToSlides(slide);
 		});
 
