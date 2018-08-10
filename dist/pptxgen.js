@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180706";
+	var APP_BLD = "20180809";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -112,7 +112,7 @@ var PptxGenJS = function(){
 		'LINE'    : { 'displayName':'Line Chart',     'name':'line'     },
 		'PIE'     : { 'displayName':'Pie Chart' ,     'name':'pie'      },
 		'SCATTER' : { 'displayName':'Scatter Chart',  'name':'scatter'  },
-        'RADAR'   : { 'displayName':'Radar Chart',    'name':'radar'    }
+		'RADAR'   : { 'displayName':'Radar Chart',    'name':'radar'    }
 	};
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
 	var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
@@ -531,6 +531,7 @@ var PptxGenJS = function(){
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			if ( ['gap','span'].indexOf(options.displayBlanksAs || '') < 0 ) options.displayBlanksAs = 'span';
+			if ( ['standard','marker','filled'].indexOf(options.radarStyle || '') < 0 ) options.radarStyle = 'standard';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 			options.lineDataSymbolLineSize = ( options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize ) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT );
 			// `layout` allows the override of PPT defaults to maximize space
@@ -543,7 +544,6 @@ var PptxGenJS = function(){
 					}
 				});
 			}
-            if ( ['standard','marker','filled'].indexOf(options.radarStyle || '') < 0 ) options.radarStyle = 'standard';
 
 
 			// Set gridline defaults
@@ -2625,7 +2625,7 @@ var PptxGenJS = function(){
 			case 'area':
 			case 'bar':
 			case 'line':
-            case 'radar':
+			case 'radar':
 				// 1: Start Chart
 				strXml += '<c:'+ chartType +'Chart>';
 				if ( chartType == 'bar' ) {
@@ -2634,7 +2634,7 @@ var PptxGenJS = function(){
 				}
 
 				if ( chartType == 'radar' ) {
-                    strXml += '<c:radarStyle val="'+ opts.radarStyle +'"/>';
+					strXml += '<c:radarStyle val="'+ opts.radarStyle +'"/>';
 				}
 
 				strXml += '<c:varyColors val="0"/>';
@@ -3297,7 +3297,6 @@ var PptxGenJS = function(){
 
 				// Done with Doughnut/Pie
 				break;
-
 		}
 
 		return strXml;

@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.3.0
-* BLD.: 20180626
+* BLD.: 20180809
 */
 
 // Detect Node.js
@@ -1514,86 +1514,87 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble4 );
 	}
 
-    // SLIDE 15: Radar Chart ------------------------------------------------------------------
-    function slide15() {
-        var slide = pptx.addNewSlide();
-        slide.addTable( [ [{ text:'Chart Examples: Radar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+	// SLIDE 15: Radar Chart ------------------------------------------------------------------
+	function slide15() {
+		var slide = pptx.addNewSlide();
+		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
+		slide.addTable( [ [{ text:'Chart Examples: Radar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
-        var arrDataRegions = [
-            {
-                name  : 'Region 1',
-                labels: ['May', 'June', 'July', 'August', 'September'],
-                values: [26, 53, 100, 75, 41]
-            }
-        ];
-        var arrDataHighVals = [
-            {
-                name  : 'California',
-                labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-                values: [2000, 2800, 3200, 4000, 5000]
-            },
-            {
-                name  : 'Texas',
-                labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
-                values: [1400, 2000, 2500, 3000, 3800]
-            }
-        ];
+		var arrDataRegions = [
+			{
+				name  : 'Region 1',
+				labels: ['May', 'June', 'July', 'August', 'September'],
+				values: [26, 53, 100, 75, 41]
+			}
+		];
+		var arrDataHighVals = [
+			{
+				name  : 'California',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [2000, 2800, 3200, 4000, 5000]
+			},
+			{
+				name  : 'Texas',
+				labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+				values: [1400, 2000, 2500, 3000, 3800]
+			}
+		];
 
-        // TOP-LEFT: Standard
-        var optsChartRadar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+		// TOP-LEFT: Standard
+		var optsChartRadar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
 			radarStyle: 'standard',
-            lineDataSymbol: 'none',
-            fill: 'F1F1F1'
-        };
-        slide.addChart( pptx.charts.RADAR, arrDataRegions, optsChartRadar1 );
+			lineDataSymbol: 'none',
+			fill: 'F1F1F1'
+		};
+		slide.addChart( pptx.charts.RADAR, arrDataRegions, optsChartRadar1 );
 
-        // TOP-RIGHT: Marker
-        var optsChartRadar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
-            radarStyle: 'marker',
-            catAxisLabelColor   : '0000CC',
-            catAxisLabelFontFace: 'Courier',
-            catAxisLabelFontSize: 12
-        };
-        slide.addChart( pptx.charts.RADAR, arrDataRegions, optsChartRadar2 );
+		// TOP-RIGHT: Marker
+		var optsChartRadar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+			radarStyle: 'marker',
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Courier',
+			catAxisLabelFontSize: 12
+		};
+		slide.addChart( pptx.charts.RADAR, arrDataRegions, optsChartRadar2 );
 
-        // BTM-LEFT: Filled - TITLE and LEGEND
-        slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
-        var optsChartRadar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
-            radarStyle: 'filled',
-            catAxisLabelColor   : 'CC0000',
-            catAxisLabelFontFace: 'Helvetica Neue',
-            catAxisLabelFontSize: 14,
+		// BTM-LEFT: Filled - TITLE and LEGEND
+		slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartRadar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+			radarStyle: 'filled',
+			catAxisLabelColor   : 'CC0000',
+			catAxisLabelFontFace: 'Helvetica Neue',
+			catAxisLabelFontSize: 14,
 
-            showTitle : true,
-            titleColor   : '33CF22',
-            titleFontFace: 'Helvetica Neue',
-            titleFontSize: 16,
-            title: 'Sales by Region',
+			showTitle : true,
+			titleColor   : '33CF22',
+			titleFontFace: 'Helvetica Neue',
+			titleFontSize: 16,
+			title: 'Sales by Region',
 
-            showLegend : true
-        };
-        slide.addChart( pptx.charts.RADAR, arrDataHighVals, optsChartRadar3 );
+			showLegend : true
+		};
+		slide.addChart( pptx.charts.RADAR, arrDataHighVals, optsChartRadar3 );
 
-        // BTM-RIGHT: TITLE and LEGEND
-        slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
-        var optsChartRadar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
-            radarStyle: 'filled',
-            chartColors: ['0088CC', '99FFCC'],
+		// BTM-RIGHT: TITLE and LEGEND
+		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+		var optsChartRadar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+			radarStyle: 'filled',
+			chartColors: ['0088CC', '99FFCC'],
 
-            catAxisLabelColor   : '0000CC',
-            catAxisLabelFontFace: 'Times',
-            catAxisLabelFontSize: 11,
-            catAxisLineShow: false,
+			catAxisLabelColor   : '0000CC',
+			catAxisLabelFontFace: 'Times',
+			catAxisLabelFontSize: 11,
+			catAxisLineShow: false,
 
-            showLegend : true,
-            legendPos  :  't',
-            legendColor: 'FF0000',
-            showTitle  : true,
-            titleColor : 'FF0000',
-            title      : 'Red Title and Legend'
-        };
-        slide.addChart( pptx.charts.RADAR, arrDataHighVals, optsChartRadar4 );
-    }
+			showLegend : true,
+			legendPos  :  't',
+			legendColor: 'FF0000',
+			showTitle  : true,
+			titleColor : 'FF0000',
+			title	  : 'Red Title and Legend'
+		};
+		slide.addChart( pptx.charts.RADAR, arrDataHighVals, optsChartRadar4 );
+	}
 
 	// SLIDE 16: Multi-Type Charts ---------------------------------------------------------
 	function slide16() {
