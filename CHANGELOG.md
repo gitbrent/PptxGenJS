@@ -14,6 +14,7 @@
 - New Feature: Speaker Notes [\#239](https://github.com/gitbrent/PptxGenJS/issues/239) [\#361](https://github.com/gitbrent/PptxGenJS/pull/361) ([travispwingo](https://github.com/travispwingo))
 - New Chart Option: `displayBlanksAs` [\#365](https://github.com/gitbrent/PptxGenJS/pull/365) ([guipas](https://github.com/guipas))
 - New Feature: ability to hide slides [\#367](https://github.com/gitbrent/PptxGenJS/pull/367) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Add second Cat Axis for Scatter and Bubble [\#372](https://github.com/gitbrent/PptxGenJS/pull/372) ([KrishnaTejaReddyV](https://github.com/KrishnaTejaReddyV))
 - New Chart Type: Add radar chart implementation [\#386](https://github.com/gitbrent/PptxGenJS/pull/386) ([loictro](https://github.com/loictro))
 
 
