@@ -9,7 +9,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 
 ## Chart Types
 * Chart type can be any one of `pptx.charts`
-* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.BUBBLE`, `pptx.charts.LINE`, `pptx.charts.SCATTER`, `pptx.charts.PIE`, `pptx.charts.DOUGHNUT`
+* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.BUBBLE`, `pptx.charts.DOUGHNUT`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.RADAR`, `pptx.charts.SCATTER`
 
 ## Multi-Type Charts
 * Chart types can be any one of `pptx.charts`, although `pptx.charts.AREA`, `pptx.charts.BAR`, and `pptx.charts.LINE` will give the best results.
@@ -47,6 +47,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `legendColor`   | string  |         | `000000`  | legend text color                  | hex color code. Ex: `{ legendColor: '0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position              | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
 | `layout`        | object  |         |           | positioning plot within chart area | object with `x`, `y`, `w` and `h` props, all in range 0-1 (proportionally related to the chart size). Ex: `{x: 0, y: 0, w: 1, h: 1}` fully expands chart within the plot area |
+| `radarStyle`    | string  |         | `standard`| radar chart style                  | `standard`, `marker`, `filled` |
 | `showDataTable`           | boolean |     | `false`   | show Data Table under the chart     | `true` or `false` (Not available for Pie/Doughnut charts) |
 | `showDataTableKeys`       | boolean |     | `true`    | show Data Table Keys (color blocks) | `true` or `false` (Not available for Pie/Doughnut charts) |
 | `showDataTableHorzBorder` | boolean |     | `true`    | show Data Table horizontal borders  | `true` or `false` (Not available for Pie/Doughnut charts) |
@@ -77,8 +78,8 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `catAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels" | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
 | `catAxisLabelPos`      | string  | string  | `nextTo`     | axis label position     | `low`, `high`, or `nextTo` . Ex: `{ catAxisLabelPos: 'low' }`      |
 | `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line  | `true` or `false` |
-| `catAxisMajorTimeUnit` | string  |         |              | category-axis major time unit | `days` `months` or `years` |
-| `catAxisMinorTimeUnit` | string  |         |              | category-axis minor time unit | `days` `months` or `years` |
+| `catAxisMajorTimeUnit` | string  |         |              | category-axis major time unit | `days`, `months` or `years` |
+| `catAxisMinorTimeUnit` | string  |         |              | category-axis minor time unit | `days`, `months` or `years` |
 | `catAxisMajorUnit`     | integer |         |              | category-axis major unit      | Positive integer. Ex: `{ catAxisMajorUnit:12 }`   |
 | `catAxisMinorUnit`     | integer |         |              | category-axis minor unit      | Positive integer. Ex: `{ catAxisMinorUnit:1 }`   |
 | `catAxisOrientation`   | string  |         | `minMax`     | category-axis orientation     | `maxMin` (high->low) or `minMax` (low->high) |
@@ -156,21 +157,6 @@ pptx.setLayout('LAYOUT_WIDE');
 
 var slide = pptx.addNewSlide();
 
-// Chart Type: BAR
-var dataChartBar = [
-  {
-    name  : 'Region 1',
-    labels: ['May', 'June', 'July', 'August'],
-    values: [26, 53, 100, 75]
-  },
-  {
-    name  : 'Region 2',
-    labels: ['May', 'June', 'July', 'August'],
-    values: [43.5, 70.3, 90.1, 80.05]
-  }
-];
-slide.addChart( pptx.charts.BAR, dataChartBar, { x:1.0, y:1.0, w:12, h:6 } );
-
 // Chart Type: AREA
 // Chart Type: LINE
 var dataChartAreaLine = [
@@ -188,19 +174,20 @@ var dataChartAreaLine = [
 slide.addChart( pptx.charts.AREA, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
 slide.addChart( pptx.charts.LINE, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
 
-// Chart Type: PIE
-var dataChartPie = [
-  { name:'Location', labels:['DE','GB','MX','JP','IN','US'], values:[35,40,85,88,99,101] }
+// Chart Type: BAR
+var dataChartBar = [
+  {
+    name  : 'Region 1',
+    labels: ['May', 'June', 'July', 'August'],
+    values: [26, 53, 100, 75]
+  },
+  {
+    name  : 'Region 2',
+    labels: ['May', 'June', 'July', 'August'],
+    values: [43.5, 70.3, 90.1, 80.05]
+  }
 ];
-slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
-
-// Chart Type: XY SCATTER
-var dataChartScatter = [
-	{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
-	{ name:'Y-Value 1', values:[13, 20, 21, 25] },
-	{ name:'Y-Value 2', values:[21, 22, 25, 49] }
-];
-slide.addChart( pptx.charts.SCATTER, dataChartScatter, { x:1.0, y:1.0, w:6, h:4 } );
+slide.addChart( pptx.charts.BAR, dataChartBar, { x:1.0, y:1.0, w:12, h:6 } );
 
 // Chart Type: BUBBLE
 var dataChartBubble = [
@@ -210,6 +197,30 @@ var dataChartBubble = [
 	{ name:'Bus',      values:[21, 22, 25, 49, 59, 69], sizes:[11,11,13,13,16,21] }
 ];
 slide.addChart( pptx.charts.BUBBLE, dataChartBubble, { x:1.0, y:1.0, w:6, h:4 } );
+
+// Chart Type: PIE
+var dataChartPie = [
+  { name:'Location', labels:['DE','GB','MX','JP','IN','US'], values:[35,40,85,88,99,101] }
+];
+slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
+
+// Chart Type: RADAR
+var dataChartRadar = [
+	{
+		name  : 'Region 1',
+		labels: ['May', 'June', 'July', 'August', 'September'],
+		values: [26, 53, 100, 75, 41]
+	}
+];
+slide.addChart( pptx.charts.RADAR, dataChartRadar, { x:0.5, y:0.6, w:6.0, h:4, radarStyle:'standard' } );
+
+// Chart Type: XY SCATTER
+var dataChartScatter = [
+	{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
+	{ name:'Y-Value 1', values:[13, 20, 21, 25] },
+	{ name:'Y-Value 2', values:[21, 22, 25, 49] }
+];
+slide.addChart( pptx.charts.SCATTER, dataChartScatter, { x:1.0, y:1.0, w:6, h:4 } );
 
 // Chart Type: Multi-Type
 // NOTE: use the same labels for all types

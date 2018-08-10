@@ -1,1 +1,3 @@
 npm run-script build
+gulp
+gulp deploy

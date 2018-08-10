@@ -18,7 +18,7 @@
 <h2><a class="anchor" aria-hidden="true" id="chart-types"></a><a href="#chart-types" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Chart Types</h2>
 <ul>
 <li>Chart type can be any one of <code>pptx.charts</code></li>
-<li>Currently: <code>pptx.charts.AREA</code>, <code>pptx.charts.BAR</code>, <code>pptx.charts.BUBBLE</code>, <code>pptx.charts.LINE</code>, <code>pptx.charts.SCATTER</code>, <code>pptx.charts.PIE</code>, <code>pptx.charts.DOUGHNUT</code></li>
+<li>Currently: <code>pptx.charts.AREA</code>, <code>pptx.charts.BAR</code>, <code>pptx.charts.BUBBLE</code>, <code>pptx.charts.DOUGHNUT</code>, <code>pptx.charts.LINE</code>, <code>pptx.charts.PIE</code>, <code>pptx.charts.RADAR</code>, <code>pptx.charts.SCATTER</code></li>
 </ul>
 <h2><a class="anchor" aria-hidden="true" id="multi-type-charts"></a><a href="#multi-type-charts" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Multi-Type Charts</h2>
 <ul>
@@ -59,6 +59,7 @@
 <tr><td style="text-align:left"><code>legendColor</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>000000</code></td><td style="text-align:left">legend text color</td><td style="text-align:left">hex color code. Ex: <code>{ legendColor: '0088CC' }</code></td></tr>
 <tr><td style="text-align:left"><code>legendPos</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>r</code></td><td style="text-align:left">chart legend position</td><td style="text-align:left"><code>b</code> (bottom), <code>tr</code> (top-right), <code>l</code> (left), <code>r</code> (right), <code>t</code> (top)</td></tr>
 <tr><td style="text-align:left"><code>layout</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">positioning plot within chart area</td><td style="text-align:left">object with <code>x</code>, <code>y</code>, <code>w</code> and <code>h</code> props, all in range 0-1 (proportionally related to the chart size). Ex: <code>{x: 0, y: 0, w: 1, h: 1}</code> fully expands chart within the plot area</td></tr>
+<tr><td style="text-align:left"><code>radarStyle</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>standard</code></td><td style="text-align:left">radar chart style</td><td style="text-align:left"><code>standard</code>, <code>marker</code>, <code>filled</code></td></tr>
 <tr><td style="text-align:left"><code>showDataTable</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">show Data Table under the chart</td><td style="text-align:left"><code>true</code> or <code>false</code> (Not available for Pie/Doughnut charts)</td></tr>
 <tr><td style="text-align:left"><code>showDataTableKeys</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>true</code></td><td style="text-align:left">show Data Table Keys (color blocks)</td><td style="text-align:left"><code>true</code> or <code>false</code> (Not available for Pie/Doughnut charts)</td></tr>
 <tr><td style="text-align:left"><code>showDataTableHorzBorder</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>true</code></td><td style="text-align:left">show Data Table horizontal borders</td><td style="text-align:left"><code>true</code> or <code>false</code> (Not available for Pie/Doughnut charts)</td></tr>
@@ -93,8 +94,8 @@
 <tr><td style="text-align:left"><code>catAxisLabelFrequency</code></td><td style="text-align:left">integer</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">PPT &quot;Interval Between Labels&quot;</td><td style="text-align:left">1-n. Ex: <code>{ catAxisLabelFrequency: 2 }</code></td></tr>
 <tr><td style="text-align:left"><code>catAxisLabelPos</code></td><td style="text-align:left">string</td><td style="text-align:left">string</td><td style="text-align:left"><code>nextTo</code></td><td style="text-align:left">axis label position</td><td style="text-align:left"><code>low</code>, <code>high</code>, or <code>nextTo</code> . Ex: <code>{ catAxisLabelPos: 'low' }</code></td></tr>
 <tr><td style="text-align:left"><code>catAxisLineShow</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left">true</td><td style="text-align:left">show/hide category-axis line</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
-<tr><td style="text-align:left"><code>catAxisMajorTimeUnit</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">category-axis major time unit</td><td style="text-align:left"><code>days</code> <code>months</code> or <code>years</code></td></tr>
-<tr><td style="text-align:left"><code>catAxisMinorTimeUnit</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">category-axis minor time unit</td><td style="text-align:left"><code>days</code> <code>months</code> or <code>years</code></td></tr>
+<tr><td style="text-align:left"><code>catAxisMajorTimeUnit</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">category-axis major time unit</td><td style="text-align:left"><code>days</code>, <code>months</code> or <code>years</code></td></tr>
+<tr><td style="text-align:left"><code>catAxisMinorTimeUnit</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">category-axis minor time unit</td><td style="text-align:left"><code>days</code>, <code>months</code> or <code>years</code></td></tr>
 <tr><td style="text-align:left"><code>catAxisMajorUnit</code></td><td style="text-align:left">integer</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">category-axis major unit</td><td style="text-align:left">Positive integer. Ex: <code>{ catAxisMajorUnit:12 }</code></td></tr>
 <tr><td style="text-align:left"><code>catAxisMinorUnit</code></td><td style="text-align:left">integer</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">category-axis minor unit</td><td style="text-align:left">Positive integer. Ex: <code>{ catAxisMinorUnit:1 }</code></td></tr>
 <tr><td style="text-align:left"><code>catAxisOrientation</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>minMax</code></td><td style="text-align:left">category-axis orientation</td><td style="text-align:left"><code>maxMin</code> (high-&gt;low) or <code>minMax</code> (low-&gt;high)</td></tr>
@@ -184,21 +185,6 @@ pptx.setLayout(<span class="hljs-string">'LAYOUT_WIDE'</span>);
 
 <span class="hljs-keyword">var</span> slide = pptx.addNewSlide();
 
-<span class="hljs-comment">// Chart Type: BAR</span>
-<span class="hljs-keyword">var</span> dataChartBar = [
-  {
-    <span class="hljs-attr">name</span>  : <span class="hljs-string">'Region 1'</span>,
-    <span class="hljs-attr">labels</span>: [<span class="hljs-string">'May'</span>, <span class="hljs-string">'June'</span>, <span class="hljs-string">'July'</span>, <span class="hljs-string">'August'</span>],
-    <span class="hljs-attr">values</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">53</span>, <span class="hljs-number">100</span>, <span class="hljs-number">75</span>]
-  },
-  {
-    <span class="hljs-attr">name</span>  : <span class="hljs-string">'Region 2'</span>,
-    <span class="hljs-attr">labels</span>: [<span class="hljs-string">'May'</span>, <span class="hljs-string">'June'</span>, <span class="hljs-string">'July'</span>, <span class="hljs-string">'August'</span>],
-    <span class="hljs-attr">values</span>: [<span class="hljs-number">43.5</span>, <span class="hljs-number">70.3</span>, <span class="hljs-number">90.1</span>, <span class="hljs-number">80.05</span>]
-  }
-];
-slide.addChart( pptx.charts.BAR, dataChartBar, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">12</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">6</span> } );
-
 <span class="hljs-comment">// Chart Type: AREA</span>
 <span class="hljs-comment">// Chart Type: LINE</span>
 <span class="hljs-keyword">var</span> dataChartAreaLine = [
@@ -216,19 +202,20 @@ slide.addChart( pptx.charts.BAR, dataChartBar, { <span class="hljs-attr">x</span
 slide.addChart( pptx.charts.AREA, dataChartAreaLine, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">12</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">6</span> } );
 slide.addChart( pptx.charts.LINE, dataChartAreaLine, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">12</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">6</span> } );
 
-<span class="hljs-comment">// Chart Type: PIE</span>
-<span class="hljs-keyword">var</span> dataChartPie = [
-  { <span class="hljs-attr">name</span>:<span class="hljs-string">'Location'</span>, <span class="hljs-attr">labels</span>:[<span class="hljs-string">'DE'</span>,<span class="hljs-string">'GB'</span>,<span class="hljs-string">'MX'</span>,<span class="hljs-string">'JP'</span>,<span class="hljs-string">'IN'</span>,<span class="hljs-string">'US'</span>], <span class="hljs-attr">values</span>:[<span class="hljs-number">35</span>,<span class="hljs-number">40</span>,<span class="hljs-number">85</span>,<span class="hljs-number">88</span>,<span class="hljs-number">99</span>,<span class="hljs-number">101</span>] }
+<span class="hljs-comment">// Chart Type: BAR</span>
+<span class="hljs-keyword">var</span> dataChartBar = [
+  {
+    <span class="hljs-attr">name</span>  : <span class="hljs-string">'Region 1'</span>,
+    <span class="hljs-attr">labels</span>: [<span class="hljs-string">'May'</span>, <span class="hljs-string">'June'</span>, <span class="hljs-string">'July'</span>, <span class="hljs-string">'August'</span>],
+    <span class="hljs-attr">values</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">53</span>, <span class="hljs-number">100</span>, <span class="hljs-number">75</span>]
+  },
+  {
+    <span class="hljs-attr">name</span>  : <span class="hljs-string">'Region 2'</span>,
+    <span class="hljs-attr">labels</span>: [<span class="hljs-string">'May'</span>, <span class="hljs-string">'June'</span>, <span class="hljs-string">'July'</span>, <span class="hljs-string">'August'</span>],
+    <span class="hljs-attr">values</span>: [<span class="hljs-number">43.5</span>, <span class="hljs-number">70.3</span>, <span class="hljs-number">90.1</span>, <span class="hljs-number">80.05</span>]
+  }
 ];
-slide.addChart( pptx.charts.PIE, dataChartPie, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">6</span> } );
-
-<span class="hljs-comment">// Chart Type: XY SCATTER</span>
-<span class="hljs-keyword">var</span> dataChartScatter = [
-    { <span class="hljs-attr">name</span>:<span class="hljs-string">'X-Axis'</span>,    <span class="hljs-attr">values</span>:[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>] },
-    { <span class="hljs-attr">name</span>:<span class="hljs-string">'Y-Value 1'</span>, <span class="hljs-attr">values</span>:[<span class="hljs-number">13</span>, <span class="hljs-number">20</span>, <span class="hljs-number">21</span>, <span class="hljs-number">25</span>] },
-    { <span class="hljs-attr">name</span>:<span class="hljs-string">'Y-Value 2'</span>, <span class="hljs-attr">values</span>:[<span class="hljs-number">21</span>, <span class="hljs-number">22</span>, <span class="hljs-number">25</span>, <span class="hljs-number">49</span>] }
-];
-slide.addChart( pptx.charts.SCATTER, dataChartScatter, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">4</span> } );
+slide.addChart( pptx.charts.BAR, dataChartBar, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">12</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">6</span> } );
 
 <span class="hljs-comment">// Chart Type: BUBBLE</span>
 <span class="hljs-keyword">var</span> dataChartBubble = [
@@ -238,6 +225,30 @@ slide.addChart( pptx.charts.SCATTER, dataChartScatter, { <span class="hljs-attr"
     { <span class="hljs-attr">name</span>:<span class="hljs-string">'Bus'</span>,      <span class="hljs-attr">values</span>:[<span class="hljs-number">21</span>, <span class="hljs-number">22</span>, <span class="hljs-number">25</span>, <span class="hljs-number">49</span>, <span class="hljs-number">59</span>, <span class="hljs-number">69</span>], <span class="hljs-attr">sizes</span>:[<span class="hljs-number">11</span>,<span class="hljs-number">11</span>,<span class="hljs-number">13</span>,<span class="hljs-number">13</span>,<span class="hljs-number">16</span>,<span class="hljs-number">21</span>] }
 ];
 slide.addChart( pptx.charts.BUBBLE, dataChartBubble, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">4</span> } );
+
+<span class="hljs-comment">// Chart Type: PIE</span>
+<span class="hljs-keyword">var</span> dataChartPie = [
+  { <span class="hljs-attr">name</span>:<span class="hljs-string">'Location'</span>, <span class="hljs-attr">labels</span>:[<span class="hljs-string">'DE'</span>,<span class="hljs-string">'GB'</span>,<span class="hljs-string">'MX'</span>,<span class="hljs-string">'JP'</span>,<span class="hljs-string">'IN'</span>,<span class="hljs-string">'US'</span>], <span class="hljs-attr">values</span>:[<span class="hljs-number">35</span>,<span class="hljs-number">40</span>,<span class="hljs-number">85</span>,<span class="hljs-number">88</span>,<span class="hljs-number">99</span>,<span class="hljs-number">101</span>] }
+];
+slide.addChart( pptx.charts.PIE, dataChartPie, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">6</span> } );
+
+<span class="hljs-comment">// Chart Type: RADAR</span>
+<span class="hljs-keyword">var</span> dataChartRadar = [
+    {
+        <span class="hljs-attr">name</span>  : <span class="hljs-string">'Region 1'</span>,
+        <span class="hljs-attr">labels</span>: [<span class="hljs-string">'May'</span>, <span class="hljs-string">'June'</span>, <span class="hljs-string">'July'</span>, <span class="hljs-string">'August'</span>, <span class="hljs-string">'September'</span>],
+        <span class="hljs-attr">values</span>: [<span class="hljs-number">26</span>, <span class="hljs-number">53</span>, <span class="hljs-number">100</span>, <span class="hljs-number">75</span>, <span class="hljs-number">41</span>]
+    }
+];
+slide.addChart( pptx.charts.RADAR, dataChartRadar, { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">0.6</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6.0</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">4</span>, <span class="hljs-attr">radarStyle</span>:<span class="hljs-string">'standard'</span> } );
+
+<span class="hljs-comment">// Chart Type: XY SCATTER</span>
+<span class="hljs-keyword">var</span> dataChartScatter = [
+    { <span class="hljs-attr">name</span>:<span class="hljs-string">'X-Axis'</span>,    <span class="hljs-attr">values</span>:[<span class="hljs-number">1</span>,<span class="hljs-number">2</span>,<span class="hljs-number">3</span>,<span class="hljs-number">4</span>,<span class="hljs-number">5</span>,<span class="hljs-number">6</span>,<span class="hljs-number">7</span>,<span class="hljs-number">8</span>,<span class="hljs-number">9</span>,<span class="hljs-number">10</span>] },
+    { <span class="hljs-attr">name</span>:<span class="hljs-string">'Y-Value 1'</span>, <span class="hljs-attr">values</span>:[<span class="hljs-number">13</span>, <span class="hljs-number">20</span>, <span class="hljs-number">21</span>, <span class="hljs-number">25</span>] },
+    { <span class="hljs-attr">name</span>:<span class="hljs-string">'Y-Value 2'</span>, <span class="hljs-attr">values</span>:[<span class="hljs-number">21</span>, <span class="hljs-number">22</span>, <span class="hljs-number">25</span>, <span class="hljs-number">49</span>] }
+];
+slide.addChart( pptx.charts.SCATTER, dataChartScatter, { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">4</span> } );
 
 <span class="hljs-comment">// Chart Type: Multi-Type</span>
 <span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> use the same labels for all types</span>
