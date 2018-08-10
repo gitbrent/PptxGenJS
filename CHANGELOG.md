@@ -1,5 +1,22 @@
 # Change Log
 
+## [v2.3.0](https://github.com/gitbrent/pptxgenjs/tree/v2.3.0) (2018-??-??)
+[Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.2.0...v2.3.0)
+
+**Fixed Bugs:**
+- Remove jquery-node dependency (fixes XSS Vulnerability Security Warning) [\#350](https://github.com/gitbrent/PptxGenJS/issues/350) ([TinkerJack](https://github.com/TinkerJack))
+- Cannot set valAxisMinVal to 0 [\#357](https://github.com/gitbrent/PptxGenJS/issues/357) ([GiridharGNair](https://github.com/GiridharGNair))
+- Multiple paragraph spacings if newline character occur in text [\#368](https://github.com/gitbrent/PptxGenJS/issues/368) ([vpetzel](https://github.com/vpetzel))
+- Rotate working incorrectly [\#370](https://github.com/gitbrent/PptxGenJS/issues/370) ([michaelcbrook](https://github.com/michaelcbrook))
+- Bugfix/enhancement for EncodeXML in speaker notes text [\#373](https://github.com/gitbrent/PptxGenJS/pull/373) ([travispwingo](https://github.com/travispwingo))
+
+**Implemented Enhancements:**
+- New Feature: Speaker Notes [\#239](https://github.com/gitbrent/PptxGenJS/issues/239) [\#361](https://github.com/gitbrent/PptxGenJS/pull/361) ([travispwingo](https://github.com/travispwingo))
+- New Chart Option: `displayBlanksAs` [\#365](https://github.com/gitbrent/PptxGenJS/pull/365) ([guipas](https://github.com/guipas))
+- New Feature: ability to hide slides [\#367](https://github.com/gitbrent/PptxGenJS/pull/367) ([ReimaFrgos](https://github.com/ReimaFrgos))
+
+
+
 ## [v2.2.0](https://github.com/gitbrent/pptxgenjs/tree/v2.2.0) (2018-06-17)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.1.0...v2.2.0)
 

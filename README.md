@@ -35,12 +35,13 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
   - [Saving a Presentation](#saving-a-presentation)
   - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
   - [Adding Charts](#adding-charts)
-  - [Adding Text](#adding-text)
-  - [Adding Tables](#adding-tables)
-  - [Adding Shapes](#adding-shapes)
   - [Adding Images](#adding-images)
   - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
-  - [Scheme Colors](#scheme-colors)
+  - [Adding Shapes](#adding-shapes)
+  - [Adding Tables](#adding-tables)
+  - [Adding Text](#adding-text)
+  - [Including Speaker Notes](#including-speaker-notes)
+  - [Using Scheme Colors](#using-scheme-colors)
 - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
 - [Integration with Other Libraries](#integration-with-other-libraries)
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
@@ -129,23 +130,26 @@ That's really all there is to it!
 ## Adding Charts
 [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts.html)
 
-## Adding Text
-[Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
-
-## Adding Tables
-[Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)
-
-## Adding Shapes
-[Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html)
-
 ## Adding Images
 [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images.html)
 
 ## Adding Media (Audio/Video/YouTube)
 [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media.html)
 
-## Scheme Colors
-[Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
+## Adding Shapes
+[Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html)
+
+## Adding Tables
+[Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)
+
+## Adding Text
+[Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
+
+## Including Speaker Notes
+[Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html)
+
+## Using Scheme Colors
+[Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
 
 
 **************************************************************************************************
@@ -245,8 +249,7 @@ These include:
 **************************************************************************************************
 # Support Us
 
-Do you like this library and find it useful?  Add a link to the [PptxGenJS project](https://github.com/gitbrent/PptxGenJS)
-on your blog, website or social media.
+Do you like this library and find it useful?  Tell the world about us! [PptxGenJS project](https://github.com/gitbrent/PptxGenJS)
 
 Thanks to everyone who supports this project! <3
 
