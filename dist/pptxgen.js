@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180711";
+	var APP_BLD = "20180809";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -120,7 +120,8 @@ var PptxGenJS = function(){
 		'DOUGHNUT': { 'displayName':'Doughnut Chart', 'name':'doughnut' },
 		'LINE'    : { 'displayName':'Line Chart',     'name':'line'     },
 		'PIE'     : { 'displayName':'Pie Chart' ,     'name':'pie'      },
-		'SCATTER' : { 'displayName':'Scatter Chart',  'name':'scatter'  }
+		'SCATTER' : { 'displayName':'Scatter Chart',  'name':'scatter'  },
+		'RADAR'   : { 'displayName':'Radar Chart',    'name':'radar'    }
 	};
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
 	var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
@@ -556,6 +557,7 @@ var PptxGenJS = function(){
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
 			if ( ['gap','span'].indexOf(options.displayBlanksAs || '') < 0 ) options.displayBlanksAs = 'span';
+			if ( ['standard','marker','filled'].indexOf(options.radarStyle || '') < 0 ) options.radarStyle = 'standard';
 			options.lineDataSymbolSize = ( options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize ) ? options.lineDataSymbolSize : 6 );
 			options.lineDataSymbolLineSize = ( options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize ) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT );
 			// `layout` allows the override of PPT defaults to maximize space
@@ -568,6 +570,7 @@ var PptxGenJS = function(){
 					}
 				});
 			}
+
 
 			// Set gridline defaults
 			options.catGridLine = options.catGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : 'none');
@@ -2683,12 +2686,18 @@ var PptxGenJS = function(){
 			case 'area':
 			case 'bar':
 			case 'line':
+			case 'radar':
 				// 1: Start Chart
 				strXml += '<c:'+ chartType +'Chart>';
 				if ( chartType == 'bar' ) {
 					strXml += '<c:barDir val="'+ opts.barDir +'"/>';
 					strXml += '<c:grouping val="'+ opts.barGrouping + '"/>';
 				}
+
+				if ( chartType == 'radar' ) {
+					strXml += '<c:radarStyle val="'+ opts.radarStyle +'"/>';
+				}
+
 				strXml += '<c:varyColors val="0"/>';
 
 				// 2: "Series" block for every data row
@@ -2752,7 +2761,7 @@ var PptxGenJS = function(){
 					strXml += '  </c:spPr>';
 
 					// 'c:marker' tag: `lineDataSymbol`
-					if ( chartType == 'line' ) {
+					if ( chartType == 'line' || chartType == 'radar') {
 						strXml += '<c:marker>';
 						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
 						if ( opts.lineDataSymbolSize ) {
@@ -2863,7 +2872,7 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					if ( opts.type.name != 'area' ) strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+					if ( opts.type.name != 'area' && opts.type.name != 'radar') strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
 					strXml += '    <c:showLegendKey val="0"/>';
 					strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
 					strXml += '    <c:showCatName val="0"/>';
@@ -3358,7 +3367,13 @@ var PptxGenJS = function(){
 		var strXml = '';
 
 		// Build cat axis tag
-		strXml += '<c:'+ (opts.catLabelFormatCode ? 'dateAx' : 'catAx') +'>';
+		// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
+		if ( opts.type.name == 'scatter' || opts.type.name == 'bubble' ) {
+			strXml += '<c:valAx>';
+		}
+		else {
+			strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>';
+		}
 		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
@@ -3374,7 +3389,13 @@ var PptxGenJS = function(){
 				title:    opts.catAxisTitle || 'Axis Title'
 			});
 		}
-		strXml += '  <c:numFmt formatCode="'+ (opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
+		// NOTE: Adding Val Axis Formatting if scatter or bubble charts
+		if ( opts.type.name == 'scatter' || opts.type.name == 'bubble' ) {
+			strXml += '  <c:numFmt formatCode="'+ (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') +'" sourceLinked="0"/>';
+		}
+		else {
+			strXml += '  <c:numFmt formatCode="'+ (opts.catLabelFormatCode || "General") +'" sourceLinked="0"/>';
+		}
 		if ( opts.type.name === 'scatter' ) {
 			strXml += '  <c:majorTickMark val="none"/>';
 			strXml += '  <c:minorTickMark val="none"/>';
@@ -3429,7 +3450,13 @@ var PptxGenJS = function(){
 		}
 
 		// Close cat axis tag
-		strXml += '</c:'+ (opts.catLabelFormatCode ? 'dateAx' : 'catAx') +'>';
+		// NOTE: Added closing tag of val or cat axis based on chart type
+		if ( opts.type.name == 'scatter' || opts.type.name == 'bubble' ) {
+			strXml += '</c:valAx>';
+		}
+		else {
+			strXml += '</c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>';
+		}
 
 		return strXml;
 	}
