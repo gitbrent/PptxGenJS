@@ -1909,15 +1909,15 @@ var PptxGenJS = function(){
 	}
 
 	function addPlaceholdersToSlides(slide) {
-		var slideLayoutPlaceholders = slide.layoutObj.data.filter(function(slideLayoutObj){
-			return slideLayoutObj.type === MASTER_OBJECTS.placeholder.name;
-		});
-
-		// A: Add all the placeholders on this slide
-		slide.data.filter(function(slideObj){ return slideObj.options && slideObj.options.placeholder }).forEach(function(placeholderObj){
-			var objPH = slideLayoutPlaceholders.filter(function(obj){ return obj.options.placeholderName == placeholderObj.options.placeholder })[0];
-			if ( objPH ) {
-				gObjPptxGenerators.addTextDefinition('', { placeholder:objPH.options.placeholderIdx }, slide, false);
+		// Add all placeholders on this Slide that dont already exist
+		slide.layoutObj.data.forEach(function(slideLayoutObj){
+			if ( slideLayoutObj.type === MASTER_OBJECTS.placeholder.name ) {
+				// A: Search for this placeholder on Slide before we add
+				// NOTE: Check to ensure a placeholder does not already exist on the Slide
+				// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
+				if ( slide.data.filter(function(slideObj){ return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholderName }).length == 0 ) {
+					gObjPptxGenerators.addTextDefinition('', { placeholder:slideLayoutObj.options.placeholderName }, slide, false);
+				}
 			}
 		});
 	}
