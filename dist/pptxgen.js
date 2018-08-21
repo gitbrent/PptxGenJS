@@ -5199,7 +5199,7 @@ if ( NODEJS ) {
 		var jsdom = require("jsdom");
 		var dom = new jsdom.JSDOM("<!DOCTYPE html>");
 		$ = require("jquery")(dom.window);
-	} catch(ex){ console.error("Unable to load `jquery`"); throw 'LIB-MISSING-JQUERY'; }
+	} catch(ex){ console.error("Unable to load `jquery`!\n"+ex); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
 	try { fs = require("fs"); } catch(ex){ console.error("Unable to load `fs`"); throw 'LIB-MISSING-FS'; }

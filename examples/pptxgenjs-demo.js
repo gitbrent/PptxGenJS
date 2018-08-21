@@ -141,15 +141,13 @@ function execGenSlidesFuncs(type) {
 			]
 		});
 
-		/*
-		// MASTER_SLIDE
+		// MASTER_PLAIN
 		pptx.defineSlideMaster({
-			title: 'MASTER_SLIDE',
+			title: 'MASTER_PLAIN',
 			bkgd: 'FFFFFF',
 			margin:  [ 0.5, 0.25, 1.0, 0.25 ],
 			objects: [
 				{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
-				{ 'image': { x:12.30, y:0.30, w:0.70, h:0.70, data:checkGreen } },
 				{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
 				{ 'text':
 					{
@@ -160,17 +158,6 @@ function execGenSlidesFuncs(type) {
 			],
 			slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
 		});
-
-		// THANKS_SLIDE
-		pptx.defineSlideMaster({
-			title: 'THANKS_SLIDE',
-			bkgd: '36ABFF',
-			objects: [
-				{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-				{ 'image': objImg }
-			]
-		});
-		*/
 
 		// MASTER_SLIDE (MASTER_PLACEHOLDER)
 		pptx.defineSlideMaster({
@@ -592,7 +579,7 @@ function genSlides_Table(pptx) {
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: `{ newPageStartY: 1.5 }`', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:1.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
-		var slide = pptx.addNewSlide('MASTER_SLIDE', {bkgd:'CCFFCC'});
+		var slide = pptx.addNewSlide('MASTER_PLAIN', {bkgd:'CCFFCC'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Master Page with Auto-Paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
