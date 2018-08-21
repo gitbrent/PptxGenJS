@@ -1954,7 +1954,7 @@ var PptxGenJS = function(){
 		image.src = inImgUrl;
 	}
 
-    /* Encode Image/Audio/Video into base64 */
+	/* Encode Image/Audio/Video into base64 */
 	function encodeSlideMediaRels(layout, arrRelsDone) {
 		var intRels = 0;
 
