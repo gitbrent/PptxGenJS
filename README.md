@@ -240,9 +240,10 @@ These include:
 **************************************************************************************************
 # Special Thanks
 
-* [Officegen Project](https://github.com/Ziv-Barber/officegen) - For the Shape definitions and XML code
-* [Dzmitry Dulko](https://github.com/DzmitryDulko) - For getting the project published on NPM
-* [kajda90](https://github.com/kajda90) - For the new Master Slide Layouts
+* [Officegen Project](https://github.com/Ziv-Barber/officegen) - Shape definitions and XML code
+* [Dzmitry Dulko](https://github.com/DzmitryDulko) - Getting the project published on NPM
+* [kajda90](https://github.com/kajda90) - New Master Slide Layouts
+* [Connor Bowman](https://github.com/conbow) - Adding Placeholders
 * PPTX Chart Experts: [kajda90](https://github.com/kajda90), [Matt King](https://github.com/kyrrigle), [Mike Wilcox](https://github.com/clubajax)
 * Everyone who has submitted an Issue or Pull Request. :-)
 

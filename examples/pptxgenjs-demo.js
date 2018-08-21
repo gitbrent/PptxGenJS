@@ -7,8 +7,20 @@
 * BLD.: 20180809
 */
 
-// Detect Node.js
-var NODEJS = ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && require('fs') );
+// Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
+var NODEJS = false;
+{
+	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
+	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+		try {
+			require.resolve('fs');
+			NODEJS = true;
+		}
+		catch (ex) {
+			NODEJS = false;
+		}
+	}
+}
 if (NODEJS) { var LOGO_STARLABS; }
 
 // Constants
@@ -108,58 +120,101 @@ function execGenSlidesFuncs(type) {
 	// STEP 3: Set layout
 	pptx.setLayout('LAYOUT_WIDE');
 
-	// STEP 4: Reproductions of the 3 Master Slides from the old `pptxgen.masters.js` file (`gObjPptxMasters` items)
-	var objBkg = { path:(NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, '../examples') : gPaths.starlabsBkgd.path) };
-	var objImg = { path:(NODEJS ? gPaths.starlabsLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.starlabsLogo.path), x:4.6, y:3.5, w:4, h:1.8 };
+	// STEP 4: Create Master Slides (from the old `pptxgen.masters.js` file - `gObjPptxMasters` items)
+	{
+		var objBkg = { path:(NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, '../examples') : gPaths.starlabsBkgd.path) };
+		var objImg = { path:(NODEJS ? gPaths.starlabsLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.starlabsLogo.path), x:4.6, y:3.5, w:4, h:1.8 };
 
-	pptx.defineSlideMaster({
-		title: 'TITLE_SLIDE',
-		bkgd: objBkg,
-		objects: [
-			{ 'line':  { x:3.5, y:1.0, w:6.0, h:0.0, line:'0088CC', lineSize:5 } },
-			//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
-			{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-			{ 'text':
-				{ text:'Global IT & Services :: Status Report',
-				options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', color:'363636', fontSize:20, valign:'m', margin:0 } }
-			},
-			{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
-		]
-	});
-	pptx.defineSlideMaster({
-		title: 'MASTER_SLIDE',
-		bkgd: 'FFFFFF',
-		margin:  [ 0.5, 0.25, 1.0, 0.25 ],
-		objects: [
-			{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
-			{ 'image': { x:12.30, y:0.30, w:0.70, h:0.70, data:checkGreen } },
-			{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
-			{ 'text':
-				{
-					options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12},
-					text: 'S.T.A.R. Laboratories - Confidential'
+		// TITLE_SLIDE
+		pptx.defineSlideMaster({
+			title: 'TITLE_SLIDE',
+			bkgd: objBkg,
+			objects: [
+				//{ 'line':  { x:3.5, y:1.0, w:6.0, h:0.0, line:'0088CC', lineSize:5 } },
+				//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
+				//{ 'image': { x:11.3, y:6.4, w:1.67, h:0.75, data:starlabsLogoSml } },
+				{ 'rect':  { x: 0.0, y:5.7, w:'100%', h:0.75, fill:'F1F1F1' } },
+				{ 'text':
+					{ text:'Global IT & Services :: Status Report',
+					options:{ x:0.0, y:5.7, w:'100%', h:0.75, fontFace:'Arial', color:'363636', fontSize:20, align:'c', valign:'m', margin:0 } }
 				}
-			}
-		],
-		slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
-	});
-	pptx.defineSlideMaster({
-		title: 'THANKS_SLIDE',
-		bkgd: '36ABFF',
-		objects: [
-			{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-			{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
-			{ 'image': objImg }
-		]
-	});
-	// Only used for Issues, ad-hoc slides etc (for screencaps)
-	pptx.defineSlideMaster({
-		title: 'DEMO_SLIDE',
-		objects: [
-			{ 'rect':  { x:0.0, y:7.1, w:'100%', h:0.4, fill:'f1f1f1' } },
-			{ 'text':  { text:'PptxGenJS - JavaScript PowerPoint Library - (github.com/gitbrent/PptxGenJS)', options:{ x:0.0, y:7.1, w:'100%', h:0.4, color:'6c6c6c', fontSize:10, align:'c' } } }
-		]
-	});
+			]
+		});
+
+		// MASTER_PLAIN
+		pptx.defineSlideMaster({
+			title: 'MASTER_PLAIN',
+			bkgd: 'FFFFFF',
+			margin:  [ 0.5, 0.25, 1.0, 0.25 ],
+			objects: [
+				{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
+				{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
+				{ 'text':
+					{
+						options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12},
+						text: 'S.T.A.R. Laboratories - Confidential'
+					}
+				}
+			],
+			slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 }
+		});
+
+		// MASTER_SLIDE (MASTER_PLACEHOLDER)
+		pptx.defineSlideMaster({
+			title: 'MASTER_SLIDE',
+			bkgd: 'FFFFFF',
+			margin:  [ 0.5, 0.25, 1.0, 0.25 ],
+			slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 },
+			objects: [
+				{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
+				{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
+				{ 'text':
+					{
+						options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12},
+						text: 'S.T.A.R. Laboratories - Confidential'
+					}
+				},
+				{ 'placeholder':
+					{
+						options: { name:'title', type:'title', x:0.6, y:0.2, w:12, h:1.0 },
+						text: ''
+					}
+				},
+				{ 'placeholder':
+					{
+						options: { name:'body', type:'body', x:0.6, y:1.5, w:12, h:5.25 },
+						text: '(supports custom placeholder text!)',
+					}
+				}
+			]
+		});
+
+		// THANKS_SLIDE (THANKS_PLACEHOLDER)
+		pptx.defineSlideMaster({
+			title: 'THANKS_SLIDE',
+			bkgd: '36ABFF',
+			objects: [
+				{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
+				{ 'placeholder': { options:{ name:'thanksText', type:'title', x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
+				{ 'image': objImg },
+				{ 'placeholder':
+					{
+						text: '(add homepage URL)',
+						options: { name:'body', type:'body', x:0.0, y:6.45, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'c' }
+					}
+				}
+			]
+		});
+
+		// MISC: Only used for Issues, ad-hoc slides etc (for screencaps)
+		pptx.defineSlideMaster({
+			title: 'DEMO_SLIDE',
+			objects: [
+				{ 'rect':  { x:0.0, y:7.1, w:'100%', h:0.4, fill:'f1f1f1' } },
+				{ 'text':  { text:'PptxGenJS - JavaScript PowerPoint Library - (github.com/gitbrent/PptxGenJS)', options:{ x:0.0, y:7.1, w:'100%', h:0.4, color:'6c6c6c', fontSize:10, align:'c' } } }
+			]
+		});
+	}
 
 	// STEP 5: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );
@@ -524,7 +579,7 @@ function genSlides_Table(pptx) {
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: `{ newPageStartY: 1.5 }`', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, newPageStartY:1.5, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
-		var slide = pptx.addNewSlide('MASTER_SLIDE', {bkgd:'CCFFCC'});
+		var slide = pptx.addNewSlide('MASTER_PLAIN', {bkgd:'CCFFCC'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Master Page with Auto-Paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:'CFCFCF' } );
 
@@ -2606,9 +2661,45 @@ function genSlides_Text(pptx) {
 
 function genSlides_Master(pptx) {
 	var slide1 = pptx.addNewSlide('TITLE_SLIDE');
-	var slide2 = pptx.addNewSlide('MASTER_SLIDE'); slide2.addText('Slide 2 - using MASTER_SLIDE', {x:2, y:2});
-	var slide3 = pptx.addNewSlide('MASTER_SLIDE'); slide3.addText('Slide 3 - using MASTER_SLIDE', {x:2, y:2});
-	var slide4 = pptx.addNewSlide('THANKS_SLIDE');
+	slide1.addNotes('Master name: `TITLE_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
+
+	var slide2 = pptx.addNewSlide('MASTER_SLIDE');
+	slide2.addNotes('Master name: `MASTER_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
+	slide2.addText('', { placeholder:'title' });
+
+	var slide3 = pptx.addNewSlide('MASTER_SLIDE');
+	slide3.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
+	slide3.addText('Text Placeholder', { placeholder:'title' });
+	slide3.addText(
+		[
+			{ text:'Pre-filled placeholder bullets', options:{ bullet:true, valign:'top' } },
+			{ text:'Add any text, charts, whatever', options:{ bullet:true, indentLevel:1, color:'0000AB' } },
+			{ text:'Check out the online API docs for more', options:{ bullet:true, indentLevel:2, color:'0000AB' } },
+		],
+		{ placeholder:'body', valign:'top' }
+	);
+
+	var slide4 = pptx.addNewSlide('MASTER_SLIDE');
+	slide4.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
+	slide4.addText('Image Placeholder', { placeholder:'title' });
+	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path) });
+
+	var dataChartPieLocs = [
+		{
+			name  : 'Location',
+			labels: ['CN', 'DE', 'GB', 'MX', 'JP', 'IN', 'US'],
+			values: [  69,   35,   40,   85,   38,   99,  101]
+		}
+	];
+	var slide5 = pptx.addNewSlide('MASTER_SLIDE');
+	slide5.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
+	slide5.addText('Chart Placeholder', { placeholder:'title' });
+	slide5.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'r', placeholder:'body'} );
+
+	var slide6 = pptx.addNewSlide('THANKS_SLIDE');
+	slide6.addNotes('Master name: `THANKS_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
+	slide6.addText('Thank You!', { placeholder:'thanksText' });
+	//slide6.addText('github.com/gitbrent', { placeholder:'body' });
 
 	// LEGACY-TEST-ONLY: To check deprecated functionality
 	/*

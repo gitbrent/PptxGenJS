@@ -26,23 +26,11 @@
 	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.colors.js"></script>
 	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.shapes.js"></script>
 
-	<!-- RELEASE (CDN)
-	-->
-	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.bundle.js"></script>
-	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/examples/pptxgenjs-demo.js"></script>
-	<!-- OFFICE365 TESTING:
-	<script src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
-	<script src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
-	<script src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
-	<script src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
-	-->
-	<!-- LOCAL TESTING:
 	<script src="../libs/promise.min.js"></script>
 	<script src="../libs/jquery.min.js"></script>
 	<script src="../libs/jszip.min.js"></script>
 	<script src="../dist/pptxgen.js"></script>
 	<script src="../examples/pptxgenjs-demo.js"></script>
-	-->
 
 	<script type="text/javascript">
 		// ==================================================================================================================
@@ -860,8 +848,10 @@
 						</fieldset>
 						<fieldset>
 							<legend>Line Chart</legend>
+							<h3>Slide 7</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>Line Smoothing,<br>Shadow,<br>Size,<br>Symbol Size</div>
 							<h3>Slide 8</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Line Smoothing, Shadow, Size, Symbol Size</div>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>lineDataSymbol,<br>SymbolSize</div>
 							<h3>Slide 9</h3>
 							<div class="chkRow"><div class="iconSvg size16 yes"></div>lineDataSymbol and SymbolSize</div>
 							<h3>Slide 10</h3>
@@ -1075,6 +1065,12 @@
 							<div class="chkRow"><div class="iconSvg size16 yes"></div>MASTER_SLIDE</div>
 
 							<h3>Slide 4</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>MASTER_SLIDE</div>
+
+							<h3>Slide 5</h3>
+							<div class="chkRow"><div class="iconSvg size16 yes"></div>MASTER_SLIDE</div>
+
+							<h3>Slide 6</h3>
 							<div class="chkRow"><div class="iconSvg size16 yes"></div>THANKS_SLIDE</div>
 						</fieldset>
 						<fieldset>
@@ -1084,11 +1080,17 @@
 							<div style="margin-left:10px">
 								<code>pptx.defineSlideMaster({</code>
 								<code>  title : 'MASTER_SLIDE',</code>
-								<code>  margin: [0.5, 0.25, 1.25, 0.25],</code>
-								<code>  bkgd  : 'EEEEEE',</code>
+								<code>  margin: [0.5, 0.25, 1.00, 0.25],</code>
+								<code>  bkgd  : 'FFFFFF',</code>
 								<code>  objects: [</code>
-								<code>    {rect: { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},</code>
-								<code>    {text: { text:'S.T.A.R. Laboratories', options:{x:0.17, y:0.1, color:'FFFFFF'} }}</code>
+								<code>    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},</code>
+								<code>    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},</code>
+								<code>    {text:  {</code>
+								<code>        text:'S.T.A.R. Laboratories - Confidential',</code>
+								<code>        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}</code>
+								<code>    }},</code>
+								<code>    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}</code>
+								<code>    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}</code>
 								<code>  ],</code>
 								<code>  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }</code>
 								<code>});</code>
