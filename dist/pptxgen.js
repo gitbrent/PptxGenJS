@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180814";
+	var APP_BLD = "20180820";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -190,10 +190,7 @@ var PptxGenJS = function(){
 		/** @type {Number} global counter for included images (used for index in their filenames) */
 		gObjPptx.imageCounter = 0;
 
-		/** @type {object} this Presentations Placeholders */
-		gObjPptx.placeholderIdxs = {};
-
-		/** @type {object[]} this Presentations Slides (Slide objects) */
+		/** @type {object[]} this Presentation's Slide objects */
 		gObjPptx.slides = [];
 
 		/** @type {object[]} slide layout definition objects, used for generating slide layout files */
@@ -665,7 +662,13 @@ var PptxGenJS = function(){
 					else if ( MASTER_OBJECTS[key] && key == 'line'  ) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes.LINE, object[key], target);
 					else if ( MASTER_OBJECTS[key] && key == 'rect'  ) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes.RECTANGLE, object[key], target);
 					else if ( MASTER_OBJECTS[key] && key == 'text'  ) gObjPptxGenerators.addTextDefinition(object[key].text, object[key].options, target, false);
-					else if ( MASTER_OBJECTS[key] && key == 'placeholder' ) gObjPptxGenerators.addPlaceholderDefinition(object[key].text, object[key].options, target);
+					else if ( MASTER_OBJECTS[key] && key == 'placeholder' ) {
+						// TODO: 20180820: Check for existing `name`?
+						object[key].options.placeholderName = object[key].options.name; delete object[key].options.name; // remap name for earier handling internally
+						object[key].options.placeholderType = object[key].options.type; delete object[key].options.type; // remap name for earier handling internally
+						object[key].options.placeholderIdx  = (100+idx);
+						gObjPptxGenerators.addPlaceholderDefinition(object[key].text, object[key].options, target);
+					}
 				});
 			}
 
@@ -711,8 +714,8 @@ var PptxGenJS = function(){
 				var x = 0, y = 0, cx = getSmartParseNumber('75%','X'), cy = 0, placeholderObj;
 				var locationAttr = "", shapeType = null;
 
-				if (slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder) {
-					placeholderObj = slideObject.layoutObj.data.filter(function(layoutObj){ return layoutObj.options.idx === slideItemObj.options.placeholder})[0];
+				if ( slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder ) {
+					placeholderObj = slideObject.layoutObj.data.filter(function(layoutObj){ return layoutObj.options.placeholderName == slideItemObj.options.placeholder})[0];
 				}
 
 				// A: Set option vars
@@ -727,7 +730,7 @@ var PptxGenJS = function(){
 				if ( slideItemObj.options.cy || slideItemObj.options.cy == 0 ) cy = getSmartParseNumber( slideItemObj.options.cy, 'Y' );
 
 				// If using a placeholder then inherit it's position
-				if (placeholderObj) {
+				if ( placeholderObj ) {
 					if ( placeholderObj.options.x  || placeholderObj.options.x  == 0  )  x = getSmartParseNumber( placeholderObj.options.x , 'X' );
 					if ( placeholderObj.options.y  || placeholderObj.options.y  == 0  )  y = getSmartParseNumber( placeholderObj.options.y , 'Y' );
 					if ( placeholderObj.options.cx || placeholderObj.options.cx  == 0 ) cx = getSmartParseNumber( placeholderObj.options.cx, 'X' );
@@ -1906,19 +1909,16 @@ var PptxGenJS = function(){
 	}
 
 	function addPlaceholdersToSlides(slide) {
-		var slidePlaceholderIdxs = slide.data
-			.filter(function(slideObj){ return slideObj.options.placeholder; })
-			.map(function(slideObj){ return slideObj.options.placeholder; });
 		var slideLayoutPlaceholders = slide.layoutObj.data.filter(function(slideLayoutObj){
 			return slideLayoutObj.type === MASTER_OBJECTS.placeholder.name;
 		});
 
-		// Determine if the slide has all placeholders from the slide master, otherwise add them as empty text shapes
-		slideLayoutPlaceholders.forEach(function (placeholderObj) {
-			if (slidePlaceholderIdxs.indexOf(placeholderObj.options.idx) > -1) return;
-			gObjPptxGenerators.addTextDefinition('', { placeholder: placeholderObj.options.idx }, slide, false);
-// TODO: idx
-// SOLN: gObjPptx.placeholderIdxs
+		// A: Add all the placeholders on this slide
+		slide.data.filter(function(slideObj){ return slideObj.options && slideObj.options.placeholder }).forEach(function(placeholderObj){
+			var objPH = slideLayoutPlaceholders.filter(function(obj){ return obj.options.placeholderName == placeholderObj.options.placeholder })[0];
+			if ( objPH ) {
+				gObjPptxGenerators.addTextDefinition('', { placeholder:objPH.options.placeholderIdx }, slide, false);
+			}
 		});
 	}
 
@@ -4012,13 +4012,14 @@ var PptxGenJS = function(){
 
 	function genXmlPlaceholder(placeholderObj) {
 		var strXml = '';
-		if (placeholderObj) {
-			var placeholderIdx = placeholderObj && placeholderObj.options && (placeholderObj.options.idx || placeholderObj.options.placeholder);
-			var placeholderType = placeholderObj && placeholderObj.options && placeholderObj.options.type;
+
+		if ( placeholderObj ) {
+			var placeholderIdx  = placeholderObj.options && placeholderObj.options.placeholderIdx  ? placeholderObj.options.placeholderIdx  : '';
+			var placeholderType = placeholderObj.options && placeholderObj.options.placeholderType ? placeholderObj.options.placeholderType : '';
 
 			strXml += '<p:ph'
-				+ (placeholderIdx ? ' idx="' + placeholderIdx + '"' : '')
-				+ (placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ' type="' + PLACEHOLDER_TYPES[placeholderType].name + '"' : '')
+				+ (placeholderIdx ? ' idx="'+ placeholderIdx +'"' : '')
+				+ (placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ' type="'+ PLACEHOLDER_TYPES[placeholderType].name +'"' : '')
 				+ (placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : '')
 				+ '/>';
 		}
@@ -4625,7 +4626,7 @@ var PptxGenJS = function(){
 
 		// STEP 1: Add empty placeholder objects to slides that don't already have them
 		gObjPptx.slides.forEach(function(slide,idx){
-			if (slide.layoutObj) addPlaceholdersToSlides(slide);
+			if ( slide.layoutObj ) addPlaceholdersToSlides(slide);
 		});
 
 		// STEP 2: Set export properties

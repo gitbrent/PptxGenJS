@@ -185,15 +185,13 @@ function execGenSlidesFuncs(type) {
 				},
 				{ 'placeholder':
 					{
-						name: 'title', // TODO: implement this in library (stop using `idx`)
-						options: { type:'title', x:0.6, y:0.2, w:12, h:1.0, idx:10 },
+						options: { name:'title', type:'title', x:0.6, y:0.2, w:12, h:1.0 },
 						text: ''
 					}
 				},
 				{ 'placeholder':
 					{
-						name: 'misc', // TODO: implement this in library (stop using `idx`)
-						options: { x:0.6, y:1.5, w:12, h:5.25, idx:11 },
+						options: { name:'body', type:'body', x:0.6, y:1.5, w:12, h:5.25 },
 						text: '',
 					}
 				}
@@ -207,9 +205,14 @@ function execGenSlidesFuncs(type) {
 			bkgd: '36ABFF',
 			objects: [
 				{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-				{ 'placeholder': { text:'', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c', idx:10, type:'body' } } },
+				{ 'placeholder': { text:'', options:{ name:'title', type:'title', x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
 				{ 'image': objImg },
-				{ 'placeholder': { text:'Custom placeholder text', options:{ x:0.0, y:1.9, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'c', idx:11, type:'body' } } }
+				{ 'placeholder':
+					{
+						text: 'Custom placeholder text',
+						options: { name:'body', type:'body', x:0.0, y:1.9, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'c' }
+					}
+				}
 			]
 		});
 
@@ -222,7 +225,6 @@ function execGenSlidesFuncs(type) {
 			]
 		});
 	}
-
 
 	// STEP 5: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );
@@ -2557,26 +2559,29 @@ function genSlides_Text(pptx) {
 
 function genSlides_Master(pptx) {
 	var slide1 = pptx.addNewSlide('TITLE_SLIDE');
+	slide1.addNotes('Master: `TITLE_SLIDE`');
 
 	var slide2 = pptx.addNewSlide('MASTER_SLIDE');
+	slide2.addNotes('Master: `MASTER_SLIDE`');
 
 	var slide3 = pptx.addNewSlide('MASTER_PLACEHOLDER');
-	slide3.addText('', { placeholder:10 });
+	slide3.addNotes('Master: `MASTER_PLACEHOLDER`');
+	slide3.addText('', { placeholder:'title' });
 
 	var slide4 = pptx.addNewSlide('MASTER_PLACEHOLDER');
-	slide4.addText('Text Placeholder', { placeholder:10 });
+	slide4.addText('Text Placeholder', { placeholder:'title' });
 	slide4.addText(
 		[
 			{ text:'Filled placeholder',  options:{ bullet:true, valign:'top' } },
 			{ text:'with different text', options:{ bullet:true, indentLevel:1 } },
 			{ text:'can override colors', options:{ bullet:true, indentLevel:2, color:'0000AB' } },
 		],
-		{ placeholder:11, valign:'top' }
+		{ placeholder:'body', valign:'top' }
 	);
 
 	var slide5 = pptx.addNewSlide('MASTER_PLACEHOLDER');
-	slide5.addText('Image Placeholder', { placeholder:10 });
-	slide5.addImage({ placeholder: 11, path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path) });
+	slide5.addText('Image Placeholder', { placeholder:'title' });
+	slide5.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path) });
 
 	var dataChartPieLocs = [
 		{
@@ -2586,14 +2591,14 @@ function genSlides_Master(pptx) {
 		}
 	];
 	var slide6 = pptx.addNewSlide('MASTER_PLACEHOLDER');
-	slide6.addText('Chart Placeholder', { placeholder:10 });
-	slide6.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'r', placeholder: 11} );
+	slide6.addText('Chart Placeholder', { placeholder:'title' });
+	slide6.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'r', placeholder:'body'} );
 
 	var slide7 = pptx.addNewSlide('THANKS_PLACEHOLDER');
-	slide7.addText('Thank You!', { placeholder: 10 });
+	slide7.addText('Thank You!', { placeholder:'title' });
 
 	var slide8 = pptx.addNewSlide('THANKS_SLIDE');
-	slide8.addText('Thank You!');
+	//slide8.addText('Thank You!');
 
 	// LEGACY-TEST-ONLY: To check deprecated functionality
 	/*
