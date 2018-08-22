@@ -4,7 +4,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
 	<meta name="author" content="https://github.com/gitbrent">
-	<meta name="date" content="20180809">
+	<meta name="date" content="20180820">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
 	<!-- IE11 Users: - Use the following 3 lines instead of the one above
 	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
@@ -12,7 +12,7 @@
 	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css?family=Open+Sans"   rel="stylesheet">
 	-->
-	<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/pptxgenjs-demo.css">
+	<link rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/examples/pptxgenjs-demo.css">
 
 	<!-- NOTE:
 	1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
@@ -26,13 +26,25 @@
 	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.colors.js"></script>
 	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.shapes.js"></script>
 
+	<!-- RELEASE (CDN)
+	-->
+	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/dccd8f5c/dist/pptxgen.bundle.js"></script>
+	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/dccd8f5c/examples/pptxgenjs-demo.js"></script>
+	<!-- OFFICE365 TESTING:
+	<script src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
+	<script src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
+	<script src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
+	<script src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
+	-->
+	<!-- LOCAL TESTING:
 	<script src="../libs/promise.min.js"></script>
 	<script src="../libs/jquery.min.js"></script>
 	<script src="../libs/jszip.min.js"></script>
 	<script src="../dist/pptxgen.js"></script>
 	<script src="../examples/pptxgenjs-demo.js"></script>
+	-->
 
-	<script type="text/javascript">
+	<script>
 		// ==================================================================================================================
 
 		function doNav(intTab) {
