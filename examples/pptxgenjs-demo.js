@@ -183,7 +183,7 @@ function execGenSlidesFuncs(type) {
 				{ 'placeholder':
 					{
 						options: { name:'body', type:'body', x:0.6, y:1.5, w:12, h:5.25 },
-						text: '(supports custom placeholder text!)',
+						text: '(supports custom placeholder text!)'
 					}
 				}
 			]
@@ -199,8 +199,8 @@ function execGenSlidesFuncs(type) {
 				{ 'image': objImg },
 				{ 'placeholder':
 					{
-						text: '(add homepage URL)',
-						options: { name:'body', type:'body', x:0.0, y:6.45, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'c' }
+						options: { name:'body', type:'body', x:0.0, y:6.45, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'c' },
+						text: '(add homepage URL)'
 					}
 				}
 			]
