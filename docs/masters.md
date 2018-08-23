@@ -18,7 +18,7 @@ use the Layout previously defined.  See the demo under /examples for several wor
 The defined Masters become first-class Layouts in the exported PowerPoint presentation and can be changed
 via View > Slide Master and will affect the Slides created using that layout.
 
-## Slide Master Options
+### Slide Master Options
 | Option        | Type    | Unit   | Default  | Description  | Possible Values       |
 | :------------ | :------ | :----- | :------- | :----------- | :-------------------- |
 | `bkgd`        | string  |        | `ffffff` | color        | hex color code or [scheme color constant](#scheme-colors). Ex: `{ bkgd:'0088CC' }` |
@@ -32,7 +32,7 @@ via View > Slide Master and will affect the Slides created using that layout.
 **TIP:**
 Pre-encode your images (base64) and add the string as the optional data key/val (see `bkgd` above)
 
-## Slide Master Examples
+### Slide Master Example
 ```javascript
 var pptx = new PptxGenJS();
 pptx.setLayout('LAYOUT_WIDE');
@@ -55,10 +55,61 @@ slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5,
 pptx.save();
 ```
 
-### Slide Master Demo
-There are several Master Slides defined in the Demo: `examples/pptxgenjs-demo.html`
-![PptxGenJS Master Slide Demo](/PptxGenJS/docs/assets/ex-master-slide-demo.png)
-
-### Slide Master Output
+### Slide Master Example Output
 Using the 'MASTER_SLIDE' defined above to produce a Slide:
 ![Master Slide Demo Presentation](/PptxGenJS/docs/assets/ex-master-slide-output.png)
+
+
+
+## Placeholders
+Placeholders are supported in PptxGenJS.
+
+Add a `placeholder` object to a Master Slide using a unique name, then reference that placeholder
+name when adding text or other objects.
+
+### Placeholder Types
+| Type          | Description  |
+| :------------ | :----------- |
+| `title`       | slide title  |
+| `body`        | body area    |
+| `image`       | image        |
+| `chart`       | chart        |
+| `table`       | table        |
+| `media`       | audio/video  |
+
+### Placeholder Example
+```javascript
+var pptx = new PptxGenJS();
+pptx.setLayout('LAYOUT_WIDE');
+
+pptx.defineSlideMaster({
+  title: 'PLACEHOLDER_SLIDE',
+  bkgd:  'FFFFFF',
+  objects: [
+    { 'rect':  { x:0, y:0, w:'100%', h:0.75, fill:'F1F1F1' } },
+	{ 'text':  { text:'Status Report', options:{ x:0, y:0, w:6, h:0.75 } } },
+    { 'placeholder': {
+        options: { name:'body', type:'body', x:0.6, y:1.5, w:12, h:5.25 },
+        text: '(custom placeholder text!)'
+    } }
+  ],
+  slideNumber: { x:0.3, y:'95%' }
+});
+
+var slide = pptx.addNewSlide('PLACEHOLDER_SLIDE');
+
+// Add text, charts, etc. to any placeholder using its `name`
+slide.addText('Body Placeholder here!', { placeholder:'body' });
+
+pptx.save();
+```
+
+### Placeholder Example Output
+Using the 'PLACEHOLDER_SLIDE' defined above to produce a Slide:
+![Placeholder Demo Presentation](/PptxGenJS/docs/assets/ex-master-slide-placeholder-output.png)
+
+
+
+## More Examples and Demos
+There are several Master Slides defined in the Demo: `examples/pptxgenjs-demo.html` including examples using placeholders.
+![PptxGenJS Master Slide Demo](/PptxGenJS/docs/assets/ex-master-slide-demo.png)
