@@ -11,6 +11,7 @@
 - Bugfix/enhancement for EncodeXML in speaker notes text [\#373](https://github.com/gitbrent/PptxGenJS/pull/373) ([travispwingo](https://github.com/travispwingo))
 
 **Implemented Enhancements:**
+- Typescript definitions have been created for the PptxGenJS API Methods (`pptxgen.d.ts`). ([gitbrent](https://github.com/gitbrent))
 - New Feature: Placeholder support in Master Slides [\#359](https://github.com/gitbrent/PptxGenJS/pull/359) ([conbow](https://github.com/conbow))
 - New Feature: Speaker Notes [\#239](https://github.com/gitbrent/PptxGenJS/issues/239) [\#361](https://github.com/gitbrent/PptxGenJS/pull/361) ([travispwingo](https://github.com/travispwingo))
 - New Chart Option: `displayBlanksAs` [\#365](https://github.com/gitbrent/PptxGenJS/pull/365) ([guipas](https://github.com/guipas))
