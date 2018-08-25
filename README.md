@@ -57,7 +57,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 
 **************************************************************************************************
 # Live Demo
-Use JavaScript to Create a PowerPoint presentation with your web browser right now:
+Use JavaScript to create a PowerPoint presentation with your web browser right now:  
 [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 # Installation
