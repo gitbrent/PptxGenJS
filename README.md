@@ -222,7 +222,7 @@ These include:
 * [kajda90](https://github.com/kajda90) - New Master Slide Layouts
 * [Connor Bowman](https://github.com/conbow) - Adding Placeholders
 * PPTX Chart Experts: [kajda90](https://github.com/kajda90), [Matt King](https://github.com/kyrrigle), [Mike Wilcox](https://github.com/clubajax)
-* Everyone who has submitted an Issue or Pull Request. :-)
+* Everyone who has [contributed](https://github.com/gitbrent/PptxGenJS/graphs/contributors), submitted an Issue, or created Pull Request.
 
 
 **************************************************************************************************
@@ -230,7 +230,7 @@ These include:
 
 Do you like this library and find it useful?  Tell the world about us! [PptxGenJS project](https://github.com/gitbrent/PptxGenJS)
 
-Thanks to everyone who supports this project! <3
+Thanks to everyone who supports this project! &#10084;
 
 
 **************************************************************************************************
