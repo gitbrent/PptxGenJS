@@ -112,11 +112,11 @@ That's really all there is to it!
 # Library API
 
 ## Presentation Creation/Options
-[Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)
-[Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)
+[Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)  
+[Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)  
 
 ## Slide Creation/Options
-[Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)
+[Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)  
 [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
 
 ## Saving a Presentation
