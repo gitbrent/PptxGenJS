@@ -6,7 +6,7 @@
 
 declare namespace PptxGenJS {
   interface ENUMS {
-    chartTypes: "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "SCATTER",
+    chartTypes: "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER",
     jsZipOutputTypes: "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array",
     layoutNames: "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE" | "LAYOUT_USER",
   }
