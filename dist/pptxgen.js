@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.3.0-beta";
-	var APP_BLD = "20180820";
+	var APP_BLD = "20180825";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -120,8 +120,8 @@ var PptxGenJS = function(){
 		'DOUGHNUT': { 'displayName':'Doughnut Chart', 'name':'doughnut' },
 		'LINE'    : { 'displayName':'Line Chart',     'name':'line'     },
 		'PIE'     : { 'displayName':'Pie Chart' ,     'name':'pie'      },
-		'SCATTER' : { 'displayName':'Scatter Chart',  'name':'scatter'  },
-		'RADAR'   : { 'displayName':'Radar Chart',    'name':'radar'    }
+		'RADAR'   : { 'displayName':'Radar Chart',    'name':'radar'    },
+		'SCATTER' : { 'displayName':'Scatter Chart',  'name':'scatter'  }
 	};
 	var PIECHART_COLORS = ['5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7', '5DA5DA','FAA43A','60BD68','F17CB0','B2912F','B276B2','DECF3F','F15854','A7A7A7'];
 	var BARCHART_COLORS = ['C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360', 'C0504D','4F81BD','9BBB59','8064A2','4BACC6','F79646','628FC6','C86360'];
@@ -1961,17 +1961,22 @@ var PptxGenJS = function(){
 		layout.rels.forEach(function(rel){
 			// Read and Encode each image into base64 for use in export
 			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1 ) {
-				// Node encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-				if ( NODEJS ) {
+				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
+				if ( NODEJS && rel.path.indexOf('http') != 0 ) {
 					try {
 						var bitmap = fs.readFileSync(rel.path);
-						rel.data = new Buffer(bitmap).toString('base64');
+						rel.data = Buffer.from(bitmap).toString('base64');
 					}
 					catch(ex) {
 						console.error('ERROR....: Unable to read media: "'+rel.path+'"');
 						console.error('DETAILS..: '+ex);
 						rel.data = IMG_BROKEN;
 					}
+				}
+				else if ( NODEJS && rel.path.indexOf('http') == 0 ) {
+					intRels++;
+					convertRemoteMediaToDataURL(rel);
+					arrRelsDone.push(rel.path);
 				}
 				else {
 					intRels++;
@@ -2002,6 +2007,22 @@ var PptxGenJS = function(){
 		xhr.open('GET', slideRel.path);
 		xhr.responseType = 'blob';
 		xhr.send();
+	}
+
+	/* Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64 */
+	function convertRemoteMediaToDataURL(slideRel) {
+		https.get(slideRel.path, function(res){
+			var rawData = '';
+			res.setEncoding('binary'); // IMPORTANT: Only binary encoding works
+			res.on('data', function(chunk){ rawData += chunk; });
+			res.on("end", function(){
+				var data = Buffer.from(rawData,'binary').toString('base64');
+				callbackImgToDataURLDone(data, slideRel);
+			});
+			res.on("error", function(e){
+				reject( e );
+			});
+		});
 	}
 
 	function callbackImgToDataURLDone(base64Data, slideRel) {
@@ -5203,6 +5224,7 @@ if ( NODEJS ) {
 
 	// B: Other dependencies
 	try { fs = require("fs"); } catch(ex){ console.error("Unable to load `fs`"); throw 'LIB-MISSING-FS'; }
+	try { https = require("https"); } catch(ex){ console.error("Unable to load `https`"); throw 'LIB-MISSING-HTTPS'; }
 	try { JSZip = require("jszip"); } catch(ex){ console.error("Unable to load `jszip`"); throw 'LIB-MISSING-JSZIP'; }
 	try { sizeOf = require("image-size"); } catch(ex){ console.error("Unable to load `image-size`"); throw 'LIB-MISSING-IMGSIZE'; }
 
