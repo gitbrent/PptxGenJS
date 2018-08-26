@@ -59,9 +59,11 @@ var gDemoTitleOpts = { fontSize:13, color:'9F9F9F' };
 var gPaths = {
 	'starlabsBkgd': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/starlabs_bkgd.jpg' },
 	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/starlabs_logo.png' },
+	'wikimedia1': { path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg' },
+	'wikimedia2': { path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png' },
 	'ccCopyRemix': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif' },
 	'ccLicenseComp': { path:'../SiteAssets/pptxgenjs/examples/images/cc_license_comp.png' },
-	'ccLogo': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg' },
+	'ccLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg' },
 	'animCampfire': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/anim_campfire.gif' },
 	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.avi' },
 	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.m4v' },
@@ -2189,9 +2191,7 @@ function genSlides_Image(pptx) {
 
 		// BOTTOM-LEFT:
 		slide.addText('Type: JPG (path:"cdn.rawgit.com")', { x:0.5, y:2.7, w:4.5, h:0.4, color:'0088CC' });
-		slide.addImage({ path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path), x:0.5, y:3.2, w:5.0, h:3.7 });
-		// TODO:
-		//slide.addImage({ path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg', x:0.5, y:3.2, w:3.6, h:3.9 });
+		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:3.2, w:5.0, h:3.7 });
 
 		// BOTTOM-RIGHT:
 		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
@@ -2199,14 +2199,9 @@ function genSlides_Image(pptx) {
 			slide.addText('Type: PNG (path:"../images")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'CC0033' });
 			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
 		}
-		else if ( typeof window !== 'undefined' ) {
-			slide.addText('Type: PNG (path:"wikimedia.org")', { x:6.83, y:2.7, w:4.5, h:0.4, color:'11FF33' });
-			slide.addImage({ path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png', x:6.9, y:3.2, w:4.9, h:3.9 });
-			//slide.addImage({ path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_license_comp.png', x:6.6, y:3.2, w:6.3, h:3.7 });
-		}
 		else {
-			slide.addText('Type: PNG (path:"w../examples")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'CC0033' });
-			slide.addImage({ path:'../examples/images/cc_license_comp.png', x:6.6, y:3.2, w:6.3, h:3.7 });
+			slide.addText('Type: PNG (path:"wikimedia.org")', { x:6.83, y:2.7, w:4.5, h:0.4, color:'11FF33' });
+			slide.addImage({ path:gPaths.wikimedia2.path, x:6.9, y:3.2, w:4.9, h:3.9 });
 		}
 
 		// TEST: Ensure framework corrects for missing all header
