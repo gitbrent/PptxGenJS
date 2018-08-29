@@ -5,71 +5,92 @@
 // TypeScript Version: 2.3
 
 declare namespace PptxGenJS {
-  interface ENUMS {
-    chartTypes: "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER",
-    jsZipOutputTypes: "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array",
-    layoutNames: "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE" | "LAYOUT_USER",
+  const version: string;
+  type ChartType = "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER";
+  type JsZipOutputType = "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array";
+  type LayoutName = "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE";
+  interface Layout {
+    name: string;
+    width: number;
+    height: number;
   }
+  type Color = string;
+  type Coord = number | string; // string is in form 'n%'
 
-  interface ImageOptions {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
-
-    base64data?: string;
-    urlPath?: string;
-
+  interface CommonOptions {
+    x?: Coord;
+    y?: Coord;
+    w?: Coord;
+    h?: Coord;
+  }
+  interface DataOrPath {
+    // Exactly one must be set
+    data?: string;
+    path?: string;
+  }
+  interface ImageOptions extends CommonOptions, DataOrPath {
     hyperlink?: string;
+    rounding?: boolean;
     sizing?: "cover" | "contain" | "crop";
   }
-  interface MediaOptions {
-    x: number;
-    y: number;
-    w: number;
-    h: number;
 
-    base64data?: string;
-    urlPath?: string;
-
+  interface MediaOptions extends CommonOptions, DataOrPath {
     onlineVideoLink?: string;
     type?: "audio" | "online" | "video";
   }
 
-  const version: string;
+  interface TextOptions extends CommonOptions, DataOrPath {
+    align?: "left" | "center" | "right";
+    fontSize?: number;
+    color?: string;
+    valign?: "top" | "middle" | "bottom";
+  }
 
-  // Presentation Props
-  function getLayout(): string;
-  function setBrowser(isBrowser: boolean): void;
-  function setLayout(layoutName: ENUMS["layoutNames"]): void;
-  function setRTL(isRTL: boolean): void;
+  interface MasterSlideOptions {
+    title: string;
+    bkgd?: string | DataOrPath;
+    objects?: Object[];
+    slideNumber?: {x?: Coord, y?: Coord, color?: Color};
+    margin?: number | number[];
+  }
 
-  // Presentation Metadata
-  function setAuthor(author: string): void;
-  function setCompany(company: string): void;
-  function setRevision(revision: string): void;
-  function setSubject(subject: string): void;
-  function setTitle(title: string): void;
-
-  class slide {
+  class Slide {
     // Slide Number methods
     getPageNumber(): string;
     slideNumber(): Object;
     slideNumber(options: Object): void;
 
     // Core Object API Methods
-    addChart(type: ENUMS["chartTypes"], data: string, options?: Object): slide;
-    addImage(options: ImageOptions): slide;
-    addMedia(options: MediaOptions): slide;
-    addNotes(noteText: string): slide;
-    addShape(shapeName: string, options: Object): slide;
-    addTable(tableData: Array<any>, options: Object): slide;
-    addText(textString: string, options: Object): slide;
+    addChart(type: ChartType, data: string, options?: Object): Slide;
+    addImage(options: ImageOptions): Slide;
+    addMedia(options: MediaOptions): Slide;
+    addNotes(noteText: string): Slide;
+    addShape(shapeName: string, options: Object): Slide;
+    addTable(tableData: Array<any>, options: Object): Slide;
+    addText(textString: string, options: TextOptions): Slide;
   }
 
-  // Add a new Slide
-  function addNewSlide(masterLayoutName?: string): slide;
+  class PptxGenJS {
+    // Presentation Props
+    getLayout(): string;
+    setBrowser(isBrowser: boolean): void;
+    setLayout(layout: LayoutName | Layout): void;
+    setRTL(isRTL: boolean): void;
 
-  // Export
-  function save(exportFileName: string, callbackFunction?: Function, zipOutputType?:ENUMS["jsZipOutputTypes"]): void;
+    // Presentation Metadata
+    setAuthor(author: string): void;
+    setCompany(company: string): void;
+    setRevision(revision: string): void;
+    setSubject(subject: string): void;
+    setTitle(title: string): void;
+
+    // Add a new Slide
+    addNewSlide(masterLayoutName?: string): Slide;
+    defineSlideMaster(opts: MasterSlideOptions): void;
+
+    // Export
+    save(exportFileName: string, callbackFunction?: Function, zipOutputType?: JsZipOutputType): void;
+  }
 }
+
+export = PptxGenJS.PptxGenJS;
