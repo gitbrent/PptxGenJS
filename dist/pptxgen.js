@@ -2554,13 +2554,15 @@ var PptxGenJS = function(){
 				var options = getMix(rel.opts, type.options);
 				var valAxisId = options.secondaryValAxis ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
 				var catAxisId = options.secondaryCatAxis ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
+				var isMultiTypeChart = true;
 				usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
-				strXml += makeChartType(chartType, data, options, valAxisId, catAxisId);
+				strXml += makeChartType(chartType, data, options, valAxisId, catAxisId, isMultiTypeChart);
 			});
 		}
 		else {
 			var chartType = rel.opts.type.name;
-			strXml += makeChartType(chartType, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
+			var isMultiTypeChart = false;
+			strXml += makeChartType(chartType, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, isMultiTypeChart);
 		}
 
 		// B: Axes -----------------------------------------------------------
@@ -2698,7 +2700,7 @@ var PptxGenJS = function(){
 	 * @param {String} valAxisId
 	 * @param {String} catAxisId
 	 */
-	function makeChartType(chartType, data, opts, valAxisId, catAxisId) {
+	function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeChart) {
 		// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 		// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 		var strXml = '';
@@ -2893,7 +2895,9 @@ var PptxGenJS = function(){
 					strXml += '        </a:defRPr>';
 					strXml += '      </a:pPr></a:p>';
 					strXml += '    </c:txPr>';
-					if ( opts.type.name != 'area' && opts.type.name != 'radar') strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+					// NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
+					// Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
+					if ( opts.type.name != 'area' && opts.type.name != 'radar' && !isMultiTypeChart) strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
 					strXml += '    <c:showLegendKey val="0"/>';
 					strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
 					strXml += '    <c:showCatName val="0"/>';
