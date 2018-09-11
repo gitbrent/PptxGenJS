@@ -8,6 +8,8 @@
 - Cannot set valAxisMinVal to 0 [\#357](https://github.com/gitbrent/PptxGenJS/issues/357) ([GiridharGNair](https://github.com/GiridharGNair))
 - Multiple paragraph spacings if newline character occur in text [\#368](https://github.com/gitbrent/PptxGenJS/issues/368) ([vpetzel](https://github.com/vpetzel))
 - Rotate working incorrectly [\#370](https://github.com/gitbrent/PptxGenJS/issues/370) ([michaelcbrook](https://github.com/michaelcbrook))
+- Removed error thrown while rendering Multi Type chart containing Area [\#371](https://github.com/gitbrent/PptxGenJS/pull/371)
+([KrishnaTejaReddyV](https://github.com/KrishnaTejaReddyV))
 - Bugfix/enhancement for EncodeXML in speaker notes text [\#373](https://github.com/gitbrent/PptxGenJS/pull/373) ([travispwingo](https://github.com/travispwingo))
 
 **Implemented Enhancements:**
