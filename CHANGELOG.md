@@ -1,7 +1,14 @@
 # Change Log
 
-## [v2.3.0](https://github.com/gitbrent/pptxgenjs/tree/v2.3.0) (2018-??-??)
+## [v2.3.0](https://github.com/gitbrent/pptxgenjs/tree/v2.3.0) (2018-09-12)
 [Full Changelog](https://github.com/gitbrent/pptxgenjs/compare/v2.2.0...v2.3.0)
+
+**Highlights:**
+- New Feature: Placeholders
+- New Feature: Speaker Notes
+- `addImage()` can now load both local ("../img.png") and remote images ("https://wikimedia.org/logo.jpg")
+- Typescript definitions are now available
+- `jquery-node` replaced with latest `jquery` package [only affects npm users]
 
 **Fixed Bugs:**
 - Remove jquery-node dependency (fixes XSS Vulnerability Security Warning) [\#350](https://github.com/gitbrent/PptxGenJS/issues/350) ([TinkerJack](https://github.com/TinkerJack))
@@ -13,6 +20,7 @@
 - Bugfix/enhancement for EncodeXML in speaker notes text [\#373](https://github.com/gitbrent/PptxGenJS/pull/373) ([travispwingo](https://github.com/travispwingo))
 
 **Implemented Enhancements:**
+- `addImage()` updated with new code allowing both local and remote images to be used (browser and Node). ([gitbrent](https://github.com/gitbrent))
 - Typescript definitions have been created for the PptxGenJS API Methods (`pptxgen.d.ts`). ([gitbrent](https://github.com/gitbrent))
 - New Feature: Placeholder support in Master Slides [\#359](https://github.com/gitbrent/PptxGenJS/pull/359) ([conbow](https://github.com/conbow))
 - New Feature: Speaker Notes [\#239](https://github.com/gitbrent/PptxGenJS/issues/239) [\#361](https://github.com/gitbrent/PptxGenJS/pull/361) ([travispwingo](https://github.com/travispwingo))
