@@ -4,32 +4,75 @@
     "next": "Next",
     "previous": "Previous",
     "tagline": "JavaScript library that creates PowerPoint presentations",
-    "api-charts": "Adding Charts",
-    "api-images": "Adding Images",
-    "api-media": "Adding Media",
-    "api-shapes": "Adding Shapes",
-    "api-tables": "Adding Tables",
-    "api-text": "Adding Text",
-    "html-to-powerpoint": "HTML to PowerPoint",
-    "HTML-to-PowerPoint": "HTML-to-PowerPoint",
-    "installation": "Installation",
-    "integration": "Library Integration",
-    "masters": "Master Slides",
-    "quick-start": "Quick Start Guide",
-    "shapes-and-schemes": "Shapes and Schemes",
-    "speaker-notes": "Speaker Notes",
-    "usage-add-slide": "Adding a Slide",
-    "usage-pres-create": "Creating a Presentation",
-    "usage-pres-options": "Presentation Options",
-    "usage-saving": "Saving Presentations",
-    "usage-slide-options": "Slide Methods",
-    "Download": "Download",
-    "Get Started": "Get Started",
-    "API Documentation": "API Documentation",
-    "GitHub": "GitHub",
-    "Usage": "Usage",
-    "Features": "Features",
-    "API Reference": "API Reference"
+    "docs": {
+      "api-charts": {
+        "title": "Adding Charts"
+      },
+      "api-images": {
+        "title": "Adding Images"
+      },
+      "api-media": {
+        "title": "Adding Media"
+      },
+      "api-shapes": {
+        "title": "Adding Shapes"
+      },
+      "api-tables": {
+        "title": "Adding Tables"
+      },
+      "api-text": {
+        "title": "Adding Text"
+      },
+      "html-to-powerpoint": {
+        "title": "HTML to PowerPoint",
+        "sidebar_label": "HTML-to-PowerPoint"
+      },
+      "installation": {
+        "title": "Installation"
+      },
+      "integration": {
+        "title": "Library Integration"
+      },
+      "masters": {
+        "title": "Master Slides"
+      },
+      "quick-start": {
+        "title": "Quick Start Guide"
+      },
+      "shapes-and-schemes": {
+        "title": "Shapes and Schemes"
+      },
+      "speaker-notes": {
+        "title": "Speaker Notes"
+      },
+      "usage-add-slide": {
+        "title": "Adding a Slide"
+      },
+      "usage-pres-create": {
+        "title": "Creating a Presentation"
+      },
+      "usage-pres-options": {
+        "title": "Presentation Options"
+      },
+      "usage-saving": {
+        "title": "Saving Presentations"
+      },
+      "usage-slide-options": {
+        "title": "Slide Methods"
+      }
+    },
+    "links": {
+      "Download": "Download",
+      "Get Started": "Get Started",
+      "API Documentation": "API Documentation",
+      "GitHub": "GitHub"
+    },
+    "categories": {
+      "Get Started": "Get Started",
+      "Usage": "Usage",
+      "Features": "Features",
+      "API Reference": "API Reference"
+    }
   },
   "pages-strings": {
     "Help Translate|recruit community translators for your project": "Help Translate",
