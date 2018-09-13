@@ -174,7 +174,7 @@ const FeatureCallout = props => (
 
 // 4:
 const TryOutLiveDemo = props => (
-	<Block background="light" id="try" align="left" layout="twoColumn">
+	<Block background="light" id="try" align="left" layout="oneColumn">
 		{[
 			{
 				title: 'Live Demo: Create a simple pptx presentation',
@@ -182,8 +182,9 @@ const TryOutLiveDemo = props => (
 			},
 			{
 				title: '',
-				content: '<p>Any desktop or mobile browser that is capable of downloading files can execute the code above to create a presentation.</p><br/>'
-				+`<Button class="button" href="javascript:" onclick="eval(document.getElementById('try').getElementsByClassName('hljs')[0].innerText); if(ga)ga('send','event','Link','click','Demo-Simple');">Try It Out</Button>`,
+				content: '<p>Any desktop or mobile browser that is capable of downloading files can execute the code above to create a presentation.</p>'
+				+ `<Button class="button" href="javascript:" onclick="eval(document.getElementById('try').getElementsByClassName('hljs')[0].innerText); if(ga)ga('send','event','Link','click','Demo-Simple');">Try It Out</Button>`
+				+ '<br/><br/><p>There is also a pre-configured <a href="https://jsfiddle.net/gitbrent/gx34jy59/5/">jsFiddle demo</a> available.</p>',
 			},
 		]}
 	</Block>
