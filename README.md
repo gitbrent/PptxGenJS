@@ -197,7 +197,7 @@ Sometimes implementing a new library can be a difficult task and the slightest m
 If you are having issues getting a presentation to generate, check out the demos in the `examples` directory. There
 are demos for both Nodejs and client-browsers that contain working examples of every available library feature.
 
-* Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/)
+* Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/)
 * Use Ask Question on [StackOverflow](http://stackoverflow.com/) - be sure to tag it with "PptxGenJS"
 
 
