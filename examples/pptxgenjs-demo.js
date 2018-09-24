@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-* VER.: 2.3.0
-* BLD.: 20180809
+* VER.: 2.4.0
+* BLD.: 20180923
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -61,6 +61,8 @@ var gPaths = {
 	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/starlabs_logo.png' },
 	'wikimedia1': { path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg' },
 	'wikimedia2': { path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png' },
+	'wikimedia_svg1': { path:'https://upload.wikimedia.org/wikipedia/commons/2/28/Cadenas-ferme-vert.svg' },
+	'wikimedia_svg2': { path:'https://upload.wikimedia.org/wikipedia/commons/3/3b/Crystal_Clear_action_go.svg' },
 	'ccCopyRemix': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif' },
 	'ccLicenseComp': { path:'../SiteAssets/pptxgenjs/examples/images/cc_license_comp.png' },
 	'ccLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg' },
@@ -2190,19 +2192,23 @@ function genSlides_Image(pptx) {
 		});
 
 		// BOTTOM-LEFT:
-		slide.addText('Type: JPG (path:"cdn.rawgit.com")', { x:0.5, y:2.7, w:4.5, h:0.4, color:'0088CC' });
-		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:3.2, w:5.0, h:3.7 });
+		slide.addText('Type: JPG (path:"cdn.rawgit.com")', { x:0.5, y:3.0, w:4.5, h:0.4, color:'0088CC' });
+		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:3.5, w:4.0, h:2.96 });
 
-		// BOTTOM-RIGHT:
+		// BOTTOM-CENTER:
 		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
 			// TEST USING RELATIVE PATHS/LOCAL FILES (OFFICE.COM)
 			slide.addText('Type: PNG (path:"../images")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'CC0033' });
 			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
 		}
 		else {
-			slide.addText('Type: PNG (path:"wikimedia.org")', { x:6.83, y:2.7, w:4.5, h:0.4, color:'11FF33' });
-			slide.addImage({ path:gPaths.wikimedia2.path, x:6.9, y:3.2, w:4.9, h:3.9 });
+			slide.addText('Type: PNG (path:"wikimedia.org")', { x:5.1, y:3.0, w:4.0, h:0.4, color:'11FF33' });
+			slide.addImage({ path:gPaths.wikimedia2.path, x:5.1, y:3.5, w:3.72, h:2.96 });
 		}
+
+		// BOTTOM-RIGHT:
+		slide.addText('Type: SVG (new in v2.4!)', { x:9.5, y:3.0, w:4.0, h:0.4, color:'EC0101' });
+		slide.addImage({ path:gPaths.wikimedia_svg1.path, x:9.5, y:3.5, w:3.0, h:3.0 });
 
 		// TEST: Ensure framework corrects for missing all header
 		// (Please **DO NOT** pass base64 data without the header! This is a JUNK TEST!)

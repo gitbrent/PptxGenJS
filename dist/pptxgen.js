@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.4.0-beta";
-	var APP_BLD = "20180913";
+	var APP_BLD = "20180923";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -432,15 +432,43 @@ var PptxGenJS = function(){
 			};
 
 			// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-			target.rels.push({
-				path: (strImagePath || 'preencoded'+strImgExtn),
-				type: 'image/'+strImgExtn,
-				extn: strImgExtn,
-				data: (strImageData || ''),
-				rId:  imageRelId,
-				Target: '../media/image'+ (++gObjPptx.imageCounter) +'.'+ strImgExtn
-			});
-			resultObject.imageRid = imageRelId;
+			if ( strImgExtn == 'svg' ) {
+				// SVG files consume *TWO* rId's: (a png version and the svg image)
+				// <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
+			    // <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
+
+				target.rels.push({
+					path: (strImagePath || 'preencoded.'+'png'),
+					type: 'image/png',
+					extn: 'png',
+					data: (strImageData || ''),
+					rId:  imageRelId,
+					Target: '../media/image'+ (++gObjPptx.imageCounter) +'.png',
+					isSvgPng: true,
+					svgSize: { w:resultObject.options.cx, h:resultObject.options.cy }
+				});
+				resultObject.imageRid = imageRelId;
+				target.rels.push({
+					path: (strImagePath || 'preencoded.'+strImgExtn),
+					type: 'image/'+strImgExtn,
+					extn: strImgExtn,
+					data: (strImageData || ''),
+					rId:  (imageRelId+1),
+					Target: '../media/image'+ (++gObjPptx.imageCounter) +'.'+ strImgExtn
+				});
+				resultObject.imageRid = (imageRelId+1);
+			}
+			else {
+				target.rels.push({
+					path: (strImagePath || 'preencoded.'+strImgExtn),
+					type: 'image/'+strImgExtn,
+					extn: strImgExtn,
+					data: (strImageData || ''),
+					rId:  imageRelId,
+					Target: '../media/image'+ (++gObjPptx.imageCounter) +'.'+ strImgExtn
+				});
+				resultObject.imageRid = imageRelId;
+			}
 
 			// STEP 5: (Issue#77) Hyperlink support
 			if ( typeof objHyperlink === 'object' ) {
@@ -1083,17 +1111,27 @@ var PptxGenJS = function(){
 						if ( slideItemObj.hyperlink && slideItemObj.hyperlink.slide ) strSlideXml += '<a:hlinkClick r:id="rId'+ slideItemObj.hyperlink.rId +'" tooltip="'+ (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +'" action="ppaction://hlinksldjump" />';
 						strSlideXml += '    </p:cNvPr>';
 						strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
-						strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
+						strSlideXml += '    <p:nvPr>'+ genXmlPlaceholder(placeholderObj) +'</p:nvPr>';
 						strSlideXml += '  </p:nvPicPr>';
 						strSlideXml += '<p:blipFill>';
-						strSlideXml += '  <a:blip r:embed="rId' + slideItemObj.imageRid + '" cstate="print"/>';
+						if ( slideItemObj.image.toLowerCase().indexOf('.svg') > -1 ) {
+							strSlideXml += '<a:blip r:embed="rId'+ (slideItemObj.imageRid-1) +'"/>';
+							strSlideXml += '<a:extLst>';
+							strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
+							strSlideXml += '    <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId'+ slideItemObj.imageRid +'"/>';
+							strSlideXml += '  </a:ext>';
+							strSlideXml += '</a:extLst>';
+						}
+						else {
+							strSlideXml += '<a:blip r:embed="rId'+ slideItemObj.imageRid +'"/>';
+						}
 						if (sizing && sizing.type) {
 							var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X') : cx,
 								boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y') : cy,
 								boxX = getSmartParseNumber(sizing.x || 0, 'X'),
 								boxY = getSmartParseNumber(sizing.y || 0, 'Y');
 
-								strSlideXml += gObjPptxGenerators.imageSizingXml[sizing.type]({w: width, h: height}, {w: boxW, h: boxH, x: boxX, y: boxY});
+							strSlideXml += gObjPptxGenerators.imageSizingXml[sizing.type]({w: width, h: height}, {w: boxW, h: boxH, x: boxX, y: boxY});
 							width = boxW;
 							height = boxH;
 						}
@@ -2012,9 +2050,9 @@ var PptxGenJS = function(){
 	/* Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64 */
 	function convertRemoteMediaToDataURL(slideRel) {
 		https.get(slideRel.path, function(res){
-			var rawData = '';
+			var rawData = "";
 			res.setEncoding('binary'); // IMPORTANT: Only binary encoding works
-			res.on('data', function(chunk){ rawData += chunk; });
+			res.on("data", function(chunk){ rawData += chunk; });
 			res.on("end", function(){
 				var data = Buffer.from(rawData,'binary').toString('base64');
 				callbackImgToDataURLDone(data, slideRel);
@@ -2025,7 +2063,63 @@ var PptxGenJS = function(){
 		});
 	}
 
+	/* browser: Convert SVG-base64 data to PNG-base64 */
+	function convertSvgToPngViaCanvas(slideRel) {
+		// A: Create
+		var image = new Image();
+
+		// B: Set onload event
+		image.onload = function(){
+			// First: Check for any errors: This is the best method (try/catch wont work, etc.)
+			if (this.width + this.height == 0) { this.onerror('h/w=0'); return; }
+			var canvas = document.createElement('CANVAS');
+			var ctx = canvas.getContext('2d');
+			canvas.width  = this.width;
+			canvas.height = this.height;
+			ctx.drawImage(this, 0, 0);
+			// Users running on local machine will get the following error:
+			// "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
+			// when the canvas.toDataURL call executes below.
+			try { callbackImgToDataURLDone( canvas.toDataURL(slideRel.type), slideRel ); }
+			catch(ex) {
+				this.onerror(ex);
+				return;
+			}
+			canvas = null;
+		};
+		image.onerror = function(ex){
+			try {
+				if ( typeof window !== 'undefined' && window.location.href.indexOf('file:') == 0 ) {
+					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files!\n(use '--allow-file-access-from-files' flag with Chrome, etc.)");
+				}
+				console.error('Unable to load image: "'+ slideRel.path );
+				console.error(ex||'');
+			}
+			catch(ex){}
+			// Return a predefined "Broken image" graphic so the user will see something on the slide
+			callbackImgToDataURLDone(IMG_BROKEN, slideRel);
+		};
+
+		// C: Load image
+		image.src = slideRel.data; // use pre-encoded SVG base64 data
+	}
+
+	/* nide: Convert SVG-base64 data to PNG-base64 */
+	function convertSvgToPngViaNode(slideRel) {
+		// TODO:
+		// require(svg-to-png)
+	}
+
 	function callbackImgToDataURLDone(base64Data, slideRel) {
+		// SVG images were retrieved via `convertImgToDataURL()`, but have to be encoded to PNG now
+		if ( slideRel.isSvgPng && base64Data.indexOf('image/svg') > -1 ) {
+			// Pass the SVG XML as base64 for conversion to PNG
+			slideRel.data = base64Data;
+			if ( NODEJS ) convertSvgToPngViaNode(slideRel);
+			else convertSvgToPngViaCanvas(slideRel);
+			return;
+		}
+
 		var intEmpty = 0;
 		var funcCallback = function(rel){
 			if ( rel.path == slideRel.path ) rel.data = base64Data;
