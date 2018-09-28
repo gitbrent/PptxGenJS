@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.4.0-beta";
-	var APP_BLD = "20180923";
+	var APP_BLD = "20180927";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -392,7 +392,6 @@ var PptxGenJS = function(){
 			var objHyperlink = (objImage.hyperlink || '');
 			var strImageData = (objImage.data || '');
 			var strImagePath = (objImage.path || '');
-
 			var imageRelId = target.rels.length + 1;
 
 			// REALITY-CHECK:
@@ -411,7 +410,9 @@ var PptxGenJS = function(){
 			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
 				strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
 			}
-
+			else if ( strImageData && strImageData.toLowerCase().indexOf('image/svg+xml') > -1 ) {
+				strImgExtn = 'svg';
+			}
 			// STEP 2: Set type/path
 			resultObject.type  = 'image';
 			resultObject.image = (strImagePath || 'preencoded.png');
@@ -422,8 +423,8 @@ var PptxGenJS = function(){
 			// if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
 			var imgObj = { width:1, height:1 };
 			resultObject.options = {
-				x: (intPosX  || 0),
-				y: (intPosY  || 0),
+				x: (intPosX || 0),
+				y: (intPosY || 0),
 				cx: (intWidth || imgObj.width),
 				cy: (intHeight || imgObj.height),
 				rounding: (objImage.rounding || false),
@@ -438,7 +439,7 @@ var PptxGenJS = function(){
 			    // <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
 
 				target.rels.push({
-					path: (strImagePath || 'preencoded.'+'png'),
+					path: (strImagePath || strImageData+'png'),
 					type: 'image/png',
 					extn: 'png',
 					data: (strImageData || ''),
@@ -449,7 +450,7 @@ var PptxGenJS = function(){
 				});
 				resultObject.imageRid = imageRelId;
 				target.rels.push({
-					path: (strImagePath || 'preencoded.'+strImgExtn),
+					path: (strImagePath || strImageData),
 					type: 'image/'+strImgExtn,
 					extn: strImgExtn,
 					data: (strImageData || ''),
@@ -1114,7 +1115,8 @@ var PptxGenJS = function(){
 						strSlideXml += '    <p:nvPr>'+ genXmlPlaceholder(placeholderObj) +'</p:nvPr>';
 						strSlideXml += '  </p:nvPicPr>';
 						strSlideXml += '<p:blipFill>';
-						if ( slideItemObj.image.toLowerCase().indexOf('.svg') > -1 ) {
+						// NOTE: This works for both cases: either `path` or `data` contains the SVG
+						if ( slideObject.rels.filter(function(rel){ return rel.rId == slideItemObj.imageRid })[0].extn == 'svg' ) {
 							strSlideXml += '<a:blip r:embed="rId'+ (slideItemObj.imageRid-1) +'"/>';
 							strSlideXml += '<a:extLst>';
 							strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
@@ -1997,7 +1999,7 @@ var PptxGenJS = function(){
 		var intRels = 0;
 
 		layout.rels.forEach(function(rel){
-			// Read and Encode each image into base64 for use in export
+			// Read and Encode each media lacking `data` into base64 (for use in export)
 			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1 ) {
 				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 				if ( NODEJS && rel.path.indexOf('http') != 0 ) {
@@ -2021,6 +2023,12 @@ var PptxGenJS = function(){
 					convertImgToDataURL(rel);
 					arrRelsDone.push(rel.path);
 				}
+			}
+			else if ( rel.isSvgPng && rel.data && rel.data.toLowerCase().indexOf('image/svg') > -1 ) {
+				// The SVG base64 must be converted to PNG SVG before export
+				intRels++;
+				callbackImgToDataURLDone(rel.data, rel);
+				arrRelsDone.push(rel.path);
 			}
 		});
 
@@ -2088,14 +2096,7 @@ var PptxGenJS = function(){
 			canvas = null;
 		};
 		image.onerror = function(ex){
-			try {
-				if ( typeof window !== 'undefined' && window.location.href.indexOf('file:') == 0 ) {
-					console.warn("WARNING: You are running this in a local web browser, which means you cant read local files!\n(use '--allow-file-access-from-files' flag with Chrome, etc.)");
-				}
-				console.error('Unable to load image: "'+ slideRel.path );
-				console.error(ex||'');
-			}
-			catch(ex){}
+			console.error(ex||'');
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			callbackImgToDataURLDone(IMG_BROKEN, slideRel);
 		};
