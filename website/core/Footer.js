@@ -54,7 +54,7 @@ class Footer extends React.Component {
 						)}
 					</a>
 					<div>
-						<h5>Docs</h5>
+						<h5>Documentation</h5>
 						<a
 							href={this.docUrl('quick-start.html')}
 							onClick={()=>ga('send','event','Link','click','link-footer-GetStarted')}>
@@ -71,23 +71,28 @@ class Footer extends React.Component {
 						</a>
 					</div>
 					<div>
-						<h5>Community</h5>
+						<h5>More</h5>
+						<a
+							href="https://jsfiddle.net/gitbrent/gx34jy59/"
+							target="_blank">
+							JSFiddle Demo Presentation
+						</a>
 						<a
 							href="https://github.com/gitbrent/pptxgenjs/issues"
 							target="_blank">
-							GitHub Issues
+							PptxGenJS GitHub Issues
 						</a>
 						<a
 							href="http://stackoverflow.com/questions/tagged/pptxgenjs"
 							target="_blank">
-							Stack Overflow
+							PptxGenJS on Stack Overflow
 						</a>
 					</div>
 					<div>
-						<h5>More</h5>
-						<a href="https://github.com/gitbrent/pptxgenjs">GitHub Project</a>
-						<a href={this.props.config.baseUrl + 'blog'}>Blog</a>
-						<a href="https://www.flaticon.com/packs/creativity">Site Icons</a>
+						<h5>Social</h5>
+						<a href="https://plus.google.com/u/3/115743568393356344951">Google Plus</a>
+						<a href="https://twitter.com/pptxgenjs">Twitter</a>
+						<a href="https://www.pinterest.com/pptxgenjs">Pinterest</a>
 					</div>
 				</section>
 
