@@ -4991,6 +4991,8 @@ var PptxGenJS = function(){
 			if ( !Array.isArray(arrRows[0]) ) arrRows = [ arrTabRows ];
 
 			// STEP 3: Set options
+// TODO: FIXME:
+//options.x        = ( options.x || (options.x == 0 ? 0 : 1) );
 			opt.x          = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
 			opt.y          = getSmartParseNumber( (opt.y || EMU), 'Y' );
 			opt.cy         = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
