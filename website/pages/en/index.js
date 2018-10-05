@@ -212,7 +212,7 @@ const LearnMore = props => (
 					+ '<li><a href="'+ docUrl('api-tables.html', '') +'" '
 					+ ' onclick="if(ga)ga(\'send\',\'event\',\'Link\',\'click\',\'LearnMore-api-tables\')">'
 					+ 'View Table API and sample code</a></li>'
-					+ '<li><a href="'+ docUrl('table2slides.html', '') +'" '
+					+ '<li><a href="'+ docUrl('html-to-powerpoint.html', '') +'" '
 					+ ' onclick="if(ga)ga(\'send\',\'event\',\'Link\',\'click\',\'LearnMore-table2slides\')">'
 					+ 'Converting HTML tables to presentations</a></li>'
 					+ '</ul>'
