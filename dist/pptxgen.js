@@ -3889,6 +3889,10 @@ var PptxGenJS = function(){
             // OPTION: align
             if ( textObj.options.align ) {
                 switch ( textObj.options.align ) {
+                    case 'l':
+                    case 'left':
+                        paragraphPropXml += ' algn="l"';
+                        break;
                     case 'r':
                     case 'right':
                         paragraphPropXml += ' algn="r"';
