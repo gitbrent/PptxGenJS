@@ -54,7 +54,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var NODEJS = false;
 {
 	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
+	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined' ) {
 		try {
 			require.resolve('fs');
 			NODEJS = true;
@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.4.0-beta";
-	var APP_BLD = "20180927";
+	var APP_BLD = "20181011";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -5335,8 +5335,14 @@ if ( NODEJS ) {
 	// C: Export module
 	module.exports = PptxGenJS;
 }
-else if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') { //means we're in angular
-	$ = require("jquery")
+// Angular support
+else if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') {
+	// A: jQuery dependency
+	try { $ = require("jquery"); } catch(ex){ console.error("Unable to load `jquery`!\n"+ex); throw 'LIB-MISSING-JQUERY'; }
+
+	// B: Other dependencies
 	try { JSZip = require("jszip"); } catch(ex){ console.error("Unable to load `jszip`"); throw 'LIB-MISSING-JSZIP'; }
+
+	// C: Export module
 	module.exports = PptxGenJS;
 }
