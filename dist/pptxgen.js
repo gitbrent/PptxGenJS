@@ -801,8 +801,8 @@ var PptxGenJS = function(){
 								+ '    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>'
 								+ '  </p:nvGraphicFramePr>'
 								+ '  <p:xfrm>'
-								+ '    <a:off  x="'+ (x  || EMU) +'"  y="'+ (y  || EMU) +'"/>'
-								+ '    <a:ext cx="'+ (cx || EMU) +'" cy="'+ (cy || EMU) +'"/>'
+								+ '    <a:off  x="'+ (x  || (x  == 0 ? 0 : EMU)) +'"  y="'+ (y  || (y  == 0 ? 0 : EMU)) +'"/>'
+								+ '    <a:ext cx="'+ (cx || (cx == 0 ? 0 : EMU)) +'" cy="'+ (cy || (cy == 0 ? 0 : EMU)) +'"/>'
 								+ '  </p:xfrm>'
 								+ '  <a:graphic>'
 								+ '    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table">'
@@ -4996,8 +4996,8 @@ var PptxGenJS = function(){
 			if ( !Array.isArray(arrRows[0]) ) arrRows = [ arrTabRows ];
 
 			// STEP 3: Set options
-			opt.x          = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
-			opt.y          = getSmartParseNumber( (opt.y || EMU), 'Y' );
+			opt.x          = getSmartParseNumber( opt.x || (opt.x == 0 ? 0 : EMU/2), 'X' );
+			opt.y          = getSmartParseNumber( opt.y || (opt.y == 0 ? 0 : EMU  ), 'Y' );
 			opt.cy         = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 			if ( opt.cy ) opt.cy = getSmartParseNumber( opt.cy, 'Y' );
 			opt.h          = opt.cy;
