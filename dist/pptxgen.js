@@ -54,7 +54,7 @@ Number.isInteger = Number.isInteger || function(value) {
 var NODEJS = false;
 {
 	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
 		try {
 			require.resolve('fs');
 			NODEJS = true;
@@ -4996,8 +4996,6 @@ var PptxGenJS = function(){
 			if ( !Array.isArray(arrRows[0]) ) arrRows = [ arrTabRows ];
 
 			// STEP 3: Set options
-// TODO: FIXME:
-//options.x        = ( options.x || (options.x == 0 ? 0 : 1) );
 			opt.x          = getSmartParseNumber( (opt.x || (EMU/2)), 'X' );
 			opt.y          = getSmartParseNumber( (opt.y || EMU), 'Y' );
 			opt.cy         = opt.h || opt.cy; // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
@@ -5335,5 +5333,10 @@ if ( NODEJS ) {
 	try { sizeOf = require("image-size"); } catch(ex){ console.error("Unable to load `image-size`"); throw 'LIB-MISSING-IMGSIZE'; }
 
 	// C: Export module
+	module.exports = PptxGenJS;
+}
+else if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') { //means we're in angular
+	$ = require("jquery")
+	try { JSZip = require("jszip"); } catch(ex){ console.error("Unable to load `jszip`"); throw 'LIB-MISSING-JSZIP'; }
 	module.exports = PptxGenJS;
 }
