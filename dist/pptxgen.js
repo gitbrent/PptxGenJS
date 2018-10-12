@@ -4260,7 +4260,7 @@ var PptxGenJS = function(){
 		strXml += '<TitlesOfParts>';
 		strXml += '<vt:vector size="'+ (gObjPptx.slides.length+1) +'" baseType="lpstr">';
 		strXml += '<vt:lpstr>Office Theme</vt:lpstr>';
-		$.each(gObjPptx.slides, function(idx,slideObj){ strXml += '<vt:lpstr>Slide '+ (idx+1) +'</vt:lpstr>'; });
+		gObjPptx.slides.forEach(function(slideObj, idx){ strXml += '<vt:lpstr>Slide '+ (idx+1) +'</vt:lpstr>'; });
 		strXml += '</vt:vector>';
 		strXml += '</TitlesOfParts>';
 		strXml += '<Company>'+gObjPptx.company+'</Company>';
