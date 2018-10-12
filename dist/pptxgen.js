@@ -3878,121 +3878,122 @@ var PptxGenJS = function(){
 	}
 
 	function genXmlParagraphProperties(textObj, isDefault) {
-        var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
-        var bulletLvl0Margin = 342900;
-        var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
+		var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
+		var bulletLvl0Margin = 342900;
+		var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
 
-        var paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '');
+		var paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '');
 
-        // A: Build paragraphProperties
-        {
-            // OPTION: align
-            if ( textObj.options.align ) {
-                switch ( textObj.options.align ) {
-                    case 'l':
-                    case 'left':
-                        paragraphPropXml += ' algn="l"';
-                        break;
-                    case 'r':
-                    case 'right':
-                        paragraphPropXml += ' algn="r"';
-                        break;
-                    case 'c':
-                    case 'ctr':
-                    case 'center':
-                        paragraphPropXml += ' algn="ctr"';
-                        break;
-                    case 'justify':
-                        paragraphPropXml += ' algn="just"';
-                        break;
-                }
-            }
-
-            if ( textObj.options.lineSpacing ) {
-                strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>';
-            }
-
-            // OPTION: indent
-            if ( textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0 ) {
-                paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
-            }
-
-            // OPTION: Paragraph Spacing: Before/After
-            if ( textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0 ) {
-                strXmlParaSpc += '<a:spcBef><a:spcPts val="'+ (textObj.options.paraSpaceBefore * 100) +'"/></a:spcBef>';
-            }
-            if ( textObj.options.paraSpaceAfter  && !isNaN(Number(textObj.options.paraSpaceAfter))  && textObj.options.paraSpaceAfter  > 0 ) {
-                strXmlParaSpc += '<a:spcAft><a:spcPts val="'+ (textObj.options.paraSpaceAfter * 100) +'"/></a:spcAft>';
-            }
-
-            // Set core XML for use below
-            paraPropXmlCore = paragraphPropXml;
-
-            // OPTION: bullet
-            // NOTE: OOXML uses the unicode character set for Bullets
-            // EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
-            if ( typeof textObj.options.bullet === 'object' ) {
-                if ( textObj.options.bullet.type ) {
-                    if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
-                        paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-                        strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
-                    }
-                }
-                else if ( textObj.options.bullet.code ) {
-                    var bulletCode = '&#x'+ textObj.options.bullet.code +';';
-
-                    // Check value for hex-ness (s/b 4 char hex)
-                    if ( /^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false ) {
-                        console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
-                        bulletCode = BULLET_TYPES['DEFAULT'];
-                    }
-
-                    paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-                    strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
-                }
-            }
-            else if ( textObj.options.bullet == true ) {
-                paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-                strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
-            } else {
-            	strXmlBullet = '<a:buNone/>';
+		// A: Build paragraphProperties
+		{
+			// OPTION: align
+			if ( textObj.options.align ) {
+				switch ( textObj.options.align ) {
+					case 'l':
+					case 'left':
+						paragraphPropXml += ' algn="l"';
+						break;
+					case 'r':
+					case 'right':
+						paragraphPropXml += ' algn="r"';
+						break;
+					case 'c':
+					case 'ctr':
+					case 'center':
+						paragraphPropXml += ' algn="ctr"';
+						break;
+					case 'justify':
+						paragraphPropXml += ' algn="just"';
+						break;
+				}
 			}
 
-            // Close Paragraph-Properties --------------------
-            // IMPORTANT: strXmlLnSpc must precede strXmlBullet for bullet lineSpacing to work (PPT-Online)
-            paragraphPropXml += '>'+ strXmlParaSpc + strXmlLnSpc + strXmlBullet;
-            if (isDefault) {
-                paragraphPropXml += genXmlTextRunProperties(textObj.options, true);
-            }
-            paragraphPropXml += '</' + tag + '>';
-        }
+			if ( textObj.options.lineSpacing ) {
+				strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>';
+			}
 
-        return paragraphPropXml;
+			// OPTION: indent
+			if ( textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0 ) {
+				paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
+			}
+
+			// OPTION: Paragraph Spacing: Before/After
+			if ( textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0 ) {
+				strXmlParaSpc += '<a:spcBef><a:spcPts val="'+ (textObj.options.paraSpaceBefore * 100) +'"/></a:spcBef>';
+			}
+			if ( textObj.options.paraSpaceAfter  && !isNaN(Number(textObj.options.paraSpaceAfter))  && textObj.options.paraSpaceAfter  > 0 ) {
+				strXmlParaSpc += '<a:spcAft><a:spcPts val="'+ (textObj.options.paraSpaceAfter * 100) +'"/></a:spcAft>';
+			}
+
+			// Set core XML for use below
+			paraPropXmlCore = paragraphPropXml;
+
+			// OPTION: bullet
+			// NOTE: OOXML uses the unicode character set for Bullets
+			// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
+			if ( typeof textObj.options.bullet === 'object' ) {
+				if ( textObj.options.bullet.type ) {
+					if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
+						paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
+						strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
+					}
+				}
+				else if ( textObj.options.bullet.code ) {
+					var bulletCode = '&#x'+ textObj.options.bullet.code +';';
+
+					// Check value for hex-ness (s/b 4 char hex)
+					if ( /^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false ) {
+						console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
+						bulletCode = BULLET_TYPES['DEFAULT'];
+					}
+
+					paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
+					strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ bulletCode +'"/>';
+				}
+			}
+			else if ( textObj.options.bullet == true ) {
+				paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
+				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="'+ BULLET_TYPES['DEFAULT'] +'"/>';
+			}
+			else {
+				strXmlBullet = '<a:buNone/>';
+			}
+
+			// Close Paragraph-Properties --------------------
+			// IMPORTANT: strXmlLnSpc must precede strXmlBullet for bullet lineSpacing to work (PPT-Online)
+			paragraphPropXml += '>'+ strXmlParaSpc + strXmlLnSpc + strXmlBullet;
+			if (isDefault) {
+				paragraphPropXml += genXmlTextRunProperties(textObj.options, true);
+			}
+			paragraphPropXml += '</' + tag + '>';
+		}
+
+		return paragraphPropXml;
 	}
 
 	function genXmlTextRunProperties(opts, isDefault) {
 		var runProps = '';
 		var runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr';
 
-        // BEGIN runProperties
+		// BEGIN runProperties
 		runProps += '<' + runPropsTag + ' lang="'+ ( opts.lang ? opts.lang : 'en-US' ) +'" '+ ( opts.lang ? ' altLang="en-US"' : '' );
-        runProps += ( opts.bold      ? ' b="1"' : '' );
-        runProps += ( opts.fontSize  ? ' sz="'+ Math.round(opts.fontSize) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
-        runProps += ( opts.italic    ? ' i="1"' : '' );
-        runProps += ( opts.strike    ? ' strike="sngStrike"' : '' );
-        runProps += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
-        runProps += ( opts.subscript ? ' baseline="-40000"' : (opts.superscript ? ' baseline="30000"' : '') );
-        runProps += ( opts.charSpacing ? ' spc="'+ (opts.charSpacing * 100) +'" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
-        runProps += ' dirty="0" smtClean="0">';
+		runProps += ( opts.bold      ? ' b="1"' : '' );
+		runProps += ( opts.fontSize  ? ' sz="'+ Math.round(opts.fontSize) +'00"' : '' ); // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+		runProps += ( opts.italic    ? ' i="1"' : '' );
+		runProps += ( opts.strike    ? ' strike="sngStrike"' : '' );
+		runProps += ( opts.underline || opts.hyperlink ? ' u="sng"' : '' );
+		runProps += ( opts.subscript ? ' baseline="-40000"' : (opts.superscript ? ' baseline="30000"' : '') );
+		runProps += ( opts.charSpacing ? ' spc="'+ (opts.charSpacing * 100) +'" kern="0"' : '' ); // IMPORTANT: Also disable kerning; otherwise text won't actually expand
+		runProps += ' dirty="0" smtClean="0">';
 		// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
 		if ( opts.color || opts.fontFace || opts.outline ) {
 			if ( opts.outline && typeof opts.outline === 'object' ) {
-                runProps += ('<a:ln w="'+ Math.round((opts.outline.size||0.75) * ONEPT) +'">'+ genXmlColorSelection(opts.outline.color||'FFFFFF') +'</a:ln>');
+				runProps += ('<a:ln w="'+ Math.round((opts.outline.size||0.75) * ONEPT) +'">'+ genXmlColorSelection(opts.outline.color||'FFFFFF') +'</a:ln>');
 			}
 			if ( opts.color ) runProps += genXmlColorSelection( opts.color );
 			if ( opts.fontFace ) {
 				// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174); ea must come first (see Issue #174)
-                runProps += '<a:latin typeface="' + opts.fontFace + '" pitchFamily="34" charset="0" />'
+				runProps += '<a:latin typeface="' + opts.fontFace + '" pitchFamily="34" charset="0" />'
 					+ '<a:ea typeface="' + opts.fontFace + '" pitchFamily="34" charset="-122" />'
 					+ '<a:cs typeface="' + opts.fontFace + '" pitchFamily="34" charset="-120" />';
 			}
