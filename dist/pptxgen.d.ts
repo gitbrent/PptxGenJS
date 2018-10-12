@@ -1,6 +1,7 @@
 // Type definitions for pptxgenjs 2.3.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
+//                 Michael Beaumont <https://github.com/michaelbeaumont>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
