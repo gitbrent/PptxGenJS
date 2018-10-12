@@ -26,11 +26,12 @@
 		"gulp-uglify": "^3.0.1"
 	},
 	"browser": {
+		"express": false,
 		"fs": false,
 		"https": false,
 		"jsdom": false,
-		"path": false,
-		"os": false
+		"os": false,
+		"path": false
 	},
 	"directories": {
 		"example": "examples",
