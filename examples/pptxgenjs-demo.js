@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.4.0
-* BLD.: 20180927
+* BLD.: 20181013
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -115,7 +115,7 @@ function execGenSlidesFuncs(type) {
 	else {
 		pptx = new PptxGenJS();
 	}
-	if (console.log) console.log(' * pptxgenjs ver: '+ pptx.version); // Loaded okay?
+	//if (console.log) console.log(' * pptxgenjs ver: '+ pptx.version); // Loaded okay?
 
 	// STEP 2: Set Presentation props (as QA test only - these are not required)
 	pptx.setAuthor('Brent Ely');
@@ -2278,7 +2278,7 @@ function genSlides_Media(pptx) {
 		slide1.addMedia({ x:9.4, y:4.0, w:3.00, h:2.25, type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc' });
 
 		slide1.addText(
-			'**NOTE** YouTube videos will issue a content warning in desktop PPT (they only work in PPT Online/O365)',
+			'**NOTE** YouTube videos will issue a content warning in older desktop PPT (they only work in PPT Online/Desktop v16+)',
 			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'c', fontSize:12 }
 		);
 	}
