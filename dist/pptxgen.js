@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.4.0-beta";
-	var APP_BLD = "20181011";
+	var APP_BLD = "20181013";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2105,10 +2105,11 @@ var PptxGenJS = function(){
 		image.src = slideRel.data; // use pre-encoded SVG base64 data
 	}
 
-	/* nide: Convert SVG-base64 data to PNG-base64 */
+	/* Node.js: Convert SVG-base64 data to PNG-base64 */
 	function convertSvgToPngViaNode(slideRel) {
-		// TODO:
+		// TODO: // FIXME: // CURRENT:
 		// require(svg-to-png)
+		// https://www.npmjs.com/package/svg-to-png
 	}
 
 	function callbackImgToDataURLDone(base64Data, slideRel) {
@@ -5227,7 +5228,7 @@ var PptxGenJS = function(){
 
 					// B: Create option object
 					var objOpts = {
-						fontSize: $(cell).css('font-size').replace(/\D/gi,''),
+						fontSize: $(cell).css('font-size').replace(/[a-z]/gi,''),
 						bold:     (( $(cell).css('font-weight') == "bold" || Number($(cell).css('font-weight')) >= 500 ) ? true : false),
 						color:    rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
 						fill:     rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
