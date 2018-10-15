@@ -2847,6 +2847,7 @@ var PptxGenJS = function(){
 					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ encodeXmlEntities(obj.name) +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
+					strXml += '  <c:invertIfNegative val="0"/>';
 
 					// Fill and Border
 					var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
