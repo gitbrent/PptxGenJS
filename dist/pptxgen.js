@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.4.0-beta";
-	var APP_BLD = "20181013";
+	var APP_BLD = "20181014";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2847,6 +2847,7 @@ var PptxGenJS = function(){
 					strXml += '      <c:strCache><c:ptCount val="1"/><c:pt idx="0"><c:v>'+ encodeXmlEntities(obj.name) +'</c:v></c:pt></c:strCache>';
 					strXml += '    </c:strRef>';
 					strXml += '  </c:tx>';
+					strXml += '  <c:invertIfNegative val="0"/>';
 
 					// Fill and Border
 					var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
