@@ -47,6 +47,15 @@
 		.text-nowrap { white-space: nowrap !important; }
 		.text-muted { font-weight:normal; }
 		.bg-light2 { background-color: #fcfcfc !important; }
+		.bde-callout-info {
+			padding: 1.25rem;
+			margin-top: 1.25rem;
+			margin-bottom: 1.25rem;
+			border: 1px solid #eee;
+			border-left-width: .25rem;
+			border-radius: .25rem;
+			border-left-color: #5bc0de;
+		}
 		/* -- brentstrap.css ---------- */
 
 		/* ------------------------------------------------------------------------- */
@@ -655,8 +664,11 @@
 			<h5 id="tab1sec2" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
 				<div class="arrow"></div>Code Sandbox
 			</h5>
-			<div class="text-center" style="display:none">
-				<div class="alert alert-info"><p class="h5 m-0">Code below is editable - use this are to test snippets of code from the demos/docs!</p></div>
+			<div style="display:none">
+				<div class="bde-callout-info bg-light">
+					<div class="h5 mb-1">Editable Code</div>
+					<div class="text-muted">Use the area below to easily try out various library features.</div>
+				</div>
 				<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true"></code></pre>
 				<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
 			</div>
