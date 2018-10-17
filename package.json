@@ -5,7 +5,7 @@
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
 	},
-	"description": "JavaScript library that creates PowerPoint presentations",
+	"description": "JavaScript PowerPoint Library",
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
 	"main": "dist/pptxgen.js",
@@ -29,6 +29,7 @@
 		"express": false,
 		"fs": false,
 		"https": false,
+		"image-size": false,
 		"jsdom": false,
 		"os": false,
 		"path": false
