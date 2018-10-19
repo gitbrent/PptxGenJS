@@ -1629,7 +1629,7 @@ var PptxGenJS = function(){
 							// Add Y-Axis 1->N
 							for (var idy=1; idy<data.length; idy++) {
 								strSheetXml += '<c r="'+ ( idy < 26 ? LETTERS[idy] : 'A'+LETTERS[idy%LETTERS.length] ) +''+ (idx+2) +'">';
-								strSheetXml += '<v>'+ (data[idy].values[idx] || '') +'</v>';
+								strSheetXml += '<v>'+ (data[idy].values[idx] || data[idy].values[idx] == 0 ? data[idy].values[idx] : '') +'</v>';
 								strSheetXml += '</c>';
 							};
 							strSheetXml += '</row>';
@@ -3133,7 +3133,7 @@ var PptxGenJS = function(){
 						strXml += '    <c:numCache>';
 						strXml += '      <c:formatCode>General</c:formatCode>';
 						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
-						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || '') +'</c:v></c:pt>'; });
+						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (value || value == 0 ? value : '') +'</c:v></c:pt>'; });
 						strXml += '    </c:numCache>';
 						strXml += '  </c:numRef>';
 						strXml += '</c:xVal>';
@@ -3146,7 +3146,7 @@ var PptxGenJS = function(){
 						strXml += '      <c:formatCode>General</c:formatCode>';
 						// NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
 						strXml += '      <c:ptCount val="'+ data[0].values.length +'"/>';
-						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (obj.values[idx] || '') +'</c:v></c:pt>'; });
+						data[0].values.forEach(function(value,idx){ strXml += '<c:pt idx="'+ idx +'"><c:v>'+ (obj.values[idx] || obj.values[idx] == 0 ? obj.values[idx] : '') +'</c:v></c:pt>'; });
 						strXml += '    </c:numCache>';
 						strXml += '  </c:numRef>';
 						strXml += '</c:yVal>';
