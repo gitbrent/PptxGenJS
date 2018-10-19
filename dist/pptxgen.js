@@ -3497,7 +3497,12 @@ var PptxGenJS = function(){
 			strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>';
 		}
 		strXml += '  <c:axId val="'+ axisId +'"/>';
-		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+		strXml += '  <c:scaling><c:orientation val="'+ (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/>';
+		if ( opts.type.name == 'scatter' || opts.type.name == 'bubble' ) {
+			if (opts.catAxisMaxVal || opts.catAxisMaxVal == 0) strXml += '<c:max val="'+ opts.catAxisMaxVal +'"/>';
+			if (opts.catAxisMinVal || opts.catAxisMinVal == 0) strXml += '<c:min val="'+ opts.catAxisMinVal +'"/>';
+		}
+		strXml +='</c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
 		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
 		strXml += ( opts.catGridLine !== 'none' ? createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE) : '' );
