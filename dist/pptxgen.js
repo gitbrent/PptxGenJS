@@ -1811,7 +1811,7 @@ var PptxGenJS = function(){
 						zip.generateAsync({type:'nodebuffer'}).then(function(content){ gObjPptx.saveCallback(content); });
 					}
 					else {
-						zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, gObjPptx.saveCallback(strExportName)); });
+						zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, function() { gObjPptx.saveCallback(strExportName)}); });
 					}
 				}
 				else {
