@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added support for SVG images [\#401](https://github.com/gitbrent/PptxGenJS/pull/401) ([Krelborn](https://github.com/Krelborn))
 - Better detection/support for Angular [\#415](https://github.com/gitbrent/PptxGenJS/pull/415) ([antiremy](https://github.com/antiremy))
 ### Changed
-- Demo page converted to Bootstrap CSS [gitbrent](https://github.com/gitbrent)
+- Demo page converted to Bootstrap 4 [gitbrent](https://github.com/gitbrent)
 - Fixed issue with float font-sizes in `addSlidesForTable()` [gitbrent](https://github.com/gitbrent)
 - No Color on negative bars when barGrouping is stacked [\#343](https://github.com/gitbrent/PptxGenJS/issue/343)
 ([vanarebane](https://github.com/vanarebane)) [\#419](https://github.com/gitbrent/PptxGenJS/pull/419)
