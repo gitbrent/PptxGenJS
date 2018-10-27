@@ -2210,7 +2210,7 @@ function genSlides_Image(pptx) {
 		}
 
 		// BOTTOM-RIGHT:
-		slide.addText('Type: SVG (new in v2.4!)', { x:9.5, y:3.0, w:4.0, h:0.4, color:'EC0101' });
+		slide.addText('Type: SVG (new in v2.4)\n(not supported in Node)', { x:9.5, y:3.0, w:4.0, h:0.4, color:'EC0101' });
 		slide.addImage({ path:gPaths.wikimedia_svg1.path, x:9.5, y:3.5, w:2.0, h:2.0 }); // TEST: `path`
 		slide.addImage({ data:svgBase64, x:11.1, y:4.9, w:1.5, h:1.5 }); // TEST: `data`
 
