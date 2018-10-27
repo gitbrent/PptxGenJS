@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.4.0-beta";
-	var APP_BLD = "20181023";
+	var APP_BLD = "20181027";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2103,13 +2103,6 @@ var PptxGenJS = function(){
 
 		// C: Load image
 		image.src = slideRel.data; // use pre-encoded SVG base64 data
-	}
-
-	/* Node.js: Convert SVG-base64 data to PNG-base64 */
-	function convertSvgToPngViaNode(slideRel) {
-		// TODO: // FIXME: // CURRENT:
-		// require(svg-to-png)
-		// https://www.npmjs.com/package/svg-to-png
 	}
 
 	function callbackImgToDataURLDone(base64Data, slideRel) {
