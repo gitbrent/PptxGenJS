@@ -1032,7 +1032,7 @@ function genSlides_Chart(pptx) {
 			{
 				name  : 'TEST: getExcelColName',
 				labels: LETTERS.concat(['AA','AB','AC','AD']),
-				values: [-5,-3,1,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
+				values: [-5,-3,0,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
 			}
 		];
 
@@ -1457,7 +1457,7 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataScatter1 = [
-			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
+			{ name:'X-Axis',    values:[0,1,2,3,4,5,6,7,8,9] },
 			{ name:'Y-Value 1', values:[13, 20, 21, 25] },
 			{ name:'Y-Value 2', values:[21, 22, 25, 49] }
 		];
