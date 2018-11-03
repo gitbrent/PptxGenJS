@@ -34,6 +34,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `isTextBox`  | boolean |         | `false`   | PPT "Textbox"       | `true` or `false` |
 | `italic`     | boolean |         | `false`   | italic text         | `true` or `false` |
 | `lang`       | string  |         | `en-US`   | language setting    | Ex: `{ lang:'zh-TW' }` (Set this when using non-English fonts like Chinese) |
+| `line`       | object  |         |           | line/border         | adds a border. Ex: `line:{ pt:'2', color:'A9A9A9' }` |
 | `lineSpacing`| number  | points  |           | line spacing points | 1-256. Ex: `{ lineSpacing:28 }` |
 | `margin`     | number  | points  |           | margin              | 0-99 (ProTip: use the same value from CSS `padding`) |
 | `outline`    | object  |         |           | text outline options | Options: `color` & `size`. Ex: `outline:{ size:1.5, color:'FF0000' }` |
