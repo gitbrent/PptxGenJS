@@ -3535,7 +3535,7 @@ var PptxGenJS = function(){
 		strXml += '    <a:lstStyle/>';
 		strXml += '    <a:p>';
 		strXml += '    <a:pPr>';
-		strXml += '    <a:defRPr sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" b="0" i="0" u="none" strike="noStrike">';
+		strXml += '    <a:defRPr sz="'+ (opts.catAxisLabelFontSize || DEF_FONT_SIZE) +'00" b="'+ (opts.catAxisLabelFontBold ? 1 : 0) +'" i="0" u="none" strike="noStrike">';
 		strXml += '      <a:solidFill><a:srgbClr val="'+ (opts.catAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
 		strXml += '      <a:latin typeface="'+ (opts.catAxisLabelFontFace || 'Arial') +'"/>';
 		strXml += '   </a:defRPr>';
@@ -3628,7 +3628,7 @@ var PptxGenJS = function(){
 		strXml += '  <a:lstStyle/>';
 		strXml += '  <a:p>';
 		strXml += '    <a:pPr>';
-		strXml += '      <a:defRPr sz="'+ (opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" b="0" i="0" u="none" strike="noStrike">';
+		strXml += '      <a:defRPr sz="'+ (opts.valAxisLabelFontSize || DEF_FONT_SIZE) +'00" b="'+ (opts.valAxisLabelFontBold ? 1 : 0) +'" i="0" u="none" strike="noStrike">';
 		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.valAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
 		strXml += '        <a:latin typeface="'+ (opts.valAxisLabelFontFace || 'Arial') +'"/>';
 		strXml += '      </a:defRPr>';

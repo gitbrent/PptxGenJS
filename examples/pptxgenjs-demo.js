@@ -626,7 +626,6 @@ function genSlides_Chart(pptx) {
 			values: [  69,   35,   40,   85,   38,   99,  101]
 		}
 	];
-
 	var arrDataLineStat = [];
 	{
 		var tmpObjRed = { name:'Red', labels:QTRS, values:[] };
@@ -951,10 +950,12 @@ function genSlides_Chart(pptx) {
 			barDir: 'bar',
 			barGrouping: 'stacked',
 
+			catAxisOrientation  : 'maxMin',
 			catAxisLabelColor   : 'CC0000',
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
-			catAxisOrientation  : 'maxMin',
+			catAxisLabelFontBold: true,
+			valAxisLabelFontBold: true,
 
 			dataLabelColor   : 'FFFFFF',
 			showValue        : true,
