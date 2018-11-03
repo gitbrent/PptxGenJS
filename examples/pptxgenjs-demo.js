@@ -974,6 +974,7 @@ function genSlides_Chart(pptx) {
 			dataLabelColor   : 'FFFFFF',
 			dataLabelFontFace: 'Arial',
 			dataLabelFontSize: 12,
+			dataLabelFontBold: true,
 			showValue        : true,
 
 			catAxisLabelColor   : '0000CC',
