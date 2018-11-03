@@ -43,6 +43,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `fill`          | string  |         |           | fill/background color              | hex color code. Ex: `{ fill:'0088CC' }` |
 | `holeSize`      | number  | percent | `50`      | doughnut hole size                 | 1-100. Ex: `{ holeSize:50 }` |
 | `invertedColors`| array   |         |           | data colors for negative numbers   | array of hex color codes. Ex: `['0088CC','FFCC00']` |
+| `legendFontFace`| string  |         | `Arial`   | font face                          | font name. Ex: `{ legendFontFace:'Arial' }` |
 | `legendFontSize`| number  | points  | `10`      | legend font size                   | 1-256. Ex: `{ legendFontSize: 13 }`|
 | `legendColor`   | string  |         | `000000`  | legend text color                  | hex color code. Ex: `{ legendColor: '0088CC' }` |
 | `legendPos`     | string  |         | `r`       | chart legend position              | `b` (bottom), `tr` (top-right), `l` (left), `r` (right), `t` (top) |
@@ -73,11 +74,12 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `catAxisBaseTimeUnit`  | string  |         |              | category-axis base time unit  | `days` `months` or `years` |
 | `catAxisHidden`        | boolean |         | `false`      | hide category-axis            | `true` or `false`   |
 | `catAxisLabelColor`    | string  |         | `000000`     | category-axis color           | hex color code. Ex: `{ catAxisLabelColor:'0088CC' }`   |
+| `catAxisLabelFontBold` | boolean |         | `false`      | make cat axis label bold      | `true` or `false` |
 | `catAxisLabelFontFace` | string  |         | `Arial`      | category-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }` |
 | `catAxisLabelFontSize` | integer | points  | `18`         | category-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`          |
 | `catAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels" | 1-n. Ex: `{ catAxisLabelFrequency: 2 }`          |
 | `catAxisLabelPos`      | string  | string  | `nextTo`     | axis label position     | `low`, `high`, or `nextTo` . Ex: `{ catAxisLabelPos: 'low' }`      |
-| `catAxisLineShow`      | boolean |         | true         | show/hide category-axis line  | `true` or `false` |
+| `catAxisLineShow`      | boolean |         | `true`       | show/hide category-axis line  | `true` or `false` |
 | `catAxisMajorTimeUnit` | string  |         |              | category-axis major time unit | `days`, `months` or `years` |
 | `catAxisMinorTimeUnit` | string  |         |              | category-axis minor time unit | `days`, `months` or `years` |
 | `catAxisMajorUnit`     | integer |         |              | category-axis major unit      | Positive integer. Ex: `{ catAxisMajorUnit:12 }`   |
@@ -93,10 +95,11 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `showValAxisTitle`     | boolean |         | `false`      | show values (horiz) title    | `true` or `false`.  Ex:`{ showValAxisTitle:true }` |
 | `valAxisHidden`        | boolean |         | `false`      | hide value-axis              | `true` or `false`   |
 | `valAxisLabelColor`    | string  |         | `000000`     | value-axis color             | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
+| `valAxisLabelFontBold` | boolean |         | `false`      | make val axis label bold     | `true` or `false` |
 | `valAxisLabelFontFace` | string  |         | `Arial`      | value-axis font face         | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `valAxisLabelFontSize` | integer | points  | `18`         | value-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `valAxisLabelFormatCode` | string |        | `General`    | value-axis number format     | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
-| `valAxisLineShow`      | boolean |         | true         | show/hide value-axis line    | `true` or `false` |
+| `valAxisLineShow`      | boolean |         | `true`       | show/hide value-axis line    | `true` or `false` |
 | `valAxisMajorUnit`     | number  |         | `1.0`        | value-axis tick steps        | Float or whole number. Ex: `{ majorUnit:0.2 }`      |
 | `valAxisMaxVal`        | number  |         |              | value-axis maximum value     | 1-N. Ex: `{ valAxisMaxVal:125 }` |
 | `valAxisMinVal`        | number  |         |              | value-axis minimum value     | 1-N. Ex: `{ valAxisMinVal: -10 }` |
@@ -117,6 +120,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
 | `dataLabelColor`       | string  |         | `000000`  | data label color           | hex color code. Ex: `{ dataLabelColor:'0088CC' }`     |
 | `dataLabelFormatCode`  | string  |         |           | format to show data value  | format string. Ex: `{ dataLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
+| `dataLabelFontBold`    | boolean |         | `false`   | make data label bold       | Ex: `{ dataLabelFontBold:true }` |
 | `dataLabelFontFace`    | string  |         | `Arial`   | value-axis font face       | font name. Ex: `{ titleFontFace:'Arial' }`   |
 | `dataLabelFontSize`    | number  | points  | `18`      | value-axis font size       | 1-256. Ex: `{ titleFontSize:12 }`            |
 | `dataLabelPosition`    | string  |         | `bestFit` | data label position        | `bestFit`,`b`,`ctr`,`inBase`,`inEnd`,`l`,`outEnd`,`r`,`t` |
