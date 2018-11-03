@@ -73,8 +73,8 @@ if ( NODEJS ) {
 
 var PptxGenJS = function(){
 	// APP
-	var APP_VER = "2.4.0";
-	var APP_BLD = "20181028";
+	var APP_VER = "2.5.0-beta";
+	var APP_BLD = "20181103";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2739,7 +2739,7 @@ var PptxGenJS = function(){
 				strXml += '<c:legendPos val="'+ rel.opts.legendPos +'"/>';
 				strXml += '<c:layout/>';
 				strXml += '<c:overlay val="0"/>';
-				if ( rel.opts.legendFontSize || rel.opts.legendColor ) {
+				if ( rel.opts.legendFontFace || rel.opts.legendFontSize || rel.opts.legendColor ) {
 					strXml += '<c:txPr>';
 					strXml += '  <a:bodyPr/>';
 					strXml += '  <a:lstStyle/>';
@@ -2747,6 +2747,8 @@ var PptxGenJS = function(){
 					strXml += '    <a:pPr>';
 					strXml += ( rel.opts.legendFontSize ? '<a:defRPr sz="'+ (Number(rel.opts.legendFontSize) * 100) +'">' : '<a:defRPr>' );
 					if ( rel.opts.legendColor ) strXml += genXmlColorSelection(rel.opts.legendColor);
+					if ( rel.opts.legendFontFace ) strXml += '<a:latin typeface="'+ rel.opts.legendFontFace +'"/>';
+	                if ( rel.opts.legendFontFace ) strXml += '<a:cs    typeface="'+ rel.opts.legendFontFace +'"/>';
 					strXml += '      </a:defRPr>';
 					strXml += '    </a:pPr>';
 					strXml += '    <a:endParaRPr lang="en-US"/>';
