@@ -57,22 +57,22 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 
 **************************************************************************************************
 # Live Demo
-Use JavaScript to create a PowerPoint presentation with your web browser right now:  
+Use JavaScript to create a PowerPoint presentation with your web browser right now:
 [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 # Installation
 ## Client-Side
 ### Include Local Scripts
 ```javascript
-<script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
-<script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
+<script src="PptxGenJS/libs/jquery.min.js"></script>
+<script src="PptxGenJS/libs/jszip.min.js"></script>
+<script src="PptxGenJS/dist/pptxgen.js"></script>
 ```
 * IE11 support requires a Promises polyfill as well (included in the libs folder)
 
 ### Include Bundled Script
 ```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.bundle.js"></script>
+<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 ```
 * Bundle script includes all libraries: jQuery + JSzip + PptxGenJS + Promises
 
@@ -112,11 +112,11 @@ That's really all there is to it!
 # Library API
 
 ## Presentation Creation/Options
-[Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)  
-[Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)  
+[Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)
+[Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)
 
 ## Slide Creation/Options
-[Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)  
+[Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)
 [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
 
 ## Saving a Presentation
@@ -170,7 +170,7 @@ include the `pptxgen.shapes.js` library.
 The shapes file contains a complete PowerPoint Shape object array thanks to the [officegen project](https://github.com/Ziv-Barber/officegen).
 
 ```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
+<script src="PptxGenJS/dist/pptxgen.shapes.js"></script>
 ```
 
 
