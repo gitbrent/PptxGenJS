@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20181103";
+	var APP_BLD = "20181115";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -1244,7 +1244,7 @@ var PptxGenJS = function(){
 				strSlideXml += '  <a:bodyPr/>';
 				strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
 				if ( slideObject.slideNumberObj.fontFace || slideObject.slideNumberObj.fontSize || slideObject.slideNumberObj.color ) {
-					strSlideXml += '<a:defRPr sz="'+ (slideObject.slideNumberObj.fontSize || '12') +'00">';
+					strSlideXml += '<a:defRPr sz="'+ (slideObject.slideNumberObj.fontSize ? Math.round(slideObject.slideNumberObj.fontSize) : '12') +'00">';
 					if ( slideObject.slideNumberObj.color ) strSlideXml += genXmlColorSelection(slideObject.slideNumberObj.color);
 					if ( slideObject.slideNumberObj.fontFace ) strSlideXml += '<a:latin typeface="'+ slideObject.slideNumberObj.fontFace +'"/><a:ea typeface="'+ slideObject.slideNumberObj.fontFace +'"/><a:cs typeface="'+ slideObject.slideNumberObj.fontFace +'"/>';
 					strSlideXml += '</a:defRPr>';
@@ -3674,7 +3674,7 @@ var PptxGenJS = function(){
 		var sizeAttr = '';
 		if ( opts.fontSize ) {
 			// only set the font size if specified.  Powerpoint will handle the default size
-			sizeAttr = 'sz="'+ opts.fontSize +'00"';
+			sizeAttr = 'sz="'+ Math.round(opts.fontSize) +'00"';
 		}
 		strXml += '      <a:defRPr '+ sizeAttr +' b="0" i="0" u="none" strike="noStrike">';
 		strXml += '        <a:solidFill><a:srgbClr val="'+ (opts.color || DEF_FONT_COLOR) +'"/></a:solidFill>';
