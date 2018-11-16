@@ -1,11 +1,15 @@
-﻿<!DOCTYPE html>
-<html lang="en-us">
+﻿<!doctype html>
+<html lang="en">
 <head>
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2018-10-28">
+	<meta name="updated" content="2018-11-15">
 	<title>PptxGenJS Examples/Demo Page</title>
+	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
+	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+	<link rel="icon" href="images/favicon.ico">
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/yeti/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-okaidia.min.css">
@@ -472,8 +476,7 @@
 			pptx.save('Table2Slides-with-dynamic-text');
 		}
 
-		// ==================================================================================================================
-		$(document).ready(function(){
+		function doAppStart() {
 			// REALITY-CHECK: Ensure user has a modern browser
 			if ( !window.Blob ) {
 				alert("Unsupported Browser\n\nSorry, but you'll need a modern browser - (Chrome, Firefox, Edge, Opera) or IE11 - to enable this feature.");
@@ -602,7 +605,10 @@
 
 			// LAST: Nav across sessions
 			doNavRestore();
-		});
+		}
+
+		// ==================================================================================================================
+		$(document).ready(function(){ doAppStart() });
 	</script>
 </head>
 <body class="bg-light mx-5 my-4">
