@@ -2149,11 +2149,11 @@ var PptxGenJS = function(){
 
 		// CASE 1: Number in inches
 		// Figure any number less than 100 is inches
-		if ( typeof inVal == 'number' && inVal < 100 ) return inch2Emu(inVal);
+		if ( typeof inVal == 'number' && inVal < 50 ) return inch2Emu(inVal);
 
 		// CASE 2: Number is already converted to something other than inches
 		// Figure any number greater than 100 is not inches! :)  Just return it (its EMU already i guess??)
-		if ( typeof inVal == 'number' && inVal >= 100 ) return inVal;
+		if ( typeof inVal == 'number' && inVal >= 50 ) return inVal;
 
 		// CASE 3: Percentage (ex: '50%')
 		if ( typeof inVal == 'string' && inVal.indexOf('%') > -1 ) {
