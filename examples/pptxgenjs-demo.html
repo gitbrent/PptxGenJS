@@ -9,7 +9,7 @@
 	<title>PptxGenJS Examples/Demo Page</title>
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
-	<link rel="icon" href="images/favicon.ico">
+	<link rel="icon" href="images/favicon.png">
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/yeti/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-okaidia.min.css">
@@ -504,83 +504,13 @@
 			}
 			*/
 
-			// STEP 1: Set UI (if you're me)
+			// STEP 1: Set UI (if you're me :-)
 			if ( window.location.href.indexOf('brentely') > 0 ) {
 				$('#tab1sec1').click();
 				$('#tab1sec2').click();
 			}
 
-			// STEP 2: Build UI elements
-			buildDataTable();
-			var pptx = new PptxGenJS();
-			['MASTER_SLIDE','THANKS_SLIDE','TITLE_SLIDE'].forEach(function(name,idx){
-				$('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>');
-			});
-
-			// STEP 3: Populate code areas
-			$('#demo-basic').text('// STEP 1: Create a new Presentation\n'
-				+ 'var pptx = new PptxGenJS();\n'
-				+ '\n'
-				+ '// STEP 2: Add a new Slide to the Presentation\n'
-				+ 'var slide = pptx.addNewSlide();\n'
-				+ '\n'
-				+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
-				+ "slide.addText(\n"
-				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
-				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
-				+ ");\n"
-				+ '\n'
-				+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
-				+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
-			);
-			/*
-			$('#demo-youtube').html("var pptx = new PptxGenJS();\n"
-				+ "var slide = pptx.addNewSlide();\n"
-				+ '\n'
-				+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
-				+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
-				+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
-				+ '\n'
-				+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
-			);
-			*/
-			$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
-				+ "pptx.setLayout('LAYOUT_WIDE');\n"
-				+ "var slide = pptx.addNewSlide();\n"
-				+ "\n"
-				+ "// Bullets with indent levels\n"
-				+ "slide.addText(\n"
-				+ "  [\n"
-				+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
-				+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
-				+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
-				+ "  ],\n"
-				+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
-				+ ");\n"
-				+ "\n"
-				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
-			);
-
-			$('#demo-master').html("pptx.defineSlideMaster({\n"
-				+ "  title : 'MASTER_SLIDE',\n"
-				+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
-				+ "  bkgd  : 'FFFFFF',\n"
-				+ "  objects: [\n"
-				+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
-				+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
-				+ "    {text:  {\n"
-				+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
-				+ "        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}\n"
-				+ "    }}\n"
-				//+ "    }},\n"
-				//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
-				//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
-				+ "  ],\n"
-				+ "  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n"
-				+ "});\n"
-			);
-
-			// STEP 4: Show library info
+			// STEP 2: Show library info
 			{
 				if ( typeof Promise !== 'function' ) {
 					$('#appHeader').after('<div class="alert alert-danger">Promise is undefined! (IE11 requires promise.min.js)</div>');
@@ -593,6 +523,80 @@
 					$('#infoBar').append("<div class='col-2 text-success text-right text-nowrap'><span style='cursor:help' title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +"</span></div>");
 					$('#infoBar').append('<div class="col-2 text-success text-right text-nowrap"><span><div class="iconSvg size24 circle check"></div>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span></div>');
 				}
+			}
+
+			// STEP 3: Build UI elements
+			buildDataTable();
+			var pptx = new PptxGenJS();
+			['MASTER_SLIDE','THANKS_SLIDE','TITLE_SLIDE'].forEach(function(name,idx){
+				$('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>');
+			});
+
+			// STEP 4: Populate code areas
+			{
+				$('#demo-basic').text('// STEP 1: Create a new Presentation\n'
+					+ 'var pptx = new PptxGenJS();\n'
+					+ '\n'
+					+ '// STEP 2: Add a new Slide to the Presentation\n'
+					+ 'var slide = pptx.addNewSlide();\n'
+					+ '\n'
+					+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
+					+ "slide.addText(\n"
+					+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
+					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
+					+ ");\n"
+					+ '\n'
+					+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
+					+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
+				);
+
+				/*
+				$('#demo-youtube').html("var pptx = new PptxGenJS();\n"
+					+ "var slide = pptx.addNewSlide();\n"
+					+ '\n'
+					+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
+					+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
+					+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
+					+ '\n'
+					+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
+				);
+				*/
+
+				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
+					+ "pptx.setLayout('LAYOUT_WIDE');\n"
+					+ "var slide = pptx.addNewSlide();\n"
+					+ "\n"
+					+ "// Bullets with indent levels\n"
+					+ "slide.addText(\n"
+					+ "  [\n"
+					+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
+					+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
+					+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
+					+ "  ],\n"
+					+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
+					+ ");\n"
+					+ "\n"
+					+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
+				);
+
+				$('#demo-master').html("pptx.defineSlideMaster({\n"
+					+ "  title : 'MASTER_SLIDE',\n"
+					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
+					+ "  bkgd  : 'FFFFFF',\n"
+					+ "  objects: [\n"
+					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
+					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
+					+ "    {text:  {\n"
+					+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
+					+ "        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}\n"
+					+ "    }}\n"
+					//+ "    }},\n"
+					//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
+					//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
+					+ "  ],\n"
+					+ "  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n"
+					+ "});\n"
+				);
 			}
 
 			// STEP 5: Demo setup
