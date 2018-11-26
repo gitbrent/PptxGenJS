@@ -405,6 +405,7 @@ var PptxGenJS = function(){
 			}
 
 			// STEP 1: Set extension
+			// NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
 			var strImgExtn = strImagePath.split('.').pop().split("?")[0].split("#")[0] || 'png';
 			// However, pre-encoded images can be whatever mime-type they want (and good for them!)
 			if ( strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0 ) {
