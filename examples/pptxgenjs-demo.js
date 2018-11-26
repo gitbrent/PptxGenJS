@@ -4,14 +4,14 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.5.0
-* BLD.: 20181103
+* BLD.: 20181125
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
 var NODEJS = false;
 {
 	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined' ) {
 		try {
 			require.resolve('fs');
 			NODEJS = true;
