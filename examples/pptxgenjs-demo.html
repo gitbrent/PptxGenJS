@@ -1,15 +1,16 @@
 ﻿<!doctype html>
 <html lang="en">
 <head>
+	<!-- NOTE: IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy) -->
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2018-11-15">
-	<title>PptxGenJS Examples/Demo Page</title>
+	<meta name="updated" content="2018-11-26">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
+	<title>PptxGenJS Examples/Demo Page</title>
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/yeti/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-okaidia.min.css">
@@ -191,13 +192,6 @@
 		.tabHtmlToPpt tbody td { background: #eee; color: #666; }
 		.tabHtmlToPpt th, .tabHtmlToPpt td { border: 1px solid white; padding: 4px 8px; }
 	</style>
-
-	<!-- NOTE:
-	1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
-		$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
-		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
-	2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
- 	-->
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/examples/images/base64Images.js"></script>
@@ -1151,17 +1145,26 @@
 					<h6 class="card-header">Image Types and Sources</h6>
 					<div class="card-body">
 						<div>Slide 1</div>
-						<div class="text-muted">- Animated GIF (shows in Presenation mode)</div>
-						<div class="text-muted">- Images from local and remote CDN URLs</div>
-						<div class="text-muted">- Pre-encoded images (using <code>data:[base64]</code>)</div>
-						<div class="text-muted">- Images with hyperlinks/tooltips</div>
-						<div class="text-muted">- SVG images <small class="text-warning ml-2">(not supported in Node)</small></div>
+						<div class="text-muted">- Type: Animated GIF <small class="text-warning ml-2">(use Slide Show)</small></div>
+						<div class="text-muted">- Type: GIF</div>
+						<div class="text-muted">- Type: JPG</div>
+						<div class="text-muted">- Type: PNG</div>
+						<div class="text-muted">- Type: SVG</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Image URLs</h6>
+					<div class="card-body">
+						<div>Slide 2</div>
+						<div class="text-muted">- Using GitHub CDN</div>
+						<div class="text-muted">- Using Wikimedia URL</div>
+						<div class="text-muted">- Using URL variables, etc</div>
 					</div>
 				</div>
 				<div class="card bg-light2">
 					<h6 class="card-header">Sizing and Rounding</h6>
 					<div class="card-body">
-						<div>Slide 2</div>
+						<div>Slide 3</div>
 						<div class="text-muted">- Image Rounding</div>
 						<div class="text-muted">- Sizing: Contain</div>
 						<div class="text-muted">- Sizing: Cover</div>
