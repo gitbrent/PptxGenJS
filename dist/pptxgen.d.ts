@@ -7,47 +7,47 @@
 
 declare namespace PptxGenJS {
   const version: string;
-  type ChartType = "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER";
-  type JsZipOutputType = "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array";
-  type LayoutName = "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE";
-  interface Layout {
+  export type ChartType = "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER";
+  export type JsZipOutputType = "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array";
+  export type LayoutName = "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE";
+  export interface Layout {
     name: string;
     width: number;
     height: number;
   }
-  type Color = string;
-  type Coord = number | string; // string is in form 'n%'
+  export type Color = string;
+  export type Coord = number | string; // string is in form 'n%'
 
-  interface CommonOptions {
+  export interface CommonOptions {
     x?: Coord;
     y?: Coord;
     w?: Coord;
     h?: Coord;
   }
-  interface DataOrPath {
+  export interface DataOrPath {
     // Exactly one must be set
     data?: string;
     path?: string;
   }
-  interface ImageOptions extends CommonOptions, DataOrPath {
+  export interface ImageOptions extends CommonOptions, DataOrPath {
     hyperlink?: string;
     rounding?: boolean;
     sizing?: "cover" | "contain" | "crop";
   }
 
-  interface MediaOptions extends CommonOptions, DataOrPath {
+  export interface MediaOptions extends CommonOptions, DataOrPath {
     onlineVideoLink?: string;
     type?: "audio" | "online" | "video";
   }
 
-  interface TextOptions extends CommonOptions, DataOrPath {
+  export interface TextOptions extends CommonOptions, DataOrPath {
     align?: "left" | "center" | "right";
     fontSize?: number;
     color?: string;
     valign?: "top" | "middle" | "bottom";
   }
 
-  interface MasterSlideOptions {
+  export interface MasterSlideOptions {
     title: string;
     bkgd?: string | DataOrPath;
     objects?: Object[];
@@ -55,7 +55,7 @@ declare namespace PptxGenJS {
     margin?: number | number[];
   }
 
-  class Slide {
+  export class Slide {
     // Slide Number methods
     getPageNumber(): string;
     slideNumber(): Object;
@@ -71,7 +71,7 @@ declare namespace PptxGenJS {
     addText(textString: string, options: TextOptions): Slide;
   }
 
-  class PptxGenJS {
+  export class PptxGenJS {
     // Presentation Props
     getLayout(): string;
     setBrowser(isBrowser: boolean): void;
@@ -94,4 +94,5 @@ declare namespace PptxGenJS {
   }
 }
 
-export = PptxGenJS.PptxGenJS;
+export import * from PptxGenJS;
+export default PptxGenJS.PptxGenJS;
