@@ -416,7 +416,9 @@ var PptxGenJS = function(){
 			}
 			// STEP 2: Set type/path
 			resultObject.type  = 'image';
-			resultObject.image = (strImagePath || 'preencoded.png');
+			// Escape ampersands in URL parameter (Issue#440)
+			var splitImagePath = strImagePath.split("?");
+			resultObject.image = (splitImagePath.length > 1 ? splitImagePath[0] + "?" + splitImagePath.slice(1, splitImagePath.length).join("").replace(/&(?!amp;)/g, "&amp;") : strImagePath || 'preencoded.png');
 
 			// STEP 3: Set image properties & options
 			// FIXME: Measure actual image when no intWidth/intHeight params passed
