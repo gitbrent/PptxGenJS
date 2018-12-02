@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.5.0
-* BLD.: 20181125
+* BLD.: 20181202
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -74,7 +74,7 @@ var gPaths = {
 	'ccLicenseComp': { path:'../SiteAssets/pptxgenjs/examples/images/cc_license_comp.png' },
 	'ccDjGif'      : { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/master/examples/images/cc_dj.gif' },
 	'gifAnimTrippy': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/master/examples/images/trippy.gif' },
-	'chicagoBean'  : { path:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Chicago_Bean_Bohne_%2822038051679%29.jpg/256px-Chicago_Bean_Bohne_%2822038051679%29.jpg?op=test' },
+	'chicagoBean'  : { path:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Chicago_Bean_Bohne_%2822038051679%29.jpg/256px-Chicago_Bean_Bohne_%2822038051679%29.jpg?op=paramTest&ampersandTest' },
 	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.avi' },
 	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.m4v' },
 	'sample_mov': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/media/sample.mov' },
