@@ -7,76 +7,13 @@
 
 export as namespace PptxGenJS;
 
-const version: string;
-export type ChartType = "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER";
-export type JsZipOutputType = "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array";
-export type LayoutName = "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE";
-export interface Layout {
-  name: string;
-  width: number;
-  height: number;
-}
-export type Color = string;
-export type Coord = number | string; // string is in form 'n%'
+export = PptxGenJS;
 
-export interface CommonOptions {
-  x?: Coord;
-  y?: Coord;
-  w?: Coord;
-  h?: Coord;
-}
-export interface DataOrPath {
-  // Exactly one must be set
-  data?: string;
-  path?: string;
-}
-export interface ImageOptions extends CommonOptions, DataOrPath {
-  hyperlink?: string;
-  rounding?: boolean;
-  sizing?: "cover" | "contain" | "crop";
-}
-
-export interface MediaOptions extends CommonOptions, DataOrPath {
-  onlineVideoLink?: string;
-  type?: "audio" | "online" | "video";
-}
-
-export interface TextOptions extends CommonOptions, DataOrPath {
-  align?: "left" | "center" | "right";
-  fontSize?: number;
-  color?: string;
-  valign?: "top" | "middle" | "bottom";
-}
-
-export interface MasterSlideOptions {
-  title: string;
-  bkgd?: string | DataOrPath;
-  objects?: Object[];
-  slideNumber?: {x?: Coord, y?: Coord, color?: Color};
-  margin?: number | number[];
-}
-
-export class Slide {
-  // Slide Number methods
-  getPageNumber(): string;
-  slideNumber(): Object;
-  slideNumber(options: Object): void;
-
-  // Core Object API Methods
-  addChart(type: ChartType, data: string, options?: Object): Slide;
-  addImage(options: ImageOptions): Slide;
-  addMedia(options: MediaOptions): Slide;
-  addNotes(noteText: string): Slide;
-  addShape(shapeName: string, options: Object): Slide;
-  addTable(tableData: Array<any>, options: Object): Slide;
-  addText(textString: string, options: TextOptions): Slide;
-}
-
-export class PptxGenJS {
+declare class PptxGenJS {
   // Presentation Props
   getLayout(): string;
   setBrowser(isBrowser: boolean): void;
-  setLayout(layout: LayoutName | Layout): void;
+  setLayout(layout: PptxGenJS.LayoutName | PptxGenJS.Layout): void;
   setRTL(isRTL: boolean): void;
 
   // Presentation Metadata
@@ -87,11 +24,77 @@ export class PptxGenJS {
   setTitle(title: string): void;
 
   // Add a new Slide
-  addNewSlide(masterLayoutName?: string): Slide;
-  defineSlideMaster(opts: MasterSlideOptions): void;
+  addNewSlide(masterLayoutName?: string): PptxGenJS.Slide;
+  defineSlideMaster(opts: PptxGenJS.MasterSlideOptions): void;
 
   // Export
-  save(exportFileName: string, callbackFunction?: Function, zipOutputType?: JsZipOutputType): void;
+  save(exportFileName: string, callbackFunction?: Function, zipOutputType?: PptxGenJS.JsZipOutputType): void;
 }
 
-export default PptxGenJS;
+declare namespace PptxGenJS {
+  const version: string;
+  export type ChartType = "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER";
+  export type JsZipOutputType = "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array";
+  export type LayoutName = "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE";
+  export interface Layout {
+    name: string;
+    width: number;
+    height: number;
+  }
+  export type Color = string;
+  export type Coord = number | string; // string is in form 'n%'
+
+  export interface CommonOptions {
+    x?: Coord;
+    y?: Coord;
+    w?: Coord;
+    h?: Coord;
+  }
+  export interface DataOrPath {
+    // Exactly one must be set
+    data?: string;
+    path?: string;
+  }
+  export interface ImageOptions extends CommonOptions, DataOrPath {
+    hyperlink?: string;
+    rounding?: boolean;
+    sizing?: "cover" | "contain" | "crop";
+  }
+
+  export interface MediaOptions extends CommonOptions, DataOrPath {
+    onlineVideoLink?: string;
+    type?: "audio" | "online" | "video";
+  }
+
+  export interface TextOptions extends CommonOptions, DataOrPath {
+    align?: "left" | "center" | "right";
+    fontSize?: number;
+    color?: string;
+    valign?: "top" | "middle" | "bottom";
+  }
+
+  export interface MasterSlideOptions {
+    title: string;
+    bkgd?: string | DataOrPath;
+    objects?: Object[];
+    slideNumber?: {x?: Coord, y?: Coord, color?: Color};
+    margin?: number | number[];
+  }
+
+  export class Slide {
+    // Slide Number methods
+    getPageNumber(): string;
+    slideNumber(): Object;
+    slideNumber(options: Object): void;
+
+    // Core Object API Methods
+    addChart(type: ChartType, data: string, options?: Object): Slide;
+    addImage(options: ImageOptions): Slide;
+    addMedia(options: MediaOptions): Slide;
+    addNotes(noteText: string): Slide;
+    addShape(shapeName: string, options: Object): Slide;
+    addTable(tableData: Array<any>, options: Object): Slide;
+    addText(textString: string, options: TextOptions): Slide;
+  }
+
+}
