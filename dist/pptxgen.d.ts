@@ -76,7 +76,7 @@ declare namespace PptxGenJS {
   export interface MasterSlideOptions {
     title: string;
     bkgd?: string | DataOrPath;
-    objects?: Object[];
+    objects?: object[];
     slideNumber?: {x?: Coord, y?: Coord, color?: Color};
     margin?: number | number[];
   }
@@ -84,16 +84,16 @@ declare namespace PptxGenJS {
   export class Slide {
     // Slide Number methods
     getPageNumber(): string;
-    slideNumber(): Object;
-    slideNumber(options: Object): void;
+    slideNumber(): object;
+    slideNumber(options: object): void;
 
-    // Core Object API Methods
-    addChart(type: ChartType, data: string, options?: Object): Slide;
+    // Core object API Methods
+    addChart(type: ChartType, data: string, options?: object): Slide;
     addImage(options: ImageOptions): Slide;
     addMedia(options: MediaOptions): Slide;
     addNotes(noteText: string): Slide;
-    addShape(shapeName: string, options: Object): Slide;
-    addTable(tableData: Array<any>, options: Object): Slide;
+    addShape(shapeName: string, options: object): Slide;
+    addTable(tableData: Array<any>, options: object): Slide;
     addText(textString: string, options: TextOptions): Slide;
   }
 
