@@ -2111,7 +2111,7 @@ var PptxGenJS = function(){
 		if ( slideRel.isSvgPng && base64Data.indexOf('image/svg') > -1 ) {
 			// Pass the SVG XML as base64 for conversion to PNG
 			slideRel.data = base64Data;
-			if ( NODEJS ) convertSvgToPngViaNode(slideRel);
+			if ( NODEJS ) console.log('SVG is not supported in Node');
 			else convertSvgToPngViaCanvas(slideRel);
 			return;
 		}
@@ -5312,7 +5312,7 @@ var PptxGenJS = function(){
 
 // [Node.js] support
 if ( NODEJS ) {
-	var $ = null;
+	var jQuery = null;
 	var fs = null;
 	var JSZip = null;
 	var sizeOf = null;
@@ -5321,7 +5321,7 @@ if ( NODEJS ) {
 	try {
 		var jsdom = require("jsdom");
 		var dom = new jsdom.JSDOM("<!DOCTYPE html>");
-		$ = require("jquery")(dom.window);
+		jQuery = require("jquery")(dom.window);
 	} catch(ex){ console.error("Unable to load `jquery`!\n"+ex); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
@@ -5336,7 +5336,7 @@ if ( NODEJS ) {
 // Angular support
 else if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') {
 	// A: jQuery dependency
-	try { $ = require("jquery"); } catch(ex){ console.error("Unable to load `jquery`!\n"+ex); throw 'LIB-MISSING-JQUERY'; }
+	try { jQuery = require("jquery"); } catch(ex){ console.error("Unable to load `jquery`!\n"+ex); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
 	try { JSZip = require("jszip"); } catch(ex){ console.error("Unable to load `jszip`"); throw 'LIB-MISSING-JSZIP'; }
