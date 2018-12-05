@@ -2,6 +2,7 @@
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
+//                 Nicholas Tietz-Sokolsky <https://github.com/ntietz>
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
@@ -96,5 +97,4 @@ declare namespace PptxGenJS {
     addTable(tableData: Array<any>, options: object): Slide;
     addText(textString: string, options: TextOptions): Slide;
   }
-
 }
