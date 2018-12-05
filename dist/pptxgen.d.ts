@@ -5,49 +5,75 @@
 // Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
 // TypeScript Version: 2.3
 
+export as namespace PptxGenJS;
+
+export = PptxGenJS;
+
+declare class PptxGenJS {
+  // Presentation Props
+  getLayout(): string;
+  setBrowser(isBrowser: boolean): void;
+  setLayout(layout: PptxGenJS.LayoutName | PptxGenJS.Layout): void;
+  setRTL(isRTL: boolean): void;
+
+  // Presentation Metadata
+  setAuthor(author: string): void;
+  setCompany(company: string): void;
+  setRevision(revision: string): void;
+  setSubject(subject: string): void;
+  setTitle(title: string): void;
+
+  // Add a new Slide
+  addNewSlide(masterLayoutName?: string): PptxGenJS.Slide;
+  defineSlideMaster(opts: PptxGenJS.MasterSlideOptions): void;
+
+  // Export
+  save(exportFileName: string, callbackFunction?: Function, zipOutputType?: PptxGenJS.JsZipOutputType): void;
+}
+
 declare namespace PptxGenJS {
   const version: string;
-  type ChartType = "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER";
-  type JsZipOutputType = "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array";
-  type LayoutName = "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE";
-  interface Layout {
+  export type ChartType = "AREA" | "BAR" | "BUBBLE" | "DOUGHNUT" | "LINE" | "PIE" | "RADAR" | "SCATTER";
+  export type JsZipOutputType = "arraybuffer" | "base64" | "binarystring" | "blob" | "nodebuffer" | "uint8array";
+  export type LayoutName = "LAYOUT_4x3" | "LAYOUT_16x9" | "LAYOUT_16x10" | "LAYOUT_WIDE";
+  export interface Layout {
     name: string;
     width: number;
     height: number;
   }
-  type Color = string;
-  type Coord = number | string; // string is in form 'n%'
+  export type Color = string;
+  export type Coord = number | string; // string is in form 'n%'
 
-  interface CommonOptions {
+  export interface CommonOptions {
     x?: Coord;
     y?: Coord;
     w?: Coord;
     h?: Coord;
   }
-  interface DataOrPath {
+  export interface DataOrPath {
     // Exactly one must be set
     data?: string;
     path?: string;
   }
-  interface ImageOptions extends CommonOptions, DataOrPath {
+  export interface ImageOptions extends CommonOptions, DataOrPath {
     hyperlink?: string;
     rounding?: boolean;
     sizing?: "cover" | "contain" | "crop";
   }
 
-  interface MediaOptions extends CommonOptions, DataOrPath {
+  export interface MediaOptions extends CommonOptions, DataOrPath {
     onlineVideoLink?: string;
     type?: "audio" | "online" | "video";
   }
 
-  interface TextOptions extends CommonOptions, DataOrPath {
+  export interface TextOptions extends CommonOptions, DataOrPath {
     align?: "left" | "center" | "right";
     fontSize?: number;
     color?: string;
     valign?: "top" | "middle" | "bottom";
   }
 
-  interface MasterSlideOptions {
+  export interface MasterSlideOptions {
     title: string;
     bkgd?: string | DataOrPath;
     objects?: object[];
@@ -55,7 +81,7 @@ declare namespace PptxGenJS {
     margin?: number | number[];
   }
 
-  class Slide {
+  export class Slide {
     // Slide Number methods
     getPageNumber(): string;
     slideNumber(): object;
@@ -71,27 +97,4 @@ declare namespace PptxGenJS {
     addText(textString: string, options: TextOptions): Slide;
   }
 
-  class PptxGenJS {
-    // Presentation Props
-    getLayout(): string;
-    setBrowser(isBrowser: boolean): void;
-    setLayout(layout: LayoutName | Layout): void;
-    setRTL(isRTL: boolean): void;
-
-    // Presentation Metadata
-    setAuthor(author: string): void;
-    setCompany(company: string): void;
-    setRevision(revision: string): void;
-    setSubject(subject: string): void;
-    setTitle(title: string): void;
-
-    // Add a new Slide
-    addNewSlide(masterLayoutName?: string): Slide;
-    defineSlideMaster(opts: MasterSlideOptions): void;
-
-    // Export
-    save(exportFileName: string, callbackFunction?: Function, zipOutputType?: JsZipOutputType): void;
-  }
 }
-
-export = PptxGenJS.PptxGenJS;
