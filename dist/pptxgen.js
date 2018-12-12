@@ -4157,6 +4157,7 @@ var PptxGenJS = function(){
 		strXml += ' <Default Extension="xml" ContentType="application/xml"/>';
 		strXml += ' <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>';
 		strXml += ' <Default Extension="jpeg" ContentType="image/jpeg"/>';
+        strXml += ' <Default Extension="jpg" ContentType="image/jpg"/>';
 
 		// STEP 1: Add standard/any media types used in Presenation
 		strXml += ' <Default Extension="png" ContentType="image/png"/>';
