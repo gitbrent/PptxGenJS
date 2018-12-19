@@ -3933,7 +3933,7 @@ var PptxGenJS = function(){
 				if ( textObj.options.bullet.type ) {
 					if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
 						paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-						const style = textObj.options.bullet.style ? textObj.options.bullet.style : 'arabicPeriod';
+						const style = textObj.options.bullet.style || 'arabicPeriod';
 						strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="' + style + '"/>';
 					}
 				}
