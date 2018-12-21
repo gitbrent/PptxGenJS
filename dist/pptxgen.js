@@ -3814,6 +3814,7 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 4: Loop over each text object and create paragraph props, text run, etc.
+		var prevTextObj;
 		arrTextObjects.forEach(function(textObj,idx){
 			// Clear/Increment loop vars
 			paragraphPropXml = '<a:pPr '+ (textObj.options.rtlMode ? ' rtl="1" ' : '');
@@ -3835,7 +3836,8 @@ var PptxGenJS = function(){
 				// Add paragraphProperties right after <p> before textrun(s) begin
 				strSlideXml += '<a:p>' + paragraphPropXml;
 			}
-			else if ( idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined') ) {
+			else if ( idx > 0 && (typeof textObj.options.bullet !== 'undefined' ||
+                (typeof textObj.options.align !== 'undefined' && prevTextObj.options.align !== textObj.options.align) )) {
 				strSlideXml += '</a:p><a:p>' + paragraphPropXml;
 			}
 
@@ -3849,6 +3851,7 @@ var PptxGenJS = function(){
 
 			// D: Add formatted textrun
 			strSlideXml += genXmlTextRun(textObj.options, textObj.text);
+			prevTextObj = textObj;
 		});
 
 		// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
