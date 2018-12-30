@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20181211";
+	var APP_BLD = "20181230";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3493,11 +3493,11 @@ var PptxGenJS = function(){
 			strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>';
 		}
 		strXml += '  <c:axId val="'+ axisId +'"/>';
-    strXml += '  <c:scaling>';
-    strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '" />';
-    if (opts.catAxisMaxVal || opts.catAxisMaxVal == 0) strXml += '<c:max val="' + opts.catAxisMaxVal + '"/>';
-    if (opts.catAxisMinVal || opts.catAxisMinVal == 0) strXml += '<c:min val="' + opts.catAxisMinVal + '"/>';
-    strXml += '</c:scaling>';
+		strXml += '  <c:scaling>';
+		strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '" />';
+		if ( opts.catAxisMaxVal || opts.catAxisMaxVal == 0 ) strXml += '<c:max val="' + opts.catAxisMaxVal + '"/>';
+		if ( opts.catAxisMinVal || opts.catAxisMinVal == 0 ) strXml += '<c:min val="' + opts.catAxisMinVal + '"/>';
+		strXml += '</c:scaling>';
 		strXml += '  <c:delete val="'+ (opts.catAxisHidden ? 1 : 0) +'"/>';
 		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
 		strXml += ( opts.catGridLine !== 'none' ? createGridLineElement(opts.catGridLine, DEF_CHART_GRIDLINE) : '' );
