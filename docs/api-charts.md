@@ -152,10 +152,10 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 ## Chart Multi-Type Options
 | Option             | Type    | Default  | Description                                             | Possible Values   |
 | :----------------- | :------ | :------- | :------------------------------------------------------ | :---------------- |
-| `catAxes`          | array   |          | array of two axis options objects | See example below   |                   |
+| `catAxes`          | array   |          | array of two axis options objects                       | See example below |
 | `secondaryCatAxis` | boolean | `false`  | If data should use secondary category axis (or primary) | `true` or `false` |
 | `secondaryValAxis` | boolean | `false`  | If data should use secondary value axis (or primary)    | `true` or `false` |
-| `valAxes`          | array   |          | array of two axis options objects | See example below   |                   |
+| `valAxes`          | array   |          | array of two axis options objects                       | See example below |
 
 ## Chart Examples
 ```javascript
