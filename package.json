@@ -10,15 +10,15 @@
 	"license": "MIT",
 	"main": "dist/pptxgen.min.js",
 	"dependencies": {
-		"express": "^4.16.3",
+		"express": "^4.16.4",
 		"https": "^1.0.0",
 		"image-size": "^0.6.3",
 		"jquery": "^3.3.1",
-		"jsdom": "^11.12.0",
+		"jsdom": "^13.1.0",
 		"jszip": "^3.1.5"
 	},
 	"devDependencies": {
-		"gulp": "^3.9.1",
+		"gulp": "^4.0.0",
 		"gulp-concat": "^2.6.1",
 		"gulp-ignore": "^2.0.2",
 		"gulp-insert": "^0.5.0",
