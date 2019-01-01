@@ -1467,6 +1467,11 @@ function genSlides_Chart(pptx) {
 			{ name:'Train',    values:[99, 88, 77, 89, 99, 99] },
 			{ name:'Bus',      values:[21, 22, 25, 49, 59, 69] }
 		];
+		var arrDataScatterLabels = [
+		    { name:'X-Axis',    values:[1, 10, 20, 30, 40, 50] },
+		    { name:'Y-Value 1', values:[11, 23, 31, 45], labels:['Red 1', 'Red 2', 'Red 3', 'Red 4'] },
+		    { name:'Y-Value 2', values:[21, 38, 47, 59], labels:['Blue 1', 'Blue 2', 'Blue 3', 'Blue 4'] }
+		];
 
 		// TOP-LEFT
 		var optsChartScat1 = { x:0.5, y:0.6, w:'45%', h:3,
@@ -1474,9 +1479,7 @@ function genSlides_Chart(pptx) {
 			valAxisTitleColor   : "428442",
 			valAxisTitleFontSize: 14,
 			showValAxisTitle    : true,
-
 			lineSize: 0,
-
 			catAxisTitle        : "Last 10 Months",
 			catAxisTitleColor   : "428442",
 			catAxisTitleFontSize: 14,
@@ -1500,16 +1503,25 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat2 );
 
-		// BOTTOM-LEFT
+		// BOTTOM-LEFT: (Labels)
 		var optsChartScat3 = { x:0.5, y:4.0, w:'45%', h:3,
 			fill: 'f2f9fc',
-			catAxisOrientation: 'maxMin',
-			valAxisOrientation: 'maxMin',
+			//catAxisOrientation: 'maxMin',
+			//valAxisOrientation: 'maxMin',
 			showCatAxisTitle: false,
 			showValAxisTitle: false,
-			lineSize: 0
+			lineSize: 0,
+
+			catAxisTitle        : "Data Point Labels",
+			catAxisTitleColor   : "0088CC",
+			catAxisTitleFontSize: 14,
+			showCatAxisTitle    : true,
+
+			// Data Labels
+			showLabel             : true, // Must be set to true or labels will not be shown
+			dataLabelFormatScatter: 'custom', // Can be set to `custom` (default), `customXY`, or `XY`.
 		};
-		slide.addChart( pptx.charts.SCATTER, arrDataScatter1, optsChartScat3 );
+		slide.addChart( pptx.charts.SCATTER, arrDataScatterLabels, optsChartScat3 );
 
 		// BOTTOM-RIGHT
 		var optsChartScat4 = { x:7.0, y:4.0, w:'45%', h:3 };
@@ -1524,8 +1536,8 @@ function genSlides_Chart(pptx) {
 
 		var arrDataBubble1 = [
 			{ name:'X-Axis',    values:[0.3,0.6,0.9,1.2,1.5,1.7] },
-			{ name:'Y-Value 1', values:[1.3,6,3.5,2.5,7.5,5], sizes:[1,4,2,3,7,4] },
-			{ name:'Y-Value 2', values:[3,9,5,7,9,10], sizes:[9,7,10,2,4,5] }
+			{ name:'Y-Value 1', values:[1.3, 9, 7.5, 2.5, 7.5,  5], sizes:[1,4,2,3,7,4] },
+			{ name:'Y-Value 2', values:[  5, 3,   2,   7,   2, 10], sizes:[9,7,9,2,4,8] }
 		];
 		var arrDataBubble2 = [
 			{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
@@ -1538,8 +1550,7 @@ function genSlides_Chart(pptx) {
 		var optsChartBubble1 = { x:0.5, y:0.6, w:'45%', h:3,
 			chartColors: ['4477CC','ED7D31'],
 			chartColorsOpacity: 40,
-			dataBorder: {pt:1, color:'FFFFFF'},
-			showValue: true
+			dataBorder: {pt:1, color:'FFFFFF'}
 		};
 		slide.addText( '.', {x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1 );
@@ -1567,7 +1578,10 @@ function genSlides_Chart(pptx) {
 			valAxisOrientation: 'maxMin',
 			showCatAxisTitle: false,
 			showValAxisTitle: false,
-			dataBorder: {pt:2, color:'FFFFFF'}
+			valAxisMinVal: 0,
+			dataBorder: {pt:2, color:'FFFFFF'},
+			dataLabelColor: 'FFFFFF',
+			showValue: true
 		};
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble3 );
 
