@@ -1,18 +1,18 @@
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/)  [![MIT Licence](https://img.shields.io/github/license/gitbrent/pptxgenjs.svg)](https://opensource.org/licenses/mit-license.php)  [![npm version](https://img.shields.io/npm/v/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)  [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)
+[![MIT Licence](https://img.shields.io/github/license/gitbrent/pptxgenjs.svg)](https://opensource.org/licenses/mit-license.php)  [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs)  [![Package Quality](http://npm.packagequality.com/shield/pptxgenjs.png?style=flat-square)](https://github.com/gitbrent/pptxgenjs)  [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)  [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
 
 # PptxGenJS
 
-### JavaScript library that produces PowerPoint (pptx) presentations
+## JavaScript library that creates PowerPoint presentations
 
 Quickly and easily create PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
 
-## Main Features
+### Main Features
 * Widely Supported: Creates and downloads presentations on all current web browsers (Chrome, Edge, Firefox, etc.) and IE11
 * Full Featured: Slides can include Charts, Images, Media, Shapes, Tables and Text (plus Master Slides/Templates)
 * Easy To Use: Entire PowerPoint presentations can be created in a few lines of code
 * Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
 
-## Additional Features
+### Additional Features
 * Use the unique [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to copy an HTML table into 1 or more Slides with a single command
 
 **************************************************************************************************
@@ -64,15 +64,15 @@ Use JavaScript to create a PowerPoint presentation with your web browser right n
 ## Client-Side
 ### Include Local Scripts
 ```javascript
-<script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
-<script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
+<script src="PptxGenJS/libs/jquery.min.js"></script>
+<script src="PptxGenJS/libs/jszip.min.js"></script>
+<script src="PptxGenJS/dist/pptxgen.js"></script>
 ```
 * IE11 support requires a Promises polyfill as well (included in the libs folder)
 
 ### Include Bundled Script
 ```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.bundle.js"></script>
+<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 ```
 * Bundle script includes all libraries: jQuery + JSzip + PptxGenJS + Promises
 
@@ -170,7 +170,7 @@ include the `pptxgen.shapes.js` library.
 The shapes file contains a complete PowerPoint Shape object array thanks to the [officegen project](https://github.com/Ziv-Barber/officegen).
 
 ```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
+<script src="PptxGenJS/dist/pptxgen.shapes.js"></script>
 ```
 
 

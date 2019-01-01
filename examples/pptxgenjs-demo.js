@@ -3,15 +3,15 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-* VER.: 2.4.0
-* BLD.: 20181013
+* VER.: 2.5.0
+* BLD.: 20181230
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
 var NODEJS = false;
 {
 	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' ) {
+	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined' ) {
 		try {
 			require.resolve('fs');
 			NODEJS = true;
@@ -48,6 +48,8 @@ var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 c
 
 	var svgBase64 =
 		'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIGlkPSJDYXBhXzEiIHg9IjBweCIgeT0iMHB4IiB3aWR0aD0iNTEycHgiIGhlaWdodD0iNTEycHgiIHZpZXdCb3g9IjAgMCA2NCA2NCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNjQgNjQ7IiB4bWw6c3BhY2U9InByZXNlcnZlIj48Zz48Zz48ZyBpZD0iY2lyY2xlX2NvcHlfNF8zXyI+PGc+PHBhdGggZD0iTTMyLDBDMTQuMzI3LDAsMCwxNC4zMjcsMCwzMmMwLDE3LjY3NCwxNC4zMjcsMzIsMzIsMzJzMzItMTQuMzI2LDMyLTMyQzY0LDE0LjMyNyw0OS42NzMsMCwzMiwweiBNMjguMjIyLDQxLjE5MSAgICAgIEwyOCw0MC45NzFsLTAuMjIyLDAuMjIzbC04Ljk3MS04Ljk3MWwxLjQxNC0xLjQxNUwyOCwzOC41ODZsMTUuNzc3LTE1Ljc3OGwxLjQxNCwxLjQxNEwyOC4yMjIsNDEuMTkxeiIgZmlsbD0iIzAwODhjYyIvPjwvZz48L2c+PC9nPjwvZz48L3N2Zz4=';
+	var svgHyperlinkImage =
+		'image/jpeg;base64,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';
 }
 var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenny','Lara','Kathryn'];
 var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
@@ -56,20 +58,23 @@ var gOptsTabOpts = { x:0.4, y:0.13, w:12.5, colW:[9,3.5] };
 var gOptsTextL = { color:'9F9F9F', margin:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 var gOptsOptsR = { color:'9F9F9F', margin:3, border:[0,0,{pt:'1',color:'CFCFCF'},0], align:'right' };
 var gOptsTextR = { text:'PptxGenJS', options:gOptsOptsR };
+var gOptsCode = { color:'9F9F9F', margin:3, border:{pt:'1',color:'CFCFCF'}, fill:'F1F1F1', fontFace:'Courier', fontSize:12 };
 var gOptsSubTitle = { x:0.5, y:0.7, w:4, h:0.3, fontSize:18, fontFace:'Arial', color:'0088CC', fill:'FFFFFF' };
 var gDemoTitleText = { fontSize:14, color:'0088CC', bold:true };
 var gDemoTitleOpts = { fontSize:13, color:'9F9F9F' };
 var gPaths = {
-	'starlabsBkgd': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/starlabs_bkgd.jpg' },
-	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/starlabs_logo.png' },
-	'wikimedia1': { path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg' },
-	'wikimedia2': { path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png' },
+	'starlabsBkgd': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.4.0/examples/images/starlabs_bkgd.jpg' },
+	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.4.0/examples/images/starlabs_logo.png' },
+	'wikimedia1'  : { path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg' },
+	'wikimedia2'  : { path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png' },
 	'wikimedia_svg1': { path:'https://upload.wikimedia.org/wikipedia/commons/2/28/Cadenas-ferme-vert.svg' },
 	'wikimedia_svg2': { path:'https://upload.wikimedia.org/wikipedia/commons/3/3b/Crystal_Clear_action_go.svg' },
-	'ccCopyRemix': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif' },
+	'ccCopyRemix'  : { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif' },
+	'ccLogo'       : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg' },
 	'ccLicenseComp': { path:'../SiteAssets/pptxgenjs/examples/images/cc_license_comp.png' },
-	'ccLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg' },
-	'animCampfire': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/anim_campfire.gif' },
+	'ccDjGif'      : { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/master/examples/images/cc_dj.gif' },
+	'gifAnimTrippy': { path:'https://cdn.rawgit.com/gitbrent/PptxGenJS/master/examples/images/trippy.gif' },
+	'chicagoBean'  : { path:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Chicago_Bean_Bohne_%2822038051679%29.jpg/256px-Chicago_Bean_Bohne_%2822038051679%29.jpg?op=paramTest&ampersandTest' },
 	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.avi' },
 	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.m4v' },
 	'sample_mov': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/media/sample.mov' },
@@ -626,7 +631,6 @@ function genSlides_Chart(pptx) {
 			values: [  69,   35,   40,   85,   38,   99,  101]
 		}
 	];
-
 	var arrDataLineStat = [];
 	{
 		var tmpObjRed = { name:'Red', labels:QTRS, values:[] };
@@ -951,10 +955,12 @@ function genSlides_Chart(pptx) {
 			barDir: 'bar',
 			barGrouping: 'stacked',
 
+			catAxisOrientation  : 'maxMin',
 			catAxisLabelColor   : 'CC0000',
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
-			catAxisOrientation  : 'maxMin',
+			catAxisLabelFontBold: true,
+			valAxisLabelFontBold: true,
 
 			dataLabelColor   : 'FFFFFF',
 			showValue        : true,
@@ -973,6 +979,7 @@ function genSlides_Chart(pptx) {
 			dataLabelColor   : 'FFFFFF',
 			dataLabelFontFace: 'Arial',
 			dataLabelFontSize: 12,
+			dataLabelFontBold: true,
 			showValue        : true,
 
 			catAxisLabelColor   : '0000CC',
@@ -1032,7 +1039,7 @@ function genSlides_Chart(pptx) {
 			{
 				name  : 'TEST: getExcelColName',
 				labels: LETTERS.concat(['AA','AB','AC','AD']),
-				values: [-5,-3,1,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
+				values: [-5,-3,0,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
 			}
 		];
 
@@ -1366,7 +1373,10 @@ function genSlides_Chart(pptx) {
 
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l'} );
+		slide.addChart(
+			pptx.charts.PIE, dataChartPieStat,
+			{x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l', legendFontFace:'Courier New'}
+		);
 
 		// TOP-RIGHT
 		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1457,7 +1467,7 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataScatter1 = [
-			{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
+			{ name:'X-Axis',    values:[0,1,2,3,4,5,6,7,8,9] },
 			{ name:'Y-Value 1', values:[13, 20, 21, 25] },
 			{ name:'Y-Value 2', values:[21, 22, 25, 49] }
 		];
@@ -2188,45 +2198,39 @@ function genSlides_Image(pptx) {
 		slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1
-		slide.addText('Type: GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
-		slide.addImage({ x:0.6, y:1.1, w:1.2, h:1.2, path:(NODEJS ? gPaths.ccCopyRemix.path.replace(/http.+\/examples/, '../examples') : gPaths.ccCopyRemix.path) });
+		slide.addText('Type: Animated GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
+		slide.addImage({ x:1.0, y:1.1, w:1.5, h:1.5, path:(NODEJS ? gPaths.gifAnimTrippy.path.replace(/http.+\/examples/, '../examples') : gPaths.gifAnimTrippy.path) });
+		slide.addText('(use slide Show)', { x:1.0, y:2.7, w:1.5, h:0.3, color:'696969', fill:'FFFCCC', align:'c', fontSize:10 });
 
 		// TOP: 2
-		slide.addText('Type: Anim-GIF', { x:3.66, y:0.6, w:2.5, h:0.4, color:'0088CC' });
-		slide.addImage({ x:3.8, y:0.7, w:1.78, h:1.78, path:(NODEJS ? gPaths.animCampfire.path.replace(/http.+\/examples/, '../examples') : gPaths.animCampfire.path) });
+		slide.addText('Type: GIF', { x:4.35, y:0.6, w:1.4, h:0.4, color:'0088CC' });
+		slide.addImage({ x:4.4, y:1.05, w:1.2, h:1.2, path:(NODEJS ? gPaths.ccDjGif.path.replace(/http.+\/examples/, '../examples') : gPaths.ccDjGif.path) });
 
 		// TOP: 3
-		slide.addText('Pre-Encoded PNG', { x:6.83, y:0.6, w:3.0, h:0.4, color:'0088CC' });
-		slide.addImage({ x:7.5, y:1.1, w:1.0, h:1.0, data:checkGreen });
+		slide.addText('Type: base64 PNG', { x:7.2, y:0.6, w:2.4, h:0.4, color:'0088CC' });
+		slide.addImage({ x:7.87, y:1.1, w:1.0, h:1.0, data:checkGreen });
 
 		// TOP: 4
-		slide.addText('Hyperlink Image', { x:9.99, y:0.6, w:3.0, h:0.4, color:'0088CC' });
+		slide.addText('Image Hyperlink', { x:10.9, y:0.6, w:2.2, h:0.4, color:'0088CC' });
 		slide.addImage({
-			x:10.7, y:1.2, w:0.8, h:0.8,
-			hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' },
-			data:
-				'image/jpeg;base64,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'
+			x:11.54, y:1.2, w:0.8, h:0.8,
+			data: svgHyperlinkImage,
+			hyperlink: { url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' }
 		});
 
 		// BOTTOM-LEFT:
-		slide.addText('Type: JPG (path:"cdn.rawgit.com")', { x:0.5, y:3.0, w:4.5, h:0.4, color:'0088CC' });
-		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:3.5, w:4.0, h:2.96 });
+		slide.addText('Type: JPG', { x:0.5, y:3.3, w:4.5, h:0.4, color:'0088CC' });
+		slide.addImage({ path:gPaths.ccCopyRemix.path, x:0.5, y:3.8, w:3.0, h:3.07 });
 
 		// BOTTOM-CENTER:
-		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
-			// TEST USING RELATIVE PATHS/LOCAL FILES (OFFICE.COM)
-			slide.addText('Type: PNG (path:"../images")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'CC0033' });
-			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
-		}
-		else {
-			slide.addText('Type: PNG (path:"wikimedia.org")', { x:5.1, y:3.0, w:4.0, h:0.4, color:'11FF33' });
-			slide.addImage({ path:gPaths.wikimedia2.path, x:5.1, y:3.5, w:3.72, h:2.96 });
-		}
+		slide.addText('Type: PNG', { x:5.1, y:3.3, w:4.0, h:0.4, color:'0088CC' });
+		slide.addImage({ path:gPaths.wikimedia1.path, x:5.1, y:3.8, w:3.0, h:2.78 });
 
 		// BOTTOM-RIGHT:
-		slide.addText('Type: SVG (new in v2.4!)', { x:9.5, y:3.0, w:4.0, h:0.4, color:'EC0101' });
-		slide.addImage({ path:gPaths.wikimedia_svg1.path, x:9.5, y:3.5, w:2.0, h:2.0 }); // TEST: `path`
-		slide.addImage({ data:svgBase64, x:11.1, y:4.9, w:1.5, h:1.5 }); // TEST: `data`
+		slide.addText('Type: SVG', { x:9.5, y:3.3, w:4.0, h:0.4, color:'0088CC' });
+		slide.addImage({ path:gPaths.wikimedia_svg1.path, x:9.5, y:3.8, w:2.0, h:2.0 }); // TEST: `path`
+		slide.addImage({ data:svgBase64, x:11.1, y:5.1, w:1.5, h:1.5 }); // TEST: `data`
+		slide.addText('(not supported in Node)', { x:9.1, y:6.8, w:3.5, h:0.3, color:'696969', fill:'FFFCCC', align:'c', fontSize:10 });
 
 		// TEST: Ensure framework corrects for missing all header
 		// (Please **DO NOT** pass base64 data without the header! This is a JUNK TEST!)
@@ -2235,7 +2239,40 @@ function genSlides_Image(pptx) {
 		//slide.addImage({ data:'https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/images/doh_this_isnt_base64_data.gif',  x:0.5, y:0.5, w:1.0, h:1.0 });
 	}
 
-	// SLIDE 2: Image Sizing -----------------------------------------------------------------------------------
+	// SLIDE 2: Image URLs -----------------------------------------------------------------------------------
+	{
+		var slide = pptx.addNewSlide();
+		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
+		slide.slideNumber({ x:'50%', y:'95%', color:'0088CC' });
+		slide.addTable( [ [{ text:'Image Examples: Image URLs', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+
+		// TOP-LEFT:
+		var objCodeEx1 = { x:0.5, y:0.6, w:6.0, h:0.6 };
+		Object.keys(gOptsCode).forEach(function(key){ objCodeEx1[key] = gOptsCode[key] });
+		slide.addText('path:"'+gPaths.ccLogo.path+'"', objCodeEx1);
+		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:1.35, h:2.5, w:3.33 });
+
+		// TOP-RIGHT:
+		var objCodeEx2 = { x:6.9, y:0.6, w:6.0, h:0.6 };
+		Object.keys(gOptsCode).forEach(function(key){ objCodeEx2[key] = gOptsCode[key] });
+		slide.addText('path:"'+gPaths.wikimedia2.path+'"', objCodeEx2);
+		slide.addImage({ path:gPaths.wikimedia2.path, x:6.9, y:1.35, h:2.5, w:3.27 });
+
+		// BTM-LEFT:
+		var objCodeEx3 = { x:0.5, y:4.2, w:12.4, h:0.8 };
+		Object.keys(gOptsCode).forEach(function(key){ objCodeEx3[key] = gOptsCode[key] });
+		slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"'+gPaths.chicagoBean.path+'"', objCodeEx3);
+		slide.addImage({ path:gPaths.chicagoBean.path, x:0.5, y:5.1, w:2.56, h:1.92 });
+
+		// BOTTOM-CENTER:
+		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
+			// TEST USING RELATIVE PATHS/LOCAL FILES (OFFICE.COM)
+			slide.addText('Type: PNG (path:"../images")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'CC0033' });
+			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
+		}
+	}
+
+	// SLIDE 3: Image Sizing -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
@@ -2260,7 +2297,11 @@ function genSlides_Image(pptx) {
 
 		// TOP-RIGHT:
 		slide.addText('Rounding: `true`',  { x:10.0, y:0.60, w:3.0, h:0.3, color:'0088CC' });
-		slide.addImage({ path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path), x:10, y:1.1, w:2, h:2, rounding:true });
+		slide.addImage({
+			path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path),
+			x:9.9, y:1.1, w:2.5, h:2.5,
+			rounding:true
+		});
 	}
 }
 
@@ -2406,7 +2447,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Breaks:", { x:7.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
-			{ x:7.5, y:0.85, w:5.25, h:1.6, valign:'middle', align:'ctr', color:'6c6c6c', fontSize:16, fill:'F2F2F2' }
+			{ x:7.5, y:0.85, w:5.25, h:1.6, valign:'middle', align:'ctr', color:'6c6c6c', fontSize:16, fill:'F2F2F2', line:{pt:'2',color:'C7C7C7'} }
 		);
 
 		slide.addText("Line-Spacing (text):", { x:7.5, y:2.6, w:'40%', h:0.38, color:'0088CC' });

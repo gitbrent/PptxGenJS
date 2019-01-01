@@ -1,10 +1,15 @@
-﻿<!DOCTYPE html>
-<html lang="en-us">
+﻿<!doctype html>
+<html lang="en">
 <head>
+	<!-- NOTE: IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy) -->
 	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2018-10-14">
+	<meta name="updated" content="2018-11-26">
+	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
+	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+	<link rel="icon" href="images/favicon.png">
 	<title>PptxGenJS Examples/Demo Page</title>
 
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/yeti/bootstrap.min.css">
@@ -188,13 +193,6 @@
 		.tabHtmlToPpt th, .tabHtmlToPpt td { border: 1px solid white; padding: 4px 8px; }
 	</style>
 
-	<!-- NOTE:
-	1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
-		$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
-		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
-	2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
- 	-->
-
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/examples/images/base64Images.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.colors.js"></script>
@@ -202,8 +200,8 @@
 
 	<!-- RELEASE (CDN)
 	-->
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.bundle.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/examples/pptxgenjs-demo.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/dist/pptxgen.bundle.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/examples/pptxgenjs-demo.js"></script>
 	<!-- OFFICE365 TESTING:
 	<script src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
 	<script src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
@@ -472,8 +470,7 @@
 			pptx.save('Table2Slides-with-dynamic-text');
 		}
 
-		// ==================================================================================================================
-		$(document).ready(function(){
+		function doAppStart() {
 			// REALITY-CHECK: Ensure user has a modern browser
 			if ( !window.Blob ) {
 				alert("Unsupported Browser\n\nSorry, but you'll need a modern browser - (Chrome, Firefox, Edge, Opera) or IE11 - to enable this feature.");
@@ -501,83 +498,13 @@
 			}
 			*/
 
-			// STEP 1: Set UI (if you're me)
+			// STEP 1: Set UI (if you're me :-)
 			if ( window.location.href.indexOf('brentely') > 0 ) {
 				$('#tab1sec1').click();
 				$('#tab1sec2').click();
 			}
 
-			// STEP 2: Build UI elements
-			buildDataTable();
-			var pptx = new PptxGenJS();
-			['MASTER_SLIDE','THANKS_SLIDE','TITLE_SLIDE'].forEach(function(name,idx){
-				$('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>');
-			});
-
-			// STEP 3: Populate code areas
-			$('#demo-basic').text('// STEP 1: Create a new Presentation\n'
-				+ 'var pptx = new PptxGenJS();\n'
-				+ '\n'
-				+ '// STEP 2: Add a new Slide to the Presentation\n'
-				+ 'var slide = pptx.addNewSlide();\n'
-				+ '\n'
-				+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
-				+ "slide.addText(\n"
-				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
-				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
-				+ ");\n"
-				+ '\n'
-				+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
-				+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
-			);
-			/*
-			$('#demo-youtube').html("var pptx = new PptxGenJS();\n"
-				+ "var slide = pptx.addNewSlide();\n"
-				+ '\n'
-				+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
-				+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
-				+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
-				+ '\n'
-				+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
-			);
-			*/
-			$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
-				+ "pptx.setLayout('LAYOUT_WIDE');\n"
-				+ "var slide = pptx.addNewSlide();\n"
-				+ "\n"
-				+ "// Bullets with indent levels\n"
-				+ "slide.addText(\n"
-				+ "  [\n"
-				+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
-				+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
-				+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
-				+ "  ],\n"
-				+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
-				+ ");\n"
-				+ "\n"
-				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
-			);
-
-			$('#demo-master').html("pptx.defineSlideMaster({\n"
-				+ "  title : 'MASTER_SLIDE',\n"
-				+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
-				+ "  bkgd  : 'FFFFFF',\n"
-				+ "  objects: [\n"
-				+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
-				+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
-				+ "    {text:  {\n"
-				+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
-				+ "        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}\n"
-				+ "    }}\n"
-				//+ "    }},\n"
-				//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
-				//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
-				+ "  ],\n"
-				+ "  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n"
-				+ "});\n"
-			);
-
-			// STEP 4: Show library info
+			// STEP 2: Show library info
 			{
 				if ( typeof Promise !== 'function' ) {
 					$('#appHeader').after('<div class="alert alert-danger">Promise is undefined! (IE11 requires promise.min.js)</div>');
@@ -592,6 +519,80 @@
 				}
 			}
 
+			// STEP 3: Build UI elements
+			buildDataTable();
+			var pptx = new PptxGenJS();
+			['MASTER_SLIDE','THANKS_SLIDE','TITLE_SLIDE'].forEach(function(name,idx){
+				$('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>');
+			});
+
+			// STEP 4: Populate code areas
+			{
+				$('#demo-basic').text('// STEP 1: Create a new Presentation\n'
+					+ 'var pptx = new PptxGenJS();\n'
+					+ '\n'
+					+ '// STEP 2: Add a new Slide to the Presentation\n'
+					+ 'var slide = pptx.addNewSlide();\n'
+					+ '\n'
+					+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
+					+ "slide.addText(\n"
+					+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
+					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
+					+ ");\n"
+					+ '\n'
+					+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
+					+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
+				);
+
+				/*
+				$('#demo-youtube').html("var pptx = new PptxGenJS();\n"
+					+ "var slide = pptx.addNewSlide();\n"
+					+ '\n'
+					+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
+					+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
+					+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
+					+ '\n'
+					+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
+				);
+				*/
+
+				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
+					+ "pptx.setLayout('LAYOUT_WIDE');\n"
+					+ "var slide = pptx.addNewSlide();\n"
+					+ "\n"
+					+ "// Bullets with indent levels\n"
+					+ "slide.addText(\n"
+					+ "  [\n"
+					+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
+					+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
+					+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
+					+ "  ],\n"
+					+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
+					+ ");\n"
+					+ "\n"
+					+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
+				);
+
+				$('#demo-master').html("pptx.defineSlideMaster({\n"
+					+ "  title : 'MASTER_SLIDE',\n"
+					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
+					+ "  bkgd  : 'FFFFFF',\n"
+					+ "  objects: [\n"
+					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
+					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
+					+ "    {text:  {\n"
+					+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
+					+ "        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}\n"
+					+ "    }}\n"
+					//+ "    }},\n"
+					//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
+					//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
+					+ "  ],\n"
+					+ "  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n"
+					+ "});\n"
+				);
+			}
+
 			// STEP 5: Demo setup
 			$('#tabCellLotsoText').text( gStrLoremIpsum.substring(0,3000) );
 
@@ -602,7 +603,10 @@
 
 			// LAST: Nav across sessions
 			doNavRestore();
-		});
+		}
+
+		// ==================================================================================================================
+		$(document).ready(function(){ doAppStart() });
 	</script>
 </head>
 <body class="bg-light mx-5 my-4">
@@ -1141,17 +1145,26 @@
 					<h6 class="card-header">Image Types and Sources</h6>
 					<div class="card-body">
 						<div>Slide 1</div>
-						<div class="text-muted">- Animated GIF (shows in Presenation mode)</div>
-						<div class="text-muted">- Images from local and remote CDN URLs</div>
-						<div class="text-muted">- Pre-encoded images (using <code>data:[base64]</code>)</div>
-						<div class="text-muted">- Images with hyperlinks/tooltips</div>
-						<div class="text-muted">- SVG images</div>
+						<div class="text-muted">- Type: Animated GIF <small class="text-warning ml-2">(use Slide Show)</small></div>
+						<div class="text-muted">- Type: GIF</div>
+						<div class="text-muted">- Type: JPG</div>
+						<div class="text-muted">- Type: PNG</div>
+						<div class="text-muted">- Type: SVG</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Image URLs</h6>
+					<div class="card-body">
+						<div>Slide 2</div>
+						<div class="text-muted">- Using GitHub CDN</div>
+						<div class="text-muted">- Using Wikimedia URL</div>
+						<div class="text-muted">- Using URL variables, etc</div>
 					</div>
 				</div>
 				<div class="card bg-light2">
 					<h6 class="card-header">Sizing and Rounding</h6>
 					<div class="card-body">
-						<div>Slide 2</div>
+						<div>Slide 3</div>
 						<div class="text-muted">- Image Rounding</div>
 						<div class="text-muted">- Sizing: Contain</div>
 						<div class="text-muted">- Sizing: Cover</div>

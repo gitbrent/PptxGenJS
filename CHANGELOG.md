@@ -5,12 +5,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Coming In [3.0]: `save()` will return a Promise
 
-## [2.4.0] - 2018-??-??
+
+## [2.5.0] - 2018-12-??
 ### Added
+- Added new chart options: `catAxisLabelFontBold`,`dataLabelFontBold`,`legendFontFace`,`valAxisLabelFontBold` [\#426](https://github.com/gitbrent/PptxGenJS/issue/426) ([BandaSatish07](https://github.com/BandaSatish07))
+- Add missing jpg content type to fix corrupt presentation for Office365 [\#435](https://github.com/gitbrent/PptxGenJS/pull/435) ([antonandreyev](https://github.com/antonandreyev))
+- Add `catAxisMinVal` and `catAxisMaxVal` [\#462](https://github.com/gitbrent/PptxGenJS/pull/462) ([vrimar](https://github.com/vrimar))
+### Changed
+- Remove legacy/deprecated attributes from README javascript script tags [\#431](https://github.com/gitbrent/PptxGenJS/pull/431) ([efx](https://github.com/efx))
+- Fixed issue with SlideNumber `fontSize` float values [\#432](https://github.com/gitbrent/PptxGenJS/issue/432) ([efx](https://github.com/efx))
+- Remove query and fragment from image URL extension [\#433](https://github.com/gitbrent/PptxGenJS/pull/433) ([katsuya-horiuchi](https://github.com/katsuya-horiuchi))
+- Replace "$" with "jQuery" to fix integration issues with some applications [\#436](https://github.com/gitbrent/PptxGenJS/pull/436) ([antonandreyev](https://github.com/antonandreyev))
+- Export more types to enhance TypeScript support [\#443](https://github.com/gitbrent/PptxGenJS/pull/443) ([ntietz](https://github.com/ntietz))
+### Removed
+
+
+
+## [2.4.0] - 2018-10-28
+### Added
+- Added support for SVG images [\#401](https://github.com/gitbrent/PptxGenJS/pull/401) ([Krelborn](https://github.com/Krelborn))
 - Better detection/support for Angular [\#415](https://github.com/gitbrent/PptxGenJS/pull/415) ([antiremy](https://github.com/antiremy))
 ### Changed
-- Demo page converted to Bootstrap CSS [gitbrent](https://github.com/gitbrent)
+- Demo page converted to Bootstrap 4 [gitbrent](https://github.com/gitbrent)
 - Fixed issue with float font-sizes in `addSlidesForTable()` [gitbrent](https://github.com/gitbrent)
 - No Color on negative bars when barGrouping is stacked [\#343](https://github.com/gitbrent/PptxGenJS/issue/343)
 ([vanarebane](https://github.com/vanarebane)) [\#419](https://github.com/gitbrent/PptxGenJS/pull/419)
@@ -19,6 +37,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - X and Y table coordinates with value of zero ignored [\#411](https://github.com/gitbrent/PptxGenJS/pull/411) ([tovab](https://github.com/tovab))
 - Placeholder left align property needs fixing [\#417](https://github.com/gitbrent/PptxGenJS/pull/417) ([raphael-trzpit](https://github.com/raphael-trzpit))
 - Replace jquery each by standard forEach [\#418](https://github.com/gitbrent/PptxGenJS/pull/418) ([fdussert](https://github.com/fdussert))
+- BugFix: 0 value plot points ignored on Scatter Chart [\#422](https://github.com/gitbrent/PptxGenJS/pull/422) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Pass the callback as a function, rather than invoke it [\#424](https://github.com/gitbrent/PptxGenJS/pull/424) ([danielsiwiec](https://github.com/danielsiwiec))
 ### Removed
 
 

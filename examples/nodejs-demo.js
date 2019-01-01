@@ -1,12 +1,13 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: 20180421
- * DESC: Demonstrate PptxGenJS on Node.js
+ * DATE: 20181023
+ * DESC: PptxGenJS feature demos for Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
- * EXEC: `node nodejs-demo.js`
- * EXEC: `node nodejs-demo.js All`
- * EXEC: `node nodejs-demo.js Text`
+ *
+ * USAGE: `node nodejs-demo.js`       (runs local tests with callbacks etc)
+ * USAGE: `node nodejs-demo.js All`   (runs all pre-defined tests in `pptxgenjs-demo.js`)
+ * USAGE: `node nodejs-demo.js Text`  (runs pre-defined single test in `pptxgenjs-demo.js`)
  */
 
 // ============================================================================
@@ -28,12 +29,14 @@ STARTING DEMO
 -------------
 `);
 
-// STEP 1: Load pptxgenjs and show version to verify everything loaded correctly
+// STEP 1: Load pptxgenjs library
 var PptxGenJS;
 if (fs.existsSync('../dist/pptxgen.js')) {
 	// for LOCAL TESTING
 	PptxGenJS = require('../dist/pptxgen.js');
-	if (gConsoleLog) console.log('-=TEST MODE=- (../dist/pptxgen.js)');
+	if (gConsoleLog) console.log('--=== LOCAL MODE ===--');
+	let pptx = new PptxGenJS();
+	if (gConsoleLog) console.log(`* pptxgenjs ver: ${pptx.version}`);
 }
 else {
 	PptxGenJS = require("pptxgenjs");
@@ -41,33 +44,35 @@ else {
 var pptx = new PptxGenJS();
 var demo = require("../examples/pptxgenjs-demo.js");
 
-if (gConsoleLog) console.log(` * save location: ${__dirname}`);
+if (gConsoleLog) console.log(`* save location: ${__dirname}`);
 
 // ============================================================================
 
 // EX: Regular callback - will be sent the export filename once the file has been written to fs
 function saveCallback(filename) {
-	if (gConsoleLog) console.log('saveCallback: Good News Everyone! File created: '+ filename);
+	if (gConsoleLog) {
+		console.log('`saveCallback()`: Export filename: '+ filename);
+	}
 }
 
 // EX: JSZip callback - take the specified output (`data`) and do whatever
 function jszipCallback(data) {
 	if (gConsoleLog) {
-		console.log('jszipCallback: First 100 chars of output:\n');
+		console.log('jszipCallback(): Here are 0-100 chars of `data`:\n');
 		console.log( data.substring(0,100) );
 	}
 }
 
 // EX: Callback that receives the PPT binary data - use this to stream file
 function streamCallback(data) {
-	var strFilename = "Node-Presenation-Streamed.pptx";
+	var strFilename = "Node-Demo-Streamed-Callback.pptx";
 
-	app.get('/', function(req, res) {
+	app.get('/', (req,res) => {
 		res.writeHead(200, { 'Content-disposition':'attachment;filename='+strFilename, 'Content-Length':data.length });
 		res.end(new Buffer(data, 'binary'));
 	});
 
-	app.listen(3000, function() {
+	app.listen(3000, () => {
 		console.log('PptxGenJS Node Demo app listening on port 3000!');
 		console.log('Visit: http://localhost:3000/');
 		console.log('(press Ctrl-C to quit app)');
@@ -76,37 +81,38 @@ function streamCallback(data) {
 
 // ============================================================================
 
-// STEP 2: Run specified test, or all test funcs
+// STEP 2: Run predefined test from `pptxgenjs-demo.js` //-OR-// Local Tests (callbacks, etc.)
 if ( process.argv.length == 3 ) {
-	if ( process.argv[2] == 'All' || process.argv[2] == 'all' ) demo.runEveryTest();
-	else demo.execGenSlidesFuncs(process.argv[2]);
+	if ( process.argv[2].toLowerCase() == 'all' ) demo.runEveryTest();
+	else demo.execGenSlidesFuncs( process.argv[2] );
 }
+else {
+	// STEP 3: Omit an arg to run only these below
+	var exportName = 'PptxGenJS_Demo_Node_'+getTimestamp();
+	var pptx = new PptxGenJS();
+	var slide = pptx.addNewSlide();
+	slide.addText( 'New Node Presentation', {x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'FFFCCC'} );
 
-// STEP 3: Export another demo file
-// HOWTO: Create a new Presenation
-var pptx = new PptxGenJS();
-if (gConsoleLog && process.argv.length != 3) console.log(` * pptxgenjs ver: ${pptx.version}`); // Loaded okay?
+	// **NOTE**: Only uncomment one EXAMPLE at a time
 
-var exportName = 'PptxGenJS_Demo_Node2_'+getTimestamp();
-var slide = pptx.addNewSlide();
-slide.addText( 'New Node Presentation', {x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'FFFCCC'} );
+	// EXAMPLE 1: Inline save (saves to the local directory where this process is running)
+	//pptx.save( exportName+'-ex1' ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName+'-ex1');
 
-// A: Inline save
-pptx.save( exportName ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName);
+	// EXAMPLE 2: Use an inline callback function
+	pptx.save( exportName+'-ex2', function(filename){ console.log('Ex2 inline callback exported: '+exportName+'-ex2'); } );
 
-// B: or Save using callback function
-//pptx.save( exportName, function(filename){ console.log('Inline callback here! -> '+exportName); } ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName);
+	// EXAMPLE 3: Use defined callback function
+	//pptx.save( exportName+'-ex3', saveCallback );
 
-// C: or use a predefined callback function
-//pptx.save( exportName, saveCallback ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName);
+	// EXAMPLE 4: Save in various formats - JSZip offers: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
+	//pptx.save( exportName+'-jszip', jszipCallback, 'base64' );
 
-// D: or use callback with 'http' in filename to get content back instead of writing a file - use this for streaming
-//pptx.save( 'http', streamCallback );
+	// EXAMPLE 5: Use callback with 'http' in filename to get content back instead of writing a file - use this for streaming, cloud, etc.
+	// TEST: Use your browser and go to "http://localhost:3000/", then the file will be donwloaded
+	//pptx.save( 'http', streamCallback );
 
-// E: or save using various JSZip formats ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']
-//pptx.save( 'jszip', jszipCallback, 'base64' );
-
-// **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
+	// **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
+}
 
 // ============================================================================
 
