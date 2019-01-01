@@ -74,7 +74,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20181230";
+	var APP_BLD = "20181231";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -635,6 +635,9 @@ var PptxGenJS = function(){
 			//
 			if ( !options.dataLabelFormatCode && options.type.name === 'scatter' ) options.dataLabelFormatCode = "General";
 			options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : (options.type.name == 'pie' || options.type.name == 'doughnut') ? '0%' : '#,##0';
+			//
+			// Set default format for Scatter chart labels to custom string if not defined
+			if ( !options.dataLabelFormatScatter && options.type.name === 'scatter') options.dataLabelFormatScatter = 'custom';
 			//
 			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
 			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );
@@ -3093,6 +3096,128 @@ var PptxGenJS = function(){
 						strXml += '</c:marker>';
 					}
 
+					// Option: scatter data point labels
+					if ( opts.showLabel ) {
+						var chartUuid = getUuid('-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
+						if ( obj.labels && (opts.dataLabelFormatScatter == 'custom' || opts.dataLabelFormatScatter == 'customXY') ) {
+							strXml +='<c:dLbls>';
+							obj.labels.forEach(function(label,idx) {
+								if ( opts.dataLabelFormatScatter == 'custom' || opts.dataLabelFormatScatter == 'customXY' ) {
+									strXml +='  <c:dLbl>';
+									strXml +='    <c:idx val="'+idx+'"/>';
+									strXml +='    <c:tx>';
+									strXml +='      <c:rich>';
+									strXml +='			<a:bodyPr>';
+									strXml +='				<a:spAutoFit/>';
+									strXml +='			</a:bodyPr>';
+									strXml +='        	<a:lstStyle/>';
+									strXml +='        	<a:p>';
+									strXml +='				<a:pPr>'
+									strXml +='					<a:defRPr/>'
+									strXml +='				</a:pPr>'
+									strXml +='          	<a:r>';
+									strXml +='            		<a:rPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
+									strXml +='            		<a:t>'+ encodeXmlEntities(label) +'</a:t>';
+									strXml +='          	</a:r>';
+									// Apply XY values at end of custom label
+									// Do not apply the values if the label was empty or just spaces
+									// This allows for selective labelling where required
+									if ( opts.dataLabelFormatScatter == 'customXY' && !(/^ *$/.test(label)) ) {
+										strXml +='          	<a:r>';
+										strXml +='          		<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0" dirty="0"/>';
+										strXml +='          		<a:t> (</a:t>';
+										strXml +='          	</a:r>';
+										strXml +='          	<a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="XVALUE">';
+										strXml +='          		<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0"/>';
+										strXml +='          		<a:pPr>';
+										strXml +='          			<a:defRPr/>';
+										strXml +='          		</a:pPr>';
+										strXml +='          		<a:t>[' + encodeXmlEntities(obj.name) + '</a:t>';
+										strXml +='          	</a:fld>';
+										strXml +='          	<a:r>';
+										strXml +='          		<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0" dirty="0"/>';
+										strXml +='          		<a:t>, </a:t>';
+										strXml +='          	</a:r>';
+										strXml +='          	<a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="YVALUE">';
+										strXml +='          		<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0"/>';
+										strXml +='          		<a:pPr>';
+										strXml +='          			<a:defRPr/>';
+										strXml +='          		</a:pPr>';
+										strXml +='          		<a:t>[' + encodeXmlEntities(obj.name) + ']</a:t>';
+										strXml +='          	</a:fld>';
+										strXml +='          	<a:r>';
+										strXml +='          		<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0" dirty="0"/>';
+										strXml +='          		<a:t>)</a:t>';
+										strXml +='          	</a:r>';
+										strXml +='          	<a:endParaRPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
+									}
+									strXml +='        	</a:p>';
+									strXml +='      </c:rich>';
+									strXml +='    </c:tx>';
+									strXml +='    <c:spPr>';
+									strXml +='    	<a:noFill/>';
+									strXml +='    	<a:ln>';
+									strXml +='    		<a:noFill/>';
+									strXml +='    	</a:ln>';
+									strXml +='    	<a:effectLst/>';
+									strXml +='    </c:spPr>';
+									strXml +='    <c:showLegendKey val="0"/>';
+									strXml +='    <c:showVal val="0"/>';
+									strXml +='    <c:showCatName val="0"/>';
+									strXml +='    <c:showSerName val="0"/>';
+									strXml +='    <c:showPercent val="0"/>';
+									strXml +='    <c:showBubbleSize val="0"/>';
+									strXml +='	  <c:showLeaderLines val="1"/>';
+									strXml +='    <c:extLst>';
+									strXml +='      <c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">';
+									strXml +='			<c15:dlblFieldTable/>';
+									strXml +='			<c15:showDataLabelsRange val="0"/>';
+									strXml +='		</c:ext>';
+									strXml +='      <c:ext uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}" xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart">';
+									strXml +='			<c16:uniqueId val="{' + "00000000".substring(0,8-(idx+1).toString().length).toString() + (idx+1) + chartUuid + '}"/>';
+									strXml +='      </c:ext>';
+									strXml +='		</c:extLst>';
+									strXml +='</c:dLbl>';
+								}
+							});
+							strXml +='</c:dLbls>';
+						}
+						if ( opts.dataLabelFormatScatter == 'XY' ) {
+							strXml +='<c:dLbls>';
+							strXml +='	<c:spPr>';
+							strXml +='		<a:noFill/>';
+							strXml +='		<a:ln>';
+							strXml +='			<a:noFill/>';
+							strXml +='		</a:ln>';
+							strXml +='	  	<a:effectLst/>';
+							strXml +='	</c:spPr>';
+							strXml +='	<c:txPr>';
+							strXml +='		<a:bodyPr>';
+							strXml +='			<a:spAutoFit/>';
+							strXml +='		</a:bodyPr>';
+							strXml +='		<a:lstStyle/>';
+							strXml +='		<a:p>';
+							strXml +='	    	<a:pPr>';
+							strXml +='        		<a:defRPr/>';
+							strXml +='	    	</a:pPr>';
+							strXml +='	    	<a:endParaRPr lang="en-US"/>';
+							strXml +='		</a:p>';
+							strXml +='	</c:txPr>';
+							strXml +='	<c:showLegendKey val="0"/>';
+							strXml +='	<c:showVal val="'+ opts.showLabel ? "1" : "0" + '"/>';
+							strXml +='	<c:showCatName val="'+ opts.showLabel ? "1" : "0" + '"/>';
+							strXml +='	<c:showSerName val="0"/>';
+							strXml +='	<c:showPercent val="0"/>';
+							strXml +='	<c:showBubbleSize val="0"/>';
+							strXml +='	<c:extLst>';
+							strXml +='		<c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">';
+							strXml +='			<c15:showLeaderLines val="1"/>';
+							strXml +='		</c:ext>';
+							strXml +='	</c:extLst>';
+							strXml +='</c:dLbls>';
+						}
+					}
+
 					// Color bar chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
 					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
@@ -5314,6 +5439,15 @@ var PptxGenJS = function(){
 		});
 	}
 };
+
+// Basic UUID Generator Adapted from:
+// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523
+function getUuid(uuidFormat) {
+	return uuidFormat.replace(/[xy]/g, function(c) {
+		var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+		return v.toString(16);
+	});
+}
 
 // [Node.js] support
 if ( NODEJS ) {
