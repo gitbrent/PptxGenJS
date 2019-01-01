@@ -6,7 +6,7 @@
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2017 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2019 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Permission is hereby granted, free of charge, to any person obtaining a copy
 |*|  of this software and associated documentation files (the "Software"), to deal
