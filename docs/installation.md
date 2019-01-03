@@ -3,36 +3,47 @@ id: installation
 title: Installation
 ---
 
-## Client-Side
-### Include Local Scripts
-```javascript
+## Installation Notes
+* Dependencies: `jQuery` and `jsZip`
+* Bundle Includes: `jquery.min.js`, `jszip.min.js`, and `promise.min.js`
+* IE11 Support: The `promise.min.js` promise polyfill is **required**
+
+## Installation Methods
+
+### CDN
+```html
+<!-- Bundle: Easiest to use, supports all browsers -->
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/dist/pptxgen.bundle.js"></script>
+
+<!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/libs/jquery.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/dist/pptxgen.min.js"></script>
+```
+
+### Download
+[GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
+```html
+<!-- Bundle: Easiest to use, supports all browsers -->
+<script src="PptxGenJS/libs/pptxgen.bundle.js"></script>
+
+<!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
 <script src="PptxGenJS/libs/jquery.min.js"></script>
 <script src="PptxGenJS/libs/jszip.min.js"></script>
-<script src="PptxGenJS/dist/pptxgen.js"></script>
-```
-* IE11 support requires a Promises polyfill as well (included in the libs folder)
-
-### Include Bundled Script
-```javascript
-<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
-```
-* Bundle script includes all libraries: jQuery + JSzip + PptxGenJS + Promises
-
-### Use CDN
-```javascript
-<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/8cb0150f/dist/pptxgen.bundle.js"></script>
+<script src="PptxGenJS/dist/pptxgen.min.js"></script>
+<!-- IE11 requires Promises polyfill -->
+<!-- <script src="PptxGenJS/libs/promise.min.js"></script> -->
 ```
 
-### Install With Bower
-```javascript
-bower install pptxgen
-```
-
-## Node.js
-[PptxGenJS NPM Homepage](https://www.npmjs.com/package/pptxgenjs)
+### Npm
+[PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
 ```javascript
 npm install pptxgenjs
 
 var pptx = require("pptxgenjs");
 ```
-* Desktop: Compatible with Electron applications!
+
+### Yarn
+```ksh
+yarn install pptxgenjs
+```
