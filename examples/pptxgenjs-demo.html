@@ -1,38 +1,222 @@
-﻿<!DOCTYPE html>
-<html lang="en-us">
+﻿<!doctype html>
+<html lang="en">
 <head>
+	<!-- NOTE: IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy) -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta name="author"  content="https://github.com/gitbrent">
+	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
+	<meta name="updated" content="2019-01-01">
+	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
+	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
+	<link rel="icon" href="images/favicon.png">
 	<title>PptxGenJS Examples/Demo Page</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge;chrome=1">
-	<meta name="author" content="https://github.com/gitbrent">
-	<meta name="date" content="20180809">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300|Roboto+Mono|Open+Sans" rel="stylesheet">
-	<!-- IE11 Users: - Use the following 3 lines instead of the one above
-	<link href="https://fonts.googleapis.com/css?family=Roboto:100"  rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Roboto:300"  rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Roboto+Mono" rel="stylesheet">
-	<link href="https://fonts.googleapis.com/css?family=Open+Sans"   rel="stylesheet">
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/yeti/bootstrap.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-okaidia.min.css">
+
+	<style>
+		#infoBar .iconSvg { vertical-align: middle; margin-right: 5px; }
+		#demo-sandbox:focus {
+			/* Chrome draws a super-annoying outline around *each line* in the <code> tag, so NOPE! */
+		    outline: none; /*-webkit-focus-ring-color auto 5px;*/
+		}
+
+		/* -- brentstrap.css ---------- */
+		.bde-arrow-cont {
+			cursor: pointer;
+			-webkit-user-select: none;
+		       -moz-user-select: none;
+		        -ms-user-select: none;
+		            user-select: none;
+		}
+		.bde-arrow-cont span.text-muted {
+			font-size: 50% !important;
+			color: #b9c9d9 !important;
+			text-transform: none !important;
+			margin-left: 4px;
+		}
+		.arrow {
+			display: inline-block;
+			height: 12px; width: 12px;
+			border-top: 3px solid #0085C3; border-right: 3px solid #0085C3;
+			margin-right: 10px;
+			cursor: pointer;
+			transition: all .25s ease;
+			transform: rotate(45deg);
+		}
+		.arrow.active {
+			transform: rotate(135deg);
+			margin-bottom: 3px;
+		}
+		.text-nowrap { white-space: nowrap !important; }
+		.text-muted { font-weight:normal; }
+		.bg-light2 { background-color: #fcfcfc !important; }
+		.bde-callout-info {
+			padding: 1.25rem;
+			margin-top: 1.25rem;
+			margin-bottom: 1.25rem;
+			border: 1px solid #eee;
+			border-left-width: .25rem;
+			border-radius: .25rem;
+			border-left-color: #5bc0de;
+		}
+		/* -- brentstrap.css ---------- */
+
+		/* ------------------------------------------------------------------------- */
+		div.iconSvg {
+			display: inline-block;
+			background-size: contain;
+			max-width: 256px;
+			max-height: 256px;
+		}
+		div.iconSvg.size16 { width:16px; height:16px; }
+		div.iconSvg.size20 { width:20px; height:20px; }
+		div.iconSvg.size24 { width:24px; height:24px; }
+		div.iconSvg.size32 { width:32px; height:32px; }
+		div.iconSvg.size48 { width:48px; height:48px; }
+		div.iconSvg.circle.question, div.iconSvg.question {
+			background-image:
+				url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDUwIDUwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MCA1MDsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxjaXJjbGUgc3R5bGU9ImZpbGw6IzQ4QTBEQzsiIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIvPgo8bGluZSBzdHlsZT0iZmlsbDpub25lO3N0cm9rZTojRkZGRkZGO3N0cm9rZS13aWR0aDoyO3N0cm9rZS1saW5lY2FwOnJvdW5kO3N0cm9rZS1taXRlcmxpbWl0OjEwOyIgeDE9IjI1IiB5MT0iMzciIHgyPSIyNSIgeTI9IjM5Ii8+CjxwYXRoIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBkPSJNMTgsMTYgIGMwLTMuODk5LDMuMTg4LTcuMDU0LDcuMS02Ljk5OWMzLjcxNywwLjA1Miw2Ljg0OCwzLjE4Miw2LjksNi45YzAuMDM1LDIuNTExLTEuMjUyLDQuNzIzLTMuMjEsNS45ODYgIEMyNi4zNTUsMjMuNDU3LDI1LDI2LjI2MSwyNSwyOS4xNThWMzIiLz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
+		}
+		div.iconSvg.circle.info, div.iconSvg.info {
+			background-image:
+				url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4IiB2aWV3Qm94PSIwIDAgMzQ3LjYxMiAzNDcuNjEyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzNDcuNjEyIDM0Ny42MTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj48Zz48Zz48cGF0aCBmaWxsPSIjMDA4OENDIiBkPSJNMTczLjgwNywwQzc3Ljk3LDAsMCw3Ny45NywwLDE3My44MDZDMCwyNjkuNjQsNzcuOTcsMzQ3LjYxMiwxNzMuODA3LDM0Ny42MTJjOTUuODMzLDAsMTczLjgwNi03Ny45NzMsMTczLjgwNi0xNzMuODA3IEMzNDcuNjEyLDc3Ljk3LDI2OS42NCwwLDE3My44MDcsMHogTTE5Ni40ODksMjY5LjQ0N2MwLDkuOTMzLTguMDcsMTcuOTk3LTE3Ljk5LDE3Ljk5N2MtOS45MTQsMC0xNy45NjktOC4wNjQtMTcuOTY5LTE3Ljk5NyBWMTM3LjM0MmMwLTkuODk4LDguMDU2LTE3Ljk2NiwxNy45NjktMTcuOTY2YzkuOTIsMCwxNy45OSw4LjA2OCwxNy45OSwxNy45NjZWMjY5LjQ0N3ogTTE3OS4yMzQsMTAxLjE1NyBjLTExLjI5NCwwLTIwLjQ5NC05LjE5My0yMC40OTQtMjAuNDk1czkuMTkzLTIwLjQ5NSwyMC40OTQtMjAuNDk1YzExLjMwNSwwLDIwLjQ5OCw5LjE5MywyMC40OTgsMjAuNDk1IFMxOTAuNTM5LDEwMS4xNTcsMTc5LjIzNCwxMDEuMTU3eiIgLz48L2c+PC9nPjwvc3ZnPg==);
+		}
+		div.iconSvg.yes, div.iconSvg.check {
+			background-image:
+				url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/PjxzdmcgaWQ9IkxheWVyXzEiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMiA1MTI7IiB2ZXJzaW9uPSIxLjEiIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB4bWw6c3BhY2U9InByZXNlcnZlIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIj48c3R5bGUgdHlwZT0idGV4dC9jc3MiPi5zdDB7ZmlsbDojMkJCNjczO30uc3Qxe2ZpbGw6bm9uZTtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6MzA7c3Ryb2tlLW1pdGVybGltaXQ6MTA7fTwvc3R5bGU+PHBhdGggY2xhc3M9InN0MCIgZD0iTTQ4OSwyNTUuOWMwLTAuMiwwLTAuNSwwLTAuN2MwLTEuNiwwLTMuMi0wLjEtNC43YzAtMC45LTAuMS0xLjgtMC4xLTIuOGMwLTAuOS0wLjEtMS44LTAuMS0yLjcgIGMtMC4xLTEuMS0wLjEtMi4yLTAuMi0zLjNjMC0wLjctMC4xLTEuNC0wLjEtMi4xYy0wLjEtMS4yLTAuMi0yLjQtMC4zLTMuNmMwLTAuNS0wLjEtMS4xLTAuMS0xLjZjLTAuMS0xLjMtMC4zLTIuNi0wLjQtNCAgYzAtMC4zLTAuMS0wLjctMC4xLTFDNDc0LjMsMTEzLjIsMzc1LjcsMjIuOSwyNTYsMjIuOVMzNy43LDExMy4yLDI0LjUsMjI5LjVjMCwwLjMtMC4xLDAuNy0wLjEsMWMtMC4xLDEuMy0wLjMsMi42LTAuNCw0ICBjLTAuMSwwLjUtMC4xLDEuMS0wLjEsMS42Yy0wLjEsMS4yLTAuMiwyLjQtMC4zLDMuNmMwLDAuNy0wLjEsMS40LTAuMSwyLjFjLTAuMSwxLjEtMC4xLDIuMi0wLjIsMy4zYzAsMC45LTAuMSwxLjgtMC4xLDIuNyAgYzAsMC45LTAuMSwxLjgtMC4xLDIuOGMwLDEuNi0wLjEsMy4yLTAuMSw0LjdjMCwwLjIsMCwwLjUsMCwwLjdjMCwwLDAsMCwwLDAuMXMwLDAsMCwwLjFjMCwwLjIsMCwwLjUsMCwwLjdjMCwxLjYsMCwzLjIsMC4xLDQuNyAgYzAsMC45LDAuMSwxLjgsMC4xLDIuOGMwLDAuOSwwLjEsMS44LDAuMSwyLjdjMC4xLDEuMSwwLjEsMi4yLDAuMiwzLjNjMCwwLjcsMC4xLDEuNCwwLjEsMi4xYzAuMSwxLjIsMC4yLDIuNCwwLjMsMy42ICBjMCwwLjUsMC4xLDEuMSwwLjEsMS42YzAuMSwxLjMsMC4zLDIuNiwwLjQsNGMwLDAuMywwLjEsMC43LDAuMSwxQzM3LjcsMzk4LjgsMTM2LjMsNDg5LjEsMjU2LDQ4OS4xczIxOC4zLTkwLjMsMjMxLjUtMjA2LjUgIGMwLTAuMywwLjEtMC43LDAuMS0xYzAuMS0xLjMsMC4zLTIuNiwwLjQtNGMwLjEtMC41LDAuMS0xLjEsMC4xLTEuNmMwLjEtMS4yLDAuMi0yLjQsMC4zLTMuNmMwLTAuNywwLjEtMS40LDAuMS0yLjEgIGMwLjEtMS4xLDAuMS0yLjIsMC4yLTMuM2MwLTAuOSwwLjEtMS44LDAuMS0yLjdjMC0wLjksMC4xLTEuOCwwLjEtMi44YzAtMS42LDAuMS0zLjIsMC4xLTQuN2MwLTAuMiwwLTAuNSwwLTAuNyAgQzQ4OSwyNTYsNDg5LDI1Niw0ODksMjU1LjlDNDg5LDI1Niw0ODksMjU2LDQ4OSwyNTUuOXoiIGlkPSJYTUxJRF8zXyIvPjxnIGlkPSJYTUxJRF8xXyI+PGxpbmUgY2xhc3M9InN0MSIgaWQ9IlhNTElEXzJfIiB4MT0iMjEzLjYiIHgyPSIzNjkuNyIgeTE9IjM0NC4yIiB5Mj0iMTg4LjIiLz48bGluZSBjbGFzcz0ic3QxIiBpZD0iWE1MSURfNF8iIHgxPSIyMzMuOCIgeDI9IjE1NC43IiB5MT0iMzQ1LjIiIHkyPSIyNjYuMSIvPjwvZz48L3N2Zz4=);
+		}
+		div.iconSvg.no,  div.iconSvg.fail {
+			background-image:
+				url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDUwIDUwIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1MCA1MDsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxjaXJjbGUgc3R5bGU9ImZpbGw6I0Q3NUE0QTsiIGN4PSIyNSIgY3k9IjI1IiByPSIyNSIvPgo8cG9seWxpbmUgc3R5bGU9ImZpbGw6bm9uZTtzdHJva2U6I0ZGRkZGRjtzdHJva2Utd2lkdGg6MjtzdHJva2UtbGluZWNhcDpyb3VuZDtzdHJva2UtbWl0ZXJsaW1pdDoxMDsiIHBvaW50cz0iMTYsMzQgMjUsMjUgMzQsMTYgICAiLz4KPHBvbHlsaW5lIHN0eWxlPSJmaWxsOm5vbmU7c3Ryb2tlOiNGRkZGRkY7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLWxpbmVjYXA6cm91bmQ7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBwb2ludHM9IjE2LDE2IDI1LDI1IDM0LDM0ICAgIi8+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+CjxnPgo8L2c+Cjwvc3ZnPgo=);
+		}
+		div.iconSvg.xmark {
+			background-image:
+				url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDQ0OS45OTggNDQ5Ljk5OCIgc3R5bGU9ImVuYWJsZS1iYWNrZ3JvdW5kOm5ldyAwIDAgNDQ5Ljk5OCA0NDkuOTk4OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4Ij48Zz48Zz48cG9seWdvbiBwb2ludHM9IjQ0OS45NzQsMzQuODU1IDQxNS4xOTEsMCAyMjUuMDA3LDE5MC4xODQgMzQuODM5LDAgMC4wMjQsMzQuODM5IDE5MC4xOTIsMjI0Ljk5OSAgICAgMC4wMjQsNDE1LjE1OSAzNC44MzksNDQ5Ljk5OCAyMjUuMDA3LDI1OS43OTcgNDE1LjE5MSw0NDkuOTk4IDQ0OS45NzQsNDE1LjE0MyAyNTkuODMsMjI0Ljk5OSAgICIgZmlsbD0iI0Q4MDAyNyIvPjwvZz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PGc+PC9nPjxnPjwvZz48Zz48L2c+PC9zdmc+);
+		}
+		div.iconSvg.circle.info {
+			background-image:
+				url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiB4PSIwcHgiIHk9IjBweCIgd2lkdGg9IjUxMnB4IiBoZWlnaHQ9IjUxMnB4IiB2aWV3Qm94PSIwIDAgMzQ3LjYxMiAzNDcuNjEyIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAzNDcuNjEyIDM0Ny42MTI7IiB4bWw6c3BhY2U9InByZXNlcnZlIj48Zz48Zz48cGF0aCBmaWxsPSIjMDA4OENDIiBkPSJNMTczLjgwNywwQzc3Ljk3LDAsMCw3Ny45NywwLDE3My44MDZDMCwyNjkuNjQsNzcuOTcsMzQ3LjYxMiwxNzMuODA3LDM0Ny42MTJjOTUuODMzLDAsMTczLjgwNi03Ny45NzMsMTczLjgwNi0xNzMuODA3IEMzNDcuNjEyLDc3Ljk3LDI2OS42NCwwLDE3My44MDcsMHogTTE5Ni40ODksMjY5LjQ0N2MwLDkuOTMzLTguMDcsMTcuOTk3LTE3Ljk5LDE3Ljk5N2MtOS45MTQsMC0xNy45NjktOC4wNjQtMTcuOTY5LTE3Ljk5NyBWMTM3LjM0MmMwLTkuODk4LDguMDU2LTE3Ljk2NiwxNy45NjktMTcuOTY2YzkuOTIsMCwxNy45OSw4LjA2OCwxNy45OSwxNy45NjZWMjY5LjQ0N3ogTTE3OS4yMzQsMTAxLjE1NyBjLTExLjI5NCwwLTIwLjQ5NC05LjE5My0yMC40OTQtMjAuNDk1czkuMTkzLTIwLjQ5NSwyMC40OTQtMjAuNDk1YzExLjMwNSwwLDIwLjQ5OCw5LjE5MywyMC40OTgsMjAuNDk1IFMxOTAuNTM5LDEwMS4xNTcsMTc5LjIzNCwxMDEuMTU3eiIgLz48L2c+PC9nPjwvc3ZnPg==);
+		}
+		div.iconSvg.lock {
+			background-image:
+				url(data:image/svg+xml;utf8;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4PSIwcHgiIHk9IjBweCIgdmlld0JveD0iMCAwIDU4IDU4IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA1OCA1ODsiIHhtbDpzcGFjZT0icHJlc2VydmUiIHdpZHRoPSI1MTJweCIgaGVpZ2h0PSI1MTJweCI+CjxwYXRoIHN0eWxlPSJmaWxsOiNDN0NBQzc7c3Ryb2tlOiNDN0NBQzc7c3Ryb2tlLXdpZHRoOjI7c3Ryb2tlLW1pdGVybGltaXQ6MTA7IiBkPSJNNDIsMzJIMTVWMTMuNjAxQzE1LDYuNjUyLDIxLjA1NiwxLDI4LjUsMSAgUzQyLDYuNjUyLDQyLDEzLjYwMVYzMnogTTE5LDI4aDE5VjEzLjYwMUMzOCw4Ljg1OCwzMy43MzgsNSwyOC41LDVTMTksOC44NTgsMTksMTMuNjAxVjI4eiIvPgo8cmVjdCB4PSI4IiB5PSIyNiIgc3R5bGU9ImZpbGw6IzczODNCRjsiIHdpZHRoPSI0MiIgaGVpZ2h0PSIzMiIvPgo8cmVjdCB4PSIyOSIgeT0iMjYiIHN0eWxlPSJmaWxsOiM2ODc5QUY7IiB3aWR0aD0iMjEiIGhlaWdodD0iMzIiLz4KPHBvbHlnb24gc3R5bGU9ImZpbGw6I0VCQkExNjsiIHBvaW50cz0iNDIuNTg2LDU3IDQ5LDUwLjU4NiA0OSw0NyA0My40MTQsNDcgMzMuNDE0LDU3ICIvPgo8cG9seWdvbiBzdHlsZT0iZmlsbDojNEY1OTcwOyIgcG9pbnRzPSI5LDQ3IDksNTQuNTg2IDE2LjU4Niw0NyAiLz4KPHBvbHlnb24gc3R5bGU9ImZpbGw6IzQyNEE2MDsiIHBvaW50cz0iMzAuNTg2LDU3IDQwLjU4Niw0NyAzMS40MTQsNDcgMjEuNDE0LDU3ICIvPgo8cGF0aCBzdHlsZT0iZmlsbDojRUFDQzE4OyIgZD0iTTI4LjU4Niw0N2gtOS4xNzJsLTkuNzA3LDkuNzA3QzkuNTEyLDU2LjkwMiw5LjI1Niw1Nyw5LDU3aDkuNTg2TDI4LjU4Niw0N3oiLz4KPHBvbHlnb24gc3R5bGU9ImZpbGw6IzQyNEE2MDsiIHBvaW50cz0iNDksNTcgNDksNTMuNDE0IDQ1LjQxNCw1NyAiLz4KPHBvbHlnb24gc3R5bGU9ImZpbGw6IzRGNTk3MDsiIHBvaW50cz0iMjksNDkuNDE0IDIxLjQxNCw1NyAyOSw1NyAiLz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPGc+CjwvZz4KPC9zdmc+Cg==);
+		}
+		div.iconSvg.reload, div.iconSvg.refresh {
+			background-image:
+				url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/PjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iTGF5ZXJfMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgeD0iMHB4IiB5PSIwcHgiIHZpZXdCb3g9IjAgMCA1MTIuMDAyIDUxMi4wMDIiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDUxMi4wMDIgNTEyLjAwMjsiIHhtbDpzcGFjZT0icHJlc2VydmUiPjxwYXRoIHN0eWxlPSJmaWxsOiMwMDg4Y2M7IiB0cmFuc2Zvcm09InJvdGF0ZSg5MCAyNTYgMjU2KSIgZD0iTTQzNi44NjYsNDM2Ljg3MWM0OC4zMTItNDguMzExLDc0LjkyMS0xMTIuNTQ2LDc0LjkyMS0xODAuODcxIGMwLTE0MS4wMzktMTE0Ljc0NC0yNTUuNzg1LTI1NS43ODMtMjU1Ljc4NnY0OS41MDdjMTEzLjc0MSwwLjAwMiwyMDYuMjc2LDkyLjUzOSwyMDYuMjc2LDIwNi4yNzljMCw1NS4xMDEtMjEuNDU4LDEwNi45MDItNjAuNDIsMTQ1Ljg2NGwtNy41NzEsNy41NzFsLTY3LjU1Mi02Ny41NTJsMC4wMjEsMTcwLjA3NmwxNzAuMDk2LDAuMDQxbC02Ny41NTktNjcuNTU5TDQzNi44NjYsNDM2Ljg3MXoiLz48cGF0aCBzdHlsZT0iZmlsbDojMDA4OGNjOyIgdHJhbnNmb3JtPSJyb3RhdGUoOTAgMjU2IDI1NikiIGQ9Ik00OS43MjQsMjU2LjAwMWMwLTU1LjEwMSwyMS40NTgtMTA2LjkwMiw2MC40Mi0xNDUuODY0bDcuNTcxLTcuNTcxbDY3LjU1Miw2Ny41NTJMMTg1LjI0NSwwLjA0MUwxNS4xNDgsMGw2Ny41NTksNjcuNTU5bC03LjU3MSw3LjU3QzI2LjgyNCwxMjMuNDM5LDAuMjE1LDE4Ny42NzUsMC4yMTUsMjU1Ljk5OWMwLDE0MS4wMzksMTE0Ljc0NCwyNTUuNzg1LDI1NS43ODMsMjU1Ljc4NnYtNDkuNTA3QzE0Mi4yNTgsNDYyLjI3OCw0OS43MjQsMzY5Ljc0Miw0OS43MjQsMjU2LjAwMXoiLz48L3N2Zz4=);
+		}
+
+		/* Flex modernTabs */
+		.flexTabs {
+			width: 100%;
+			margin: 20px 0 10px 0;
+			border: 1px solid #d5d5d5;
+			box-shadow: 0px 4px 10px -5px rgba(0,0,0,0.5);
+			border-radius: 5px;
+		}
+		.flexTabs > ul {
+			display: flex;
+			background: #F6F6F6;
+		    list-style-type: none;
+		    margin: 0 !important; -webkit-margin-before: 0;  -moz-margin-before: 0;  -ms-margin-before: 0;
+		    padding: 0 !important;
+		    border-bottom: 1px solid #d5d5d5;
+		    border-radius: 5px 5px 0 0;
+		}
+		.flexTabs > ul > li {
+			flex: 1 0 auto;
+			box-sizing: border-box;
+		    cursor: pointer;
+		    text-shadow: 2px 2px #efefef;
+		    text-align: center;
+		    display: inline-block;
+			list-style-type: none;
+		    padding: 15px;
+		    font-size: 14px;
+		    color: #a7a7a7;
+		    text-transform: uppercase;
+		    border-bottom: 3px solid #F6F6F6;
+		    -webkit-user-select: none;
+		       -moz-user-select: none;
+		        -ms-user-select: none;
+		            user-select: none;
+		}
+		.flexTabs > ul > li.active {
+		    font-weight: bold;
+		    text-shadow: none;
+		    color: #0088CC;
+		    border-bottom: 3px solid #0088cc;
+		}
+		.flexTabs > div {
+		    display: none;
+		    margin: 0;
+		    padding: 1.5rem 2rem;
+		    background: white;
+		    border-radius: 0 0 5px 5px;
+		}
+		.flexTabs > div.active { display: block; }
+		.flexTabs > div > .toolBar { width: 100%; min-height: 44px; display: table; margin-top: -20px; }
+		.flexTabs > div > .toolBar > div:first-child { display:table-cell; width:75%; text-align: left; padding:10px 0; vertical-align:middle; color:#bcd; }
+		.flexTabs > div > .toolBar > div:last-child  { display:table-cell; width:25%; text-align:right; padding:10px 0; vertical-align:middle; white-space:nowrap; }
+		.flexTabs > div > .toolBar button { border-radius: 2px; text-transform: none; }
+		.flexTabs > div > .toolBar img { vertical-align:middle; margin:-3px 3px 0 0; }
+
+		/* ------------------------------------------------------------------------- */
+		/* tabDemo */
+		.tabDemo {
+		    width: 100%;
+		    border-collapse: collapse;
+		}
+		.tabDemo thead th {
+		    border: 1px solid white;
+		    background: #4488DD;
+		    color: white;
+		    padding: 10px;
+		    margin: 0;
+		}
+		.tabDemo tbody td:first-child {
+			background: #efefff;
+		}
+		.tabDemo tbody td {
+		    border: 1px solid #d7d7d7;
+			background: white;
+		    padding: 10px;
+		    margin: 0;
+		    text-align: left;
+		}
+		.tabDemo tbody td:nth-child(1), .tabDemo tbody td:nth-child(2) { white-space: nowrap; }
+
+		.tabHtmlToPpt thead th { background: #a7a7a7; color: white; font-weight: normal; }
+		.tabHtmlToPpt tbody td { background: #eee; color: #666; }
+		.tabHtmlToPpt th, .tabHtmlToPpt td { border: 1px solid white; padding: 4px 8px; }
+	</style>
+
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/examples/images/base64Images.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.colors.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.shapes.js"></script>
+
+	<!-- RELEASE (CDN)
 	-->
-	<link type="text/css" rel="stylesheet" href="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.1.0/examples/pptxgenjs-demo.css">
-
-	<!-- NOTE:
-	1) Running this on your local PC requires Chrome be run from the console/terminal in order to allow reading local image files
-		$ open -a 'Google Chrome' -\-args -\-allow-file-access-from-files &
-		(Otherwise you will receive: "Tainted canvases may not be exported" message in console)
-	2) IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy)
- 	-->
-
-	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/examples/images/base64Images.js"></script>
-	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/examples/media/base64media.js"></script>
-	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.colors.js"></script>
-	<script src="https://cdn.rawgit.com/gitbrent/PptxGenJS/v2.2.0/dist/pptxgen.shapes.js"></script>
-
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/dist/pptxgen.bundle.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/examples/pptxgenjs-demo.js"></script>
+	<!-- OFFICE365 TESTING:
+	<script src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
+	<script src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
+	<script src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
+	<script src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
+	-->
+	<!-- LOCAL TESTING:
 	<script src="../libs/promise.min.js"></script>
 	<script src="../libs/jquery.min.js"></script>
 	<script src="../libs/jszip.min.js"></script>
 	<script src="../dist/pptxgen.js"></script>
 	<script src="../examples/pptxgenjs-demo.js"></script>
+	-->
 
-	<script type="text/javascript">
+	<script>
 		// ==================================================================================================================
 
 		function doNav(intTab) {
@@ -286,8 +470,7 @@
 			pptx.save('Table2Slides-with-dynamic-text');
 		}
 
-		// ==================================================================================================================
-		$(document).ready(function(){
+		function doAppStart() {
 			// REALITY-CHECK: Ensure user has a modern browser
 			if ( !window.Blob ) {
 				alert("Unsupported Browser\n\nSorry, but you'll need a modern browser - (Chrome, Firefox, Edge, Opera) or IE11 - to enable this feature.");
@@ -315,792 +498,872 @@
 			}
 			*/
 
-			// STEP 1: Set UI (if you're me)
+			// STEP 1: Set UI (if you're me :-)
 			if ( window.location.href.indexOf('brentely') > 0 ) {
 				$('#tab1sec1').click();
 				$('#tab1sec2').click();
 			}
 
-			// STEP 2: Build UI elements
+			// STEP 2: Show library info
+			{
+				if ( typeof Promise !== 'function' ) {
+					$('#appHeader').after('<div class="alert alert-danger">Promise is undefined! (IE11 requires promise.min.js)</div>');
+				}
+				else {
+					// NOTE: Tooltips (span title below) only works with quote (not single quote)
+					var pptx = new PptxGenJS();
+					$('#infoBar').append('<div class="col-6 px-0 text-primary"><div class="iconSvg size24 info"></div>Version: <span>'+pptx.version+'</span></div>');
+					$('#infoBar').append("<div class='col-2 text-success text-right text-nowrap'><span style='cursor:help' title='"+ JSON.stringify(pptx.charts) +"'><div class='iconSvg size24 circle check'></div>pptx.charts = "+ Object.keys(pptx.charts).length +"</span></div>");
+					$('#infoBar').append("<div class='col-2 text-success text-right text-nowrap'><span style='cursor:help' title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +"</span></div>");
+					$('#infoBar').append('<div class="col-2 text-success text-right text-nowrap"><span><div class="iconSvg size24 circle check"></div>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span></div>');
+				}
+			}
+
+			// STEP 3: Build UI elements
 			buildDataTable();
 			var pptx = new PptxGenJS();
 			['MASTER_SLIDE','THANKS_SLIDE','TITLE_SLIDE'].forEach(function(name,idx){
 				$('#selSlideMaster').append('<option value="'+ name +'">'+ name +'</option>');
 			});
 
-			// STEP 3: Populate code areas
-			$('#demo-basic').html('<pre class="prettyprint">\n'
-				+ '// STEP 1: Create a new Presentation\n'
-				+ 'var pptx = new PptxGenJS();\n'
-				+ '\n'
-				+ '// STEP 2: Add a new Slide to the Presentation\n'
-				+ 'var slide = pptx.addNewSlide();\n'
-				+ '\n'
-				+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
-				+ "slide.addText(\n"
-				+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
-				+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
-				+ ");\n"
-				+ '\n'
-				+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
-				+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
-				+ '</pre>\n');
-
-			$('#demo-youtube').html('<pre class="prettyprint">\n'
-				+ "var pptx = new PptxGenJS();\n"
-				+ "var slide = pptx.addNewSlide();\n"
-				+ '\n'
-				+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
-				+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
-				+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
-				+ '\n'
-				+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
-				+ '</pre>\n');
-
-			$('#demo-sandbox').html('<pre class="prettyprint" style="margin:0 !important; width:auto; padding:10px; border-radius:0;">\n'
-				+ "var pptx = new PptxGenJS();\n"
-				+ "pptx.setLayout('LAYOUT_WIDE');\n"
-				+ "var slide = pptx.addNewSlide();\n"
-				+ "\n"
-				+ "// Bullets with indent levels\n"
-				+ "slide.addText(\n"
-				+ "  [\n"
-				+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
-				+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
-				+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
-				+ "  ],\n"
-				+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
-				+ ");\n"
-				+ "\n"
-				+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
-				+ "</pre>\n"
-			);
-
-			// STEP 4: Show library info
+			// STEP 4: Populate code areas
 			{
-				if ( typeof Promise !== 'function' ) {
-					$('#pptxVersion').after('<div style="color:red">Promise undefined! (IE11 requires promise.js)<div>');
-				}
-				else {
-					// NOTE: Tooltips (span title below) only works with quote (not single quote)
-					var pptx = new PptxGenJS();
-					$('#infoBar').append('<div style="flex:2 0 auto; color:#66A7F7"><div class="iconSvg size24 info"></div>Library Version: <span>'+pptx.version+'</span></div>');
-					$('#infoBar').append("<div style='flex:1 0 auto; text-align:right;'><span style='cursor:help' title='"+ JSON.stringify(pptx.charts) +"'><div class='iconSvg size24 circle check'></div>pptx.charts = "+ Object.keys(pptx.charts).length +"</span></div>");
-					$('#infoBar').append("<div style='flex:1 0 auto; text-align:right;'><span style='cursor:help' title='"+ JSON.stringify(pptx.colors) +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors).length +"</span></div>");
-					$('#infoBar').append('<div style="flex:1 0 auto; text-align:right;"><span><div class="iconSvg size24 circle check"></div>pptx.shapes = '+ Object.keys(pptx.shapes).length +'</span></div>');
-				}
+				$('#demo-basic').text('// STEP 1: Create a new Presentation\n'
+					+ 'var pptx = new PptxGenJS();\n'
+					+ '\n'
+					+ '// STEP 2: Add a new Slide to the Presentation\n'
+					+ 'var slide = pptx.addNewSlide();\n'
+					+ '\n'
+					+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
+					+ "slide.addText(\n"
+					+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
+					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
+					+ ");\n"
+					+ '\n'
+					+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
+					+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
+				);
+
+				/*
+				$('#demo-youtube').html("var pptx = new PptxGenJS();\n"
+					+ "var slide = pptx.addNewSlide();\n"
+					+ '\n'
+					+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
+					+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
+					+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
+					+ '\n'
+					+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
+				);
+				*/
+
+				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
+					+ "pptx.setLayout('LAYOUT_WIDE');\n"
+					+ "var slide = pptx.addNewSlide();\n"
+					+ "\n"
+					+ "// Bullets with indent levels\n"
+					+ "slide.addText(\n"
+					+ "  [\n"
+					+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
+					+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
+					+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
+					+ "  ],\n"
+					+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
+					+ ");\n"
+					+ "\n"
+					+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
+				);
+
+				$('#demo-master').html("pptx.defineSlideMaster({\n"
+					+ "  title : 'MASTER_SLIDE',\n"
+					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
+					+ "  bkgd  : 'FFFFFF',\n"
+					+ "  objects: [\n"
+					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
+					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
+					+ "    {text:  {\n"
+					+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
+					+ "        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}\n"
+					+ "    }}\n"
+					//+ "    }},\n"
+					//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
+					//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
+					+ "  ],\n"
+					+ "  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n"
+					+ "});\n"
+				);
 			}
 
 			// STEP 5: Demo setup
 			$('#tabCellLotsoText').text( gStrLoremIpsum.substring(0,3000) );
 
+			// LAST: Re-highlight code
+			$('#tab1 code, #tab7 code').each(function(idx,ele){
+				Prism.highlightElement( $(ele)[0] );
+			});
+
 			// LAST: Nav across sessions
 			doNavRestore();
-		});
+		}
+
+		// ==================================================================================================================
+		$(document).ready(function(){ doAppStart() });
 	</script>
-	<!-- Add source highlighting once script above populates code everywhere -->
-	<script src="https://cdn.rawgit.com/google/code-prettify/master/loader/run_prettify.js?skin=sunburst"></script>
 </head>
-<body>
-	<div data="anchors">
+<body class="bg-light mx-5 my-4">
+	<div data-desc="anchors">
 		<a href="#tab1"></a><a href="#tab2"></a><a href="#tab3"></a><a href="#tab4"></a><a href="#tab5"></a><a href="#tab6"></a><a href="#tab7"></a>
 	</div>
 
-	<div id="contBody">
-		<div id="contTitle" class="table">
-			<div>
-				<div class="bigTitle">
-					<a href="https://github.com/GitBrent/PptxGenJS" target="_blank" title="GitHub Project Page">PptxGenJS</a>
-				</div>
-				<div class="subTitle">
-					JavaScript PowerPoint Generation Library :: Presentation Demos
-				</div>
+	<div id="appHeader" class="container-fluid">
+		<div class="row align-items-top">
+			<div class="col-9">
+				<h1 class="text-primary"><a href="https://github.com/GitBrent/PptxGenJS" title="GitHub Project Page" target="_blank">PptxGenJS</a> Demos</h1>
+				<h5 class="text-info">JavaScript PowerPoint Generation Library</h5>
 			</div>
-			<div style="vertical-align:middle;">
-				<div id="contBtns" class="flex">
-					<div style="flex:2 0 auto">
-						<button id="btnRun" type="button" class="flatBtn shadow flatBtn-blueMd" onclick="runEveryTest()">Run All Demos</button>
+			<div class="col-3">
+				<div class="row mb-2">
+					<div class="col px-0">
+						<button id="btnRun" type="button" class="btn btn-lg btn-primary w-100" onclick="runEveryTest()">Run All Demos</button>
 					</div>
-					<div style="flex:1 0 auto">
-						<button id="btnGit" type="button" class="flatBtn small flatBtn-nsOrange" onclick="window.open('https://github.com/gitbrent/PptxGenJS')">GitHub Site</button>
+				</div>
+				<div class="row">
+					<div class="col-6 pl-0 pr-1">
+						<button id="btnGit" type="button" class="btn btn-sm btn-outline-info w-100" onclick="window.open('https://github.com/gitbrent/PptxGenJS')">GitHub Site</button>
 					</div>
-					<div style="flex:1 0 auto; text-align:right;">
-						<button id="btnDoc" type="button" class="flatBtn small flatBtn-nsPurple" onclick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation.html')">View Documentation</button>
+					<div class="col-6 pl-1 pr-0">
+						<button id="btnDoc" type="button" class="btn btn-sm btn-outline-info w-100" onclick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation.html')">API Documentation</button>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<div id="navTabs" class="modernTabs">
-			<ul>
-				<li id="nav1" class="active" onclick="doNav(1)">Introduction</li>
-				<li id="nav2" onclick="doNav(2)">HTML to PPTX</li>
-				<li id="nav3" onclick="doNav(3)">Charts</li>
-				<li id="nav4" onclick="doNav(4)">Images &amp; Media</li>
-				<li id="nav5" onclick="doNav(5)">Shapes &amp; Text</li>
-				<li id="nav6" onclick="doNav(6)">Tables</li>
-				<li id="nav7" onclick="doNav(7)">Templates</li>
-			</ul>
+	<div id="navTabs" class="flexTabs">
+		<ul>
+			<li id="nav1" class="active" onclick="doNav(1)">Introduction</li>
+			<li id="nav2" onclick="doNav(2)">HTML to PPTX</li>
+			<li id="nav3" onclick="doNav(3)">Charts</li>
+			<li id="nav4" onclick="doNav(4)">Images &amp; Media</li>
+			<li id="nav5" onclick="doNav(5)">Shapes &amp; Text</li>
+			<li id="nav6" onclick="doNav(6)">Tables</li>
+			<li id="nav7" onclick="doNav(7)">Templates</li>
+		</ul>
 
-			<div id="tab1" class="active" data-title="Intro">
-				<div id="infoBar" class="flex"></div>
-
-				<div id="tab1sec1" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Basic Presentation: Slide
-				</div>
-				<div class="sectionBox" style="display:block; padding:15px;">
-					<div id="demo-basic" class="code" style="text-align:left; margin-bottom:15px"></div>
-					<div style="text-align:center; padding:20px;">
-						<input type="button" class="flatBtn flatBtn-green" value="Basic Slide Demo" onclick="eval( $('#demo-basic').text() )">
-					</div>
-				</div>
-
-				<div id="tab1sec2" class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow"></div>Code Sandbox
-				</div>
-				<div class="sectionBox" style="display:none">
-					<div class="highlightBox">
-						Code below is editable - Test snippets of code from the demos/readme!
-					</div>
-					<div class="code" style="text-align:left; margin-bottom:15px">
-						<div id="demo-sandbox" contenteditable="true" style="background:#f1f1f1;"></div>
-					</div>
-
-					<div style="text-align:center; padding:20px;">
-						<input type="button" class="flatBtn flatBtn-nsOrange" value="Execute Sandbox Code" onclick="eval( $('#demo-sandbox').text() )">
-					</div>
+		<div id="tab1" class="active" data-title="Intro">
+			<h4 class="text-primary">Library Information</h4>
+			<div class="container-fluid mb-4">
+				<div id="infoBar" class="row align-items-center">
 				</div>
 			</div>
+			<hr>
 
-			<div id="tab2" data-title="HTML to PowerPoint">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					HTML to PowerPoint
-				</div>
-				<div style="font-size:120%; color:#696969;">
-					Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <div class="codeSnip">pptx.addSlidesForTable('tableId');</div>
-					<ul>
-						<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
-						<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
-						<li>View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html">HTML to PowerPoint documentation</a> for full details and examples</li>
-					</ul>
-					Notes:
-					<ul>
-						<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
-						<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
-					</ul>
-				</div>
-
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Basic Functionality and Options
-				</div>
-				<div class="sectionBox">
-					<div id="contAutoPagingOptions" class="sectionCont" style="flex-wrap:nowrap">
-						<fieldset>
-							<legend>Demo Table</legend>
-							<div class="tableRows" style="margin:0 0 10px 10px">
-								<div>
-									<div><label for="numTab2SlideRows">Number of Table Rows:</label></div>
-									<div><input  id="numTab2SlideRows" type="number" min="1" max="25" value="3" onchange="buildDataTable()"></div>
-								</div>
-								<div>
-									<div><label for="numTab2Padding">Cell Padding (points):</label></div>
-									<div><input  id="numTab2Padding" type="number" min="0" max="25" value="5" onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')"></div>
-								</div>
-							</div>
-						</fieldset>
-						<fieldset>
-							<legend><a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html#html-to-powerpoint-options" title="View Docs"><div class="iconSvg size24 lightbulb"></div></a>Options: Auto-Paging</legend>
-							<div class="tableRows" style="margin:0 0 10px 10px">
-								<div>
-									<div>
-										<div class="codeSnip">addHeaderToEach</div>
-									</div>
-									<div>
-										Show Table Header on Each Slide?
-									</div>
-									<div>
-										<label style="white-space:nowrap"><input type="radio" name="radioHead" value="Y" checked="checked">Yes</label>
-										<label style="white-space:nowrap"><input type="radio" name="radioHead" value="N">No</label>
-									</div>
-								</div>
-								<div>
-									<div>
-										<div class="codeSnip">newPageStartY</div>
-									</div>
-									<div>
-										<label for="numTab2SlideStartY">Y location for table on subsequent slides</label>
-									</div>
-									<div style="white-space:nowrap">
-										<label for="checkStartY" style="margin-right:3px"><input id="checkStartY" type="checkbox" onclick="$('#contStartY').toggle()">Enable?</label>
-										<span id="contStartY" style="display:none"><input id="numTab2SlideStartY" type="number" min="0" max="10" step="0.5" value="1.5"></span>
-									</div>
-								</div>
-							</div>
-						</fieldset>
-						<fieldset>
-							<legend><a href="https://gitbrent.github.io/PptxGenJS/docs/masters.html" title="View Docs"><div class="iconSvg size24 lightbulb"></div></a>Option: Master</legend>
-							<div class="tableRows" style="margin:0 0 10px 10px">
-								<div>
-									<div>Master Name:</div>
-									<div><select id="selSlideMaster"><option selected="selected">(None)</option></select></div>
-								</div>
-							</div>
-						</fieldset>
-					</div>
-
-					<table id="tabAutoPaging" class="tabCool">
-						<thead>
-							<tr>
-								<th data-pptx-min-width="0.6" style="width:5%">Row</th>
-								<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
-								<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-								<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
-							</tr>
-						</thead>
-						<tbody></tbody>
-					</table>
-
-					<div id="contAutoPagingBtns" style="text-align:center; padding:20px 20px 0 20px;">
-						<button type="button" class="flatBtn flatBtn-nsBlue"   onclick="table2slides1()">Demo Table Above</button>
-						<button type="button" class="flatBtn flatBtn-nsOrange" onclick="table2slides2()">Demo Table Above (add dynamic text)</button>
-					</div>
-				</div>
-
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow"></div>Table Styles
-				</div>
-				<div id="html2PptxTabs-styles" class="sectionBox" style="display:none">
-					<div class="sectionCont">
-						<fieldset class="demoFset">
-							<legend>Plain/Unstyled Table</legend>
-
-							<table id="tabNoStyle">
-							    <thead>
-							        <tr>
-							            <th>Name</th>
-							            <th>Email</th>
-							            <th>Company</th>
-										<th>Feedback</th>
-							        </tr>
-							    </thead>
-								<tbody>
-									<tr>
-										<td>Elon Musk</td>
-										<td>Elon@tesla.com</td>
-										<td>Tesla Motors &amp; SpaceX</td>
-										<td>PptxGenJS is almost as good as rockets that can land themselves</td>
-									</tr>
-									<tr>
-										<td>Tim Cook</td>
-										<td>tim@apple.com</td>
-										<td>Apple Inc.</td>
-										<td>Jony Ive said the Keynote team needs to hire you</td>
-									</tr>
-									<tr>
-										<td>Satya Nadella</td>
-										<td>ceo@microsoft.com</td>
-										<td>Microsoft Inc.</td>
-										<td>The PowerPoint team needs to hire you</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="demoBtns">
-								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabNoStyle')">Table-to-Slides Demo</button>
-							</div>
-						</fieldset>
-
-						<fieldset class="demoFset">
-							<legend>Inherited Style</legend>
-
-							<table id="tabInheritStyle" class="tabHtmlToPpt" cellspacing="0" cellpadding="3">
-							    <thead>
-							        <tr>
-										<th>Company</th>
-							            <th>Contact</th>
-										<th>Feedback</th>
-							        </tr>
-							    </thead>
-								<tbody>
-									<tr>
-										<td>Tesla &amp; SpaceX</td>
-										<td>Elon@tesla.com</td>
-										<td>PptxGenJS is almost as good as rockets that can land themselves</td>
-									</tr>
-									<tr>
-										<td>Apple Inc.</td>
-										<td>tim@apple.com</td>
-										<td>Jony Ive said the Keynote team needs to hire you</td>
-									</tr>
-									<tr>
-										<td>Microsoft Inc.</td>
-										<td>ceo@microsoft.com</td>
-										<td>The PowerPoint team needs to hire you</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="demoBtns">
-								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabInheritStyle')">Table-to-Slides Demo</button>
-							</div>
-						</fieldset>
-					</div>
-				</div>
-
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow"></div>Rowspans/Colspans
-				</div>
-				<div id="html2PptxTabs-spans" class="sectionBox" style="display:none">
-					<div class="sectionCont">
-						<fieldset class="demoFset">
-							<legend>Colspan</legend>
-							<table id="tabColspan" class="tabHtmlToPpt">
-								<thead>
-									<tr>
-										<th class="tg-header">First Name</th>
-										<th class="tg-header">Last Name</th>
-										<th class="tg-header" colspan="2">Colspan Column</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Jill</td>
-										<td>Smith</td>
-										<td>59</td>
-									</tr>
-									<tr>
-										<td>Eve</td>
-										<td>Pilgrim</td>
-										<td>94</td>
-									</tr>
-									<tr>
-										<td>Scott</td>
-										<td>Jackson</td>
-										<td>101</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="demoBtns">
-								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
-							</div>
-						</fieldset>
-
-						<fieldset class="demoFset">
-							<legend>Rowspan</legend>
-							<table id="tabRowspan" class="tabHtmlToPpt">
-								<thead>
-									<tr>
-										<th class="tg-header">Last Name</th>
-										<th class="tg-header">First Name</th>
-										<th class="tg-header">Count</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td rowspan="3">Smith</td>
-										<td>Liz</td>
-										<td>50</td>
-									</tr>
-									<tr>
-										<td>Eve</td>
-										<td>94</td>
-									</tr>
-									<tr>
-										<td>Scott</td>
-										<td>101</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="demoBtns">
-								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
-							</div>
-						</fieldset>
-
-						<fieldset class="demoFset">
-							<legend>Rowspan plus Colspan</legend>
-							<table id="tabRowColspan" class="tabHtmlToPpt">
-								<thead>
-									<tr>
-										<th class="tg-header" colspan="2">Name</th>
-										<th class="tg-header" rowspan="2">Count</th>
-									</tr>
-									<tr>
-										<th class="tg-header">Last</th>
-										<th class="tg-header">First</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td>Smith</td>
-										<td>Liz</td>
-										<td>50</td>
-									</tr>
-									<tr>
-										<td>Eve</td>
-										<td>Williams</td>
-										<td>94</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="demoBtns">
-								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabRowColspan',{addHeaderToEach:true})">Rowspan+Colspan Demo</button>
-								<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
-							</div>
-						</fieldset>
-					</div>
-				</div>
-
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow"></div>Auto-Paging
-				</div>
-				<div id="html2PptxTabs-spans" class="sectionBox" style="display:none">
-					<div class="sectionCont">
-						<fieldset class="demoFset">
-							<legend>Scenario: One cell with large amount of text</legend>
-							<table id="tabLotsoText" class="tabHtmlToPpt">
-								<thead>
-									<tr>
-										<th class="tg-header">Executive Status</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr>
-										<td id="tabCellLotsoText">99</td>
-									</tr>
-								</tbody>
-							</table>
-							<div class="demoBtns">
-								<button type="button" class="flatBtn flatBtn-green" onclick="table2slidesDemoForTab('tabLotsoText',{'addHeaderToEach':true})">Lots-o-Text Demo</button>
-							</div>
-						</fieldset>
-					</div>
-				</div>
-
-				<!-- FUTURE:
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Table With Bullets
-				</div>
-				<div class="sectionBox">
-					<table id="tableWithBullets" style="width:50%; font-family:Arial;">
-						<tbody>
-							<tr>
-								<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
-									<ul>
-										<li><b>Bold Text</b></li>
-										<ol>
-											<li>Nested</li>
-											<li>Nested</li>
-											<li>Nested</li>
-										</ol>
-										<li><u>Underline Text</u></li>
-									</ul>
-								</td>
-								<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
-									<ul>
-										<li>Level 1
-											<ul>
-												<li>Level 2
-													<ul>
-														<li><a href="https://google.com">Level 3 Link</a></li>
-														<li><a href="https://amazon.com">Level 3 Link</a></li>
-													</ul>
-												</li>
-											</ul>
-										</li>
-									</ul>
-								</td>
-							</tr>
-						</tbody>
-					</table>
-					<div style="text-align:center; padding:20px;">
-						<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesBullets()" value="Bullet Table Demo">
-					</div>
-				</div>
-				-->
+			<h5 id="tab1sec1" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+				<div class="arrow active"></div>Simple Presentation
+			</h5>
+			<div class="text-center">
+				<pre class="mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
+				<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-basic').text() )">Basic Slide Demo</button>
 			</div>
 
-			<div id="tab3" data-title="Charts">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Charts
+			<h5 id="tab1sec2" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+				<div class="arrow"></div>Code Sandbox
+			</h5>
+			<div style="display:none">
+				<div class="bde-callout-info bg-light">
+					<div class="h5 mb-1">Editable Code</div>
+					<div class="text-muted">Use the area below to easily try out various library features.</div>
 				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-							<legend>Bar Chart</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Vertical/Horizontal bars</div>
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Grid/Axis options</div>
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Stacked/PercentStacked Bars</div>
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lots of Bars</div>
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Bar colors, majorUnit, Number Format</div>
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>3D bar</div>
-						</fieldset>
-						<fieldset>
-							<legend>Tornado Chart</legend>
-							<h3>Slide 7</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Tornado Type</div>
-						</fieldset>
-						<fieldset>
-							<legend>Line Chart</legend>
-							<h3>Slide 7</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Line Smoothing,<br>Shadow,<br>Size,<br>Symbol Size</div>
-							<h3>Slide 8</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>lineDataSymbol,<br>SymbolSize</div>
-							<h3>Slide 9</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>lineDataSymbol and SymbolSize</div>
-							<h3>Slide 10</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lots of Categories</div>
-						</fieldset>
-						<fieldset>
-							<legend>Area Chart</legend>
-							<h3>Slide 11</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Opacity and other options</div>
-						</fieldset>
-						<fieldset>
-							<legend>Pie Chart</legend>
-							<h3>Slide 12</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various options</div>
-							<h3>Slide 13</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Doughnut Type</div>
-						</fieldset>
-						<fieldset>
-							<legend>X Y (Scatter) Chart</legend>
-							<h3>Slide 14</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Options</div>
-						</fieldset>
-						<fieldset>
-							<legend>Bubble Chart</legend>
-							<h3>Slide 15</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Options</div>
-						</fieldset>
-						<fieldset>
-							<legend>Radar Chart</legend>
-							<h3>Slide 15</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Options</div>
-						</fieldset>
-						<fieldset>
-							<legend>Multi-Type Charts</legend>
-							<h3>Slide 16</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Various Mixed Chart Types</div>
-						</fieldset>
-						<fieldset>
-							<legend>Chart Options</legend>
-							<h3>Slide 17</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shadows and Transparent Color</div>
-						</fieldset>
-					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Chart')">
-					</div>
-				</div>
+				<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true"></code></pre>
+				<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
+			</div>
+		</div>
+
+		<div id="tab2" data-title="HTML to PowerPoint">
+			<h4 class="text-primary">HTML to PowerPoint</h4>
+			<p class="text-muted">
+				Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code class="p-1">pptx.addSlidesForTable('tableId');</code><br>
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html" target="_blank">HTML to PowerPoint documentation</a> for full details and examples
+			</p>
+
+			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+				<div class="arrow"></div>Usage Notes &amp; Tips
+			</h5>
+			<div class="text-muted mb-4" style="display:none">
+				Usage:
+				<ul>
+					<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
+					<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
+				</ul>
+				Tips:
+				<ul>
+					<li>If you need to modify your table before creating the Presenation, use jQuery to clone() it and do the modifications on that table</li>
+					<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
+					<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
+				</ul>
 			</div>
 
-			<div id="tab4" data-title="Images/Media">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Images &amp; Media
-				</div>
-				<div>
-					<div class="sectionBox">
-						<div class="sectionCont">
-							<fieldset>
-								<legend>Images: Various Types</legend>
-								<h3>Slide 1</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Animated GIF (shows in Presenation mode)</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Images from local and remote CDN URLs</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Pre-encoded images (using `data:[base64]`)</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Images with hyperlinks/tooltips</div>
-							</fieldset>
-							<fieldset>
-								<legend>Images: Sizing and Rounding</legend>
-								<h3>Slide 2</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Image Rounding</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Contain</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Cover</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Sizing: Crop</div>
-							</fieldset>
+			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+				<div class="arrow active"></div>Demo: Options
+			</h5>
+			<div class="container-fluid m-0 p-2">
+				<div class="row mb-3">
+					<div class="col-3">
+						<div class="card">
+							<h6 class="card-header">Table Setup</h6>
+							<div class="card-body">
+								<div class="row">
+									<div class="col">
+										<label for="numTab2SlideRows" class="text-muted">Table Rows</label>
+										<input  id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="3" onchange="buildDataTable()">
+									</div>
+									<div class="col">
+										<label for="numTab2Padding" class="text-muted">Cell Padding</label>
+										<input  id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="5" onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+										<!--<small class="text-info">(points)</small>-->
+									</div>
+								</div>
+								<code>&nbsp;</code>
+							</div>
 						</div>
-						<div class="sectionCont">
-							<fieldset>
-								<legend>Media: Video</legend>
-								<h3>Slide 3</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Various formats&nbsp;&nbsp;
-									<span style="color:red; background:#fffccc;">(most OS's wont have every format codec - YMMV)</span>
+					</div>
+					<div class="col-6">
+						<div class="card">
+							<h6 class="card-header">Paging Options</h6>
+							<div class="card-body">
+								<div class="row">
+									<div class="col">
+										<label class="text-muted">Repeat Table Head on each Slide</label>
+										<div class="form-control">
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y" checked>
+												<label class="form-check-label" for="radioHeadY">Yes</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N">
+												<label class="form-check-label" for="radioHeadN">No</label>
+											</div>
+										</div>
+										<code>addHeaderToEach</code>
+									</div>
+									<div class="col">
+										<label class="text-muted">Starting top location (<code>y</code>) after first slide</label>
+										<div class="form-check form-check-inline w-100">
+											<div class="col px-0 text-nowrap">
+												<div class="form-control">
+													<input class="form-check-input" type="checkbox" id="checkStartY" onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
+													<label class="form-check-label" for="checkStartY">Enable?</label>
+												</div>
+											</div>
+											<div class="col px-0">
+												<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
+											</div>
+										</div>
+										<code>newPageStartY</code>
+									</div>
 								</div>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>YouTube&nbsp;&nbsp;
-									<span style="color:red; background:#fffccc;">(only supported in PowerPoint Online)</span>
-								</div>
-								<div class="chkRow">
-									<div style="margin-left:20px"><input id="chkYoutube" type="checkbox"><label for="chkYoutube">Include YouTube demo?</label></div>
-									<div style="margin-left:20px; color:#d7d7d7;">(open in PowerPoint Online or a content warning will show in desktop app)</div>
-								</div>
-							</fieldset>
-							<fieldset>
-								<legend>Media: Audio</legend>
-								<h3>Slide 4</h3>
-								<div class="chkRow"><div class="iconSvg size16 yes"></div>Misc Audio formats (mp3, wav)</div>
-							</fieldset>
+							</div>
 						</div>
-						<div>
-							<input type="button" class="flatBtn flatBtn-green" style="margin-right:10px !important" value="Generate Demo: Images" onclick="execGenSlidesFuncs(['Image'])">
-							<input type="button" class="flatBtn flatBtn-green" style="margin-right:10px !important" value="Generate Demo: Media" onclick="execGenSlidesFuncs(['Media'])">
-							<input type="button" class="flatBtn flatBtn-blueMd" value="Generate Demo: Images and Media" onclick="execGenSlidesFuncs(['Image','Media'])">
+					</div>
+					<div class="col-3">
+						<div class="card">
+							<h6 class="card-header">Master Slide</h6>
+							<div class="card-body">
+								<div class="row">
+									<div class="col">
+										<label class="text-muted">Select a Master Slide</label>
+										<select id="selSlideMaster" class="form-control"><option selected="selected">(None)</option></select>
+										<div>&nbsp;</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<table id="tabAutoPaging" class="tabDemo">
+					<thead>
+						<tr>
+							<th data-pptx-min-width="0.6" style="width:5%">Row</th>
+							<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
+							<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
+							<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
+						</tr>
+					</thead>
+					<tbody></tbody>
+				</table>
+
+				<div class="text-center p-3">
+					<button type="button" class="btn btn-success w-25 mr-3"    onclick="table2slides1()">Demo Table Above</button>
+					<button type="button" class="btn btn-outline-success w-25" onclick="table2slides2()">Demo Table Above (add dynamic text)</button>
+				</div>
+			</div>
+
+			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+				<div class="arrow"></div>Demo: Table Styles
+			</h5>
+			<div class="container-fluid m-0 p-2" style="display:none;">
+				<div class="card mb-4">
+					<h6 class="card-header">Plain/Unstyled Table</h6>
+					<div class="card-body">
+						<table id="tabNoStyle" class="mb-3 w-100">
+						    <thead>
+						        <tr>
+						            <th>Name</th>
+						            <th>Email</th>
+						            <th>Company</th>
+									<th>Feedback</th>
+						        </tr>
+						    </thead>
+							<tbody>
+								<tr>
+									<td>Elon Musk</td>
+									<td>Elon@tesla.com</td>
+									<td>Tesla Motors &amp; SpaceX</td>
+									<td>PptxGenJS is almost as good as rockets that can land themselves</td>
+								</tr>
+								<tr>
+									<td>Tim Cook</td>
+									<td>tim@apple.com</td>
+									<td>Apple Inc.</td>
+									<td>Jony Ive said the Keynote team needs to hire you</td>
+								</tr>
+								<tr>
+									<td>Satya Nadella</td>
+									<td>ceo@microsoft.com</td>
+									<td>Microsoft Inc.</td>
+									<td>The PowerPoint team needs to hire you</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="text-center">
+							<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabNoStyle')">Unstyled Demo</button>
+						</div>
+					</div>
+				</div>
+
+				<div class="card mb-4">
+					<h6 class="card-header">CSS via <code>&lt;style&gt;</code></h6>
+					<div class="card-body">
+						<table id="tabInheritStyle" class="tabHtmlToPpt mb-3 w-100">
+						    <thead>
+						        <tr>
+									<th>Company</th>
+						            <th>Contact</th>
+									<th>Feedback</th>
+						        </tr>
+						    </thead>
+							<tbody>
+								<tr>
+									<td>Tesla &amp; SpaceX</td>
+									<td>Elon@tesla.com</td>
+									<td>PptxGenJS is almost as good as rockets that can land themselves</td>
+								</tr>
+								<tr>
+									<td>Apple Inc.</td>
+									<td>tim@apple.com</td>
+									<td>Jony Ive said the Keynote team needs to hire you</td>
+								</tr>
+								<tr>
+									<td>Microsoft Inc.</td>
+									<td>ceo@microsoft.com</td>
+									<td>The PowerPoint team needs to hire you</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="text-center">
+							<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabInheritStyle')">Stylesheet Demo</button>
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div id="tab5" data-title="Shapes/Text">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Shapes &amp; Text
-				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-							<legend>Shape Objects</legend>
-
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shapes: Rectangle, Line, Oval, Triangle</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shapes: Flipped, With and Without Text</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Shape Borders</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Lines: With and Without Arrowheads</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Same Shapes with Text</div>
-						</fieldset>
-						<fieldset>
-							<legend>Text Objects</legend>
-
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Word-Level Formatting</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Multi-Line Text</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Hyperlinks, Text Shadow, Text Outline</div>
-
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Bullets: Regular and Custom</div>
-
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Text alignment, percent x/y, etc</div>
-
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Scheme Colors</div>
-						</fieldset>
+			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+				<div class="arrow"></div>Demo: Rowspans/Colspans
+			</h5>
+			<div class="card-deck m-0 p-2" style="display:none;">
+				<div class="card">
+					<h6 class="card-header">Colspan</h6>
+					<div class="card-body">
+						<table id="tabColspan" class="tabHtmlToPpt w-100">
+							<thead>
+								<tr>
+									<th class="tg-header">First Name</th>
+									<th class="tg-header">Last Name</th>
+									<th class="tg-header" colspan="2">Colspan TH</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Jill</td>
+									<td>Smith</td>
+									<td>12</td>
+									<td>34</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>Pilgrim</td>
+									<td>56</td>
+									<td>67</td>
+								</tr>
+								<tr>
+									<td>Scott</td>
+									<td>Jackson</td>
+									<td>89</td>
+									<td>99</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="mt-3 text-center">
+							<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
+						</div>
 					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs(['Shape','Text'])">
+				</div>
+				<div class="card">
+					<h6 class="card-header">Rowspan</h6>
+					<div class="card-body">
+						<table id="tabRowspan" class="tabHtmlToPpt w-100">
+							<thead>
+								<tr>
+									<th class="tg-header">Last Name</th>
+									<th class="tg-header">First Name</th>
+									<th class="tg-header">Count</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td rowspan="3">Smith</td>
+									<td>Liz</td>
+									<td>50</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>94</td>
+								</tr>
+								<tr>
+									<td>Scott</td>
+									<td>101</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="mt-3 text-center">
+							<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
+						</div>
+					</div>
+				</div>
+				<div class="card">
+					<h6 class="card-header">Rowspan and Colspan</h6>
+					<div class="card-body">
+						<table id="tabRowColspan" class="tabHtmlToPpt w-100">
+							<thead>
+								<tr>
+									<th class="tg-header" colspan="2">Name</th>
+									<th class="tg-header" rowspan="2">Count</th>
+								</tr>
+								<tr>
+									<th class="tg-header">Last</th>
+									<th class="tg-header">First</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td>Smith</td>
+									<td>Liz</td>
+									<td>50</td>
+								</tr>
+								<tr>
+									<td>Eve</td>
+									<td>Williams</td>
+									<td>94</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="mt-3 text-center">
+							<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabRowColspan')">Rowspan/Colspan Demo</button>
+							<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<div id="tab6" data-title="Tables">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Tables
-				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-					    	<legend>Table Layout/Format</legend>
-
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Text Alignment</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Styles</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Row Height / Col Width</div>
-
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Colspans/Rowspans</div>
-
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Extreme Colspans/Rowspans</div>
-						</fieldset>
-						<fieldset style="height:auto">
-							<legend>Cell Formatting</legend>
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Margins</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Complex Cell Borders</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Escaped Special Characters</div>
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Text Formatting Overview</div>
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Cell Text Formatting Examples 2</div>
-						</fieldset>
-						<fieldset style="height:auto">
-							<legend>Table Auto-Paging</legend>
-							<h3>Slide 7-n</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test basic functionality</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with small table dimensions</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with correct starting `{y:4.0}`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with `{ newPageStartY:0.5 }`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Test with `{ autoPage:false }`</div>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>Three Tables with various `lineWeight`</div>
-						</fieldset>
-					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Table')">
+			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+				<div class="arrow"></div>Demo: Auto-Paging
+			</h5>
+			<div class="container-fluid m-0 p-2" style="display:none;">
+				<div class="card mb-4">
+					<h6 class="card-header">Example: Paging needed due to cell with large amount of text</h6>
+					<div class="card-body">
+						<table id="tabLotsoText" class="tabHtmlToPpt">
+							<thead>
+								<tr>
+									<th class="tg-header">Executive Status</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td id="tabCellLotsoText">99</td>
+								</tr>
+							</tbody>
+						</table>
+						<div class="mt-3 text-center">
+							<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabLotsoText')">Lots-o-Text Demo</button>
+						</div>
 					</div>
 				</div>
 			</div>
 
-			<div id="tab7" data-title="Templates/Master Slides">
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-					onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-					<div class="arrow active"></div>Slide Masters / Templates / Layouts
+			<!-- FUTURE:
+			<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+				onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+				<div class="arrow active"></div>Table With Bullets
+			</div>
+			<div class="sectionBox">
+				<table id="tableWithBullets" style="width:50%; font-family:Arial;">
+					<tbody>
+						<tr>
+							<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+								<ul>
+									<li><b>Bold Text</b></li>
+									<ol>
+										<li>Nested</li>
+										<li>Nested</li>
+										<li>Nested</li>
+									</ol>
+									<li><u>Underline Text</u></li>
+								</ul>
+							</td>
+							<td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+								<ul>
+									<li>Level 1
+										<ul>
+											<li>Level 2
+												<ul>
+													<li><a href="https://google.com">Level 3 Link</a></li>
+													<li><a href="https://amazon.com">Level 3 Link</a></li>
+												</ul>
+											</li>
+										</ul>
+									</li>
+								</ul>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div style="text-align:center; padding:20px;">
+					<input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesBullets()" value="Bullet Table Demo">
 				</div>
-				<div class="sectionBox">
-					<div class="sectionCont">
-						<fieldset>
-					    	<legend>Misc Tests</legend>
-							<h3>Slide 1</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>TITLE_SLIDE</div>
+			</div>
+			-->
+		</div>
 
-							<h3>Slide 2</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>MASTER_SLIDE</div>
+		<div id="tab3" data-title="Charts">
+			<h4 class="text-primary">Chart Demos</h4>
+			<p class="text-muted">
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-charts.html" target="_blank">chart documentation</a> for full details and examples
+			</p>
 
-							<h3>Slide 3</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>MASTER_SLIDE</div>
+			<div class="d-flex flex-wrap mb-1">
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Bar Chart</h6>
+					<div class="card-body text-nowrap">
+						<div>Slide 1 - <span class="text-muted">Vertical/Horizontal bars</span></div>
+						<div>Slide 2 - <span class="text-muted">Grid/Axis options</span></div>
+						<div>Slide 3 - <span class="text-muted">Stacked/PercentStacked Bars</span></div>
+						<div>Slide 4 - <span class="text-muted">Lots of Bars</span></div>
+						<div>Slide 5 - <span class="text-muted">Bar colors, majorUnit, Number Format</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Tornado Chart</h6>
+					<div class="card-body">
+						<div>Slide 6 - <span class="text-muted">Tornado Type</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Line Chart</h6>
+					<div class="card-body">
+						<div>Slide 7 - <span class="text-muted">Line Smoothing, Shadow, Size, Symbol Size</span></div>
+						<div>Slide 8 - <span class="text-muted">lineDataSymbol, SymbolSize</span></div>
+						<div>Slide 9 - <span class="text-muted">Lots of Categories</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Area Chart</h6>
+					<div class="card-body">
+						<div>Slide 10 - <span class="text-muted">Opacity and other options</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Pie Chart</h6>
+					<div class="card-body">
+						<div>Slide 11 - <span class="text-muted">Various options</span></div>
+						<div>Slide 12 - <span class="text-muted">Doughnut Type</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">X Y (Scatter) Chart</h6>
+					<div class="card-body">
+						<div>Slide 13 - <span class="text-muted">Various Options</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Bubble Chart</h6>
+					<div class="card-body">
+						<div>Slide 14 - <span class="text-muted">Various Options</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Radar Chart</h6>
+					<div class="card-body">
+						<div>Slide 15 - <span class="text-muted">Various Options</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Multi-Type Chart</h6>
+					<div class="card-body">
+						<div>Slide 16 - <span class="text-muted">Various Mixed-Chart Types</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">Chart Options</h6>
+					<div class="card-body">
+						<div>Slide 17 - <span class="text-muted">Shadows and Transparent Color</span></div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs('Chart')">Generate Chart Demo</button>
+			</div>
+		</div>
 
-							<h3>Slide 4</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>MASTER_SLIDE</div>
+		<div id="tab4" data-title="Images/Media">
+			<h4 class="text-primary">Image Demos</h4>
+			<p class="text-muted">
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-images.html" target="_blank">image documentation</a> for full details and examples
+			</p>
+			<div class="card-deck mb-4">
+				<div class="card bg-light2">
+					<h6 class="card-header">Image Types and Sources</h6>
+					<div class="card-body">
+						<div>Slide 1</div>
+						<div class="text-muted">- Type: Animated GIF <small class="text-warning ml-2">(use Slide Show)</small></div>
+						<div class="text-muted">- Type: GIF</div>
+						<div class="text-muted">- Type: JPG</div>
+						<div class="text-muted">- Type: PNG</div>
+						<div class="text-muted">- Type: SVG</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Image URLs</h6>
+					<div class="card-body">
+						<div>Slide 2</div>
+						<div class="text-muted">- Using GitHub CDN</div>
+						<div class="text-muted">- Using Wikimedia URL</div>
+						<div class="text-muted">- Using URL variables, etc</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Sizing and Rounding</h6>
+					<div class="card-body">
+						<div>Slide 3</div>
+						<div class="text-muted">- Image Rounding</div>
+						<div class="text-muted">- Sizing: Contain</div>
+						<div class="text-muted">- Sizing: Cover</div>
+						<div class="text-muted">- Sizing: Crop</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Image'])">Image Demo</button>
+			</div>
 
-							<h3>Slide 5</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>MASTER_SLIDE</div>
-
-							<h3>Slide 6</h3>
-							<div class="chkRow"><div class="iconSvg size16 yes"></div>THANKS_SLIDE</div>
-						</fieldset>
-						<fieldset>
-					    	<legend>Example</legend>
-							<h3>Creating Slide Masters is easy!</h3>
-							<p></p>
-							<div style="margin-left:10px">
-								<code>pptx.defineSlideMaster({</code>
-								<code>  title : 'MASTER_SLIDE',</code>
-								<code>  margin: [0.5, 0.25, 1.00, 0.25],</code>
-								<code>  bkgd  : 'FFFFFF',</code>
-								<code>  objects: [</code>
-								<code>    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},</code>
-								<code>    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},</code>
-								<code>    {text:  {</code>
-								<code>        text:'S.T.A.R. Laboratories - Confidential',</code>
-								<code>        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}</code>
-								<code>    }},</code>
-								<code>    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}</code>
-								<code>    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}</code>
-								<code>  ],</code>
-								<code>  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }</code>
-								<code>});</code>
+			<h4 class="text-primary mt-4">Media Demos</h4>
+			<p class="text-muted">
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-media.html" target="_blank">media documentation</a> for full details and examples
+			</p>
+			<div class="card-deck mb-4">
+				<div class="card bg-light2">
+					<h6 class="card-header">Video</h6>
+					<div class="card-body">
+						<div>Slide 1</div>
+						<div class="text-muted">- Various formats (most OS's wont have every format codec - <abbr title="Your Milage May Vary">YMMV</abbr>)</div>
+						<div class="text-muted">- YouTube (only supported in PowerPoint Online / PowerPoint desktop v16+)</div>
+						<div class="form-control my-2">
+							<div class="form-check form-check-inline">
+								<input class="form-check-input"  id="chkYoutube" type="checkbox">
+								<label class="form-check-label" for="chkYoutube">Include YouTube video?</label>
 							</div>
-						</fieldset>
-					</div>
-					<div>
-						<input type="button" class="flatBtn flatBtn-green" value="Generate Demo Presentation" onclick="execGenSlidesFuncs('Master')">
+						</div>
+						<small class="text-warning">NOTE: opening a presentation with a YouTube video will show a content warning in desktop PowerPoint v15 or earlier</small>
 					</div>
 				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Audio</h6>
+					<div class="card-body">
+						<div>Slide 2</div>
+						<div class="text-muted">- Misc Audio formats (mp3, wav)</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Media'])">Media Demo</button>
+			</div>
+		</div>
+
+		<div id="tab5" data-title="Shapes/Text">
+			<h4 class="text-primary">Shape Demos</h4>
+			<p class="text-muted">
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html" target="_blank">shape documentation</a> for full details and examples
+			</p>
+			<div class="card-deck mb-4">
+				<div class="card bg-light2">
+					<h6 class="card-header">Core Shape Types</h6>
+					<div class="card-body">
+						<div>Slide 1</div>
+						<div class="text-muted">- Shapes: Rectangle, Line, Oval, Triangle</div>
+						<div class="text-muted">- Shapes: Flipped, With and Without Text</div>
+						<div class="text-muted">- Shape Borders</div>
+						<div class="text-muted">- Lines: With and Without Arrowheads</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Core Shape Types with Text</h6>
+					<div class="card-body">
+						<div>Slide 2</div>
+						<div class="text-muted">- Shapes: Rectangle, Line, Oval, Triangle</div>
+						<div class="text-muted">- Shapes: Flipped, With and Without Text</div>
+						<div class="text-muted">- Shape Borders</div>
+						<div class="text-muted">- Lines: With and Without Arrowheads</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Shape'])">Shape Demo</button>
+			</div>
+
+			<h4 class="text-primary mt-4">Text Demos</h4>
+			<p class="text-muted">
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-text.html" target="_blank">text documentation</a> for full details and examples
+			</p>
+			<div class="card-deck mb-4">
+				<div class="card bg-light2">
+					<h6 class="card-header">Text Types</h6>
+					<div class="card-body">
+						<div>Slide 1</div>
+						<div class="text-muted">- Word-Level Formatting</div>
+						<div class="text-muted">- Multi-Line Text</div>
+						<div class="text-muted">- Hyperlinks, Text Shadow, Text Outline</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Text Bullets</h6>
+					<div class="card-body">
+						<div>Slide 2</div>
+						<div class="text-muted">- Regular</div>
+						<div class="text-muted">- Custom Shapes</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Text Alignment</h6>
+					<div class="card-body">
+						<div>Slide 3</div>
+						<div class="text-muted">- Text alignment</div>
+						<div class="text-muted">- <code>x</code>/<code>y</code> percent values</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Text Schemes</h6>
+					<div class="card-body">
+						<div>Slide 4</div>
+						<div class="text-muted">- Scheme Colors</div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Text'])">Text Demo</button>
+			</div>
+		</div>
+
+		<div id="tab6" data-title="Tables">
+			<h4 class="text-primary">Table Demos</h4>
+			<p class="text-muted">
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-table.html" target="_blank">table documentation</a> for full details and examples
+			</p>
+			<div class="card-deck mb-4">
+				<div class="card bg-light2">
+					<h6 class="card-header">Table Layout/Format</h6>
+					<div class="card-body">
+						<div>Slide 1</div>
+						<div class="text-muted">- Text Alignment</div>
+						<div class="text-muted">- Cell Styles</div>
+						<div class="text-muted">- Row Height / Col Width</div>
+
+						<div class="mt-2">Slide 2</div>
+						<div class="text-muted">- Colspans/Rowspans</div>
+
+						<div class="mt-2">Slide 3</div>
+						<div class="text-muted">- Extreme Colspans/Rowspans</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Cell Formatting</h6>
+					<div class="card-body">
+						<div>Slide 4</div>
+						<div class="text-muted">- Cell Margins</div>
+						<div class="text-muted">- Complex Cell Borders</div>
+						<div class="text-muted">- Escaped Special Characters</div>
+
+						<div class="mt-2">Slide 5</div>
+						<div class="text-muted">- Cell Text Formatting Overview</div>
+
+						<div class="mt-2">Slide 6</div>
+						<div class="text-muted">- Cell Text Formatting Examples</div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Table Auto-Paging</h6>
+					<div class="card-body">
+						<div>Slide 7+</div>
+						<div class="text-muted">- Test basic functionality</div>
+						<div class="text-muted">- Test with small table dimensions</div>
+						<div class="text-muted">- Test with correct starting <code>{y:4.0}</code></div>
+						<div class="text-muted">- Test with <code>{ newPageStartY:0.5 }</code></div>
+						<div class="text-muted">- Test with <code>{ autoPage:false }</code></div>
+						<div class="text-muted">- Three Tables with various <code>lineWeight</code></div>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Table'])">Table Demo</button>
+			</div>
+		</div>
+
+		<div id="tab7" data-title="Templates/Master Slides">
+			<h4 class="text-primary">Slide Masters / Templates / Layouts</h4>
+			<p class="text-muted">
+				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/masters.html" target="_blank">masters documentation</a> for full details and examples
+			</p>
+
+			<div class="card-deck mb-4">
+				<div class="card bg-light2" style="max-width:18%">
+					<h6 class="card-header">Misc Master Slides</h6>
+					<div class="card-body">
+						<div>Slide 1 - <span class="text-muted">TITLE_SLIDE</span></div>
+						<div>Slide 2 - <span class="text-muted">MASTER_SLIDE</span></div>
+						<div>Slide 3 - <span class="text-muted">MASTER_SLIDE</span></div>
+						<div>Slide 4 - <span class="text-muted">MASTER_SLIDE</span></div>
+						<div>Slide 5 - <span class="text-muted">MASTER_SLIDE</span></div>
+						<div>Slide 6 - <span class="text-muted">THANKS_SLIDE</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2">
+					<h6 class="card-header">Creating Slide Masters is easy!</h6>
+					<div class="card-body">
+						<pre class="mb-3"><code id="demo-master" class="language-javascript"></code></pre>
+					</div>
+				</div>
+			</div>
+			<div class="text-center">
+				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Master'])">Master Demo</button>
 			</div>
 		</div>
 	</div>

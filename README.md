@@ -1,18 +1,18 @@
-[![Open Source Love](https://badges.frapsoft.com/os/v1/open-source.svg?v=103)](https://github.com/ellerbrock/open-source-badge/)  [![MIT Licence](https://img.shields.io/github/license/gitbrent/pptxgenjs.svg)](https://opensource.org/licenses/mit-license.php)  [![npm version](https://img.shields.io/npm/v/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)  [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)
+[![MIT Licence](https://img.shields.io/github/license/gitbrent/pptxgenjs.svg)](https://opensource.org/licenses/mit-license.php)  [![Dependency Status](https://david-dm.org/gitbrent/pptxgenjs/status.svg)](https://david-dm.org/gitbrent/pptxgenjs)  [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs)  [![Package Quality](http://npm.packagequality.com/shield/pptxgenjs.png?style=flat-square)](https://github.com/gitbrent/pptxgenjs)  [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)  [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
 
 # PptxGenJS
 
-### JavaScript library that produces PowerPoint (pptx) presentations
+## JavaScript library that creates PowerPoint presentations
 
 Quickly and easily create PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
 
-## Main Features
+### Main Features
 * Widely Supported: Creates and downloads presentations on all current web browsers (Chrome, Edge, Firefox, etc.) and IE11
 * Full Featured: Slides can include Charts, Images, Media, Shapes, Tables and Text (plus Master Slides/Templates)
 * Easy To Use: Entire PowerPoint presentations can be created in a few lines of code
 * Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
 
-## Additional Features
+### Additional Features
 * Use the unique [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to copy an HTML table into 1 or more Slides with a single command
 
 **************************************************************************************************
@@ -45,11 +45,9 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
 - [Integration with Other Libraries](#integration-with-other-libraries)
 - [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
+- [Typescript Definitions](#typescript-definitions)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
-- [Version 2.0 Breaking Changes](#version-20-breaking-changes)
-  - [All Users](#all-users)
-  - [Node Users](#node-users)
 - [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
 - [Support Us](#support-us)
@@ -59,22 +57,22 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 
 **************************************************************************************************
 # Live Demo
-Use JavaScript to Create a PowerPoint presentation with your web browser right now:
+Use JavaScript to create a PowerPoint presentation with your web browser right now:  
 [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
 # Installation
 ## Client-Side
 ### Include Local Scripts
 ```javascript
-<script lang="javascript" src="PptxGenJS/libs/jquery.min.js"></script>
-<script lang="javascript" src="PptxGenJS/libs/jszip.min.js"></script>
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.js"></script>
+<script src="PptxGenJS/libs/jquery.min.js"></script>
+<script src="PptxGenJS/libs/jszip.min.js"></script>
+<script src="PptxGenJS/dist/pptxgen.js"></script>
 ```
 * IE11 support requires a Promises polyfill as well (included in the libs folder)
 
 ### Include Bundled Script
 ```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.bundle.js"></script>
+<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 ```
 * Bundle script includes all libraries: jQuery + JSzip + PptxGenJS + Promises
 
@@ -114,11 +112,11 @@ That's really all there is to it!
 # Library API
 
 ## Presentation Creation/Options
-[Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)
-[Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)
+[Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)  
+[Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)  
 
 ## Slide Creation/Options
-[Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)
+[Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)  
 [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
 
 ## Saving a Presentation
@@ -172,8 +170,14 @@ include the `pptxgen.shapes.js` library.
 The shapes file contains a complete PowerPoint Shape object array thanks to the [officegen project](https://github.com/Ziv-Barber/officegen).
 
 ```javascript
-<script lang="javascript" src="PptxGenJS/dist/pptxgen.shapes.js"></script>
+<script src="PptxGenJS/dist/pptxgen.shapes.js"></script>
 ```
+
+
+**************************************************************************************************
+# Typescript Definitions
+
+As of version 2.3.0, typescript definitions are available (`pptxgen.d.ts`).
 
 
 **************************************************************************************************
@@ -184,6 +188,7 @@ Please file issues or suggestions on the [issues page on github](https://github.
 When reporting issues, please include a code snippet or a link demonstrating the problem.
 Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is already configured and uses the latest PptxGenJS code.
 
+
 **************************************************************************************************
 # Need Help?
 
@@ -192,38 +197,9 @@ Sometimes implementing a new library can be a difficult task and the slightest m
 If you are having issues getting a presentation to generate, check out the demos in the `examples` directory. There
 are demos for both Nodejs and client-browsers that contain working examples of every available library feature.
 
-* Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/)
+* Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/)
 * Use Ask Question on [StackOverflow](http://stackoverflow.com/) - be sure to tag it with "PptxGenJS"
 
-**************************************************************************************************
-# Version 2.0 Breaking Changes
-
-Please note that version 2.0.0 enabled some much needed cleanup, but may break your previous code...
-(however, a quick search-and-replace will fix any issues).
-
-While the changes may only impact cosmetic properties, it's recommended you test your solutions thoroughly before upgrading PptxGenJS to the 2.0 version.
-
-## All Users
-The library `getVersion()` method is now a property: `version`
-
-Option names are now caseCase across all methods:
-* `font_face` renamed to `fontFace`
-* `font_size` renamed to `fontSize`
-* `line_dash` renamed to `lineDash`
-* `line_head` renamed to `lineHead`
-* `line_size` renamed to `lineSize`
-* `line_tail` renamed to `lineTail`
-
-Options deprecated in early 1.0 versions (hopefully nobody still uses these):
-* `marginPt` renamed to `margin`
-
-
-## Node Users
-
-**Major Change**
-* `require('pptxgenjs')` no longer returns a singleton instance
-* `pptx = new PptxGenJS()` will create a single, unique instance
-* Advantage: Creating [multiple presentations](#saving-multiple-presentations) is much easier now - see [Issue #83](https://github.com/gitbrent/PptxGenJS/issues/83) for more).
 
 **************************************************************************************************
 # Unimplemented Features
@@ -237,6 +213,7 @@ These include:
 * Outlines
 * SmartArt
 
+
 **************************************************************************************************
 # Special Thanks
 
@@ -245,14 +222,16 @@ These include:
 * [kajda90](https://github.com/kajda90) - New Master Slide Layouts
 * [Connor Bowman](https://github.com/conbow) - Adding Placeholders
 * PPTX Chart Experts: [kajda90](https://github.com/kajda90), [Matt King](https://github.com/kyrrigle), [Mike Wilcox](https://github.com/clubajax)
-* Everyone who has submitted an Issue or Pull Request. :-)
+* Everyone who has [contributed](https://github.com/gitbrent/PptxGenJS/graphs/contributors), submitted an Issue, or created Pull Request.
+
 
 **************************************************************************************************
 # Support Us
 
 Do you like this library and find it useful?  Tell the world about us! [PptxGenJS project](https://github.com/gitbrent/PptxGenJS)
 
-Thanks to everyone who supports this project! <3
+Thanks to everyone who supports this project! &#10084;
+
 
 **************************************************************************************************
 # License
