@@ -75,7 +75,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20190101";
+	var APP_BLD = "20190110";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2833,12 +2833,12 @@ var PptxGenJS = function(){
 		switch ( chartType ) {
 			case 'area':
 			case 'bar':
-			case 'line':
 			case 'bar3D':
+			case 'line':
 			case 'radar':
 				// 1: Start Chart
 				strXml += '<c:'+ chartType +'Chart>';
-				if ( chartType == 'bar' || chartType == 'bar3D') {
+				if ( chartType == 'bar' || chartType == 'bar3D' ) {
 					strXml += '<c:barDir val="'+ opts.barDir +'"/>';
 					strXml += '<c:grouping val="'+ opts.barGrouping + '"/>';
 				}
@@ -3073,13 +3073,12 @@ var PptxGenJS = function(){
 				if ( chartType == 'bar' ) {
 					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
 					strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
-
 				}
 				else if ( chartType == 'bar3D' ) {
-                    strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
-                    strXml += '  <c:gapDepth val="'+ opts.barGapDepthPct +'"/>';
-                    strXml += '  <c:shape val="'+ opts.bar3DShape +'"/>';
-                }
+					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
+					strXml += '  <c:gapDepth val="'+ opts.barGapDepthPct +'"/>';
+					strXml += '  <c:shape val="'+ opts.bar3DShape +'"/>';
+				}
 				else if ( chartType == 'line' ) {
 					strXml += '  <c:marker val="1"/>';
 				}
@@ -3087,7 +3086,7 @@ var PptxGenJS = function(){
 				// 4: Add axisId (NOTE: order matters! (category comes first))
 				strXml += '  <c:axId val="'+ catAxisId +'"/>';
 				strXml += '  <c:axId val="'+ valAxisId +'"/>';
-                strXml += '  <c:axId val="'+ AXIS_ID_SERIES_PRIMARY +'"/>';
+				strXml += '  <c:axId val="'+ AXIS_ID_SERIES_PRIMARY +'"/>';
 
 				// 5: Close Chart tag
 				strXml += '</c:'+ chartType +'Chart>';
@@ -3847,78 +3846,76 @@ var PptxGenJS = function(){
 		return strXml;
 	}
 
-    function makeSerAxis(opts, axisId, valAxisId) {
-        var strXml = '';
+	/** DESC: Used by `bar3D` */
+	function makeSerAxis(opts, axisId, valAxisId) {
+		var strXml = '';
 
-        // Build ser axis tag
-        strXml += '<c:serAx>';
-        strXml += '  <c:axId val="'+ axisId +'"/>';
-        strXml += '  <c:scaling><c:orientation val="'+ (opts.serAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
-        strXml += '  <c:delete val="'+ (opts.serAxisHidden ? 1 : 0) +'"/>';
-        strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
-        strXml += ( opts.serGridLine !== 'none' ? createGridLineElement(opts.serGridLine, DEF_CHART_GRIDLINE) : '' );
-        // '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
-        if ( opts.showSerAxisTitle ) {
-            strXml += genXmlTitle({
-                color:    opts.serAxisTitleColor,
-                fontFace: opts.serAxisTitleFontFace,
-                fontSize: opts.serAxisTitleFontSize,
-                rotate:   opts.serAxisTitleRotate,
-                title:    opts.serAxisTitle || 'Axis Title'
-            });
-        }
-        strXml += '  <c:numFmt formatCode="'+ (opts.serLabelFormatCode || "General") +'" sourceLinked="0"/>';
+		// Build ser axis tag
+		strXml += '<c:serAx>';
+		strXml += '  <c:axId val="'+ axisId +'"/>';
+		strXml += '  <c:scaling><c:orientation val="'+ (opts.serAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+		strXml += '  <c:delete val="'+ (opts.serAxisHidden ? 1 : 0) +'"/>';
+		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+		strXml += ( opts.serGridLine !== 'none' ? createGridLineElement(opts.serGridLine, DEF_CHART_GRIDLINE) : '' );
+		// '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
+		if ( opts.showSerAxisTitle ) {
+			strXml += genXmlTitle({
+				color: opts.serAxisTitleColor,
+				fontFace: opts.serAxisTitleFontFace,
+				fontSize: opts.serAxisTitleFontSize,
+				rotate: opts.serAxisTitleRotate,
+				title: opts.serAxisTitle || 'Axis Title'
+			});
+		}
+		strXml += '  <c:numFmt formatCode="'+ (opts.serLabelFormatCode || "General") +'" sourceLinked="0"/>';
 		strXml += '  <c:majorTickMark val="out"/>';
 		strXml += '  <c:minorTickMark val="none"/>';
 		strXml += '  <c:tickLblPos val="'+ (opts.serAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+		strXml += '  <c:spPr>';
+		strXml += '    <a:ln w="12700" cap="flat">';
+		strXml += ( opts.serAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="'+ DEF_CHART_GRIDLINE.color +'"/></a:solidFill>' );
+		strXml += '      <a:prstDash val="solid"/>';
+		strXml += '      <a:round/>';
+		strXml += '    </a:ln>';
+		strXml += '  </c:spPr>';
+		strXml += '  <c:txPr>';
+		strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
+		strXml += '    <a:lstStyle/>';
+		strXml += '    <a:p>';
+		strXml += '    <a:pPr>';
+		strXml += '    <a:defRPr sz="'+ (opts.serAxisLabelFontSize || DEF_FONT_SIZE) +'00" b="0" i="0" u="none" strike="noStrike">';
+		strXml += '      <a:solidFill><a:srgbClr val="'+ (opts.serAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
+		strXml += '      <a:latin typeface="'+ (opts.serAxisLabelFontFace || 'Arial') +'"/>';
+		strXml += '   </a:defRPr>';
+		strXml += '  </a:pPr>';
+		strXml += '  <a:endParaRPr lang="'+ (opts.lang || 'en-US') +'"/>';
+		strXml += '  </a:p>';
+		strXml += ' </c:txPr>';
+		strXml += ' <c:crossAx val="'+ valAxisId +'"/>';
+		strXml += ' <c:crosses val="autoZero"/>';
+		if ( opts.serAxisLabelFrequency ) strXml += ' <c:tickLblSkip val="' +  opts.serAxisLabelFrequency + '"/>';
 
-        strXml += '  <c:spPr>';
-        strXml += '    <a:ln w="12700" cap="flat">';
-        strXml += ( opts.serAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="'+ DEF_CHART_GRIDLINE.color +'"/></a:solidFill>' );
-        strXml += '      <a:prstDash val="solid"/>';
-        strXml += '      <a:round/>';
-        strXml += '    </a:ln>';
-        strXml += '  </c:spPr>';
-        strXml += '  <c:txPr>';
-        strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
-        strXml += '    <a:lstStyle/>';
-        strXml += '    <a:p>';
-        strXml += '    <a:pPr>';
-        strXml += '    <a:defRPr sz="'+ (opts.serAxisLabelFontSize || DEF_FONT_SIZE) +'00" b="0" i="0" u="none" strike="noStrike">';
-        strXml += '      <a:solidFill><a:srgbClr val="'+ (opts.serAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
-        strXml += '      <a:latin typeface="'+ (opts.serAxisLabelFontFace || 'Arial') +'"/>';
-        strXml += '   </a:defRPr>';
-        strXml += '  </a:pPr>';
-        strXml += '  <a:endParaRPr lang="'+ (opts.lang || 'en-US') +'"/>';
-        strXml += '  </a:p>';
-        strXml += ' </c:txPr>';
-        strXml += ' <c:crossAx val="'+ valAxisId +'"/>';
-        strXml += ' <c:crosses val="autoZero"/>';
-        if ( opts.serAxisLabelFrequency ) strXml += ' <c:tickLblSkip val="' +  opts.serAxisLabelFrequency + '"/>';
+		// Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
+		if ( opts.serLabelFormatCode ) {
+			['serAxisBaseTimeUnit','serAxisMajorTimeUnit','serAxisMinorTimeUnit'].forEach(function(opt,idx){
+				// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
+				if ( opts[opt] && (typeof opts[opt] !== 'string' || ['days','months','years'].indexOf(opt.toLowerCase()) == -1) ) {
+					console.warn("`"+opt+"` must be one of: 'days','months','years' !");
+					opts[opt] = null;
+				}
+			});
+			if ( opts.serAxisBaseTimeUnit )  strXml += ' <c:baseTimeUnit  val="'+ opts.serAxisBaseTimeUnit.toLowerCase()  +'"/>';
+			if ( opts.serAxisMajorTimeUnit ) strXml += ' <c:majorTimeUnit val="'+ opts.serAxisMajorTimeUnit.toLowerCase() +'"/>';
+			if ( opts.serAxisMinorTimeUnit ) strXml += ' <c:minorTimeUnit val="'+ opts.serAxisMinorTimeUnit.toLowerCase() +'"/>';
+			if ( opts.serAxisMajorUnit )     strXml += ' <c:majorUnit     val="'+ opts.serAxisMajorUnit +'"/>';
+			if ( opts.serAxisMinorUnit )     strXml += ' <c:minorUnit     val="'+ opts.serAxisMinorUnit +'"/>';
+		}
 
-        // Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
-        if ( opts.serLabelFormatCode ) {
-            ['serAxisBaseTimeUnit','serAxisMajorTimeUnit','serAxisMinorTimeUnit'].forEach(function(opt,idx){
-                // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-                if ( opts[opt] && (typeof opts[opt] !== 'string' || ['days','months','years'].indexOf(opt.toLowerCase()) == -1) ) {
-                    console.warn("`"+opt+"` must be one of: 'days','months','years' !");
-                    opts[opt] = null;
-                }
-            });
-            if ( opts.serAxisBaseTimeUnit )  strXml += ' <c:baseTimeUnit  val="'+ opts.serAxisBaseTimeUnit.toLowerCase()  +'"/>';
-            if ( opts.serAxisMajorTimeUnit ) strXml += ' <c:majorTimeUnit val="'+ opts.serAxisMajorTimeUnit.toLowerCase() +'"/>';
-            if ( opts.serAxisMinorTimeUnit ) strXml += ' <c:minorTimeUnit val="'+ opts.serAxisMinorTimeUnit.toLowerCase() +'"/>';
-            if ( opts.serAxisMajorUnit )     strXml += ' <c:majorUnit     val="'+ opts.serAxisMajorUnit +'"/>';
-            if ( opts.serAxisMinorUnit )     strXml += ' <c:minorUnit     val="'+ opts.serAxisMinorUnit +'"/>';
-        }
+		// Close ser axis tag
+		strXml += '</c:serAx>';
 
-        // Close ser axis tag
-        strXml += '</c:serAx>';
-
-        return strXml;
-    }
-
-
+		return strXml;
+	}
 
 	/**
 	* DESC: Convert degrees (0..360) to Powerpoint rot value
