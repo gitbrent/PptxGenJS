@@ -66,6 +66,7 @@ var NODEJS = false;
 }
 
 // [Node.js] <script> includes
+// TODO: Issue #137 (move these to very bottom where other require()s are)
 if ( NODEJS ) {
 	var gObjPptxColors = require('../dist/pptxgen.colors.js');
 	var gObjPptxShapes = require('../dist/pptxgen.shapes.js');
