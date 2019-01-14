@@ -3609,6 +3609,7 @@ var PptxGenJS = function(){
 
 	function makeCatAxis(opts, axisId, valAxisId) {
 		var strXml = '';
+		var crosses = opts.valAxisCrossesAt ? opts.valAxisCrossesAt : 'autoZero';
 
 		// Build cat axis tag
 		// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
@@ -3675,7 +3676,7 @@ var PptxGenJS = function(){
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
 		strXml += ' <c:crossAx val="'+ valAxisId +'"/>';
-		strXml += ' <c:crosses val="autoZero"/>';
+		strXml += ' <c:' + ((typeof crosses == "number") ? 'crossesAt' : 'crosses') + ' val="' + crosses + '"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
 		strXml += ' <c:noMultiLvlLbl val="1"/>';
