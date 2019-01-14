@@ -2162,10 +2162,10 @@ var PptxGenJS = function(){
 
 		// CASE 3: Percentage (ex: '50%')
 		if ( typeof inVal == 'string' && inVal.indexOf('%') > -1 ) {
-			if ( inDir && inDir == 'X') return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.width  );
-			if ( inDir && inDir == 'Y') return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.height );
+			if ( inDir && inDir == 'X') return Math.round( (parseFloat(inVal,10) / 100) * gObjPptx.pptLayout.width  );
+			if ( inDir && inDir == 'Y') return Math.round( (parseFloat(inVal,10) / 100) * gObjPptx.pptLayout.height );
 			// Default: Assume width (x/cx)
-			return Math.round( (parseInt(inVal,10) / 100) * gObjPptx.pptLayout.width );
+			return Math.round( (parseFloat(inVal,10) / 100) * gObjPptx.pptLayout.width );
 		}
 
 		// LAST: Default value
