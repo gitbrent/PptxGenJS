@@ -1173,8 +1173,119 @@ function genSlides_Chart(pptx) {
 		);
 	}
 
-	// SLIDE 6: Tornado Chart -------------------------------------------------------------
-	function slide6() {
+    // SLIDE 6: 3D Bar Chart ------------------------------------------------------------------
+    function slide6() {
+        var slide = pptx.addNewSlide();
+        slide.addTable( [ [{ text:'Chart Examples: 3D Bar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+
+        var arrDataRegions = [
+            {
+                name  : 'Region 1',
+                labels: ['May', 'June', 'July', 'August'],
+                values: [26, 53, 100, 75]
+            },
+            {
+                name  : 'Region 2',
+                labels: ['May', 'June', 'July', 'August'],
+                values: [43.5, 70.3, 90.1, 80.05]
+            }
+        ];
+        var arrDataHighVals = [
+            {
+                name  : 'California',
+                labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+                values: [2000, 2800, 3200, 4000, 5000]
+            },
+            {
+                name  : 'Texas',
+                labels: ['Apartment', 'Townhome', 'Duplex', 'House', 'Big House'],
+                values: [1400, 2000, 2500, 3000, 3800]
+            }
+        ];
+
+        // TOP-LEFT: H/bar
+        var optsChartBar1 = { x:0.5, y:0.6, w:6.0, h:3.0,
+            barDir: 'bar',
+            fill: 'F1F1F1',
+
+            catAxisLabelColor   : 'CC0000',
+            catAxisLabelFontFace: 'Arial',
+            catAxisLabelFontSize: 10,
+            catAxisOrientation  : 'maxMin',
+
+            serAxisLabelColor   : '00EE00',
+            serAxisLabelFontFace: 'Arial',
+            serAxisLabelFontSize: 10
+        };
+        slide.addChart( pptx.charts.BAR3D, arrDataRegions, optsChartBar1 );
+
+        // TOP-RIGHT: V/col
+        var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
+            barDir: 'col',
+            bar3DShape: 'cylinder',
+            catAxisLabelColor   : '0000CC',
+            catAxisLabelFontFace: 'Courier',
+            catAxisLabelFontSize: 12,
+
+            dataLabelColor     : '000000',
+            dataLabelFontFace  : 'Arial',
+            dataLabelFontSize  : 11,
+            dataLabelPosition  : 'outEnd',
+            dataLabelFormatCode: '#.0',
+            dataLabelBkgrdColors: true,
+            showValue          : true
+        };
+        slide.addChart( pptx.charts.BAR3D, arrDataRegions, optsChartBar2 );
+
+        // BTM-LEFT: H/bar - TITLE and LEGEND
+        slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+        var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
+            barDir: 'col',
+            bar3DShape: 'pyramid',
+            barGrouping: 'stacked',
+
+            catAxisLabelColor   : 'CC0000',
+            catAxisLabelFontFace: 'Arial',
+            catAxisLabelFontSize: 10,
+
+            showValue          : true,
+            dataLabelBkgrdColors: true,
+
+            showTitle : true,
+            title: 'Sales by Region'
+        };
+        slide.addChart( pptx.charts.BAR3D, arrDataHighVals, optsChartBar3 );
+
+        // BTM-RIGHT: V/col - TITLE and LEGEND
+        slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
+        var optsChartBar4 = { x:7.0, y:3.8, w:6.0, h:3.5,
+            barDir: 'col',
+            bar3DShape: 'coneToMax',
+            chartColors: ['0088CC', '99FFCC'],
+
+            catAxisLabelColor   : '0000CC',
+            catAxisLabelFontFace: 'Times',
+            catAxisLabelFontSize: 11,
+            catAxisOrientation  : 'minMax',
+
+            dataBorder         : { pt:'1', color:'F1F1F1' },
+            dataLabelColor     : '000000',
+            dataLabelFontFace  : 'Arial',
+            dataLabelFontSize  : 10,
+            dataLabelPosition  : 'ctr',
+
+            showLegend : true,
+            legendPos  :  't',
+            legendColor: 'FF0000',
+            showTitle  : true,
+            titleColor : 'FF0000',
+            title      : 'Red Title and Legend'
+        };
+        slide.addChart( pptx.charts.BAR3D, arrDataHighVals, optsChartBar4 );
+    }
+
+    // SLIDE 7: Tornado Chart -------------------------------------------------------------
+	function slide7() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1214,8 +1325,8 @@ function genSlides_Chart(pptx) {
 		);
 	}
 
-	// SLIDE 7: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
-	function slide7() {
+	// SLIDE 8: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
+	function slide8() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Line Smoothing, Line Size, Line Shadow, Symbol Size', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1257,8 +1368,8 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
 	}
 
-	// SLIDE 8: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
-	function slide8() {
+	// SLIDE 9: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
+	function slide9() {
 		var intWgap = 4.25;
 		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
 		var slide = pptx.addNewSlide();
@@ -1279,8 +1390,8 @@ function genSlides_Chart(pptx) {
 		});
 	}
 
-	// SLIDE 9: Line Chart: Lots of Cats ---------------------------------------------------
-	function slide9() {
+	// SLIDE 10: Line Chart: Lots of Cats ---------------------------------------------------
+	function slide10() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1314,8 +1425,8 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
 	}
 
-	// SLIDE 10: Area Chart: Misc -----------------------------------------------------------
-	function slide10() {
+	// SLIDE 11: Area Chart: Misc -----------------------------------------------------------
+	function slide11() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1362,8 +1473,8 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
 	}
 
-	// SLIDE 11: Pie Charts: All 4 Legend Options ------------------------------------------
-	function slide11() {
+	// SLIDE 12: Pie Charts: All 4 Legend Options ------------------------------------------
+	function slide12() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1411,8 +1522,8 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
-	// SLIDE 12: Doughnut Chart ------------------------------------------------------------
-	function slide12() {
+	// SLIDE 13: Doughnut Chart ------------------------------------------------------------
+	function slide13() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1460,8 +1571,8 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 
-	// SLIDE 13: XY Scatter Chart -------------------------------------------------------------
-	function slide13() {
+	// SLIDE 14: XY Scatter Chart -------------------------------------------------------------
+	function slide14() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1538,8 +1649,8 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat4 );
 	}
 
-	// SLIDE 14: Bubble Charts ---------------------------------------------------------
-	function slide14() {
+	// SLIDE 15: Bubble Charts ---------------------------------------------------------
+	function slide15() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Bubble Charts', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1601,7 +1712,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 15: Radar Chart ------------------------------------------------------------------
-	function slide15() {
+	function slide16() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Radar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1683,7 +1794,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 16: Multi-Type Charts ---------------------------------------------------------
-	function slide16() {
+	function slide17() {
 		// powerpoint 2016 add secondary category axis labels
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
@@ -2055,7 +2166,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 17: Charts Options: Shadow, Transparent Colors --------------------------------
-	function slide17() {
+	function slide18() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );

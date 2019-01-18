@@ -75,7 +75,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20190101";
+	var APP_BLD = "20190117";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -117,6 +117,7 @@ var PptxGenJS = function(){
 	var CHART_TYPES = {
 		'AREA'    : { 'displayName':'Area Chart',     'name':'area'     },
 		'BAR'     : { 'displayName':'Bar Chart' ,     'name':'bar'      },
+		'BAR3D'   : { 'displayName':'3D Bar Chart' ,  'name':'bar3D'    },
 		'BUBBLE'  : { 'displayName':'Bubble Chart',   'name':'bubble'   },
 		'DOUGHNUT': { 'displayName':'Doughnut Chart', 'name':'doughnut' },
 		'LINE'    : { 'displayName':'Line Chart',     'name':'line'     },
@@ -155,6 +156,7 @@ var PptxGenJS = function(){
 	var AXIS_ID_VALUE_SECONDARY = '2094734553';
 	var AXIS_ID_CATEGORY_PRIMARY = '2094734554';
 	var AXIS_ID_CATEGORY_SECONDARY = '2094734555';
+    var AXIS_ID_SERIES_PRIMARY = '2094734556';
 
 	// A: Create internal pptx object
 	var gObjPptx = {};
@@ -574,6 +576,7 @@ var PptxGenJS = function(){
 			if ( ['bar','col'].indexOf(options.barDir || '') < 0 ) options.barDir = 'col';
 			// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
 			if ( ['bestFit','b','ctr','inBase','inEnd','l','outEnd','r','t'].indexOf(options.dataLabelPosition || '') < 0 ) options.dataLabelPosition = (options.type.name == 'pie' || options.type.name == 'doughnut' ? 'bestFit' : 'ctr');
+            options.dataLabelBkgrdColors = (options.dataLabelBkgrdColors == true || options.dataLabelBkgrdColors  == false ? options.dataLabelBkgrdColors           : false);
 			if ( ['b','l','r','t','tr'].indexOf(options.legendPos || '') < 0 ) options.legendPos = 'r';
 			// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 			if ( ['clustered','standard','stacked','percentStacked'].indexOf(options.barGrouping || '') < 0 ) options.barGrouping = 'standard';
@@ -581,6 +584,8 @@ var PptxGenJS = function(){
 				options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
 				if (!options.barGapWidthPct) options.barGapWidthPct = 50;
 			}
+			// 3D bar: ST_Shape
+			if ( ['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0 ) options.bar3DShape = 'box';
 			// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
 			// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
 			if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(options.lineDataSymbol || '') < 0 ) options.lineDataSymbol = 'circle';
@@ -603,8 +608,10 @@ var PptxGenJS = function(){
 			// Set gridline defaults
 			options.catGridLine = options.catGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : 'none');
 			options.valGridLine = options.valGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : {});
+            options.serGridLine = options.serGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : 'none');
 			correctGridLineOptions(options.catGridLine);
 			correctGridLineOptions(options.valGridLine);
+            correctGridLineOptions(options.serGridLine);
 			correctShadowOptions(options.shadow);
 
 			// C: Options: plotArea
@@ -620,9 +627,17 @@ var PptxGenJS = function(){
 			options.showValue     = (options.showValue     == true || options.showValue     == false ? options.showValue     : false);
 			options.catAxisLineShow = (typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true);
 			options.valAxisLineShow = (typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true);
+            options.serAxisLineShow = (typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true);
+
+            options.v3DRotX        = (!isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30);
+            options.v3DRotY        = (!isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30);
+            options.v3DRAngAx      = (options.v3DRAngAx == true || options.v3DRAngAx == false ? options.v3DRAngAx : true);
+			options.v3DPerspective = (!isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30);
 
 			// D: Options: chart
 			options.barGapWidthPct = (!isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150);
+            options.barGapDepthPct = (!isNaN(options.barGapDepthPct) && options.barGapDepthPct >= 0 && options.barGapDepthPct <= 1000 ? options.barGapDepthPct : 150);
+
 			options.chartColors = ( Array.isArray(options.chartColors) ? options.chartColors : (options.type.name == 'pie' || options.type.name == 'doughnut' ? PIECHART_COLORS : BARCHART_COLORS) );
 			options.chartColorsOpacity = ( options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null );
 			//
@@ -2617,8 +2632,17 @@ var PptxGenJS = function(){
 				// NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
 				strXml += '<c:autoTitleDeleted val="1"/>';
 			}
+			// Add 3D view tag
+			if ( rel.opts.type.name == 'bar3D' ) {
+				strXml += '<c:view3D>';
+                strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>';
+                strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>';
+                strXml += ' <c:rAngAx val="' + (rel.opts.v3DRAngAx == false ? 0 : 1) + '"/>';
+                strXml += ' <c:perspective val="' + rel.opts.v3DPerspective + '"/>';
+                strXml += '</c:view3D>';
+			}
 
-			strXml += '<c:plotArea>';
+            strXml += '<c:plotArea>';
 			// IMPORTANT: Dont specify layout to enable auto-fit: PPT does a great job maximizing space with all 4 TRBL locations
 			if ( rel.opts.layout ) {
 				strXml += '<c:layout>';
@@ -2689,6 +2713,11 @@ var PptxGenJS = function(){
 			}
 			else {
 				strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_CATEGORY_SECONDARY);
+
+				// Add series axis for 3D bar
+                if ( rel.opts.type.name == 'bar3D' ) {
+                    strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY)
+                }
 			}
 		}
 
@@ -2804,13 +2833,14 @@ var PptxGenJS = function(){
 		switch ( chartType ) {
 			case 'area':
 			case 'bar':
+			case 'bar3D':
 			case 'line':
 			case 'radar':
 				// 1: Start Chart
 				strXml += '<c:'+ chartType +'Chart>';
-				if ( chartType == 'bar' ) {
+				if ( chartType == 'bar' || chartType == 'bar3D' ) {
 					strXml += '<c:barDir val="'+ opts.barDir +'"/>';
-					strXml += '<c:grouping val="'+ opts.barGrouping + '"/>';
+					strXml += '<c:grouping val="'+ opts.barGrouping +'"/>';
 				}
 
 				if ( chartType == 'radar' ) {
@@ -2880,6 +2910,40 @@ var PptxGenJS = function(){
 
 					strXml += '  </c:spPr>';
 
+                    // Data Labels per series
+					// [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
+					if ( chartType != 'radar' ) {
+                        strXml += '  <c:dLbls>';
+                        strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+                        if ( opts.dataLabelBkgrdColors ) {
+							strXml += '    <c:spPr>';
+							strXml += '       <a:solidFill>'+ createColorElement(strSerColor) +'</a:solidFill>';
+							strXml += '    </c:spPr>';
+                        }
+                        strXml += '    <c:txPr>';
+                        strXml += '      <a:bodyPr/>';
+                        strXml += '      <a:lstStyle/>';
+                        strXml += '      <a:p><a:pPr>';
+                        strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="'+ (opts.dataLabelFontSize || DEF_FONT_SIZE) +'00" u="none">';
+                        strXml += '          <a:solidFill>'+ createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) +'</a:solidFill>';
+                        strXml += '          <a:latin typeface="'+ (opts.dataLabelFontFace || 'Arial') +'"/>';
+                        strXml += '        </a:defRPr>';
+                        strXml += '      </a:pPr></a:p>';
+                        strXml += '    </c:txPr>';
+                        // Setting dLblPos tag for bar3D seems to break the generated chart
+                        if ( chartType != 'area' && chartType != 'bar3D' ) {
+                            strXml += '<c:dLblPos val="'+ (opts.dataLabelPosition || 'outEnd') +'"/>';
+                        }
+                        strXml += '    <c:showLegendKey val="0"/>';
+                        strXml += '    <c:showVal val="'+ (opts.showValue ? '1' : '0') +'"/>';
+                        strXml += '    <c:showCatName val="0"/>';
+                        strXml += '    <c:showSerName val="0"/>';
+                        strXml += '    <c:showPercent val="0"/>';
+                        strXml += '    <c:showBubbleSize val="0"/>';
+                        strXml += '    <c:showLeaderLines val="0"/>';
+                        strXml += '  </c:dLbls>';
+                    }
+
 					// 'c:marker' tag: `lineDataSymbol`
 					if ( chartType == 'line' || chartType == 'radar') {
 						strXml += '<c:marker>';
@@ -2900,7 +2964,7 @@ var PptxGenJS = function(){
 
 					// Color chart bars various colors
 					// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-					if ( chartType == 'bar' && ( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
+					if ( ( chartType == 'bar' || chartType == 'bar3D' ) && ( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
 							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
@@ -3010,6 +3074,11 @@ var PptxGenJS = function(){
 					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
 					strXml += '  <c:overlap val="'+ (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) +'"/>';
 				}
+				else if ( chartType == 'bar3D' ) {
+					strXml += '  <c:gapWidth val="'+ opts.barGapWidthPct +'"/>';
+					strXml += '  <c:gapDepth val="'+ opts.barGapDepthPct +'"/>';
+					strXml += '  <c:shape val="'+ opts.bar3DShape +'"/>';
+				}
 				else if ( chartType == 'line' ) {
 					strXml += '  <c:marker val="1"/>';
 				}
@@ -3017,6 +3086,7 @@ var PptxGenJS = function(){
 				// 5: Add axisId (NOTE: order matters! (category comes first))
 				strXml += '  <c:axId val="'+ catAxisId +'"/>';
 				strXml += '  <c:axId val="'+ valAxisId +'"/>';
+				strXml += '  <c:axId val="'+ AXIS_ID_SERIES_PRIMARY +'"/>';
 
 				// 6: Close Chart tag
 				strXml += '</c:'+ chartType +'Chart>';
@@ -3237,7 +3307,7 @@ var PptxGenJS = function(){
 							}
 							else {
 								strXml += '<a:solidFill>';
-								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'" />';
+								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
 								strXml += '</a:solidFill>';
 							}
 							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
@@ -3620,7 +3690,7 @@ var PptxGenJS = function(){
 		}
 		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling>';
-		strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '" />';
+		strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '"/>';
 		if ( opts.catAxisMaxVal || opts.catAxisMaxVal == 0 ) strXml += '<c:max val="' + opts.catAxisMaxVal + '"/>';
 		if ( opts.catAxisMinVal || opts.catAxisMinVal == 0 ) strXml += '<c:min val="' + opts.catAxisMinVal + '"/>';
 		strXml += '</c:scaling>';
@@ -3772,6 +3842,77 @@ var PptxGenJS = function(){
 		strXml += ' <c:crossBetween val="'+ ( opts.type.name === 'scatter' || opts.hasArea ? 'midCat' : 'between' ) +'"/>';
 		if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
 		strXml += '</c:valAx>';
+
+		return strXml;
+	}
+
+	/** DESC: Used by `bar3D` */
+	function makeSerAxis(opts, axisId, valAxisId) {
+		var strXml = '';
+
+		// Build ser axis tag
+		strXml += '<c:serAx>';
+		strXml += '  <c:axId val="'+ axisId +'"/>';
+		strXml += '  <c:scaling><c:orientation val="'+ (opts.serAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) +'"/></c:scaling>';
+		strXml += '  <c:delete val="'+ (opts.serAxisHidden ? 1 : 0) +'"/>';
+		strXml += '  <c:axPos val="'+ (opts.barDir == 'col' ? 'b' : 'l') +'"/>';
+		strXml += ( opts.serGridLine !== 'none' ? createGridLineElement(opts.serGridLine, DEF_CHART_GRIDLINE) : '' );
+		// '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
+		if ( opts.showSerAxisTitle ) {
+			strXml += genXmlTitle({
+				color: opts.serAxisTitleColor,
+				fontFace: opts.serAxisTitleFontFace,
+				fontSize: opts.serAxisTitleFontSize,
+				rotate: opts.serAxisTitleRotate,
+				title: opts.serAxisTitle || 'Axis Title'
+			});
+		}
+		strXml += '  <c:numFmt formatCode="'+ (opts.serLabelFormatCode || "General") +'" sourceLinked="0"/>';
+		strXml += '  <c:majorTickMark val="out"/>';
+		strXml += '  <c:minorTickMark val="none"/>';
+		strXml += '  <c:tickLblPos val="'+ (opts.serAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+		strXml += '  <c:spPr>';
+		strXml += '    <a:ln w="12700" cap="flat">';
+		strXml += ( opts.serAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="'+ DEF_CHART_GRIDLINE.color +'"/></a:solidFill>' );
+		strXml += '      <a:prstDash val="solid"/>';
+		strXml += '      <a:round/>';
+		strXml += '    </a:ln>';
+		strXml += '  </c:spPr>';
+		strXml += '  <c:txPr>';
+		strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
+		strXml += '    <a:lstStyle/>';
+		strXml += '    <a:p>';
+		strXml += '    <a:pPr>';
+		strXml += '    <a:defRPr sz="'+ (opts.serAxisLabelFontSize || DEF_FONT_SIZE) +'00" b="0" i="0" u="none" strike="noStrike">';
+		strXml += '      <a:solidFill><a:srgbClr val="'+ (opts.serAxisLabelColor || DEF_FONT_COLOR) +'"/></a:solidFill>';
+		strXml += '      <a:latin typeface="'+ (opts.serAxisLabelFontFace || 'Arial') +'"/>';
+		strXml += '   </a:defRPr>';
+		strXml += '  </a:pPr>';
+		strXml += '  <a:endParaRPr lang="'+ (opts.lang || 'en-US') +'"/>';
+		strXml += '  </a:p>';
+		strXml += ' </c:txPr>';
+		strXml += ' <c:crossAx val="'+ valAxisId +'"/>';
+		strXml += ' <c:crosses val="autoZero"/>';
+		if ( opts.serAxisLabelFrequency ) strXml += ' <c:tickLblSkip val="' +  opts.serAxisLabelFrequency + '"/>';
+
+		// Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
+		if ( opts.serLabelFormatCode ) {
+			['serAxisBaseTimeUnit','serAxisMajorTimeUnit','serAxisMinorTimeUnit'].forEach(function(opt,idx){
+				// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
+				if ( opts[opt] && (typeof opts[opt] !== 'string' || ['days','months','years'].indexOf(opt.toLowerCase()) == -1) ) {
+					console.warn("`"+opt+"` must be one of: 'days','months','years' !");
+					opts[opt] = null;
+				}
+			});
+			if ( opts.serAxisBaseTimeUnit )  strXml += ' <c:baseTimeUnit  val="'+ opts.serAxisBaseTimeUnit.toLowerCase()  +'"/>';
+			if ( opts.serAxisMajorTimeUnit ) strXml += ' <c:majorTimeUnit val="'+ opts.serAxisMajorTimeUnit.toLowerCase() +'"/>';
+			if ( opts.serAxisMinorTimeUnit ) strXml += ' <c:minorTimeUnit val="'+ opts.serAxisMinorTimeUnit.toLowerCase() +'"/>';
+			if ( opts.serAxisMajorUnit )     strXml += ' <c:majorUnit     val="'+ opts.serAxisMajorUnit +'"/>';
+			if ( opts.serAxisMinorUnit )     strXml += ' <c:minorUnit     val="'+ opts.serAxisMinorUnit +'"/>';
+		}
+
+		// Close ser axis tag
+		strXml += '</c:serAx>';
 
 		return strXml;
 	}
