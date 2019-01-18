@@ -75,7 +75,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20190110";
+	var APP_BLD = "20190117";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -2840,7 +2840,7 @@ var PptxGenJS = function(){
 				strXml += '<c:'+ chartType +'Chart>';
 				if ( chartType == 'bar' || chartType == 'bar3D' ) {
 					strXml += '<c:barDir val="'+ opts.barDir +'"/>';
-					strXml += '<c:grouping val="'+ opts.barGrouping + '"/>';
+					strXml += '<c:grouping val="'+ opts.barGrouping +'"/>';
 				}
 
 				if ( chartType == 'radar' ) {
@@ -2911,7 +2911,8 @@ var PptxGenJS = function(){
 					strXml += '  </c:spPr>';
 
                     // Data Labels per series
-                    {
+					// [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
+					if ( chartType != 'radar' ) {
                         strXml += '  <c:dLbls>';
                         strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
                         if ( opts.dataLabelBkgrdColors ) {
@@ -2942,7 +2943,6 @@ var PptxGenJS = function(){
                         strXml += '    <c:showLeaderLines val="0"/>';
                         strXml += '  </c:dLbls>';
                     }
-
 
 					// 'c:marker' tag: `lineDataSymbol`
 					if ( chartType == 'line' || chartType == 'radar') {
@@ -3083,12 +3083,12 @@ var PptxGenJS = function(){
 					strXml += '  <c:marker val="1"/>';
 				}
 
-				// 4: Add axisId (NOTE: order matters! (category comes first))
+				// 5: Add axisId (NOTE: order matters! (category comes first))
 				strXml += '  <c:axId val="'+ catAxisId +'"/>';
 				strXml += '  <c:axId val="'+ valAxisId +'"/>';
 				strXml += '  <c:axId val="'+ AXIS_ID_SERIES_PRIMARY +'"/>';
 
-				// 5: Close Chart tag
+				// 6: Close Chart tag
 				strXml += '</c:'+ chartType +'Chart>';
 
 				// end switch
@@ -3307,7 +3307,7 @@ var PptxGenJS = function(){
 							}
 							else {
 								strXml += '<a:solidFill>';
-								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'" />';
+								strXml += ' <a:srgbClr val="'+ arrColors[index % arrColors.length] +'"/>';
 								strXml += '</a:solidFill>';
 							}
 							strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
@@ -3690,7 +3690,7 @@ var PptxGenJS = function(){
 		}
 		strXml += '  <c:axId val="'+ axisId +'"/>';
 		strXml += '  <c:scaling>';
-		strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '" />';
+		strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '"/>';
 		if ( opts.catAxisMaxVal || opts.catAxisMaxVal == 0 ) strXml += '<c:max val="' + opts.catAxisMaxVal + '"/>';
 		if ( opts.catAxisMinVal || opts.catAxisMinVal == 0 ) strXml += '<c:min val="' + opts.catAxisMinVal + '"/>';
 		strXml += '</c:scaling>';

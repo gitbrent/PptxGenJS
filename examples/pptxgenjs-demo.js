@@ -1284,7 +1284,6 @@ function genSlides_Chart(pptx) {
         slide.addChart( pptx.charts.BAR3D, arrDataHighVals, optsChartBar4 );
     }
 
-
     // SLIDE 7: Tornado Chart -------------------------------------------------------------
 	function slide7() {
 		var slide = pptx.addNewSlide();
@@ -1713,7 +1712,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 15: Radar Chart ------------------------------------------------------------------
-	function slide15() {
+	function slide16() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Radar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1795,7 +1794,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 16: Multi-Type Charts ---------------------------------------------------------
-	function slide16() {
+	function slide17() {
 		// powerpoint 2016 add secondary category axis labels
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
@@ -2167,7 +2166,7 @@ function genSlides_Chart(pptx) {
 	}
 
 	// SLIDE 17: Charts Options: Shadow, Transparent Colors --------------------------------
-	function slide17() {
+	function slide18() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );

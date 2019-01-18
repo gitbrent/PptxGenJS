@@ -6,13 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2019-01-01">
+	<meta name="updated" content="2019-01-17">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
 	<title>PptxGenJS Examples/Demo Page</title>
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.1.2/yeti/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.2.1/yeti/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-okaidia.min.css">
 
 	<style>
@@ -198,10 +198,12 @@
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.colors.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.shapes.js"></script>
 
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/pptxgenjs-demo.js"></script>
 	<!-- RELEASE (CDN)
-	-->
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/dist/pptxgen.bundle.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.4.0/examples/pptxgenjs-demo.js"></script>
+	-->
 	<!-- OFFICE365 TESTING:
 	<script src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
 	<script src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
@@ -1067,66 +1069,72 @@
 					<div class="card-body text-nowrap">
 						<div>Slide 1 - <span class="text-muted">Vertical/Horizontal bars</span></div>
 						<div>Slide 2 - <span class="text-muted">Grid/Axis options</span></div>
-						<div>Slide 3 - <span class="text-muted">Stacked/PercentStacked Bars</span></div>
-						<div>Slide 4 - <span class="text-muted">Lots of Bars</span></div>
-						<div>Slide 5 - <span class="text-muted">Bar colors, majorUnit, Number Format</span></div>
+						<div>Slide 3 - <span class="text-muted">Stacked/PercentStacked bars</span></div>
+						<div>Slide 4 - <span class="text-muted">Lots of bars</span></div>
+						<div>Slide 5 - <span class="text-muted">Bar colors, units, formats</span></div>
+					</div>
+				</div>
+				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
+					<h6 class="card-header">3D Bar Chart</h6>
+					<div class="card-body">
+						<div>Slide 6 - <span class="text-muted">3D Bar, Cone, Cylinder, Pyramid</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Tornado Chart</h6>
 					<div class="card-body">
-						<div>Slide 6 - <span class="text-muted">Tornado Type</span></div>
+						<div>Slide 7 - <span class="text-muted">Tornado Type</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Line Chart</h6>
 					<div class="card-body">
-						<div>Slide 7 - <span class="text-muted">Line Smoothing, Shadow, Size, Symbol Size</span></div>
-						<div>Slide 8 - <span class="text-muted">lineDataSymbol, SymbolSize</span></div>
-						<div>Slide 9 - <span class="text-muted">Lots of Categories</span></div>
+						<div>Slide 8 - <span class="text-muted">Smoothing, Shadow, Size, Symbols</span></div>
+						<div>Slide 9 - <span class="text-muted">Data Symbol, Size</span></div>
+						<div>Slide 10 - <span class="text-muted">Lots of Categories</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Area Chart</h6>
 					<div class="card-body">
-						<div>Slide 10 - <span class="text-muted">Opacity and other options</span></div>
+						<div>Slide 11 - <span class="text-muted">Opacity and other options</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Pie Chart</h6>
 					<div class="card-body">
-						<div>Slide 11 - <span class="text-muted">Various options</span></div>
-						<div>Slide 12 - <span class="text-muted">Doughnut Type</span></div>
+						<div>Slide 12 - <span class="text-muted">Various options</span></div>
+						<div>Slide 13 - <span class="text-muted">Doughnut Type</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">X Y (Scatter) Chart</h6>
 					<div class="card-body">
-						<div>Slide 13 - <span class="text-muted">Various Options</span></div>
+						<div>Slide 14 - <span class="text-muted">Various Options</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Bubble Chart</h6>
 					<div class="card-body">
-						<div>Slide 14 - <span class="text-muted">Various Options</span></div>
+						<div>Slide 15 - <span class="text-muted">Various Options</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Radar Chart</h6>
 					<div class="card-body">
-						<div>Slide 15 - <span class="text-muted">Various Options</span></div>
+						<div>Slide 16 - <span class="text-muted">Various Options</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Multi-Type Chart</h6>
 					<div class="card-body">
-						<div>Slide 16 - <span class="text-muted">Various Mixed-Chart Types</span></div>
+						<div>Slide 17 - <span class="text-muted">Various Mixed-Chart Types</span></div>
 					</div>
 				</div>
 				<div class="card bg-light2 mr-4 mb-4 flex-grow-1">
 					<h6 class="card-header">Chart Options</h6>
 					<div class="card-body">
-						<div>Slide 17 - <span class="text-muted">Shadows and Transparent Color</span></div>
+						<div>Slide 18 - <span class="text-muted">Shadows and Transparent Color</span></div>
 					</div>
 				</div>
 			</div>
