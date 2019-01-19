@@ -7,11 +7,12 @@ title: Adding Charts
 slide.addChart({TYPE}, {DATA}, {OPTIONS});
 ```
 
-## Chart Types
+## Chart Features
+### Core Chart Types
 * Chart type can be any one of `pptx.charts`
-* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.BUBBLE`, `pptx.charts.DOUGHNUT`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.RADAR`, `pptx.charts.SCATTER`
+* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.BAR3D`, `pptx.charts.BUBBLE`, `pptx.charts.DOUGHNUT`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.RADAR`, `pptx.charts.SCATTER`
 
-## Multi-Type Charts
+### Multi-Type Charts
 * Chart types can be any one of `pptx.charts`, although `pptx.charts.AREA`, `pptx.charts.BAR`, and `pptx.charts.LINE` will give the best results.
 * There should be at least two chart-types. There should always be two value axes and category axes.
 * Multi Charts have a different function signature than standard. There are two parameters:
@@ -22,7 +23,7 @@ slide.addChart({TYPE}, {DATA}, {OPTIONS});
 * If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
 * Standard options are used, and the chart-type-options are mixed in to each.
 
-## Multi-Type Syntax
+### Multi-Type Syntax
 ```javascript
 slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 ```
@@ -30,7 +31,8 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 ## Chart Notes
 * Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
 
-## Chart Size/Formatting Options
+## Chart Options
+### General, Legend, Title
 | Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
 | :-------------- | :------ | :------ | :-------- | :--------------------------------- | :--------------- |
 | `x`             | number  | inches  | `1.0`     | horizontal location                | 0-n OR 'n%'. (Ex: `{x:'50%'}` places object in middle of the Slide) |
@@ -67,7 +69,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `titlePos`      | object  |         |           | title position                     | object with x and y values. Ex: `{ titlePos:{x: 0, y: 10} }` |
 | `titleRotate`   | integer | degrees |           | title rotation degrees             | 0-360. Ex: `{ titleRotate:45 }` |
 
-## Chart Axis Options
+### Cat and Val Axis
 | Option                 | Type    | Unit    | Default      | Description                   | Possible Values                                  |
 | :--------------------- | :------ | :------ | :----------- | :---------------------------- | :----------------------------------------------- |
 | `axisLineColor`        | string  |         | `000000`     | cat/val axis line color       | hex color code. Ex: `{ axisLineColor:'0088CC' }` |
@@ -113,7 +115,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `valAxisTitleRotate`   | integer | degrees |              | title rotation degrees       | 0-360. Ex: `{ valAxisTitleRotate:45 }` |
 | `valGridLine`          | object  |         |              | value grid line style        | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 
-## Chart Data Options
+### Bar, Data, Line
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
 | `barDir`               | string  |         | `col`     | bar direction        | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
@@ -140,7 +142,38 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `shadow`               | object  |         |           | data element shadow options   | `'none'` or [shadow options](#chart-element-shadow-options) |
 | `valueBarColors`       | boolean |         | `false`   | forces chartColors on multi-data-series | `true` or `false` |
 
-## Chart Element Shadow Options
+### 3D Bar Chart
+| Option                 | Type    | Unit    | Default      | Description                   | Possible Values                            |
+| :--------------------- | :------ | :------ | :----------- | :---------------------------- | :----------------------------------------- |
+| `bar3DShape`           | string  |         | `box`        | bar 3d shape                  | `box`, `cylinder`, `coneToMax`, `pyramid`, `pyramidToMax` |
+| `barGapDepthPct`       | number  | percent | `150`        | width % between bar groups    | 0-999. Ex: `{ barGapWidthPct:50 }` |
+| `dataLabelBkgrdColors` | boolean |         | `false`      | bkgd color is series color    | `true` or `false`   |
+| `serAxisBaseTimeUnit`  | string  |         |              | series-axis base time unit    | `days` `months` or `years` |
+| `serAxisHidden`        | boolean |         | `false`      | hide series-axis              | `true` or `false`   |
+| `serAxisOrientation`   | string  |         | `minMax`     | series-axis orientation       | `maxMin` (high->low) or `minMax` (low->high) |
+| `serAxisLabelColor`    | string  |         | `000000`     | series-axis color             | hex color code. Ex: `{ serAxisLabelColor:'0088CC' }`   |
+| `serAxisLabelFontBold` | boolean |         | `false`      | make cat axis label bold      | `true` or `false` |
+| `serAxisLabelFontFace` | string  |         | `Arial`      | series-axis font face         | font name. Ex: `{ titleFontFace:'Arial' }` |
+| `serAxisLabelFontSize` | integer | points  | `18`         | series-axis font size         | 1-256. Ex: `{ titleFontSize:12 }`          |
+| `serAxisLabelFrequency`| integer |         |              | PPT "Interval Between Labels" | 1-n. Ex: `{ serAxisLabelFrequency: 2 }`          |
+| `serAxisLabelPos`      | string  | string  | `nextTo`     | axis label position           | `low`, `high`, or `nextTo` . Ex: `{ serAxisLabelPos: 'low' }`      |
+| `serAxisLineShow`      | boolean |         | `true`       | show/hide series-axis line    | `true` or `false` |
+| `serAxisMajorTimeUnit` | string  |         |              | series-axis major time unit   | `days`, `months` or `years` |
+| `serAxisMajorUnit`     | integer |         |              | series-axis major unit        | Positive integer. Ex: `{ serAxisMajorUnit:12 }`   |
+| `serAxisMinorTimeUnit` | string  |         |              | series-axis minor time unit   | `days`, `months` or `years` |
+| `serAxisMinorUnit`     | integer |         |              | series-axis minor unit        | Positive integer. Ex: `{ serAxisMinorUnit:1 }`   |
+| `serAxisTitle`         | string  |         | `Axis Title` | axis title                    | a string. Ex: `{ serAxisTitle:'Regions' }` |
+| `serAxisTitleColor`    | string  |         | `000000`     | title color                   | hex color code. Ex: `{ serAxisTitleColor:'0088CC' }` |
+| `serAxisTitleFontFace` | string  |         | `Arial`      | font face                     | font name. Ex: `{ serAxisTitleFontFace:'Arial' }` |
+| `serAxisTitleFontSize` | integer | points  |              | font size                     | 1-256. Ex: `{ serAxisTitleFontSize:12 }` |
+| `serAxisTitleRotate`   | integer | degrees |              | title rotation degrees        | 0-360. Ex: `{ serAxisTitleRotate:45 }` |
+| `serGridLine`          | object  |         | `none`       | series grid line style        | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
+| `v3DRAngAx`            | boolean |         | `true`       | Right angle axes              | `true` or `false` |
+| `v3DPerspective`       | integer | points  | `18`         | series-axis font size         | 1-240. Ex: `{ v3DPerspective:125 }` |
+| `v3DRotX`              | integer | degrees |              | x-axis rotation degrees       | `-90` - `90`. Ex: `{ v3DRotX:-45 }` |
+| `v3DRotY`              | integer | degrees |              | title rotation degrees        | 0-360. Ex: `{ v3DRotY:180 }` |
+
+### Element Shadows
 | Option       | Type    | Unit    | Default   | Description         | Possible Values                            |
 | :----------- | :------ | :------ | :-------- | :------------------ | :----------------------------------------- |
 | `type`       | string  |         | `outer`   | shadow type         | `outer` or `inner`. Ex: `{ type:'outer' }` |
@@ -150,7 +183,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `offset`     | number  | points  | `1.8`     | offset size         | 1-256. Ex: `{ offset:2 }`                  |
 | `opacity`    | number  | percent | `0.35`    | opacity             | 0-1. Ex: `{ opacity:0.35 }`                |
 
-## Chart Multi-Type Options
+### Multi-Type Options
 | Option             | Type    | Default  | Description                                             | Possible Values   |
 | :----------------- | :------ | :------- | :------------------------------------------------------ | :---------------- |
 | `catAxes`          | array   |          | array of two axis options objects                       | See example below |
@@ -159,13 +192,19 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `valAxes`          | array   |          | array of two axis options objects                       | See example below |
 
 ## Chart Examples
+### Tons of Sample Code
+Please check the `examples/pptxgenjs-demo.js` file for almost 3,000 lines of well-documented examples, including charts.
+
+There are lots of Slides filled with Charts you can copy:
+
+![HTML-to-PowerPoint Presentation](/PptxGenJS/img/demo-all-charts.jpg)
+
+
+### Line Chart Sample
 ```javascript
 var pptx = new PptxGenJS();
-pptx.setLayout('LAYOUT_WIDE');
-
 var slide = pptx.addNewSlide();
 
-// Chart Type: AREA
 // Chart Type: LINE
 var dataChartAreaLine = [
   {
@@ -179,108 +218,7 @@ var dataChartAreaLine = [
     values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
   }
 ];
-slide.addChart( pptx.charts.AREA, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
 slide.addChart( pptx.charts.LINE, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
 
-// Chart Type: BAR
-var dataChartBar = [
-  {
-    name  : 'Region 1',
-    labels: ['May', 'June', 'July', 'August'],
-    values: [26, 53, 100, 75]
-  },
-  {
-    name  : 'Region 2',
-    labels: ['May', 'June', 'July', 'August'],
-    values: [43.5, 70.3, 90.1, 80.05]
-  }
-];
-slide.addChart( pptx.charts.BAR, dataChartBar, { x:1.0, y:1.0, w:12, h:6 } );
-
-// Chart Type: BUBBLE
-var dataChartBubble = [
-	{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
-	{ name:'Airplane', values:[33, 20, 51, 65, 71, 75], sizes:[10,10,12,12,15,20] },
-	{ name:'Train',    values:[99, 88, 77, 89, 99, 99], sizes:[20,20,22,22,25,30] },
-	{ name:'Bus',      values:[21, 22, 25, 49, 59, 69], sizes:[11,11,13,13,16,21] }
-];
-slide.addChart( pptx.charts.BUBBLE, dataChartBubble, { x:1.0, y:1.0, w:6, h:4 } );
-
-// Chart Type: PIE
-var dataChartPie = [
-  { name:'Location', labels:['DE','GB','MX','JP','IN','US'], values:[35,40,85,88,99,101] }
-];
-slide.addChart( pptx.charts.PIE, dataChartPie, { x:1.0, y:1.0, w:6, h:6 } );
-
-// Chart Type: RADAR
-var dataChartRadar = [
-	{
-		name  : 'Region 1',
-		labels: ['May', 'June', 'July', 'August', 'September'],
-		values: [26, 53, 100, 75, 41]
-	}
-];
-slide.addChart( pptx.charts.RADAR, dataChartRadar, { x:0.5, y:0.6, w:6.0, h:4, radarStyle:'standard' } );
-
-// Chart Type: XY SCATTER
-var dataChartScatter = [
-	{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10] },
-	{ name:'Y-Value 1', values:[13, 20, 21, 25] },
-	{ name:'Y-Value 2', values:[21, 22, 25, 49] }
-];
-slide.addChart( pptx.charts.SCATTER, dataChartScatter, { x:1.0, y:1.0, w:6, h:4 } );
-
-// Chart Type: Multi-Type
-// NOTE: use the same labels for all types
-var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
-var chartTypes = [
-  {
-    type: pptx.charts.BAR,
-    data: [{
-      name: 'Projected',
-      labels: labels,
-      values: [17, 26, 53, 10, 4]
-    }],
-    options: { barDir: 'col' }
-  },
-  {
-    type: pptx.charts.LINE,
-    data: [{
-      name: 'Current',
-      labels: labels,
-      values: [5, 3, 2, 4, 7]
-    }],
-    options: {
-      // NOTE: both are required, when using a secondary axis:
-      secondaryValAxis: true,
-      secondaryCatAxis: true
-    }
-  }
-];
-var multiOpts = {
-  x:1.0, y:1.0, w:6, h:6,
-  showLegend: false,
-  valAxisMaxVal: 100,
-  valAxisMinVal: 0,
-  valAxisMajorUnit: 20,
-  valAxes:[
-    {
-      showValAxisTitle: true,
-      valAxisTitle: 'Primary Value Axis'
-    },
-    {
-      showValAxisTitle: true,
-      valAxisTitle: 'Secondary Value Axis',
-      valAxisMajorUnit: 1,
-      valAxisMaxVal: 10,
-      valAxisMinVal: 1,
-      valGridLine: 'none'
-    }
-  ],
-  catAxes: [{ catAxisTitle: 'Primary Category Axis' }, { catAxisHidden: true }]
-};
-
-slide.addChart(chartTypes, multiOpts);
-
-pptx.save('Demo-Chart');
+pptx.save('Demo-Line-Chart');
 ```
