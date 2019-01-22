@@ -3722,7 +3722,7 @@ var PptxGenJS = function(){
 		else {
 			strXml += '  <c:majorTickMark val="out"/>';
 			strXml += '  <c:minorTickMark val="none"/>';
-			strXml += '  <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+			strXml += '  <c:tickLblPos val="'+ (opts.catAxisLabelPos || (opts.barDir == 'col' ? 'low' : 'nextTo')) +'"/>';
 		}
 		strXml += '  <c:spPr>';
 		strXml += '    <a:ln w="12700" cap="flat">';
@@ -3815,7 +3815,7 @@ var PptxGenJS = function(){
 		else {
 			strXml += ' <c:majorTickMark val="out"/>';
 			strXml += ' <c:minorTickMark val="none"/>';
-			strXml += ' <c:tickLblPos val="'+ (opts.catAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') +'"/>';
+			strXml += ' <c:tickLblPos val="'+ (opts.catAxisLabelPos || (opts.barDir == 'col' ? 'nextTo' : 'low')) +'"/>';
 		}
 		strXml += ' <c:spPr>';
 		strXml += '   <a:ln w="12700" cap="flat">';
@@ -3870,7 +3870,7 @@ var PptxGenJS = function(){
 		strXml += '  <c:numFmt formatCode="'+ (opts.serLabelFormatCode || "General") +'" sourceLinked="0"/>';
 		strXml += '  <c:majorTickMark val="out"/>';
 		strXml += '  <c:minorTickMark val="none"/>';
-		strXml += '  <c:tickLblPos val="'+ (opts.serAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') +'"/>';
+		strXml += '  <c:tickLblPos val="'+ (opts.serAxisLabelPos || (opts.barDir == 'col' ? 'low' : 'nextTo')) +'"/>';
 		strXml += '  <c:spPr>';
 		strXml += '    <a:ln w="12700" cap="flat">';
 		strXml += ( opts.serAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="'+ DEF_CHART_GRIDLINE.color +'"/></a:solidFill>' );
