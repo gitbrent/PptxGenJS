@@ -4229,8 +4229,9 @@ var PptxGenJS = function(){
 			}
 
 			// Close Paragraph-Properties --------------------
-			// IMPORTANT: strXmlLnSpc must precede strXmlBullet for bullet lineSpacing to work (PPT-Online)
-			paragraphPropXml += '>'+ strXmlParaSpc + strXmlLnSpc + strXmlBullet;
+			// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering.
+			//            anything out of order is ignored. (PPT-Online, PPT for Mac)
+			paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet;
 			if (isDefault) {
 				paragraphPropXml += genXmlTextRunProperties(textObj.options, true);
 			}
