@@ -2212,7 +2212,7 @@ var PptxGenJS = function(){
 				if ( typeof text.options.hyperlink !== 'object' ) console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
 				else if ( !text.options.hyperlink.url && !text.options.hyperlink.slide ) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'");
 				else {
-					var intRels = 1;
+					var intRels = 0;
 					gObjPptx.slides.forEach(function(slide,idx){ intRels += slide.rels.length; });
 					var intRelId = intRels+1;
 
