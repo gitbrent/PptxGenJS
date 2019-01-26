@@ -246,6 +246,6 @@ Thanks to everyone who supports this project! &#10084;
 **************************************************************************************************
 # License
 
-Copyright &copy; 2015-2018 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
+Copyright &copy; 2015-2019 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)
