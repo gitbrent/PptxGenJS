@@ -230,6 +230,7 @@ These include:
 * [Dzmitry Dulko](https://github.com/DzmitryDulko) - Getting the project published on NPM
 * [kajda90](https://github.com/kajda90) - New Master Slide Layouts
 * [Connor Bowman](https://github.com/conbow) - Adding Placeholders
+* [Reima Frgos](https://github.com/ReimaFrgos) - Multiple chart and general functionality patches
 * PPTX Chart Experts: [kajda90](https://github.com/kajda90), [Matt King](https://github.com/kyrrigle), [Mike Wilcox](https://github.com/clubajax)
 * Everyone who has [contributed](https://github.com/gitbrent/PptxGenJS/graphs/contributors), submitted an Issue, or created Pull Request.
 
