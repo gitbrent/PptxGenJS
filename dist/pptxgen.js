@@ -604,7 +604,6 @@ var PptxGenJS = function(){
 				});
 			}
 
-
 			// Set gridline defaults
 			options.catGridLine = options.catGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : 'none');
 			options.valGridLine = options.valGridLine || (type.name == 'scatter' ? { color:'D9D9D9', pt:1 } : {});
@@ -657,6 +656,7 @@ var PptxGenJS = function(){
 			//
 			options.lineSize = ( typeof options.lineSize === 'number' ? options.lineSize : 2 );
 			options.valAxisMajorUnit = ( typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null );
+			options.valAxisCrossesAt = ( options.valAxisCrossesAt || 'autoZero' );
 
 			// STEP 4: Set props
 			resultObject.type    = 'chart';
@@ -3745,7 +3745,7 @@ var PptxGenJS = function(){
 		strXml += '  </a:p>';
 		strXml += ' </c:txPr>';
 		strXml += ' <c:crossAx val="'+ valAxisId +'"/>';
-		strXml += ' <c:crosses val="autoZero"/>';
+		strXml += ' <c:' + (typeof opts.valAxisCrossesAt === "number" ? 'crossesAt' : 'crosses') +' val="'+ opts.valAxisCrossesAt + '"/>';
 		strXml += ' <c:auto val="1"/>';
 		strXml += ' <c:lblAlgn val="ctr"/>';
 		strXml += ' <c:noMultiLvlLbl val="1"/>';

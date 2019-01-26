@@ -694,6 +694,7 @@ function genSlides_Chart(pptx) {
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
 			catAxisOrientation  : 'maxMin',
+			// valAxisCrossesAt: 10,
 
 			titleColor   : '33CF22',
 			titleFontFace: 'Helvetica Neue',
