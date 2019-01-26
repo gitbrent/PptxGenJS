@@ -51,10 +51,10 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 | `border`     | object  |        |           | cell border        | object with `pt` and `color` values. Ex: `{pt:'1', color:'f1f1f1'}`               |
 | `border`     | array   |        |           | cell border        | array of objects with `pt` and `color` values in TRBL order.                      |
 | `color`      | string  |        |           | text color         | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
-| `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}`                                                            |
+| `colspan`    | integer |        |           | column span        | 2-n. Ex: `{colspan:2}` (Note: be sure to include a table `w` value)               |
 | `fill`       | string  |        |           | fill/bkgd color    | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
-| `fontFace`   | string  |        |           | font face          | Ex: `{fontFace:'Arial'}`                                                         |
-| `fontSize`   | number  | points |           | font size          | 1-256. Ex: `{fontSize:12}`                                                       |
+| `fontFace`   | string  |        |           | font face          | Ex: `{fontFace:'Arial'}`                                                          |
+| `fontSize`   | number  | points |           | font size          | 1-256. Ex: `{fontSize:12}`                                                        |
 | `italic`     | boolean |        | `false`   | italic text        | `true` or `false`                                                                 |
 | `margin`     | number  | points |           | margin             | 0-99 (ProTip: use the same value from CSS `padding`)                              |
 | `margin`     | array   | points |           | margin             | array of integer values in TRBL order. Ex: `margin:[5,10,5,10]`                   |
