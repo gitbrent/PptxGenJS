@@ -1,7 +1,7 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: 20181023
+ * DATE: 20190204
  * DESC: PptxGenJS feature demos for Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  *
@@ -92,6 +92,8 @@ else {
 	var pptx = new PptxGenJS();
 	var slide = pptx.addNewSlide();
 	slide.addText( 'New Node Presentation', {x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'FFFCCC'} );
+	// Test that `pptxgen.shapes.js` was loaded/is available
+	slide.addShape(pptx.shapes.OVAL_CALLOUT, { x:6, y:2, w:3, h:2, fill:'00FF00', line:'000000', lineSize:1 });
 
 	// **NOTE**: Only uncomment one EXAMPLE at a time
 

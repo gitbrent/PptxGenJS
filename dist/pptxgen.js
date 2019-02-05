@@ -52,6 +52,7 @@ Number.isInteger = Number.isInteger || function(value) {
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
 var NODEJS = false;
+var APPJS = false;
 {
 	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
 	if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined' ) {
@@ -63,11 +64,13 @@ var NODEJS = false;
 			NODEJS = false;
 		}
 	}
+	else if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') {
+		APPJS = true;
+	}
 }
 
-// [Node.js] <script> includes
-// TODO: Issue #137 (move these to very bottom where other require()s are)
-if ( NODEJS ) {
+// Require [include] colors/shapes for Node/Angular/React, etc.
+if ( NODEJS || APPJS ) {
 	var gObjPptxColors = require('../dist/pptxgen.colors.js');
 	var gObjPptxShapes = require('../dist/pptxgen.shapes.js');
 }
@@ -75,7 +78,7 @@ if ( NODEJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20190126";
+	var APP_BLD = "20190204";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -161,7 +164,7 @@ var PptxGenJS = function(){
 	// A: Create internal pptx object
 	var gObjPptx = {};
 
-	// B: Set Presentation Property Defaults
+	// B: Set Presentation property defaults
 	{
 		// Presentation props/metadata
 		gObjPptx.author    = 'PptxGenJS';
@@ -5592,7 +5595,7 @@ function getUuid(uuidFormat) {
 	});
 }
 
-// [Node.js] support
+// NodeJS support
 if ( NODEJS ) {
 	var jQuery = null;
 	var fs = null;
@@ -5612,17 +5615,17 @@ if ( NODEJS ) {
 	try { JSZip = require("jszip"); } catch(ex){ console.error("Unable to load `jszip`"); throw 'LIB-MISSING-JSZIP'; }
 	try { sizeOf = require("image-size"); } catch(ex){ console.error("Unable to load `image-size`"); throw 'LIB-MISSING-IMGSIZE'; }
 
-	// C: Export module
+	// LAST: Export module
 	module.exports = PptxGenJS;
 }
-// Angular support
-else if ( typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') {
+// Angular/React/etc support
+else if ( APPJS ) {
 	// A: jQuery dependency
 	try { jQuery = require("jquery"); } catch(ex){ console.error("Unable to load `jquery`!\n"+ex); throw 'LIB-MISSING-JQUERY'; }
 
 	// B: Other dependencies
 	try { JSZip = require("jszip"); } catch(ex){ console.error("Unable to load `jszip`"); throw 'LIB-MISSING-JSZIP'; }
 
-	// C: Export module
+	// LAST: Export module
 	module.exports = PptxGenJS;
 }
