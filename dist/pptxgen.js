@@ -3735,7 +3735,7 @@ var PptxGenJS = function(){
 		strXml += '    </a:ln>';
 		strXml += '  </c:spPr>';
 		strXml += '  <c:txPr>';
-		strXml += '    <a:bodyPr/>';  // don't specify rot 0 so we get the auto behavior
+		strXml += '    <a:bodyPr '+ (opts.catAxisLabelRotate ? ('rot="'+ convertRotationDegrees(opts.catAxisLabelRotate) +'"') : "") +'/>'; // don't specify rot 0 so we get the auto behavior
 		strXml += '    <a:lstStyle/>';
 		strXml += '    <a:p>';
 		strXml += '    <a:pPr>';
@@ -3828,7 +3828,7 @@ var PptxGenJS = function(){
 		strXml += '   </a:ln>';
 		strXml += ' </c:spPr>';
 		strXml += ' <c:txPr>';
-		strXml += '  <a:bodyPr/>'; // don't specify rot=0 so we can get the PPT default
+		strXml += '  <a:bodyPr '+ (opts.valAxisLabelRotate ? ('rot="'+ convertRotationDegrees(opts.valAxisLabelRotate) +'"') : "") +'/>'; // don't specify rot 0 so we get the auto behavior
 		strXml += '  <a:lstStyle/>';
 		strXml += '  <a:p>';
 		strXml += '    <a:pPr>';

@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.5.0-beta
-* BLD.: 20190101
+* BLD.: 20190206
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -1174,7 +1174,7 @@ function genSlides_Chart(pptx) {
 		);
 	}
 
-    // SLIDE 6: 3D Bar Chart ------------------------------------------------------------------
+    // SLIDE 6: 3D Bar Chart ---------------------------------------------------------------
     function slide6() {
         var slide = pptx.addNewSlide();
         slide.addTable( [ [{ text:'Chart Examples: 3D Bar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -1285,7 +1285,7 @@ function genSlides_Chart(pptx) {
         slide.addChart( pptx.charts.BAR3D, arrDataHighVals, optsChartBar4 );
     }
 
-    // SLIDE 7: Tornado Chart -------------------------------------------------------------
+    // SLIDE 7: Tornado Chart --------------------------------------------------------------
 	function slide7() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
@@ -1391,7 +1391,7 @@ function genSlides_Chart(pptx) {
 		});
 	}
 
-	// SLIDE 10: Line Chart: Lots of Cats ---------------------------------------------------
+	// SLIDE 10: Line Chart: Lots of Cats --------------------------------------------------
 	function slide10() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
@@ -1426,7 +1426,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
 	}
 
-	// SLIDE 11: Area Chart: Misc -----------------------------------------------------------
+	// SLIDE 11: Area Chart: Misc ----------------------------------------------------------
 	function slide11() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
@@ -1446,13 +1446,18 @@ function genSlides_Chart(pptx) {
 		];
 
 		// TOP-LEFT
-		var optsChartLine1 = { x:0.5, y:0.6, w:'45%', h:3, catAxisOrientation:'maxMin', valAxisOrientation:'maxMin' };
+		var optsChartLine1 = {
+			x:0.5, y:0.6, w:'45%', h:3,
+			catAxisLabelRotate: 45,
+			catAxisOrientation:'maxMin', valAxisOrientation:'maxMin'
+		};
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine1 );
 
 		// TOP-RIGHT
 		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
 			chartColors: ['0088CC', '99FFCC'],
 			chartColorsOpacity: 25,
+			valAxisLabelRotate: 5,
 			dataBorder: {pt:2, color:'FFFFFF'},
 			fill: 'D1E1F1'
 		};
@@ -1572,7 +1577,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 
-	// SLIDE 14: XY Scatter Chart -------------------------------------------------------------
+	// SLIDE 14: XY Scatter Chart ----------------------------------------------------------
 	function slide14() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
@@ -1650,7 +1655,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat4 );
 	}
 
-	// SLIDE 15: Bubble Charts ---------------------------------------------------------
+	// SLIDE 15: Bubble Charts -------------------------------------------------------------
 	function slide15() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
@@ -1712,7 +1717,7 @@ function genSlides_Chart(pptx) {
 		slide.addChart( pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble4 );
 	}
 
-	// SLIDE 15: Radar Chart ------------------------------------------------------------------
+	// SLIDE 15: Radar Chart ---------------------------------------------------------------
 	function slide16() {
 		var slide = pptx.addNewSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
