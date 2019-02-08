@@ -78,7 +78,7 @@ if ( NODEJS || APPJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.5.0-beta";
-	var APP_BLD = "20190204";
+	var APP_BLD = "20190207";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -3297,7 +3297,6 @@ var PptxGenJS = function(){
 					if (( data.length === 1 || opts.valueBarColors ) && opts.chartColors != BARCHART_COLORS ) {
 						// Series Data Point colors
 						obj.values.forEach(function(value,index){
-
 							var arrColors = (value < 0 ? (opts.invertedColors || BARCHART_COLORS) : opts.chartColors);
 
 							strXml += '  <c:dPt>';
