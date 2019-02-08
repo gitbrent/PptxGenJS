@@ -3,15 +3,29 @@ id: usage-saving
 title: Saving Presentations
 ---
 
-Presentations require nothing more than passing a filename to `save()`. Node.js users have more options available
+Saving a Presentation is usually as easy as providing a filename to `save()`. More options are available,
 examples of which can be found below.
 
 **************************************************************************************************
 ## Client Browser
-* Simply provide a filename
+
+### Download
+Simply provide a filename to have the file automatically pushed to users (browser download prompt appears)
 
 ```javascript
-pptx.save('Demo-Media');
+// EX: provide filename
+pptx.save('Demo-Save');
+```
+
+### Blob and Other Formats
+The presentation can be received in given format by using a callback and specifying output type.
+
+```javascript
+// Save using various JSZip output types: ['arraybuffer', 'base64', 'blob', etc]
+pptx.save('jszip', saveCallback, 'arraybuffer');
+
+// EX: Save as Blob for sending to cloud data store like Amazon AWS or OneDrive
+pptx.save('jszip', function(blob){ console.log(blob) }, 'blob');
 ```
 
 **************************************************************************************************
@@ -41,7 +55,7 @@ pptx.save('jszip', saveCallback, 'base64');
 **************************************************************************************************
 ## Saving Multiple Presentations
 
-### Client-Side:
+### Client Browser
 * In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
@@ -58,7 +72,7 @@ pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
 pptx.save('PptxGenJS-Presentation-2');
 ```
 
-### Node.js:
+### Node.js
 * See `examples/nodejs-demo.js` for a working demo with multiple presentations, callbacks, streaming, etc.
 
 ```javascript
