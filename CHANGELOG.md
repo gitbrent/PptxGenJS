@@ -8,25 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Coming In [3.0]: `save()` will return a Promise
 
 
-## [2.5.0] - 2019-01-??
+## [2.5.0] - 2019-02-08
 ### Added
 - Make Shapes available for a front-end usage [\#137](https://github.com/gitbrent/PptxGenJS/issue/137) ([spamforhope](https://github.com/spamforhope))
 - Ability to rotate chart axis labels (`catAxisLabelRotate`/`valAxisLabelRotate`) [\#378](https://github.com/gitbrent/PptxGenJS/issue/378) ([teejayvanslyke](https://github.com/teejayvanslyke))
 - New Chart Type: 3D bar charts [\#384](https://github.com/gitbrent/PptxGenJS/pull/384) ([loictro](https://github.com/loictro))
 - New Chart Feature: Add Data Labels to Scatter Charts [\#420](https://github.com/gitbrent/PptxGenJS/pull/420) ([ReimaFrgos](https://github.com/ReimaFrgos))
-- Added new chart options: `catAxisLabelFontBold`,`dataLabelFontBold`,`legendFontFace`,`valAxisLabelFontBold` [\#426](https://github.com/gitbrent/PptxGenJS/issue/426) ([BandaSatish07](https://github.com/BandaSatish07))
+- Add new chart options: `catAxisLabelFontBold`,`dataLabelFontBold`,`legendFontFace`,`valAxisLabelFontBold` [\#426](https://github.com/gitbrent/PptxGenJS/issue/426) ([BandaSatish07](https://github.com/BandaSatish07))
 - Add missing jpg content type to fix corrupt presentation for Office365 [\#435](https://github.com/gitbrent/PptxGenJS/pull/435) ([antonandreyev](https://github.com/antonandreyev))
 - Add `catAxisMinVal` and `catAxisMaxVal` [\#462](https://github.com/gitbrent/PptxGenJS/pull/462) ([vrimar](https://github.com/vrimar))
-- New Chart Option: valAxisCrossesAt [\#474](https://github.com/gitbrent/PptxGenJS/pull/474) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- New Chart Option: `valAxisCrossesAt` [\#474](https://github.com/gitbrent/PptxGenJS/pull/474) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Docs: Show how to save as Blob using client browser [\#478](https://github.com/gitbrent/PptxGenJS/issue/478) ([crazyx13th](https://github.com/crazyx13th))
 ### Changed
-- Remove legacy/deprecated attributes from README javascript script tags [\#431](https://github.com/gitbrent/PptxGenJS/pull/431) ([efx](https://github.com/efx))
-- Fixed issue with SlideNumber `fontSize` float values [\#432](https://github.com/gitbrent/PptxGenJS/issue/432) ([efx](https://github.com/efx))
-- Remove query and fragment from image URL extension [\#433](https://github.com/gitbrent/PptxGenJS/pull/433) ([katsuya-horiuchi](https://github.com/katsuya-horiuchi))
-- Replace "$" with "jQuery" to fix integration issues with some applications [\#436](https://github.com/gitbrent/PptxGenJS/pull/436) ([antonandreyev](https://github.com/antonandreyev))
-- Export more types to enhance TypeScript support [\#443](https://github.com/gitbrent/PptxGenJS/pull/443) ([ntietz](https://github.com/ntietz))
-- Rounding in percentage leads to small deviations [\#470](https://github.com/gitbrent/PptxGenJS/pull/470) ([Slidemagic](https://github.com/Slidemagic)) [\#475](https://github.com/gitbrent/PptxGenJS/pull/475) ([ReimaFrgos](https://github.com/ReimaFrgos))
-- Fix: Hyperlinks causing duplicate relationship ID when other objects on page [\#477](https://github.com/gitbrent/PptxGenJS/pull/477) ([ReimaFrgos](https://github.com/ReimaFrgos))
-- Fix for ordering of paragraph properties [\#485](https://github.com/gitbrent/PptxGenJS/pull/485) ([sleepylemur](https://github.com/sleepylemur))
+- Removed: legacy/deprecated attributes from README javascript script tags [\#431](https://github.com/gitbrent/PptxGenJS/pull/431) ([efx](https://github.com/efx))
+- Fixed: issue with SlideNumber `fontSize` float values [\#432](https://github.com/gitbrent/PptxGenJS/issue/432) ([efx](https://github.com/efx))
+- Fixed: query and fragment from image URL extension [\#433](https://github.com/gitbrent/PptxGenJS/pull/433) ([katsuya-horiuchi](https://github.com/katsuya-horiuchi))
+- Changed: Replace "$" with "jQuery" to fix integration issues with some applications [\#436](https://github.com/gitbrent/PptxGenJS/pull/436) ([antonandreyev](https://github.com/antonandreyev))
+- Changed: Export more types to enhance TypeScript support [\#443](https://github.com/gitbrent/PptxGenJS/pull/443) ([ntietz](https://github.com/ntietz))
+- Fixed: Rounding in percentage leads to small deviations [\#470](https://github.com/gitbrent/PptxGenJS/pull/470) ([Slidemagic](https://github.com/Slidemagic)) [\#475](https://github.com/gitbrent/PptxGenJS/pull/475) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Fixed: Hyperlinks causing duplicate relationship ID when other objects on page [\#477](https://github.com/gitbrent/PptxGenJS/pull/477) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Fixed: ordering of paragraph properties [\#485](https://github.com/gitbrent/PptxGenJS/pull/485) ([sleepylemur](https://github.com/sleepylemur))
 ### Removed
 
 
