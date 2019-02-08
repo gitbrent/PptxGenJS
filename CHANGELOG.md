@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New Chart Option: `valAxisCrossesAt` [\#474](https://github.com/gitbrent/PptxGenJS/pull/474) ([ReimaFrgos](https://github.com/ReimaFrgos))
 - Docs: Show how to save as Blob using client browser [\#478](https://github.com/gitbrent/PptxGenJS/issue/478) ([crazyx13th](https://github.com/crazyx13th))
 ### Changed
+- Fixed: Dynamic Text Options do not apply [\#427](https://github.com/gitbrent/PptxGenJS/issue/427) ([sunnyar](https://github.com/sunnyar))
 - Removed: legacy/deprecated attributes from README javascript script tags [\#431](https://github.com/gitbrent/PptxGenJS/pull/431) ([efx](https://github.com/efx))
 - Fixed: issue with SlideNumber `fontSize` float values [\#432](https://github.com/gitbrent/PptxGenJS/issue/432) ([efx](https://github.com/efx))
 - Fixed: query and fragment from image URL extension [\#433](https://github.com/gitbrent/PptxGenJS/pull/433) ([katsuya-horiuchi](https://github.com/katsuya-horiuchi))
