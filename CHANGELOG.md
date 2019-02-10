@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Coming In [3.0]: `save()` will return a Promise
 
 
+## [2.6.0] - 2019-??-??
+### Added
+### Changed
+- Fixed: MIME type is ppt now instead of "application/zip"
+### Removed
+
+
+
 ## [2.5.0] - 2019-02-08
 ### Added
 - Make Shapes available for a front-end usage [\#137](https://github.com/gitbrent/PptxGenJS/issue/137) ([spamforhope](https://github.com/spamforhope))
