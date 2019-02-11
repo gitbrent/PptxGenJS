@@ -4054,10 +4054,7 @@ var PptxGenJS = function(){
 				if ( obj.text.split(CRLF).length > 0 ) {
 					obj.text.toString().split(CRLF).forEach(function(line,idx){
                         // Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
-                        // Do not add a linebreak to the last split out item as this affects formatting.
-                        if (idx < (obj.text.split(CRLF).length - 1)) {
-                            line += ( obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '' );
-                        }
+                        line += ( obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '' );
 						arrTextObjects.push( {text:line, options:obj.options} );
 					});
 				}
