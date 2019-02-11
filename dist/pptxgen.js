@@ -4053,8 +4053,11 @@ var PptxGenJS = function(){
 				// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
 				if ( obj.text.split(CRLF).length > 0 ) {
 					obj.text.toString().split(CRLF).forEach(function(line,idx){
-						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
-						line += ( obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '' );
+                        // Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
+                        // Do not add a linebreak to the last split out item as this affects formatting.
+                        if (idx < (obj.text.split(CRLF).length - 1)) {
+                            line += ( obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '' );
+                        }
 						arrTextObjects.push( {text:line, options:obj.options} );
 					});
 				}
@@ -4087,7 +4090,8 @@ var PptxGenJS = function(){
 		}
 
 		// STEP 4: Loop over each text object and create paragraph props, text run, etc.
-		arrTextObjects.forEach(function(textObj,idx){
+        var prevTextObj;
+        arrTextObjects.forEach(function(textObj,idx){
 			// Clear/Increment loop vars
 			paragraphPropXml = '<a:pPr '+ (textObj.options.rtlMode ? ' rtl="1" ' : '');
 			strXmlBullet = '', strXmlParaSpc = '';
@@ -4100,15 +4104,14 @@ var PptxGenJS = function(){
             textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || slideObj.options.paraSpaceBefore;
             textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || slideObj.options.paraSpaceAfter;
 
-			textObj.options.lineIdx = idx;
-			var paragraphPropXml = genXmlParagraphProperties(textObj, false);
+            var paragraphPropXml = genXmlParagraphProperties(textObj, false);
 
 			// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
 			if ( idx == 0 ) {
 				// Add paragraphProperties right after <p> before textrun(s) begin
 				strSlideXml += '<a:p>' + paragraphPropXml;
 			}
-			else if ( idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined') ) {
+			else if ( idx > 0 && (typeof textObj.options.bullet !== 'undefined' || (typeof textObj.options.align !== 'undefined' && (prevTextObj.options.align !== textObj.options.align || prevTextObj.options.lineIdx === textObj.options.lineIdx)) )) {
 				strSlideXml += '</a:p><a:p>' + paragraphPropXml;
 			}
 
@@ -4121,7 +4124,8 @@ var PptxGenJS = function(){
 			});
 
 			// D: Add formatted textrun
-			strSlideXml += genXmlTextRun(textObj.options, textObj.text);
+            strSlideXml += genXmlTextRun(textObj.options, textObj.text);
+            prevTextObj = textObj;
 		});
 
 		// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
