@@ -75,7 +75,8 @@ if ( NODEJS || APPJS ) {
 	var gObjPptxShapes = require('../dist/pptxgen.shapes.js');
 }
 
-var PptxGenJS = function(){
+var PptxGenJS = function(shapesExt){
+	if (!gObjPptxShapes && !!shapesExt) gObjPptxShapes = shapesExt;
 	// APP
 	var APP_VER = "2.6.0-beta";
 	var APP_BLD = "20190209";
@@ -89,6 +90,15 @@ var PptxGenJS = function(){
 		'text'       : { name:'text'        },
 		'placeholder': { name:'placeholder' }
 	};
+
+	if (gObjPptxShapes) {
+		Object.keys(gObjPptxShapes).forEach(function(shapeName) {
+			// FIXME If needed, to alter name best for the api
+			const masterObjectName = gObjPptxShapes[shapeName].displayName.toLowerCase();
+			MASTER_OBJECTS[masterObjectName] = { name: masterObjectName, objName: shapeName };
+		})
+	}
+
 	var LAYOUTS = {
 		'LAYOUT_4x3'  : { name: 'screen4x3',   width:  9144000, height: 6858000 },
 		'LAYOUT_16x9' : { name: 'screen16x9',  width:  9144000, height: 5143500 },
@@ -709,6 +719,10 @@ var PptxGenJS = function(){
 			if ( slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0 ) {
 				slideDef.objects.forEach(function(object,idx){
 					var key = Object.keys(object)[0];
+					var masterObject = MASTER_OBJECTS[key];
+					
+					if (!MASTER_OBJECTS[key]) return;
+
 					if      ( MASTER_OBJECTS[key] && key == 'chart' ) gObjPptxGenerators.addChartDefinition(CHART_TYPES[(object.chart.type||'').toUpperCase()], object.chart.data, object.chart.opts, target);
 					else if ( MASTER_OBJECTS[key] && key == 'image' ) gObjPptxGenerators.addImageDefinition(object[key], target);
 					else if ( MASTER_OBJECTS[key] && key == 'line'  ) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes.LINE, object[key], target);
@@ -721,6 +735,7 @@ var PptxGenJS = function(){
 						object[key].options.placeholderIdx  = (100+idx);
 						gObjPptxGenerators.addPlaceholderDefinition(object[key].text, object[key].options, target);
 					}
+					else if (!!gObjPptxShapes[masterObject.objName]) gObjPptxGenerators.addShapeDefinition(gObjPptxShapes[masterObject.objName], object[key], target);
 				});
 			}
 
