@@ -12,9 +12,9 @@
 	"dependencies": {
 		"express": "^4.16.4",
 		"https": "^1.0.0",
-		"image-size": "^0.6.3",
+		"image-size": "^0.7.2",
 		"jquery": "^3.3.1",
-		"jsdom": "^13.1.0",
+		"jsdom": "^14.0.0",
 		"jszip": "^3.1.5"
 	},
 	"devDependencies": {
