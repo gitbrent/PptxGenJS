@@ -2884,7 +2884,11 @@ var PptxGenJS = function(){
 
 					// Fill and Border
 					var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length];
-
+					var lineDash = opts.lineDash || "solid";
+					// check for data specfic line data symbol
+					if ( ['dash','dashDot','lgDash','lgDashDot','lgDashDotDot','solid','sysDash','sysDot'].indexOf(obj.lineDash || '') >= 0 ) {
+						lineDash = obj.lineDash
+					}
 					strXml += '  <c:spPr>';
 					if ( strSerColor == 'transparent' ) {
 						strXml += '<a:noFill/>';
@@ -2902,7 +2906,7 @@ var PptxGenJS = function(){
 						}
 						else {
 							strXml += '<a:ln w="' + (opts.lineSize * ONEPT) + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
-							strXml += '<a:prstDash val="' + (opts.lineDash || "solid") + '"/><a:round/></a:ln>';
+							strXml += '<a:prstDash val="' + (lineDash) + '"/><a:round/></a:ln>';
 						}
 					}
 					else if ( opts.dataBorder ) {
@@ -2950,7 +2954,7 @@ var PptxGenJS = function(){
 					// 'c:marker' tag: `lineDataSymbol`
 					var lineDataSymbol = opts.lineDataSymbol;
 					// check for data specfic line data symbol
-					if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(obj.lineDataSymbol || '') > 0 ) {
+					if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(obj.lineDataSymbol || '') >= 0 ) {
 						lineDataSymbol = obj.lineDataSymbol
 					}
 					if ( chartType == 'line' || chartType == 'radar') {
