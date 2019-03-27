@@ -2948,9 +2948,14 @@ var PptxGenJS = function(){
                     }
 
 					// 'c:marker' tag: `lineDataSymbol`
+					var lineDataSymbol = opts.lineDataSymbol;
+					// check for data specfic line data symbol
+					if ( ['circle','dash','diamond','dot','none','square','triangle'].indexOf(obj.lineDataSymbol || '') > 0 ) {
+						lineDataSymbol = obj.lineDataSymbol
+					}
 					if ( chartType == 'line' || chartType == 'radar') {
 						strXml += '<c:marker>';
-						strXml += '  <c:symbol val="'+ opts.lineDataSymbol +'"/>';
+						strXml += '  <c:symbol val="'+ lineDataSymbol +'"/>';
 						if ( opts.lineDataSymbolSize ) {
 							// Defaults to "auto" otherwise (but this is usually too small, so there is a default)
 							strXml += '  <c:size val="'+ opts.lineDataSymbolSize +'"/>';
