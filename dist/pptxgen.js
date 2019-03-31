@@ -458,7 +458,7 @@ var PptxGenJS = function(){
 				resultObject.imageRid = imageRelId;
 				target.rels.push({
 					path: (strImagePath || strImageData),
-					type: 'image/'+strImgExtn,
+					type: 'image/svg+xml',
 					extn: strImgExtn,
 					data: (strImageData || ''),
 					rId:  (imageRelId+1),
@@ -1140,12 +1140,13 @@ var PptxGenJS = function(){
 						strSlideXml += '<p:blipFill>';
 						// NOTE: This works for both cases: either `path` or `data` contains the SVG
 						if ( slideObject.rels.filter(function(rel){ return rel.rId == slideItemObj.imageRid })[0].extn == 'svg' ) {
-							strSlideXml += '<a:blip r:embed="rId'+ (slideItemObj.imageRid-1) +'"/>';
-							strSlideXml += '<a:extLst>';
-							strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
-							strSlideXml += '    <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId'+ slideItemObj.imageRid +'"/>';
-							strSlideXml += '  </a:ext>';
-							strSlideXml += '</a:extLst>';
+							strSlideXml += '<a:blip r:embed="rId'+ (slideItemObj.imageRid-1) +'">';
+							strSlideXml += '  <a:extLst>';
+							strSlideXml += '    <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
+							strSlideXml += '      <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId'+ slideItemObj.imageRid +'"/>';
+							strSlideXml += '    </a:ext>';
+							strSlideXml += '  </a:extLst>';
+							strSlideXml += '</a:blip>';
 						}
 						else {
 							strSlideXml += '<a:blip r:embed="rId'+ slideItemObj.imageRid +'"/>';
@@ -2047,7 +2048,7 @@ var PptxGenJS = function(){
 					arrRelsDone.push(rel.path);
 				}
 			}
-			else if ( rel.isSvgPng && rel.data && rel.data.toLowerCase().indexOf('image/svg') > -1 ) {
+			else if ( rel.isSvgPng && rel.data && rel.data.toLowerCase().indexOf('image/svg+xml') > -1 ) {
 				// The SVG base64 must be converted to PNG SVG before export
 				intRels++;
 				callbackImgToDataURLDone(rel.data, rel);
@@ -2130,7 +2131,7 @@ var PptxGenJS = function(){
 
 	function callbackImgToDataURLDone(base64Data, slideRel) {
 		// SVG images were retrieved via `convertImgToDataURL()`, but have to be encoded to PNG now
-		if ( slideRel.isSvgPng && base64Data.indexOf('image/svg') > -1 ) {
+		if ( slideRel.isSvgPng && base64Data.indexOf('image/svg+xml') > -1 ) {
 			// Pass the SVG XML as base64 for conversion to PNG
 			slideRel.data = base64Data;
 			if ( NODEJS ) console.log('SVG is not supported in Node');
@@ -2138,9 +2139,16 @@ var PptxGenJS = function(){
 			return;
 		}
 
+		var oldslideRelData = slideRel.data;
 		var intEmpty = 0;
 		var funcCallback = function(rel){
-			if ( rel.path == slideRel.path ) rel.data = base64Data;
+			if ( rel.path == slideRel.path ) {
+				if (rel.extn == 'svg') {
+					rel.data = oldslideRelData;
+				} else {
+					rel.data = base64Data;
+				}
+			} 
 			if ( !rel.data ) intEmpty++;
 		}
 
