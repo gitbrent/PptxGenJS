@@ -1761,7 +1761,7 @@ var PptxGenJS = function(){
 	/**
 	 * DESC: Export the .pptx file
 	 */
-	function doExportPresentation(outputType) {
+	function doExportPresentation() {
 		var arrChartPromises = [];
 		var intSlideNum = 0, intRels = 0, intNotesRels = 0;
 
@@ -1825,6 +1825,7 @@ var PptxGenJS = function(){
 		Promise.all( arrChartPromises )
 		.then(function(arrResults){
 			var strExportName = ((gObjPptx.fileName.toLowerCase().indexOf('.ppt') > -1) ? gObjPptx.fileName : gObjPptx.fileName+gObjPptx.fileExtn);
+			var outputType = gObjPptx.outputType;
 			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0 ) {
 				zip.generateAsync({ type:outputType }).then(gObjPptx.saveCallback);
 			}
@@ -5030,6 +5031,7 @@ var PptxGenJS = function(){
 		// STEP 2: Set export properties
 		if ( funcCallback ) gObjPptx.saveCallback = funcCallback;
 		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
+		if ( outputType ) gObjPptx.outputType = outputType;
 
 		// STEP 3: Read/Encode Images
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
@@ -5044,7 +5046,7 @@ var PptxGenJS = function(){
 		intRels += encodeSlideMediaRels(gObjPptx.masterSlide, arrRelsDone);
 
 		// STEP 4: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-		if ( intRels == 0 ) doExportPresentation(outputType);
+		if ( intRels == 0 ) doExportPresentation();
 	};
 
 	/**
