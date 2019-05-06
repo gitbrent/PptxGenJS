@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [2.6.0] - 2019-??-??
 ### Added
+- Host the Examples demo webpage online [\#505](https://github.com/gitbrent/PptxGenJS/pull/505) ([multiplegeorges](https://github.com/multiplegeorges))
 ### Changed
 - Fixed: MIME type is ppt now instead of "application/zip"
 ### Removed
