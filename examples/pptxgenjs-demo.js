@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 2.5.0
-* BLD.: 20190208
+* BLD.: 20190506
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -71,7 +71,7 @@ var gPaths = {
 	'wikimedia_svg2': { path:'https://upload.wikimedia.org/wikipedia/commons/3/3b/Crystal_Clear_action_go.svg' },
 	'ccCopyRemix'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif' },
 	'ccLogo'       : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg' },
-	'ccLicenseComp': { path:'../SiteAssets/pptxgenjs/examples/images/cc_license_comp.png' },
+	'ccLicenseComp': { path:'images/cc_license_comp.png' },
 	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/images/cc_dj.gif' },
 	'gifAnimTrippy': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/images/trippy.gif' },
 	'chicagoBean'  : { path:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Chicago_Bean_Bohne_%2822038051679%29.jpg/256px-Chicago_Bean_Bohne_%2822038051679%29.jpg?op=paramTest&ampersandTest' },
@@ -2469,7 +2469,7 @@ function genSlides_Media(pptx) {
 	if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
 		// TEST USING LOCAL FILES (OFFICE.COM)
 		slide2.addText('Audio: MP3 (path:"../media")', { x:0.5, y:4.6, w:4.0, h:0.4, color:'0088CC' });
-		slide2.addMedia({ x:0.5, y:5.0, w:4.0, h:0.3, type:'audio', path:'../SiteAssets/pptxgenjs/examples/media/sample.mp3' });
+		slide2.addMedia({ x:0.5, y:5.0, w:4.0, h:0.3, type:'audio', path:'media/sample.mp3' });
 	}
 }
 
