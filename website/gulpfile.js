@@ -11,10 +11,39 @@ var fs       = require('fs'),
 	cleanCSS = require('gulp-clean-css');
 
 var cssSrch1 = '<link rel="stylesheet" href="/PptxGenJS/css/main.css"/>';
-var cssSrch2 = '<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.13.1/styles/hybrid.min.css"/>';
-var jvsSrch1 = /\<script src="https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/highlight.*.min.js"\>\<\/script\>/;
+var cssSrch2 = '<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/hybrid.min.css"/>';
+//var jvsSrch1 = /\<script src="https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/highlight.*.min.js"\>\<\/script\>/;
+//var jvsSrch1 = /\<script src="https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/highlight.js\/\d+.\d+.\d+\/highlight.min.js"\>\<\/script\>/;
+var jvsSrch1 = '<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>';
 var jvsSrch2 = 'pptxgen.bundle.js">';
 
+// TASKS: Minify
+gulp.task('min-css', ()=>{
+	// A: Inline both css files
+	return gulp.src(['../css/hybrid.min.css', './build/PptxGenJS/css/main.css'])
+		.pipe(concat('style.bundle.css'))
+		.pipe(cleanCSS())
+		.pipe(gulp.dest('../css'))
+		.pipe(gulp.src('../css/style.bundle.css'));
+});
+gulp.task('min-html', function(){
+	// A: Grab newly combined styles
+	var strMinCss = fs.readFileSync('../css/style.bundle.css', 'utf8');
+	var strMinJvs = fs.readFileSync('../js/highlight.min.js', 'utf8');
+	//console.log('>> `style.bundle.css` lines = '+ strMinCss.split('\n').length);
+	//console.log('>> `highlight.min.js` lines = '+ strMinJvs.split('\n').length);
+
+	// B: Replace head tags with inline style/javascript
+	return gulp.src('build/PptxGenJS/index.html')
+		.pipe(replace(cssSrch1, '', {logs:{ enabled:true }}))
+		.pipe(replace(cssSrch2, '\n<style>'+ strMinCss +'</style>\n', {logs:{ enabled:false }}))
+		.pipe(replace(jvsSrch1, '<script>'+ strMinJvs +'</script>\n', {logs:{ enabled:false }}))
+		.pipe(replace(jvsSrch2, 'pptxgen.bundle.js" async>', {logs:{ enabled:true }}))
+		.pipe(concat('index.perf.html'))
+		.pipe(gulp.dest('../'));
+});
+
+// TASKS: Deploy
 gulp.task('deploy-css', ()=>{
 	return gulp.src('./build/PptxGenJS/css/main.css').pipe(gulp.dest('../css/'));
 });
@@ -34,28 +63,10 @@ gulp.task('deploy-sitemap', ()=>{
 	return gulp.src('./build/PptxGenJS/sitemap.xml').pipe(gulp.dest('../'));
 });
 
-gulp.task('min-css', ()=>{
-	// STEP 1: Inline both css files
-	return gulp.src(['../css/hybrid.min.css', './build/PptxGenJS/css/main.css'])
-		.pipe(concat('style.bundle.css'))
-		.pipe(cleanCSS())
-		.pipe(gulp.dest('../css'))
-		.pipe(gulp.src('../css/style.bundle.css'));
-});
-
-gulp.task('default', gulp.series('min-css', gulp.parallel(gulp.parallel('deploy-css','deploy-help','deploy-html','deploy-img','deploy-index','deploy-sitemap'))), ()=>{
-	// A: Grab newly combined styles
-	var strMinCss = fs.readFileSync('../css/style.bundle.css', 'utf8');
-	var strMinJvs = fs.readFileSync('../js/highlight.min.js', 'utf8');
-	//console.log('>> `style.bundle.css` lines = '+ strMinCss.split('\n').length);
-	//console.log('>> `highlight.min.js` lines = '+ strMinJvs.split('\n').length);
-
-	// B: Replace head tags with inline style/javascript
-	gulp.src('build/PptxGenJS/index.html')
-	.pipe(replace(cssSrch1, '', {logs:{ enabled:true }}))
-	.pipe(replace(cssSrch2, '\n<style>'+ strMinCss +'</style>\n', {logs:{ enabled:false }}))
-	.pipe(replace(jvsSrch1, '<script>'+ strMinJvs +'</script>\n', {logs:{ enabled:false }}))
-	.pipe(replace(jvsSrch2, 'pptxgen.bundle.js" async>', {logs:{ enabled:true }}))
-	.pipe(concat('index.perf.html'))
-	.pipe(gulp.dest('../'));
+// Build/Deploy
+gulp.task(
+	'default',
+	gulp.series( gulp.parallel('deploy-css','deploy-help','deploy-html','deploy-img','deploy-index','deploy-sitemap'), 'min-css', 'min-html' ),
+	()=>{
+	console.log('Done');
 });
