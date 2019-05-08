@@ -78,7 +78,7 @@ if ( NODEJS || APPJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.6.0-beta";
-	var APP_BLD = "20190209";
+	var APP_BLD = "20190507";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -245,7 +245,7 @@ var PptxGenJS = function(){
 				bkg.src = bkg.src || bkg.path || null;
 				if (!bkg.src) bkg.src = 'preencoded.png';
 				var targetRels = target.rels;
-				var strImgExtn = bkg.src.split('.').pop() || 'png';
+				var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
 				if ( strImgExtn == 'jpg' ) strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
 				var intRels = targetRels.length + 1;
