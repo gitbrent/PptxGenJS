@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Host the Examples demo webpage online [\#505](https://github.com/gitbrent/PptxGenJS/pull/505) ([multiplegeorges](https://github.com/multiplegeorges))
 ### Changed
 - Fixed: MIME type is ppt now instead of "application/zip"
+- Fixed: Not Able to add background image from the www source [\#497](https://github.com/gitbrent/PptxGenJS/issue/497) ([nish25sp](https://github.com/nish25sp))
 ### Removed
 
 
