@@ -3,6 +3,8 @@
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
 
+import {IBorder} from './pptxgen'
+
 // CONST
 export const EMU: number = 914400;  // One (1) inch (OfficeXML measures in EMU (English Metric Units))
 export const ONEPT: number = 12700; // One (1) point (pt)
@@ -12,6 +14,7 @@ export const REGEX_HEX_COLOR: RegExp = /^[0-9a-fA-F]{6}$/;
 
 export const DEF_FONT_TITLE_SIZE: number = 18;
 export const DEF_SLIDE_MARGIN_IN: Array<number> = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+export const DEF_SLIDE_BKGD = 'FFFFFF';
 export const DEF_FONT_COLOR: string = '000000';
 export const DEF_FONT_SIZE: number = 12;
 export const DEF_CHART_GRIDLINE = { color: "888888", style: "solid", size: 1 };
@@ -32,7 +35,26 @@ export const PIECHART_COLORS: Array<string> = [
 	'5DA5DA', 'FAA43A', '60BD68', 'F17CB0', 'B2912F', 'B276B2', 'DECF3F', 'F15854', 'A7A7A7', '5DA5DA', 'FAA43A', '60BD68', 'F17CB0', 'B2912F', 'B276B2', 'DECF3F', 'F15854', 'A7A7A7'
 ];
 
+export const SLDNUMFLDID:string = '{F7021451-1387-4CA6-816F-3879F97B5CBC}'
+export const DEF_CELL_BORDER:IBorder = { color: "666666" }
+export const DEF_CELL_MARGIN_PT:Array<number> = [3, 3, 3, 3] // TRBL-style
+
 // ENUM
+export enum JSZIP_OUTPUT_TYPES = ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']; /** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
+
+export enum SCHEME_COLOR_NAMES {
+	TEXT1 = 'tx1',
+	TEXT2 = 'tx2',
+	BACKGROUND1 = 'bg1',
+	BACKGROUND2 = 'bg2',
+	ACCENT1 = 'accent1',
+	ACCENT2 = 'accent2',
+	ACCENT3 = 'accent3',
+	ACCENT4 = 'accent4',
+	ACCENT5 = 'accent5',
+	ACCENT6 = 'accent6',
+}
+
 export enum MASTER_OBJECTS {
 	"chart" = "chart",
 	"image" = "image",
