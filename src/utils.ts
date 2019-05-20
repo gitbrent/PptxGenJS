@@ -65,3 +65,27 @@ export function getSmartParseNumber(inVal:number|string, inDir:"X"|"Y") {
 	// LAST: Default value
 	return 0;
 }
+
+/**
+* DESC: Convert degrees (0..360) to Powerpoint rot value
+*/
+export function convertRotationDegrees(d:number) {
+	d = d || 0;
+	return (d > 360 ? (d - 360) : d) * 60000;
+}
+
+/**
+ * DESC: Convert component value to hex value
+ */
+export function componentToHex(c:number) {
+	var hex = c.toString(16);
+	return hex.length == 1 ? "0" + hex : hex;
+}
+
+/**
+ * DESC: Used by `addSlidesForTable()` to convert RGB colors from jQuery selectors to Hex for Presentation colors
+ */
+export function rgbToHex(r:number, g:number, b:number) {
+	if (!Number.isInteger(r)) { try { console.warn('Integer expected!'); } catch (ex) { } }
+	return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase();
+}

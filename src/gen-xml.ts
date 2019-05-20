@@ -4,6 +4,7 @@
 
 import {
 	CRLF, EMU, ONEPT,
+	MASTER_OBJECTS,
 	REGEX_HEX_COLOR,
 	BARCHART_COLORS,
 	PIECHART_COLORS,
@@ -21,8 +22,8 @@ import {
 	AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_SERIES_PRIMARY, BULLET_TYPES, DEF_FONT_TITLE_SIZE, DEF_FONT_COLOR, DEF_FONT_SIZE,
 	LAYOUT_IDX_SERIES_BASE, PLACEHOLDER_TYPES
 } from './enums';
-import { IChartOpts, ISlide, IShadowOpts, ITextOpts, gObjPptx, jQuery } from './pptxgen'
-import { getSmartParseNumber, encodeXmlEntities, getMix, getUuid, inch2Emu } from './utils';
+import { IChartOpts, ISlide, IShadowOpts, ITextOpts, gObjPptx, jQuery, JSZip } from './pptxgen'
+import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, getMix, getUuid, inch2Emu } from './utils';
 import { gObjPptxShapes} from './shapes'
 
 export var gObjPptxGenerators = {
@@ -1640,7 +1641,7 @@ export function makeXmlCharts(rel) {
 	// A: Create Chart XML -----------------------------------------------------------
 	if (Array.isArray(rel.opts.type)) {
 		rel.opts.type.forEach((type) => {
-			var chartType = type.type.name;
+			var chartType:CHART_TYPES = type.type.name;
 			var data = type.data;
 			var options = getMix(rel.opts, type.options);
 			var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
@@ -2898,14 +2899,6 @@ function makeSerAxis(opts, axisId, valAxisId) {
 }
 
 /**
-* DESC: Convert degrees (0..360) to Powerpoint rot value
-*/
-function convertRotationDegrees(d) {
-	d = d || 0;
-	return (d > 360 ? (d - 360) : d) * 60000;
-}
-
-/**
 * DESC: Generate the XML for title elements used for the char and axis titles
 */
 function genXmlTitle(opts) {
@@ -3127,7 +3120,7 @@ export function genXmlTextBody(slideObj) {
 }
 
 function genXmlParagraphProperties(textObj, isDefault) {
-	var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
+	var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '', paraPropXmlCore = '';
 	var bulletLvl0Margin = 342900;
 	var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
 
