@@ -46,17 +46,17 @@
 */
 
 import {
-	EMU, ONEPT, CRLF, DEF_SLIDE_MARGIN_IN, DEF_CELL_MARGIN_PT, DEF_FONT_COLOR, DEF_FONT_SIZE, CHART_TYPES, MASTER_OBJECTS, JSZIP_OUTPUT_TYPES, IMG_BROKEN, IMG_PLAYBTN,
-} from './enums';
+	EMU, ONEPT, CRLF, DEF_SLIDE_MARGIN_IN, DEF_CELL_MARGIN_PT, DEF_FONT_COLOR, DEF_FONT_SIZE, CHART_TYPES, MASTER_OBJECTS, JSZIP_OUTPUT_TYPES, IMG_BROKEN, IMG_PLAYBTN, PLACEHOLDER_TYPES, SLIDE_OBJECT_TYPES,
+} from './enums'
 import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
-import * as genXml from './gen-xml';
-//import {thisShapes} from './shapes'
+import * as genXml from './gen-xml'
+import { gObjPptxShapes } from './shapes'
 import jszip from 'jszip'
 
 export var jQuery = null;
 export var fs = null;
 export var https = null;
-export var JSZip:jszip = null;
+export var JSZip: jszip = null;
 export var sizeOf = null;
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -103,10 +103,16 @@ export interface OptsDataOrPath {
 	path?: string
 }
 export interface OptsChartData {
-	name:string
-    labels:Array<string>
-	values:Array<number>
-	sizes:Array<number>
+	index?: number
+	name?: string
+	labels?: Array<string>
+	values?: Array<number>
+	sizes?: Array<number>
+}
+export interface OptsChartGridLine {
+	size?: number
+	color?: string
+	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
 // Opts
 export interface IBorder {
@@ -117,17 +123,24 @@ export interface IShadowOpts {
 	type: string
 	angle: number
 	opacity: number
+	blur?:number
+	offset?:number
+	color?:string
 }
-export interface IChartOpts extends OptsCoords {
+export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	type: CHART_TYPES
-	layout:OptsCoords
+	layout?: OptsCoords
 	barDir?: string
 	barGrouping?: string
 	barGapWidthPct?: number
 	barGapDepthPct?: number
 	bar3DShape?: string,
-	chartColors?: Array<string>, chartColorsOpacity?: number,
-	showLabel?: boolean,
+	catAxisOrientation?: 'minMax' | 'minMax'
+	catGridLine?: OptsChartGridLine
+	valGridLine?: OptsChartGridLine
+	chartColors?: Array<string>
+	chartColorsOpacity?: number
+	showLabel?: boolean
 	lang?: string,
 	dataNoEffects?: string,
 	dataLabelFormatScatter?: string,
@@ -138,8 +151,8 @@ export interface IChartOpts extends OptsCoords {
 	dataLabelFontFace?: string,
 	dataLabelPosition?: string,
 	displayBlanksAs?: string,
-	fill:string
-	border:IBorder
+	fill?: string
+	border?: IBorder
 	hasArea?: boolean
 	catAxes?: Array<number>
 	valAxes?: Array<number>
@@ -147,57 +160,84 @@ export interface IChartOpts extends OptsCoords {
 	lineDataSymbolSize?: number
 	lineDataSymbolLineColor?: string
 	lineDataSymbolLineSize?: number
-	showLegend?:boolean
-	legendPos?:string
-	legendFontFace?:string
-	legendFontSize?:number
-	legendColor?:string
+	showLegend?: boolean
+	legendPos?: string
+	legendFontFace?: string
+	legendFontSize?: number
+	legendColor?: string
 	lineSmooth?: boolean
-	invertedColors?: string,
-	showDataTable?:boolean
-	showDataTableHorzBorder?:boolean
-	showDataTableVertBorder?:boolean
-	showDataTableOutline?:boolean
-	showDataTableKeys?:boolean
-	title?:string
-	titleFontSize?:number
-	titleColor?:string
+	invertedColors?: string
+
+	serAxisOrientation?: string
+	serAxisHidden?: boolean
+	serGridLine?: OptsChartGridLine
+	showSerAxisTitle?: boolean
+	serLabelFormatCode?: string
+	serAxisLabelPos?: string
+	serAxisLineShow?: boolean
+	serAxisLabelFontSize?: string
+	serAxisLabelColor?: string
+	serAxisLabelFontFace?: string
+	serAxisLabelFrequency?: string
+	serAxisBaseTimeUnit?: string
+	serAxisMajorTimeUnit?: string
+	serAxisMinorTimeUnit?: string
+	serAxisMajorUnit?: number
+	serAxisMinorUnit?: number
+	serAxisTitleColor?: string
+	serAxisTitleFontFace?: string
+	serAxisTitleFontSize?: number
+	serAxisTitleRotate?: number
+	serAxisTitle?: string
+
+	showDataTable?: boolean
+	showDataTableHorzBorder?: boolean
+	showDataTableVertBorder?: boolean
+	showDataTableOutline?: boolean
+	showDataTableKeys?: boolean
+	title?: string
+	titleFontSize?: number
+	titleColor?: string
 	titleFontFace?: string
-	titleRotate: number
-	titleAlign: string
-	titlePos: string
+	titleRotate?: number
+	titleAlign?: string
+	titlePos?: string
 	dataLabelFontBold?: boolean
 	valueBarColors?: Array<string>
 	holeSize?: number
 	showTitle?: boolean
 	showValue?: boolean
 	showPercent?: boolean
-	catLabelFormatCode?: string, dataBorder?: IBorder, lineSize?: number, lineDash?: string, radarStyle?: string, shadow?: IShadowOpts,
-	catAxisLabelPos?:string
+	catLabelFormatCode?: string
+	dataBorder?: IBorder
+	lineSize?: number
+	lineDash?: string
+	radarStyle?: string
+	shadow?: IShadowOpts
+	catAxisLabelPos?: string
 	valAxisOrientation?: 'minMax' | 'minMax'
-	valAxisMaxVal?:number
-	valAxisMinVal?:number
-	valAxisHidden?:boolean
-	valGridLine?:number
-	valAxisTitleColor?:string
-	valAxisTitleFontFace?:string
-	valAxisTitleFontSize?:number
-	valAxisTitleRotate?:number
-	valAxisTitle?:string
-	valAxisLabelFormatCode?:string
-	valAxisLineShow?:boolean
-	valAxisLabelRotate?:number
-	valAxisLabelFontSize?:number
-	valAxisLabelFontBold?:boolean
-	valAxisLabelColor?:string
-	valAxisLabelFontFace?:string
-	valAxisMajorUnit?:number
-	showValAxisTitle?:boolean
-	axisPos?:string
-	v3DRotX?:number
-	v3DRotY?:number
-	v3DRAngAx?:boolean
-	v3DPerspective?:string
+	valAxisMaxVal?: number
+	valAxisMinVal?: number
+	valAxisHidden?: boolean
+	valAxisTitleColor?: string
+	valAxisTitleFontFace?: string
+	valAxisTitleFontSize?: number
+	valAxisTitleRotate?: number
+	valAxisTitle?: string
+	valAxisLabelFormatCode?: string
+	valAxisLineShow?: boolean
+	valAxisLabelRotate?: number
+	valAxisLabelFontSize?: number
+	valAxisLabelFontBold?: boolean
+	valAxisLabelColor?: string
+	valAxisLabelFontFace?: string
+	valAxisMajorUnit?: number
+	showValAxisTitle?: boolean
+	axisPos?: string
+	v3DRotX?: number
+	v3DRotY?: number
+	v3DRAngAx?: boolean
+	v3DPerspective?: string
 }
 export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
 	onlineVideoLink?: string;
@@ -221,7 +261,7 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 }
 // Core: `slide` and `presentation`
 export interface ISlideRelChart extends OptsChartData {
-	type: string
+	type: CHART_TYPES
 	opts: IChartOpts
 	data: Array<OptsChartData>
 	rId: number
@@ -234,7 +274,7 @@ export interface ISlideRelMedia {
 	opts: IMediaOpts
 	path?: string
 	extn?: string
-	data?: string|ArrayBuffer
+	data?: string | ArrayBuffer
 	isSvgPng?: boolean
 	rId: number
 	Target: string
@@ -242,6 +282,10 @@ export interface ISlideRelMedia {
 export interface ILayout {
 	name: string
 	rels: ISlideRelChart | ISlideRelMedia
+	data: Array<object>
+	options: {
+		placeholderName: string
+	}
 	width: number
 	height: number
 }
@@ -250,9 +294,66 @@ export interface ISlideNumber extends OptsCoords {
 	fontSize: number
 	color: string
 }
-/**
-* Slide Rel
-*/
+
+export interface ISlideDataObject {
+	type: SLIDE_OBJECT_TYPES
+	// text
+	text?: string
+	// table
+	arrTabRows?: Array<Array<{text:string|object, options?:{colspan?:number}}>>
+	// chart
+	chartRid?:number
+	// image:
+	image?: string
+	imageRid?: number
+	hyperlink?: { rId:number, slide?:number, tooltip?:string, url?:string }
+	// media
+	media?:string
+	mtype?: 'online' | 'other'
+	mediaRid?: number
+	//
+	options?: {
+		x?:number
+		y?:number
+		cx?:number
+		cy?:number
+		w?:number
+		h?:number
+		placeholder?: string
+		shape?: gObjPptxShapes
+		bodyProp?: {
+			lIns?:number
+			rIns?:number
+			bIns?:number
+			tIns?:number
+		}
+		isTextBox?:boolean
+		line?:string
+		margin?:number
+		rectRadius?:number
+		fill?:string
+		shadow?:IShadowOpts
+		colW?:number
+		rowH?:number
+		flipH?:boolean
+		flipV?:boolean
+		rotate?:number
+		lineDash?:string
+		lineSize?:number
+		lineHead?:string
+		lineTail?:string
+		// image:
+		sizing?: {
+			type?:string
+			x?:number
+			y?:number
+			w?:number
+			h?:number
+		}
+		rounding?: string
+	}
+}
+
 export interface ISlideLayout {
 	name: string
 	slide: ISlide
@@ -266,9 +367,12 @@ export interface ISlide {
 		back: string
 		bkgdImgRid?: number
 		color: string
+		hidden?: boolean
 	}
+	numb: number
+	name: string
 	rels: Array<ISlideRelChart | ISlideRelMedia>
-	data: Array<object>
+	data: Array<ISlideDataObject>
 	layoutName: string
 	layoutObj?: ILayout
 	slideNumberObj?: ISlideNumber
@@ -349,22 +453,53 @@ export default class PptxGenJS {
 	private fileName: string
 	private fileExtn: string
 	private isBrowser: boolean
+	/** master slide layout object */
 	private masterSlide: ISlide
+	/** this Presentation's Slide objects */
 	private slides: ISlide[]
+	/** slide layout definition objects, used for generating slide layout files */
 	private slideLayouts: ISlideLayout[]
 	private saveCallback: Function
-	private chartCounter: number
-	private imageCounter: number
 
 	constructor() {
+		// Core
+		this._author = 'PptxGenJS'
+		this.company = 'PptxGenJS'
+		this.revision = '1'
+		this.subject = 'PptxGenJS Presentation'
+		this.title = 'PptxGenJS Presentation'
+		// PptxGenJS props
+		this.isBrowser= false
+		this.fileName= 'Presentation'
+		this.fileExtn= '.pptx'
+		this.pptLayout= LAYOUTS['LAYOUT_16x9']
+		this.rtlMode= false
+		this.saveCallback= null
+		//
+		this.masterSlide = {
+			slide: null,
+			layoutName: null,
+			data: [],
+			rels: [],
+			slideNumberObj: null
+		}
+		this.slides= []
+		this.slideLayouts = [{
+			name: 'BLANK',
+			slide: null,
+			data: [],
+			rels: [],
+			margin: DEF_SLIDE_MARGIN_IN,
+			slideNumberObj: null
+		}]
 	}
 
 	/**
 	 * DESC: Export the .pptx file
 	 */
-	doExportPresentation = (outputType?:JSZIP_OUTPUT_TYPES) => {
-		var arrChartPromises:Array<Promise<any>> = [];
-		var intSlideNum:number = 0;
+	doExportPresentation = (outputType?: JSZIP_OUTPUT_TYPES) => {
+		var arrChartPromises: Array<Promise<any>> = [];
+		var intSlideNum: number = 0;
 
 		// STEP 1: Create new JSZip file
 		var zip = new JSZip();
@@ -383,14 +518,14 @@ export default class PptxGenJS {
 		zip.folder("ppt/notesMasters").folder("_rels");
 		zip.folder("ppt/notesSlides").folder("_rels");
 		//
-		zip.file("[Content_Types].xml", genXml.makeXmlContTypes());
+		zip.file("[Content_Types].xml", genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide));
 		zip.file("_rels/.rels", genXml.makeXmlRootRels());
-		zip.file("docProps/app.xml", genXml.makeXmlApp());
-		zip.file("docProps/core.xml", genXml.makeXmlCore());
-		zip.file("ppt/_rels/presentation.xml.rels", genXml.makeXmlPresentationRels());
+		zip.file("docProps/app.xml", genXml.makeXmlApp(this.slides, this.company));
+		zip.file("docProps/core.xml", genXml.makeXmlCore(this.title, this.subject, this.author, this.revision));
+		zip.file("ppt/_rels/presentation.xml.rels", genXml.makeXmlPresentationRels(this.slides));
 		//
 		zip.file("ppt/theme/theme1.xml", genXml.makeXmlTheme());
-		zip.file("ppt/presentation.xml", genXml.makeXmlPresentation());
+		zip.file("ppt/presentation.xml", genXml.makeXmlPresentation(this.slides, this.pptLayout));
 		zip.file("ppt/presProps.xml", genXml.makeXmlPresProps());
 		zip.file("ppt/tableStyles.xml", genXml.makeXmlTableStyles());
 		zip.file("ppt/viewProps.xml", genXml.makeXmlViewProps());
@@ -404,7 +539,7 @@ export default class PptxGenJS {
 		for (var idx = 0; idx < this.slides.length; idx++) {
 			intSlideNum++;
 			zip.file('ppt/slides/slide' + intSlideNum + '.xml', genXml.makeXmlSlide(this.slides[idx]));
-			zip.file('ppt/slides/_rels/slide' + intSlideNum + '.xml.rels', genXml.makeXmlSlideRel(intSlideNum));
+			zip.file('ppt/slides/_rels/slide' + intSlideNum + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, intSlideNum));
 
 			// Here we will create all slide notes related items. Notes of empty strings
 			// are created for slides which do not have notes specified, to keep track of _rels.
@@ -412,8 +547,8 @@ export default class PptxGenJS {
 			zip.file('ppt/notesSlides/_rels/notesSlide' + intSlideNum + '.xml.rels', genXml.makeXmlNotesSlideRel(intSlideNum));
 		}
 
-		zip.file("ppt/slideMasters/slideMaster1.xml", genXml.makeXmlMaster(this.masterSlide));
-		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", genXml.makeXmlMasterRel(this.masterSlide));
+		zip.file("ppt/slideMasters/slideMaster1.xml", genXml.makeXmlMaster(this.masterSlide, this.slideLayouts));
+		zip.file("ppt/slideMasters/_rels/slideMaster1.xml.rels", genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts));
 		zip.file('ppt/notesMasters/notesMaster1.xml', genXml.makeXmlNotesMaster());
 		zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', genXml.makeXmlNotesMasterRel());
 
@@ -495,7 +630,7 @@ export default class PptxGenJS {
 		this.saveCallback = null;
 	}
 
-	createMediaFiles = (layout:ISlideLayout, zip:jszip, chartPromises:Array<Promise<any>>) => {
+	createMediaFiles = (layout: ISlideLayout, zip: jszip, chartPromises: Array<Promise<any>>) => {
 		layout.rels.forEach((rel) => {
 			if (rel.type == 'chart') {
 				chartPromises.push(genXml.gObjPptxGenerators.createExcelWorksheet(rel, zip));
@@ -603,7 +738,7 @@ export default class PptxGenJS {
 	}
 
 	/* `FileReader()` + `readAsDataURL` = Ablity to read any file into base64! */
-	convertImgToDataURL = (slideRel:ISlideRelMedia) => {
+	convertImgToDataURL = (slideRel: ISlideRelMedia) => {
 		var xhr = new XMLHttpRequest();
 		xhr.onload = () => {
 			var reader = new FileReader();
@@ -623,7 +758,7 @@ export default class PptxGenJS {
 	}
 
 	/* Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64 */
-	convertRemoteMediaToDataURL = (slideRel:ISlideRelMedia) => {
+	convertRemoteMediaToDataURL = (slideRel: ISlideRelMedia) => {
 		https.get(slideRel.path, function(res) {
 			var rawData = "";
 			res.setEncoding('binary'); // IMPORTANT: Only binary encoding works
@@ -672,7 +807,7 @@ export default class PptxGenJS {
 		image.src = slideRel.data; // use pre-encoded SVG base64 data
 	}
 
-	callbackImgToDataURLDone = (base64Data:string|ArrayBuffer, slideRel:ISlideRel) => {
+	callbackImgToDataURLDone = (base64Data: string | ArrayBuffer, slideRel: ISlideRel) => {
 		// SVG images were retrieved via `convertImgToDataURL()`, but have to be encoded to PNG now
 		if (slideRel.isSvgPng && base64Data.indexOf('image/svg') > -1) {
 			// Pass the SVG XML as base64 for conversion to PNG
@@ -1047,7 +1182,7 @@ this.save = function save(inStrExportName: string, funcCallback?: Function, outp
 
 	// STEP 1: Add empty placeholder objects to slides that don't already have them
 	this.slides.forEach(function(slide) {
-		if (slide.layoutObj) addPlaceholdersToSlides(slide);
+		if (slide.layoutObj) this.addPlaceholdersToSlides(slide);
 	});
 
 	// STEP 2: Set export properties
@@ -1058,16 +1193,16 @@ this.save = function save(inStrExportName: string, funcCallback?: Function, outp
 	// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 
 	// A: Slide rels
-	this.slides.forEach(function(slide, idx) { intRels += encodeSlideMediaRels(slide, arrRelsDone); });
+	this.slides.forEach(function(slide, idx) { intRels += this.encodeSlideMediaRels(slide, arrRelsDone); });
 
 	// B: Layout rels
-	this.slideLayouts.forEach(function(layout, idx) { intRels += encodeSlideMediaRels(layout, arrRelsDone); });
+	this.slideLayouts.forEach(function(layout, idx) { intRels += this.encodeSlideMediaRels(layout, arrRelsDone); });
 
 	// C: Master Slide rels
-	intRels += encodeSlideMediaRels(this.masterSlide, arrRelsDone);
+	intRels += this.encodeSlideMediaRels(this.masterSlide, arrRelsDone);
 
 	// STEP 4: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-	if (intRels == 0) doExportPresentation(outputType);
+	if (intRels == 0) this.doExportPresentation(outputType);
 };
 
 /**
