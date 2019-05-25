@@ -22,9 +22,10 @@ import {
 	AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_SERIES_PRIMARY, BULLET_TYPES, DEF_FONT_TITLE_SIZE, DEF_FONT_COLOR, DEF_FONT_SIZE,
 	LAYOUT_IDX_SERIES_BASE, PLACEHOLDER_TYPES
 } from './enums';
-import { IChartOpts, ISlide, IShadowOpts, ITextOpts, gObjPptx, jQuery, JSZip } from './pptxgen'
+import { IChartOpts, ISlide, ISlideRelChart, ISlideRelMedia, IShadowOpts, ITextOpts, gObjPptx, jQuery, JSZip } from './pptxgen'
 import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, getMix, getUuid, inch2Emu } from './utils';
 import { gObjPptxShapes} from './shapes'
+import jszip from 'jszip'
 
 export var gObjPptxGenerators = {
 	/**
@@ -49,7 +50,7 @@ export var gObjPptxGenerators = {
 				data: (bkg.data || ''),
 				rId: intRels,
 				Target: '../media/image' + (++gObjPptx.imageCounter) + '.' + strImgExtn
-			});
+			} as ISlideRelMedia);
 			target.slide.bkgdImgRid = intRels;
 		}
 		else if (bkg && typeof bkg === 'string') {
@@ -1203,15 +1204,15 @@ export var gObjPptxGenerators = {
 
 	/**
 	 * Based on passed data, creates Excel Worksheet that is used as a data source for a chart.
-	 * @param {Object} chartObject chart object
-	 * @param {ZipObject} zip zip file that the resulting XLSX should be added to
+	 * @param {ISlideRelChart} chartObject chart object
+	 * @param {jszip} zip file that the resulting XLSX should be added to
 	 * @return {Promise} promise of generating the XLSX file
 	 */
-	createExcelWorksheet: function createExcelWorksheet(chartObject, zip) {
+	createExcelWorksheet: function createExcelWorksheet(chartObject: ISlideRelChart, zip: jszip): Promise<any> {
 		var data = chartObject.data;
 
 		return new Promise(function(resolve, reject) {
-			var zipExcel = new JSZip();
+			var zipExcel:jszip = new JSZip();
 			var intBubbleCols = (((data.length - 1) * 2) + 1) // 1 for "X-Values", then 2 for every Y-Axis
 
 			// A: Add folders
@@ -1301,10 +1302,10 @@ export var gObjPptxGenerators = {
 			{
 				// A: Start XML
 				var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-				if (chartObject.opts.type.name === 'bubble') {
+				if (chartObject.opts.type === 'bubble') {
 					strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">';
 				}
-				else if (chartObject.opts.type.name === 'scatter') {
+				else if (chartObject.opts.type === 'scatter') {
 					strSharedStrings += '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">';
 				}
 				else {
@@ -1314,7 +1315,7 @@ export var gObjPptxGenerators = {
 				}
 
 				// C: Add `name`/Series
-				if (chartObject.opts.type.name === 'bubble') {
+				if (chartObject.opts.type === 'bubble') {
 					data.forEach(function(objData, idx) {
 						if (idx == 0) strSharedStrings += '<si><t>' + 'X-Axis' + '</t></si>';
 						else {
@@ -1328,7 +1329,7 @@ export var gObjPptxGenerators = {
 				}
 
 				// D: Add `labels`/Categories
-				if (chartObject.opts.type.name != 'bubble' && chartObject.opts.type.name != 'scatter') {
+				if (chartObject.opts.type != 'bubble' && chartObject.opts.type != 'scatter') {
 					data[0].labels.forEach(function(label, idx) { strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'; });
 				}
 
@@ -1339,23 +1340,23 @@ export var gObjPptxGenerators = {
 			// tables/table1.xml
 			{
 				var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-				if (chartObject.opts.type.name == 'bubble') {
+				if (chartObject.opts.type == 'bubble') {
 					/*
 					strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
 					strTableXml += '<tableColumns count="' + (data.length) +'">';
 					data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'" />' });
 					*/
 				}
-				else if (chartObject.opts.type.name == 'scatter') {
+				else if (chartObject.opts.type == 'scatter') {
 					strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" totalsRowShown="0">';
 					strTableXml += '<tableColumns count="' + (data.length) + '">';
-					data.forEach(function(obj, idx) { strTableXml += '<tableColumn id="' + (idx + 1) + '" name="' + (idx == 0 ? 'X-Values' : 'Y-Value ' + idx) + '" />' });
+					data.forEach((_obj, idx) => { strTableXml += '<tableColumn id="' + (idx + 1) + '" name="' + (idx == 0 ? 'X-Values' : 'Y-Value ' + idx) + '" />' });
 				}
 				else {
 					strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" totalsRowShown="0">';
 					strTableXml += '<tableColumns count="' + (data.length + 1) + '">';
 					strTableXml += '<tableColumn id="1" name=" " />';
-					data.forEach(function(obj, idx) { strTableXml += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />' });
+					data.forEach((obj, idx) => { strTableXml += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />' });
 				}
 				strTableXml += '</tableColumns>';
 				strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0" />';
@@ -1367,10 +1368,10 @@ export var gObjPptxGenerators = {
 			{
 				var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
 				strSheetXml += '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
-				if (chartObject.opts.type.name === 'bubble') {
+				if (chartObject.opts.type === 'bubble') {
 					strSheetXml += '<dimension ref="A1:' + LETTERS[(intBubbleCols - 1)] + (data[0].values.length + 1) + '" />';
 				}
-				else if (chartObject.opts.type.name === 'scatter') {
+				else if (chartObject.opts.type === 'scatter') {
 					strSheetXml += '<dimension ref="A1:' + LETTERS[(data.length - 1)] + (data[0].values.length + 1) + '" />';
 				}
 				else {
@@ -1379,7 +1380,7 @@ export var gObjPptxGenerators = {
 
 				strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
 				strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
-				if (chartObject.opts.type.name == 'bubble') {
+				if (chartObject.opts.type == 'bubble') {
 					strSheetXml += '<cols>';
 					strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
 					strSheetXml += '</cols>';
@@ -1409,7 +1410,7 @@ export var gObjPptxGenerators = {
 					strSheetXml += '</row>';
 
 					// B: Add row for each X-Axis value (Y-Axis* value is optional)
-					data[0].values.forEach(function(val, idx) {
+					data[0].values.forEach((val, idx) =>{
 						// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
 						strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + intBubbleCols + '">';
 						strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>';
@@ -1430,7 +1431,7 @@ export var gObjPptxGenerators = {
 						strSheetXml += '</row>';
 					});
 				}
-				else if (chartObject.opts.type.name == 'scatter') {
+				else if (chartObject.opts.type == 'scatter') {
 					strSheetXml += '<cols>';
 					strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
 					//data.forEach(function(obj,idx){ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
@@ -1565,20 +1566,7 @@ export var gObjPptxGenerators = {
  * Main entry point method for create charts
  * @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
  */
-export function makeXmlCharts(rel) {
-	// HELPER FUNCS:
-	function hasArea(chartType: CHART_TYPES) {
-		function has(type) {
-			return chartType.some(function(item) {
-				return item.type.name === type;
-			});
-		}
-		if (Array.isArray(chartType)) {
-			return has('area');
-		}
-		return chartType === 'area';
-	}
-
+export function makeXmlCharts(rel:ISlideRelChart) {
 	/* ----------------------------------------------------------------------- */
 
 	// STEP 1: Create chart
@@ -1607,7 +1595,7 @@ export function makeXmlCharts(rel) {
 			strXml += '<c:autoTitleDeleted val="1"/>';
 		}
 		// Add 3D view tag
-		if (rel.opts.type.name == 'bar3D') {
+		if (rel.opts.type == 'bar3D') {
 			strXml += '<c:view3D>';
 			strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>';
 			strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>';
@@ -1652,13 +1640,13 @@ export function makeXmlCharts(rel) {
 		});
 	}
 	else {
-		var chartType = rel.opts.type.name;
+		var chartType = rel.opts.type;
 		var isMultiTypeChart = false;
 		strXml += makeChartType(chartType, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, isMultiTypeChart);
 	}
 
 	// B: Axes -----------------------------------------------------------
-	if (rel.opts.type.name !== 'pie' && rel.opts.type.name !== 'doughnut') {
+	if (rel.opts.type !== 'pie' && rel.opts.type !== 'doughnut') {
 		// Param check
 		if (rel.opts.valAxes && !usesSecondaryValAxis) {
 			throw new Error('Secondary axis must be used by one of the multiple charts');
@@ -1677,8 +1665,6 @@ export function makeXmlCharts(rel) {
 			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
 		}
 
-		rel.opts.hasArea = hasArea(rel.opts.type);
-
 		if (rel.opts.valAxes) {
 			strXml += makeValueAxis(getMix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY);
 			if (rel.opts.valAxes[1]) {
@@ -1689,7 +1675,7 @@ export function makeXmlCharts(rel) {
 			strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY);
 
 			// Add series axis for 3D bar
-			if (rel.opts.type.name == 'bar3D') {
+			if (rel.opts.type == 'bar3D') {
 				strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			}
 		}
@@ -1769,7 +1755,7 @@ export function makeXmlCharts(rel) {
 
 	strXml += '  <c:plotVisOnly val="1"/>';
 	strXml += '  <c:dispBlanksAs val="' + rel.opts.displayBlanksAs + '"/>';
-	if (rel.opts.type.name === 'scatter') strXml += '<c:showDLblsOverMax val="1"/>';
+	if (rel.opts.type === 'scatter') strXml += '<c:showDLblsOverMax val="1"/>';
 
 	strXml += '</c:chart>';
 
@@ -2663,7 +2649,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
 
 	// Build cat axis tag
 	// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-	if (opts.type.name == 'scatter' || opts.type.name == 'bubble') {
+	if (opts.type == 'scatter' || opts.type == 'bubble') {
 		strXml += '<c:valAx>';
 	}
 	else {
@@ -2689,13 +2675,13 @@ function makeCatAxis(opts, axisId, valAxisId) {
 		});
 	}
 	// NOTE: Adding Val Axis Formatting if scatter or bubble charts
-	if (opts.type.name == 'scatter' || opts.type.name == 'bubble') {
+	if (opts.type == 'scatter' || opts.type == 'bubble') {
 		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>';
 	}
 	else {
 		strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode || "General") + '" sourceLinked="0"/>';
 	}
-	if (opts.type.name === 'scatter') {
+	if (opts.type === 'scatter') {
 		strXml += '  <c:majorTickMark val="none"/>';
 		strXml += '  <c:minorTickMark val="none"/>';
 		strXml += '  <c:tickLblPos val="nextTo"/>';
@@ -2750,7 +2736,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
 
 	// Close cat axis tag
 	// NOTE: Added closing tag of val or cat axis based on chart type
-	if (opts.type.name == 'scatter' || opts.type.name == 'bubble') {
+	if (opts.type == 'scatter' || opts.type == 'bubble') {
 		strXml += '</c:valAx>';
 	}
 	else {
@@ -2760,7 +2746,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
 	return strXml;
 }
 
-function makeValueAxis(opts, valAxisId) {
+function makeValueAxis(opts:ISlideRelChart['opts'], valAxisId) {
 	var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir == 'col' ? 'l' : 'b') : (opts.barDir == 'col' ? 'r' : 't');
 	var strXml = '';
 	var isRight = axisPos === 'r' || axisPos === 't';
@@ -2788,7 +2774,7 @@ function makeValueAxis(opts, valAxisId) {
 		});
 	}
 	strXml += ' <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>';
-	if (opts.type.name === 'scatter') {
+	if (opts.type === 'scatter') {
 		strXml += '  <c:majorTickMark val="none"/>';
 		strXml += '  <c:minorTickMark val="none"/>';
 		strXml += '  <c:tickLblPos val="nextTo"/>';
@@ -2820,7 +2806,7 @@ function makeValueAxis(opts, valAxisId) {
 	strXml += ' </c:txPr>';
 	strXml += ' <c:crossAx val="' + crossAxId + '"/>';
 	strXml += ' <c:crosses val="' + crosses + '"/>';
-	strXml += ' <c:crossBetween val="' + (opts.type.name === 'scatter' || opts.hasArea ? 'midCat' : 'between') + '"/>';
+	strXml += ' <c:crossBetween val="' + (opts.type === 'scatter' || (Array.isArray(opts.type) && opts.type.indexOf(CHART_TYPES.AREA) > -1 ? true : false) ? 'midCat' : 'between') + '"/>';
 	if (opts.valAxisMajorUnit) strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>';
 	strXml += '</c:valAx>';
 

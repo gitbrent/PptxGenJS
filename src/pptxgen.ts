@@ -51,11 +51,12 @@ import {
 import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
 import * as genXml from './gen-xml';
 //import {thisShapes} from './shapes'
+import jszip from 'jszip'
 
 export var jQuery = null;
 export var fs = null;
 export var https = null;
-export var JSZip = null;
+export var JSZip:jszip = null;
 export var sizeOf = null;
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -101,13 +102,30 @@ export interface OptsDataOrPath {
 	data?: string
 	path?: string
 }
+export interface OptsChartData {
+	name:string
+    labels:Array<string>
+	values:Array<number>
+	sizes:Array<number>
+}
 // Opts
 export interface IBorder {
 	color?: string // '#696969'
 	pt?: number
 }
-export interface IChartOpts {
-	barDir?: string, barGrouping?: string, barGapWidthPct?: number, barGapDepthPct?: number, bar3DShape?: string,
+export interface IShadowOpts {
+	type: string
+	angle: number
+	opacity: number
+}
+export interface IChartOpts extends OptsCoords {
+	type: CHART_TYPES
+	layout:OptsCoords
+	barDir?: string
+	barGrouping?: string
+	barGapWidthPct?: number
+	barGapDepthPct?: number
+	bar3DShape?: string,
 	chartColors?: Array<string>, chartColorsOpacity?: number,
 	showLabel?: boolean,
 	lang?: string,
@@ -119,26 +137,71 @@ export interface IChartOpts {
 	dataLabelColor?: string,
 	dataLabelFontFace?: string,
 	dataLabelPosition?: string,
-	lineDataSymbol?: string,
-	lineDataSymbolSize?: number,
-	lineDataSymbolLineColor?: string,
-	lineDataSymbolLineSize?: number,
-	lineSmooth?: boolean,
+	displayBlanksAs?: string,
+	fill:string
+	border:IBorder
+	hasArea?: boolean
+	catAxes?: Array<number>
+	valAxes?: Array<number>
+	lineDataSymbol?: string
+	lineDataSymbolSize?: number
+	lineDataSymbolLineColor?: string
+	lineDataSymbolLineSize?: number
+	showLegend?:boolean
+	legendPos?:string
+	legendFontFace?:string
+	legendFontSize?:number
+	legendColor?:string
+	lineSmooth?: boolean
 	invertedColors?: string,
-	dataLabelFontBold?: boolean,
-	valueBarColors?: Array<string>,
-	type: CHART_TYPES,
-	holeSize?: number,
-	showValue?: boolean,
-	showPercent?: boolean,
-	catLabelFormatCode?: string, dataBorder?: IBorder, lineSize?: number, lineDash?: string, radarStyle?: string, shadow?: IShadowOpts
+	showDataTable?:boolean
+	showDataTableHorzBorder?:boolean
+	showDataTableVertBorder?:boolean
+	showDataTableOutline?:boolean
+	showDataTableKeys?:boolean
+	title?:string
+	titleFontSize?:number
+	titleColor?:string
+	titleFontFace?: string
+	titleRotate: number
+	titleAlign: string
+	titlePos: string
+	dataLabelFontBold?: boolean
+	valueBarColors?: Array<string>
+	holeSize?: number
+	showTitle?: boolean
+	showValue?: boolean
+	showPercent?: boolean
+	catLabelFormatCode?: string, dataBorder?: IBorder, lineSize?: number, lineDash?: string, radarStyle?: string, shadow?: IShadowOpts,
+	catAxisLabelPos?:string
+	valAxisOrientation?: 'minMax' | 'minMax'
+	valAxisMaxVal?:number
+	valAxisMinVal?:number
+	valAxisHidden?:boolean
+	valGridLine?:number
+	valAxisTitleColor?:string
+	valAxisTitleFontFace?:string
+	valAxisTitleFontSize?:number
+	valAxisTitleRotate?:number
+	valAxisTitle?:string
+	valAxisLabelFormatCode?:string
+	valAxisLineShow?:boolean
+	valAxisLabelRotate?:number
+	valAxisLabelFontSize?:number
+	valAxisLabelFontBold?:boolean
+	valAxisLabelColor?:string
+	valAxisLabelFontFace?:string
+	valAxisMajorUnit?:number
+	showValAxisTitle?:boolean
+	axisPos?:string
+	v3DRotX?:number
+	v3DRotY?:number
+	v3DRAngAx?:boolean
+	v3DPerspective?:string
 }
 export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
 	onlineVideoLink?: string;
 	type?: "audio" | "online" | "video";
-}
-export interface IShadowOpts {
-	type: string, angle: number, opacity: number
 }
 export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	align?: string // "left" | "center" | "right"
@@ -157,8 +220,28 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	valign?: string //"top" | "middle" | "bottom"
 }
 // Core: `slide` and `presentation`
+export interface ISlideRelChart extends OptsChartData {
+	type: string
+	opts: IChartOpts
+	data: Array<OptsChartData>
+	rId: number
+	Target: string
+	globalId: number
+	fileName: string
+}
+export interface ISlideRelMedia {
+	type: string
+	opts: IMediaOpts
+	path?: string
+	extn?: string
+	data?: string|ArrayBuffer
+	isSvgPng?: boolean
+	rId: number
+	Target: string
+}
 export interface ILayout {
 	name: string
+	rels: ISlideRelChart | ISlideRelMedia
 	width: number
 	height: number
 }
@@ -167,19 +250,14 @@ export interface ISlideNumber extends OptsCoords {
 	fontSize: number
 	color: string
 }
-export interface ISlideRel {
-	path: string
-	type: string
-	extn: string
-	data: string
-	rId: number
-	Target: string
-}
+/**
+* Slide Rel
+*/
 export interface ISlideLayout {
 	name: string
 	slide: ISlide
 	data: Array<object>
-	rels: Array<ISlideRel>
+	rels: Array<ISlideRelChart | ISlideRelMedia>
 	margin: Array<number>
 	slideNumberObj?: ISlideNumber
 }
@@ -189,7 +267,7 @@ export interface ISlide {
 		bkgdImgRid?: number
 		color: string
 	}
-	rels: Array<ISlideRel>
+	rels: Array<ISlideRelChart | ISlideRelMedia>
 	data: Array<object>
 	layoutName: string
 	layoutObj?: ILayout
@@ -237,16 +315,41 @@ export default class PptxGenJS {
 	public get company(): string {
 		return this._company;
 	}
-	private revision: string
-	private subject: string
-	private title: string
-	private isBrowser: boolean
+	private _revision: string;
+	public set revision(value: string) {
+		this._revision = value;
+	}
+	public get revision(): string {
+		return this._revision;
+	}
+	private _subject: string;
+	public set subject(value: string) {
+		this._subject = value;
+	}
+	public get subject(): string {
+		return this._subject;
+	}
+	private _title: string;
+	public set title(value: string) {
+		this._title = value;
+	}
+	public get title(): string {
+		return this._title;
+	}
+	private _rtlMode: boolean;
+	public set rtlMode(value: boolean) {
+		this._rtlMode = value;
+	}
+	public get rtlMode(): boolean {
+		return this._rtlMode;
+	}
+
+	// TODO: prepend `_`
+	private pptLayout: ILayout
 	private fileName: string
 	private fileExtn: string
-	private pptLayout: ILayout
-	private rtlMode: boolean
+	private isBrowser: boolean
 	private masterSlide: ISlide
-
 	private slides: ISlide[]
 	private slideLayouts: ISlideLayout[]
 	private saveCallback: Function
@@ -259,9 +362,9 @@ export default class PptxGenJS {
 	/**
 	 * DESC: Export the .pptx file
 	 */
-	doExportPresentation = (outputType) => {
-		var arrChartPromises = [];
-		var intSlideNum = 0;
+	doExportPresentation = (outputType?:JSZIP_OUTPUT_TYPES) => {
+		var arrChartPromises:Array<Promise<any>> = [];
+		var intSlideNum:number = 0;
 
 		// STEP 1: Create new JSZip file
 		var zip = new JSZip();
@@ -392,7 +495,7 @@ export default class PptxGenJS {
 		this.saveCallback = null;
 	}
 
-	createMediaFiles = (layout, zip, chartPromises) => {
+	createMediaFiles = (layout:ISlideLayout, zip:jszip, chartPromises:Array<Promise<any>>) => {
 		layout.rels.forEach((rel) => {
 			if (rel.type == 'chart') {
 				chartPromises.push(genXml.gObjPptxGenerators.createExcelWorksheet(rel, zip));
@@ -411,8 +514,6 @@ export default class PptxGenJS {
 			}
 		});
 	}
-
-
 
 	addPlaceholdersToSlides = (slide) => {
 		// Add all placeholders on this Slide that dont already exist
@@ -502,14 +603,14 @@ export default class PptxGenJS {
 	}
 
 	/* `FileReader()` + `readAsDataURL` = Ablity to read any file into base64! */
-	convertImgToDataURL = (slideRel) => {
+	convertImgToDataURL = (slideRel:ISlideRelMedia) => {
 		var xhr = new XMLHttpRequest();
-		xhr.onload = function() {
+		xhr.onload = () => {
 			var reader = new FileReader();
-			reader.onloadend = function() { this.callbackImgToDataURLDone(reader.result, slideRel); }
+			reader.onloadend = () => { this.callbackImgToDataURLDone(reader.result, slideRel); }
 			reader.readAsDataURL(xhr.response);
 		};
-		xhr.onerror = function(ex) {
+		xhr.onerror = (ex) => {
 			// TODO: xhr.error/catch whatever! then return
 			console.error('Unable to load image: "' + slideRel.path);
 			console.error(ex || '');
@@ -522,14 +623,14 @@ export default class PptxGenJS {
 	}
 
 	/* Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64 */
-	convertRemoteMediaToDataURL = (slideRel) => {
+	convertRemoteMediaToDataURL = (slideRel:ISlideRelMedia) => {
 		https.get(slideRel.path, function(res) {
 			var rawData = "";
 			res.setEncoding('binary'); // IMPORTANT: Only binary encoding works
-			res.on("data", function(chunk) { rawData += chunk; });
-			res.on("end", function() {
+			res.on("data", (chunk) => { rawData += chunk; });
+			res.on("end", () => {
 				var data = Buffer.from(rawData, 'binary').toString('base64');
-				callbackImgToDataURLDone(data, slideRel);
+				this.callbackImgToDataURLDone(data, slideRel);
 			});
 			res.on("error", function(e) {
 				reject(e);
@@ -571,13 +672,13 @@ export default class PptxGenJS {
 		image.src = slideRel.data; // use pre-encoded SVG base64 data
 	}
 
-	callbackImgToDataURLDone = (base64Data, slideRel) => {
+	callbackImgToDataURLDone = (base64Data:string|ArrayBuffer, slideRel:ISlideRel) => {
 		// SVG images were retrieved via `convertImgToDataURL()`, but have to be encoded to PNG now
 		if (slideRel.isSvgPng && base64Data.indexOf('image/svg') > -1) {
 			// Pass the SVG XML as base64 for conversion to PNG
 			slideRel.data = base64Data;
 			if (NODEJS) console.log('SVG is not supported in Node');
-			else convertSvgToPngViaCanvas(slideRel);
+			else this.convertSvgToPngViaCanvas(slideRel);
 			return;
 		}
 
@@ -593,7 +694,7 @@ export default class PptxGenJS {
 		this.masterSlide.rels.forEach(funcCallback);
 
 		// STEP 2: Continue export process if all rels have base64 `data` now
-		if (intEmpty == 0) doExportPresentation();
+		if (intEmpty == 0) this.doExportPresentation();
 	}
 
 
