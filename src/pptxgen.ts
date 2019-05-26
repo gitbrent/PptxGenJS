@@ -380,6 +380,8 @@ export interface ISlideLayout {
 	rels: Array<any>
 	margin: Array<number>
 	slideNumberObj?: ISlideNumber
+	width?: number
+	height?: number
 }
 export interface ISlideLayoutChart extends ISlideLayout {
 	rels: Array<ISlideRelChart>
@@ -555,6 +557,7 @@ export default class PptxGenJS {
 			numb: null,
 			name: null,
 			layoutName: null,
+			layoutObj: null,
 			data: [],
 			rels: [],
 			slideNumberObj: null,
@@ -1259,7 +1262,7 @@ export default class PptxGenJS {
 		}
 		var slideNum = this.slides.length
 		var pageNum = slideNum + 1
-		var objLayout = this.slideLayouts.filter(function(layout) {
+		var objLayout:ISlideLayout = this.slideLayouts.filter(function(layout) {
 			return layout.name == inMasterName
 		})[0]
 
@@ -1473,10 +1476,10 @@ export default class PptxGenJS {
 			if (!Array.isArray(arrRows[0])) arrRows = [arrTabRows]
 
 			// STEP 3: Set options
-			opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X')
-			opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y')
+			opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', objLayout)
+			opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', objLayout)
 			opt.cy = opt.h || opt.cy // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-			if (opt.cy) opt.cy = getSmartParseNumber(opt.cy, 'Y')
+			if (opt.cy) opt.cy = getSmartParseNumber(opt.cy, 'Y', objLayout)
 			opt.h = opt.cy
 			opt.autoPage = opt.autoPage == false ? false : true
 			opt.fontSize = opt.fontSize || DEF_FONT_SIZE
@@ -1507,7 +1510,7 @@ export default class PptxGenJS {
 
 			// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
 			if (opt.w || opt.cx) {
-				opt.cx = getSmartParseNumber(opt.w || opt.cx, 'X')
+				opt.cx = getSmartParseNumber(opt.w || opt.cx, 'X', objLayout)
 				opt.w = opt.cx
 			} else if (opt.colW) {
 				if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {

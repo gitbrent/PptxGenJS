@@ -8,9 +8,8 @@ module.exports = {
 	//mode: "production", // these 2 made no diff in file size
 	devtool: 'inline-source-map',
 	output: {
-		filename: "build/[name].min.js",
-		path: path.resolve(__dirname, 'dist'),
-		publicPath: "/"
+		filename: "pptxgen.min.js",
+		path: path.resolve(__dirname, 'dist')
 	},
 	resolve: {
 		extensions: [".ts", ".tsx", ".js", ".json"]

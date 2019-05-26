@@ -629,7 +629,7 @@ export var gObjPptxGenerators = {
 		slideObject.data.forEach((slideItemObj, idx) => {
 			var x = 0,
 				y = 0,
-				cx = getSmartParseNumber('75%', 'X'),
+				cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj),
 				cy = 0,
 				placeholderObj
 			var locationAttr = '',
@@ -647,17 +647,17 @@ export var gObjPptxGenerators = {
 			if (slideItemObj.options.w || slideItemObj.options.w == 0) slideItemObj.options.cx = slideItemObj.options.w
 			if (slideItemObj.options.h || slideItemObj.options.h == 0) slideItemObj.options.cy = slideItemObj.options.h
 			//
-			if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X')
-			if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y')
-			if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X')
-			if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y')
+			if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slideObject.layoutObj)
+			if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slideObject.layoutObj)
+			if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slideObject.layoutObj)
+			if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slideObject.layoutObj)
 
 			// If using a placeholder then inherit it's position
 			if (placeholderObj) {
-				if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X')
-				if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y')
-				if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X')
-				if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y')
+				if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slideObject.layoutObj)
+				if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slideObject.layoutObj)
+				if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slideObject.layoutObj)
+				if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slideObject.layoutObj)
 			}
 			//
 			if (slideItemObj.options.shape) shapeType = getShapeInfo(slideItemObj.options.shape)
@@ -1089,10 +1089,10 @@ export var gObjPptxGenerators = {
 						strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
 					}
 					if (sizing && sizing.type) {
-						var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X') : cx,
-							boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y') : cy,
-							boxX = getSmartParseNumber(sizing.x || 0, 'X'),
-							boxY = getSmartParseNumber(sizing.y || 0, 'Y')
+						var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slideObject.layoutObj) : cx,
+							boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slideObject.layoutObj) : cy,
+							boxX = getSmartParseNumber(sizing.x || 0, 'X', slideObject.layoutObj),
+							boxY = getSmartParseNumber(sizing.y || 0, 'Y', slideObject.layoutObj)
 
 						strSlideXml += gObjPptxGenerators.imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY })
 						width = boxW
@@ -1203,14 +1203,14 @@ export var gObjPptxGenerators = {
 				'  <p:spPr>' +
 				'    <a:xfrm>' +
 				'      <a:off x="' +
-				getSmartParseNumber(slideObject.slideNumberObj.x, 'X') +
+				getSmartParseNumber(slideObject.slideNumberObj.x, 'X', slideObject.layoutObj) +
 				'" y="' +
-				getSmartParseNumber(slideObject.slideNumberObj.y, 'Y') +
+				getSmartParseNumber(slideObject.slideNumberObj.y, 'Y', slideObject.layoutObj) +
 				'"/>' +
 				'      <a:ext cx="' +
-				(slideObject.slideNumberObj.w ? getSmartParseNumber(slideObject.slideNumberObj.w, 'X') : 800000) +
+				(slideObject.slideNumberObj.w ? getSmartParseNumber(slideObject.slideNumberObj.w, 'X', slideObject.layoutObj) : 800000) +
 				'" cy="' +
-				(slideObject.slideNumberObj.h ? getSmartParseNumber(slideObject.slideNumberObj.h, 'Y') : 300000) +
+				(slideObject.slideNumberObj.h ? getSmartParseNumber(slideObject.slideNumberObj.h, 'Y', slideObject.layoutObj) : 300000) +
 				'"/>' +
 				'    </a:xfrm>' +
 				'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
