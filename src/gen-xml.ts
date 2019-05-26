@@ -59,12 +59,12 @@ export var gObjPptxGenerators = {
 			var intRels = targetRels.length + 1
 			targetRels.push({
 				path: bkg.src,
-				type: 'image/' + strImgExtn,
+				type: SLIDE_OBJECT_TYPES.image,
 				extn: strImgExtn,
-				data: bkg.data || '',
+				data: bkg.data || null,
 				rId: intRels,
 				Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
-			} as ISlideRelMedia)
+			} )
 			target.slide.bkgdImgRid = intRels
 		} else if (bkg && typeof bkg === 'string') {
 			target.slide.back = bkg
@@ -146,9 +146,9 @@ export var gObjPptxGenerators = {
 
 	/**
 	 * Adds Notes to a slide.
-	 * @param {String} notes
+	 * @param {String} `notes`
 	 * @param {Object} opt (*unused*)
-	 * @param {ISlide} target slide object
+	 * @param {ISlide} `target` slide object
 	 * @since 2.3.0
 	 */
 	addNotesDefinition: function addNotesDefinition(notes: string, opt: object, target: ISlide) {
@@ -158,7 +158,7 @@ export var gObjPptxGenerators = {
 			text: null,
 		}
 
-		resultObject.type = PLACEHOLDER_TYPES.notes
+		resultObject.type = SLIDE_OBJECT_TYPES.notes
 		resultObject.text = notes
 
 		target.data.push(resultObject)
@@ -168,9 +168,9 @@ export var gObjPptxGenerators = {
 
 	/**
 	 * Adds a placeholder object to a slide definition.
-	 * @param {String} text
-	 * @param {Object} opt
-	 * @param {ISlide} target slide object that the placeholder should be added to
+	 * @param {String} `text`
+	 * @param {Object} `opt`
+	 * @param {ISlide} `target` slide object that the placeholder should be added to
 	 */
 	addPlaceholderDefinition: function addPlaceholderDefinition(text: string, opt: object, target: ISlide) {
 		return gObjPptxGenerators.addTextDefinition(text, opt, target, true)
@@ -1075,7 +1075,7 @@ export var gObjPptxGenerators = {
 					strSlideXml += '<p:blipFill>'
 					// NOTE: This works for both cases: either `path` or `data` contains the SVG
 					if (
-						slideObject.rels.filter(function(rel) {
+						slideObject.relsMedia.filter(function(rel) {
 							return rel.rId == slideItemObj.imageRid
 						})[0].extn == 'svg'
 					) {
@@ -1262,7 +1262,7 @@ export var gObjPptxGenerators = {
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 		strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 		// Add any rels for this Slide (image/audio/video/youtube/chart)
-		slideObject.rels.forEach(function(rel, idx) {
+		slideObject.rels.forEach((rel, idx) => {
 			lastRid = Math.max(lastRid, rel.rId)
 			if (rel.type.toLowerCase().indexOf('image') > -1) {
 				strXml +=
@@ -3661,7 +3661,7 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 	strXml += ' <Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
 	strXml += ' <Default Extension="mp4" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
 	slides.forEach(slide => {
-		slide.rels.forEach(rel => {
+		slide.relsMedia.forEach(rel => {
 			if (rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1) {
 				strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>'
 			}
@@ -3983,7 +3983,7 @@ export function makeXmlNotesMaster() {
  * @return {String} complete XML string ready to be saved as a file
  */
 export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: Array<ISlideLayout>): string {
-	return gObjPptxGenerators.slideObjectRelationsToXml(slideLayouts[layoutNumber - 1], [
+	return gObjPptxGenerators.slideObjectRelationsToXml(slideLayouts[layoutNumber - 1] as ISlide, [
 		{
 			target: '../slideMasters/slideMaster1.xml',
 			type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster',

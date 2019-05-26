@@ -85,17 +85,23 @@ export function convertRotationDegrees(d: number) {
 }
 
 /**
- * DESC: Convert component value to hex value
+ * Converts component value to hex value
+ * @param {number} `c` - component color
+ * @returns {string} hex string
  */
-export function componentToHex(c: number) {
+export function componentToHex(c: number):string {
 	var hex = c.toString(16)
 	return hex.length == 1 ? '0' + hex : hex
 }
 
 /**
- * DESC: Used by `addSlidesForTable()` to convert RGB colors from jQuery selectors to Hex for Presentation colors
+ * Converts RGB colors from jQuery selectors to Hex for Presentation colors
+ * Used by `addSlidesForTable()`
+ * @param {number} `r` - red value
+ * @param {number} `g` - green value
+ * @param {number} `b` - blue value
  */
-export function rgbToHex(r: number, g: number, b: number) {
+export function rgbToHex(r: number, g: number, b: number):string {
 	if (!Number.isInteger(r)) {
 		try {
 			console.warn('Integer expected!')

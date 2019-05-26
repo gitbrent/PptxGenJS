@@ -72,15 +72,6 @@ export const DEF_CELL_BORDER: IBorder = { color: '666666' }
 export const DEF_CELL_MARGIN_PT: Array<number> = [3, 3, 3, 3] // TRBL-style
 
 // ENUM
-/** @see https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html */
-export enum JSZIP_OUTPUT_TYPES {
-	'arraybuffer',
-	'base64',
-	'binarystring',
-	'blob',
-	'nodebuffer',
-	'uint8array',
-}
 export enum SCHEME_COLOR_NAMES {
 	TEXT1 = 'tx1',
 	TEXT2 = 'tx2',
@@ -105,8 +96,10 @@ export enum MASTER_OBJECTS {
 
 export enum SLIDE_OBJECT_TYPES {
 	'chart' = 'chart',
+	'hyperlink' = 'hyperlink',
 	'image' = 'image',
 	'media' = 'media',
+	'online' = 'online',
 	'placeholder' = 'placeholder',
 	'table' = 'table',
 	'text' = 'text',

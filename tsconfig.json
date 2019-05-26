@@ -1,17 +1,13 @@
 {
-	"compilerOptions": {
-		"module": "commonjs",
-		"target": "es5",
-		"esModuleInterop": true,
-		"experimentalDecorators": true,
-		"sourceMap": true,
-		"lib": [
-			"dom",
-			"es6"
-		]
-	},
-	"include": [
-		"src"
-	],
-	"compileOnSave": false
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "esModuleInterop": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "lib": ["dom", "es6"],
+    "declaration": true
+  },
+  "include": ["src"],
+  "compileOnSave": false
 }

@@ -1,14 +1,15 @@
-const CleanWebpackPlugin = require("clean-webpack-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const path = require('path');
+//const CleanWebpackPlugin = require("clean-webpack-plugin");
+//const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 module.exports = {
 	entry: "./src/pptxgen.ts",
 	mode: "development",
 	//mode: "production", // these 2 made no diff in file size
-	//devtool: false,
+	devtool: 'inline-source-map',
 	output: {
-		path: __dirname + "/dist",
-		filename: "build/[name].[contenthash].js",
+		filename: "build/[name].min.js",
+		path: path.resolve(__dirname, 'dist'),
 		publicPath: "/"
 	},
 	resolve: {
