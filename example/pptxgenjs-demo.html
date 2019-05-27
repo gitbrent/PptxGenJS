@@ -194,24 +194,26 @@
 	</style>
 
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/examples/images/base64Images.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/example/images/base64Images.js" async></script>
+	<!-- TODO-3:
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.colors.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs/dist/pptxgen.shapes.js"></script>
+	-->
 
 	<!-- RELEASE (CDN)
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/pptxgenjs-demo.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/example/pptxgenjs-demo.js"></script>
 	-->
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/dist/pptxgen.bundle.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/examples/pptxgenjs-demo.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/example/pptxgenjs-demo.js"></script>
 	-->
 	<!-- OFFICE365 TESTING:
 	<script src="../SiteAssets/pptxgenjs/libs/jquery.min.js"></script>
 	<script src="../SiteAssets/pptxgenjs/libs/jszip.min.js"></script>
 	<script src="../SiteAssets/pptxgenjs/dist/pptxgen.js"></script>
-	<script src="../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js"></script>
+	<script src="../SiteAssets/pptxgenjs/example/pptxgenjs-demo.js"></script>
 	-->
 	<!-- LOCAL TESTING:
 	<script src="../dist/pptxgen.min.js"></script>
@@ -221,17 +223,17 @@
 	<script src="../libs/jquery.min.js"></script>
 	<script src="../libs/jszip.min.js"></script>
 	<script src="../dist/pptxgen.es.js"></script>
-	<script src="../examples/pptxgenjs-demo.js"></script>
+	<script src="../example/pptxgenjs-demo.js"></script>
 	<!-- LOCAL TESTING: MIN:
 	<script src="../libs/promise.min.js"></script>
 	<script src="../libs/jquery.min.js"></script>
 	<script src="../libs/jszip.min.js"></script>
 	<script src="../dist/pptxgen.min.js"></script>
-	<script src="../examples/pptxgenjs-demo.js"></script>
+	<script src="../example/pptxgenjs-demo.js"></script>
 	-->
 	<!-- LOCAL TESTING: BUNDLE:
 	<script src="../dist/pptxgen.bundle.js"></script>
-	<script src="../examples/pptxgenjs-demo.js"></script>
+	<script src="../example/pptxgenjs-demo.js"></script>
 	-->
 
 	<script>
@@ -505,8 +507,8 @@
 				// Dynamically load library as SharePoint Online is *BAD* about caching
 				$.getScript("../SiteAssets/pptxgenjs/dist/pptxgen.js", function(){
 					console.log('DEBUG: local file loaded: `dist/pptxgen.js`');
-					$.getScript("../SiteAssets/pptxgenjs/examples/pptxgenjs-demo.js", function(){
-						console.log('DEBUG: local file loaded: `examples/pptxgenjs-demo.js`');
+					$.getScript("../SiteAssets/pptxgenjs/example/pptxgenjs-demo.js", function(){
+						console.log('DEBUG: local file loaded: `example/pptxgenjs-demo.js`');
 					})
 					.fail(function(err){
 						console.error(err.statusText);
@@ -1371,7 +1373,7 @@
 				<div class="card bg-light2" style="max-width:18%">
 					<h6 class="card-header">Misc Master Slides</h6>
 					<div class="card-body">
-						<div>Slide 1 - <span class="text-muted">TITLE_SLIDE</span></div>
+						<div>Slide 1 - <span class="text-muted">TITLE_SLIDE</span></div>``
 						<div>Slide 2 - <span class="text-muted">MASTER_SLIDE</span></div>
 						<div>Slide 3 - <span class="text-muted">MASTER_SLIDE</span></div>
 						<div>Slide 4 - <span class="text-muted">MASTER_SLIDE</span></div>
