@@ -31,10 +31,12 @@ import {
 	PLACEHOLDER_TYPES,
 	SLIDE_OBJECT_TYPES,
 } from './enums'
-import { IChartOpts, ISlide, ISlideRelChart, ISlideRelMedia, IShadowOpts, ITextOpts, jQuery, JSZip, ILayout, ISlideLayout, ISlideDataObject } from './pptxgen'
+import { IChartOpts, ISlide, ISlideRelChart, IShadowOpts, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell } from './interfaces'
 import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, getMix, getUuid, inch2Emu } from './utils'
 import { gObjPptxShapes } from './shapes'
 //import jszip from 'jszip'
+import { each } from 'jquery'
+import * as JSZip from 'jszip'
 
 /** counter for included images (used for index in their filenames) */
 var _imageCounter: number = 0
@@ -64,7 +66,7 @@ export var gObjPptxGenerators = {
 				data: bkg.data || null,
 				rId: intRels,
 				Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
-			} )
+			})
 			target.slide.bkgdImgRid = intRels
 		} else if (bkg && typeof bkg === 'string') {
 			target.slide.back = bkg
@@ -756,12 +758,12 @@ export var gObjPptxGenerators = {
 						|      |      |  C2  |  D2  |
 						\------|------|------|------/
 					*/
-					jQuery.each(arrTabRows, function(rIdx, row) {
+					arrTabRows.forEach((row, rIdx) => {
 						// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
 						if (!objTableGrid[rIdx]) objTableGrid[rIdx] = {}
 
 						// B: Loop over all cells
-						jQuery(row).each(function(cIdx, cell) {
+						row.forEach((cell, cIdx) => {
 							// DESIGN: NOTE: Row cell arrays can be "uneven" (diff cell count in each) due to rowspan/colspan
 							// Therefore, for each cell we run 0->colCount to determien the correct slot for it to reside
 							// as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
@@ -814,20 +816,20 @@ export var gObjPptxGenerators = {
 						strXml += '<a:tr h="' + intRowH + '">'
 
 						// C: Loop over each CELL
-						jQuery.each(rowObj, (_cIdx, cell) => {
+						jQuery.each(rowObj, (_cIdx, cell: ITableCell) => {
 							// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 							if (cell.hmerge) return
 
 							// 2: OPTIONS: Build/set cell options ===========================
 							{
-								var cellOpts = cell.options || cell.opts || {}
-								if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
+								var cellOpts = cell.options || ({} as ITableCell['options'])
+								/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
 								cellOpts.isTableCell = true // Used to create textBody XML
 								cell.options = cellOpts
 
 								// B: Apply default values (tabOpts being used when cellOpts dont exist):
 								// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-								;['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(function(name, idx) {
+								;['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(name => {
 									if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0) cellOpts[name] = objTabOpts[name]
 								})
 
@@ -875,7 +877,8 @@ export var gObjPptxGenerators = {
 							strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMargin + cellValign + '>'
 
 							// 5: Borders: Add any borders
-							if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
+							/// TODO=3: FIXME: stop using `none` if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
+							if (cellOpts.border && cellOpts.border.type == 'none') {
 								strXml += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>'
 								strXml += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>'
 								strXml += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>'

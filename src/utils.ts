@@ -3,7 +3,7 @@
  */
 
 import { EMU } from './enums'
-import { ISlideLayout, ILayout } from './pptxgen'
+import { ISlideLayout } from './interfaces'
 
 // Basic UUID Generator Adapted from:
 // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523

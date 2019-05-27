@@ -49,7 +49,6 @@ import {
 	EMU,
 	ONEPT,
 	CRLF,
-	CHART_TYPES,
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
@@ -60,385 +59,10 @@ import {
 	JSZIP_OUTPUT_TYPE,
 	SLIDE_OBJECT_TYPES,
 } from './enums'
+import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia } from './interfaces'
 import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
 import * as genXml from './gen-xml'
-//import jszip from 'jszip'
-
-export var jQuery = null
-export var fs = null
-export var https = null
-//export var JSZip: jszip = null
-export var JSZip = null
-export var sizeOf = null
-
-// Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
-var NODEJS: boolean = false
-var APPJS: boolean = false
-{
-	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-	if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
-		try {
-			require.resolve('fs')
-			NODEJS = true
-		} catch (ex) {
-			NODEJS = false
-		}
-	} else if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') {
-		APPJS = true
-	}
-}
-
-// Require [include] colors/shapes for Node/Angular/React, etc.
-if (NODEJS || APPJS) {
-	//var thisColors = require('../dist/pptxgen.colors.js');
-	//var thisShapes = require('../dist/pptxgen.shapes.js');
-}
-
-// Common
-type Coord = number | string // string is in form 'n%'
-export interface OptsCoords {
-	x?: Coord
-	y?: Coord
-	w?: Coord
-	h?: Coord
-}
-export interface OptsDataOrPath {
-	// Exactly one must be set
-	data?: string
-	path?: string
-}
-export interface OptsChartData {
-	index?: number
-	name?: string
-	labels?: Array<string>
-	values?: Array<number>
-	sizes?: Array<number>
-}
-export interface OptsChartGridLine {
-	size?: number
-	color?: string
-	style?: 'solid' | 'dash' | 'dot' | 'none'
-}
-// Opts
-export interface IBorder {
-	color?: string // '#696969'
-	pt?: number
-}
-export interface IShadowOpts {
-	type: string
-	angle: number
-	opacity: number
-	blur?: number
-	offset?: number
-	color?: string
-}
-export interface IChartOpts extends OptsCoords, OptsChartGridLine {
-	type: CHART_TYPES
-	layout?: OptsCoords
-	barDir?: string
-	barGrouping?: string
-	barGapWidthPct?: number
-	barGapDepthPct?: number
-	bar3DShape?: string
-	catAxisOrientation?: 'minMax' | 'minMax'
-	catGridLine?: OptsChartGridLine
-	valGridLine?: OptsChartGridLine
-	chartColors?: Array<string>
-	chartColorsOpacity?: number
-	showLabel?: boolean
-	lang?: string
-	dataNoEffects?: string
-	dataLabelFormatScatter?: string
-	dataLabelFormatCode?: string
-	dataLabelBkgrdColors?: string
-	dataLabelFontSize?: number
-	dataLabelColor?: string
-	dataLabelFontFace?: string
-	dataLabelPosition?: string
-	displayBlanksAs?: string
-	fill?: string
-	border?: IBorder
-	hasArea?: boolean
-	catAxes?: Array<number>
-	valAxes?: Array<number>
-	lineDataSymbol?: string
-	lineDataSymbolSize?: number
-	lineDataSymbolLineColor?: string
-	lineDataSymbolLineSize?: number
-	showLegend?: boolean
-	legendPos?: string
-	legendFontFace?: string
-	legendFontSize?: number
-	legendColor?: string
-	lineSmooth?: boolean
-	invertedColors?: string
-	serAxisOrientation?: string
-	serAxisHidden?: boolean
-	serGridLine?: OptsChartGridLine
-	showSerAxisTitle?: boolean
-	serLabelFormatCode?: string
-	serAxisLabelPos?: string
-	serAxisLineShow?: boolean
-	serAxisLabelFontSize?: string
-	serAxisLabelColor?: string
-	serAxisLabelFontFace?: string
-	serAxisLabelFrequency?: string
-	serAxisBaseTimeUnit?: string
-	serAxisMajorTimeUnit?: string
-	serAxisMinorTimeUnit?: string
-	serAxisMajorUnit?: number
-	serAxisMinorUnit?: number
-	serAxisTitleColor?: string
-	serAxisTitleFontFace?: string
-	serAxisTitleFontSize?: number
-	serAxisTitleRotate?: number
-	serAxisTitle?: string
-	showDataTable?: boolean
-	showDataTableHorzBorder?: boolean
-	showDataTableVertBorder?: boolean
-	showDataTableOutline?: boolean
-	showDataTableKeys?: boolean
-	title?: string
-	titleFontSize?: number
-	titleColor?: string
-	titleFontFace?: string
-	titleRotate?: number
-	titleAlign?: string
-	titlePos?: string
-	dataLabelFontBold?: boolean
-	valueBarColors?: Array<string>
-	holeSize?: number
-	showTitle?: boolean
-	showValue?: boolean
-	showPercent?: boolean
-	catLabelFormatCode?: string
-	dataBorder?: IBorder
-	lineSize?: number
-	lineDash?: string
-	radarStyle?: string
-	shadow?: IShadowOpts
-	catAxisLabelPos?: string
-	valAxisOrientation?: 'minMax' | 'minMax'
-	valAxisMaxVal?: number
-	valAxisMinVal?: number
-	valAxisHidden?: boolean
-	valAxisTitleColor?: string
-	valAxisTitleFontFace?: string
-	valAxisTitleFontSize?: number
-	valAxisTitleRotate?: number
-	valAxisTitle?: string
-	valAxisLabelFormatCode?: string
-	valAxisLineShow?: boolean
-	valAxisLabelRotate?: number
-	valAxisLabelFontSize?: number
-	valAxisLabelFontBold?: boolean
-	valAxisLabelColor?: string
-	valAxisLabelFontFace?: string
-	valAxisMajorUnit?: number
-	showValAxisTitle?: boolean
-	axisPos?: string
-	v3DRotX?: number
-	v3DRotY?: number
-	v3DRAngAx?: boolean
-	v3DPerspective?: string
-}
-export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
-	onlineVideoLink?: string
-	type?: 'audio' | 'online' | 'video'
-}
-export interface ITextOpts extends OptsCoords, OptsDataOrPath {
-	align?: string // "left" | "center" | "right"
-	autoFit?: boolean
-	color?: string
-	fontSize?: number
-	inset?: number
-	lineSpacing?: number
-	line?: string // color
-	lineSize?: number
-	placeholder?: object
-	rotate?: number // VALS: degree * 60,000
-	shadow?: IShadowOpts
-	shape?: { name: string }
-	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-	valign?: string //"top" | "middle" | "bottom"
-}
-// Core: `slide` and `presentation`
-export interface ISlideRel {
-	Target: string
-	type: SLIDE_OBJECT_TYPES
-	data: string
-	path?:string
-	extn?:string
-	rId: number
-}
-export interface ISlideRelChart extends OptsChartData {
-	type: CHART_TYPES
-	opts: IChartOpts
-	data: Array<OptsChartData>
-	rId: number
-	Target: string
-	globalId: number
-	fileName: string
-}
-export interface ISlideRelMedia {
-	type: string // TODO: media types
-	opts: IMediaOpts
-	path?: string
-	extn?: string
-	data?: string | ArrayBuffer
-	isSvgPng?: boolean
-	rId: number
-	Target: string
-}
-export interface ILayout {
-	name: string
-	rels?: object
-	relsChart?: ISlideRelChart
-	relsMedia?: ISlideRelMedia
-	data: Array<object>
-	options: {
-		placeholderName: string
-	}
-	width: number
-	height: number
-}
-export interface ISlideNumber extends OptsCoords {
-	fontFace: string
-	fontSize: number
-	color: string
-}
-
-export interface ISlideDataObject {
-	type: SLIDE_OBJECT_TYPES
-	// text
-	text?: string
-	// table
-	arrTabRows?: Array<Array<{ text: string | object; options?: { colspan?: number } }>>
-	// chart
-	chartRid?: number
-	// image:
-	image?: string
-	imageRid?: number
-	hyperlink?: { rId: number; slide?: number; tooltip?: string; url?: string }
-	// media
-	media?: string
-	mtype?: 'online' | 'other'
-	mediaRid?: number
-	//
-	options?: {
-		x?: number
-		y?: number
-		cx?: number
-		cy?: number
-		w?: number
-		h?: number
-		placeholder?: string
-		shape?: object
-		bodyProp?: {
-			lIns?: number
-			rIns?: number
-			bIns?: number
-			tIns?: number
-		}
-		isTextBox?: boolean
-		line?: string
-		margin?: number
-		rectRadius?: number
-		fill?: string
-		shadow?: IShadowOpts
-		colW?: number
-		rowH?: number
-		flipH?: boolean
-		flipV?: boolean
-		rotate?: number
-		lineDash?: string
-		lineSize?: number
-		lineHead?: string
-		lineTail?: string
-		// image:
-		sizing?: {
-			type?: string
-			x?: number
-			y?: number
-			w?: number
-			h?: number
-		}
-		rounding?: string
-	}
-}
-
-export interface ISlideLayout {
-	name: string
-	slide: ISlide
-	data: Array<object>
-	rels: Array<any>
-	margin: Array<number>
-	slideNumberObj?: ISlideNumber
-	width?: number
-	height?: number
-}
-export interface ISlideLayoutChart extends ISlideLayout {
-	rels: Array<ISlideRelChart>
-}
-export interface ISlideLayoutMedia extends ISlideLayout {
-	rels: Array<ISlideRelMedia>
-}
-export interface ISlide {
-	slide?: {
-		back: string
-		bkgdImgRid?: number
-		color: string
-		hidden?: boolean
-	}
-	numb?: number
-	name?: string
-	rels?: Array<ISlideRel>
-	relsChart?: Array<ISlideRelChart>
-	relsMedia?: Array<ISlideRelMedia>
-	data?: Array<ISlideDataObject>
-	layoutName?: string
-	layoutObj?: ISlideLayout
-	margin?: object
-	slideNumberObj?: ISlideNumber
-}
-export interface IPresentation {
-	author: string
-	company: string
-	revision: string
-	subject: string
-	title: string
-	isBrowser: boolean
-	fileName: string
-	fileExtn: string
-	pptLayout: ILayout
-	rtlMode: boolean
-	saveCallback?: null
-	masterSlide?: ISlide
-	chartCounter: number
-	imageCounter: number
-	slides?: ISlide[]
-	slideLayouts?: ISlideLayout[]
-}
-
-export interface IAddNewSlide {
-	getPageNumber: Function
-	slideNumber: Function
-	addChart: Function
-	addImage: Function
-	addMedia: Function
-	addNotes: Function
-	addShape: Function
-	addTable: Function
-	addText: Function
-}
-
-let LAYOUTS = {
-	LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 } as ILayout,
-	LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as ILayout,
-	LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 } as ILayout,
-	LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
-	LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
-}
+import * as JSZip from 'jszip'
 
 export default class PptxGenJS {
 	private _version: string = '3.0.0'
@@ -530,8 +154,34 @@ export default class PptxGenJS {
 	/** slide layout definition objects, used for generating slide layout files */
 	private slideLayouts: ISlideLayout[]
 	private saveCallback: Function
+	private NODEJS: boolean = false
+	private LAYOUTS: object
+
+	//	private jQuery: JQuery
+	private fs: any
+	private https: any
+	private JSZip: JSZip
+	private sizeOf: any
 
 	constructor() {
+		// Determine Environment
+		if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
+			try {
+				require.resolve('fs')
+				this.NODEJS = true
+			} catch (ex) {
+				this.NODEJS = false
+			}
+		}
+
+		this.LAYOUTS = {
+			LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 } as ILayout,
+			LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as ILayout,
+			LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 } as ILayout,
+			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
+			LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
+		}
+
 		// Core
 		this._author = 'PptxGenJS'
 		this._company = 'PptxGenJS'
@@ -539,7 +189,7 @@ export default class PptxGenJS {
 		this._subject = 'PptxGenJS Presentation'
 		this._title = 'PptxGenJS Presentation'
 		// PptxGenJS props
-		this._pptLayout = LAYOUTS['LAYOUT_16x9']
+		this._pptLayout = this.LAYOUTS['LAYOUT_16x9']
 		this._rtlMode = false
 		this._isBrowser = false
 		this.fileName = 'Presentation'
@@ -577,7 +227,7 @@ export default class PptxGenJS {
 		var intSlideNum: number = 0
 
 		// STEP 1: Create new JSZip file
-		var zip = new JSZip()
+		var zip: JSZip = new this.JSZip()
 
 		// STEP 2: Add all required folders and files
 		zip.folder('_rels')
@@ -642,7 +292,7 @@ export default class PptxGenJS {
 				var strExportName = this.fileName.toLowerCase().indexOf('.ppt') > -1 ? this.fileName : this.fileName + this.fileExtn
 				if (outputType) {
 					zip.generateAsync({ type: outputType }).then(() => this.saveCallback)
-				} else if (NODEJS && !this.isBrowser) {
+				} else if (this.NODEJS && !this.isBrowser) {
 					if (this.saveCallback) {
 						if (strExportName.indexOf('http') == 0) {
 							zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
@@ -650,7 +300,7 @@ export default class PptxGenJS {
 							})
 						} else {
 							zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
-								fs.writeFile(strExportName, content, function() {
+								this.fs.writeFile(strExportName, content, function() {
 									this.saveCallback(strExportName)
 								})
 							})
@@ -658,7 +308,7 @@ export default class PptxGenJS {
 					} else {
 						// Starting in late 2017 (Node ~8.9.1), `fs` requires a callback so use a dummy func
 						zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
-							fs.writeFile(strExportName, content, function() {})
+							this.fs.writeFile(strExportName, content, function() {})
 						})
 					}
 				} else {
@@ -715,7 +365,7 @@ export default class PptxGenJS {
 	}
 
 	createMediaFiles = (layout: ISlide, zip, chartPromises: Array<Promise<any>>) => {
-		layout.relsChart.forEach(rel => chartPromises.push(genXml.gObjPptxGenerators.createExcelWorksheet(rel, zip)) )
+		layout.relsChart.forEach(rel => chartPromises.push(genXml.gObjPptxGenerators.createExcelWorksheet(rel, zip)))
 		layout.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {
 				// A: Loop vars
@@ -753,9 +403,9 @@ export default class PptxGenJS {
 	// IMAGE METHODS:
 
 	getSizeFromImage = inImgUrl => {
-		if (NODEJS) {
+		if (this.NODEJS) {
 			try {
-				var dimensions = sizeOf(inImgUrl)
+				var dimensions = this.sizeOf(inImgUrl)
 				return { width: dimensions.width, height: dimensions.height }
 			} catch (ex) {
 				console.error('ERROR: Unable to read image: ' + inImgUrl)
@@ -793,16 +443,16 @@ export default class PptxGenJS {
 			// Read and Encode each media lacking `data` into base64 (for use in export)
 			if (rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1) {
 				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-				if (NODEJS && rel.path.indexOf('http') != 0) {
+				if (this.NODEJS && rel.path.indexOf('http') != 0) {
 					try {
-						var bitmap = fs.readFileSync(rel.path)
+						var bitmap = this.fs.readFileSync(rel.path)
 						rel.data = Buffer.from(bitmap).toString('base64')
 					} catch (ex) {
 						console.error('ERROR....: Unable to read media: "' + rel.path + '"')
 						console.error('DETAILS..: ' + ex)
 						rel.data = IMG_BROKEN
 					}
-				} else if (NODEJS && rel.path.indexOf('http') == 0) {
+				} else if (this.NODEJS && rel.path.indexOf('http') == 0) {
 					intRels++
 					this.convertRemoteMediaToDataURL(rel)
 					arrRelsDone.push(rel.path)
@@ -846,7 +496,7 @@ export default class PptxGenJS {
 
 	/* Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64 */
 	convertRemoteMediaToDataURL = (slideRel: ISlideRelMedia) => {
-		https.get(slideRel.path, res => {
+		this.https.get(slideRel.path, res => {
 			var rawData = ''
 			res.setEncoding('binary') // IMPORTANT: Only binary encoding works
 			res.on('data', chunk => {
@@ -906,7 +556,7 @@ export default class PptxGenJS {
 		if (slideRel.isSvgPng && typeof base64Data === 'string' && base64Data.indexOf('image/svg') > -1) {
 			// Pass the SVG XML as base64 for conversion to PNG
 			slideRel.data = base64Data
-			if (NODEJS) console.log('SVG is not supported in Node')
+			if (this.NODEJS) console.log('SVG is not supported in Node')
 			else this.convertSvgToPngViaCanvas(slideRel)
 			return
 		}
@@ -1256,7 +906,7 @@ export default class PptxGenJS {
 		}
 		var slideNum = this.slides.length
 		var pageNum = slideNum + 1
-		var objLayout:ISlideLayout = this.slideLayouts.filter(function(layout) {
+		var objLayout: ISlideLayout = this.slideLayouts.filter(function(layout) {
 			return layout.name == inMasterName
 		})[0]
 
@@ -1677,8 +1327,8 @@ export default class PptxGenJS {
 					.each(function(i, cell) {
 						// FIXME: This is a hack - guessing at col widths when colspan
 						if (jQuery(this).attr('colspan')) {
-							for (var idx = 0; idx < jQuery(this).attr('colspan'); idx++) {
-								arrTabColW.push(Math.round(jQuery(this).outerWidth() / jQuery(this).attr('colspan')))
+							for (var idx = 0; idx < Number(jQuery(this).attr('colspan')); idx++) {
+								arrTabColW.push(Math.round(jQuery(this).outerWidth() / Number(jQuery(this).attr('colspan'))))
 							}
 						} else {
 							arrTabColW.push(jQuery(this).outerWidth())
@@ -1756,9 +1406,11 @@ export default class PptxGenJS {
 							jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], function(i, val) {
 								objOpts.margin.push(
 									Math.round(
-										jQuery(cell)
-											.css(val)
-											.replace(/\D/gi, '')
+										Number(
+											jQuery(cell)
+												.css(val)
+												.replace(/\D/gi, '')
+										)
 									)
 								)
 							})
@@ -1858,8 +1510,9 @@ export default class PptxGenJS {
 	}
 }
 
+/*
 // NodeJS support
-if (NODEJS) {
+if (this.NODEJS) {
 	jQuery = null
 	fs = null
 	https = null
@@ -1926,3 +1579,4 @@ else if (APPJS) {
 	// LAST: Export module
 	module.exports = PptxGenJS
 }
+*/
