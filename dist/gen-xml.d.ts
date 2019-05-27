@@ -1,7 +1,7 @@
 /**
  * PptxGenJS: XML Generation
  */
-import { ISlide, ISlideRelChart, ITextOpts, ILayout, ISlideLayout, ISlideDataObject } from './pptxgen';
+import { ISlide, ISlideRelChart, ITextOpts, ILayout, ISlideLayout, ISlideDataObject } from './interfaces';
 export declare var gObjPptxGenerators: {
     /**
      * Adds a background image or color to a slide definition.

@@ -2,7 +2,7 @@
  * PptxGenJS Enums
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
-import { IBorder } from './pptxgen';
+import { IBorder } from './interfaces';
 export declare const EMU: number;
 export declare const ONEPT: number;
 export declare const CRLF: string;

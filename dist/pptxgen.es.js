@@ -1,3 +1,5 @@
+import * as JSZip from 'jszip';
+
 /**
  * PptxGenJS Enums
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
@@ -1617,7 +1619,6 @@ var gObjPptxShapes = Object.freeze({
 /**
  * PptxGenJS: XML Generation
  */
-//import jszip from 'jszip'
 /** counter for included images (used for index in their filenames) */
 var _imageCounter = 0;
 /** counter for included charts (used for index in their filenames) */
@@ -2310,12 +2311,12 @@ var gObjPptxGenerators = {
                         |      |      |  C2  |  D2  |
                         \------|------|------|------/
                     */
-                    jQuery.each(arrTabRows, function (rIdx, row) {
+                    arrTabRows.forEach(function (row, rIdx) {
                         // A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
                         if (!objTableGrid[rIdx])
                             objTableGrid[rIdx] = {};
                         // B: Loop over all cells
-                        jQuery(row).each(function (cIdx, cell) {
+                        row.forEach(function (cell, cIdx) {
                             // DESIGN: NOTE: Row cell arrays can be "uneven" (diff cell count in each) due to rowspan/colspan
                             // Therefore, for each cell we run 0->colCount to determien the correct slot for it to reside
                             // as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
@@ -2371,12 +2372,11 @@ var gObjPptxGenerators = {
                                 return;
                             // 2: OPTIONS: Build/set cell options ===========================
                             {
-                                var cellOpts = cell.options || cell.opts || {};
-                                if (typeof cell === 'number' || typeof cell === 'string')
-                                    cell = { text: cell.toString() };
+                                var cellOpts = cell.options || {};
+                                /// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
                                 cellOpts.isTableCell = true; // Used to create textBody XML
                                 cell.options = cellOpts;
-                                ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(function (name, idx) {
+                                ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(function (name) {
                                     if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0)
                                         cellOpts[name] = objTabOpts[name];
                                 });
@@ -2420,7 +2420,8 @@ var gObjPptxGenerators = {
                             // 4: Set CELL content and properties ==================================
                             strXml_1 += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMargin + cellValign + '>';
                             // 5: Borders: Add any borders
-                            if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
+                            /// TODO=3: FIXME: stop using `none` if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
+                            if (cellOpts.border && cellOpts.border.type == 'none') {
                                 strXml_1 += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>';
                                 strXml_1 += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>';
                                 strXml_1 += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>';
@@ -5695,42 +5696,11 @@ function createHyperlinkRels(slides, inText, slideRels) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-//import jszip from 'jszip'
-var jQuery = null;
-var fs = null;
-var https = null;
-//export var JSZip: jszip = null
-var JSZip = null;
-var sizeOf = null;
-// Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
-var NODEJS = false;
-var APPJS = false;
-{
-    // NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-    if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
-        try {
-            require.resolve('fs');
-            NODEJS = true;
-        }
-        catch (ex) {
-            NODEJS = false;
-        }
-    }
-    else if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window !== 'undefined') {
-        APPJS = true;
-    }
-}
-var LAYOUTS = {
-    LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 },
-    LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 },
-    LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 },
-    LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 },
-    LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 },
-};
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
         this._version = '3.0.0';
+        this.NODEJS = false;
         /**
          * DESC: Export the .pptx file
          */
@@ -5738,7 +5708,7 @@ var PptxGenJS = /** @class */ (function () {
             var arrChartPromises = [];
             var intSlideNum = 0;
             // STEP 1: Create new JSZip file
-            var zip = new JSZip();
+            var zip = new _this.JSZip();
             // STEP 2: Add all required folders and files
             zip.folder('_rels');
             zip.folder('docProps');
@@ -5797,7 +5767,7 @@ var PptxGenJS = /** @class */ (function () {
                 if (outputType) {
                     zip.generateAsync({ type: outputType }).then(function () { return _this.saveCallback; });
                 }
-                else if (NODEJS && !_this.isBrowser) {
+                else if (_this.NODEJS && !_this.isBrowser) {
                     if (_this.saveCallback) {
                         if (strExportName.indexOf('http') == 0) {
                             zip.generateAsync({ type: 'nodebuffer' }).then(function (content) {
@@ -5806,7 +5776,7 @@ var PptxGenJS = /** @class */ (function () {
                         }
                         else {
                             zip.generateAsync({ type: 'nodebuffer' }).then(function (content) {
-                                fs.writeFile(strExportName, content, function () {
+                                this.fs.writeFile(strExportName, content, function () {
                                     this.saveCallback(strExportName);
                                 });
                             });
@@ -5815,7 +5785,7 @@ var PptxGenJS = /** @class */ (function () {
                     else {
                         // Starting in late 2017 (Node ~8.9.1), `fs` requires a callback so use a dummy func
                         zip.generateAsync({ type: 'nodebuffer' }).then(function (content) {
-                            fs.writeFile(strExportName, content, function () { });
+                            this.fs.writeFile(strExportName, content, function () { });
                         });
                     }
                 }
@@ -5902,9 +5872,9 @@ var PptxGenJS = /** @class */ (function () {
         };
         // IMAGE METHODS:
         this.getSizeFromImage = function (inImgUrl) {
-            if (NODEJS) {
+            if (_this.NODEJS) {
                 try {
-                    var dimensions = sizeOf(inImgUrl);
+                    var dimensions = _this.sizeOf(inImgUrl);
                     return { width: dimensions.width, height: dimensions.height };
                 }
                 catch (ex) {
@@ -5939,9 +5909,9 @@ var PptxGenJS = /** @class */ (function () {
                 // Read and Encode each media lacking `data` into base64 (for use in export)
                 if (rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1) {
                     // Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-                    if (NODEJS && rel.path.indexOf('http') != 0) {
+                    if (this.NODEJS && rel.path.indexOf('http') != 0) {
                         try {
-                            var bitmap = fs.readFileSync(rel.path);
+                            var bitmap = this.fs.readFileSync(rel.path);
                             rel.data = Buffer.from(bitmap).toString('base64');
                         }
                         catch (ex) {
@@ -5950,7 +5920,7 @@ var PptxGenJS = /** @class */ (function () {
                             rel.data = IMG_BROKEN;
                         }
                     }
-                    else if (NODEJS && rel.path.indexOf('http') == 0) {
+                    else if (this.NODEJS && rel.path.indexOf('http') == 0) {
                         intRels++;
                         this.convertRemoteMediaToDataURL(rel);
                         arrRelsDone.push(rel.path);
@@ -5993,7 +5963,7 @@ var PptxGenJS = /** @class */ (function () {
         };
         /* Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64 */
         this.convertRemoteMediaToDataURL = function (slideRel) {
-            https.get(slideRel.path, function (res) {
+            _this.https.get(slideRel.path, function (res) {
                 var rawData = '';
                 res.setEncoding('binary'); // IMPORTANT: Only binary encoding works
                 res.on('data', function (chunk) {
@@ -6050,7 +6020,7 @@ var PptxGenJS = /** @class */ (function () {
             if (slideRel.isSvgPng && typeof base64Data === 'string' && base64Data.indexOf('image/svg') > -1) {
                 // Pass the SVG XML as base64 for conversion to PNG
                 slideRel.data = base64Data;
-                if (NODEJS)
+                if (_this.NODEJS)
                     console.log('SVG is not supported in Node');
                 else
                     _this.convertSvgToPngViaCanvas(slideRel);
@@ -6332,6 +6302,23 @@ var PptxGenJS = /** @class */ (function () {
          */
         this.inch2Emu = function () { return inch2Emu; };
         this.rgbToHex = function () { return rgbToHex; };
+        // Determine Environment
+        if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
+            try {
+                require.resolve('fs');
+                this.NODEJS = true;
+            }
+            catch (ex) {
+                this.NODEJS = false;
+            }
+        }
+        this.LAYOUTS = {
+            LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 },
+            LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 },
+            LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 },
+            LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 },
+            LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 },
+        };
         // Core
         this._author = 'PptxGenJS';
         this._company = 'PptxGenJS';
@@ -6339,7 +6326,7 @@ var PptxGenJS = /** @class */ (function () {
         this._subject = 'PptxGenJS Presentation';
         this._title = 'PptxGenJS Presentation';
         // PptxGenJS props
-        this._pptLayout = LAYOUTS['LAYOUT_16x9'];
+        this._pptLayout = this.LAYOUTS['LAYOUT_16x9'];
         this._rtlMode = false;
         this._isBrowser = false;
         this.fileName = 'Presentation';
@@ -6904,8 +6891,8 @@ var PptxGenJS = /** @class */ (function () {
                     .each(function (i, cell) {
                     // FIXME: This is a hack - guessing at col widths when colspan
                     if (jQuery(this).attr('colspan')) {
-                        for (var idx = 0; idx < jQuery(this).attr('colspan'); idx++) {
-                            arrTabColW.push(Math.round(jQuery(this).outerWidth() / jQuery(this).attr('colspan')));
+                        for (var idx = 0; idx < Number(jQuery(this).attr('colspan')); idx++) {
+                            arrTabColW.push(Math.round(jQuery(this).outerWidth() / Number(jQuery(this).attr('colspan'))));
                         }
                     }
                     else {
@@ -6980,9 +6967,9 @@ var PptxGenJS = /** @class */ (function () {
                     if (jQuery(cell).css('padding-left')) {
                         objOpts.margin = [];
                         jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], function (i, val) {
-                            objOpts.margin.push(Math.round(jQuery(cell)
+                            objOpts.margin.push(Math.round(Number(jQuery(cell)
                                 .css(val)
-                                .replace(/\D/gi, '')));
+                                .replace(/\D/gi, ''))));
                         });
                     }
                     // D: Add colspan/rowspan (if any)
@@ -7071,76 +7058,75 @@ var PptxGenJS = /** @class */ (function () {
     };
     return PptxGenJS;
 }());
+/*
 // NodeJS support
-if (NODEJS) {
-    jQuery = null;
-    fs = null;
-    https = null;
-    JSZip = null;
-    sizeOf = null;
+if (this.NODEJS) {
+    jQuery = null
+    fs = null
+    https = null
+    JSZip = null
+    sizeOf = null
+
     // A: jQuery dependency
     try {
-        var jsdom = require('jsdom');
-        var dom = new jsdom.JSDOM('<!DOCTYPE html>');
-        jQuery = require('jquery')(dom.window);
+        var jsdom = require('jsdom')
+        var dom = new jsdom.JSDOM('<!DOCTYPE html>')
+        jQuery = require('jquery')(dom.window)
+    } catch (ex) {
+        console.error('Unable to load `jquery`!\n' + ex)
+        throw 'LIB-MISSING-JQUERY'
     }
-    catch (ex) {
-        console.error('Unable to load `jquery`!\n' + ex);
-        throw 'LIB-MISSING-JQUERY';
-    }
+
     // B: Other dependencies
     try {
-        fs = require('fs');
-    }
-    catch (ex) {
-        console.error('Unable to load `fs`');
-        throw 'LIB-MISSING-FS';
-    }
-    try {
-        https = require('https');
-    }
-    catch (ex) {
-        console.error('Unable to load `https`');
-        throw 'LIB-MISSING-HTTPS';
+        fs = require('fs')
+    } catch (ex) {
+        console.error('Unable to load `fs`')
+        throw 'LIB-MISSING-FS'
     }
     try {
-        JSZip = require('jszip');
-    }
-    catch (ex) {
-        console.error('Unable to load `jszip`');
-        throw 'LIB-MISSING-JSZIP';
+        https = require('https')
+    } catch (ex) {
+        console.error('Unable to load `https`')
+        throw 'LIB-MISSING-HTTPS'
     }
     try {
-        sizeOf = require('image-size');
+        JSZip = require('jszip')
+    } catch (ex) {
+        console.error('Unable to load `jszip`')
+        throw 'LIB-MISSING-JSZIP'
     }
-    catch (ex) {
-        console.error('Unable to load `image-size`');
-        throw 'LIB-MISSING-IMGSIZE';
+    try {
+        sizeOf = require('image-size')
+    } catch (ex) {
+        console.error('Unable to load `image-size`')
+        throw 'LIB-MISSING-IMGSIZE'
     }
+
     // LAST: Export module
-    module.exports = PptxGenJS;
+    module.exports = PptxGenJS
 }
 // Angular/React/etc support
 else if (APPJS) {
     // A: jQuery dependency
     try {
-        jQuery = require('jquery');
+        jQuery = require('jquery')
+    } catch (ex) {
+        console.error('Unable to load `jquery`!\n' + ex)
+        throw 'LIB-MISSING-JQUERY'
     }
-    catch (ex) {
-        console.error('Unable to load `jquery`!\n' + ex);
-        throw 'LIB-MISSING-JQUERY';
-    }
+
     // B: Other dependencies
     try {
-        JSZip = require('jszip');
+        JSZip = require('jszip')
+    } catch (ex) {
+        console.error('Unable to load `jszip`')
+        throw 'LIB-MISSING-JSZIP'
     }
-    catch (ex) {
-        console.error('Unable to load `jszip`');
-        throw 'LIB-MISSING-JSZIP';
-    }
-    // LAST: Export module
-    module.exports = PptxGenJS;
-}
 
-//export default PptxGenJS;
-//export { JSZip, fs, https, jQuery, sizeOf };
+    // LAST: Export module
+    module.exports = PptxGenJS
+}
+*/
+
+export default PptxGenJS;

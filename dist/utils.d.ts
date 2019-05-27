@@ -1,7 +1,7 @@
 /**
  * PptxGenJS Utils
  */
-import { ISlideLayout } from './pptxgen';
+import { ISlideLayout } from './interfaces';
 export declare function getUuid(uuidFormat: string): string;
 /**
  * shallow mix, returns new object
