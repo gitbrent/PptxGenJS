@@ -1,13 +1,13 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "declaration": true,
+    "declarationDir": "./dist",
+    "module": "es6",
+    "noImplicitAny": false,
+    "outDir": "./dist",
     "target": "es5",
-    "esModuleInterop": true,
-    "experimentalDecorators": true,
-    "sourceMap": true,
-    "lib": ["dom", "es6"],
-    "declaration": true
+    "lib": ["dom", "es2015"]
   },
-  "include": ["src"],
-  "compileOnSave": false
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
 }

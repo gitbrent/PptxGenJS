@@ -49,24 +49,26 @@ import {
 	EMU,
 	ONEPT,
 	CRLF,
-	DEF_SLIDE_MARGIN_IN,
+	CHART_TYPES,
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
-	CHART_TYPES,
+	DEF_SLIDE_MARGIN_IN,
 	MASTER_OBJECTS,
 	IMG_BROKEN,
 	IMG_PLAYBTN,
+	JSZIP_OUTPUT_TYPE,
 	SLIDE_OBJECT_TYPES,
 } from './enums'
 import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
 import * as genXml from './gen-xml'
-import jszip from 'jszip'
+//import jszip from 'jszip'
 
 export var jQuery = null
 export var fs = null
 export var https = null
-export var JSZip: jszip = null
+//export var JSZip: jszip = null
+export var JSZip = null
 export var sizeOf = null
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -92,16 +94,8 @@ if (NODEJS || APPJS) {
 	//var thisShapes = require('../dist/pptxgen.shapes.js');
 }
 
-// Polyfill for IE11 (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isInteger)
-Number.isInteger =
-	Number.isInteger ||
-	function(value) {
-		return typeof value === 'number' && isFinite(value) && Math.floor(value) === value
-	}
-
 // Common
-export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
-export type Coord = number | string // string is in form 'n%'
+type Coord = number | string // string is in form 'n%'
 export interface OptsCoords {
 	x?: Coord
 	y?: Coord
@@ -540,17 +534,17 @@ export default class PptxGenJS {
 	constructor() {
 		// Core
 		this._author = 'PptxGenJS'
-		this.company = 'PptxGenJS'
-		this.revision = '1'
-		this.subject = 'PptxGenJS Presentation'
-		this.title = 'PptxGenJS Presentation'
+		this._company = 'PptxGenJS'
+		this._revision = '1'
+		this._subject = 'PptxGenJS Presentation'
+		this._title = 'PptxGenJS Presentation'
 		// PptxGenJS props
-		this.isBrowser = false
+		this._pptLayout = LAYOUTS['LAYOUT_16x9']
+		this._rtlMode = false
+		this._isBrowser = false
 		this.fileName = 'Presentation'
 		this.fileExtn = '.pptx'
-		this.pptLayout = LAYOUTS['LAYOUT_16x9']
-		this.rtlMode = false
-		this.saveCallback = null
+		//this.saveCallback = null
 		//
 		this.masterSlide = {
 			slide: null,
@@ -720,7 +714,7 @@ export default class PptxGenJS {
 		this.saveCallback = null
 	}
 
-	createMediaFiles = (layout: ISlide, zip: jszip, chartPromises: Array<Promise<any>>) => {
+	createMediaFiles = (layout: ISlide, zip, chartPromises: Array<Promise<any>>) => {
 		layout.relsChart.forEach(rel => chartPromises.push(genXml.gObjPptxGenerators.createExcelWorksheet(rel, zip)) )
 		layout.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {

@@ -1,3 +1,0 @@
-/**
-* PptxGenJS Interfaces
-*/

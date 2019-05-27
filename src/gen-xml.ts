@@ -34,7 +34,7 @@ import {
 import { IChartOpts, ISlide, ISlideRelChart, ISlideRelMedia, IShadowOpts, ITextOpts, jQuery, JSZip, ILayout, ISlideLayout, ISlideDataObject } from './pptxgen'
 import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, getMix, getUuid, inch2Emu } from './utils'
 import { gObjPptxShapes } from './shapes'
-import jszip from 'jszip'
+//import jszip from 'jszip'
 
 /** counter for included images (used for index in their filenames) */
 var _imageCounter: number = 0
@@ -961,7 +961,7 @@ export var gObjPptxGenerators = {
 						slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin[1] * ONEPT || 0
 						slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin[2] * ONEPT || 0
 						slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin[3] * ONEPT || 0
-					} else if ((slideItemObj.options.margin || slideItemObj.options.margin == 0) && Number.isInteger(slideItemObj.options.margin)) {
+					} else if ((slideItemObj.options.margin || slideItemObj.options.margin == 0) && !isNaN(slideItemObj.options.margin)) {
 						slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin * ONEPT
 						slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin * ONEPT
 						slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin * ONEPT
@@ -1365,11 +1365,11 @@ export var gObjPptxGenerators = {
 	 * @param {jszip} zip file that the resulting XLSX should be added to
 	 * @return {Promise} promise of generating the XLSX file
 	 */
-	createExcelWorksheet: function createExcelWorksheet(chartObject: ISlideRelChart, zip: jszip): Promise<any> {
+	createExcelWorksheet: function createExcelWorksheet(chartObject: ISlideRelChart, zip): Promise<any> {
 		var data = chartObject.data
 
 		return new Promise(function(resolve, reject) {
-			var zipExcel: jszip = new JSZip()
+			var zipExcel = new JSZip()
 			var intBubbleCols = (data.length - 1) * 2 + 1 // 1 for "X-Values", then 2 for every Y-Axis
 
 			// A: Add folders

@@ -27,6 +27,8 @@ export const AXIS_ID_CATEGORY_PRIMARY: string = '2094734554'
 export const AXIS_ID_CATEGORY_SECONDARY: string = '2094734555'
 export const AXIS_ID_SERIES_PRIMARY: string = '2094734556'
 
+export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+
 export const LETTERS: Array<string> = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('')
 export const BARCHART_COLORS: Array<string> = [
 	'C0504D',

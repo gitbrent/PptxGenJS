@@ -9,9 +9,14 @@
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
   "license": "MIT",
   "main": "dist/pptxgen.min.js",
+  "module": "dist/pptxgen.es.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
   "scripts": {
-    "build": "webpack -p",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "rollup -c",
+    "watch": "rollup -cw"
   },
   "dependencies": {
     "express": "^4.16.4",
@@ -22,27 +27,18 @@
     "jszip": "^3.1.5"
   },
   "devDependencies": {
-    "@babel/core": "^7.3.4",
-    "@babel/preset-env": "^7.3.4",
+    "@types/jquery": "^3.3.29",
     "@types/jszip": "^3.1.6",
     "@types/node": "^12.0.2",
-    "babel-loader": "^8.0.5",
-    "clean-webpack-plugin": "1.0.1",
-    "css-loader": "^2.1.0",
-    "file-loader": "^3.0.1",
     "gulp": "^4.0.0",
     "gulp-concat": "^2.6.1",
     "gulp-ignore": "^2.0.2",
     "gulp-insert": "^0.5.0",
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
-    "html-webpack-plugin": "3.2.0",
-    "style-loader": "^0.23.1",
-    "ts-loader": "5.3.3",
-    "typescript": "3.3.1",
-    "webpack": "^4.29.1",
-    "webpack-cli": "3.2.1",
-    "webpack-dev-server": "3.1.14"
+    "rollup": "^1.12.3",
+    "rollup-plugin-typescript2": "^0.21.1",
+    "typescript": "3.3.1"
   },
   "browser": {
     "express": false,
