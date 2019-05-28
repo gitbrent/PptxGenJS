@@ -46,20 +46,21 @@
 */
 
 import {
-	EMU,
-	ONEPT,
+	CHART_TYPES,
 	CRLF,
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SLIDE_MARGIN_IN,
-	MASTER_OBJECTS,
+	EMU,
 	IMG_BROKEN,
 	IMG_PLAYBTN,
 	JSZIP_OUTPUT_TYPE,
+	MASTER_OBJECTS,
+	ONEPT,
 	SLIDE_OBJECT_TYPES,
 } from './enums'
-import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia } from './interfaces'
+import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell } from './interfaces'
 import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
 import * as genXml from './gen-xml'
 import * as JSZip from 'jszip'
@@ -124,11 +125,11 @@ export default class PptxGenJS {
 	 * @param {string} inLayout - a const name from LAYOUTS variable
 	 * @param {object} inLayout - an object with user-defined `w` and `h`
 	 */
-	private _pptLayout: ILayout
-	public set pptLayout(value: ILayout) {
+	private _pptLayout: ISlideLayout
+	public set pptLayout(value: ISlideLayout) {
 		this._pptLayout = value
 	}
-	public get pptLayout(): ILayout {
+	public get pptLayout(): ISlideLayout {
 		return this._pptLayout
 	}
 	/**
@@ -157,10 +158,10 @@ export default class PptxGenJS {
 	private NODEJS: boolean = false
 	private LAYOUTS: object
 
-	//	private jQuery: JQuery
+	private _imageCounter: number // TODO: This is a dummy value - `gen-xml` has real one: find a better solution, stop using counter
+
 	private fs: any
 	private https: any
-	private JSZip: JSZip
 	private sizeOf: any
 
 	constructor() {
@@ -189,7 +190,12 @@ export default class PptxGenJS {
 		this._subject = 'PptxGenJS Presentation'
 		this._title = 'PptxGenJS Presentation'
 		// PptxGenJS props
-		this._pptLayout = this.LAYOUTS['LAYOUT_16x9']
+		this._pptLayout = {
+			name:this.LAYOUTS['LAYOUT_16x9'].name,
+			width:this.LAYOUTS['LAYOUT_16x9'].width,
+			height:this.LAYOUTS['LAYOUT_16x9'].height,
+			data:[]
+		}
 		this._rtlMode = false
 		this._isBrowser = false
 		this.fileName = 'Presentation'
@@ -200,16 +206,20 @@ export default class PptxGenJS {
 			slide: null,
 			numb: null,
 			name: null,
-			layoutName: null,
-			layoutObj: null,
 			data: [],
 			rels: [],
+			relsChart: [],
+			relsMedia: [],
+			layoutName: null,
+			layoutObj: null,
 			slideNumberObj: null,
 		}
 		this.slides = []
 		this.slideLayouts = [
 			{
 				name: 'BLANK',
+				width: this.LAYOUTS['LAYOUT_16x9'].width,
+				height: this.LAYOUTS['LAYOUT_16x9'].height,
 				slide: null,
 				data: [],
 				rels: [],
@@ -227,7 +237,7 @@ export default class PptxGenJS {
 		var intSlideNum: number = 0
 
 		// STEP 1: Create new JSZip file
-		var zip: JSZip = new this.JSZip()
+		let zip: JSZip = new JSZip()
 
 		// STEP 2: Add all required folders and files
 		zip.folder('_rels')
@@ -278,10 +288,10 @@ export default class PptxGenJS {
 		zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', genXml.makeXmlNotesMasterRel())
 
 		// Create all Rels (images, media, chart data)
-		this.slideLayouts.forEach(function(layout) {
-			this.createMediaFiles(layout, zip, arrChartPromises)
+		this.slideLayouts.forEach(layout => {
+			///TODO-3: FIXME: this.createMediaFiles(layout as ISlide, zip, arrChartPromises)
 		})
-		this.slides.forEach(function(slide) {
+		this.slides.forEach(slide => {
 			this.createMediaFiles(slide, zip, arrChartPromises)
 		})
 		this.createMediaFiles(this.masterSlide, zip, arrChartPromises)
@@ -295,34 +305,34 @@ export default class PptxGenJS {
 				} else if (this.NODEJS && !this.isBrowser) {
 					if (this.saveCallback) {
 						if (strExportName.indexOf('http') == 0) {
-							zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
+							zip.generateAsync({ type: 'nodebuffer' }).then(content => {
 								this.saveCallback(content)
 							})
 						} else {
-							zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
-								this.fs.writeFile(strExportName, content, function() {
+							zip.generateAsync({ type: 'nodebuffer' }).then(content => {
+								this.fs.writeFile(strExportName, content, () => {
 									this.saveCallback(strExportName)
 								})
 							})
 						}
 					} else {
 						// Starting in late 2017 (Node ~8.9.1), `fs` requires a callback so use a dummy func
-						zip.generateAsync({ type: 'nodebuffer' }).then(function(content) {
-							this.fs.writeFile(strExportName, content, function() {})
+						zip.generateAsync({ type: 'nodebuffer' }).then(content => {
+							this.fs.writeFile(strExportName, content, () => {})
 						})
 					}
 				} else {
-					zip.generateAsync({ type: 'blob' }).then(function(content) {
+					zip.generateAsync({ type: 'blob' }).then(content => {
 						this.writeFileToBrowser(strExportName, content)
 					})
 				}
 			})
-			.catch(function(strErr) {
+			.catch(strErr => {
 				console.error(strErr)
 			})
 	}
 
-	writeFileToBrowser = (strExportName, content) => {
+	writeFileToBrowser = (strExportName: string, content) => {
 		// STEP 1: Create element
 		var a = document.createElement('a')
 		a.setAttribute('style', 'display:none;')
@@ -333,7 +343,7 @@ export default class PptxGenJS {
 		if (window.navigator.msSaveOrOpenBlob) {
 			// REF: https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
 			let blobObject = new Blob([content])
-			jQuery(a).click(function() {
+			jQuery(a).click(() => {
 				window.navigator.msSaveOrOpenBlob(blobObject, strExportName)
 			})
 			a.click()
@@ -351,7 +361,7 @@ export default class PptxGenJS {
 			a.click()
 
 			// Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
-			setTimeout(function() {
+			setTimeout(() => {
 				window.URL.revokeObjectURL(url)
 				document.body.removeChild(a)
 			}, 100)
@@ -364,7 +374,7 @@ export default class PptxGenJS {
 		this.saveCallback = null
 	}
 
-	createMediaFiles = (layout: ISlide, zip, chartPromises: Array<Promise<any>>) => {
+	createMediaFiles = (layout: ISlide, zip: JSZip, chartPromises: Array<Promise<any>>) => {
 		layout.relsChart.forEach(rel => chartPromises.push(genXml.gObjPptxGenerators.createExcelWorksheet(rel, zip)))
 		layout.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {
@@ -382,15 +392,15 @@ export default class PptxGenJS {
 		})
 	}
 
-	addPlaceholdersToSlides = slide => {
+	addPlaceholdersToSlides = (slide: ISlide) => {
 		// Add all placeholders on this Slide that dont already exist
-		slide.layoutObj.data.forEach(function(slideLayoutObj) {
+		slide.layoutObj.data.forEach(slideLayoutObj => {
 			if (slideLayoutObj.type === MASTER_OBJECTS.placeholder) {
 				// A: Search for this placeholder on Slide before we add
 				// NOTE: Check to ensure a placeholder does not already exist on the Slide
 				// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 				if (
-					slide.data.filter(function(slideObj) {
+					slide.data.filter(slideObj => {
 						return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholderName
 					}).length == 0
 				) {
@@ -402,7 +412,7 @@ export default class PptxGenJS {
 
 	// IMAGE METHODS:
 
-	getSizeFromImage = inImgUrl => {
+	getSizeFromImage = (inImgUrl: string) => {
 		if (this.NODEJS) {
 			try {
 				var dimensions = this.sizeOf(inImgUrl)
@@ -439,7 +449,7 @@ export default class PptxGenJS {
 	encodeSlideMediaRels = (layout, arrRelsDone) => {
 		let intRels = 0
 
-		layout.rels.forEach(function(rel) {
+		layout.rels.forEach(rel => {
 			// Read and Encode each media lacking `data` into base64 (for use in export)
 			if (rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1) {
 				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
@@ -494,7 +504,10 @@ export default class PptxGenJS {
 		xhr.send()
 	}
 
-	/* Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64 */
+	/**
+	 * Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64
+	 * @param {ISlideRelMedia} `slideRel` - slide rel
+	 */
 	convertRemoteMediaToDataURL = (slideRel: ISlideRelMedia) => {
 		this.https.get(slideRel.path, res => {
 			var rawData = ''
@@ -506,15 +519,18 @@ export default class PptxGenJS {
 				var data = Buffer.from(rawData, 'binary').toString('base64')
 				this.callbackImgToDataURLDone(data, slideRel)
 			})
-			res.on('error', function(e) {
+			res.on('error', e => {
 				// TODO-3:
 				///reject(e);
 			})
 		})
 	}
 
-	/* browser: Convert SVG-base64 data to PNG-base64 */
-	convertSvgToPngViaCanvas = slideRel => {
+	/**
+	 * (Browser Only): Convert SVG-base64 data to PNG-base64
+	 * @param {ISlideRelMedia} `slideRel` - slide rel
+	 */
+	convertSvgToPngViaCanvas = (slideRel: ISlideRelMedia) => {
 		// A: Create
 		let image = new Image()
 
@@ -541,14 +557,14 @@ export default class PptxGenJS {
 			}
 			canvas = null
 		}
-		image.onerror = function(ex) {
+		image.onerror = ex => {
 			console.error(ex || '')
 			// Return a predefined "Broken image" graphic so the user will see something on the slide
 			this.callbackImgToDataURLDone(IMG_BROKEN, slideRel)
 		}
 
 		// C: Load image
-		image.src = slideRel.data // use pre-encoded SVG base64 data
+		image.src = slideRel.data as string // use pre-encoded SVG base64 data
 	}
 
 	callbackImgToDataURLDone = (base64Data: string | ArrayBuffer, slideRel: ISlideRelMedia) => {
@@ -583,7 +599,7 @@ export default class PptxGenJS {
 	/**
 	 * Magic happens here
 	 */
-	parseTextToLines = (cell, inWidth): Array<string> => {
+	parseTextToLines = (cell: ITableCell, inWidth: number): Array<string> => {
 		var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
 		var CPL = (inWidth * EMU) / ((cell.opts.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 		var arrLines = []
@@ -596,8 +612,8 @@ export default class PptxGenJS {
 		var inStr = (cell.text || '').toString().trim()
 
 		// B: Build line array
-		jQuery.each(inStr.split('\n'), function(i, line) {
-			jQuery.each(line.split(' '), function(i, word) {
+		jQuery.each(inStr.split('\n'), (_idx, line) => {
+			jQuery.each(line.split(' '), (_idx, word) => {
 				if (strCurrLine.length + word.length + 1 < CPL) {
 					strCurrLine += word + ' '
 				} else {
@@ -656,7 +672,7 @@ export default class PptxGenJS {
 		// STEP 2: Calc number of columns
 		// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 		// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
-		inArrRows[0].forEach(function(cell, idx) {
+		inArrRows[0].forEach(cell => {
 			if (!cell) cell = {}
 			var cellOpts = cell.options || cell.opts || null
 			numCols += cellOpts && cellOpts.colspan ? cellOpts.colspan : 1
@@ -668,7 +684,7 @@ export default class PptxGenJS {
 		// Calc opts.w if we can
 		if (!opts.w && opts.colW) {
 			if (Array.isArray(opts.colW))
-				opts.colW.forEach(function(val, idx) {
+				opts.colW.forEach(val => {
 					opts.w += val
 				})
 			else {
@@ -685,11 +701,11 @@ export default class PptxGenJS {
 		if (!opts.colW || !Array.isArray(opts.colW)) {
 			if (opts.colW && !isNaN(Number(opts.colW))) {
 				var arrColW = []
-				inArrRows[0].forEach(function(cell, idx) {
+				inArrRows[0].forEach(() => {
 					arrColW.push(opts.colW)
 				})
 				opts.colW = []
-				arrColW.forEach(function(val, idx) {
+				arrColW.forEach(val => {
 					opts.colW.push(val)
 				})
 			}
@@ -704,7 +720,7 @@ export default class PptxGenJS {
 
 		// STEP 4: Iterate over each line and perform magic =========================
 		// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `addSlidesForTable()` or `.addTable()`
-		inArrRows.forEach(function(row, iRow) {
+		inArrRows.forEach((row, iRow) => {
 			// A: Reset ROW variables
 			var arrCellsLines = [],
 				arrCellsLineHeights = [],
@@ -722,7 +738,7 @@ export default class PptxGenJS {
 			if (opts.debug) console.log('* Slide ' + arrObjSlides.length + ': emuSlideTabH (in) ........ = ' + (emuSlideTabH / EMU).toFixed(1))
 
 			// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
-			row.forEach(function(cell, iCell) {
+			row.forEach((cell, iCell) => {
 				// FIRST: REALITY-CHECK:
 				if (!cell) cell = {}
 
@@ -793,7 +809,7 @@ export default class PptxGenJS {
 						// NOTE: Edge cases can occur where we create a new slide only to have no more lines
 						// ....: and then a blank row sits at the bottom of a table!
 						// ....: Hence, we verify all cells have text before adding this final row.
-						jQuery.each(currRow, function(i, cell) {
+						jQuery.each(currRow, (_idx, cell) => {
 							if (cell.text.length > 0) {
 								// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
 								arrRows.push(jQuery.extend(true, [], currRow))
@@ -807,7 +823,7 @@ export default class PptxGenJS {
 						// 4: Reset current table height for new Slide
 						emuTabCurrH = 0 // This row's emuRowH w/b added below
 						// 5: Empty current row's text (continue adding lines where we left off below)
-						jQuery.each(currRow, function(i, cell) {
+						jQuery.each(currRow, (_idx, cell) => {
 							cell.text = ''
 						})
 						// 6: Auto-Paging Options: addHeaderToEach
@@ -859,7 +875,7 @@ export default class PptxGenJS {
 			arrRelsDone = []
 
 		// STEP 1: Add empty placeholder objects to slides that don't already have them
-		this.slides.forEach(function(slide) {
+		this.slides.forEach(slide => {
 			if (slide.layoutObj) this.addPlaceholdersToSlides(slide)
 		})
 
@@ -871,12 +887,12 @@ export default class PptxGenJS {
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
 
 		// A: Slide rels
-		this.slides.forEach(function(slide, idx) {
+		this.slides.forEach(slide => {
 			intRels += this.encodeSlideMediaRels(slide, arrRelsDone)
 		})
 
 		// B: Layout rels
-		this.slideLayouts.forEach(function(layout, idx) {
+		this.slideLayouts.forEach(layout => {
 			intRels += this.encodeSlideMediaRels(layout, arrRelsDone)
 		})
 
@@ -889,8 +905,8 @@ export default class PptxGenJS {
 
 	/**
 	 * Add a new Slide to the Presentation
-	 * @param {string} inMasterName - Name of Master Slide
-	 * @returns {ISlide[]} slideObj - The new Slide object
+	 * @param {string} inMasterName - name of Master Slide
+	 * @returns {IAddNewSlide} slideObj - new Slide object
 	 */
 	addNewSlide(inMasterName?: string): IAddNewSlide {
 		var slideObj: IAddNewSlide = {
@@ -906,20 +922,24 @@ export default class PptxGenJS {
 		}
 		var slideNum = this.slides.length
 		var pageNum = slideNum + 1
-		var objLayout: ISlideLayout = this.slideLayouts.filter(function(layout) {
-			return layout.name == inMasterName
-		})[0]
+		var objLayout: ISlideLayout =
+			this.slideLayouts.filter(layout => {
+				return layout.name == inMasterName
+			})[0] || this._pptLayout
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
-		this.slides[slideNum] = {
+		///this.slides[slideNum] = {
+		this.slides.push({
 			name: 'Slide ' + pageNum,
 			numb: pageNum,
 			data: [],
 			rels: [],
+			relsChart: [],
+			relsMedia: [],
 			slideNumberObj: null,
 			layoutName: inMasterName || '[ default ]',
-			layoutObj: objLayout,
-		}
+			layoutObj: objLayout || null,
+		})
 
 		// ==========================================================================
 		// PUBLIC METHODS:
@@ -948,8 +968,9 @@ export default class PptxGenJS {
 		 * Generate the chart based on input data.
 		 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
 		 *
-		 * @param {object} renderType should belong to: 'column', 'pie'
-		 * @param {object} data a JSON object with follow the following format
+		 * @param {CHART_TYPES} `type` - chart type
+		 * @param {object} `data` - a JSON object with follow the following format
+		 * @param {object} `opt` - options
 		 * {
 		 *   title: 'eSurvey chart',
 		 *   data: [
@@ -966,7 +987,7 @@ export default class PptxGenJS {
 		 *	 ]
 		 * }
 		 */
-		slideObj.addChart = (type, data, opt) => {
+		slideObj.addChart = (type: CHART_TYPES, data, opt?) => {
 			genXml.gObjPptxGenerators.addChartDefinition(type, data, opt, this.slides[slideNum])
 			return this
 		}
@@ -974,14 +995,14 @@ export default class PptxGenJS {
 		/**
 		 * NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
 		 */
-		slideObj.addImage = function(objImage) {
+		slideObj.addImage = objImage => {
 			genXml.gObjPptxGenerators.addImageDefinition(objImage, this.slides[slideNum])
 			return this
 		}
 
-		slideObj.addMedia = function(opt) {
+		slideObj.addMedia = opt => {
 			var intRels = 1
-			var intImages = ++this.imageCounter
+			var intImages = ++this._imageCounter
 			var intPosX = opt.x || 0
 			var intPosY = opt.y || 0
 			var intSizeX = opt.w || 2
@@ -1008,15 +1029,16 @@ export default class PptxGenJS {
 
 			// STEP 2: Set vars for this Slide
 			var slideObjNum = this.slides[slideNum].data.length
-			var slideObjRels = this.slides[slideNum].rels
+			var slideObjRels = this.slides[slideNum].relsMedia
 
 			strType = strData ? strData.split(';')[0].split('/')[0] : strType
 			strExtn = strData ? strData.split(';')[0].split('/')[1] : strPath.split('.').pop()
 
-			this.slides[slideNum].data[slideObjNum] = {}
-			this.slides[slideNum].data[slideObjNum].type = 'media'
-			this.slides[slideNum].data[slideObjNum].mtype = strType
-			this.slides[slideNum].data[slideObjNum].media = strPath || 'preencoded.mov'
+			this.slides[slideNum].data[slideObjNum] = {
+				type: 'media',
+				mtype: strType,
+				media: strPath || 'preencoded.mov',
+			} as ISlideDataObject
 
 			// STEP 3: Set media properties & options
 			this.slides[slideNum].data[slideObjNum].options = {}
@@ -1027,7 +1049,7 @@ export default class PptxGenJS {
 
 			// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 			// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-			this.slides.forEach(function(slide) {
+			this.slides.forEach(slide => {
 				intRels += slide.rels.length
 			})
 
@@ -1053,17 +1075,18 @@ export default class PptxGenJS {
 					Target: '../media/image' + intRels + '.png',
 				})
 			} else {
-				// Audio/Video files consume *TWO* rId's:
-				// <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-				// <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
-				slideObjRels.push({
+				let objRel: ISlideRelMedia = {
 					path: strPath || 'preencoded' + strExtn,
 					type: strType + '/' + strExtn,
 					extn: strExtn,
 					data: strData || '',
 					rId: intRels + 0,
 					Target: '../media/media' + intImages + '.' + strExtn,
-				})
+				}
+				// Audio/Video files consume *TWO* rId's:
+				// <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
+				// <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+				slideObjRels.push(objRel)
 				this.slides[slideNum].data[slideObjNum].mediaRid = slideObjRels[slideObjRels.length - 1].rId
 				slideObjRels.push({
 					path: strPath || 'preencoded' + strExtn,
@@ -1088,12 +1111,12 @@ export default class PptxGenJS {
 			return this
 		}
 
-		slideObj.addNotes = function(notes, options) {
-			genXml.gObjPptxGenerators.addNotesDefinition(notes, options, this.slides[slideNum])
+		slideObj.addNotes = (notes, opt) => {
+			genXml.gObjPptxGenerators.addNotesDefinition(notes, opt, this.slides[slideNum])
 			return this
 		}
 
-		slideObj.addShape = function(shape, opt) {
+		slideObj.addShape = (shape, opt) => {
 			genXml.gObjPptxGenerators.addShapeDefinition(shape, opt, this.slides[slideNum])
 			return this
 		}
@@ -1186,8 +1209,8 @@ export default class PptxGenJS {
 			// STEP 5: Check for fine-grained formatting, disable auto-page when found
 			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
 			// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
-			arrRows.forEach(function(row, rIdx) {
-				row.forEach(function(cell, cIdx) {
+			arrRows.forEach(row => {
+				row.forEach(cell => {
 					if (cell && cell.text && Array.isArray(cell.text)) opt.autoPage = false
 				})
 			})
@@ -1206,7 +1229,7 @@ export default class PptxGenJS {
 				}
 			} else {
 				// Loop over rows and create 1-N tables as needed (ISSUE#21)
-				this.getSlidesForTableRows(arrRows, opt).forEach(function(arrRows, idx) {
+				this.getSlidesForTableRows(arrRows, opt).forEach((arrRows, idx) => {
 					// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
 					var currSlide = !this.slides[slideNum + idx] ? this.addNewSlide(inMasterName) : this.slides[slideNum + idx].slide
 
@@ -1215,7 +1238,7 @@ export default class PptxGenJS {
 
 					// C: Add this table to new Slide
 					opt.autoPage = false
-					currSlide.addTable(arrRows, jQuery.extend(true, {}, opt))
+					/// TODO-3: FIXME: ((how to do this in TS)) currSlide.addTable(arrRows, jQuery.extend(true, {}, opt))
 				})
 			}
 
@@ -1223,7 +1246,14 @@ export default class PptxGenJS {
 			return this
 		}
 
-		slideObj.addText = function(text, options) {
+		/**
+		 * Add text object to Slide
+		 *
+		 * @param {object|string} `text` - text string or complex object
+		 * @param {object} `options` - text options
+		 * @since: 1.0.0
+		 */
+		slideObj.addText = (text, options) => {
 			genXml.gObjPptxGenerators.addTextDefinition(text, options, this.slides[slideNum], false)
 			return this
 		}
@@ -1253,6 +1283,8 @@ export default class PptxGenJS {
 
 		var objLayout: ISlideLayout = {
 			name: inObjMasterDef.title,
+			width: inObjMasterDef.width,
+			height: inObjMasterDef.height,
 			slide: null,
 			data: [],
 			rels: [],
@@ -1277,8 +1309,8 @@ export default class PptxGenJS {
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * "Auto-Paging is the future!" --Elon Musk
 	 *
-	 * @param {string} tabEleId - The HTML Element ID of the table
-	 * @param {array} inOpts - An array of options (e.g.: tabsize)
+	 * @param {string} `tabEleId` - HTMLElementID of the table
+	 * @param {object} `inOpts` - array of options (e.g.: tabsize)
 	 */
 	addSlidesForTable(tabEleId, inOpts) {
 		var api = this
@@ -1303,7 +1335,7 @@ export default class PptxGenJS {
 		opts.margin = opts.margin || opts.margin == 0 ? opts.margin : 0.5
 
 		if (opts.master && typeof opts.master === 'string') {
-			var objLayout = this.slideLayouts.filter(function(layout) {
+			var objLayout = this.slideLayouts.filter(layout => {
 				return layout.name == opts.master
 			})[0]
 			if (objLayout && objLayout.margin) {
@@ -1320,11 +1352,11 @@ export default class PptxGenJS {
 		var emuSlideTabH = opts.h ? inch2Emu(opts.h) : this.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
 
 		// STEP 1: Grab table col widths
-		jQuery.each(['thead', 'tbody', 'tfoot'], function(i, val) {
+		jQuery.each(['thead', 'tbody', 'tfoot'], (i, val) => {
 			if (jQuery('#' + tabEleId + ' > ' + val + ' > tr').length > 0) {
 				jQuery('#' + tabEleId + ' > ' + val + ' > tr:first-child')
 					.find('> th, > td')
-					.each(function(i, cell) {
+					.each((i, cell) => {
 						// FIXME: This is a hack - guessing at col widths when colspan
 						if (jQuery(this).attr('colspan')) {
 							for (var idx = 0; idx < Number(jQuery(this).attr('colspan')); idx++) {
@@ -1337,12 +1369,12 @@ export default class PptxGenJS {
 				return false // break out of .each loop
 			}
 		})
-		jQuery.each(arrTabColW, function(i, colW) {
+		jQuery.each(arrTabColW, (i, colW) => {
 			intTabW += colW
 		})
 
 		// STEP 2: Calc/Set column widths by using same column width percent from HTML table
-		jQuery.each(arrTabColW, function(i, colW) {
+		jQuery.each(arrTabColW, (i, colW) => {
 			var intCalcWidth = Number(((emuSlideTabW * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
 			var intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-min-width')
 			var intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-width')
@@ -1351,12 +1383,12 @@ export default class PptxGenJS {
 
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
 		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-		jQuery.each(['thead', 'tbody', 'tfoot'], function(i, val) {
-			jQuery('#' + tabEleId + ' > ' + val + ' > tr').each(function(i, row) {
+		jQuery.each(['thead', 'tbody', 'tfoot'], (i, val) => {
+			jQuery('#' + tabEleId + ' > ' + val + ' > tr').each((i, row) => {
 				var arrObjTabCells = []
 				jQuery(row)
 					.find('> th, > td')
-					.each(function(i, cell) {
+					.each((i, cell) => {
 						// A: Get RGB text/bkgd colors
 						var arrRGB1 = []
 						var arrRGB2 = []
@@ -1403,7 +1435,7 @@ export default class PptxGenJS {
 						// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
 						if (jQuery(cell).css('padding-left')) {
 							objOpts.margin = []
-							jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], function(i, val) {
+							jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], (i, val) => {
 								objOpts.margin.push(
 									Math.round(
 										Number(
@@ -1428,7 +1460,7 @@ export default class PptxGenJS {
 							jQuery(cell).css('border-left-width')
 						) {
 							objOpts.border = []
-							jQuery.each(['top', 'right', 'bottom', 'left'], function(i, val) {
+							jQuery.each(['top', 'right', 'bottom', 'left'], (i, val) => {
 								var intBorderW = Math.round(
 									Number(
 										jQuery(cell)
@@ -1489,7 +1521,7 @@ export default class PptxGenJS {
 		opts.arrObjTabHeadRows = arrObjTabHeadRows || ''
 		opts.colW = arrColW
 
-		this.getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts).forEach(function(arrTabRows, idx) {
+		this.getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts).forEach((arrTabRows, idx) => {
 			// A: Create new Slide
 			var newSlide: IAddNewSlide = api.addNewSlide(opts.master || null)
 

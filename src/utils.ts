@@ -59,7 +59,7 @@ export function inch2Emu(inches: number | string): number {
 	return Math.round(EMU * inches)
 }
 
-export function getSmartParseNumber(inVal: number | string, inDir: 'X' | 'Y', pptLayout?: ISlideLayout) {
+export function getSmartParseNumber(inVal: number | string, inDir: 'X' | 'Y', pptLayout: ISlideLayout) {
 	// FIRST: Convert string numeric value if reqd
 	if (typeof inVal == 'string' && !isNaN(Number(inVal))) inVal = Number(inVal)
 

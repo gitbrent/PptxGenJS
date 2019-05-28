@@ -141,7 +141,7 @@ export var gObjPptxGenerators = {
 		}
 
 		target.data.push(resultObject)
-		this.createHyperlinkRels(text || '', target.rels)
+		createHyperlinkRels([target], text || '', target.rels)
 
 		return resultObject
 	},
@@ -388,7 +388,7 @@ export var gObjPptxGenerators = {
 			// as well as a single data source for non-series operations.
 			// The data is indexed below to keep the data in order when segmented
 			// into types.
-			type.forEach(function(obj) {
+			type.forEach(obj => {
 				tmpData = tmpData.concat(obj.data)
 			})
 			tmpOpt = data || opt
@@ -396,7 +396,7 @@ export var gObjPptxGenerators = {
 			tmpData = data
 			tmpOpt = opt
 		}
-		tmpData.forEach(function(item, i) {
+		tmpData.forEach((item, i) => {
 			item.index = i
 		})
 		options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {}
@@ -448,7 +448,7 @@ export var gObjPptxGenerators = {
 		options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT
 		// `layout` allows the override of PPT defaults to maximize space
 		if (options.layout) {
-			;['x', 'y', 'w', 'h'].forEach(function(key) {
+			;['x', 'y', 'w', 'h'].forEach(key => {
 				var val = options.layout[key]
 				if (isNaN(Number(val)) || val < 0 || val > 1) {
 					console.warn('Warning: chart.layout.' + key + ' can only be 0-1')
@@ -567,7 +567,7 @@ export var gObjPptxGenerators = {
 
 		// STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
 		if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-			slideDef.objects.forEach(function(object, idx) {
+			slideDef.objects.forEach((object, idx) => {
 				var key = Object.keys(object)[0]
 				if (MASTER_OBJECTS[key] && key == 'chart')
 					gObjPptxGenerators.addChartDefinition(CHART_TYPES[(object.chart.type || '').toUpperCase()], object.chart.data, object.chart.opts, target)
@@ -603,12 +603,12 @@ export var gObjPptxGenerators = {
 		var intTableNum: number = 1
 
 		// STEP 1: Add background
-		if (slideObject.slide.back) {
+		if (slideObject.slide && slideObject.slide.back) {
 			strSlideXml += genXmlColorSelection(false, slideObject.slide.back)
 		}
 
 		// STEP 2: Add background image (using Strech) (if any)
-		if (slideObject.slide.bkgdImgRid) {
+		if (slideObject.slide && slideObject.slide.bkgdImgRid) {
 			// FIXME: We should be doing this in the slideLayout...
 			strSlideXml +=
 				'<p:bg>' +
@@ -629,6 +629,7 @@ export var gObjPptxGenerators = {
 
 		// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
 		slideObject.data.forEach((slideItemObj, idx) => {
+			console.log(slideItemObj)
 			var x = 0,
 				y = 0,
 				cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj),
@@ -638,7 +639,7 @@ export var gObjPptxGenerators = {
 				shapeType = null
 
 			if (slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder) {
-				placeholderObj = slideObject.layoutObj.data.filter((layoutObj: ILayout) => {
+				placeholderObj = slideObject.layoutObj.data.filter((layoutObj) => {
 					return layoutObj.options.placeholderName == slideItemObj.options.placeholder
 				})[0]
 			}
@@ -893,7 +894,7 @@ export var gObjPptxGenerators = {
 								strXml +=
 									'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
 							} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
-								jQuery.each([{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }], function(i, obj) {
+								jQuery.each([{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }], (i, obj) => {
 									if (cellOpts.border[obj.idx]) {
 										var strC =
 											'<a:solidFill><a:srgbClr val="' +
@@ -1078,7 +1079,7 @@ export var gObjPptxGenerators = {
 					strSlideXml += '<p:blipFill>'
 					// NOTE: This works for both cases: either `path` or `data` contains the SVG
 					if (
-						slideObject.relsMedia.filter(function(rel) {
+						slideObject.relsMedia.filter(rel => {
 							return rel.rId == slideItemObj.imageRid
 						})[0].extn == 'svg'
 					) {
@@ -1320,7 +1321,7 @@ export var gObjPptxGenerators = {
 			}
 		})
 
-		defaultRels.forEach(function(rel, idx) {
+		defaultRels.forEach((rel, idx) => {
 			strXml += '<Relationship Id="rId' + (lastRid + idx + 1) + '" Target="' + rel.target + '" Type="' + rel.type + '"/>'
 		})
 
@@ -1329,7 +1330,7 @@ export var gObjPptxGenerators = {
 	},
 
 	imageSizingXml: {
-		cover: function(imgSize, boxDim) {
+		cover: (imgSize, boxDim) => {
 			var imgRatio = imgSize.h / imgSize.w,
 				boxRatio = boxDim.h / boxDim.w,
 				isBoxBased = boxRatio > imgRatio,
@@ -1339,7 +1340,7 @@ export var gObjPptxGenerators = {
 				vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
 			return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
 		},
-		contain: function(imgSize, boxDim) {
+		contain: (imgSize, boxDim) => {
 			var imgRatio = imgSize.h / imgSize.w,
 				boxRatio = boxDim.h / boxDim.w,
 				widthBased = boxRatio > imgRatio,
@@ -1349,7 +1350,7 @@ export var gObjPptxGenerators = {
 				vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
 			return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
 		},
-		crop: function(imageSize, boxDim) {
+		crop: (imageSize, boxDim) => {
 			var l = boxDim.x,
 				r = imageSize.w - (boxDim.x + boxDim.w),
 				t = boxDim.y,
@@ -1371,7 +1372,7 @@ export var gObjPptxGenerators = {
 	createExcelWorksheet: function createExcelWorksheet(chartObject: ISlideRelChart, zip): Promise<any> {
 		var data = chartObject.data
 
-		return new Promise(function(resolve, reject) {
+		return new Promise((resolve, reject) => {
 			var zipExcel = new JSZip()
 			var intBubbleCols = (data.length - 1) * 2 + 1 // 1 for "X-Values", then 2 for every Y-Axis
 
@@ -1497,7 +1498,7 @@ export var gObjPptxGenerators = {
 
 				// C: Add `name`/Series
 				if (chartObject.opts.type === 'bubble') {
-					data.forEach(function(objData, idx) {
+					data.forEach((objData, idx) => {
 						if (idx == 0) strSharedStrings += '<si><t>' + 'X-Axis' + '</t></si>'
 						else {
 							strSharedStrings += '<si><t>' + encodeXmlEntities(objData.name || ' ') + '</t></si>'
@@ -1505,14 +1506,14 @@ export var gObjPptxGenerators = {
 						}
 					})
 				} else {
-					data.forEach(function(objData, idx) {
+					data.forEach(objData => {
 						strSharedStrings += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>'
 					})
 				}
 
 				// D: Add `labels`/Categories
 				if (chartObject.opts.type != 'bubble' && chartObject.opts.type != 'scatter') {
-					data[0].labels.forEach(function(label, idx) {
+					data[0].labels.forEach(label => {
 						strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'
 					})
 				}
@@ -1626,7 +1627,7 @@ export var gObjPptxGenerators = {
 				} else if (chartObject.opts.type == 'scatter') {
 					strSheetXml += '<cols>'
 					strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
-					//data.forEach(function(obj,idx){ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
+					//data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
 					strSheetXml += '</cols>'
 					/* EX: INPUT: `data`
 					[
@@ -1654,7 +1655,7 @@ export var gObjPptxGenerators = {
 					strSheetXml += '</row>'
 
 					// B: Add row for each X-Axis value (Y-Axis* value is optional)
-					data[0].values.forEach(function(val, idx) {
+					data[0].values.forEach((val, idx) => {
 						// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
 						strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + data.length + '">'
 						strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>'
@@ -1703,7 +1704,7 @@ export var gObjPptxGenerators = {
 					strSheetXml += '</row>'
 
 					// B: Add data row(s) for each category
-					data[0].labels.forEach(function(cat, idx) {
+					data[0].labels.forEach((cat, idx) => {
 						// Leading col is reserved for the label, so hard-code it, then loop over col values
 						strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + 1) + '">'
 						strSheetXml += '<c r="A' + (idx + 2) + '" t="s">'
@@ -1731,7 +1732,7 @@ export var gObjPptxGenerators = {
 			// C: Add XLSX to PPTX export
 			zipExcel
 				.generateAsync({ type: 'base64' })
-				.then(function(content) {
+				.then(content => {
 					// 1: Create the embedded Excel worksheet with labels and data
 					zip.file('ppt/embeddings/Microsoft_Excel_Worksheet' + chartObject.globalId + '.xlsx', content, { base64: true })
 
@@ -1750,7 +1751,7 @@ export var gObjPptxGenerators = {
 					// 3: Done
 					resolve()
 				})
-				.catch(function(strErr) {
+				.catch(strErr => {
 					reject(strErr)
 				})
 		})
@@ -2129,7 +2130,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
 				if ((chartType == 'bar' || chartType == 'bar3D') && (data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
 					// Series Data Point colors
-					obj.values.forEach(function(value, index) {
+					obj.values.forEach((value, index) => {
 						var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors
 
 						strXml += '  <c:dPt>'
@@ -2166,7 +2167,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 						strXml += '    <c:numCache>'
 						strXml += '      <c:formatCode>' + opts.catLabelFormatCode + '</c:formatCode>'
 						strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
-						obj.labels.forEach(function(label, idx) {
+						obj.labels.forEach((label, idx) => {
 							strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
 						})
 						strXml += '    </c:numCache>'
@@ -2176,7 +2177,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 						strXml += '    <c:f>Sheet1!' + '$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 						strXml += '    <c:strCache>'
 						strXml += '	     <c:ptCount val="' + obj.labels.length + '"/>'
-						obj.labels.forEach(function(label, idx) {
+						obj.labels.forEach((label, idx) => {
 							strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
 						})
 						strXml += '    </c:strCache>'
@@ -2193,7 +2194,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 					strXml += '      <c:numCache>'
 					strXml += '        <c:formatCode>General</c:formatCode>'
 					strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
-					obj.values.forEach(function(value, idx) {
+					obj.values.forEach((value, idx) => {
 						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>'
 					})
 					strXml += '      </c:numCache>'
@@ -2344,7 +2345,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 					var chartUuid = getUuid('-xxxx-xxxx-xxxx-xxxxxxxxxxxx')
 					if (obj.labels && (opts.dataLabelFormatScatter == 'custom' || opts.dataLabelFormatScatter == 'customXY')) {
 						strXml += '<c:dLbls>'
-						obj.labels.forEach(function(label, idx) {
+						obj.labels.forEach((label, idx) => {
 							if (opts.dataLabelFormatScatter == 'custom' || opts.dataLabelFormatScatter == 'customXY') {
 								strXml += '  <c:dLbl>'
 								strXml += '    <c:idx val="' + idx + '"/>'
@@ -2465,7 +2466,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
 				if ((data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
 					// Series Data Point colors
-					obj.values.forEach(function(value, index) {
+					obj.values.forEach((value, index) => {
 						var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors
 
 						strXml += '  <c:dPt>'
@@ -2495,7 +2496,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 					strXml += '    <c:numCache>'
 					strXml += '      <c:formatCode>General</c:formatCode>'
 					strXml += '      <c:ptCount val="' + data[0].values.length + '"/>'
-					data[0].values.forEach(function(value, idx) {
+					data[0].values.forEach((value, idx) => {
 						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>'
 					})
 					strXml += '    </c:numCache>'
@@ -2637,7 +2638,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 					strXml += '    <c:numCache>'
 					strXml += '      <c:formatCode>General</c:formatCode>'
 					strXml += '      <c:ptCount val="' + data[0].values.length + '"/>'
-					data[0].values.forEach(function(value, idx) {
+					data[0].values.forEach((value, idx) => {
 						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>'
 					})
 					strXml += '    </c:numCache>'
@@ -2669,7 +2670,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 				strXml += '      <c:numCache>'
 				strXml += '        <c:formatCode>General</c:formatCode>'
 				strXml += '	       <c:ptCount val="' + obj.sizes.length + '"/>'
-				obj.sizes.forEach(function(value, idx) {
+				obj.sizes.forEach((value, idx) => {
 					strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || '') + '</c:v></c:pt>'
 				})
 				strXml += '      </c:numCache>'
@@ -2762,7 +2763,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 			strXml += '<c:explosion val="0"/>'
 
 			// 2: "Data Point" block for every data row
-			obj.labels.forEach(function(_label, idx) {
+			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dPt>'
 				strXml += '  <c:idx val="' + idx + '"/>'
 				strXml += '  <c:explosion val="0"/>'
@@ -2786,7 +2787,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 
 			// 3: "Data Label" block for every data Label
 			strXml += '<c:dLbls>'
-			obj.labels.forEach(function(_label, idx) {
+			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dLbl>'
 				strXml += '  <c:idx val="' + idx + '"/>'
 				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
@@ -2844,7 +2845,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 			strXml += '    <c:f>Sheet1!' + '$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 			strXml += '    <c:strCache>'
 			strXml += '	     <c:ptCount val="' + obj.labels.length + '"/>'
-			obj.labels.forEach(function(label, idx) {
+			obj.labels.forEach((label, idx) => {
 				strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
 			})
 			strXml += '    </c:strCache>'
@@ -2857,7 +2858,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 			strXml += '      <c:f>Sheet1!' + '$B$2:$B$' + (obj.labels.length + 1) + '</c:f>'
 			strXml += '      <c:numCache>'
 			strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
-			obj.values.forEach(function(value, idx) {
+			obj.values.forEach((value, idx) => {
 				strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>'
 			})
 			strXml += '      </c:numCache>'
@@ -2950,7 +2951,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
 
 	// Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
 	if (opts.catLabelFormatCode) {
-		;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(function(opt, idx) {
+		;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach((opt, idx) => {
 			// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
 			if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) == -1)) {
 				console.warn('`' + opt + "` must be one of: 'days','months','years' !")
@@ -3229,7 +3230,7 @@ export function genXmlTextBody(slideObj) {
 
 	// STEP 2: Grab options, format line-breaks, etc.
 	if (Array.isArray(slideObj.text)) {
-		slideObj.text.forEach(function(obj, idx) {
+		slideObj.text.forEach((obj, idx) => {
 			// A: Set options
 			obj.options = obj.options || slideObj.options || {}
 			if (idx == 0 && obj.options && !obj.options.bullet && slideObj.options.bullet) obj.options.bullet = slideObj.options.bullet
@@ -3246,7 +3247,7 @@ export function genXmlTextBody(slideObj) {
 				obj.text
 					.toString()
 					.split(CRLF)
-					.forEach(function(line, idx) {
+					.forEach((line, idx) => {
 						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
 						line += obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : ''
 						arrTextObjects.push({ text: line, options: obj.options })
@@ -3278,7 +3279,7 @@ export function genXmlTextBody(slideObj) {
 	}
 
 	// STEP 4: Loop over each text object and create paragraph props, text run, etc.
-	arrTextObjects.forEach(function(textObj, idx) {
+	arrTextObjects.forEach((textObj, idx) => {
 		// Clear/Increment loop vars
 		paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
 		textObj.options.lineIdx = idx
@@ -3305,7 +3306,7 @@ export function genXmlTextBody(slideObj) {
 		// We only pass the text.options to genXmlTextRun (not the Slide.options),
 		// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 		// TODO-3: convert to Object.values or whatever in ES6
-		jQuery.each(slideObj.options, function(key, val) {
+		jQuery.each(slideObj.options, (key, val) => {
 			// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
 			if (key != 'bullet' && !textObj.options[key]) textObj.options[key] = val
 		})
@@ -3664,7 +3665,7 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 	strXml += ' <Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
 	strXml += ' <Default Extension="mp4" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
 	slides.forEach(slide => {
-		slide.relsMedia.forEach(rel => {
+		;(slide.relsMedia || []).forEach(rel => {
 			if (rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1) {
 				strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>'
 			}
@@ -3676,14 +3677,14 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 	// STEP 2: Add presentation and slide master(s)/slide(s)
 	strXml += ' <Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
 	strXml += ' <Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>'
-	slides.forEach(function(slide, idx) {
+	slides.forEach((slide, idx) => {
 		strXml +=
 			'<Override PartName="/ppt/slideMasters/slideMaster' +
 			(idx + 1) +
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>'
 		strXml += '<Override PartName="/ppt/slides/slide' + (idx + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
 		// add charts if any
-		slide.rels.forEach(function(rel) {
+		slide.rels.forEach(rel => {
 			if (rel.type == 'chart') {
 				strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 			}
@@ -3702,7 +3703,7 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 			'<Override PartName="/ppt/slideLayouts/slideLayout' +
 			(idx + 1) +
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>'
-		layout.rels.forEach(function(rel) {
+		layout.rels.forEach(rel => {
 			if (rel.type == 'chart') {
 				strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 			}
@@ -3710,7 +3711,7 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 	})
 
 	// STEP 5: Add notes slide(s)
-	slides.forEach((slide, idx) => {
+	slides.forEach((_slide, idx) => {
 		strXml +=
 			' <Override PartName="/ppt/notesSlides/notesSlide' +
 			(idx + 1) +
@@ -3770,7 +3771,7 @@ export function makeXmlApp(slides: Array<ISlide>, company: string): string {
 	strXml += '<TitlesOfParts>'
 	strXml += '<vt:vector size="' + (slides.length + 1) + '" baseType="lpstr">'
 	strXml += '<vt:lpstr>Office Theme</vt:lpstr>'
-	slides.forEach((slideObj, idx) => {
+	slides.forEach((_slideObj, idx) => {
 		strXml += '<vt:lpstr>Slide ' + (idx + 1) + '</vt:lpstr>'
 	})
 	strXml += '</vt:vector>'
@@ -3845,7 +3846,7 @@ export function makeXmlSlide(objSlide: ISlide): string {
 	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
 		'<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
-		(objSlide.slide.hidden ? ' show="0"' : '') +
+		(objSlide.slide && objSlide.slide.hidden ? ' show="0"' : '') +
 		'>'
 	strXml += gObjPptxGenerators.slideObjectToXml(objSlide)
 	strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>'
@@ -3855,9 +3856,9 @@ export function makeXmlSlide(objSlide: ISlide): string {
 	return strXml
 }
 
-export function getNotesFromSlide(objSlide) {
+export function getNotesFromSlide(objSlide: ISlide): string {
 	var notesStr = ''
-	objSlide.data.forEach(function(data) {
+	objSlide.data.forEach(data => {
 		if (data.type === 'notes') {
 			notesStr += data.text
 		}
@@ -3865,7 +3866,7 @@ export function getNotesFromSlide(objSlide) {
 	return notesStr.replace(/\r*\n/g, CRLF)
 }
 
-export function makeXmlNotesSlide(objSlide) {
+export function makeXmlNotesSlide(objSlide: ISlide): string {
 	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
 		'<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
@@ -3901,15 +3902,16 @@ export function makeXmlNotesSlide(objSlide) {
 
 /**
  * Generates the XML layout resource from a layout object
- * @param {Object} objSlideLayout - slide object that represents layout
+ *
+ * @param {ISlide} objSlideLayout - slide object that represents layout
  * @return {string} strXml - slide OOXML
  */
-export function makeXmlLayout(objSlideLayout) {
+export function makeXmlLayout(objSlideLayout: ISlideLayout): string {
 	// STEP 1: Generate slide XML - wrap generated text in full XML envelope
 	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
 		'<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">'
-	strXml += gObjPptxGenerators.slideObjectToXml(objSlideLayout)
+	strXml += gObjPptxGenerators.slideObjectToXml(objSlideLayout as ISlide)
 	strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>'
 	strXml += '</p:sldLayout>'
 
@@ -3972,7 +3974,12 @@ export function makeXmlMaster(objSlide: ISlide, slideLayouts: Array<ISlideLayout
 	return strXml
 }
 
-export function makeXmlNotesMaster() {
+/**
+ * Generate XML for Notes Master
+ *
+ * @returns {string} XML
+ */
+export function makeXmlNotesMaster(): string {
 	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
@@ -3997,7 +4004,7 @@ export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: Array<
 /**
  * Generates XML string for a slide relation file.
  * @param {Number} slideNumber 1-indexed number of a layout that relations are generated for
- * @return {String} complete XML string ready to be saved as a file
+ * @return {string} complete XML string ready to be saved as a file
  */
 export function makeXmlSlideRel(slides: Array<ISlide>, slideLayouts: Array<ISlideLayout>, slideNumber: number): string {
 	return gObjPptxGenerators.slideObjectRelationsToXml(slides[slideNumber - 1], [
@@ -4012,6 +4019,11 @@ export function makeXmlSlideRel(slides: Array<ISlide>, slideLayouts: Array<ISlid
 	])
 }
 
+/**
+ * Generates XML string for a slide relation file.
+ * @param {Number} `slideNumber` 1-indexed number of a layout that relations are generated for
+ * @return {String} complete XML string ready to be saved as a file
+ */
 export function makeXmlNotesSlideRel(slideNumber: number): string {
 	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
@@ -4027,7 +4039,7 @@ export function makeXmlNotesSlideRel(slideNumber: number): string {
 
 /**
  * Generates XML string for the master file.
- * @param {Object} masterSlideObject slide object
+ * @param {ISlide} `masterSlideObject` - slide object
  * @return {String} complete XML string ready to be saved as a file
  */
 export function makeXmlMasterRel(masterSlideObject: ISlide, slideLayouts: Array<ISlideLayout>): string {
@@ -4039,7 +4051,7 @@ export function makeXmlMasterRel(masterSlideObject: ISlide, slideLayouts: Array<
 	return gObjPptxGenerators.slideObjectRelationsToXml(masterSlideObject, defaultRels)
 }
 
-export function makeXmlNotesMasterRel() {
+export function makeXmlNotesMasterRel(): string {
 	return (
 		'<?xml version="1.0" encoding="UTF-8"?>' +
 		CRLF +
@@ -4051,6 +4063,8 @@ export function makeXmlNotesMasterRel() {
 
 /**
  * For the passed slide number, resolves name of a layout that is used for.
+ * @param {ISlide[]} `slides` - Array of slides
+ * @param {Number} `slideLayouts`
  * @param {Number} slideNumber
  * @return {Number} slide number
  */
@@ -4089,7 +4103,7 @@ export function makeXmlTheme() {
 	return strXml
 }
 
-export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
+export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ISlideLayout) {
 	var intCurPos = 0
 	// REF: http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
 	var strXml =
@@ -4354,7 +4368,7 @@ export function createHyperlinkRels(slides: Array<ISlide>, inText, slideRels) {
 			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
 			else {
 				var intRels = 0
-				slides.forEach(function(slide, idx) {
+				slides.forEach((slide, idx) => {
 					intRels += slide.rels.length
 				})
 				var intRelId = intRels + 1

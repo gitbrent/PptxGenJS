@@ -31,7 +31,7 @@ export interface OptsChartGridLine {
 }
 
 // Opts
-export interface IBorder {
+export interface IBorderOpts {
 	color?: string // '#696969'
 	pt?: number
 	type?: string // TODO: specify values
@@ -69,7 +69,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	dataLabelPosition?: string
 	displayBlanksAs?: string
 	fill?: string
-	border?: IBorder
+	border?: IBorderOpts
 	hasArea?: boolean
 	catAxes?: Array<number>
 	valAxes?: Array<number>
@@ -124,7 +124,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	showValue?: boolean
 	showPercent?: boolean
 	catLabelFormatCode?: string
-	dataBorder?: IBorder
+	dataBorder?: IBorderOpts
 	lineSize?: number
 	lineDash?: string
 	radarStyle?: string
@@ -167,7 +167,7 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	lineSpacing?: number
 	line?: string // color
 	lineSize?: number
-	placeholder?: object
+	placeholder?: string
 	rotate?: number // VALS: degree * 60,000
 	shadow?: IShadowOpts
 	shape?: { name: string }
@@ -194,8 +194,8 @@ export interface ISlideRelChart extends OptsChartData {
 	fileName: string
 }
 export interface ISlideRelMedia {
-	type: string // TODO: media types
-	opts: IMediaOpts
+	type: string
+	opts?: IMediaOpts
 	path?: string
 	extn?: string
 	data?: string | ArrayBuffer
@@ -225,7 +225,7 @@ export interface ISlideDataObject {
 	// text
 	text?: string
 	// table
-	arrTabRows?: Array<Array<{ cell: ITableCell; opts?:ITableCell['opts'], options?: ITableCell['options'] }>>
+	arrTabRows?: Array<Array<{ cell: ITableCell; opts?: ITableCell['opts']; options?: ITableCell['options'] }>>
 	// chart
 	chartRid?: number
 	// image:
@@ -280,13 +280,20 @@ export interface ISlideDataObject {
 }
 export interface ISlideLayout {
 	name: string
-	slide: ISlide
-	data: Array<object>
-	rels: Array<any>
-	margin: Array<number>
+	slide?: {
+		back: string
+		bkgdImgRid?: number
+		color: string
+		hidden?: boolean
+	}
+	data: Array<{ type: string; options: { placeholderName: string } }>
+	rels?: Array<any>
+	relsChart?: Array<ISlideRelChart>
+	relsMedia?: Array<ISlideRelMedia>
+	margin?: Array<number>
 	slideNumberObj?: ISlideNumber
-	width?: number
-	height?: number
+	width: number
+	height: number
 }
 export interface ISlideLayoutChart extends ISlideLayout {
 	rels: Array<ISlideRelChart>
@@ -303,9 +310,9 @@ export interface ISlide {
 	}
 	numb?: number
 	name?: string
-	rels?: Array<ISlideRel>
-	relsChart?: Array<ISlideRelChart>
-	relsMedia?: Array<ISlideRelMedia>
+	rels: Array<ISlideRel>
+	relsChart: Array<ISlideRelChart>
+	relsMedia: Array<ISlideRelMedia>
 	data?: Array<ISlideDataObject>
 	layoutName?: string
 	layoutObj?: ISlideLayout
@@ -346,9 +353,10 @@ export interface IAddNewSlide {
 
 // Objects
 export interface ITableCell {
-	hmerge:boolean
-	vmerge:boolean
-	optImp:any
-	opts:{border?:IBorder, colspan?:number, fill?:string, margin?:any, rowspan?:number, valign:string}
-	options:{ border?:IBorder, colspan?:number, fill?:string, isTableCell?:boolean, margin?:any, rowspan?:number, valign:string}
+	text: string
+	hmerge: boolean
+	vmerge: boolean
+	optImp: any
+	opts: { border?: IBorderOpts; colspan?: number; fontSize: number; lineWeight: number; fill?: string; margin?: any; rowspan?: number; valign: string }
+	options: { border?: IBorderOpts; colspan?: number; fill?: string; isTableCell?: boolean; margin?: any; rowspan?: number; valign: string }
 }

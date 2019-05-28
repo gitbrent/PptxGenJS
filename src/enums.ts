@@ -3,7 +3,7 @@
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
 
-import { IBorder } from './interfaces'
+import { IBorderOpts } from './interfaces'
 
 // CONST
 export const EMU: number = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))
@@ -70,7 +70,7 @@ export const PIECHART_COLORS: Array<string> = [
 ]
 
 export const SLDNUMFLDID: string = '{F7021451-1387-4CA6-816F-3879F97B5CBC}'
-export const DEF_CELL_BORDER: IBorder = { color: '666666' }
+export const DEF_CELL_BORDER: IBorderOpts = { color: '666666' }
 export const DEF_CELL_MARGIN_PT: Array<number> = [3, 3, 3, 3] // TRBL-style
 
 // ENUM
