@@ -1,6 +1,7 @@
 import { JSZIP_OUTPUT_TYPE } from './enums';
-import { ISlide, ILayout, IAddNewSlide, ISlideRelMedia } from './interfaces';
+import { ISlide, ISlideLayout, IAddNewSlide, ISlideRelMedia, ITableCell } from './interfaces';
 import { inch2Emu, rgbToHex } from './utils';
+import * as JSZip from 'jszip';
 export default class PptxGenJS {
     private _version;
     readonly version: string;
@@ -30,7 +31,7 @@ export default class PptxGenJS {
      * @param {object} inLayout - an object with user-defined `w` and `h`
      */
     private _pptLayout;
-    pptLayout: ILayout;
+    pptLayout: ISlideLayout;
     /**
      * Sets the Presentation Option: `isBrowser`
      * Target: Angular/React/Webpack, etc.
@@ -49,31 +50,39 @@ export default class PptxGenJS {
     private saveCallback;
     private NODEJS;
     private LAYOUTS;
+    private _imageCounter;
     private fs;
     private https;
-    private JSZip;
     private sizeOf;
     constructor();
     /**
      * DESC: Export the .pptx file
      */
     doExportPresentation: (outputType?: JSZIP_OUTPUT_TYPE) => void;
-    writeFileToBrowser: (strExportName: any, content: any) => void;
-    createMediaFiles: (layout: ISlide, zip: any, chartPromises: Promise<any>[]) => void;
-    addPlaceholdersToSlides: (slide: any) => void;
-    getSizeFromImage: (inImgUrl: any) => {
+    writeFileToBrowser: (strExportName: string, content: any) => void;
+    createMediaFiles: (layout: ISlide, zip: JSZip, chartPromises: Promise<any>[]) => void;
+    addPlaceholdersToSlides: (slide: ISlide) => void;
+    getSizeFromImage: (inImgUrl: string) => {
         width: any;
         height: any;
     };
     encodeSlideMediaRels: (layout: any, arrRelsDone: any) => number;
     convertImgToDataURL: (slideRel: ISlideRelMedia) => void;
+    /**
+     * Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64
+     * @param {ISlideRelMedia} `slideRel` - slide rel
+     */
     convertRemoteMediaToDataURL: (slideRel: ISlideRelMedia) => void;
-    convertSvgToPngViaCanvas: (slideRel: any) => void;
+    /**
+     * (Browser Only): Convert SVG-base64 data to PNG-base64
+     * @param {ISlideRelMedia} `slideRel` - slide rel
+     */
+    convertSvgToPngViaCanvas: (slideRel: ISlideRelMedia) => void;
     callbackImgToDataURLDone: (base64Data: string | ArrayBuffer, slideRel: ISlideRelMedia) => void;
     /**
      * Magic happens here
      */
-    parseTextToLines: (cell: any, inWidth: any) => string[];
+    parseTextToLines: (cell: ITableCell, inWidth: number) => string[];
     /**
      * Magic happens here
      */
@@ -92,8 +101,8 @@ export default class PptxGenJS {
     save(inStrExportName: string, funcCallback?: Function, outputType?: JSZIP_OUTPUT_TYPE): void;
     /**
      * Add a new Slide to the Presentation
-     * @param {string} inMasterName - Name of Master Slide
-     * @returns {ISlide[]} slideObj - The new Slide object
+     * @param {string} inMasterName - name of Master Slide
+     * @returns {IAddNewSlide} slideObj - new Slide object
      */
     addNewSlide(inMasterName?: string): IAddNewSlide;
     /**
@@ -106,8 +115,8 @@ export default class PptxGenJS {
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
      * "Auto-Paging is the future!" --Elon Musk
      *
-     * @param {string} tabEleId - The HTML Element ID of the table
-     * @param {array} inOpts - An array of options (e.g.: tabsize)
+     * @param {string} `tabEleId` - HTMLElementID of the table
+     * @param {object} `inOpts` - array of options (e.g.: tabsize)
      */
     addSlidesForTable(tabEleId: any, inOpts: any): void;
 }

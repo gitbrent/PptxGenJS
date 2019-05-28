@@ -1,7 +1,7 @@
 /**
  * PptxGenJS: XML Generation
  */
-import { ISlide, ISlideRelChart, ITextOpts, ILayout, ISlideLayout, ISlideDataObject } from './interfaces';
+import { ISlide, ISlideRelChart, ITextOpts, ISlideLayout, ISlideDataObject } from './interfaces';
 export declare var gObjPptxGenerators: {
     /**
      * Adds a background image or color to a slide definition.
@@ -193,14 +193,15 @@ export declare function makeXmlPresentationRels(slides: Array<ISlide>): string;
  * @return {string} strXml - slide OOXML
  */
 export declare function makeXmlSlide(objSlide: ISlide): string;
-export declare function getNotesFromSlide(objSlide: any): string;
-export declare function makeXmlNotesSlide(objSlide: any): string;
+export declare function getNotesFromSlide(objSlide: ISlide): string;
+export declare function makeXmlNotesSlide(objSlide: ISlide): string;
 /**
  * Generates the XML layout resource from a layout object
- * @param {Object} objSlideLayout - slide object that represents layout
+ *
+ * @param {ISlide} objSlideLayout - slide object that represents layout
  * @return {string} strXml - slide OOXML
  */
-export declare function makeXmlLayout(objSlideLayout: any): string;
+export declare function makeXmlLayout(objSlideLayout: ISlideLayout): string;
 /**
  * Generates XML for the master file
  * @param {ISlide} objSlide - slide object that represents master slide layout
@@ -208,6 +209,11 @@ export declare function makeXmlLayout(objSlideLayout: any): string;
  * @return {string} strXml - slide OOXML
  */
 export declare function makeXmlMaster(objSlide: ISlide, slideLayouts: Array<ISlideLayout>): string;
+/**
+ * Generate XML for Notes Master
+ *
+ * @returns {string} XML
+ */
 export declare function makeXmlNotesMaster(): string;
 /**
  * Generates XML string for a slide layout relation file.
@@ -218,19 +224,24 @@ export declare function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts
 /**
  * Generates XML string for a slide relation file.
  * @param {Number} slideNumber 1-indexed number of a layout that relations are generated for
- * @return {String} complete XML string ready to be saved as a file
+ * @return {string} complete XML string ready to be saved as a file
  */
 export declare function makeXmlSlideRel(slides: Array<ISlide>, slideLayouts: Array<ISlideLayout>, slideNumber: number): string;
+/**
+ * Generates XML string for a slide relation file.
+ * @param {Number} `slideNumber` 1-indexed number of a layout that relations are generated for
+ * @return {String} complete XML string ready to be saved as a file
+ */
 export declare function makeXmlNotesSlideRel(slideNumber: number): string;
 /**
  * Generates XML string for the master file.
- * @param {Object} masterSlideObject slide object
+ * @param {ISlide} `masterSlideObject` - slide object
  * @return {String} complete XML string ready to be saved as a file
  */
 export declare function makeXmlMasterRel(masterSlideObject: ISlide, slideLayouts: Array<ISlideLayout>): string;
 export declare function makeXmlNotesMasterRel(): string;
 export declare function makeXmlTheme(): string;
-export declare function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout): string;
+export declare function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ISlideLayout): string;
 export declare function makeXmlPresProps(): string;
 export declare function makeXmlTableStyles(): string;
 export declare function makeXmlViewProps(): string;

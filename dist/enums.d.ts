@@ -2,7 +2,7 @@
  * PptxGenJS Enums
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
-import { IBorder } from './interfaces';
+import { IBorderOpts } from './interfaces';
 export declare const EMU: number;
 export declare const ONEPT: number;
 export declare const CRLF: string;
@@ -45,7 +45,7 @@ export declare const LETTERS: Array<string>;
 export declare const BARCHART_COLORS: Array<string>;
 export declare const PIECHART_COLORS: Array<string>;
 export declare const SLDNUMFLDID: string;
-export declare const DEF_CELL_BORDER: IBorder;
+export declare const DEF_CELL_BORDER: IBorderOpts;
 export declare const DEF_CELL_MARGIN_PT: Array<number>;
 export declare enum SCHEME_COLOR_NAMES {
     TEXT1 = "tx1",

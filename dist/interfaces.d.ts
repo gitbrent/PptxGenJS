@@ -25,7 +25,7 @@ export interface OptsChartGridLine {
     color?: string;
     style?: 'solid' | 'dash' | 'dot' | 'none';
 }
-export interface IBorder {
+export interface IBorderOpts {
     color?: string;
     pt?: number;
     type?: string;
@@ -63,7 +63,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
     dataLabelPosition?: string;
     displayBlanksAs?: string;
     fill?: string;
-    border?: IBorder;
+    border?: IBorderOpts;
     hasArea?: boolean;
     catAxes?: Array<number>;
     valAxes?: Array<number>;
@@ -118,7 +118,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
     showValue?: boolean;
     showPercent?: boolean;
     catLabelFormatCode?: string;
-    dataBorder?: IBorder;
+    dataBorder?: IBorderOpts;
     lineSize?: number;
     lineDash?: string;
     radarStyle?: string;
@@ -161,7 +161,7 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
     lineSpacing?: number;
     line?: string;
     lineSize?: number;
-    placeholder?: object;
+    placeholder?: string;
     rotate?: number;
     shadow?: IShadowOpts;
     shape?: {
@@ -189,7 +189,7 @@ export interface ISlideRelChart extends OptsChartData {
 }
 export interface ISlideRelMedia {
     type: string;
-    opts: IMediaOpts;
+    opts?: IMediaOpts;
     path?: string;
     extn?: string;
     data?: string | ArrayBuffer;
@@ -276,13 +276,25 @@ export interface ISlideDataObject {
 }
 export interface ISlideLayout {
     name: string;
-    slide: ISlide;
-    data: Array<object>;
-    rels: Array<any>;
-    margin: Array<number>;
+    slide?: {
+        back: string;
+        bkgdImgRid?: number;
+        color: string;
+        hidden?: boolean;
+    };
+    data: Array<{
+        type: string;
+        options: {
+            placeholderName: string;
+        };
+    }>;
+    rels?: Array<any>;
+    relsChart?: Array<ISlideRelChart>;
+    relsMedia?: Array<ISlideRelMedia>;
+    margin?: Array<number>;
     slideNumberObj?: ISlideNumber;
-    width?: number;
-    height?: number;
+    width: number;
+    height: number;
 }
 export interface ISlideLayoutChart extends ISlideLayout {
     rels: Array<ISlideRelChart>;
@@ -299,9 +311,9 @@ export interface ISlide {
     };
     numb?: number;
     name?: string;
-    rels?: Array<ISlideRel>;
-    relsChart?: Array<ISlideRelChart>;
-    relsMedia?: Array<ISlideRelMedia>;
+    rels: Array<ISlideRel>;
+    relsChart: Array<ISlideRelChart>;
+    relsMedia: Array<ISlideRelMedia>;
     data?: Array<ISlideDataObject>;
     layoutName?: string;
     layoutObj?: ISlideLayout;
@@ -338,19 +350,22 @@ export interface IAddNewSlide {
     addText: Function;
 }
 export interface ITableCell {
+    text: string;
     hmerge: boolean;
     vmerge: boolean;
     optImp: any;
     opts: {
-        border?: IBorder;
+        border?: IBorderOpts;
         colspan?: number;
+        fontSize: number;
+        lineWeight: number;
         fill?: string;
         margin?: any;
         rowspan?: number;
         valign: string;
     };
     options: {
-        border?: IBorder;
+        border?: IBorderOpts;
         colspan?: number;
         fill?: string;
         isTableCell?: boolean;

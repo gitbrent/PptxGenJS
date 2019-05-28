@@ -18,7 +18,7 @@ export declare function encodeXmlEntities(inStr: string): string;
  * @returns {number} EMU value
  */
 export declare function inch2Emu(inches: number | string): number;
-export declare function getSmartParseNumber(inVal: number | string, inDir: 'X' | 'Y', pptLayout?: ISlideLayout): number;
+export declare function getSmartParseNumber(inVal: number | string, inDir: 'X' | 'Y', pptLayout: ISlideLayout): number;
 /**
  * Convert degrees (0..360) to PowerPoint `rot` value
  *
