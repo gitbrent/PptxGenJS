@@ -1,10 +1,10 @@
-// Type definitions for pptxgenjs 2.3.0
+// Type definitions for pptxgenjs 2.5.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
 //                 Nicholas Tietz-Sokolsky <https://github.com/ntietz>
-// Definitions: https://github.com/DefinitelyTyped/DefinitelyTyped
-// TypeScript Version: 2.3
+//                 David Adams <https://github.com/iota-pi>
+// TypeScript Version: 3.x
 
 export as namespace PptxGenJS;
 
@@ -63,7 +63,7 @@ declare namespace PptxGenJS {
     h?: Coord;
   }
 
-  export type CommonOptions = PositionOptions; // for backwards compatability
+  export type CommonOptions = PositionOptions; // for backwards compatibility
 
   export type Hyperlink = ({ url: string; slide?: undefined } | { slide: number; url?: undefined }) & { tooltip?: string };
 
