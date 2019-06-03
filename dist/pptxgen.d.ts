@@ -56,23 +56,32 @@ declare namespace PptxGenJS {
 
   export type ChartLabelPos = 'low' | 'high' | 'nextTo';
 
-  export interface CommonOptions {
+  export interface PositionOptions {
     x?: Coord;
     y?: Coord;
     w?: Coord;
     h?: Coord;
   }
 
+  export type CommonOptions = PositionOptions; // for backwards compatability
+
+  export type Hyperlink = ({ url: string; slide?: undefined } | { slide: number; url?: undefined }) & { tooltip?: string };
+
   export type DataOrPath = { data: string; path?: undefined } | { data?: undefined; path: string };
 
-  export interface ImageBaseOptions extends CommonOptions {
-    hyperlink?: string;
-    rounding?: boolean;
-    sizing?: 'cover' | 'contain' | 'crop';
+  export interface ImageSizingOptions extends PositionOptions {
+    type: 'cover' | 'contain' | 'crop';
   }
+
+  export interface ImageBaseOptions extends PositionOptions {
+    hyperlink?: Hyperlink;
+    rounding?: boolean;
+    sizing?: ImageSizingOptions;
+  }
+
   export type ImageOptions = ImageBaseOptions | DataOrPath;
 
-  export interface MediaBaseOptions extends CommonOptions {
+  export interface MediaBaseOptions extends PositionOptions {
     onlineVideoLink?: string;
     type?: 'audio' | 'online' | 'video';
   }
@@ -104,7 +113,7 @@ declare namespace PptxGenJS {
     style?: 'solid' | 'dash' | 'dot';
   }
 
-  export interface ChartBaseOptions extends CommonOptions {
+  export interface ChartBaseOptions extends PositionOptions {
     border?: BorderOptions;
     chartColors?: Color[];
     chartColorsOpacity?: number;
@@ -259,7 +268,7 @@ declare namespace PptxGenJS {
     avLst: { [key: string]: number };
   }
 
-  export interface ShapeOptions extends CommonOptions {
+  export interface ShapeOptions extends PositionOptions {
     align?: HAlign;
     fill?: Color | { type: string; color: Color; alpha?: number };
     flipH?: boolean;
@@ -291,7 +300,7 @@ declare namespace PptxGenJS {
     breakLine?: boolean;
     bullet?: boolean | { type: 'number'; code?: undefined } | { code: string; type?: undefined };
     charSpacing?: number;
-    hyperlink?: ({ url: string; slide?: undefined } | { slide: number; url?: undefined }) & { tooltip?: string };
+    hyperlink?: Hyperlink;
     indentLevel?: number;
     inset?: number;
     isTextBox?: boolean;
@@ -325,7 +334,7 @@ declare namespace PptxGenJS {
 
   export type TableRow = TextDeclaration<TableFormatting>[];
 
-  export interface SlideNumberOptions extends CommonOptions {
+  export interface SlideNumberOptions extends PositionOptions {
     color?: Color;
     fontFace?: string;
     fontSize?: number;
