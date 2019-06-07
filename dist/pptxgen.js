@@ -4206,7 +4206,8 @@ var PptxGenJS = function(){
 				if ( textObj.options.bullet.type ) {
 					if ( textObj.options.bullet.type.toString().toLowerCase() == "number" ) {
 						paragraphPropXml += ' marL="'+ (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin+(bulletLvl0Margin*textObj.options.indentLevel) : bulletLvl0Margin) +'" indent="-'+bulletLvl0Margin+'"';
-						strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>';
+						var startAt = textObj.options.bullet.startAt ? textObj.options.bullet.startAt : '1';
+						strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod" startAt="' + startAt + '"/>';
 					}
 				}
 				else if ( textObj.options.bullet.code ) {
