@@ -155,8 +155,9 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	v3DPerspective?: string
 }
 export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
-	onlineVideoLink?: string
 	type?: 'audio' | 'online' | 'video'
+	link:string
+	onlineVideoLink?: string
 }
 export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	align?: string // "left" | "center" | "right"
@@ -173,6 +174,21 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	shape?: { name: string }
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	valign?: string //"top" | "middle" | "bottom"
+}
+
+export interface ILayout {
+	name: string
+	width?: number
+	height?: number
+	/*
+	// TODO: remove below - they s/b SlideLayout right?
+	rels?: object
+	relsChart?: ISlideRelChart
+	relsMedia?: ISlideRelMedia
+	data: Array<object>
+	options: {
+		placeholderName: string
+	}*/
 }
 
 // Core: `slide` and `presentation`
@@ -202,18 +218,6 @@ export interface ISlideRelMedia {
 	isSvgPng?: boolean
 	rId: number
 	Target: string
-}
-export interface ILayout {
-	name: string
-	rels?: object
-	relsChart?: ISlideRelChart
-	relsMedia?: ISlideRelMedia
-	data: Array<object>
-	options: {
-		placeholderName: string
-	}
-	width: number
-	height: number
 }
 export interface ISlideNumber extends OptsCoords {
 	fontFace: string

@@ -45,6 +45,9 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
+import * as JSZip from 'jszip'
+import * as genXml from './gen-xml'
+import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
 import {
 	CHART_TYPES,
 	CRLF,
@@ -60,10 +63,7 @@ import {
 	ONEPT,
 	SLIDE_OBJECT_TYPES,
 } from './enums'
-import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell } from './interfaces'
-import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
-import * as genXml from './gen-xml'
-import * as JSZip from 'jszip'
+import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell, IMediaOpts } from './interfaces'
 
 export default class PptxGenJS {
 	private _version: string = '3.0.0'
@@ -110,7 +110,7 @@ export default class PptxGenJS {
 		return this._title
 	}
 	/**
-	 * Set Right-to-Left (RTL) mode for users whose language requires this setting
+	 * Whether Right-to-Left (RTL) mode is enabled
 	 */
 	private _rtlMode: boolean
 	public set rtlMode(value: boolean) {
@@ -120,22 +120,19 @@ export default class PptxGenJS {
 		return this._rtlMode
 	}
 	/**
-	 * Sets the Presentation's Slide Layout {object}: [screen4x3, screen16x9, widescreen]
+	 * Presentation Layout: 'screen4x3', 'screen16x9', 'widescreen', etc.
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
-	 * @param {string} inLayout - a const name from LAYOUTS variable
-	 * @param {object} inLayout - an object with user-defined `w` and `h`
 	 */
-	private _pptLayout: ISlideLayout
-	public set pptLayout(value: ISlideLayout) {
-		this._pptLayout = value
+	private _layout: ILayout
+	public set layout(value: ILayout) {
+		this._layout = value
 	}
-	public get pptLayout(): ISlideLayout {
-		return this._pptLayout
+	public get layout(): ILayout {
+		return this._layout
 	}
 	/**
-	 * Sets the Presentation Option: `isBrowser`
-	 * Target: Angular/React/Webpack, etc.
-	 * This setting affects how files are saved: using `fs` for Node.js or browser libs
+	 * `isBrowser` Presentation Option:
+	 * Target: Angular/React/Webpack, etc. This setting affects how files are saved: using `fs` for Node.js or browser libs
 	 */
 	private _isBrowser: boolean
 	public set isBrowser(value: boolean) {
@@ -190,11 +187,10 @@ export default class PptxGenJS {
 		this._subject = 'PptxGenJS Presentation'
 		this._title = 'PptxGenJS Presentation'
 		// PptxGenJS props
-		this._pptLayout = {
+		this._layout = {
 			name:this.LAYOUTS['LAYOUT_16x9'].name,
 			width:this.LAYOUTS['LAYOUT_16x9'].width,
-			height:this.LAYOUTS['LAYOUT_16x9'].height,
-			data:[]
+			height:this.LAYOUTS['LAYOUT_16x9'].height
 		}
 		this._rtlMode = false
 		this._isBrowser = false
@@ -260,7 +256,7 @@ export default class PptxGenJS {
 		zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
 		//
 		zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
-		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this.pptLayout))
+		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this._layout))
 		zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
 		zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
 		zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
@@ -520,7 +516,7 @@ export default class PptxGenJS {
 				this.callbackImgToDataURLDone(data, slideRel)
 			})
 			res.on('error', e => {
-				// TODO-3:
+				// TODO-3: make this method return Promise?
 				///reject(e);
 			})
 		})
@@ -640,15 +636,12 @@ export default class PptxGenJS {
 		var LINEH_MODIFIER = 1.9
 		var opts = opts || {}
 		var arrInchMargins = DEF_SLIDE_MARGIN_IN // (0.5" on all sides)
-		var arrObjTabHeadRows = opts.arrObjTabHeadRows || [],
-			arrObjTabBodyRows = [],
-			arrObjTabFootRows = []
+		var arrObjTabHeadRows = opts.arrObjTabHeadRows || []
 		var arrObjSlides = [],
 			arrRows = [],
 			currRow = [],
 			numCols = 0
-		var intTabW = 0,
-			emuTabCurrH = 0,
+		var emuTabCurrH = 0,
 			emuSlideTabW = EMU * 1,
 			emuSlideTabH = EMU * 1
 
@@ -693,9 +686,9 @@ export default class PptxGenJS {
 		}
 
 		// STEP 2: Calc usable space/table size now that we have usable space calc'd
-		emuSlideTabW = opts.w ? inch2Emu(opts.w) : this.pptLayout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])
+		emuSlideTabW = opts.w ? inch2Emu(opts.w) : this._layout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])
 		if (opts.debug) console.log('emuSlideTabW (in) ........ = ' + (emuSlideTabW / EMU).toFixed(1))
-		if (opts.debug) console.log('this.pptLayout.h ..... = ' + this.pptLayout.height / EMU)
+		if (opts.debug) console.log('this._layout.h ..... = ' + this._layout.height / EMU)
 
 		// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
 		if (!opts.colW || !Array.isArray(opts.colW)) {
@@ -731,10 +724,10 @@ export default class PptxGenJS {
 			// B: Calc usable vertical space/table height
 			// NOTE: Use margins after the first Slide (dont re-use opt.y - it could've been halfway down the page!) (ISSUE#43,ISSUE#47,ISSUE#48)
 			if (arrObjSlides.length > 0) {
-				emuSlideTabH = this.pptLayout.height - inch2Emu((opts.y / EMU < arrInchMargins[0] ? opts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
+				emuSlideTabH = this._layout.height - inch2Emu((opts.y / EMU < arrInchMargins[0] ? opts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
 				// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
 				if (emuSlideTabH < opts.h) emuSlideTabH = opts.h
-			} else emuSlideTabH = opts.h ? opts.h : this.pptLayout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
+			} else emuSlideTabH = opts.h ? opts.h : this._layout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
 			if (opts.debug) console.log('* Slide ' + arrObjSlides.length + ': emuSlideTabH (in) ........ = ' + (emuSlideTabH / EMU).toFixed(1))
 
 			// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
@@ -858,11 +851,7 @@ export default class PptxGenJS {
 		return arrObjSlides
 	}
 
-	/**
-	 * Expose a couple private helper functions from above
-	 */
-	inch2Emu = () => inch2Emu
-	rgbToHex = () => rgbToHex
+	// PUBLIC API
 
 	/**
 	 * Save (export) the Presentation .pptx file
@@ -925,7 +914,7 @@ export default class PptxGenJS {
 		var objLayout: ISlideLayout =
 			this.slideLayouts.filter(layout => {
 				return layout.name == inMasterName
-			})[0] || this._pptLayout
+			})[0] || TODO.Default_Slide_Layout
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		///this.slides[slideNum] = {
@@ -994,12 +983,15 @@ export default class PptxGenJS {
 
 		/**
 		 * NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
+		 *
 		 */
 		slideObj.addImage = objImage => {
+			// TODO-3: create `IImageOpts` (name,path,w,rotate,etc.)
 			genXml.gObjPptxGenerators.addImageDefinition(objImage, this.slides[slideNum])
 			return this
 		}
 
+		///slideObj.addMedia = (opt:IMediaOpts) => {
 		slideObj.addMedia = opt => {
 			var intRels = 1
 			var intImages = ++this._imageCounter
@@ -1186,7 +1178,7 @@ export default class PptxGenJS {
 				} else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length) {
 					console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.')
 
-					var numColWidth = Math.floor((this.pptLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length)
+					var numColWidth = Math.floor((this._layout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length)
 					opt.colW = []
 					for (var idx = 0; idx < arrRows[0].length; idx++) {
 						opt.colW.push(numColWidth)
@@ -1195,7 +1187,7 @@ export default class PptxGenJS {
 					opt.w = opt.cx
 				}
 			} else {
-				var numTabWidth = this.pptLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]
+				var numTabWidth = this._layout.width / EMU - arrTableMargin[1] - arrTableMargin[3]
 				opt.cx = Math.floor(numTabWidth)
 				opt.w = opt.cx
 			}
@@ -1312,18 +1304,15 @@ export default class PptxGenJS {
 	 * @param {string} `tabEleId` - HTMLElementID of the table
 	 * @param {object} `inOpts` - array of options (e.g.: tabsize)
 	 */
-	addSlidesForTable(tabEleId, inOpts) {
+	addSlidesForTable(tabEleId:string, inOpts) {
 		var api = this
 		var opts = inOpts || {}
 		var arrObjTabHeadRows = [],
 			arrObjTabBodyRows = [],
 			arrObjTabFootRows = []
-		var arrObjSlides = [],
-			arrRows = [],
-			arrColW = [],
+		var arrColW = [],
 			arrTabColW = []
-		var intTabW = 0,
-			emuTabCurrH = 0
+		var intTabW = 0
 
 		// REALITY-CHECK:
 		if (jQuery('#' + tabEleId).length == 0) {
@@ -1348,15 +1337,15 @@ export default class PptxGenJS {
 			else if (!isNaN(opts.margin)) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin]
 		}
 
-		var emuSlideTabW = opts.w ? inch2Emu(opts.w) : this.pptLayout.width - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
-		var emuSlideTabH = opts.h ? inch2Emu(opts.h) : this.pptLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
+		var emuSlideTabW = opts.w ? inch2Emu(opts.w) : this._layout.width - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
+		///var emuSlideTabH = opts.h ? inch2Emu(opts.h) : this._layout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
 
 		// STEP 1: Grab table col widths
-		jQuery.each(['thead', 'tbody', 'tfoot'], (i, val) => {
+		jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, val) => {
 			if (jQuery('#' + tabEleId + ' > ' + val + ' > tr').length > 0) {
 				jQuery('#' + tabEleId + ' > ' + val + ' > tr:first-child')
 					.find('> th, > td')
-					.each((i, cell) => {
+					.each(() => {
 						// FIXME: This is a hack - guessing at col widths when colspan
 						if (jQuery(this).attr('colspan')) {
 							for (var idx = 0; idx < Number(jQuery(this).attr('colspan')); idx++) {
@@ -1369,7 +1358,7 @@ export default class PptxGenJS {
 				return false // break out of .each loop
 			}
 		})
-		jQuery.each(arrTabColW, (i, colW) => {
+		jQuery.each(arrTabColW, (_idx, colW) => {
 			intTabW += colW
 		})
 
@@ -1383,12 +1372,12 @@ export default class PptxGenJS {
 
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
 		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-		jQuery.each(['thead', 'tbody', 'tfoot'], (i, val) => {
-			jQuery('#' + tabEleId + ' > ' + val + ' > tr').each((i, row) => {
+		jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, val) => {
+			jQuery('#' + tabEleId + ' > ' + val + ' > tr').each((_idx, row) => {
 				var arrObjTabCells = []
 				jQuery(row)
 					.find('> th, > td')
-					.each((i, cell) => {
+					.each((_idx, cell) => {
 						// A: Get RGB text/bkgd colors
 						var arrRGB1 = []
 						var arrRGB2 = []
@@ -1435,7 +1424,7 @@ export default class PptxGenJS {
 						// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
 						if (jQuery(cell).css('padding-left')) {
 							objOpts.margin = []
-							jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], (i, val) => {
+							jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], (_idx, val) => {
 								objOpts.margin.push(
 									Math.round(
 										Number(
@@ -1460,7 +1449,7 @@ export default class PptxGenJS {
 							jQuery(cell).css('border-left-width')
 						) {
 							objOpts.border = []
-							jQuery.each(['top', 'right', 'bottom', 'left'], (i, val) => {
+							jQuery.each(['top', 'right', 'bottom', 'left'], (_idx, val) => {
 								var intBorderW = Math.round(
 									Number(
 										jQuery(cell)

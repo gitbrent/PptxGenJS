@@ -1,7 +1,6 @@
+import * as JSZip from 'jszip';
 import { JSZIP_OUTPUT_TYPE } from './enums';
 import { ISlide, ISlideLayout, IAddNewSlide, ISlideRelMedia, ITableCell } from './interfaces';
-import { inch2Emu, rgbToHex } from './utils';
-import * as JSZip from 'jszip';
 export default class PptxGenJS {
     private _version;
     readonly version: string;
@@ -20,22 +19,21 @@ export default class PptxGenJS {
     private _title;
     title: string;
     /**
-     * Set Right-to-Left (RTL) mode for users whose language requires this setting
+     * Whether Right-to-Left (RTL) mode is enabled
      */
     private _rtlMode;
     rtlMode: boolean;
     /**
-     * Sets the Presentation's Slide Layout {object}: [screen4x3, screen16x9, widescreen]
-     * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+     * Presentation Slide Layout: 'screen4x3', 'screen16x9', 'widescreen', etc.
      * @param {string} inLayout - a const name from LAYOUTS variable
      * @param {object} inLayout - an object with user-defined `w` and `h`
+     * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
      */
     private _pptLayout;
     pptLayout: ISlideLayout;
     /**
-     * Sets the Presentation Option: `isBrowser`
-     * Target: Angular/React/Webpack, etc.
-     * This setting affects how files are saved: using `fs` for Node.js or browser libs
+     * `isBrowser` Presentation Option:
+     * Target: Angular/React/Webpack, etc. This setting affects how files are saved: using `fs` for Node.js or browser libs
      */
     private _isBrowser;
     isBrowser: boolean;
@@ -87,11 +85,6 @@ export default class PptxGenJS {
      * Magic happens here
      */
     getSlidesForTableRows: (inArrRows: any, opts: any) => any[];
-    /**
-     * Expose a couple private helper functions from above
-     */
-    inch2Emu: () => typeof inch2Emu;
-    rgbToHex: () => typeof rgbToHex;
     /**
      * Save (export) the Presentation .pptx file
      * @param {string} `inStrExportName` - Filename to use for the export

@@ -1,3 +1,4 @@
+import * as JSZip from 'jszip';
 
 /**
  * PptxGenJS Enums
@@ -5990,7 +5991,7 @@ var PptxGenJS = /** @class */ (function () {
                     _this.callbackImgToDataURLDone(data, slideRel);
                 });
                 res.on('error', function (e) {
-                    // TODO-3:
+                    // TODO-3: make this method return Promise?
                     ///reject(e);
                 });
             });
@@ -6316,11 +6317,6 @@ var PptxGenJS = /** @class */ (function () {
             }
             return arrObjSlides;
         };
-        /**
-         * Expose a couple private helper functions from above
-         */
-        this.inch2Emu = function () { return inch2Emu; };
-        this.rgbToHex = function () { return rgbToHex; };
         // Determine Environment
         if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
             try {
@@ -6470,6 +6466,7 @@ var PptxGenJS = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    // PUBLIC API
     /**
      * Save (export) the Presentation .pptx file
      * @param {string} `inStrExportName` - Filename to use for the export
@@ -7173,3 +7170,5 @@ else if (APPJS) {
     module.exports = PptxGenJS
 }
 */
+
+export default PptxGenJS;
