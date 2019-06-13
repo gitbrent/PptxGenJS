@@ -2150,7 +2150,7 @@ var PptxGenJS = function(){
 		gObjPptx.masterSlide.rels.forEach(funcCallback);
 
 		// STEP 2: Continue export process if all rels have base64 `data` now
-		if ( intEmpty == 0 ) doExportPresentation();
+		if ( intEmpty == 0 ) doExportPresentation(gObjPptx.outputType);
 	}
 
 	function getShapeInfo(shapeName) {
@@ -5030,6 +5030,7 @@ var PptxGenJS = function(){
 		// STEP 2: Set export properties
 		if ( funcCallback ) gObjPptx.saveCallback = funcCallback;
 		if ( inStrExportName ) gObjPptx.fileName = inStrExportName;
+		if ( outputType ) gObjPptx.outputType = outputType;
 
 		// STEP 3: Read/Encode Images
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
