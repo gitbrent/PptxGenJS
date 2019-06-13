@@ -14,6 +14,7 @@
     "dist"
   ],
   "types": "dist/index.d.ts",
+  "typings": "dist/pptxgen.d.ts",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw"
