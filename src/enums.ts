@@ -20,6 +20,7 @@ export const DEF_FONT_SIZE: number = 12
 export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
 export const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true }
 export const DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 }
+export const DEF_PRES_LAYOUT = 'LAYOUT_16x9'
 
 export const AXIS_ID_VALUE_PRIMARY: string = '2094734552'
 export const AXIS_ID_VALUE_SECONDARY: string = '2094734553'

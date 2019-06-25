@@ -62,6 +62,7 @@ import {
 	MASTER_OBJECTS,
 	ONEPT,
 	SLIDE_OBJECT_TYPES,
+	DEF_PRES_LAYOUT,
 } from './enums'
 import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell, IMediaOpts } from './interfaces'
 
@@ -172,6 +173,7 @@ export default class PptxGenJS {
 			}
 		}
 
+		// Set available layouts
 		this.LAYOUTS = {
 			LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 } as ILayout,
 			LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as ILayout,
@@ -179,7 +181,6 @@ export default class PptxGenJS {
 			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
 			LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
 		}
-
 		// Core
 		this._author = 'PptxGenJS'
 		this._company = 'PptxGenJS'
@@ -188,9 +189,9 @@ export default class PptxGenJS {
 		this._title = 'PptxGenJS Presentation'
 		// PptxGenJS props
 		this._layout = {
-			name:this.LAYOUTS['LAYOUT_16x9'].name,
-			width:this.LAYOUTS['LAYOUT_16x9'].width,
-			height:this.LAYOUTS['LAYOUT_16x9'].height
+			name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
+			width: this.LAYOUTS[DEF_PRES_LAYOUT].width,
+			height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
 		}
 		this._rtlMode = false
 		this._isBrowser = false
@@ -390,7 +391,7 @@ export default class PptxGenJS {
 
 	addPlaceholdersToSlides = (slide: ISlide) => {
 		// Add all placeholders on this Slide that dont already exist
-		slide.layoutObj.data.forEach(slideLayoutObj => {
+		(slide.layoutObj.data||[]).forEach(slideLayoutObj => {
 			if (slideLayoutObj.type === MASTER_OBJECTS.placeholder) {
 				// A: Search for this placeholder on Slide before we add
 				// NOTE: Check to ensure a placeholder does not already exist on the Slide
@@ -911,10 +912,11 @@ export default class PptxGenJS {
 		}
 		var slideNum = this.slides.length
 		var pageNum = slideNum + 1
-		var objLayout: ISlideLayout =
-			this.slideLayouts.filter(layout => {
-				return layout.name == inMasterName
-			})[0] || TODO.Default_Slide_Layout
+		var slideLayout: ISlideLayout = inMasterName
+			? this.slideLayouts.filter(layout => {
+					return layout.name == inMasterName
+			  })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
+			: this.LAYOUTS[DEF_PRES_LAYOUT]
 
 		// A: Add this SLIDE to PRESENTATION, Add default values as well
 		///this.slides[slideNum] = {
@@ -927,7 +929,7 @@ export default class PptxGenJS {
 			relsMedia: [],
 			slideNumberObj: null,
 			layoutName: inMasterName || '[ default ]',
-			layoutObj: objLayout || null,
+			layoutObj: slideLayout || null,
 		})
 
 		// ==========================================================================
@@ -1135,10 +1137,10 @@ export default class PptxGenJS {
 			if (!Array.isArray(arrRows[0])) arrRows = [arrTabRows]
 
 			// STEP 3: Set options
-			opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', objLayout)
-			opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', objLayout)
+			opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', slideLayout)
+			opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', slideLayout)
 			opt.cy = opt.h || opt.cy // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-			if (opt.cy) opt.cy = getSmartParseNumber(opt.cy, 'Y', objLayout)
+			if (opt.cy) opt.cy = getSmartParseNumber(opt.cy, 'Y', slideLayout)
 			opt.h = opt.cy
 			opt.autoPage = opt.autoPage == false ? false : true
 			opt.fontSize = opt.fontSize || DEF_FONT_SIZE
@@ -1154,10 +1156,10 @@ export default class PptxGenJS {
 			// Get slide margins - start with default values, then adjust if master or slide margins exist
 			var arrTableMargin = DEF_SLIDE_MARGIN_IN
 			// Case 1: Master margins
-			if (objLayout && typeof objLayout.margin !== 'undefined') {
-				if (Array.isArray(objLayout.margin)) arrTableMargin = objLayout.margin
-				else if (!isNaN(Number(objLayout.margin)))
-					arrTableMargin = [Number(objLayout.margin), Number(objLayout.margin), Number(objLayout.margin), Number(objLayout.margin)]
+			if (slideLayout && typeof slideLayout.margin !== 'undefined') {
+				if (Array.isArray(slideLayout.margin)) arrTableMargin = slideLayout.margin
+				else if (!isNaN(Number(slideLayout.margin)))
+					arrTableMargin = [Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin)]
 			}
 			// Case 2: Table margins
 			/* FIXME: add `margin` option to slide options
@@ -1169,7 +1171,7 @@ export default class PptxGenJS {
 
 			// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
 			if (opt.w || opt.cx) {
-				opt.cx = getSmartParseNumber(opt.w || opt.cx, 'X', objLayout)
+				opt.cx = getSmartParseNumber(opt.w || opt.cx, 'X', slideLayout)
 				opt.w = opt.cx
 			} else if (opt.colW) {
 				if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
@@ -1257,7 +1259,7 @@ export default class PptxGenJS {
 		// NOTE: Slide Numbers: In order for Slide Numbers to work normally, they need to be in all 3 files: master/layout/slide
 		// `defineSlideMaster` and `slideObj.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		// so, lastly, add to the Slide now.
-		if (objLayout && objLayout.slideNumberObj && !slideObj.slideNumber()) this.slides[slideNum].slideNumberObj = objLayout.slideNumberObj
+		if (slideLayout && slideLayout.slideNumberObj && !slideObj.slideNumber()) this.slides[slideNum].slideNumberObj = slideLayout.slideNumberObj
 
 		// LAST: Return this Slide
 		return slideObj
@@ -1304,7 +1306,7 @@ export default class PptxGenJS {
 	 * @param {string} `tabEleId` - HTMLElementID of the table
 	 * @param {object} `inOpts` - array of options (e.g.: tabsize)
 	 */
-	addSlidesForTable(tabEleId:string, inOpts) {
+	addSlidesForTable(tabEleId: string, inOpts) {
 		var api = this
 		var opts = inOpts || {}
 		var arrObjTabHeadRows = [],

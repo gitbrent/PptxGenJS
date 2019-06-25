@@ -639,7 +639,7 @@ export var gObjPptxGenerators = {
 				shapeType = null
 
 			if (slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder) {
-				placeholderObj = slideObject.layoutObj.data.filter((layoutObj) => {
+				placeholderObj = slideObject.layoutObj.data.filter(layoutObj => {
 					return layoutObj.options.placeholderName == slideItemObj.options.placeholder
 				})[0]
 			}
@@ -4103,9 +4103,14 @@ export function makeXmlTheme() {
 	return strXml
 }
 
-export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ISlideLayout) {
-	var intCurPos = 0
-	// REF: http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
+/**
+* Create the `ppt/presentation.xml` file XML
+* @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
+* @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
+* @param `slides` {Array<ISlide>} presentation slides
+* @param `pptLayout` {ISlideLayout} presentation layout
+*/
+export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 	var strXml =
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
@@ -4142,7 +4147,8 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ISlideLayo
 		'"/>' +
 		'<p:defaultTextStyle>'
 	;+'  <a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
-	for (var idx = 1; idx < 10; idx++) {
+	for (let idx = 1; idx < 10; idx++) {
+		let intCurPos = 0
 		strXml +=
 			'  <a:lvl' +
 			idx +
@@ -4203,6 +4209,7 @@ export function makeXmlViewProps() {
 }
 
 /**
+ * Create Grid Line Element
  * @param {Object} glOpts {size, color, style}
  * @param {Object} defaults {size, color, style}
  * @param {String} type "major"(default) | "minor"
