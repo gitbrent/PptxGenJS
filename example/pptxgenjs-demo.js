@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
-* VER.: 2.5.0
-* BLD.: 20190506
+* VER.: 3.0.0-beta1
+* BLD.: 20190723
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -123,14 +123,14 @@ function execGenSlidesFuncs(type) {
 	//if (console.log) console.log(' * pptxgenjs ver: '+ pptx.version); // Loaded okay?
 
 	// STEP 2: Set Presentation props (as QA test only - these are not required)
-	pptx.setAuthor('Brent Ely');
-	pptx.setCompany(CUST_NAME);
-	pptx.setRevision('15');
-	pptx.setSubject('PptxGenJS Test Suite Export');
-	pptx.setTitle('PptxGenJS Test Suite Presentation');
+	pptx.title = 'PptxGenJS Test Suite Presentation';
+	pptx.subject = 'PptxGenJS Test Suite Export';
+	pptx.author = 'Brent Ely';
+	pptx.company = CUST_NAME;
+	pptx.revision = '15';
 
 	// STEP 3: Set layout
-	pptx.setLayout('LAYOUT_WIDE');
+	pptx.layout = 'LAYOUT_WIDE';
 
 	// STEP 4: Create Master Slides (from the old `pptxgen.masters.js` file - `gObjPptxMasters` items)
 	{
@@ -2759,7 +2759,7 @@ function genSlides_Master(pptx) {
 	var slide5 = pptx.addNewSlide('MASTER_SLIDE');
 	slide5.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide5.addText('Chart Placeholder', { placeholder:'title' });
-	slide5.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'r', placeholder:'body'} );
+	slide5.addChart( pptx.Charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'r', placeholder:'body'} );
 
 	var slide6 = pptx.addNewSlide('THANKS_SLIDE');
 	slide6.addNotes('Master name: `THANKS_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');

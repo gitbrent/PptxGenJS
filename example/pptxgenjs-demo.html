@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2019-02-08">
+	<meta name="updated" content="2019-07-23">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -260,7 +260,8 @@
 			var slide = pptx.addNewSlide();
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 
-			pptx.setLayout({ name:'A3', width:16.5, height:11.7 });
+// TODO: add new defineLayout method
+			pptx.layout({ name:'A3', width:16.5, height:11.7 });
 
 			slide.slideNumber({ x:0.5, y:'90%' });
 
@@ -298,7 +299,7 @@
 		/* The "Text" demo on the PptxGenJS homepage - codified here so we can quickly reproduce the screencaps, etc. as needed */
 		function doHomepageDemo_Text() {
 			var pptx = new PptxGenJS();
-			pptx.setLayout('LAYOUT_WIDE');
+			pptx.layout ='LAYOUT_WIDE';
 			var slide = pptx.addNewSlide();
 
 			slide.addText(
@@ -393,7 +394,7 @@
 		function testOnly_LegacyMasterSlides() {
 			// TEST-ONLY: DO NOT USE/COPY ME!!
 			var pptx = new PptxGenJS();
-			pptx.setLayout('LAYOUT_WIDE');
+			pptx.layout = 'LAYOUT_WIDE';
 			var slide = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
 			pptx.save('Demo-LegacyMasterSlides_'+getTimestamp());
 		}
@@ -446,7 +447,7 @@
 
 			// STEP 1: Add Master Slide defs / Set slide size/layout
 			addMasterDefs(pptx);
-			pptx.setLayout('LAYOUT_WIDE');
+			pptx.layout = 'LAYOUT_WIDE';
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
@@ -468,7 +469,7 @@
 
 			// STEP 1: Add Master Slide defs / Set slide size/layout
 			addMasterDefs(pptx);
-			pptx.setLayout('LAYOUT_WIDE');
+			pptx.layout = 'LAYOUT_WIDE';
 
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
@@ -577,7 +578,7 @@
 				*/
 
 				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
-					+ "pptx.setLayout('LAYOUT_WIDE');\n"
+					+ "pptx.layout = 'LAYOUT_WIDE';\n"
 					+ "var slide = pptx.addNewSlide();\n"
 					+ "\n"
 					+ "// Bullets with indent levels\n"
