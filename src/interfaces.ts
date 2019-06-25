@@ -5,15 +5,22 @@ import { CHART_TYPES, SLIDE_OBJECT_TYPES } from './enums'
  */
 
 // Common
-type Coord = number | string // string is in form 'n%'
+// ======
+
+/**
+ * Coordinate (string is in the form of 'N%')
+ */
+type Coord = number | string
 export interface OptsCoords {
 	x?: Coord
 	y?: Coord
 	w?: Coord
 	h?: Coord
 }
+/**
+ * `data`/`path` options (one option is required)
+ */
 export interface OptsDataOrPath {
-	// Exactly one must be set
 	data?: string
 	path?: string
 }
@@ -31,6 +38,25 @@ export interface OptsChartGridLine {
 }
 
 // Opts
+// ====
+
+/**
+ * The Presenation Layout (ex: 'LAYOUT_WIDE')
+ */
+export interface ILayout {
+	name: string
+	width?: number
+	height?: number
+	/*
+	// TODO: remove below - they s/b SlideLayout right?
+	rels?: object
+	relsChart?: ISlideRelChart
+	relsMedia?: ISlideRelMedia
+	data: Array<object>
+	options: {
+		placeholderName: string
+	}*/
+}
 export interface IBorderOpts {
 	color?: string // '#696969'
 	pt?: number
@@ -156,7 +182,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 }
 export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
 	type?: 'audio' | 'online' | 'video'
-	link:string
+	link: string
 	onlineVideoLink?: string
 }
 export interface ITextOpts extends OptsCoords, OptsDataOrPath {
@@ -176,22 +202,9 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	valign?: string //"top" | "middle" | "bottom"
 }
 
-export interface ILayout {
-	name: string
-	width?: number
-	height?: number
-	/*
-	// TODO: remove below - they s/b SlideLayout right?
-	rels?: object
-	relsChart?: ISlideRelChart
-	relsMedia?: ISlideRelMedia
-	data: Array<object>
-	options: {
-		placeholderName: string
-	}*/
-}
-
 // Core: `slide` and `presentation`
+// =====
+
 export interface ISlideRel {
 	Target: string
 	type: SLIDE_OBJECT_TYPES
@@ -343,6 +356,7 @@ export interface IPresentation {
 }
 
 // Methods
+// =======
 export interface IAddNewSlide {
 	getPageNumber: Function
 	slideNumber: Function
@@ -356,6 +370,7 @@ export interface IAddNewSlide {
 }
 
 // Objects
+// =======
 export interface ITableCell {
 	text: string
 	hmerge: boolean
