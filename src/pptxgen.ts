@@ -64,7 +64,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 	DEF_PRES_LAYOUT,
 } from './enums'
-import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell, IMediaOpts } from './interfaces'
+import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell, ISlideMasterDef } from './interfaces'
 
 export default class PptxGenJS {
 	private _version: string = '3.0.0'
@@ -155,6 +155,7 @@ export default class PptxGenJS {
 	private saveCallback: Function
 	private NODEJS: boolean = false
 	private LAYOUTS: object
+	private Charts: typeof CHART_TYPES
 
 	private _imageCounter: number // TODO: This is a dummy value - `gen-xml` has real one: find a better solution, stop using counter
 
@@ -181,6 +182,9 @@ export default class PptxGenJS {
 			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
 			LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
 		}
+
+		this.Charts = CHART_TYPES
+
 		// Core
 		this._author = 'PptxGenJS'
 		this._company = 'PptxGenJS'
@@ -200,7 +204,7 @@ export default class PptxGenJS {
 		//this.saveCallback = null
 		//
 		this.masterSlide = {
-			slide: null,
+			//slide: null,
 			numb: null,
 			name: null,
 			data: [],
@@ -1225,7 +1229,7 @@ export default class PptxGenJS {
 				// Loop over rows and create 1-N tables as needed (ISSUE#21)
 				this.getSlidesForTableRows(arrRows, opt).forEach((arrRows, idx) => {
 					// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-					var currSlide = !this.slides[slideNum + idx] ? this.addNewSlide(inMasterName) : this.slides[slideNum + idx].slide
+					let currSlide = !this.slides[slideNum + idx] ? this.addNewSlide(inMasterName) : this.slides[slideNum + idx]
 
 					// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 					if (idx > 0) opt.y = inch2Emu(opt.newPageStartY || arrTableMargin[0])
@@ -1267,18 +1271,17 @@ export default class PptxGenJS {
 
 	/**
 	 * Adds a new slide master [layout] to the presentation.
-	 * @param {ILayout} inObjMasterDef - layout definition
-	 * @return {ISlide} this slide
+	 * @param {ISlideMasterDef} inObjMasterDef - layout definition
 	 */
-	defineSlideMaster(inObjMasterDef) {
+	defineSlideMaster(inObjMasterDef:ISlideMasterDef) {
 		if (!inObjMasterDef.title) {
 			throw Error('defineSlideMaster() object argument requires a `title` value.')
 		}
 
 		var objLayout: ISlideLayout = {
 			name: inObjMasterDef.title,
-			width: inObjMasterDef.width,
-			height: inObjMasterDef.height,
+			width: inObjMasterDef.width || this.layout.width,
+			height: inObjMasterDef.height || this.layout.height,
 			slide: null,
 			data: [],
 			rels: [],
@@ -1294,9 +1297,6 @@ export default class PptxGenJS {
 
 		// STEP 3: Add slideNumber to master slide (if any)
 		if (objLayout.slideNumberObj && !this.masterSlide.slideNumberObj) this.masterSlide.slideNumberObj = objLayout.slideNumberObj
-
-		// LAST:
-		return this
 	}
 
 	/**

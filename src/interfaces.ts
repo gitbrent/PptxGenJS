@@ -204,15 +204,6 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 
 // Core: `slide` and `presentation`
 // =====
-
-export interface ISlideRel {
-	Target: string
-	type: SLIDE_OBJECT_TYPES
-	data: string
-	path?: string
-	extn?: string
-	rId: number
-}
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_TYPES
 	opts: IChartOpts
@@ -221,6 +212,30 @@ export interface ISlideRelChart extends OptsChartData {
 	Target: string
 	globalId: number
 	fileName: string
+}
+export interface ISlideNumber extends OptsCoords {
+	fontFace?: string
+	fontSize?: number
+	color?: string
+}
+
+export interface ISlideMasterDef {
+	title: string
+	height?: number
+	width?: number
+	margin?: Array<number> | number
+	bkgd?: string
+	objects?: [{}]
+	slideNumber?: ISlideNumber
+}
+
+export interface ISlideRel {
+	Target: string
+	type: SLIDE_OBJECT_TYPES
+	data: string
+	path?: string
+	extn?: string
+	rId: number
 }
 export interface ISlideRelMedia {
 	type: string
@@ -231,11 +246,6 @@ export interface ISlideRelMedia {
 	isSvgPng?: boolean
 	rId: number
 	Target: string
-}
-export interface ISlideNumber extends OptsCoords {
-	fontFace: string
-	fontSize: number
-	color: string
 }
 export interface ISlideDataObject {
 	type: SLIDE_OBJECT_TYPES
@@ -307,7 +317,7 @@ export interface ISlideLayout {
 	rels?: Array<any>
 	relsChart?: Array<ISlideRelChart>
 	relsMedia?: Array<ISlideRelMedia>
-	margin?: Array<number>
+	margin?: Array<number> | number
 	slideNumberObj?: ISlideNumber
 	width: number
 	height: number
@@ -319,12 +329,12 @@ export interface ISlideLayoutMedia extends ISlideLayout {
 	rels: Array<ISlideRelMedia>
 }
 export interface ISlide {
-	slide?: {
-		back: string
+	//slide?: {
+		back?: string
 		bkgdImgRid?: number
-		color: string
+		color?: string
 		hidden?: boolean
-	}
+	//}
 	numb?: number
 	name?: string
 	rels: Array<ISlideRel>

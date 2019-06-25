@@ -67,9 +67,9 @@ export var gObjPptxGenerators = {
 				rId: intRels,
 				Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
 			})
-			target.slide.bkgdImgRid = intRels
+			target.bkgdImgRid = intRels
 		} else if (bkg && typeof bkg === 'string') {
-			target.slide.back = bkg
+			target.back = bkg
 		}
 	},
 
@@ -94,7 +94,7 @@ export var gObjPptxGenerators = {
 		// STEP 2: Set some options
 		// Placeholders should inherit their colors or override them, so don't default them
 		if (!opt.placeholder) {
-			opt.color = opt.color || target.slide.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
+			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
 		}
 
 		// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
@@ -603,18 +603,18 @@ export var gObjPptxGenerators = {
 		var intTableNum: number = 1
 
 		// STEP 1: Add background
-		if (slideObject.slide && slideObject.slide.back) {
-			strSlideXml += genXmlColorSelection(false, slideObject.slide.back)
+		if (slideObject && slideObject.back) {
+			strSlideXml += genXmlColorSelection(false, slideObject.back)
 		}
 
 		// STEP 2: Add background image (using Strech) (if any)
-		if (slideObject.slide && slideObject.slide.bkgdImgRid) {
+		if (slideObject && slideObject.bkgdImgRid) {
 			// FIXME: We should be doing this in the slideLayout...
 			strSlideXml +=
 				'<p:bg>' +
 				'<p:bgPr><a:blipFill dpi="0" rotWithShape="1">' +
 				'<a:blip r:embed="rId' +
-				slideObject.slide.bkgdImgRid +
+				slideObject.bkgdImgRid +
 				'"><a:lum/></a:blip>' +
 				'<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>' +
 				'<a:effectLst/></p:bgPr>' +
@@ -629,7 +629,6 @@ export var gObjPptxGenerators = {
 
 		// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
 		slideObject.data.forEach((slideItemObj, idx) => {
-			console.log(slideItemObj)
 			var x = 0,
 				y = 0,
 				cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj),
@@ -3846,7 +3845,7 @@ export function makeXmlSlide(objSlide: ISlide): string {
 	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
 		'<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
-		(objSlide.slide && objSlide.slide.hidden ? ' show="0"' : '') +
+		(objSlide && objSlide.hidden ? ' show="0"' : '') +
 		'>'
 	strXml += gObjPptxGenerators.slideObjectToXml(objSlide)
 	strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>'
