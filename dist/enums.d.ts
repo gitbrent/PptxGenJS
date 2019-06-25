@@ -35,6 +35,7 @@ export declare const DEF_TEXT_SHADOW: {
     color: string;
     opacity: number;
 };
+export declare const DEF_PRES_LAYOUT = "LAYOUT_16x9";
 export declare const AXIS_ID_VALUE_PRIMARY: string;
 export declare const AXIS_ID_VALUE_SECONDARY: string;
 export declare const AXIS_ID_CATEGORY_PRIMARY: string;

@@ -1,7 +1,7 @@
 /**
  * PptxGenJS: XML Generation
  */
-import { ISlide, ISlideRelChart, ITextOpts, ISlideLayout, ISlideDataObject } from './interfaces';
+import { ISlide, ISlideRelChart, ITextOpts, ILayout, ISlideLayout, ISlideDataObject } from './interfaces';
 export declare var gObjPptxGenerators: {
     /**
      * Adds a background image or color to a slide definition.
@@ -241,7 +241,14 @@ export declare function makeXmlNotesSlideRel(slideNumber: number): string;
 export declare function makeXmlMasterRel(masterSlideObject: ISlide, slideLayouts: Array<ISlideLayout>): string;
 export declare function makeXmlNotesMasterRel(): string;
 export declare function makeXmlTheme(): string;
-export declare function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ISlideLayout): string;
+/**
+* Create the `ppt/presentation.xml` file XML
+* @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
+* @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
+* @param `slides` {Array<ISlide>} presentation slides
+* @param `pptLayout` {ISlideLayout} presentation layout
+*/
+export declare function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout): string;
 export declare function makeXmlPresProps(): string;
 export declare function makeXmlTableStyles(): string;
 export declare function makeXmlViewProps(): string;

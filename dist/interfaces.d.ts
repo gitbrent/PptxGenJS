@@ -2,6 +2,9 @@ import { CHART_TYPES, SLIDE_OBJECT_TYPES } from './enums';
 /**
  * PptxGenJS Interfaces
  */
+/**
+ * Coordinate (string is in the form of 'N%')
+ */
 declare type Coord = number | string;
 export interface OptsCoords {
     x?: Coord;
@@ -9,6 +12,9 @@ export interface OptsCoords {
     w?: Coord;
     h?: Coord;
 }
+/**
+ * `data`/`path` options (one option is required)
+ */
 export interface OptsDataOrPath {
     data?: string;
     path?: string;
@@ -24,6 +30,14 @@ export interface OptsChartGridLine {
     size?: number;
     color?: string;
     style?: 'solid' | 'dash' | 'dot' | 'none';
+}
+/**
+ * The Presenation Layout (ex: 'LAYOUT_WIDE')
+ */
+export interface ILayout {
+    name: string;
+    width?: number;
+    height?: number;
 }
 export interface IBorderOpts {
     color?: string;
@@ -149,8 +163,9 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
     v3DPerspective?: string;
 }
 export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
-    onlineVideoLink?: string;
     type?: 'audio' | 'online' | 'video';
+    link: string;
+    onlineVideoLink?: string;
 }
 export interface ITextOpts extends OptsCoords, OptsDataOrPath {
     align?: string;
@@ -196,18 +211,6 @@ export interface ISlideRelMedia {
     isSvgPng?: boolean;
     rId: number;
     Target: string;
-}
-export interface ILayout {
-    name: string;
-    rels?: object;
-    relsChart?: ISlideRelChart;
-    relsMedia?: ISlideRelMedia;
-    data: Array<object>;
-    options: {
-        placeholderName: string;
-    };
-    width: number;
-    height: number;
 }
 export interface ISlideNumber extends OptsCoords {
     fontFace: string;
