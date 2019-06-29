@@ -67,7 +67,7 @@ import {
 import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell, ISlideMasterDef } from './interfaces'
 
 export default class PptxGenJS {
-	private _version: string = '3.0.0'
+	private _version: string = '3.0.0-beta1'
 	public get version(): string {
 		return this._version
 	}
