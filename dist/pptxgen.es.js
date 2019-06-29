@@ -2184,13 +2184,18 @@ var gObjPptxGenerators = {
         strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
         // STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
         slideObject.data.forEach(function (slideItemObj, idx) {
-            var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj), cy = 0, placeholderObj;
+            var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj), cy = 0;
+            var placeholderObj;
+            //			let placeholderObj:ISlideLayout
             var locationAttr = '', shapeType = null;
             if (slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder) {
                 placeholderObj = slideObject.layoutObj.data.filter(function (layoutObj) {
                     return layoutObj.options.placeholderName == slideItemObj.options.placeholder;
                 })[0];
             }
+            console.log(slideItemObj);
+            console.log(slideObject.layoutObj);
+            console.log(placeholderObj);
             // A: Set option vars
             slideItemObj.options = slideItemObj.options || {};
             if (slideItemObj.options.w || slideItemObj.options.w == 0)
@@ -5719,7 +5724,7 @@ function createHyperlinkRels(slides, inText, slideRels) {
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
-        this._version = '3.0.0';
+        this._version = '3.0.0-beta1';
         this.NODEJS = false;
         /**
          * DESC: Export the .pptx file
