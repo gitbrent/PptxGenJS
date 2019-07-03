@@ -265,8 +265,8 @@ export interface ISlideDataObject {
 	mediaRid?: number
 	//
 	options?: {
-		x?: number
-		y?: number
+		x?: Coord
+		y?: Coord
 		cx?: number
 		cy?: number
 		w?: number
@@ -305,6 +305,17 @@ export interface ISlideDataObject {
 		rounding?: string
 	}
 }
+
+export interface ISlideLayoutData {
+	type: string // MASTER_OBJECTS.placeholder.name
+	options?: {
+		x?: Coord
+		y?: Coord
+		cx?: Coord
+		cy?: Coord
+		placeholderName?: string
+	}
+}
 export interface ISlideLayout {
 	name: string
 	slide?: {
@@ -313,16 +324,7 @@ export interface ISlideLayout {
 		color: string
 		hidden?: boolean
 	}
-	data: Array<{
-		type: string
-		options?: {
-			x?: number
-			y?: number
-			cx?: number
-			cy?: number
-			placeholderName?: string
-		}
-	}>
+	data: Array<ISlideLayoutData>
 	rels?: Array<any>
 	relsChart?: Array<ISlideRelChart>
 	relsMedia?: Array<ISlideRelMedia>

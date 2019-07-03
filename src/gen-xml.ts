@@ -31,7 +31,7 @@ import {
 	PLACEHOLDER_TYPES,
 	SLIDE_OBJECT_TYPES,
 } from './enums'
-import { IChartOpts, ISlide, ISlideRelChart, IShadowOpts, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell } from './interfaces'
+import { IChartOpts, ISlide, ISlideRelChart, IShadowOpts, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell, ISlideLayoutData } from './interfaces'
 import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, getMix, getUuid, inch2Emu } from './utils'
 import { gObjPptxShapes } from './shapes'
 //import jszip from 'jszip'
@@ -633,8 +633,7 @@ export var gObjPptxGenerators = {
 				y = 0,
 				cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj),
 				cy = 0
-			let placeholderObj
-//			let placeholderObj:ISlideLayout
+			let placeholderObj:ISlideLayoutData
 			let locationAttr = '',
 				shapeType = null
 
@@ -643,9 +642,6 @@ export var gObjPptxGenerators = {
 					return layoutObj.options.placeholderName == slideItemObj.options.placeholder
 				})[0]
 			}
-console.log(slideItemObj)
-console.log(slideObject.layoutObj)
-console.log(placeholderObj)
 
 			// A: Set option vars
 			slideItemObj.options = slideItemObj.options || {}
