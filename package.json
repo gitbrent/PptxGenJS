@@ -62,7 +62,6 @@
 	"bugs": {
 		"url": "https://github.com/gitbrent/PptxGenJS/issues"
 	},
-	"typings": "dist/pptxgen.d.ts",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"build": "./node_modules/gulp/bin/gulp.js"
