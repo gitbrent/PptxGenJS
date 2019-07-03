@@ -599,8 +599,8 @@ export var gObjPptxGenerators = {
 	 * @return {string} XML string with <p:cSld> as the root
 	 */
 	slideObjectToXml: function slideObjectToXml(slideObject: ISlide): string {
-		var strSlideXml: string = slideObject.name ? '<p:cSld name="' + slideObject.name + '">' : '<p:cSld>'
-		var intTableNum: number = 1
+		let strSlideXml: string = slideObject.name ? '<p:cSld name="' + slideObject.name + '">' : '<p:cSld>'
+		let intTableNum: number = 1
 
 		// STEP 1: Add background
 		if (slideObject && slideObject.back) {
@@ -629,12 +629,13 @@ export var gObjPptxGenerators = {
 
 		// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
 		slideObject.data.forEach((slideItemObj, idx) => {
-			var x = 0,
+			let x = 0,
 				y = 0,
 				cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj),
-				cy = 0,
-				placeholderObj
-			var locationAttr = '',
+				cy = 0
+			let placeholderObj
+//			let placeholderObj:ISlideLayout
+			let locationAttr = '',
 				shapeType = null
 
 			if (slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder) {
@@ -642,6 +643,9 @@ export var gObjPptxGenerators = {
 					return layoutObj.options.placeholderName == slideItemObj.options.placeholder
 				})[0]
 			}
+console.log(slideItemObj)
+console.log(slideObject.layoutObj)
+console.log(placeholderObj)
 
 			// A: Set option vars
 			slideItemObj.options = slideItemObj.options || {}

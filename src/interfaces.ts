@@ -313,7 +313,16 @@ export interface ISlideLayout {
 		color: string
 		hidden?: boolean
 	}
-	data: Array<{ type: string; options: { placeholderName: string } }>
+	data: Array<{
+		type: string
+		options?: {
+			x?: number
+			y?: number
+			cx?: number
+			cy?: number
+			placeholderName?: string
+		}
+	}>
 	rels?: Array<any>
 	relsChart?: Array<ISlideRelChart>
 	relsMedia?: Array<ISlideRelMedia>
@@ -330,10 +339,10 @@ export interface ISlideLayoutMedia extends ISlideLayout {
 }
 export interface ISlide {
 	//slide?: {
-		back?: string
-		bkgdImgRid?: number
-		color?: string
-		hidden?: boolean
+	back?: string
+	bkgdImgRid?: number
+	color?: string
+	hidden?: boolean
 	//}
 	numb?: number
 	name?: string
