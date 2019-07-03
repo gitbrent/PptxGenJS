@@ -5,12 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Coming In [3.0]: `save()` will return a Promise
+### Coming In [3.0]:
+- Rewritten in Typescript
+- `save()` will return a Promise
 
 
 ## [2.6.0] - 2019-??-??
 ### Added
 - Host the Examples demo webpage online [\#505](https://github.com/gitbrent/PptxGenJS/pull/505) ([multiplegeorges](https://github.com/multiplegeorges))
+- Add types key to package.json [\#529](https://github.com/gitbrent/PptxGenJS/pull/529) ([adamlong5](https://github.com/adamlong5))
 ### Changed
 - Fixed: MIME type is ppt now instead of "application/zip"
 - Fixed: Not Able to add background image from the www source [\#497](https://github.com/gitbrent/PptxGenJS/issue/497) ([nish25sp](https://github.com/nish25sp))
