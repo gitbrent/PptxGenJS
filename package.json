@@ -15,7 +15,7 @@
 		"https": "^1.0.0",
 		"image-size": "^0.7.2",
 		"jquery": "^3.3.1",
-		"jsdom": "^14.0.0",
+		"jsdom": "^14.1.0",
 		"jszip": "^3.1.5"
 	},
 	"devDependencies": {
