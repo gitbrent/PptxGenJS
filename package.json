@@ -9,6 +9,7 @@
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
 	"main": "dist/pptxgen.min.js",
+	"types": "dist/pptxgen.d.ts",
 	"dependencies": {
 		"express": "^4.16.4",
 		"https": "^1.0.0",
