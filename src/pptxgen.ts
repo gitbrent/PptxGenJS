@@ -124,11 +124,19 @@ export default class PptxGenJS {
 	 * Presentation Layout: 'screen4x3', 'screen16x9', 'widescreen', etc.
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 	 */
-	private _layout: ILayout
-	public set layout(value: ILayout) {
-		this._layout = value
+	private _layout: string
+	public set layout(value: string) {
+		let newLayout:ILayout = this.LAYOUTS[value]
+
+		if ( newLayout ) {
+			this._layout = value
+			this._presLayout = newLayout
+		}
+		else {
+			throw 'UNKNOWN-LAYOUT'
+		}
 	}
-	public get layout(): ILayout {
+	public get layout(): string {
 		return this._layout
 	}
 	/**
@@ -156,6 +164,8 @@ export default class PptxGenJS {
 	private NODEJS: boolean = false
 	private LAYOUTS: object
 	private Charts: typeof CHART_TYPES
+
+	private _presLayout:ILayout
 
 	private _imageCounter: number // TODO: This is a dummy value - `gen-xml` has real one: find a better solution, stop using counter
 
@@ -188,11 +198,11 @@ export default class PptxGenJS {
 		// Core
 		this._author = 'PptxGenJS'
 		this._company = 'PptxGenJS'
-		this._revision = '1'
+		this._revision = '1' // whole number
 		this._subject = 'PptxGenJS Presentation'
 		this._title = 'PptxGenJS Presentation'
 		// PptxGenJS props
-		this._layout = {
+		this._presLayout = {
 			name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
 			width: this.LAYOUTS[DEF_PRES_LAYOUT].width,
 			height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
@@ -261,7 +271,9 @@ export default class PptxGenJS {
 		zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
 		//
 		zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
-		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this._layout))
+console.log('this sould be an object, not just a name!')//BRO!
+console.log(this._layout)
+		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this._presLayout))
 		zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
 		zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
 		zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
@@ -691,9 +703,9 @@ export default class PptxGenJS {
 		}
 
 		// STEP 2: Calc usable space/table size now that we have usable space calc'd
-		emuSlideTabW = opts.w ? inch2Emu(opts.w) : this._layout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])
+		emuSlideTabW = opts.w ? inch2Emu(opts.w) : this._presLayout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])
 		if (opts.debug) console.log('emuSlideTabW (in) ........ = ' + (emuSlideTabW / EMU).toFixed(1))
-		if (opts.debug) console.log('this._layout.h ..... = ' + this._layout.height / EMU)
+		if (opts.debug) console.log('this._presLayout.h ..... = ' + this._presLayout.height / EMU)
 
 		// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
 		if (!opts.colW || !Array.isArray(opts.colW)) {
@@ -729,10 +741,10 @@ export default class PptxGenJS {
 			// B: Calc usable vertical space/table height
 			// NOTE: Use margins after the first Slide (dont re-use opt.y - it could've been halfway down the page!) (ISSUE#43,ISSUE#47,ISSUE#48)
 			if (arrObjSlides.length > 0) {
-				emuSlideTabH = this._layout.height - inch2Emu((opts.y / EMU < arrInchMargins[0] ? opts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
+				emuSlideTabH = this._presLayout.height - inch2Emu((opts.y / EMU < arrInchMargins[0] ? opts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
 				// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
 				if (emuSlideTabH < opts.h) emuSlideTabH = opts.h
-			} else emuSlideTabH = opts.h ? opts.h : this._layout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
+			} else emuSlideTabH = opts.h ? opts.h : this._presLayout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
 			if (opts.debug) console.log('* Slide ' + arrObjSlides.length + ': emuSlideTabH (in) ........ = ' + (emuSlideTabH / EMU).toFixed(1))
 
 			// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
@@ -1184,7 +1196,7 @@ export default class PptxGenJS {
 				} else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length) {
 					console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.')
 
-					var numColWidth = Math.floor((this._layout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length)
+					var numColWidth = Math.floor((this._presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length)
 					opt.colW = []
 					for (var idx = 0; idx < arrRows[0].length; idx++) {
 						opt.colW.push(numColWidth)
@@ -1193,7 +1205,7 @@ export default class PptxGenJS {
 					opt.w = opt.cx
 				}
 			} else {
-				var numTabWidth = this._layout.width / EMU - arrTableMargin[1] - arrTableMargin[3]
+				var numTabWidth = this._presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]
 				opt.cx = Math.floor(numTabWidth)
 				opt.w = opt.cx
 			}
@@ -1280,8 +1292,8 @@ export default class PptxGenJS {
 
 		var objLayout: ISlideLayout = {
 			name: inObjMasterDef.title,
-			width: inObjMasterDef.width || this.layout.width,
-			height: inObjMasterDef.height || this.layout.height,
+			width: inObjMasterDef.width || this._presLayout.width,
+			height: inObjMasterDef.height || this._presLayout.height,
 			slide: null,
 			data: [],
 			rels: [],
@@ -1339,8 +1351,8 @@ export default class PptxGenJS {
 			else if (!isNaN(opts.margin)) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin]
 		}
 
-		var emuSlideTabW = opts.w ? inch2Emu(opts.w) : this._layout.width - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
-		///var emuSlideTabH = opts.h ? inch2Emu(opts.h) : this._layout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
+		var emuSlideTabW = opts.w ? inch2Emu(opts.w) : this._presLayout.width - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
+		///var emuSlideTabH = opts.h ? inch2Emu(opts.h) : this._presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
 
 		// STEP 1: Grab table col widths
 		jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, val) => {
