@@ -21,7 +21,7 @@ gulp.task("build", () => {
     })
     .then(bundle => {
       return bundle.write({
-        file: "./dist/pptxgen.es.js",
+        file: "./src/bld/pptxgen.es.js",
         format: "es",
         name: "pptxgen",
         sourcemap: true
@@ -31,7 +31,7 @@ gulp.task("build", () => {
 
 gulp.task("clean", () => {
   return gulp
-    .src(["dist/pptxgen.es.js"])
+    .src(["./src/bld/pptxgen.es.js"])
     .pipe(
       deleteLines({
         filters: [/^import |^export /i]
@@ -51,7 +51,7 @@ gulp.task("clean", () => {
     .pipe(sourcemaps.init())
     .pipe(ignore.exclude(["**/*.map"]))
     .pipe(sourcemaps.write("./"))
-    .pipe(gulp.dest("dist/"));
+    .pipe(gulp.dest("./dist/"));
 });
 
 // Build/Deploy
