@@ -1,3 +1,7 @@
+const pkg = require("./package.json");
+const rollup = require("rollup");
+const rollupTypescript = require("rollup-plugin-typescript2");
+const { watch, series } = require("gulp");
 const gulp = require("gulp"),
   concat = require("gulp-concat"),
   sourcemaps = require("gulp-sourcemaps"),
@@ -5,9 +9,6 @@ const gulp = require("gulp"),
   insert = require("gulp-insert"),
   deleteLines = require("gulp-delete-lines"),
   uglify = require("gulp-uglify");
-const rollup = require("rollup");
-const rollupTypescript = require("rollup-plugin-typescript2");
-const pkg = require("./package.json");
 
 gulp.task("build", () => {
   return rollup
@@ -58,3 +59,8 @@ gulp.task("clean", () => {
 gulp.task("default", gulp.series("build", "clean"), () => {
   console.log("... dist/pptxgen.min.js done!");
 });
+
+// Watch
+exports.default = function() {
+  watch("src/*.ts", series("build", "clean"));
+};
