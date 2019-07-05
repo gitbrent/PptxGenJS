@@ -700,7 +700,7 @@ function genSlides_Chart(pptx) {
 			titleFontFace: 'Helvetica Neue',
 			titleFontSize: 24
 		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar1 );
 
 		// TOP-RIGHT: V/col
 		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
@@ -724,7 +724,7 @@ function genSlides_Chart(pptx) {
 			showLegend: false,
 			showTitle : false
 		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar2 );
 
 		// BTM-LEFT: H/bar - TITLE and LEGEND
 		slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -746,7 +746,7 @@ function genSlides_Chart(pptx) {
 			showTitle : true,
 			title: 'Sales by Region'
 		};
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+		slide.addChart( pptx.Charts.BAR, arrDataHighVals, optsChartBar3 );
 
 		// BTM-RIGHT: V/col - TITLE and LEGEND
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -776,7 +776,7 @@ function genSlides_Chart(pptx) {
 			titleColor : 'FF0000',
 			title      : 'Red Title and Legend'
 		};
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+		slide.addChart( pptx.Charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
 	// SLIDE 2: Bar Chart Grid/Axis Options ------------------------------------------------
@@ -830,7 +830,7 @@ function genSlides_Chart(pptx) {
 			titleFontSize: 14,
 			showTitle    : true
 		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar1 );
 
 		// TOP-RIGHT: V/col
 		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
@@ -854,7 +854,7 @@ function genSlides_Chart(pptx) {
 			legendPos : 'b',
 			showTitle : false
 		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar2 );
 
 		// BTM-LEFT: H/bar - TITLE and LEGEND
 		slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -885,7 +885,7 @@ function genSlides_Chart(pptx) {
 			showTitle : true,
 			title: 'Sales by Region'
 		};
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar3 );
+		slide.addChart( pptx.Charts.BAR, arrDataHighVals, optsChartBar3 );
 
 		// BTM-RIGHT: V/col - TITLE and LEGEND
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -917,7 +917,7 @@ function genSlides_Chart(pptx) {
 			showLegend: false,
 			showTitle : false
 		};
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+		slide.addChart( pptx.Charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
 	// SLIDE 3: Stacked Bar Chart ----------------------------------------------------------
@@ -970,7 +970,7 @@ function genSlides_Chart(pptx) {
 			titleFontFace: 'Helvetica Neue',
 			titleFontSize: 24
 		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar1 );
 
 		// TOP-RIGHT: V/col
 		var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
@@ -991,7 +991,7 @@ function genSlides_Chart(pptx) {
 			showLegend: false,
 			showTitle : false
 		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar2 );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar2 );
 
 		// BTM-LEFT: H/bar - 100% layout without axis labels
 		var optsChartBar3 = { x:0.5, y:3.8, w:6.0, h:3.5,
@@ -1008,7 +1008,7 @@ function genSlides_Chart(pptx) {
 			showDataTableVertBorder: false,
 			showDataTableOutline:    false
 		};
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar3 );
 
 		// BTM-RIGHT: V/col - TITLE and LEGEND
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1027,7 +1027,7 @@ function genSlides_Chart(pptx) {
 			showDataTable:     true,
 			showDataTableKeys: false
 		};
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+		slide.addChart( pptx.Charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
 	// SLIDE 4: Bar Chart - Lots of Bars ---------------------------------------------------
@@ -1066,7 +1066,7 @@ function genSlides_Chart(pptx) {
 		};
 
 		// TEST `getExcelColName()` to ensure Excel Column names are generated correctly above >26 chars/cols
-		slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChart);
+		slide.addChart(pptx.Charts.BAR, arrDataHighVals, optsChart);
 	}
 
 	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ------
@@ -1077,7 +1077,7 @@ function genSlides_Chart(pptx) {
 
 		// TOP-LEFT
 		slide.addChart(
-			pptx.charts.BAR,
+			pptx.Charts.BAR,
 			[
 				{
 					name  : 'Labels are Excel Date Values',
@@ -1102,7 +1102,7 @@ function genSlides_Chart(pptx) {
 		// TOP-RIGHT
 		// NOTE: Labels are ppt/excel dates (days past 1900)
 		slide.addChart(
-			pptx.charts.BAR,
+			pptx.Charts.BAR,
 			[
 				{
 					name  : 'Too Many Colors Series',
@@ -1129,7 +1129,7 @@ function genSlides_Chart(pptx) {
 
 		// BOTTOM-LEFT
 		slide.addChart(
-			pptx.charts.BAR,
+			pptx.Charts.BAR,
 			[
 				{
 					name  : 'Two Color Series',
@@ -1151,7 +1151,7 @@ function genSlides_Chart(pptx) {
 
 		// BOTTOM-RIGHT
 		slide.addChart(
-			pptx.charts.BAR,
+			pptx.Charts.BAR,
 			[
 				{
 					name  : 'Escaped XML Chars',
@@ -1218,7 +1218,7 @@ function genSlides_Chart(pptx) {
             serAxisLabelFontFace: 'Arial',
             serAxisLabelFontSize: 10
         };
-        slide.addChart( pptx.charts.BAR3D, arrDataRegions, optsChartBar1 );
+        slide.addChart( pptx.Charts.BAR3D, arrDataRegions, optsChartBar1 );
 
         // TOP-RIGHT: V/col
         var optsChartBar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
@@ -1236,7 +1236,7 @@ function genSlides_Chart(pptx) {
             dataLabelBkgrdColors: true,
             showValue          : true
         };
-        slide.addChart( pptx.charts.BAR3D, arrDataRegions, optsChartBar2 );
+        slide.addChart( pptx.Charts.BAR3D, arrDataRegions, optsChartBar2 );
 
         // BTM-LEFT: H/bar - TITLE and LEGEND
         slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1255,7 +1255,7 @@ function genSlides_Chart(pptx) {
             showTitle : true,
             title: 'Sales by Region'
         };
-        slide.addChart( pptx.charts.BAR3D, arrDataHighVals, optsChartBar3 );
+        slide.addChart( pptx.Charts.BAR3D, arrDataHighVals, optsChartBar3 );
 
         // BTM-RIGHT: V/col - TITLE and LEGEND
         slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1282,7 +1282,7 @@ function genSlides_Chart(pptx) {
             titleColor : 'FF0000',
             title      : 'Red Title and Legend'
         };
-        slide.addChart( pptx.charts.BAR3D, arrDataHighVals, optsChartBar4 );
+        slide.addChart( pptx.Charts.BAR3D, arrDataHighVals, optsChartBar4 );
     }
 
     // SLIDE 7: Tornado Chart --------------------------------------------------------------
@@ -1292,7 +1292,7 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		slide.addChart(
-			pptx.charts.BAR,
+			pptx.Charts.BAR,
 			[
 				{
 					name: 'High',
@@ -1339,7 +1339,7 @@ function genSlides_Chart(pptx) {
 			lineSmooth: true,
 			showLegend: true, legendPos: 't'
 		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+		slide.addChart( pptx.Charts.LINE, arrDataLineStat, optsChartLine1 );
 
 		var optsChartLine2 = { x:7.0, y:0.6, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
@@ -1347,7 +1347,7 @@ function genSlides_Chart(pptx) {
 			lineSmooth: true,
 			showLegend: true, legendPos: 'r'
 		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
+		slide.addChart( pptx.Charts.LINE, arrDataLineStat, optsChartLine2 );
 
 		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
@@ -1356,7 +1356,7 @@ function genSlides_Chart(pptx) {
 			//displayBlanksAs: 'gap', //uncomment only for test - looks broken otherwise!
 			showLegend: true, legendPos: 'l'
 		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
+		slide.addChart( pptx.Charts.LINE, arrDataLineStat, optsChartLine1 );
 
 		// QA: DEMO: Test shadow option
 		var shadowOpts = { type:'outer', color:'cd0011', blur:3, offset:12, angle:75, opacity:0.8 };
@@ -1366,7 +1366,7 @@ function genSlides_Chart(pptx) {
 			shadow: shadowOpts,
 			showLegend: true, legendPos: 'b'
 		};
-		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine2 );
+		slide.addChart( pptx.Charts.LINE, arrDataLineStat, optsChartLine2 );
 	}
 
 	// SLIDE 9: Line Chart: TEST: `lineDataSymbol` + `lineDataSymbolSize` ------------------
@@ -1379,7 +1379,7 @@ function genSlides_Chart(pptx) {
 
 		opts_lineDataSymbol.forEach(function(opt,idx){
 			slide.addChart(
-				pptx.charts.LINE,
+				pptx.Charts.LINE,
 				arrDataLineStat,
 				{
 					x:(idx < 3 ? idx*intWgap : (idx < 6 ? (idx-3)*intWgap : (idx-6)*intWgap)), y:(idx < 3 ? 0.5 : (idx < 6 ? 2.75 : 5)),
@@ -1423,7 +1423,7 @@ function genSlides_Chart(pptx) {
 			showLegend: true,
 			legendPos : 'r'
 		};
-		slide.addChart( pptx.charts.LINE, arrDataTimeline, optsChartLine1 );
+		slide.addChart( pptx.Charts.LINE, arrDataTimeline, optsChartLine1 );
 	}
 
 	// SLIDE 11: Area Chart: Misc ----------------------------------------------------------
@@ -1451,7 +1451,7 @@ function genSlides_Chart(pptx) {
 			catAxisLabelRotate: 45,
 			catAxisOrientation:'maxMin', valAxisOrientation:'maxMin'
 		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine1 );
+		slide.addChart( pptx.Charts.AREA, arrDataTimeline2ser, optsChartLine1 );
 
 		// TOP-RIGHT
 		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
@@ -1461,7 +1461,7 @@ function genSlides_Chart(pptx) {
 			dataBorder: {pt:2, color:'FFFFFF'},
 			fill: 'D1E1F1'
 		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
+		slide.addChart( pptx.Charts.AREA, arrDataTimeline2ser, optsChartLine2 );
 
 		// BOTTOM-LEFT
 		var optsChartLine3 = { x:0.5, y:4.0, w:'45%', h:3,
@@ -1469,14 +1469,14 @@ function genSlides_Chart(pptx) {
 			chartColorsOpacity: 50,
 			valAxisLabelFormatCode: '#,K'
 		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine3 );
+		slide.addChart( pptx.Charts.AREA, arrDataTimeline2ser, optsChartLine3 );
 
 		// BOTTOM-RIGHT
 		var optsChartLine4 = { x:7, y:4.0, w:'45%', h:3,
 			chartColors: ['CC8833', 'CCFF69'],
 			chartColorsOpacity: 75
 		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine4 );
+		slide.addChart( pptx.Charts.AREA, arrDataTimeline2ser, optsChartLine4 );
 	}
 
 	// SLIDE 12: Pie Charts: All 4 Legend Options ------------------------------------------
@@ -1491,26 +1491,26 @@ function genSlides_Chart(pptx) {
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart(
-			pptx.charts.PIE, dataChartPieStat,
+			pptx.Charts.PIE, dataChartPieStat,
 			{x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l', legendFontFace:'Courier New'}
 		);
 
 		// TOP-RIGHT
 		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
+		slide.addChart( pptx.Charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
 
 		// BTM-LEFT
 		slide.addText( '.', {x:0.5, y:4.0, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.2, h:3.2, showLegend:true, legendPos:'r'} );
+		slide.addChart( pptx.Charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.2, h:3.2, showLegend:true, legendPos:'r'} );
 
 		// BTM-RIGHT
 		slide.addText( '.', {x:5.6, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:5.6, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
+		slide.addChart( pptx.Charts.PIE, dataChartPieLocs, {x:5.6, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
 
 		// BOTH: TOP-RIGHT
 		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		// DEMO: `legendFontSize`, `titleAlign`, `titlePos`
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs,
+		slide.addChart( pptx.Charts.PIE, dataChartPieLocs,
 		{
 			x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'},
 			showLegend: true,
@@ -1525,7 +1525,7 @@ function genSlides_Chart(pptx) {
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+		slide.addChart( pptx.Charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
 	}
 
 	// SLIDE 13: Doughnut Chart ------------------------------------------------------------
@@ -1556,7 +1556,7 @@ function genSlides_Chart(pptx) {
 			titleFontSize: 24
 		};
 		slide.addText( '.', {x:0.5, y:1.0, w:6.0, h:6.0, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieStat, optsChartPie1 );
+		slide.addChart(pptx.Charts.DOUGHNUT, dataChartPieStat, optsChartPie1 );
 
 		var optsChartPie2 = {
 			x:7.0, y:1.0, w:6, h:6,
@@ -1574,7 +1574,7 @@ function genSlides_Chart(pptx) {
 				type: 'inner'
 			}
 		};
-		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
+		slide.addChart(pptx.Charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
 	}
 
 	// SLIDE 14: XY Scatter Chart ----------------------------------------------------------
@@ -1612,7 +1612,7 @@ function genSlides_Chart(pptx) {
 			catAxisTitleFontSize: 14,
 			showCatAxisTitle    : true
 		};
-		slide.addChart( pptx.charts.SCATTER, arrDataScatter1, optsChartScat1 );
+		slide.addChart( pptx.Charts.SCATTER, arrDataScatter1, optsChartScat1 );
 
 		// TOP-RIGHT
 		var optsChartScat2 = { x:7.0, y:0.6, w:'45%', h:3,
@@ -1628,7 +1628,7 @@ function genSlides_Chart(pptx) {
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			chartColorsOpacity: 25
 		};
-		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat2 );
+		slide.addChart( pptx.Charts.SCATTER, arrDataScatter2, optsChartScat2 );
 
 		// BOTTOM-LEFT: (Labels)
 		var optsChartScat3 = { x:0.5, y:4.0, w:'45%', h:3,
@@ -1648,11 +1648,11 @@ function genSlides_Chart(pptx) {
 			showLabel             : true, // Must be set to true or labels will not be shown
 			dataLabelFormatScatter: 'custom', // Can be set to `custom` (default), `customXY`, or `XY`.
 		};
-		slide.addChart( pptx.charts.SCATTER, arrDataScatterLabels, optsChartScat3 );
+		slide.addChart( pptx.Charts.SCATTER, arrDataScatterLabels, optsChartScat3 );
 
 		// BOTTOM-RIGHT
 		var optsChartScat4 = { x:7.0, y:4.0, w:'45%', h:3 };
-		slide.addChart( pptx.charts.SCATTER, arrDataScatter2, optsChartScat4 );
+		slide.addChart( pptx.Charts.SCATTER, arrDataScatter2, optsChartScat4 );
 	}
 
 	// SLIDE 15: Bubble Charts -------------------------------------------------------------
@@ -1680,7 +1680,7 @@ function genSlides_Chart(pptx) {
 			dataBorder: {pt:1, color:'FFFFFF'}
 		};
 		slide.addText( '.', {x:0.5, y:0.6, w:6.0, h:3.0, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble1 );
+		slide.addChart( pptx.Charts.BUBBLE, arrDataBubble1, optsChartBubble1 );
 
 		// TOP-RIGHT
 		var optsChartBubble2 = { x:7.0, y:0.6, w:'45%', h:3,
@@ -1696,7 +1696,7 @@ function genSlides_Chart(pptx) {
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			chartColorsOpacity: 25
 		};
-		slide.addChart( pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble2 );
+		slide.addChart( pptx.Charts.BUBBLE, arrDataBubble2, optsChartBubble2 );
 
 		// BOTTOM-LEFT
 		var optsChartBubble3 = { x:0.5, y:4.0, w:'45%', h:3,
@@ -1710,11 +1710,11 @@ function genSlides_Chart(pptx) {
 			dataLabelColor: 'FFFFFF',
 			showValue: true
 		};
-		slide.addChart( pptx.charts.BUBBLE, arrDataBubble1, optsChartBubble3 );
+		slide.addChart( pptx.Charts.BUBBLE, arrDataBubble1, optsChartBubble3 );
 
 		// BOTTOM-RIGHT
 		var optsChartBubble4 = { x:7.0, y:4.0, w:'45%', h:3, lineSize:0 };
-		slide.addChart( pptx.charts.BUBBLE, arrDataBubble2, optsChartBubble4 );
+		slide.addChart( pptx.Charts.BUBBLE, arrDataBubble2, optsChartBubble4 );
 	}
 
 	// SLIDE 15: Radar Chart ---------------------------------------------------------------
@@ -1749,7 +1749,7 @@ function genSlides_Chart(pptx) {
 			lineDataSymbol: 'none',
 			fill: 'F1F1F1'
 		};
-		slide.addChart( pptx.charts.RADAR, arrDataRegions, optsChartRadar1 );
+		slide.addChart( pptx.Charts.RADAR, arrDataRegions, optsChartRadar1 );
 
 		// TOP-RIGHT: Marker
 		var optsChartRadar2 = { x:7.0, y:0.6, w:6.0, h:3.0,
@@ -1758,7 +1758,7 @@ function genSlides_Chart(pptx) {
 			catAxisLabelFontFace: 'Courier',
 			catAxisLabelFontSize: 12
 		};
-		slide.addChart( pptx.charts.RADAR, arrDataRegions, optsChartRadar2 );
+		slide.addChart( pptx.Charts.RADAR, arrDataRegions, optsChartRadar2 );
 
 		// BTM-LEFT: Filled - TITLE and LEGEND
 		slide.addText( '.', { x:0.5, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1776,7 +1776,7 @@ function genSlides_Chart(pptx) {
 
 			showLegend : true
 		};
-		slide.addChart( pptx.charts.RADAR, arrDataHighVals, optsChartRadar3 );
+		slide.addChart( pptx.Charts.RADAR, arrDataHighVals, optsChartRadar3 );
 
 		// BTM-RIGHT: TITLE and LEGEND
 		slide.addText( '.', { x:7.0, y:3.8, w:6.0, h:3.5, fill:'F1F1F1', color:'F1F1F1'} );
@@ -1796,7 +1796,7 @@ function genSlides_Chart(pptx) {
 			titleColor : 'FF0000',
 			title	  : 'Red Title and Legend'
 		};
-		slide.addChart( pptx.charts.RADAR, arrDataHighVals, optsChartRadar4 );
+		slide.addChart( pptx.Charts.RADAR, arrDataHighVals, optsChartRadar4 );
 	}
 
 	// SLIDE 16: Multi-Type Charts ---------------------------------------------------------
@@ -1827,7 +1827,7 @@ function genSlides_Chart(pptx) {
 			var labels = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 			var chartTypes = [
 				{
-					type: pptx.charts.BAR,
+					type: pptx.Charts.BAR,
 					data: [
 						{
 							name: 'Bottom',
@@ -1850,7 +1850,7 @@ function genSlides_Chart(pptx) {
 					}
 				},
 				{
-					type: pptx.charts.LINE,
+					type: pptx.Charts.LINE,
 					data: [{
 						name: 'Current',
 						labels: labels,
@@ -1900,7 +1900,7 @@ function genSlides_Chart(pptx) {
 			var labels = ['April', 'May', 'June', 'July', 'August'];
 			var chartTypes = [
 				{
-					type: pptx.charts.AREA,
+					type: pptx.Charts.AREA,
 					data: [{
 						name: 'Current',
 						labels: labels,
@@ -1913,7 +1913,7 @@ function genSlides_Chart(pptx) {
 						secondaryCatAxis: !!opts.catAxes
 					}
 				}, {
-					type: pptx.charts.BAR,
+					type: pptx.Charts.BAR,
 					data: [{
 						name: 'Bottom',
 						labels: labels,
@@ -1924,7 +1924,7 @@ function genSlides_Chart(pptx) {
 						barGrouping: 'stacked'
 					}
 				}, {
-					type: pptx.charts.LINE,
+					type: pptx.Charts.LINE,
 					data: [{
 						name: 'Current',
 						labels: labels,
@@ -1990,7 +1990,7 @@ function genSlides_Chart(pptx) {
 			var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
 			var chartTypes = [
 				{
-					type: pptx.charts.BAR,
+					type: pptx.Charts.BAR,
 					data: [{
 						name: 'Bottom',
 						labels: labels,
@@ -2010,7 +2010,7 @@ function genSlides_Chart(pptx) {
 						barGrouping: 'stacked'
 					}
 				}, {
-					type: pptx.charts.LINE,
+					type: pptx.Charts.LINE,
 					data: [{
 						name: 'Current',
 						labels: labels,
@@ -2069,7 +2069,7 @@ function genSlides_Chart(pptx) {
 			var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
 			var chartTypes = [
 				{
-					type: pptx.charts.BAR,
+					type: pptx.Charts.BAR,
 					data: [{
 						name: 'Bottom',
 						labels: labels,
@@ -2089,7 +2089,7 @@ function genSlides_Chart(pptx) {
 						barGrouping: 'stacked'
 					}
 				}, {
-					type: pptx.charts.BAR,
+					type: pptx.Charts.BAR,
 					data: [{
 						name: 'Current',
 						labels: labels,
@@ -2111,7 +2111,7 @@ function genSlides_Chart(pptx) {
 			var labels = ['Q1', 'Q2', 'Q3', 'Q4', 'OT'];
 			var chartTypes = [
 				{
-					type: pptx.charts.BAR,
+					type: pptx.Charts.BAR,
 					data: [{
 						name: 'Projected',
 						labels: labels,
@@ -2121,7 +2121,7 @@ function genSlides_Chart(pptx) {
 						barDir: 'col'
 					}
 				}, {
-					type: pptx.charts.LINE,
+					type: pptx.Charts.LINE,
 					data: [{
 						name: 'Current',
 						labels: labels,
@@ -2275,10 +2275,10 @@ function genSlides_Chart(pptx) {
 			}
 		};
 
-		slide.addChart( pptx.charts.BAR, single, optsChartBar1 );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, pieOptions );
-		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
-		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
+		slide.addChart( pptx.Charts.BAR, single, optsChartBar1 );
+		slide.addChart( pptx.Charts.PIE, dataChartPieStat, pieOptions );
+		slide.addChart( pptx.Charts.BAR, arrDataRegions, optsChartBar3 );
+		slide.addChart( pptx.Charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
 
 	// RUN ALL SLIDE DEMOS -----
