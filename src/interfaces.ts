@@ -326,7 +326,7 @@ export interface ISlideLayout {
 	}
 	data: Array<ISlideLayoutData>
 	rels?: Array<any>
-	relsChart?: Array<ISlideRelChart>
+	//relsChart?: Array<ISlideRelChart>
 	//relsMedia?: Array<ISlideRelMedia>
 	margin?: Array<number> | number
 	slideNumberObj?: ISlideNumber
