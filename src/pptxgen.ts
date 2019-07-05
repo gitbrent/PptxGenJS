@@ -65,6 +65,7 @@ import {
 	DEF_PRES_LAYOUT,
 } from './enums'
 import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell, ISlideMasterDef } from './interfaces'
+import { gObjPptxShapes } from './shapes';
 
 export default class PptxGenJS {
 	private _version: string = '3.0.0-beta1'
@@ -163,7 +164,15 @@ export default class PptxGenJS {
 	private saveCallback: Function
 	private NODEJS: boolean = false
 	private LAYOUTS: object
-	private Charts: typeof CHART_TYPES
+
+	private _Charts = CHART_TYPES
+	public get Charts(): typeof CHART_TYPES {
+		return this._Charts
+	}
+	private _Shapes = gObjPptxShapes
+	public get Shapes(): typeof gObjPptxShapes {
+		return this._Shapes
+	}
 
 	private _presLayout:ILayout
 
@@ -192,8 +201,6 @@ export default class PptxGenJS {
 			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
 			LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
 		}
-
-		this.Charts = CHART_TYPES
 
 		// Core
 		this._author = 'PptxGenJS'

@@ -117,6 +117,7 @@ export enum PLACEHOLDER_TYPES {
 	'media' = 'media',
 }
 
+//export type CHART_NAMES = 'AREA' | 'BAR' | 'BAR3D' | 'BUBBLE' | 'DOUGHNUT' | 'LINE' | 'PIE' | 'RADAR' | 'SCATTER'
 export enum CHART_TYPES {
 	'AREA' = 'area',
 	'BAR' = 'bar',
