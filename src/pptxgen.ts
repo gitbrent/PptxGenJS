@@ -271,8 +271,6 @@ export default class PptxGenJS {
 		zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
 		//
 		zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
-console.log('this sould be an object, not just a name!')//BRO!
-console.log(this._layout)
 		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this._presLayout))
 		zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
 		zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())

@@ -594,27 +594,27 @@ export var gObjPptxGenerators = {
 	},
 
 	/**
-	 * Transforms a slide object to resulting XML string.
-	 * @param {ISlide} slideObject slide object created within gObjPptxGenerators.createSlideObject
+	 * Transforms a slide or slideLayout to resulting XML string.
+	 * @param {ISlide|ISlideLayout} slideObject slide object created within gObjPptxGenerators.createSlideObject
 	 * @return {string} XML string with <p:cSld> as the root
 	 */
-	slideObjectToXml: function slideObjectToXml(slideObject: ISlide): string {
+	slideObjectToXml: function slideObjectToXml(slideObject: ISlide|ISlideLayout): string {
 		let strSlideXml: string = slideObject.name ? '<p:cSld name="' + slideObject.name + '">' : '<p:cSld>'
 		let intTableNum: number = 1
 
 		// STEP 1: Add background
-		if (slideObject && slideObject.back) {
-			strSlideXml += genXmlColorSelection(false, slideObject.back)
+		if (slideObject && slideObject['back']) {
+			strSlideXml += genXmlColorSelection(false, slideObject['back'])
 		}
 
 		// STEP 2: Add background image (using Strech) (if any)
-		if (slideObject && slideObject.bkgdImgRid) {
+		if (slideObject && slideObject['bkgdImgRid']) {
 			// FIXME: We should be doing this in the slideLayout...
 			strSlideXml +=
 				'<p:bg>' +
 				'<p:bgPr><a:blipFill dpi="0" rotWithShape="1">' +
 				'<a:blip r:embed="rId' +
-				slideObject.bkgdImgRid +
+				slideObject['bkgdImgRid'] +
 				'"><a:lum/></a:blip>' +
 				'<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>' +
 				'<a:effectLst/></p:bgPr>' +
@@ -628,17 +628,17 @@ export var gObjPptxGenerators = {
 		strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
 		// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
-		slideObject.data.forEach((slideItemObj, idx) => {
+		slideObject.data.forEach((slideItemObj, idx:number) => {
 			let x = 0,
 				y = 0,
-				cx = getSmartParseNumber('75%', 'X', slideObject.layoutObj),
+				cx = getSmartParseNumber('75%', 'X', slideObject['layoutObj'] || slideObject ),
 				cy = 0
 			let placeholderObj:ISlideLayoutData
 			let locationAttr = '',
 				shapeType = null
 
-			if (slideObject.layoutObj && slideObject.layoutObj.data && slideItemObj.options && slideItemObj.options.placeholder) {
-				placeholderObj = slideObject.layoutObj.data.filter(layoutObj => {
+			if (slideObject['layoutObj'] && slideObject['layoutObj']['data'] && slideItemObj.options && slideItemObj.options.placeholder) {
+				placeholderObj = slideObject['layoutObj']['data'].filter((layoutObj:ISlideLayoutData) => {
 					return layoutObj.options.placeholderName == slideItemObj.options.placeholder
 				})[0]
 			}
@@ -649,17 +649,17 @@ export var gObjPptxGenerators = {
 			if (slideItemObj.options.w || slideItemObj.options.w == 0) slideItemObj.options.cx = slideItemObj.options.w
 			if (slideItemObj.options.h || slideItemObj.options.h == 0) slideItemObj.options.cy = slideItemObj.options.h
 			//
-			if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slideObject.layoutObj)
-			if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slideObject.layoutObj)
-			if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slideObject.layoutObj)
-			if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slideObject.layoutObj)
+			if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slideObject['layoutObj'] || slideObject)
+			if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slideObject['layoutObj'] || slideObject)
+			if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slideObject['layoutObj'] || slideObject)
+			if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slideObject['layoutObj'] || slideObject)
 
 			// If using a placeholder then inherit it's position
 			if (placeholderObj) {
-				if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slideObject.layoutObj)
-				if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slideObject.layoutObj)
-				if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slideObject.layoutObj)
-				if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slideObject.layoutObj)
+				if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slideObject['layoutObj'] || slideObject)
+				if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slideObject['layoutObj'] || slideObject)
+				if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slideObject['layoutObj'] || slideObject)
+				if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slideObject['layoutObj'] || slideObject)
 			}
 			//
 			if (slideItemObj.options.shape) shapeType = getShapeInfo(slideItemObj.options.shape)
@@ -695,9 +695,9 @@ export var gObjPptxGenerators = {
 						'<p:graphicFrame>' +
 						'  <p:nvGraphicFramePr>' +
 						'    <p:cNvPr id="' +
-						(intTableNum * slideObject.numb + 1) +
+						(intTableNum * slideObject['numb'] + 1) +
 						'" name="Table ' +
-						intTableNum * slideObject.numb +
+						intTableNum * slideObject['numb'] +
 						'"/>' +
 						'    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 						'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -1078,9 +1078,11 @@ export var gObjPptxGenerators = {
 					strSlideXml += '<p:blipFill>'
 					// NOTE: This works for both cases: either `path` or `data` contains the SVG
 					if (
-						slideObject.relsMedia.filter(rel => {
+						(slideObject['relsMedia']||[]).filter(rel => {
 							return rel.rId == slideItemObj.imageRid
-						})[0].extn == 'svg'
+						})[0] && (slideObject['relsMedia']||[]).filter(rel => {
+							return rel.rId == slideItemObj.imageRid
+						})[0]['extn'] == 'svg'
 					) {
 						strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '"/>'
 						strSlideXml += '<a:extLst>'
@@ -1092,10 +1094,10 @@ export var gObjPptxGenerators = {
 						strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
 					}
 					if (sizing && sizing.type) {
-						var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slideObject.layoutObj) : cx,
-							boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slideObject.layoutObj) : cy,
-							boxX = getSmartParseNumber(sizing.x || 0, 'X', slideObject.layoutObj),
-							boxY = getSmartParseNumber(sizing.y || 0, 'Y', slideObject.layoutObj)
+						var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slideObject['layoutObj'] || slideObject) : cx,
+							boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slideObject['layoutObj'] || slideObject) : cy,
+							boxX = getSmartParseNumber(sizing.x || 0, 'X', slideObject['layoutObj'] || slideObject),
+							boxY = getSmartParseNumber(sizing.y || 0, 'Y', slideObject['layoutObj'] || slideObject)
 
 						strSlideXml += gObjPptxGenerators.imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY })
 						width = boxW
@@ -1206,14 +1208,14 @@ export var gObjPptxGenerators = {
 				'  <p:spPr>' +
 				'    <a:xfrm>' +
 				'      <a:off x="' +
-				getSmartParseNumber(slideObject.slideNumberObj.x, 'X', slideObject.layoutObj) +
+				getSmartParseNumber(slideObject.slideNumberObj.x, 'X', slideObject['layoutObj'] || slideObject) +
 				'" y="' +
-				getSmartParseNumber(slideObject.slideNumberObj.y, 'Y', slideObject.layoutObj) +
+				getSmartParseNumber(slideObject.slideNumberObj.y, 'Y', slideObject['layoutObj'] || slideObject) +
 				'"/>' +
 				'      <a:ext cx="' +
-				(slideObject.slideNumberObj.w ? getSmartParseNumber(slideObject.slideNumberObj.w, 'X', slideObject.layoutObj) : 800000) +
+				(slideObject.slideNumberObj.w ? getSmartParseNumber(slideObject.slideNumberObj.w, 'X', slideObject['layoutObj'] || slideObject) : 800000) +
 				'" cy="' +
-				(slideObject.slideNumberObj.h ? getSmartParseNumber(slideObject.slideNumberObj.h, 'Y', slideObject.layoutObj) : 300000) +
+				(slideObject.slideNumberObj.h ? getSmartParseNumber(slideObject.slideNumberObj.h, 'Y', slideObject['layoutObj'] || slideObject) : 300000) +
 				'"/>' +
 				'    </a:xfrm>' +
 				'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
@@ -1260,7 +1262,7 @@ export var gObjPptxGenerators = {
 	 * @param {Object[]} defaultRels array of default relations (such objects expected: { target: <filepath>, type: <schemepath> })
 	 * @return {string} complete XML string ready to be saved as a file
 	 */
-	slideObjectRelationsToXml: function slideObjectRelationsToXml(slideObject: ISlide, defaultRels): string {
+	slideObjectRelationsToXml: function slideObjectRelationsToXml(slideObject: ISlide|ISlideLayout, defaultRels): string {
 		var lastRid = 0 // stores maximum rId used for dynamic relations
 		var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 		strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
@@ -3910,7 +3912,7 @@ export function makeXmlLayout(objSlideLayout: ISlideLayout): string {
 	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
 		'<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">'
-	strXml += gObjPptxGenerators.slideObjectToXml(objSlideLayout as ISlide)
+	strXml += gObjPptxGenerators.slideObjectToXml(objSlideLayout as ISlideLayout)
 	strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>'
 	strXml += '</p:sldLayout>'
 
@@ -3992,7 +3994,7 @@ export function makeXmlNotesMaster(): string {
  * @return {String} complete XML string ready to be saved as a file
  */
 export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: Array<ISlideLayout>): string {
-	return gObjPptxGenerators.slideObjectRelationsToXml(slideLayouts[layoutNumber - 1] as ISlide, [
+	return gObjPptxGenerators.slideObjectRelationsToXml(slideLayouts[layoutNumber - 1], [
 		{
 			target: '../slideMasters/slideMaster1.xml',
 			type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster',
