@@ -78,7 +78,27 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	barGapWidthPct?: number
 	barGapDepthPct?: number
 	bar3DShape?: string
+	catAxisLineShow?:boolean
+	catAxisMaxVal?: number
+	catAxisMinVal?:number
+	catAxisHidden?:boolean
 	catAxisOrientation?: 'minMax' | 'minMax'
+	catAxisLabelRotate?:number
+	catAxisLabelFontBold?:boolean
+	catAxisTitleColor?:string
+	catAxisTitleFontFace?:string
+	catAxisTitleFontSize?:number
+	catAxisTitleRotate?:number
+	catAxisTitle?:string
+	catAxisLabelFontSize?:number
+	catAxisLabelColor?:string
+	catAxisLabelFontFace?:string
+	catAxisLabelFrequency?:string
+	catAxisBaseTimeUnit ?:string
+	catAxisMajorTimeUnit?:string
+	catAxisMinorTimeUnit?:string
+	catAxisMajorUnit    ?:string
+	catAxisMinorUnit    ?:string
 	catGridLine?: OptsChartGridLine
 	valGridLine?: OptsChartGridLine
 	chartColors?: Array<string>
@@ -104,6 +124,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	lineDataSymbolLineColor?: string
 	lineDataSymbolLineSize?: number
 	showLegend?: boolean
+	showCatAxisTitle?:boolean
 	legendPos?: string
 	legendFontFace?: string
 	legendFontSize?: number
@@ -157,6 +178,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	shadow?: IShadowOpts
 	catAxisLabelPos?: string
 	valAxisOrientation?: 'minMax' | 'minMax'
+	valAxisCrossesAt?:string|number
 	valAxisMaxVal?: number
 	valAxisMinVal?: number
 	valAxisHidden?: boolean

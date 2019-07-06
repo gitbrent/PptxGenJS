@@ -3,7 +3,7 @@
  */
 
 import { EMU } from './enums'
-import { ISlideLayout } from './interfaces'
+import { ISlideLayout, IChartOpts } from './interfaces'
 
 // Basic UUID Generator Adapted from:
 // https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523
@@ -18,12 +18,12 @@ export function getUuid(uuidFormat: string) {
 /**
  * shallow mix, returns new object
  */
-export function getMix(o1, o2, etc?) {
-	var objMix = {}
-	for (var i = 0; i <= arguments.length; i++) {
-		var oN = arguments[i]
+export function getMix(o1:any|IChartOpts, o2:any|IChartOpts, etc?:any) {
+	let objMix = {}
+	for (let i = 0; i <= arguments.length; i++) {
+		let oN = arguments[i]
 		if (oN)
-			Object.keys(oN).forEach(function(key) {
+			Object.keys(oN).forEach((key) => {
 				objMix[key] = oN[key]
 			})
 	}
