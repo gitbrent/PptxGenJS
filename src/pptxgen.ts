@@ -63,11 +63,13 @@ import {
 	ONEPT,
 	SLIDE_OBJECT_TYPES,
 	DEF_PRES_LAYOUT,
+	SCHEME_COLOR_NAMES,
 } from './enums'
 import { ISlide, ILayout, ISlideLayout, IAddNewSlide, ISlideNumber, ISlideRelMedia, ISlideDataObject, ITableCell, ISlideMasterDef } from './interfaces'
-import { gObjPptxShapes } from './shapes';
+import { gObjPptxShapes } from './shapes'
 
 export default class PptxGenJS {
+	// Property getters/setters
 	private _version: string = '3.0.0-beta1'
 	public get version(): string {
 		return this._version
@@ -127,13 +129,12 @@ export default class PptxGenJS {
 	 */
 	private _layout: string
 	public set layout(value: string) {
-		let newLayout:ILayout = this.LAYOUTS[value]
+		let newLayout: ILayout = this.LAYOUTS[value]
 
-		if ( newLayout ) {
+		if (newLayout) {
 			this._layout = value
 			this._presLayout = newLayout
-		}
-		else {
+		} else {
 			throw 'UNKNOWN-LAYOUT'
 		}
 	}
@@ -152,7 +153,7 @@ export default class PptxGenJS {
 		return this._isBrowser
 	}
 
-	// TODO: prepend `_`
+	// TODO: should these be `this.var` inside constructor?
 	private fileName: string
 	private fileExtn: string
 	/** master slide layout object */
@@ -169,12 +170,16 @@ export default class PptxGenJS {
 	public get charts(): typeof CHART_TYPES {
 		return this._charts
 	}
+	private _colors = SCHEME_COLOR_NAMES
+	public get colors(): typeof SCHEME_COLOR_NAMES {
+		return this._colors
+	}
 	private _shapes = gObjPptxShapes
 	public get shapes(): typeof gObjPptxShapes {
 		return this._shapes
 	}
 
-	private _presLayout:ILayout
+	private _presLayout: ILayout
 
 	private _imageCounter: number // TODO: This is a dummy value - `gen-xml` has real one: find a better solution, stop using counter
 
@@ -412,7 +417,7 @@ export default class PptxGenJS {
 
 	addPlaceholdersToSlides = (slide: ISlide) => {
 		// Add all placeholders on this Slide that dont already exist
-		(slide.layoutObj.data||[]).forEach(slideLayoutObj => {
+		;(slide.layoutObj.data || []).forEach(slideLayoutObj => {
 			if (slideLayoutObj.type === MASTER_OBJECTS.placeholder) {
 				// A: Search for this placeholder on Slide before we add
 				// NOTE: Check to ensure a placeholder does not already exist on the Slide
@@ -1290,7 +1295,7 @@ export default class PptxGenJS {
 	 * Adds a new slide master [layout] to the presentation.
 	 * @param {ISlideMasterDef} inObjMasterDef - layout definition
 	 */
-	defineSlideMaster(inObjMasterDef:ISlideMasterDef) {
+	defineSlideMaster(inObjMasterDef: ISlideMasterDef) {
 		if (!inObjMasterDef.title) {
 			throw Error('defineSlideMaster() object argument requires a `title` value.')
 		}
@@ -1364,14 +1369,14 @@ export default class PptxGenJS {
 			if (jQuery('#' + tabEleId + ' > ' + val + ' > tr').length > 0) {
 				jQuery('#' + tabEleId + ' > ' + val + ' > tr:first-child')
 					.find('> th, > td')
-					.each(() => {
+					.each((idx,cell) => {
 						// FIXME: This is a hack - guessing at col widths when colspan
-						if (jQuery(this).attr('colspan')) {
-							for (var idx = 0; idx < Number(jQuery(this).attr('colspan')); idx++) {
-								arrTabColW.push(Math.round(jQuery(this).outerWidth() / Number(jQuery(this).attr('colspan'))))
+						if (jQuery(cell).attr('colspan')) {
+							for (var idx = 0; idx < Number(jQuery(cell).attr('colspan')); idx++) {
+								arrTabColW.push(Math.round(jQuery(cell).outerWidth() / Number(jQuery(cell).attr('colspan'))))
 							}
 						} else {
-							arrTabColW.push(jQuery(this).outerWidth())
+							arrTabColW.push(jQuery(cell).outerWidth())
 						}
 					})
 				return false // break out of .each loop
