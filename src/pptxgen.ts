@@ -165,13 +165,13 @@ export default class PptxGenJS {
 	private NODEJS: boolean = false
 	private LAYOUTS: object
 
-	private _Charts = CHART_TYPES
-	public get Charts(): typeof CHART_TYPES {
-		return this._Charts
+	private _charts = CHART_TYPES
+	public get charts(): typeof CHART_TYPES {
+		return this._charts
 	}
-	private _Shapes = gObjPptxShapes
-	public get Shapes(): typeof gObjPptxShapes {
-		return this._Shapes
+	private _shapes = gObjPptxShapes
+	public get shapes(): typeof gObjPptxShapes {
+		return this._shapes
 	}
 
 	private _presLayout:ILayout
@@ -218,7 +218,7 @@ export default class PptxGenJS {
 		this._isBrowser = false
 		this.fileName = 'Presentation'
 		this.fileExtn = '.pptx'
-		//this.saveCallback = null
+		//this.saveCallback = null // deprecated: moving to Promise
 		//
 		this.masterSlide = {
 			//slide: null,
