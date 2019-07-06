@@ -1396,15 +1396,15 @@ export default class PptxGenJS {
 
 		// STEP 3: Iterate over each table element and create data arrays (text and opts)
 		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-		jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, val) => {
-			jQuery('#' + tabEleId + ' > ' + val + ' > tr').each((_idx, row) => {
-				var arrObjTabCells = []
+		jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, part) => {
+			jQuery('#' + tabEleId + ' > ' + part + ' > tr').each((_idx, row) => {
+				let arrObjTabCells = []
 				jQuery(row)
 					.find('> th, > td')
 					.each((_idx, cell) => {
 						// A: Get RGB text/bkgd colors
-						var arrRGB1 = []
-						var arrRGB2 = []
+						let arrRGB1 = []
+						let arrRGB2 = []
 						arrRGB1 = jQuery(cell)
 							.css('color')
 							.replace(/\s+/gi, '')
@@ -1419,11 +1419,12 @@ export default class PptxGenJS {
 							.replace('rgb(', '')
 							.replace(')', '')
 							.split(',')
-						// ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
+						// ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead
+						// (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
 						if (jQuery(cell).css('background-color') == 'rgba(0, 0, 0, 0)' || jQuery(cell).css('background-color') == 'transparent') arrRGB2 = [255, 255, 255]
 
 						// B: Create option object
-						var objOpts = {
+						let objOpts = {
 							fontSize: jQuery(cell)
 								.css('font-size')
 								.replace(/[a-z]/gi, ''),
@@ -1495,7 +1496,7 @@ export default class PptxGenJS {
 						}
 
 						// F: Massage cell text so we honor linebreak tag as a line break during line parsing
-						var $cell2 = jQuery(cell).clone()
+						let $cell2 = jQuery(cell).clone()
 						$cell2.html(
 							jQuery(cell)
 								.html()
@@ -1507,8 +1508,11 @@ export default class PptxGenJS {
 							text: jQuery.trim($cell2.text()),
 							opts: objOpts,
 						})
+
+						// FIXME: background colors missing
+						console.log(arrObjTabCells)
 					})
-				switch (val) {
+				switch (part) {
 					case 'thead':
 						arrObjTabHeadRows.push(arrObjTabCells)
 						break
