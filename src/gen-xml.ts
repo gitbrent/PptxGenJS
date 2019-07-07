@@ -2460,9 +2460,9 @@ export function makeXmlViewProps() {
 }
 
 /**
- * DESC: Depending on the passed color string, creates either `a:schemeClr` (when scheme color) or `a:srgbClr` (when hexa representation).
- * color (string): hexa representation (eg. "FFFF00") or a scheme color constant (eg. colors.ACCENT1)
- * innerElements (optional string): Additional elements that adjust the color and are enclosed by the color element.
+ * Create either a `a:schemeClr` (scheme color) or `a:srgbClr` (hexa representation).
+ * @param {string} `colorStr` hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string} `innerElements` additional elements that adjust the color and are enclosed by the color element
  */
 export function createColorElement(colorStr: string, innerElements?: string) {
 	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
@@ -2480,7 +2480,7 @@ export function createColorElement(colorStr: string, innerElements?: string) {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {IShadowOpts} shadowOpts
+ * @param {IShadowOpts} `shadowOpts`
  */
 function correctShadowOptions(shadowOpts: IShadowOpts) {
 	if (!shadowOpts || shadowOpts === null) return
