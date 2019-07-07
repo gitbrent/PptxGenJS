@@ -13,7 +13,7 @@
   "files": [
     "dist"
   ],
-  "types": "dist/index.d.ts",
+  "types": "dist/pptxgen.d.ts",
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw"
