@@ -2,7 +2,7 @@
  * PptxGenJS Utils
  */
 
-import { EMU } from './enums'
+import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './enums'
 import { ISlideLayout, IChartOpts } from './interfaces'
 
 // Basic UUID Generator Adapted from:
@@ -119,4 +119,54 @@ export function rgbToHex(r: number, g: number, b: number): string {
 		} catch (ex) {}
 	}
 	return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase()
+}
+
+/**
+ * Create either a `a:schemeClr` (scheme color) or `a:srgbClr` (hexa representation).
+ * @param {string} `colorStr` hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string} `innerElements` additional elements that adjust the color and are enclosed by the color element
+ */
+export function createColorElement(colorStr: string, innerElements?: string) {
+	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
+
+	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) == -1) {
+		console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values')
+		colorStr = DEF_FONT_COLOR
+	}
+
+	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
+	let colorAttr = ' val="' + colorStr + '"'
+
+	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + ' />'
+}
+
+export function genXmlColorSelection(color_info, back_info?: string) {
+	let colorVal
+	let fillType = 'solid'
+	let internalElements = ''
+	let outText = ''
+
+	if (back_info && typeof back_info === 'string') {
+		outText += '<p:bg><p:bgPr>'
+		outText += genXmlColorSelection(back_info.replace('#', ''))
+		outText += '<a:effectLst/>'
+		outText += '</p:bgPr></p:bg>'
+	}
+
+	if (color_info) {
+		if (typeof color_info == 'string') colorVal = color_info
+		else {
+			if (color_info.type) fillType = color_info.type
+			if (color_info.color) colorVal = color_info.color
+			if (color_info.alpha) internalElements += '<a:alpha val="' + (100 - color_info.alpha) + '000"/>'
+		}
+
+		switch (fillType) {
+			case 'solid':
+				outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>'
+				break
+		}
+	}
+
+	return outText
 }

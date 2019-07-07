@@ -19,9 +19,9 @@ import {
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 } from './enums'
-import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData } from './interfaces'
+import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts } from './interfaces'
 import { convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './utils'
-import { genXmlTitle, createColorElement, genXmlColorSelection } from './gen-xml'
+import { createColorElement, genXmlColorSelection } from './utils'
 import * as JSZip from 'jszip'
 
 /**
@@ -1777,6 +1777,61 @@ function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 	// Close ser axis tag
 	strXml += '</c:serAx>'
 
+	return strXml
+}
+
+/**
+ * DESC: Generate the XML for title elements used for the chart and axis titles
+ */
+function genXmlTitle(opts: IChartTitleOpts) {
+	let align = opts.titleAlign == 'left' ? 'l' : opts.titleAlign == 'right' ? 'r' : false
+	let strXml = ''
+
+	strXml += '<c:title>'
+	strXml += ' <c:tx>'
+	strXml += '  <c:rich>'
+	if (opts.rotate) {
+		strXml += '  <a:bodyPr rot="' + convertRotationDegrees(opts.rotate) + '"/>'
+	} else {
+		strXml += '  <a:bodyPr/>' // don't specify rotation to get default (ex. vertical for cat axis)
+	}
+	strXml += '  <a:lstStyle/>'
+	strXml += '  <a:p>'
+	strXml += align ? '<a:pPr algn="' + align + '">' : '<a:pPr>'
+	var sizeAttr = ''
+	if (opts.fontSize) {
+		// only set the font size if specified.  Powerpoint will handle the default size
+		sizeAttr = 'sz="' + Math.round(opts.fontSize) + '00"'
+	}
+	strXml += '      <a:defRPr ' + sizeAttr + ' b="0" i="0" u="none" strike="noStrike">'
+	strXml += '        <a:solidFill><a:srgbClr val="' + (opts.color || DEF_FONT_COLOR) + '"/></a:solidFill>'
+	strXml += '        <a:latin typeface="' + (opts.fontFace || 'Arial') + '"/>'
+	strXml += '      </a:defRPr>'
+	strXml += '    </a:pPr>'
+	strXml += '    <a:r>'
+	strXml += '      <a:rPr ' + sizeAttr + ' b="0" i="0" u="none" strike="noStrike">'
+	strXml += '        <a:solidFill><a:srgbClr val="' + (opts.color || DEF_FONT_COLOR) + '"/></a:solidFill>'
+	strXml += '        <a:latin typeface="' + (opts.fontFace || 'Arial') + '"/>'
+	strXml += '      </a:rPr>'
+	strXml += '      <a:t>' + (encodeXmlEntities(opts.title) || '') + '</a:t>'
+	strXml += '    </a:r>'
+	strXml += '  </a:p>'
+	strXml += '  </c:rich>'
+	strXml += ' </c:tx>'
+	if (opts.titlePos && opts.titlePos.x && opts.titlePos.y) {
+		strXml += '<c:layout>'
+		strXml += '  <c:manualLayout>'
+		strXml += '    <c:xMode val="edge"/>'
+		strXml += '    <c:yMode val="edge"/>'
+		strXml += '    <c:x val="' + opts.titlePos.x + '"/>'
+		strXml += '    <c:y val="' + opts.titlePos.y + '"/>'
+		strXml += '  </c:manualLayout>'
+		strXml += '</c:layout>'
+	} else {
+		strXml += ' <c:layout/>'
+	}
+	strXml += ' <c:overlay val="0"/>'
+	strXml += '</c:title>'
 	return strXml
 }
 

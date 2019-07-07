@@ -7,34 +7,22 @@ import {
 	EMU,
 	ONEPT,
 	MASTER_OBJECTS,
-	REGEX_HEX_COLOR,
 	BARCHART_COLORS,
 	PIECHART_COLORS,
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
-	DEF_CHART_GRIDLINE,
-	DEF_SHAPE_SHADOW,
-	SCHEME_COLOR_NAMES,
 	CHART_TYPES,
-	LETTERS,
 	SLDNUMFLDID,
-	AXIS_ID_VALUE_PRIMARY,
-	AXIS_ID_VALUE_SECONDARY,
-	AXIS_ID_CATEGORY_PRIMARY,
-	AXIS_ID_CATEGORY_SECONDARY,
-	AXIS_ID_SERIES_PRIMARY,
 	BULLET_TYPES,
-	DEF_FONT_TITLE_SIZE,
 	DEF_FONT_COLOR,
-	DEF_FONT_SIZE,
 	LAYOUT_IDX_SERIES_BASE,
 	PLACEHOLDER_TYPES,
 	SLIDE_OBJECT_TYPES,
 } from './enums'
-import { IChartOpts, ISlide, ISlideRelChart, IShadowOpts, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell, ISlideLayoutData } from './interfaces'
-import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, getMix, getUuid, inch2Emu } from './utils'
+import { ISlide, IShadowOpts, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell, ISlideLayoutData } from './interfaces'
+import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, inch2Emu, genXmlColorSelection } from './utils'
 import { gObjPptxShapes } from './shapes'
-import { each } from 'jquery'
+//import { each } from 'jquery'
 
 /** counter for included images (used for index in their filenames) */
 var _imageCounter: number = 0
@@ -1369,61 +1357,6 @@ export var gObjPptxGenerators = {
 	},
 }
 
-
-/**
- * DESC: Generate the XML for title elements used for the char and axis titles
- */
-export function genXmlTitle(opts) {
-	var align = opts.titleAlign == 'left' ? 'l' : opts.titleAlign == 'right' ? 'r' : false
-	var strXml = ''
-	strXml += '<c:title>'
-	strXml += ' <c:tx>'
-	strXml += '  <c:rich>'
-	if (opts.rotate) {
-		strXml += '  <a:bodyPr rot="' + convertRotationDegrees(opts.rotate) + '"/>'
-	} else {
-		strXml += '  <a:bodyPr/>' // don't specify rotation to get default (ex. vertical for cat axis)
-	}
-	strXml += '  <a:lstStyle/>'
-	strXml += '  <a:p>'
-	strXml += align ? '<a:pPr algn="' + align + '">' : '<a:pPr>'
-	var sizeAttr = ''
-	if (opts.fontSize) {
-		// only set the font size if specified.  Powerpoint will handle the default size
-		sizeAttr = 'sz="' + Math.round(opts.fontSize) + '00"'
-	}
-	strXml += '      <a:defRPr ' + sizeAttr + ' b="0" i="0" u="none" strike="noStrike">'
-	strXml += '        <a:solidFill><a:srgbClr val="' + (opts.color || DEF_FONT_COLOR) + '"/></a:solidFill>'
-	strXml += '        <a:latin typeface="' + (opts.fontFace || 'Arial') + '"/>'
-	strXml += '      </a:defRPr>'
-	strXml += '    </a:pPr>'
-	strXml += '    <a:r>'
-	strXml += '      <a:rPr ' + sizeAttr + ' b="0" i="0" u="none" strike="noStrike">'
-	strXml += '        <a:solidFill><a:srgbClr val="' + (opts.color || DEF_FONT_COLOR) + '"/></a:solidFill>'
-	strXml += '        <a:latin typeface="' + (opts.fontFace || 'Arial') + '"/>'
-	strXml += '      </a:rPr>'
-	strXml += '      <a:t>' + (encodeXmlEntities(opts.title) || '') + '</a:t>'
-	strXml += '    </a:r>'
-	strXml += '  </a:p>'
-	strXml += '  </c:rich>'
-	strXml += ' </c:tx>'
-	if (opts.titlePos && opts.titlePos.x && opts.titlePos.y) {
-		strXml += '<c:layout>'
-		strXml += '  <c:manualLayout>'
-		strXml += '    <c:xMode val="edge"/>'
-		strXml += '    <c:yMode val="edge"/>'
-		strXml += '    <c:x val="' + opts.titlePos.x + '"/>'
-		strXml += '    <c:y val="' + opts.titlePos.y + '"/>'
-		strXml += '  </c:manualLayout>'
-		strXml += '</c:layout>'
-	} else {
-		strXml += ' <c:layout/>'
-	}
-	strXml += ' <c:overlay val="0"/>'
-	strXml += '</c:title>'
-	return strXml
-}
-
 /**
 * DESC: Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
 * EX:
@@ -1850,37 +1783,6 @@ function genXmlBodyProperties(objOptions) {
 
 	// LAST: Return Close bodyProp
 	return objOptions.isTableCell ? '<a:bodyPr/>' : bodyProperties
-}
-
-export function genXmlColorSelection(color_info, back_info?: string) {
-	var colorVal
-	var fillType = 'solid'
-	var internalElements = ''
-	var outText = ''
-
-	if (back_info && typeof back_info === 'string') {
-		outText += '<p:bg><p:bgPr>'
-		outText += genXmlColorSelection(back_info.replace('#', ''))
-		outText += '<a:effectLst/>'
-		outText += '</p:bgPr></p:bg>'
-	}
-
-	if (color_info) {
-		if (typeof color_info == 'string') colorVal = color_info
-		else {
-			if (color_info.type) fillType = color_info.type
-			if (color_info.color) colorVal = color_info.color
-			if (color_info.alpha) internalElements += '<a:alpha val="' + (100 - color_info.alpha) + '000"/>'
-		}
-
-		switch (fillType) {
-			case 'solid':
-				outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>'
-				break
-		}
-	}
-
-	return outText
 }
 
 function genXmlPlaceholder(placeholderObj) {
@@ -2457,25 +2359,6 @@ export function makeXmlViewProps() {
 		'<p:gridSpacing cx="76200" cy="76200" />' +
 		'</p:viewPr>'
 	return strXml
-}
-
-/**
- * Create either a `a:schemeClr` (scheme color) or `a:srgbClr` (hexa representation).
- * @param {string} `colorStr` hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
- * @param {string} `innerElements` additional elements that adjust the color and are enclosed by the color element
- */
-export function createColorElement(colorStr: string, innerElements?: string) {
-	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
-
-	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) == -1) {
-		console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values')
-		colorStr = DEF_FONT_COLOR
-	}
-
-	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = ' val="' + colorStr + '"'
-
-	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + ' />'
 }
 
 /**

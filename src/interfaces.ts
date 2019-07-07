@@ -70,6 +70,27 @@ export interface IShadowOpts {
 	offset?: number
 	color?: string
 }
+export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
+	type?: 'audio' | 'online' | 'video'
+	link: string
+	onlineVideoLink?: string
+}
+export interface ITextOpts extends OptsCoords, OptsDataOrPath {
+	align?: string // "left" | "center" | "right"
+	autoFit?: boolean
+	color?: string
+	fontSize?: number
+	inset?: number
+	lineSpacing?: number
+	line?: string // color
+	lineSize?: number
+	placeholder?: string
+	rotate?: number // VALS: degree * 60,000
+	shadow?: IShadowOpts
+	shape?: { name: string }
+	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+	valign?: string //"top" | "middle" | "bottom"
+}
 export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	type: CHART_TYPES
 	layout?: OptsCoords
@@ -78,27 +99,27 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	barGapWidthPct?: number
 	barGapDepthPct?: number
 	bar3DShape?: string
-	catAxisLineShow?:boolean
+	catAxisLineShow?: boolean
 	catAxisMaxVal?: number
-	catAxisMinVal?:number
-	catAxisHidden?:boolean
+	catAxisMinVal?: number
+	catAxisHidden?: boolean
 	catAxisOrientation?: 'minMax' | 'minMax'
-	catAxisLabelRotate?:number
-	catAxisLabelFontBold?:boolean
-	catAxisTitleColor?:string
-	catAxisTitleFontFace?:string
-	catAxisTitleFontSize?:number
-	catAxisTitleRotate?:number
-	catAxisTitle?:string
-	catAxisLabelFontSize?:number
-	catAxisLabelColor?:string
-	catAxisLabelFontFace?:string
-	catAxisLabelFrequency?:string
-	catAxisBaseTimeUnit ?:string
-	catAxisMajorTimeUnit?:string
-	catAxisMinorTimeUnit?:string
-	catAxisMajorUnit    ?:string
-	catAxisMinorUnit    ?:string
+	catAxisLabelRotate?: number
+	catAxisLabelFontBold?: boolean
+	catAxisTitleColor?: string
+	catAxisTitleFontFace?: string
+	catAxisTitleFontSize?: number
+	catAxisTitleRotate?: number
+	catAxisTitle?: string
+	catAxisLabelFontSize?: number
+	catAxisLabelColor?: string
+	catAxisLabelFontFace?: string
+	catAxisLabelFrequency?: string
+	catAxisBaseTimeUnit?: string
+	catAxisMajorTimeUnit?: string
+	catAxisMinorTimeUnit?: string
+	catAxisMajorUnit?: string
+	catAxisMinorUnit?: string
 	catGridLine?: OptsChartGridLine
 	valGridLine?: OptsChartGridLine
 	chartColors?: Array<string>
@@ -124,7 +145,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	lineDataSymbolLineColor?: string
 	lineDataSymbolLineSize?: number
 	showLegend?: boolean
-	showCatAxisTitle?:boolean
+	showCatAxisTitle?: boolean
 	legendPos?: string
 	legendFontFace?: string
 	legendFontSize?: number
@@ -163,7 +184,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	titleFontFace?: string
 	titleRotate?: number
 	titleAlign?: string
-	titlePos?: string
+	titlePos?: { x: number; y: number }
 	dataLabelFontBold?: boolean
 	valueBarColors?: Array<string>
 	holeSize?: number
@@ -178,7 +199,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	shadow?: IShadowOpts
 	catAxisLabelPos?: string
 	valAxisOrientation?: 'minMax' | 'minMax'
-	valAxisCrossesAt?:string|number
+	valAxisCrossesAt?: string | number
 	valAxisMaxVal?: number
 	valAxisMinVal?: number
 	valAxisHidden?: boolean
@@ -202,26 +223,14 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	v3DRAngAx?: boolean
 	v3DPerspective?: string
 }
-export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
-	type?: 'audio' | 'online' | 'video'
-	link: string
-	onlineVideoLink?: string
-}
-export interface ITextOpts extends OptsCoords, OptsDataOrPath {
-	align?: string // "left" | "center" | "right"
-	autoFit?: boolean
-	color?: string
+export interface IChartTitleOpts {
+	title: string
+	color?: String
 	fontSize?: number
-	inset?: number
-	lineSpacing?: number
-	line?: string // color
-	lineSize?: number
-	placeholder?: string
-	rotate?: number // VALS: degree * 60,000
-	shadow?: IShadowOpts
-	shape?: { name: string }
-	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-	valign?: string //"top" | "middle" | "bottom"
+	fontFace?: string
+	rotate?: number
+	titleAlign?: string
+	titlePos?: { x: number; y: number }
 }
 
 // Core: `slide` and `presentation`
