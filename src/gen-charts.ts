@@ -19,9 +19,404 @@ import {
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 } from './enums'
-import { IChartOpts, ISlideRelChart, IShadowOpts } from './interfaces'
+import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData } from './interfaces'
 import { convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './utils'
 import { genXmlTitle, createColorElement, genXmlColorSelection } from './gen-xml'
+import * as JSZip from 'jszip'
+
+/**
+ * Based on passed data, creates Excel Worksheet that is used as a data source for a chart.
+ * @param {ISlideRelChart} `chartObject` chart object
+ * @param {JSZip} `zip` file that the resulting XLSX should be added to
+ * @return {Promise} promise of generating the XLSX file
+ */
+export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): Promise<any> {
+	var data = chartObject.data
+
+	return new Promise((resolve, reject) => {
+		var zipExcel = new JSZip()
+		var intBubbleCols = (data.length - 1) * 2 + 1 // 1 for "X-Values", then 2 for every Y-Axis
+
+		// A: Add folders
+		zipExcel.folder('_rels')
+		zipExcel.folder('docProps')
+		zipExcel.folder('xl/_rels')
+		zipExcel.folder('xl/tables')
+		zipExcel.folder('xl/theme')
+		zipExcel.folder('xl/worksheets')
+		zipExcel.folder('xl/worksheets/_rels')
+
+		// B: Add core contents
+		{
+			zipExcel.file(
+				'[Content_Types].xml',
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">' +
+					'  <Default Extension="xml" ContentType="application/xml"/>' +
+					'  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>' +
+					//+ '  <Default Extension="jpeg" ContentType="image/jpg"/><Default Extension="png" ContentType="image/png"/>'
+					//+ '  <Default Extension="bmp" ContentType="image/bmp"/><Default Extension="gif" ContentType="image/gif"/><Default Extension="tif" ContentType="image/tif"/><Default Extension="pdf" ContentType="application/pdf"/><Default Extension="mov" ContentType="application/movie"/><Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>'
+					//+ '  <Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>'
+					'  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>' +
+					'  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>' +
+					'  <Override PartName="/xl/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>' +
+					'  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>' +
+					'  <Override PartName="/xl/sharedStrings.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sharedStrings+xml"/>' +
+					'  <Override PartName="/xl/tables/table1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.table+xml"/>' +
+					'  <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>' +
+					'  <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>' +
+					'</Types>\n'
+			)
+			zipExcel.file(
+				'_rels/.rels',
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+					'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
+					'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
+					'<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>' +
+					'</Relationships>\n'
+			)
+			zipExcel.file(
+				'docProps/app.xml',
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">' +
+					'<Application>Microsoft Excel</Application>' +
+					'<DocSecurity>0</DocSecurity>' +
+					'<ScaleCrop>false</ScaleCrop>' +
+					'<HeadingPairs><vt:vector size="2" baseType="variant"><vt:variant><vt:lpstr>Worksheets</vt:lpstr></vt:variant><vt:variant><vt:i4>1</vt:i4></vt:variant></vt:vector></HeadingPairs><TitlesOfParts><vt:vector size="1" baseType="lpstr"><vt:lpstr>Sheet1</vt:lpstr></vt:vector></TitlesOfParts>' +
+					'</Properties>\n'
+			)
+			zipExcel.file(
+				'docProps/core.xml',
+				'<?xml version="1.0" encoding="UTF-8"?><cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">' +
+					'<dc:creator>PptxGenJS</dc:creator>' +
+					'<cp:lastModifiedBy>Ely, Brent</cp:lastModifiedBy>' +
+					'<dcterms:created xsi:type="dcterms:W3CDTF">' +
+					new Date().toISOString() +
+					'</dcterms:created>' +
+					'<dcterms:modified xsi:type="dcterms:W3CDTF">' +
+					new Date().toISOString() +
+					'</dcterms:modified>' +
+					'</cp:coreProperties>\n'
+			)
+			zipExcel.file(
+				'xl/_rels/workbook.xml.rels',
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+					'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+					'<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>' +
+					'<Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/sharedStrings" Target="sharedStrings.xml"/>' +
+					'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>' +
+					'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
+					'</Relationships>\n'
+			)
+			zipExcel.file(
+				'xl/styles.xml',
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><numFmts count="1"><numFmt numFmtId="0" formatCode="General"/></numFmts><fonts count="4"><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="9"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="10"/><color indexed="8"/><name val="Geneva"/></font><font><sz val="18"/><color indexed="8"/>' +
+					'<name val="Arial"/></font></fonts><fills count="2"><fill><patternFill patternType="none"/></fill><fill><patternFill patternType="gray125"/></fill></fills><borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders><dxfs count="0"/><tableStyles count="0"/><colors><indexedColors><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ffff0000"/><rgbColor rgb="ff00ff00"/><rgbColor rgb="ff0000ff"/>' +
+					'<rgbColor rgb="ffffff00"/><rgbColor rgb="ffff00ff"/><rgbColor rgb="ff00ffff"/><rgbColor rgb="ff000000"/><rgbColor rgb="ffffffff"/><rgbColor rgb="ff878787"/><rgbColor rgb="fff9f9f9"/></indexedColors></colors></styleSheet>\n'
+			)
+			zipExcel.file(
+				'xl/theme/theme1.xml',
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?><a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Calibri Light" panose="020F0302020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:majorFont><a:minorFont><a:latin typeface="Calibri" panose="020F0502020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Tahoma"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/></a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/><a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/><a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/><a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/><a:extLst><a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}"><thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="Office Theme" id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/></a:ext></a:extLst></a:theme>'
+			)
+			zipExcel.file(
+				'xl/workbook.xml',
+				'<?xml version="1.0" encoding="UTF-8"?>' +
+					'<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x15" xmlns:x15="http://schemas.microsoft.com/office/spreadsheetml/2010/11/main">' +
+					'<fileVersion appName="xl" lastEdited="6" lowestEdited="6" rupBuild="14420"/>' +
+					'<workbookPr />' +
+					'<bookViews><workbookView xWindow="0" yWindow="0" windowWidth="15960" windowHeight="18080"/></bookViews>' +
+					'<sheets><sheet name="Sheet1" sheetId="1" r:id="rId1" /></sheets>' +
+					'<calcPr calcId="171026" concurrentCalc="0"/>' +
+					'</workbook>\n'
+			)
+			zipExcel.file(
+				'xl/worksheets/_rels/sheet1.xml.rels',
+				'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+					'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+					'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>' +
+					'</Relationships>\n'
+			)
+		}
+
+		// sharedStrings.xml
+		{
+			// A: Start XML
+			var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+			if (chartObject.opts.type === 'bubble') {
+				strSharedStrings +=
+					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">'
+			} else if (chartObject.opts.type === 'scatter') {
+				strSharedStrings +=
+					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">'
+			} else {
+				strSharedStrings +=
+					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' +
+					(data[0].labels.length + data.length + 1) +
+					'" uniqueCount="' +
+					(data[0].labels.length + data.length + 1) +
+					'">'
+				// B: Add 'blank' for A1
+				strSharedStrings += '<si><t xml:space="preserve"></t></si>'
+			}
+
+			// C: Add `name`/Series
+			if (chartObject.opts.type === 'bubble') {
+				data.forEach((objData, idx) => {
+					if (idx == 0) strSharedStrings += '<si><t>' + 'X-Axis' + '</t></si>'
+					else {
+						strSharedStrings += '<si><t>' + encodeXmlEntities(objData.name || ' ') + '</t></si>'
+						strSharedStrings += '<si><t>' + encodeXmlEntities('Size ' + idx) + '</t></si>'
+					}
+				})
+			} else {
+				data.forEach(objData => {
+					strSharedStrings += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>'
+				})
+			}
+
+			// D: Add `labels`/Categories
+			if (chartObject.opts.type != 'bubble' && chartObject.opts.type != 'scatter') {
+				data[0].labels.forEach(label => {
+					strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'
+				})
+			}
+
+			strSharedStrings += '</sst>\n'
+			zipExcel.file('xl/sharedStrings.xml', strSharedStrings)
+		}
+
+		// tables/table1.xml
+		{
+			var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+			if (chartObject.opts.type == 'bubble') {
+				/*
+				strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
+				strTableXml += '<tableColumns count="' + (data.length) +'">';
+				data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'" />' });
+				*/
+			} else if (chartObject.opts.type == 'scatter') {
+				strTableXml +=
+					'<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
+					LETTERS[data.length - 1] +
+					(data[0].values.length + 1) +
+					'" totalsRowShown="0">'
+				strTableXml += '<tableColumns count="' + data.length + '">'
+				data.forEach((_obj, idx) => {
+					strTableXml += '<tableColumn id="' + (idx + 1) + '" name="' + (idx == 0 ? 'X-Values' : 'Y-Value ' + idx) + '" />'
+				})
+			} else {
+				strTableXml +=
+					'<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
+					LETTERS[data.length] +
+					(data[0].labels.length + 1) +
+					'" totalsRowShown="0">'
+				strTableXml += '<tableColumns count="' + (data.length + 1) + '">'
+				strTableXml += '<tableColumn id="1" name=" " />'
+				data.forEach((obj, idx) => {
+					strTableXml += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />'
+				})
+			}
+			strTableXml += '</tableColumns>'
+			strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0" />'
+			strTableXml += '</table>'
+			zipExcel.file('xl/tables/table1.xml', strTableXml)
+		}
+
+		// worksheets/sheet1.xml
+		{
+			var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
+			strSheetXml +=
+				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
+			if (chartObject.opts.type === 'bubble') {
+				strSheetXml += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />'
+			} else if (chartObject.opts.type === 'scatter') {
+				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />'
+			} else {
+				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />'
+			}
+
+			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>'
+			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />'
+			if (chartObject.opts.type == 'bubble') {
+				strSheetXml += '<cols>'
+				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
+				strSheetXml += '</cols>'
+				/* EX: INPUT: `data`
+				[
+					{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
+					{ name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9], sizes:[ 4, 5, 6, 7, 8] },
+					{ name:'Y-Axis 2', values:[33,32,42,53,63], sizes:[11,12,13,14,15] }
+				];
+				*/
+				/* EX: OUTPUT: bubbleChart Worksheet:
+					-|----A-----|------B-----|------C-----|------D-----|------E-----|
+					1| X-Values | Y-Values 1 | Y-Sizes 1  | Y-Values 2 | Y-Sizes 2  |
+					2|    11    |     22     |      4     |     33     |      8     |
+					-|----------|------------|------------|------------|------------|
+				*/
+				strSheetXml += '<sheetData>'
+
+				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+				strSheetXml += '<row r="1" spans="1:' + intBubbleCols + '">'
+				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
+				for (var idx = 1; idx < intBubbleCols; idx++) {
+					strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">' // NOTE: use `t="s"` for label cols!
+					strSheetXml += '<v>' + idx + '</v>'
+					strSheetXml += '</c>'
+				}
+				strSheetXml += '</row>'
+
+				// B: Add row for each X-Axis value (Y-Axis* value is optional)
+				data[0].values.forEach((val, idx) => {
+					// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
+					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + intBubbleCols + '">'
+					strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>'
+					// Add Y-Axis 1->N (idy=0 = Xaxis)
+					var idxColLtr = 1
+					for (var idy = 1; idy < data.length; idy++) {
+						// y-value
+						strSheetXml += '<c r="' + (idxColLtr < 26 ? LETTERS[idxColLtr] : 'A' + LETTERS[idxColLtr % LETTERS.length]) + '' + (idx + 2) + '">'
+						strSheetXml += '<v>' + (data[idy].values[idx] || '') + '</v>'
+						strSheetXml += '</c>'
+						idxColLtr++
+						// y-size
+						strSheetXml += '<c r="' + (idxColLtr < 26 ? LETTERS[idxColLtr] : 'A' + LETTERS[idxColLtr % LETTERS.length]) + '' + (idx + 2) + '">'
+						strSheetXml += '<v>' + (data[idy].sizes[idx] || '') + '</v>'
+						strSheetXml += '</c>'
+						idxColLtr++
+					}
+					strSheetXml += '</row>'
+				})
+			} else if (chartObject.opts.type == 'scatter') {
+				strSheetXml += '<cols>'
+				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
+				//data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
+				strSheetXml += '</cols>'
+				/* EX: INPUT: `data`
+				[
+					{ name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
+					{ name:'Y-Axis 1', values:[ 1, 6, 7, 8, 9] },
+					{ name:'Y-Axis 2', values:[33,32,42,53,63] }
+				];
+				*/
+				/* EX: OUTPUT: scatterChart Worksheet:
+					-|----A-----|------B-----|
+					1| X-Values | Y-Values 1 |
+					2|    11    |     22     |
+					-|----------|------------|
+				*/
+				strSheetXml += '<sheetData>'
+
+				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+				strSheetXml += '<row r="1" spans="1:' + data.length + '">'
+				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
+				for (var idx = 1; idx < data.length; idx++) {
+					strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">' // NOTE: use `t="s"` for label cols!
+					strSheetXml += '<v>' + idx + '</v>'
+					strSheetXml += '</c>'
+				}
+				strSheetXml += '</row>'
+
+				// B: Add row for each X-Axis value (Y-Axis* value is optional)
+				data[0].values.forEach((val, idx) => {
+					// Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
+					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + data.length + '">'
+					strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>'
+					// Add Y-Axis 1->N
+					for (var idy = 1; idy < data.length; idy++) {
+						strSheetXml += '<c r="' + (idy < 26 ? LETTERS[idy] : 'A' + LETTERS[idy % LETTERS.length]) + '' + (idx + 2) + '">'
+						strSheetXml += '<v>' + (data[idy].values[idx] || data[idy].values[idx] == 0 ? data[idy].values[idx] : '') + '</v>'
+						strSheetXml += '</c>'
+					}
+					strSheetXml += '</row>'
+				})
+			} else {
+				strSheetXml += '<cols>'
+				strSheetXml += '<col min="1" max="1" width="11" customWidth="1" />'
+				//data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1" />' });
+				strSheetXml += '</cols>'
+				strSheetXml += '<sheetData>'
+
+				/* EX: INPUT: `data`
+				[
+					{ name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
+					{ name:'Amb', labels:['Jan..May-17'], values:[22, 6, 7, 8, 9] },
+					{ name:'Grn', labels:['Jan..May-17'], values:[33,32,42,53,63] }
+				];
+				*/
+				/* EX: OUTPUT: lineChart Worksheet:
+					-|---A---|--B--|--C--|--D--|
+					1|       | Red | Amb | Grn |
+					2|Jan-17 |   11|   22|   33|
+					3|Feb-17 |   55|   43|   70|
+					4|Mar-17 |   56|  143|   99|
+					5|Apr-17 |   65|    3|  120|
+					6|May-17 |   75|   93|  170|
+					-|-------|-----|-----|-----|
+				*/
+
+				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
+				strSheetXml += '<row r="1" spans="1:' + (data.length + 1) + '">'
+				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
+				for (var idx = 1; idx <= data.length; idx++) {
+					// FIXME: Max cols is 52
+					strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">' // NOTE: use `t="s"` for label cols!
+					strSheetXml += '<v>' + idx + '</v>'
+					strSheetXml += '</c>'
+				}
+				strSheetXml += '</row>'
+
+				// B: Add data row(s) for each category
+				data[0].labels.forEach((_cat, idx) => {
+					// Leading col is reserved for the label, so hard-code it, then loop over col values
+					strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + 1) + '">'
+					strSheetXml += '<c r="A' + (idx + 2) + '" t="s">'
+					strSheetXml += '<v>' + (data.length + idx + 1) + '</v>'
+					strSheetXml += '</c>'
+					for (var idy = 0; idy < data.length; idy++) {
+						strSheetXml += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">'
+						strSheetXml += '<v>' + (data[idy].values[idx] || '') + '</v>'
+						strSheetXml += '</c>'
+					}
+					strSheetXml += '</row>'
+				})
+			}
+			strSheetXml += '</sheetData>'
+			strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />'
+			// Link the `table1.xml` file to define an actual Table in Excel
+			// NOTE: This onyl works with scatter charts - all others give a "cannot find linked file" error
+			// ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
+			// ....: Leaving this so nobody foolishly attempts to add this in the future
+			// strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
+			strSheetXml += '</worksheet>\n'
+			zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml)
+		}
+
+		// C: Add XLSX to PPTX export
+		zipExcel
+			.generateAsync({ type: 'base64' })
+			.then(content => {
+				// 1: Create the embedded Excel worksheet with labels and data
+				zip.file('ppt/embeddings/Microsoft_Excel_Worksheet' + chartObject.globalId + '.xlsx', content, { base64: true })
+
+				// 2: Create the chart.xml and rels files
+				zip.file(
+					'ppt/charts/_rels/' + chartObject.fileName + '.rels',
+					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+						'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+						'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet' +
+						chartObject.globalId +
+						'.xlsx"/>' +
+						'</Relationships>'
+				)
+				zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject))
+
+				// 3: Done
+				resolve()
+			})
+			.catch(strErr => {
+				reject(strErr)
+			})
+	})
+}
 
 /**
  * Main entry point method for create charts
@@ -237,14 +632,14 @@ export function makeXmlCharts(rel: ISlideRelChart) {
  * Create XML string for any given chart type
  * @example: <c:bubbleChart> or <c:lineChart>
  *
- * @param {String} CHART_TYPES key
- * @param {String} data
- * @param {object} opts
- * @param {String} valAxisId
- * @param {String} catAxisId
- * @param {boolean} isMultiTypeChart
+ * @param {CHART_TYPES} `chartType` chart type
+ * @param {OptsChartData[]} `data` chart data
+ * @param {IChartOpts} `opts` chart options
+ * @param {String} `valAxisId`
+ * @param {String} `catAxisId`
+ * @param {boolean} `isMultiTypeChart`
  */
-function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['data'], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean) {
+function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean) {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	var strXml: string = ''
@@ -1142,7 +1537,7 @@ function makeChartType(chartType: ISlideRelChart['type'], data: ISlideRelChart['
 	return strXml
 }
 
-function makeCatAxis(opts:IChartOpts, axisId: string, valAxisId: string) {
+function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 	var strXml = ''
 
 	// Build cat axis tag
@@ -1215,7 +1610,7 @@ function makeCatAxis(opts:IChartOpts, axisId: string, valAxisId: string) {
 
 	// Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
 	if (opts.catLabelFormatCode) {
-		;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach((opt) => {
+		;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(opt => {
 			// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
 			if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) == -1)) {
 				console.warn('`' + opt + "` must be one of: 'days','months','years' !")
@@ -1407,7 +1802,7 @@ function createGridLineElement(glOpts: IChartOpts['catGridLine']) {
 /**
  * DESC: Calc and return excel column name (eg: 'A2')
  */
-function getExcelColName(length:number) {
+function getExcelColName(length: number) {
 	var strName = ''
 
 	if (length <= 26) {

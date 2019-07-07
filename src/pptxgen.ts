@@ -46,6 +46,7 @@
 */
 
 import * as JSZip from 'jszip'
+import * as genCharts from './gen-charts'
 import * as genXml from './gen-xml'
 import { getSmartParseNumber, inch2Emu, rgbToHex } from './utils'
 import {
@@ -398,7 +399,7 @@ export default class PptxGenJS {
 	}
 
 	createMediaFiles = (layout: ISlide, zip: JSZip, chartPromises: Array<Promise<any>>) => {
-		layout.relsChart.forEach(rel => chartPromises.push(genXml.gObjPptxGenerators.createExcelWorksheet(rel, zip)))
+		layout.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		layout.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {
 				// A: Loop vars
