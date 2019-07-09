@@ -257,7 +257,7 @@
 		/* DESC: old/undocumented/unused */
 		function doTestSimple() {
 			var pptx = new PptxGenJS();
-			var slide = pptx.addNewSlide();
+			var slide = pptx.addSlide();
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 
 // TODO: add new defineLayout method
@@ -300,7 +300,7 @@
 		function doHomepageDemo_Text() {
 			var pptx = new PptxGenJS();
 			pptx.layout ='LAYOUT_WIDE';
-			var slide = pptx.addNewSlide();
+			var slide = pptx.addSlide();
 
 			slide.addText(
 				'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
@@ -345,7 +345,7 @@
 
 		function doTablePagingLogicCheck() {
 			var pptx = new PptxGenJS();
-			var slide = pptx.addNewSlide();
+			var slide = pptx.addSlide();
 			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'c', fontSize:18, color:'0088CC', fill:'F2F9FC' });
 
 			var numMargin = 1.25;
@@ -395,7 +395,7 @@
 			// TEST-ONLY: DO NOT USE/COPY ME!!
 			var pptx = new PptxGenJS();
 			pptx.layout = 'LAYOUT_WIDE';
-			var slide = pptx.addNewSlide( pptx.masters.TITLE_SLIDE  );
+			var slide = pptx.addSlide( pptx.masters.TITLE_SLIDE  );
 			pptx.save('Demo-LegacyMasterSlides_'+getTimestamp());
 		}
 
@@ -553,7 +553,7 @@
 					+ 'var pptx = new PptxGenJS();\n'
 					+ '\n'
 					+ '// STEP 2: Add a new Slide to the Presentation\n'
-					+ 'var slide = pptx.addNewSlide();\n'
+					+ 'var slide = pptx.addSlide();\n'
 					+ '\n'
 					+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
 					+ "slide.addText(\n"
@@ -567,7 +567,7 @@
 
 				/*
 				$('#demo-youtube').html("var pptx = new PptxGenJS();\n"
-					+ "var slide = pptx.addNewSlide();\n"
+					+ "var slide = pptx.addSlide();\n"
 					+ '\n'
 					+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
 					+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
@@ -579,7 +579,7 @@
 
 				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
 					+ "pptx.layout = 'LAYOUT_WIDE';\n"
-					+ "var slide = pptx.addNewSlide();\n"
+					+ "var slide = pptx.addSlide();\n"
 					+ "\n"
 					+ "// Bullets with indent levels\n"
 					+ "slide.addText(\n"

@@ -371,8 +371,16 @@ export interface ISlideLayoutMedia extends ISlideLayout {
 	rels: Array<ISlideRelMedia>
 }
 export interface ISlide {
+	addChart: Function
+	addImage: Function
+	addMedia: Function
+	addNotes: Function
+	addShape: Function
+	addTable: Function
+	addText: Function
+
 	//slide?: {
-	back?: string
+	bkgd?: string
 	bkgdImgRid?: number
 	color?: string
 	hidden?: boolean
@@ -384,7 +392,7 @@ export interface ISlide {
 	relsMedia: Array<ISlideRelMedia>
 	data?: Array<ISlideDataObject>
 	layoutName?: string
-	layoutObj: ISlideLayout
+	slideLayout: ISlideLayout
 	margin?: object
 	slideNumberObj?: ISlideNumber
 }
@@ -405,20 +413,6 @@ export interface IPresentation {
 	imageCounter: number
 	slides?: ISlide[]
 	slideLayouts?: ISlideLayout[]
-}
-
-// Methods
-// =======
-export interface IAddNewSlide {
-	getPageNumber: Function
-	slideNumber: Function
-	addChart: Function
-	addImage: Function
-	addMedia: Function
-	addNotes: Function
-	addShape: Function
-	addTable: Function
-	addText: Function
 }
 
 // Objects
