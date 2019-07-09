@@ -114,7 +114,7 @@ export default class Slide {
 	}
 
 	addMedia(opt: IMediaOpts) {
-		genXml.gObjPptxGenerators.addMediaDefinition(opt, this)
+		genXml.gObjPptxGenerators.addMediaDefinition(this, opt)
 		return this
 	}
 

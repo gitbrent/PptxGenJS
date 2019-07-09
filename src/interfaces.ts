@@ -298,8 +298,8 @@ export interface ISlideDataObject {
 	options?: {
 		x?: Coord
 		y?: Coord
-		cx?: number
-		cy?: number
+		cx?: Coord
+		cy?: Coord
 		w?: number
 		h?: number
 		placeholder?: string
