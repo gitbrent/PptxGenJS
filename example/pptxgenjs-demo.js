@@ -2648,7 +2648,7 @@ function genSlides_Text(pptx) {
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
 		// Slide colors: bkgd/fore
-		slide.back = '030303';
+		slide.bkgd = '030303';
 		slide.color = '9F9F9F';
 		// Title
 		slide.addTable( [ [{ text:'Text Examples: Text alignment, percent x/y, etc.', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
