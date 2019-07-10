@@ -385,8 +385,8 @@ export interface ISlide {
 	color?: string
 	hidden?: boolean
 	//}
-	numb?: number
 	name?: string
+	number: number
 	rels: Array<ISlideRel>
 	relsChart: Array<ISlideRelChart>
 	relsMedia: Array<ISlideRelMedia>

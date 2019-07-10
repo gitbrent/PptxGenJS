@@ -52,10 +52,10 @@ export var gObjPptxGenerators = {
 		if (!Array.isArray(arrRows[0])) arrRows = [arrTabRows]
 
 		// STEP 3: Set options
-		opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', this.slideLayout)
-		opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', this.slideLayout)
+		opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', slideLayout)
+		opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', slideLayout)
 		opt.cy = opt.h || opt.cy // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-		if (opt.cy) opt.cy = getSmartParseNumber(opt.cy, 'Y', this.slideLayout)
+		if (opt.cy) opt.cy = getSmartParseNumber(opt.cy, 'Y', slideLayout)
 		opt.h = opt.cy
 		opt.autoPage = opt.autoPage == false ? false : true
 		opt.fontSize = opt.fontSize || DEF_FONT_SIZE
@@ -71,7 +71,7 @@ export var gObjPptxGenerators = {
 		// Get slide margins - start with default values, then adjust if master or slide margins exist
 		var arrTableMargin = DEF_SLIDE_MARGIN_IN
 		// Case 1: Master margins
-		if (this.slideLayout && typeof this.slideLayout.margin !== 'undefined') {
+		if (slideLayout && typeof slideLayout.margin !== 'undefined') {
 			if (Array.isArray(slideLayout.margin)) arrTableMargin = slideLayout.margin
 			else if (!isNaN(Number(slideLayout.margin)))
 				arrTableMargin = [Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin)]
@@ -86,7 +86,7 @@ export var gObjPptxGenerators = {
 
 		// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
 		if (opt.w || opt.cx) {
-			opt.cx = getSmartParseNumber(opt.w || opt.cx, 'X', this.slideLayout)
+			opt.cx = getSmartParseNumber(opt.w || opt.cx, 'X', slideLayout)
 			opt.w = opt.cx
 		} else if (opt.colW) {
 			if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
@@ -919,9 +919,9 @@ export var gObjPptxGenerators = {
 						'<p:graphicFrame>' +
 						'  <p:nvGraphicFramePr>' +
 						'    <p:cNvPr id="' +
-						(intTableNum * slideObject['numb'] + 1) +
+						(intTableNum * slideObject['number'] + 1) +
 						'" name="Table ' +
-						intTableNum * slideObject['numb'] +
+						intTableNum * slideObject['number'] +
 						'"/>' +
 						'    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 						'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -2279,7 +2279,7 @@ export function makeXmlNotesSlide(objSlide: ISlide): string {
 		SLDNUMFLDID +
 		'" type="slidenum">' +
 		'<a:rPr lang="en-US" smtClean="0" /><a:t>' +
-		objSlide.numb +
+		objSlide.number +
 		'</a:t></a:fld><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp>' +
 		'</p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
 		'<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991" />' +

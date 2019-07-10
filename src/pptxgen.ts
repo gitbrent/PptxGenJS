@@ -248,7 +248,7 @@ export default class PptxGenJS {
 			addTable: null,
 			addText:  null,
 			//slide: null,
-			numb: null,
+			number: null,
 			name: null,
 			data: [],
 			rels: [],
