@@ -4,7 +4,7 @@
 
 import { CHART_TYPES } from './enums'
 import { IMediaOpts, ISlideNumber, ISlideLayout, ILayout } from './interfaces'
-import * as genXml from './gen-xml'
+import * as genObj from './gen-objects'
 
 export default class Slide {
 	private _bkgd: string
@@ -99,7 +99,7 @@ export default class Slide {
 	 * }
 	 */
 	addChart(type: CHART_TYPES, data, opt?) {
-		genXml.gObjPptxGenerators.addChartDefinition(type, data, opt, this)
+		genObj.addChartDefinition(type, data, opt, this)
 		return this
 	}
 
@@ -109,29 +109,29 @@ export default class Slide {
 	 */
 	addImage(objImage) {
 		// TODO-3: create `IImageOpts` (name,path,w,rotate,etc.)
-		genXml.gObjPptxGenerators.addImageDefinition(objImage, this)
+		genObj.addImageDefinition(objImage, this)
 		return this
 	}
 
 	addMedia(opt: IMediaOpts) {
-		genXml.gObjPptxGenerators.addMediaDefinition(this, opt)
+		genObj.addMediaDefinition(this, opt)
 		return this
 	}
 
 	addNotes(notes, opt) {
-		genXml.gObjPptxGenerators.addNotesDefinition(notes, opt, this)
+		genObj.addNotesDefinition(notes, opt, this)
 		return this
 	}
 
 	addShape(shape, opt) {
-		genXml.gObjPptxGenerators.addShapeDefinition(shape, opt, this)
+		genObj.addShapeDefinition(shape, opt, this)
 		return this
 	}
 
 	// RECURSIVE: (sometimes)
 	// TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
 	addTable(arrTabRows, inOpt) {
-		genXml.gObjPptxGenerators.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this._presLayout)
+		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this._presLayout)
 		return this
 	}
 
@@ -143,7 +143,7 @@ export default class Slide {
 	 * @since: 1.0.0
 	 */
 	addText(text, options) {
-		genXml.gObjPptxGenerators.addTextDefinition(text, options, this, false)
+		genObj.addTextDefinition(text, options, this, false)
 		return this
 	}
 }

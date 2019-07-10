@@ -47,10 +47,11 @@
 
 import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
+import * as genObj from './gen-objects'
 import * as genXml from './gen-xml'
 import { inch2Emu, rgbToHex } from './utils'
-import { CHART_TYPES, CRLF, DEF_FONT_SIZE, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, MASTER_OBJECTS, ONEPT, SCHEME_COLOR_NAMES } from './enums'
-import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ITableCell, ISlideMasterDef } from './interfaces'
+import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, MASTER_OBJECTS, SCHEME_COLOR_NAMES } from './enums'
+import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef } from './interfaces'
 import { gObjPptxShapes } from './lib-shapes'
 import Slide from './pptxgen-slide'
 
@@ -435,7 +436,7 @@ export default class PptxGenJS {
 						return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholderName
 					}).length == 0
 				) {
-					genXml.gObjPptxGenerators.addTextDefinition('', { placeholder: slideLayoutObj.options.placeholderName }, slide, false)
+					genObj.addTextDefinition('', { placeholder: slideLayoutObj.options.placeholderName }, slide, false)
 				}
 			}
 		})
@@ -710,7 +711,7 @@ export default class PptxGenJS {
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genXml.gObjPptxGenerators.createSlideObject(inObjMasterDef, objLayout)
+		genObj.createSlideObject(inObjMasterDef, objLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(objLayout)
