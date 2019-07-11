@@ -322,12 +322,17 @@ export default class PptxGenJS {
 		// Create all Rels (images, media, chart data)
 		this.slideLayouts.forEach(layout => {
 			///TODO-3: FIXME:
-			//this.createMediaFiles(layout as ISlide, zip, arrChartPromises)
+			// 20190710: Why are we doing this? do layout's have charts?? Is this for cases where Master Slides can have media/charts??
+			// this.createChartMediaRels(layout as ISlide, zip, arrChartPromises)
+			console.log(layout)
 		})
 		this.slides.forEach(slide => {
-			this.createMediaFiles(slide, zip, arrChartPromises)
+			console.log(slide.relsChart)
+			this.createChartMediaRels(slide, zip, arrChartPromises)
+			// FIXME: /charts is empty in pptx export!!
+			console.log(arrChartPromises)
 		})
-		this.createMediaFiles(this.masterSlide, zip, arrChartPromises)
+		this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
 
 		// STEP 3: Wait for Promises (if any) then generate the PPTX file
 		Promise.all(arrChartPromises)
@@ -407,9 +412,9 @@ export default class PptxGenJS {
 		this.saveCallback = null
 	}
 
-	createMediaFiles = (layout: ISlide, zip: JSZip, chartPromises: Array<Promise<any>>) => {
-		layout.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
-		layout.relsMedia.forEach(rel => {
+	createChartMediaRels = (slide: ISlide, zip: JSZip, chartPromises: Array<Promise<any>>) => {
+		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
+		slide.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {
 				// A: Loop vars
 				var data: string = rel.data as string

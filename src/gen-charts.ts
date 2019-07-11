@@ -20,8 +20,7 @@ import {
 	DEF_FONT_SIZE,
 } from './enums'
 import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts } from './interfaces'
-import { convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './utils'
-import { createColorElement, genXmlColorSelection } from './utils'
+import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './utils'
 import * as JSZip from 'jszip'
 
 /**
@@ -487,8 +486,8 @@ export function makeXmlCharts(rel: ISlideRelChart) {
 			let options: IChartOpts = {
 				type: type.type,
 			}
-			var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
-			var catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
+			let valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
+			let catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
 			usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis']
 			strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId, true)
 		})
@@ -1696,7 +1695,7 @@ function makeValueAxis(opts: IChartOpts, valAxisId: string) {
 	strXml += ' <c:crosses val="' + crosses + '"/>'
 	strXml +=
 		' <c:crossBetween val="' +
-		(opts.type === 'scatter' || (Array.isArray(opts.type) && opts.type.indexOf(CHART_TYPES.AREA) > -1 ? true : false) ? 'midCat' : 'between') +
+		(opts.type === CHART_TYPES.SCATTER || (Array.isArray(opts.type) && opts.type.filter(type=>{return type.type == CHART_TYPES.AREA}).length > 0 ? true : false) ? 'midCat' : 'between') +
 		'"/>'
 	if (opts.valAxisMajorUnit) strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>'
 	strXml += '</c:valAx>'

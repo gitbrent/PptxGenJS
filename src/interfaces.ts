@@ -1,4 +1,4 @@
-import { CHART_TYPES, SLIDE_OBJECT_TYPES } from './enums'
+import { CHART_TYPES, SLIDE_OBJECT_TYPES, CHART_TYPE_NAMES } from './enums'
 
 /**
  * PptxGenJS Interfaces
@@ -92,7 +92,7 @@ export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	valign?: string //"top" | "middle" | "bottom"
 }
 export interface IChartOpts extends OptsCoords, OptsChartGridLine {
-	type: CHART_TYPES
+	type: CHART_TYPE_NAMES|IChartMulti[]
 	layout?: OptsCoords
 	barDir?: string
 	barGrouping?: string
@@ -129,7 +129,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	dataNoEffects?: string
 	dataLabelFormatScatter?: string
 	dataLabelFormatCode?: string
-	dataLabelBkgrdColors?: string
+	dataLabelBkgrdColors?: boolean
 	dataLabelFontSize?: number
 	dataLabelColor?: string
 	dataLabelFontFace?: string
@@ -221,7 +221,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	v3DRotX?: number
 	v3DRotY?: number
 	v3DRAngAx?: boolean
-	v3DPerspective?: string
+	v3DPerspective?: number
 }
 export interface IChartTitleOpts {
 	title: string
@@ -231,6 +231,11 @@ export interface IChartTitleOpts {
 	rotate?: number
 	titleAlign?: string
 	titlePos?: { x: number; y: number }
+}
+export interface IChartMulti {
+	type: CHART_TYPE_NAMES
+	data: []
+	options: {}
 }
 
 // Core: `slide` and `presentation`
@@ -262,10 +267,13 @@ export interface ISlideMasterDef {
 
 export interface ISlideRel {
 	Target: string
+	fileName?: string
 	type: SLIDE_OBJECT_TYPES
-	data: string
+	data: any[] | string
+	opts?:IChartOpts
 	path?: string
 	extn?: string
+	globalId?: number
 	rId: number
 }
 export interface ISlideRelMedia {

@@ -1,9 +1,9 @@
 /**
- * Slide
+ * Slide Class
  */
 
-import { CHART_TYPES } from './enums'
-import { IMediaOpts, ISlideNumber, ISlideLayout, ILayout } from './interfaces'
+import { CHART_TYPE_NAMES } from './enums'
+import { IMediaOpts, ISlideNumber, ISlideLayout, ILayout, IChartMulti, IChartOpts } from './interfaces'
 import * as genObj from './gen-objects'
 
 export default class Slide {
@@ -37,9 +37,6 @@ export default class Slide {
 		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		// so, lastly, add to the Slide now.
 		if (this.slideLayout && this.slideLayout.slideNumberObj && !this._slideNumber) this.slideNumber = this.slideLayout.slideNumberObj
-
-		// TODO: FIXME: get this class working!
-		console.log('new Slide!')
 	}
 
 	// ==========================================================================
@@ -79,9 +76,9 @@ export default class Slide {
 	 * Generate the chart based on input data.
 	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
 	 *
-	 * @param {CHART_TYPES} `type` - chart type
+	 * @param {CHART_TYPE_NAMES|IChartMulti[]} `type` - chart type
 	 * @param {object} `data` - a JSON object with follow the following format
-	 * @param {object} `opt` - options
+	 * @param {IChartOpts} `opt` - options
 	 * {
 	 *   title: 'eSurvey chart',
 	 *   data: [
@@ -98,7 +95,7 @@ export default class Slide {
 	 *	 ]
 	 * }
 	 */
-	addChart(type: CHART_TYPES, data, opt?) {
+	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data, opt?: IChartOpts) {
 		genObj.addChartDefinition(type, data, opt, this)
 		return this
 	}

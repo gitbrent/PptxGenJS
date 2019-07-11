@@ -22,8 +22,9 @@ import {
 	DEF_SLIDE_MARGIN_IN,
 	IMG_PLAYBTN,
 	BASE_SHAPES,
+    CHART_TYPE_NAMES,
 } from './enums'
-import { ISlide, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell, ISlideLayoutData, IMediaOpts, ISlideRelMedia } from './interfaces'
+import { ISlide, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell, ISlideLayoutData, IMediaOpts, ISlideRelMedia, IChartOpts, IChartMulti } from './interfaces'
 import { convertRotationDegrees, encodeXmlEntities, getSmartParseNumber, inch2Emu, genXmlColorSelection } from './utils'
 import { createHyperlinkRels, getSlidesForTableRows, correctShadowOptions, correctGridLineOptions, getShapeInfo, genXmlTextBody, genXmlPlaceholder } from './gen-xml'
 
@@ -256,6 +257,11 @@ export function addTextDefinition(text: string | Array<object>, opt: ITextOpts, 
 	return resultObject
 }
 
+/**
+ * Adds a media object to a slide definition.
+ * @param {ISlide} target - slide object that the text should be added to
+ * @param {IMediaOpts} opt
+ */
 export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 	let intRels = 1
 	let intImages = ++this._imageCounter // FIXME: _imageCounter doesnt exist here!
@@ -583,7 +589,7 @@ export function addImageDefinition(objImage, target) {
  *	 ]
  *	}
  */
-export function addChartDefinition(type, data, opt, target) {
+export function addChartDefinition(type:CHART_TYPE_NAMES|IChartMulti[], data:[], opt, target:ISlide) {
 	var targetRels = target.rels
 	var chartId = ++_chartCounter
 	var chartRelId = target.rels.length + 1
@@ -598,7 +604,7 @@ export function addChartDefinition(type, data, opt, target) {
 	// Multi-Type Charts
 	var tmpOpt
 	var tmpData = [],
-		options
+		options:IChartOpts
 	if (Array.isArray(type)) {
 		// For multi-type charts there needs to be data for each type,
 		// as well as a single data source for non-series operations.
@@ -635,8 +641,8 @@ export function addChartDefinition(type, data, opt, target) {
 	// STEP 2: Set default options/decode user options
 	// A: Core
 	options.type = type
-	options.x = typeof options.x !== 'undefined' && options.x != null && !isNaN(options.x) ? options.x : 1
-	options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(options.y) ? options.y : 1
+	options.x = typeof options.x !== 'undefined' && options.x != null && !isNaN(Number(options.x)) ? options.x : 1
+	options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1
 	options.w = options.w || '50%'
 	options.h = options.h || '50%'
 
@@ -644,7 +650,7 @@ export function addChartDefinition(type, data, opt, target) {
 	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
 	// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
 	if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-		options.dataLabelPosition = options.type.name == 'pie' || options.type.name == 'doughnut' ? 'bestFit' : 'ctr'
+		options.dataLabelPosition = options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr'
 	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors == true || options.dataLabelBkgrdColors == false ? options.dataLabelBkgrdColors : false
 	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
@@ -674,9 +680,9 @@ export function addChartDefinition(type, data, opt, target) {
 	}
 
 	// Set gridline defaults
-	options.catGridLine = options.catGridLine || (type.name == 'scatter' ? { color: 'D9D9D9', pt: 1 } : 'none')
-	options.valGridLine = options.valGridLine || (type.name == 'scatter' ? { color: 'D9D9D9', pt: 1 } : {})
-	options.serGridLine = options.serGridLine || (type.name == 'scatter' ? { color: 'D9D9D9', pt: 1 } : 'none')
+	options.catGridLine = options.catGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {style:'none'})
+	options.valGridLine = options.valGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
+	options.serGridLine = options.serGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {style:'none'})
 	correctGridLineOptions(options.catGridLine)
 	correctGridLineOptions(options.valGridLine)
 	correctGridLineOptions(options.serGridLine)
@@ -708,7 +714,7 @@ export function addChartDefinition(type, data, opt, target) {
 
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
-		: options.type.name == 'pie' || options.type.name == 'doughnut'
+		: options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT
 		? PIECHART_COLORS
 		: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
@@ -722,16 +728,16 @@ export function addChartDefinition(type, data, opt, target) {
 	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6))
 		options.dataBorder.color = 'F9F9F9'
 	//
-	if (!options.dataLabelFormatCode && options.type.name === 'scatter') options.dataLabelFormatCode = 'General'
+	if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatCode = 'General'
 	options.dataLabelFormatCode =
 		options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
 			? options.dataLabelFormatCode
-			: options.type.name == 'pie' || options.type.name == 'doughnut'
+			: options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT
 			? '0%'
 			: '#,##0'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
-	if (!options.dataLabelFormatScatter && options.type.name === 'scatter') options.dataLabelFormatScatter = 'custom'
+	if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatScatter = 'custom'
 	//
 	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
@@ -746,7 +752,7 @@ export function addChartDefinition(type, data, opt, target) {
 		rId: chartRelId,
 		data: tmpData,
 		opts: options,
-		type: 'chart',
+		type: SLIDE_OBJECT_TYPES.chart,
 		globalId: chartId,
 		fileName: 'chart' + chartId + '.xml',
 		Target: '/ppt/charts/chart' + chartId + '.xml',
@@ -778,16 +784,14 @@ export function addChartDefinition(type, data, opt, target) {
 export function createSlideObject(slideDef, target) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
-		// FIXME: bkgd isnt wokring
-		console.log(slideDef.bkgd)
 		addBackgroundDefinition(slideDef.bkgd, target)
 	}
 
 	// STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-		slideDef.objects.forEach((object, idx) => {
+		slideDef.objects.forEach((object, idx:number) => {
 			var key = Object.keys(object)[0]
-			if (MASTER_OBJECTS[key] && key == 'chart') addChartDefinition(CHART_TYPES[(object.chart.type || '').toUpperCase()], object.chart.data, object.chart.opts, target)
+			if (MASTER_OBJECTS[key] && key == 'chart') addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target)
 			else if (MASTER_OBJECTS[key] && key == 'image') addImageDefinition(object[key], target)
 			else if (MASTER_OBJECTS[key] && key == 'line') addShapeDefinition(BASE_SHAPES.LINE, object[key], target)
 			else if (MASTER_OBJECTS[key] && key == 'rect') addShapeDefinition(BASE_SHAPES.RECTANGLE, object[key], target)
