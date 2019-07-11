@@ -3,24 +3,15 @@
  */
 
 import {
-	CRLF,
-	EMU,
-	ONEPT,
-	MASTER_OBJECTS,
-	BARCHART_COLORS,
-	PIECHART_COLORS,
-	DEF_CELL_BORDER,
-	DEF_CELL_MARGIN_PT,
-	CHART_TYPES,
-	SLDNUMFLDID,
 	BULLET_TYPES,
-	DEF_FONT_COLOR,
-	LAYOUT_IDX_SERIES_BASE,
-	PLACEHOLDER_TYPES,
-	SLIDE_OBJECT_TYPES,
+	CRLF,
 	DEF_FONT_SIZE,
 	DEF_SLIDE_MARGIN_IN,
-	IMG_PLAYBTN,
+	EMU,
+	LAYOUT_IDX_SERIES_BASE,
+	ONEPT,
+	PLACEHOLDER_TYPES,
+	SLDNUMFLDID,
 } from './enums'
 import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell } from './interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection } from './utils'
@@ -192,6 +183,43 @@ export function genXmlTextBody(slideObj) {
 
 	// LAST: Return XML
 	return strSlideXml
+}
+
+/**
+ * Magic happens here
+ */
+function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
+	var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
+	var CPL = (inWidth * EMU) / ((cell.opts.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	var arrLines = []
+	var strCurrLine = ''
+
+	// Allow a single space/whitespace as cell text
+	if (cell.text && cell.text.trim() == '') return [' ']
+
+	// A: Remove leading/trailing space
+	var inStr = (cell.text || '').toString().trim()
+
+	// B: Build line array
+	jQuery.each(inStr.split('\n'), (_idx, line) => {
+		jQuery.each(line.split(' '), (_idx, word) => {
+			if (strCurrLine.length + word.length + 1 < CPL) {
+				strCurrLine += word + ' '
+			} else {
+				if (strCurrLine) arrLines.push(strCurrLine)
+				strCurrLine = word + ' '
+			}
+		})
+		// All words for this line have been exhausted, flush buffer to new line, clear line var
+		if (strCurrLine) arrLines.push(jQuery.trim(strCurrLine) + CRLF)
+		strCurrLine = ''
+	})
+
+	// C: Remove trailing linebreak
+	arrLines[arrLines.length - 1] = jQuery.trim(arrLines[arrLines.length - 1])
+
+	// D: Return lines
+	return arrLines
 }
 
 function genXmlParagraphProperties(textObj, isDefault) {
@@ -1341,41 +1369,4 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 		console.log(arrObjSlides)
 	}
 	return arrObjSlides
-}
-
-/**
- * Magic happens here
- */
-function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
-	var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	var CPL = (inWidth * EMU) / ((cell.opts.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
-	var arrLines = []
-	var strCurrLine = ''
-
-	// Allow a single space/whitespace as cell text
-	if (cell.text && cell.text.trim() == '') return [' ']
-
-	// A: Remove leading/trailing space
-	var inStr = (cell.text || '').toString().trim()
-
-	// B: Build line array
-	jQuery.each(inStr.split('\n'), (_idx, line) => {
-		jQuery.each(line.split(' '), (_idx, word) => {
-			if (strCurrLine.length + word.length + 1 < CPL) {
-				strCurrLine += word + ' '
-			} else {
-				if (strCurrLine) arrLines.push(strCurrLine)
-				strCurrLine = word + ' '
-			}
-		})
-		// All words for this line have been exhausted, flush buffer to new line, clear line var
-		if (strCurrLine) arrLines.push(jQuery.trim(strCurrLine) + CRLF)
-		strCurrLine = ''
-	})
-
-	// C: Remove trailing linebreak
-	arrLines[arrLines.length - 1] = jQuery.trim(arrLines[arrLines.length - 1])
-
-	// D: Return lines
-	return arrLines
 }

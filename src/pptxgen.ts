@@ -321,7 +321,8 @@ export default class PptxGenJS {
 
 		// Create all Rels (images, media, chart data)
 		this.slideLayouts.forEach(layout => {
-			///TODO-3: FIXME: this.createMediaFiles(layout as ISlide, zip, arrChartPromises)
+			///TODO-3: FIXME:
+			//this.createMediaFiles(layout as ISlide, zip, arrChartPromises)
 		})
 		this.slides.forEach(slide => {
 			this.createMediaFiles(slide, zip, arrChartPromises)

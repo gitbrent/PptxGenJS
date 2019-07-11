@@ -1,3 +1,7 @@
+/**
+ * PptxGenJS: Slide object generators
+ */
+
 import {
 	CRLF,
 	EMU,
@@ -20,7 +24,7 @@ import {
 	BASE_SHAPES,
 } from './enums'
 import { ISlide, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell, ISlideLayoutData, IMediaOpts, ISlideRelMedia } from './interfaces'
-import { convertRotationDegrees, getSmartParseNumber, encodeXmlEntities, inch2Emu, genXmlColorSelection } from './utils'
+import { convertRotationDegrees, encodeXmlEntities, getSmartParseNumber, inch2Emu, genXmlColorSelection } from './utils'
 import { createHyperlinkRels, getSlidesForTableRows, correctShadowOptions, correctGridLineOptions, getShapeInfo, genXmlTextBody, genXmlPlaceholder } from './gen-xml'
 
 /** counter for included images (used for index in their filenames) */
