@@ -77,7 +77,7 @@ export default class Slide {
 	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
 	 *
 	 * @param {CHART_TYPE_NAMES|IChartMulti[]} `type` - chart type
-	 * @param {object} `data` - a JSON object with follow the following format
+	 * @param {object[]} `data` - a JSON object with follow the following format
 	 * @param {IChartOpts} `opt` - options
 	 * {
 	 *   title: 'eSurvey chart',
@@ -95,7 +95,7 @@ export default class Slide {
 	 *	 ]
 	 * }
 	 */
-	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data, opt?: IChartOpts) {
+	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data:[], opt?: IChartOpts) {
 		genObj.addChartDefinition(type, data, opt, this)
 		return this
 	}
