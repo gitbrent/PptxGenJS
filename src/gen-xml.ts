@@ -1095,18 +1095,6 @@ export function correctShadowOptions(shadowOpts: IShadowOpts) {
 	}
 }
 
-export function correctGridLineOptions(glOpts) {
-	if (!glOpts || glOpts === 'none') return
-	if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
-		console.warn('Warning: chart.gridLine.size must be greater than 0.')
-		delete glOpts.size // delete prop to used defaults
-	}
-	if (glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0) {
-		console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.')
-		delete glOpts.style
-	}
-}
-
 export function getShapeInfo(shapeName) {
 	if (!shapeName) return gObjPptxShapes.RECTANGLE
 
