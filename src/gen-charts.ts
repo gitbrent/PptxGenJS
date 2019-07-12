@@ -19,7 +19,7 @@ import {
 	LETTERS,
 	ONEPT,
 } from './enums'
-import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts } from './interfaces'
+import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './utils'
 import * as JSZip from 'jszip'
 
@@ -1846,8 +1846,8 @@ function genXmlTitle(opts: IChartTitleOpts) {
  * @param {Object} defaults {size, color, style}
  * @param {String} type "major"(default) | "minor"
  */
-function createGridLineElement(glOpts: IChartOpts['catGridLine']) {
-	let strXml = '<c:majorGridlines>'
+function createGridLineElement(glOpts: OptsChartGridLine) {
+	let strXml:string = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
 	strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">'
 	strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>' // should accept scheme colors as implemented in PR 135
@@ -1856,7 +1856,9 @@ function createGridLineElement(glOpts: IChartOpts['catGridLine']) {
 	strXml += ' </c:spPr>'
 	strXml += '</c:majorGridlines>'
 
-	return strXml
+	// FIXME: this being included in slides where prev version didnt include them is causing CORRUPTION (slide is EMPTY)
+	//return strXml
+	return ''
 }
 
 /**
