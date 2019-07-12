@@ -500,8 +500,8 @@ export function genXmlPlaceholder(placeholderObj) {
 
 // XML-GEN: First 6 functions create the base /ppt files
 
-export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlide?): string {
-	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
+export function makeXmlContTypes(slides: ISlide[], slideLayouts:ISlideLayout[], masterSlide?:ISlide): string {
+	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
 	strXml += ' <Default Extension="xml" ContentType="application/xml"/>'
 	strXml += ' <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
@@ -533,10 +533,8 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>'
 		strXml += '<Override PartName="/ppt/slides/slide' + (idx + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
 		// add charts if any
-		slide.rels.forEach(rel => {
-			if (rel.type == 'chart') {
-				strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
-			}
+		slide.relsChart.forEach(rel => {
+			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 		})
 	})
 
@@ -552,10 +550,8 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 			'<Override PartName="/ppt/slideLayouts/slideLayout' +
 			(idx + 1) +
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>'
-		layout.rels.forEach(rel => {
-			if (rel.type == 'chart') {
-				strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
-			}
+		;(layout.relsChart||[]).forEach(rel => {
+			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 		})
 	})
 
@@ -567,15 +563,16 @@ export function makeXmlContTypes(slides: Array<ISlide>, slideLayouts, masterSlid
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>'
 	})
 
-	masterSlide.rels.forEach(rel => {
-		if (rel.type == 'chart') {
-			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
-		}
+	// STEP 6: Add rels
+	masterSlide.relsChart.forEach(rel => {
+		strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
+	})
+	masterSlide.relsMedia.forEach(rel => {
 		if (rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1)
 			strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>'
 	})
 
-	// STEP 5: Finish XML (Resume core)
+	// LAST: Finish XML (Resume core)
 	strXml += ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
 	strXml += ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
 	strXml += '</Types>'

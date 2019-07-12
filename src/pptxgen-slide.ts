@@ -95,14 +95,14 @@ export default class Slide {
 	 *	 ]
 	 * }
 	 */
-	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data:[], opt?: IChartOpts) {
+	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt?: IChartOpts) {
 		genObj.addChartDefinition(type, data, opt, this)
 		return this
 	}
 
 	/**
-	 * NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
-	 *
+	 * NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
+	 * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
 	 */
 	addImage(objImage) {
 		// TODO-3: create `IImageOpts` (name,path,w,rotate,etc.)

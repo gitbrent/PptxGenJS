@@ -3,21 +3,21 @@
  */
 
 import {
-	ONEPT,
-	BARCHART_COLORS,
-	PIECHART_COLORS,
-	DEF_CHART_GRIDLINE,
-	DEF_SHAPE_SHADOW,
-	CHART_TYPES,
-	LETTERS,
-	AXIS_ID_VALUE_PRIMARY,
-	AXIS_ID_VALUE_SECONDARY,
 	AXIS_ID_CATEGORY_PRIMARY,
 	AXIS_ID_CATEGORY_SECONDARY,
 	AXIS_ID_SERIES_PRIMARY,
-	DEF_FONT_TITLE_SIZE,
+	AXIS_ID_VALUE_PRIMARY,
+	AXIS_ID_VALUE_SECONDARY,
+	BARCHART_COLORS,
+	CHART_TYPE_NAMES,
+	CHART_TYPES,
+	DEF_CHART_GRIDLINE,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
+	DEF_FONT_TITLE_SIZE,
+	DEF_SHAPE_SHADOW,
+	LETTERS,
+	ONEPT,
 } from './enums'
 import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts } from './interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './utils'
@@ -139,10 +139,10 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		{
 			// A: Start XML
 			var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts.type === 'bubble') {
+			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
 				strSharedStrings +=
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">'
-			} else if (chartObject.opts.type === 'scatter') {
+			} else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
 				strSharedStrings +=
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">'
 			} else {
@@ -157,7 +157,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// C: Add `name`/Series
-			if (chartObject.opts.type === 'bubble') {
+			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
 				data.forEach((objData, idx) => {
 					if (idx == 0) strSharedStrings += '<si><t>' + 'X-Axis' + '</t></si>'
 					else {
@@ -172,7 +172,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// D: Add `labels`/Categories
-			if (chartObject.opts.type != 'bubble' && chartObject.opts.type != 'scatter') {
+			if (chartObject.opts.type != CHART_TYPES.BUBBLE && chartObject.opts.type != CHART_TYPES.SCATTER) {
 				data[0].labels.forEach(label => {
 					strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'
 				})
@@ -185,13 +185,13 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		// tables/table1.xml
 		{
 			var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts.type == 'bubble') {
+			if (chartObject.opts.type == CHART_TYPES.BUBBLE) {
 				/*
 				strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
 				strTableXml += '<tableColumns count="' + (data.length) +'">';
 				data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'" />' });
 				*/
-			} else if (chartObject.opts.type == 'scatter') {
+			} else if (chartObject.opts.type == CHART_TYPES.SCATTER) {
 				strTableXml +=
 					'<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
 					LETTERS[data.length - 1] +
@@ -224,9 +224,9 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			strSheetXml +=
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
-			if (chartObject.opts.type === 'bubble') {
+			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />'
-			} else if (chartObject.opts.type === 'scatter') {
+			} else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />'
 			} else {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />'
@@ -234,7 +234,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>'
 			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />'
-			if (chartObject.opts.type == 'bubble') {
+			if (chartObject.opts.type == CHART_TYPES.BUBBLE) {
 				strSheetXml += '<cols>'
 				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
 				strSheetXml += '</cols>'
@@ -284,7 +284,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					}
 					strSheetXml += '</row>'
 				})
-			} else if (chartObject.opts.type == 'scatter') {
+			} else if (chartObject.opts.type == CHART_TYPES.SCATTER) {
 				strSheetXml += '<cols>'
 				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
 				//data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
@@ -450,7 +450,7 @@ export function makeXmlCharts(rel: ISlideRelChart) {
 			strXml += '<c:autoTitleDeleted val="1"/>'
 		}
 		// Add 3D view tag
-		if (rel.opts.type == 'bar3D') {
+		if (rel.opts.type == CHART_TYPES.BAR3D) {
 			strXml += '<c:view3D>'
 			strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>'
 			strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>'
@@ -480,12 +480,10 @@ export function makeXmlCharts(rel: ISlideRelChart) {
 
 	// A: Create Chart XML -----------------------------------------------------------
 	if (Array.isArray(rel.opts.type)) {
-		rel.opts.type.forEach((type: ISlideRelChart) => {
+		rel.opts.type.forEach(type => {
 			// TODO: FIXME: theres `options` on chart rels??
-			///var options = getMix(rel.opts, type.options) as IChartOpts;
-			let options: IChartOpts = {
-				type: type.type,
-			}
+			let options = getMix(rel.opts, type.options) as IChartOpts;
+			//let options: IChartOpts = { type: type.type, }
 			let valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
 			let catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
 			usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis']
@@ -496,7 +494,7 @@ export function makeXmlCharts(rel: ISlideRelChart) {
 	}
 
 	// B: Axes -----------------------------------------------------------
-	if (rel.opts.type !== 'pie' && rel.opts.type !== 'doughnut') {
+	if (rel.opts.type !== CHART_TYPES.PIE && rel.opts.type !== CHART_TYPES.DOUGHNUT) {
 		// Param check
 		if (rel.opts.valAxes && !usesSecondaryValAxis) {
 			throw new Error('Secondary axis must be used by one of the multiple charts')
@@ -523,7 +521,7 @@ export function makeXmlCharts(rel: ISlideRelChart) {
 			strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY)
 
 			// Add series axis for 3D bar
-			if (rel.opts.type == 'bar3D') {
+			if (rel.opts.type == CHART_TYPES.BAR3D) {
 				strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			}
 		}
@@ -607,7 +605,7 @@ export function makeXmlCharts(rel: ISlideRelChart) {
 
 	strXml += '  <c:plotVisOnly val="1"/>'
 	strXml += '  <c:dispBlanksAs val="' + rel.opts.displayBlanksAs + '"/>'
-	if (rel.opts.type === 'scatter') strXml += '<c:showDLblsOverMax val="1"/>'
+	if (rel.opts.type === CHART_TYPES.SCATTER) strXml += '<c:showDLblsOverMax val="1"/>'
 
 	strXml += '</c:chart>'
 
@@ -638,20 +636,20 @@ export function makeXmlCharts(rel: ISlideRelChart) {
  * @param {String} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
  */
-function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean) {
+function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean) {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
-	var strXml: string = ''
+	let strXml: string = ''
 
 	switch (chartType) {
 		case 'area':
 		case 'bar':
-		case 'bar3D':
+		case 'bar3d':
 		case 'line':
 		case 'radar':
 			// 1: Start Chart
 			strXml += '<c:' + chartType + 'Chart>'
-			if (chartType == 'bar' || chartType == 'bar3D') {
+			if (chartType == 'bar' || chartType == 'bar3d') {
 				strXml += '<c:barDir val="' + opts.barDir + '"/>'
 				strXml += '<c:grouping val="' + opts.barGrouping + '"/>'
 			}
@@ -677,10 +675,10 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 				 }
 				]
 			*/
-			var colorIndex = -1 // Maintain the color index by region
+			let colorIndex = -1 // Maintain the color index by region
 			data.forEach(obj => {
 				colorIndex++
-				var idx = obj.index
+				let idx = obj.index
 				strXml += '<c:ser>'
 				strXml += '  <c:idx val="' + idx + '"/>'
 				strXml += '  <c:order val="' + idx + '"/>'
@@ -693,7 +691,7 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Fill and Border
-				var strSerColor = opts.chartColors[colorIndex % opts.chartColors.length]
+				let strSerColor = (opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null)
 
 				strXml += '  <c:spPr>'
 				if (strSerColor == 'transparent') {
@@ -745,7 +743,7 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 					strXml += '      </a:pPr></a:p>'
 					strXml += '    </c:txPr>'
 					// Setting dLblPos tag for bar3D seems to break the generated chart
-					if (chartType != 'area' && chartType != 'bar3D') {
+					if (chartType != 'area' && chartType != 'bar3d') {
 						strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
 					}
 					strXml += '    <c:showLegendKey val="0"/>'
@@ -786,10 +784,10 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 
 				// Color chart bars various colors
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-				if ((chartType == 'bar' || chartType == 'bar3D') && (data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
+				if ((chartType == 'bar' || chartType == 'bar3d') && (data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
-						var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors
+						let arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || []
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
@@ -884,7 +882,7 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 				strXml += '    </c:txPr>'
 				// NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
 				// Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
-				if (opts.type != 'area' && opts.type != 'radar' && !isMultiTypeChart) strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
+				if (opts.type != CHART_TYPES.AREA && opts.type != CHART_TYPES.RADAR && !isMultiTypeChart) strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
@@ -898,8 +896,8 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 			// 4: Add more chart options (gapWidth, line Marker, etc.)
 			if (chartType == 'bar') {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
-				strXml += '  <c:overlap val="' + (opts.barGrouping.indexOf('tacked') > -1 ? 100 : 0) + '"/>'
-			} else if (chartType == 'bar3D') {
+				strXml += '  <c:overlap val="' + ((opts.barGrouping||'').indexOf('tacked') > -1 ? 100 : 0) + '"/>'
+			} else if (chartType == 'bar3d') {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
 				strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>'
 				strXml += '  <c:shape val="' + opts.bar3DShape + '"/>'
@@ -918,7 +916,7 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 			// end switch
 			break
 
-		case 'scatter':
+		case CHART_TYPES.SCATTER:
 			/*
 				`data` = [
 					{ name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10,11,12] },
@@ -933,7 +931,7 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 			strXml += '<c:varyColors val="0"/>'
 
 			// 2: Series: (One for each Y-Axis)
-			var colorIndex = -1
+			colorIndex = -1
 			data.filter((_obj, idx) => {
 				return idx > 0
 			}).forEach((obj, idx) => {
@@ -1125,7 +1123,7 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 				if ((data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
-						var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors
+						var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || []
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
@@ -1218,7 +1216,7 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 			// end switch
 			break
 
-		case 'bubble':
+		case CHART_TYPES.BUBBLE:
 			/*
 				`data` = [
 					{ name:'X-Axis',     values:[1,2,3,4,5,6,7,8,9,10,11,12] },
@@ -1232,8 +1230,8 @@ function makeChartType(chartType: CHART_TYPES, data: OptsChartData[], opts: ICha
 			strXml += '<c:varyColors val="0"/>'
 
 			// 2: Series: (One for each Y-Axis)
-			var colorIndex = -1
-			var idxColLtr = 1
+			colorIndex = -1
+			let idxColLtr = 1
 			data.filter((_obj, idx) => {
 				return idx > 0
 			}).forEach((obj, idx) => {
@@ -1541,7 +1539,7 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 
 	// Build cat axis tag
 	// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-	if (opts.type == 'scatter' || opts.type == 'bubble') {
+	if (opts.type == CHART_TYPES.SCATTER || opts.type == CHART_TYPES.BUBBLE) {
 		strXml += '<c:valAx>'
 	} else {
 		strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
@@ -1566,12 +1564,12 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 		})
 	}
 	// NOTE: Adding Val Axis Formatting if scatter or bubble charts
-	if (opts.type == 'scatter' || opts.type == 'bubble') {
+	if (opts.type == CHART_TYPES.SCATTER || opts.type == CHART_TYPES.BUBBLE) {
 		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>'
 	} else {
 		strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode || 'General') + '" sourceLinked="0"/>'
 	}
-	if (opts.type === 'scatter') {
+	if (opts.type === CHART_TYPES.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
 		strXml += '  <c:minorTickMark val="none"/>'
 		strXml += '  <c:tickLblPos val="nextTo"/>'
@@ -1625,7 +1623,7 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 
 	// Close cat axis tag
 	// NOTE: Added closing tag of val or cat axis based on chart type
-	if (opts.type == 'scatter' || opts.type == 'bubble') {
+	if (opts.type == CHART_TYPES.SCATTER || opts.type == CHART_TYPES.BUBBLE) {
 		strXml += '</c:valAx>'
 	} else {
 		strXml += '</c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
@@ -1662,7 +1660,7 @@ function makeValueAxis(opts: IChartOpts, valAxisId: string) {
 		})
 	}
 	strXml += ' <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>'
-	if (opts.type === 'scatter') {
+	if (opts.type === CHART_TYPES.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
 		strXml += '  <c:minorTickMark val="none"/>'
 		strXml += '  <c:tickLblPos val="nextTo"/>'
@@ -1695,7 +1693,15 @@ function makeValueAxis(opts: IChartOpts, valAxisId: string) {
 	strXml += ' <c:crosses val="' + crosses + '"/>'
 	strXml +=
 		' <c:crossBetween val="' +
-		(opts.type === CHART_TYPES.SCATTER || (Array.isArray(opts.type) && opts.type.filter(type=>{return type.type == CHART_TYPES.AREA}).length > 0 ? true : false) ? 'midCat' : 'between') +
+		(opts.type === CHART_TYPES.SCATTER ||
+		(Array.isArray(opts.type) &&
+		opts.type.filter(type => {
+			return type.type == CHART_TYPES.AREA
+		}).length > 0
+			? true
+			: false)
+			? 'midCat'
+			: 'between') +
 		'"/>'
 	if (opts.valAxisMajorUnit) strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>'
 	strXml += '</c:valAx>'
@@ -1841,14 +1847,14 @@ function genXmlTitle(opts: IChartTitleOpts) {
  * @param {String} type "major"(default) | "minor"
  */
 function createGridLineElement(glOpts: IChartOpts['catGridLine']) {
-	let strXml = '<MajorGridlines>'
+	let strXml = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
 	strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">'
 	strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>' // should accept scheme colors as implemented in PR 135
 	strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>'
 	strXml += '  </a:ln>'
 	strXml += ' </c:spPr>'
-	strXml += '</c:MajorGridlines>'
+	strXml += '</c:majorGridlines>'
 
 	return strXml
 }

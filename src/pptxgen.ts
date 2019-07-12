@@ -327,10 +327,7 @@ export default class PptxGenJS {
 			console.log(layout)
 		})
 		this.slides.forEach(slide => {
-			console.log(slide.relsChart)
 			this.createChartMediaRels(slide, zip, arrChartPromises)
-			// FIXME: /charts is empty in pptx export!!
-			console.log(arrChartPromises)
 		})
 		this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
 

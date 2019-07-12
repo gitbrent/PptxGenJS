@@ -13,20 +13,31 @@ import {
 	DEF_CELL_MARGIN_PT,
 	CHART_TYPES,
 	SLDNUMFLDID,
-	BULLET_TYPES,
 	DEF_FONT_COLOR,
-	LAYOUT_IDX_SERIES_BASE,
-	PLACEHOLDER_TYPES,
-	SLIDE_OBJECT_TYPES,
 	DEF_FONT_SIZE,
 	DEF_SLIDE_MARGIN_IN,
 	IMG_PLAYBTN,
 	BASE_SHAPES,
-    CHART_TYPE_NAMES,
+	CHART_TYPE_NAMES,
+	SLIDE_OBJECT_TYPES,
 } from './enums'
-import { ISlide, ITextOpts, ILayout, ISlideLayout, ISlideDataObject, ITableCell, ISlideLayoutData, IMediaOpts, ISlideRelMedia, IChartOpts, IChartMulti } from './interfaces'
+import {
+	ISlide,
+	ITextOpts,
+	ILayout,
+	ISlideLayout,
+	ISlideDataObject,
+	ITableCell,
+	ISlideLayoutData,
+	IMediaOpts,
+	ISlideRelMedia,
+	IChartOpts,
+	IChartMulti,
+	ISlideRel,
+	ISlideRelChart,
+} from './interfaces'
 import { convertRotationDegrees, encodeXmlEntities, getSmartParseNumber, inch2Emu, genXmlColorSelection } from './utils'
-import { createHyperlinkRels, getSlidesForTableRows, correctShadowOptions, correctGridLineOptions, getShapeInfo, genXmlTextBody, genXmlPlaceholder } from './gen-xml'
+import { createHyperlinkRels, getSlidesForTableRows, correctShadowOptions, getShapeInfo, genXmlTextBody, genXmlPlaceholder } from './gen-xml'
 
 /** counter for included images (used for index in their filenames) */
 var _imageCounter: number = 0
@@ -165,12 +176,11 @@ export function addBackgroundDefinition(bkg: string | { src?: string; path?: str
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
 		if (!bkg.src) bkg.src = 'preencoded.png'
-		var targetRels = target.rels
 		var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn == 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
-		var intRels = targetRels.length + 1
-		targetRels.push({
+		var intRels = target.rels.length + 1
+		target.rels.push({
 			path: bkg.src,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
@@ -307,7 +317,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 	this.slides.forEach(slide => {
-		intRels += slide.rels.length
+		intRels += slide.relsMedia.length
 	})
 	// FIXME: "this.slides" doesnt exist - pass in or create method!
 
@@ -589,10 +599,8 @@ export function addImageDefinition(objImage, target) {
  *	 ]
  *	}
  */
-export function addChartDefinition(type:CHART_TYPE_NAMES|IChartMulti[], data:[], opt, target:ISlide) {
-	var targetRels = target.rels
+export function addChartDefinition(type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt, target: ISlide) {
 	var chartId = ++_chartCounter
-	var chartRelId = target.rels.length + 1
 	var resultObject = {
 		type: null,
 		text: null,
@@ -604,7 +612,7 @@ export function addChartDefinition(type:CHART_TYPE_NAMES|IChartMulti[], data:[],
 	// Multi-Type Charts
 	var tmpOpt
 	var tmpData = [],
-		options:IChartOpts
+		options: IChartOpts
 	if (Array.isArray(type)) {
 		// For multi-type charts there needs to be data for each type,
 		// as well as a single data source for non-series operations.
@@ -680,9 +688,9 @@ export function addChartDefinition(type:CHART_TYPE_NAMES|IChartMulti[], data:[],
 	}
 
 	// Set gridline defaults
-	options.catGridLine = options.catGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {style:'none'})
+	options.catGridLine = options.catGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
 	options.valGridLine = options.valGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
-	options.serGridLine = options.serGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {style:'none'})
+	options.serGridLine = options.serGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
 	correctGridLineOptions(options.catGridLine)
 	correctGridLineOptions(options.valGridLine)
 	correctGridLineOptions(options.serGridLine)
@@ -746,18 +754,18 @@ export function addChartDefinition(type:CHART_TYPE_NAMES|IChartMulti[], data:[],
 	// STEP 4: Set props
 	resultObject.type = 'chart'
 	resultObject.options = options
+	resultObject.chartRid = target.relsChart.length + 1
 
 	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-	targetRels.push({
-		rId: chartRelId,
+	target.relsChart.push({
+		rId: target.relsChart.length + 1,
 		data: tmpData,
 		opts: options,
-		type: SLIDE_OBJECT_TYPES.chart,
+		type: options.type,
 		globalId: chartId,
 		fileName: 'chart' + chartId + '.xml',
 		Target: '/ppt/charts/chart' + chartId + '.xml',
 	})
-	resultObject.chartRid = chartRelId
 
 	target.data.push(resultObject)
 	return resultObject
@@ -789,7 +797,7 @@ export function createSlideObject(slideDef, target) {
 
 	// STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-		slideDef.objects.forEach((object, idx:number) => {
+		slideDef.objects.forEach((object, idx: number) => {
 			var key = Object.keys(object)[0]
 			if (MASTER_OBJECTS[key] && key == 'chart') addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target)
 			else if (MASTER_OBJECTS[key] && key == 'image') addImageDefinition(object[key], target)
@@ -1098,8 +1106,8 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 
 						// 4: Set CELL content and properties ==================================
 						// FIXME: cell is "0" ??? table demo
-						console.log(rowObj)
-						console.log(cell)
+						//console.log(rowObj)
+						//console.log(cell)
 						strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMargin + cellValign + '>'
 
 						// 5: Borders: Add any borders
@@ -1488,17 +1496,44 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
  * @param {Object[]} defaultRels array of default relations (such objects expected: { target: <filepath>, type: <schemepath> })
  * @return {string} complete XML string ready to be saved as a file
  */
-export function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRels): string {
-	var lastRid = 0 // stores maximum rId used for dynamic relations
-	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
+export function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
+	let lastRid = 0 // stores maximum rId used for dynamic relations
+	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-	// Add any rels for this Slide (image/audio/video/youtube/chart)
-	slideObject.rels.forEach((rel, idx) => {
+
+	// Add all rels for this Slide
+	slideObject.rels.forEach((rel: ISlideRel) => {
 		lastRid = Math.max(lastRid, rel.rId)
+		if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
+			if (rel.data == 'slide') {
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="slide' +
+					rel.Target +
+					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
+			} else {
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="' +
+					rel.Target +
+					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
+			}
+		} else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
+			strXml +=
+				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
+		}
+	})
+
+	;(slideObject.relsChart || []).forEach((rel: ISlideRelChart) => {
+		lastRid = Math.max(lastRid, rel.rId)
+		strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
+	})
+
+	;(slideObject.relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		if (rel.type.toLowerCase().indexOf('image') > -1) {
 			strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>'
-		} else if (rel.type.toLowerCase().indexOf('chart') > -1) {
-			strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
 		} else if (rel.type.toLowerCase().indexOf('audio') > -1) {
 			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
 			if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
@@ -1524,25 +1559,6 @@ export function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, de
 					'" Target="' +
 					rel.Target +
 					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>'
-		} else if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
-			if (rel.data == 'slide') {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="slide' +
-					rel.Target +
-					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
-			} else {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="' +
-					rel.Target +
-					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
-			}
-		} else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
-			strXml +=
-				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
 		}
 	})
 
@@ -1552,6 +1568,18 @@ export function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, de
 
 	strXml += '</Relationships>'
 	return strXml
+}
+
+function correctGridLineOptions(glOpts) {
+	if (!glOpts || glOpts.style == 'none') return
+	if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
+		console.warn('Warning: chart.gridLine.size must be greater than 0.')
+		delete glOpts.size // delete prop to used defaults
+	}
+	if (glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0) {
+		console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.')
+		delete glOpts.style
+	}
 }
 
 let imageSizingXml = {

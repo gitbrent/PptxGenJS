@@ -240,21 +240,11 @@ export interface IChartMulti {
 
 // Core: `slide` and `presentation`
 // =====
-export interface ISlideRelChart extends OptsChartData {
-	type: CHART_TYPES
-	opts: IChartOpts
-	data: Array<OptsChartData>
-	rId: number
-	Target: string
-	globalId: number
-	fileName: string
-}
 export interface ISlideNumber extends OptsCoords {
 	fontFace?: string
 	fontSize?: number
 	color?: string
 }
-
 export interface ISlideMasterDef {
 	title: string
 	height?: number
@@ -264,11 +254,19 @@ export interface ISlideMasterDef {
 	objects?: [{}]
 	slideNumber?: ISlideNumber
 }
-
+export interface ISlideRelChart extends OptsChartData {
+	type: CHART_TYPE_NAMES|IChartMulti[]
+	opts: IChartOpts
+	data: Array<OptsChartData>
+	rId: number
+	Target: string
+	globalId: number
+	fileName: string
+}
 export interface ISlideRel {
+	type: SLIDE_OBJECT_TYPES
 	Target: string
 	fileName?: string
-	type: SLIDE_OBJECT_TYPES
 	data: any[] | string
 	opts?:IChartOpts
 	path?: string
@@ -365,8 +363,8 @@ export interface ISlideLayout {
 	}
 	data: Array<ISlideLayoutData>
 	rels?: Array<any>
-	//relsChart?: Array<ISlideRelChart>
-	//relsMedia?: Array<ISlideRelMedia>
+	relsChart?: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
+	relsMedia?: Array<ISlideRelMedia>
 	margin?: Array<number> | number
 	slideNumberObj?: ISlideNumber
 	width: number
