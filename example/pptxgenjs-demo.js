@@ -819,12 +819,12 @@ function genSlides_Chart(pptx) {
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
 
-			catGridLine: 'none',
+			catGridLine: { style: "none" },
 			catAxisHidden: true,
 			valGridLine: { color: "cc6699", style: "dash", size: 1 },
 
 			showLegend   : true,
-			title        : 'No CatAxis, ValGridLine=dash',
+			title        : 'No CatAxis, ValGridLine=style:dash',
 			titleColor   : 'a9a9a9',
 			titleFontFace: 'Helvetica Neue',
 			titleFontSize: 14,
@@ -846,9 +846,9 @@ function genSlides_Chart(pptx) {
 			showValue          : true,
 
 			catAxisHidden: true,
-			catGridLine  : 'none',
+			catGridLine  : { style: "none" },
 			valAxisHidden: true,
-			valGridLine  : 'none',
+			valGridLine  : { style: "none" },
 
 			showLegend: true,
 			legendPos : 'b',
@@ -874,7 +874,7 @@ function genSlides_Chart(pptx) {
 			showCatAxisTitle: true,
 
 			valAxisOrientation: 'maxMin',
-			valGridLine: 'none',
+			valGridLine: { style: "none" },
 			valAxisHidden: true,
 			catGridLine: { color: "cc6699", style: "dash", size: 1 },
 
@@ -1884,7 +1884,7 @@ function genSlides_Chart(pptx) {
 					}, {
 						showValAxisTitle: true,
 						valAxisTitle: 'Secondary Value Axis',
-						valGridLine: 'none'
+						valGridLine: { style: "none" }
 					}
 				],
 
@@ -1974,7 +1974,7 @@ function genSlides_Chart(pptx) {
 						valAxisMajorUnit: 1,
 						valAxisMaxVal: 10,
 						valAxisMinVal: 1,
-						valGridLine: 'none'
+						valGridLine: { style: "none" }
 					}
 				],
 				catAxes: [
@@ -2053,7 +2053,7 @@ function genSlides_Chart(pptx) {
 						valAxisMajorUnit: 1,
 						valAxisMaxVal: 10,
 						valAxisMinVal: 1,
-						valGridLine: 'none'
+						valGridLine: { style: "none" }
 					}
 				],
 				catAxes: [
@@ -2148,7 +2148,7 @@ function genSlides_Chart(pptx) {
 						valAxisMajorUnit: 1,
 						valAxisMaxVal: 10,
 						valAxisMinVal: 1,
-						valGridLine: 'none'
+						valGridLine: { style: "none" }
 					}
 				],
 				catAxes: [

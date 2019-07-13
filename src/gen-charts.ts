@@ -629,11 +629,11 @@ export function makeXmlCharts(rel: ISlideRelChart) {
  * Create XML string for any given chart type
  * @example: <c:bubbleChart> or <c:lineChart>
  *
- * @param {CHART_TYPES} `chartType` chart type
+ * @param {CHART_TYPE_NAMES} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
  * @param {IChartOpts} `opts` chart options
- * @param {String} `valAxisId`
- * @param {String} `catAxisId`
+ * @param {string} `valAxisId`
+ * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
  */
 function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean) {
@@ -642,19 +642,19 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 	let strXml: string = ''
 
 	switch (chartType) {
-		case 'area':
-		case 'bar':
-		case 'bar3d':
-		case 'line':
-		case 'radar':
+		case CHART_TYPES.AREA:
+		case CHART_TYPES.BAR:
+		case CHART_TYPES.BAR3D:
+		case CHART_TYPES.LINE:
+		case CHART_TYPES.RADAR:
 			// 1: Start Chart
 			strXml += '<c:' + chartType + 'Chart>'
-			if (chartType == 'bar' || chartType == 'bar3d') {
+			if (chartType == CHART_TYPES.BAR || chartType == CHART_TYPES.BAR3D) {
 				strXml += '<c:barDir val="' + opts.barDir + '"/>'
 				strXml += '<c:grouping val="' + opts.barGrouping + '"/>'
 			}
 
-			if (chartType == 'radar') {
+			if (chartType == CHART_TYPES.RADAR) {
 				strXml += '<c:radarStyle val="' + opts.radarStyle + '"/>'
 			}
 
@@ -702,7 +702,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 					strXml += '<a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
 				}
 
-				if (chartType == 'line') {
+				if (chartType == CHART_TYPES.LINE) {
 					if (opts.lineSize == 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
@@ -724,7 +724,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 
 				// Data Labels per series
 				// [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
-				if (chartType != 'radar') {
+				if (chartType != CHART_TYPES.RADAR) {
 					strXml += '  <c:dLbls>'
 					strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
 					if (opts.dataLabelBkgrdColors) {
@@ -743,7 +743,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 					strXml += '      </a:pPr></a:p>'
 					strXml += '    </c:txPr>'
 					// Setting dLblPos tag for bar3D seems to break the generated chart
-					if (chartType != 'area' && chartType != 'bar3d') {
+					if (chartType != CHART_TYPES.AREA && chartType != CHART_TYPES.BAR3D) {
 						strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
 					}
 					strXml += '    <c:showLegendKey val="0"/>'
@@ -757,7 +757,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				}
 
 				// 'c:marker' tag: `lineDataSymbol`
-				if (chartType == 'line' || chartType == 'radar') {
+				if (chartType == CHART_TYPES.LINE || chartType == CHART_TYPES.RADAR) {
 					strXml += '<c:marker>'
 					strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>'
 					if (opts.lineDataSymbolSize) {
@@ -784,7 +784,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 
 				// Color chart bars various colors
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-				if ((chartType == 'bar' || chartType == 'bar3d') && (data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
+				if ((chartType == CHART_TYPES.BAR || chartType == CHART_TYPES.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
 						let arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || []
@@ -796,7 +796,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						strXml += '    <c:spPr>'
 						if (opts.lineSize === 0) {
 							strXml += '<a:ln><a:noFill/></a:ln>'
-						} else if (chartType === 'bar') {
+						} else if (chartType === CHART_TYPES.BAR) {
 							strXml += '<a:solidFill>'
 							strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
 							strXml += '</a:solidFill>'
@@ -859,7 +859,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				}
 
 				// Option: `smooth`
-				if (chartType == 'line') strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>'
+				if (chartType == CHART_TYPES.LINE) strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>'
 
 				// 4: Close "SERIES"
 				strXml += '</c:ser>'
@@ -894,14 +894,14 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			}
 
 			// 4: Add more chart options (gapWidth, line Marker, etc.)
-			if (chartType == 'bar') {
+			if (chartType == CHART_TYPES.BAR) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
 				strXml += '  <c:overlap val="' + ((opts.barGrouping||'').indexOf('tacked') > -1 ? 100 : 0) + '"/>'
-			} else if (chartType == 'bar3d') {
+			} else if (chartType == CHART_TYPES.BAR3D) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
 				strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>'
 				strXml += '  <c:shape val="' + opts.bar3DShape + '"/>'
-			} else if (chartType == 'line') {
+			} else if (chartType == CHART_TYPES.LINE) {
 				strXml += '  <c:marker val="1"/>'
 			}
 
@@ -1377,8 +1377,8 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			// end switch
 			break
 
-		case 'pie':
-		case 'doughnut':
+		case CHART_TYPES.DOUGHNUT:
+		case CHART_TYPES.PIE:
 			// Use the same var name so code blocks from barChart are interchangeable
 			var obj = data[0]
 
@@ -1457,7 +1457,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '        </a:defRPr>'
 				strXml += '      </a:pPr></a:p>'
 				strXml += '    </c:txPr>'
-				if (chartType == 'pie') {
+				if (chartType == CHART_TYPES.PIE) {
 					strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'inEnd') + '"/>'
 				}
 				strXml += '    <c:showLegendKey val="0"/>'
@@ -1484,7 +1484,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				  </a:p>\
 				</c:txPr>\
 				' +
-				(chartType == 'pie' ? '<c:dLblPos val="ctr"/>' : '') +
+				(chartType == CHART_TYPES.PIE ? '<c:dLblPos val="ctr"/>' : '') +
 				'\
 				<c:showLegendKey val="0"/>\
 				<c:showVal val="0"/>\
@@ -1524,7 +1524,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			// 4: Close "SERIES"
 			strXml += '  </c:ser>'
 			strXml += '  <c:firstSliceAng val="0"/>'
-			if (chartType == 'doughnut') strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>'
+			if (chartType == CHART_TYPES.DOUGHNUT) strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>'
 			strXml += '</c:' + chartType + 'Chart>'
 
 			// Done with Doughnut/Pie
@@ -1552,7 +1552,7 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 	strXml += '</c:scaling>'
 	strXml += '  <c:delete val="' + (opts.catAxisHidden ? 1 : 0) + '"/>'
 	strXml += '  <c:axPos val="' + (opts.barDir == 'col' ? 'b' : 'l') + '"/>'
-	strXml += opts.catGridLine !== 'none' ? createGridLineElement(opts.catGridLine) : ''
+	strXml += opts.catGridLine.style !== 'none' ? createGridLineElement(opts.catGridLine) : ''
 	// '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
 	if (opts.showCatAxisTitle) {
 		strXml += genXmlTitle({
@@ -1648,7 +1648,7 @@ function makeValueAxis(opts: IChartOpts, valAxisId: string) {
 	strXml += '  </c:scaling>'
 	strXml += '  <c:delete val="' + (opts.valAxisHidden ? 1 : 0) + '"/>'
 	strXml += '  <c:axPos val="' + axisPos + '"/>'
-	if (opts.valGridLine != 'none') strXml += createGridLineElement(opts.valGridLine)
+	if (opts.valGridLine.style != 'none') strXml += createGridLineElement(opts.valGridLine)
 	// '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
 	if (opts.showValAxisTitle) {
 		strXml += genXmlTitle({
@@ -1724,7 +1724,7 @@ function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 	strXml += '  <c:scaling><c:orientation val="' + (opts.serAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '"/></c:scaling>'
 	strXml += '  <c:delete val="' + (opts.serAxisHidden ? 1 : 0) + '"/>'
 	strXml += '  <c:axPos val="' + (opts.barDir == 'col' ? 'b' : 'l') + '"/>'
-	strXml += opts.serGridLine !== 'none' ? createGridLineElement(opts.serGridLine) : ''
+	strXml += opts.serGridLine.style !== 'none' ? createGridLineElement(opts.serGridLine) : ''
 	// '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
 	if (opts.showSerAxisTitle) {
 		strXml += genXmlTitle({
@@ -1856,9 +1856,7 @@ function createGridLineElement(glOpts: OptsChartGridLine) {
 	strXml += ' </c:spPr>'
 	strXml += '</c:majorGridlines>'
 
-	// FIXME: this being included in slides where prev version didnt include them is causing CORRUPTION (slide is EMPTY)
-	//return strXml
-	return ''
+	return strXml
 }
 
 /**
