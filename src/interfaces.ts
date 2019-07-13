@@ -284,7 +284,7 @@ export interface ISlideRelMedia {
 	rId: number
 	Target: string
 }
-export interface ISlideDataObject {
+export interface ISlideData {
 	type: SLIDE_OBJECT_TYPES
 	// text
 	text?: string
@@ -396,7 +396,7 @@ export interface ISlide {
 	rels: Array<ISlideRel>
 	relsChart: Array<ISlideRelChart>
 	relsMedia: Array<ISlideRelMedia>
-	data?: Array<ISlideDataObject>
+	data?: Array<ISlideData>
 	layoutName?: string
 	slideLayout: ISlideLayout
 	margin?: object

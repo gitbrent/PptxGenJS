@@ -26,7 +26,7 @@ import {
 	ITextOpts,
 	ILayout,
 	ISlideLayout,
-	ISlideDataObject,
+	ISlideData,
 	ITableCell,
 	ISlideLayoutData,
 	IMediaOpts,
@@ -306,7 +306,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 		mtype: strType,
 		media: strPath || 'preencoded.mov',
 		options: {},
-	} as ISlideDataObject
+	} as ISlideData
 
 	// STEP 3: Set media properties & options
 	slideData.options.x = intPosX
@@ -387,7 +387,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
  */
 export function addNotesDefinition(notes: string, opt: object, target: ISlide) {
 	var opt = opt && typeof opt === 'object' ? opt : {}
-	var resultObject: ISlideDataObject = {
+	var resultObject: ISlideData = {
 		type: null,
 		text: null,
 	}
@@ -865,6 +865,9 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 		let placeholderObj: ISlideLayoutData
 		let locationAttr = '',
 			shapeType = null
+
+		// FIXME: charts with % width (eg: "90%") are too small
+		console.log(slideObject['slideLayout'])
 
 		if (slideObject['slideLayout'] && slideObject['slideLayout']['data'] && slideItemObj.options && slideItemObj.options.placeholder) {
 			placeholderObj = slideObject['slideLayout']['data'].filter((slideLayout: ISlideLayoutData) => {
@@ -1525,12 +1528,10 @@ export function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, de
 				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
 		}
 	})
-
 	;(slideObject.relsChart || []).forEach((rel: ISlideRelChart) => {
 		lastRid = Math.max(lastRid, rel.rId)
 		strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
 	})
-
 	;(slideObject.relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		if (rel.type.toLowerCase().indexOf('image') > -1) {
 			strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>'
