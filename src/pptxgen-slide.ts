@@ -21,6 +21,8 @@ export default class Slide {
 	public layoutName: any
 	public slideLayout: ISlideLayout
 
+	// TODO: slide.title (they're all "PowerPoint Presenation" now!) 20190712
+
 	constructor(params: { presLayout: ILayout; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this._presLayout = params.presLayout
 		this.name = 'Slide ' + params.slideNumber
