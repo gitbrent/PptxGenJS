@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2019-07-02">
+	<meta name="updated" content="2019-07-13">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -260,11 +260,8 @@
 			var slide = pptx.addSlide();
 			var optsTitle = { color:'9F9F9F', marginPt:3, border:[0,0,{pt:'1',color:'CFCFCF'},0] };
 
-// TODO: add new defineLayout method
 			pptx.layout({ name:'A3', width:16.5, height:11.7 });
-
 			slide.slideNumber({ x:0.5, y:'90%' });
-
 			slide.addTable( [ [{ text:'Simple Example', options:optsTitle }] ], { x:0.5, y:0.13, w:12.5 } );
 
 			//slide.addText('Hello World!', { x:0.5, y:0.7, w:6, h:1, color:'0000FF' });
