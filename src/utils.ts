@@ -59,24 +59,33 @@ export function inch2Emu(inches: number | string): number {
 	return Math.round(EMU * inches)
 }
 
-export function getSmartParseNumber(inVal: number | string, inDir: 'X' | 'Y', pptLayout: ISlideLayout) {
+/**
+ * Convert string percentages to number relative to slide size
+ *
+ * @param {number|string} `size`
+ * @param {string} `xyDir`
+ * @param {ISlideLayout} `layout`
+ * @returns {number} width/height
+ */
+export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ISlideLayout): number {
 	// FIRST: Convert string numeric value if reqd
-	if (typeof inVal == 'string' && !isNaN(Number(inVal))) inVal = Number(inVal)
+	if (typeof size == 'string' && !isNaN(Number(size))) size = Number(size)
 
 	// CASE 1: Number in inches
-	// Figure any number less than 100 is inches
-	if (typeof inVal == 'number' && inVal < 100) return inch2Emu(inVal)
+	// Assume any number less than 100 is inches
+	if (typeof size == 'number' && size < 100) return inch2Emu(size)
 
 	// CASE 2: Number is already converted to something other than inches
-	// Figure any number greater than 100 is not inches! :)  Just return it (its EMU already i guess??)
-	if (typeof inVal == 'number' && inVal >= 100) return inVal
+	// Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
+	if (typeof size == 'number' && size >= 100) return size
 
 	// CASE 3: Percentage (ex: '50%')
-	if (typeof inVal == 'string' && inVal.indexOf('%') > -1) {
-		if (inDir && inDir == 'X') return Math.round((parseFloat(inVal) / 100) * pptLayout.width)
-		if (inDir && inDir == 'Y') return Math.round((parseFloat(inVal) / 100) * pptLayout.height)
+	if (typeof size == 'string' && size.indexOf('%') > -1) {
+		if (xyDir && xyDir == 'X') return Math.round((parseFloat(size) / 100) * layout.width)
+		if (xyDir && xyDir == 'Y') return Math.round((parseFloat(size) / 100) * layout.height)
+
 		// Default: Assume width (x/cx)
-		return Math.round((parseFloat(inVal) / 100) * pptLayout.width)
+		return Math.round((parseFloat(size) / 100) * layout.width)
 	}
 
 	// LAST: Default value
@@ -86,8 +95,8 @@ export function getSmartParseNumber(inVal: number | string, inDir: 'X' | 'Y', pp
 /**
  * Convert degrees (0..360) to PowerPoint `rot` value
  *
- * @param {number} `d` - degrees
- * @returns {number} PPT `rot` value
+ * @param {number} `d` degrees
+ * @returns {number} `rot` value
  */
 export function convertRotationDegrees(d: number): number {
 	d = d || 0
@@ -123,6 +132,7 @@ export function rgbToHex(r: number, g: number, b: number): string {
 
 /**
  * Create either a `a:schemeClr` (scheme color) or `a:srgbClr` (hexa representation).
+ *
  * @param {string} `colorStr` hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
  * @param {string} `innerElements` additional elements that adjust the color and are enclosed by the color element
  */
