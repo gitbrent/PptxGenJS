@@ -45,15 +45,15 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
+import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, MASTER_OBJECTS, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './enums'
+import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef } from './interfaces'
+import Slide from './pptxgen-slide'
 import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genXml from './gen-xml'
 import { inch2Emu, rgbToHex } from './utils'
-import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, MASTER_OBJECTS, SCHEME_COLOR_NAMES } from './enums'
-import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef } from './interfaces'
 import { gObjPptxShapes } from './lib-shapes'
-import Slide from './pptxgen-slide'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -128,6 +128,11 @@ export default class PptxGenJS {
 		if (newLayout) {
 			this._layout = value
 			this._presLayout = newLayout
+
+			// FIXME: setting layout doesnt seem to be working 20190712
+			console.log(this._layout)
+			console.log(this._presLayout)
+
 		} else {
 			throw 'UNKNOWN-LAYOUT'
 		}
@@ -430,16 +435,16 @@ export default class PptxGenJS {
 	addPlaceholdersToSlides = (slide: ISlide) => {
 		// Add all placeholders on this Slide that dont already exist
 		;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
-			if (slideLayoutObj.type === MASTER_OBJECTS.placeholder) {
+			if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
 				// A: Search for this placeholder on Slide before we add
 				// NOTE: Check to ensure a placeholder does not already exist on the Slide
 				// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 				if (
 					slide.data.filter(slideObj => {
-						return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholderName
+						return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholder
 					}).length == 0
 				) {
-					genObj.addTextDefinition('', { placeholder: slideLayoutObj.options.placeholderName }, slide, false)
+					genObj.addTextDefinition('', { placeholder: slideLayoutObj.options.placeholder }, slide, false)
 				}
 			}
 		})
@@ -612,8 +617,8 @@ export default class PptxGenJS {
 			return
 		}
 
-		var intEmpty = 0
-		var funcCallback = rel => {
+		let intEmpty = 0
+		let funcCallback = rel => {
 			if (rel.path == slideRel.path) rel.data = base64Data
 			if (!rel.data) intEmpty++
 		}
@@ -636,12 +641,12 @@ export default class PptxGenJS {
 
 	/**
 	 * Save (export) the Presentation .pptx file
-	 * @param {string} `inStrExportName` - Filename to use for the export
-	 * @param {Function} `funcCallback` - Callback function to be called when export is complete
+	 * @param {string} `exportName` - Filename to use for the export
+	 * @param {Function} `callbackFunc` - Callback function to be called when export is complete
 	 * @param {JSZIP_OUTPUT_TYPE} `outputType` - JSZip output type
 	 */
-	save(inStrExportName: string, funcCallback?: Function, outputType?: JSZIP_OUTPUT_TYPE) {
-		var intRels = 0,
+	save(exportName: string, callbackFunc?: Function, outputType?: JSZIP_OUTPUT_TYPE) {
+		let intRels = 0,
 			arrRelsDone = []
 
 		// STEP 1: Add empty placeholder objects to slides that don't already have them
@@ -650,8 +655,8 @@ export default class PptxGenJS {
 		})
 
 		// STEP 2: Set export properties
-		if (funcCallback) this.saveCallback = funcCallback
-		if (inStrExportName) this.fileName = inStrExportName
+		if (callbackFunc) this.saveCallback = callbackFunc
+		if (exportName) this.fileName = exportName
 
 		// STEP 3: Read/Encode Images
 		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)

@@ -26,9 +26,8 @@ import {
 	ITextOpts,
 	ILayout,
 	ISlideLayout,
-	ISlideData,
+	ISlideObject,
 	ITableCell,
-	ISlideLayoutData,
 	IMediaOpts,
 	ISlideRelMedia,
 	IChartOpts,
@@ -202,11 +201,10 @@ export function addBackgroundDefinition(bkg: string | { src?: string; path?: str
  * @param {Boolean} isPlaceholder
  * @since: 1.0.0
  */
-export function addTextDefinition(text: string | Array<object>, opt: ITextOpts, target: ISlide, isPlaceholder: boolean) {
-	var opt: ITextOpts = opt || {}
-	var text = text || ''
-	if (Array.isArray(text) && text.length == 0) text = ''
-	var resultObject = {
+export function addTextDefinition(text: string | Array<object>, opts: ITextOpts, target: ISlide, isPlaceholder: boolean) {
+	var text = (Array.isArray(text) && text.length == 0 ? '' : text || '') || ''
+	let opt: ITextOpts = opts || {}
+	let resultObject = {
 		type: null,
 		text: null,
 		options: null,
@@ -306,7 +304,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 		mtype: strType,
 		media: strPath || 'preencoded.mov',
 		options: {},
-	} as ISlideData
+	} as ISlideObject
 
 	// STEP 3: Set media properties & options
 	slideData.options.x = intPosX
@@ -319,7 +317,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 	this.slides.forEach(slide => {
 		intRels += slide.relsMedia.length
 	})
-	// FIXME: "this.slides" doesnt exist - pass in or create method!
+	// FIXME: 201907: "this.slides" doesnt exist! - pass in from pptx or create a method we can call!
 
 	if (strType == 'online') {
 		// Add video
@@ -387,7 +385,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
  */
 export function addNotesDefinition(notes: string, opt: object, target: ISlide) {
 	var opt = opt && typeof opt === 'object' ? opt : {}
-	var resultObject: ISlideData = {
+	var resultObject: ISlideObject = {
 		type: null,
 		text: null,
 	}
@@ -448,11 +446,11 @@ export function addShapeDefinition(shape, opt, target) {
 /**
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
- * @param {Object} objImage - object containing `path`/`data`, `x`, `y`, etc.
- * @param {Object} target - slide that the image should be added to (if not specified as the 2nd arg)
+ * @param {Object} `objImage` - object containing `path`/`data`, `x`, `y`, etc.
+ * @param {Object} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @return {Object} image object
  */
-export function addImageDefinition(objImage, target) {
+export function addImageDefinition(objImage, target: ISlide) {
 	var resultObject = {
 		type: null,
 		text: null,
@@ -520,7 +518,7 @@ export function addImageDefinition(objImage, target) {
 		// <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
 		// <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
 
-		target.rels.push({
+		target.relsMedia.push({
 			path: strImagePath || strImageData + 'png',
 			type: 'image/png',
 			extn: 'png',
@@ -531,7 +529,7 @@ export function addImageDefinition(objImage, target) {
 			svgSize: { w: resultObject.options.cx, h: resultObject.options.cy },
 		})
 		resultObject.imageRid = imageRelId
-		target.rels.push({
+		target.relsMedia.push({
 			path: strImagePath || strImageData,
 			type: 'image/' + strImgExtn,
 			extn: strImgExtn,
@@ -541,7 +539,7 @@ export function addImageDefinition(objImage, target) {
 		})
 		resultObject.imageRid = imageRelId + 1
 	} else {
-		target.rels.push({
+		target.relsMedia.push({
 			path: strImagePath || 'preencoded.' + strImgExtn,
 			type: 'image/' + strImgExtn,
 			extn: strImgExtn,
@@ -558,8 +556,8 @@ export function addImageDefinition(objImage, target) {
 		else {
 			var intRelId = imageRelId + 1
 
-			target.rels.push({
-				type: 'hyperlink',
+			target.relsMedia.push({
+				type: SLIDE_OBJECT_TYPES.hyperlink,
 				data: objHyperlink.slide ? 'slide' : 'dummy',
 				rId: intRelId,
 				Target: objHyperlink.url || objHyperlink.slide,
@@ -806,7 +804,7 @@ export function createSlideObject(slideDef, target) {
 			else if (MASTER_OBJECTS[key] && key == 'text') addTextDefinition(object[key].text, object[key].options, target, false)
 			else if (MASTER_OBJECTS[key] && key == 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
-				object[key].options.placeholderName = object[key].options.name
+				object[key].options.placeholder = object[key].options.name
 				delete object[key].options.name // remap name for earier handling internally
 				object[key].options.placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
@@ -827,23 +825,21 @@ export function createSlideObject(slideDef, target) {
  * @param {ISlide|ISlideLayout} slideObject slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
-export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
-	let strSlideXml: string = slideObject.name ? '<p:cSld name="' + slideObject.name + '">' : '<p:cSld>'
+export function slideObjectToXml(slide: ISlide | ISlideLayout): string {
+	let strSlideXml: string = slide.name ? '<p:cSld name="' + slide.name + '">' : '<p:cSld>'
 	let intTableNum: number = 1
 
 	// STEP 1: Add background
-	if (slideObject && slideObject['bkgd']) {
-		strSlideXml += genXmlColorSelection(false, slideObject['bkgd'])
-	}
+	if (slide && slide.bkgd) strSlideXml += genXmlColorSelection(false, slide.bkgd)
 
 	// STEP 2: Add background image (using Strech) (if any)
-	if (slideObject && slideObject['bkgdImgRid']) {
+	if (slide && slide.bkgdImgRid) {
 		// FIXME: We should be doing this in the slideLayout...
 		strSlideXml +=
 			'<p:bg>' +
 			'<p:bgPr><a:blipFill dpi="0" rotWithShape="1">' +
 			'<a:blip r:embed="rId' +
-			slideObject['bkgdImgRid'] +
+			slide.bkgdImgRid +
 			'"><a:lum/></a:blip>' +
 			'<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>' +
 			'<a:effectLst/></p:bgPr>' +
@@ -857,21 +853,21 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
 	// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
-	slideObject.data.forEach((slideItemObj, idx: number) => {
+	slide.data.forEach((slideItemObj: ISlideObject, idx: number) => {
 		let x = 0,
 			y = 0,
-			cx = getSmartParseNumber('75%', 'X', slideObject['slideLayout'] || slideObject),
+			cx = getSmartParseNumber('75%', 'X', slide['slideLayout'] || slide),
 			cy = 0
-		let placeholderObj: ISlideLayoutData
+		let placeholderObj: ISlideObject
 		let locationAttr = '',
 			shapeType = null
 
 		// FIXME: charts with % width (eg: "90%") are too small
-		console.log(slideObject['slideLayout'])
+		console.log(slide['slideLayout'])
 
-		if (slideObject['slideLayout'] && slideObject['slideLayout']['data'] && slideItemObj.options && slideItemObj.options.placeholder) {
-			placeholderObj = slideObject['slideLayout']['data'].filter((slideLayout: ISlideLayoutData) => {
-				return slideLayout.options.placeholderName == slideItemObj.options.placeholder
+		if (slide['slideLayout'] && slide['slideLayout']['data'] && slideItemObj.options && slideItemObj.options.placeholder) {
+			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => {
+				return object.options.placeholder == slideItemObj.options.placeholder
 			})[0]
 		}
 
@@ -881,19 +877,17 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 		if (slideItemObj.options.w || slideItemObj.options.w == 0) slideItemObj.options.cx = slideItemObj.options.w
 		if (slideItemObj.options.h || slideItemObj.options.h == 0) slideItemObj.options.cy = slideItemObj.options.h
 		//
-		if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slideObject['slideLayout'] || slideObject)
-		if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slideObject['slideLayout'] || slideObject)
-		if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slideObject['slideLayout'] || slideObject)
-		if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slideObject['slideLayout'] || slideObject)
+		if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slide['slideLayout'] || slide)
+		if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide['slideLayout'] || slide)
+		if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slide['slideLayout'] || slide)
+		if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slide['slideLayout'] || slide)
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
-			if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slideObject['slideLayout'] || slideObject)
-			if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slideObject['slideLayout'] || slideObject)
-			if (placeholderObj.options.cx || placeholderObj.options.cx == 0)
-				cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slideObject['slideLayout'] || slideObject)
-			if (placeholderObj.options.cy || placeholderObj.options.cy == 0)
-				cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slideObject['slideLayout'] || slideObject)
+			if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide['slideLayout'] || slide)
+			if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide['slideLayout'] || slide)
+			if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slide['slideLayout'] || slide)
+			if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slide['slideLayout'] || slide)
 		}
 		//
 		if (slideItemObj.options.shape) shapeType = getShapeInfo(slideItemObj.options.shape)
@@ -929,9 +923,9 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 					'<p:graphicFrame>' +
 					'  <p:nvGraphicFramePr>' +
 					'    <p:cNvPr id="' +
-					(intTableNum * slideObject['number'] + 1) +
+					(intTableNum * slide['number'] + 1) +
 					'" name="Table ' +
-					intTableNum * slideObject['number'] +
+					intTableNum * slide['number'] +
 					'"/>' +
 					'    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 					'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -964,14 +958,18 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 				if (Array.isArray(objTabOpts.colW)) {
 					strXml += '<a:tblGrid>'
 					for (var col = 0; col < intColCnt; col++) {
-						strXml += '  <a:gridCol w="' + Math.round(inch2Emu(objTabOpts.colW[col]) || slideItemObj.options.cx / intColCnt) + '"/>'
+						strXml +=
+							'<a:gridCol w="' +
+							Math.round(inch2Emu(objTabOpts.colW[col]) || (typeof slideItemObj.options.cx === 'number' ? slideItemObj.options.cx : 1) / intColCnt) +
+							'"/>'
 					}
 					strXml += '</a:tblGrid>'
 				}
 				// B: Table Width provided without colW? Then distribute cols
 				else {
 					intColW = objTabOpts.colW ? objTabOpts.colW : EMU
-					if (slideItemObj.options.cx && !objTabOpts.colW) intColW = Math.round(slideItemObj.options.cx / intColCnt) // FIX: Issue#12
+					if (slideItemObj.options.cx && !objTabOpts.colW)
+						intColW = Math.round((typeof slideItemObj.options.cx === 'number' ? slideItemObj.options.cx : 1) / intColCnt)
 					strXml += '<a:tblGrid>'
 					for (var col = 0; col < intColCnt; col++) {
 						strXml += '<a:gridCol w="' + intColW + '"/>'
@@ -1044,7 +1042,9 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 					if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx]) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]))
 					else if (objTabOpts.rowH && !isNaN(Number(objTabOpts.rowH))) intRowH = inch2Emu(Number(objTabOpts.rowH))
 					else if (slideItemObj.options.cy || slideItemObj.options.h)
-						intRowH = (slideItemObj.options.h ? inch2Emu(slideItemObj.options.h) : slideItemObj.options.cy) / arrTabRows.length
+						intRowH =
+							(slideItemObj.options.h ? inch2Emu(slideItemObj.options.h) : typeof slideItemObj.options.cy === 'number' ? slideItemObj.options.cy : 1) /
+							arrTabRows.length
 
 					// B: Start row
 					strXml += '<a:tr h="' + intRowH + '">'
@@ -1315,10 +1315,10 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 				strSlideXml += '<p:blipFill>'
 				// NOTE: This works for both cases: either `path` or `data` contains the SVG
 				if (
-					(slideObject['relsMedia'] || []).filter(rel => {
+					(slide['relsMedia'] || []).filter(rel => {
 						return rel.rId == slideItemObj.imageRid
 					})[0] &&
-					(slideObject['relsMedia'] || []).filter(rel => {
+					(slide['relsMedia'] || []).filter(rel => {
 						return rel.rId == slideItemObj.imageRid
 					})[0]['extn'] == 'svg'
 				) {
@@ -1332,10 +1332,10 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
 				}
 				if (sizing && sizing.type) {
-					var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slideObject['slideLayout'] || slideObject) : cx,
-						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slideObject['slideLayout'] || slideObject) : cy,
-						boxX = getSmartParseNumber(sizing.x || 0, 'X', slideObject['slideLayout'] || slideObject),
-						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slideObject['slideLayout'] || slideObject)
+					var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide['slideLayout'] || slide) : cx,
+						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide['slideLayout'] || slide) : cy,
+						boxX = getSmartParseNumber(sizing.x || 0, 'X', slide['slideLayout'] || slide),
+						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide['slideLayout'] || slide)
 
 					strSlideXml += imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY })
 					width = boxW
@@ -1433,8 +1433,8 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 	})
 
 	// STEP 5: Add slide numbers last (if any)
-	if (slideObject.slideNumberObj) {
-		///if (!slideObject.slideNumberObj) slideObject.slideNumberObj = { x: 0.3, y: '90%' }
+	if (slide.slideNumberObj) {
+		///if (!slide.slideNumberObj) slide.slideNumberObj = { x: 0.3, y: '90%' }
 
 		strSlideXml +=
 			'<p:sp>' +
@@ -1446,14 +1446,14 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 			'  <p:spPr>' +
 			'    <a:xfrm>' +
 			'      <a:off x="' +
-			getSmartParseNumber(slideObject.slideNumberObj.x, 'X', slideObject['slideLayout'] || slideObject) +
+			getSmartParseNumber(slide.slideNumberObj.x, 'X', slide['slideLayout'] || slide) +
 			'" y="' +
-			getSmartParseNumber(slideObject.slideNumberObj.y, 'Y', slideObject['slideLayout'] || slideObject) +
+			getSmartParseNumber(slide.slideNumberObj.y, 'Y', slide['slideLayout'] || slide) +
 			'"/>' +
 			'      <a:ext cx="' +
-			(slideObject.slideNumberObj.w ? getSmartParseNumber(slideObject.slideNumberObj.w, 'X', slideObject['slideLayout'] || slideObject) : 800000) +
+			(slide.slideNumberObj.w ? getSmartParseNumber(slide.slideNumberObj.w, 'X', slide['slideLayout'] || slide) : 800000) +
 			'" cy="' +
-			(slideObject.slideNumberObj.h ? getSmartParseNumber(slideObject.slideNumberObj.h, 'Y', slideObject['slideLayout'] || slideObject) : 300000) +
+			(slide.slideNumberObj.h ? getSmartParseNumber(slide.slideNumberObj.h, 'Y', slide['slideLayout'] || slide) : 300000) +
 			'"/>' +
 			'    </a:xfrm>' +
 			'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
@@ -1463,17 +1463,17 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
 		strSlideXml += '<p:txBody>'
 		strSlideXml += '  <a:bodyPr/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
-		if (slideObject.slideNumberObj.fontFace || slideObject.slideNumberObj.fontSize || slideObject.slideNumberObj.color) {
-			strSlideXml += '<a:defRPr sz="' + (slideObject.slideNumberObj.fontSize ? Math.round(slideObject.slideNumberObj.fontSize) : '12') + '00">'
-			if (slideObject.slideNumberObj.color) strSlideXml += genXmlColorSelection(slideObject.slideNumberObj.color)
-			if (slideObject.slideNumberObj.fontFace)
+		if (slide.slideNumberObj.fontFace || slide.slideNumberObj.fontSize || slide.slideNumberObj.color) {
+			strSlideXml += '<a:defRPr sz="' + (slide.slideNumberObj.fontSize ? Math.round(slide.slideNumberObj.fontSize) : '12') + '00">'
+			if (slide.slideNumberObj.color) strSlideXml += genXmlColorSelection(slide.slideNumberObj.color)
+			if (slide.slideNumberObj.fontFace)
 				strSlideXml +=
 					'<a:latin typeface="' +
-					slideObject.slideNumberObj.fontFace +
+					slide.slideNumberObj.fontFace +
 					'"/><a:ea typeface="' +
-					slideObject.slideNumberObj.fontFace +
+					slide.slideNumberObj.fontFace +
 					'"/><a:cs typeface="' +
-					slideObject.slideNumberObj.fontFace +
+					slide.slideNumberObj.fontFace +
 					'"/>'
 			strSlideXml += '</a:defRPr>'
 		}
@@ -1495,7 +1495,7 @@ export function slideObjectToXml(slideObject: ISlide | ISlideLayout): string {
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
  *
- * @param {ISlide} slideObject slide object whose relations are being transformed
+ * @param {ISlide} slide slide object whose relations are being transformed
  * @param {Object[]} defaultRels array of default relations (such objects expected: { target: <filepath>, type: <schemepath> })
  * @return {string} complete XML string ready to be saved as a file
  */

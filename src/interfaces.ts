@@ -281,11 +281,54 @@ export interface ISlideRelMedia {
 	extn?: string
 	data?: string | ArrayBuffer
 	isSvgPng?: boolean
+	svgSize?: {w:number, h:number}
 	rId: number
 	Target: string
 }
-export interface ISlideData {
+
+export interface ObjectOptions {
+	x?: Coord
+	y?: Coord
+	cx?: Coord
+	cy?: Coord
+	w?: number
+	h?: number
+	placeholder?: string
+	shape?: object
+	bodyProp?: {
+		lIns?: number
+		rIns?: number
+		bIns?: number
+		tIns?: number
+	}
+	isTextBox?: boolean
+	line?: string
+	margin?: number
+	rectRadius?: number
+	fill?: string
+	shadow?: IShadowOpts
+	colW?: number
+	rowH?: number
+	flipH?: boolean
+	flipV?: boolean
+	rotate?: number
+	lineDash?: string
+	lineSize?: number
+	lineHead?: string
+	lineTail?: string
+	// image:
+	sizing?: {
+		type?: string
+		x?: number
+		y?: number
+		w?: number
+		h?: number
+	}
+	rounding?: string
+}
+export interface ISlideObject {
 	type: SLIDE_OBJECT_TYPES
+	options?: ObjectOptions
 	// text
 	text?: string
 	// table
@@ -300,68 +343,19 @@ export interface ISlideData {
 	media?: string
 	mtype?: 'online' | 'other'
 	mediaRid?: number
-	//
-	options?: {
-		x?: Coord
-		y?: Coord
-		cx?: Coord
-		cy?: Coord
-		w?: number
-		h?: number
-		placeholder?: string
-		shape?: object
-		bodyProp?: {
-			lIns?: number
-			rIns?: number
-			bIns?: number
-			tIns?: number
-		}
-		isTextBox?: boolean
-		line?: string
-		margin?: number
-		rectRadius?: number
-		fill?: string
-		shadow?: IShadowOpts
-		colW?: number
-		rowH?: number
-		flipH?: boolean
-		flipV?: boolean
-		rotate?: number
-		lineDash?: string
-		lineSize?: number
-		lineHead?: string
-		lineTail?: string
-		// image:
-		sizing?: {
-			type?: string
-			x?: number
-			y?: number
-			w?: number
-			h?: number
-		}
-		rounding?: string
-	}
 }
 
-export interface ISlideLayoutData {
-	type: string // MASTER_OBJECTS.placeholder.name
-	options?: {
-		x?: Coord
-		y?: Coord
-		cx?: Coord
-		cy?: Coord
-		placeholderName?: string
-	}
-}
 export interface ISlideLayout {
 	name: string
+	bkgd?: string
+	bkgdImgRid?: number
 	slide?: {
 		back: string
 		bkgdImgRid?: number
 		color: string
 		hidden?: boolean
 	}
-	data: Array<ISlideLayoutData>
+	data: Array<ISlideObject>
 	rels?: Array<any>
 	relsChart?: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia?: Array<ISlideRelMedia>
@@ -396,7 +390,7 @@ export interface ISlide {
 	rels: Array<ISlideRel>
 	relsChart: Array<ISlideRelChart>
 	relsMedia: Array<ISlideRelMedia>
-	data?: Array<ISlideData>
+	data?: Array<ISlideObject>
 	layoutName?: string
 	slideLayout: ISlideLayout
 	margin?: object

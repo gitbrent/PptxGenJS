@@ -130,6 +130,7 @@ export default class Slide {
 	// RECURSIVE: (sometimes)
 	// TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
 	addTable(arrTabRows, inOpt) {
+		// TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this._presLayout)
 		return this
 	}
