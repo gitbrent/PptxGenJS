@@ -132,7 +132,6 @@ export default class PptxGenJS {
 			// FIXME: setting layout doesnt seem to be working 20190712
 			console.log(this._layout)
 			console.log(this._presLayout)
-
 		} else {
 			throw 'UNKNOWN-LAYOUT'
 		}
@@ -183,7 +182,7 @@ export default class PptxGenJS {
 	}
 
 	private _presLayout: ILayout
-	presLayout = ():ILayout => {
+	presLayout = (): ILayout => {
 		return this._presLayout
 	}
 
@@ -233,6 +232,7 @@ export default class PptxGenJS {
 		//
 		this.slideLayouts = [
 			{
+				presLayout: this._presLayout,
 				name: 'BLANK',
 				width: this.LAYOUTS['LAYOUT_16x9'].width,
 				height: this.LAYOUTS['LAYOUT_16x9'].height,
@@ -252,10 +252,11 @@ export default class PptxGenJS {
 			addNotes: null,
 			addShape: null,
 			addTable: null,
-			addText:  null,
-			//slide: null,
-			number: null,
+			addText: null,
+
+			presLayout: this._presLayout,
 			name: null,
+			number: null,
 			data: [],
 			rels: [],
 			relsChart: [],
@@ -636,7 +637,6 @@ export default class PptxGenJS {
 		if (intEmpty == 0) this.doExportPresentation()
 	}
 
-
 	// PUBLIC API
 
 	/**
@@ -708,12 +708,15 @@ export default class PptxGenJS {
 		}
 
 		var objLayout: ISlideLayout = {
+			presLayout: this._presLayout,
 			name: inObjMasterDef.title,
 			width: inObjMasterDef.width || this._presLayout.width,
 			height: inObjMasterDef.height || this._presLayout.height,
 			slide: null,
 			data: [],
 			rels: [],
+			relsChart: [],
+			relsMedia: [],
 			margin: inObjMasterDef.margin || DEF_SLIDE_MARGIN_IN,
 			slideNumberObj: inObjMasterDef.slideNumber || null,
 		}

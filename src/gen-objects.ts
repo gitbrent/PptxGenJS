@@ -447,7 +447,7 @@ export function addShapeDefinition(shape, opt, target) {
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
  * @param {Object} `objImage` - object containing `path`/`data`, `x`, `y`, etc.
- * @param {Object} `target` - slide that the image should be added to (if not specified as the 2nd arg)
+ * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @return {Object} image object
  */
 export function addImageDefinition(objImage, target: ISlide) {
@@ -856,14 +856,11 @@ export function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 	slide.data.forEach((slideItemObj: ISlideObject, idx: number) => {
 		let x = 0,
 			y = 0,
-			cx = getSmartParseNumber('75%', 'X', slide['slideLayout'] || slide),
+			cx = getSmartParseNumber('75%', 'X', slide.presLayout),
 			cy = 0
 		let placeholderObj: ISlideObject
 		let locationAttr = '',
 			shapeType = null
-
-		// FIXME: charts with % width (eg: "90%") are too small
-		console.log(slide['slideLayout'])
 
 		if (slide['slideLayout'] && slide['slideLayout']['data'] && slideItemObj.options && slideItemObj.options.placeholder) {
 			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => {
@@ -877,17 +874,17 @@ export function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		if (slideItemObj.options.w || slideItemObj.options.w == 0) slideItemObj.options.cx = slideItemObj.options.w
 		if (slideItemObj.options.h || slideItemObj.options.h == 0) slideItemObj.options.cy = slideItemObj.options.h
 		//
-		if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slide['slideLayout'] || slide)
-		if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide['slideLayout'] || slide)
-		if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slide['slideLayout'] || slide)
-		if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slide['slideLayout'] || slide)
+		if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slide.presLayout)
+		if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide.presLayout)
+		if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slide.presLayout)
+		if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slide.presLayout)
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
-			if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide['slideLayout'] || slide)
-			if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide['slideLayout'] || slide)
-			if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slide['slideLayout'] || slide)
-			if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slide['slideLayout'] || slide)
+			if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide.presLayout)
+			if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide.presLayout)
+			if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slide.presLayout)
+			if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slide.presLayout)
 		}
 		//
 		if (slideItemObj.options.shape) shapeType = getShapeInfo(slideItemObj.options.shape)
@@ -1332,10 +1329,10 @@ export function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
 				}
 				if (sizing && sizing.type) {
-					var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide['slideLayout'] || slide) : cx,
-						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide['slideLayout'] || slide) : cy,
-						boxX = getSmartParseNumber(sizing.x || 0, 'X', slide['slideLayout'] || slide),
-						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide['slideLayout'] || slide)
+					var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide.presLayout) : cx,
+						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide.presLayout) : cy,
+						boxX = getSmartParseNumber(sizing.x || 0, 'X', slide.presLayout),
+						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide.presLayout)
 
 					strSlideXml += imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY })
 					width = boxW
@@ -1446,14 +1443,14 @@ export function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			'  <p:spPr>' +
 			'    <a:xfrm>' +
 			'      <a:off x="' +
-			getSmartParseNumber(slide.slideNumberObj.x, 'X', slide['slideLayout'] || slide) +
+			getSmartParseNumber(slide.slideNumberObj.x, 'X', slide.presLayout) +
 			'" y="' +
-			getSmartParseNumber(slide.slideNumberObj.y, 'Y', slide['slideLayout'] || slide) +
+			getSmartParseNumber(slide.slideNumberObj.y, 'Y', slide.presLayout) +
 			'"/>' +
 			'      <a:ext cx="' +
-			(slide.slideNumberObj.w ? getSmartParseNumber(slide.slideNumberObj.w, 'X', slide['slideLayout'] || slide) : 800000) +
+			(slide.slideNumberObj.w ? getSmartParseNumber(slide.slideNumberObj.w, 'X', slide.presLayout) : 800000) +
 			'" cy="' +
-			(slide.slideNumberObj.h ? getSmartParseNumber(slide.slideNumberObj.h, 'Y', slide['slideLayout'] || slide) : 300000) +
+			(slide.slideNumberObj.h ? getSmartParseNumber(slide.slideNumberObj.h, 'Y', slide.presLayout) : 300000) +
 			'"/>' +
 			'    </a:xfrm>' +
 			'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +

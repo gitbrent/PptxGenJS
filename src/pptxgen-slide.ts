@@ -10,8 +10,8 @@ export default class Slide {
 	private _bkgd: string
 	private _color: string
 	private _slideNumber: ISlideNumber
-	private _presLayout: ILayout
 
+	public presLayout: ILayout
 	public name: string
 	public number: number
 	public data: []
@@ -24,7 +24,7 @@ export default class Slide {
 	// TODO: slide.title (they're all "PowerPoint Presenation" now!) 20190712
 
 	constructor(params: { presLayout: ILayout; slideNumber: number; slideLayout?: ISlideLayout }) {
-		this._presLayout = params.presLayout
+		this.presLayout = params.presLayout
 		this.name = 'Slide ' + params.slideNumber
 		this.number = params.slideNumber
 		this.data = []
@@ -131,7 +131,7 @@ export default class Slide {
 	// TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
 	addTable(arrTabRows, inOpt) {
 		// TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this._presLayout)
+		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout)
 		return this
 	}
 

@@ -3,10 +3,45 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './enums'
-import { ISlideLayout, IChartOpts } from './interfaces'
+import { IChartOpts, ILayout } from './interfaces'
 
-// Basic UUID Generator Adapted from:
-// https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523
+/**
+ * Convert string percentages to number relative to slide size
+ *
+ * @param {number|string} `size`
+ * @param {string} `xyDir`
+ * @param {ISlideLayout} `layout`
+ * @returns {number} width/height
+ */
+export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ILayout): number {
+	// FIRST: Convert string numeric value if reqd
+	if (typeof size == 'string' && !isNaN(Number(size))) size = Number(size)
+
+	// CASE 1: Number in inches
+	// Assume any number less than 100 is inches
+	if (typeof size == 'number' && size < 100) return inch2Emu(size)
+
+	// CASE 2: Number is already converted to something other than inches
+	// Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
+	if (typeof size == 'number' && size >= 100) return size
+
+	// CASE 3: Percentage (ex: '50%')
+	if (typeof size == 'string' && size.indexOf('%') > -1) {
+		if (xyDir && xyDir == 'X') return Math.round((parseFloat(size) / 100) * layout.width)
+		if (xyDir && xyDir == 'Y') return Math.round((parseFloat(size) / 100) * layout.height)
+
+		// Default: Assume width (x/cx)
+		return Math.round((parseFloat(size) / 100) * layout.width)
+	}
+
+	// LAST: Default value
+	return 0
+}
+
+/**
+ * Basic UUID Generator Adapted
+ * @link https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523
+ */
 export function getUuid(uuidFormat: string) {
 	return uuidFormat.replace(/[xy]/g, function(c) {
 		var r = (Math.random() * 16) | 0,
@@ -18,12 +53,12 @@ export function getUuid(uuidFormat: string) {
 /**
  * shallow mix, returns new object
  */
-export function getMix(o1:any|IChartOpts, o2:any|IChartOpts, etc?:any) {
+export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 	let objMix = {}
 	for (let i = 0; i <= arguments.length; i++) {
 		let oN = arguments[i]
 		if (oN)
-			Object.keys(oN).forEach((key) => {
+			Object.keys(oN).forEach(key => {
 				objMix[key] = oN[key]
 			})
 	}
@@ -57,39 +92,6 @@ export function inch2Emu(inches: number | string): number {
 	if (typeof inches === 'number' && inches > 100) return inches
 	if (typeof inches === 'string') inches = Number(inches.replace(/in*/gi, ''))
 	return Math.round(EMU * inches)
-}
-
-/**
- * Convert string percentages to number relative to slide size
- *
- * @param {number|string} `size`
- * @param {string} `xyDir`
- * @param {ISlideLayout} `layout`
- * @returns {number} width/height
- */
-export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ISlideLayout): number {
-	// FIRST: Convert string numeric value if reqd
-	if (typeof size == 'string' && !isNaN(Number(size))) size = Number(size)
-
-	// CASE 1: Number in inches
-	// Assume any number less than 100 is inches
-	if (typeof size == 'number' && size < 100) return inch2Emu(size)
-
-	// CASE 2: Number is already converted to something other than inches
-	// Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
-	if (typeof size == 'number' && size >= 100) return size
-
-	// CASE 3: Percentage (ex: '50%')
-	if (typeof size == 'string' && size.indexOf('%') > -1) {
-		if (xyDir && xyDir == 'X') return Math.round((parseFloat(size) / 100) * layout.width)
-		if (xyDir && xyDir == 'Y') return Math.round((parseFloat(size) / 100) * layout.height)
-
-		// Default: Assume width (x/cx)
-		return Math.round((parseFloat(size) / 100) * layout.width)
-	}
-
-	// LAST: Default value
-	return 0
 }
 
 /**

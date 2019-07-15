@@ -346,6 +346,7 @@ export interface ISlideObject {
 }
 
 export interface ISlideLayout {
+	presLayout: ILayout
 	name: string
 	bkgd?: string
 	bkgdImgRid?: number
@@ -385,6 +386,7 @@ export interface ISlide {
 	color?: string
 	hidden?: boolean
 	//}
+	presLayout: ILayout
 	name?: string
 	number: number
 	rels: Array<ISlideRel>

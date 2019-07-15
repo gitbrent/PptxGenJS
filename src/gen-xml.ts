@@ -2,17 +2,7 @@
  * PptxGenJS: XML Generation
  */
 
-import {
-	BULLET_TYPES,
-	CRLF,
-	DEF_FONT_SIZE,
-	DEF_SLIDE_MARGIN_IN,
-	EMU,
-	LAYOUT_IDX_SERIES_BASE,
-	ONEPT,
-	PLACEHOLDER_TYPES,
-	SLDNUMFLDID,
-} from './enums'
+import { BULLET_TYPES, CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LAYOUT_IDX_SERIES_BASE, ONEPT, PLACEHOLDER_TYPES, SLDNUMFLDID } from './enums'
 import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell } from './interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection } from './utils'
 import { gObjPptxShapes } from './lib-shapes'
@@ -500,7 +490,7 @@ export function genXmlPlaceholder(placeholderObj) {
 
 // XML-GEN: First 6 functions create the base /ppt files
 
-export function makeXmlContTypes(slides: ISlide[], slideLayouts:ISlideLayout[], masterSlide?:ISlide): string {
+export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[], masterSlide?: ISlide): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
 	strXml += ' <Default Extension="xml" ContentType="application/xml"/>'
@@ -550,7 +540,7 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts:ISlideLayout[], 
 			'<Override PartName="/ppt/slideLayouts/slideLayout' +
 			(idx + 1) +
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>'
-		;(layout.relsChart||[]).forEach(rel => {
+		;(layout.relsChart || []).forEach(rel => {
 			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 		})
 	})
@@ -688,8 +678,8 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
  * @return {string} strXml - slide OOXML
  */
 export function makeXmlSlide(objSlide: ISlide): string {
-	// STEP 1: Generate slide XML - wrap generated text in full XML envelope
-	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
+	// Generate slide XML - wrap generated text in full XML envelope
+	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
 		'<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
 		(objSlide && objSlide.hidden ? ' show="0"' : '') +
@@ -698,7 +688,6 @@ export function makeXmlSlide(objSlide: ISlide): string {
 	strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>'
 	strXml += '</p:sld>'
 
-	// LAST: Return
 	return strXml
 }
 
