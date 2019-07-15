@@ -482,7 +482,7 @@ export function makeXmlCharts(rel: ISlideRelChart) {
 	if (Array.isArray(rel.opts.type)) {
 		rel.opts.type.forEach(type => {
 			// TODO: FIXME: theres `options` on chart rels??
-			let options = getMix(rel.opts, type.options) as IChartOpts;
+			let options = getMix(rel.opts, type.options) as IChartOpts
 			//let options: IChartOpts = { type: type.type, }
 			let valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
 			let catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
@@ -691,7 +691,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Fill and Border
-				let strSerColor = (opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null)
+				let strSerColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 
 				strXml += '  <c:spPr>'
 				if (strSerColor == 'transparent') {
@@ -882,7 +882,8 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '    </c:txPr>'
 				// NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
 				// Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
-				if (opts.type != CHART_TYPES.AREA && opts.type != CHART_TYPES.RADAR && !isMultiTypeChart) strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
+				if (opts.type != CHART_TYPES.AREA && opts.type != CHART_TYPES.RADAR && !isMultiTypeChart)
+					strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
@@ -896,7 +897,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			// 4: Add more chart options (gapWidth, line Marker, etc.)
 			if (chartType == CHART_TYPES.BAR) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
-				strXml += '  <c:overlap val="' + ((opts.barGrouping||'').indexOf('tacked') > -1 ? 100 : 0) + '"/>'
+				strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>'
 			} else if (chartType == CHART_TYPES.BAR3D) {
 				strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>'
 				strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>'
@@ -1847,7 +1848,7 @@ function genXmlTitle(opts: IChartTitleOpts) {
  * @param {String} type "major"(default) | "minor"
  */
 function createGridLineElement(glOpts: OptsChartGridLine) {
-	let strXml:string = '<c:majorGridlines>'
+	let strXml: string = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
 	strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">'
 	strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>' // should accept scheme colors as implemented in PR 135
