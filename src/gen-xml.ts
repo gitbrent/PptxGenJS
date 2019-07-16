@@ -904,7 +904,7 @@ export function makeXmlNotesMasterRel(): string {
  * @return {Number} slide number
  */
 function getLayoutIdxForSlide(slides: Array<ISlide>, slideLayouts: Array<ISlideLayout>, slideNumber: number): number {
-	var layoutName = slides[slideNumber - 1].layoutName
+	let layoutName = slides[slideNumber - 1].slideLayout.name
 
 	for (var i = 0; i < slideLayouts.length; i++) {
 		if (slideLayouts[i].name === layoutName) {

@@ -34,6 +34,7 @@ import {
 	IChartMulti,
 	ISlideRel,
 	ISlideRelChart,
+    IImageOpts,
 } from './interfaces'
 import { convertRotationDegrees, encodeXmlEntities, getSmartParseNumber, inch2Emu, genXmlColorSelection } from './utils'
 import { createHyperlinkRels, getSlidesForTableRows, correctShadowOptions, getShapeInfo, genXmlTextBody, genXmlPlaceholder } from './gen-xml'
@@ -170,7 +171,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
  * @param {String|Object} bkg color string or an object with image definition
  * @param {ISlide} target slide object that the background is set to
  */
-export function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide) {
+function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
@@ -179,7 +180,7 @@ export function addBackgroundDefinition(bkg: string | { src?: string; path?: str
 		if (strImgExtn == 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
 		var intRels = target.rels.length + 1
-		target.rels.push({
+		target.relsMedia.push({
 			path: bkg.src,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
@@ -446,12 +447,12 @@ export function addShapeDefinition(shape, opt, target) {
 /**
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
- * @param {Object} `objImage` - object containing `path`/`data`, `x`, `y`, etc.
+ * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
  * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @return {Object} image object
  */
-export function addImageDefinition(objImage, target: ISlide) {
-	var resultObject = {
+export function addImageDefinition(opt:IImageOpts, target: ISlide): object {
+	let resultObject:any = {
 		type: null,
 		text: null,
 		options: null,
@@ -460,15 +461,15 @@ export function addImageDefinition(objImage, target: ISlide) {
 		hyperlink: null,
 	}
 	// FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
-	var intPosX = objImage.x || 0
-	var intPosY = objImage.y || 0
-	var intWidth = objImage.w || 0
-	var intHeight = objImage.h || 0
-	var sizing = objImage.sizing || null
-	var objHyperlink = objImage.hyperlink || ''
-	var strImageData = objImage.data || ''
-	var strImagePath = objImage.path || ''
-	var imageRelId = target.rels.length + 1
+	let intPosX = opt.x || 0
+	let intPosY = opt.y || 0
+	let intWidth = opt.w || 0
+	let intHeight = opt.h || 0
+	let sizing = opt.sizing || null
+	let objHyperlink = opt.hyperlink || ''
+	let strImageData = opt.data || ''
+	let strImagePath = opt.path || ''
+	let imageRelId = target.rels.length + 1
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -481,7 +482,7 @@ export function addImageDefinition(objImage, target: ISlide) {
 
 	// STEP 1: Set extension
 	// NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
-	var strImgExtn =
+	let strImgExtn =
 		strImagePath
 			.split('.')
 			.pop()
@@ -501,15 +502,14 @@ export function addImageDefinition(objImage, target: ISlide) {
 	// FIXME: Measure actual image when no intWidth/intHeight params passed
 	// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
 	// if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
-	var imgObj = { width: 1, height: 1 }
 	resultObject.options = {
 		x: intPosX || 0,
 		y: intPosY || 0,
-		cx: intWidth || imgObj.width,
-		cy: intHeight || imgObj.height,
-		rounding: objImage.rounding || false,
+		cx: intWidth || 1,
+		cy: intHeight || 1,
+		rounding: opt.rounding || false,
 		sizing: sizing,
-		placeholder: objImage.placeholder,
+		placeholder: opt.placeholder,
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -568,7 +568,10 @@ export function addImageDefinition(objImage, target: ISlide) {
 		}
 	}
 
+	// STEP 6
 	target.data.push(resultObject)
+
+	// LAST
 	return resultObject
 }
 
@@ -787,7 +790,7 @@ export function addChartDefinition(type: CHART_TYPE_NAMES | IChartMulti[], data:
  * @param {Object} `slideDef` slide definition
  * @param {ISlide} `target` empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef, target) {
+export function createSlideObject(slideDef, target/*FIXME :ISlide|ISlideLayout*/) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -862,7 +865,7 @@ export function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		let locationAttr = '',
 			shapeType = null
 
-		if (slide['slideLayout'] && slide['slideLayout']['data'] && slideItemObj.options && slideItemObj.options.placeholder) {
+		if ((slide as ISlide).slideLayout !== undefined && (slide as ISlide).slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
 			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => {
 				return object.options.placeholder == slideItemObj.options.placeholder
 			})[0]

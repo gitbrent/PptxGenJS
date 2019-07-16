@@ -3,7 +3,7 @@
  */
 
 import { CHART_TYPE_NAMES } from './enums'
-import { IMediaOpts, ISlideNumber, ISlideLayout, ILayout, IChartMulti, IChartOpts } from './interfaces'
+import { IMediaOpts, ISlideNumber, ISlideLayout, ILayout, IChartMulti, IChartOpts, ISlideRel, ISlideRelChart, ISlideRelMedia, ISlideObject, IImageOpts } from './interfaces'
 import * as genObj from './gen-objects'
 
 export default class Slide {
@@ -14,11 +14,11 @@ export default class Slide {
 	public presLayout: ILayout
 	public name: string
 	public number: number
-	public data: []
-	public rels: any[]
-	public relsChart: any[]
-	public relsMedia: any[]
-	public layoutName: any
+	public data: ISlideObject[]
+	public rels: ISlideRel[]
+	public relsChart: ISlideRelChart[]
+	public relsMedia: ISlideRelMedia[]
+	public layoutName: string
 	public slideLayout: ISlideLayout
 
 	// TODO: slide.title (they're all "PowerPoint Presenation" now!) 20190712
@@ -32,7 +32,7 @@ export default class Slide {
 		this.relsChart = []
 		this.relsMedia = []
 		this.slideNumber = null
-		this.layoutName = params.slideLayout.name || '[ default ]'
+		this.layoutName = params.slideLayout.name || '[PptxgenDefaultLayout]'
 		this.slideLayout = params.slideLayout || null
 
 		// NOTE: Slide Numbers: In order for Slide Numbers to work normally, they need to be in all 3 files: master/layout/slide
@@ -59,9 +59,9 @@ export default class Slide {
 		return this._color
 	}
 
-	public set slideNumber(inObj: ISlideNumber) {
+	public set slideNumber(value: ISlideNumber) {
 		// A:
-		this._slideNumber = inObj
+		this._slideNumber = value
 
 		// TODO: commented these as we need to reach up to do these (create some setters on PptxGen??)
 		// B: Add slideNumber to slideMaster1.xml
@@ -106,9 +106,9 @@ export default class Slide {
 	 * NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
 	 * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
 	 */
-	addImage(objImage) {
-		// TODO-3: create `IImageOpts` (name,path,w,rotate,etc.)
-		genObj.addImageDefinition(objImage, this)
+	addImage(opt: IImageOpts) {
+		// FIXME: CURRENT: images are all the same because imgCounter is inaccesble!!!
+		genObj.addImageDefinition(opt, this)
 		return this
 	}
 

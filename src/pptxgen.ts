@@ -45,8 +45,8 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, MASTER_OBJECTS, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './enums'
-import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef } from './interfaces'
+import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './enums'
+import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel } from './interfaces'
 import Slide from './pptxgen-slide'
 import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
@@ -57,6 +57,26 @@ import { gObjPptxShapes } from './lib-shapes'
 
 export default class PptxGenJS {
 	// Property getters/setters
+
+	/**
+	 * Presentation Layout: 'screen4x3', 'screen16x9', 'widescreen', etc.
+	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+	 */
+	private _layout: string
+	public set layout(value: string) {
+		let newLayout: ILayout = this.LAYOUTS[value]
+
+		if (newLayout) {
+			this._layout = value
+			this._presLayout = newLayout
+		} else {
+			throw 'UNKNOWN-LAYOUT'
+		}
+	}
+	public get layout(): string {
+		return this._layout
+	}
+
 	private _version: string = '3.0.0-beta1'
 	public get version(): string {
 		return this._version
@@ -79,8 +99,8 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * DESC: Sets the Presentation's Revision
-	 * NOTE: PowerPoint requires `revision` be: number only (without "." or ",") otherwise, PPT will throw errors upon opening Presentation.
+	 * Sets the Presentation's Revision
+	 * PowerPoint requires `revision` be a number only (without "." or ",") (otherwise, PPT will throw errors upon opening Presentation!)
 	 */
 	private _revision: string
 	public set revision(value: string) {
@@ -115,29 +135,6 @@ export default class PptxGenJS {
 	}
 	public get rtlMode(): boolean {
 		return this._rtlMode
-	}
-
-	/**
-	 * Presentation Layout: 'screen4x3', 'screen16x9', 'widescreen', etc.
-	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
-	 */
-	private _layout: string
-	public set layout(value: string) {
-		let newLayout: ILayout = this.LAYOUTS[value]
-
-		if (newLayout) {
-			this._layout = value
-			this._presLayout = newLayout
-
-			// FIXME: setting layout doesnt seem to be working 20190712
-			console.log(this._layout)
-			console.log(this._presLayout)
-		} else {
-			throw 'UNKNOWN-LAYOUT'
-		}
-	}
-	public get layout(): string {
-		return this._layout
 	}
 
 	/**
@@ -186,7 +183,7 @@ export default class PptxGenJS {
 		return this._presLayout
 	}
 
-	private _imageCounter: number // TODO: This is a dummy value - `gen-xml` has real one: find a better solution, stop using counter
+	//private _imageCounter: number // TODO: This is a dummy value - `gen-xml` has real one: find a better solution, stop using counter
 
 	private fs: any
 	private https: any
@@ -228,7 +225,7 @@ export default class PptxGenJS {
 		this._isBrowser = false
 		this.fileName = 'Presentation'
 		this.fileExtn = '.pptx'
-		//this.saveCallback = null // deprecated: moving to Promise
+		//this.saveCallback = null // FIXME: deprecated: moving to Promise
 		//
 		this.slideLayouts = [
 			{
@@ -239,6 +236,8 @@ export default class PptxGenJS {
 				slide: null,
 				data: [],
 				rels: [],
+				relsChart: [],
+				relsMedia: [],
 				margin: DEF_SLIDE_MARGIN_IN,
 				slideNumberObj: null,
 			},
@@ -261,7 +260,6 @@ export default class PptxGenJS {
 			rels: [],
 			relsChart: [],
 			relsMedia: [],
-			layoutName: null,
 			slideLayout: null,
 			slideNumberObj: null,
 		}
@@ -373,9 +371,9 @@ export default class PptxGenJS {
 			})
 	}
 
-	writeFileToBrowser = (strExportName: string, content) => {
+	writeFileToBrowser = (strExportName: string, content: Blob) => {
 		// STEP 1: Create element
-		var a = document.createElement('a')
+		let a = document.createElement('a')
 		a.setAttribute('style', 'display:none;')
 		document.body.appendChild(a)
 
@@ -490,9 +488,13 @@ export default class PptxGenJS {
 	encodeSlideMediaRels = (layout, arrRelsDone) => {
 		let intRels = 0
 
-		layout.rels.forEach(rel => {
+		// FIXME: we dont seem to be retrieving img via URL (or any way)
+		console.log('FIXME:encodeSlideMediaRels')
+		console.log(layout)
+
+		layout.relsMedia.forEach((rel:ISlideRelMedia) => {
 			// Read and Encode each media lacking `data` into base64 (for use in export)
-			if (rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1) {
+			if (rel.type != 'online' && !rel.data && arrRelsDone.indexOf(rel.path) == -1) {
 				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 				if (this.NODEJS && rel.path.indexOf('http') != 0) {
 					try {
@@ -512,7 +514,7 @@ export default class PptxGenJS {
 					this.convertImgToDataURL(rel)
 					arrRelsDone.push(rel.path)
 				}
-			} else if (rel.isSvgPng && rel.data && rel.data.toLowerCase().indexOf('image/svg') > -1) {
+			} else if (rel.isSvgPng && rel.data && rel.data.toString().toLowerCase().indexOf('image/svg') > -1) {
 				// The SVG base64 must be converted to PNG SVG before export
 				intRels++
 				this.callbackImgToDataURLDone(rel.data, rel)
@@ -608,30 +610,41 @@ export default class PptxGenJS {
 		image.src = slideRel.data as string // use pre-encoded SVG base64 data
 	}
 
+	// FIXME: 20190715: if all were doing here is mapping `rel.base64` to `rel.data`, surely there's a better/clearer way...
 	callbackImgToDataURLDone = (base64Data: string | ArrayBuffer, slideRel: ISlideRelMedia) => {
 		// SVG images were retrieved via `convertImgToDataURL()`, but have to be encoded to PNG now
 		if (slideRel.isSvgPng && typeof base64Data === 'string' && base64Data.indexOf('image/svg') > -1) {
 			// Pass the SVG XML as base64 for conversion to PNG
+
 			slideRel.data = base64Data
-			if (this.NODEJS) console.log('SVG is not supported in Node')
+			if (this.NODEJS) throw 'SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)'
 			else this.convertSvgToPngViaCanvas(slideRel)
 			return
 		}
 
 		let intEmpty = 0
-		let funcCallback = rel => {
+		let funcCallback = (rel: ISlideRel | ISlideRelMedia) => {
 			if (rel.path == slideRel.path) rel.data = base64Data
-			if (!rel.data) intEmpty++
+			if (!rel.data) intEmpty++;
+			// FIXME: WTF?
+			if (!rel.data) console.log(rel)//console.log(`${rel.Target} len= ${(rel.data||'').toString().length}`)
+			//console.log(intEmpty)
 		}
 
 		// STEP 1: Set data for this rel, count outstanding
 		this.slides.forEach(slide => {
 			slide.rels.forEach(funcCallback)
+			slide.relsMedia.forEach(funcCallback)
 		})
 		this.slideLayouts.forEach(layout => {
 			layout.rels.forEach(funcCallback)
+			layout.relsMedia.forEach(funcCallback)
 		})
 		this.masterSlide.rels.forEach(funcCallback)
+		this.masterSlide.relsMedia.forEach(funcCallback)
+
+		// FIXME: not escaping here!!!
+		console.log(`intEmpty = ${intEmpty}`)
 
 		// STEP 2: Continue export process if all rels have base64 `data` now
 		if (intEmpty == 0) this.doExportPresentation()
@@ -678,6 +691,11 @@ export default class PptxGenJS {
 		if (intRels == 0) this.doExportPresentation(outputType)
 	}
 
+	/**
+	* Add a Slide to Presenation
+	* @param {string} `inMasterName` Master Slide name
+	* @returns {ISlide} the new Slide
+	*/
 	addSlide(inMasterName?: string): ISlide {
 		let slideLayout: ISlideLayout = inMasterName
 			? this.slideLayouts.filter(layout => {
