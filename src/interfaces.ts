@@ -1,8 +1,8 @@
-import { CHART_TYPES, SLIDE_OBJECT_TYPES, CHART_TYPE_NAMES } from './enums'
-
 /**
  * PptxGenJS Interfaces
  */
+
+import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES } from './enums'
 
 // Common
 // ======
@@ -69,6 +69,13 @@ export interface IShadowOpts {
 	blur?: number
 	offset?: number
 	color?: string
+}
+export interface IImageOpts extends OptsCoords, OptsDataOrPath {
+	type?: 'audio' | 'online' | 'video'
+	sizing?: { type:'crop' | 'contain' | 'cover', w:number, h:number, x?:number, y?:number }
+	hyperlink?: any
+	rounding?: boolean
+	placeholder?: any
 }
 export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
 	type?: 'audio' | 'online' | 'video'
@@ -357,19 +364,13 @@ export interface ISlideLayout {
 		hidden?: boolean
 	}
 	data: Array<ISlideObject>
-	rels?: Array<any>
-	relsChart?: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
-	relsMedia?: Array<ISlideRelMedia>
+	rels: Array<ISlideRel>
+	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
+	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: Array<number> | number
 	slideNumberObj?: ISlideNumber
 	width: number
 	height: number
-}
-export interface ISlideLayoutChart extends ISlideLayout {
-	rels: Array<ISlideRelChart>
-}
-export interface ISlideLayoutMedia extends ISlideLayout {
-	rels: Array<ISlideRelMedia>
 }
 export interface ISlide {
 	addChart: Function
@@ -379,24 +380,20 @@ export interface ISlide {
 	addShape: Function
 	addTable: Function
 	addText: Function
-
-	//slide?: {
 	bkgd?: string
-	bkgdImgRid?: number
+	bkgdImgRid?: number // FIXME rename
 	color?: string
+	data?: ISlideObject[]
 	hidden?: boolean
-	//}
-	presLayout: ILayout
+	margin?: object
 	name?: string
 	number: number
-	rels: Array<ISlideRel>
-	relsChart: Array<ISlideRelChart>
-	relsMedia: Array<ISlideRelMedia>
-	data?: Array<ISlideObject>
-	layoutName?: string
+	presLayout: ILayout
+	rels: ISlideRel[]
+	relsChart: ISlideRelChart[]
+	relsMedia: ISlideRelMedia[]
 	slideLayout: ISlideLayout
-	margin?: object
-	slideNumberObj?: ISlideNumber
+	slideNumberObj?: ISlideNumber // FIXME rename
 }
 export interface IPresentation {
 	author: string
