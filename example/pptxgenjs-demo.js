@@ -2311,7 +2311,7 @@ function genSlides_Image(pptx) {
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
-		slide.slideNumber({ x:'50%', y:'95%', color:'0088CC' });
+		slide.slideNumber = { x:'50%', y:'95%', color:'0088CC' };
 		slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1
@@ -2360,7 +2360,7 @@ function genSlides_Image(pptx) {
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
-		slide.slideNumber({ x:'50%', y:'95%', color:'0088CC' });
+		slide.slideNumber = { x:'50%', y:'95%', color:'0088CC' };
 		slide.addTable( [ [{ text:'Image Examples: Image URLs', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP-LEFT:
@@ -2393,7 +2393,7 @@ function genSlides_Image(pptx) {
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
-		slide.slideNumber({ x:'50%', y:'95%', w:1, h:1, color:'0088CC' });
+		slide.slideNumber = { x:'50%', y:'95%', w:1, h:1, color:'0088CC' };
 		slide.addTable( [ [{ text:'Image Examples: Image Sizing/Rounding', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP: 1
