@@ -982,22 +982,20 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 		'"/>' +
 		'<p:defaultTextStyle>' +
 		'<a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
-	let intCurPos = 0
 	for (let idx = 1; idx < 10; idx++) {
 		strXml +=
-			'  <a:lvl' +
+			'<a:lvl' +
 			idx +
 			'pPr marL="' +
-			intCurPos.toString() +
+			(idx - 1) * 457200 +
 			'" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">' +
-			'    <a:defRPr sz="1800" kern="1200">' +
-			'      <a:solidFill><a:schemeClr val="tx1"/></a:solidFill>' +
-			'      <a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
-			'    </a:defRPr>' +
-			'  </a:lvl' +
+			'<a:defRPr sz="1800" kern="1200">' +
+			'<a:solidFill><a:schemeClr val="tx1"/></a:solidFill>' +
+			'<a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
+			'</a:defRPr>' +
+			'</a:lvl' +
 			idx +
 			'pPr>'
-		intCurPos += 457200
 	}
 	strXml += '</p:defaultTextStyle>'
 	strXml += '</p:presentation>'
