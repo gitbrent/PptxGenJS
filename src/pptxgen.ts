@@ -45,8 +45,8 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './enums'
-import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel } from './interfaces'
+import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './enums'
+import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel, ISlideNumber } from './interfaces'
 import Slide from './pptxgen-slide'
 import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
@@ -230,7 +230,7 @@ export default class PptxGenJS {
 		this.slideLayouts = [
 			{
 				presLayout: this._presLayout,
-				name: 'BLANK',
+				name: DEF_PRES_LAYOUT_NAME,
 				width: this.LAYOUTS['LAYOUT_16x9'].width,
 				height: this.LAYOUTS['LAYOUT_16x9'].height,
 				slide: null,
@@ -488,11 +488,7 @@ export default class PptxGenJS {
 	encodeSlideMediaRels = (layout, arrRelsDone) => {
 		let intRels = 0
 
-		// FIXME: we dont seem to be retrieving img via URL (or any way)
-		console.log('FIXME:encodeSlideMediaRels')
-		console.log(layout)
-
-		layout.relsMedia.forEach((rel:ISlideRelMedia) => {
+		layout.relsMedia.forEach((rel: ISlideRelMedia) => {
 			// Read and Encode each media lacking `data` into base64 (for use in export)
 			if (rel.type != 'online' && !rel.data && arrRelsDone.indexOf(rel.path) == -1) {
 				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
@@ -514,7 +510,14 @@ export default class PptxGenJS {
 					this.convertImgToDataURL(rel)
 					arrRelsDone.push(rel.path)
 				}
-			} else if (rel.isSvgPng && rel.data && rel.data.toString().toLowerCase().indexOf('image/svg') > -1) {
+			} else if (
+				rel.isSvgPng &&
+				rel.data &&
+				rel.data
+					.toString()
+					.toLowerCase()
+					.indexOf('image/svg') > -1
+			) {
 				// The SVG base64 must be converted to PNG SVG before export
 				intRels++
 				this.callbackImgToDataURLDone(rel.data, rel)
@@ -625,10 +628,7 @@ export default class PptxGenJS {
 		let intEmpty = 0
 		let funcCallback = (rel: ISlideRel | ISlideRelMedia) => {
 			if (rel.path == slideRel.path) rel.data = base64Data
-			if (!rel.data) intEmpty++;
-			// FIXME: WTF?
-			if (!rel.data) console.log(rel)//console.log(`${rel.Target} len= ${(rel.data||'').toString().length}`)
-			//console.log(intEmpty)
+			if (!rel.data) intEmpty++
 		}
 
 		// STEP 1: Set data for this rel, count outstanding
@@ -643,11 +643,21 @@ export default class PptxGenJS {
 		this.masterSlide.rels.forEach(funcCallback)
 		this.masterSlide.relsMedia.forEach(funcCallback)
 
-		// FIXME: not escaping here!!!
-		console.log(`intEmpty = ${intEmpty}`)
-
 		// STEP 2: Continue export process if all rels have base64 `data` now
 		if (intEmpty == 0) this.doExportPresentation()
+	}
+
+	/**
+	 * Enables the Slide class to set PptxGen master/layout slidenumbers
+	 */
+	setSlideNumber = (slideNumberObj: ISlideNumber) => {
+		// 1: Add slideNumber to slideMaster1.xml
+		this.masterSlide.slideNumberObj = slideNumberObj
+
+		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
+		this.slideLayouts.filter(layout => {
+			return layout.name == DEF_PRES_LAYOUT_NAME
+		})[0].slideNumberObj = slideNumberObj
 	}
 
 	// PUBLIC API
@@ -692,25 +702,22 @@ export default class PptxGenJS {
 	}
 
 	/**
-	* Add a Slide to Presenation
-	* @param {string} `inMasterName` Master Slide name
-	* @returns {ISlide} the new Slide
-	*/
-	addSlide(inMasterName?: string): ISlide {
-		let slideLayout: ISlideLayout = inMasterName
-			? this.slideLayouts.filter(layout => {
-					return layout.name == inMasterName
-			  })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
-			: this.LAYOUTS[DEF_PRES_LAYOUT]
-
-		// 1: Create new Slide
+	 * Add a Slide to Presenation
+	 * @param {string} `masterSlideName` Master Slide name
+	 * @returns {ISlide} the new Slide
+	 */
+	addSlide(masterSlideName?: string): ISlide {
 		let newSlide = new Slide({
 			presLayout: this._presLayout,
+			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,
-			slideLayout: slideLayout,
+			slideLayout: masterSlideName
+				? this.slideLayouts.filter(layout => {
+						return layout.name == masterSlideName
+				  })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
+				: this.LAYOUTS[DEF_PRES_LAYOUT],
 		})
 
-		// 2: Add this SLIDE to PRESENTATION
 		this.slides.push(newSlide)
 
 		return newSlide

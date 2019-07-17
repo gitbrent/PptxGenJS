@@ -9,6 +9,7 @@ import * as genObj from './gen-objects'
 export default class Slide {
 	private _bkgd: string
 	private _color: string
+	private _setSlideNum: Function
 	private _slideNumber: ISlideNumber
 
 	public presLayout: ILayout
@@ -18,13 +19,13 @@ export default class Slide {
 	public rels: ISlideRel[]
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
-	public layoutName: string
 	public slideLayout: ISlideLayout
 
 	// TODO: slide.title (they're all "PowerPoint Presenation" now!) 20190712
 
-	constructor(params: { presLayout: ILayout; slideNumber: number; slideLayout?: ISlideLayout }) {
+	constructor(params: { presLayout: ILayout; setSlideNum:Function; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this.presLayout = params.presLayout
+		this._setSlideNum = params.setSlideNum
 		this.name = 'Slide ' + params.slideNumber
 		this.number = params.slideNumber
 		this.data = []
@@ -32,7 +33,6 @@ export default class Slide {
 		this.relsChart = []
 		this.relsMedia = []
 		this.slideNumber = null
-		this.layoutName = params.slideLayout.name || '[PptxgenDefaultLayout]'
 		this.slideLayout = params.slideLayout || null
 
 		// NOTE: Slide Numbers: In order for Slide Numbers to work normally, they need to be in all 3 files: master/layout/slide
@@ -63,12 +63,8 @@ export default class Slide {
 		// A:
 		this._slideNumber = value
 
-		// TODO: commented these as we need to reach up to do these (create some setters on PptxGen??)
-		// B: Add slideNumber to slideMaster1.xml
-		//if (!this.masterSlide.slideNumber) this.masterSlide.slideNumber = inObj
-
-		// C: Add slideNumber to `BLANK` (default) layout
-		//if (!this.slideLayouts[0].slideNumber) this.slideLayouts[0].slideNumber = inObj
+		// B:
+		this._setSlideNum(value)
 	}
 	public get slideNumber(): ISlideNumber {
 		return this._slideNumber
