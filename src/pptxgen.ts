@@ -757,7 +757,7 @@ export default class PptxGenJS {
 	 * @param {string} `tabEleId` - HTMLElementID of the table
 	 * @param {object} `inOpts` - array of options (e.g.: tabsize)
 	 */
-	addSlidesForTable(tabEleId: string, inOpts) {
+	tableToSlides(tabEleId: string, inOpts) {
 		var api = this
 		var opts = inOpts || {}
 		var arrObjTabHeadRows = [],

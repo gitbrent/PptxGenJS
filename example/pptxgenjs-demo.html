@@ -1,4 +1,4 @@
-﻿<!doctype html>
+tableToSlides﻿<!doctype html>
 <html lang="en">
 <head>
 	<!-- NOTE: IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy) -->
@@ -377,13 +377,13 @@
 
 		function table2slidesDemoForTab(inTabId,inOpts) {
 			var pptx = new PptxGenJS();
-			pptx.addSlidesForTable(inTabId,(inOpts||null));
+			pptx.tableToSlides(inTabId,(inOpts||null));
 			pptx.save( inTabId+'_'+getTimestamp() );
 		}
 
 		function table2slidesBullets() {
 			var pptx = new PptxGenJS();
-			pptx.addSlidesForTable('tableWithBullets');
+			pptx.tableToSlides('tableWithBullets');
 			pptx.save( 'tabBullets_'+getTimestamp() );
 		}
 
@@ -453,8 +453,8 @@
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 			if ( $('#checkStartY').prop('checked') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
 
-			// STEP 3: Pass table to addSlidesForTable function to produce 1-N slides
-			pptx.addSlidesForTable('tabAutoPaging', objOpts);
+			// STEP 3: Pass table to tableToSlides function to produce 1-N slides
+			pptx.tableToSlides('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
 			pptx.save('Demo-TableToSlidesMasterSlide_'+getTimestamp());
@@ -481,8 +481,8 @@
 			// NOTE: You can do this for all other types as well: .addShape(), .addTable() and .addImage()
 			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:1.1, y:0.6, color:'0088CC', fontFace:'Arial', fontSize:12 } };
 
-			// STEP 4: Pass table to addSlidesForTable function to produce 1-N slides
-			pptx.addSlidesForTable('tabAutoPaging', objOpts);
+			// STEP 4: Pass table to tableToSlides function to produce 1-N slides
+			pptx.tableToSlides('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
 			pptx.save('Table2Slides-with-dynamic-text');
@@ -699,7 +699,7 @@
 		<div id="tab2" data-title="HTML to PowerPoint">
 			<h4 class="text-primary">HTML to PowerPoint</h4>
 			<p class="text-muted">
-				Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code class="p-1">pptx.addSlidesForTable('tableId');</code><br>
+				Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code class="p-1">pptx.tableToSlides('tableId');</code><br>
 				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html" target="_blank">HTML to PowerPoint documentation</a> for full details and examples
 			</p>
 
