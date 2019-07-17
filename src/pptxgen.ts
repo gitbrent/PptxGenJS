@@ -252,7 +252,7 @@ export default class PptxGenJS {
 			addShape: null,
 			addTable: null,
 			addText: null,
-
+			//
 			presLayout: this._presLayout,
 			name: null,
 			number: null,
@@ -266,7 +266,8 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * DESC: Export the .pptx file
+	 * Create and export the .pptx file
+	 * @param {JSZIP_OUTPUT_TYPE} `outputType` JSZip output type (ArrayBuffer, Blob, etc.)
 	 */
 	doExportPresentation = (outputType?: JSZIP_OUTPUT_TYPE) => {
 		var arrChartPromises: Array<Promise<any>> = []
@@ -288,25 +289,22 @@ export default class PptxGenJS {
 		zip.folder('ppt/theme')
 		zip.folder('ppt/notesMasters').folder('_rels')
 		zip.folder('ppt/notesSlides').folder('_rels')
-		//
 		zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide))
 		zip.file('_rels/.rels', genXml.makeXmlRootRels())
 		zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company))
 		zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision))
 		zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
-		//
 		zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
 		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this._presLayout))
 		zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
 		zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
 		zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
 
-		// Create a Layout/Master/Rel/Slide file for each SLIDE
+		// STEP 3: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
 		for (var idx = 1; idx <= this.slideLayouts.length; idx++) {
 			zip.file('ppt/slideLayouts/slideLayout' + idx + '.xml', genXml.makeXmlLayout(this.slideLayouts[idx - 1]))
 			zip.file('ppt/slideLayouts/_rels/slideLayout' + idx + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx, this.slideLayouts))
 		}
-
 		for (var idx = 0; idx < this.slides.length; idx++) {
 			intSlideNum++
 			zip.file('ppt/slides/slide' + intSlideNum + '.xml', genXml.makeXmlSlide(this.slides[idx]))
@@ -317,25 +315,21 @@ export default class PptxGenJS {
 			zip.file('ppt/notesSlides/notesSlide' + intSlideNum + '.xml', genXml.makeXmlNotesSlide(this.slides[idx]))
 			zip.file('ppt/notesSlides/_rels/notesSlide' + intSlideNum + '.xml.rels', genXml.makeXmlNotesSlideRel(intSlideNum))
 		}
-
 		zip.file('ppt/slideMasters/slideMaster1.xml', genXml.makeXmlMaster(this.masterSlide, this.slideLayouts))
 		zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts))
 		zip.file('ppt/notesMasters/notesMaster1.xml', genXml.makeXmlNotesMaster())
 		zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', genXml.makeXmlNotesMasterRel())
 
-		// Create all Rels (images, media, chart data)
+		// STEP 4: Create all Rels (images, media, chart data)
 		this.slideLayouts.forEach(layout => {
-			///TODO-3: FIXME:
-			// 20190710: Why are we doing this? do layout's have charts?? Is this for cases where Master Slides can have media/charts??
-			// this.createChartMediaRels(layout as ISlide, zip, arrChartPromises)
-			console.log(layout)
+			this.createChartMediaRels(layout, zip, arrChartPromises)
 		})
 		this.slides.forEach(slide => {
 			this.createChartMediaRels(slide, zip, arrChartPromises)
 		})
 		this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
 
-		// STEP 3: Wait for Promises (if any) then generate the PPTX file
+		// STEP 5: Wait for Promises (if any) then generate the PPTX file
 		Promise.all(arrChartPromises)
 			.then(() => {
 				var strExportName = this.fileName.toLowerCase().indexOf('.ppt') > -1 ? this.fileName : this.fileName + this.fileExtn
@@ -413,7 +407,7 @@ export default class PptxGenJS {
 		this.saveCallback = null
 	}
 
-	createChartMediaRels = (slide: ISlide, zip: JSZip, chartPromises: Array<Promise<any>>) => {
+	createChartMediaRels = (slide: ISlide|ISlideLayout, zip: JSZip, chartPromises: Array<Promise<any>>) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {
