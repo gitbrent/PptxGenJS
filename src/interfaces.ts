@@ -4,6 +4,8 @@
 
 import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES } from './enums'
 
+// FIXME: WONT FORMAT ANYMORE!!! ("TSTypeAliasDeclaration" error)
+
 // Common
 // ======
 
