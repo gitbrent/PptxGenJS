@@ -35,7 +35,7 @@ export default class Slide {
 		this.slideNumber = null
 		this.slideLayout = params.slideLayout || null
 
-		// NOTE: Slide Numbers: In order for Slide Numbers to work normally, they need to be in all 3 files: master/layout/slide
+		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		// so, lastly, add to the Slide now.
 		if (this.slideLayout && this.slideLayout.slideNumberObj && !this._slideNumber) this.slideNumber = this.slideLayout.slideNumberObj
@@ -60,10 +60,8 @@ export default class Slide {
 	}
 
 	public set slideNumber(value: ISlideNumber) {
-		// A:
+		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		this._slideNumber = value
-
-		// B:
 		this._setSlideNum(value)
 	}
 	public get slideNumber(): ISlideNumber {
