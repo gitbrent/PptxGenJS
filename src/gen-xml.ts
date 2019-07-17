@@ -946,7 +946,7 @@ export function makeXmlTheme() {
  * @param `pptLayout` {ISlideLayout} presentation layout
  */
 export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
-	var strXml =
+	let strXml =
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
 		'<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ' +
@@ -958,12 +958,12 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 	// STEP 1: Build SLIDE master list
 	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
 	strXml += '<p:sldIdLst>'
-	for (var idx = 0; idx < slides.length; idx++) {
+	for (let idx = 0; idx < slides.length; idx++) {
 		strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>'
 	}
 	strXml += '</p:sldIdLst>'
 
-	// Step 2: Add NOTES master list
+	// STEP 2: Add NOTES master list
 	strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (slides.length + 2 + 4) + '"/></p:notesMasterIdLst>' // length+2+4 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic)
 
 	// STEP 3: Build SLIDE text styles
@@ -980,15 +980,15 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 		'" cy="' +
 		pptLayout.width +
 		'"/>' +
-		'<p:defaultTextStyle>'
-	;+'  <a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
+		'<p:defaultTextStyle>' +
+		'<a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
+	let intCurPos = 0
 	for (let idx = 1; idx < 10; idx++) {
-		let intCurPos = 0
 		strXml +=
 			'  <a:lvl' +
 			idx +
 			'pPr marL="' +
-			intCurPos +
+			intCurPos.toString() +
 			'" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">' +
 			'    <a:defRPr sz="1800" kern="1200">' +
 			'      <a:solidFill><a:schemeClr val="tx1"/></a:solidFill>' +
