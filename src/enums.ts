@@ -12,15 +12,16 @@ export const CRLF: string = '\r\n' // AKA: Chr(13) & Chr(10)
 export const LAYOUT_IDX_SERIES_BASE: number = 2147483649
 export const REGEX_HEX_COLOR: RegExp = /^[0-9a-fA-F]{6}$/
 
-export const DEF_FONT_TITLE_SIZE: number = 18
-export const DEF_SLIDE_MARGIN_IN: Array<number> = [0.5, 0.5, 0.5, 0.5] // TRBL-style
-export const DEF_SLIDE_BKGD = 'FFFFFF'
+export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
 export const DEF_FONT_COLOR: string = '000000'
 export const DEF_FONT_SIZE: number = 12
-export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
+export const DEF_FONT_TITLE_SIZE: number = 18
+export const DEF_PRES_LAYOUT = 'LAYOUT_16x9'
+export const DEF_PRES_LAYOUT_NAME = 'DEFAULT'
+export const DEF_SLIDE_BKGD = 'FFFFFF'
+export const DEF_SLIDE_MARGIN_IN: Array<number> = [0.5, 0.5, 0.5, 0.5] // TRBL-style
 export const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true }
 export const DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 }
-export const DEF_PRES_LAYOUT = 'LAYOUT_16x9'
 
 export const AXIS_ID_VALUE_PRIMARY: string = '2094734552'
 export const AXIS_ID_VALUE_SECONDARY: string = '2094734553'
