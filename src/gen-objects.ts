@@ -34,7 +34,7 @@ import {
 	IImageOpts,
 } from './interfaces'
 import { getSmartParseNumber, inch2Emu } from './utils'
-import { createHyperlinkRels, getSlidesForTableRows, correctShadowOptions } from './gen-xml'
+import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
 
 /** counter for included images (used for index in their filenames) */
 var _imageCounter: number = 0
