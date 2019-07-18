@@ -1,4 +1,4 @@
-tableToSlides﻿<!doctype html>
+﻿<!doctype html>
 <html lang="en">
 <head>
 	<!-- NOTE: IE11 will show an "Active-X blocked on this page, do you want to allow?" security dialog when run locally (run from server to remedy) -->
@@ -449,7 +449,7 @@ tableToSlides﻿<!doctype html>
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.debug = true; // DEBUG:
-			if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
+			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 			if ( $('#checkStartY').prop('checked') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
 
@@ -471,7 +471,7 @@ tableToSlides﻿<!doctype html>
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.debug = true;
-			if ( $('#selSlideMaster').val() ) objOpts.master = $('#selSlideMaster').val();
+			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 			if ( $('#checkStartY') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
 
