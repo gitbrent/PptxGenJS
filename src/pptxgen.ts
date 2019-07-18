@@ -45,14 +45,13 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, EMU, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './enums'
-import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel, ISlideNumber } from './interfaces'
+import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './enums'
+import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel, ISlideNumber, ITableToSlidesOpts } from './interfaces'
 import Slide from './pptxgen-slide'
 import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genXml from './gen-xml'
-import { inch2Emu, rgbToHex } from './utils'
 import { gObjPptxShapes } from './lib-shapes'
 
 export default class PptxGenJS {
@@ -407,7 +406,7 @@ export default class PptxGenJS {
 		this.saveCallback = null
 	}
 
-	createChartMediaRels = (slide: ISlide|ISlideLayout, zip: JSZip, chartPromises: Array<Promise<any>>) => {
+	createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Array<Promise<any>>) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {
@@ -726,7 +725,7 @@ export default class PptxGenJS {
 			throw Error('defineSlideMaster() object argument requires a `title` value.')
 		}
 
-		var objLayout: ISlideLayout = {
+		let objLayout: ISlideLayout = {
 			presLayout: this._presLayout,
 			name: inObjMasterDef.title,
 			width: inObjMasterDef.width || this._presLayout.width,
@@ -752,239 +751,20 @@ export default class PptxGenJS {
 
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-	 * "Auto-Paging is the future!" --Elon Musk
-	 *
 	 * @param {string} `tabEleId` - HTMLElementID of the table
-	 * @param {object} `inOpts` - array of options (e.g.: tabsize)
+	 * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
 	 */
-	tableToSlides(tabEleId: string, inOpts) {
-		var api = this
-		var opts = inOpts || {}
-		var arrObjTabHeadRows = [],
-			arrObjTabBodyRows = [],
-			arrObjTabFootRows = []
-		var arrColW = [],
-			arrTabColW = []
-		var intTabW = 0
-
-		// REALITY-CHECK:
-		if (jQuery('#' + tabEleId).length == 0) {
-			console.error('Table "' + tabEleId + '" does not exist!')
-			return
-		}
-
-		var arrInchMargins = [0.5, 0.5, 0.5, 0.5] // TRBL-style
-		opts.margin = opts.margin || opts.margin == 0 ? opts.margin : 0.5
-
-		if (opts.master && typeof opts.master === 'string') {
-			var objLayout = this.slideLayouts.filter(layout => {
-				return layout.name == opts.master
-			})[0]
-			if (objLayout && objLayout.margin) {
-				if (Array.isArray(objLayout.margin)) arrInchMargins = objLayout.margin
-				else if (!isNaN(objLayout.margin)) arrInchMargins = [objLayout.margin, objLayout.margin, objLayout.margin, objLayout.margin]
-				opts.margin = arrInchMargins
-			}
-		} else if (opts && opts.margin) {
-			if (Array.isArray(opts.margin)) arrInchMargins = opts.margin
-			else if (!isNaN(opts.margin)) arrInchMargins = [opts.margin, opts.margin, opts.margin, opts.margin]
-		}
-
-		var emuSlideTabW = opts.w ? inch2Emu(opts.w) : this._presLayout.width - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
-		///var emuSlideTabH = opts.h ? inch2Emu(opts.h) : this._presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
-
-		// STEP 1: Grab table col widths
-		jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, val) => {
-			if (jQuery('#' + tabEleId + ' > ' + val + ' > tr').length > 0) {
-				jQuery('#' + tabEleId + ' > ' + val + ' > tr:first-child')
-					.find('> th, > td')
-					.each((idx, cell) => {
-						// FIXME: This is a hack - guessing at col widths when colspan
-						if (jQuery(cell).attr('colspan')) {
-							for (var idx = 0; idx < Number(jQuery(cell).attr('colspan')); idx++) {
-								arrTabColW.push(Math.round(jQuery(cell).outerWidth() / Number(jQuery(cell).attr('colspan'))))
-							}
-						} else {
-							arrTabColW.push(jQuery(cell).outerWidth())
-						}
-					})
-				return false // break out of .each loop
-			}
-		})
-		jQuery.each(arrTabColW, (_idx, colW) => {
-			intTabW += colW
-		})
-
-		// STEP 2: Calc/Set column widths by using same column width percent from HTML table
-		jQuery.each(arrTabColW, (i, colW) => {
-			var intCalcWidth = Number(((emuSlideTabW * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
-			var intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-min-width')
-			var intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-width')
-			arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
-		})
-
-		// STEP 3: Iterate over each table element and create data arrays (text and opts)
-		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-		jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, part) => {
-			jQuery('#' + tabEleId + ' > ' + part + ' > tr').each((_idx, row) => {
-				let arrObjTabCells = []
-				jQuery(row)
-					.find('> th, > td')
-					.each((_idx, cell) => {
-						// A: Get RGB text/bkgd colors
-						let arrRGB1 = []
-						let arrRGB2 = []
-						arrRGB1 = jQuery(cell)
-							.css('color')
-							.replace(/\s+/gi, '')
-							.replace('rgba(', '')
-							.replace('rgb(', '')
-							.replace(')', '')
-							.split(',')
-						arrRGB2 = jQuery(cell)
-							.css('background-color')
-							.replace(/\s+/gi, '')
-							.replace('rgba(', '')
-							.replace('rgb(', '')
-							.replace(')', '')
-							.split(',')
-						// ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead
-						// (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
-						if (jQuery(cell).css('background-color') == 'rgba(0, 0, 0, 0)' || jQuery(cell).css('background-color') == 'transparent') arrRGB2 = [255, 255, 255]
-
-						// B: Create option object
-						let objOpts = {
-							fontSize: jQuery(cell)
-								.css('font-size')
-								.replace(/[a-z]/gi, ''),
-							bold: jQuery(cell).css('font-weight') == 'bold' || Number(jQuery(cell).css('font-weight')) >= 500 ? true : false,
-							color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
-							fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
-							align: null,
-							border: null,
-							margin: null,
-							colspan: null,
-							rowspan: null,
-							valign: null,
-						}
-						if (['left', 'center', 'right', 'start', 'end'].indexOf(jQuery(cell).css('text-align')) > -1)
-							objOpts.align = jQuery(cell)
-								.css('text-align')
-								.replace('start', 'left')
-								.replace('end', 'right')
-						if (['top', 'middle', 'bottom'].indexOf(jQuery(cell).css('vertical-align')) > -1) objOpts.valign = jQuery(cell).css('vertical-align')
-
-						// C: Add padding [margin] (if any)
-						// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
-						if (jQuery(cell).css('padding-left')) {
-							objOpts.margin = []
-							jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], (_idx, val) => {
-								objOpts.margin.push(
-									Math.round(
-										Number(
-											jQuery(cell)
-												.css(val)
-												.replace(/\D/gi, '')
-										)
-									)
-								)
-							})
-						}
-
-						// D: Add colspan/rowspan (if any)
-						if (jQuery(cell).attr('colspan')) objOpts.colspan = jQuery(cell).attr('colspan')
-						if (jQuery(cell).attr('rowspan')) objOpts.rowspan = jQuery(cell).attr('rowspan')
-
-						// E: Add border (if any)
-						if (
-							jQuery(cell).css('border-top-width') ||
-							jQuery(cell).css('border-right-width') ||
-							jQuery(cell).css('border-bottom-width') ||
-							jQuery(cell).css('border-left-width')
-						) {
-							objOpts.border = []
-							jQuery.each(['top', 'right', 'bottom', 'left'], (_idx, val) => {
-								var intBorderW = Math.round(
-									Number(
-										jQuery(cell)
-											.css('border-' + val + '-width')
-											.replace('px', '')
-									)
-								)
-								var arrRGB = []
-								arrRGB = jQuery(cell)
-									.css('border-' + val + '-color')
-									.replace(/\s+/gi, '')
-									.replace('rgba(', '')
-									.replace('rgb(', '')
-									.replace(')', '')
-									.split(',')
-								var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
-								objOpts.border.push({ pt: intBorderW, color: strBorderC })
-							})
-						}
-
-						// F: Massage cell text so we honor linebreak tag as a line break during line parsing
-						let $cell2 = jQuery(cell).clone()
-						$cell2.html(
-							jQuery(cell)
-								.html()
-								.replace(/<br[^>]*>/gi, '\n')
-						)
-
-						// LAST: Add cell
-						arrObjTabCells.push({
-							text: jQuery.trim($cell2.text()),
-							opts: objOpts,
-						})
-
-						// FIXME: background colors missing
-						console.log(arrObjTabCells)
-					})
-				switch (part) {
-					case 'thead':
-						arrObjTabHeadRows.push(arrObjTabCells)
-						break
-					case 'tbody':
-						arrObjTabBodyRows.push(arrObjTabCells)
-						break
-					case 'tfoot':
-						arrObjTabFootRows.push(arrObjTabCells)
-						break
-					default:
-				}
-			})
-		})
-
-		// STEP 4: NOTE: `margin` is "cell margin (pt)" everywhere else tables are used, so explicitly convert to "slide margin" here
-		if (opts.margin) {
-			opts.slideMargin = opts.margin
-			delete opts.margin
-		}
-
-		// STEP 5: Break table into Slides as needed
-		// Pass head-rows as there is an option to add to each table and the parse func needs this daa to fulfill that option
-		opts.arrObjTabHeadRows = arrObjTabHeadRows || ''
-		opts.colW = arrColW
-
-		genXml.getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts, this.presLayout).forEach((arrTabRows, idx) => {
-			// A: Create new Slide
-			let newSlide = api.addSlide(opts.master || null)
-
-			// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idx == 0) opts.y = opts.y || arrInchMargins[0]
-			if (idx > 0) opts.y = opts.newPageStartY || arrInchMargins[0]
-			if (opts.debug) console.log('opts.newPageStartY:' + opts.newPageStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
-
-			// C: Add table to Slide
-			newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: emuSlideTabW / EMU, colW: arrColW, autoPage: false })
-
-			// D: Add any additional objects
-			if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })
-			if (opts.addShape) newSlide.addShape(opts.addShape.shape, opts.addShape.opts || opts.addShape.options || {})
-			if (opts.addTable) newSlide.addTable(opts.addTable.rows, opts.addTable.opts || opts.addTable.options || {})
-			if (opts.addText) newSlide.addText(opts.addText.text, opts.addText.opts || opts.addText.options || {})
-		})
+	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts) {
+		genXml.genTableToSlides(
+			this,
+			tableElementId,
+			opts,
+			opts.masterSlideName
+				? this.slideLayouts.filter(layout => {
+						return layout.name == opts.masterSlideName.toString()
+				  })[0]
+				: null
+		)
 	}
 }
 

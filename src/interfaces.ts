@@ -41,24 +41,6 @@ export interface OptsChartGridLine {
 
 // Opts
 // ====
-
-/**
- * The Presenation Layout (ex: 'LAYOUT_WIDE')
- */
-export interface ILayout {
-	name: string
-	width?: number
-	height?: number
-	/*
-	// TODO: remove below - they s/b SlideLayout right?
-	rels?: object
-	relsChart?: ISlideRelChart
-	relsMedia?: ISlideRelMedia
-	data: Array<object>
-	options: {
-		placeholderName: string
-	}*/
-}
 export interface IBorderOpts {
 	color?: string // '#696969'
 	pt?: number
@@ -71,34 +53,6 @@ export interface IShadowOpts {
 	blur?: number
 	offset?: number
 	color?: string
-}
-export interface IImageOpts extends OptsCoords, OptsDataOrPath {
-	type?: 'audio' | 'online' | 'video'
-	sizing?: { type:'crop' | 'contain' | 'cover', w:number, h:number, x?:number, y?:number }
-	hyperlink?: any
-	rounding?: boolean
-	placeholder?: any
-}
-export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
-	type?: 'audio' | 'online' | 'video'
-	link: string
-	onlineVideoLink?: string
-}
-export interface ITextOpts extends OptsCoords, OptsDataOrPath {
-	align?: string // "left" | "center" | "right"
-	autoFit?: boolean
-	color?: string
-	fontSize?: number
-	inset?: number
-	lineSpacing?: number
-	line?: string // color
-	lineSize?: number
-	placeholder?: string
-	rotate?: number // VALS: degree * 60,000
-	shadow?: IShadowOpts
-	shape?: { name: string }
-	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-	valign?: string //"top" | "middle" | "bottom"
 }
 export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	type: CHART_TYPE_NAMES|IChartMulti[]
@@ -232,6 +186,34 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	v3DRAngAx?: boolean
 	v3DPerspective?: number
 }
+export interface IImageOpts extends OptsCoords, OptsDataOrPath {
+	type?: 'audio' | 'online' | 'video'
+	sizing?: { type:'crop' | 'contain' | 'cover', w:number, h:number, x?:number, y?:number }
+	hyperlink?: any
+	rounding?: boolean
+	placeholder?: any
+}
+export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
+	type?: 'audio' | 'online' | 'video'
+	link: string
+	onlineVideoLink?: string
+}
+export interface ITextOpts extends OptsCoords, OptsDataOrPath {
+	align?: string // "left" | "center" | "right"
+	autoFit?: boolean
+	color?: string
+	fontSize?: number
+	inset?: number
+	lineSpacing?: number
+	line?: string // color
+	lineSize?: number
+	placeholder?: string
+	rotate?: number // VALS: degree * 60,000
+	shadow?: IShadowOpts
+	shape?: { name: string }
+	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+	valign?: string //"top" | "middle" | "bottom"
+}
 export interface IChartTitleOpts {
 	title: string
 	color?: String
@@ -246,9 +228,35 @@ export interface IChartMulti {
 	data: []
 	options: {}
 }
+export interface ITableToSlidesOpts {
+	addImage: {url:string, x:number, y:number, w?:number, h?:number}
+	addShape: {shape:any, opts:{}}
+	addTable: {rows:any[], opts:{}}
+	addText: {text:any[], opts:{}}
+	//
+	x?: number
+	y?: number
+	w?: number
+	h?: number
+	_arrObjTabHeadRows?: any[]
+	addHeaderToEach?: boolean
+	colW?: Array<number> | number
+	debug?: boolean
+	masterSlideName?: string
+	newSlideStartY?: number
+	slideMargin?: Array<number> | number
+}
 
-// Core: `slide` and `presentation`
-// =====
+// Core
+// ====
+/**
+ * The Presenation Layout (ex: 'LAYOUT_WIDE')
+ */
+export interface ILayout {
+	name: string
+	width?: number
+	height?: number
+}
 export interface ISlideNumber extends OptsCoords {
 	fontFace?: string
 	fontSize?: number

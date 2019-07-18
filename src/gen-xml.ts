@@ -16,10 +16,11 @@ import {
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
 } from './enums'
-import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject } from './interfaces'
-import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees } from './utils'
+import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts } from './interfaces'
+import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './utils'
 import { gObjPptxShapes } from './lib-shapes'
 import { slideObjectRelationsToXml } from './gen-objects'
+import PptxGenJS from './pptxgen'
 
 /**
  * Transforms a slide or slideLayout to resulting XML string.
@@ -1633,6 +1634,7 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 		'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ' +
 		(this._rtlMode ? 'rtl="1"' : '') +
 		' saveSubsetFonts="1" autoCompressPictures="0">'
+	// FIXME: "this._rtlMode" doesnt exist
 
 	// STEP 1: Build SLIDE master list
 	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
@@ -2054,4 +2056,229 @@ let imageSizingXml = {
 			bPerc = Math.round(1e5 * (b / imageSize.h))
 		return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '" /><a:stretch/>'
 	},
+}
+
+/**
+ * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+ * "Auto-Paging is the future!" --Elon Musk
+ *
+ * @param {string} `tabEleId` - HTMLElementID of the table
+ * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
+ */
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITableToSlidesOpts, objLayout: ISlideLayout) {
+	let opts = inOpts || ({} as ITableToSlidesOpts)
+	opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5
+	let emuSlideTabW = opts.w || pptx.presLayout().width
+	let arrObjTabHeadRows = [],
+		arrObjTabBodyRows = [],
+		arrObjTabFootRows = []
+	let arrColW = [],
+		arrTabColW = []
+	let intTabW = 0
+	let arrInchMargins = [0.5, 0.5, 0.5, 0.5] // TRBL-style
+
+	// REALITY-CHECK:
+	if (jQuery('#' + tabEleId).length == 0) {
+		console.error('Table "' + tabEleId + '" does not exist!')
+		return
+	}
+
+	// Set margins
+	if (objLayout && objLayout.margin) {
+		if (Array.isArray(objLayout.margin)) arrInchMargins = objLayout.margin
+		else if (!isNaN(objLayout.margin)) arrInchMargins = [objLayout.margin, objLayout.margin, objLayout.margin, objLayout.margin]
+		opts.slideMargin = arrInchMargins
+	} else if (opts && opts.slideMargin) {
+		if (Array.isArray(opts.slideMargin)) arrInchMargins = opts.slideMargin
+		else if (!isNaN(opts.slideMargin)) arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin]
+	}
+	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout().width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
+
+	// STEP 1: Grab table col widths
+	jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, val) => {
+		if (jQuery('#' + tabEleId + ' > ' + val + ' > tr').length > 0) {
+			jQuery('#' + tabEleId + ' > ' + val + ' > tr:first-child')
+				.find('> th, > td')
+				.each((idx, cell) => {
+					// FIXME: This is a hack - guessing at col widths when colspan
+					if (jQuery(cell).attr('colspan')) {
+						for (var idx = 0; idx < Number(jQuery(cell).attr('colspan')); idx++) {
+							arrTabColW.push(Math.round(jQuery(cell).outerWidth() / Number(jQuery(cell).attr('colspan'))))
+						}
+					} else {
+						arrTabColW.push(jQuery(cell).outerWidth())
+					}
+				})
+			return false // break out of .each loop
+		}
+	})
+	jQuery.each(arrTabColW, (_idx, colW) => {
+		intTabW += colW
+	})
+
+	// STEP 2: Calc/Set column widths by using same column width percent from HTML table
+	jQuery.each(arrTabColW, (i, colW) => {
+		var intCalcWidth = Number(((emuSlideTabW * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
+		var intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-min-width')
+		var intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-width')
+		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
+	})
+
+	// STEP 3: Iterate over each table element and create data arrays (text and opts)
+	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
+	jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, part) => {
+		jQuery('#' + tabEleId + ' > ' + part + ' > tr').each((_idx, row) => {
+			let arrObjTabCells = []
+			jQuery(row)
+				.find('> th, > td')
+				.each((_idx, cell) => {
+					// A: Get RGB text/bkgd colors
+					let arrRGB1 = []
+					let arrRGB2 = []
+					arrRGB1 = jQuery(cell)
+						.css('color')
+						.replace(/\s+/gi, '')
+						.replace('rgba(', '')
+						.replace('rgb(', '')
+						.replace(')', '')
+						.split(',')
+					arrRGB2 = jQuery(cell)
+						.css('background-color')
+						.replace(/\s+/gi, '')
+						.replace('rgba(', '')
+						.replace('rgb(', '')
+						.replace(')', '')
+						.split(',')
+					// ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead
+					// (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
+					if (jQuery(cell).css('background-color') == 'rgba(0, 0, 0, 0)' || jQuery(cell).css('background-color') == 'transparent') arrRGB2 = [255, 255, 255]
+
+					// B: Create option object
+					let objOpts = {
+						fontSize: jQuery(cell)
+							.css('font-size')
+							.replace(/[a-z]/gi, ''),
+						bold: jQuery(cell).css('font-weight') == 'bold' || Number(jQuery(cell).css('font-weight')) >= 500 ? true : false,
+						color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
+						fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+						align: null,
+						border: null,
+						margin: null,
+						colspan: null,
+						rowspan: null,
+						valign: null,
+					}
+					if (['left', 'center', 'right', 'start', 'end'].indexOf(jQuery(cell).css('text-align')) > -1)
+						objOpts.align = jQuery(cell)
+							.css('text-align')
+							.replace('start', 'left')
+							.replace('end', 'right')
+					if (['top', 'middle', 'bottom'].indexOf(jQuery(cell).css('vertical-align')) > -1) objOpts.valign = jQuery(cell).css('vertical-align')
+
+					// C: Add padding [margin] (if any)
+					// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
+					if (jQuery(cell).css('padding-left')) {
+						objOpts.margin = []
+						jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], (_idx, val) => {
+							objOpts.margin.push(
+								Math.round(
+									Number(
+										jQuery(cell)
+											.css(val)
+											.replace(/\D/gi, '')
+									)
+								)
+							)
+						})
+					}
+
+					// D: Add colspan/rowspan (if any)
+					if (jQuery(cell).attr('colspan')) objOpts.colspan = jQuery(cell).attr('colspan')
+					if (jQuery(cell).attr('rowspan')) objOpts.rowspan = jQuery(cell).attr('rowspan')
+
+					// E: Add border (if any)
+					if (
+						jQuery(cell).css('border-top-width') ||
+						jQuery(cell).css('border-right-width') ||
+						jQuery(cell).css('border-bottom-width') ||
+						jQuery(cell).css('border-left-width')
+					) {
+						objOpts.border = []
+						jQuery.each(['top', 'right', 'bottom', 'left'], (_idx, val) => {
+							var intBorderW = Math.round(
+								Number(
+									jQuery(cell)
+										.css('border-' + val + '-width')
+										.replace('px', '')
+								)
+							)
+							var arrRGB = []
+							arrRGB = jQuery(cell)
+								.css('border-' + val + '-color')
+								.replace(/\s+/gi, '')
+								.replace('rgba(', '')
+								.replace('rgb(', '')
+								.replace(')', '')
+								.split(',')
+							var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
+							objOpts.border.push({ pt: intBorderW, color: strBorderC })
+						})
+					}
+
+					// F: Massage cell text so we honor linebreak tag as a line break during line parsing
+					let $cell2 = jQuery(cell).clone()
+					$cell2.html(
+						jQuery(cell)
+							.html()
+							.replace(/<br[^>]*>/gi, '\n')
+					)
+
+					// LAST: Add cell
+					arrObjTabCells.push({
+						text: jQuery.trim($cell2.text()),
+						opts: objOpts,
+					})
+
+					// FIXME: background colors missing
+					console.log('FIXME:background colors missing')
+					console.log(arrObjTabCells)
+				})
+			switch (part) {
+				case 'thead':
+					arrObjTabHeadRows.push(arrObjTabCells)
+					break
+				case 'tbody':
+					arrObjTabBodyRows.push(arrObjTabCells)
+					break
+				case 'tfoot':
+					arrObjTabFootRows.push(arrObjTabCells)
+					break
+				default:
+			}
+		})
+	})
+
+	// STEP 5: Break table into Slides as needed
+	// Pass head-rows as there is an option to add to each table and the parse func needs this data to fulfill that option
+	opts._arrObjTabHeadRows = arrObjTabHeadRows || null
+	opts.colW = arrColW
+
+	getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts, pptx.presLayout()).forEach((arrTabRows, idx) => {
+		// A: Create new Slide
+		let newSlide = pptx.addSlide(opts.masterSlideName || null)
+
+		// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+		if (idx == 0) opts.y = opts.y || arrInchMargins[0]
+		if (idx > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
+		if (opts.debug) console.log('opts.newPageStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+
+		// C: Add table to Slide
+		newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: emuSlideTabW / EMU, colW: arrColW, autoPage: false })
+
+		// D: Add any additional objects
+		if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })
+		if (opts.addShape) newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {})
+		if (opts.addTable) newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {})
+		if (opts.addText) newSlide.addText(opts.addText.text, opts.addText.opts || {})
+	})
 }
