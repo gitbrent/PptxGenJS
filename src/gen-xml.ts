@@ -2078,10 +2078,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 	let intTabW = 0
 
 	// REALITY-CHECK:
-	if (jQuery('#' + tabEleId).length == 0) {
-		console.error('Table "' + tabEleId + '" does not exist!')
-		return
-	}
+	if (!document.getElementById(tabEleId)) throw 'Table "' + tabEleId + '" does not exist!'
 
 	// Set margins
 	if (masterSlide && masterSlide.margin) {
@@ -2095,7 +2092,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout().width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
 
 	// STEP 1: Grab table col widths
-	arrTableParts.forEach((part, _idx) => {
+	//arrTableParts.forEach((part, _idx) => { // NO! CAREFUL! We need to break out of loop using "return false" - forEach break col sizing badly
+	jQuery.each(arrTableParts, (_idx,part) => {
 		if (jQuery('#' + tabEleId + ' > ' + part + ' > tr').length > 0) {
 			jQuery('#' + tabEleId + ' > ' + part + ' > tr:first-child')
 				.find('> th, > td')
