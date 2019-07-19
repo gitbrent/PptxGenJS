@@ -17,7 +17,7 @@ import {
 	DEF_CELL_MARGIN_PT,
 	LINEH_MODIFIER,
 } from './enums'
-import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts, ITableToSlidesCell } from './interfaces'
+import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts, ITableToSlidesCell, ITableCellOpts } from './interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './utils'
 import { gObjPptxShapes } from './lib-shapes'
 import { slideObjectRelationsToXml } from './gen-objects'
@@ -133,18 +133,18 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		// B: Add OBJECT to current Slide ----------------------------
 		switch (slideItemObj.type) {
 			case SLIDE_OBJECT_TYPES.table:
-				// Set table vars
-				var objTableGrid = {}
-				var arrTabRows = slideItemObj.arrTabRows
-				var objTabOpts = slideItemObj.options
-				var intColCnt = 0,
+				let objTableGrid = {}
+				let arrTabRows = slideItemObj.arrTabRows
+				let objTabOpts = slideItemObj.options
+				let intColCnt = 0,
 					intColW = 0
+				let cellOpts: ITableCellOpts
 
 				// Calc number of columns
 				// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 				// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 				arrTabRows[0].forEach(cell => {
-					var cellOpts = cell.options || null
+					cellOpts = cell.options || null
 					intColCnt += cellOpts && cellOpts.colspan ? Number(cellOpts.colspan) : 1
 				})
 
@@ -154,9 +154,9 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					'<p:graphicFrame>' +
 					'  <p:nvGraphicFramePr>' +
 					'    <p:cNvPr id="' +
-					(intTableNum * slide['number'] + 1) +
+					(intTableNum * slide.number + 1) +
 					'" name="Table ' +
-					intTableNum * slide['number'] +
+					intTableNum * slide.number +
 					'"/>' +
 					'    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 					'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -178,7 +178,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					'      <a:tbl>' +
 					'        <a:tblPr/>'
 				// + '        <a:tblPr bandRow="1"/>';
-
 				// FIXME: Support banded rows, first/last row, etc.
 				// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
 				// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
@@ -239,12 +238,12 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 								objTableGrid[rIdx][currColIdx] = cell
 
 								// B: Handle `colspan` or `rowspan` (a {cell} cant have both! FIXME: FUTURE: ROWSPAN & COLSPAN in same cell)
-								if (cell && cell.opts && cell.opts.colspan && !isNaN(Number(cell.opts.colspan))) {
-									for (var idy = 1; idy < Number(cell.opts.colspan); idy++) {
+								if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
+									for (var idy = 1; idy < Number(cell.options.colspan); idy++) {
 										objTableGrid[rIdx][currColIdx + idy] = { hmerge: true, text: 'hmerge' }
 									}
-								} else if (cell && cell.opts && cell.opts.rowspan && !isNaN(Number(cell.opts.rowspan))) {
-									for (var idz = 1; idz < Number(cell.opts.rowspan); idz++) {
+								} else if (cell && cell.options && cell.options.rowspan && !isNaN(Number(cell.options.rowspan))) {
+									for (var idz = 1; idz < Number(cell.options.rowspan); idz++) {
 										if (!objTableGrid[rIdx + idz]) objTableGrid[rIdx + idz] = {}
 										objTableGrid[rIdx + idz][currColIdx] = { vmerge: true, text: 'vmerge' }
 									}
@@ -286,51 +285,50 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						if (cell.hmerge) return
 
 						// 2: OPTIONS: Build/set cell options ===========================
-						{
-							var cellOpts = cell.options || ({} as ITableCell['options'])
-							/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
-							cellOpts.isTableCell = true // Used to create textBody XML
-							cell.options = cellOpts
 
-							// B: Apply default values (tabOpts being used when cellOpts dont exist):
-							// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
-							;['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(name => {
-								if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0) cellOpts[name] = objTabOpts[name]
-							})
+						let cellOpts = cell.options || ({} as ITableCell['options'])
+						/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
+						cellOpts.isTableCell = true // Used to create textBody XML
+						cell.options = cellOpts
 
-							var cellValign = cellOpts.valign
-								? ' anchor="' +
-								  cellOpts.valign
-										.replace(/^c$/i, 'ctr')
-										.replace(/^m$/i, 'ctr')
-										.replace('center', 'ctr')
-										.replace('middle', 'ctr')
-										.replace('top', 't')
-										.replace('btm', 'b')
-										.replace('bottom', 'b') +
-								  '"'
+						// B: Apply default values (tabOpts being used when cellOpts dont exist):
+						// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
+						;['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(name => {
+							if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0) cellOpts[name] = objTabOpts[name]
+						})
+
+						let cellValign = cellOpts.valign
+							? ' anchor="' +
+							  cellOpts.valign
+									.replace(/^c$/i, 'ctr')
+									.replace(/^m$/i, 'ctr')
+									.replace('center', 'ctr')
+									.replace('middle', 'ctr')
+									.replace('top', 't')
+									.replace('btm', 'b')
+									.replace('bottom', 'b') +
+							  '"'
+							: ''
+						let cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : ''
+						let cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : ''
+						let cellFill =
+							(cell.optImp && cell.optImp.fill) || cellOpts.fill
+								? ' <a:solidFill><a:srgbClr val="' + ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#', '')) + '"/></a:solidFill>'
 								: ''
-							var cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : ''
-							var cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : ''
-							var cellFill =
-								(cell.optImp && cell.optImp.fill) || cellOpts.fill
-									? ' <a:solidFill><a:srgbClr val="' + ((cell.optImp && cell.optImp.fill) || cellOpts.fill.replace('#', '')) + '"/></a:solidFill>'
-									: ''
-							var cellMargin = cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
-							if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
-							cellMargin =
-								' marL="' +
-								cellMargin[3] * ONEPT +
-								'" marR="' +
-								cellMargin[1] * ONEPT +
-								'" marT="' +
-								cellMargin[0] * ONEPT +
-								'" marB="' +
-								cellMargin[2] * ONEPT +
-								'"'
-						}
+						let cellMargin = cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
+						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
+						let cellMarginXml =
+							' marL="' +
+							cellMargin[3] * ONEPT +
+							'" marR="' +
+							cellMargin[1] * ONEPT +
+							'" marT="' +
+							cellMargin[0] * ONEPT +
+							'" marB="' +
+							cellMargin[2] * ONEPT +
+							'"'
 
-						// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev opts exist)
+						// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev options exist)
 
 						// 3: ROWSPAN: Add dummy cells for any active rowspan
 						if (cell.vmerge) {
@@ -339,10 +337,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						}
 
 						// 4: Set CELL content and properties ==================================
-						// FIXME: cell is "0" ??? table demo
-						//console.log(rowObj)
-						//console.log(cell)
-						strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMargin + cellValign + '>'
+						strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>'
 
 						// 5: Borders: Add any borders
 						/// TODO=3: FIXME: stop using `none` if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
@@ -863,7 +858,7 @@ export function genXmlTextBody(slideObj) {
 	})
 
 	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
-	// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring opts
+	// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 	if (slideObj.options.isTableCell && (slideObj.options.fontSize || slideObj.options.fontFace)) {
 		strSlideXml +=
 			'<a:endParaRPr lang="' +
@@ -893,8 +888,8 @@ export function genXmlTextBody(slideObj) {
  * Magic happens here
  */
 function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
-	let CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	let CPL = (inWidth * EMU) / ((cell.opts.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
+	let CPL = (inWidth * EMU) / ((cell.options.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []
 	let strCurrLine = ''
 
@@ -1842,9 +1837,9 @@ export function createHyperlinkRels(slides: Array<ISlide>, inText, slideRels) {
 	})
 }
 
-// TABLE-TO-SLIDES below
+// TABLE-TO-SLIDES vvvvvvvvvvvvvvvvvvvv
 
-export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], opts: ITableToSlidesOpts = {}, presLayout: ILayout, masterSlide: ISlideLayout) {
+export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], opts: ITableToSlidesOpts = {}, presLayout: ILayout, masterSlide: ISlideLayout) {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN
 	let arrObjSlides = [],
 		arrRows = [],
@@ -1876,7 +1871,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], 
 	// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 	inArrRows[0].forEach(cell => {
 		if (!cell) cell = {}
-		let cellOpts = cell.opts || null
+		let cellOpts = cell.options || null
 		numCols += cellOpts && cellOpts.colspan ? cellOpts.colspan : 1
 	})
 
@@ -1924,8 +1919,8 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], 
 	// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `addSlidesForTable()` or `.addTable()`
 	inArrRows.forEach((row, iRow) => {
 		// A: Reset ROW variables
-		var arrCellsLines = [],
-			arrCellsLineHeights = [],
+		let arrCellsLines = [],
+			arrCellsLineHeights: number[] = [],
 			intMaxLineCnt = 0,
 			intMaxColIdx = 0
 
@@ -1939,12 +1934,12 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], 
 		if (opts.debug) console.log('* Slide ' + arrObjSlides.length + ': emuSlideTabH (in) ........ = ' + (emuSlideTabH / EMU).toFixed(1))
 
 		// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
-		row.forEach((cell, iCell) => {
+		row.forEach((cell = {}, iCell) => {
 			// FIRST: REALITY-CHECK:
-			if (!cell) cell = {}
+			//if (!cell) cell = {}
 
 			// DESIGN: Cells are henceforth {objects} with `text` and `opts`
-			let lines: Array<string> = []
+			let lines: string[] = []
 
 			// 1: Cleanse data
 			// TODO-3: still needed?
@@ -1967,10 +1962,10 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], 
 			//cell.opts.lineWeight = opts.lineWeight
 
 			// 2: Create a cell object for each table column
-			currRow.push({ text: '', opts: cell.opts })
+			currRow.push({ text: '', options: cell.options })
 
 			// 3: Parse cell contents into lines (**MAGIC HAPPENSS HERE**)
-			lines = parseTextToLines(cell as ITableCell, opts.colW[iCell] / ONEPT)
+			lines = parseTextToLines(cell, opts.colW[iCell] / ONEPT)
 			arrCellsLines.push(lines)
 			///if (opts.debug) console.log('Cell:'+iCell+' - lines:'+lines.length);
 
@@ -1980,17 +1975,17 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], 
 				intMaxColIdx = iCell
 			}
 			///let lineHeight = inch2Emu(((cell.opts.fontSize || opts.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
-			let lineHeight = inch2Emu(((cell.opts.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
+			let lineHeight = inch2Emu(((cell.options.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
 			// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
-			if (cell.opts && cell.opts.rowspan) lineHeight = 0
+			if (cell.options && cell.options.rowspan) lineHeight = 0
 
 			// 5: Add cell margins to lineHeight (if any)
-			if (cell.opts.margin) {
-				if (cell.opts.margin[0]) lineHeight += (cell.opts.margin[0] * ONEPT) / intMaxLineCnt
-				if (cell.opts.margin[2]) lineHeight += (cell.opts.margin[2] * ONEPT) / intMaxLineCnt
+			if (cell.options.margin) {
+				if (cell.options.margin[0]) lineHeight += (cell.options.margin[0] * ONEPT) / intMaxLineCnt
+				if (cell.options.margin[2]) lineHeight += (cell.options.margin[2] * ONEPT) / intMaxLineCnt
 			}
 
-			// Add to array
+			// 6: Add to array
 			arrCellsLineHeights.push(Math.round(lineHeight))
 		})
 
@@ -2051,11 +2046,11 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], 
 	// STEP 4-2: Flush final row buffer to slide
 	arrObjSlides.push(jQuery.extend(true, [], arrRows))
 
-	// LAST:
 	if (opts.debug) {
 		console.log('arrObjSlides count = ' + arrObjSlides.length)
 		console.log(arrObjSlides)
 	}
+
 	return arrObjSlides
 }
 
@@ -2064,8 +2059,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], 
  * @param {string} `tabEleId` - HTMLElementID of the table
  * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
  */
-export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITableToSlidesOpts, masterSlide: ISlideLayout) {
-	let opts = inOpts || {}
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, opts: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
 	opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout().width
 	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = []
@@ -2093,7 +2087,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 
 	// STEP 1: Grab table col widths
 	//arrTableParts.forEach((part, _idx) => { // NO! CAREFUL! We need to break out of loop using "return false" - forEach break col sizing badly
-	jQuery.each(arrTableParts, (_idx,part) => {
+	jQuery.each(arrTableParts, (_idx, part) => {
 		if (jQuery('#' + tabEleId + ' > ' + part + ' > tr').length > 0) {
 			jQuery('#' + tabEleId + ' > ' + part + ' > tr:first-child')
 				.find('> th, > td')
@@ -2152,7 +2146,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 					if (jQuery(cell).css('background-color') == 'rgba(0, 0, 0, 0)' || jQuery(cell).css('background-color') == 'transparent') arrRGB2 = [255, 255, 255]
 
 					// B: Create option object
-					let objOpts = {
+					let cellOpts = {
 						fontSize: jQuery(cell)
 							.css('font-size')
 							.replace(/[a-z]/gi, ''),
@@ -2167,18 +2161,18 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 						valign: null,
 					}
 					if (['left', 'center', 'right', 'start', 'end'].indexOf(jQuery(cell).css('text-align')) > -1)
-						objOpts.align = jQuery(cell)
+						cellOpts.align = jQuery(cell)
 							.css('text-align')
 							.replace('start', 'left')
 							.replace('end', 'right')
-					if (['top', 'middle', 'bottom'].indexOf(jQuery(cell).css('vertical-align')) > -1) objOpts.valign = jQuery(cell).css('vertical-align')
+					if (['top', 'middle', 'bottom'].indexOf(jQuery(cell).css('vertical-align')) > -1) cellOpts.valign = jQuery(cell).css('vertical-align')
 
 					// C: Add padding [margin] (if any)
 					// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
 					if (jQuery(cell).css('padding-left')) {
-						objOpts.margin = []
+						cellOpts.margin = []
 						jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], (_idx, val) => {
-							objOpts.margin.push(
+							cellOpts.margin.push(
 								Math.round(
 									Number(
 										jQuery(cell)
@@ -2191,8 +2185,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 					}
 
 					// D: Add colspan/rowspan (if any)
-					if (jQuery(cell).attr('colspan')) objOpts.colspan = jQuery(cell).attr('colspan')
-					if (jQuery(cell).attr('rowspan')) objOpts.rowspan = jQuery(cell).attr('rowspan')
+					if (jQuery(cell).attr('colspan')) cellOpts.colspan = jQuery(cell).attr('colspan')
+					if (jQuery(cell).attr('rowspan')) cellOpts.rowspan = jQuery(cell).attr('rowspan')
 
 					// E: Add border (if any)
 					if (
@@ -2201,7 +2195,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 						jQuery(cell).css('border-bottom-width') ||
 						jQuery(cell).css('border-left-width')
 					) {
-						objOpts.border = []
+						cellOpts.border = []
 						jQuery.each(['top', 'right', 'bottom', 'left'], (_idx, val) => {
 							var intBorderW = Math.round(
 								Number(
@@ -2219,7 +2213,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 								.replace(')', '')
 								.split(',')
 							var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
-							objOpts.border.push({ pt: intBorderW, color: strBorderC })
+							cellOpts.border.push({ pt: intBorderW, color: strBorderC })
 						})
 					}
 
@@ -2234,12 +2228,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 					// LAST: Add cell
 					arrObjTabCells.push({
 						text: $cell2.text().trim(),
-						opts: objOpts,
+						options: cellOpts,
 					})
-
-					// FIXME: background colors missing
-					console.log('FIXME:background colors missing')
-					console.log(arrObjTabCells)
 				})
 			switch (part) {
 				case 'thead':

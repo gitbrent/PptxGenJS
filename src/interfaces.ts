@@ -255,6 +255,7 @@ export interface ITableCellOpts {
 	colspan?:number
 	fill?:string
 	fontSize?:number
+	isTableCell?: boolean;
 	lineWeight?:number
 	margin?:number|number[]
 	rowspan?:number
@@ -262,15 +263,14 @@ export interface ITableCellOpts {
 }
 export interface ITableToSlidesCell {
 	text?: string
-	opts?: ITableCellOpts
+	options?: ITableCellOpts
 }
 export interface ITableCell {
 	text?: string
 	hmerge?: boolean
 	vmerge?: boolean
 	optImp?: any
-	opts?: ITableCellOpts
-	options?: { border?: IBorderOpts; colspan?: number; fill?: string; isTableCell?: boolean; margin?: any; rowspan?: number; valign: string }
+	options?: ITableCellOpts
 }
 
 // Core
@@ -401,6 +401,7 @@ export interface ISlideLayout {
 	}
 	data: Array<ISlideObject>
 	rels: Array<ISlideRel>
+	number?: number // needed as we use args:"ISlide|ISlideLayout" often
 	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: Array<number> | number
