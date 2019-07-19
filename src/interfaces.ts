@@ -229,10 +229,10 @@ export interface IChartMulti {
 	options: {}
 }
 export interface ITableToSlidesOpts {
-	addImage: {url:string, x:number, y:number, w?:number, h?:number}
-	addShape: {shape:any, opts:{}}
-	addTable: {rows:any[], opts:{}}
-	addText: {text:any[], opts:{}}
+	addImage?: {url:string, x:number, y:number, w?:number, h?:number}
+	addShape?: {shape:any, opts:{}}
+	addTable?: {rows:any[], opts:{}}
+	addText?: {text:any[], opts:{}}
 	//
 	x?: number
 	y?: number
@@ -240,11 +240,37 @@ export interface ITableToSlidesOpts {
 	h?: number
 	_arrObjTabHeadRows?: any[]
 	addHeaderToEach?: boolean
-	colW?: Array<number> | number
+	colW?: Array<number>
 	debug?: boolean
 	masterSlideName?: string
+	masterSlide?: ISlideLayout
 	newSlideStartY?: number
 	slideMargin?: Array<number> | number
+}
+export interface ITableCellOpts {
+	align?:'left'|'center'|'right'
+	bold?:boolean
+	border?:IBorderOpts
+	color?:string
+	colspan?:number
+	fill?:string
+	fontSize?:number
+	lineWeight?:number
+	margin?:number|number[]
+	rowspan?:number
+	valign?:'top'|'middle'|'bottom'
+}
+export interface ITableToSlidesCell {
+	text?: string
+	opts?: ITableCellOpts
+}
+export interface ITableCell {
+	text?: string
+	hmerge?: boolean
+	vmerge?: boolean
+	optImp?: any
+	opts?: ITableCellOpts
+	options?: { border?: IBorderOpts; colspan?: number; fill?: string; isTableCell?: boolean; margin?: any; rowspan?: number; valign: string }
 }
 
 // Core
@@ -349,7 +375,7 @@ export interface ISlideObject {
 	// text
 	text?: string
 	// table
-	arrTabRows?: Array<Array<{ cell: ITableCell; opts?: ITableCell['opts']; options?: ITableCell['options'] }>>
+	arrTabRows?: [ITableCell[]?]
 	// chart
 	chartRid?: number
 	// image:
@@ -422,15 +448,4 @@ export interface IPresentation {
 	imageCounter: number
 	slides?: ISlide[]
 	slideLayouts?: ISlideLayout[]
-}
-
-// Objects
-// =======
-export interface ITableCell {
-	text: string
-	hmerge: boolean
-	vmerge: boolean
-	optImp: any
-	opts: { border?: IBorderOpts; colspan?: number; fontSize: number; lineWeight: number; fill?: string; margin?: any; rowspan?: number; valign: string }
-	options: { border?: IBorderOpts; colspan?: number; fill?: string; isTableCell?: boolean; margin?: any; rowspan?: number; valign: string }
 }

@@ -15,12 +15,47 @@ import {
 	SLIDE_OBJECT_TYPES,
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
+	LINEH_MODIFIER,
 } from './enums'
-import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts } from './interfaces'
+import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts, ITableToSlidesCell } from './interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './utils'
 import { gObjPptxShapes } from './lib-shapes'
 import { slideObjectRelationsToXml } from './gen-objects'
 import PptxGenJS from './pptxgen'
+
+let imageSizingXml = {
+	cover: function(imgSize, boxDim) {
+		var imgRatio = imgSize.h / imgSize.w,
+			boxRatio = boxDim.h / boxDim.w,
+			isBoxBased = boxRatio > imgRatio,
+			width = isBoxBased ? boxDim.h / imgRatio : boxDim.w,
+			height = isBoxBased ? boxDim.h : boxDim.w * imgRatio,
+			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
+			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
+		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
+	},
+	contain: function(imgSize, boxDim) {
+		var imgRatio = imgSize.h / imgSize.w,
+			boxRatio = boxDim.h / boxDim.w,
+			widthBased = boxRatio > imgRatio,
+			width = widthBased ? boxDim.w : boxDim.h / imgRatio,
+			height = widthBased ? boxDim.w * imgRatio : boxDim.h,
+			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
+			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
+		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
+	},
+	crop: function(imageSize, boxDim) {
+		var l = boxDim.x,
+			r = imageSize.w - (boxDim.x + boxDim.w),
+			t = boxDim.y,
+			b = imageSize.h - (boxDim.y + boxDim.h),
+			lPerc = Math.round(1e5 * (l / imageSize.w)),
+			rPerc = Math.round(1e5 * (r / imageSize.w)),
+			tPerc = Math.round(1e5 * (t / imageSize.h)),
+			bPerc = Math.round(1e5 * (b / imageSize.h))
+		return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '" /><a:stretch/>'
+	},
+}
 
 /**
  * Transforms a slide or slideLayout to resulting XML string.
@@ -98,9 +133,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		// B: Add OBJECT to current Slide ----------------------------
 		switch (slideItemObj.type) {
 			case SLIDE_OBJECT_TYPES.table:
-				// FIRST: Ensure we have rows - otherwise, bail!
-				if (!slideItemObj.arrTabRows || (Array.isArray(slideItemObj.arrTabRows) && slideItemObj.arrTabRows.length == 0)) break
-
 				// Set table vars
 				var objTableGrid = {}
 				var arrTabRows = slideItemObj.arrTabRows
@@ -861,10 +893,10 @@ export function genXmlTextBody(slideObj) {
  * Magic happens here
  */
 function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
-	var CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	var CPL = (inWidth * EMU) / ((cell.opts.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
-	var arrLines = []
-	var strCurrLine = ''
+	let CHAR = 2.2 + (cell.opts && cell.opts.lineWeight ? cell.opts.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
+	let CPL = (inWidth * EMU) / ((cell.opts.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	let arrLines = []
+	let strCurrLine = ''
 
 	// Allow a single space/whitespace as cell text
 	if (cell.text && cell.text.trim() == '') return [' ']
@@ -1810,16 +1842,15 @@ export function createHyperlinkRels(slides: Array<ISlide>, inText, slideRels) {
 	})
 }
 
-export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
-	var LINEH_MODIFIER = 1.9
-	var opts = opts || {}
-	var arrInchMargins = DEF_SLIDE_MARGIN_IN // (0.5" on all sides)
-	var arrObjTabHeadRows = opts.arrObjTabHeadRows || []
-	var arrObjSlides = [],
+// TABLE-TO-SLIDES below
+
+export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]] = [[]], opts: ITableToSlidesOpts = {}, presLayout: ILayout, masterSlide: ISlideLayout) {
+	let arrInchMargins = DEF_SLIDE_MARGIN_IN
+	let arrObjSlides = [],
 		arrRows = [],
 		currRow = [],
 		numCols = 0
-	var emuTabCurrH = 0,
+	let emuTabCurrH = 0,
 		emuSlideTabW = EMU * 1,
 		emuSlideTabH = EMU * 1
 
@@ -1835,9 +1866,9 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 	if (opts.slideMargin || opts.slideMargin == 0) {
 		if (Array.isArray(opts.slideMargin)) arrInchMargins = opts.slideMargin
 		else if (!isNaN(opts.slideMargin)) arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin]
-	} else if (opts && opts.master && opts.master.margin) {
-		if (Array.isArray(opts.master.margin)) arrInchMargins = opts.master.margin
-		else if (!isNaN(opts.master.margin)) arrInchMargins = [opts.master.margin, opts.master.margin, opts.master.margin, opts.master.margin]
+	} else if (masterSlide && masterSlide.margin) {
+		if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
+		else if (!isNaN(masterSlide.margin)) arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin]
 	}
 
 	// STEP 2: Calc number of columns
@@ -1845,7 +1876,7 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 	// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
 	inArrRows[0].forEach(cell => {
 		if (!cell) cell = {}
-		var cellOpts = cell.options || cell.opts || null
+		let cellOpts = cell.opts || null
 		numCols += cellOpts && cellOpts.colspan ? cellOpts.colspan : 1
 	})
 
@@ -1871,7 +1902,7 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 	// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
 	if (!opts.colW || !Array.isArray(opts.colW)) {
 		if (opts.colW && !isNaN(Number(opts.colW))) {
-			var arrColW = []
+			let arrColW = []
 			inArrRows[0].forEach(() => {
 				arrColW.push(opts.colW)
 			})
@@ -1895,7 +1926,6 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 		// A: Reset ROW variables
 		var arrCellsLines = [],
 			arrCellsLineHeights = [],
-			emuRowH = 0,
 			intMaxLineCnt = 0,
 			intMaxColIdx = 0
 
@@ -1914,9 +1944,11 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 			if (!cell) cell = {}
 
 			// DESIGN: Cells are henceforth {objects} with `text` and `opts`
-			var lines: Array<string> = []
+			let lines: Array<string> = []
 
 			// 1: Cleanse data
+			// TODO-3: still needed?
+			/*
 			if (!isNaN(cell) || typeof cell === 'string') {
 				// Grab table formatting `opts` to use here so text style/format inherits as it should
 				cell = { text: cell.toString(), opts: opts }
@@ -1929,23 +1961,26 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 				var opt = cell.options || cell.opts || {}
 				cell.opts = opt
 			}
+			*/
+
 			// Capture some table options for use in other functions
-			cell.opts.lineWeight = opts.lineWeight
+			//cell.opts.lineWeight = opts.lineWeight
 
 			// 2: Create a cell object for each table column
 			currRow.push({ text: '', opts: cell.opts })
 
 			// 3: Parse cell contents into lines (**MAGIC HAPPENSS HERE**)
-			var lines: Array<string> = parseTextToLines(cell, opts.colW[iCell] / ONEPT)
+			lines = parseTextToLines(cell as ITableCell, opts.colW[iCell] / ONEPT)
 			arrCellsLines.push(lines)
-			//if (opts.debug) console.log('Cell:'+iCell+' - lines:'+lines.length);
+			///if (opts.debug) console.log('Cell:'+iCell+' - lines:'+lines.length);
 
 			// 4: Keep track of max line count within all row cells
 			if (lines.length > intMaxLineCnt) {
 				intMaxLineCnt = lines.length
 				intMaxColIdx = iCell
 			}
-			var lineHeight = inch2Emu(((cell.opts.fontSize || opts.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
+			///let lineHeight = inch2Emu(((cell.opts.fontSize || opts.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
+			let lineHeight = inch2Emu(((cell.opts.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
 			// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (cell.opts && cell.opts.rowspan) lineHeight = 0
 
@@ -1993,7 +2028,7 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 						cell.text = ''
 					})
 					// 6: Auto-Paging Options: addHeaderToEach
-					if (opts.addHeaderToEach && arrObjTabHeadRows) arrRows = arrRows.concat(arrObjTabHeadRows)
+					if (opts.addHeaderToEach && opts._arrObjTabHeadRows) arrRows = arrRows.concat(opts._arrObjTabHeadRows)
 				}
 
 				// B: Add next line of text to this cell
@@ -2024,54 +2059,18 @@ export function getSlidesForTableRows(inArrRows, opts, presLayout: ILayout) {
 	return arrObjSlides
 }
 
-let imageSizingXml = {
-	cover: function(imgSize, boxDim) {
-		var imgRatio = imgSize.h / imgSize.w,
-			boxRatio = boxDim.h / boxDim.w,
-			isBoxBased = boxRatio > imgRatio,
-			width = isBoxBased ? boxDim.h / imgRatio : boxDim.w,
-			height = isBoxBased ? boxDim.h : boxDim.w * imgRatio,
-			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
-			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
-		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
-	},
-	contain: function(imgSize, boxDim) {
-		var imgRatio = imgSize.h / imgSize.w,
-			boxRatio = boxDim.h / boxDim.w,
-			widthBased = boxRatio > imgRatio,
-			width = widthBased ? boxDim.w : boxDim.h / imgRatio,
-			height = widthBased ? boxDim.w * imgRatio : boxDim.h,
-			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
-			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
-		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
-	},
-	crop: function(imageSize, boxDim) {
-		var l = boxDim.x,
-			r = imageSize.w - (boxDim.x + boxDim.w),
-			t = boxDim.y,
-			b = imageSize.h - (boxDim.y + boxDim.h),
-			lPerc = Math.round(1e5 * (l / imageSize.w)),
-			rPerc = Math.round(1e5 * (r / imageSize.w)),
-			tPerc = Math.round(1e5 * (t / imageSize.h)),
-			bPerc = Math.round(1e5 * (b / imageSize.h))
-		return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '" /><a:stretch/>'
-	},
-}
-
 /**
  * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
- * "Auto-Paging is the future!" --Elon Musk
- *
  * @param {string} `tabEleId` - HTMLElementID of the table
  * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
  */
-export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITableToSlidesOpts, objLayout: ISlideLayout) {
-	let opts = inOpts || ({} as ITableToSlidesOpts)
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITableToSlidesOpts, masterSlide: ISlideLayout) {
+	let opts = inOpts || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout().width
-	let arrObjTabHeadRows = [],
-		arrObjTabBodyRows = [],
-		arrObjTabFootRows = []
+	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = [],
+		arrObjTabBodyRows: [ITableToSlidesCell[]?] = [],
+		arrObjTabFootRows: [ITableToSlidesCell[]?] = []
 	let arrColW = [],
 		arrTabColW = []
 	let intTabW = 0
@@ -2084,9 +2083,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 	}
 
 	// Set margins
-	if (objLayout && objLayout.margin) {
-		if (Array.isArray(objLayout.margin)) arrInchMargins = objLayout.margin
-		else if (!isNaN(objLayout.margin)) arrInchMargins = [objLayout.margin, objLayout.margin, objLayout.margin, objLayout.margin]
+	if (masterSlide && masterSlide.margin) {
+		if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
+		else if (!isNaN(masterSlide.margin)) arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin]
 		opts.slideMargin = arrInchMargins
 	} else if (opts && opts.slideMargin) {
 		if (Array.isArray(opts.slideMargin)) arrInchMargins = opts.slideMargin
@@ -2235,7 +2234,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 
 					// LAST: Add cell
 					arrObjTabCells.push({
-						text: jQuery.trim($cell2.text()),
+						text: $cell2.text().trim(),
 						opts: objOpts,
 					})
 
@@ -2263,22 +2262,25 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 	opts._arrObjTabHeadRows = arrObjTabHeadRows || null
 	opts.colW = arrColW
 
-	getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows), opts, pptx.presLayout()).forEach((arrTabRows, idx) => {
-		// A: Create new Slide
-		let newSlide = pptx.addSlide(opts.masterSlideName || null)
+	getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows) as [ITableToSlidesCell[]], opts, pptx.presLayout(), masterSlide).forEach(
+		(arrTabRows, idx) => {
+			// A: Create new Slide
+			let newSlide = pptx.addSlide(opts.masterSlideName || null)
 
-		// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-		if (idx == 0) opts.y = opts.y || arrInchMargins[0]
-		if (idx > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
-		if (opts.debug) console.log('opts.newPageStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+			// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+			if (idx == 0) opts.y = opts.y || arrInchMargins[0]
+			if (idx > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
+			if (opts.debug) console.log('opts.newPageStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
-		// C: Add table to Slide
-		newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: emuSlideTabW / EMU, colW: arrColW, autoPage: false })
+			// C: Add table to Slide
+			newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: emuSlideTabW / EMU, colW: arrColW, autoPage: false })
+			console.log(arrTabRows)
 
-		// D: Add any additional objects
-		if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })
-		if (opts.addShape) newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {})
-		if (opts.addTable) newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {})
-		if (opts.addText) newSlide.addText(opts.addText.text, opts.addText.opts || {})
-	})
+			// D: Add any additional objects
+			if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })
+			if (opts.addShape) newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {})
+			if (opts.addTable) newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {})
+			if (opts.addText) newSlide.addText(opts.addText.text, opts.addText.opts || {})
+		}
+	)
 }

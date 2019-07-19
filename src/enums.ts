@@ -11,6 +11,7 @@ export const ONEPT: number = 12700 // One (1) point (pt)
 export const CRLF: string = '\r\n' // AKA: Chr(13) & Chr(10)
 export const LAYOUT_IDX_SERIES_BASE: number = 2147483649
 export const REGEX_HEX_COLOR: RegExp = /^[0-9a-fA-F]{6}$/
+export const LINEH_MODIFIER = 1.9
 
 export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
 export const DEF_FONT_COLOR: string = '000000'

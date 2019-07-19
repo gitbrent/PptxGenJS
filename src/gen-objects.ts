@@ -32,6 +32,7 @@ import {
 	ISlideRel,
 	ISlideRelChart,
 	IImageOpts,
+	ITableCell,
 } from './interfaces'
 import { getSmartParseNumber, inch2Emu } from './utils'
 import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
@@ -55,7 +56,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 	// STEP 2: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
 	//var arrRows = jQuery.extend(true,[],arrTabRows);
 	//if ( !Array.isArray(arrRows[0]) ) arrRows = [ jQuery.extend(true,[],arrTabRows) ];
-	var arrRows = arrTabRows
+	let arrRows: [ITableCell[]] = arrTabRows as [ITableCell[]]
 	if (!Array.isArray(arrRows[0])) arrRows = [arrTabRows]
 
 	// STEP 3: Set options
@@ -148,7 +149,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 		})
 	} else {
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
-		getSlidesForTableRows(arrRows, opt, presLayout).forEach((arrRows, idx) => {
+		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((arrRows, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
 			//let currSlide = !this.slides[slideNum + idx] ? this.addNewSlide(inMasterName) : this.slides[slideNum + idx]
 			// FIXME: ^^^
