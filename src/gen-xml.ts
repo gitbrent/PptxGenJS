@@ -2059,7 +2059,8 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
  * @param {string} `tabEleId` - HTMLElementID of the table
  * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
  */
-export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, opts: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
+	let opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout().width
 	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = []

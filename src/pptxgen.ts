@@ -754,14 +754,14 @@ export default class PptxGenJS {
 	 * @param {string} `tabEleId` - HTMLElementID of the table
 	 * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
 	 */
-	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts) {
+	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
 		genXml.genTableToSlides(
 			this,
 			tableElementId,
 			opts,
-			opts.masterSlideName
+			opts && opts.masterSlideName
 				? this.slideLayouts.filter(layout => {
-						return layout.name == opts.masterSlideName.toString()
+						return layout.name == opts.masterSlideName
 				  })[0]
 				: null
 		)
