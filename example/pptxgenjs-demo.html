@@ -451,7 +451,7 @@
 			//objOpts.debug = true; // DEBUG:
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY').prop('checked') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
 
 			// STEP 3: Pass table to tableToSlides function to produce 1-N slides
 			pptx.tableToSlides('tabAutoPaging', objOpts);
@@ -473,7 +473,7 @@
 			//objOpts.debug = true;
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY') ) objOpts.newPageStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('#checkStartY') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
 
 			// STEP 3: Add a custom shape (text in this case) to each Slide
 			// EXAMPLE: Add any dynamic content to each generated Slide
@@ -776,7 +776,7 @@
 												<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
 											</div>
 										</div>
-										<code>newPageStartY</code>
+										<code>newSlideStartY</code>
 									</div>
 								</div>
 							</div>
@@ -1350,7 +1350,7 @@
 						<div class="text-muted">- Test basic functionality</div>
 						<div class="text-muted">- Test with small table dimensions</div>
 						<div class="text-muted">- Test with correct starting <code>{y:4.0}</code></div>
-						<div class="text-muted">- Test with <code>{ newPageStartY:0.5 }</code></div>
+						<div class="text-muted">- Test with <code>{ newSlideStartY:0.5 }</code></div>
 						<div class="text-muted">- Test with <code>{ autoPage:false }</code></div>
 						<div class="text-muted">- Three Tables with various <code>lineWeight</code></div>
 					</div>
