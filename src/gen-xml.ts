@@ -2068,13 +2068,14 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 	let opts = inOpts || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout().width
-	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = [],
-		arrObjTabBodyRows: [ITableToSlidesCell[]?] = [],
-		arrObjTabFootRows: [ITableToSlidesCell[]?] = []
-	let arrColW = [],
-		arrTabColW = []
-	let intTabW = 0
+	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = []
+	let arrObjTabBodyRows: [ITableToSlidesCell[]?] = []
+	let arrObjTabFootRows: [ITableToSlidesCell[]?] = []
+	let arrColW: number[] = []
+	let arrTabColW: number[] = []
 	let arrInchMargins = [0.5, 0.5, 0.5, 0.5] // TRBL-style
+	let arrTableParts = ['thead', 'tbody', 'tfoot']
+	let intTabW = 0
 
 	// REALITY-CHECK:
 	if (jQuery('#' + tabEleId).length == 0) {
@@ -2094,9 +2095,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout().width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
 
 	// STEP 1: Grab table col widths
-	jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, val) => {
-		if (jQuery('#' + tabEleId + ' > ' + val + ' > tr').length > 0) {
-			jQuery('#' + tabEleId + ' > ' + val + ' > tr:first-child')
+	arrTableParts.forEach((part, _idx) => {
+		if (jQuery('#' + tabEleId + ' > ' + part + ' > tr').length > 0) {
+			jQuery('#' + tabEleId + ' > ' + part + ' > tr:first-child')
 				.find('> th, > td')
 				.each((idx, cell) => {
 					// FIXME: This is a hack - guessing at col widths when colspan
@@ -2111,21 +2112,21 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 			return false // break out of .each loop
 		}
 	})
-	jQuery.each(arrTabColW, (_idx, colW) => {
+	arrTabColW.forEach((colW, _idx) => {
 		intTabW += colW
 	})
 
 	// STEP 2: Calc/Set column widths by using same column width percent from HTML table
-	jQuery.each(arrTabColW, (i, colW) => {
-		var intCalcWidth = Number(((emuSlideTabW * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
-		var intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-min-width')
-		var intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (i + 1) + ')').data('pptx-width')
+	arrTabColW.forEach((colW, idx) => {
+		let intCalcWidth = Number(((emuSlideTabW * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
+		let intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-min-width')
+		let intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-width')
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
 
 	// STEP 3: Iterate over each table element and create data arrays (text and opts)
 	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-	jQuery.each(['thead', 'tbody', 'tfoot'], (_idx, part) => {
+	arrTableParts.forEach((part, _idx) => {
 		jQuery('#' + tabEleId + ' > ' + part + ' > tr').each((_idx, row) => {
 			let arrObjTabCells = []
 			jQuery(row)
@@ -2274,7 +2275,6 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, inOpts: ITab
 
 			// C: Add table to Slide
 			newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: emuSlideTabW / EMU, colW: arrColW, autoPage: false })
-			console.log(arrTabRows)
 
 			// D: Add any additional objects
 			if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })
