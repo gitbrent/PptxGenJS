@@ -17,11 +17,23 @@ import {
 	SLDNUMFLDID,
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
-import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts, ITableToSlidesCell, ITableCellOpts } from './core-interfaces'
-import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './gen-utils'
-import { gObjPptxShapes } from './core-shapes'
-import { slideObjectRelationsToXml } from './gen-objects'
 import PptxGenJS from './pptxgen'
+import { gObjPptxShapes } from './core-shapes'
+import {
+	ISlide,
+	IShadowOpts,
+	ILayout,
+	ISlideLayout,
+	ITableCell,
+	ISlideObject,
+	ITableToSlidesOpts,
+	ITableToSlidesCell,
+	ITableCellOpts,
+	ISlideRel,
+	ISlideRelChart,
+	ISlideRelMedia,
+} from './core-interfaces'
+import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './gen-utils'
 
 let imageSizingXml = {
 	cover: function(imgSize, boxDim) {
@@ -718,170 +730,86 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 }
 
 /**
-* DESC: Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
-* EX:
-	<p:txBody>
-		<a:bodyPr wrap="none" lIns="50800" tIns="50800" rIns="50800" bIns="50800" anchor="ctr">
-		</a:bodyPr>
-		<a:lstStyle/>
-		<a:p>
-		  <a:pPr marL="228600" indent="-228600"><a:buSzPct val="100000"/><a:buChar char="&#x2022;"/></a:pPr>
-		  <a:r>
-			<a:t>bullet 1 </a:t>
-		  </a:r>
-		  <a:r>
-			<a:rPr>
-			  <a:solidFill><a:srgbClr val="7B2CD6"/></a:solidFill>
-			</a:rPr>
-			<a:t>colored text</a:t>
-		  </a:r>
-		</a:p>
-	  </p:txBody>
-* NOTES:
-* - PPT text lines [lines followed by line-breaks] are createing using <p>-aragraph's
-* - Bullets are a paragprah-level formatting device
-*
-* @param slideObj (object) - slideObj -OR- table `cell` object
-* @returns XML string containing the param object's text and formatting
-*/
-export function genXmlTextBody(slideObj) {
-	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
-	if (slideObj.options && !slideObj.options.isTableCell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
+ * Transforms slide relations to XML string.
+ * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
+ * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
+ *
+ * @param {ISlide} slide slide object whose relations are being transformed
+ * @param {Object[]} defaultRels array of default relations (such objects expected: { target: <filepath>, type: <schemepath> })
+ * @return {string} complete XML string ready to be saved as a file
+ */
+function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
+	let lastRid = 0 // stores maximum rId used for dynamic relations
+	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
+	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 
-	// Create options if needed
-	if (!slideObj.options) slideObj.options = {}
-
-	// Vars
-	var arrTextObjects = []
-	var tagStart = slideObj.options.isTableCell ? '<a:txBody>' : '<p:txBody>'
-	var tagClose = slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>'
-	var strSlideXml = tagStart
-
-	// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
-	/* CASES:
-		addText( 'string' )
-		addText( 'line1\n line2' )
-		addText( ['barry','allen'] )
-		addText( [{text'word1'}, {text:'word2'}] )
-		addText( [{text'line1\n line2'}, {text:'end word'}] )
-	*/
-	// A: Handle string/number
-	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
-		slideObj.text = [{ text: slideObj.text.toString(), options: slideObj.options || {} }]
-	}
-
-	// STEP 2: Grab options, format line-breaks, etc.
-	if (Array.isArray(slideObj.text)) {
-		slideObj.text.forEach((obj, idx) => {
-			// A: Set options
-			obj.options = obj.options || slideObj.options || {}
-			if (idx == 0 && obj.options && !obj.options.bullet && slideObj.options.bullet) obj.options.bullet = slideObj.options.bullet
-
-			// B: Cast to text-object and fix line-breaks (if needed)
-			if (typeof obj.text === 'string' || typeof obj.text === 'number') {
-				obj.text = obj.text.toString().replace(/\r*\n/g, CRLF)
-				// Plain strings like "hello \n world" need to have lineBreaks set to break as intended
-				if (obj.text.indexOf(CRLF) > -1) obj.options.breakLine = true
-			}
-
-			// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
-			if (obj.text.split(CRLF).length > 0) {
-				obj.text
-					.toString()
-					.split(CRLF)
-					.forEach((line, idx) => {
-						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
-						line += obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : ''
-						arrTextObjects.push({ text: line, options: obj.options })
-					})
+	// Add all rels for this Slide
+	slideObject.rels.forEach((rel: ISlideRel) => {
+		lastRid = Math.max(lastRid, rel.rId)
+		if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
+			if (rel.data == 'slide') {
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="slide' +
+					rel.Target +
+					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
 			} else {
-				// NOTE: The replace used here is for non-textObjects (plain strings) eg:'hello\nworld'
-				arrTextObjects.push(obj)
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="' +
+					rel.Target +
+					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
 			}
-		})
-	}
-
-	// STEP 3: Add bodyProperties
-	{
-		// A: 'bodyPr'
-		strSlideXml += genXmlBodyProperties(slideObj.options)
-
-		// B: 'lstStyle'
-		// NOTE: Shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
-		// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
-		if (slideObj.options.h == 0 && slideObj.options.line && slideObj.options.align) {
-			strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
-		} else if (slideObj.type === 'placeholder') {
-			strSlideXml += '<a:lstStyle>'
-			strSlideXml += genXmlParagraphProperties(slideObj, true)
-			strSlideXml += '</a:lstStyle>'
-		} else {
-			strSlideXml += '<a:lstStyle/>'
+		} else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
+			strXml +=
+				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
 		}
-	}
-
-	// STEP 4: Loop over each text object and create paragraph props, text run, etc.
-	arrTextObjects.forEach((textObj, idx) => {
-		// Clear/Increment loop vars
-		paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
-		textObj.options.lineIdx = idx
-
-		// Inherit pPr-type options from parent shape's `options`
-		textObj.options.align = textObj.options.align || slideObj.options.align
-		textObj.options.lineSpacing = textObj.options.lineSpacing || slideObj.options.lineSpacing
-		textObj.options.indentLevel = textObj.options.indentLevel || slideObj.options.indentLevel
-		textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || slideObj.options.paraSpaceBefore
-		textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || slideObj.options.paraSpaceAfter
-
-		textObj.options.lineIdx = idx
-		var paragraphPropXml = genXmlParagraphProperties(textObj, false)
-
-		// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
-		if (idx == 0) {
-			// Add paragraphProperties right after <p> before textrun(s) begin
-			strSlideXml += '<a:p>' + paragraphPropXml
-		} else if (idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined')) {
-			strSlideXml += '</a:p><a:p>' + paragraphPropXml
+	})
+	;(slideObject.relsChart || []).forEach((rel: ISlideRelChart) => {
+		lastRid = Math.max(lastRid, rel.rId)
+		strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
+	})
+	;(slideObject.relsMedia || []).forEach((rel: ISlideRelMedia) => {
+		if (rel.type.toLowerCase().indexOf('image') > -1) {
+			console.log(slideObject)
+			console.log('rID for slie = ' + rel.rId)
+			strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="' + rel.Target + '"/>'
+		} else if (rel.type.toLowerCase().indexOf('audio') > -1) {
+			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+			if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
+				strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' + rel.Target + '"/>'
+			else
+				strXml +=
+					'<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio" Target="' + rel.Target + '"/>'
+		} else if (rel.type.toLowerCase().indexOf('video') > -1) {
+			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+			if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
+				strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' + rel.Target + '"/>'
+			else
+				strXml +=
+					'<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video" Target="' + rel.Target + '"/>'
+		} else if (rel.type.toLowerCase().indexOf('online') > -1) {
+			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+			if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
+				strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2007/relationships/image" Target="' + rel.Target + '"/>'
+			else
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="' +
+					rel.Target +
+					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>'
 		}
-
-		// C: Inherit any main options (color, fontSize, etc.)
-		// We only pass the text.options to genXmlTextRun (not the Slide.options),
-		// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
-		// TODO-3: convert to Object.values or whatever in ES6
-		jQuery.each(slideObj.options, (key, val) => {
-			// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-			if (key != 'bullet' && !textObj.options[key]) textObj.options[key] = val
-		})
-
-		// D: Add formatted textrun
-		strSlideXml += genXmlTextRun(textObj.options, textObj.text)
 	})
 
-	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
-	// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
-	if (slideObj.options.isTableCell && (slideObj.options.fontSize || slideObj.options.fontFace)) {
-		strSlideXml +=
-			'<a:endParaRPr lang="' +
-			(slideObj.options.lang ? slideObj.options.lang : 'en-US') +
-			'" ' +
-			(slideObj.options.fontSize ? ' sz="' + Math.round(slideObj.options.fontSize) + '00"' : '') +
-			' dirty="0">'
-		if (slideObj.options.fontFace) {
-			strSlideXml += '  <a:latin typeface="' + slideObj.options.fontFace + '" charset="0"/>'
-			strSlideXml += '  <a:ea    typeface="' + slideObj.options.fontFace + '" charset="0"/>'
-			strSlideXml += '  <a:cs    typeface="' + slideObj.options.fontFace + '" charset="0"/>'
-		}
-		strSlideXml += '</a:endParaRPr>'
-	} else {
-		strSlideXml += '<a:endParaRPr lang="' + (slideObj.options.lang || 'en-US') + '" dirty="0"/>' // NOTE: Added 20180101 to address PPT-2007 issues
-	}
-	strSlideXml += '</a:p>'
+	defaultRels.forEach((rel, idx) => {
+		strXml += '<Relationship Id="rId' + (lastRid + idx + 1) + '" Type="' + rel.type + '" Target="' + rel.target + '"/>'
+	})
 
-	// STEP 6: Close the textBody
-	strSlideXml += tagClose
-
-	// LAST: Return XML
-	return strSlideXml
+	strXml += '</Relationships>'
+	return strXml
 }
 
 /**
@@ -1180,6 +1108,173 @@ function genXmlBodyProperties(objOptions) {
 	return objOptions.isTableCell ? '<a:bodyPr/>' : bodyProperties
 }
 
+/**
+* DESC: Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
+* EX:
+	<p:txBody>
+		<a:bodyPr wrap="none" lIns="50800" tIns="50800" rIns="50800" bIns="50800" anchor="ctr">
+		</a:bodyPr>
+		<a:lstStyle/>
+		<a:p>
+		  <a:pPr marL="228600" indent="-228600"><a:buSzPct val="100000"/><a:buChar char="&#x2022;"/></a:pPr>
+		  <a:r>
+			<a:t>bullet 1 </a:t>
+		  </a:r>
+		  <a:r>
+			<a:rPr>
+			  <a:solidFill><a:srgbClr val="7B2CD6"/></a:solidFill>
+			</a:rPr>
+			<a:t>colored text</a:t>
+		  </a:r>
+		</a:p>
+	  </p:txBody>
+* NOTES:
+* - PPT text lines [lines followed by line-breaks] are createing using <p>-aragraph's
+* - Bullets are a paragprah-level formatting device
+*
+* @param slideObj (object) - slideObj -OR- table `cell` object
+* @returns XML string containing the param object's text and formatting
+*/
+export function genXmlTextBody(slideObj) {
+	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
+	if (slideObj.options && !slideObj.options.isTableCell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
+
+	// Create options if needed
+	if (!slideObj.options) slideObj.options = {}
+
+	// Vars
+	var arrTextObjects = []
+	var tagStart = slideObj.options.isTableCell ? '<a:txBody>' : '<p:txBody>'
+	var tagClose = slideObj.options.isTableCell ? '</a:txBody>' : '</p:txBody>'
+	var strSlideXml = tagStart
+
+	// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
+	/* CASES:
+		addText( 'string' )
+		addText( 'line1\n line2' )
+		addText( ['barry','allen'] )
+		addText( [{text'word1'}, {text:'word2'}] )
+		addText( [{text'line1\n line2'}, {text:'end word'}] )
+	*/
+	// A: Handle string/number
+	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
+		slideObj.text = [{ text: slideObj.text.toString(), options: slideObj.options || {} }]
+	}
+
+	// STEP 2: Grab options, format line-breaks, etc.
+	if (Array.isArray(slideObj.text)) {
+		slideObj.text.forEach((obj, idx) => {
+			// A: Set options
+			obj.options = obj.options || slideObj.options || {}
+			if (idx == 0 && obj.options && !obj.options.bullet && slideObj.options.bullet) obj.options.bullet = slideObj.options.bullet
+
+			// B: Cast to text-object and fix line-breaks (if needed)
+			if (typeof obj.text === 'string' || typeof obj.text === 'number') {
+				obj.text = obj.text.toString().replace(/\r*\n/g, CRLF)
+				// Plain strings like "hello \n world" need to have lineBreaks set to break as intended
+				if (obj.text.indexOf(CRLF) > -1) obj.options.breakLine = true
+			}
+
+			// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
+			if (obj.text.split(CRLF).length > 0) {
+				obj.text
+					.toString()
+					.split(CRLF)
+					.forEach((line, idx) => {
+						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
+						line += obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : ''
+						arrTextObjects.push({ text: line, options: obj.options })
+					})
+			} else {
+				// NOTE: The replace used here is for non-textObjects (plain strings) eg:'hello\nworld'
+				arrTextObjects.push(obj)
+			}
+		})
+	}
+
+	// STEP 3: Add bodyProperties
+	{
+		// A: 'bodyPr'
+		strSlideXml += genXmlBodyProperties(slideObj.options)
+
+		// B: 'lstStyle'
+		// NOTE: Shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
+		// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
+		if (slideObj.options.h == 0 && slideObj.options.line && slideObj.options.align) {
+			strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
+		} else if (slideObj.type === 'placeholder') {
+			strSlideXml += '<a:lstStyle>'
+			strSlideXml += genXmlParagraphProperties(slideObj, true)
+			strSlideXml += '</a:lstStyle>'
+		} else {
+			strSlideXml += '<a:lstStyle/>'
+		}
+	}
+
+	// STEP 4: Loop over each text object and create paragraph props, text run, etc.
+	arrTextObjects.forEach((textObj, idx) => {
+		// Clear/Increment loop vars
+		paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
+		textObj.options.lineIdx = idx
+
+		// Inherit pPr-type options from parent shape's `options`
+		textObj.options.align = textObj.options.align || slideObj.options.align
+		textObj.options.lineSpacing = textObj.options.lineSpacing || slideObj.options.lineSpacing
+		textObj.options.indentLevel = textObj.options.indentLevel || slideObj.options.indentLevel
+		textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || slideObj.options.paraSpaceBefore
+		textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || slideObj.options.paraSpaceAfter
+
+		textObj.options.lineIdx = idx
+		var paragraphPropXml = genXmlParagraphProperties(textObj, false)
+
+		// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
+		if (idx == 0) {
+			// Add paragraphProperties right after <p> before textrun(s) begin
+			strSlideXml += '<a:p>' + paragraphPropXml
+		} else if (idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined')) {
+			strSlideXml += '</a:p><a:p>' + paragraphPropXml
+		}
+
+		// C: Inherit any main options (color, fontSize, etc.)
+		// We only pass the text.options to genXmlTextRun (not the Slide.options),
+		// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
+		// TODO-3: convert to Object.values or whatever in ES6
+		jQuery.each(slideObj.options, (key, val) => {
+			// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
+			if (key != 'bullet' && !textObj.options[key]) textObj.options[key] = val
+		})
+
+		// D: Add formatted textrun
+		strSlideXml += genXmlTextRun(textObj.options, textObj.text)
+	})
+
+	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
+	// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
+	if (slideObj.options.isTableCell && (slideObj.options.fontSize || slideObj.options.fontFace)) {
+		strSlideXml +=
+			'<a:endParaRPr lang="' +
+			(slideObj.options.lang ? slideObj.options.lang : 'en-US') +
+			'" ' +
+			(slideObj.options.fontSize ? ' sz="' + Math.round(slideObj.options.fontSize) + '00"' : '') +
+			' dirty="0">'
+		if (slideObj.options.fontFace) {
+			strSlideXml += '  <a:latin typeface="' + slideObj.options.fontFace + '" charset="0"/>'
+			strSlideXml += '  <a:ea    typeface="' + slideObj.options.fontFace + '" charset="0"/>'
+			strSlideXml += '  <a:cs    typeface="' + slideObj.options.fontFace + '" charset="0"/>'
+		}
+		strSlideXml += '</a:endParaRPr>'
+	} else {
+		strSlideXml += '<a:endParaRPr lang="' + (slideObj.options.lang || 'en-US') + '" dirty="0"/>' // NOTE: Added 20180101 to address PPT-2007 issues
+	}
+	strSlideXml += '</a:p>'
+
+	// STEP 6: Close the textBody
+	strSlideXml += tagClose
+
+	// LAST: Return XML
+	return strSlideXml
+}
+
 export function genXmlPlaceholder(placeholderObj) {
 	var strXml = ''
 
@@ -1231,7 +1326,7 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[],
 			(idx + 1) +
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>'
 		strXml += '<Override PartName="/ppt/slides/slide' + (idx + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
-		// add charts if any
+		// Add charts if any
 		slide.relsChart.forEach(rel => {
 			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 		})
@@ -1280,13 +1375,13 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[],
 }
 
 export function makeXmlRootRels() {
-	var strXml =
+	let strXml =
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
 		'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-		'  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
-		'  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
-		'  <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>' +
+		'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
+		'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
+		'<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>' +
 		'</Relationships>'
 	return strXml
 }
@@ -1347,31 +1442,33 @@ export function makeXmlCore(title: string, subject: string, author: string, revi
 }
 
 export function makeXmlPresentationRels(slides: Array<ISlide>): string {
-	var intRelNum = 0
-	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
+	let intRelNum = 1
+	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-	strXml += '  <Relationship Id="rId1" Target="slideMasters/slideMaster1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>'
-	intRelNum++
+	strXml += '<Relationship Id="rId1" Target="slideMasters/slideMaster1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>'
 	for (var idx = 1; idx <= slides.length; idx++) {
-		intRelNum++
 		strXml +=
-			'  <Relationship Id="rId' + intRelNum + '" Target="slides/slide' + idx + '.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
+			'  <Relationship Id="rId' +
+			++intRelNum +
+			'" Target="slides/slide' +
+			idx +
+			'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
 	}
 	intRelNum++
 	strXml +=
-		'  <Relationship Id="rId' +
+		'<Relationship Id="rId' +
 		intRelNum +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/presProps" Target="presProps.xml"/>' +
-		'  <Relationship Id="rId' +
+		'<Relationship Id="rId' +
 		(intRelNum + 1) +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/viewProps" Target="viewProps.xml"/>' +
-		'  <Relationship Id="rId' +
+		'<Relationship Id="rId' +
 		(intRelNum + 2) +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="theme/theme1.xml"/>' +
-		'  <Relationship Id="rId' +
+		'<Relationship Id="rId' +
 		(intRelNum + 3) +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/tableStyles" Target="tableStyles.xml"/>' +
-		'  <Relationship Id="rId' +
+		'<Relationship Id="rId' +
 		(intRelNum + 4) +
 		'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="notesMasters/notesMaster1.xml"/>' +
 		'</Relationships>'
@@ -1611,10 +1708,8 @@ export function makeXmlNotesMasterRel(): string {
  * @return {Number} slide number
  */
 function getLayoutIdxForSlide(slides: Array<ISlide>, slideLayouts: Array<ISlideLayout>, slideNumber: number): number {
-	let layoutName = slides[slideNumber - 1].slideLayout.name
-
-	for (var i = 0; i < slideLayouts.length; i++) {
-		if (slideLayouts[i].name === layoutName) {
+	for (let i = 0; i < slideLayouts.length; i++) {
+		if (slideLayouts[i].name === slides[slideNumber - 1].slideLayout.name) {
 			return i + 1
 		}
 	}

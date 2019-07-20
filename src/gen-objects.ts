@@ -442,7 +442,8 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 	let objHyperlink = opt.hyperlink || ''
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
-	let imageRelId = target.relsMedia.length + 1
+	///? let imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1
+	let imageRelId = target.relsMedia.length + 2 // `rId` needs to be >=2 as Id="rId1" is "SlideMaster1.xml"
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -755,10 +756,10 @@ function addBackgroundDefinition(bkg: string | { src?: string; path?: string; da
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
 		if (!bkg.src) bkg.src = 'preencoded.png'
-		var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
+		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn == 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
-		var intRels = target.rels.length + 1
+		let intRels = target.relsMedia.length + 2 // `rId` needs to be >=2 as Id="rId1" is "SlideMaster1.xml"
 		target.relsMedia.push({
 			path: bkg.src,
 			type: SLIDE_OBJECT_TYPES.image,
@@ -822,87 +823,6 @@ export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME 
 	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
 		target.slideNumberObj = slideDef.slideNumber
 	}
-}
-
-/**
- * Transforms slide relations to XML string.
- * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
- * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
- *
- * @param {ISlide} slide slide object whose relations are being transformed
- * @param {Object[]} defaultRels array of default relations (such objects expected: { target: <filepath>, type: <schemepath> })
- * @return {string} complete XML string ready to be saved as a file
- */
-export function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
-	let lastRid = 0 // stores maximum rId used for dynamic relations
-	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-
-	// Add all rels for this Slide
-	slideObject.rels.forEach((rel: ISlideRel) => {
-		lastRid = Math.max(lastRid, rel.rId)
-		if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
-			if (rel.data == 'slide') {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="slide' +
-					rel.Target +
-					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
-			} else {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="' +
-					rel.Target +
-					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
-			}
-		} else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
-			strXml +=
-				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
-		}
-	})
-	;(slideObject.relsChart || []).forEach((rel: ISlideRelChart) => {
-		lastRid = Math.max(lastRid, rel.rId)
-		strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
-	})
-	;(slideObject.relsMedia || []).forEach((rel: ISlideRelMedia) => {
-		if (rel.type.toLowerCase().indexOf('image') > -1) {
-			strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image"/>'
-		} else if (rel.type.toLowerCase().indexOf('audio') > -1) {
-			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-			if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-				strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>'
-			else
-				strXml +=
-					'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio"/>'
-		} else if (rel.type.toLowerCase().indexOf('video') > -1) {
-			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-			if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-				strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>'
-			else
-				strXml +=
-					'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>'
-		} else if (rel.type.toLowerCase().indexOf('online') > -1) {
-			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-			if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-				strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.microsoft.com/office/2007/relationships/image"/>'
-			else
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="' +
-					rel.Target +
-					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>'
-		}
-	})
-
-	defaultRels.forEach((rel, idx) => {
-		strXml += '<Relationship Id="rId' + (lastRid + idx + 1) + '" Target="' + rel.target + '" Type="' + rel.type + '"/>'
-	})
-
-	strXml += '</Relationships>'
-	return strXml
 }
 
 function correctGridLineOptions(glOpts) {
