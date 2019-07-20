@@ -3,7 +3,7 @@
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
 
-import { IBorderOpts } from './interfaces'
+import { IBorderOpts } from './core-interfaces'
 
 // CONST
 export const EMU: number = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))

@@ -2,8 +2,8 @@
  * PptxGenJS Utils
  */
 
-import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './enums'
-import { IChartOpts, ILayout } from './interfaces'
+import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './core-enums'
+import { IChartOpts, ILayout } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size

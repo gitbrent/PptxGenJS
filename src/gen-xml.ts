@@ -5,21 +5,21 @@
 import {
 	BULLET_TYPES,
 	CRLF,
+	DEF_CELL_BORDER,
+	DEF_CELL_MARGIN_PT,
 	DEF_FONT_SIZE,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	LAYOUT_IDX_SERIES_BASE,
+	LINEH_MODIFIER,
 	ONEPT,
 	PLACEHOLDER_TYPES,
 	SLDNUMFLDID,
 	SLIDE_OBJECT_TYPES,
-	DEF_CELL_BORDER,
-	DEF_CELL_MARGIN_PT,
-	LINEH_MODIFIER,
-} from './enums'
-import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts, ITableToSlidesCell, ITableCellOpts } from './interfaces'
-import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './utils'
-import { gObjPptxShapes } from './lib-shapes'
+} from './core-enums'
+import { ISlide, IShadowOpts, ILayout, ISlideLayout, ITableCell, ISlideObject, ITableToSlidesOpts, ITableToSlidesCell, ITableCellOpts } from './core-interfaces'
+import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './gen-utils'
+import { gObjPptxShapes } from './core-shapes'
 import { slideObjectRelationsToXml } from './gen-objects'
 import PptxGenJS from './pptxgen'
 
@@ -32,7 +32,7 @@ let imageSizingXml = {
 			height = isBoxBased ? boxDim.h : boxDim.w * imgRatio,
 			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
 			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
-		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
+		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
 	contain: function(imgSize, boxDim) {
 		var imgRatio = imgSize.h / imgSize.w,
@@ -42,7 +42,7 @@ let imageSizingXml = {
 			height = widthBased ? boxDim.w * imgRatio : boxDim.h,
 			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
 			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
-		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '" /><a:stretch/>'
+		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
 	crop: function(imageSize, boxDim) {
 		var l = boxDim.x,
@@ -53,7 +53,7 @@ let imageSizingXml = {
 			rPerc = Math.round(1e5 * (r / imageSize.w)),
 			tPerc = Math.round(1e5 * (t / imageSize.h)),
 			bPerc = Math.round(1e5 * (b / imageSize.h))
-		return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '" /><a:stretch/>'
+		return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '"/><a:stretch/>'
 	},
 }
 
@@ -162,9 +162,9 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
 					'  </p:nvGraphicFramePr>' +
 					'  <p:xfrm>' +
-					'    <a:off  x="' +
+					'    <a:off x="' +
 					(x || (x == 0 ? 0 : EMU)) +
-					'"  y="' +
+					'" y="' +
 					(y || (y == 0 ? 0 : EMU)) +
 					'"/>' +
 					'    <a:ext cx="' +
@@ -367,7 +367,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 											? ONEPT * Number(cellOpts.border[obj.idx].pt)
 											: ONEPT
 									strXml += '<a:' + obj.name + ' w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strC + '</a:' + obj.name + '>'
-								} else strXml += '<a:' + obj.name + ' w="0"><a:miter lim="400000" /></a:' + obj.name + '>'
+								} else strXml += '<a:' + obj.name + ' w="0"><a:miter lim="400000"/></a:' + obj.name + '>'
 							})
 						} else if (cellOpts.border && typeof cellOpts.border === 'object') {
 							var intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT
@@ -454,7 +454,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					shapeType.name +
 					'"><a:avLst>' +
 					(slideItemObj.options.rectRadius
-						? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '" />'
+						? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
 						: '') +
 					'</a:avLst></a:prstGeom>'
 
@@ -495,7 +495,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					if ( slideItemObj.options.textWrap ) {
 						strSlideXml += '<a:extLst>'
 									+ '<a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
-									+ '<ma14:wrappingTextBoxFlag xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main" val="1" />'
+									+ '<ma14:wrappingTextBoxFlag xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main" val="1"/>'
 									+ '</a:ext>'
 									+ '</a:extLst>';
 					}
@@ -526,14 +526,14 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						slideItemObj.hyperlink.rId +
 						'" tooltip="' +
 						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'" />'
+						'"/>'
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
 					strSlideXml +=
 						'<a:hlinkClick r:id="rId' +
 						slideItemObj.hyperlink.rId +
 						'" tooltip="' +
 						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'" action="ppaction://hlinksldjump" />'
+						'" action="ppaction://hlinksldjump"/>'
 				strSlideXml += '    </p:cNvPr>'
 				strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 				strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
@@ -572,7 +572,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				strSlideXml += '</p:blipFill>'
 				strSlideXml += '<p:spPr>'
 				strSlideXml += ' <a:xfrm' + locationAttr + '>'
-				strSlideXml += '  <a:off  x="' + x + '"  y="' + y + '"/>'
+				strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>'
 				strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
 				strSlideXml += ' </a:xfrm>'
 				strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>'
@@ -645,7 +645,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
 				strSlideXml += ' </p:nvGraphicFramePr>'
 				strSlideXml += ' <p:xfrm>'
-				strSlideXml += '  <a:off  x="' + x + '"  y="' + y + '"/>'
+				strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>'
 				strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
 				strSlideXml += ' </p:xfrm>'
 				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
@@ -667,7 +667,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
 			'    <p:cNvPr id="25" name="Slide Number Placeholder 24"/>' +
-			'    <p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr>' +
+			'    <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>' +
 			'    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>' +
 			'  </p:nvSpPr>' +
 			'  <p:spPr>' +
@@ -867,9 +867,9 @@ export function genXmlTextBody(slideObj) {
 			(slideObj.options.fontSize ? ' sz="' + Math.round(slideObj.options.fontSize) + '00"' : '') +
 			' dirty="0">'
 		if (slideObj.options.fontFace) {
-			strSlideXml += '  <a:latin typeface="' + slideObj.options.fontFace + '" charset="0" />'
-			strSlideXml += '  <a:ea    typeface="' + slideObj.options.fontFace + '" charset="0" />'
-			strSlideXml += '  <a:cs    typeface="' + slideObj.options.fontFace + '" charset="0" />'
+			strSlideXml += '  <a:latin typeface="' + slideObj.options.fontFace + '" charset="0"/>'
+			strSlideXml += '  <a:ea    typeface="' + slideObj.options.fontFace + '" charset="0"/>'
+			strSlideXml += '  <a:cs    typeface="' + slideObj.options.fontFace + '" charset="0"/>'
 		}
 		strSlideXml += '</a:endParaRPr>'
 	} else {
@@ -1058,13 +1058,13 @@ function genXmlTextRunProperties(opts, isDefault) {
 			runProps +=
 				'<a:latin typeface="' +
 				opts.fontFace +
-				'" pitchFamily="34" charset="0" />' +
+				'" pitchFamily="34" charset="0"/>' +
 				'<a:ea typeface="' +
 				opts.fontFace +
-				'" pitchFamily="34" charset="-122" />' +
+				'" pitchFamily="34" charset="-122"/>' +
 				'<a:cs typeface="' +
 				opts.fontFace +
-				'" pitchFamily="34" charset="-120" />'
+				'" pitchFamily="34" charset="-120"/>'
 		}
 	}
 
@@ -1080,14 +1080,14 @@ function genXmlTextRunProperties(opts, isDefault) {
 				opts.hyperlink.rId +
 				'" invalidUrl="" action="" tgtFrame="" tooltip="' +
 				(opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +
-				'" history="1" highlightClick="0" endSnd="0" />'
+				'" history="1" highlightClick="0" endSnd="0"/>'
 		} else if (opts.hyperlink.slide) {
 			runProps +=
 				'<a:hlinkClick r:id="rId' +
 				opts.hyperlink.rId +
 				'" action="ppaction://hlinksldjump" tooltip="' +
 				(opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +
-				'" />'
+				'"/>'
 		}
 	}
 
@@ -1163,7 +1163,7 @@ function genXmlBodyProperties(objOptions) {
 		bodyProperties += '>'
 
 		// E: NEW: Add autofit type tags
-		if (objOptions.shrinkText) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000" />' // MS-PPT > Format Shape > Text Options: "Shrink text on overflow"
+		if (objOptions.shrinkText) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format Shape > Text Options: "Shrink text on overflow"
 		// MS-PPT > Format Shape > Text Options: "Resize shape to fit text" [spAutoFit]
 		// NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
 		bodyProperties += objOptions.bodyProp.autoFit !== false ? '<a:spAutoFit/>' : ''
@@ -1415,32 +1415,32 @@ export function makeXmlNotesSlide(objSlide: ISlide): string {
 	strXml +=
 		'<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
 	strXml +=
-		'<p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name="" /><p:cNvGrpSpPr />' +
-		'<p:nvPr /></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0" />' +
-		'<a:ext cx="0" cy="0" /><a:chOff x="0" y="0" /><a:chExt cx="0" cy="0" />' +
-		'</a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Slide Image Placeholder 1" />' +
-		'<p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1" /></p:cNvSpPr>' +
-		'<p:nvPr><p:ph type="sldImg" /></p:nvPr></p:nvSpPr><p:spPr />' +
-		'</p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Notes Placeholder 2" />' +
-		'<p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr>' +
-		'<p:ph type="body" idx="1" /></p:nvPr></p:nvSpPr><p:spPr />' +
-		'<p:txBody><a:bodyPr /><a:lstStyle /><a:p><a:r>' +
-		'<a:rPr lang="en-US" dirty="0" smtClean="0" /><a:t>' +
+		'<p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/>' +
+		'<p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/>' +
+		'<a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/>' +
+		'</a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Slide Image Placeholder 1"/>' +
+		'<p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/></p:cNvSpPr>' +
+		'<p:nvPr><p:ph type="sldImg"/></p:nvPr></p:nvSpPr><p:spPr/>' +
+		'</p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Notes Placeholder 2"/>' +
+		'<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr>' +
+		'<p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr><p:spPr/>' +
+		'<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r>' +
+		'<a:rPr lang="en-US" dirty="0" smtClean="0"/><a:t>' +
 		encodeXmlEntities(getNotesFromSlide(objSlide)) +
-		'</a:t></a:r><a:endParaRPr lang="en-US" dirty="0" /></a:p></p:txBody>' +
-		'</p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Number Placeholder 3" />' +
-		'<p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr>' +
-		'<p:ph type="sldNum" sz="quarter" idx="10" /></p:nvPr></p:nvSpPr>' +
-		'<p:spPr /><p:txBody><a:bodyPr /><a:lstStyle /><a:p>' +
+		'</a:t></a:r><a:endParaRPr lang="en-US" dirty="0"/></a:p></p:txBody>' +
+		'</p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Number Placeholder 3"/>' +
+		'<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr>' +
+		'<p:ph type="sldNum" sz="quarter" idx="10"/></p:nvPr></p:nvSpPr>' +
+		'<p:spPr/><p:txBody><a:bodyPr/><a:lstStyle/><a:p>' +
 		'<a:fld id="' +
 		SLDNUMFLDID +
 		'" type="slidenum">' +
-		'<a:rPr lang="en-US" smtClean="0" /><a:t>' +
+		'<a:rPr lang="en-US" smtClean="0"/><a:t>' +
 		objSlide.number +
-		'</a:t></a:fld><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp>' +
+		'</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp>' +
 		'</p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
-		'<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991" />' +
-		'</p:ext></p:extLst></p:cSld><p:clrMapOvr><a:masterClrMapping /></p:clrMapOvr></p:notes>'
+		'<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991"/>' +
+		'</p:ext></p:extLst></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:notes>'
 	return strXml
 }
 
@@ -1525,7 +1525,7 @@ export function makeXmlNotesMaster(): string {
 	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
-		'<p:notesMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1" /></p:bgRef></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name="" /><p:cNvGrpSpPr /><p:nvPr /></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0" /><a:ext cx="0" cy="0" /><a:chOff x="0" y="0" /><a:chExt cx="0" cy="0" /></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Header Placeholder 1" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="hdr" sz="quarter" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0" /><a:ext cx="2971800" cy="458788" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" /><a:lstStyle><a:lvl1pPr algn="l"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Date Placeholder 2" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="dt" idx="1" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3884613" y="0" /><a:ext cx="2971800" cy="458788" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" /><a:lstStyle><a:lvl1pPr algn="r"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:fld id="{5282F153-3F37-0F45-9E97-73ACFA13230C}" type="datetimeFigureOut"><a:rPr lang="en-US" smtClean="0" /><a:t>6/20/18</a:t></a:fld><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Image Placeholder 3" /><p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1" /></p:cNvSpPr><p:nvPr><p:ph type="sldImg" idx="2" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="685800" y="1143000" /><a:ext cx="5486400" cy="3086100" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom><a:noFill /><a:ln w="12700"><a:solidFill><a:prstClr val="black" /></a:solidFill></a:ln></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="ctr" /><a:lstStyle /><a:p><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="5" name="Notes Placeholder 4" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="body" sz="quarter" idx="3" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="685800" y="4400550" /><a:ext cx="5486400" cy="3600450" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" /><a:lstStyle /><a:p><a:pPr lvl="0" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Click to edit Master text styles</a:t></a:r></a:p><a:p><a:pPr lvl="1" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Second level</a:t></a:r></a:p><a:p><a:pPr lvl="2" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Third level</a:t></a:r></a:p><a:p><a:pPr lvl="3" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Fourth level</a:t></a:r></a:p><a:p><a:pPr lvl="4" /><a:r><a:rPr lang="en-US" smtClean="0" /><a:t>Fifth level</a:t></a:r><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="6" name="Footer Placeholder 5" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="ftr" sz="quarter" idx="4" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="8685213" /><a:ext cx="2971800" cy="458787" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="b" /><a:lstStyle><a:lvl1pPr algn="l"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="7" name="Slide Number Placeholder 6" /><p:cNvSpPr><a:spLocks noGrp="1" /></p:cNvSpPr><p:nvPr><p:ph type="sldNum" sz="quarter" idx="5" /></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3884613" y="8685213" /><a:ext cx="2971800" cy="458787" /></a:xfrm><a:prstGeom prst="rect"><a:avLst /></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="b" /><a:lstStyle><a:lvl1pPr algn="r"><a:defRPr sz="1200" /></a:lvl1pPr></a:lstStyle><a:p><a:fld id="{CE5E9CC1-C706-0F49-92D6-E571CC5EEA8F}" type="slidenum"><a:rPr lang="en-US" smtClean="0" /><a:t>‹#›</a:t></a:fld><a:endParaRPr lang="en-US" /></a:p></p:txBody></p:sp></p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}"><p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991" /></p:ext></p:extLst></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink" /><p:notesStyle><a:lvl1pPr marL="0" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl1pPr><a:lvl2pPr marL="457200" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl2pPr><a:lvl3pPr marL="914400" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl3pPr><a:lvl4pPr marL="1371600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl4pPr><a:lvl5pPr marL="1828800" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl5pPr><a:lvl6pPr marL="2286000" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl6pPr><a:lvl7pPr marL="2743200" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl7pPr><a:lvl8pPr marL="3200400" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl8pPr><a:lvl9pPr marL="3657600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1" /></a:solidFill><a:latin typeface="+mn-lt" /><a:ea typeface="+mn-ea" /><a:cs typeface="+mn-cs" /></a:defRPr></a:lvl9pPr></p:notesStyle></p:notesMaster>'
+		'<p:notesMaster xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:cSld><p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr><p:sp><p:nvSpPr><p:cNvPr id="2" name="Header Placeholder 1"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="hdr" sz="quarter"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="2971800" cy="458788"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0"/><a:lstStyle><a:lvl1pPr algn="l"><a:defRPr sz="1200"/></a:lvl1pPr></a:lstStyle><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="3" name="Date Placeholder 2"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="dt" idx="1"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3884613" y="0"/><a:ext cx="2971800" cy="458788"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0"/><a:lstStyle><a:lvl1pPr algn="r"><a:defRPr sz="1200"/></a:lvl1pPr></a:lstStyle><a:p><a:fld id="{5282F153-3F37-0F45-9E97-73ACFA13230C}" type="datetimeFigureOut"><a:rPr lang="en-US" smtClean="0"/><a:t>6/20/18</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Image Placeholder 3"/><p:cNvSpPr><a:spLocks noGrp="1" noRot="1" noChangeAspect="1"/></p:cNvSpPr><p:nvPr><p:ph type="sldImg" idx="2"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="685800" y="1143000"/><a:ext cx="5486400" cy="3086100"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom><a:noFill/><a:ln w="12700"><a:solidFill><a:prstClr val="black"/></a:solidFill></a:ln></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="ctr"/><a:lstStyle/><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="5" name="Notes Placeholder 4"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="body" sz="quarter" idx="3"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="685800" y="4400550"/><a:ext cx="5486400" cy="3600450"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0"/><a:lstStyle/><a:p><a:pPr lvl="0"/><a:r><a:rPr lang="en-US" smtClean="0"/><a:t>Click to edit Master text styles</a:t></a:r></a:p><a:p><a:pPr lvl="1"/><a:r><a:rPr lang="en-US" smtClean="0"/><a:t>Second level</a:t></a:r></a:p><a:p><a:pPr lvl="2"/><a:r><a:rPr lang="en-US" smtClean="0"/><a:t>Third level</a:t></a:r></a:p><a:p><a:pPr lvl="3"/><a:r><a:rPr lang="en-US" smtClean="0"/><a:t>Fourth level</a:t></a:r></a:p><a:p><a:pPr lvl="4"/><a:r><a:rPr lang="en-US" smtClean="0"/><a:t>Fifth level</a:t></a:r><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="6" name="Footer Placeholder 5"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="ftr" sz="quarter" idx="4"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="0" y="8685213"/><a:ext cx="2971800" cy="458787"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="b"/><a:lstStyle><a:lvl1pPr algn="l"><a:defRPr sz="1200"/></a:lvl1pPr></a:lstStyle><a:p><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp><p:sp><p:nvSpPr><p:cNvPr id="7" name="Slide Number Placeholder 6"/><p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr><p:ph type="sldNum" sz="quarter" idx="5"/></p:nvPr></p:nvSpPr><p:spPr><a:xfrm><a:off x="3884613" y="8685213"/><a:ext cx="2971800" cy="458787"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr><p:txBody><a:bodyPr vert="horz" lIns="91440" tIns="45720" rIns="91440" bIns="45720" rtlCol="0" anchor="b"/><a:lstStyle><a:lvl1pPr algn="r"><a:defRPr sz="1200"/></a:lvl1pPr></a:lstStyle><a:p><a:fld id="{CE5E9CC1-C706-0F49-92D6-E571CC5EEA8F}" type="slidenum"><a:rPr lang="en-US" smtClean="0"/><a:t>‹#›</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp></p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}"><p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991"/></p:ext></p:extLst></p:cSld><p:clrMap bg1="lt1" tx1="dk1" bg2="lt2" tx2="dk2" accent1="accent1" accent2="accent2" accent3="accent3" accent4="accent4" accent5="accent5" accent6="accent6" hlink="hlink" folHlink="folHlink"/><p:notesStyle><a:lvl1pPr marL="0" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl1pPr><a:lvl2pPr marL="457200" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl2pPr><a:lvl3pPr marL="914400" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl3pPr><a:lvl4pPr marL="1371600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl4pPr><a:lvl5pPr marL="1828800" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl5pPr><a:lvl6pPr marL="2286000" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl6pPr><a:lvl7pPr marL="2743200" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl7pPr><a:lvl8pPr marL="3200400" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl8pPr><a:lvl9pPr marL="3657600" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1"><a:defRPr sz="1200" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/></a:defRPr></a:lvl9pPr></p:notesStyle></p:notesMaster>'
 	)
 }
 
@@ -1659,20 +1659,21 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 		'<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ' +
 		'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
 		'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ' +
-		(this._rtlMode ? 'rtl="1"' : '') +
-		' saveSubsetFonts="1" autoCompressPictures="0">'
+		(this._rtlMode ? 'rtl="1" ' : '') +
+		'saveSubsetFonts="1" autoCompressPictures="0">'
 	// FIXME: "this._rtlMode" doesnt exist
 
-	// STEP 1: Build SLIDE master list
+	// STEP 1: Add NOTES master list
+	// NOTE: length+2+4 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic)
+	strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (slides.length + 2 + 4) + '"/></p:notesMasterIdLst>'
+
+	// STEP 2: Build SLIDE master list
 	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
 	strXml += '<p:sldIdLst>'
 	for (let idx = 0; idx < slides.length; idx++) {
 		strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>'
 	}
 	strXml += '</p:sldIdLst>'
-
-	// STEP 2: Add NOTES master list
-	strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (slides.length + 2 + 4) + '"/></p:notesMasterIdLst>' // length+2+4 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic)
 
 	// STEP 3: Build SLIDE text styles
 	strXml +=
@@ -1734,17 +1735,17 @@ export function makeXmlViewProps() {
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
 		'<p:viewPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">' +
-		'<p:normalViewPr><p:restoredLeft sz="15610" /><p:restoredTop sz="94613" /></p:normalViewPr>' +
+		'<p:normalViewPr><p:restoredLeft sz="15610"/><p:restoredTop sz="94613"/></p:normalViewPr>' +
 		'<p:slideViewPr>' +
 		'  <p:cSldViewPr snapToGrid="0" snapToObjects="1">' +
-		'    <p:cViewPr varScale="1"><p:scale><a:sx n="119" d="100" /><a:sy n="119" d="100" /></p:scale><p:origin x="312" y="184" /></p:cViewPr>' +
-		'    <p:guideLst />' +
+		'    <p:cViewPr varScale="1"><p:scale><a:sx n="119" d="100"/><a:sy n="119" d="100"/></p:scale><p:origin x="312" y="184"/></p:cViewPr>' +
+		'    <p:guideLst/>' +
 		'  </p:cSldViewPr>' +
 		'</p:slideViewPr>' +
 		'<p:notesTextViewPr>' +
-		'  <p:cViewPr><p:scale><a:sx n="1" d="1" /><a:sy n="1" d="1" /></p:scale><p:origin x="0" y="0" /></p:cViewPr>' +
+		'  <p:cViewPr><p:scale><a:sx n="1" d="1"/><a:sy n="1" d="1"/></p:scale><p:origin x="0" y="0"/></p:cViewPr>' +
 		'</p:notesTextViewPr>' +
-		'<p:gridSpacing cx="76200" cy="76200" />' +
+		'<p:gridSpacing cx="76200" cy="76200"/>' +
 		'</p:viewPr>'
 	return strXml
 }

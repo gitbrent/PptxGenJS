@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES } from './enums'
+import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
 
 // FIXME: WONT FORMAT ANYMORE!!! ("TSTypeAliasDeclaration" error)
 

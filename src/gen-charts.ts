@@ -18,9 +18,9 @@ import {
 	DEF_SHAPE_SHADOW,
 	LETTERS,
 	ONEPT,
-} from './enums'
-import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './interfaces'
-import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './utils'
+} from './core-enums'
+import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
+import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './gen-utils'
 import * as JSZip from 'jszip'
 
 /**

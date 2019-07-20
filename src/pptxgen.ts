@@ -45,14 +45,14 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './enums'
-import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel, ISlideNumber, ITableToSlidesOpts } from './interfaces'
-import Slide from './pptxgen-slide'
+import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './core-enums'
+import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
+import Slide from './slide'
 import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genXml from './gen-xml'
-import { gObjPptxShapes } from './lib-shapes'
+import { gObjPptxShapes } from './core-shapes'
 
 export default class PptxGenJS {
 	// Property getters/setters

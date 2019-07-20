@@ -2,8 +2,8 @@
  * Slide Class
  */
 
-import { CHART_TYPE_NAMES } from './enums'
-import { IMediaOpts, ISlideNumber, ISlideLayout, ILayout, IChartMulti, IChartOpts, ISlideRel, ISlideRelChart, ISlideRelMedia, ISlideObject, IImageOpts } from './interfaces'
+import { CHART_TYPE_NAMES } from './core-enums'
+import { IMediaOpts, ISlideNumber, ISlideLayout, ILayout, IChartMulti, IChartOpts, ISlideRel, ISlideRelChart, ISlideRelMedia, ISlideObject, IImageOpts } from './core-interfaces'
 import * as genObj from './gen-objects'
 
 export default class Slide {

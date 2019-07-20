@@ -18,7 +18,7 @@ import {
 	BASE_SHAPES,
 	CHART_TYPE_NAMES,
 	SLIDE_OBJECT_TYPES,
-} from './enums'
+} from './core-enums'
 import {
 	ISlide,
 	ITextOpts,
@@ -33,8 +33,8 @@ import {
 	ISlideRelChart,
 	IImageOpts,
 	ITableCell,
-} from './interfaces'
-import { getSmartParseNumber, inch2Emu } from './utils'
+} from './core-interfaces'
+import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
 
 /** counter for included images (used for index in their filenames) */
