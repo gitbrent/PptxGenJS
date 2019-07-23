@@ -149,7 +149,7 @@ export function createColorElement(colorStr: string, innerElements?: string) {
 	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
 	let colorAttr = ' val="' + colorStr + '"'
 
-	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + ' />'
+	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
 }
 
 export function genXmlColorSelection(color_info, back_info?: string) {
