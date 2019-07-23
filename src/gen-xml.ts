@@ -1068,29 +1068,36 @@ function genXmlTextRun(opts, inStrText) {
 }
 
 /**
- * DESC: Builds <a:bodyPr></a:bodyPr> tag
+ * Builds `<a:bodyPr></a:bodyPr>` tag
+ * @param {Object} `objOptions` various options
+ * @return {string} XML string
  */
-function genXmlBodyProperties(objOptions) {
+function genXmlBodyProperties(objOptions): string {
 	var bodyProperties = '<a:bodyPr'
 
 	if (objOptions && objOptions.bodyProp) {
-		// A: Enable or disable textwrapping none or square:
-		objOptions.bodyProp.wrap ? (bodyProperties += ' wrap="' + objOptions.bodyProp.wrap + '" rtlCol="0"') : (bodyProperties += ' wrap="square" rtlCol="0"')
+		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
-		// B: Set anchorPoints:
+		// A: Enable or disable textwrapping none or square
+		bodyProperties += objOptions.bodyProp.wrap ? ' wrap="' + objOptions.bodyProp.wrap + '"' : ' wrap="square"'
+
+		// B: Textbox margins [padding]
+		if (objOptions.bodyProp.lIns || objOptions.bodyProp.lIns == 0) bodyProperties += ' lIns="' + objOptions.bodyProp.lIns + '"'
+		if (objOptions.bodyProp.tIns || objOptions.bodyProp.tIns == 0) bodyProperties += ' tIns="' + objOptions.bodyProp.tIns + '"'
+		if (objOptions.bodyProp.rIns || objOptions.bodyProp.rIns == 0) bodyProperties += ' rIns="' + objOptions.bodyProp.rIns + '"'
+		if (objOptions.bodyProp.bIns || objOptions.bodyProp.bIns == 0) bodyProperties += ' bIns="' + objOptions.bodyProp.bIns + '"'
+
+		// C: Add rtl after margins
+		bodyProperties += ' rtlCol="0"'
+
+		// D: Add anchorPoints
 		if (objOptions.bodyProp.anchor) bodyProperties += ' anchor="' + objOptions.bodyProp.anchor + '"' // VALS: [t,ctr,b]
 		if (objOptions.bodyProp.vert) bodyProperties += ' vert="' + objOptions.bodyProp.vert + '"' // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 
-		// C: Textbox margins [padding]:
-		if (objOptions.bodyProp.bIns || objOptions.bodyProp.bIns == 0) bodyProperties += ' bIns="' + objOptions.bodyProp.bIns + '"'
-		if (objOptions.bodyProp.lIns || objOptions.bodyProp.lIns == 0) bodyProperties += ' lIns="' + objOptions.bodyProp.lIns + '"'
-		if (objOptions.bodyProp.rIns || objOptions.bodyProp.rIns == 0) bodyProperties += ' rIns="' + objOptions.bodyProp.rIns + '"'
-		if (objOptions.bodyProp.tIns || objOptions.bodyProp.tIns == 0) bodyProperties += ' tIns="' + objOptions.bodyProp.tIns + '"'
-
-		// D: Close <a:bodyPr element
+		// E: Close <a:bodyPr element
 		bodyProperties += '>'
 
-		// E: NEW: Add autofit type tags
+		// F: NEW: Add autofit type tags
 		if (objOptions.shrinkText) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format Shape > Text Options: "Shrink text on overflow"
 		// MS-PPT > Format Shape > Text Options: "Resize shape to fit text" [spAutoFit]
 		// NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
@@ -1445,14 +1452,10 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
 	let intRelNum = 1
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-	strXml += '<Relationship Id="rId1" Target="slideMasters/slideMaster1.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster"/>'
+	strXml += '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>'
 	for (var idx = 1; idx <= slides.length; idx++) {
 		strXml +=
-			'  <Relationship Id="rId' +
-			++intRelNum +
-			'" Target="slides/slide' +
-			idx +
-			'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
+			'<Relationship Id="rId' + ++intRelNum + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide' + idx + '.xml"/>'
 	}
 	intRelNum++
 	strXml +=
@@ -1479,7 +1482,7 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
 // XML-GEN: Next 5 functions run 1-N times (once for each Slide)
 
 /**
- * Generates XML for the slide file
+ * Generates XML for the slide file (`ppt/slides/slide1.xml`)
  * @param {Object} objSlide - the slide object to transform into XML
  * @return {string} strXml - slide OOXML
  */
@@ -1507,11 +1510,14 @@ export function getNotesFromSlide(objSlide: ISlide): string {
 	return notesStr.replace(/\r*\n/g, CRLF)
 }
 
+/**
+ * Creates Notes Slide (`ppt/notesSlides/notesSlide1.xml`)
+ */
 export function makeXmlNotesSlide(objSlide: ISlide): string {
-	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml +=
-		'<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">'
-	strXml +=
+	return (
+		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+		CRLF +
+		'<p:notes xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">' +
 		'<p:cSld><p:spTree><p:nvGrpSpPr><p:cNvPr id="1" name=""/><p:cNvGrpSpPr/>' +
 		'<p:nvPr/></p:nvGrpSpPr><p:grpSpPr><a:xfrm><a:off x="0" y="0"/>' +
 		'<a:ext cx="0" cy="0"/><a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/>' +
@@ -1538,7 +1544,7 @@ export function makeXmlNotesSlide(objSlide: ISlide): string {
 		'</p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
 		'<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991"/>' +
 		'</p:ext></p:extLst></p:cSld><p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:notes>'
-	return strXml
+	)
 }
 
 /**
@@ -1560,7 +1566,7 @@ export function makeXmlLayout(layout: ISlideLayout): string {
 }
 
 /**
- * Generates XML for the master file
+ * Generates XML for the slide master file (`ppt/slideMasters/slideMaster1.xml`)
  * @param {ISlide} objSlide - slide object that represents master slide layout
  * @param {ISlideLayout[]} slideLayouts - slide layouts
  * @return {string} strXml - slide OOXML
@@ -1615,7 +1621,6 @@ export function makeXmlMaster(slide: ISlide, layouts: Array<ISlideLayout>): stri
 
 /**
  * Generate XML for Notes Master
- *
  * @returns {string} XML
  */
 export function makeXmlNotesMaster(): string {
@@ -1741,11 +1746,11 @@ export function makeXmlTheme() {
 }
 
 /**
- * Create the `ppt/presentation.xml` file XML
+ * Create presentation file (`ppt/presentation.xml`)
  * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
  * @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
- * @param `slides` {Array<ISlide>} presentation slides
- * @param `pptLayout` {ISlideLayout} presentation layout
+ * @param {Array<ISlide>} `slides` presentation slides
+ * @param {ISlideLayout} `pptLayout` presentation layout
  */
 export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 	let strXml =
@@ -1759,11 +1764,11 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 	// FIXME: "this._rtlMode" doesnt exist
 
 	// STEP 1: Add NOTES master list
+	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
 	// NOTE: length+2+4 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic)
 	strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (slides.length + 2 + 4) + '"/></p:notesMasterIdLst>'
 
 	// STEP 2: Build SLIDE master list
-	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
 	strXml += '<p:sldIdLst>'
 	for (let idx = 0; idx < slides.length; idx++) {
 		strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>'
@@ -1808,25 +1813,26 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 }
 
 export function makeXmlPresProps() {
-	var strXml =
+	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
 		'<p:presentationPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"/>'
-
-	return strXml
+	)
 }
 
+/**
+ * @see: http://openxmldeveloper.org/discussions/formats/f/13/p/2398/8107.aspx
+ */
 export function makeXmlTableStyles() {
-	// SEE: http://openxmldeveloper.org/discussions/formats/f/13/p/2398/8107.aspx
-	var strXml =
+	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
 		'<a:tblStyleLst xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" def="{5C22544A-7EE6-4342-B048-85BDC9FD1C3A}"/>'
-	return strXml
+	)
 }
 
 export function makeXmlViewProps() {
-	var strXml =
+	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
 		'<p:viewPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">' +
@@ -1842,7 +1848,7 @@ export function makeXmlViewProps() {
 		'</p:notesTextViewPr>' +
 		'<p:gridSpacing cx="76200" cy="76200"/>' +
 		'</p:viewPr>'
-	return strXml
+	)
 }
 
 /**
