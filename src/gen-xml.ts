@@ -70,7 +70,7 @@ let imageSizingXml = {
 }
 
 /**
- * Transforms a slide or slideLayout to resulting XML string.
+ * Transforms a slide or slideLayout to resulting XML string (slide1.xml)
  * @param {ISlide|ISlideLayout} slideObject slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
@@ -523,7 +523,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				// B: Close Shape Properties
 				strSlideXml += '</p:spPr>'
 
-				// Add formatted text
+				// C: Add formatted text (text body "bodyPr")
 				strSlideXml += genXmlTextBody(slideItemObj)
 
 				// LAST: Close SHAPE =======================================================
@@ -1311,8 +1311,8 @@ export function genXmlPlaceholder(placeholderObj) {
 export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[], masterSlide?: ISlide): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-	strXml += '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
 	strXml += '<Default Extension="xml" ContentType="application/xml"/>'
+	strXml += '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
 	strXml += '<Default Extension="jpeg" ContentType="image/jpeg"/>'
 	strXml += '<Default Extension="jpg" ContentType="image/jpg"/>'
 
@@ -1522,7 +1522,7 @@ export function getNotesFromSlide(objSlide: ISlide): string {
 }
 
 /**
- * Generate XML for Notes Master
+ * Generate XML for Notes Master (notesMaster1.xml)
  * @returns {string} XML
  */
 export function makeXmlNotesMaster(): string {
@@ -1774,19 +1774,21 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 		'saveSubsetFonts="1" autoCompressPictures="0">'
 	// FIXME: "this._rtlMode" doesnt exist
 
-	// STEP 1: Add NOTES master list
+	// IMPORTANT: Steps 1-2-3 must be in this order or PPT will give corruption message on open!
+	// STEP 1: Add slide master
 	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
-	// NOTE: length+2 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic)
-	strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (slides.length + 2) + '"/></p:notesMasterIdLst>'
 
-	// STEP 2: Build SLIDE master list
+	// STEP 2: Add all Slides
 	strXml += '<p:sldIdLst>'
 	for (let idx = 0; idx < slides.length; idx++) {
 		strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>'
 	}
 	strXml += '</p:sldIdLst>'
 
-	// STEP 3: Build SLIDE text styles
+	// STEP 3: Add Notes Master (NOTE: length+2 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic))
+	strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (slides.length + 2) + '"/></p:notesMasterIdLst>'
+
+	// STEP 4: Build SLIDE text styles
 	strXml +=
 		'<p:sldSz cx="' +
 		pptLayout.width +
@@ -1798,8 +1800,7 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 		'" cy="' +
 		pptLayout.width +
 		'"/>' +
-		'<p:defaultTextStyle>' +
-		'<a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
+		'<p:defaultTextStyle>' //+'<a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
 	for (let idx = 1; idx < 10; idx++) {
 		strXml +=
 			'<a:lvl' +
@@ -1816,8 +1817,6 @@ export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
 			'pPr>'
 	}
 	strXml += '</p:defaultTextStyle>'
-	strXml +=
-		'<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>'
 	strXml += '</p:presentation>'
 
 	return strXml
@@ -1843,8 +1842,8 @@ export function makeXmlTableStyles() {
 }
 
 /**
-* Creates `ppt/viewProps.xml`
-*/
+ * Creates `ppt/viewProps.xml`
+ */
 export function makeXmlViewProps() {
 	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<p:viewPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:normalViewPr horzBarState="maximized"><p:restoredLeft sz="15611"/><p:restoredTop sz="94610"/></p:normalViewPr><p:slideViewPr><p:cSldViewPr snapToGrid="0" snapToObjects="1"><p:cViewPr varScale="1"><p:scale><a:sx n="136" d="100"/><a:sy n="136" d="100"/></p:scale><p:origin x="216" y="312"/></p:cViewPr><p:guideLst/></p:cSldViewPr></p:slideViewPr><p:notesTextViewPr><p:cViewPr><p:scale><a:sx n="1" d="1"/><a:sy n="1" d="1"/></p:scale><p:origin x="0" y="0"/></p:cViewPr></p:notesTextViewPr><p:gridSpacing cx="76200" cy="76200"/></p:viewPr>`
 }
