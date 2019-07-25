@@ -38,6 +38,7 @@ export interface OptsChartGridLine {
 	color?: string
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
+type MediaType = 'audio' | 'online' | 'video'
 
 // Opts
 // ====
@@ -194,9 +195,9 @@ export interface IImageOpts extends OptsCoords, OptsDataOrPath {
 	placeholder?: any
 }
 export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
-	type?: 'audio' | 'online' | 'video'
 	link: string
 	onlineVideoLink?: string
+	type?: MediaType
 }
 export interface ITextOpts extends OptsCoords, OptsDataOrPath {
 	align?: string // "left" | "center" | "right"
@@ -384,7 +385,7 @@ export interface ISlideObject {
 	hyperlink?: { rId: number; slide?: number; tooltip?: string; url?: string }
 	// media
 	media?: string
-	mtype?: 'online' | 'other'
+	mtype?: MediaType
 	mediaRid?: number
 }
 
@@ -431,6 +432,7 @@ export interface ISlide {
 	relsMedia: ISlideRelMedia[]
 	slideLayout: ISlideLayout
 	slideNumberObj?: ISlideNumber // FIXME rename
+	totalMediaRels:number
 }
 export interface IPresentation {
 	author: string

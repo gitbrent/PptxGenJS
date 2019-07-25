@@ -780,8 +780,6 @@ function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRe
 	})
 	;(slideObject.relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		if (rel.type.toLowerCase().indexOf('image') > -1) {
-			console.log(slideObject)
-			console.log('rID for slie = ' + rel.rId)
 			strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="' + rel.Target + '"/>'
 		} else if (rel.type.toLowerCase().indexOf('audio') > -1) {
 			// As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
@@ -824,7 +822,7 @@ function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRe
  */
 function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
 	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	let CPL = (inWidth * EMU) / ((cell.options.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	let CPL = (inWidth * EMU) / ((cell.options && cell.options.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []
 	let strCurrLine = ''
 
@@ -2033,9 +2031,10 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		if (opts.debug) console.log('* Slide ' + arrObjSlides.length + ': emuSlideTabH (in) ........ = ' + (emuSlideTabH / EMU).toFixed(1))
 
 		// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
-		row.forEach((cell = {}, iCell) => {
+		row.forEach((cell, iCell) => {
 			// FIRST: REALITY-CHECK:
-			//if (!cell) cell = {}
+			if (!cell) cell = {}
+			if (!cell.options) cell.options = {}
 
 			// DESIGN: Cells are henceforth {objects} with `text` and `opts`
 			let lines: string[] = []

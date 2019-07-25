@@ -148,6 +148,16 @@ export default class PptxGenJS {
 		return this._isBrowser
 	}
 
+	public get totalMediaRels():number {
+		let intRels = 0
+
+		this.slides.forEach(slide => {
+			intRels += slide.relsMedia.length
+		})
+
+		return intRels
+	}
+
 	// TODO: should these be `this.var` inside constructor?
 	private fileName: string
 	private fileExtn: string
@@ -261,6 +271,7 @@ export default class PptxGenJS {
 			relsMedia: [],
 			slideLayout: null,
 			slideNumberObj: null,
+			totalMediaRels: this.getTotalMediaRels()
 		}
 	}
 
@@ -424,6 +435,7 @@ export default class PptxGenJS {
 		})
 	}
 
+	// TODO: TODO-3: move to gen-xml or whatever (same for others below?)
 	addPlaceholdersToSlides = (slide: ISlide) => {
 		// Add all placeholders on this Slide that dont already exist
 		;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
@@ -641,7 +653,7 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * Enables the Slide class to set PptxGen master/layout slidenumbers
+	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
 	 */
 	setSlideNumber = (slideNumberObj: ISlideNumber) => {
 		// 1: Add slideNumber to slideMaster1.xml
@@ -651,6 +663,16 @@ export default class PptxGenJS {
 		this.slideLayouts.filter(layout => {
 			return layout.name == DEF_PRES_LAYOUT_NAME
 		})[0].slideNumberObj = slideNumberObj
+	}
+
+	getTotalMediaRels = ():number => {
+		let intRels = 0
+
+		this.slides.forEach(slide => {
+			intRels += slide.relsMedia.length
+		})
+
+		return intRels
 	}
 
 	// PUBLIC API
@@ -701,6 +723,7 @@ export default class PptxGenJS {
 	 */
 	addSlide(masterSlideName?: string): ISlide {
 		let newSlide = new Slide({
+			totalMediaRels: this.totalMediaRels,
 			presLayout: this._presLayout,
 			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,
