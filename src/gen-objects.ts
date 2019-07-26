@@ -40,8 +40,8 @@ var _chartCounter: number = 0
  *     }
  *   }]
  * }
- * @param {Object} `slideDef` slide definition
- * @param {ISlide} `target` empty slide object that should be updated by the passed definition
+ * @param {ISlideMasterDef} `slideDef` slide definition
+ * @param {ISlide|ISlideLayout} `target` empty slide object that should be updated by the passed definition
  */
 export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME :ISlide|ISlideLayout*/) {
 	// STEP 1: Add background
@@ -321,7 +321,7 @@ export function addChartDefinition(type: CHART_TYPE_NAMES | IChartMulti[], data:
  * @return {Object} image object
  */
 export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
-	let resultObject: any = {
+	let newObject: any = {
 		type: null,
 		text: null,
 		options: null,
@@ -339,7 +339,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
 	///? let imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1
-	let imageRelId = target.relsMedia.length + 2 // `rId` needs to be >=2 as Id="rId1" is "SlideMaster1.xml"
+	let imageRelId = target.relsMedia.length + 3 // NOTE: rId must be >=3 as rId1="slideLayout1.xml" & rId2="notesSlide1.xml"
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -365,14 +365,14 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 		strImgExtn = 'svg'
 	}
 	// STEP 2: Set type/path
-	resultObject.type = 'image'
-	resultObject.image = strImagePath || 'preencoded.png'
+	newObject.type = 'image'
+	newObject.image = strImagePath || 'preencoded.png'
 
 	// STEP 3: Set image properties & options
 	// FIXME: Measure actual image when no intWidth/intHeight params passed
 	// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
 	// if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
-	resultObject.options = {
+	newObject.options = {
 		x: intPosX || 0,
 		y: intPosY || 0,
 		cx: intWidth || 1,
@@ -396,9 +396,9 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			rId: imageRelId,
 			Target: '../media/image' + ++_imageCounter + '.png',
 			isSvgPng: true,
-			svgSize: { w: resultObject.options.cx, h: resultObject.options.cy },
+			svgSize: { w: newObject.options.cx, h: newObject.options.cy },
 		})
-		resultObject.imageRid = imageRelId
+		newObject.imageRid = imageRelId
 		target.relsMedia.push({
 			path: strImagePath || strImageData,
 			type: 'image/' + strImgExtn,
@@ -407,7 +407,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			rId: imageRelId + 1,
 			Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
 		})
-		resultObject.imageRid = imageRelId + 1
+		newObject.imageRid = imageRelId + 1
 	} else {
 		target.relsMedia.push({
 			path: strImagePath || 'preencoded.' + strImgExtn,
@@ -417,7 +417,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			rId: imageRelId,
 			Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
 		})
-		resultObject.imageRid = imageRelId
+		newObject.imageRid = imageRelId
 	}
 
 	// STEP 5: Hyperlink support
@@ -434,15 +434,15 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			})
 
 			objHyperlink.rId = intRelId
-			resultObject.hyperlink = objHyperlink
+			newObject.hyperlink = objHyperlink
 		}
 	}
 
 	// STEP 6: Add object to slide
-	target.data.push(resultObject)
+	target.data.push(newObject)
 
 	// LAST
-	return resultObject
+	return newObject
 }
 
 /**
