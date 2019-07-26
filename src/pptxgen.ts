@@ -677,6 +677,8 @@ export default class PptxGenJS {
 
 	// PUBLIC API
 
+	// TODO: TODO-3: remove `save` - use `write` and `writeFile` instead
+
 	/**
 	 * Save (export) the Presentation .pptx file
 	 * @param {string} `exportName` - Filename to use for the export

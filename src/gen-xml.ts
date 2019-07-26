@@ -741,9 +741,9 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
  *
- * @param {ISlide} slide slide object whose relations are being transformed
- * @param {Object[]} defaultRels array of default relations (such objects expected: { target: <filepath>, type: <schemepath> })
- * @return {string} complete XML string ready to be saved as a file
+ * @param {ISlide | ISlideLayout} `slideObject` slide object whose relations are being transformed
+ * @param {{ target: string; type: string }[]} `defaultRels` array of default relations
+ * @return {string} XML
  */
 function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
 	let lastRid = 0 // stores maximum rId used for dynamic relations
@@ -1652,8 +1652,10 @@ export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: Array<
 
 /**
  * Generates XML string for a slide relation file.
- * @param {Number} slideNumber 1-indexed number of a layout that relations are generated for
- * @return {string} complete XML string ready to be saved as a file
+ * @param {Array<ISlide>} `slides`
+ * @param {Array<ISlideLayout>} `slideLayouts`
+ * @param {number} `slideNumber` 1-indexed number of a layout that relations are generated for
+ * @return {string} XML
  */
 export function makeXmlSlideRel(slides: Array<ISlide>, slideLayouts: Array<ISlideLayout>, slideNumber: number): string {
 	return slideObjectRelationsToXml(slides[slideNumber - 1], [
