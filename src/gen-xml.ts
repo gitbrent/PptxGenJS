@@ -20,9 +20,9 @@ import {
 import PptxGenJS from './pptxgen'
 import { gObjPptxShapes } from './core-shapes'
 import {
+	ILayout,
 	ISlide,
 	IShadowOpts,
-	ILayout,
 	ISlideLayout,
 	ITableCell,
 	ISlideObject,
@@ -827,7 +827,7 @@ function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
 	let strCurrLine = ''
 
 	// Allow a single space/whitespace as cell text
-	if (cell.text && cell.text.trim() == '') return [' ']
+	if (cell.text && cell.text.toString().trim() == '') return [' ']
 
 	// A: Remove leading/trailing space
 	var inStr = (cell.text || '').toString().trim()
@@ -2038,28 +2038,11 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			if (!cell) cell = {}
 			if (!cell.options) cell.options = {}
 
-			// DESIGN: Cells are henceforth {objects} with `text` and `opts`
+			// DESIGN: Cells are henceforth {`text`: `opts`:}
 			let lines: string[] = []
 
-			// 1: Cleanse data
-			// TODO-3: still needed?
-			/*
-			if (!isNaN(cell) || typeof cell === 'string') {
-				// Grab table formatting `opts` to use here so text style/format inherits as it should
-				cell = { text: cell.toString(), opts: opts }
-			} else if (typeof cell === 'object') {
-				// ARG0: `text`
-				if (typeof cell.text === 'number') cell.text = cell.text.toString()
-				else if (typeof cell.text === 'undefined' || cell.text == null) cell.text = ''
-
-				// ARG1: `options`
-				var opt = cell.options || cell.opts || {}
-				cell.opts = opt
-			}
-			*/
-
-			// Capture some table options for use in other functions
-			//cell.opts.lineWeight = opts.lineWeight
+			// 1: Capture some table options for use in other functions
+			cell.options.lineWeight = opts.lineWeight
 
 			// 2: Create a cell object for each table column
 			currRow.push({ text: '', options: cell.options })
@@ -2074,7 +2057,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 				intMaxLineCnt = lines.length
 				intMaxColIdx = iCell
 			}
-			///let lineHeight = inch2Emu(((cell.opts.fontSize || opts.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
+
 			let lineHeight = inch2Emu(((cell.options.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
 			// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (cell.options && cell.options.rowspan) lineHeight = 0

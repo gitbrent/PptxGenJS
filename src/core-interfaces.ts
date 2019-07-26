@@ -241,8 +241,10 @@ export interface ITableToSlidesOpts {
 	h?: number
 	_arrObjTabHeadRows?: any[]
 	addHeaderToEach?: boolean
+	autoPage?: boolean
 	colW?: Array<number>
 	debug?: boolean
+	lineWeight?: number
 	masterSlideName?: string
 	masterSlide?: ISlideLayout
 	newSlideStartY?: number

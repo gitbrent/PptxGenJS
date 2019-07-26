@@ -712,17 +712,39 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 	if (opt.cx < 20) opt.cx = inch2Emu(opt.cx)
 	if (opt.cy && opt.cy < 20) opt.cy = inch2Emu(opt.cy)
 
-	// STEP 5: Check for fine-grained formatting, disable auto-page when found
-	// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
-	// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
+	// STEP 5: Loop over cells: transform to ITableCell; check to see whether to skip autopaging
 	arrRows.forEach(row => {
-		row.forEach(cell => {
-			if (cell && cell.text && Array.isArray(cell.text)) opt.autoPage = false
+		row.forEach((cell,idy) => {
+			// A: Transform cell data if needed
+			/* Table rows can be an object or plain text - transform into object when needed
+				// EX:
+				var arrTabRows1 = [
+					[ { text:'A1\nA2', options:{rowspan:2, fill:'99FFCC'} } ]
+					,[ 'B2', 'C2', 'D2', 'E2' ]
+				]
+			*/
+			if (typeof cell === 'number' || typeof cell === 'string') {
+				// Grab table formatting `opts` to use here so text style/format inherits as it should
+				row[idy] = { text: row[idy].toString(), options: opt }
+			} else if (typeof cell === 'object') {
+				// ARG0: `text`
+				if (typeof cell.text === 'number') row[idy].text = row[idy].text.toString()
+				else if (typeof cell.text === 'undefined' || cell.text == null) row[idy].text = ''
+
+				// ARG1: `options`: ensure options exists
+				row[idy].options = cell.options || {}
+			}
+
+			// B: Check for fine-grained formatting, disable auto-page when found
+			// Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
+			// Text in individual cells will be formatted as they are added by calls to genXmlTextBody within table builder
+			if (cell.text && Array.isArray(cell.text)) opt.autoPage = false
 		})
 	})
 
 	// STEP 6: Create hyperlink rels
 	createHyperlinkRels(this.slides, arrRows, this.rels)
+	// FIXME: TODO-3: "this." refs above dont exist here!! 20190725
 	// FIXME: why do we need all slides???
 
 	// STEP 7: Auto-Paging: (via {options} and used internally)
