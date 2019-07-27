@@ -71,7 +71,7 @@ let imageSizingXml = {
 
 /**
  * Transforms a slide or slideLayout to resulting XML string (slide1.xml)
- * @param {ISlide|ISlideLayout} slideObject slide object created within createSlideObject
+ * @param {ISlide|ISlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide: ISlide | ISlideLayout): string {
@@ -741,8 +741,8 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
  *
- * @param {ISlide | ISlideLayout} `slideObject` slide object whose relations are being transformed
- * @param {{ target: string; type: string }[]} `defaultRels` array of default relations
+ * @param {ISlide | ISlideLayout} slideObject - slide object whose relations are being transformed
+ * @param {{ target: string; type: string }[]} defaultRels - array of default relations
  * @return {string} XML
  */
 function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
@@ -822,7 +822,7 @@ function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRe
  */
 function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
 	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	let CPL = (inWidth * EMU) / ((cell.options && cell.options.fontSize || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	let CPL = (inWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []
 	let strCurrLine = ''
 
@@ -1031,23 +1031,23 @@ function genXmlTextRunProperties(opts, isDefault) {
 }
 
 /**
-* Builds <a:r></a:r> text runs for <a:p> paragraphs in textBody
-* @param {Object} opts - various options
-* @param {string} paraText - various options
-* @return {string} XML string
-* @example
-* <a:r>
-*   <a:rPr lang="en-US" sz="2800" dirty="0" smtClean="0">
-* 	<a:solidFill>
-* 	  <a:srgbClr val="00FF00">
-* 	  </a:srgbClr>
-* 	</a:solidFill>
-* 	<a:latin typeface="Courier New" pitchFamily="34" charset="0"/>
-*   </a:rPr>
-*   <a:t>Misc font/color, size = 28</a:t>
-* </a:r>
-*/
-function genXmlTextRun(opts, paraText:string):string {
+ * Builds <a:r></a:r> text runs for <a:p> paragraphs in textBody
+ * @param {Object} opts - various options
+ * @param {string} paraText - various options
+ * @return {string} XML string
+ * @example
+ * <a:r>
+ *   <a:rPr lang="en-US" sz="2800" dirty="0" smtClean="0">
+ * 	<a:solidFill>
+ * 	  <a:srgbClr val="00FF00">
+ * 	  </a:srgbClr>
+ * 	</a:solidFill>
+ * 	<a:latin typeface="Courier New" pitchFamily="34" charset="0"/>
+ *   </a:rPr>
+ *   <a:t>Misc font/color, size = 28</a:t>
+ * </a:r>
+ */
+function genXmlTextRun(opts, paraText: string): string {
 	let xmlTextRun = ''
 	let paraProp = ''
 	let arrLines = []
@@ -1499,17 +1499,14 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
  * @return {string} strXml - slide OOXML
  */
 export function makeXmlSlide(slide: ISlide): string {
-	// Generate slide XML - wrap generated text in full XML envelope
-	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml +=
-		'<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"' +
-		(slide && slide.hidden ? ' show="0"' : '') +
-		'>'
-	strXml += slideObjectToXml(slide)
-	strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>'
-	strXml += '</p:sld>'
-
-	return strXml
+	return (
+		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
+		`<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ` +
+		`xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ` +
+		`${slide && slide.hidden ? ' show="0"' : ''}>` +
+		`${slideObjectToXml(slide)}` +
+		`<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sld>`
+	)
 }
 
 export function getNotesFromSlide(objSlide: ISlide): string {
@@ -1569,29 +1566,25 @@ export function makeXmlNotesSlide(objSlide: ISlide): string {
 
 /**
  * Generates the XML layout resource from a layout object
- *
- * @param {ISlide} objSlideLayout - slide object that represents layout
- * @return {string} strXml - slide OOXML
+ * @param {ISlideLayout} objSlideLayout - slide object that represents layout
+ * @return {string} XML
  */
 export function makeXmlLayout(layout: ISlideLayout): string {
-	// STEP 1: Generate slide XML - wrap generated text in full XML envelope
-	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml +=
-		'<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">'
-	strXml += slideObjectToXml(layout)
-	strXml += '<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr>'
-	strXml += '</p:sldLayout>'
-
-	return strXml
+	return (
+		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
+		`<p:sldLayout xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" preserve="1">` +
+		`${slideObjectToXml(layout)}` +
+		`<p:clrMapOvr><a:masterClrMapping/></p:clrMapOvr></p:sldLayout>`
+	)
 }
 
 /**
  * Generates XML for the slide master file (`ppt/slideMasters/slideMaster1.xml`)
  * @param {ISlide} objSlide - slide object that represents master slide layout
  * @param {ISlideLayout[]} slideLayouts - slide layouts
- * @return {string} strXml - slide OOXML
+ * @return {string} XML
  */
-export function makeXmlMaster(slide: ISlide, layouts: Array<ISlideLayout>): string {
+export function makeXmlMaster(slide: ISlide, layouts: ISlideLayout[]): string {
 	// NOTE: Pass layouts as static rels because they are not referenced any time
 	let layoutDefs = layouts.map((_layoutDef, idx) => {
 		return '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slide.rels.length + idx + 1) + '"/>'
@@ -1640,11 +1633,12 @@ export function makeXmlMaster(slide: ISlide, layouts: Array<ISlideLayout>): stri
 }
 
 /**
- * Generates XML string for a slide layout relation file.
- * @param {Number} layoutNumber - 1-indexed number of a layout that relations are generated for
- * @return {String} complete XML string ready to be saved as a file
+ * Generates XML string for a slide layout relation file
+ * @param {number} layoutNumber - 1-indexed number of a layout that relations are generated for
+ * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
+ * @return {string} XML
  */
-export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: Array<ISlideLayout>): string {
+export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: ISlideLayout[]): string {
 	return slideObjectRelationsToXml(slideLayouts[layoutNumber - 1], [
 		{
 			target: '../slideMasters/slideMaster1.xml',
@@ -1655,8 +1649,8 @@ export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: Array<
 
 /**
  * Generates XML string for a slide relation file.
- * @param {Array<ISlide>} `slides`
- * @param {Array<ISlideLayout>} `slideLayouts`
+ * @param {Array<ISlide>} slides
+ * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
  * @param {number} `slideNumber` 1-indexed number of a layout that relations are generated for
  * @return {string} XML
  */
@@ -1675,8 +1669,8 @@ export function makeXmlSlideRel(slides: Array<ISlide>, slideLayouts: Array<ISlid
 
 /**
  * Generates XML string for a slide relation file.
- * @param {Number} `slideNumber` 1-indexed number of a layout that relations are generated for
- * @return {String} complete XML string ready to be saved as a file
+ * @param {number} slideNumber - 1-indexed number of a layout that relations are generated for
+ * @return {string} XML
  */
 export function makeXmlNotesSlideRel(slideNumber: number): string {
 	return (
@@ -1693,10 +1687,11 @@ export function makeXmlNotesSlideRel(slideNumber: number): string {
 
 /**
  * Generates XML string for the master file
- * @param {ISlide} `masterSlideObject` - slide object
+ * @param {ISlide} masterSlideObject - slide object
+ * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
  * @return {String} complete XML string ready to be saved as a file
  */
-export function makeXmlMasterRel(masterSlideObject: ISlide, slideLayouts: Array<ISlideLayout>): string {
+export function makeXmlMasterRel(masterSlideObject: ISlide, slideLayouts: ISlideLayout[]): string {
 	var defaultRels = slideLayouts.map((_layoutDef, idx) => {
 		return { target: '../slideLayouts/slideLayout' + (idx + 1) + '.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' }
 	})
@@ -1717,12 +1712,12 @@ export function makeXmlNotesMasterRel(): string {
 
 /**
  * For the passed slide number, resolves name of a layout that is used for.
- * @param {ISlide[]} `slides` - Array of slides
- * @param {Number} `slideLayouts`
- * @param {Number} slideNumber
- * @return {Number} slide number
+ * @param {ISlide[]} slides - srray of slides
+ * @param {ISlideLayout[]} slideLayouts - array of slideLayouts
+ * @param {number} slideNumber
+ * @return {number} slide number
  */
-function getLayoutIdxForSlide(slides: Array<ISlide>, slideLayouts: Array<ISlideLayout>, slideNumber: number): number {
+function getLayoutIdxForSlide(slides: Array<ISlide>, slideLayouts: ISlideLayout[], slideNumber: number): number {
 	for (let i = 0; i < slideLayouts.length; i++) {
 		if (slideLayouts[i].name === slides[slideNumber - 1].slideLayout.name) {
 			return i + 1
@@ -1737,25 +1732,6 @@ function getLayoutIdxForSlide(slides: Array<ISlide>, slideLayouts: Array<ISlideL
 // XML-GEN: Last 5 functions create root /ppt files
 
 export function makeXmlTheme() {
-	// FIXME: old below!
-	/*
-	var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml +=
-		'<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme">\
-					<a:themeElements>\
-					  <a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1>\
-					  <a:dk2><a:srgbClr val="A7A7A7"/></a:dk2>\
-					  <a:lt2><a:srgbClr val="535353"/></a:lt2>\
-					  <a:accent1><a:srgbClr val="4F81BD"/></a:accent1><a:accent2><a:srgbClr val="C0504D"/></a:accent2><a:accent3><a:srgbClr val="9BBB59"/></a:accent3><a:accent4><a:srgbClr val="8064A2"/></a:accent4><a:accent5><a:srgbClr val="4BACC6"/></a:accent5>\
-					  <a:accent6><a:srgbClr val="F79646"/></a:accent6><a:hlink><a:srgbClr val="0000FF"/></a:hlink><a:folHlink><a:srgbClr val="800080"/></a:folHlink></a:clrScheme>\
-					  <a:fontScheme name="Office">\
-					  <a:majorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/></a:majorFont>\
-					  <a:minorFont><a:latin typeface="Arial"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="Yu Gothic"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="DengXian"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/>\
-					  </a:minorFont></a:fontScheme>\
-					  <a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="50000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="35000"><a:schemeClr val="phClr"><a:tint val="37000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:tint val="15000"/><a:satMod val="350000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="1"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:shade val="51000"/><a:satMod val="130000"/></a:schemeClr></a:gs><a:gs pos="80000"><a:schemeClr val="phClr"><a:shade val="93000"/><a:satMod val="130000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="94000"/><a:satMod val="135000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="16200000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"><a:shade val="95000"/><a:satMod val="105000"/></a:schemeClr></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="25400" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln><a:ln w="38100" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="20000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="38000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="40000" dist="23000" dir="5400000" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="35000"/></a:srgbClr></a:outerShdw></a:effectLst><a:scene3d><a:camera prst="orthographicFront"><a:rot lat="0" lon="0" rev="0"/></a:camera><a:lightRig rig="threePt" dir="t"><a:rot lat="0" lon="0" rev="1200000"/></a:lightRig></a:scene3d><a:sp3d><a:bevelT w="63500" h="25400"/></a:sp3d></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="40000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="40000"><a:schemeClr val="phClr"><a:tint val="45000"/><a:shade val="99000"/><a:satMod val="350000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="20000"/><a:satMod val="255000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="-80000" r="50000" b="180000"/></a:path></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="80000"/><a:satMod val="300000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="30000"/><a:satMod val="200000"/></a:schemeClr></a:gs></a:gsLst><a:path path="circle"><a:fillToRect l="50000" t="50000" r="50000" b="50000"/></a:path></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/>\
-					</a:theme>'
-	return strXml
-	*/
 	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Office Theme"><a:themeElements><a:clrScheme name="Office"><a:dk1><a:sysClr val="windowText" lastClr="000000"/></a:dk1><a:lt1><a:sysClr val="window" lastClr="FFFFFF"/></a:lt1><a:dk2><a:srgbClr val="44546A"/></a:dk2><a:lt2><a:srgbClr val="E7E6E6"/></a:lt2><a:accent1><a:srgbClr val="4472C4"/></a:accent1><a:accent2><a:srgbClr val="ED7D31"/></a:accent2><a:accent3><a:srgbClr val="A5A5A5"/></a:accent3><a:accent4><a:srgbClr val="FFC000"/></a:accent4><a:accent5><a:srgbClr val="5B9BD5"/></a:accent5><a:accent6><a:srgbClr val="70AD47"/></a:accent6><a:hlink><a:srgbClr val="0563C1"/></a:hlink><a:folHlink><a:srgbClr val="954F72"/></a:folHlink></a:clrScheme><a:fontScheme name="Office"><a:majorFont><a:latin typeface="Calibri Light" panose="020F0302020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="游ゴシック Light"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="等线 Light"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Times New Roman"/><a:font script="Hebr" typeface="Times New Roman"/><a:font script="Thai" typeface="Angsana New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="MoolBoran"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Times New Roman"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/><a:font script="Armn" typeface="Arial"/><a:font script="Bugi" typeface="Leelawadee UI"/><a:font script="Bopo" typeface="Microsoft JhengHei"/><a:font script="Java" typeface="Javanese Text"/><a:font script="Lisu" typeface="Segoe UI"/><a:font script="Mymr" typeface="Myanmar Text"/><a:font script="Nkoo" typeface="Ebrima"/><a:font script="Olck" typeface="Nirmala UI"/><a:font script="Osma" typeface="Ebrima"/><a:font script="Phag" typeface="Phagspa"/><a:font script="Syrn" typeface="Estrangelo Edessa"/><a:font script="Syrj" typeface="Estrangelo Edessa"/><a:font script="Syre" typeface="Estrangelo Edessa"/><a:font script="Sora" typeface="Nirmala UI"/><a:font script="Tale" typeface="Microsoft Tai Le"/><a:font script="Talu" typeface="Microsoft New Tai Lue"/><a:font script="Tfng" typeface="Ebrima"/></a:majorFont><a:minorFont><a:latin typeface="Calibri" panose="020F0502020204030204"/><a:ea typeface=""/><a:cs typeface=""/><a:font script="Jpan" typeface="游ゴシック"/><a:font script="Hang" typeface="맑은 고딕"/><a:font script="Hans" typeface="等线"/><a:font script="Hant" typeface="新細明體"/><a:font script="Arab" typeface="Arial"/><a:font script="Hebr" typeface="Arial"/><a:font script="Thai" typeface="Cordia New"/><a:font script="Ethi" typeface="Nyala"/><a:font script="Beng" typeface="Vrinda"/><a:font script="Gujr" typeface="Shruti"/><a:font script="Khmr" typeface="DaunPenh"/><a:font script="Knda" typeface="Tunga"/><a:font script="Guru" typeface="Raavi"/><a:font script="Cans" typeface="Euphemia"/><a:font script="Cher" typeface="Plantagenet Cherokee"/><a:font script="Yiii" typeface="Microsoft Yi Baiti"/><a:font script="Tibt" typeface="Microsoft Himalaya"/><a:font script="Thaa" typeface="MV Boli"/><a:font script="Deva" typeface="Mangal"/><a:font script="Telu" typeface="Gautami"/><a:font script="Taml" typeface="Latha"/><a:font script="Syrc" typeface="Estrangelo Edessa"/><a:font script="Orya" typeface="Kalinga"/><a:font script="Mlym" typeface="Kartika"/><a:font script="Laoo" typeface="DokChampa"/><a:font script="Sinh" typeface="Iskoola Pota"/><a:font script="Mong" typeface="Mongolian Baiti"/><a:font script="Viet" typeface="Arial"/><a:font script="Uigh" typeface="Microsoft Uighur"/><a:font script="Geor" typeface="Sylfaen"/><a:font script="Armn" typeface="Arial"/><a:font script="Bugi" typeface="Leelawadee UI"/><a:font script="Bopo" typeface="Microsoft JhengHei"/><a:font script="Java" typeface="Javanese Text"/><a:font script="Lisu" typeface="Segoe UI"/><a:font script="Mymr" typeface="Myanmar Text"/><a:font script="Nkoo" typeface="Ebrima"/><a:font script="Olck" typeface="Nirmala UI"/><a:font script="Osma" typeface="Ebrima"/><a:font script="Phag" typeface="Phagspa"/><a:font script="Syrn" typeface="Estrangelo Edessa"/><a:font script="Syrj" typeface="Estrangelo Edessa"/><a:font script="Syre" typeface="Estrangelo Edessa"/><a:font script="Sora" typeface="Nirmala UI"/><a:font script="Tale" typeface="Microsoft Tai Le"/><a:font script="Talu" typeface="Microsoft New Tai Lue"/><a:font script="Tfng" typeface="Ebrima"/></a:minorFont></a:fontScheme><a:fmtScheme name="Office"><a:fillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:lumMod val="110000"/><a:satMod val="105000"/><a:tint val="67000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="103000"/><a:tint val="73000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="105000"/><a:satMod val="109000"/><a:tint val="81000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:satMod val="103000"/><a:lumMod val="102000"/><a:tint val="94000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:satMod val="110000"/><a:lumMod val="100000"/><a:shade val="100000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:lumMod val="99000"/><a:satMod val="120000"/><a:shade val="78000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:fillStyleLst><a:lnStyleLst><a:ln w="6350" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="12700" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln><a:ln w="19050" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:prstDash val="solid"/><a:miter lim="800000"/></a:ln></a:lnStyleLst><a:effectStyleLst><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst/></a:effectStyle><a:effectStyle><a:effectLst><a:outerShdw blurRad="57150" dist="19050" dir="5400000" algn="ctr" rotWithShape="0"><a:srgbClr val="000000"><a:alpha val="63000"/></a:srgbClr></a:outerShdw></a:effectLst></a:effectStyle></a:effectStyleLst><a:bgFillStyleLst><a:solidFill><a:schemeClr val="phClr"/></a:solidFill><a:solidFill><a:schemeClr val="phClr"><a:tint val="95000"/><a:satMod val="170000"/></a:schemeClr></a:solidFill><a:gradFill rotWithShape="1"><a:gsLst><a:gs pos="0"><a:schemeClr val="phClr"><a:tint val="93000"/><a:satMod val="150000"/><a:shade val="98000"/><a:lumMod val="102000"/></a:schemeClr></a:gs><a:gs pos="50000"><a:schemeClr val="phClr"><a:tint val="98000"/><a:satMod val="130000"/><a:shade val="90000"/><a:lumMod val="103000"/></a:schemeClr></a:gs><a:gs pos="100000"><a:schemeClr val="phClr"><a:shade val="63000"/><a:satMod val="120000"/></a:schemeClr></a:gs></a:gsLst><a:lin ang="5400000" scaled="0"/></a:gradFill></a:bgFillStyleLst></a:fmtScheme></a:themeElements><a:objectDefaults/><a:extraClrSchemeLst/><a:extLst><a:ext uri="{05A4C25C-085E-4340-85A3-A5531E510DB2}"><thm15:themeFamily xmlns:thm15="http://schemas.microsoft.com/office/thememl/2012/main" name="Office Theme" id="{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}" vid="{4A3C46E8-61CC-4603-A589-7422A47A8E4A}"/></a:ext></a:extLst></a:theme>`
 }
 
@@ -1763,19 +1739,18 @@ export function makeXmlTheme() {
  * Create presentation file (`ppt/presentation.xml`)
  * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
  * @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
- * @param {Array<ISlide>} `slides` presentation slides
- * @param {ISlideLayout} `pptLayout` presentation layout
+ * @param {ISlide[]} slides - array of slides
+ * @param {ILayout} pptLayout - presentation layout
  */
-export function makeXmlPresentation(slides: Array<ISlide>, pptLayout: ILayout) {
+export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMode:boolean) {
 	let strXml =
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
 		'<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ' +
 		'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
 		'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ' +
-		(this._rtlMode ? 'rtl="1" ' : '') +
+		(rtlMode ? 'rtl="1" ' : '') +
 		'saveSubsetFonts="1" autoCompressPictures="0">'
-	// FIXME: "this._rtlMode" doesnt exist
 
 	// IMPORTANT: Steps 1-2-3 must be in this order or PPT will give corruption message on open!
 	// STEP 1: Add slide master
