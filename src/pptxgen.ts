@@ -186,10 +186,8 @@ export default class PptxGenJS {
 	public get shapes(): typeof gObjPptxShapes {
 		return this._shapes
 	}
-
 	private _presLayout: ILayout
 	public get presLayout(): ILayout {
-	//presLayout = (): ILayout => {
 		return this._presLayout
 	}
 
@@ -222,7 +220,7 @@ export default class PptxGenJS {
 		// Core
 		this._author = 'PptxGenJS'
 		this._company = 'PptxGenJS'
-		this._revision = '1' // whole number
+		this._revision = '1' // Note: Must be a whole number
 		this._subject = 'PptxGenJS Presentation'
 		this._title = 'PptxGenJS Presentation'
 		// PptxGenJS props

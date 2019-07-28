@@ -2123,7 +2123,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
 	let opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5
-	let emuSlideTabW = opts.w || pptx.presLayout().width
+	let emuSlideTabW = opts.w || pptx.presLayout.width
 	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = []
 	let arrObjTabBodyRows: [ITableToSlidesCell[]?] = []
 	let arrObjTabFootRows: [ITableToSlidesCell[]?] = []
@@ -2145,7 +2145,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 		if (Array.isArray(opts.slideMargin)) arrInchMargins = opts.slideMargin
 		else if (!isNaN(opts.slideMargin)) arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin]
 	}
-	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout().width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
+	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout.width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
 
 	// STEP 1: Grab table col widths
 	//arrTableParts.forEach((part, _idx) => { // NO! CAREFUL! We need to break out of loop using "return false" - forEach break col sizing badly
@@ -2313,7 +2313,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	opts._arrObjTabHeadRows = arrObjTabHeadRows || null
 	opts.colW = arrColW
 
-	getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows) as [ITableToSlidesCell[]], opts, pptx.presLayout(), masterSlide).forEach(
+	getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows) as [ITableToSlidesCell[]], opts, pptx.presLayout, masterSlide).forEach(
 		(arrTabRows, idx) => {
 			// A: Create new Slide
 			let newSlide = pptx.addSlide(opts.masterSlideName || null)
