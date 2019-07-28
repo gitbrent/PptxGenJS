@@ -56,7 +56,7 @@ export interface IShadowOpts {
 	color?: string
 }
 export interface IChartOpts extends OptsCoords, OptsChartGridLine {
-	type: CHART_TYPE_NAMES|IChartMulti[]
+	type: CHART_TYPE_NAMES | IChartMulti[]
 	layout?: OptsCoords
 	barDir?: string
 	barGrouping?: string
@@ -189,7 +189,7 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 }
 export interface IImageOpts extends OptsCoords, OptsDataOrPath {
 	type?: 'audio' | 'online' | 'video'
-	sizing?: { type:'crop' | 'contain' | 'cover', w:number, h:number, x?:number, y?:number }
+	sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
 	hyperlink?: any
 	rounding?: boolean
 	placeholder?: any
@@ -230,10 +230,10 @@ export interface IChartMulti {
 	options: {}
 }
 export interface ITableToSlidesOpts {
-	addImage?: {url:string, x:number, y:number, w?:number, h?:number}
-	addShape?: {shape:any, opts:{}}
-	addTable?: {rows:any[], opts:{}}
-	addText?: {text:any[], opts:{}}
+	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+	addShape?: { shape: any; opts: {} }
+	addTable?: { rows: any[]; opts: {} }
+	addText?: { text: any[]; opts: {} }
 	//
 	x?: number
 	y?: number
@@ -251,18 +251,18 @@ export interface ITableToSlidesOpts {
 	slideMargin?: Array<number> | number
 }
 export interface ITableCellOpts {
-	align?:'left'|'center'|'right'
-	bold?:boolean
-	border?:IBorderOpts
-	color?:string
-	colspan?:number
-	fill?:string
-	fontSize?:number
-	isTableCell?: boolean;
-	lineWeight?:number
-	margin?:number|number[]
-	rowspan?:number
-	valign?:'top'|'middle'|'bottom'
+	align?: 'left' | 'center' | 'right'
+	bold?: boolean
+	border?: IBorderOpts
+	color?: string
+	colspan?: number
+	fill?: string
+	fontSize?: number
+	isTableCell?: boolean
+	lineWeight?: number
+	margin?: number | number[]
+	rowspan?: number
+	valign?: 'top' | 'middle' | 'bottom'
 }
 export interface ITableToSlidesCell {
 	text?: string
@@ -274,6 +274,10 @@ export interface ITableCell {
 	vmerge?: boolean
 	optImp?: any
 	options?: ITableCellOpts
+}
+export interface IText {
+	text: string
+	options?: ITextOpts
 }
 
 // Core
@@ -301,7 +305,7 @@ export interface ISlideMasterDef {
 	slideNumber?: ISlideNumber
 }
 export interface ISlideRelChart extends OptsChartData {
-	type: CHART_TYPE_NAMES|IChartMulti[]
+	type: CHART_TYPE_NAMES | IChartMulti[]
 	opts: IChartOpts
 	data: Array<OptsChartData>
 	rId: number
@@ -314,7 +318,7 @@ export interface ISlideRel {
 	Target: string
 	fileName?: string
 	data: any[] | string
-	opts?:IChartOpts
+	opts?: IChartOpts
 	path?: string
 	extn?: string
 	globalId?: number
@@ -327,7 +331,7 @@ export interface ISlideRelMedia {
 	extn?: string
 	data?: string | ArrayBuffer
 	isSvgPng?: boolean
-	svgSize?: {w:number, h:number}
+	svgSize?: { w: number; h: number }
 	rId: number
 	Target: string
 }
@@ -434,7 +438,7 @@ export interface ISlide {
 	relsMedia: ISlideRelMedia[]
 	slideLayout: ISlideLayout
 	slideNumberObj?: ISlideNumber // FIXME rename
-	totalMediaRels:number
+	totalMediaRels: number
 }
 export interface IPresentation {
 	author: string

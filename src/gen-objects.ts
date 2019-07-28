@@ -18,7 +18,7 @@ import {
 	CHART_TYPE_NAMES,
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
-import { ISlide, ITextOpts, ILayout, ISlideLayout, ISlideObject, IMediaOpts, ISlideRelMedia, IChartOpts, IChartMulti, IImageOpts, ITableCell } from './core-interfaces'
+import { ISlide, ITextOpts, ILayout, ISlideLayout, ISlideObject, IMediaOpts, ISlideRelMedia, IChartOpts, IChartMulti, IImageOpts, ITableCell, IText } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
 
@@ -462,7 +462,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 	let strPath = opt.path || ''
 	let strType = opt.type || 'audio'
 	let strExtn = 'mp3'
-	let slideData:ISlideObject = {
+	let slideData: ISlideObject = {
 		type: SLIDE_OBJECT_TYPES.media,
 	}
 
@@ -714,7 +714,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 
 	// STEP 5: Loop over cells: transform to ITableCell; check to see whether to skip autopaging
 	arrRows.forEach(row => {
-		row.forEach((cell,idy) => {
+		row.forEach((cell, idy) => {
 			// A: Transform cell data if needed
 			/* Table rows can be an object or plain text - transform into object when needed
 				// EX:
@@ -777,14 +777,14 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 
 /**
  * Adds a text object to a slide definition.
- * @param {string} `text`
- * @param {ITextOpts} `opt`
- * @param {ISlide} `target` - slide object that the text should be added to
- * @param {boolean} `isPlaceholder` is this a placeholder object
- * @return {Object} text object
+ * @param {string|IText[]} text
+ * @param {ITextOpts} opt
+ * @param {ISlide} target - slide object that the text should be added to
+ * @param {boolean} isPlaceholder` is this a placeholder object
+ * @return {object} text object
  * @since: 1.0.0
  */
-export function addTextDefinition(text: string | Array<object>, opts: ITextOpts, target: ISlide, isPlaceholder: boolean) {
+export function addTextDefinition(text: string | IText[], opts: ITextOpts, target: ISlide, isPlaceholder: boolean) {
 	var text = (Array.isArray(text) && text.length == 0 ? '' : text || '') || ''
 	let opt: ITextOpts = opts || {}
 	let resultObject = {

@@ -4,17 +4,19 @@
 
 import { CHART_TYPE_NAMES } from './core-enums'
 import {
-	IMediaOpts,
-	ISlideNumber,
-	ISlideLayout,
-	ILayout,
 	IChartMulti,
 	IChartOpts,
+	IImageOpts,
+	ILayout,
+	IMediaOpts,
+	ISlideLayout,
+	ISlideNumber,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
 	ISlideObject,
-	IImageOpts,
+    ITextOpts,
+    IText,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -33,8 +35,6 @@ export default class Slide {
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
-
-	// TODO: slide.title (they're all "PowerPoint Presenation" now!) 20190712
 
 	constructor(params: { totalMediaRels: number; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this.presLayout = params.presLayout
@@ -115,12 +115,14 @@ export default class Slide {
 	}
 
 	/**
-	 * NOTE: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
+	 * Add Image object
+	 * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
 	 * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
+	 * @param {IImageOpts} options - image options
+	 * @return {Slide} this class
 	 */
-	addImage(opt: IImageOpts) {
-		// FIXME: CURRENT: images are all the same because imgCounter is inaccesble!!!
-		genObj.addImageDefinition(opt, this)
+	addImage(options: IImageOpts):Slide {
+		genObj.addImageDefinition(options, this)
 		return this
 	}
 
@@ -149,12 +151,12 @@ export default class Slide {
 
 	/**
 	 * Add text object to Slide
-	 *
-	 * @param {object|string} `text` - text string or complex object
-	 * @param {object} `options` - text options
+	 * @param {string|IText[]} text - text string or complex object
+	 * @param {ITextOpts} options - text options
+	 * @return {Slide} this class
 	 * @since: 1.0.0
 	 */
-	addText(text, options) {
+	addText(text:string|IText[], options:ITextOpts):Slide {
 		genObj.addTextDefinition(text, options, this, false)
 		return this
 	}
