@@ -188,7 +188,8 @@ export default class PptxGenJS {
 	}
 
 	private _presLayout: ILayout
-	presLayout = (): ILayout => {
+	public get presLayout(): ILayout {
+	//presLayout = (): ILayout => {
 		return this._presLayout
 	}
 
@@ -305,10 +306,7 @@ export default class PptxGenJS {
 		zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision))
 		zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
 		zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
-		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this._presLayout, this.rtlMode))
-//		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this._presLayout))
-console.log(this._presLayout)
-console.log(this.presLayout())
+		zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this.presLayout, this.rtlMode))
 		zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
 		zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
 		zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
@@ -729,7 +727,7 @@ console.log(this.presLayout())
 	addSlide(masterSlideName?: string): ISlide {
 		let newSlide = new Slide({
 			totalMediaRels: this.totalMediaRels,
-			presLayout: this._presLayout,
+			presLayout: this.presLayout,
 			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,
 			slideLayout: masterSlideName
@@ -754,10 +752,10 @@ console.log(this.presLayout())
 		}
 
 		let objLayout: ISlideLayout = {
-			presLayout: this._presLayout,
+			presLayout: this.presLayout,
 			name: inObjMasterDef.title,
-			width: inObjMasterDef.width || this._presLayout.width,
-			height: inObjMasterDef.height || this._presLayout.height,
+			width: inObjMasterDef.width || this.presLayout.width,
+			height: inObjMasterDef.height || this.presLayout.height,
 			slide: null,
 			data: [],
 			rels: [],
