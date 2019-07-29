@@ -52,7 +52,7 @@ import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genXml from './gen-xml'
-import { gObjPptxShapes } from './core-shapes'
+import { PowerPointShapes } from './core-shapes'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -182,8 +182,8 @@ export default class PptxGenJS {
 	public get colors(): typeof SCHEME_COLOR_NAMES {
 		return this._colors
 	}
-	private _shapes = gObjPptxShapes
-	public get shapes(): typeof gObjPptxShapes {
+	private _shapes = PowerPointShapes
+	public get shapes(): typeof PowerPointShapes {
 		return this._shapes
 	}
 	private _presLayout: ILayout

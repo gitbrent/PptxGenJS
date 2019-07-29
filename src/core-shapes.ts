@@ -1,7 +1,7 @@
 /**
 * PptxGenJS - All PowerPoint Shapes
 */
-export const gObjPptxShapes = Object.freeze({
+export const PowerPointShapes = Object.freeze({
 	ACTION_BUTTON_BACK_OR_PREVIOUS: {
 		'displayName': 'Action Button: Back or Previous',
 		'name': 'actionButtonBackPrevious',
