@@ -18,7 +18,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { gObjPptxShapes } from './core-shapes'
+import { PowerPointShapes } from './core-shapes'
 import {
 	ILayout,
 	ISlide,
@@ -143,7 +143,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slide.presLayout)
 		}
 		//
-		if (slideItemObj.options.shape) shapeType = getShapeInfo(slideItemObj.options.shape)
+		if (slideItemObj.shape) shapeType = getShapeInfo(slideItemObj.shape)
 		//
 		if (slideItemObj.options.flipH) locationAttr += ' flipH="1"'
 		if (slideItemObj.options.flipV) locationAttr += ' flipV="1"'
@@ -276,13 +276,13 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				})
 
 				/* Only useful for rowspan/colspan testing
-					if ( objTabOpts.debug ) {
-						console.table(objTableGrid);
-						var arrText = [];
-						jQuery.each(objTableGrid, function(i,row){ var arrRow = []; jQuery.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
-						console.table( arrText );
-					}
-					*/
+				if ( objTabOpts.debug ) {
+					console.table(objTableGrid);
+					var arrText = [];
+					jQuery.each(objTableGrid, function(i,row){ var arrRow = []; jQuery.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
+					console.table( arrText );
+				}
+				*/
 
 				// STEP 4: Build table rows/cells ============================
 				jQuery.each(objTableGrid, (rIdx, rowObj) => {
@@ -1147,8 +1147,8 @@ function genXmlBodyProperties(objOptions): string {
 * - PPT text lines [lines followed by line-breaks] are createing using <p>-aragraph's
 * - Bullets are a paragprah-level formatting device
 *
-* @param slideObj (object) - slideObj -OR- table `cell` object
-* @returns XML string containing the param object's text and formatting
+* @param {ISlide|ITableCell} slideObj - slideObj -OR- table `cell` object
+* @returns XML containing the param object's text and formatting
 */
 export function genXmlTextBody(slideObj) {
 	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
@@ -1742,7 +1742,7 @@ export function makeXmlTheme() {
  * @param {ISlide[]} slides - array of slides
  * @param {ILayout} pptLayout - presentation layout
  */
-export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMode:boolean) {
+export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMode: boolean) {
 	let strXml =
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
@@ -1865,18 +1865,18 @@ export function correctShadowOptions(shadowOpts: IShadowOpts) {
 }
 
 export function getShapeInfo(shapeName) {
-	if (!shapeName) return gObjPptxShapes.RECTANGLE
+	if (!shapeName) return PowerPointShapes.RECTANGLE
 
 	if (typeof shapeName == 'object' && shapeName.name && shapeName.displayName && shapeName.avLst) return shapeName
 
-	if (gObjPptxShapes[shapeName]) return gObjPptxShapes[shapeName]
+	if (PowerPointShapes[shapeName]) return PowerPointShapes[shapeName]
 
-	var objShape = Object.keys(gObjPptxShapes).filter((key: string) => {
-		return gObjPptxShapes[key].name == shapeName || gObjPptxShapes[key].displayName
+	var objShape = Object.keys(PowerPointShapes).filter((key: string) => {
+		return PowerPointShapes[key].name == shapeName || PowerPointShapes[key].displayName
 	})[0]
 	if (typeof objShape !== 'undefined' && objShape != null) return objShape
 
-	return gObjPptxShapes.RECTANGLE
+	return PowerPointShapes.RECTANGLE
 }
 
 export function createHyperlinkRels(slides: Array<ISlide>, inText, slideRels) {
