@@ -71,6 +71,16 @@ export const PIECHART_COLORS: Array<string> = [
 	'F15854',
 	'A7A7A7',
 ]
+export enum TEXT_HALIGN {
+	'left' = 'left',
+	'center' = 'center',
+	'right' = 'right',
+}
+export enum TEXT_VALIGN {
+	'b' = 'b',
+	'ctr' = 'ctr',
+	't' = 't',
+}
 
 export const SLDNUMFLDID: string = '{F7021451-1387-4CA6-816F-3879F97B5CBC}'
 export const DEF_CELL_BORDER: IBorderOpts = { color: '666666' }

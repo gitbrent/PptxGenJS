@@ -17,8 +17,25 @@ import {
 	BASE_SHAPES,
 	CHART_TYPE_NAMES,
 	SLIDE_OBJECT_TYPES,
+	TEXT_HALIGN,
+	TEXT_VALIGN,
 } from './core-enums'
-import { ISlide, ITextOpts, ILayout, ISlideLayout, ISlideObject, IMediaOpts, ISlideRelMedia, IChartOpts, IChartMulti, IImageOpts, ITableCell, IText } from './core-interfaces'
+import {
+	ISlide,
+	ITextOpts,
+	ILayout,
+	ISlideLayout,
+	ISlideObject,
+	IMediaOpts,
+	ISlideRelMedia,
+	IChartOpts,
+	IChartMulti,
+	IImageOpts,
+	ITableCell,
+	IText,
+	Shape,
+	ShapeOptions,
+} from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
 
@@ -489,8 +506,8 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 	// STEP 3: Set media properties & options
 	slideData.options.x = intPosX
 	slideData.options.y = intPosY
-	slideData.options.cx = intSizeX
-	slideData.options.cy = intSizeY
+	slideData.options.w = intSizeX
+	slideData.options.h = intSizeY
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
@@ -589,28 +606,23 @@ export function addPlaceholderDefinition(text: string, opt: object, target: ISli
 
 /**
  * Adds a shape object to a slide definition.
- * @param {gObjPptxShapes} shape shape const object (pptx.shapes)
- * @param {Object} opt
- * @param {Object} target slide object that the shape should be added to
- * @return {Object} shape object
+ * @param {Shape} shape shape const object (pptx.shapes)
+ * @param {ShapeOptions} opt
+ * @param {ISlide} target slide object that the shape should be added to
  */
-export function addShapeDefinition(shape, opt, target: ISlide) {
-	var options = typeof opt === 'object' ? opt : {}
-	var resultObject = {
-		type: null,
+export function addShapeDefinition(shape: Shape, opt: ShapeOptions, target: ISlide) {
+	let options = typeof opt === 'object' ? opt : {}
+	let newObject = {
+		type: SLIDE_OBJECT_TYPES.text,
+		shape: shape,
+		options: options,
 		text: null,
-		options: {},
 	}
 
-	if (!shape || typeof shape !== 'object') {
-		console.error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});` ')
-		return
-	}
+	// 1: Reality check
+	if (!shape || typeof shape !== 'object') throw 'Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`'
 
-	resultObject.type = 'text'
-	resultObject.options = options
-
-	options.shape = shape
+	// 2: Set options defaults
 	options.x = options.x || (options.x == 0 ? 0 : 1)
 	options.y = options.y || (options.y == 0 ? 0 : 1)
 	options.w = options.w || (options.w == 0 ? 0 : 1)
@@ -619,9 +631,8 @@ export function addShapeDefinition(shape, opt, target: ISlide) {
 	options.lineSize = options.lineSize || (shape.name == 'line' ? 1 : null)
 	if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
 
-	target.data.push(resultObject)
-
-	return resultObject
+	// 3: Add object to slide
+	target.data.push(newObject)
 }
 
 /**
@@ -781,69 +792,65 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
  * @param {ITextOpts} opt
  * @param {ISlide} target - slide object that the text should be added to
  * @param {boolean} isPlaceholder` is this a placeholder object
- * @return {object} text object
  * @since: 1.0.0
  */
 export function addTextDefinition(text: string | IText[], opts: ITextOpts, target: ISlide, isPlaceholder: boolean) {
-	var text = (Array.isArray(text) && text.length == 0 ? '' : text || '') || ''
 	let opt: ITextOpts = opts || {}
-	let resultObject = {
-		type: null,
-		text: null,
-		options: null,
+	if (!opt.bodyProp) opt.bodyProp = {}
+	let newObject = {
+		text: (Array.isArray(text) && text.length == 0 ? '' : text || '') || '',
+		type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
+		options: opts,
+		shape: opts.shape,
 	}
 
 	// STEP 2: Set some options
-	// Placeholders should inherit their colors or override them, so don't default them
-	if (!opt.placeholder) {
-		opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
+	{
+		// A
+		// Placeholders should inherit their colors or override them, so don't default them
+		if (!opt.placeholder) {
+			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
+		}
+
+		// B
+		if (opt.shape && opt.shape.name == 'line') {
+			opt.line = opt.line || '333333'
+			opt.lineSize = opt.lineSize || 1
+		}
+
+		// C
+		newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
+
+		// D: Transform text options to bodyProperties as thats how we build XML
+		newObject.options.bodyProp.autoFit = opt.autoFit || false // If true, shape will collapse to text size (Fit To Shape)
+		newObject.options.bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
+		newObject.options.bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+
+		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0) {
+			newObject.options.bodyProp.lIns = inch2Emu(opt.inset)
+			newObject.options.bodyProp.rIns = inch2Emu(opt.inset)
+			newObject.options.bodyProp.tIns = inch2Emu(opt.inset)
+			newObject.options.bodyProp.bIns = inch2Emu(opt.inset)
+		}
 	}
 
-	// ROBUST: Convert attr values that will likely be passed by users to valid OOXML values
-	if (opt.valign)
-		opt.valign = opt.valign
-			.toLowerCase()
-			.replace(/^c.*/i, 'ctr')
-			.replace(/^m.*/i, 'ctr')
-			.replace(/^t.*/i, 't')
-			.replace(/^b.*/i, 'b')
-	if (opt.align)
-		opt.align = opt.align
-			.toLowerCase()
-			.replace(/^c.*/i, 'center')
-			.replace(/^m.*/i, 'center')
-			.replace(/^l.*/i, 'left')
-			.replace(/^r.*/i, 'right')
+	// STEP 3: Transform `align`/`valign` to XML values, store in bodyProp for XML gen
+	{
+		if ((newObject.options.align || '').toLowerCase().startsWith('c')) newObject.options.bodyProp.align = TEXT_HALIGN.center
+		else if ((newObject.options.align || '').toLowerCase().startsWith('l')) newObject.options.bodyProp.align = TEXT_HALIGN.left
+		else if ((newObject.options.align || '').toLowerCase().startsWith('r')) newObject.options.bodyProp.align = TEXT_HALIGN.right
 
-	// ROBUST: Set rational values for some shadow props if needed
+		if ((newObject.options.valign || '').toLowerCase().startsWith('b')) newObject.options.bodyProp.anchor = TEXT_VALIGN.b
+		else if ((newObject.options.valign || '').toLowerCase().startsWith('c')) newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr
+		else if ((newObject.options.valign || '').toLowerCase().startsWith('t')) newObject.options.bodyProp.anchor = TEXT_VALIGN.t
+	}
+
+	// STEP 4: ROBUST: Set rational values for some shadow props if needed
 	correctShadowOptions(opt.shadow)
 
-	// STEP 3: Set props
-	resultObject.type = isPlaceholder ? 'placeholder' : 'text'
-	resultObject.text = text
+	// STEP 5: Create hyperlinks
+	createHyperlinkRels([target], newObject.text || '', target.rels)
 
-	// STEP 4: Set options
-	resultObject.options = opt
-	if (opt.shape && opt.shape.name == 'line') {
-		opt.line = opt.line || '333333'
-		opt.lineSize = opt.lineSize || 1
-	}
-	resultObject.options.bodyProp = {}
-	resultObject.options.bodyProp.autoFit = opt.autoFit || false // If true, shape will collapse to text size (Fit To Shape)
-	resultObject.options.bodyProp.anchor = opt.valign || (!opt.placeholder ? 'ctr' : null) // VALS: [t,ctr,b]
-	resultObject.options.bodyProp.rot = opt.rotate || null // VALS: degree * 60,000
-	resultObject.options.bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
-	resultObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
-
-	if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0) {
-		resultObject.options.bodyProp.lIns = inch2Emu(opt.inset)
-		resultObject.options.bodyProp.rIns = inch2Emu(opt.inset)
-		resultObject.options.bodyProp.tIns = inch2Emu(opt.inset)
-		resultObject.options.bodyProp.bIns = inch2Emu(opt.inset)
-	}
-
-	target.data.push(resultObject)
-	createHyperlinkRels([target], text || '', target.rels)
-
-	return resultObject
+	// LAST: Add object to Slide
+	target.data.push(newObject)
 }

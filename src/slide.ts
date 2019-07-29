@@ -15,8 +15,10 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	ISlideObject,
-    ITextOpts,
-    IText,
+	ITextOpts,
+	IText,
+	Shape,
+	ShapeOptions,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -82,7 +84,7 @@ export default class Slide {
 		return this._slideNumber
 	}
 
-	public get totalMediaRels():number {
+	public get totalMediaRels(): number {
 		return this._totalMediaRels
 	}
 
@@ -121,7 +123,7 @@ export default class Slide {
 	 * @param {IImageOpts} options - image options
 	 * @return {Slide} this class
 	 */
-	addImage(options: IImageOpts):Slide {
+	addImage(options: IImageOpts): Slide {
 		genObj.addImageDefinition(options, this)
 		return this
 	}
@@ -136,15 +138,21 @@ export default class Slide {
 		return this
 	}
 
-	addShape(shape, opt) {
+	/**
+	 * Add shape object to Slide
+	 * @param {Shape} shape - shape object
+	 * @param {ShapeOptions} options - shape options
+	 * @return {Slide} this class
+	 */
+	addShape(shape: Shape, opt: ShapeOptions): Slide {
 		genObj.addShapeDefinition(shape, opt, this)
 		return this
 	}
 
 	// RECURSIVE: (sometimes)
-	// TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
+	// FIXME: TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
 	addTable(arrTabRows, inOpt) {
-		// TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
+		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout)
 		return this
 	}
@@ -156,7 +164,7 @@ export default class Slide {
 	 * @return {Slide} this class
 	 * @since: 1.0.0
 	 */
-	addText(text:string|IText[], options:ITextOpts):Slide {
+	addText(text: string | IText[], options: ITextOpts): Slide {
 		genObj.addTextDefinition(text, options, this, false)
 		return this
 	}

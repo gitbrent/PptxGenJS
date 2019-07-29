@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
+import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN } from './core-enums'
 
 // FIXME: WONT FORMAT ANYMORE!!! ("TSTypeAliasDeclaration" error)
 
@@ -12,13 +12,19 @@ import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
 /**
  * Coordinate (string is in the form of 'N%')
  */
-type Coord = number | string
-export interface OptsCoords {
+export type HexColor = string // should match /^[0-9a-fA-F]{6}$/
+export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
+export type Color = HexColor | ThemeColor
+export type Coord = number | string // string is in form 'n%'
+export interface PositionOptions {
 	x?: Coord
 	y?: Coord
 	w?: Coord
 	h?: Coord
 }
+export type HAlignOpts = 'left' | 'center' | 'right'
+export type VAlignOpts = 'top' | 'middle' | 'bottom'
+
 /**
  * `data`/`path` options (one option is required)
  */
@@ -55,9 +61,13 @@ export interface IShadowOpts {
 	offset?: number
 	color?: string
 }
-export interface IChartOpts extends OptsCoords, OptsChartGridLine {
+
+// TODO:
+//   export type ChartOptions = ChartBaseOptions | ChartAxesOptions | ChartBarDataLineOptions | Chart3DBarOptions;
+
+export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	type: CHART_TYPE_NAMES | IChartMulti[]
-	layout?: OptsCoords
+	layout?: PositionOptions
 	barDir?: string
 	barGrouping?: string
 	barGapWidthPct?: number
@@ -187,33 +197,65 @@ export interface IChartOpts extends OptsCoords, OptsChartGridLine {
 	v3DRAngAx?: boolean
 	v3DPerspective?: number
 }
-export interface IImageOpts extends OptsCoords, OptsDataOrPath {
+export interface IImageOpts extends PositionOptions, OptsDataOrPath {
 	type?: 'audio' | 'online' | 'video'
 	sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
 	hyperlink?: any
 	rounding?: boolean
 	placeholder?: any
 }
-export interface IMediaOpts extends OptsCoords, OptsDataOrPath {
+export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
 	link: string
 	onlineVideoLink?: string
 	type?: MediaType
 }
-export interface ITextOpts extends OptsCoords, OptsDataOrPath {
-	align?: string // "left" | "center" | "right"
+
+export interface Shape {
+	displayName: string
+	name: string
+	avLst: { [key: string]: number }
+}
+export interface ShapeOptions extends PositionOptions {
+	align?: HAlignOpts
+	fill?: Color | { type: string; color: Color; alpha?: number }
+	flipH?: boolean
+	flipV?: boolean
+	lineSize?: number
+	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	line?: Color
+	rectRadius?: number
+	rotate?: number
+	shadow?: IShadowOpts
+}
+
+export interface ITextOpts extends PositionOptions, OptsDataOrPath {
+	align?: HAlignOpts
 	autoFit?: boolean
+	bodyProp?: {
+		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
+		autoFit?: boolean
+		align?: TEXT_HALIGN
+		anchor?: TEXT_VALIGN
+		lIns?: number
+		rIns?: number
+		tIns?: number
+		bIns?: number
+		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+	}
 	color?: string
 	fontSize?: number
 	inset?: number
-	lineSpacing?: number
-	line?: string // color
+	line?: Color
 	lineSize?: number
+	lineSpacing?: number
 	placeholder?: string
-	rotate?: number // VALS: degree * 60,000
+	rotate?: number // (degree * 60,000)
 	shadow?: IShadowOpts
-	shape?: { name: string }
+	shape?: Shape
+	valign?: VAlignOpts
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-	valign?: string //"top" | "middle" | "bottom"
 }
 export interface IChartTitleOpts {
 	title: string
@@ -290,7 +332,7 @@ export interface ILayout {
 	width?: number
 	height?: number
 }
-export interface ISlideNumber extends OptsCoords {
+export interface ISlideNumber extends PositionOptions {
 	fontFace?: string
 	fontSize?: number
 	color?: string
@@ -336,15 +378,16 @@ export interface ISlideRelMedia {
 	Target: string
 }
 
-export interface ObjectOptions {
+export interface ObjectOptions extends ShapeOptions {
 	x?: Coord
 	y?: Coord
 	cx?: Coord
 	cy?: Coord
-	w?: number
-	h?: number
+	w?: Coord
+	h?: Coord
+	margin?: number
+	// text
 	placeholder?: string
-	shape?: object
 	bodyProp?: {
 		lIns?: number
 		rIns?: number
@@ -352,20 +395,9 @@ export interface ObjectOptions {
 		tIns?: number
 	}
 	isTextBox?: boolean
-	line?: string
-	margin?: number
-	rectRadius?: number
-	fill?: string
-	shadow?: IShadowOpts
+	// table
 	colW?: number
 	rowH?: number
-	flipH?: boolean
-	flipV?: boolean
-	rotate?: number
-	lineDash?: string
-	lineSize?: number
-	lineHead?: string
-	lineTail?: string
 	// image:
 	sizing?: {
 		type?: string
@@ -380,7 +412,7 @@ export interface ISlideObject {
 	type: SLIDE_OBJECT_TYPES
 	options?: ObjectOptions
 	// text
-	text?: string
+	text?: string | IText[]
 	// table
 	arrTabRows?: [ITableCell[]?]
 	// chart
@@ -393,6 +425,7 @@ export interface ISlideObject {
 	media?: string
 	mtype?: MediaType
 	mediaRid?: number
+	shape?: Shape
 }
 
 export interface ISlideLayout {
