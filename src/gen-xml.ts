@@ -753,23 +753,7 @@ function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRe
 	// Add all rels for this Slide
 	slideObject.rels.forEach((rel: ISlideRel) => {
 		lastRid = Math.max(lastRid, rel.rId)
-		if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
-			if (rel.data == 'slide') {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="slide' +
-					rel.Target +
-					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
-			} else {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="' +
-					rel.Target +
-					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
-			}
-		} else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
+		if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
 			strXml +=
 				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
 		}
@@ -806,6 +790,22 @@ function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRe
 					'" Target="' +
 					rel.Target +
 					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>'
+		} else if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
+			if (rel.data == 'slide') {
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="slide' +
+					rel.Target +
+					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
+			} else {
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="' +
+					rel.Target +
+					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
+			}
 		}
 	})
 
