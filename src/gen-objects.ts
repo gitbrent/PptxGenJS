@@ -465,7 +465,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
  * @param {IMediaOpts} `opt` - media options
  */
 export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
-	let intRels = 1
+	let intRels = target.relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
 	let intSizeX = opt.w || 2
@@ -507,12 +507,8 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-	intRels += target.relsMedia.length
-	// FIXME: media is all the same video! 20190724
-	console.log(`intRels = ${intRels}`)
-
 	if (strType == 'online') {
-		// Add video
+		// A: Add video
 		target.relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			data: 'dummy',
@@ -523,38 +519,43 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 		})
 		slideData.mediaRid = target.relsMedia[target.relsMedia.length - 1].rId
 
-		// Add preview/overlay image
+		// B: Add preview/overlay image
 		target.relsMedia.push({
 			path: 'preencoded.png',
 			data: IMG_PLAYBTN,
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
-			Target: '../media/image' + intRels + '.png',
+			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
 		})
 	} else {
-		let objRel: ISlideRelMedia = {
+		/* NOTE: Audio/Video files consume *TWO* rId's:
+		* <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
+		* <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+		*/
+
+		// A: "relationships/video"
+		target.relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 0,
 			Target: '../media/media-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strExtn,
-		}
-		// Audio/Video files consume *TWO* rId's:
-		// <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-		// <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
-		target.relsMedia.push(objRel)
+		})
 		slideData.mediaRid = target.relsMedia[target.relsMedia.length - 1].rId
+
+		// B: "relationships/media"
 		target.relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 1,
-			Target: '../media/media-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strExtn,
+			Target: '../media/media-' + target.number + '-' + (target.relsMedia.length + 0) + '.' + strExtn,
 		})
-		// Add preview/overlay image
+
+		// C: Add preview/overlay image
 		target.relsMedia.push({
 			data: IMG_PLAYBTN,
 			path: 'preencoded.png',
@@ -565,6 +566,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 		})
 	}
 
+	// LAST
 	target.data.push(slideData)
 }
 
