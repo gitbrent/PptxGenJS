@@ -741,28 +741,45 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
  *
- * @param {ISlide | ISlideLayout} slideObject - slide object whose relations are being transformed
+ * @param {ISlide | ISlideLayout} slide - slide object whose relations are being transformed
  * @param {{ target: string; type: string }[]} defaultRels - array of default relations
  * @return {string} XML
  */
-function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
+function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
 	let lastRid = 0 // stores maximum rId used for dynamic relations
-	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 
-	// Add all rels for this Slide
-	slideObject.rels.forEach((rel: ISlideRel) => {
+	// STEP 1: Add all rels for this Slide
+	slide.rels.forEach((rel: ISlideRel) => {
 		lastRid = Math.max(lastRid, rel.rId)
-		if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
+		if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
+			if (rel.data == 'slide') {
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="slide' +
+					rel.Target +
+					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
+			} else {
+				strXml +=
+					'<Relationship Id="rId' +
+					rel.rId +
+					'" Target="' +
+					rel.Target +
+					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
+			}
+		}
+		else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
 			strXml +=
 				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
 		}
 	})
-	;(slideObject.relsChart || []).forEach((rel: ISlideRelChart) => {
+	;(slide.relsChart || []).forEach((rel: ISlideRelChart) => {
 		lastRid = Math.max(lastRid, rel.rId)
 		strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
 	})
-	;(slideObject.relsMedia || []).forEach((rel: ISlideRelMedia) => {
+	;(slide.relsMedia || []).forEach((rel: ISlideRelMedia) => {
+		lastRid = Math.max(lastRid, rel.rId)
 		if (rel.type.toLowerCase().indexOf('image') > -1) {
 			strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="' + rel.Target + '"/>'
 		} else if (rel.type.toLowerCase().indexOf('audio') > -1) {
@@ -790,25 +807,10 @@ function slideObjectRelationsToXml(slideObject: ISlide | ISlideLayout, defaultRe
 					'" Target="' +
 					rel.Target +
 					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>'
-		} else if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
-			if (rel.data == 'slide') {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="slide' +
-					rel.Target +
-					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
-			} else {
-				strXml +=
-					'<Relationship Id="rId' +
-					rel.rId +
-					'" Target="' +
-					rel.Target +
-					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
-			}
 		}
 	})
 
+	// STEP 2: Add default rels
 	defaultRels.forEach((rel, idx) => {
 		strXml += '<Relationship Id="rId' + (lastRid + idx + 1) + '" Type="' + rel.type + '" Target="' + rel.target + '"/>'
 	})

@@ -355,8 +355,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 	let objHyperlink = opt.hyperlink || ''
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
-	///? let imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1
-	let imageRelId = target.relsMedia.length + 3 // NOTE: rId must be >=3 as rId1="slideLayout1.xml" & rId2="notesSlide1.xml"
+	let imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -441,16 +440,17 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 	if (typeof objHyperlink === 'object') {
 		if (!objHyperlink.url && !objHyperlink.slide) throw 'ERROR: `hyperlink` option requires either: `url` or `slide`'
 		else {
-			var intRelId = imageRelId + 1
+			// TODO: 20190729: Why not use "createHyperlinkRels"?
+			imageRelId++
 
-			target.relsMedia.push({
+			target.rels.push({
 				type: SLIDE_OBJECT_TYPES.hyperlink,
 				data: objHyperlink.slide ? 'slide' : 'dummy',
-				rId: intRelId,
+				rId: imageRelId,
 				Target: objHyperlink.url || objHyperlink.slide,
 			})
 
-			objHyperlink.rId = intRelId
+			objHyperlink.rId = imageRelId
 			newObject.hyperlink = objHyperlink
 		}
 	}
@@ -754,7 +754,8 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 	})
 
 	// STEP 6: Create hyperlink rels
-	createHyperlinkRels(this.slides, arrRows, this.rels)
+	createHyperlinkRels(this.slides, arrRows, target.rels)
+	//console.log(this.slides)
 	// FIXME: TODO-3: "this." refs above dont exist here!! 20190725
 	// FIXME: why do we need all slides???
 
