@@ -45,7 +45,7 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './core-enums'
+import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
 import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
 import Slide from './slide'
 import * as JSZip from 'jszip'
@@ -148,16 +148,6 @@ export default class PptxGenJS {
 		return this._isBrowser
 	}
 
-	public get totalMediaRels():number {
-		let intRels = 0
-
-		this.slides.forEach(slide => {
-			intRels += slide.relsMedia.length
-		})
-
-		return intRels
-	}
-
 	// TODO: should these be `this.var` inside constructor?
 	private fileName: string
 	private fileExtn: string
@@ -239,6 +229,7 @@ export default class PptxGenJS {
 			{
 				presLayout: this._presLayout,
 				name: DEF_PRES_LAYOUT_NAME,
+				number: 1000,
 				width: this.LAYOUTS['LAYOUT_16x9'].width,
 				height: this.LAYOUTS['LAYOUT_16x9'].height,
 				slide: null,
@@ -270,7 +261,6 @@ export default class PptxGenJS {
 			relsMedia: [],
 			slideLayout: null,
 			slideNumberObj: null,
-			totalMediaRels: this.getTotalMediaRels()
 		}
 	}
 
@@ -664,7 +654,7 @@ export default class PptxGenJS {
 		})[0].slideNumberObj = slideNumberObj
 	}
 
-	getTotalMediaRels = ():number => {
+	getTotalMediaRels = (): number => {
 		let intRels = 0
 
 		this.slides.forEach(slide => {
@@ -724,7 +714,6 @@ export default class PptxGenJS {
 	 */
 	addSlide(masterSlideName?: string): ISlide {
 		let newSlide = new Slide({
-			totalMediaRels: this.totalMediaRels,
 			presLayout: this.presLayout,
 			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,
@@ -752,6 +741,7 @@ export default class PptxGenJS {
 		let objLayout: ISlideLayout = {
 			presLayout: this.presLayout,
 			name: inObjMasterDef.title,
+			number: 1000 + this.slideLayouts.length + 1,
 			width: inObjMasterDef.width || this.presLayout.width,
 			height: inObjMasterDef.height || this.presLayout.height,
 			slide: null,

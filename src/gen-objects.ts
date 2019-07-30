@@ -39,8 +39,6 @@ import {
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
 
-/** counter for included images (used for index in their filenames) */
-var _imageCounter: number = 0
 /** counter for included charts (used for index in their filenames) */
 var _chartCounter: number = 0
 
@@ -113,7 +111,7 @@ function addBackgroundDefinition(bkg: string | { src?: string; path?: string; da
 			extn: strImgExtn,
 			data: bkg.data || null,
 			rId: intRels,
-			Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
+			Target: '../media/image' + (target.relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		target.bkgdImgRid = intRels
 	} else if (bkg && typeof bkg === 'string') {
@@ -403,14 +401,13 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 		// SVG files consume *TWO* rId's: (a png version and the svg image)
 		// <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
 		// <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
-
 		target.relsMedia.push({
 			path: strImagePath || strImageData + 'png',
 			type: 'image/png',
 			extn: 'png',
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image' + ++_imageCounter + '.png',
+			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
 			isSvgPng: true,
 			svgSize: { w: newObject.options.cx, h: newObject.options.cy },
 		})
@@ -421,7 +418,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId + 1,
-			Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
+			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 2) + '.' + strImgExtn,
 		})
 		newObject.imageRid = imageRelId + 1
 	} else {
@@ -431,7 +428,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image' + ++_imageCounter + '.' + strImgExtn,
+			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		newObject.imageRid = imageRelId
 	}
@@ -469,7 +466,6 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
  */
 export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 	let intRels = 1
-	let intImages = ++_imageCounter
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
 	let intSizeX = opt.w || 2
@@ -511,7 +507,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-	intRels += target.totalMediaRels
+	intRels += target.relsMedia.length
 	// FIXME: media is all the same video! 20190724
 	console.log(`intRels = ${intRels}`)
 
@@ -543,7 +539,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 0,
-			Target: '../media/media' + intImages + '.' + strExtn,
+			Target: '../media/media-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strExtn,
 		}
 		// Audio/Video files consume *TWO* rId's:
 		// <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
@@ -556,7 +552,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 1,
-			Target: '../media/media' + intImages + '.' + strExtn,
+			Target: '../media/media-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strExtn,
 		})
 		// Add preview/overlay image
 		target.relsMedia.push({
@@ -565,7 +561,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
-			Target: '../media/image' + intImages + '.png',
+			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
 		})
 	}
 

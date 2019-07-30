@@ -431,6 +431,7 @@ export interface ISlideObject {
 export interface ISlideLayout {
 	presLayout: ILayout
 	name: string
+	number: number
 	bkgd?: string
 	bkgdImgRid?: number
 	slide?: {
@@ -441,7 +442,6 @@ export interface ISlideLayout {
 	}
 	data: Array<ISlideObject>
 	rels: Array<ISlideRel>
-	number?: number // needed as we use args:"ISlide|ISlideLayout" often
 	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: Array<number> | number
@@ -471,7 +471,6 @@ export interface ISlide {
 	relsMedia: ISlideRelMedia[]
 	slideLayout: ISlideLayout
 	slideNumberObj?: ISlideNumber // FIXME rename
-	totalMediaRels: number
 }
 export interface IPresentation {
 	author: string

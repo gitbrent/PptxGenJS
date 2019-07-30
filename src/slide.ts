@@ -28,7 +28,6 @@ export default class Slide {
 	private _setSlideNum: Function
 	private _slideNumber: ISlideNumber
 
-	public _totalMediaRels: number
 	public presLayout: ILayout
 	public name: string
 	public number: number
@@ -38,9 +37,8 @@ export default class Slide {
 	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
 
-	constructor(params: { totalMediaRels: number; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
+	constructor(params: { presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this.presLayout = params.presLayout
-		this._totalMediaRels = params.totalMediaRels
 		this._setSlideNum = params.setSlideNum
 		this.name = 'Slide ' + params.slideNumber
 		this.number = params.slideNumber
@@ -82,10 +80,6 @@ export default class Slide {
 	}
 	public get slideNumber(): ISlideNumber {
 		return this._slideNumber
-	}
-
-	public get totalMediaRels(): number {
-		return this._totalMediaRels
 	}
 
 	/**
