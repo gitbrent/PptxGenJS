@@ -1031,7 +1031,7 @@ function genXmlTextRunProperties(opts, isDefault) {
 
 	return runProps
 }
-
+ 
 /**
  * Builds <a:r></a:r> text runs for <a:p> paragraphs in textBody
  * @param {Object} opts - various options
