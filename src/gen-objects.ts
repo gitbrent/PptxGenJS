@@ -418,7 +418,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId + 1,
-			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 2) + '.' + strImgExtn,
+			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		newObject.imageRid = imageRelId + 1
 	} else {
