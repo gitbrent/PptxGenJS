@@ -15,10 +15,11 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	ISlideObject,
-	ITextOpts,
-	IText,
 	Shape,
 	ShapeOptions,
+    TableOptions,
+	IText,
+	ITextOpts,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -145,7 +146,7 @@ export default class Slide {
 
 	// RECURSIVE: (sometimes)
 	// FIXME: TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
-	addTable(arrTabRows, inOpt) {
+	addTable(arrTabRows, inOpt:TableOptions): Slide {
 		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout)
 		return this
