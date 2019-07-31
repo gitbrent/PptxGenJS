@@ -230,8 +230,6 @@ export default class PptxGenJS {
 				presLayout: this._presLayout,
 				name: DEF_PRES_LAYOUT_NAME,
 				number: 1000,
-				width: this.LAYOUTS['LAYOUT_16x9'].width,
-				height: this.LAYOUTS['LAYOUT_16x9'].height,
 				slide: null,
 				data: [],
 				rels: [],
@@ -709,7 +707,7 @@ export default class PptxGenJS {
 
 	/**
 	 * Add a Slide to Presenation
-	 * @param {string} `masterSlideName` Master Slide name
+	 * @param {string} masterSlideName - Master Slide name
 	 * @returns {ISlide} the new Slide
 	 */
 	addSlide(masterSlideName?: string): ISlide {
@@ -742,8 +740,6 @@ export default class PptxGenJS {
 			presLayout: this.presLayout,
 			name: inObjMasterDef.title,
 			number: 1000 + this.slideLayouts.length + 1,
-			width: inObjMasterDef.width || this.presLayout.width,
-			height: inObjMasterDef.height || this.presLayout.height,
 			slide: null,
 			data: [],
 			rels: [],

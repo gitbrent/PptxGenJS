@@ -659,10 +659,10 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 	if (!Array.isArray(arrRows[0])) arrRows = [arrTabRows]
 
 	// STEP 3: Set options
-	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', slideLayout)
-	opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', slideLayout)
+	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', presLayout)
+	opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', presLayout)
 	//	opt.cy = opt.h || opt.cy // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', slideLayout) // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
+	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 	//	opt.h = opt.cy
 	opt.autoPage = opt.autoPage == false ? false : true
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
@@ -693,7 +693,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 
 	// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
 	if (opt.w) {
-		opt.w = getSmartParseNumber(opt.w, 'X', slideLayout)
+		opt.w = getSmartParseNumber(opt.w, 'X', presLayout)
 	} else if (opt.colW) {
 		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
 			opt.w = Math.floor(Number(opt.colW) * arrRows[0].length)

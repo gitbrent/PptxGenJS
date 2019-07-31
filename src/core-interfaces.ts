@@ -457,8 +457,6 @@ export interface ISlideLayout {
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: number | [number, number, number, number]
 	slideNumberObj?: ISlideNumber
-	width: number
-	height: number
 }
 export interface ISlide {
 	addChart: Function
