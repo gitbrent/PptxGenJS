@@ -332,7 +332,7 @@ function genSlides_Table(pptx) {
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Colspans/Rowspans:', optsSub);
 
-		var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', fontSize:16, border:{pt:4, color:'FFFFFF'}, align:'c', valign:'m' };
+		var tabOpts1 = { x:0.5, y:1.1, w:'90%', h:2, fill:'F5F5F5', color:'3D3D3D', fontSize:16, border:{pt:4, color:'FFFFFF'}, align:'center', valign:'middle' };
 		var arrTabRows1 = [
 			[
 				{ text:'A1\nA2', options:{rowspan:2, fill:'99FFCC'} }
