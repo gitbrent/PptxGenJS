@@ -27,7 +27,6 @@ import {
 	ISlideLayout,
 	ISlideObject,
 	IMediaOpts,
-	ISlideRelMedia,
 	IChartOpts,
 	IChartMulti,
 	IImageOpts,
@@ -35,6 +34,7 @@ import {
 	IText,
 	Shape,
 	ShapeOptions,
+	TableOptions,
 } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
@@ -530,9 +530,9 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 		})
 	} else {
 		/* NOTE: Audio/Video files consume *TWO* rId's:
-		* <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
-		* <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
-		*/
+		 * <Relationship Id="rId2" Target="../media/media1.mov" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>
+		 * <Relationship Id="rId3" Target="../media/media1.mov" Type="http://schemas.microsoft.com/office/2007/relationships/media"/>
+		 */
 
 		// A: "relationships/video"
 		target.relsMedia.push({
@@ -635,13 +635,14 @@ export function addShapeDefinition(shape: Shape, opt: ShapeOptions, target: ISli
 
 /**
  * Adds a table object to a slide definition.
- * @param {ISlide} `target` slide object that the table should be added to
- * @param {Array} `arrTabRows` table data
- * @param {Object} `inOpt` table options
- * @param {ILayout} `presLayout` slide object that the table should be added to
+ * @param {ISlide} target - slide object that the table should be added to
+ * @param {Array} arrTabRows - table data
+ * @param {TableOptions} inOpt - table options
+ * @param {ISlideLayout} slideLayout - Slide layout
+ * @param {ILayout} presLayout - Presenation layout
  */
-export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayout: ISlideLayout, presLayout: ILayout) {
-	var opt = inOpt && typeof inOpt === 'object' ? inOpt : {}
+export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptions, slideLayout: ISlideLayout, presLayout: ILayout) {
+	var opt = inOpt && typeof inOpt === 'object' ? inOpt : ({} as TableOptions)
 
 	// STEP 1: REALITY-CHECK
 	if (arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows)) {
@@ -660,14 +661,14 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 	// STEP 3: Set options
 	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', slideLayout)
 	opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', slideLayout)
-	opt.cy = opt.h || opt.cy // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-	if (opt.cy) opt.cy = getSmartParseNumber(opt.cy, 'Y', slideLayout)
-	opt.h = opt.cy
+	//	opt.cy = opt.h || opt.cy // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
+	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', slideLayout) // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
+	//	opt.h = opt.cy
 	opt.autoPage = opt.autoPage == false ? false : true
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
 	opt.lineWeight = typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0
 	opt.margin = opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
-	if (!isNaN(opt.margin)) opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
+	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 	if (opt.lineWeight > 1) opt.lineWeight = 1
 	else if (opt.lineWeight < -1) opt.lineWeight = -1
 	// Set default color if needed (table option > inherit from Slide > default to black)
@@ -675,7 +676,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 
 	// Set/Calc table width
 	// Get slide margins - start with default values, then adjust if master or slide margins exist
-	var arrTableMargin = DEF_SLIDE_MARGIN_IN
+	let arrTableMargin = DEF_SLIDE_MARGIN_IN
 	// Case 1: Master margins
 	if (slideLayout && typeof slideLayout.margin !== 'undefined') {
 		if (Array.isArray(slideLayout.margin)) arrTableMargin = slideLayout.margin
@@ -684,20 +685,19 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 	}
 	// Case 2: Table margins
 	/* FIXME: add `margin` option to slide options
-			else if ( addNewSlide.margin ) {
-				if ( Array.isArray(addNewSlide.margin) ) arrTableMargin = addNewSlide.margin;
-				else if ( !isNaN(Number(addNewSlide.margin)) ) arrTableMargin = [Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin)];
-			}
-		*/
+		else if ( addNewSlide.margin ) {
+			if ( Array.isArray(addNewSlide.margin) ) arrTableMargin = addNewSlide.margin;
+			else if ( !isNaN(Number(addNewSlide.margin)) ) arrTableMargin = [Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin)];
+		}
+	*/
 
 	// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
-	if (opt.w || opt.cx) {
-		opt.cx = getSmartParseNumber(opt.w || opt.cx, 'X', slideLayout)
-		opt.w = opt.cx
+	if (opt.w) {
+		opt.w = getSmartParseNumber(opt.w, 'X', slideLayout)
 	} else if (opt.colW) {
 		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
-			opt.cx = Math.floor(Number(opt.colW) * arrRows[0].length)
-			opt.w = opt.cx
+			opt.w = Math.floor(Number(opt.colW) * arrRows[0].length)
+			//			opt.w = opt.cx
 		} else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length) {
 			console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.')
 
@@ -706,20 +706,17 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 			for (var idx = 0; idx < arrRows[0].length; idx++) {
 				opt.colW.push(numColWidth)
 			}
-			opt.cx = Math.floor(numColWidth * arrRows[0].length)
-			opt.w = opt.cx
+			opt.w = Math.floor(numColWidth * arrRows[0].length)
 		}
 	} else {
-		var numTabWidth = presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]
-		opt.cx = Math.floor(numTabWidth)
-		opt.w = opt.cx
+		opt.w = Math.floor(presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3])
 	}
 
 	// STEP 4: Convert units to EMU now (we use different logic in makeSlide->table - smartCalc is not used)
-	if (opt.x < 20) opt.x = inch2Emu(opt.x)
-	if (opt.y < 20) opt.y = inch2Emu(opt.y)
-	if (opt.cx < 20) opt.cx = inch2Emu(opt.cx)
-	if (opt.cy && opt.cy < 20) opt.cy = inch2Emu(opt.cy)
+	if (opt.x && opt.x < 20) opt.x = inch2Emu(opt.x)
+	if (opt.y && opt.y < 20) opt.y = inch2Emu(opt.y)
+	if (opt.w && opt.w < 20) opt.w = inch2Emu(opt.w)
+	if (opt.h && opt.h < 20) opt.h = inch2Emu(opt.h)
 
 	// STEP 5: Loop over cells: transform to ITableCell; check to see whether to skip autopaging
 	arrRows.forEach(row => {
@@ -776,7 +773,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt, slideLayou
 			// FIXME: ^^^
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idx > 0) opt.y = inch2Emu(opt.newPageStartY || arrTableMargin[0])
+			if (idx > 0) opt.y = inch2Emu(opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			opt.autoPage = false

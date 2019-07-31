@@ -127,20 +127,17 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		// A: Set option vars
 		slideItemObj.options = slideItemObj.options || {}
 
-		if (slideItemObj.options.w || slideItemObj.options.w == 0) slideItemObj.options.cx = slideItemObj.options.w
-		if (slideItemObj.options.h || slideItemObj.options.h == 0) slideItemObj.options.cy = slideItemObj.options.h
-		//
-		if (slideItemObj.options.x || slideItemObj.options.x == 0) x = getSmartParseNumber(slideItemObj.options.x, 'X', slide.presLayout)
+		if (typeof slideItemObj.options.x === 'number') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide.presLayout)
 		if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide.presLayout)
-		if (slideItemObj.options.cx || slideItemObj.options.cx == 0) cx = getSmartParseNumber(slideItemObj.options.cx, 'X', slide.presLayout)
-		if (slideItemObj.options.cy || slideItemObj.options.cy == 0) cy = getSmartParseNumber(slideItemObj.options.cy, 'Y', slide.presLayout)
+		if (slideItemObj.options.w || slideItemObj.options.w == 0) cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide.presLayout)
+		if (slideItemObj.options.h || slideItemObj.options.h == 0) cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide.presLayout)
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
 			if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide.presLayout)
 			if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide.presLayout)
-			if (placeholderObj.options.cx || placeholderObj.options.cx == 0) cx = getSmartParseNumber(placeholderObj.options.cx, 'X', slide.presLayout)
-			if (placeholderObj.options.cy || placeholderObj.options.cy == 0) cy = getSmartParseNumber(placeholderObj.options.cy, 'Y', slide.presLayout)
+			if (placeholderObj.options.w || placeholderObj.options.w == 0) cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide.presLayout)
+			if (placeholderObj.options.h || placeholderObj.options.h == 0) cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout)
 		}
 		//
 		if (slideItemObj.shape) shapeType = getShapeInfo(slideItemObj.shape)
@@ -209,7 +206,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					for (var col = 0; col < intColCnt; col++) {
 						strXml +=
 							'<a:gridCol w="' +
-							Math.round(inch2Emu(objTabOpts.colW[col]) || (typeof slideItemObj.options.cx === 'number' ? slideItemObj.options.cx : 1) / intColCnt) +
+							Math.round(inch2Emu(objTabOpts.colW[col]) || (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt) +
 							'"/>'
 					}
 					strXml += '</a:tblGrid>'
@@ -217,8 +214,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				// B: Table Width provided without colW? Then distribute cols
 				else {
 					intColW = objTabOpts.colW ? objTabOpts.colW : EMU
-					if (slideItemObj.options.cx && !objTabOpts.colW)
-						intColW = Math.round((typeof slideItemObj.options.cx === 'number' ? slideItemObj.options.cx : 1) / intColCnt)
+					if (slideItemObj.options.w && !objTabOpts.colW) intColW = Math.round((typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt)
 					strXml += '<a:tblGrid>'
 					for (var col = 0; col < intColCnt; col++) {
 						strXml += '<a:gridCol w="' + intColW + '"/>'
@@ -360,7 +356,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 						// 5: Borders: Add any borders
 						/// TODO=3: FIXME: stop using `none` if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
-						if (cellOpts.border && cellOpts.border.type == 'none') {
+						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type == 'none') {
 							strXml += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>'
 							strXml += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>'
 							strXml += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>'
@@ -388,13 +384,13 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 									strXml += '<a:' + obj.name + ' w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strC + '</a:' + obj.name + '>'
 								} else strXml += '<a:' + obj.name + ' w="0"><a:miter lim="400000"/></a:' + obj.name + '>'
 							})
-						} else if (cellOpts.border && typeof cellOpts.border === 'object') {
-							var intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT
-							var strClr =
+						} else if (cellOpts.border && !Array.isArray(cellOpts.border)) {
+							let intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT
+							let strClr =
 								'<a:solidFill><a:srgbClr val="' +
 								(cellOpts.border.color ? cellOpts.border.color.replace('#', '') : DEF_CELL_BORDER.color) +
 								'"/></a:solidFill>'
-							var strAttr = '<a:prstDash val="'
+							let strAttr = '<a:prstDash val="'
 							strAttr += cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1 ? 'sysDash' : 'solid'
 							strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>'
 							// *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
@@ -446,7 +442,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin[1] * ONEPT || 0
 					slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin[2] * ONEPT || 0
 					slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin[3] * ONEPT || 0
-				} else if ((slideItemObj.options.margin || slideItemObj.options.margin == 0) && !isNaN(slideItemObj.options.margin)) {
+				} else if (typeof slideItemObj.options.margin === 'number') {
 					slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin * ONEPT
 					slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin * ONEPT
 					slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin * ONEPT
@@ -768,8 +764,7 @@ function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { 
 					rel.Target +
 					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
 			}
-		}
-		else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
+		} else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
 			strXml +=
 				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
 		}
@@ -1031,7 +1026,7 @@ function genXmlTextRunProperties(opts, isDefault) {
 
 	return runProps
 }
- 
+
 /**
  * Builds <a:r></a:r> text runs for <a:p> paragraphs in textBody
  * @param {Object} opts - various options
@@ -1898,7 +1893,7 @@ export function createHyperlinkRels(slides: Array<ISlide>, inText, slideRels) {
 			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
 			else {
 				var intRels = 0
-				slides.forEach((slide, idx) => {
+				slides.forEach(slide => {
 					intRels += slide.rels.length
 				})
 				var intRelId = intRels + 1
@@ -1961,7 +1956,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 	if (!opts.w && opts.colW) {
 		if (Array.isArray(opts.colW))
 			opts.colW.forEach(val => {
-				opts.w += val
+				typeof opts.w !== 'number' ? (opts.w = 0 + val) : (opts.w += val)
 			})
 		else {
 			opts.w = opts.colW * numCols
@@ -1969,7 +1964,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 	}
 
 	// STEP 2: Calc usable space/table size now that we have usable space calc'd
-	emuSlideTabW = opts.w ? inch2Emu(opts.w) : presLayout.width - inch2Emu((opts.x || arrInchMargins[1]) + arrInchMargins[3])
+	emuSlideTabW = typeof opts.w === 'number' ? inch2Emu(opts.w) : presLayout.width - inch2Emu((typeof opts.x === 'number' ? opts.x : arrInchMargins[1]) + arrInchMargins[3])
 	if (opts.debug) console.log('emuSlideTabW (in) ........ = ' + (emuSlideTabW / EMU).toFixed(1))
 	if (opts.debug) console.log('presLayout.h ..... = ' + presLayout.height / EMU)
 
@@ -1982,7 +1977,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			})
 			opts.colW = []
 			arrColW.forEach(val => {
-				opts.colW.push(val)
+				if (Array.isArray(opts.colW)) opts.colW.push(val)
 			})
 		}
 		// No column widths provided? Then distribute cols.
@@ -2005,11 +2000,12 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 
 		// B: Calc usable vertical space/table height
 		// NOTE: Use margins after the first Slide (dont re-use opt.y - it could've been halfway down the page!) (ISSUE#43,ISSUE#47,ISSUE#48)
-		if (arrObjSlides.length > 0) {
+		if (arrObjSlides.length > 0 && typeof opts.y === 'number') {
 			emuSlideTabH = presLayout.height - inch2Emu((opts.y / EMU < arrInchMargins[0] ? opts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
 			// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
-			if (emuSlideTabH < opts.h) emuSlideTabH = opts.h
-		} else emuSlideTabH = opts.h ? opts.h : presLayout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
+			if (typeof opts.h === 'number' && emuSlideTabH < opts.h) emuSlideTabH = opts.h
+		} else if (typeof opts.h === 'number' && typeof opts.y === 'number')
+			emuSlideTabH = opts.h ? opts.h : presLayout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
 		if (opts.debug) console.log('* Slide ' + arrObjSlides.length + ': emuSlideTabH (in) ........ = ' + (emuSlideTabH / EMU).toFixed(1))
 
 		// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
@@ -2131,7 +2127,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	let arrObjTabFootRows: [ITableToSlidesCell[]?] = []
 	let arrColW: number[] = []
 	let arrTabColW: number[] = []
-	let arrInchMargins = [0.5, 0.5, 0.5, 0.5] // TRBL-style
+	let arrInchMargins: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5] // TRBL-style
 	let arrTableParts = ['thead', 'tbody', 'tfoot']
 	let intTabW = 0
 
@@ -2174,7 +2170,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 
 	// STEP 2: Calc/Set column widths by using same column width percent from HTML table
 	arrTabColW.forEach((colW, idx) => {
-		let intCalcWidth = Number(((emuSlideTabW * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
+		let intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
 		let intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-min-width')
 		let intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-width')
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
@@ -2326,7 +2322,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 			if (opts.debug) console.log('opts.newPageStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
 			// C: Add table to Slide
-			newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: emuSlideTabW / EMU, colW: arrColW, autoPage: false })
+			newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })
 
 			// D: Add any additional objects
 			if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })

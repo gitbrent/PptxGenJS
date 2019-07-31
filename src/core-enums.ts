@@ -3,7 +3,7 @@
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
 
-import { IBorderOpts } from './core-interfaces'
+import { BorderOptions } from './core-interfaces'
 
 // CONST
 export const EMU: number = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))
@@ -13,6 +13,8 @@ export const LAYOUT_IDX_SERIES_BASE: number = 2147483649
 export const REGEX_HEX_COLOR: RegExp = /^[0-9a-fA-F]{6}$/
 export const LINEH_MODIFIER = 1.9
 
+export const DEF_CELL_BORDER: BorderOptions = { color: '666666' }
+export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style
 export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
 export const DEF_FONT_COLOR: string = '000000'
 export const DEF_FONT_SIZE: number = 12
@@ -20,7 +22,7 @@ export const DEF_FONT_TITLE_SIZE: number = 18
 export const DEF_PRES_LAYOUT = 'LAYOUT_16x9'
 export const DEF_PRES_LAYOUT_NAME = 'DEFAULT'
 export const DEF_SLIDE_BKGD = 'FFFFFF'
-export const DEF_SLIDE_MARGIN_IN: Array<number> = [0.5, 0.5, 0.5, 0.5] // TRBL-style
+export const DEF_SLIDE_MARGIN_IN: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5] // TRBL-style
 export const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true }
 export const DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 }
 
@@ -83,8 +85,6 @@ export enum TEXT_VALIGN {
 }
 
 export const SLDNUMFLDID: string = '{F7021451-1387-4CA6-816F-3879F97B5CBC}'
-export const DEF_CELL_BORDER: IBorderOpts = { color: '666666' }
-export const DEF_CELL_MARGIN_PT: Array<number> = [3, 3, 3, 3] // TRBL-style
 
 // ENUM
 export enum SCHEME_COLOR_NAMES {

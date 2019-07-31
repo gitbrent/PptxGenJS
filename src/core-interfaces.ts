@@ -16,21 +16,18 @@ export type HexColor = string // should match /^[0-9a-fA-F]{6}$/
 export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 export type Color = HexColor | ThemeColor
 export type Coord = number | string // string is in form 'n%'
+export type HAlign = 'left' | 'center' | 'right'
+export type VAlign = 'top' | 'middle' | 'bottom'
+
 export interface PositionOptions {
 	x?: Coord
 	y?: Coord
 	w?: Coord
 	h?: Coord
 }
-export type HAlignOpts = 'left' | 'center' | 'right'
-export type VAlignOpts = 'top' | 'middle' | 'bottom'
-
-/**
- * `data`/`path` options (one option is required)
- */
 export interface OptsDataOrPath {
-	data?: string
-	path?: string
+	data?: string // one option is required
+	path?: string // one option is required
 }
 export interface OptsChartData {
 	index?: number
@@ -48,10 +45,10 @@ type MediaType = 'audio' | 'online' | 'video'
 
 // Opts
 // ====
-export interface IBorderOpts {
-	color?: string // '#696969'
+export interface BorderOptions {
+	color?: HexColor
 	pt?: number
-	type?: string // TODO: specify values
+	type?: string // TODO: specify values, eg: 'none'
 }
 export interface IShadowOpts {
 	type: string
@@ -110,7 +107,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	dataLabelPosition?: string
 	displayBlanksAs?: string
 	fill?: string
-	border?: IBorderOpts
+	border?: BorderOptions
 	hasArea?: boolean
 	catAxes?: Array<number>
 	valAxes?: Array<number>
@@ -166,7 +163,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	showValue?: boolean
 	showPercent?: boolean
 	catLabelFormatCode?: string
-	dataBorder?: IBorderOpts
+	dataBorder?: BorderOptions
 	lineSize?: number
 	lineDash?: string
 	radarStyle?: string
@@ -216,7 +213,7 @@ export interface Shape {
 	avLst: { [key: string]: number }
 }
 export interface ShapeOptions extends PositionOptions {
-	align?: HAlignOpts
+	align?: HAlign
 	fill?: Color | { type: string; color: Color; alpha?: number }
 	flipH?: boolean
 	flipV?: boolean
@@ -230,8 +227,82 @@ export interface ShapeOptions extends PositionOptions {
 	shadow?: IShadowOpts
 }
 
+export interface IChartTitleOpts {
+	title: string
+	color?: String
+	fontSize?: number
+	fontFace?: string
+	rotate?: number
+	titleAlign?: string
+	titlePos?: { x: number; y: number }
+}
+export interface IChartMulti {
+	type: CHART_TYPE_NAMES
+	data: []
+	options: {}
+}
+
+export interface ITableToSlidesOpts extends PositionOptions {
+	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+	addShape?: { shape: any; opts: {} }
+	addTable?: { rows: any[]; opts: {} }
+	addText?: { text: any[]; opts: {} }
+	//
+	_arrObjTabHeadRows?: any[]
+	addHeaderToEach?: boolean
+	autoPage?: boolean
+	colW?: number | number[]
+	debug?: boolean
+	lineWeight?: number
+	masterSlideName?: string
+	masterSlide?: ISlideLayout
+	newSlideStartY?: number
+	slideMargin?: number | [number, number, number, number]
+}
+export interface ITableCellOpts {
+	align?: HAlign
+	bold?: boolean
+	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+	color?: string
+	colspan?: number
+	fill?: string
+	fontSize?: number
+	isTableCell?: boolean
+	lineWeight?: number
+	margin?: number | [number, number, number, number]
+	rowspan?: number
+	valign?: VAlign
+}
+export interface ITableToSlidesCell {
+	text?: string
+	options?: ITableCellOpts
+}
+export interface ITableCell {
+	text?: string
+	hmerge?: boolean
+	vmerge?: boolean
+	optImp?: any
+	options?: ITableCellOpts
+}
+export interface TableOptions extends PositionOptions {
+	align?: HAlign
+	autoPage?: boolean
+	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+	color?: Color
+	colspan?: number
+	colW?: number | number[]
+	fill?: Color
+	fontSize?: number
+	lineWeight?: number
+	margin?: number | [number, number, number, number]
+	newSlideStartY?: number
+	rowW?: number | number[]
+	rowspan?: number
+	valign?: VAlign
+}
+
 export interface ITextOpts extends PositionOptions, OptsDataOrPath {
-	align?: HAlignOpts
+	align?: HAlign
 	autoFit?: boolean
 	bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
@@ -254,68 +325,8 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	rotate?: number // (degree * 60,000)
 	shadow?: IShadowOpts
 	shape?: Shape
-	valign?: VAlignOpts
+	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-}
-export interface IChartTitleOpts {
-	title: string
-	color?: String
-	fontSize?: number
-	fontFace?: string
-	rotate?: number
-	titleAlign?: string
-	titlePos?: { x: number; y: number }
-}
-export interface IChartMulti {
-	type: CHART_TYPE_NAMES
-	data: []
-	options: {}
-}
-export interface ITableToSlidesOpts {
-	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
-	addShape?: { shape: any; opts: {} }
-	addTable?: { rows: any[]; opts: {} }
-	addText?: { text: any[]; opts: {} }
-	//
-	x?: number
-	y?: number
-	w?: number
-	h?: number
-	_arrObjTabHeadRows?: any[]
-	addHeaderToEach?: boolean
-	autoPage?: boolean
-	colW?: Array<number>
-	debug?: boolean
-	lineWeight?: number
-	masterSlideName?: string
-	masterSlide?: ISlideLayout
-	newSlideStartY?: number
-	slideMargin?: Array<number> | number
-}
-export interface ITableCellOpts {
-	align?: 'left' | 'center' | 'right'
-	bold?: boolean
-	border?: IBorderOpts
-	color?: string
-	colspan?: number
-	fill?: string
-	fontSize?: number
-	isTableCell?: boolean
-	lineWeight?: number
-	margin?: number | number[]
-	rowspan?: number
-	valign?: 'top' | 'middle' | 'bottom'
-}
-export interface ITableToSlidesCell {
-	text?: string
-	options?: ITableCellOpts
-}
-export interface ITableCell {
-	text?: string
-	hmerge?: boolean
-	vmerge?: boolean
-	optImp?: any
-	options?: ITableCellOpts
 }
 export interface IText {
 	text: string
@@ -341,7 +352,7 @@ export interface ISlideMasterDef {
 	title: string
 	height?: number
 	width?: number
-	margin?: Array<number> | number
+	margin?: number | [number, number, number, number]
 	bkgd?: string
 	objects?: [{}]
 	slideNumber?: ISlideNumber
@@ -385,7 +396,7 @@ export interface ObjectOptions extends ShapeOptions {
 	cy?: Coord
 	w?: Coord
 	h?: Coord
-	margin?: number
+	margin?: number | [number, number, number, number]
 	// text
 	placeholder?: string
 	bodyProp?: {
@@ -396,8 +407,8 @@ export interface ObjectOptions extends ShapeOptions {
 	}
 	isTextBox?: boolean
 	// table
-	colW?: number
-	rowH?: number
+	colW?: number | number[]
+	rowH?: number | number[]
 	// image:
 	sizing?: {
 		type?: string
@@ -444,7 +455,7 @@ export interface ISlideLayout {
 	rels: Array<ISlideRel>
 	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
-	margin?: Array<number> | number
+	margin?: number | [number, number, number, number]
 	slideNumberObj?: ISlideNumber
 	width: number
 	height: number
@@ -462,7 +473,7 @@ export interface ISlide {
 	color?: string
 	data?: ISlideObject[]
 	hidden?: boolean
-	margin?: object
+	margin?: number | [number, number, number, number]
 	name?: string
 	number: number
 	presLayout: ILayout
