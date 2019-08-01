@@ -21,14 +21,14 @@ import PptxGenJS from './pptxgen'
 import { PowerPointShapes } from './core-shapes'
 import {
 	ILayout,
-	ISlide,
 	IShadowOpts,
+	ISlide,
 	ISlideLayout,
-	ITableCell,
 	ISlideObject,
-	ITableToSlidesOpts,
-	ITableToSlidesCell,
+	ITableCell,
 	ITableCellOpts,
+	ITableToSlidesCell,
+	ITableToSlidesOpts,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
@@ -80,7 +80,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 	// STEP 1: Add background
 	if (slide.bkgd) {
-		strSlideXml += genXmlColorSelection(false, slide.bkgd)
+		strSlideXml += genXmlColorSelection(null, slide.bkgd)
 	}
 	/* TODO: this is needed on slideMaster1.xml to avoid gray background in Finder
 	// but it shoudln't go on every slide that comes along

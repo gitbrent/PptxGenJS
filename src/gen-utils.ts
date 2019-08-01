@@ -3,15 +3,14 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './core-enums'
-import { IChartOpts, ILayout } from './core-interfaces'
+import { IChartOpts, ILayout, ShapeFill } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
- *
- * @param {number|string} `size`
- * @param {string} `xyDir`
- * @param {ISlideLayout} `layout`
- * @returns {number} width/height
+ * @param {number|string} size - numeric ("5.5") or percentage ("90%")
+ * @param {'X' | 'Y'} xyDir - direction
+ * @param {ILayout} layout - presentation layout
+ * @returns {number} calculated size
  */
 export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ILayout): number {
 	// FIRST: Convert string numeric value if reqd
@@ -66,9 +65,9 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 }
 
 /**
- * DESC: Replace special XML characters with HTML-encoded strings
+ * Replace special XML characters with HTML-encoded strings
  */
-export function encodeXmlEntities(inStr: string) {
+export function encodeXmlEntities(inStr: string):string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 	if (typeof inStr === 'undefined' || inStr == null) return ''
 	return inStr
@@ -152,8 +151,8 @@ export function createColorElement(colorStr: string, innerElements?: string) {
 	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
 }
 
-export function genXmlColorSelection(color_info, back_info?: string) {
-	let colorVal
+export function genXmlColorSelection(color_info:ShapeFill, back_info?: string) {
+	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''
 	let outText = ''

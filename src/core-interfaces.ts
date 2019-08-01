@@ -212,9 +212,10 @@ export interface Shape {
 	name: string
 	avLst: { [key: string]: number }
 }
+export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 export interface ShapeOptions extends PositionOptions {
 	align?: HAlign
-	fill?: Color | { type: string; color: Color; alpha?: number }
+	fill?: ShapeFill
 	flipH?: boolean
 	flipV?: boolean
 	lineSize?: number
