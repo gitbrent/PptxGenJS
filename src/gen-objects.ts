@@ -44,19 +44,8 @@ var _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * The following object is expected as a slide definition:
- * {
- *   bkgd: 'FF00FF',
- *   objects: [{
- *     text: {
- *       text: 'Hello World',
- *       x: 1,
- *       y: 1
- *     }
- *   }]
- * }
- * @param {ISlideMasterDef} `slideDef` slide definition
- * @param {ISlide|ISlideLayout} `target` empty slide object that should be updated by the passed definition
+ * @param {ISlideMasterDef} slideDef - slide definition
+ * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
 export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME :ISlide|ISlideLayout*/) {
 	// STEP 1: Add background
@@ -67,7 +56,7 @@ export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME 
 	// STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
 		slideDef.objects.forEach((object, idx: number) => {
-			var key = Object.keys(object)[0]
+			let key = Object.keys(object)[0]
 			if (MASTER_OBJECTS[key] && key == 'chart') addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target)
 			else if (MASTER_OBJECTS[key] && key == 'image') addImageDefinition(object[key], target)
 			else if (MASTER_OBJECTS[key] && key == 'line') addShapeDefinition(BASE_SHAPES.LINE, object[key], target)
@@ -389,8 +378,8 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 	newObject.options = {
 		x: intPosX || 0,
 		y: intPosY || 0,
-		cx: intWidth || 1,
-		cy: intHeight || 1,
+		w: intWidth || 1,
+		h: intHeight || 1,
 		rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
 		sizing: sizing,
 		placeholder: opt.placeholder,
@@ -409,7 +398,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 			rId: imageRelId,
 			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
 			isSvgPng: true,
-			svgSize: { w: newObject.options.cx, h: newObject.options.cy },
+			svgSize: { w: newObject.options.w, h: newObject.options.h },
 		})
 		newObject.imageRid = imageRelId
 		target.relsMedia.push({
@@ -661,9 +650,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 	// STEP 3: Set options
 	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', presLayout)
 	opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', presLayout)
-	//	opt.cy = opt.h || opt.cy // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `cy` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-	//	opt.h = opt.cy
+	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 	opt.autoPage = opt.autoPage == false ? false : true
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
 	opt.lineWeight = typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0
@@ -697,7 +684,6 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 	} else if (opt.colW) {
 		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
 			opt.w = Math.floor(Number(opt.colW) * arrRows[0].length)
-			//			opt.w = opt.cx
 		} else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length) {
 			console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.')
 
