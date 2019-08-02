@@ -732,11 +732,9 @@ export default class PptxGenJS {
 	 * @param {ISlideMasterDef} inObjMasterDef - layout definition
 	 */
 	defineSlideMaster(inObjMasterDef: ISlideMasterDef) {
-		if (!inObjMasterDef.title) {
-			throw Error('defineSlideMaster() object argument requires a `title` value.')
-		}
+		if (!inObjMasterDef.title) throw Error('defineSlideMaster() object argument requires a `title` value.')
 
-		let objLayout: ISlideLayout = {
+		let newLayout: ISlideLayout = {
 			presLayout: this.presLayout,
 			name: inObjMasterDef.title,
 			number: 1000 + this.slideLayouts.length + 1,
@@ -750,19 +748,19 @@ export default class PptxGenJS {
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(inObjMasterDef, objLayout)
+		genObj.createSlideObject(inObjMasterDef, newLayout)
 
 		// STEP 2: Add it to layout defs
-		this.slideLayouts.push(objLayout)
+		this.slideLayouts.push(newLayout)
 
 		// STEP 3: Add slideNumber to master slide (if any)
-		if (objLayout.slideNumberObj && !this.masterSlide.slideNumberObj) this.masterSlide.slideNumberObj = objLayout.slideNumberObj
+		if (newLayout.slideNumberObj && !this.masterSlide.slideNumberObj) this.masterSlide.slideNumberObj = newLayout.slideNumberObj
 	}
 
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-	 * @param {string} `tabEleId` - HTMLElementID of the table
-	 * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
+	 * @param {string} tabEleId - HTMLElementID of the table
+	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
 	 */
 	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
 		genXml.genTableToSlides(
