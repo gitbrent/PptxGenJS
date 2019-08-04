@@ -33,7 +33,7 @@ import {
 	ITableToSlidesCell,
 	ITableToSlidesOpts,
 	ObjectOptions,
-    IText,
+	IText,
 } from './core-interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './gen-utils'
 
@@ -859,7 +859,7 @@ function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
  * @param {boolean} isDefault - array of default relations
  * @return {string} XML
  */
-function genXmlParagraphProperties(textObj:ISlideObject|IText, isDefault:boolean):string {
+function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boolean): string {
 	let strXmlBullet = '',
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
@@ -1027,31 +1027,30 @@ function genXmlTextRunProperties(opts, isDefault) {
 }
 
 /**
- * Builds <a:r></a:r> text runs for <a:p> paragraphs in textBody
- * @param {Object} opts - various options
- * @param {string} paraText - various options
+ * Builds `<a:r></a:r>` text runs for `<a:p>` paragraphs in textBody
+ * @param {IText} textObj - Text object
  * @return {string} XML string
  */
-function genXmlTextRun(opts, paraText: string): string {
+function genXmlTextRun(textObj: IText): string {
 	let arrLines = []
 	let paraProp = ''
 	let xmlTextRun = ''
 
 	// 1: ADD runProperties
-	let startInfo = genXmlTextRunProperties(opts, false)
+	let startInfo = genXmlTextRunProperties(textObj.options, false)
 
 	// 2: LINE-BREAKS/MULTI-LINE: Split text into multi-p:
-	arrLines = paraText.split(CRLF)
+	arrLines = textObj.text.split(CRLF)
 	if (arrLines.length > 1) {
-		arrLines.forEach((line, idx)=>{
+		arrLines.forEach((line, idx) => {
 			xmlTextRun += '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(line)
 			// Stop/Start <p>aragraph as long as there is more lines ahead (otherwise its closed at the end of this function)
-			if (idx + 1 < arrLines.length) xmlTextRun += (opts.breakLine ? CRLF : '') + '</a:t></a:r>'
+			if (idx + 1 < arrLines.length) xmlTextRun += (textObj.options.breakLine ? CRLF : '') + '</a:t></a:r>'
 		})
 	} else {
 		// Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
 		// The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
-		xmlTextRun = (opts.align && opts.lineIdx > 0 ? paraProp : '') + '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(paraText)
+		xmlTextRun = (textObj.options.align && textObj.options.lineIdx > 0 ? paraProp : '') + '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(textObj.text)
 	}
 
 	// Return paragraph with text run
@@ -1119,7 +1118,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	if (opts && slideObj.type != SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
 
 	// Vars
-	var arrTextObjects:IText[] = []
+	var arrTextObjects: IText[] = []
 	var tagStart = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
 	var tagClose = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
 	var strSlideXml = tagStart
@@ -1221,7 +1220,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		})
 
 		// D: Add formatted textrun
-		strSlideXml += genXmlTextRun(textObj.options, textObj.text)
+		strSlideXml += genXmlTextRun(textObj)
 	})
 
 	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
