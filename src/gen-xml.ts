@@ -34,7 +34,7 @@ import {
 	ITableToSlidesOpts,
 	ObjectOptions,
 	IText,
-    ITextOpts,
+	ITextOpts,
 } from './core-interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './gen-utils'
 
@@ -818,48 +818,6 @@ function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { 
 }
 
 /**
- * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
- * @param {ITableCell} cell - table cell
- * @param {number} colWidth - table column width
- * @return {string[]} XML
- */
-function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
-	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
-	let arrLines = []
-	let strCurrLine = ''
-
-	// A: Allow a single space/whitespace as cell text (user-requested feature)
-	if (cell.text && cell.text.toString().trim() == '') return [' ']
-
-	// B: Remove leading/trailing spaces
-	let inStr = (cell.text || '').toString().trim()
-
-	// C: Build line array
-	// FIXME: FIXME-3: change to `forEach`
-	jQuery.each(inStr.split('\n'), (_idx, line) => {
-		jQuery.each(line.split(' '), (_idx, word) => {
-			if (strCurrLine.length + word.length + 1 < CPL) {
-				strCurrLine += word + ' '
-			} else {
-				if (strCurrLine) arrLines.push(strCurrLine)
-				strCurrLine = word + ' '
-			}
-		})
-
-		// All words for this line have been exhausted, flush buffer to new line, clear line var
-		if (strCurrLine) arrLines.push(strCurrLine.trim() + CRLF)
-		strCurrLine = ''
-	})
-
-	// D: Remove trailing linebreak
-	arrLines[arrLines.length - 1] = jQuery.trim(arrLines[arrLines.length - 1])
-
-	// Return lines
-	return arrLines
-}
-
-/**
  * Generate XML Paragraph Properties
  * @param {ISlideObject|IText} textObj - text object
  * @param {boolean} isDefault - array of default relations
@@ -974,7 +932,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
-function genXmlTextRunProperties(opts:ObjectOptions|ITextOpts, isDefault:boolean):string {
+function genXmlTextRunProperties(opts: ObjectOptions | ITextOpts, isDefault: boolean): string {
 	let runProps = ''
 	let runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
 
@@ -1011,8 +969,8 @@ function genXmlTextRunProperties(opts:ObjectOptions|ITextOpts, isDefault:boolean
 
 	// Hyperlink support
 	if (opts.hyperlink) {
-		if (typeof opts.hyperlink !== 'object') console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ")
-		else if (!opts.hyperlink.url && !opts.hyperlink.slide) console.log("ERROR: 'hyperlink requires either `url` or `slide`'")
+		if (typeof opts.hyperlink !== 'object') throw "ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` "
+		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw "ERROR: 'hyperlink requires either `url` or `slide`'"
 		else if (opts.hyperlink.url) {
 			// FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
@@ -1364,16 +1322,16 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[],
 	return strXml
 }
 
-export function makeXmlRootRels() {
-	return (
-		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-		CRLF +
-		'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-		'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>' +
-		'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>' +
-		'<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>' +
-		'</Relationships>'
-	)
+/**
+ * Creates `_rels/.rels`
+ * @returns XML
+ */
+export function makeXmlRootRels():string {
+	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+		<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
+		<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
+		<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
+		</Relationships>`
 }
 
 export function makeXmlApp(slides: Array<ISlide>, company: string): string {
@@ -1890,6 +1848,48 @@ export function createHyperlinkRels(slides: Array<ISlide>, inText, slideRels) {
 }
 
 // TABLE-TO-SLIDES vvvvvvvvvvvvvvvvvvvv
+
+/**
+ * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
+ * @param {ITableCell} cell - table cell
+ * @param {number} colWidth - table column width
+ * @return {string[]} XML
+ */
+function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
+	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
+	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	let arrLines = []
+	let strCurrLine = ''
+
+	// A: Allow a single space/whitespace as cell text (user-requested feature)
+	if (cell.text && cell.text.toString().trim() == '') return [' ']
+
+	// B: Remove leading/trailing spaces
+	let inStr = (cell.text || '').toString().trim()
+
+	// C: Build line array
+	// FIXME: FIXME-3: change to `forEach`
+	jQuery.each(inStr.split('\n'), (_idx, line) => {
+		jQuery.each(line.split(' '), (_idx, word) => {
+			if (strCurrLine.length + word.length + 1 < CPL) {
+				strCurrLine += word + ' '
+			} else {
+				if (strCurrLine) arrLines.push(strCurrLine)
+				strCurrLine = word + ' '
+			}
+		})
+
+		// All words for this line have been exhausted, flush buffer to new line, clear line var
+		if (strCurrLine) arrLines.push(strCurrLine.trim() + CRLF)
+		strCurrLine = ''
+	})
+
+	// D: Remove trailing linebreak
+	arrLines[arrLines.length - 1] = jQuery.trim(arrLines[arrLines.length - 1])
+
+	// Return lines
+	return arrLines
+}
 
 export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], opts: ITableToSlidesOpts = {}, presLayout: ILayout, masterSlide: ISlideLayout) {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN
