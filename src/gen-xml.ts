@@ -1031,22 +1031,11 @@ function genXmlTextRunProperties(opts, isDefault) {
  * @param {Object} opts - various options
  * @param {string} paraText - various options
  * @return {string} XML string
- * @example
- * <a:r>
- *   <a:rPr lang="en-US" sz="2800" dirty="0" smtClean="0">
- * 	<a:solidFill>
- * 	  <a:srgbClr val="00FF00">
- * 	  </a:srgbClr>
- * 	</a:solidFill>
- * 	<a:latin typeface="Courier New" pitchFamily="34" charset="0"/>
- *   </a:rPr>
- *   <a:t>Misc font/color, size = 28</a:t>
- * </a:r>
  */
 function genXmlTextRun(opts, paraText: string): string {
-	let xmlTextRun = ''
-	let paraProp = ''
 	let arrLines = []
+	let paraProp = ''
+	let xmlTextRun = ''
 
 	// 1: ADD runProperties
 	let startInfo = genXmlTextRunProperties(opts, false)
@@ -1054,13 +1043,11 @@ function genXmlTextRun(opts, paraText: string): string {
 	// 2: LINE-BREAKS/MULTI-LINE: Split text into multi-p:
 	arrLines = paraText.split(CRLF)
 	if (arrLines.length > 1) {
-		var outTextData = ''
-		for (var i = 0, total_size_i = arrLines.length; i < total_size_i; i++) {
-			outTextData += '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(arrLines[i])
+		arrLines.forEach((line, idx)=>{
+			xmlTextRun += '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(line)
 			// Stop/Start <p>aragraph as long as there is more lines ahead (otherwise its closed at the end of this function)
-			if (i + 1 < total_size_i) outTextData += (opts.breakLine ? CRLF : '') + '</a:t></a:r>'
-		}
-		xmlTextRun = outTextData
+			if (idx + 1 < arrLines.length) xmlTextRun += (opts.breakLine ? CRLF : '') + '</a:t></a:r>'
+		})
 	} else {
 		// Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
 		// The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
