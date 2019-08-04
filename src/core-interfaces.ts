@@ -266,19 +266,20 @@ export interface ITableCellOpts {
 	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
 	color?: string
 	colspan?: number
-	fill?: string
+	fill?: ShapeFill
 	fontSize?: number
-	isTableCell?: boolean
 	lineWeight?: number
 	margin?: number | [number, number, number, number]
 	rowspan?: number
 	valign?: VAlign
 }
 export interface ITableToSlidesCell {
+	type: SLIDE_OBJECT_TYPES.tablecell
 	text?: string
 	options?: ITableCellOpts
 }
 export interface ITableCell {
+	type: SLIDE_OBJECT_TYPES.tablecell
 	text?: string
 	hmerge?: boolean
 	vmerge?: boolean
@@ -315,19 +316,30 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 		tIns?: number
 		bIns?: number
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+		wrap?: boolean
 	}
+	breakLine?: boolean
+	bullet?: boolean | { type?: string; code?: string }
 	color?: string
+	fontFace?: string
 	fontSize?: number
+	indentLevel?: number
 	inset?: number
+	isTextBox?: boolean
+	lang?: string
 	line?: Color
 	lineSize?: number
 	lineSpacing?: number
+	paraSpaceAfter?: number
+	paraSpaceBefore?: number
 	placeholder?: string
 	rotate?: number // (degree * 60,000)
 	shadow?: IShadowOpts
 	shape?: Shape
+	shrinkText?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+	wrap?: boolean
 }
 export interface IText {
 	text: string
@@ -390,7 +402,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 
-export interface ObjectOptions extends ShapeOptions {
+export interface ObjectOptions extends ShapeOptions, ITableCellOpts, ITextOpts {
 	x?: Coord
 	y?: Coord
 	cx?: Coord
@@ -398,15 +410,6 @@ export interface ObjectOptions extends ShapeOptions {
 	w?: Coord
 	h?: Coord
 	margin?: number | [number, number, number, number]
-	// text
-	placeholder?: string
-	bodyProp?: {
-		lIns?: number
-		rIns?: number
-		bIns?: number
-		tIns?: number
-	}
-	isTextBox?: boolean
 	// table
 	colW?: number | number[]
 	rowH?: number | number[]

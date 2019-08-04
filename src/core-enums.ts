@@ -117,6 +117,7 @@ export enum SLIDE_OBJECT_TYPES {
 	'online' = 'online',
 	'placeholder' = 'placeholder',
 	'table' = 'table',
+	'tablecell' = 'tablecell',
 	'text' = 'text',
 	'notes' = 'notes',
 }

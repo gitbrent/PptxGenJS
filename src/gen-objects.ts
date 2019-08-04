@@ -717,7 +717,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 			*/
 			if (typeof cell === 'number' || typeof cell === 'string') {
 				// Grab table formatting `opts` to use here so text style/format inherits as it should
-				row[idy] = { text: row[idy].toString(), options: opt }
+				row[idy] = { type: SLIDE_OBJECT_TYPES.tablecell, text: row[idy].toString(), options: opt }
 			} else if (typeof cell === 'object') {
 				// ARG0: `text`
 				if (typeof cell.text === 'number') row[idy].text = row[idy].text.toString()
@@ -725,6 +725,9 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 
 				// ARG1: `options`: ensure options exists
 				row[idy].options = cell.options || {}
+
+				// Set type to tabelcell
+				row[idy].type = SLIDE_OBJECT_TYPES.tablecell
 			}
 
 			// B: Check for fine-grained formatting, disable auto-page when found
