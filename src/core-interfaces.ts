@@ -18,6 +18,7 @@ export type Color = HexColor | ThemeColor
 export type Coord = number | string // string is in form 'n%'
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 
 export interface PositionOptions {
 	x?: Coord
@@ -197,7 +198,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 export interface IImageOpts extends PositionOptions, OptsDataOrPath {
 	type?: 'audio' | 'online' | 'video'
 	sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
-	hyperlink?: any
+	hyperlink?: HyperLink
 	rounding?: boolean
 	placeholder?: any
 }
@@ -318,19 +319,24 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: boolean
 	}
+	bold?: boolean
 	breakLine?: boolean
 	bullet?: boolean | { type?: string; code?: string }
+	charSpacing?: number
 	color?: string
 	fontFace?: string
 	fontSize?: number
+	hyperlink?: HyperLink
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
+	italic?: boolean
 	lang?: string
 	line?: Color
 	lineIdx?:number
 	lineSize?: number
 	lineSpacing?: number
+	outline?: { color:Color, size:number }
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
@@ -339,6 +345,10 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	shadow?: IShadowOpts
 	shape?: Shape
 	shrinkText?: boolean
+	strike?: boolean
+	subscript?: boolean
+	superscript?: boolean
+	underline?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	wrap?: boolean
@@ -440,7 +450,7 @@ export interface ISlideObject {
 	// image:
 	image?: string
 	imageRid?: number
-	hyperlink?: { rId: number; slide?: number; tooltip?: string; url?: string }
+	hyperlink?: HyperLink
 	// media
 	media?: string
 	mtype?: MediaType

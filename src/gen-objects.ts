@@ -433,7 +433,7 @@ export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
 				type: SLIDE_OBJECT_TYPES.hyperlink,
 				data: objHyperlink.slide ? 'slide' : 'dummy',
 				rId: imageRelId,
-				Target: objHyperlink.url || objHyperlink.slide,
+				Target: objHyperlink.url || objHyperlink.slide.toString(),
 			})
 
 			objHyperlink.rId = imageRelId

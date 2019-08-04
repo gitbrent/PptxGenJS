@@ -34,6 +34,7 @@ import {
 	ITableToSlidesOpts,
 	ObjectOptions,
 	IText,
+    ITextOpts,
 } from './core-interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './gen-utils'
 
@@ -845,8 +846,9 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 				strCurrLine = word + ' '
 			}
 		})
+
 		// All words for this line have been exhausted, flush buffer to new line, clear line var
-		if (strCurrLine) arrLines.push(jQuery.trim(strCurrLine) + CRLF)
+		if (strCurrLine) arrLines.push(strCurrLine.trim() + CRLF)
 		strCurrLine = ''
 	})
 
@@ -966,9 +968,15 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 	return paragraphPropXml
 }
 
-function genXmlTextRunProperties(opts, isDefault) {
-	var runProps = ''
-	var runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
+/**
+ * Generate XML Text Run Properties (`a:rPr`)
+ * @param {ObjectOptions|ITextOpts} opts - text options
+ * @param {boolean} isDefault - whether these are the default text run properties
+ * @return {string} XML
+ */
+function genXmlTextRunProperties(opts:ObjectOptions|ITextOpts, isDefault:boolean):string {
+	let runProps = ''
+	let runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
 
 	// BEGIN runProperties
 	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '" ' + (opts.lang ? ' altLang="en-US"' : '')
