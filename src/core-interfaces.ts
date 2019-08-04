@@ -16,7 +16,7 @@ export type HexColor = string // should match /^[0-9a-fA-F]{6}$/
 export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 export type Color = HexColor | ThemeColor
 export type Coord = number | string // string is in form 'n%'
-export type HAlign = 'left' | 'center' | 'right'
+export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 
 export interface PositionOptions {
