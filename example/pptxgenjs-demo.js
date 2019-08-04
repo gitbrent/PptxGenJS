@@ -1177,6 +1177,7 @@ function genSlides_Chart(pptx) {
     // SLIDE 6: 3D Bar Chart ---------------------------------------------------------------
     function slide6() {
         var slide = pptx.addSlide();
+		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
         slide.addTable( [ [{ text:'Chart Examples: 3D Bar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
         var arrDataRegions = [
