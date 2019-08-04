@@ -1382,19 +1382,25 @@ export function makeXmlApp(slides: ISlide[], company: string): string {
 	</Properties>`
 }
 
+/**
+ * Creates `docProps/core.xml`
+ * @param {string} title - metadata data
+ * @param {string} company - metadata data
+ * @param {string} author - metadata value
+ * @param {string} revision - metadata value
+ * @returns XML
+ */
 export function makeXmlCore(title: string, subject: string, author: string, revision: string): string {
-	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml +=
-		'<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">'
-	strXml += '<dc:title>' + encodeXmlEntities(title) + '</dc:title>'
-	strXml += '<dc:subject>' + encodeXmlEntities(subject) + '</dc:subject>'
-	strXml += '<dc:creator>' + encodeXmlEntities(author) + '</dc:creator>'
-	strXml += '<cp:lastModifiedBy>' + encodeXmlEntities(author) + '</cp:lastModifiedBy>'
-	strXml += '<cp:revision>' + revision + '</cp:revision>'
-	strXml += '<dcterms:created xsi:type="dcterms:W3CDTF">' + new Date().toISOString().replace(/\.\d\d\dZ/, 'Z') + '</dcterms:created>'
-	strXml += '<dcterms:modified xsi:type="dcterms:W3CDTF">' + new Date().toISOString().replace(/\.\d\d\dZ/, 'Z') + '</dcterms:modified>'
-	strXml += '</cp:coreProperties>'
-	return strXml
+	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+	<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<dc:title>${encodeXmlEntities(title)}</dc:title>
+		<dc:subject>${encodeXmlEntities(subject)}</dc:subject>
+		<dc:creator>${encodeXmlEntities(author)}</dc:creator>
+		<cp:lastModifiedBy>${encodeXmlEntities(author)}</cp:lastModifiedBy>
+		<cp:revision>${revision}</cp:revision>
+		<dcterms:created xsi:type="dcterms:W3CDTF">${new Date().toISOString().replace(/\.\d\d\dZ/, 'Z')}</dcterms:created>
+		<dcterms:modified xsi:type="dcterms:W3CDTF">${new Date().toISOString().replace(/\.\d\d\dZ/, 'Z')}</dcterms:modified>
+	</cp:coreProperties>`
 }
 
 export function makeXmlPresentationRels(slides: Array<ISlide>): string {
