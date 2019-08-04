@@ -148,7 +148,7 @@ function execGenSlidesFuncs(type) {
 				{ 'rect':  { x: 0.0, y:5.7, w:'100%', h:0.75, fill:'F1F1F1' } },
 				{ 'text':
 					{ text:'Global IT & Services :: Status Report',
-					options:{ x:0.0, y:5.7, w:'100%', h:0.75, fontFace:'Arial', color:'363636', fontSize:20, align:'c', valign:'m', margin:0 } }
+					options:{ x:0.0, y:5.7, w:'100%', h:0.75, fontFace:'Arial', color:'363636', fontSize:20, align:'center', valign:'middle', margin:0 } }
 				}
 			]
 		});
@@ -163,7 +163,7 @@ function execGenSlidesFuncs(type) {
 				{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
 				{ 'text':
 					{
-						options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12},
+						options: {x:0, y:6.9, w:'100%', h:0.6, align:'center', valign:'middle', color:'FFFFFF', fontSize:12},
 						text: 'S.T.A.R. Laboratories - Confidential'
 					}
 				}
@@ -182,7 +182,7 @@ function execGenSlidesFuncs(type) {
 				{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
 				{ 'text':
 					{
-						options: {x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12},
+						options: {x:0, y:6.9, w:'100%', h:0.6, align:'center', valign:'middle', color:'FFFFFF', fontSize:12},
 						text: 'S.T.A.R. Laboratories - Confidential'
 					}
 				},
@@ -207,11 +207,11 @@ function execGenSlidesFuncs(type) {
 			bkgd: '36ABFF',
 			objects: [
 				{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-				{ 'placeholder': { options:{ name:'thanksText', type:'title', x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
+				{ 'placeholder': { options:{ name:'thanksText', type:'title', x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
 				{ 'image': objImg },
 				{ 'placeholder':
 					{
-						options: { name:'body', type:'body', x:0.0, y:6.45, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'c' },
+						options: { name:'body', type:'body', x:0.0, y:6.45, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'center' },
 						text: '(add homepage URL)'
 					}
 				}
@@ -223,7 +223,7 @@ function execGenSlidesFuncs(type) {
 			title: 'DEMO_SLIDE',
 			objects: [
 				{ 'rect':  { x:0.0, y:7.1, w:'100%', h:0.4, fill:'f1f1f1' } },
-				{ 'text':  { text:'PptxGenJS - JavaScript PowerPoint Library - (github.com/gitbrent/PptxGenJS)', options:{ x:0.0, y:7.1, w:'100%', h:0.4, color:'6c6c6c', fontSize:10, align:'c' } } }
+				{ 'text':  { text:'PptxGenJS - JavaScript PowerPoint Library - (github.com/gitbrent/PptxGenJS)', options:{ x:0.0, y:7.1, w:'100%', h:0.4, color:'6c6c6c', fontSize:10, align:'center' } } }
 			]
 		});
 	}
@@ -258,18 +258,18 @@ function genSlides_Table(pptx) {
 		var arrTabRows = [
 			[
 				{ text: 'Top Lft', options: { valign:'top',    align:'left'  , fontFace:'Arial'   } },
-				{ text: 'Top Ctr', options: { valign:'t'  ,    align:'center', fontFace:'Courier' } },
-				{ text: 'Top Rgt', options: { valign:'t'  ,    align:'right' , fontFace:'Verdana' } }
+				{ text: 'Top Ctr', options: { valign:'top'  ,    align:'center', fontFace:'Courier' } },
+				{ text: 'Top Rgt', options: { valign:'top'  ,    align:'right' , fontFace:'Verdana' } }
 			],
 			[
 				{ text: 'Ctr Lft', options: { valign:'middle', align:'left' } },
-				{ text: 'Ctr Ctr', options: { valign:'center', align:'ctr'  } },
-				{ text: 'Ctr Rgt', options: { valign:'c'     , align:'r'    } }
+				{ text: 'Ctr Ctr', options: { valign:'center', align:'center'  } },
+				{ text: 'Ctr Rgt', options: { valign:'center'     , align:'right'    } }
 			],
 			[
-				{ text: 'Btm Lft', options: { valign:'bottom', align:'l' } },
-				{ text: 'Btm Ctr', options: { valign:'btm',    align:'c' } },
-				{ text: 'Btm Rgt', options: { valign:'b',      align:'r' } }
+				{ text: 'Btm Lft', options: { valign:'bottom', align:'left' } },
+				{ text: 'Btm Ctr', options: { valign:'btm',    align:'center' } },
+				{ text: 'Btm Rgt', options: { valign:'bottom',      align:'right' } }
 			]
 		];
 		slide.addTable(
@@ -299,7 +299,7 @@ function genSlides_Table(pptx) {
 			]
 		];
 		slide.addTable(
-			arrTabRows, { x:6.0, y:1.1, w:7.0, rowH:0.75, fill:'F7F7F7', color:'FFFFFF', fontSize:16, valign:'center', align:'ctr', border:{pt:'1', color:'FFFFFF'} }
+			arrTabRows, { x:6.0, y:1.1, w:7.0, rowH:0.75, fill:'F7F7F7', color:'FFFFFF', fontSize:16, valign:'center', align:'center', border:{pt:'1', color:'FFFFFF'} }
 		);
 
 		// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
@@ -315,7 +315,7 @@ function genSlides_Table(pptx) {
 				x:0.5, y:4.0,
 				rowH: [1, 2], colW: [1, 2, 2.5, 3, 4],
 				fill:'F7F7F7', color:'6c6c6c',
-				fontSize:14, valign:'center', align:'ctr',
+				fontSize:14, valign:'center', align:'center',
 				border:{pt:'1', color:'BBCCDD'}
 			}
 		);
@@ -431,7 +431,7 @@ function genSlides_Table(pptx) {
 			]
 		];
 
-		var taboptions5 = { x:0.6, y:1.3, w:'90%', h:5.5, margin:0, fontSize:14, align:'c', valign:'m', border:{pt:'1'} };
+		var taboptions5 = { x:0.6, y:1.3, w:'90%', h:5.5, margin:0, fontSize:14, align:'center', valign:'middle', border:{pt:'1'} };
 
 		slide.addTable(arrTabRows5, taboptions5);
 	}
@@ -448,7 +448,7 @@ function genSlides_Table(pptx) {
 		slide.addText('Cell Margins:', optsSub);
 
 		slide.addTable( [['margin:0']],           { x:0.5, y:1.1, margin:0,           w:1.2, fill:'FFFCCC' } );
-		slide.addTable( [['margin:[0,0,0,20]']],  { x:2.5, y:1.1, margin:[0,0,0,20],  w:2.0, fill:'FFFCCC', align:'r' } );
+		slide.addTable( [['margin:[0,0,0,20]']],  { x:2.5, y:1.1, margin:[0,0,0,20],  w:2.0, fill:'FFFCCC', align:'right' } );
 		slide.addTable( [['margin:5']],           { x:5.5, y:1.1, margin:5,           w:1.0, fill:'F1F1F1' } );
 		slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
 		slide.addTable( [['margin:[80,5,5,10]']], { x:10.5,y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
@@ -460,9 +460,9 @@ function genSlides_Table(pptx) {
 		var arrTextObjects = [
 			['Plain text','Cell 2',3],
 			[
-				{ text:'Text Objects', options:{ color:'99ABCC', align:'r' } },
-				{ text:'2nd cell', options:{ color:'0000EE', align:'c' } },
-				{ text:3, options:{ color:'0088CC', align:'l' } }
+				{ text:'Text Objects', options:{ color:'99ABCC', align:'right' } },
+				{ text:'2nd cell', options:{ color:'0000EE', align:'center' } },
+				{ text:3, options:{ color:'0088CC', align:'left' } }
 			]
 		];
 		slide.addTable( arrTextObjects, { x:0.5, y:2.7, w:12.25, margin:7, fill:'F1F1F1', border:{pt:1,color:'696969'} } );
@@ -471,13 +471,13 @@ function genSlides_Table(pptx) {
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 3.9;
 		slide.addText('Complex Cell Border:', optsSub);
 		var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
-		slide.addTable( [['Borders!']], { x:0.5, y:4.3, w:12.3, rowH:1.5, fill:'F5F5F5', color:'3D3D3D', fontSize:18, border:arrBorder, align:'c', valign:'c' } );
+		slide.addTable( [['Borders!']], { x:0.5, y:4.3, w:12.3, rowH:1.5, fill:'F5F5F5', color:'3D3D3D', fontSize:18, border:arrBorder, align:'center', valign:'middle' } );
 
 		// Invalid char check
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 6.1;
 		slide.addText('Escaped Invalid Chars:', optsSub);
 		var arrTabRows3 = [['<', '>', '"', "'", '&', 'plain']];
-		slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'c', valign:'c' } );
+		slide.addTable( arrTabRows3, { x:0.5, y:6.5, w:12.3, rowH:0.5, fill:'F5F5F5', color:'3D3D3D', border:'FFFFFF', align:'center', valign:'middle' } );
 
 	}
 
@@ -491,9 +491,9 @@ function genSlides_Table(pptx) {
 			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, fontSize:14 }
 		);
 		slide.addText("[\n"
-			+ "  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'r', breakLine:true } },\n"
-			+ "  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'c', breakLine:true } },\n"
-			+ "  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'l' } }\n"
+			+ "  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right', breakLine:true } },\n"
+			+ "  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },\n"
+			+ "  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left' } }\n"
 			+ "]",
 			{ x:1, y:1.1, w:11, h:1.5, margin:0.1, fontFace:'Courier', fontSize:14, fill:'F1F1F1', color:'333333' }
 		);
@@ -502,9 +502,9 @@ function genSlides_Table(pptx) {
 		slide.addText('Textbox:', { x:1, y:2.8, w:3, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
 		var arrTextObjects = [
-			{ text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'r', breakLine:true } },
-			{ text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'c', breakLine:true } },
-			{ text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'l' } }
+			{ text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right', breakLine:true } },
+			{ text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },
+			{ text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left' } }
 		];
 		slide.addText( arrTextObjects, { x:2.5, y:2.8, w:9, h:2, margin:0.1, fill:'232323' } );
 
@@ -537,7 +537,7 @@ function genSlides_Table(pptx) {
 		var arrCell3 = [{ text:'Bullets\nBullets\nBullets', options:{ color:'0088cc', bullet:true } }];
 		var arrCell4 = [{ text:'Numbers\nNumbers\nNumbers', options:{ color:'0088cc', bullet:{type:'number'} } }];
 		var arrTabRows = [
-			[{ text:arrCell1 }, { text:arrCell2, options:{valign:'m'} }, { text:arrCell3, options:{valign:'m'} }, { text:arrCell4, options:{valign:'b'} }]
+			[{ text:arrCell1 }, { text:arrCell2, options:{valign:'middle'} }, { text:arrCell3, options:{valign:'middle'} }, { text:arrCell4, options:{valign:'bottom'} }]
 		];
 		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:3, fontSize:24, border:{pt:'1'}, fill:'F1F1F1' } );
 
@@ -550,8 +550,8 @@ function genSlides_Table(pptx) {
 					{ text:'Final text object w/ bullet:true', options:{color:'0000AB', bullet:true} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{fontSize:36, align:'l', breakLine:true} },
-					{ text:'#2',   options:{fontSize:60, align:'r', color:'CD0101'} }
+					{ text:'Cell', options:{fontSize:36, align:'left', breakLine:true} },
+					{ text:'#2',   options:{fontSize:60, align:'right', color:'CD0101'} }
 				]},
 				{ text:[
 					{ text:'Cell', options:{fontSize:36, fontFace:'Courier', color:'dd0000', breakLine:true} },
@@ -559,7 +559,7 @@ function genSlides_Table(pptx) {
 					{ text:'3'   , options:{fontSize:60, color:'33ccef'} }
 				]}
 			],
-			{ x:0.6, y:4.75, w:12, h:2, fontSize:24, colW:[8,2,2], valign:'m', border:{pt:'1'}, fill:'F1F1F1' }
+			{ x:0.6, y:4.75, w:12, h:2, fontSize:24, colW:[8,2,2], valign:'middle', border:{pt:'1'}, fill:'F1F1F1' }
 		);
 	}
 
@@ -1492,7 +1492,7 @@ function genSlides_Chart(pptx) {
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart(
 			pptx.charts.PIE, dataChartPieStat,
-			{x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'l', legendFontFace:'Courier New'}
+			{x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'left', legendFontFace:'Courier New'}
 		);
 
 		// TOP-RIGHT
@@ -2317,7 +2317,7 @@ function genSlides_Image(pptx) {
 		// TOP: 1
 		slide.addText('Type: Animated GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
 		slide.addImage({ x:1.0, y:1.1, w:1.5, h:1.5, path:(NODEJS ? gPaths.gifAnimTrippy.path.replace(/http.+\/examples/, '../examples') : gPaths.gifAnimTrippy.path) });
-		slide.addText('(use slide Show)', { x:1.0, y:2.7, w:1.5, h:0.3, color:'696969', fill:'FFFCCC', align:'c', fontSize:10 });
+		slide.addText('(use slide Show)', { x:1.0, y:2.7, w:1.5, h:0.3, color:'696969', fill:'FFFCCC', align:'center', fontSize:10 });
 
 		// TOP: 2
 		slide.addText('Type: GIF', { x:4.35, y:0.6, w:1.4, h:0.4, color:'0088CC' });
@@ -2347,7 +2347,7 @@ function genSlides_Image(pptx) {
 		slide.addText('Type: SVG', { x:9.5, y:3.3, w:4.0, h:0.4, color:'0088CC' });
 		slide.addImage({ path:gPaths.wikimedia_svg1.path, x:9.5, y:3.8, w:2.0, h:2.0 }); // TEST: `path`
 		slide.addImage({ data:svgBase64, x:11.1, y:5.1, w:1.5, h:1.5 }); // TEST: `data`
-		slide.addText('(not supported in Node)', { x:9.1, y:6.8, w:3.5, h:0.3, color:'696969', fill:'FFFCCC', align:'c', fontSize:10 });
+		slide.addText('(not supported in Node)', { x:9.1, y:6.8, w:3.5, h:0.3, color:'696969', fill:'FFFCCC', align:'center', fontSize:10 });
 
 		// TEST: Ensure framework corrects for missing all header
 		// (Please **DO NOT** pass base64 data without the header! This is a JUNK TEST!)
@@ -2451,7 +2451,7 @@ function genSlides_Media(pptx) {
 
 		slide1.addText(
 			'**NOTE** YouTube videos will issue a content warning in older desktop PPT (they only work in PPT Online/Desktop v16+)',
-			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'c', fontSize:12 }
+			{ shape:pptx.shapes.RECTANGLE, x:0.0, y:7.0, w:'100%', h:0.53, fill:'FFF000', align:'center', fontSize:12 }
 		);
 	}
 
@@ -2502,20 +2502,20 @@ function genSlides_Shape(pptx) {
 	slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html');
 	slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
-	slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE, x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'c', fontSize:14 });
-	slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE, x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'c', fontSize:14 });
-	slide.addText('OVAL (alpha:50)',            { shape:pptx.shapes.OVAL,      x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC', alpha:50 }, align:'c', fontSize:14 });
-	slide.addText('OVAL (rotate:90, alpha:75)', { shape:pptx.shapes.OVAL,      x:7.7, y:1.4, w:3.0, h:1.5, fill:{ type:'solid', color:'FF00CC', alpha:75 }, rotate:90, align:'c', fontSize:14 });
-	slide.addText('ROUNDED-RECTANGLE\nlineDash:dash\nrectRadius:10', { shape:pptx.shapes.ROUNDED_RECTANGLE, x:10 , y:2.5, w:3.0, h:1.5, r:0.2, fill:'00FF00', align:'c', fontSize:14, line:'000000', lineSize:1, lineDash:'dash', rectRadius:10 });
+	slide.addText('RECTANGLE',                  { shape:pptx.shapes.RECTANGLE, x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'center', fontSize:14 });
+	slide.addText('RECTANGLE (rotate:45)',      { shape:pptx.shapes.RECTANGLE, x:3.0, y:0.7, w:1.5, h:3.0, fill:'F38E00', rotate:45, align:'center', fontSize:14 });
+	slide.addText('OVAL (alpha:50)',            { shape:pptx.shapes.OVAL,      x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC', alpha:50 }, align:'center', fontSize:14 });
+	slide.addText('OVAL (rotate:90, alpha:75)', { shape:pptx.shapes.OVAL,      x:7.7, y:1.4, w:3.0, h:1.5, fill:{ type:'solid', color:'FF00CC', alpha:75 }, rotate:90, align:'center', fontSize:14 });
+	slide.addText('ROUNDED-RECTANGLE\nlineDash:dash\nrectRadius:10', { shape:pptx.shapes.ROUNDED_RECTANGLE, x:10 , y:2.5, w:3.0, h:1.5, r:0.2, fill:'00FF00', align:'center', fontSize:14, line:'000000', lineSize:1, lineDash:'dash', rectRadius:10 });
 	//
-	slide.addText('LINE size=1',     { shape:pptx.shapes.LINE, align:'c', x:4.15, y:4.40, w:5, h:0, line:'FF0000', lineSize:1, lineDash:'lgDash' });
-	slide.addText('LINE size=2',     { shape:pptx.shapes.LINE, align:'l', x:4.15, y:4.80, w:5, h:0, line:'FF0000', lineSize:2, lineTail:'triangle' });
-	slide.addText('LINE size=3',     { shape:pptx.shapes.LINE, align:'r', x:4.15, y:5.20, w:5, h:0, line:'FF0000', lineSize:3, lineHead:'triangle' });
-	slide.addText('LINE size=4',     { shape:pptx.shapes.LINE, align:'c', x:4.15, y:5.60, w:5, h:0, line:'FF0000', lineSize:4, lineHead:'triangle', lineTail:'triangle' });
-	slide.addText('DIAGONAL',        { shape:pptx.shapes.LINE, valign:'b', x:5.7, y:3.3, w:2.5, h:0, lineSize:2, rotate:(360-45) }); // TEST: (missing `line`)
+	slide.addText('LINE size=1',     { shape:pptx.shapes.LINE, align:'center', x:4.15, y:4.40, w:5, h:0, line:'FF0000', lineSize:1, lineDash:'lgDash' });
+	slide.addText('LINE size=2',     { shape:pptx.shapes.LINE, align:'left', x:4.15, y:4.80, w:5, h:0, line:'FF0000', lineSize:2, lineTail:'triangle' });
+	slide.addText('LINE size=3',     { shape:pptx.shapes.LINE, align:'right', x:4.15, y:5.20, w:5, h:0, line:'FF0000', lineSize:3, lineHead:'triangle' });
+	slide.addText('LINE size=4',     { shape:pptx.shapes.LINE, align:'center', x:4.15, y:5.60, w:5, h:0, line:'FF0000', lineSize:4, lineHead:'triangle', lineTail:'triangle' });
+	slide.addText('DIAGONAL',        { shape:pptx.shapes.LINE, valign:'bottom', x:5.7, y:3.3, w:2.5, h:0, lineSize:2, rotate:(360-45) }); // TEST: (missing `line`)
 	//
-	slide.addText('RIGHT-TRIANGLE',  { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.4, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', lineSize:3 });
-	slide.addText('RIGHT-TRIANGLE',  { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.0, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
+	slide.addText('RIGHT-TRIANGLE',  { shape:pptx.shapes.RIGHT_TRIANGLE, align:'center', x:0.4, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', lineSize:3 });
+	slide.addText('RIGHT-TRIANGLE',  { shape:pptx.shapes.RIGHT_TRIANGLE, align:'center', x:7.0, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
 }
 
 function genSlides_Text(pptx) {
@@ -2532,11 +2532,11 @@ function genSlides_Text(pptx) {
 		slide.addText("Word-Level Formatting:", { x:0.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'1st\nline',options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-				{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
-				{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'l' } },
-				{ text:'4th line', options:{ fontSize:38, fontFace:'Arial',       color:'FFFF00', align:'c', strike:true } },
-				{ text:'5th\nline',options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'r' } }
+				{ text:'1st\nline',options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'right', breakLine:true } },
+				{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'center', breakLine:true } },
+				{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'left' } },
+				{ text:'4th line', options:{ fontSize:38, fontFace:'Arial',       color:'FFFF00', align:'center', strike:true } },
+				{ text:'5th\nline',options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'right' } }
 			],
 			{ x:0.5, y:0.85, w:6, h:4, margin:0.1, fill:'232323' }
 		);
@@ -2564,13 +2564,13 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Breaks:", { x:7.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'***Line-Break/Multi-Line Test***\n\nFirst line\nSecond line\nThird line',
-			{ x:7.5, y:0.85, w:5.25, h:1.6, valign:'middle', align:'ctr', color:'6c6c6c', fontSize:16, fill:'F2F2F2', line:{pt:'2',color:'C7C7C7'} }
+			{ x:7.5, y:0.85, w:5.25, h:1.6, valign:'middle', align:'center', color:'6c6c6c', fontSize:16, fill:'F2F2F2', line:{pt:'2',color:'C7C7C7'} }
 		);
 
 		slide.addText("Line-Spacing (text):", { x:7.5, y:2.6, w:'40%', h:0.38, color:'0088CC' });
 		slide.addText(
 			'1st Line\n2nd Line (40pt)',
-			{ x:7.5, y:2.95, w:5.25, h:1.25, valign:'m', align:'c', fill:'f1f1f1', color:'363636', lineSpacing:40 }
+			{ x:7.5, y:2.95, w:5.25, h:1.25, valign:'middle', align:'center', fill:'f1f1f1', color:'363636', lineSpacing:40 }
 		);
 
 		slide.addText("Line-Spacing (bullets):", { x:7.5, y:4.45, w:'40%', h:0.38, color:'0088CC' });
@@ -2658,15 +2658,15 @@ function genSlides_Text(pptx) {
 				{ text:'Textbox align (ctr/ctr)', options:{ fontSize:32 } },
 				{ text:'Character Spacing 16', options:{ fontSize:16, charSpacing:16 } }
 			],
-			{ x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'c', align:'c', isTextBox:true }
+			{ x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'middle', align:'center', isTextBox:true }
 		);
 		slide.addText(
 			[{ text:'(top/lft)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
-			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'t', align:'l', margin:15 }
+			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'top', align:'left', margin:15 }
 		);
 		slide.addText(
 			[{ text:'Textbox' }, { text:'(btm/rgt)', options:{ fontSize:12 } }],
-			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'b', align:'r', margin:0 }
+			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'bottom', align:'right', margin:0 }
 		);
 
 		slide.addText('^ (50%/50%)', { x:'50%', y:'50%', w:2 });
@@ -2688,14 +2688,14 @@ function genSlides_Text(pptx) {
 		// TEST: using {option}: Add text box with multiline options:
 		slide.addText(
 			[
-				{ text:'word-level\nformatting', options:{ fontSize:32, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-				{ text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
+				{ text:'word-level\nformatting', options:{ fontSize:32, fontFace:'Courier New', color:'99ABCC', align:'right', breakLine:true } },
+				{ text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'center' } }
 			],
 			{ x:0.5, y:4.3, w:8.5, h:2.5, margin:0.1, fill:'232323' }
 		);
 
 		var objOptions = {
-			x:0, y:7, w:'100%', h:0.5, align:'c',
+			x:0, y:7, w:'100%', h:0.5, align:'center',
 			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
 		};
 		slide.addText('Text: Arial, 24, green, bold, italic, underline, margin:0', objOptions);
