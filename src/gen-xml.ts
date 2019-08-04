@@ -817,21 +817,25 @@ function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { 
 }
 
 /**
- * Magic happens here
+ * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
+ * @param {ITableCell} cell - table cell
+ * @param {number} colWidth - table column width
+ * @return {string[]} XML
  */
-function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
+function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
-	let CPL = (inWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
+	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []
 	let strCurrLine = ''
 
-	// Allow a single space/whitespace as cell text
+	// A: Allow a single space/whitespace as cell text (user-requested feature)
 	if (cell.text && cell.text.toString().trim() == '') return [' ']
 
-	// A: Remove leading/trailing space
-	var inStr = (cell.text || '').toString().trim()
+	// B: Remove leading/trailing spaces
+	let inStr = (cell.text || '').toString().trim()
 
-	// B: Build line array
+	// C: Build line array
+	// FIXME: FIXME-3: change to `forEach`
 	jQuery.each(inStr.split('\n'), (_idx, line) => {
 		jQuery.each(line.split(' '), (_idx, word) => {
 			if (strCurrLine.length + word.length + 1 < CPL) {
@@ -846,10 +850,10 @@ function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
 		strCurrLine = ''
 	})
 
-	// C: Remove trailing linebreak
+	// D: Remove trailing linebreak
 	arrLines[arrLines.length - 1] = jQuery.trim(arrLines[arrLines.length - 1])
 
-	// D: Return lines
+	// Return lines
 	return arrLines
 }
 
