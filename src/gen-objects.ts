@@ -82,8 +82,8 @@ export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME 
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {String|Object} bkg color string or an object with image definition
- * @param {ISlide} target slide object that the background is set to
+ * @param {String|Object} bkg - color string or an object with image definition
+ * @param {ISlide} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
