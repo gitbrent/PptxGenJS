@@ -495,7 +495,7 @@ function genSlides_Table(pptx) {
 			+ "  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },\n"
 			+ "  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left' } }\n"
 			+ "]",
-			{ x:1, y:1.1, w:11, h:1.5, margin:0.1, fontFace:'Courier', fontSize:14, fill:'F1F1F1', color:'333333' }
+			{ x:1, y:1.1, w:11, h:1.5, margin:0.1, fontFace:'Courier', fontSize:13, fill:'F1F1F1', color:'333333' }
 		);
 
 		// Textbox: Text word-level formatting
