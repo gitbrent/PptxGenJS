@@ -739,7 +739,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
  * Transforms slide relations to XML string.
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
- *
  * @param {ISlide | ISlideLayout} slide - slide object whose relations are being transformed
  * @param {{ target: string; type: string }[]} defaultRels - array of default relations
  * @return {string} XML
@@ -854,31 +853,32 @@ function parseTextToLines(cell: ITableCell, inWidth: number): Array<string> {
 	return arrLines
 }
 
-function genXmlParagraphProperties(textObj, isDefault) {
-	var strXmlBullet = '',
+/**
+ * Generate XML Paragraph Properties
+ * @param {ISlideObject|IText} textObj - text object
+ * @param {boolean} isDefault - array of default relations
+ * @return {string} XML
+ */
+function genXmlParagraphProperties(textObj:ISlideObject|IText, isDefault:boolean):string {
+	let strXmlBullet = '',
 		strXmlLnSpc = '',
-		strXmlParaSpc = '',
-		paraPropXmlCore = ''
-	var bulletLvl0Margin = 342900
-	var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
+		strXmlParaSpc = ''
+	let bulletLvl0Margin = 342900
+	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
 
-	var paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '')
+	let paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '')
 
 	// A: Build paragraphProperties
 	{
 		// OPTION: align
 		if (textObj.options.align) {
 			switch (textObj.options.align) {
-				case 'l':
 				case 'left':
 					paragraphPropXml += ' algn="l"'
 					break
-				case 'r':
 				case 'right':
 					paragraphPropXml += ' algn="r"'
 					break
-				case 'c':
-				case 'ctr':
 				case 'center':
 					paragraphPropXml += ' algn="ctr"'
 					break
@@ -904,9 +904,6 @@ function genXmlParagraphProperties(textObj, isDefault) {
 		if (textObj.options.paraSpaceAfter && !isNaN(Number(textObj.options.paraSpaceAfter)) && textObj.options.paraSpaceAfter > 0) {
 			strXmlParaSpc += '<a:spcAft><a:spcPts val="' + textObj.options.paraSpaceAfter * 100 + '"/></a:spcAft>'
 		}
-
-		// Set core XML for use below
-		paraPropXmlCore = paragraphPropXml
 
 		// OPTION: bullet
 		// NOTE: OOXML uses the unicode character set for Bullets
@@ -953,9 +950,8 @@ function genXmlParagraphProperties(textObj, isDefault) {
 			strXmlBullet = '<a:buNone/>'
 		}
 
-		// Close Paragraph-Properties --------------------
-		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering.
-		//            anything out of order is ignored. (PPT-Online, PPT for Mac)
+		// B: Close Paragraph-Properties
+		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
 		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet
 		if (isDefault) {
 			paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
