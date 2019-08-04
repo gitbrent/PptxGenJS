@@ -1403,6 +1403,11 @@ export function makeXmlCore(title: string, subject: string, author: string, revi
 	</cp:coreProperties>`
 }
 
+/**
+ * Creates `ppt/_rels/presentation.xml.rels`
+ * @param {ISlide[]} slides - Presenation Slides
+ * @returns XML
+ */
 export function makeXmlPresentationRels(slides: Array<ISlide>): string {
 	let intRelNum = 1
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
@@ -1438,8 +1443,8 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
 
 /**
  * Generates XML for the slide file (`ppt/slides/slide1.xml`)
- * @param {Object} objSlide - the slide object to transform into XML
- * @return {string} strXml - slide OOXML
+ * @param {ISlide} slide - the slide object to transform into XML
+ * @return {string} XML
  */
 export function makeXmlSlide(slide: ISlide): string {
 	return (
