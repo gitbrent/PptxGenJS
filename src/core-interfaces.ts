@@ -328,12 +328,14 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	isTextBox?: boolean
 	lang?: string
 	line?: Color
+	lineIdx?:number
 	lineSize?: number
 	lineSpacing?: number
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
 	rotate?: number // (degree * 60,000)
+	rtlMode?: boolean
 	shadow?: IShadowOpts
 	shape?: Shape
 	shrinkText?: boolean

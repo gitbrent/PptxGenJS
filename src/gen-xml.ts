@@ -33,6 +33,7 @@ import {
 	ITableToSlidesCell,
 	ITableToSlidesOpts,
 	ObjectOptions,
+    IText,
 } from './core-interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, rgbToHex } from './gen-utils'
 
@@ -1135,7 +1136,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	if (opts && slideObj.type != SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
 
 	// Vars
-	var arrTextObjects = []
+	var arrTextObjects:IText[] = []
 	var tagStart = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
 	var tagClose = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
 	var strSlideXml = tagStart
@@ -1282,6 +1283,13 @@ export function genXmlPlaceholder(placeholderObj: ISlideObject): string {
 
 // XML-GEN: First 6 functions create the base /ppt files
 
+/**
+ * Generate XML ContentType
+ * @param {ISlide[]} slides - slides
+ * @param {ISlideLayout[]} slideLayouts - slide layouts
+ * @param {ISlide} masterSlide - master slide
+ * @returns XML
+ */
 export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[], masterSlide?: ISlide): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
