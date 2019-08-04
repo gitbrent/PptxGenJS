@@ -1262,21 +1262,22 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	return strSlideXml
 }
 
-export function genXmlPlaceholder(placeholderObj) {
-	let strXml = ''
+/**
+ * Generate an XML Placeholder
+ * @param {ISlideObject} placeholderObj
+ * @returns XML
+ */
+export function genXmlPlaceholder(placeholderObj: ISlideObject): string {
+	if (!placeholderObj) return ''
 
-	if (placeholderObj) {
-		let placeholderIdx = placeholderObj.options && placeholderObj.options.placeholderIdx ? placeholderObj.options.placeholderIdx : ''
-		let placeholderType = placeholderObj.options && placeholderObj.options.placeholderType ? placeholderObj.options.placeholderType : ''
+	let placeholderIdx = placeholderObj.options && placeholderObj.options.placeholderIdx ? placeholderObj.options.placeholderIdx : ''
+	let placeholderType = placeholderObj.options && placeholderObj.options.placeholderType ? placeholderObj.options.placeholderType : ''
 
-		strXml +=
-			'<p:ph' +
-			(placeholderIdx ? ' idx="' + placeholderIdx + '"' : '') +
-			(placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ' type="' + PLACEHOLDER_TYPES[placeholderType] + '"' : '') +
-			(placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : '') +
-			'/>'
-	}
-	return strXml
+	return `<p:ph
+		${placeholderIdx ? ' idx="' + placeholderIdx + '"' : ''}
+		${placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ' type="' + PLACEHOLDER_TYPES[placeholderType] + '"' : ''}
+		${placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : ''}
+		/>`
 }
 
 // XML-GEN: First 6 functions create the base /ppt files

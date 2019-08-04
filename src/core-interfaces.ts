@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN } from './core-enums'
+import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES } from './core-enums'
 
 // FIXME: WONT FORMAT ANYMORE!!! ("TSTypeAliasDeclaration" error)
 
@@ -422,6 +422,9 @@ export interface ObjectOptions extends ShapeOptions, ITableCellOpts, ITextOpts {
 		h?: number
 	}
 	rounding?: string
+	// placeholder
+	placeholderIdx?: number
+	placeholderType?: PLACEHOLDER_TYPES
 }
 export interface ISlideObject {
 	type: SLIDE_OBJECT_TYPES
