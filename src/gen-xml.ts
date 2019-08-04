@@ -1457,14 +1457,19 @@ export function makeXmlSlide(slide: ISlide): string {
 	)
 }
 
-export function getNotesFromSlide(objSlide: ISlide): string {
-	var notesStr = ''
-	objSlide.data.forEach(data => {
-		if (data.type === 'notes') {
-			notesStr += data.text
-		}
+/**
+ * Get text content of Notes from Slide
+ * @param {ISlide} slide - the slide object to transform into XML
+ * @return {string} notes text
+ */
+export function getNotesFromSlide(slide: ISlide): string {
+	let notesText = ''
+
+	slide.data.forEach(data => {
+		if (data.type === 'notes') notesText += data.text
 	})
-	return notesStr.replace(/\r*\n/g, CRLF)
+
+	return notesText.replace(/\r*\n/g, CRLF)
 }
 
 /**
@@ -1477,8 +1482,10 @@ export function makeXmlNotesMaster(): string {
 
 /**
  * Creates Notes Slide (`ppt/notesSlides/notesSlide1.xml`)
+ * @param {ISlide} slide - the slide object to transform into XML
+ * @return {string} XML
  */
-export function makeXmlNotesSlide(objSlide: ISlide): string {
+export function makeXmlNotesSlide(slide: ISlide): string {
 	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
@@ -1494,7 +1501,7 @@ export function makeXmlNotesSlide(objSlide: ISlide): string {
 		'<p:ph type="body" idx="1"/></p:nvPr></p:nvSpPr><p:spPr/>' +
 		'<p:txBody><a:bodyPr/><a:lstStyle/><a:p><a:r>' +
 		'<a:rPr lang="en-US" dirty="0" smtClean="0"/><a:t>' +
-		encodeXmlEntities(getNotesFromSlide(objSlide)) +
+		encodeXmlEntities(getNotesFromSlide(slide)) +
 		'</a:t></a:r><a:endParaRPr lang="en-US" dirty="0"/></a:p></p:txBody>' +
 		'</p:sp><p:sp><p:nvSpPr><p:cNvPr id="4" name="Slide Number Placeholder 3"/>' +
 		'<p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr><p:nvPr>' +
@@ -1504,7 +1511,7 @@ export function makeXmlNotesSlide(objSlide: ISlide): string {
 		SLDNUMFLDID +
 		'" type="slidenum">' +
 		'<a:rPr lang="en-US" smtClean="0"/><a:t>' +
-		objSlide.number +
+		slide.number +
 		'</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp>' +
 		'</p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
 		'<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991"/>' +
