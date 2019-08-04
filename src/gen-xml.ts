@@ -1326,7 +1326,7 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[],
  * Creates `_rels/.rels`
  * @returns XML
  */
-export function makeXmlRootRels():string {
+export function makeXmlRootRels(): string {
 	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
 		<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
 		<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
@@ -1334,48 +1334,52 @@ export function makeXmlRootRels():string {
 		</Relationships>`
 }
 
-export function makeXmlApp(slides: Array<ISlide>, company: string): string {
-	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-	strXml +=
-		'<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">'
-	strXml += '<TotalTime>0</TotalTime>'
-	strXml += '<Words>0</Words>'
-	strXml += '<Application>Microsoft Office PowerPoint</Application>'
-	strXml += '<PresentationFormat>On-screen Show (16:9)</PresentationFormat>'
-	strXml += '<Paragraphs>0</Paragraphs>'
-	strXml += '<Slides>' + slides.length + '</Slides>'
-	strXml += '<Notes>' + slides.length + '</Notes>'
-	strXml += '<HiddenSlides>0</HiddenSlides>'
-	strXml += '<MMClips>0</MMClips>'
-	strXml += '<ScaleCrop>false</ScaleCrop>'
-	strXml += '<HeadingPairs>'
-	strXml += '<vt:vector size="6" baseType="variant">'
-	strXml += '<vt:variant><vt:lpstr>Fonts Used</vt:lpstr></vt:variant>'
-	strXml += '<vt:variant><vt:i4>2</vt:i4></vt:variant>'
-	strXml += '<vt:variant><vt:lpstr>Theme</vt:lpstr></vt:variant>'
-	strXml += '<vt:variant><vt:i4>1</vt:i4></vt:variant>'
-	strXml += '<vt:variant><vt:lpstr>Slide Titles</vt:lpstr></vt:variant>'
-	strXml += '<vt:variant><vt:i4>' + slides.length + '</vt:i4></vt:variant>'
-	strXml += '</vt:vector>'
-	strXml += '</HeadingPairs>'
-	strXml += '<TitlesOfParts>'
-	strXml += '<vt:vector size="' + (slides.length + 1 + 2) + '" baseType="lpstr">'
-	strXml += '<vt:lpstr>Arial</vt:lpstr>'
-	strXml += '<vt:lpstr>Calibri</vt:lpstr>'
-	strXml += '<vt:lpstr>Office Theme</vt:lpstr>'
-	slides.forEach((_slideObj, idx) => {
-		strXml += '<vt:lpstr>Slide ' + (idx + 1) + '</vt:lpstr>'
-	})
-	strXml += '</vt:vector>'
-	strXml += '</TitlesOfParts>'
-	strXml += '<Company>' + company + '</Company>'
-	strXml += '<LinksUpToDate>false</LinksUpToDate>'
-	strXml += '<SharedDoc>false</SharedDoc>'
-	strXml += '<HyperlinksChanged>false</HyperlinksChanged>'
-	strXml += '<AppVersion>16.0000</AppVersion>'
-	strXml += '</Properties>'
-
-	return strXml
+/**
+ * Creates `docProps/app.xml`
+ * @param {ISlide[]} slides - Presenation Slides
+ * @param {string} company - "Company" metadata
+ * @returns XML
+ */
+export function makeXmlApp(slides: ISlide[], company: string): string {
+	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+	<TotalTime>0</TotalTime>
+	<Words>0</Words>
+	<Application>Microsoft Office PowerPoint</Application>
+	<PresentationFormat>On-screen Show (16:9)</PresentationFormat>
+	<Paragraphs>0</Paragraphs>
+	<Slides>${slides.length}</Slides>
+	<Notes>${slides.length}</Notes>
+	<HiddenSlides>0</HiddenSlides>
+	<MMClips>0</MMClips>
+	<ScaleCrop>false</ScaleCrop>
+	<HeadingPairs>
+		<vt:vector size="6" baseType="variant">
+			<vt:variant><vt:lpstr>Fonts Used</vt:lpstr></vt:variant>
+			<vt:variant><vt:i4>2</vt:i4></vt:variant>
+			<vt:variant><vt:lpstr>Theme</vt:lpstr></vt:variant>
+			<vt:variant><vt:i4>1</vt:i4></vt:variant>
+			<vt:variant><vt:lpstr>Slide Titles</vt:lpstr></vt:variant>
+			<vt:variant><vt:i4>${slides.length}</vt:i4></vt:variant>
+		</vt:vector>
+	</HeadingPairs>
+	<TitlesOfParts>
+		<vt:vector size="${slides.length + 1 + 2}" baseType="lpstr">
+			<vt:lpstr>Arial</vt:lpstr>
+			<vt:lpstr>Calibri</vt:lpstr>
+			<vt:lpstr>Office Theme</vt:lpstr>
+			${slides
+				.map((_slideObj, idx) => {
+					return '<vt:lpstr>Slide ' + (idx + 1) + '</vt:lpstr>\n'
+				})
+				.join('')}
+		</vt:vector>
+	</TitlesOfParts>
+	<Company>${company}</Company>
+	<LinksUpToDate>false</LinksUpToDate>
+	<SharedDoc>false</SharedDoc>
+	<HyperlinksChanged>false</HyperlinksChanged>
+	<AppVersion>16.0000</AppVersion>
+	</Properties>`
 }
 
 export function makeXmlCore(title: string, subject: string, author: string, revision: string): string {
