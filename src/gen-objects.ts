@@ -625,7 +625,7 @@ export function addShapeDefinition(shape: Shape, opt: ShapeOptions, target: ISli
 /**
  * Adds a table object to a slide definition.
  * @param {ISlide} target - slide object that the table should be added to
- * @param {Array} arrTabRows - table data
+ * @param {TODO} arrTabRows - table data
  * @param {TableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presenation layout
@@ -791,8 +791,7 @@ export function addTextDefinition(text: string | IText[], opts: ITextOpts, targe
 
 	// STEP 2: Set some options
 	{
-		// A
-		// Placeholders should inherit their colors or override them, so don't default them
+		// A: Placeholders should inherit their colors or override them, so don't default them
 		if (!opt.placeholder) {
 			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
 		}
@@ -824,6 +823,7 @@ export function addTextDefinition(text: string | IText[], opts: ITextOpts, targe
 		if ((newObject.options.align || '').toLowerCase().startsWith('c')) newObject.options.bodyProp.align = TEXT_HALIGN.center
 		else if ((newObject.options.align || '').toLowerCase().startsWith('l')) newObject.options.bodyProp.align = TEXT_HALIGN.left
 		else if ((newObject.options.align || '').toLowerCase().startsWith('r')) newObject.options.bodyProp.align = TEXT_HALIGN.right
+		else if ((newObject.options.align || '').toLowerCase().startsWith('j')) newObject.options.bodyProp.align = TEXT_HALIGN.justify
 
 		if ((newObject.options.valign || '').toLowerCase().startsWith('b')) newObject.options.bodyProp.anchor = TEXT_VALIGN.b
 		else if ((newObject.options.valign || '').toLowerCase().startsWith('c')) newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr

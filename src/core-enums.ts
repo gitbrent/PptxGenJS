@@ -77,6 +77,7 @@ export enum TEXT_HALIGN {
 	'left' = 'left',
 	'center' = 'center',
 	'right' = 'right',
+	'justify' = 'justify',
 }
 export enum TEXT_VALIGN {
 	'b' = 'b',
