@@ -130,10 +130,10 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		// A: Set option vars
 		slideItemObj.options = slideItemObj.options || {}
 
-		if (typeof slideItemObj.options.x === 'number') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide.presLayout)
-		if (slideItemObj.options.y || slideItemObj.options.y == 0) y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide.presLayout)
-		if (slideItemObj.options.w || slideItemObj.options.w == 0) cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide.presLayout)
-		if (slideItemObj.options.h || slideItemObj.options.h == 0) cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide.presLayout)
+		if (typeof slideItemObj.options.x !== 'undefined') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide.presLayout)
+		if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide.presLayout)
+		if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide.presLayout)
+		if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide.presLayout)
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
@@ -1125,7 +1125,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 				obj.text
 					.toString()
 					.split(CRLF)
-					.forEach((line, idx) => {
+					.forEach(line => {
 						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
 						line += obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : ''
 						arrTextObjects.push({ text: line, options: obj.options })
