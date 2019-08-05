@@ -1634,28 +1634,28 @@ export function makeXmlNotesSlideRel(slideNumber: number): string {
 }
 
 /**
- * Generates XML string for the master file
- * @param {ISlide} masterSlideObject - slide object
- * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
- * @return {String} complete XML string ready to be saved as a file
+ * Creates `ppt/slideMasters/_rels/slideMaster1.xml.rels`
+ * @param {ISlide} masterSlide - Slide object
+ * @param {ISlideLayout[]} slideLayouts - Slide Layouts
+ * @return {string} XML
  */
-export function makeXmlMasterRel(masterSlideObject: ISlide, slideLayouts: ISlideLayout[]): string {
-	var defaultRels = slideLayouts.map((_layoutDef, idx) => {
-		return { target: '../slideLayouts/slideLayout' + (idx + 1) + '.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' }
+export function makeXmlMasterRel(masterSlide: ISlide, slideLayouts: ISlideLayout[]): string {
+	let defaultRels = slideLayouts.map((_layoutDef, idx) => {
+		return { target: `../slideLayouts/slideLayout${idx + 1}.xml`, type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' }
 	})
 	defaultRels.push({ target: '../theme/theme1.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme' })
 
-	return slideObjectRelationsToXml(masterSlideObject, defaultRels)
+	return slideObjectRelationsToXml(masterSlide, defaultRels)
 }
 
+/**
+* Creates `ppt/notesMasters/_rels/notesMaster1.xml.rels`
+* @return {string} XML
+*/
 export function makeXmlNotesMasterRel(): string {
-	return (
-		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-		CRLF +
-		'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-		'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>' +
-		'</Relationships>'
-	)
+	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+		<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme" Target="../theme/theme1.xml"/>
+		</Relationships>`
 }
 
 /**
