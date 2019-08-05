@@ -1533,8 +1533,8 @@ export function makeXmlLayout(layout: ISlideLayout): string {
 
 /**
  * Generates XML for the slide master file (`ppt/slideMasters/slideMaster1.xml`)
- * @param {ISlide} objSlide - slide object that represents master slide layout
- * @param {ISlideLayout[]} slideLayouts - slide layouts
+ * @param {ISlide} slide - slide object that represents master slide layout
+ * @param {ISlideLayout[]} layouts - slide layouts
  * @return {string} XML
  */
 export function makeXmlMaster(slide: ISlide, layouts: ISlideLayout[]): string {
@@ -1588,7 +1588,7 @@ export function makeXmlMaster(slide: ISlide, layouts: ISlideLayout[]): string {
 /**
  * Generates XML string for a slide layout relation file
  * @param {number} layoutNumber - 1-indexed number of a layout that relations are generated for
- * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
+ * @param {ISlideLayout[]} slideLayouts - Slide Layouts
  * @return {string} XML
  */
 export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: ISlideLayout[]): string {
@@ -1602,12 +1602,12 @@ export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: ISlide
 
 /**
  * Generates XML string for a slide relation file.
- * @param {Array<ISlide>} slides
+ * @param {ISlide[]} slides
  * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
  * @param {number} `slideNumber` 1-indexed number of a layout that relations are generated for
  * @return {string} XML
  */
-export function makeXmlSlideRel(slides: Array<ISlide>, slideLayouts: Array<ISlideLayout>, slideNumber: number): string {
+export function makeXmlSlideRel(slides: ISlide[], slideLayouts: ISlideLayout[], slideNumber: number): string {
 	return slideObjectRelationsToXml(slides[slideNumber - 1], [
 		{
 			target: '../slideLayouts/slideLayout' + getLayoutIdxForSlide(slides, slideLayouts, slideNumber) + '.xml',
@@ -1626,16 +1626,11 @@ export function makeXmlSlideRel(slides: Array<ISlide>, slideLayouts: Array<ISlid
  * @return {string} XML
  */
 export function makeXmlNotesSlideRel(slideNumber: number): string {
-	return (
-		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-		CRLF +
-		'<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-		'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="../notesMasters/notesMaster1.xml"/>' +
-		'<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide' +
-		slideNumber +
-		'.xml"/>' +
-		'</Relationships>'
-	)
+	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+		<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+			<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesMaster" Target="../notesMasters/notesMaster1.xml"/>
+			<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="../slides/slide${slideNumber}.xml"/>
+		</Relationships>`
 }
 
 /**
