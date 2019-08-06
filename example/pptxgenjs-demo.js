@@ -453,7 +453,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
 		slide.addTable( [['margin:[80,5,5,10]']], { x:10.5,y:1.1, margin:[80,5,5,10], w:2.2, fill:'F1F1F1' } );
 
-		slide.addTable( [{text:'number zero:', options:{margin:5}}, {text:0, options:{margin:5}}], { x:0.5, y:1.9, w:3, fill:'f2f9fc', border:'none', colW:[2,1] } );
+		slide.addTable( [{text:'no border and number zero', options:{margin:5}}, {text:0, options:{margin:5}}], { x:0.5, y:1.9, w:3, fill:'f2f9fc', border:{type:'none'}, colW:[2.5,0.5] } );
 		slide.addTable( [{text:'text-obj margin:0', options:{margin:0}}], { x:4.0, y:1.9, w:2, fill:'f2f9fc' } );
 
 		// Test margin option when using both plain and text object cells
