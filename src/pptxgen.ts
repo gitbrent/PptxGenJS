@@ -45,14 +45,15 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, IMG_BROKEN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
-import { ISlide, ILayout, ISlideLayout, ISlideRelMedia, ISlideMasterDef, ISlideRel, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
+import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
+import { ILayout, ISlide, ISlideLayout, ISlideMasterDef, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
+import { PowerPointShapes } from './core-shapes'
 import Slide from './slide'
-import * as JSZip from 'jszip'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
+import * as genMedia from './gen-media'
 import * as genXml from './gen-xml'
-import { PowerPointShapes } from './core-shapes'
+import * as JSZip from 'jszip'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -404,12 +405,12 @@ export default class PptxGenJS {
 		this.saveCallback = null
 	}
 
-	createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Array<Promise<any>>) => {
+	createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
 			if (rel.type != 'online' && rel.type != 'hyperlink') {
 				// A: Loop vars
-				var data: string = rel.data as string
+				let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
 
 				// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
 				if (data.indexOf(',') == -1 && data.indexOf(';') == -1) data = 'image/png;base64,' + data
@@ -420,6 +421,19 @@ export default class PptxGenJS {
 				zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true })
 			}
 		})
+	}
+
+	/**
+	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
+	 */
+	setSlideNumber = (slideNumberObj: ISlideNumber) => {
+		// 1: Add slideNumber to slideMaster1.xml
+		this.masterSlide.slideNumberObj = slideNumberObj
+
+		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
+		this.slideLayouts.filter(layout => {
+			return layout.name == DEF_PRES_LAYOUT_NAME
+		})[0].slideNumberObj = slideNumberObj
 	}
 
 	// TODO: TODO-3: move to gen-xml or whatever (same for others below?)
@@ -441,230 +455,10 @@ export default class PptxGenJS {
 		})
 	}
 
-	// IMAGE METHODS:
-
-	getSizeFromImage = (inImgUrl: string) => {
-		if (this.NODEJS) {
-			try {
-				var dimensions = this.sizeOf(inImgUrl)
-				return { width: dimensions.width, height: dimensions.height }
-			} catch (ex) {
-				console.error('ERROR: Unable to read image: ' + inImgUrl)
-				return { width: 0, height: 0 }
-			}
-		}
-
-		// A: Create
-		var image = new Image()
-
-		// B: Set onload event
-		image.onload = () => {
-			// FIRST: Check for any errors: This is the best method (try/catch wont work, etc.)
-			if (image.width + image.height == 0) {
-				return { width: 0, height: 0 }
-			}
-			var obj = { width: image.width, height: image.height }
-			return obj
-		}
-		image.onerror = () => {
-			try {
-				console.error('[Error] Unable to load image: ' + inImgUrl)
-			} catch (ex) {}
-		}
-
-		// C: Load image
-		image.src = inImgUrl
-	}
-
-	/* Encode Image/Audio/Video into base64 */
-	encodeSlideMediaRels = (layout, arrRelsDone) => {
-		let intRels = 0
-
-		layout.relsMedia.forEach((rel: ISlideRelMedia) => {
-			// Read and Encode each media lacking `data` into base64 (for use in export)
-			if (rel.type != 'online' && !rel.data && arrRelsDone.indexOf(rel.path) == -1) {
-				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
-				if (this.NODEJS && rel.path.indexOf('http') != 0) {
-					try {
-						var bitmap = this.fs.readFileSync(rel.path)
-						rel.data = Buffer.from(bitmap).toString('base64')
-					} catch (ex) {
-						console.error('ERROR....: Unable to read media: "' + rel.path + '"')
-						console.error('DETAILS..: ' + ex)
-						rel.data = IMG_BROKEN
-					}
-				} else if (this.NODEJS && rel.path.indexOf('http') == 0) {
-					intRels++
-					this.convertRemoteMediaToDataURL(rel)
-					arrRelsDone.push(rel.path)
-				} else {
-					intRels++
-					this.convertImgToDataURL(rel)
-					arrRelsDone.push(rel.path)
-				}
-			} else if (
-				rel.isSvgPng &&
-				rel.data &&
-				rel.data
-					.toString()
-					.toLowerCase()
-					.indexOf('image/svg') > -1
-			) {
-				// The SVG base64 must be converted to PNG SVG before export
-				intRels++
-				this.callbackImgToDataURLDone(rel.data, rel)
-				arrRelsDone.push(rel.path)
-			}
-		})
-
-		return intRels
-	}
-
-	/* `FileReader()` + `readAsDataURL` = Ablity to read any file into base64! */
-	convertImgToDataURL = (slideRel: ISlideRelMedia) => {
-		var xhr = new XMLHttpRequest()
-		xhr.onload = () => {
-			var reader = new FileReader()
-			reader.onloadend = () => {
-				this.callbackImgToDataURLDone(reader.result, slideRel)
-			}
-			reader.readAsDataURL(xhr.response)
-		}
-		xhr.onerror = ex => {
-			// TODO: xhr.error/catch whatever! then return
-			console.error('Unable to load image: "' + slideRel.path)
-			console.error(ex || '')
-			// Return a predefined "Broken image" graphic so the user will see something on the slide
-			this.callbackImgToDataURLDone(IMG_BROKEN, slideRel)
-		}
-		xhr.open('GET', slideRel.path)
-		xhr.responseType = 'blob'
-		xhr.send()
-	}
-
-	/**
-	 * Node equivalent of `convertImgToDataURL()`: Use https to fetch, then use Buffer to encode to base64
-	 * @param {ISlideRelMedia} `slideRel` - slide rel
-	 */
-	convertRemoteMediaToDataURL = (slideRel: ISlideRelMedia) => {
-		this.https.get(slideRel.path, res => {
-			var rawData = ''
-			res.setEncoding('binary') // IMPORTANT: Only binary encoding works
-			res.on('data', chunk => {
-				rawData += chunk
-			})
-			res.on('end', () => {
-				var data = Buffer.from(rawData, 'binary').toString('base64')
-				this.callbackImgToDataURLDone(data, slideRel)
-			})
-			res.on('error', e => {
-				// TODO-3: make this method return Promise?
-				///reject(e);
-			})
-		})
-	}
-
-	/**
-	 * (Browser Only): Convert SVG-base64 data to PNG-base64
-	 * @param {ISlideRelMedia} `slideRel` - slide rel
-	 */
-	convertSvgToPngViaCanvas = (slideRel: ISlideRelMedia) => {
-		// A: Create
-		let image = new Image()
-
-		// B: Set onload event
-		image.onload = () => {
-			// First: Check for any errors: This is the best method (try/catch wont work, etc.)
-			if (image.width + image.height == 0) {
-				image.onerror('h/w=0')
-				return
-			}
-			var canvas: HTMLCanvasElement = document.createElement('CANVAS') as HTMLCanvasElement
-			var ctx = canvas.getContext('2d')
-			canvas.width = image.width
-			canvas.height = image.height
-			ctx.drawImage(image, 0, 0)
-			// Users running on local machine will get the following error:
-			// "SecurityError: Failed to execute 'toDataURL' on 'HTMLCanvasElement': Tainted canvases may not be exported."
-			// when the canvas.toDataURL call executes below.
-			try {
-				this.callbackImgToDataURLDone(canvas.toDataURL(slideRel.type), slideRel)
-			} catch (ex) {
-				image.onerror(ex)
-				return
-			}
-			canvas = null
-		}
-		image.onerror = ex => {
-			console.error(ex || '')
-			// Return a predefined "Broken image" graphic so the user will see something on the slide
-			this.callbackImgToDataURLDone(IMG_BROKEN, slideRel)
-		}
-
-		// C: Load image
-		image.src = slideRel.data as string // use pre-encoded SVG base64 data
-	}
-
-	// FIXME: 20190715: if all were doing here is mapping `rel.base64` to `rel.data`, surely there's a better/clearer way...
-	callbackImgToDataURLDone = (base64Data: string | ArrayBuffer, slideRel: ISlideRelMedia) => {
-		// SVG images were retrieved via `convertImgToDataURL()`, but have to be encoded to PNG now
-		if (slideRel.isSvgPng && typeof base64Data === 'string' && base64Data.indexOf('image/svg') > -1) {
-			// Pass the SVG XML as base64 for conversion to PNG
-
-			slideRel.data = base64Data
-			if (this.NODEJS) throw 'SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)'
-			else this.convertSvgToPngViaCanvas(slideRel)
-			return
-		}
-
-		let intEmpty = 0
-		let funcCallback = (rel: ISlideRel | ISlideRelMedia) => {
-			if (rel.path == slideRel.path) rel.data = base64Data
-			if (!rel.data) intEmpty++
-		}
-
-		// STEP 1: Set data for this rel, count outstanding
-		this.slides.forEach(slide => {
-			slide.rels.forEach(funcCallback)
-			slide.relsMedia.forEach(funcCallback)
-		})
-		this.slideLayouts.forEach(layout => {
-			layout.rels.forEach(funcCallback)
-			layout.relsMedia.forEach(funcCallback)
-		})
-		this.masterSlide.rels.forEach(funcCallback)
-		this.masterSlide.relsMedia.forEach(funcCallback)
-
-		// STEP 2: Continue export process if all rels have base64 `data` now
-		if (intEmpty == 0) this.doExportPresentation()
-	}
-
-	/**
-	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
-	 */
-	setSlideNumber = (slideNumberObj: ISlideNumber) => {
-		// 1: Add slideNumber to slideMaster1.xml
-		this.masterSlide.slideNumberObj = slideNumberObj
-
-		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-		this.slideLayouts.filter(layout => {
-			return layout.name == DEF_PRES_LAYOUT_NAME
-		})[0].slideNumberObj = slideNumberObj
-	}
-
-	getTotalMediaRels = (): number => {
-		let intRels = 0
-
-		this.slides.forEach(slide => {
-			intRels += slide.relsMedia.length
-		})
-
-		return intRels
-	}
-
 	// PUBLIC API
 
-	// TODO: TODO-3: remove `save` - use `write` and `writeFile` instead
+	// FIXME: TODO: TODO-3: remove `save` - use `write` and `writeFile` instead
+	// ALSO: mnove to {options} instead of positional params!
 
 	/**
 	 * Save (export) the Presentation .pptx file
@@ -673,8 +467,7 @@ export default class PptxGenJS {
 	 * @param {JSZIP_OUTPUT_TYPE} `outputType` - JSZip output type
 	 */
 	save(exportName: string, callbackFunc?: Function, outputType?: JSZIP_OUTPUT_TYPE) {
-		let intRels = 0,
-			arrRelsDone = []
+		let arrProms: Promise<string>[] = []
 
 		// STEP 1: Add empty placeholder objects to slides that don't already have them
 		this.slides.forEach(slide => {
@@ -686,23 +479,22 @@ export default class PptxGenJS {
 		if (exportName) this.fileName = exportName
 
 		// STEP 3: Read/Encode Images
-		// PERF: Only send unique paths for encoding (encoding func will find and fill *ALL* matching paths across the Presentation)
-
-		// A: Slide rels
 		this.slides.forEach(slide => {
-			intRels += this.encodeSlideMediaRels(slide, arrRelsDone)
+			arrProms = arrProms.concat(genMedia.encodeSlideMediaRels(slide))
 		})
-
-		// B: Layout rels
 		this.slideLayouts.forEach(layout => {
-			intRels += this.encodeSlideMediaRels(layout, arrRelsDone)
+			arrProms = arrProms.concat(genMedia.encodeSlideMediaRels(layout))
 		})
+		arrProms = arrProms.concat(genMedia.encodeSlideMediaRels(this.masterSlide))
 
-		// C: Master Slide rels
-		intRels += this.encodeSlideMediaRels(this.masterSlide, arrRelsDone)
-
-		// STEP 4: Export now if there's no images to encode (otherwise, last async imgConvert call above will call exportFile)
-		if (intRels == 0) this.doExportPresentation(outputType)
+		// STEP 4: Write file after all rels are encoded
+		Promise.all(arrProms)
+			.then(_results => {
+				this.doExportPresentation(outputType)
+			})
+			.catch(ex => {
+				throw ex
+			})
 	}
 
 	/**
