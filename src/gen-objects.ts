@@ -744,11 +744,9 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 	// FIXME: why do we need all slides???
 
 	// STEP 7: Auto-Paging: (via {options} and used internally)
-	// (used internally by `addSlidesForTable()` to not engage recursion - we've already paged the table data, just add this one)
+	// (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
 	if (opt && opt.autoPage == false) {
 		// Add data (NOTE: Use `extend` to avoid mutation)
-		//gObjPptx.slides[slideNum].data[gObjPptx.slides[slideNum].data.length] = {
-		// FIXME: create an addObject method instead of touching `data`!!
 		target.data.push({
 			type: SLIDE_OBJECT_TYPES.table,
 			arrTabRows: arrRows,
@@ -758,15 +756,16 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
 		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((arrRows, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-			//let currSlide = !this.slides[slideNum + idx] ? this.addNewSlide(inMasterName) : this.slides[slideNum + idx]
+//			let currSlide = !this.slides[slideNum + idx] ? this.addNewSlide(inMasterName) : this.slides[slideNum + idx]
 			// FIXME: ^^^
+//			let newSlide = pptx.addSlide(opts.masterSlideName || null)
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx > 0) opt.y = inch2Emu(opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			opt.autoPage = false
-			target.addTable(arrRows, jQuery.extend(true, {}, opt))
+			target.addTable(arrRows, Object.assign({}, opt))
 		})
 	}
 }
