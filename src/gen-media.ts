@@ -134,6 +134,7 @@ function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
 
 /**
  * FIXME: TODO: currently unused
+ * TODO: Should return a Promise
  */
 function getSizeFromImage(inImgUrl: string): { width: number; height: number } {
 	if (typeof this.sizeOf === 'function') {
