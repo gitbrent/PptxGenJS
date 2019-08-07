@@ -6,13 +6,13 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2019-07-13">
+	<meta name="updated" content="2019-08-06">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
 	<title>PptxGenJS Examples/Demo Page</title>
 
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.2.1/yeti/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.3.1/yeti/bootstrap.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-okaidia.min.css">
 
 	<style>
@@ -340,7 +340,8 @@
 			pptx.save('Demo-Text');
 		}
 
-		function doTablePagingLogicCheck() {
+		// UNDOCUMENTED: Run from console
+		function doTestTableToSlides() {
 			var pptx = new PptxGenJS();
 			var slide = pptx.addSlide();
 			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'c', fontSize:18, color:'0088CC', fill:'F2F9FC' });
@@ -349,7 +350,10 @@
 			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:'FFFCCC' });
 			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:'F1F1F1'} );
 
-			pptx.save('PptxGenJs-TablePagingLogicCheck');
+			// TEST
+			pptx.tableToSlides('tabAutoPaging', {debug:true/*, newSlideStartY:2*/});
+
+			pptx.save('PptxGenJs-TableToSlidesCHK_'+getTimestamp());
 		}
 
 		function buildDataTable() {
