@@ -1988,7 +1988,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 	}
 
 	// STEP 4: Iterate over each line and perform magic =========================
-	// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `addSlidesForTable()` or `.addTable()`
+	// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `tableToSlides()` or `addTable()`
 	inArrRows.forEach((row, iRow) => {
 		// A: Reset ROW variables
 		let arrCellsLines = [],
