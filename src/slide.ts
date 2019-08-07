@@ -22,6 +22,7 @@ import {
 	ITextOpts,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
+import PptxGenJS from './pptxgen';
 
 export default class Slide {
 	private _bkgd: string
@@ -29,6 +30,7 @@ export default class Slide {
 	private _setSlideNum: Function
 	private _slideNumber: ISlideNumber
 
+	public addSlide: Function
 	public presLayout: ILayout
 	public name: string
 	public number: number
@@ -38,7 +40,8 @@ export default class Slide {
 	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
 
-	constructor(params: { presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
+	constructor(params: { addSlide: Function; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
+		this.addSlide = params.addSlide
 		this.presLayout = params.presLayout
 		this._setSlideNum = params.setSlideNum
 		this.name = 'Slide ' + params.slideNumber
@@ -148,7 +151,7 @@ export default class Slide {
 	// FIXME: TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
 	addTable(arrTabRows, inOpt:TableOptions): Slide {
 		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout)
+		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout, this.addSlide)
 		return this
 	}
 

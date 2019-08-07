@@ -436,7 +436,15 @@ export default class PptxGenJS {
 		})[0].slideNumberObj = slideNumberObj
 	}
 
-	// TODO: TODO-3: move to gen-xml or whatever (same for others below?)
+	/**
+	* Provides an API for `addTableDefinition` to create slides as needed for auto-paging
+	* @since 3.0.0
+	*/
+	addNewSlide = (masterName:string):ISlide => {
+		return this.addSlide(masterName)
+	}
+
+	// TODO: TODO-3: move to gen-xml or whatever
 	addPlaceholdersToSlides = (slide: ISlide) => {
 		// Add all placeholders on this Slide that dont already exist
 		;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
@@ -504,6 +512,7 @@ export default class PptxGenJS {
 	 */
 	addSlide(masterSlideName?: string): ISlide {
 		let newSlide = new Slide({
+			addSlide: this.addNewSlide,
 			presLayout: this.presLayout,
 			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,
@@ -553,6 +562,7 @@ export default class PptxGenJS {
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * @param {string} tabEleId - HTMLElementID of the table
 	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+	 * @note `debug` option is undocumented; used for verbose output of layout process
 	 */
 	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
 		genXml.genTableToSlides(
