@@ -566,19 +566,11 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
  * @param {ISlide} `target` slide object
  * @since 2.3.0
  */
-export function addNotesDefinition(target: ISlide, notes: string, opt: object) {
-	var opt = opt && typeof opt === 'object' ? opt : {}
-	var resultObject: ISlideObject = {
-		type: null,
-		text: null,
-	}
-
-	resultObject.type = SLIDE_OBJECT_TYPES.notes
-	resultObject.text = notes
-
-	target.data.push(resultObject)
-
-	return resultObject
+export function addNotesDefinition(target: ISlide, notes: string) {
+	target.data.push({
+		type: SLIDE_OBJECT_TYPES.notes,
+		text: notes,
+	})
 }
 
 /**

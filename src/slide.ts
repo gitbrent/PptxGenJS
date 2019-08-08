@@ -17,7 +17,7 @@ import {
 	ISlideObject,
 	Shape,
 	ShapeOptions,
-    TableOptions,
+	TableOptions,
 	IText,
 	ITextOpts,
 } from './core-interfaces'
@@ -92,8 +92,9 @@ export default class Slide {
 	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
 	 *
 	 * @param {CHART_TYPE_NAMES|IChartMulti[]} `type` - chart type
-	 * @param {object[]} `data` - a JSON object with follow the following format
-	 * @param {IChartOpts} `opt` - options
+	 * @param {object[]} data - a JSON object with follow the following format
+	 * @param {IChartOpts} options - chart options
+	 * @example
 	 * {
 	 *   title: 'eSurvey chart',
 	 *   data: [
@@ -109,9 +110,10 @@ export default class Slide {
 	 *		}
 	 *	 ]
 	 * }
+	 * @return {Slide} this class
 	 */
-	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt?: IChartOpts) {
-		genObj.addChartDefinition(this, type, data, opt)
+	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts) {
+		genObj.addChartDefinition(this, type, data, options)
 		return this
 	}
 
@@ -129,7 +131,7 @@ export default class Slide {
 
 	/**
 	 * Add Media (audio/video) object
-	 * @param {IMediaOpts} options - image options
+	 * @param {IMediaOpts} options - media options
 	 * @return {Slide} this class
 	 */
 	addMedia(options: IMediaOpts): Slide {
@@ -138,12 +140,13 @@ export default class Slide {
 	}
 
 	/**
-	 * Add Notes to Slide
-	 * @param {INotesOpts} options - image options
+	 * Add Speaker Notes to Slide
+	 * @docs https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html
+	 * @param {string} notes - notes to add to slide
 	 * @return {Slide} this class
 	 */
-	addNotes(notes, options):Slide {
-		genObj.addNotesDefinition(this, notes, options)
+	addNotes(notes: string): Slide {
+		genObj.addNotesDefinition(this, notes)
 		return this
 	}
 
@@ -159,7 +162,7 @@ export default class Slide {
 	}
 
 	// RECURSIVE: (sometimes)
-	addTable(arrTabRows, inOpt:TableOptions): Slide {
+	addTable(arrTabRows, inOpt: TableOptions): Slide {
 		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
