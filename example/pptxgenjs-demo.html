@@ -341,7 +341,7 @@
 		}
 
 		// UNDOCUMENTED: Run from console
-		function doTestTableToSlides() {
+		function testTTS() {
 			var pptx = new PptxGenJS();
 			pptx.layout = 'LAYOUT_WIDE';
 			/*
@@ -358,7 +358,37 @@
 			// TEST
 			pptx.tableToSlides('tabAutoPaging');//, {debug:true, addHeaderToEach:true /*, newSlideStartY:2*/});
 
-			pptx.save('PptxGenJs-TableToSlidesCHK_'+getTimestamp());
+			pptx.save('PptxGenJs_TTSTest_'+getTimestamp());
+		}
+
+		// UNDOCUMENTED:
+		function testTTSMulti() {
+			var ttsTitleText = { fontSize:14, color:'0088CC', bold:true };
+			var ttsMultiOpts = { fontSize:13, color:'9F9F9F', debug:true };
+			var arrRows = [];
+			var arrText = [];
+			//
+			var pptx = new PptxGenJS();
+			pptx.layout = 'LAYOUT_WIDE';
+
+			for (var idx=0; idx<gArrNamesF.length; idx++) {
+				var strText = ( idx == 0 ? gStrLoremIpsum.substring(0,100) : gStrLoremIpsum.substring(idx*100,idx*200) );
+				arrRows.push( [idx, gArrNamesF[idx], strText] );
+				arrText.push( [strText] );
+			}
+
+			// lineWeight option demos
+			var slide = pptx.addSlide();
+			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'lineWeight:0', options:ttsMultiOpts}], {x:0.5, y:0.13, w:3} );
+			slide.addTable( arrText, { x:0.50, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true } );
+
+			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'lineWeight:0.5', options:ttsMultiOpts}], {x:5.0, y:0.13, w:3} );
+			slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:0.5 } );
+
+			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'lineWeight:-0.5', options:ttsMultiOpts}], {x:9.0, y:0.13, w:3} );
+			slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:-0.5 } );
+
+			pptx.save('PptxGenJS_TTSMulti_'+getTimestamp());
 		}
 
 		function buildDataTable() {
