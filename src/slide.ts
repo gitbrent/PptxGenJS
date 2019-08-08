@@ -161,10 +161,16 @@ export default class Slide {
 		return this
 	}
 
-	// RECURSIVE: (sometimes)
-	addTable(arrTabRows, inOpt: TableOptions): Slide {
+	/**
+	 * Add shape object to Slide
+	 * @note can be recursive
+	 * @param {[]} arrTabRows - table rows
+	 * @param {TableOptions} options - table options
+	 * @return {Slide} this class
+	 */
+	addTable(arrTabRows, options: TableOptions): Slide {
 		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
+		genObj.addTableDefinition(this, arrTabRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}
 
