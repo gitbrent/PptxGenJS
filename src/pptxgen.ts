@@ -437,11 +437,20 @@ export default class PptxGenJS {
 	}
 
 	/**
-	* Provides an API for `addTableDefinition` to create slides as needed for auto-paging
-	* @since 3.0.0
-	*/
-	addNewSlide = (masterName:string):ISlide => {
+	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
+	 * @since 3.0.0
+	 */
+	addNewSlide = (masterName: string): ISlide => {
 		return this.addSlide(masterName)
+	}
+	/**
+	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
+	 * @since 3.0.0
+	 */
+	getSlide = (slideNum: number): ISlide => {
+		return this.slides.filter(slide => {
+			return slide.number == slideNum
+		})[0]
 	}
 
 	// TODO: TODO-3: move to gen-xml or whatever
@@ -513,6 +522,7 @@ export default class PptxGenJS {
 	addSlide(masterSlideName?: string): ISlide {
 		let newSlide = new Slide({
 			addSlide: this.addNewSlide,
+			getSlide: this.getSlide,
 			presLayout: this.presLayout,
 			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,

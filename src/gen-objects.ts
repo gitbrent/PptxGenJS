@@ -630,13 +630,14 @@ export function addShapeDefinition(shape: Shape, opt: ShapeOptions, target: ISli
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presenation layout
  */
-export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptions, slideLayout: ISlideLayout, presLayout: ILayout) {
-	var opt = inOpt && typeof inOpt === 'object' ? inOpt : ({} as TableOptions)
+export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptions, slideLayout: ISlideLayout, presLayout: ILayout, addSlide: Function, getSlide: Function) {
+	let opt = inOpt && typeof inOpt === 'object' ? inOpt : ({} as TableOptions)
+	let slides = [target] // Create array of Slides as more will be added for auto-paging
 
 	// STEP 1: REALITY-CHECK
 	if (arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows)) {
 		try {
-			console.warn('[warn] addTable: Array expected! USAGE: slide.addTable( [rows], {options} );')
+			console.warn('addTable: Array expected! USAGE: slide.addTable( [rows], {options} );')
 		} catch (ex) {}
 		return null
 	}
@@ -750,22 +751,20 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 		target.data.push({
 			type: SLIDE_OBJECT_TYPES.table,
 			arrTabRows: arrRows,
-			options: jQuery.extend(true, {}, opt),
+			options: Object.assign({}, opt),
 		})
 	} else {
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
 		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((arrRows, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-//			let currSlide = !this.slides[slideNum + idx] ? this.addNewSlide(inMasterName) : this.slides[slideNum + idx]
-			// FIXME: ^^^
-//			let newSlide = pptx.addSlide(opts.masterSlideName || null)
+			if (!getSlide(target.number + idx)) slides.push(addSlide(presLayout ? presLayout.name : null))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx > 0) opt.y = inch2Emu(opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			opt.autoPage = false
-			target.addTable(arrRows, Object.assign({}, opt))
+			getSlide(target.number + idx).addTable(arrRows, Object.assign({}, opt))
 		})
 	}
 }
