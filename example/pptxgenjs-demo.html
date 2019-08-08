@@ -282,9 +282,9 @@
 			// Fine-grained Formatting/word-level/line-level Formatting
 			slide.addText(
 				[
-					{ text:'right line', options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-					{ text:'ctr line',   options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
-					{ text:'left line',  options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'l' } }
+					{ text:'right line', options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'right', breakLine:true } },
+					{ text:'ctr line',   options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'center', breakLine:true } },
+					{ text:'left line',  options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'left' } }
 				],
 				{ x:0.5, y:3.0, w:8.5, h:4, margin:0.1, fill:'232323' }
 			);
@@ -301,15 +301,15 @@
 
 			slide.addText(
 				'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
-				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'c', fontSize:18, color:'0088CC', fill:'F1F1F1' }
+				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'center', fontSize:18, color:'0088CC', fill:'F1F1F1' }
 			);
 
 			slide.addText("Line-Level Formatting:", { x:0.5, y:1.5, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				[
-					{ text:'1st line', options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-					{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'c', breakLine:true } },
-					{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'l' } }
+					{ text:'1st line', options:{ fontSize:24, fontFace:'Courier New', color:'99ABCC', align:'right', breakLine:true } },
+					{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'center', breakLine:true } },
+					{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'left' } }
 				],
 				{ x:0.5, y:2.0, w:6, h:2.25, margin:0.1, fill:'232323' }
 			);
@@ -343,15 +343,20 @@
 		// UNDOCUMENTED: Run from console
 		function doTestTableToSlides() {
 			var pptx = new PptxGenJS();
+			pptx.layout = 'LAYOUT_WIDE';
+			/*
 			var slide = pptx.addSlide();
-			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'c', fontSize:18, color:'0088CC', fill:'F2F9FC' });
-
+			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'center', fontSize:18, color:'0088CC', fill:'F2F9FC' });
 			var numMargin = 1.25;
 			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:'FFFCCC' });
 			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:'F1F1F1'} );
+			*/
+
+			// Mimic "table2slides1()"
+			// addMasterDefs(pptx);
 
 			// TEST
-			pptx.tableToSlides('tabAutoPaging', {debug:true/*, newSlideStartY:2*/});
+			pptx.tableToSlides('tabAutoPaging');//, {debug:true, addHeaderToEach:true /*, newSlideStartY:2*/});
 
 			pptx.save('PptxGenJs-TableToSlidesCHK_'+getTimestamp());
 		}
@@ -408,11 +413,10 @@
 				title: 'TITLE_SLIDE',
 				bkgd: { data:BKGD_STARLABS },
 				objects: [
-					{ 'line':  { x: 3.5, y:1.00, w:6.00, line:'0088CC', line_size:5 } },
-					//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], opts:{x:0.25, y:0.25, w:3, h:3} } },
-					{ 'rect':  { x: 0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
+					{ 'line':  { x:3.5, y:1.00, w:6.00, line:'0088CC', lineSize:5 } },
+					{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
 					{ 'text':  { text:'Global IT & Services :: Status Report',
-						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', color:'363636', fontSize:20, valign:'m', margin:0 } }
+						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', fontSize:20, color:'363636', valign:'middle', margin:0 } }
 					},
 					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
 				]
@@ -425,8 +429,8 @@
 				slideNumber: { x:1.0, y:7.0, color:'FFFFFF' },
 				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
 				objects: [
-					{ 'rect': { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
-					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'c', valign:'m', color:'FFFFFF', fontSize:12} } }
+					{ 'rect': { x:0.0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
+					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'center', valign:'middle', color:'FFFFFF', fontSize:12} } }
 				]
 			});
 
@@ -436,7 +440,7 @@
 				bkgd: '36ABFF',
 				objects: [
 					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'c' } } },
+					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
 					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS } }
 				]
 			});
@@ -453,9 +457,10 @@
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.debug = true; // DEBUG:
-			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
+			//console.log(JSON.stringify(objOpts));
 
 			// STEP 3: Pass table to tableToSlides function to produce 1-N slides
 			pptx.tableToSlides('tabAutoPaging', objOpts);
@@ -475,9 +480,9 @@
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.debug = true;
-			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
 			if ( $('#checkStartY') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 
 			// STEP 3: Add a custom shape (text in this case) to each Slide
 			// EXAMPLE: Add any dynamic content to each generated Slide
@@ -559,7 +564,7 @@
 					+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
 					+ "slide.addText(\n"
 					+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
-					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'c', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
+					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
 					+ ");\n"
 					+ '\n'
 					+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
@@ -604,7 +609,7 @@
 					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
 					+ "    {text:  {\n"
 					+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
-					+ "        options:{x:0, y:6.9, w:'100%', align:'c', color:'FFFFFF', fontSize:12}\n"
+					+ "        options:{x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12}\n"
 					+ "    }}\n"
 					//+ "    }},\n"
 					//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
@@ -793,7 +798,7 @@
 								<div class="row">
 									<div class="col">
 										<label class="text-muted">Select a Master Slide</label>
-										<select id="selSlideMaster" class="form-control"><option selected="selected">(None)</option></select>
+										<select id="selSlideMaster" class="form-control"><option value="" selected="selected">(None)</option></select>
 										<div>&nbsp;</div>
 									</div>
 								</div>
