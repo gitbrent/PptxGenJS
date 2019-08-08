@@ -111,7 +111,7 @@ export default class Slide {
 	 * }
 	 */
 	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt?: IChartOpts) {
-		genObj.addChartDefinition(type, data, opt, this)
+		genObj.addChartDefinition(this, type, data, opt)
 		return this
 	}
 
@@ -123,17 +123,27 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	addImage(options: IImageOpts): Slide {
-		genObj.addImageDefinition(options, this)
+		genObj.addImageDefinition(this, options)
 		return this
 	}
 
-	addMedia(opt: IMediaOpts) {
-		genObj.addMediaDefinition(this, opt)
+	/**
+	 * Add Media (audio/video) object
+	 * @param {IMediaOpts} options - image options
+	 * @return {Slide} this class
+	 */
+	addMedia(options: IMediaOpts): Slide {
+		genObj.addMediaDefinition(this, options)
 		return this
 	}
 
-	addNotes(notes, opt) {
-		genObj.addNotesDefinition(notes, opt, this)
+	/**
+	 * Add Notes to Slide
+	 * @param {INotesOpts} options - image options
+	 * @return {Slide} this class
+	 */
+	addNotes(notes, options):Slide {
+		genObj.addNotesDefinition(this, notes, options)
 		return this
 	}
 
@@ -144,12 +154,11 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	addShape(shape: Shape, opt: ShapeOptions): Slide {
-		genObj.addShapeDefinition(shape, opt, this)
+		genObj.addShapeDefinition(this, shape, opt)
 		return this
 	}
 
 	// RECURSIVE: (sometimes)
-	// FIXME: TODO: dont forget to update the "this.color" refs below to "target.slide.color"!!!
 	addTable(arrTabRows, inOpt:TableOptions): Slide {
 		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, inOpt, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
@@ -164,7 +173,7 @@ export default class Slide {
 	 * @since: 1.0.0
 	 */
 	addText(text: string | IText[], options: ITextOpts): Slide {
-		genObj.addTextDefinition(text, options, this, false)
+		genObj.addTextDefinition(this, text, options, false)
 		return this
 	}
 }

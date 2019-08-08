@@ -58,10 +58,10 @@ export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME 
 		slideDef.objects.forEach((object, idx: number) => {
 			let key = Object.keys(object)[0]
 			if (MASTER_OBJECTS[key] && key == 'chart') addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target)
-			else if (MASTER_OBJECTS[key] && key == 'image') addImageDefinition(object[key], target)
-			else if (MASTER_OBJECTS[key] && key == 'line') addShapeDefinition(BASE_SHAPES.LINE, object[key], target)
-			else if (MASTER_OBJECTS[key] && key == 'rect') addShapeDefinition(BASE_SHAPES.RECTANGLE, object[key], target)
-			else if (MASTER_OBJECTS[key] && key == 'text') addTextDefinition(object[key].text, object[key].options, target, false)
+			else if (MASTER_OBJECTS[key] && key == 'image') addImageDefinition(target, object[key])
+			else if (MASTER_OBJECTS[key] && key == 'line') addShapeDefinition(target, BASE_SHAPES.LINE, object[key])
+			else if (MASTER_OBJECTS[key] && key == 'rect') addShapeDefinition(target, BASE_SHAPES.RECTANGLE, object[key])
+			else if (MASTER_OBJECTS[key] && key == 'text') addTextDefinition(target, object[key].text, object[key].options, false)
 			else if (MASTER_OBJECTS[key] && key == 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
@@ -69,7 +69,7 @@ export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME 
 				object[key].options.placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
 				object[key].options.placeholderIdx = 100 + idx
-				addPlaceholderDefinition(object[key].text, object[key].options, target)
+				addPlaceholderDefinition(target, object[key].text, object[key].options)
 			}
 		})
 	}
@@ -133,7 +133,7 @@ function addBackgroundDefinition(bkg: string | { src?: string; path?: string; da
  *	 ]
  *	}
  */
-export function addChartDefinition(type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt: IChartOpts, target: ISlide): object {
+export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt: IChartOpts): object {
 	function correctGridLineOptions(glOpts) {
 		if (!glOpts || glOpts.style == 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
@@ -324,7 +324,7 @@ export function addChartDefinition(type: CHART_TYPE_NAMES | IChartMulti[], data:
  * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @return {Object} image object
  */
-export function addImageDefinition(opt: IImageOpts, target: ISlide): object {
+export function addImageDefinition(target: ISlide, opt: IImageOpts): object {
 	let newObject: any = {
 		type: null,
 		text: null,
@@ -566,7 +566,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
  * @param {ISlide} `target` slide object
  * @since 2.3.0
  */
-export function addNotesDefinition(notes: string, opt: object, target: ISlide) {
+export function addNotesDefinition(target: ISlide, notes: string, opt: object) {
 	var opt = opt && typeof opt === 'object' ? opt : {}
 	var resultObject: ISlideObject = {
 		type: null,
@@ -587,8 +587,8 @@ export function addNotesDefinition(notes: string, opt: object, target: ISlide) {
  * @param {Object} `opt`
  * @param {ISlide} `target` slide object that the placeholder should be added to
  */
-export function addPlaceholderDefinition(text: string, opt: object, target: ISlide) {
-	return addTextDefinition(text, opt, target, true)
+export function addPlaceholderDefinition(target: ISlide, text: string, opt: object) {
+	return addTextDefinition(target, text, opt, true)
 }
 
 /**
@@ -597,7 +597,7 @@ export function addPlaceholderDefinition(text: string, opt: object, target: ISli
  * @param {ShapeOptions} opt
  * @param {ISlide} target slide object that the shape should be added to
  */
-export function addShapeDefinition(shape: Shape, opt: ShapeOptions, target: ISlide) {
+export function addShapeDefinition(target: ISlide, shape: Shape, opt: ShapeOptions) {
 	let options = typeof opt === 'object' ? opt : {}
 	let newObject = {
 		type: SLIDE_OBJECT_TYPES.text,
@@ -777,7 +777,7 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(text: string | IText[], opts: ITextOpts, target: ISlide, isPlaceholder: boolean) {
+export function addTextDefinition(target: ISlide, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
 	let opt: ITextOpts = opts || {}
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
@@ -850,7 +850,7 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 					return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholder
 				}).length == 0
 			) {
-				addTextDefinition('', { placeholder: slideLayoutObj.options.placeholder }, slide, false)
+				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
 			}
 		}
 	})
