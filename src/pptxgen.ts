@@ -45,7 +45,7 @@
 	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
+import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES } from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterDef, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
 import { PowerPointShapes } from './core-shapes'
 import Slide from './slide'
@@ -453,25 +453,6 @@ export default class PptxGenJS {
 		})[0]
 	}
 
-	// TODO: TODO-3: move to gen-xml or whatever
-	addPlaceholdersToSlides = (slide: ISlide) => {
-		// Add all placeholders on this Slide that dont already exist
-		;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
-			if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
-				// A: Search for this placeholder on Slide before we add
-				// NOTE: Check to ensure a placeholder does not already exist on the Slide
-				// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
-				if (
-					slide.data.filter(slideObj => {
-						return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholder
-					}).length == 0
-				) {
-					genObj.addTextDefinition('', { placeholder: slideLayoutObj.options.placeholder }, slide, false)
-				}
-			}
-		})
-	}
-
 	// PUBLIC API
 
 	// FIXME: TODO: TODO-3: remove `save` - use `write` and `writeFile` instead
@@ -488,7 +469,7 @@ export default class PptxGenJS {
 
 		// STEP 1: Add empty placeholder objects to slides that don't already have them
 		this.slides.forEach(slide => {
-			if (slide.slideLayout) this.addPlaceholdersToSlides(slide)
+			if (slide.slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
 		})
 
 		// STEP 2: Set export properties

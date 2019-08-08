@@ -837,3 +837,21 @@ export function addTextDefinition(text: string | IText[], opts: ITextOpts, targe
 	// LAST: Add object to Slide
 	target.data.push(newObject)
 }
+
+export function addPlaceholdersToSlideLayouts(slide: ISlide) {
+	// Add all placeholders on this Slide that dont already exist
+	;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
+		if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
+			// A: Search for this placeholder on Slide before we add
+			// NOTE: Check to ensure a placeholder does not already exist on the Slide
+			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
+			if (
+				slide.data.filter(slideObj => {
+					return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholder
+				}).length == 0
+			) {
+				addTextDefinition('', { placeholder: slideLayoutObj.options.placeholder }, slide, false)
+			}
+		}
+	})
+}
