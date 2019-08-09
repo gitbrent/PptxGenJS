@@ -51,7 +51,7 @@ export interface BorderOptions {
 	pt?: number
 	type?: string // TODO: specify values, eg: 'none'
 }
-export interface IShadowOpts {
+export interface ShadowOpts {
 	type: string
 	angle: number
 	opacity: number
@@ -168,7 +168,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	lineSize?: number
 	lineDash?: string
 	radarStyle?: string
-	shadow?: IShadowOpts
+	shadow?: ShadowOpts
 	catAxisLabelPos?: string
 	valAxisOrientation?: 'minMax' | 'minMax'
 	valAxisCrossesAt?: string | number
@@ -226,7 +226,7 @@ export interface ShapeOptions extends PositionOptions {
 	line?: Color
 	rectRadius?: number
 	rotate?: number
-	shadow?: IShadowOpts
+	shadow?: ShadowOpts
 }
 
 export interface IChartTitleOpts {
@@ -279,7 +279,7 @@ export interface ITableToSlidesCell {
 	text?: string
 	options?: ITableCellOpts
 }
-export interface ITableCell {
+export interface TableCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
 	text?: string
 	hmerge?: boolean
@@ -287,6 +287,7 @@ export interface ITableCell {
 	optImp?: any
 	options?: ITableCellOpts
 }
+export type TableRow = [TableCell[]]
 export interface TableOptions extends PositionOptions {
 	align?: HAlign
 	autoPage?: boolean
@@ -342,7 +343,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	placeholder?: string
 	rotate?: number // (degree * 60,000)
 	rtlMode?: boolean
-	shadow?: IShadowOpts
+	shadow?: ShadowOpts
 	shape?: Shape
 	shrinkText?: boolean
 	strike?: boolean
@@ -444,7 +445,7 @@ export interface ISlideObject {
 	// text
 	text?: string | IText[]
 	// table
-	arrTabRows?: [ITableCell[]?]
+	arrTabRows?: [TableCell[]?]
 	// chart
 	chartRid?: number
 	// image:

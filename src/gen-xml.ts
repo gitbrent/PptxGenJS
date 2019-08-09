@@ -21,14 +21,14 @@ import PptxGenJS from './pptxgen'
 import { PowerPointShapes } from './core-shapes'
 import {
 	ILayout,
-	IShadowOpts,
+	ShadowOpts,
 	ISlide,
 	ISlideLayout,
 	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	ITableCell,
+	TableCell,
 	ITableCellOpts,
 	ITableToSlidesCell,
 	ITableToSlidesOpts,
@@ -298,13 +298,13 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strXml += '<a:tr h="' + intRowH + '">'
 
 					// C: Loop over each CELL
-					jQuery.each(rowObj, (_cIdx, cell: ITableCell) => {
+					jQuery.each(rowObj, (_cIdx, cell: TableCell) => {
 						// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 						if (cell.hmerge) return
 
 						// 2: OPTIONS: Build/set cell options ===========================
 
-						let cellOpts = cell.options || ({} as ITableCell['options'])
+						let cellOpts = cell.options || ({} as TableCell['options'])
 						/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
 						cell.options = cellOpts
 
@@ -1032,7 +1032,7 @@ function genXmlTextRun(textObj: IText): string {
  * @param {ISlideObject | ITableCell} slideObject - various options
  * @return {string} XML string
  */
-function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
+function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 	let bodyProperties = '<a:bodyPr'
 
 	if (slideObject && slideObject.type === SLIDE_OBJECT_TYPES.text && slideObject.options.bodyProp) {
@@ -1082,7 +1082,7 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
  * @param {ISlideObject|ITableCell} slideObj - slideObj -OR- table `cell` object
  * @returns XML containing the param object's text and formatting
  */
-export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
+export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	let opts: ObjectOptions = slideObj.options || {}
 	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
 	if (opts && slideObj.type != SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
@@ -1781,9 +1781,9 @@ export function makeXmlViewProps():string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {IShadowOpts} shadowOpts - shadow options
+ * @param {ShadowOpts} shadowOpts - shadow options
  */
-export function correctShadowOptions(shadowOpts: IShadowOpts) {
+export function correctShadowOptions(shadowOpts: ShadowOpts) {
 	if (!shadowOpts || shadowOpts === null) return
 
 	// OPT: `type`
@@ -1875,7 +1875,7 @@ export function createHyperlinkRels(slides: ISlide[], inText, slideRels) {
  * @param {number} colWidth - table column width
  * @return {string[]} XML
  */
-function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
+function parseTextToLines(cell: TableCell, colWidth: number): string[] {
 	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
 	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []

@@ -19,7 +19,7 @@ import {
 	LETTERS,
 	ONEPT,
 } from './core-enums'
-import { IChartOpts, ISlideRelChart, IShadowOpts, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
+import { IChartOpts, ISlideRelChart, ShadowOpts, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './gen-utils'
 import * as JSZip from 'jszip'
 
@@ -1884,7 +1884,7 @@ function getExcelColName(length: number) {
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
  */
-function createShadowElement(options: IShadowOpts, defaults: object) {
+function createShadowElement(options: ShadowOpts, defaults: object) {
 	///if (options === 'none') {
 	if (options === null) {
 		return '<a:effectLst/>'
