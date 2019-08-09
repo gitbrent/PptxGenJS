@@ -67,7 +67,7 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 /**
  * Replace special XML characters with HTML-encoded strings
  */
-export function encodeXmlEntities(inStr: string):string {
+export function encodeXmlEntities(inStr: string): string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 	if (typeof inStr === 'undefined' || inStr == null) return ''
 	return inStr
@@ -151,25 +151,22 @@ export function createColorElement(colorStr: string, innerElements?: string) {
 	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
 }
 
-export function genXmlColorSelection(color_info:ShapeFill, back_info?: string) {
+export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string) {
 	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''
 	let outText = ''
 
-	if (back_info && typeof back_info === 'string') {
-		outText += '<p:bg><p:bgPr>'
-		outText += genXmlColorSelection(back_info.replace('#', ''))
-		outText += '<a:effectLst/>'
-		outText += '</p:bgPr></p:bg>'
+	if (backColor && typeof backColor === 'string') {
+		outText += `<p:bg><p:bgPr>${genXmlColorSelection(backColor.replace('#', ''))}<a:effectLst/></p:bgPr></p:bg>`
 	}
 
-	if (color_info) {
-		if (typeof color_info == 'string') colorVal = color_info
+	if (shapeFill) {
+		if (typeof shapeFill == 'string') colorVal = shapeFill
 		else {
-			if (color_info.type) fillType = color_info.type
-			if (color_info.color) colorVal = color_info.color
-			if (color_info.alpha) internalElements += '<a:alpha val="' + (100 - color_info.alpha) + '000"/>'
+			if (shapeFill.type) fillType = shapeFill.type
+			if (shapeFill.color) colorVal = shapeFill.color
+			if (shapeFill.alpha) internalElements += '<a:alpha val="' + (100 - shapeFill.alpha) + '000"/>'
 		}
 
 		switch (fillType) {
