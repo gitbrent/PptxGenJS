@@ -182,8 +182,6 @@ export default class PptxGenJS {
 		return this._presLayout
 	}
 
-	//private _imageCounter: number // TODO: This is a dummy value - `gen-xml` has real one: find a better solution, stop using counter
-
 	private fs: any
 	private https: any
 	private sizeOf: any
@@ -443,6 +441,7 @@ export default class PptxGenJS {
 	addNewSlide = (masterName: string): ISlide => {
 		return this.addSlide(masterName)
 	}
+
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
 	 * @since 3.0.0
@@ -569,6 +568,8 @@ export default class PptxGenJS {
 	}
 }
 
+// TODO: include via rollup
+// https://github.com/rollup/rollup-plugin-node-resolve
 /*
 // NodeJS support
 if (this.NODEJS) {
