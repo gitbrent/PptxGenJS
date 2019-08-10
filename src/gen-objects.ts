@@ -635,10 +635,9 @@ export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptio
 	}
 
 	// STEP 2: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
-	//var arrRows = jQuery.extend(true,[],arrTabRows);
-	//if ( !Array.isArray(arrRows[0]) ) arrRows = [ jQuery.extend(true,[],arrTabRows) ];
 	let arrRows: [TableCell[]] = arrTabRows as [TableCell[]]
 	if (!Array.isArray(arrRows[0])) arrRows = [arrTabRows]
+	// TODO: if (!Array.isArray(arrRows[0])) arrRows = [...arrTabRows]
 
 	// STEP 3: Set options
 	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', presLayout)

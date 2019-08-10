@@ -2066,12 +2066,12 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 					jQuery.each(currRow, (_idx, cell) => {
 						if (cell.text.length > 0) {
 							// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
-							arrRows.push(jQuery.extend(true, [], currRow))
+							arrRows.push([...currRow])
 							return false // break out of .each loop
 						}
 					})
 					// 2: Add new Slide with current array of table rows
-					arrObjSlides.push(jQuery.extend(true, [], arrRows))
+					arrObjSlides.push([...arrRows])
 					// 3: Empty rows for new Slide
 					arrRows.length = 0
 					// 4: Reset current table height for new Slide
@@ -2097,12 +2097,12 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 
 		// E: Flush row buffer - Add the current row to table, then truncate row cell array
 		// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
-		if (currRow.length) arrRows.push(jQuery.extend(true, [], currRow))
+		if (currRow.length) arrRows.push([...currRow])
 		currRow.length = 0
 	})
 
 	// STEP 4-2: Flush final row buffer to slide
-	arrObjSlides.push(jQuery.extend(true, [], arrRows))
+	arrObjSlides.push([...arrRows])
 
 	if (opts.debug) {
 		console.log(`\n|================================================|\n| FINAL: arrObjSlides.length = ${arrObjSlides.length}`)
