@@ -93,7 +93,7 @@ function addBackgroundDefinition(bkg: string | { src?: string; path?: string; da
 		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn == 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
-		let intRels = target.relsMedia.length + 2 // `rId` needs to be >=2 as Id="rId1" is "SlideMaster1.xml"
+		let intRels = target.relsMedia.length + 1
 		target.relsMedia.push({
 			path: bkg.src,
 			type: SLIDE_OBJECT_TYPES.image,
