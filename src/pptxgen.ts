@@ -31,19 +31,19 @@
 \*/
 
 /**
-* PPTX Units are "DXA" (except for font sizing)
-* ....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
-* ....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
-* SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
-*
-* OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
-*
-* REFERENCES:
-* @see "Structure of a PresentationML document (Open XML SDK)"
-* @see: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
-* TableStyleId enumeration
-* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
-*/
+ * PPTX Units are "DXA" (except for font sizing)
+ * ....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
+ * ....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
+ * SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
+ *
+ * OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
+ *
+ * REFERENCES:
+ * @see "Structure of a PresentationML document (Open XML SDK)"
+ * @see: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
+ * TableStyleId enumeration
+ * @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
+ */
 
 import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES } from './core-enums'
 import { ILayout, ISlide, ISlideLayout, SlideMasterOptions, SlideNumber, ITableToSlidesOpts } from './core-interfaces'
@@ -296,16 +296,16 @@ export default class PptxGenJS {
 		zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
 
 		// STEP 3: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
-		this.slideLayouts.forEach((layout,idx) => {
-			zip.file('ppt/slideLayouts/slideLayout' + (idx+1) + '.xml', genXml.makeXmlLayout(layout))
-			zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx+1) + '.xml.rels', genXml.makeXmlSlideLayoutRel((idx+1), this.slideLayouts))
+		this.slideLayouts.forEach((layout, idx) => {
+			zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', genXml.makeXmlLayout(layout))
+			zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx + 1, this.slideLayouts))
 		})
-		this.slides.forEach((slide,idx) => {
-			zip.file('ppt/slides/slide' + (idx+1) + '.xml', genXml.makeXmlSlide(slide))
-			zip.file('ppt/slides/_rels/slide' + (idx+1) + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, (idx+1)))
+		this.slides.forEach((slide, idx) => {
+			zip.file('ppt/slides/slide' + (idx + 1) + '.xml', genXml.makeXmlSlide(slide))
+			zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, idx + 1))
 			// Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
-			zip.file('ppt/notesSlides/notesSlide' + (idx+1) + '.xml', genXml.makeXmlNotesSlide(slide))
-			zip.file('ppt/notesSlides/_rels/notesSlide' + (idx+1) + '.xml.rels', genXml.makeXmlNotesSlideRel(idx+1))
+			zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', genXml.makeXmlNotesSlide(slide))
+			zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', genXml.makeXmlNotesSlideRel(idx + 1))
 		})
 		zip.file('ppt/slideMasters/slideMaster1.xml', genXml.makeXmlMaster(this.masterSlide, this.slideLayouts))
 		zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts))
