@@ -30,23 +30,23 @@
 |*|  SOFTWARE.
 \*/
 
-/*
-	PPTX Units are "DXA" (except for font sizing)
-	....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
-	....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
-	SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
-	|
-	OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
-	|
-	REFS:
-	* "Structure of a PresentationML document (Open XML SDK)"
-	* @see: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
-	* TableStyleId enumeration
-	* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
+/**
+* PPTX Units are "DXA" (except for font sizing)
+* ....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
+* ....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
+* SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
+*
+* OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
+*
+* REFERENCES:
+* @see "Structure of a PresentationML document (Open XML SDK)"
+* @see: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
+* TableStyleId enumeration
+* @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
 */
 
 import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES } from './core-enums'
-import { ILayout, ISlide, ISlideLayout, ISlideMasterDef, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
+import { ILayout, ISlide, ISlideLayout, SlideMasterOptions, SlideNumber, ITableToSlidesOpts } from './core-interfaces'
 import { PowerPointShapes } from './core-shapes'
 import Slide from './slide'
 import * as genCharts from './gen-charts'
@@ -424,7 +424,7 @@ export default class PptxGenJS {
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
 	 */
-	setSlideNumber = (slideNumberObj: ISlideNumber) => {
+	setSlideNumber = (slideNumberObj: SlideNumber) => {
 		// 1: Add slideNumber to slideMaster1.xml
 		this.masterSlide.slideNumberObj = slideNumberObj
 
@@ -519,27 +519,27 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * Adds a new slide master [layout] to the presentation.
-	 * @param {ISlideMasterDef} inObjMasterDef - layout definition
+	 * Adds a new slide master [layout] to the Presentation
+	 * @param {SlideMasterOptions} slideMasterOpts - layout definition
 	 */
-	defineSlideMaster(inObjMasterDef: ISlideMasterDef) {
-		if (!inObjMasterDef.title) throw Error('defineSlideMaster() object argument requires a `title` value.')
+	defineSlideMaster(slideMasterOpts: SlideMasterOptions) {
+		if (!slideMasterOpts.title) throw Error('defineSlideMaster() object argument requires a `title` value.')
 
 		let newLayout: ISlideLayout = {
 			presLayout: this.presLayout,
-			name: inObjMasterDef.title,
+			name: slideMasterOpts.title,
 			number: 1000 + this.slideLayouts.length + 1,
 			slide: null,
 			data: [],
 			rels: [],
 			relsChart: [],
 			relsMedia: [],
-			margin: inObjMasterDef.margin || DEF_SLIDE_MARGIN_IN,
-			slideNumberObj: inObjMasterDef.slideNumber || null,
+			margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
+			slideNumberObj: slideMasterOpts.slideNumber || null,
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(inObjMasterDef, newLayout)
+		genObj.createSlideObject(slideMasterOpts, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)

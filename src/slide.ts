@@ -10,7 +10,7 @@ import {
 	ILayout,
 	IMediaOpts,
 	ISlideLayout,
-	ISlideNumber,
+	SlideNumber,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
@@ -27,7 +27,7 @@ export default class Slide {
 	private _bkgd: string
 	private _color: string
 	private _setSlideNum: Function
-	private _slideNumber: ISlideNumber
+	private _slideNumber: SlideNumber
 
 	public addSlide: Function
 	public getSlide: Function
@@ -78,12 +78,12 @@ export default class Slide {
 		return this._color
 	}
 
-	public set slideNumber(value: ISlideNumber) {
+	public set slideNumber(value: SlideNumber) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		this._slideNumber = value
 		this._setSlideNum(value)
 	}
-	public get slideNumber(): ISlideNumber {
+	public get slideNumber(): SlideNumber {
 		return this._slideNumber
 	}
 

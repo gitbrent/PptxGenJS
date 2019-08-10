@@ -44,10 +44,10 @@ var _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * @param {ISlideMasterDef} slideDef - slide definition
+ * @param {SlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef /*:ISlideMasterDef*/, target /*FIXME :ISlide|ISlideLayout*/) {
+export function createSlideObject(slideDef /*:SlideMasterOptions*/, target /*FIXME :ISlide|ISlideLayout*/) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)

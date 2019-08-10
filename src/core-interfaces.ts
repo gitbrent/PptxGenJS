@@ -19,6 +19,7 @@ export type Coord = number | string // string is in form 'n%'
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
+export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 
 export interface PositionOptions {
 	x?: Coord
@@ -213,7 +214,6 @@ export interface Shape {
 	name: string
 	avLst: { [key: string]: number }
 }
-export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 export interface ShapeOptions extends PositionOptions {
 	align?: HAlign
 	fill?: ShapeFill
@@ -369,19 +369,19 @@ export interface ILayout {
 	width?: number
 	height?: number
 }
-export interface ISlideNumber extends PositionOptions {
+export interface SlideNumber extends PositionOptions {
 	fontFace?: string
 	fontSize?: number
 	color?: string
 }
-export interface ISlideMasterDef {
+export interface SlideMasterOptions {
 	title: string
 	height?: number
 	width?: number
 	margin?: number | [number, number, number, number]
 	bkgd?: string
 	objects?: [{}]
-	slideNumber?: ISlideNumber
+	slideNumber?: SlideNumber
 }
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_TYPE_NAMES | IChartMulti[]
@@ -476,7 +476,7 @@ export interface ISlideLayout {
 	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: number | [number, number, number, number]
-	slideNumberObj?: ISlideNumber
+	slideNumberObj?: SlideNumber
 }
 export interface ISlide {
 	addChart: Function
@@ -499,7 +499,7 @@ export interface ISlide {
 	relsChart: ISlideRelChart[]
 	relsMedia: ISlideRelMedia[]
 	slideLayout: ISlideLayout
-	slideNumberObj?: ISlideNumber // FIXME rename
+	slideNumberObj?: SlideNumber // FIXME rename
 }
 export interface IPresentation {
 	author: string
