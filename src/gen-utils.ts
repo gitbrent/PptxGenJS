@@ -40,8 +40,10 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
 /**
  * Basic UUID Generator Adapted
  * @link https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523
+ * @param {string} uuidFormat - UUID format
+ * @returns {string} UUID
  */
-export function getUuid(uuidFormat: string) {
+export function getUuid(uuidFormat: string):string {
 	return uuidFormat.replace(/[xy]/g, function(c) {
 		var r = (Math.random() * 16) | 0,
 			v = c == 'x' ? r : (r & 0x3) | 0x8
@@ -50,6 +52,7 @@ export function getUuid(uuidFormat: string) {
 }
 
 /**
+* TODO: What does this mehtod do again??
  * shallow mix, returns new object
  */
 export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
@@ -66,11 +69,13 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 
 /**
  * Replace special XML characters with HTML-encoded strings
+ * @param {string} xml - XML string to encode
+ * @returns {string} escaped XML
  */
-export function encodeXmlEntities(inStr: string): string {
+export function encodeXmlEntities(xml: string): string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
-	if (typeof inStr === 'undefined' || inStr == null) return ''
-	return inStr
+	if (typeof xml === 'undefined' || xml == null) return ''
+	return xml
 		.toString()
 		.replace(/&/g, '&amp;')
 		.replace(/</g, '&lt;')
@@ -81,8 +86,7 @@ export function encodeXmlEntities(inStr: string): string {
 
 /**
  * Convert inches into EMU
- *
- * @param {number|string} `inches`
+ * @param {number|string} inches - as string or number
  * @returns {number} EMU value
  */
 export function inch2Emu(inches: number | string): number {
@@ -96,8 +100,8 @@ export function inch2Emu(inches: number | string): number {
 /**
  * Convert degrees (0..360) to PowerPoint `rot` value
  *
- * @param {number} `d` degrees
- * @returns {number} `rot` value
+ * @param {number} d - degrees
+ * @returns {number} rot - value
  */
 export function convertRotationDegrees(d: number): number {
 	d = d || 0
@@ -106,8 +110,7 @@ export function convertRotationDegrees(d: number): number {
 
 /**
  * Converts component value to hex value
- *
- * @param {number} `c` - component color
+ * @param {number} c - component color
  * @returns {string} hex string
  */
 export function componentToHex(c: number): string {
@@ -117,10 +120,10 @@ export function componentToHex(c: number): string {
 
 /**
  * Converts RGB colors from jQuery selectors to Hex for Presentation colors
- *
- * @param {number} `r` - red value
- * @param {number} `g` - green value
- * @param {number} `b` - blue value
+ * @param {number} r - red value
+ * @param {number} g - green value
+ * @param {number} b - blue value
+ * @returns {string} XML string
  */
 export function rgbToHex(r: number, g: number, b: number): string {
 	if (!Number.isInteger(r)) {
@@ -132,12 +135,12 @@ export function rgbToHex(r: number, g: number, b: number): string {
 }
 
 /**
- * Create either a `a:schemeClr` (scheme color) or `a:srgbClr` (hexa representation).
- *
- * @param {string} `colorStr` hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
- * @param {string} `innerElements` additional elements that adjust the color and are enclosed by the color element
+ * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
+ * @param {string} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
+ * @returns {string} XML string
  */
-export function createColorElement(colorStr: string, innerElements?: string) {
+export function createColorElement(colorStr: string, innerElements?: string):string {
 	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
 
 	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) == -1) {
@@ -151,7 +154,13 @@ export function createColorElement(colorStr: string, innerElements?: string) {
 	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
 }
 
-export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string) {
+/**
+* Create color selection
+* @param {ShapeFill} shapeFill - options
+* @param {string} backColor - color string
+* @returns {string} XML string
+*/
+export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string):string {
 	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''
