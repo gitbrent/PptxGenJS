@@ -263,11 +263,10 @@ export default class PptxGenJS {
 
 	/**
 	 * Create and export the .pptx file
-	 * @param {JSZIP_OUTPUT_TYPE} `outputType` JSZip output type (ArrayBuffer, Blob, etc.)
+	 * @param {JSZIP_OUTPUT_TYPE} outputType - JSZip output type (ArrayBuffer, Blob, etc.)
 	 */
 	doExportPresentation = (outputType?: JSZIP_OUTPUT_TYPE) => {
-		var arrChartPromises: Array<Promise<any>> = []
-		var intSlideNum: number = 0
+		var arrChartPromises: Promise<any>[] = []
 
 		// STEP 1: Create new JSZip file
 		let zip: JSZip = new JSZip()
@@ -297,20 +296,17 @@ export default class PptxGenJS {
 		zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
 
 		// STEP 3: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
-		for (var idx = 1; idx <= this.slideLayouts.length; idx++) {
-			zip.file('ppt/slideLayouts/slideLayout' + idx + '.xml', genXml.makeXmlLayout(this.slideLayouts[idx - 1]))
-			zip.file('ppt/slideLayouts/_rels/slideLayout' + idx + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx, this.slideLayouts))
-		}
-		for (var idx = 0; idx < this.slides.length; idx++) {
-			intSlideNum++
-			zip.file('ppt/slides/slide' + intSlideNum + '.xml', genXml.makeXmlSlide(this.slides[idx]))
-			zip.file('ppt/slides/_rels/slide' + intSlideNum + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, intSlideNum))
-
-			// Here we will create all slide notes related items. Notes of empty strings
-			// are created for slides which do not have notes specified, to keep track of _rels.
-			zip.file('ppt/notesSlides/notesSlide' + intSlideNum + '.xml', genXml.makeXmlNotesSlide(this.slides[idx]))
-			zip.file('ppt/notesSlides/_rels/notesSlide' + intSlideNum + '.xml.rels', genXml.makeXmlNotesSlideRel(intSlideNum))
-		}
+		this.slideLayouts.forEach((layout,idx) => {
+			zip.file('ppt/slideLayouts/slideLayout' + (idx+1) + '.xml', genXml.makeXmlLayout(layout))
+			zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx+1) + '.xml.rels', genXml.makeXmlSlideLayoutRel((idx+1), this.slideLayouts))
+		})
+		this.slides.forEach((slide,idx) => {
+			zip.file('ppt/slides/slide' + (idx+1) + '.xml', genXml.makeXmlSlide(slide))
+			zip.file('ppt/slides/_rels/slide' + (idx+1) + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, (idx+1)))
+			// Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
+			zip.file('ppt/notesSlides/notesSlide' + (idx+1) + '.xml', genXml.makeXmlNotesSlide(slide))
+			zip.file('ppt/notesSlides/_rels/notesSlide' + (idx+1) + '.xml.rels', genXml.makeXmlNotesSlideRel(idx+1))
+		})
 		zip.file('ppt/slideMasters/slideMaster1.xml', genXml.makeXmlMaster(this.masterSlide, this.slideLayouts))
 		zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts))
 		zip.file('ppt/notesMasters/notesMaster1.xml', genXml.makeXmlNotesMaster())
@@ -370,7 +366,7 @@ export default class PptxGenJS {
 		// STEP 2: Download file to browser
 		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
 		if (window.navigator.msSaveOrOpenBlob) {
-			// REF: https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
+			// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
 			let blobObject = new Blob([content])
 			jQuery(a).click(() => {
 				window.navigator.msSaveOrOpenBlob(blobObject, strExportName)
@@ -403,6 +399,12 @@ export default class PptxGenJS {
 		this.saveCallback = null
 	}
 
+	/**
+	 * Create all chart and media rels for this Presenation
+	 * @param {ISlide | ISlideLayout} slide - slide with rels
+	 * @param {JSZIP} zip - JSZip instance
+	 * @param {Promise<any>[]} chartPromises - promise array
+	 */
 	createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
@@ -423,20 +425,22 @@ export default class PptxGenJS {
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
+	 * @param {SlideNumber} slideNum - slide number config
 	 */
-	setSlideNumber = (slideNumberObj: SlideNumber) => {
+	setSlideNumber = (slideNum: SlideNumber) => {
 		// 1: Add slideNumber to slideMaster1.xml
-		this.masterSlide.slideNumberObj = slideNumberObj
+		this.masterSlide.slideNumberObj = slideNum
 
 		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
 		this.slideLayouts.filter(layout => {
 			return layout.name == DEF_PRES_LAYOUT_NAME
-		})[0].slideNumberObj = slideNumberObj
+		})[0].slideNumberObj = slideNum
 	}
 
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
-	 * @since 3.0.0
+	 * @param {string} masterName - slide master name
+	 * @return {ISlide} new Slide
 	 */
 	addNewSlide = (masterName: string): ISlide => {
 		return this.addSlide(masterName)
@@ -444,6 +448,8 @@ export default class PptxGenJS {
 
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
+	 * @param {number} slideNum - slide number
+	 * @return {ISlide} Slide
 	 * @since 3.0.0
 	 */
 	getSlide = (slideNum: number): ISlide => {
@@ -456,6 +462,7 @@ export default class PptxGenJS {
 
 	// FIXME: TODO: TODO-3: remove `save` - use `write` and `writeFile` instead
 	// ALSO: mnove to {options} instead of positional params!
+	//* @since 3.0.0
 
 	/**
 	 * Save (export) the Presentation .pptx file
