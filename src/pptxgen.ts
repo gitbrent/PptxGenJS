@@ -523,7 +523,7 @@ export default class PptxGenJS {
 	 * @param {SlideMasterOptions} slideMasterOpts - layout definition
 	 */
 	defineSlideMaster(slideMasterOpts: SlideMasterOptions) {
-		if (!slideMasterOpts.title) throw Error('defineSlideMaster() object argument requires a `title` value.')
+		if (!slideMasterOpts.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: ISlideLayout = {
 			presLayout: this.presLayout,
