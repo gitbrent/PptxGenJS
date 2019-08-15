@@ -453,8 +453,8 @@ function genSlides_Table(pptx) {
 		slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
 		slide.addTable( [['margin:[30,5,5,30]']], { x:10.5,y:1.1, margin:[30,5,5,30], w:2.2, fill:'F1F1F1' } );
 
-		slide.addTable( [{text:'no border and number zero', options:{margin:5}}, {text:0, options:{margin:5}}], { x:0.5, y:1.9, w:3, fill:'f2f9fc', border:{type:'none'}, colW:[2.5,0.5] } );
-		slide.addTable( [{text:'text-obj margin:0', options:{margin:0}}], { x:4.0, y:1.9, w:2, fill:'f2f9fc' } );
+		slide.addTable( [[{text:'no border and number zero', options:{margin:5}}, {text:0, options:{margin:5}}]], { x:0.5, y:1.9, w:3, fill:'f2f9fc', border:{type:'none'}, colW:[2.5,0.5] } );
+		slide.addTable( [[{text:'text-obj margin:0', options:{margin:0}}]], { x:4.0, y:1.9, w:2, fill:'f2f9fc' } );
 
 		// Test margin option when using both plain and text object cells
 		var arrTextObjects = [
@@ -536,13 +536,18 @@ function genSlides_Table(pptx) {
 		var arrCell2 = [{ text:'Red ', options:{color:'FF0000'} }, { text:'Green ', options:{color:'00FF00'} }, { text:'Blue', options:{color:'0000FF'} }];
 		var arrCell3 = [{ text:'Bullets\nBullets\nBullets', options:{ color:'0088cc', bullet:true } }];
 		var arrCell4 = [{ text:'Numbers\nNumbers\nNumbers', options:{ color:'0088cc', bullet:{type:'number'} } }];
-		var arrTabRows = [
-			[{ text:arrCell1 }, { text:arrCell2, options:{valign:'middle'} }, { text:arrCell3, options:{valign:'middle'} }, { text:arrCell4, options:{valign:'bottom'} }]
-		];
-		slide.addTable( arrTabRows, { x:0.6, y:1.25, w:12, h:3, fontSize:24, border:{pt:'1'}, fill:'F1F1F1' } );
+		slide.addTable([
+			[
+				{ text:arrCell1 },
+				{ text:arrCell2, options:{valign:'middle'} },
+				{ text:arrCell3, options:{valign:'middle'} },
+				{ text:arrCell4, options:{valign:'bottom'} }
+			]],
+			{ x:0.6, y:1.25, w:12, h:3, fontSize:24, border:{pt:'1'}, fill:'F1F1F1' }
+		);
 
 		// EX 2:
-		slide.addTable(
+		slide.addTable([
 			[
 				{ text:[
 					{ text:'I am a text object with bullets ', options:{color:'CC0000', bullet:{code:'2605'}} },
@@ -558,7 +563,7 @@ function genSlides_Table(pptx) {
 					{ text:'#'   , options:{fontSize:60, color:'8648cd'} },
 					{ text:'3'   , options:{fontSize:60, color:'33ccef'} }
 				]}
-			],
+			]],
 			{ x:0.6, y:4.75, w:12, h:2, fontSize:24, colW:[8,2,2], valign:'middle', border:{pt:'1'}, fill:'F1F1F1' }
 		);
 	}

@@ -20,6 +20,7 @@ export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
+export type Margin = number | [number, number, number, number]
 
 export interface PositionOptions {
 	x?: Coord
@@ -259,18 +260,19 @@ export interface ITableToSlidesOpts extends PositionOptions {
 	masterSlideName?: string
 	masterSlide?: ISlideLayout
 	newSlideStartY?: number
-	slideMargin?: number | [number, number, number, number]
+	slideMargin?: Margin
 }
 export interface ITableCellOpts {
 	align?: HAlign
 	bold?: boolean
 	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
-	color?: string
+	color?: Color
 	colspan?: number
 	fill?: ShapeFill
+	fontFace?: string
 	fontSize?: number
 	lineWeight?: number
-	margin?: number | [number, number, number, number]
+	margin?: Margin
 	rowspan?: number
 	valign?: VAlign
 }
@@ -279,15 +281,6 @@ export interface ITableToSlidesCell {
 	text?: string
 	options?: ITableCellOpts
 }
-export interface TableCell {
-	type: SLIDE_OBJECT_TYPES.tablecell
-	text?: string
-	hmerge?: boolean
-	vmerge?: boolean
-	optImp?: any
-	options?: ITableCellOpts
-}
-export type TableRow = [TableCell[]]
 export interface TableOptions extends PositionOptions {
 	align?: HAlign
 	autoPage?: boolean
@@ -298,12 +291,22 @@ export interface TableOptions extends PositionOptions {
 	fill?: Color
 	fontSize?: number
 	lineWeight?: number
-	margin?: number | [number, number, number, number]
+	margin?: Margin
 	newSlideStartY?: number
 	rowW?: number | number[]
 	rowspan?: number
 	valign?: VAlign
 }
+export interface TableCell {
+	type: SLIDE_OBJECT_TYPES.tablecell
+	text?: string
+	options?: ITableCellOpts
+	// internal fields below
+	hmerge?: boolean
+	vmerge?: boolean
+	optImp?: any
+}
+export type TableRow = number[] | string[] | TableCell[]
 
 export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	align?: HAlign
@@ -334,10 +337,10 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	italic?: boolean
 	lang?: string
 	line?: Color
-	lineIdx?:number
+	lineIdx?: number
 	lineSize?: number
 	lineSpacing?: number
-	outline?: { color:Color, size:number }
+	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
@@ -378,7 +381,7 @@ export interface SlideMasterOptions {
 	title: string
 	height?: number
 	width?: number
-	margin?: number | [number, number, number, number]
+	margin?: Margin
 	bkgd?: string
 	objects?: [{}]
 	slideNumber?: SlideNumber
@@ -422,7 +425,7 @@ export interface ObjectOptions extends ShapeOptions, ITableCellOpts, ITextOpts {
 	cy?: Coord
 	w?: Coord
 	h?: Coord
-	margin?: number | [number, number, number, number]
+	margin?: Margin
 	// table
 	colW?: number | number[]
 	rowH?: number | number[]
@@ -475,7 +478,7 @@ export interface ISlideLayout {
 	rels: Array<ISlideRel>
 	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
-	margin?: number | [number, number, number, number]
+	margin?: Margin
 	slideNumberObj?: SlideNumber
 }
 export interface ISlide {
@@ -491,7 +494,7 @@ export interface ISlide {
 	color?: string
 	data?: ISlideObject[]
 	hidden?: boolean
-	margin?: number | [number, number, number, number]
+	margin?: Margin
 	name?: string
 	number: number
 	presLayout: ILayout

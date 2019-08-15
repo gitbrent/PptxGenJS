@@ -35,6 +35,7 @@ import {
 	Shape,
 	ShapeOptions,
 	TableOptions,
+	TableRow,
 } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
@@ -622,22 +623,61 @@ export function addShapeDefinition(target: ISlide, shape: Shape, opt: ShapeOptio
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presenation layout
  */
-export function addTableDefinition(target: ISlide, arrTabRows, inOpt: TableOptions, slideLayout: ISlideLayout, presLayout: ILayout, addSlide: Function, getSlide: Function) {
-	let opt = inOpt && typeof inOpt === 'object' ? inOpt : ({} as TableOptions)
-	let slides = [target] // Create array of Slides as more will be added for auto-paging
+export function addTableDefinition(
+	target: ISlide,
+	tableRows: TableRow[],
+	options: TableOptions,
+	slideLayout: ISlideLayout,
+	presLayout: ILayout,
+	addSlide: Function,
+	getSlide: Function
+) {
+	let opt: TableOptions = options && typeof options === 'object' ? options : {}
+	let slides: ISlide[] = [target] // Create array of Slides as more may be added by auto-paging
 
 	// STEP 1: REALITY-CHECK
-	if (arrTabRows == null || arrTabRows.length == 0 || !Array.isArray(arrTabRows)) {
-		try {
-			console.warn('addTable: Array expected! USAGE: slide.addTable( [rows], {options} );')
-		} catch (ex) {}
-		return null
+	{
+		// A: check for empty
+		if (tableRows == null || tableRows.length == 0 || !Array.isArray(tableRows)) {
+			throw `addTable: Array expected! EX: 'slide.addTable( [rows], {options} );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`
+		}
+
+		// B: check for non-well-formatted array (ex: rows=['a','b'] instead of [['a','b']])
+		if (!tableRows[0] || !Array.isArray(tableRows[0])) {
+			throw `addTable: 'rows' should be an array of cells! EX: 'slide.addTable( [ ['A'], ['B'], {text:'C',options:{align:'center'}} ] );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`
+		}
 	}
 
-	// STEP 2: Row setup: Handle case where user passed in a simple 1-row array. EX: `["cell 1", "cell 2"]`
-	let arrRows: [TableCell[]] = arrTabRows as [TableCell[]]
-	if (!Array.isArray(arrRows[0])) arrRows = [arrTabRows]
-	// TODO: if (!Array.isArray(arrRows[0])) arrRows = [...arrTabRows]
+	// STEP 2: Transform `tableRows` into well-formatted TableCell's
+	// tableRows can be object or plain text array: `[{text:'cell 1'}, {text:'cell 2', options:{color:'ff0000'}}]` | `["cell 1", "cell 2"]`
+	let arrRows: [TableCell[]?] = []
+	tableRows.forEach(row => {
+		let newRow: TableCell[] = []
+
+		if (Array.isArray(row)) {
+			row.forEach((cell: number | string | TableCell) => {
+				let newCell: TableCell = {
+					type: SLIDE_OBJECT_TYPES.tablecell,
+					text: '',
+					options: null,
+				}
+				if (typeof cell === 'string' || typeof cell === 'number') newCell.text = cell.toString()
+				else if (cell.text) {
+					// Cell can contain complex text type, or string, or number
+					if (typeof cell.text === 'string' || typeof cell.text === 'number') newCell.text = cell.text.toString()
+					else if (cell.text) newCell.text = cell.text
+					// Capture options
+					if (cell.options) newCell.options = cell.options
+				}
+				newRow.push(newCell)
+			})
+		} else {
+			console.log('addTable: tableRows has a bad row. A row should be an array of cells. You provided:')
+			console.log(row)
+		}
+
+		arrRows.push(newRow)
+	})
 
 	// STEP 3: Set options
 	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', presLayout)

@@ -1,5 +1,5 @@
 /**
- * Slide Class
+ * PptxGenJS Slide Class
  */
 
 import { CHART_TYPE_NAMES } from './core-enums'
@@ -20,6 +20,7 @@ import {
 	TableOptions,
 	IText,
 	ITextOpts,
+	TableRow,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -90,7 +91,6 @@ export default class Slide {
 	/**
 	 * Generate the chart based on input data.
 	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
-	 *
 	 * @param {CHART_TYPE_NAMES|IChartMulti[]} `type` - chart type
 	 * @param {object[]} data - a JSON object with follow the following format
 	 * @param {IChartOpts} options - chart options
@@ -112,7 +112,7 @@ export default class Slide {
 	 * }
 	 * @return {Slide} this class
 	 */
-	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts) {
+	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts): Slide {
 		genObj.addChartDefinition(this, type, data, options)
 		return this
 	}
@@ -156,19 +156,19 @@ export default class Slide {
 	 * @param {ShapeOptions} options - shape options
 	 * @return {Slide} this class
 	 */
-	addShape(shape: Shape, opt: ShapeOptions): Slide {
-		genObj.addShapeDefinition(this, shape, opt)
+	addShape(shape: Shape, options?: ShapeOptions): Slide {
+		genObj.addShapeDefinition(this, shape, options)
 		return this
 	}
 
 	/**
 	 * Add shape object to Slide
 	 * @note can be recursive
-	 * @param {[]} arrTabRows - table rows
+	 * @param {TableRow[]} arrTabRows - table rows
 	 * @param {TableOptions} options - table options
 	 * @return {Slide} this class
 	 */
-	addTable(arrTabRows, options: TableOptions): Slide {
+	addTable(arrTabRows: TableRow[], options?: TableOptions): Slide {
 		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
@@ -181,7 +181,7 @@ export default class Slide {
 	 * @return {Slide} this class
 	 * @since: 1.0.0
 	 */
-	addText(text: string | IText[], options: ITextOpts): Slide {
+	addText(text: string | IText[], options?: ITextOpts): Slide {
 		genObj.addTextDefinition(this, text, options, false)
 		return this
 	}
