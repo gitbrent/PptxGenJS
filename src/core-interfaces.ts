@@ -54,7 +54,7 @@ export interface BorderOptions {
 	type?: string // TODO: specify values, eg: 'none'
 }
 export interface ShadowOpts {
-	type: string
+	type: 'outer' | 'inner' | 'none'
 	angle: number
 	opacity: number
 	blur?: number
