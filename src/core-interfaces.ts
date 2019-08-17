@@ -255,12 +255,12 @@ export interface ITableToSlidesOpts extends PositionOptions {
 	addHeaderToEach?: boolean
 	autoPage?: boolean
 	colW?: number | number[]
-	debug?: boolean
 	lineWeight?: number
 	masterSlideName?: string
 	masterSlide?: ISlideLayout
 	newSlideStartY?: number
 	slideMargin?: Margin
+	verbose?: boolean // Undocumented; shows verbose output
 }
 export interface ITableCellOpts {
 	align?: HAlign

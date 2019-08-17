@@ -618,10 +618,12 @@ export function addShapeDefinition(target: ISlide, shape: Shape, opt: ShapeOptio
 /**
  * Adds a table object to a slide definition.
  * @param {ISlide} target - slide object that the table should be added to
- * @param {TODO} arrTabRows - table data
+ * @param {TableRow[]} arrTabRows - table data
  * @param {TableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presenation layout
+ * TODO: FIXME:
+ * TODO: FIXME:
  */
 export function addTableDefinition(
 	target: ISlide,

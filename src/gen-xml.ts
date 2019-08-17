@@ -275,7 +275,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				})
 
 				/* Only useful for rowspan/colspan testing
-				if ( objTabOpts.debug ) {
+				if ( objTabOpts.verbose ) {
 					console.table(objTableGrid);
 					var arrText = [];
 					jQuery.each(objTableGrid, function(i,row){ var arrRow = []; jQuery.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
@@ -1922,12 +1922,12 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		emuSlideTabH = EMU * 1
 
 	// Undocumented option offers verbose decision/status output
-	if (opts.debug) console.log(`-- DEBUG ----------------------------------`)
-	if (opts.debug) console.log(`opts.h ................. = ${opts.h}`)
-	if (opts.debug) console.log(`presLayout.height ...... = ${presLayout.height / EMU}`)
-	if (opts.debug) console.log(`opts.w ................. = ${opts.w}`)
-	if (opts.debug) console.log(`opts.colW .............. = ${opts.colW}`)
-	if (opts.debug) console.log(`opts.slideMargin ....... = ${opts.slideMargin || ''}`)
+	if (opts.verbose) console.log(`-- DEBUG ----------------------------------`)
+	if (opts.verbose) console.log(`opts.h ................. = ${opts.h}`)
+	if (opts.verbose) console.log(`presLayout.height ...... = ${presLayout.height / EMU}`)
+	if (opts.verbose) console.log(`opts.w ................. = ${opts.w}`)
+	if (opts.verbose) console.log(`opts.colW .............. = ${opts.colW}`)
+	if (opts.verbose) console.log(`opts.slideMargin ....... = ${opts.slideMargin || ''}`)
 
 	// NOTE: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
 	if (!opts.slideMargin && opts.slideMargin != 0) opts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
@@ -1950,8 +1950,8 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		numCols += cellOpts && cellOpts.colspan ? cellOpts.colspan : 1
 	})
 
-	if (opts.debug) console.log('arrInchMargins ......... = ' + arrInchMargins.toString())
-	if (opts.debug) console.log('numCols ................ = ' + numCols)
+	if (opts.verbose) console.log('arrInchMargins ......... = ' + arrInchMargins.toString())
+	if (opts.verbose) console.log('numCols ................ = ' + numCols)
 
 	// Calc opts.w if we can
 	if (!opts.w && opts.colW) {
@@ -1966,7 +1966,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 
 	// STEP 2: Calc usable space/table size now that we have usable space calc'd
 	emuSlideTabW = typeof opts.w === 'number' ? inch2Emu(opts.w) : presLayout.width - inch2Emu((typeof opts.x === 'number' ? opts.x : arrInchMargins[1]) + arrInchMargins[3])
-	if (opts.debug) console.log('emuSlideTabW (in) ...... = ' + (emuSlideTabW / EMU).toFixed(1))
+	if (opts.verbose) console.log('emuSlideTabW (in) ...... = ' + (emuSlideTabW / EMU).toFixed(1))
 
 	// STEP 3: Calc column widths if needed so we can subsequently calc lines (we need `emuSlideTabW`!)
 	if (!opts.colW || !Array.isArray(opts.colW)) {
@@ -1991,9 +1991,9 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 
 	// STEP 4: Iterate over each line and perform magic =========================
 	// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `tableToSlides()` or `addTable()`
-	inArrRows.forEach((row, idx) => {
+	inArrRows.forEach((row, iRow) => {
 		// A: Reset ROW variables
-		let arrCellsLines = [],
+		let arrCellsLines:[string[]?] = [],
 			arrCellsLineHeights: number[] = [],
 			intMaxLineCnt = 0,
 			intMaxColIdx = 0
@@ -2009,7 +2009,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			if (typeof opts.h === 'number' && emuSlideTabH < opts.h) emuSlideTabH = opts.h
 		} else if (typeof opts.h === 'number' && typeof opts.y === 'number')
 			emuSlideTabH = opts.h ? opts.h : presLayout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
-		if (opts.debug) console.log(`- SLIDE [${arrObjSlides.length}]: emuSlideTabH .. = ${(emuSlideTabH / EMU).toFixed(1)}`)
+		//if (opts.verbose) console.log(`- SLIDE [${arrObjSlides.length}]: emuSlideTabH .. = ${(emuSlideTabH / EMU).toFixed(1)}`)
 
 		// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
 		row.forEach((cell, iCell) => {
@@ -2029,13 +2029,14 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			// 3: Parse cell contents into lines (**MAGIC HAPPENSS HERE**)
 			lines = parseTextToLines(cell, opts.colW[iCell] / ONEPT)
 			arrCellsLines.push(lines)
-			///if (opts.debug) console.log('Cell:'+iCell+' - lines:'+lines.length);
+			//if (opts.verbose) console.log('Cell:'+iCell+' - lines:'+lines.length);
 
 			// 4: Keep track of max line count within all row cells
 			if (lines.length > intMaxLineCnt) {
 				intMaxLineCnt = lines.length
 				intMaxColIdx = iCell
 			}
+			//if (opts.verbose) console.log(`intMaxLineCnt = ${intMaxLineCnt}`)
 
 			let lineHeight = inch2Emu(((cell.options.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
 			// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
@@ -2051,13 +2052,13 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			arrCellsLineHeights.push(Math.round(lineHeight))
 		})
 
-		// D: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table H limit is hit
-		for (var idx = 0; idx < intMaxLineCnt; idx++) {
+		// D: AUTO-PAGING: Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
+		for (let idx = 0; idx < intMaxLineCnt; idx++) {
 			// 1: Add the current line to cell
-			for (var col = 0; col < arrCellsLines.length; col++) {
+			for (let col = 0; col < arrCellsLines.length; col++) {
 				// A: Commit this slide to Presenation if table Height limit is hit
 				if (emuTabCurrH + arrCellsLineHeights[intMaxColIdx] > emuSlideTabH) {
-					if (opts.debug) console.log(`*** NEW SLIDE CREATED ******************************************`
+					if (opts.verbose) console.log(`*** NEW SLIDE CREATED *********************************************`
 						+ ` (why?): ${(emuTabCurrH / EMU).toFixed(1)}+${(arrCellsLineHeights[intMaxColIdx] / EMU).toFixed(1)} > ${emuSlideTabH / EMU}`)
 					// 1: Add the current row to table
 					// NOTE: Edge cases can occur where we create a new slide only to have no more lines
@@ -2065,7 +2066,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 					// ....: Hence, we verify all cells have text before adding this final row.
 					jQuery.each(currRow, (_idx, cell) => {
 						if (cell.text.length > 0) {
-							// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
+							// IMPORTANT: use clone/deep-copy or cell will mutate!!
 							arrRows.push([...currRow])
 							return false // break out of .each loop
 						}
@@ -2092,8 +2093,8 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			emuTabCurrH += arrCellsLineHeights[intMaxColIdx]
 		}
 
-		if (opts.debug) console.log(`- SLIDE [${arrObjSlides.length}]: row completed = ${idx}`)
-		if (opts.debug) console.log(`- SLIDE [${arrObjSlides.length}]: emuTabCurrH .. = ${emuTabCurrH / EMU}`)
+		if (opts.verbose)
+			console.log(`- SLIDE [${arrObjSlides.length}]: ROW [${iRow}] complete ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)} ( emuSlideTabH = ${(emuSlideTabH / EMU).toFixed(2)} )`)
 
 		// E: Flush row buffer - Add the current row to table, then truncate row cell array
 		// IMPORTANT: use jQuery extend (deep copy) or cell will mutate!!
@@ -2104,7 +2105,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 	// STEP 4-2: Flush final row buffer to slide
 	arrObjSlides.push([...arrRows])
 
-	if (opts.debug) {
+	if (opts.verbose) {
 		console.log(`\n|================================================|\n| FINAL: arrObjSlides.length = ${arrObjSlides.length}`)
 		console.log(arrObjSlides)
 		console.log(`|================================================|\n\n`)
@@ -2145,11 +2146,11 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	}
 	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout.width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
 
-	if (opts.debug) console.log('-- DEBUG ----------------------------------')
-	if (opts.debug) console.log(`opts.h ................. = ${opts.h}`)
-	if (opts.debug) console.log(`opts.w ................. = ${opts.w}`)
-	if (opts.debug) console.log(`pptx.presLayout.width .. = ${pptx.presLayout.width/EMU}`)
-	if (opts.debug) console.log(`emuSlideTabW (in)....... = ${emuSlideTabW/EMU}`)
+	if (opts.verbose) console.log('-- DEBUG ----------------------------------')
+	if (opts.verbose) console.log(`opts.h ................. = ${opts.h}`)
+	if (opts.verbose) console.log(`opts.w ................. = ${opts.w}`)
+	if (opts.verbose) console.log(`pptx.presLayout.width .. = ${pptx.presLayout.width/EMU}`)
+	if (opts.verbose) console.log(`emuSlideTabW (in)....... = ${emuSlideTabW/EMU}`)
 
 	// STEP 1: Grab table col widths
 	// ATTN: `arrTableParts.forEach((part, _idx) => {` --> NO! CAREFUL! We need to break out of loop using "return false" - forEach break col sizing badly
@@ -2181,7 +2182,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 		let intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-width')
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
-	if (opts.debug) console.log(`arrColW ................ = ${arrColW.toString()}`)
+	if (opts.verbose) console.log(`arrColW ................ = ${arrColW.toString()}`)
 
 	// STEP 3: Iterate over each table element and create data arrays (text and opts)
 	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
@@ -2326,7 +2327,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 			// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx == 0) opts.y = opts.y || arrInchMargins[0]
 			if (idx > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
-			if (opts.debug) console.log('opts.newPageStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+			if (opts.verbose) console.log('opts.newPageStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
 			// C: Add table to Slide
 			newSlide.addTable(arrTabRows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })
