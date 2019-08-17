@@ -736,7 +736,7 @@ export function addTableDefinition(
 	if (opt.w && opt.w < 20) opt.w = inch2Emu(opt.w)
 	if (opt.h && opt.h < 20) opt.h = inch2Emu(opt.h)
 
-	// STEP 5: Loop over cells: transform to ITableCell; check to see whether to skip autopaging
+	// STEP 5: Loop over cells: transform each to ITableCell; check to see whether to skip autopaging while here
 	arrRows.forEach(row => {
 		row.forEach((cell, idy) => {
 			// A: Transform cell data if needed
