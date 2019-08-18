@@ -1924,11 +1924,13 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 
 	// Undocumented option offers verbose decision/status output
 	if (opts.verbose) console.log(`-- VERBOSE MODE ----------------------------------`)
-	if (opts.verbose) console.log(`opts.h ................. = ${opts.h}`)
+	if (opts.verbose) console.log(`.. (PARAMETERS)`)
 	if (opts.verbose) console.log(`presLayout.height ...... = ${presLayout.height / EMU}`)
+	if (opts.verbose) console.log(`opts.h ................. = ${opts.h}`)
 	if (opts.verbose) console.log(`opts.w ................. = ${opts.w}`)
 	if (opts.verbose) console.log(`opts.colW .............. = ${opts.colW}`)
 	if (opts.verbose) console.log(`opts.slideMargin ....... = ${opts.slideMargin || ''}`)
+	if (opts.verbose) console.log(`.. (/PARAMETERS)`)
 
 	// NOTE: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
 	if (!opts.slideMargin && opts.slideMargin != 0) opts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
@@ -1941,6 +1943,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
 		else if (!isNaN(masterSlide.margin)) arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin]
 	}
+	if (opts.verbose) console.log('arrInchMargins ......... = ' + arrInchMargins.toString())
 
 	// STEP 2: Calculate number of columns
 	// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
@@ -1950,8 +1953,6 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		let cellOpts = cell.options || null
 		numCols += cellOpts && cellOpts.colspan ? cellOpts.colspan : 1
 	})
-
-	if (opts.verbose) console.log('arrInchMargins ......... = ' + arrInchMargins.toString())
 	if (opts.verbose) console.log('numCols ................ = ' + numCols)
 
 	// Calculate opts.w if opts.colW was provided
@@ -2002,8 +2003,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			intMaxLineCnt = 0,
 			intMaxColIdx = 0
 
-		// B: Calc usable vertical space/table height
-		// Set default value first, adjust below if/when needed
+		// B: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
 		emuSlideTabH = opts.h && typeof opts.h === 'number' ? opts.h : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
 
 		// NOTE: Use margins after the first Slide (dont re-use `opt.y` - it could've been halfway down the page!) (ISSUE#43,ISSUE#47,ISSUE#48)
@@ -2099,8 +2099,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		if (opts.verbose) console.log(`- SLIDE [${arrObjSlides.length}]: ROW [${iRow}] complete ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)} ( emuSlideTabH = ${(emuSlideTabH / EMU).toFixed(2)} )`)
 
 		// E: Flush row buffer - Add the current row to table, then truncate row cell array
-		// IMPORTANT: use clone/deep copy or cell will mutate!!
-		if (currRow.length) arrRows.push([...currRow])
+		if (currRow.length) arrRows.push([...currRow]) // IMPORTANT: use clone/deep copy or cell will mutate!!
 		currRow.length = 0
 	})
 
