@@ -1955,7 +1955,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 	})
 	if (opts.verbose) console.log('numCols ................ = ' + numCols)
 
-	// Calculate opts.w if opts.colW was provided
+	// STEP 3: Calculate opts.w if opts.colW was provided
 	if (!opts.w && opts.colW) {
 		if (Array.isArray(opts.colW))
 			opts.colW.forEach(val => {
@@ -1966,11 +1966,11 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		}
 	}
 
-	// STEP 2: Calculate usable space/table size now that we have usable space calculated
+	// STEP 4: Calculate usable space/table size now that we have usable space calculated
 	emuSlideTabW = typeof opts.w === 'number' ? inch2Emu(opts.w) : presLayout.width - inch2Emu((typeof opts.x === 'number' ? opts.x : arrInchMargins[1]) + arrInchMargins[3])
 	if (opts.verbose) console.log('emuSlideTabW (in) ...... = ' + (emuSlideTabW / EMU).toFixed(1))
 
-	// STEP 3: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
+	// STEP 5: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
 	if (!opts.colW || !Array.isArray(opts.colW)) {
 		if (opts.colW && !isNaN(Number(opts.colW))) {
 			let arrColW = []
@@ -1994,10 +1994,10 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 // TODO: FIXME: CURRENT: 20190817
 // Fix this: its a mess - no more for loops, use array and push cells, etc.!!!
 
-	// STEP 4: Iterate over each line and perform magic
+	// STEP 6: Iterate over each table row, determine max lines per column
 	// NOTE: inArrRows will be an array of {text:'', opts{}} whether from `tableToSlides()` or `addTable()`
 	inArrRows.forEach((row, iRow) => {
-		// A: Reset ROW variables
+		// A: Reset row variables
 		let arrCellsLines:[string[]?] = [],
 			arrCellsLineHeights: number[] = [],
 			intMaxLineCnt = 0,
@@ -2015,14 +2015,15 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			emuSlideTabH = opts.h ? opts.h : presLayout.height - inch2Emu((opts.y / EMU || arrInchMargins[0]) + arrInchMargins[2])
 		//if (opts.verbose) console.log(`- SLIDE [${arrObjSlides.length}]: emuSlideTabH .. = ${(emuSlideTabH / EMU).toFixed(1)}`)
 
-		// C: Parse and store each cell's text into line array (**MAGIC HAPPENS HERE**)
+		// C: Iterate over each cell - store each cell's text into line array (**MAGIC HAPPENS HERE**)
 		row.forEach((cell, iCell) => {
-			// FIRST: REALITY-CHECK:
-			if (!cell) cell = { type: SLIDE_OBJECT_TYPES.tablecell }
-			if (!cell.options) cell.options = {}
+			let lineHeight = inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
+			let textLines: string[] = []
 
-			// DESIGN: Cells are henceforth {`text`: `opts`:}
-			let lines: string[] = []
+			// FIRST: REALITY-CHECK: Cells are ITableToSlidesCell/{`text`: `opts`:} going fwd
+			///if (!cell) cell = { type: SLIDE_OBJECT_TYPES.tablecell }
+			///if (!cell.options) cell.options = {}
+			// FIXME: dont still need this right??? 2 feeder methods create/transform these??
 
 			// 1: Capture some table options for use in other functions
 			cell.options.lineWeight = opts.lineWeight
@@ -2031,18 +2032,17 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 			currRow.push({ text: '', options: cell.options })
 
 			// 3: Parse cell contents into lines (**MAGIC HAPPENSS HERE**)
-			lines = parseTextToLines(cell, opts.colW[iCell] / ONEPT)
-			arrCellsLines.push(lines)
+			textLines = parseTextToLines(cell, opts.colW[iCell] / ONEPT)
+			arrCellsLines.push(textLines)
 			//if (opts.verbose) console.log('Cell:'+iCell+' - lines:'+lines.length);
 
-			// 4: Keep track of max line count within all row cells
-			if (lines.length > intMaxLineCnt) {
-				intMaxLineCnt = lines.length
+			// 4: Track max line count and its containing cell
+			if (textLines.length > intMaxLineCnt) {
+				intMaxLineCnt = textLines.length
 				intMaxColIdx = iCell
 			}
 			//if (opts.verbose) console.log(`intMaxLineCnt = ${intMaxLineCnt}`)
 
-			let lineHeight = inch2Emu(((cell.options.fontSize || DEF_FONT_SIZE) * LINEH_MODIFIER) / 100)
 			// NOTE: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (cell.options && cell.options.rowspan) lineHeight = 0
 
@@ -2103,7 +2103,7 @@ export function getSlidesForTableRows(inArrRows: [ITableToSlidesCell[]?] = [], o
 		currRow.length = 0
 	})
 
-	// STEP 5: Flush final row buffer to slide
+	// STEP 7: Flush final row buffer to slide
 	arrObjSlides.push([...arrRows])
 
 	if (opts.verbose) {
