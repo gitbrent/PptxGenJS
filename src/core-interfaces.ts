@@ -251,7 +251,7 @@ export interface ITableToSlidesOpts extends PositionOptions {
 	addTable?: { rows: any[]; opts: {} }
 	addText?: { text: any[]; opts: {} }
 	//
-	_arrObjTabHeadRows?: any[]
+	_arrObjTabHeadRows?: [ITableToSlidesCell[]?]
 	addHeaderToEach?: boolean
 	autoPage?: boolean
 	colW?: number | number[]
@@ -276,6 +276,7 @@ export interface ITableCellOpts {
 	rowspan?: number
 	valign?: VAlign
 }
+// TODO: replace this with `TableCell`
 export interface ITableToSlidesCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
 	text?: string
@@ -302,11 +303,14 @@ export interface TableCell {
 	text?: string
 	options?: ITableCellOpts
 	// internal fields below
+	lines?: string[]
+	lineHeight?: number
 	hmerge?: boolean
 	vmerge?: boolean
 	optImp?: any
 }
 export type TableRow = number[] | string[] | TableCell[]
+export type ITableRow = TableCell[]
 
 export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	align?: HAlign

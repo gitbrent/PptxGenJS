@@ -788,7 +788,7 @@ export function addTableDefinition(
 		})
 	} else {
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
-		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((arrRows, idx) => {
+		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((slide, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
 			if (!getSlide(target.number + idx)) slides.push(addSlide(presLayout ? presLayout.name : null))
 
@@ -797,7 +797,7 @@ export function addTableDefinition(
 
 			// C: Add this table to new Slide
 			opt.autoPage = false
-			getSlide(target.number + idx).addTable(arrRows, Object.assign({}, opt))
+			getSlide(target.number + idx).addTable(slide.rows, Object.assign({}, opt))
 		})
 	}
 }
