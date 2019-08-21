@@ -9,7 +9,7 @@ import { inch2Emu, rgbToHex } from './gen-utils'
 
 /**
  * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
- * @param {ITableCell} cell - table cell
+ * @param {TableCell} cell - table cell
  * @param {number} colWidth - table column width
  * @return {string[]} XML
  */
@@ -262,11 +262,14 @@ export function getSlidesForTableRows(
 
 			// C: Add this new rows H to overall (use cell with the most lines as the determiner for overall row Height)
 			emuTabCurrH += maxLineHeight
+// TODO: FIXME:! ^^^ No what if that cell didnt have a line and a neighbor had a tiny line size?
+// USe the cells lineHeight! we'll need to do it in loop above, then take max of the 3 cols, whatever
+			if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: 1 line added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(1)}`)
 		}
 
 		if (tabOpts.verbose)
 			console.log(
-				`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}] complete ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)} ( emuSlideTabH = ${(
+				`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: *COMPLETE* ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)} ( emuSlideTabH = ${(
 					emuSlideTabH / EMU
 				).toFixed(2)} )`
 			)
