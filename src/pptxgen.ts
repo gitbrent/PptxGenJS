@@ -52,6 +52,7 @@ import Slide from './slide'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
+import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 import * as JSZip from 'jszip'
 
@@ -562,7 +563,7 @@ export default class PptxGenJS {
 	 * @note `debug` option is undocumented; used for verbose output of layout process
 	 */
 	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
-		genXml.genTableToSlides(
+		genTable.genTableToSlides(
 			this,
 			tableElementId,
 			opts,

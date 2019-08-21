@@ -38,7 +38,8 @@ import {
 	TableRow,
 } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
-import { correctShadowOptions, createHyperlinkRels, getSlidesForTableRows } from './gen-xml'
+import { getSlidesForTableRows } from './gen-tables'
+import { correctShadowOptions, createHyperlinkRels } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
 var _chartCounter: number = 0

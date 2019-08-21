@@ -311,6 +311,9 @@ export interface TableCell {
 }
 export type TableRow = number[] | string[] | TableCell[]
 export type ITableRow = TableCell[]
+export interface TableRowSlide {
+	rows: ITableRow[]
+}
 
 export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	align?: HAlign
