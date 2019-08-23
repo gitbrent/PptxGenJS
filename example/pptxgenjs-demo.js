@@ -258,9 +258,9 @@ function genSlides_Table(pptx) {
 
 		var arrTabRows = [
 			[
-				{ text: 'Top Lft', options: { valign:'top',    align:'left'  , fontFace:'Arial'   } },
-				{ text: 'Top Ctr', options: { valign:'top'  ,    align:'center', fontFace:'Courier' } },
-				{ text: 'Top Rgt', options: { valign:'top'  ,    align:'right' , fontFace:'Verdana' } }
+				{ text: 'Top Lft', options: { valign:'top', align:'left'  , fontFace:'Arial'   } },
+				{ text: 'Top Ctr', options: { valign:'top', align:'center', fontFace:'Courier' } },
+				{ text: 'Top Rgt', options: { valign:'top', align:'right' , fontFace:'Verdana' } }
 			],
 			[
 				{ text: 'Ctr Lft', options: { valign:'middle', align:'left' } },
