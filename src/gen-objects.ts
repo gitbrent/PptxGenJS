@@ -662,7 +662,7 @@ export function addTableDefinition(
 				let newCell: TableCell = {
 					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: '',
-					options: null,
+					options: typeof cell === 'object' ? cell.options : null,
 				}
 				if (typeof cell === 'string' || typeof cell === 'number') newCell.text = cell.toString()
 				else if (cell.text) {
