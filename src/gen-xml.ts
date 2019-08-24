@@ -286,13 +286,12 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						if (cell.hmerge) return
 
 						// 2: OPTIONS: Build/set cell options ===========================
-
 						let cellOpts = cell.options || ({} as TableCell['options'])
 						/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
 						cell.options = cellOpts
 
-						// B: Apply default values (tabOpts being used when cellOpts dont exist):
-						// SEE: http://officeopenxml.com/drwTableCellProperties-alignment.php
+						// B: Inherit some options from table when cell options dont exist
+						// @see: http://officeopenxml.com/drwTableCellProperties-alignment.php
 						;['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(name => {
 							if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0) cellOpts[name] = objTabOpts[name]
 						})
