@@ -245,7 +245,7 @@ export interface IChartMulti {
 	options: {}
 }
 
-export interface ITableToSlidesOpts extends PositionOptions {
+export interface ITableToSlidesOpts extends TableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
 	addShape?: { shape: any; opts: {} }
 	addTable?: { rows: any[]; opts: {} }
