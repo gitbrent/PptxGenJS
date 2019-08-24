@@ -187,37 +187,28 @@ export function getSlidesForTableRows(
 				lines: [],
 				lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) * LINEH_MODIFIER) / 100),
 			}
+			//if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(1)}`)
 
 			// 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (newCell.options.rowspan) newCell.lineHeight = 0
 
 			// 2: The `parseTextToLines` method uses `lineWeight`, so inherit from table options (if any)
-			newCell.options.lineWeight = tabOpts.lineWeight
+			newCell.options.lineWeight = tabOpts.lineWeight ? tabOpts.lineWeight : null
 
 			// 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
 			newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT)
 
-			// 4: Add t/b cell margins to lineHeight
-			if (cell.options.margin) {
-				if (cell.options.margin[0]) newCell.lineHeight += (cell.options.margin[0] * ONEPT) / newCell.lines.length
-				if (cell.options.margin[2]) newCell.lineHeight += (cell.options.margin[2] * ONEPT) / newCell.lines.length
-			}
-
-			// 5: Add to array
+			// 4: Add to array
 			linesRow.push(newCell)
 		})
 
-		// F: In order to measure whether space exists for a new line, find the largest `lineHeight` of all the cells
-		maxLineHeight = linesRow.sort((a, b) => {
-			return a.lineHeight > b.lineHeight ? 0 : 1
-		})[0].lineHeight
-
-		/* G: **BUILD/PAGE DATA SET**
+		/* F: **BUILD/PAGE DATA SET**
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
 		 * Design: Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line.
 		 * Therefore, build the whole row, 1-line-at-a-time, spanning all columns.
 		 * That way, when the vertical size limit is hit, all lines pick up where they need to on the subsequent slide.
 		 */
+		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: >> START >>> ... maxLineHeight = ${(maxLineHeight / EMU).toFixed(1)}`)
 		while (
 			linesRow.filter(cell => {
 				return cell.lines.length > 0
@@ -227,7 +218,7 @@ export function getSlidesForTableRows(
 			if (emuTabCurrH + maxLineHeight > emuSlideTabH) {
 				if (tabOpts.verbose)
 					console.log(
-						`** NEW SLIDE CREATED ***********************************************` +
+						`** NEW SLIDE CREATED *****************************************` +
 							` (why?): ${(emuTabCurrH / EMU).toFixed(1)}+${(maxLineHeight / EMU).toFixed(1)} > ${emuSlideTabH / EMU}`
 					)
 
@@ -257,19 +248,18 @@ export function getSlidesForTableRows(
 				if (cell.lines.length > 0) {
 					let currSlide = tableRowSlides[tableRowSlides.length - 1]
 					currSlide.rows[currSlide.rows.length - 1][idx].text += cell.lines.shift()
+					if (cell.lineHeight > maxLineHeight) maxLineHeight = cell.lineHeight
 				}
 			})
 
 			// C: Add this new rows H to overall (use cell with the most lines as the determiner for overall row Height)
 			emuTabCurrH += maxLineHeight
-// TODO: FIXME:! ^^^ No what if that cell didnt have a line and a neighbor had a tiny line size?
-// USe the cells lineHeight! we'll need to do it in loop above, then take max of the 3 cols, whatever
 			if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: 1 line added ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(1)}`)
 		}
 
 		if (tabOpts.verbose)
 			console.log(
-				`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: *COMPLETE* ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)} ( emuSlideTabH = ${(
+				`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: **COMPLETE** ... emuTabCurrH = ${(emuTabCurrH / EMU).toFixed(2)} ( emuSlideTabH = ${(
 					emuSlideTabH / EMU
 				).toFixed(2)} )`
 			)
@@ -278,6 +268,7 @@ export function getSlidesForTableRows(
 	if (tabOpts.verbose) {
 		console.log(`\n|================================================|\n| FINAL: tableRowSlides.length = ${tableRowSlides.length}`)
 		console.log(tableRowSlides)
+		//console.log(JSON.stringify(tableRowSlides,null,2))
 		console.log(`|================================================|\n\n`)
 	}
 
