@@ -68,7 +68,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 	if (slide.bkgd) {
 		strSlideXml += genXmlColorSelection(null, slide.bkgd)
 	}
-	/* FIXME: TODO: this is needed on slideMaster1.xml to avoid gray background in Finder
+	/* FIXME: TODO: this is needed on slideMaster1.xml to avoid gray background in Finder/Apple Pages
 	// but it shoudln't go on every slide that comes along
 	else {
 		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
@@ -329,7 +329,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 							cellMargin[2] * ONEPT +
 							'"'
 
-						// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatev options exist)
+						// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 3: ROWSPAN: Add dummy cells for any active rowspan
 						if (cell.vmerge) {
@@ -1070,10 +1070,10 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	if (opts && slideObj.type != SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
 
 	// Vars
-	var arrTextObjects: IText[] = []
-	var tagStart = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
-	var tagClose = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
-	var strSlideXml = tagStart
+	let arrTextObjects: IText[] = []
+	let tagStart = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
+	let tagClose = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
+	let strSlideXml = tagStart
 
 	// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
 	/* CASES:
@@ -1083,14 +1083,14 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		addText( [{text'word1'}, {text:'word2'}] )
 		addText( [{text'line1\n line2'}, {text:'end word'}] )
 	*/
-	// A: Handle string/number
+	// A: Transform string/number inot complex object
 	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
 		slideObj.text = [{ text: slideObj.text.toString(), options: opts || {} }]
 	}
 
 	// STEP 2: Grab options, format line-breaks, etc.
 	if (Array.isArray(slideObj.text)) {
-		slideObj.text.forEach((obj, idx: number) => {
+		slideObj.text.forEach((obj, idx) => {
 			// A: Set options
 			obj.options = obj.options || opts || {}
 			if (idx == 0 && obj.options && !obj.options.bullet && opts.bullet) obj.options.bullet = opts.bullet
@@ -1107,10 +1107,12 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 				obj.text
 					.toString()
 					.split(CRLF)
-					.forEach(line => {
+					.forEach((line, lineIdx) => {
 						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
-						line += obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : ''
-						arrTextObjects.push({ text: line, options: obj.options })
+						arrTextObjects.push({
+							text: (lineIdx > 0 && obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '') + line,
+							options: obj.options,
+						})
 					})
 			} else {
 				// NOTE: The replace used here is for non-textObjects (plain strings) eg:'hello\nworld'
@@ -1176,13 +1178,13 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	})
 
 	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
-	// NOTE: (ISSUE#20/#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
+	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 	if (slideObj.type == SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 		strSlideXml += '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '" ' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
 		if (opts.fontFace) {
-			strSlideXml += '  <a:latin typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '  <a:ea    typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '  <a:cs    typeface="' + opts.fontFace + '" charset="0"/>'
+			strSlideXml += '<a:latin typeface="' + opts.fontFace + '" charset="0"/>'
+			strSlideXml += '<a:ea typeface="' + opts.fontFace + '" charset="0"/>'
+			strSlideXml += '<a:cs typeface="' + opts.fontFace + '" charset="0"/>'
 		}
 		strSlideXml += '</a:endParaRPr>'
 	} else {
