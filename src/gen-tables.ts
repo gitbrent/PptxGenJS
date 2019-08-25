@@ -69,7 +69,7 @@ export function getSlidesForTableRows(
 	if (tabOpts.verbose) {
 		console.log(`-- VERBOSE MODE ----------------------------------`)
 		console.log(`.. (PARAMETERS)`)
-		console.log(`presLayout.height ...... = ${presLayout.height / EMU}`)
+		console.log(`presLayout.height ......... = ${presLayout.height / EMU}`)
 		console.log(`tabOpts.h ................. = ${tabOpts.h}`)
 		console.log(`tabOpts.w ................. = ${tabOpts.w}`)
 		console.log(`tabOpts.colW .............. = ${tabOpts.colW}`)
@@ -169,8 +169,12 @@ export function getSlidesForTableRows(
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
 		emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
 
-		// D: NOTE: Use margins after the first Slide (dont re-use `opt.y` - it could've been halfway down the page!) (ISSUE#43,ISSUE#47,ISSUE#48)
-		if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
+		// D: NOTE: Use margins after the first Slide not `opt.y` (it could've been halfway down the page! ISSUE#43,ISSUE#47,ISSUE#48)
+		if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+			console.log(`tabOpts.newSlideStartY = ${tabOpts.newSlideStartY}`)
+			emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2])
+		}
+		else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
 			emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
 			// Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
 			if (typeof tabOpts.h === 'number' && emuSlideTabH < tabOpts.h) emuSlideTabH = tabOpts.h
@@ -185,9 +189,9 @@ export function getSlidesForTableRows(
 				text: '',
 				options: cell.options,
 				lines: [],
-				lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : DEF_FONT_SIZE) * LINEH_MODIFIER) / 100),
+				lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) * LINEH_MODIFIER) / 100),
 			}
-			//if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(1)}`)
+			if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(1)}`)
 
 			// 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (newCell.options.rowspan) newCell.lineHeight = 0
@@ -214,8 +218,12 @@ export function getSlidesForTableRows(
 				return cell.lines.length > 0
 			}).length > 0
 		) {
+			let emuMaxCellMargin = 0
+			// TODO: FIXME: find largest cell margin top and bottom, this plus emuTabCurrH is our size!
+			emuMaxCellMargin = row[0].options.margin ? row[0].options.margin[0]*ONEPT + row[0].options.margin[2]*ONEPT : tabOpts.margin ? tabOpts.margin[0]*ONEPT + tabOpts.margin[2]*ONEPT : 0
+
 			// A: Add new Slide if there is no more space to fix 1 new line
-			if (emuTabCurrH + maxLineHeight > emuSlideTabH) {
+			if (emuTabCurrH + emuMaxCellMargin + maxLineHeight > emuSlideTabH) {
 				if (tabOpts.verbose)
 					console.log(
 						`** NEW SLIDE CREATED *****************************************` +
@@ -239,6 +247,9 @@ export function getSlidesForTableRows(
 				})
 				currSlide.rows.push(newRowSlide)
 
+				// TODO: FIXME: add support for "addHeaderToEach"
+				// add here, increase `emuTabCurrH`
+
 				// 3: Reset current table height for new Slide
 				emuTabCurrH = 0 // This row's emuRowH w/b added below
 			}
@@ -246,9 +257,14 @@ export function getSlidesForTableRows(
 			// B: Add next line of text to this cell
 			linesRow.forEach((cell, idx) => {
 				if (cell.lines.length > 0) {
+					// 1
 					let currSlide = tableRowSlides[tableRowSlides.length - 1]
 					currSlide.rows[currSlide.rows.length - 1][idx].text += cell.lines.shift()
-					if (cell.lineHeight > maxLineHeight) maxLineHeight = cell.lineHeight
+					// 2
+					if (cell.lineHeight > maxLineHeight) {
+						maxLineHeight = cell.lineHeight
+						if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxLineHeight = ${(maxLineHeight / EMU).toFixed(2)}`)
+					}
 				}
 			})
 
@@ -485,10 +501,10 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 			// A: Create new Slide
 			let newSlide = pptx.addSlide(opts.masterSlideName || null)
 
-			// B: DESIGN: Reset `y` to `newPageStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+			// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx == 0) opts.y = opts.y || arrInchMargins[0]
 			if (idx > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
-			if (opts.verbose) console.log('opts.newPageStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+			if (opts.verbose) console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
 			// C: Add table to Slide
 			newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })
