@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2019-08-20">
+	<meta name="updated" content="2019-08-26">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -356,7 +356,8 @@
 			// addMasterDefs(pptx);
 
 			// TEST
-			pptx.tableToSlides('tabAutoPaging');//, {verbose:true, addHeaderToEach:true /*, newSlideStartY:2*/});
+			//pptx.tableToSlides('tabAutoPaging');
+			pptx.tableToSlides('tabAutoPaging', {verbose:true, addHeaderToEach:true /*, newSlideStartY:2*/});
 
 			pptx.save('PptxGenJs_TTSTest_'+getTimestamp());
 		}
@@ -771,7 +772,7 @@
 								<div class="row">
 									<div class="col">
 										<label for="numTab2SlideRows" class="text-muted">Table Rows</label>
-										<input  id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="3" onchange="buildDataTable()">
+										<input  id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4" onchange="buildDataTable()">
 									</div>
 									<div class="col">
 										<label for="numTab2Padding" class="text-muted">Cell Padding</label>
