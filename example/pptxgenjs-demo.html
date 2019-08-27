@@ -377,16 +377,16 @@
 				arrText.push( [strText] );
 			}
 
-			// lineWeight option demos
+			// autoPageLineWeight option demos
 			var slide = pptx.addSlide();
-			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'lineWeight:0', options:ttsMultiOpts}], {x:0.5, y:0.13, w:3} );
+			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'autoPageLineWeight:0', options:ttsMultiOpts}], {x:0.5, y:0.13, w:3} );
 			slide.addTable( arrText, { x:0.50, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true } );
 
-			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'lineWeight:0.5', options:ttsMultiOpts}], {x:5.0, y:0.13, w:3} );
-			slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:0.5 } );
+			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'autoPageLineWeight:0.5', options:ttsMultiOpts}], {x:5.0, y:0.13, w:3} );
+			slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:0.5 } );
 
-			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'lineWeight:-0.5', options:ttsMultiOpts}], {x:9.0, y:0.13, w:3} );
-			slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, lineWeight:-0.5 } );
+			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'autoPageLineWeight:-0.5', options:ttsMultiOpts}], {x:9.0, y:0.13, w:3} );
+			slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:-0.5 } );
 
 			pptx.save('PptxGenJS_TTSMulti_'+getTimestamp());
 		}
@@ -1391,7 +1391,7 @@
 						<div class="text-muted">- Test with correct starting <code>{y:4.0}</code></div>
 						<div class="text-muted">- Test with <code>{ newSlideStartY:0.5 }</code></div>
 						<div class="text-muted">- Test with <code>{ autoPage:false }</code></div>
-						<div class="text-muted">- Three Tables with various <code>lineWeight</code></div>
+						<div class="text-muted">- Three Tables with various <code>autoPageLineWeight</code></div>
 					</div>
 				</div>
 			</div>
