@@ -49,6 +49,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Need Help?](#need-help)
 - [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
+- [Coming Soon](#coming-soon)
 - [Support Us](#support-us)
 - [License](#license)
 
@@ -234,6 +235,32 @@ These include:
 * PPTX Chart Experts: [kajda90](https://github.com/kajda90), [Matt King](https://github.com/kyrrigle), [Mike Wilcox](https://github.com/clubajax)
 * Everyone who has [contributed](https://github.com/gitbrent/PptxGenJS/graphs/contributors), submitted an Issue, or created Pull Request.
 
+
+**************************************************************************************************
+# Coming Soon
+
+## [PptxGenJS 3.0 Preview](https://github.com/gitbrent/PptxGenJS/tree/version-3.0)
+
+The library is currently being rewritten in TypeScript for version 3.0 which will be completed by the end of 2019.  
+
+Visit the "version-3.0" branch to try it out!
+
+New Features:
+* Brand-new TypeScript/ES6 Class codebase eliminated dozens of bugs and greatly increased stability
+* Code is logically separated into 10+ files, making pull requests and maintenance easier
+* Completely rewritten Table AutoPaging and HTML-to-PowerPoint methods - faster and much more accurate
+* Save/Export:
+ * Promise-based export methods - no more callbacks
+ * Two new methods (Write and WriteFile) will replace `save()`
+ * Supports all types of output methods: ArrayBuffer, Blob, etc.
+
+Outstanding Dev Items:
+* Angular/React integration has not been completed as of yet (but it will be MUCH EASIER once it is finalized)
+* TypeScript definitions are not up-to-date
+* SlideNumbers do not work
+* `save()` is still the only export method: `write()` & `writeFile()` are coming in September
+* Correct MIME type for zip exports
+* Other small items
 
 **************************************************************************************************
 # Support Us
