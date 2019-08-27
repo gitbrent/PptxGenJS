@@ -1098,22 +1098,21 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			// B: Cast to text-object and fix line-breaks (if needed)
 			if (typeof obj.text === 'string' || typeof obj.text === 'number') {
 				obj.text = obj.text.toString().replace(/\r*\n/g, CRLF)
+				if (obj.options.breakLine && !obj.options.bullet && !obj.options.align) obj.text += CRLF
 				// Plain strings like "hello \n world" need to have lineBreaks set to break as intended
-				if (obj.text.indexOf(CRLF) > -1) obj.options.breakLine = true
+				else if (obj.text.indexOf(CRLF) > -1) obj.options.breakLine = true
 			}
 
 			// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
-			if (obj.text.split(CRLF).length > 0) {
-				obj.text
-					.toString()
-					.split(CRLF)
-					.forEach((line, lineIdx) => {
-						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
-						arrTextObjects.push({
-							text: (lineIdx > 0 && obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '') + line,
-							options: obj.options,
-						})
+			if (obj.options.breakLine || obj.text.indexOf(CRLF) > -1) {
+				obj.text.split(CRLF).forEach((line, lineIdx) => {
+					// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 3)
+					// NOTE: Use "idx>0" so lines wont start with linebreak (eg:empty first line)
+					arrTextObjects.push({
+						text: (lineIdx > 0 && obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '') + line,
+						options: obj.options,
 					})
+				})
 			} else {
 				// NOTE: The replace used here is for non-textObjects (plain strings) eg:'hello\nworld'
 				arrTextObjects.push(obj)

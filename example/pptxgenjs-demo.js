@@ -533,7 +533,7 @@ function genSlides_Table(pptx) {
 		slide.addText('Table Cell Word-Level Formatting:', optsSub);
 
 		// EX 1:
-		var arrCell1 = [{ text:'Cell 1A', options:{ color:'0088cc' } }];
+		var arrCell1 = [{ text:'Cell\n#1', options:{ color:'0088cc' } }];
 		var arrCell2 = [{ text:'Red ', options:{color:'FF0000'} }, { text:'Green ', options:{color:'00FF00'} }, { text:'Blue', options:{color:'0000FF'} }];
 		var arrCell3 = [{ text:'Bullets\nBullets\nBullets', options:{ color:'0088cc', bullet:true } }];
 		var arrCell4 = [{ text:'Numbers\nNumbers\nNumbers', options:{ color:'0088cc', bullet:{type:'number'} } }];
@@ -556,13 +556,13 @@ function genSlides_Table(pptx) {
 					{ text:'Final text object w/ bullet:true', options:{color:'0000AB', bullet:true} }
 				]},
 				{ text:[
-					{ text:'Cell', options:{fontSize:36, align:'left', breakLine:true} },
+					{ text:'Cell', options:{fontSize:36, align:'left', color:'8648cd'} },
 					{ text:'#2',   options:{fontSize:60, align:'right', color:'CD0101'} }
 				]},
 				{ text:[
 					{ text:'Cell', options:{fontSize:36, fontFace:'Courier', color:'dd0000', breakLine:true} },
 					{ text:'#'   , options:{fontSize:60, color:'8648cd'} },
-					{ text:'3'   , options:{fontSize:60, color:'33ccef'} }
+					{ text:'3'   , options:{fontSize:60, fontFace:'Times', color:'33ccef'} }
 				]}
 			]],
 			{ x:0.6, y:4.75, w:12, h:2, fontSize:24, colW:[8,2,2], valign:'middle', border:{pt:'1'}, fill:'F1F1F1' }
