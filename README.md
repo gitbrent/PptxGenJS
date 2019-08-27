@@ -50,6 +50,7 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Unimplemented Features](#unimplemented-features)
 - [Special Thanks](#special-thanks)
 - [Coming Soon](#coming-soon)
+  - [PptxGenJS 3.0 Preview](#pptxgenjs-30-preview)
 - [Support Us](#support-us)
 - [License](#license)
 
