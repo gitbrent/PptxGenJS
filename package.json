@@ -19,6 +19,7 @@
 		"jszip": "^3.1.5"
 	},
 	"devDependencies": {
+		"doctoc": "^1.4.0",
 		"gulp": "^4.0.0",
 		"gulp-concat": "^2.6.1",
 		"gulp-ignore": "^2.0.2",
