@@ -268,7 +268,11 @@ export function getSlidesForTableRows(
 				if (cell.lines.length > 0) {
 					// 1
 					let currSlide = tableRowSlides[tableRowSlides.length - 1]
-					currSlide.rows[currSlide.rows.length - 1][idx].text += (currSlide.rows[currSlide.rows.length - 1][idx].text.length > 0 ? CRLF : '') + cell.lines.shift()
+					currSlide.rows[currSlide.rows.length - 1][idx].text +=
+						(currSlide.rows[currSlide.rows.length - 1][idx].text.length > 0 && !RegExp(/\n$/g).test(currSlide.rows[currSlide.rows.length - 1][idx].text)
+							? CRLF
+							: ''
+						).replace(/[\r\n]+$/g, CRLF) + cell.lines.shift()
 
 					// 2
 					if (cell.lineHeight > maxLineHeight) maxLineHeight = cell.lineHeight
