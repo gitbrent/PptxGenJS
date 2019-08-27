@@ -14,7 +14,7 @@ import { inch2Emu, rgbToHex } from './gen-utils'
  * @return {string[]} XML
  */
 function parseTextToLines(cell: TableCell, colWidth: number): string[] {
-	let CHAR = 2.2 + (cell.options && cell.options.lineWeight ? cell.options.lineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
+	let CHAR = 2.2 + (cell.options && cell.options.autoPageLineWeight ? cell.options.autoPageLineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
 	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []
 	let strCurrLine = ''
@@ -196,8 +196,8 @@ export function getSlidesForTableRows(
 			// 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (newCell.options.rowspan) newCell.lineHeight = 0
 
-			// 2: The `parseTextToLines` method uses `lineWeight`, so inherit from table options (if any)
-			newCell.options.lineWeight = tabOpts.lineWeight ? tabOpts.lineWeight : null
+			// 2: The `parseTextToLines` method uses `autoPageLineWeight`, so inherit from table options (if any)
+			newCell.options.autoPageLineWeight = tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : null
 
 			// 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
 			newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT)

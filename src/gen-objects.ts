@@ -688,11 +688,11 @@ export function addTableDefinition(
 	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
-	opt.lineWeight = typeof opt.lineWeight !== 'undefined' && !isNaN(Number(opt.lineWeight)) ? Number(opt.lineWeight) : 0
+	opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0
 	opt.margin = opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
-	if (opt.lineWeight > 1) opt.lineWeight = 1
-	else if (opt.lineWeight < -1) opt.lineWeight = -1
+	if (opt.autoPageLineWeight > 1) opt.autoPageLineWeight = 1
+	else if (opt.autoPageLineWeight < -1) opt.autoPageLineWeight = -1
 	// Set default color if needed (table option > inherit from Slide > default to black)
 	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR
 
