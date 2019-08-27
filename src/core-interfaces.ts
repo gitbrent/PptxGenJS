@@ -254,7 +254,8 @@ export interface ITableToSlidesOpts extends TableOptions {
 	_arrObjTabHeadRows?: [ITableToSlidesCell[]?]
 	addHeaderToEach?: boolean
 	autoPage?: boolean
-	autoPageLineWeight?: number
+	autoPageCharWeight?: number // -1.0 to 1.0
+	autoPageLineWeight?: number // -1.0 to 1.0
 	colW?: number | number[]
 	masterSlideName?: string
 	masterSlide?: ISlideLayout
@@ -263,6 +264,7 @@ export interface ITableToSlidesOpts extends TableOptions {
 	verbose?: boolean // Undocumented; shows verbose output
 }
 export interface ITableCellOpts {
+	autoPageCharWeight?: number
 	autoPageLineWeight?: number
 	align?: HAlign
 	bold?: boolean
@@ -276,15 +278,10 @@ export interface ITableCellOpts {
 	rowspan?: number
 	valign?: VAlign
 }
-// TODO: replace this with `TableCell`
-export interface ITableToSlidesCell {
-	type: SLIDE_OBJECT_TYPES.tablecell
-	text?: string
-	options?: ITableCellOpts
-}
 export interface TableOptions extends PositionOptions {
 	align?: HAlign
 	autoPage?: boolean
+	autoPageCharWeight?: number
 	autoPageLineWeight?: number
 	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
 	color?: Color
@@ -297,6 +294,12 @@ export interface TableOptions extends PositionOptions {
 	rowW?: number | number[]
 	rowspan?: number
 	valign?: VAlign
+}
+// TODO: replace this with `TableCell`
+export interface ITableToSlidesCell {
+	type: SLIDE_OBJECT_TYPES.tablecell
+	text?: string
+	options?: ITableCellOpts
 }
 export interface TableCell {
 	type: SLIDE_OBJECT_TYPES.tablecell

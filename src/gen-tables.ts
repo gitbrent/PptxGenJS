@@ -14,7 +14,7 @@ import { inch2Emu, rgbToHex } from './gen-utils'
  * @return {string[]} XML
  */
 function parseTextToLines(cell: TableCell, colWidth: number): string[] {
-	let CHAR = 2.2 + (cell.options && cell.options.autoPageLineWeight ? cell.options.autoPageLineWeight : 0) // Character Constant (An approximation of the Golden Ratio)
+	let CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (An approximation of the Golden Ratio)
 	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []
 	let strCurrLine = ''
@@ -188,7 +188,9 @@ export function getSlidesForTableRows(
 				options: cell.options,
 				lines: [],
 				lineHeight: inch2Emu(
-					((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) * LINEH_MODIFIER) / 100
+					((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
+						(LINEH_MODIFIER + (tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : 0))) /
+						100
 				),
 			}
 			//if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(2)}`)
@@ -196,8 +198,8 @@ export function getSlidesForTableRows(
 			// 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
 			if (newCell.options.rowspan) newCell.lineHeight = 0
 
-			// 2: The `parseTextToLines` method uses `autoPageLineWeight`, so inherit from table options (if any)
-			newCell.options.autoPageLineWeight = tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : null
+			// 2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
+			newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null
 
 			// 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
 			newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT)

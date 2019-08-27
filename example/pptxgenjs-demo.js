@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 3.0.0-beta1
-* BLD.: 20190820
+* BLD.: 20190826
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -615,6 +615,17 @@ function genSlides_Table(pptx) {
 
 		slide.addText( [{text:'Table Examples: Line Weight Options\n', options:gDemoTitleText},{text:'autoPageLineWeight:-0.5', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4} );
 		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:-0.5 } );
+
+		// autoPageCharWeight option demos
+		var slide = pptx.addSlide();
+		slide.addText( [{text:'Table Examples: Char Weight Options\n', options:gDemoTitleText},{text:'autoPageLineWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4} );
+		slide.addTable( arrText, { x:0.23, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageCharWeight:0.0 } );
+
+		slide.addText( [{text:'Table Examples: Char Weight Options\n', options:gDemoTitleText},{text:'autoPageLineWeight:0.25', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4} );
+		slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageCharWeight:0.25 } );
+
+		slide.addText( [{text:'Table Examples: Char Weight Options\n', options:gDemoTitleText},{text:'autoPageLineWeight:-0.25', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4} );
+		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageCharWeight:-0.25 } );
 	}
 }
 
