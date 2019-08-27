@@ -607,13 +607,13 @@ function genSlides_Table(pptx) {
 
 		// autoPageLineWeight option demos
 		var slide = pptx.addSlide();
-		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'autoPageLineWeight:0', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:3} );
-		slide.addTable( arrText, { x:0.50, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:0.0 } );
+		slide.addText( [{text:'Table Examples: Line Weight Options\n', options:gDemoTitleText},{text:'autoPageLineWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4} );
+		slide.addTable( arrText, { x:0.23, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:0.0 } );
 
-		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'autoPageLineWeight:0.5', options:gDemoTitleOpts}], {x:5.0, y:0.13, w:3} );
+		slide.addText( [{text:'Table Examples: Line Weight Options\n', options:gDemoTitleText},{text:'autoPageLineWeight:0.5', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4} );
 		slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:0.5 } );
 
-		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'autoPageLineWeight:-0.5', options:gDemoTitleOpts}], {x:9.0, y:0.13, w:3} );
+		slide.addText( [{text:'Table Examples: Line Weight Options\n', options:gDemoTitleText},{text:'autoPageLineWeight:-0.5', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4} );
 		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:-0.5 } );
 	}
 }
