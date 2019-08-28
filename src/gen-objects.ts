@@ -773,7 +773,7 @@ export function addTableDefinition(
 	})
 
 	// STEP 6: Create hyperlink rels
-	createHyperlinkRels(this.slides, arrRows, target.rels)
+	//createHyperlinkRels(this.slides, arrRows, target.rels)
 	//console.log(this.slides)
 	// FIXME: TODO-3: "this." refs above dont exist here!! 20190725
 	// FIXME: why do we need all slides???
