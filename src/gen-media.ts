@@ -19,7 +19,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 		.forEach(rel => {
 			imageProms.push(
 				new Promise((resolve, reject) => {
-					if (typeof this.fs === 'function' && rel.path.indexOf('http') != 0) {
+					if (this && typeof this.fs === 'function' && rel.path.indexOf('http') != 0) {
 						// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 						try {
 							let bitmap = this.fs.readFileSync(rel.path)
@@ -29,7 +29,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 							rel.data = IMG_BROKEN
 							reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
 						}
-					} else if (typeof this.fs === 'function' && rel.path.indexOf('http') == 0) {
+					} else if (this && typeof this.fs === 'function' && rel.path.indexOf('http') == 0) {
 						this.https.get(rel.path, res => {
 							var rawData = ''
 							res.setEncoding('binary') // IMPORTANT: Only binary encoding works
@@ -86,7 +86,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 		})
 		.forEach(rel => {
 			// A:
-			if (typeof this.fs === 'function') throw 'Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)'
+			if (this && typeof this.fs === 'function') throw 'Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)'
 
 			// B:
 			imageProms.push(createSvgPngPreview(rel))
