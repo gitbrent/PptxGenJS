@@ -1769,10 +1769,9 @@ export function makeXmlViewProps(): string {
 export function correctShadowOptions(shadowOpts: ShadowOpts) {
 	if (!shadowOpts || shadowOpts === null) return
 
-	// TODO: FIXME: handle 'none'
 	// OPT: `type`
-	if (shadowOpts.type != 'outer' && shadowOpts.type != 'inner') {
-		console.warn('Warning: shadow.type options are `outer` or `inner`.')
+	if (shadowOpts.type != 'outer' && shadowOpts.type != 'inner' && shadowOpts.type != 'none') {
+		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
 		shadowOpts.type = 'outer'
 	}
 
