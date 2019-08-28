@@ -1335,7 +1335,7 @@ function genSlides_Chart(pptx) {
 				barGrouping: 'stacked',
 				catAxisLabelPos: 'low',
 				valueBarColors: true,
-				shadow: 'none',
+				shadow: {type:'none'},
 				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384','7D666A','A3C961','EF907B','9BA0A3'],
 				invertedColors: ['0065A2','428526','C99100','51A7C1','BD3813','123970','6A575A','8BAB52','CB7A69','84888B'],
 				barGapWidthPct: 25,
@@ -1370,7 +1370,7 @@ function genSlides_Chart(pptx) {
 		var optsChartLine1 = { x:0.5, y:4.0, w:6.0, h:3.0,
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineDataSymbolSize: 10,
-			shadow: 'none',
+			shadow: {type:'none'},
 			//displayBlanksAs: 'gap', //uncomment only for test - looks broken otherwise!
 			showLegend: true, legendPos: 'l'
 		};
@@ -1587,9 +1587,9 @@ function genSlides_Chart(pptx) {
 			showTitle  : false,
 			title: 'Resource Totals by Location',
 			shadow: {
+				type: 'inner',
 				offset: 20,
-				blur: 20,
-				type: 'inner'
+				blur: 20
 			}
 		};
 		slide.addChart(pptx.charts.DOUGHNUT, dataChartPieLocs, optsChartPie2 );
@@ -2269,7 +2269,7 @@ function genSlides_Chart(pptx) {
 			barDir     : 'bar',
 			barGrouping: 'stacked',
 			chartColors: ['transparent', '5DA5DA', 'transparent', 'FAA43A'],
-			shadow: 'none'
+			shadow: {type:'none'}
 		};
 
 		// BTM-RIGHT: V/col - TITLE and LEGEND
