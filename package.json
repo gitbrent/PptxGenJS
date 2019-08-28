@@ -18,6 +18,15 @@
     "build": "rollup -c",
     "watch": "rollup -cw"
   },
+  "browser": {
+    "express": false,
+    "fs": false,
+    "https": false,
+    "image-size": false,
+    "jsdom": false,
+    "os": false,
+    "path": false
+  },
   "dependencies": {
     "express": "^4.16.4",
     "https": "^1.0.0",
@@ -38,17 +47,11 @@
     "gulp-sourcemaps": "^2.6.4",
     "gulp-uglify": "^3.0.1",
     "rollup": "^1.17.0",
+    "rollup-plugin-alias": "^2.0.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript2": "^0.21.1",
     "typescript": "3.3.1"
-  },
-  "browser": {
-    "express": false,
-    "fs": false,
-    "https": false,
-    "image-size": false,
-    "jsdom": false,
-    "os": false,
-    "path": false
   },
   "repository": {
     "type": "git",

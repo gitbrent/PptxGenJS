@@ -22,22 +22,21 @@ gulp.task("build", () => {
     })
     .then(bundle => {
       return bundle.write({
-        file: "./src/bld/pptxgen.es.js",
-        format: "es",
-        name: "pptxgen",
-        sourcemap: true
+        file: "./src/bld/pptxgen.gulp.js",
+        format: "iife",
+        name: "PptxGenJS",
+        globals: {
+            jszip: 'JSZip'
+        },
+        sourcemap: true,
+		definitions: true
       });
     });
 });
 
 gulp.task("clean", () => {
   return gulp
-    .src(["./src/bld/pptxgen.es.js"])
-    .pipe(
-      deleteLines({
-        filters: [/^import |^export /i]
-      })
-    )
+    .src(["./src/bld/pptxgen.gulp.js"])
     .pipe(concat("pptxgen.min.js"))
     .pipe(uglify())
     .pipe(
