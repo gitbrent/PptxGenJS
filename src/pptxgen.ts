@@ -39,10 +39,8 @@
  * OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
  *
  * REFERENCES:
- * @see "Structure of a PresentationML document (Open XML SDK)"
- * @see: https://msdn.microsoft.com/en-us/library/office/gg278335.aspx
- * TableStyleId enumeration
- * @see: https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx
+ * @see [Structure of a PresentationML document (Open XML SDK)](https://msdn.microsoft.com/en-us/library/office/gg278335.aspx)
+ * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
  */
 
 import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES } from './core-enums'
