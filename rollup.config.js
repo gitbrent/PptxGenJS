@@ -12,12 +12,22 @@ export default {
 				jszip: 'JSZip'
 			}
 		},
-		/*{
-			file: './src/bld/' + pkg.main,
-			format: 'cjs'
-		},*/
+		/*
 		{
-			file: './src/bld/' + pkg.module,
+			file: './src/bld/pptxgenjs.cjs.js',
+			format: 'cjs'
+		},
+		{
+			file: './src/bld/pptxgenjs.umd.js',
+			format: 'umd',
+			name: 'PptxGenJS',
+			globals: {
+				jszip: 'JSZip'
+			}
+		},
+		*/
+		{
+			file: './src/bld/pptxgenjs.es.js',
 			format: 'es'
 		}
 	],
