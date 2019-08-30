@@ -53,6 +53,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 import * as JSZip from 'jszip'
+//import * as sizeOf from 'image-size' // NodeJS
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -181,10 +182,6 @@ export default class PptxGenJS {
 		return this._presLayout
 	}
 
-	private fs: any
-	private https: any
-	private sizeOf: any
-
 	constructor() {
 		// Determine Environment
 		if (typeof module !== 'undefined' && module.exports && typeof require === 'function' && typeof window === 'undefined') {
@@ -265,7 +262,8 @@ export default class PptxGenJS {
 	 * @param {JSZIP_OUTPUT_TYPE} outputType - JSZip output type (ArrayBuffer, Blob, etc.)
 	 */
 	doExportPresentation = (outputType?: JSZIP_OUTPUT_TYPE) => {
-		var arrChartPromises: Promise<any>[] = []
+		const fs = typeof require !== 'undefined' ? require('fs') : null // NodeJS
+		let arrChartPromises: Promise<any>[] = []
 
 		// STEP 1: Create new JSZip file
 		let zip: JSZip = new JSZip()
@@ -323,7 +321,7 @@ export default class PptxGenJS {
 		// STEP 5: Wait for Promises (if any) then generate the PPTX file
 		Promise.all(arrChartPromises)
 			.then(() => {
-				var strExportName = this.fileName.toLowerCase().indexOf('.ppt') > -1 ? this.fileName : this.fileName + this.fileExtn
+				let strExportName = this.fileName.toLowerCase().indexOf('.ppt') > -1 ? this.fileName : this.fileName + this.fileExtn
 				if (outputType) {
 					zip.generateAsync({ type: outputType }).then(() => this.saveCallback)
 				} else if (this.NODEJS && !this.isBrowser) {
@@ -334,7 +332,7 @@ export default class PptxGenJS {
 							})
 						} else {
 							zip.generateAsync({ type: 'nodebuffer' }).then(content => {
-								this.fs.writeFile(strExportName, content, () => {
+								fs.writeFile(strExportName, content, () => {
 									this.saveCallback(strExportName)
 								})
 							})
@@ -342,7 +340,7 @@ export default class PptxGenJS {
 					} else {
 						// Starting in late 2017 (Node ~8.9.1), `fs` requires a callback so use a dummy func
 						zip.generateAsync({ type: 'nodebuffer' }).then(content => {
-							this.fs.writeFile(strExportName, content, () => {})
+							fs.writeFile(strExportName, content, () => {})
 						})
 					}
 				} else {
@@ -574,8 +572,7 @@ export default class PptxGenJS {
 	}
 }
 
-// TODO: include via rollup
-// https://github.com/rollup/rollup-plugin-node-resolve
+// TODO: NodeJS test/integration
 /*
 // NodeJS support
 if (this.NODEJS) {
