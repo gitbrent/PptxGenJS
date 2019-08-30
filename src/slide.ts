@@ -61,10 +61,6 @@ export default class Slide {
 		if (this.slideLayout && this.slideLayout.slideNumberObj && !this._slideNumber) this.slideNumber = this.slideLayout.slideNumberObj
 	}
 
-	// ==========================================================================
-	// PUBLIC METHODS:
-	// ==========================================================================
-
 	public set bkgd(value: string) {
 		this._bkgd = value
 	}
