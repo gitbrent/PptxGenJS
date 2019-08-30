@@ -36,10 +36,11 @@ import {
 	ShapeOptions,
 	TableOptions,
 	TableRow,
+	OptsChartGridLine,
 } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { getSlidesForTableRows } from './gen-tables'
-import { correctShadowOptions, createHyperlinkRels } from './gen-xml'
+import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
 var _chartCounter: number = 0
@@ -83,34 +84,6 @@ export function createSlideObject(slideDef /*:SlideMasterOptions*/, target /*FIX
 }
 
 /**
- * Adds a background image or color to a slide definition.
- * @param {String|Object} bkg - color string or an object with image definition
- * @param {ISlide} target - slide object that the background is set to
- */
-function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide) {
-	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
-		// Allow the use of only the data key (`path` isnt reqd)
-		bkg.src = bkg.src || bkg.path || null
-		if (!bkg.src) bkg.src = 'preencoded.png'
-		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
-		if (strImgExtn == 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
-
-		let intRels = target.relsMedia.length + 1
-		target.relsMedia.push({
-			path: bkg.src,
-			type: SLIDE_OBJECT_TYPES.image,
-			extn: strImgExtn,
-			data: bkg.data || null,
-			rId: intRels,
-			Target: '../media/image' + (target.relsMedia.length + 1) + '.' + strImgExtn,
-		})
-		target.bkgdImgRid = intRels
-	} else if (bkg && typeof bkg === 'string') {
-		target.bkgd = bkg
-	}
-}
-
-/**
  * Generate the chart based on input data.
  * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
  *
@@ -136,7 +109,7 @@ function addBackgroundDefinition(bkg: string | { src?: string; path?: string; da
  *	}
  */
 export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt: IChartOpts): object {
-	function correctGridLineOptions(glOpts) {
+	function correctGridLineOptions(glOpts: OptsChartGridLine) {
 		if (!glOpts || glOpts.style == 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
 			console.warn('Warning: chart.gridLine.size must be greater than 0.')
@@ -324,9 +297,8 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
  * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
  * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
- * @return {Object} image object
  */
-export function addImageDefinition(target: ISlide, opt: IImageOpts): object {
+export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 	let newObject: any = {
 		type: null,
 		text: null,
@@ -428,7 +400,6 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts): object {
 	if (typeof objHyperlink === 'object') {
 		if (!objHyperlink.url && !objHyperlink.slide) throw 'ERROR: `hyperlink` option requires either: `url` or `slide`'
 		else {
-			// TODO: 20190729: Why not use "createHyperlinkRels"?
 			imageRelId++
 
 			target.rels.push({
@@ -445,9 +416,6 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts): object {
 
 	// STEP 6: Add object to slide
 	target.data.push(newObject)
-
-	// LAST
-	return newObject
 }
 
 /**
@@ -773,10 +741,7 @@ export function addTableDefinition(
 	})
 
 	// STEP 6: Create hyperlink rels
-	//createHyperlinkRels(this.slides, arrRows, target.rels)
-	//console.log(this.slides)
-	// FIXME: TODO-3: "this." refs above dont exist here!! 20190725
-	// FIXME: why do we need all slides???
+	createHyperlinkRels(target, arrRows)
 
 	// STEP 7: Auto-Paging: (via {options} and used internally)
 	// (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
@@ -866,7 +831,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 	correctShadowOptions(opt.shadow)
 
 	// STEP 5: Create hyperlinks
-	createHyperlinkRels([target], newObject.text || '', target.rels)
+	createHyperlinkRels(target, newObject.text || '')
 
 	// LAST: Add object to Slide
 	target.data.push(newObject)
@@ -885,6 +850,72 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 				}).length == 0
 			) {
 				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
+			}
+		}
+	})
+}
+
+/* -------------------------------------------------------------------------------- */
+
+/**
+ * Adds a background image or color to a slide definition.
+ * @param {String|Object} bkg - color string or an object with image definition
+ * @param {ISlide} target - slide object that the background is set to
+ */
+function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide) {
+	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
+		// Allow the use of only the data key (`path` isnt reqd)
+		bkg.src = bkg.src || bkg.path || null
+		if (!bkg.src) bkg.src = 'preencoded.png'
+		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
+		if (strImgExtn == 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
+
+		let intRels = target.relsMedia.length + 1
+		target.relsMedia.push({
+			path: bkg.src,
+			type: SLIDE_OBJECT_TYPES.image,
+			extn: strImgExtn,
+			data: bkg.data || null,
+			rId: intRels,
+			Target: '../media/image' + (target.relsMedia.length + 1) + '.' + strImgExtn,
+		})
+		target.bkgdImgRid = intRels
+	} else if (bkg && typeof bkg === 'string') {
+		target.bkgd = bkg
+	}
+}
+
+/**
+ * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
+ * @param {ISlide} target - slide object that any hyperlinks will be be added to
+ * @param {number | string | IText | IText[] | TableCell[][]} text - text to parse
+ */
+function createHyperlinkRels(target: ISlide, text: number | string | IText | IText[] | TableCell[][]) {
+	let textObjs = []
+
+	// Only text objects can have hyperlinks, bail when text param is plain text
+	if (typeof text === 'string' || typeof text === 'number') return
+	// IMPORTANT: "else if" Array.isArray must come before typeof===object! Otherwise, code will exhaust recursion!
+	else if (Array.isArray(text)) textObjs = text
+	else if (typeof text === 'object') textObjs = [text]
+
+	textObjs.forEach((text: IText) => {
+		// `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
+		if (Array.isArray(text)) createHyperlinkRels(target, text)
+		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId) {
+			if (typeof text.options.hyperlink !== 'object') console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ")
+			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
+			else {
+				let relId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1
+
+				target.rels.push({
+					type: SLIDE_OBJECT_TYPES.hyperlink,
+					data: text.options.hyperlink.slide ? 'slide' : 'dummy',
+					rId: relId,
+					Target: text.options.hyperlink.url || text.options.hyperlink.slide.toString(),
+				})
+
+				text.options.hyperlink.rId = relId
 			}
 		}
 	})

@@ -1814,38 +1814,3 @@ export function getShapeInfo(shapeName) {
 
 	return PowerPointShapes.RECTANGLE
 }
-
-export function createHyperlinkRels(slides: ISlide[], inText, slideRels) {
-	var arrTextObjects = []
-
-	// Only text objects can have hyperlinks, so return if this is plain text/number
-	if (typeof inText === 'string' || typeof inText === 'number') return
-	// IMPORTANT: Check for isArray before typeof=object, or we'll exhaust recursion!
-	else if (Array.isArray(inText)) arrTextObjects = inText
-	else if (typeof inText === 'object') arrTextObjects = [inText]
-
-	arrTextObjects.forEach(text => {
-		// `text` can be an array of other `text` objects (table cell word-level formatting), so use recursion
-		if (Array.isArray(text)) createHyperlinkRels(slides, text, slideRels)
-		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId) {
-			if (typeof text.options.hyperlink !== 'object') console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ")
-			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
-			else {
-				var intRels = 0
-				slides.forEach(slide => {
-					intRels += slide.rels.length
-				})
-				var intRelId = intRels + 1
-
-				slideRels.push({
-					type: 'hyperlink',
-					data: text.options.hyperlink.slide ? 'slide' : 'dummy',
-					rId: intRelId,
-					Target: text.options.hyperlink.url || text.options.hyperlink.slide,
-				})
-
-				text.options.hyperlink.rId = intRelId
-			}
-		}
-	})
-}
