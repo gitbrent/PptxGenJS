@@ -782,8 +782,8 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 	let newObject = {
 		text: (Array.isArray(text) && text.length == 0 ? '' : text || '') || '',
 		type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
-		options: opts,
-		shape: opts.shape,
+		options: opt,
+		shape: opt.shape,
 	}
 
 	// STEP 2: Set some options
