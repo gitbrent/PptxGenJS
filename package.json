@@ -9,16 +9,19 @@
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
 	"main": "dist/pptxgen.min.js",
+	"types": "dist/pptxgen.d.ts",
 	"dependencies": {
 		"express": "^4.16.4",
 		"https": "^1.0.0",
 		"image-size": "^0.7.2",
 		"jquery": "^3.3.1",
-		"jsdom": "^14.0.0",
+		"jsdom": "^14.1.0",
 		"jszip": "^3.1.5"
 	},
 	"devDependencies": {
 		"gulp": "^4.0.2",
+		"doctoc": "^1.4.0",
+		"gulp": "^4.0.0",
 		"gulp-concat": "^2.6.1",
 		"gulp-ignore": "^2.0.2",
 		"gulp-insert": "^0.5.0",
