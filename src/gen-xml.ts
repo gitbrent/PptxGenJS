@@ -1584,7 +1584,7 @@ export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: ISlide
 }
 
 /**
- * Generates XML string for a slide relation file.
+ * Creates `ppt/_rels/slide*.xml.rels`
  * @param {ISlide[]} slides
  * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
  * @param {number} `slideNumber` 1-indexed number of a layout that relations are generated for
