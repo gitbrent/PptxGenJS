@@ -652,7 +652,7 @@ export function addTableDefinition(
 
 	// STEP 3: Set options
 	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', presLayout)
-	opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU), 'Y', presLayout)
+	opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU / 2), 'Y', presLayout)
 	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
@@ -740,12 +740,12 @@ export function addTableDefinition(
 		})
 	})
 
-	// STEP 6: Create hyperlink rels
-	createHyperlinkRels(target, arrRows)
-
-	// STEP 7: Auto-Paging: (via {options} and used internally)
+	// STEP 6: Auto-Paging: (via {options} and used internally)
 	// (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
 	if (opt && opt.autoPage == false) {
+		// Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
+		createHyperlinkRels(target, arrRows)
+
 		// Add data (NOTE: Use `extend` to avoid mutation)
 		target.data.push({
 			type: SLIDE_OBJECT_TYPES.table,
@@ -762,8 +762,17 @@ export function addTableDefinition(
 			if (idx > 0) opt.y = inch2Emu(opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
-			opt.autoPage = false
-			getSlide(target.number + idx).addTable(slide.rows, Object.assign({}, opt))
+			{
+				let newSlide:ISlide = getSlide(target.number + idx)
+
+				opt.autoPage = false
+
+				// Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
+				createHyperlinkRels(newSlide, slide.rows)
+
+				// Add rows to new slide
+				newSlide.addTable(slide.rows, Object.assign({}, opt))
+			}
 		})
 	}
 }
