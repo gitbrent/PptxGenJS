@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2019-08-26">
+	<meta name="updated" content="2019-09-02">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -652,7 +652,10 @@
 			}
 
 			// STEP 5: Demo setup
-			$('#tabCellLotsoText').text( gStrLoremIpsum.substring(0,3000) );
+			$('#tabLargeCellText tbody td').text( gStrLoremIpsum.substring(0,3000) );
+			for (let idx=0; idx<30; idx++) {
+				$('#tabLotsOfLines tbody').append('<tr><td>Row-'+idx+'</td><td>Col-B</td><td>Col-C</td></tr>')
+			}
 
 			// LAST: Re-highlight code
 			$('#tab1 code, #tab7 code').each(function(idx,ele){
@@ -761,7 +764,7 @@
 			</div>
 
 			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow active"></div>Demo: Options
+				<div class="arrow active"></div>Demo: tableToSlides Options
 			</h5>
 			<div class="container-fluid m-0 p-2">
 				<div class="row mb-3">
@@ -857,7 +860,7 @@
 			</div>
 
 			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow"></div>Demo: Table Styles
+				<div class="arrow"></div>Demo: Misc Table Styles
 			</h5>
 			<div class="container-fluid m-0 p-2" style="display:none;">
 				<div class="card mb-4">
@@ -1044,13 +1047,32 @@
 			</div>
 
 			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow"></div>Demo: Auto-Paging
+				<div class="arrow"></div>Demo: Single Lines, Large Cell Text
 			</h5>
-			<div class="container-fluid m-0 p-2" style="display:none;">
+			<div class="card-deck m-0 p-2" style="display:none;">
+				<div class="card mb-4">
+					<h6 class="card-header">Example: Lots of Single-Line Rows</h6>
+					<div class="card-body">
+						<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
+							<thead>
+								<tr>
+									<th class="tg-header">A</th>
+									<th class="tg-header">B</th>
+									<th class="tg-header">C</th>
+								</tr>
+							</thead>
+							<tbody>
+							</tbody>
+						</table>
+						<div class="mt-3 text-center">
+							<button type="button" class="btn btn-success w-50" onclick="table2slidesDemoForTab('tabLotsOfLines',{verbose:true})">Single-Line Rows Demo</button>
+						</div>
+					</div>
+				</div>
 				<div class="card mb-4">
 					<h6 class="card-header">Example: Paging needed due to cell with large amount of text</h6>
 					<div class="card-body">
-						<table id="tabLotsoText" class="tabHtmlToPpt">
+						<table id="tabLargeCellText" class="tabHtmlToPpt">
 							<thead>
 								<tr>
 									<th class="tg-header">Executive Status</th>
@@ -1058,12 +1080,12 @@
 							</thead>
 							<tbody>
 								<tr>
-									<td id="tabCellLotsoText">99</td>
+									<td>?</td>
 								</tr>
 							</tbody>
 						</table>
 						<div class="mt-3 text-center">
-							<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabLotsoText')">Lots-o-Text Demo</button>
+							<button type="button" class="btn btn-success w-50" onclick="table2slidesDemoForTab('tabLargeCellText')">Large Cell Text Demo</button>
 						</div>
 					</div>
 				</div>
