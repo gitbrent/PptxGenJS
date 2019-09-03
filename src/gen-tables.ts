@@ -99,7 +99,7 @@ export function getSlidesForTableRows(
 		tableRows[0].forEach(cell => {
 			if (!cell) cell = { type: SLIDE_OBJECT_TYPES.tablecell }
 			let cellOpts = cell.options || null
-			numCols += cellOpts && cellOpts.colspan ? cellOpts.colspan : 1
+			numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1)
 		})
 
 		if (tabOpts.verbose) console.log('numCols ................ = ' + numCols)
@@ -163,7 +163,6 @@ export function getSlidesForTableRows(
 				options: cell.options,
 			})
 		})
-		currSlide.rows.push(newRowSlide)
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
 		emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
@@ -225,6 +224,9 @@ export function getSlidesForTableRows(
 		// Add T/B cell margins to calc actual row height
 		emuTabCurrH += emuMaxCellMargin
 
+		// G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
+		if (emuTabCurrH + maxLineHeight <= emuSlideTabH) currSlide.rows.push(newRowSlide)
+
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 		while (
 			linesRow.filter(cell => {
@@ -236,7 +238,7 @@ export function getSlidesForTableRows(
 				if (tabOpts.verbose)
 					console.log(
 						`** NEW SLIDE CREATED *****************************************` +
-							` (why?): ${(emuTabCurrH / EMU).toFixed(1)}+${(maxLineHeight / EMU).toFixed(1)} > ${emuSlideTabH / EMU}`
+							` (why?): ${(emuTabCurrH / EMU).toFixed(2)}+${(maxLineHeight / EMU).toFixed(2)} > ${emuSlideTabH / EMU}`
 					)
 
 				// 1: Add a new slide
@@ -334,7 +336,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	}
 	emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout.width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3])
 
-	if (opts.verbose) console.log('-- DEBUG ----------------------------------')
+	if (opts.verbose) console.log('-- VERBOSE MODE ----------------------------------')
 	if (opts.verbose) console.log(`opts.h ................. = ${opts.h}`)
 	if (opts.verbose) console.log(`opts.w ................. = ${opts.w}`)
 	if (opts.verbose) console.log(`pptx.presLayout.width .. = ${pptx.presLayout.width / EMU}`)
