@@ -335,7 +335,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	}
 	bold?: boolean
 	breakLine?: boolean
-	bullet?: boolean | { type?: string; code?: string }
+	bullet?: boolean | { type?: string; code?: string; style?: string; startAt?: number }
 	charSpacing?: number
 	color?: string
 	fontFace?: string

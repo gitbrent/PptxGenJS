@@ -865,7 +865,8 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 						'" indent="-' +
 						bulletLvl0Margin +
 						'"'
-					strXmlBullet = '<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="arabicPeriod"/>'
+					strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style ||
+						'arabicPeriod'}" startAt="${textObj.options.bullet.startAt || '1'}"/>`
 				}
 			} else if (textObj.options.bullet.code) {
 				var bulletCode = '&#x' + textObj.options.bullet.code + ';'
