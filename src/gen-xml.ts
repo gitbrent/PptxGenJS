@@ -56,7 +56,7 @@ let imageSizingXml = {
 }
 
 /**
- * Transforms a slide or slideLayout to resulting XML string (slide1.xml)
+ * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
  * @param {ISlide|ISlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
@@ -94,15 +94,15 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 	strSlideXml += '<p:grpSpPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="0" cy="0"/>'
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
-	// STEP 4: Loop over all Slide.data objects and add them to this slide ===============================
+	// STEP 4: Loop over all Slide.data objects and add them to this slide
 	slide.data.forEach((slideItemObj: ISlideObject, idx: number) => {
 		let x = 0,
 			y = 0,
 			cx = getSmartParseNumber('75%', 'X', slide.presLayout),
 			cy = 0
 		let placeholderObj: ISlideObject
-		let locationAttr = '',
-			shapeType = null
+		let locationAttr = ''
+		let shapeType = null
 
 		if ((slide as ISlide).slideLayout !== undefined && (slide as ISlide).slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
 			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => {
@@ -132,7 +132,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		if (slideItemObj.options.flipV) locationAttr += ' flipV="1"'
 		if (slideItemObj.options.rotate) locationAttr += ' rot="' + convertRotationDegrees(slideItemObj.options.rotate) + '"'
 
-		// B: Add OBJECT to current Slide ----------------------------
+		// B: Add OBJECT to the current Slide
 		switch (slideItemObj.type) {
 			case SLIDE_OBJECT_TYPES.table:
 				let objTableGrid = {}
@@ -150,7 +150,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					intColCnt += cellOpts && cellOpts.colspan ? Number(cellOpts.colspan) : 1
 				})
 
-				// STEP 1: Start Table XML =============================
+				// STEP 1: Start Table XML
 				// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
 				let strXml =
 					'<p:graphicFrame>' +
@@ -257,7 +257,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					})
 				})
 
-				/* Only useful for rowspan/colspan testing
+				/* DEBUG: Only useful for rowspan/colspan testing
 				if ( objTabOpts.verbose ) {
 					console.table(objTableGrid);
 					var arrText = [];
@@ -266,7 +266,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				}
 				*/
 
-				// STEP 4: Build table rows/cells ============================
+				// STEP 4: Build table rows/cells
 				jQuery.each(objTableGrid, (rIdx, rowObj) => {
 					// A: Table Height provided without rowH? Then distribute rows
 					var intRowH = 0 // IMPORTANT: Default must be zero for auto-sizing to work
@@ -285,7 +285,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 						if (cell.hmerge) return
 
-						// 2: OPTIONS: Build/set cell options ===========================
+						// 2: OPTIONS: Build/set cell options
 						let cellOpts = cell.options || ({} as TableCell['options'])
 						/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
 						cell.options = cellOpts
@@ -935,7 +935,7 @@ function genXmlTextRunProperties(opts: ObjectOptions | ITextOpts, isDefault: boo
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
 		if (opts.fontFace) {
-			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use -120 instead of 0 - see Issue #174); ea must come first (see Issue #174)
+			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
 			runProps +=
 				'<a:latin typeface="' +
 				opts.fontFace +
