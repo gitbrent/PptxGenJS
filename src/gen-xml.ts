@@ -2,7 +2,7 @@
  * PptxGenJS: XML Generation
  */
 
-import { BULLET_TYPES, CRLF, DEF_CELL_BORDER, DEF_CELL_MARGIN_PT, EMU, LAYOUT_IDX_SERIES_BASE, ONEPT, PLACEHOLDER_TYPES, SLDNUMFLDID, SLIDE_OBJECT_TYPES } from './core-enums'
+import { BULLET_TYPES, CRLF, DEF_CELL_BORDER, DEF_CELL_MARGIN_PT, EMU, LAYOUT_IDX_SERIES_BASE, ONEPT, PLACEHOLDER_TYPES, SLDNUMFLDID, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './core-enums'
 import { PowerPointShapes } from './core-shapes'
 import {
 	ILayout,
@@ -68,11 +68,10 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 	if (slide.bkgd) {
 		strSlideXml += genXmlColorSelection(null, slide.bkgd)
 	}
-	/* FIXME: TODO: this is needed on slideMaster1.xml to avoid gray background in Finder/Apple Pages
-	// but it shoudln't go on every slide that comes along
-	else {
+	else if (!slide.bkgd && slide.name && slide.name == DEF_PRES_LAYOUT_NAME) {
+		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
 		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
-	}*/
+	}
 
 	// STEP 2: Add background image (using Strech) (if any)
 	if (slide.bkgdImgRid) {
@@ -1423,7 +1422,7 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
 	return strXml
 }
 
-// XML-GEN: Next 5 functions run 1-N times (once for each Slide)
+// XML-GEN: Functions that run 1-N times (once for each Slide)
 
 /**
  * Generates XML for the slide file (`ppt/slides/slide1.xml`)
@@ -1516,7 +1515,7 @@ export function makeXmlLayout(layout: ISlideLayout): string {
 }
 
 /**
- * Generates XML for the slide master file (`ppt/slideMasters/slideMaster1.xml`)
+ * Creates Slide Master 1 (`ppt/slideMasters/slideMaster1.xml`)
  * @param {ISlide} slide - slide object that represents master slide layout
  * @param {ISlideLayout[]} layouts - slide layouts
  * @return {string} XML
