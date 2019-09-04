@@ -149,7 +149,7 @@ export function createColorElement(colorStr: string, innerElements?: string): st
 	}
 
 	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = ' val="' + (colorStr || '').toUpperCase() + '"'
+	let colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"'
 
 	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
 }
