@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Loaded by `pptxgenjs-demo.js` and `nodejs-demo.js`
 * VER.: 3.0.0-beta1
-* BLD.: 20190826
+* BLD.: 20190903
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -2615,44 +2615,55 @@ function genSlides_Text(pptx) {
 		// LEFT COLUMN ------------------------------------------------------------
 
 		// 1: Bullets with indent levels
-		slide.addText("Bullet Indent-Levels:", { x:0.5, y:0.5, w:'40%', h:0.38, color:'0088CC' });
+		slide.addText("Bullet Indent-Levels:", { x:0.5, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text:'Bullet one',     options:{ fontSize:24, bullet:true, color:'99ABCC'                } },
-				{ text:'Indent-Level 1', options:{ fontSize:32, bullet:true, color:'FFFF00', indentLevel:1 } },
-				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:'0088CC', indentLevel:2 } },
-				{ text:'Indent-Level 3', options:{ fontSize:48, bullet:true, color:'CC88BB', indentLevel:3 } },
-				{ text:'Indent-Level 3', options:{ fontSize:48, bullet:true, color:'CC88BB', indentLevel:3 } },
-				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:'0088CC', indentLevel:2 } },
-				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:'0088CC', indentLevel:2 } },
-				{ text:'Indent-Level 1', options:{ fontSize:32, bullet:true, color:'FFFF00', indentLevel:1 } },
-				{ text:'Bullet no indent', options:{ fontSize:24, bullet:true, color:'99ABCC'              } },
-				{ text:'Bullet Last',    options:{ fontSize:24, bullet:true, color:'99ABCC'                } }
+				{ text:'Bullet one',     options:{ fontSize:24, bullet:true, color:pptx.colors.ACCENT3                } },
+				{ text:'Indent-Level 1', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT4, indentLevel:1 } },
+				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:pptx.colors.ACCENT5, indentLevel:2 } },
+				{ text:'Indent-Level 3', options:{ fontSize:48, bullet:true, color:pptx.colors.ACCENT6, indentLevel:3 } }
 			],
-			{ x:0.5, y:1.0, w:6.25, h:6.0, fill:'373737' }
+			{ x:0.5, y:1.0, w:5.75, h:3.0, fill:'373737' }
 		);
 
-		// 4: Regular bullets
-		slide.addText("Bullets:", { x:7.5, y:0.65, w:'40%', h:0.38, color:'0088CC' });
-		slide.addText(12345                  , { x:8.0, y:1.05, w:'30%', h:0.5, color:'0000DE', fontFace:"Courier New", bullet:true });
-		slide.addText('String (number above)', { x:8.0, y:1.35, w:'30%', h:0.5, color:'00AA00', bullet:true });
+		slide.addText("Bullet Styles:", { x:0.5, y:4.5, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText(
+			[
+				{ text:'style: arabicPeriod' , options:{ color:pptx.colors.ACCENT2, bullet:{type:'number', style:'arabicPeriod'} } },
+				{ text:'style: arabicPeriod' , options:{ color:pptx.colors.ACCENT2, bullet:{type:'number', style:'arabicPeriod'} } },
+				{ text:'style: alphaLcPeriod', options:{ color:pptx.colors.ACCENT5, bullet:{type:'number', style:'alphaLcPeriod'}, indentLevel:1 } },
+				{ text:'style: alphaLcPeriod', options:{ color:pptx.colors.ACCENT5, bullet:{type:'number', style:'alphaLcPeriod'}, indentLevel:1 } },
+				{ text:'style: romanLcPeriod', options:{ color:pptx.colors.ACCENT6, bullet:{type:'number', style:'romanLcPeriod'}, indentLevel:2 } },
+				{ text:'style: romanLcPeriod', options:{ color:pptx.colors.ACCENT6, bullet:{type:'number', style:'romanLcPeriod'}, indentLevel:2 } }
+			],
+			{ x:0.5, y:4.9, w:5.75, h:2.0, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT1 }
+		);
 
-		// 5: Bullets: Text With Line-Breaks
-		slide.addText("Bullets with line-breaks:", { x:7.5, y:2.1, w:'40%', h:0.38, color:'0088CC' });
-		slide.addText('Line 1\nLine 2\nLine 3', { x:8.0, y:2.6, w:'30%', h:1.0, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} });
+		// RIGHT COLUMN ------------------------------------------------------------
 
-		// 6: Bullets: With group of {text}
-		slide.addText("Bullet with {text} objects:", { x:7.5, y:4.0, w:'40%', h:0.38, color:'0088CC' });
+		// 1: Regular bullets
+		slide.addText("Bullet startAt number option:", { x:7.0, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText(
+			"type:'number'\nstartAt:'5'",
+			{ x:7.0, y:1.05, w:'40%', h:0.75, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', startAt:'5'} }
+		);
+
+		// 2: Bullets: Text With Line-Breaks
+		slide.addText("Bullets made with Line Breaks:", { x:7.0, y:2.1, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText('Line 1\nLine 2\nLine 3', { x:7.0, y:2.6, w:'40%', h:1.0, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} });
+
+		// 3: Bullets: With group of {text}
+		slide.addText("Bullets made with text objects:", { x:7.0, y:4.0, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
 				{ text: 'big red words... ', options:{fontSize:24, color:'FF0000'} },
 				{ text: 'some green words.', options:{fontSize:16, color:'00FF00'} }
 			],
-			{ x:8.0, y:4.4, w:5.0, h:0.5, margin:0.1, fontFace:'Arial', bullet:{code:'25BA'} }
+			{ x:7.0, y:4.4, w:5.75, h:0.5, margin:0.1, fontFace:'Arial', bullet:{code:'25BA'} }
 		);
 
-		// 7: Bullets: Within a {text} object
-		slide.addText("Bullet within {text} objects:", { x:7.5, y:5.3, w:'40%', h:0.38, color:'0088CC' });
+		// 5: Bullets: Within a {text} object
+		slide.addText("Bullets using text object options:", { x:7.0, y:5.3, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
 				{ text:'I am a text object with bullets..', options:{bullet:{code:'25BA'}, color:'CC0000'} },
@@ -2660,7 +2671,7 @@ function genSlides_Text(pptx) {
 				{ text:'Default bullet text.. '           , options:{bullet:true, color:'696969'} },
 				{ text:'Final text object w/ bullet:true.', options:{bullet:true, color:'0000AB'} }
 			],
-			{ x:8.0, y:5.65, w:'35%', h:1.4, color:'ABABAB', margin:1 }
+			{ x:7.0, y:5.65, w:'40%', h:1.4, color:'ABABAB', margin:1 }
 		);
 	}
 
