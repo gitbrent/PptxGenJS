@@ -171,7 +171,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					'    <a:ext cx="' +
 					(cx || (cx == 0 ? 0 : EMU)) +
 					'" cy="' +
-					(cy || (cy == 0 ? 0 : EMU)) +
+					(cy || EMU) +
 					'"/>' +
 					'  </p:xfrm>' +
 					'  <a:graphic>' +
@@ -918,10 +918,10 @@ function genXmlTextRunProperties(opts: ObjectOptions | ITextOpts, isDefault: boo
 	let runProps = ''
 	let runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
 
-	// BEGIN runProperties
-	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '" ' + (opts.lang ? ' altLang="en-US"' : '')
-	runProps += opts.bold ? ' b="1"' : ''
+	// BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
+	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '')
 	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+	runProps += opts.bold ? ' b="1"' : ''
 	runProps += opts.italic ? ' i="1"' : ''
 	runProps += opts.strike ? ' strike="sngStrike"' : ''
 	runProps += opts.underline || opts.hyperlink ? ' u="sng"' : ''
