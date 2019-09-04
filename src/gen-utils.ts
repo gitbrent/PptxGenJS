@@ -43,7 +43,7 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
  * @param {string} uuidFormat - UUID format
  * @returns {string} UUID
  */
-export function getUuid(uuidFormat: string):string {
+export function getUuid(uuidFormat: string): string {
 	return uuidFormat.replace(/[xy]/g, function(c) {
 		var r = (Math.random() * 16) | 0,
 			v = c == 'x' ? r : (r & 0x3) | 0x8
@@ -52,7 +52,7 @@ export function getUuid(uuidFormat: string):string {
 }
 
 /**
-* TODO: What does this mehtod do again??
+ * TODO: What does this mehtod do again??
  * shallow mix, returns new object
  */
 export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
@@ -140,7 +140,7 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-export function createColorElement(colorStr: string, innerElements?: string):string {
+export function createColorElement(colorStr: string, innerElements?: string): string {
 	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
 
 	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) == -1) {
@@ -149,18 +149,18 @@ export function createColorElement(colorStr: string, innerElements?: string):str
 	}
 
 	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = ' val="' + colorStr + '"'
+	let colorAttr = ' val="' + (colorStr || '').toUpperCase() + '"'
 
 	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
 }
 
 /**
-* Create color selection
-* @param {ShapeFill} shapeFill - options
-* @param {string} backColor - color string
-* @returns {string} XML string
-*/
-export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string):string {
+ * Create color selection
+ * @param {ShapeFill} shapeFill - options
+ * @param {string} backColor - color string
+ * @returns {string} XML string
+ */
+export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): string {
 	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''
