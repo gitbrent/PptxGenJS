@@ -312,7 +312,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						let cellFill =
 							(cell.optImp && cell.optImp.fill) || cellOpts.fill
 								? ' <a:solidFill><a:srgbClr val="' +
-								  ((cell.optImp && cell.optImp.fill) || (typeof cellOpts.fill === 'string' ? cellOpts.fill.replace('#', '') : '')) +
+								  ((cell.optImp && cell.optImp.fill) || (typeof cellOpts.fill === 'string' ? cellOpts.fill.replace('#', '') : '')).toUpperCase() +
 								  '"/></a:solidFill>'
 								: ''
 						let cellMargin = cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
@@ -1179,13 +1179,16 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
 	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 	if (slideObj.type == SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
-		strSlideXml += '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '" ' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
 		if (opts.fontFace) {
+			strSlideXml += '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
 			strSlideXml += '<a:latin typeface="' + opts.fontFace + '" charset="0"/>'
 			strSlideXml += '<a:ea typeface="' + opts.fontFace + '" charset="0"/>'
 			strSlideXml += '<a:cs typeface="' + opts.fontFace + '" charset="0"/>'
+			strSlideXml += '</a:endParaRPr>'
 		}
-		strSlideXml += '</a:endParaRPr>'
+		else {
+			strSlideXml += '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0"/>'
+		}
 	} else {
 		strSlideXml += '<a:endParaRPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>' // NOTE: Added 20180101 to address PPT-2007 issues
 	}
