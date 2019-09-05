@@ -248,6 +248,9 @@ Outstanding Dev Items
 * Correct MIME type for zip exports
 * Other small items
 
+Coming in 3.0/3.1
+* Sections
+
 **************************************************************************************************
 # Contributors ✨
 
