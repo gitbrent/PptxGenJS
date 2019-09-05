@@ -795,7 +795,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		shape: opt.shape,
 	}
 
-	// STEP 2: Set some options
+	// STEP 1: Set some options
 	{
 		// A: Placeholders should inherit their colors or override them, so don't default them
 		if (!opt.placeholder) {
@@ -824,7 +824,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		}
 	}
 
-	// STEP 3: Transform `align`/`valign` to XML values, store in bodyProp for XML gen
+	// STEP 2: Transform `align`/`valign` to XML values, store in bodyProp for XML gen
 	{
 		if ((newObject.options.align || '').toLowerCase().startsWith('c')) newObject.options.bodyProp.align = TEXT_HALIGN.center
 		else if ((newObject.options.align || '').toLowerCase().startsWith('l')) newObject.options.bodyProp.align = TEXT_HALIGN.left
@@ -836,16 +836,20 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		else if ((newObject.options.valign || '').toLowerCase().startsWith('t')) newObject.options.bodyProp.anchor = TEXT_VALIGN.t
 	}
 
-	// STEP 4: ROBUST: Set rational values for some shadow props if needed
+	// STEP 3: ROBUST: Set rational values for some shadow props if needed
 	correctShadowOptions(opt.shadow)
 
-	// STEP 5: Create hyperlinks
+	// STEP 4: Create hyperlinks
 	createHyperlinkRels(target, newObject.text || '')
 
 	// LAST: Add object to Slide
 	target.data.push(newObject)
 }
 
+/**
+ * Adds placeholder objects to slide
+ * @param {ISlide} slide - slide object containing layouts
+ */
 export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 	// Add all placeholders on this Slide that dont already exist
 	;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
