@@ -2,7 +2,19 @@
  * PptxGenJS: XML Generation
  */
 
-import { BULLET_TYPES, CRLF, DEF_CELL_BORDER, DEF_CELL_MARGIN_PT, EMU, LAYOUT_IDX_SERIES_BASE, ONEPT, PLACEHOLDER_TYPES, SLDNUMFLDID, SLIDE_OBJECT_TYPES, DEF_PRES_LAYOUT_NAME } from './core-enums'
+import {
+	BULLET_TYPES,
+	CRLF,
+	DEF_CELL_BORDER,
+	DEF_CELL_MARGIN_PT,
+	EMU,
+	LAYOUT_IDX_SERIES_BASE,
+	ONEPT,
+	PLACEHOLDER_TYPES,
+	SLDNUMFLDID,
+	SLIDE_OBJECT_TYPES,
+	DEF_PRES_LAYOUT_NAME,
+} from './core-enums'
 import { PowerPointShapes } from './core-shapes'
 import {
 	ILayout,
@@ -67,8 +79,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 	// STEP 1: Add background
 	if (slide.bkgd) {
 		strSlideXml += genXmlColorSelection(null, slide.bkgd)
-	}
-	else if (!slide.bkgd && slide.name && slide.name == DEF_PRES_LAYOUT_NAME) {
+	} else if (!slide.bkgd && slide.name && slide.name == DEF_PRES_LAYOUT_NAME) {
 		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
 		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
 	}
@@ -1083,7 +1094,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		addText( [{text'word1'}, {text:'word2'}] )
 		addText( [{text'line1\n line2'}, {text:'end word'}] )
 	*/
-	// A: Transform string/number inot complex object
+	// A: Transform string/number into complex object
 	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
 		slideObj.text = [{ text: slideObj.text.toString(), options: opts || {} }]
 	}
@@ -1097,10 +1108,19 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 
 			// B: Cast to text-object and fix line-breaks (if needed)
 			if (typeof obj.text === 'string' || typeof obj.text === 'number') {
+				// 1: Convert "\n" or any variation into CRLF
 				obj.text = obj.text.toString().replace(/\r*\n/g, CRLF)
-				if (obj.options.breakLine && !obj.options.bullet && !obj.options.align) obj.text += CRLF
-				// Plain strings like "hello \n world" need to have lineBreaks set to break as intended
-				else if (obj.text.indexOf(CRLF) > -1) obj.options.breakLine = true
+
+				// 2: Handle strings that contain "\n"
+				if (obj.text.indexOf(CRLF) > -1) {
+					// Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
+					obj.text = obj.text.replace(/\r\n$/g, '')
+					// Plain strings like "hello \n world" or "first line\n" need to have lineBreaks set to become 2 separate lines as intended
+					obj.options.breakLine = true
+				}
+
+				// 3: Add CRLF line ending if `breakLine`
+				if (obj.options.breakLine && !obj.options.bullet && !obj.options.align && idx + 1 < slideObj.text.length) obj.text += CRLF
 			}
 
 			// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
@@ -1145,7 +1165,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
 		textObj.options.lineIdx = idx
 
-		// Inherit pPr-type options from parent shape's `options`
+		// A: Inherit pPr-type options from parent shape's `options`
 		textObj.options.align = textObj.options.align || opts.align
 		textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing
 		textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel
@@ -1180,14 +1200,15 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 	if (slideObj.type == SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 		if (opts.fontFace) {
-			strSlideXml += '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
+			strSlideXml +=
+				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
 			strSlideXml += '<a:latin typeface="' + opts.fontFace + '" charset="0"/>'
 			strSlideXml += '<a:ea typeface="' + opts.fontFace + '" charset="0"/>'
 			strSlideXml += '<a:cs typeface="' + opts.fontFace + '" charset="0"/>'
 			strSlideXml += '</a:endParaRPr>'
-		}
-		else {
-			strSlideXml += '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0"/>'
+		} else {
+			strSlideXml +=
+				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0"/>'
 		}
 	} else {
 		strSlideXml += '<a:endParaRPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>' // NOTE: Added 20180101 to address PPT-2007 issues
