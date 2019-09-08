@@ -6,18 +6,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 ### Coming In [3.0]:
-- `save()` will be renamed return a Promise
+- `save()` will be renamed, return a Promise
 - Many **BREAKING CHANGES**
 
 
 ## [3.0.0] - 2019-12-31
-### Changed
+### Added
 - Ability to specify numbered list format [\#452](https://github.com/gitbrent/PptxGenJS/issue/452) ([mayvazyan](https://github.com/mayvazyan))
 - Ability to set start number "startAt" for a bullet list of type numbered [\#554](https://github.com/gitbrent/PptxGenJS/issue/554) [\#555](https://github.com/gitbrent/PptxGenJS/pull/555) ([bj-mitchell](https://github.com/bj-mitchell))
-- Tables not being displayed after update [\#559](https://github.com/gitbrent/PptxGenJS/issue/559) ([emartz404](https://github.com/emartz404))
-- Links in tables won't work on tables generated with autoPage [\#583](https://github.com/gitbrent/PptxGenJS/issue/583) ([githuis](https://github.com/githuis))
-- Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
-- Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
+### Changed
+- Fixed: Tables not being displayed after update [\#559](https://github.com/gitbrent/PptxGenJS/issue/559) ([emartz404](https://github.com/emartz404))
+- Fixed: Links in tables won't work on tables generated with autoPage [\#583](https://github.com/gitbrent/PptxGenJS/issue/583) ([githuis](https://github.com/githuis))
+- Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
+- Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
 
 
 ## [2.6.0] - 2019-??-??
