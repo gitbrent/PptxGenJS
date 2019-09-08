@@ -48,6 +48,14 @@ function parseTextToLines(cell: TableCell, colWidth: number): string[] {
 	return arrLines
 }
 
+/**
+ * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
+ * @param {[ITableToSlidesCell[]?]} tableRows - HTMLElementID of the table
+ * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
+ * @param {ILayout} presLayout - Presentation layout
+ * @param {ISlideLayout} masterSlide - master slide (if any)
+ * @return {TableRowSlide[]} array of table rows
+ */
 export function getSlidesForTableRows(
 	tableRows: [ITableToSlidesCell[]?] = [],
 	tabOpts: ITableToSlidesOpts = {},
@@ -306,8 +314,8 @@ export function getSlidesForTableRows(
 
 /**
  * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
- * @param {string} `tabEleId` - HTMLElementID of the table
- * @param {ITableToSlidesOpts} `inOpts` - array of options (e.g.: tabsize)
+ * @param {string} tabEleId - HTMLElementID of the table
+ * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
  */
 export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
 	let opts = options || {}
