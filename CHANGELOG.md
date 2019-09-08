@@ -10,13 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - See [Coming Soon in 3.0](https://github.com/GitBrent/PptxGenJS#coming-soon) for more details
 
 
-## [2.6.0] - 2019-??-??
+## [2.6.0] - 2019-09-??
 ### Added
 - Host the Examples demo webpage online [\#505](https://github.com/gitbrent/PptxGenJS/pull/505) ([multiplegeorges](https://github.com/multiplegeorges))
 - Add types key to package.json [\#529](https://github.com/gitbrent/PptxGenJS/pull/529) ([adamlong5](https://github.com/adamlong5))
 ### Changed
 - Fixed: MIME type is ppt now instead of "application/zip"
 - Fixed: Not Able to add background image from the www source [\#497](https://github.com/gitbrent/PptxGenJS/issue/497) ([nish25sp](https://github.com/nish25sp))
+- Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
+- Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
 ### Removed
 
 
