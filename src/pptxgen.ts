@@ -349,8 +349,8 @@ export default class PptxGenJS {
 					})
 				}
 			})
-			.catch(strErr => {
-				console.error(strErr)
+			.catch(err => {
+				console.error(err)
 			})
 	}
 
@@ -364,9 +364,9 @@ export default class PptxGenJS {
 		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
 		if (window.navigator.msSaveOrOpenBlob) {
 			// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
-			let blobObject = new Blob([content])
+			let blob = new Blob([content], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
 			jQuery(a).click(() => {
-				window.navigator.msSaveOrOpenBlob(blobObject, strExportName)
+				window.navigator.msSaveOrOpenBlob(blob, strExportName)
 			})
 			a.click()
 
@@ -376,8 +376,8 @@ export default class PptxGenJS {
 			// LAST: Callback (if any)
 			if (this.saveCallback) this.saveCallback(strExportName)
 		} else if (window.URL.createObjectURL) {
-			var blob = new Blob([content], { type: 'octet/stream' })
-			var url = window.URL.createObjectURL(blob)
+			let blob = new Blob([content], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
+			let url = window.URL.createObjectURL(blob)
 			a.href = url
 			a.download = strExportName
 			a.click()
@@ -458,7 +458,7 @@ export default class PptxGenJS {
 	// PUBLIC API
 
 	// FIXME: TODO: TODO-3: remove `save` - use `write` and `writeFile` instead
-	// ALSO: mnove to {options} instead of positional params!
+	// ALSO: move to {options} instead of positional params!
 	//* @since 3.0.0
 
 	/**
