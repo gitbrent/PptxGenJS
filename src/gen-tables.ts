@@ -156,7 +156,11 @@ export function getSlidesForTableRows(
 	}
 
 	// STEP 6: **MAIN** Iterate over rows, add table content, create new slides as rows overflow
-	tableRows.forEach((row, iRow) => {
+	let iRow = 0
+	while (tableRows.length > 0) {
+		let row = tableRows.shift()
+		iRow++
+
 		// A: Row variables
 		let maxLineHeight = 0
 		let linesRow: TableCell[] = []
@@ -254,23 +258,44 @@ export function getSlidesForTableRows(
 					rows: [] as ITableRow[],
 				})
 
-				// 2: Add new row to new slide
-				let currSlide = tableRowSlides[tableRowSlides.length - 1]
-				let newRowSlide = []
-				row.forEach(cell => {
-					newRowSlide.push({
-						type: SLIDE_OBJECT_TYPES.tablecell,
-						text: '',
-						options: cell.options,
-					})
-				})
-				currSlide.rows.push(newRowSlide)
-
-				// TODO: FIXME: add support for "addHeaderToEach"
-				// add here, increase `emuTabCurrH`
-
-				// 3: Reset current table height for new Slide
+				// 2: Reset current table height for new Slide
 				emuTabCurrH = 0 // This row's emuRowH w/b added below
+
+				// 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
+				if (tabOpts.addHeaderToEach && tabOpts._arrObjTabHeadRows) {
+					// A: Add remaining cell lines
+					let newRowSlide = []
+					linesRow.forEach(cell => {
+						newRowSlide.push({
+							type: SLIDE_OBJECT_TYPES.tablecell,
+							text: cell.lines.join(''),
+							options: cell.options,
+						})
+					})
+					tableRows.unshift(newRowSlide)
+
+					// B: Add header row(s)
+					newRowSlide = []
+					tabOpts._arrObjTabHeadRows[0].forEach(cell => {
+						newRowSlide.push(cell)
+					})
+					tableRows.unshift(newRowSlide)
+
+					// C:
+					break
+				} else {
+					// A: Add new row to new slide
+					let currSlide = tableRowSlides[tableRowSlides.length - 1]
+					let newRowSlide = []
+					row.forEach(cell => {
+						newRowSlide.push({
+							type: SLIDE_OBJECT_TYPES.tablecell,
+							text: '',
+							options: cell.options,
+						})
+					})
+					currSlide.rows.push(newRowSlide)
+				}
 			}
 
 			// B: Add a line of text to 1-N cells that still have `lines`
@@ -300,7 +325,7 @@ export function getSlidesForTableRows(
 					emuSlideTabH / EMU
 				).toFixed(2)} )`
 			)
-	})
+	}
 
 	if (tabOpts.verbose) {
 		console.log(`\n|================================================|\n| FINAL: tableRowSlides.length = ${tableRowSlides.length}`)
@@ -333,7 +358,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	// REALITY-CHECK:
 	if (!document.getElementById(tabEleId)) throw 'tableToSlides: Table ID "' + tabEleId + '" does not exist!'
 
-	// Set margins
+	// STEP 1: Set margins
 	if (masterSlide && masterSlide.margin) {
 		if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
 		else if (!isNaN(masterSlide.margin)) arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin]
@@ -350,7 +375,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	if (opts.verbose) console.log(`pptx.presLayout.width .. = ${pptx.presLayout.width / EMU}`)
 	if (opts.verbose) console.log(`emuSlideTabW (in)....... = ${emuSlideTabW / EMU}`)
 
-	// STEP 1: Grab table col widths
+	// STEP 2: Grab table col widths
 	// ATTN: `arrTableParts.forEach((part, _idx) => {` --> NO! CAREFUL! We need to break out of loop using "return false" - forEach break col sizing badly
 	jQuery.each(arrTableParts, (_idx, part) => {
 		if (jQuery('#' + tabEleId + ' > ' + part + ' > tr').length > 0) {
@@ -373,7 +398,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 		intTabW += colW
 	})
 
-	// STEP 2: Calc/Set column widths by using same column width percent from HTML table
+	// STEP 3: Calc/Set column widths by using same column width percent from HTML table
 	arrTabColW.forEach((colW, idx) => {
 		let intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
 		let intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-min-width')
@@ -382,7 +407,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	})
 	if (opts.verbose) console.log(`arrColW ................ = ${arrColW.toString()}`)
 
-	// STEP 3: Iterate over each table element and create data arrays (text and opts)
+	// STEP 4: Iterate over each table element and create data arrays (text and opts)
 	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
 	arrTableParts.forEach((part, _idx) => {
 		jQuery('#' + tabEleId + ' > ' + part + ' > tr').each((_idx, row) => {
@@ -516,8 +541,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	// Pass head-rows as there is an option to add to each table and the parse func needs this data to fulfill that option
 	opts._arrObjTabHeadRows = arrObjTabHeadRows || null
 	opts.colW = arrColW
-
-	getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows).concat(arrObjTabFootRows) as [ITableToSlidesCell[]], opts, pptx.presLayout, masterSlide).forEach(
+	getSlidesForTableRows([...arrObjTabHeadRows, ...arrObjTabBodyRows, ...arrObjTabFootRows] as [ITableToSlidesCell[]], opts, pptx.presLayout, masterSlide).forEach(
 		(slide, idx) => {
 			// A: Create new Slide
 			let newSlide = pptx.addSlide(opts.masterSlideName || null)
