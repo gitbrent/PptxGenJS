@@ -1,13 +1,13 @@
 /*
- * NAME: nodejs-demo.js
+ * NAME: demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: 20190707
+ * DATE: 20190908
  * DESC: PptxGenJS feature demos for Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  *
- * USAGE: `node nodejs-demo.js`       (runs local tests with callbacks etc)
- * USAGE: `node nodejs-demo.js All`   (runs all pre-defined tests in `pptxgenjs-demo.js`)
- * USAGE: `node nodejs-demo.js Text`  (runs pre-defined single test in `pptxgenjs-demo.js`)
+ * USAGE: `node demo.js`       (runs local tests with callbacks etc)
+ * USAGE: `node demo.js All`   (runs all pre-defined tests in `pptxgenjs-demo.js`)
+ * USAGE: `node demo.js Text`  (runs pre-defined single test in `pptxgenjs-demo.js`)
  */
 
 // ============================================================================
@@ -110,7 +110,7 @@ else {
 	//pptx.save( exportName+'-jszip', jszipCallback, 'base64' );
 
 	// EXAMPLE 5: Use callback with 'http' in filename to get content back instead of writing a file - use this for streaming, cloud, etc.
-	// TEST: Use your browser and go to "http://localhost:3000/", then the file will be donwloaded
+	// TEST: Use your browser and go to "http://localhost:3000/", then the file will be downloaded
 	//pptx.save( 'http', streamCallback );
 
 	// **NOTE** If you continue to use the `pptx` variable, new Slides will be added to the existing set
