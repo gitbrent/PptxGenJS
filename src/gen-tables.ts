@@ -164,6 +164,8 @@ export function getSlidesForTableRows(
 		// A: Row variables
 		let maxLineHeight = 0
 		let linesRow: TableCell[] = []
+		let maxCellMarTopEmu = 0
+		let maxCellMarBtmEmu = 0
 
 		// B: Create new row in data model
 		let currSlide = tableRowSlides[tableRowSlides.length - 1]
@@ -174,6 +176,11 @@ export function getSlidesForTableRows(
 				text: '',
 				options: cell.options,
 			})
+
+			if (cell.options.margin && cell.options.margin[0] && cell.options.margin[0] * ONEPT > maxCellMarTopEmu) maxCellMarTopEmu = cell.options.margin[0] * ONEPT
+			else if (tabOpts.margin && tabOpts.margin[0] && tabOpts.margin[0] * ONEPT > maxCellMarTopEmu) maxCellMarTopEmu = tabOpts.margin[0] * ONEPT
+			if (cell.options.margin && cell.options.margin[2] && cell.options.margin[2] * ONEPT > maxCellMarBtmEmu) maxCellMarBtmEmu = cell.options.margin[2] * ONEPT
+			else if (tabOpts.margin && tabOpts.margin[2] && tabOpts.margin[2] * ONEPT > maxCellMarBtmEmu) maxCellMarBtmEmu = tabOpts.margin[2] * ONEPT
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
@@ -219,26 +226,19 @@ export function getSlidesForTableRows(
 			linesRow.push(newCell)
 		})
 
-		/* F: **BUILD/PAGE DATA SET**
+		// F: Start row height with margins
+		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: maxCellMarTopEmu=${maxCellMarTopEmu} / maxCellMarBtmEmu=${maxCellMarBtmEmu}`)
+		emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu
+
+		// G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
+		if (emuTabCurrH + maxLineHeight <= emuSlideTabH) currSlide.rows.push(newRowSlide)
+
+		/* H: **PAGE DATA SET**
 		 * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
 		 * Design: Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line.
 		 * Therefore, build the whole row, 1-line-at-a-time, spanning all columns.
 		 * That way, when the vertical size limit is hit, all lines pick up where they need to on the subsequent slide.
 		 */
-		let emuMaxCellMargin = 0
-		// TODO: FIXME: find largest cell margin top and bottom, this plus emuTabCurrH is our size!
-		// FIXME: im only using cell[0] for now as a DEV/DEBUG value
-		emuMaxCellMargin = row[0].options.margin
-			? row[0].options.margin[0] * ONEPT + row[0].options.margin[2] * ONEPT
-			: tabOpts.margin
-			? tabOpts.margin[0] * ONEPT + tabOpts.margin[2] * ONEPT
-			: 0
-		// Add T/B cell margins to calc actual row height
-		emuTabCurrH += emuMaxCellMargin
-
-		// G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
-		if (emuTabCurrH + maxLineHeight <= emuSlideTabH) currSlide.rows.push(newRowSlide)
-
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
 		while (
 			linesRow.filter(cell => {
