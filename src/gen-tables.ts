@@ -4,16 +4,16 @@
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { ILayout, ISlideLayout, TableCell, ITableToSlidesCell, ITableToSlidesOpts, ITableRow, TableRowSlide } from './core-interfaces'
+import { ILayout, ISlideLayout, ITableCell, ITableToSlidesCell, ITableToSlidesOpts, ITableRow, TableRowSlide } from './core-interfaces'
 import { inch2Emu, rgbToHex } from './gen-utils'
 
 /**
  * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
- * @param {TableCell} cell - table cell
+ * @param {ITableCell} cell - table cell
  * @param {number} colWidth - table column width
  * @return {string[]} XML
  */
-function parseTextToLines(cell: TableCell, colWidth: number): string[] {
+function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 	let CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0) // Character Constant (An approximation of the Golden Ratio)
 	let CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR) // Chars-Per-Line
 	let arrLines = []
@@ -163,7 +163,7 @@ export function getSlidesForTableRows(
 
 		// A: Row variables
 		let maxLineHeight = 0
-		let linesRow: TableCell[] = []
+		let linesRow: ITableCell[] = []
 		let maxCellMarTopEmu = 0
 		let maxCellMarBtmEmu = 0
 
@@ -200,7 +200,7 @@ export function getSlidesForTableRows(
 
 		// E: **BUILD DATA SET** | Iterate over cells: split text into lines[], set `lineHeight`
 		row.forEach((cell, iCell) => {
-			let newCell: TableCell = {
+			let newCell: ITableCell = {
 				type: SLIDE_OBJECT_TYPES.tablecell,
 				text: '',
 				options: cell.options,

@@ -10,14 +10,14 @@ import {
 	ILayout,
 	IMediaOpts,
 	ISlideLayout,
-	SlideNumber,
+	ISlideNumber,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
 	ISlideObject,
 	IShape,
 	IShapeOptions,
-	TableOptions,
+	ITableOptions,
 	IText,
 	ITextOpts,
 	TableRow,
@@ -28,7 +28,7 @@ export default class Slide {
 	private _bkgd: string
 	private _color: string
 	private _setSlideNum: Function
-	private _slideNumber: SlideNumber
+	private _slideNumber: ISlideNumber
 
 	public addSlide: Function
 	public getSlide: Function
@@ -75,12 +75,12 @@ export default class Slide {
 		return this._color
 	}
 
-	public set slideNumber(value: SlideNumber) {
+	public set slideNumber(value: ISlideNumber) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		this._slideNumber = value
 		this._setSlideNum(value)
 	}
-	public get slideNumber(): SlideNumber {
+	public get slideNumber(): ISlideNumber {
 		return this._slideNumber
 	}
 
@@ -161,10 +161,10 @@ export default class Slide {
 	 * Add shape object to Slide
 	 * @note can be recursive
 	 * @param {TableRow[]} arrTabRows - table rows
-	 * @param {TableOptions} options - table options
+	 * @param {ITableOptions} options - table options
 	 * @return {Slide} this class
 	 */
-	addTable(arrTabRows: TableRow[], options?: TableOptions): Slide {
+	addTable(arrTabRows: TableRow[], options?: ITableOptions): Slide {
 		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this

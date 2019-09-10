@@ -245,7 +245,7 @@ export interface IChartMulti {
 	options: {}
 }
 
-export interface ITableToSlidesOpts extends TableOptions {
+export interface ITableToSlidesOpts extends ITableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
 	addShape?: { shape: any; opts: {} }
 	addTable?: { rows: any[]; opts: {} }
@@ -278,7 +278,7 @@ export interface ITableCellOpts {
 	rowspan?: number
 	valign?: VAlign
 }
-export interface TableOptions extends PositionOptions {
+export interface ITableOptions extends PositionOptions {
 	align?: HAlign
 	autoPage?: boolean
 	autoPageCharWeight?: number
@@ -295,13 +295,13 @@ export interface TableOptions extends PositionOptions {
 	rowspan?: number
 	valign?: VAlign
 }
-// TODO: replace this with `TableCell`
+// TODO: replace this with `ITableCell`
 export interface ITableToSlidesCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
 	text?: string
 	options?: ITableCellOpts
 }
-export interface TableCell {
+export interface ITableCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
 	text?: string
 	options?: ITableCellOpts
@@ -312,8 +312,8 @@ export interface TableCell {
 	vmerge?: boolean
 	optImp?: any
 }
-export type TableRow = number[] | string[] | TableCell[]
-export type ITableRow = TableCell[]
+export type TableRow = number[] | string[] | ITableCell[]
+export type ITableRow = ITableCell[]
 export interface TableRowSlide {
 	rows: ITableRow[]
 }
@@ -382,19 +382,19 @@ export interface ILayout {
 	width?: number
 	height?: number
 }
-export interface SlideNumber extends PositionOptions {
+export interface ISlideNumber extends PositionOptions {
 	fontFace?: string
 	fontSize?: number
 	color?: string
 }
-export interface SlideMasterOptions {
+export interface ISlideMasterOptions {
 	title: string
 	height?: number
 	width?: number
 	margin?: Margin
 	bkgd?: string
 	objects?: [{}]
-	slideNumber?: SlideNumber
+	slideNumber?: ISlideNumber
 }
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_TYPE_NAMES | IChartMulti[]
@@ -428,7 +428,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 
-export interface ObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
+export interface IObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
 	x?: Coord
 	y?: Coord
 	cx?: Coord
@@ -454,11 +454,11 @@ export interface ObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts 
 }
 export interface ISlideObject {
 	type: SLIDE_OBJECT_TYPES
-	options?: ObjectOptions
+	options?: IObjectOptions
 	// text
 	text?: string | IText[]
 	// table
-	arrTabRows?: [TableCell[]?]
+	arrTabRows?: [ITableCell[]?]
 	// chart
 	chartRid?: number
 	// image:
@@ -489,7 +489,7 @@ export interface ISlideLayout {
 	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: Margin
-	slideNumberObj?: SlideNumber
+	slideNumberObj?: ISlideNumber
 }
 export interface ISlide {
 	addChart: Function
@@ -512,7 +512,7 @@ export interface ISlide {
 	relsChart: ISlideRelChart[]
 	relsMedia: ISlideRelMedia[]
 	slideLayout: ISlideLayout
-	slideNumberObj?: SlideNumber // FIXME rename
+	slideNumberObj?: ISlideNumber // FIXME rename
 }
 export interface IPresentation {
 	author: string

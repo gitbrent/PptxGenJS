@@ -44,7 +44,7 @@
  */
 
 import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES } from './core-enums'
-import { ILayout, ISlide, ISlideLayout, SlideMasterOptions, SlideNumber, ITableToSlidesOpts } from './core-interfaces'
+import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
 import { PowerPointShapes } from './core-shapes'
 import Slide from './slide'
 import * as genCharts from './gen-charts'
@@ -406,9 +406,9 @@ export default class PptxGenJS {
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
-	 * @param {SlideNumber} slideNum - slide number config
+	 * @param {ISlideNumber} slideNum - slide number config
 	 */
-	setSlideNumber = (slideNum: SlideNumber) => {
+	setSlideNumber = (slideNum: ISlideNumber) => {
 		// 1: Add slideNumber to slideMaster1.xml
 		this.masterSlide.slideNumberObj = slideNum
 
@@ -516,9 +516,9 @@ export default class PptxGenJS {
 
 	/**
 	 * Adds a new slide master [layout] to the Presentation
-	 * @param {SlideMasterOptions} slideMasterOpts - layout definition
+	 * @param {ISlideMasterOptions} slideMasterOpts - layout definition
 	 */
-	defineSlideMaster(slideMasterOpts: SlideMasterOptions) {
+	defineSlideMaster(slideMasterOpts: ISlideMasterOptions) {
 		if (!slideMasterOpts.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: ISlideLayout = {

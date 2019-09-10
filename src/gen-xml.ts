@@ -25,9 +25,9 @@ import {
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	TableCell,
+	ITableCell,
 	ITableCellOpts,
-	ObjectOptions,
+	IObjectOptions,
 	IText,
 	ITextOpts,
 } from './core-interfaces'
@@ -291,12 +291,12 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strXml += '<a:tr h="' + intRowH + '">'
 
 					// C: Loop over each CELL
-					jQuery.each(rowObj, (_cIdx, cell: TableCell) => {
+					jQuery.each(rowObj, (_cIdx, cell: ITableCell) => {
 						// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 						if (cell.hmerge) return
 
 						// 2: OPTIONS: Build/set cell options
-						let cellOpts = cell.options || ({} as TableCell['options'])
+						let cellOpts = cell.options || ({} as ITableCell['options'])
 						/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
 						cell.options = cellOpts
 
@@ -921,11 +921,11 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 
 /**
  * Generate XML Text Run Properties (`a:rPr`)
- * @param {ObjectOptions|ITextOpts} opts - text options
+ * @param {IObjectOptions|ITextOpts} opts - text options
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
-function genXmlTextRunProperties(opts: ObjectOptions | ITextOpts, isDefault: boolean): string {
+function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: boolean): string {
 	let runProps = ''
 	let runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
 
@@ -1025,7 +1025,7 @@ function genXmlTextRun(textObj: IText): string {
  * @param {ISlideObject | ITableCell} slideObject - various options
  * @return {string} XML string
  */
-function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
+function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 	let bodyProperties = '<a:bodyPr'
 
 	if (slideObject && slideObject.type === SLIDE_OBJECT_TYPES.text && slideObject.options.bodyProp) {
@@ -1075,8 +1075,8 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
  * @param {ISlideObject|ITableCell} slideObj - slideObj -OR- table `cell` object
  * @returns XML containing the param object's text and formatting
  */
-export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
-	let opts: ObjectOptions = slideObj.options || {}
+export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
+	let opts: IObjectOptions = slideObj.options || {}
 	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
 	if (opts && slideObj.type != SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
 

@@ -30,11 +30,11 @@ import {
 	IChartOpts,
 	IChartMulti,
 	IImageOpts,
-	TableCell,
+	ITableCell,
 	IText,
 	IShape,
 	IShapeOptions,
-	TableOptions,
+	ITableOptions,
 	TableRow,
 	OptsChartGridLine,
 } from './core-interfaces'
@@ -47,10 +47,10 @@ var _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * @param {SlideMasterOptions} slideDef - slide definition
+ * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef /*:SlideMasterOptions*/, target /*FIXME :ISlide|ISlideLayout*/) {
+export function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FIXME :ISlide|ISlideLayout*/) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -588,7 +588,7 @@ export function addShapeDefinition(target: ISlide, shape: IShape, opt: IShapeOpt
  * Adds a table object to a slide definition.
  * @param {ISlide} target - slide object that the table should be added to
  * @param {TableRow[]} arrTabRows - table data
- * @param {TableOptions} inOpt - table options
+ * @param {ITableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presenation layout
  * TODO: FIXME:
@@ -597,13 +597,13 @@ export function addShapeDefinition(target: ISlide, shape: IShape, opt: IShapeOpt
 export function addTableDefinition(
 	target: ISlide,
 	tableRows: TableRow[],
-	options: TableOptions,
+	options: ITableOptions,
 	slideLayout: ISlideLayout,
 	presLayout: ILayout,
 	addSlide: Function,
 	getSlide: Function
 ) {
-	let opt: TableOptions = options && typeof options === 'object' ? options : {}
+	let opt: ITableOptions = options && typeof options === 'object' ? options : {}
 	let slides: ISlide[] = [target] // Create array of Slides as more may be added by auto-paging
 
 	// STEP 1: REALITY-CHECK
@@ -619,15 +619,15 @@ export function addTableDefinition(
 		}
 	}
 
-	// STEP 2: Transform `tableRows` into well-formatted TableCell's
+	// STEP 2: Transform `tableRows` into well-formatted ITableCell's
 	// tableRows can be object or plain text array: `[{text:'cell 1'}, {text:'cell 2', options:{color:'ff0000'}}]` | `["cell 1", "cell 2"]`
-	let arrRows: [TableCell[]?] = []
+	let arrRows: [ITableCell[]?] = []
 	tableRows.forEach(row => {
-		let newRow: TableCell[] = []
+		let newRow: ITableCell[] = []
 
 		if (Array.isArray(row)) {
-			row.forEach((cell: number | string | TableCell) => {
-				let newCell: TableCell = {
+			row.forEach((cell: number | string | ITableCell) => {
+				let newCell: ITableCell = {
 					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: '',
 					options: typeof cell === 'object' ? cell.options : null,
@@ -901,9 +901,9 @@ function addBackgroundDefinition(bkg: string | { src?: string; path?: string; da
 /**
  * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
  * @param {ISlide} target - slide object that any hyperlinks will be be added to
- * @param {number | string | IText | IText[] | TableCell[][]} text - text to parse
+ * @param {number | string | IText | IText[] | ITableCell[][]} text - text to parse
  */
-function createHyperlinkRels(target: ISlide, text: number | string | IText | IText[] | TableCell[][]) {
+function createHyperlinkRels(target: ISlide, text: number | string | IText | IText[] | ITableCell[][]) {
 	let textObjs = []
 
 	// Only text objects can have hyperlinks, bail when text param is plain text
