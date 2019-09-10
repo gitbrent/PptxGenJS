@@ -89,12 +89,13 @@ export function getSlidesForTableRows(
 		// Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
 		if (!tabOpts.slideMargin && tabOpts.slideMargin != 0) tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
 
-		if (tabOpts.slideMargin || tabOpts.slideMargin == 0) {
+		if (masterSlide && typeof masterSlide.margin !== 'undefined') {
+			if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
+			else if (!isNaN(Number(masterSlide.margin)))
+				arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)]
+		} else if (tabOpts.slideMargin || tabOpts.slideMargin == 0) {
 			if (Array.isArray(tabOpts.slideMargin)) arrInchMargins = tabOpts.slideMargin
 			else if (!isNaN(tabOpts.slideMargin)) arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin]
-		} else if (masterSlide && masterSlide.margin) {
-			if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
-			else if (!isNaN(masterSlide.margin)) arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin]
 		}
 
 		if (tabOpts.verbose) console.log('arrInchMargins ......... = ' + arrInchMargins.toString())
