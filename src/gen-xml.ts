@@ -450,7 +450,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				// A: Start SHAPE =======================================================
 				strSlideXml += '<p:sp>'
 
-				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a Shape or Textbox
+				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
 				strSlideXml += '<p:nvSpPr><p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '"/>'
 				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
 				strSlideXml += '<p:nvPr>'
@@ -472,7 +472,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				// Option: FILL
 				strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>'
 
-				// Shape Type: LINE: line color
+				// shape Type: LINE: line color
 				if (slideItemObj.options.line) {
 					strSlideXml += '<a:ln' + (slideItemObj.options.lineSize ? ' w="' + slideItemObj.options.lineSize * ONEPT + '"' : '') + '>'
 					strSlideXml += genXmlColorSelection(slideItemObj.options.line)
@@ -512,7 +512,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					}
 					*/
 
-				// B: Close Shape Properties
+				// B: Close shape Properties
 				strSlideXml += '</p:spPr>'
 
 				// C: Add formatted text (text body "bodyPr")
@@ -1051,8 +1051,8 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 		bodyProperties += '>'
 
 		// F: NEW: Add autofit type tags
-		if (slideObject.options.shrinkText) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format Shape > Text Options: "Shrink text on overflow"
-		// MS-PPT > Format Shape > Text Options: "Resize shape to fit text" [spAutoFit]
+		if (slideObject.options.shrinkText) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
+		// MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
 		// NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
 		bodyProperties += slideObject.options.bodyProp.autoFit !== false ? '<a:spAutoFit/>' : ''
 
@@ -1146,7 +1146,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		strSlideXml += genXmlBodyProperties(slideObj)
 
 		// B: 'lstStyle'
-		// NOTE: Shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
+		// NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
 		// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
 		if (opts.h == 0 && opts.line && opts.align) {
 			strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'

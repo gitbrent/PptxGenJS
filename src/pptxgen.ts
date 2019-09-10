@@ -470,7 +470,7 @@ export default class PptxGenJS {
 			// STEP 2: Set export properties
 			if (exportName) this.fileName = exportName
 
-			// STEP 3: Read/Encode Images
+			// STEP 3: Create Promises to read/encode Media
 			this.slides.forEach(slide => {
 				arrProms = arrProms.concat(genMedia.encodeSlideMediaRels(slide))
 			})
@@ -479,7 +479,7 @@ export default class PptxGenJS {
 			})
 			arrProms = arrProms.concat(genMedia.encodeSlideMediaRels(this.masterSlide))
 
-			// STEP 4: Write file after all rels are encoded
+			// STEP 4: Export presentation after all rels are encoded
 			Promise.all(arrProms)
 				.then(_results => {
 					resolve(this.doExportPresentation({ outputType: outputType }))

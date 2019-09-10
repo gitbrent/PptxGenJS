@@ -21,6 +21,7 @@ export type VAlign = 'top' | 'middle' | 'bottom'
 export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 export type Margin = number | [number, number, number, number]
+type MediaType = 'audio' | 'online' | 'video'
 
 export interface PositionOptions {
 	x?: Coord
@@ -44,7 +45,6 @@ export interface OptsChartGridLine {
 	color?: string
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
-type MediaType = 'audio' | 'online' | 'video'
 
 // Opts
 // ====
@@ -210,7 +210,7 @@ export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
 	type?: MediaType
 }
 
-export interface Shape {
+export interface IShape {
 	displayName: string
 	name: string
 	avLst: { [key: string]: number }
@@ -357,7 +357,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	rotate?: number // (degree * 60,000)
 	rtlMode?: boolean
 	shadow?: IShadowOptions
-	shape?: Shape
+	shape?: IShape
 	shrinkText?: boolean
 	strike?: boolean
 	subscript?: boolean
@@ -469,7 +469,7 @@ export interface ISlideObject {
 	media?: string
 	mtype?: MediaType
 	mediaRid?: number
-	shape?: Shape
+	shape?: IShape
 }
 
 export interface ISlideLayout {

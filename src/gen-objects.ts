@@ -32,7 +32,7 @@ import {
 	IImageOpts,
 	TableCell,
 	IText,
-	Shape,
+	IShape,
 	ShapeOptions,
 	TableOptions,
 	TableRow,
@@ -555,11 +555,11 @@ export function addPlaceholderDefinition(target: ISlide, text: string, opt: obje
 
 /**
  * Adds a shape object to a slide definition.
- * @param {Shape} shape shape const object (pptx.shapes)
+ * @param {IShape} shape shape const object (pptx.shapes)
  * @param {ShapeOptions} opt
  * @param {ISlide} target slide object that the shape should be added to
  */
-export function addShapeDefinition(target: ISlide, shape: Shape, opt: ShapeOptions) {
+export function addShapeDefinition(target: ISlide, shape: IShape, opt: ShapeOptions) {
 	let options = typeof opt === 'object' ? opt : {}
 	let newObject = {
 		type: SLIDE_OBJECT_TYPES.text,
@@ -812,7 +812,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
 
 		// D: Transform text options to bodyProperties as thats how we build XML
-		newObject.options.bodyProp.autoFit = opt.autoFit || false // If true, shape will collapse to text size (Fit To Shape)
+		newObject.options.bodyProp.autoFit = opt.autoFit || false // If true, shape will collapse to text size (Fit To shape)
 		newObject.options.bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
 		newObject.options.bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 

@@ -15,7 +15,7 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	ISlideObject,
-	Shape,
+	IShape,
 	ShapeOptions,
 	TableOptions,
 	IText,
@@ -148,11 +148,11 @@ export default class Slide {
 
 	/**
 	 * Add shape object to Slide
-	 * @param {Shape} shape - shape object
+	 * @param {IShape} shape - shape object
 	 * @param {ShapeOptions} options - shape options
 	 * @return {Slide} this class
 	 */
-	addShape(shape: Shape, options?: ShapeOptions): Slide {
+	addShape(shape: IShape, options?: ShapeOptions): Slide {
 		genObj.addShapeDefinition(this, shape, options)
 		return this
 	}
