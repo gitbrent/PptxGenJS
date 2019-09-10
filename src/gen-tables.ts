@@ -84,7 +84,7 @@ export function getSlidesForTableRows(
 		console.log(`.. (/PARAMETERS)`)
 	}
 
-	// STEP 1: Calculate margins, overall usable slide space
+	// STEP 1: Calculate margins
 	{
 		// Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
 		if (!tabOpts.slideMargin && tabOpts.slideMargin != 0) tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
@@ -184,7 +184,11 @@ export function getSlidesForTableRows(
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-		emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2])
+		emuSlideTabH =
+			tabOpts.h && typeof tabOpts.h === 'number'
+				? tabOpts.h
+				: presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0)
+		if (tabOpts.verbose) console.log('emuSlideTabH (in) ...... = ' + (emuSlideTabH / EMU).toFixed(1))
 
 		// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
