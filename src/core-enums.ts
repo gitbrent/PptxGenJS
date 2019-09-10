@@ -3,7 +3,7 @@
  * NOTE: `enum` wont work for objects, so use `Object.freeze`
  */
 
-import { BorderOptions } from './core-interfaces'
+import { IBorderOptions } from './core-interfaces'
 
 // CONST
 export const EMU: number = 914400 // One (1) inch (OfficeXML measures in EMU (English Metric Units))
@@ -13,7 +13,7 @@ export const LAYOUT_IDX_SERIES_BASE: number = 2147483649
 export const REGEX_HEX_COLOR: RegExp = /^[0-9a-fA-F]{6}$/
 export const LINEH_MODIFIER = 1.67 // AKA: Golden Ratio Typography
 
-export const DEF_CELL_BORDER: BorderOptions = { color: '666666' }
+export const DEF_CELL_BORDER: IBorderOptions = { color: '666666' }
 export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style
 export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }
 export const DEF_FONT_COLOR: string = '000000'

@@ -18,7 +18,7 @@ import {
 import { PowerPointShapes } from './core-shapes'
 import {
 	ILayout,
-	ShadowOpts,
+	IShadowOptions,
 	ISlide,
 	ISlideLayout,
 	ISlideObject,
@@ -1788,39 +1788,39 @@ export function makeXmlViewProps(): string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowOpts} shadowOpts - shadow options
+ * @param {IShadowOptions} IShadowOptions - shadow options
  */
-export function correctShadowOptions(shadowOpts: ShadowOpts) {
-	if (!shadowOpts || shadowOpts === null) return
+export function correctShadowOptions(IShadowOptions: IShadowOptions) {
+	if (!IShadowOptions || IShadowOptions === null) return
 
 	// OPT: `type`
-	if (shadowOpts.type != 'outer' && shadowOpts.type != 'inner' && shadowOpts.type != 'none') {
+	if (IShadowOptions.type != 'outer' && IShadowOptions.type != 'inner' && IShadowOptions.type != 'none') {
 		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
-		shadowOpts.type = 'outer'
+		IShadowOptions.type = 'outer'
 	}
 
 	// OPT: `angle`
-	if (shadowOpts.angle) {
+	if (IShadowOptions.angle) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(shadowOpts.angle)) || shadowOpts.angle < 0 || shadowOpts.angle > 359) {
+		if (isNaN(Number(IShadowOptions.angle)) || IShadowOptions.angle < 0 || IShadowOptions.angle > 359) {
 			console.warn('Warning: shadow.angle can only be 0-359')
-			shadowOpts.angle = 270
+			IShadowOptions.angle = 270
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		shadowOpts.angle = Math.round(Number(shadowOpts.angle))
+		IShadowOptions.angle = Math.round(Number(IShadowOptions.angle))
 	}
 
 	// OPT: `opacity`
-	if (shadowOpts.opacity) {
+	if (IShadowOptions.opacity) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(shadowOpts.opacity)) || shadowOpts.opacity < 0 || shadowOpts.opacity > 1) {
+		if (isNaN(Number(IShadowOptions.opacity)) || IShadowOptions.opacity < 0 || IShadowOptions.opacity > 1) {
 			console.warn('Warning: shadow.opacity can only be 0-1')
-			shadowOpts.opacity = 0.75
+			IShadowOptions.opacity = 0.75
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		shadowOpts.opacity = Number(shadowOpts.opacity)
+		IShadowOptions.opacity = Number(IShadowOptions.opacity)
 	}
 }
 

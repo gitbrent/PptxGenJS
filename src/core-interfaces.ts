@@ -48,12 +48,12 @@ type MediaType = 'audio' | 'online' | 'video'
 
 // Opts
 // ====
-export interface BorderOptions {
+export interface IBorderOptions {
 	color?: HexColor
 	pt?: number
 	type?: string // TODO: specify values, eg: 'none'
 }
-export interface ShadowOpts {
+export interface IShadowOptions {
 	type: 'outer' | 'inner' | 'none'
 	angle: number
 	opacity: number
@@ -110,7 +110,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	dataLabelPosition?: string
 	displayBlanksAs?: string
 	fill?: string
-	border?: BorderOptions
+	border?: IBorderOptions
 	hasArea?: boolean
 	catAxes?: Array<number>
 	valAxes?: Array<number>
@@ -166,11 +166,11 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	showValue?: boolean
 	showPercent?: boolean
 	catLabelFormatCode?: string
-	dataBorder?: BorderOptions
+	dataBorder?: IBorderOptions
 	lineSize?: number
 	lineDash?: string
 	radarStyle?: string
-	shadow?: ShadowOpts
+	shadow?: IShadowOptions
 	catAxisLabelPos?: string
 	valAxisOrientation?: 'minMax' | 'minMax'
 	valAxisCrossesAt?: string | number
@@ -227,7 +227,7 @@ export interface ShapeOptions extends PositionOptions {
 	line?: Color
 	rectRadius?: number
 	rotate?: number
-	shadow?: ShadowOpts
+	shadow?: IShadowOptions
 }
 
 export interface IChartTitleOpts {
@@ -268,7 +268,7 @@ export interface ITableCellOpts {
 	autoPageLineWeight?: number
 	align?: HAlign
 	bold?: boolean
-	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
 	color?: Color
 	colspan?: number
 	fill?: ShapeFill
@@ -283,7 +283,7 @@ export interface TableOptions extends PositionOptions {
 	autoPage?: boolean
 	autoPageCharWeight?: number
 	autoPageLineWeight?: number
-	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
 	color?: Color
 	colspan?: number
 	colW?: number | number[]
@@ -356,7 +356,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	placeholder?: string
 	rotate?: number // (degree * 60,000)
 	rtlMode?: boolean
-	shadow?: ShadowOpts
+	shadow?: IShadowOptions
 	shape?: Shape
 	shrinkText?: boolean
 	strike?: boolean
