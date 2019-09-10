@@ -193,7 +193,6 @@ export function getSlidesForTableRows(
 
 		// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
-			console.log(`tabOpts.newSlideStartY = ${tabOpts.newSlideStartY}`)
 			emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2])
 		} else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
 			emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
