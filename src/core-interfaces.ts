@@ -215,7 +215,7 @@ export interface IShape {
 	name: string
 	avLst: { [key: string]: number }
 }
-export interface ShapeOptions extends PositionOptions {
+export interface IShapeOptions extends PositionOptions {
 	align?: HAlign
 	fill?: ShapeFill
 	flipH?: boolean
@@ -428,7 +428,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 
-export interface ObjectOptions extends ShapeOptions, ITableCellOpts, ITextOpts {
+export interface ObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
 	x?: Coord
 	y?: Coord
 	cx?: Coord

@@ -33,7 +33,7 @@ import {
 	TableCell,
 	IText,
 	IShape,
-	ShapeOptions,
+	IShapeOptions,
 	TableOptions,
 	TableRow,
 	OptsChartGridLine,
@@ -556,10 +556,10 @@ export function addPlaceholderDefinition(target: ISlide, text: string, opt: obje
 /**
  * Adds a shape object to a slide definition.
  * @param {IShape} shape shape const object (pptx.shapes)
- * @param {ShapeOptions} opt
+ * @param {IShapeOptions} opt
  * @param {ISlide} target slide object that the shape should be added to
  */
-export function addShapeDefinition(target: ISlide, shape: IShape, opt: ShapeOptions) {
+export function addShapeDefinition(target: ISlide, shape: IShape, opt: IShapeOptions) {
 	let options = typeof opt === 'object' ? opt : {}
 	let newObject = {
 		type: SLIDE_OBJECT_TYPES.text,
