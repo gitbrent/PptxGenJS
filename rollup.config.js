@@ -27,7 +27,7 @@ export default {
 		},
 		*/
 		{
-			file: './src/bld/pptxgenjs.es.js',
+			file: './src/bld/pptxgen.es.js',
 			format: 'es'
 		}
 	],
