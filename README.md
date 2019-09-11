@@ -236,16 +236,16 @@ New Features
 * Code is logically separated into 10+ files, making pull requests and maintenance easier
 * Completely rewritten Table AutoPaging and HTML-to-PowerPoint methods - faster and much more accurate
 * Save/Export:
- * Promise-based export methods - no more callbacks
- * Two new methods (Write and WriteFile) will replace `save()`
- * Supports all types of output methods: ArrayBuffer, Blob, etc.
+  * `save()` method is gone!
+  * Three new export methods are used now: `stream()` [node], `write()` [node], `writeFile()` [browser]
+  * Promise-based export methods support lots of output methods: ArrayBuffer, Blob, stream, etc.
 
-Outstanding Dev Items
-* Angular/React integration has not been completed as of yet (but it will be MUCH EASIER once it is finalized)
-* TypeScript definitions are not up-to-date
+Beta Features
+* Angular/React integration is MUCH EASIER now - demos coming soon (use `dist/pptxgen.es.js`)
+
+Outstanding Features
+* TypeScript definitions and docs are out-of-date
 * SlideNumbers do not work
-* `save()` is still the only export method: `write()` & `writeFile()` are coming in September
-* Correct MIME type for zip exports
 * Other small items
 
 Coming in 3.0/3.1
