@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author"  content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2019-09-08">
+	<meta name="updated" content="2019-09-10">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -283,7 +283,7 @@
 			);
 
 			// Export:
-			pptx.save('Sample Presentation');
+			pptx.writeFile('Sample Presentation');
 		}
 
 		/* The "Text" demo on the PptxGenJS homepage - codified here so we can quickly reproduce the screencaps, etc. as needed */
@@ -330,7 +330,7 @@
 				{ x:0.5, y:6.4, w:12, h:0.6, fontSize:32, color:'0088cc', shadow:shadowOpts }
 			);
 
-			pptx.save('Demo-Text');
+			pptx.writeFile('Demo-Text');
 		}
 
 		// UNDOCUMENTED: Run from console
@@ -352,7 +352,7 @@
 			//pptx.tableToSlides('tabAutoPaging');
 			pptx.tableToSlides('tabAutoPaging', {verbose:true, addHeaderToEach:true /*, newSlideStartY:2*/});
 
-			pptx.save('PptxGenJs_TTSTest_'+getTimestamp());
+			pptx.writeFile('PptxGenJs_TTSTest_'+getTimestamp());
 		}
 
 		// UNDOCUMENTED:
@@ -382,7 +382,7 @@
 			slide.addText( [{text:'Table Examples: ', options:ttsTitleText},{text:'autoPageLineWeight:-0.5', options:ttsMultiOpts}], {x:9.0, y:0.13, w:3} );
 			slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:'CFCFCF', autoPage:true, autoPageLineWeight:-0.5 } );
 
-			pptx.save('PptxGenJS_TTSMulti_'+getTimestamp());
+			pptx.writeFile('PptxGenJS_TTSMulti_'+getTimestamp());
 		}
 
 		function buildDataTable() {
@@ -411,13 +411,13 @@
 		function table2slidesDemoForTab(inTabId,inOpts) {
 			var pptx = new PptxGenJS();
 			pptx.tableToSlides(inTabId,(inOpts||null));
-			pptx.save( inTabId+'_'+getTimestamp() );
+			pptx.writeFile( inTabId+'_'+getTimestamp() );
 		}
 
 		function table2slidesBullets() {
 			var pptx = new PptxGenJS();
 			pptx.tableToSlides('tableWithBullets');
-			pptx.save( 'tabBullets_'+getTimestamp() );
+			pptx.writeFile( 'tabBullets_'+getTimestamp() );
 		}
 
 		/* DESC: Test for backward compatibility with Slide Masters defined in `pptxgen.masters.js` */
@@ -426,7 +426,7 @@
 			var pptx = new PptxGenJS();
 			pptx.layout = 'LAYOUT_WIDE';
 			var slide = pptx.addSlide( pptx.masters.TITLE_SLIDE  );
-			pptx.save('Demo-LegacyMasterSlides_'+getTimestamp());
+			pptx.writeFile('Demo-LegacyMasterSlides_'+getTimestamp());
 		}
 
 		// Table-to-Slides Demos =======================================================================
@@ -490,7 +490,7 @@
 			pptx.tableToSlides('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
-			pptx.save('Demo-TableToSlidesMasterSlide_'+getTimestamp());
+			pptx.writeFile('Demo-TableToSlidesMasterSlide_'+getTimestamp());
 		}
 
 		function table2slides2() {
@@ -518,7 +518,7 @@
 			pptx.tableToSlides('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
-			pptx.save('Table2Slides-with-dynamic-text');
+			pptx.writeFile('Table2Slides-with-dynamic-text');
 		}
 
 		function doAppStart() {
@@ -592,7 +592,7 @@
 					+ ");\n"
 					+ '\n'
 					+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
-					+ "pptx.save('PptxGenJs-Basic-Slide-Demo');\n"
+					+ "pptx.writeFile('PptxGenJs-Basic-Slide-Demo');\n"
 				);
 
 				/*
@@ -603,25 +603,25 @@
 					+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
 					+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
 					+ '\n'
-					+ "pptx.save('PptxGenJs-YouTube-Demo');\n"
+					+ "pptx.writeFile('PptxGenJs-YouTube-Demo');\n"
 				);
 				*/
 
 				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
-					+ "pptx.layout = 'LAYOUT_WIDE';\n"
 					+ "var slide = pptx.addSlide();\n"
 					+ "\n"
-					+ "// Bullets with indent levels\n"
 					+ "slide.addText(\n"
 					+ "  [\n"
-					+ "    { text:'1st line', options:{ fontSize:24, bullet:true, color:'99ABCC' } },\n"
-					+ "    { text:'2nd line', options:{ fontSize:36, bullet:true, color:'FFFF00', indentLevel:1 } },\n"
-					+ "    { text:'3rd line', options:{ fontSize:48, bullet:true, color:'0088CC', indentLevel:2 } }\n"
+					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.colors.ACCENT1 } },\n"
+					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.colors.ACCENT6 } },\n"
+					+ "    { text:'!', options:{ fontSize:24, color:pptx.colors.ACCENT6 } },\n"
+					+ "    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.colors.ACCENT3 } }\n"
 					+ "  ],\n"
-					+ "  { x:1.5, y:1.5, w:6, h:2, margin:0.1, fill:'232323' }\n"
+					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:pptx.colors.BACKGROUND2 }\n"
 					+ ");\n"
 					+ "\n"
-					+ "pptx.save('PptxGenJS-Sandbox_'+getTimestamp());\n"
+					+ "pptx.writeFile('PptxGenJS-Sandbox-'+getTimestamp())\n"
+					+ ".then(function(fileName){ console.log('Saved! File Name: '+fileName) });\n"
 				);
 
 				$('#demo-master').html("pptx.defineSlideMaster({\n"

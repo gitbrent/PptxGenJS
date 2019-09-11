@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.0.0-beta1
-* BLD.: 20190908
+* VER.: 3.0.0-beta2
+* BLD.: 20190910
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -236,11 +236,11 @@ function execGenSlidesFuncs(type) {
 
 	// LAST: Export Presentation
 	if ( NODEJS ) {
-		pptx.save('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
+		pptx.writeFile('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
 		console.log('\nDemo file created:\n * '+'PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
 	}
 	else {
-		pptx.save('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
+		pptx.writeFile('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
 	}
 }
 
