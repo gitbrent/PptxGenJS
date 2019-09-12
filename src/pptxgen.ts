@@ -576,7 +576,7 @@ export default class PptxGenJS {
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * @param {string} tabEleId - HTMLElementID of the table
 	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
-	 * @note `debug` option is undocumented; used for verbose output of layout process
+	 * @note `verbose` option is undocumented; used for verbose output of layout process
 	 */
 	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
 		genTable.genTableToSlides(
