@@ -16,11 +16,12 @@ export type HexColor = string // should match /^[0-9a-fA-F]{6}$/
 export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 export type Color = HexColor | ThemeColor
 export type Coord = number | string // string is in form 'n%'
+export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
-export type Margin = number | [number, number, number, number]
 type MediaType = 'audio' | 'online' | 'video'
 
 export interface PositionOptions {
@@ -94,6 +95,8 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	catAxisMinorTimeUnit?: string
 	catAxisMajorUnit?: string
 	catAxisMinorUnit?: string
+	catAxisMajorTickMark?: ChartAxisTickMark
+	catAxisMinorTickMark?: ChartAxisTickMark
 	catGridLine?: OptsChartGridLine
 	valGridLine?: OptsChartGridLine
 	chartColors?: Array<string>
@@ -190,6 +193,8 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	valAxisLabelColor?: string
 	valAxisLabelFontFace?: string
 	valAxisMajorUnit?: number
+	valAxisMajorTickMark?: ChartAxisTickMark
+	valAxisMinorTickMark?: ChartAxisTickMark
 	showValAxisTitle?: boolean
 	axisPos?: string
 	v3DRotX?: number

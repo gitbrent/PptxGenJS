@@ -712,7 +712,12 @@ function genSlides_Chart(pptx) {
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
 			catAxisOrientation  : 'maxMin',
+			catAxisMajorTickMark: 'in',
+			catAxisMinorTickMark: 'cross',
+
 			// valAxisCrossesAt: 10,
+			valAxisMajorTickMark: 'cross',
+			valAxisMinorTickMark: 'out',
 
 			titleColor   : '33CF22',
 			titleFontFace: 'Helvetica Neue',
@@ -728,6 +733,8 @@ function genSlides_Chart(pptx) {
 			catAxisLabelFontFace: 'Courier',
 			catAxisLabelFontSize: 12,
 			catAxisOrientation  : 'minMax',
+			catAxisMajorTickMark: 'none',
+			catAxisMinorTickMark: 'none',
 
 			dataBorder         : { pt:'1', color:'F1F1F1' },
 			dataLabelColor     : '696969',
@@ -738,6 +745,8 @@ function genSlides_Chart(pptx) {
 			showValue          : true,
 
 			valAxisOrientation: 'maxMin',
+			valAxisMajorTickMark: 'none',
+			valAxisMinorTickMark: 'none',
 
 			showLegend: false,
 			showTitle : false

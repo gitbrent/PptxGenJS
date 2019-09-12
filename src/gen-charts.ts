@@ -1576,8 +1576,8 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 		strXml += '  <c:minorTickMark val="none"/>'
 		strXml += '  <c:tickLblPos val="nextTo"/>'
 	} else {
-		strXml += '  <c:majorTickMark val="out"/>'
-		strXml += '  <c:minorTickMark val="none"/>'
+		strXml += '  <c:majorTickMark val="' + (opts.catAxisMajorTickMark || 'out') + '"/>'
+		strXml += '  <c:minorTickMark val="' + (opts.catAxisMajorTickMark || 'none') + '"/>'
 		strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') + '"/>'
 	}
 	strXml += '  <c:spPr>'
@@ -1672,8 +1672,8 @@ function makeValueAxis(opts: IChartOpts, valAxisId: string): string {
 		strXml += '  <c:minorTickMark val="none"/>'
 		strXml += '  <c:tickLblPos val="nextTo"/>'
 	} else {
-		strXml += ' <c:majorTickMark val="out"/>'
-		strXml += ' <c:minorTickMark val="none"/>'
+		strXml += ' <c:majorTickMark val="' + (opts.valAxisMajorTickMark || 'out') + '"/>'
+		strXml += ' <c:minorTickMark val="' + (opts.valAxisMinorTickMark || 'none') + '"/>'
 		strXml += ' <c:tickLblPos val="' + (opts.catAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') + '"/>'
 	}
 	strXml += ' <c:spPr>'
@@ -1793,7 +1793,9 @@ function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 }
 
 /**
- * DESC: Generate the XML for title elements used for the chart and axis titles
+ * Create char title elements
+ * @param {IChartTitleOpts} opts - options
+ * @return {string} XML `<c:title>`
  */
 function genXmlTitle(opts: IChartTitleOpts): string {
 	let align = opts.titleAlign == 'left' || opts.titleAlign == 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : `<a:pPr>`
