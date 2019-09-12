@@ -134,7 +134,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	serGridLine?: OptsChartGridLine
 	showSerAxisTitle?: boolean
 	serLabelFormatCode?: string
-	serAxisLabelPos?: string
+	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	serAxisLineShow?: boolean
 	serAxisLabelFontSize?: string
 	serAxisLabelColor?: string
@@ -174,7 +174,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	lineDash?: string
 	radarStyle?: string
 	shadow?: IShadowOptions
-	catAxisLabelPos?: string
+	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	valAxisOrientation?: 'minMax' | 'minMax'
 	valAxisCrossesAt?: string | number
 	valAxisMaxVal?: number
@@ -187,6 +187,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	valAxisTitle?: string
 	valAxisLabelFormatCode?: string
 	valAxisLineShow?: boolean
+	valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	valAxisLabelRotate?: number
 	valAxisLabelFontSize?: number
 	valAxisLabelFontBold?: boolean

@@ -1674,7 +1674,7 @@ function makeValueAxis(opts: IChartOpts, valAxisId: string): string {
 	} else {
 		strXml += ' <c:majorTickMark val="' + (opts.valAxisMajorTickMark || 'out') + '"/>'
 		strXml += ' <c:minorTickMark val="' + (opts.valAxisMinorTickMark || 'none') + '"/>'
-		strXml += ' <c:tickLblPos val="' + (opts.catAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') + '"/>'
+		strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') + '"/>'
 	}
 	strXml += ' <c:spPr>'
 	strXml += '   <a:ln w="12700" cap="flat">'
