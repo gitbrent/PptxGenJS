@@ -635,8 +635,9 @@ export function makeXmlCharts(rel: ISlideRelChart) {
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
+ * @return {string} XML
  */
-function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean) {
+function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	let strXml: string = ''
@@ -1535,7 +1536,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 	return strXml
 }
 
-function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
+function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): string {
 	var strXml = ''
 
 	// Build cat axis tag
@@ -1633,7 +1634,12 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 	return strXml
 }
 
-function makeValueAxis(opts: IChartOpts, valAxisId: string) {
+/**
+ * Create Value Axis (Used by `bar3D`)
+ * @param {IChartOpts} opts - chart options
+ * @param {string} valAxisId - value
+ */
+function makeValueAxis(opts: IChartOpts, valAxisId: string): string {
 	var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir == 'col' ? 'l' : 'b') : opts.barDir == 'col' ? 'r' : 't'
 	var strXml = ''
 	var isRight = axisPos === 'r' || axisPos === 't'
@@ -1711,12 +1717,12 @@ function makeValueAxis(opts: IChartOpts, valAxisId: string) {
 }
 
 /**
- * @description Used by `bar3D`
- * @param `opts` (ISlideRelChart['opts']) - chart options
- * @param `axisId` (string)
- * @param `valAxisId` (string)
+ * Create Series Axis (Used by `bar3D`)
+ * @param {IChartOpts} opts - chart options
+ * @param {string} axisId - axis ID
+ * @param {string} valAxisId - value
  */
-function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
+function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string): string {
 	var strXml = ''
 
 	// Build ser axis tag
@@ -1789,56 +1795,40 @@ function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string) {
 /**
  * DESC: Generate the XML for title elements used for the chart and axis titles
  */
-function genXmlTitle(opts: IChartTitleOpts) {
-	let align = opts.titleAlign == 'left' ? 'l' : opts.titleAlign == 'right' ? 'r' : false
-	let strXml = ''
+function genXmlTitle(opts: IChartTitleOpts): string {
+	let align = opts.titleAlign == 'left' || opts.titleAlign == 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : `<a:pPr>`
+	let rotate = opts.rotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.rotate)}"/>` : `<a:bodyPr/>` // don't specify rotation to get default (ex. vertical for cat axis)
+	let sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize) + '00"' : '' // only set the font size if specified.  Powerpoint will handle the default size
+	let layout =
+		opts.titlePos && opts.titlePos.x && opts.titlePos.y
+			? `<c:layout><c:manualLayout><c:xMode val="edge"/><c:yMode val="edge"/><c:x val="${opts.titlePos.x}"/><c:y val="${opts.titlePos.y}"/></c:manualLayout></c:layout>`
+			: `<c:layout/>`
 
-	strXml += '<c:title>'
-	strXml += ' <c:tx>'
-	strXml += '  <c:rich>'
-	if (opts.rotate) {
-		strXml += '  <a:bodyPr rot="' + convertRotationDegrees(opts.rotate) + '"/>'
-	} else {
-		strXml += '  <a:bodyPr/>' // don't specify rotation to get default (ex. vertical for cat axis)
-	}
-	strXml += '  <a:lstStyle/>'
-	strXml += '  <a:p>'
-	strXml += align ? '<a:pPr algn="' + align + '">' : '<a:pPr>'
-	var sizeAttr = ''
-	if (opts.fontSize) {
-		// only set the font size if specified.  Powerpoint will handle the default size
-		sizeAttr = 'sz="' + Math.round(opts.fontSize) + '00"'
-	}
-	strXml += '      <a:defRPr ' + sizeAttr + ' b="0" i="0" u="none" strike="noStrike">'
-	strXml += '        <a:solidFill><a:srgbClr val="' + (opts.color || DEF_FONT_COLOR) + '"/></a:solidFill>'
-	strXml += '        <a:latin typeface="' + (opts.fontFace || 'Arial') + '"/>'
-	strXml += '      </a:defRPr>'
-	strXml += '    </a:pPr>'
-	strXml += '    <a:r>'
-	strXml += '      <a:rPr ' + sizeAttr + ' b="0" i="0" u="none" strike="noStrike">'
-	strXml += '        <a:solidFill><a:srgbClr val="' + (opts.color || DEF_FONT_COLOR) + '"/></a:solidFill>'
-	strXml += '        <a:latin typeface="' + (opts.fontFace || 'Arial') + '"/>'
-	strXml += '      </a:rPr>'
-	strXml += '      <a:t>' + (encodeXmlEntities(opts.title) || '') + '</a:t>'
-	strXml += '    </a:r>'
-	strXml += '  </a:p>'
-	strXml += '  </c:rich>'
-	strXml += ' </c:tx>'
-	if (opts.titlePos && opts.titlePos.x && opts.titlePos.y) {
-		strXml += '<c:layout>'
-		strXml += '  <c:manualLayout>'
-		strXml += '    <c:xMode val="edge"/>'
-		strXml += '    <c:yMode val="edge"/>'
-		strXml += '    <c:x val="' + opts.titlePos.x + '"/>'
-		strXml += '    <c:y val="' + opts.titlePos.y + '"/>'
-		strXml += '  </c:manualLayout>'
-		strXml += '</c:layout>'
-	} else {
-		strXml += ' <c:layout/>'
-	}
-	strXml += ' <c:overlay val="0"/>'
-	strXml += '</c:title>'
-	return strXml
+	return `<c:title>
+	  <c:tx>
+	    <c:rich>
+	      ${rotate}
+	      <a:lstStyle/>
+	      <a:p>
+	        ${align}
+	        <a:defRPr ${sizeAttr} b="0" i="0" u="none" strike="noStrike">
+	          <a:solidFill><a:srgbClr val="${opts.color || DEF_FONT_COLOR}"/></a:solidFill>
+	          <a:latin typeface="${opts.fontFace || 'Arial'}"/>
+	        </a:defRPr>
+	      </a:pPr>
+	      <a:r>
+	        <a:rPr ${sizeAttr} b="0" i="0" u="none" strike="noStrike">
+	          <a:solidFill><a:srgbClr val="${opts.color || DEF_FONT_COLOR}"/></a:solidFill>
+	          <a:latin typeface="${opts.fontFace || 'Arial'}"/>
+	        </a:rPr>
+	        <a:t>${encodeXmlEntities(opts.title) || ''}</a:t>
+	      </a:r>
+	    </a:p>
+	    </c:rich>
+	  </c:tx>
+	  ${layout}
+	  <c:overlay val="0"/>
+	</c:title>`
 }
 
 /**
