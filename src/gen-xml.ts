@@ -748,16 +748,18 @@ function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { 
 				strXml +=
 					'<Relationship Id="rId' +
 					rel.rId +
-					'" Target="slide' +
+					'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"' +
+					' Target="slide' +
 					rel.Target +
-					'.xml" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"/>'
+					'.xml"/>'
 			} else {
 				strXml +=
 					'<Relationship Id="rId' +
 					rel.rId +
-					'" Target="' +
+					'" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"' +
+					' Target="' +
 					rel.Target +
-					'" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"/>'
+					'" TargetMode="External"/>'
 			}
 		} else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
 			strXml +=
