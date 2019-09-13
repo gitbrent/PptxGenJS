@@ -331,16 +331,19 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 	// NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
 	let strImgExtn =
 		strImagePath
+			.substring(strImagePath.lastIndexOf('/') + 1)
+			.split('?')[0]
 			.split('.')
 			.pop()
-			.split('?')[0]
 			.split('#')[0] || 'png'
+
 	// However, pre-encoded images can be whatever mime-type they want (and good for them!)
 	if (strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0) {
 		strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1]
 	} else if (strImageData && strImageData.toLowerCase().indexOf('image/svg+xml') > -1) {
 		strImgExtn = 'svg'
 	}
+
 	// STEP 2: Set type/path
 	newObject.type = 'image'
 	newObject.image = strImagePath || 'preencoded.png'
@@ -763,7 +766,7 @@ export function addTableDefinition(
 
 			// C: Add this table to new Slide
 			{
-				let newSlide:ISlide = getSlide(target.number + idx)
+				let newSlide: ISlide = getSlide(target.number + idx)
 
 				opt.autoPage = false
 
