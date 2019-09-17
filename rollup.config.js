@@ -12,11 +12,11 @@ export default {
 				jszip: 'JSZip'
 			}
 		},
-		/*
 		{
-			file: './src/bld/pptxgenjs.cjs.js',
+			file: './src/bld/pptxgen.cjs.js',
 			format: 'cjs'
 		},
+		/*
 		{
 			file: './src/bld/pptxgenjs.umd.js',
 			format: 'umd',
