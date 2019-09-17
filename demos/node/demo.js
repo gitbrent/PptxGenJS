@@ -1,20 +1,20 @@
 /*
  * NAME: demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: 20190908
+ * DATE: 20190916
  * DESC: PptxGenJS feature demos for Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  *
  * USAGE: `node demo.js`       (runs local tests with callbacks etc)
- * USAGE: `node demo.js All`   (runs all pre-defined tests in `pptxgenjs-demo.js`)
- * USAGE: `node demo.js Text`  (runs pre-defined single test in `pptxgenjs-demo.js`)
+ * USAGE: `node demo.js All`   (runs all pre-defined tests in `../common/demos.js`)
+ * USAGE: `node demo.js Text`  (runs pre-defined single test in `../common/demos.js`)
  */
 
 // ============================================================================
 const express = require('express'); // Not core - Only required for streaming
 const app = express(); // Not core - Only required for streaming
-const fs = require('fs');
-var gConsoleLog = true;
+let verboseMode = true;
+let PptxGenJS;
 
 function getTimestamp() {
 	var dateNow = new Date();
@@ -23,41 +23,40 @@ function getTimestamp() {
 }
 // ============================================================================
 
-if (gConsoleLog) console.log(`
+if (verboseMode) console.log(`
 -------------
 STARTING DEMO
 -------------
 `);
 
 // STEP 1: Load pptxgenjs library
-var PptxGenJS;
-if (fs.existsSync('../dist/pptxgen.js')) {
+if ( (process.argv[2] && process.argv[2].toLowerCase() == '-local') || (process.argv[3] && process.argv[3].toLowerCase() == '-local' ) ) {
 	// for LOCAL TESTING
-	PptxGenJS = require('../dist/pptxgen.js');
-	if (gConsoleLog) console.log('--=== LOCAL MODE ===--');
+	PptxGenJS = require('../../dist/pptxgen.cjs.js');
+	if (verboseMode) console.log('--=== LOCAL MODE ===--');
 	let pptx = new PptxGenJS();
-	if (gConsoleLog) console.log(`* pptxgenjs ver: ${pptx.version}`);
+	if (verboseMode) console.log(`* pptxgenjs ver: ${pptx.version}`);
 }
 else {
 	PptxGenJS = require("pptxgenjs");
 }
 var pptx = new PptxGenJS();
-var demo = require("../examples/pptxgenjs-demo.js");
+var demo = require("../common/demos.js");
 
-if (gConsoleLog) console.log(`* save location: ${__dirname}`);
+if (verboseMode) console.log(`* save location: ${__dirname}`);
 
 // ============================================================================
 
 // EX: Regular callback - will be sent the export filename once the file has been written to fs
 function saveCallback(filename) {
-	if (gConsoleLog) {
+	if (verboseMode) {
 		console.log('`saveCallback()`: Export filename: '+ filename);
 	}
 }
 
 // EX: JSZip callback - take the specified output (`data`) and do whatever
 function jszipCallback(data) {
-	if (gConsoleLog) {
+	if (verboseMode) {
 		console.log('jszipCallback(): Here are 0-100 chars of `data`:\n');
 		console.log( data.substring(0,100) );
 	}
@@ -81,7 +80,7 @@ function streamCallback(data) {
 
 // ============================================================================
 
-// STEP 2: Run predefined test from `pptxgenjs-demo.js` //-OR-// Local Tests (callbacks, etc.)
+// STEP 2: Run predefined test from `../common/demos.js` //-OR-// Local Tests (callbacks, etc.)
 if ( process.argv.length == 3 ) {
 	if ( process.argv[2].toLowerCase() == 'all' ) demo.runEveryTest();
 	else demo.execGenSlidesFuncs( process.argv[2] );
@@ -98,10 +97,12 @@ else {
 	// **NOTE**: Only uncomment one EXAMPLE at a time
 
 	// EXAMPLE 1: Inline save (saves to the local directory where this process is running)
-	//pptx.save( exportName+'-ex1' ); if (gConsoleLog) console.log('\nFile created:\n'+' * '+exportName+'-ex1');
+	//pptx.save( exportName+'-ex1' ); if (verboseMode) console.log('\nFile created:\n'+' * '+exportName+'-ex1');
 
 	// EXAMPLE 2: Use an inline callback function
-	pptx.save( exportName+'-ex2', function(filename){ console.log('Ex2 inline callback exported: '+exportName+'-ex2'); } );
+	pptx.writeFile(exportName+'-ex2')
+		.catch(ex => { console.log('ERROR: '+err) })
+		.then(fileName => { console.log('Ex2 inline callback exported: '+fileName); } );
 
 	// EXAMPLE 3: Use defined callback function
 	//pptx.save( exportName+'-ex3', saveCallback );
@@ -118,7 +119,7 @@ else {
 
 // ============================================================================
 
-if (gConsoleLog) console.log(`
+if (verboseMode) console.log(`
 --------------
 DEMO COMPLETE!
 --------------
