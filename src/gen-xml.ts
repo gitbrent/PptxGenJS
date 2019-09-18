@@ -267,11 +267,11 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					})
 				})
 
-				/* DEBUG: Only useful for rowspan/colspan testing
+				/* DEBUG: useful for rowspan/colspan testing
 				if ( objTabOpts.verbose ) {
 					console.table(objTableGrid);
 					var arrText = [];
-					jQuery.each(objTableGrid, function(i,row){ var arrRow = []; jQuery.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
+					objTableGrid.forEach(function(row){ let arrRow = []; row.forEach(row,function(cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
 					console.table( arrText );
 				}
 				*/
@@ -1188,8 +1188,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		// C: Inherit any main options (color, fontSize, etc.)
 		// We only pass the text.options to genXmlTextRun (not the Slide.options),
 		// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
-		// TODO-3: convert to Object.values or whatever in ES6
-		jQuery.each(opts, (key, val) => {
+		Object.entries(opts).forEach(([key, val]) => {
 			// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
 			if (key != 'bullet' && !textObj.options[key]) textObj.options[key] = val
 		})
