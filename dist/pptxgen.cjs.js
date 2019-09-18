@@ -1,6 +1,7 @@
 'use strict';
 
 var JSZip = require('jszip');
+var jquery = require('jquery');
 
 /**
  * PptxGenJS Enums
@@ -6758,6 +6759,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
+var jQuery$1 = jquery;
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6932,7 +6934,7 @@ var PptxGenJS = /** @class */ (function () {
                 if (window.navigator.msSaveOrOpenBlob) {
                     // @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
                     var blob_1 = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
-                    jQuery(a).click(function () {
+                    jQuery$1(a).click(function () {
                         window.navigator.msSaveOrOpenBlob(blob_1, exportName);
                     });
                     a.click();
