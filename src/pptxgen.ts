@@ -403,36 +403,35 @@ export default class PptxGenJS {
 	writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> => {
 		return new Promise((resolve, _reject) => {
 			// STEP 1: Create element
-			let a = document.createElement('a')
-			a.setAttribute('style', 'display:none;')
-			document.body.appendChild(a)
+			let eleLink = document.createElement('a')
+			eleLink.setAttribute('style', 'display:none;')
+			document.body.appendChild(eleLink)
 
 			// STEP 2: Download file to browser
 			// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
 			if (window.navigator.msSaveOrOpenBlob) {
 				// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
 				let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
-				jQuery(a).click(() => {
+				eleLink.onclick = function() {
 					window.navigator.msSaveOrOpenBlob(blob, exportName)
-				})
-				a.click()
+				}
+				eleLink.click()
 
 				// Clean-up
-				document.body.removeChild(a)
+				document.body.removeChild(eleLink)
 
 				// Done
 				resolve(exportName)
 			} else if (window.URL.createObjectURL) {
-				let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
-				let url = window.URL.createObjectURL(blob)
-				a.href = url
-				a.download = exportName
-				a.click()
+				let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
+				eleLink.href = url
+				eleLink.download = exportName
+				eleLink.click()
 
 				// Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
 				setTimeout(() => {
 					window.URL.revokeObjectURL(url)
-					document.body.removeChild(a)
+					document.body.removeChild(eleLink)
 				}, 100)
 
 				// Done
