@@ -367,13 +367,13 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 							strXml +=
 								'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
 						} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
-							jQuery.each([{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }], (_i, obj) => {
+							[{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(obj => {
 								if (cellOpts.border[obj.idx]) {
-									var strC =
+									let strC =
 										'<a:solidFill><a:srgbClr val="' +
 										(cellOpts.border[obj.idx].color ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +
 										'"/></a:solidFill>'
-									var intW =
+									let intW =
 										cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt == 0)
 											? ONEPT * Number(cellOpts.border[obj.idx].pt)
 											: ONEPT
