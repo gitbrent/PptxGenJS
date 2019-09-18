@@ -33,7 +33,7 @@ STARTING DEMO
 if ( (process.argv[2] && process.argv[2].toLowerCase() == '-local') || (process.argv[3] && process.argv[3].toLowerCase() == '-local' ) ) {
 	// for LOCAL TESTING
 	PptxGenJS = require('../../dist/pptxgen.cjs.js');
-	if (verboseMode) console.log('--=== LOCAL MODE ===--');
+	if (verboseMode) console.log('---==~==[ LOCAL MODE ]==~==---');
 	let pptx = new PptxGenJS();
 	if (verboseMode) console.log(`* pptxgenjs ver: ${pptx.version}`);
 }
