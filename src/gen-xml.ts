@@ -223,14 +223,18 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				// so a simple loop below in XML building wont suffice to build table correctly.
 				// We have to build an actual grid now
 				/*
-						EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
+					EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
 
-						/------|------|------|------\
-						|  A0  |  B0  |  C0  |  D0  |
-						|      |  B1  |  C1  |      |
-						|      |      |  C2  |  D2  |
-						\------|------|------|------/
-					*/
+					/------|------|------|------\
+					|  A0  |  B0  |  C0  |  D0  |
+					|      |  B1  |  C1  |      |
+					|      |      |  C2  |  D2  |
+					\------|------|------|------/
+				*/
+				/*
+					Object ex: key = rowIdx / val = [cells] cellIdx { 0:{type: "tablecell", text: Array(1), options: {…}}, 1:... }
+					{0: {…}, 1: {…}, 2: {…}, 3: {…}}
+				*/
 				arrTabRows.forEach((row, rIdx) => {
 					// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
 					if (!objTableGrid[rIdx]) objTableGrid[rIdx] = {}
@@ -277,9 +281,9 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				*/
 
 				// STEP 4: Build table rows/cells
-				jQuery.each(objTableGrid, (rIdx, rowObj) => {
+				Object.entries(objTableGrid).forEach(([rIdx,rowObj]) => {
 					// A: Table Height provided without rowH? Then distribute rows
-					var intRowH = 0 // IMPORTANT: Default must be zero for auto-sizing to work
+					let intRowH = 0 // IMPORTANT: Default must be zero for auto-sizing to work
 					if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx]) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]))
 					else if (objTabOpts.rowH && !isNaN(Number(objTabOpts.rowH))) intRowH = inch2Emu(Number(objTabOpts.rowH))
 					else if (slideItemObj.options.cy || slideItemObj.options.h)
@@ -291,7 +295,9 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strXml += '<a:tr h="' + intRowH + '">'
 
 					// C: Loop over each CELL
-					jQuery.each(rowObj, (_cIdx, cell: ITableCell) => {
+					Object.entries(rowObj).forEach(([_cIdx,cellObj]) => {
+						let cell:ITableCell = cellObj
+
 						// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 						if (cell.hmerge) return
 
