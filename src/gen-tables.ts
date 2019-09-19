@@ -26,9 +26,8 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 	let inStr = (cell.text || '').toString().trim()
 
 	// C: Build line array
-	// FIXME: FIXME-3: change to `forEach`
-	jQuery.each(inStr.split('\n'), (_idx, line) => {
-		jQuery.each(line.split(' '), (_idx, word) => {
+	inStr.split('\n').forEach(line => {
+		line.split(' ').forEach(word => {
 			if (strCurrLine.length + word.length + 1 < CPL) {
 				strCurrLine += word + ' '
 			} else {
@@ -356,7 +355,6 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	let arrColW: number[] = []
 	let arrTabColW: number[] = []
 	let arrInchMargins: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5] // TRBL-style
-	let arrTableParts = ['thead', 'tbody', 'tfoot']
 	let intTabW = 0
 
 	// REALITY-CHECK:
@@ -379,26 +377,21 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	if (opts.verbose) console.log(`pptx.presLayout.width .. = ${pptx.presLayout.width / EMU}`)
 	if (opts.verbose) console.log(`emuSlideTabW (in)....... = ${emuSlideTabW / EMU}`)
 
-	// STEP 2: Grab table col widths
-	// ATTN: `arrTableParts.forEach((part, _idx) => {` --> NO! CAREFUL! We need to break out of loop using "return false" - forEach break col sizing badly
-	jQuery.each(arrTableParts, (_idx, part) => {
-		if (jQuery('#' + tabEleId + ' > ' + part + ' > tr').length > 0) {
-			jQuery('#' + tabEleId + ' > ' + part + ' > tr:first-child')
-				.find('> th, > td')
-				.each((idx, cell) => {
-					// FIXME: This is a hack - guessing at col widths when colspan
-					if (jQuery(cell).attr('colspan')) {
-						for (var idx = 0; idx < Number(jQuery(cell).attr('colspan')); idx++) {
-							arrTabColW.push(Math.round(jQuery(cell).outerWidth() / Number(jQuery(cell).attr('colspan'))))
-						}
-					} else {
-						arrTabColW.push(jQuery(cell).outerWidth())
-					}
-				})
-			return false // break out of .each loop
+	// STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
+	let firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child th`)
+	if (firstRowCells.length == 0) firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child td`)
+	firstRowCells.forEach((cell: HTMLElement) => {
+		if (cell.getAttribute('colspan')) {
+			// Guesstimate (divide evenly) col widths
+			// NOTE: both j$query and vanilla selectors return {0} when table is not visible)
+			for (let idx = 0; idx < Number(cell.getAttribute('colspan')); idx++) {
+				arrTabColW.push(Math.round(cell.offsetWidth / Number(cell.getAttribute('colspan'))))
+			}
+		} else {
+			arrTabColW.push(cell.offsetWidth)
 		}
 	})
-	arrTabColW.forEach((colW, _idx) => {
+	arrTabColW.forEach(colW => {
 		intTabW += colW
 	})
 
@@ -409,11 +402,12 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 		let intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-width')
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
-	if (opts.verbose) console.log(`arrColW ................ = ${arrColW.toString()}`)
+	if (opts.verbose)
+		console.log(`arrColW ................ = ${arrColW.toString()}`)
 
-	// STEP 4: Iterate over each table element and create data arrays (text and opts)
-	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-	arrTableParts.forEach((part, _idx) => {
+		// STEP 4: Iterate over each table element and create data arrays (text and opts)
+		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
+	;['thead', 'tbody', 'tfoot'].forEach((part, _idx) => {
 		jQuery('#' + tabEleId + ' > ' + part + ' > tr').each((_idx, row) => {
 			let arrObjTabCells = []
 			jQuery(row)
