@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Coming In [3.0]:
 - `save()` will be renamed, return a Promise
+- jQuery is no longer required
 - Many **BREAKING CHANGES**
 
 
@@ -16,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - New cat/val axis options: majorTickMark/minorTickMark [\#473](https://github.com/gitbrent/PptxGenJS/pull/473) ([RokasDie](https://github.com/RokasDie))
 - Ability to set start number "startAt" for a bullet list of type numbered [\#554](https://github.com/gitbrent/PptxGenJS/issue/554) [\#555](https://github.com/gitbrent/PptxGenJS/pull/555) ([bj-mitchell](https://github.com/bj-mitchell))
 ### Changed
+- Removed: jQuery is no longer required (!)
 - Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
 - Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
 - Fixed: Tables not being displayed after update [\#559](https://github.com/gitbrent/PptxGenJS/issue/559) ([emartz404](https://github.com/emartz404))
