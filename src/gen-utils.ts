@@ -119,7 +119,7 @@ export function componentToHex(c: number): string {
 }
 
 /**
- * Converts RGB colors from jQuery selectors to Hex for Presentation colors
+ * Converts RGB colors from css selectors to Hex for Presentation colors
  * @param {number} r - red value
  * @param {number} g - green value
  * @param {number} b - blue value
