@@ -101,8 +101,9 @@ else {
 
 	// EXAMPLE 2: Use an inline callback function
 	pptx.writeFile(exportName+'-ex2')
-		.catch(ex => { console.log('ERROR: '+err) })
-		.then(fileName => { console.log('Ex2 inline callback exported: '+fileName); } );
+		.catch(err => {throw err})
+		.then(fileName => { console.log('Ex2 inline callback exported: '+fileName); } )
+		.catch(err => { console.log('ERROR: '+err) });
 
 	// EXAMPLE 3: Use defined callback function
 	//pptx.save( exportName+'-ex3', saveCallback );
