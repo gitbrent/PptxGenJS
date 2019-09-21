@@ -4,7 +4,7 @@
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { ILayout, ISlideLayout, ITableCell, ITableToSlidesCell, ITableToSlidesOpts, ITableRow, TableRowSlide } from './core-interfaces'
+import { ILayout, ISlideLayout, ITableCell, ITableToSlidesCell, ITableToSlidesOpts, ITableRow, TableRowSlide, ITableCellOpts } from './core-interfaces'
 import { inch2Emu, rgbToHex } from './gen-utils'
 
 /**
@@ -398,128 +398,132 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	// STEP 3: Calc/Set column widths by using same column width percent from HTML table
 	arrTabColW.forEach((colW, idx) => {
 		let intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
-		let intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-min-width')
-		let intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-width')
+		let intMinWidth = Number(document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`).getAttribute('data-pptx-min-width'))
+		let intSetWidth = Number(document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`).getAttribute('data-pptx-width'))
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
-	if (opts.verbose)
+	if (opts.verbose) {
 		console.log(`arrColW ................ = ${arrColW.toString()}`)
+	}
 
-		// STEP 4: Iterate over each table element and create data arrays (text and opts)
-		// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-	;['thead', 'tbody', 'tfoot'].forEach((part, _idx) => {
-		jQuery('#' + tabEleId + ' > ' + part + ' > tr').each((_idx, row) => {
+	// STEP 4: Iterate over each table element and create data arrays (text and opts)
+	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
+	;['thead', 'tbody', 'tfoot'].forEach(part => {
+		document.querySelectorAll(`#${tabEleId} ${part} tr`).forEach((row: HTMLTableRowElement) => {
 			let arrObjTabCells = []
-			jQuery(row)
-				.find('> th, > td')
-				.each((_idx, cell) => {
-					// A: Get RGB text/bkgd colors
-					let arrRGB1 = []
-					let arrRGB2 = []
-					arrRGB1 = jQuery(cell)
-						.css('color')
-						.replace(/\s+/gi, '')
-						.replace('rgba(', '')
-						.replace('rgb(', '')
-						.replace(')', '')
-						.split(',')
-					arrRGB2 = jQuery(cell)
-						.css('background-color')
-						.replace(/\s+/gi, '')
-						.replace('rgba(', '')
-						.replace('rgb(', '')
-						.replace(')', '')
-						.split(',')
-					// ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead
-					// (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
-					if (jQuery(cell).css('background-color') == 'rgba(0, 0, 0, 0)' || jQuery(cell).css('background-color') == 'transparent') arrRGB2 = [255, 255, 255]
+			// TODO-3: TODO: let arrObjTabCells:ITableCell[] = []
+			Array.from(row.cells).forEach(cell => {
+				// A: Get RGB text/bkgd colors
+				let arrRGB1 = window
+					.getComputedStyle(cell)
+					.getPropertyValue('color')
+					.replace(/\s+/gi, '')
+					.replace('rgba(', '')
+					.replace('rgb(', '')
+					.replace(')', '')
+					.split(',')
+				let arrRGB2 = window
+					.getComputedStyle(cell)
+					.getPropertyValue('background-color')
+					.replace(/\s+/gi, '')
+					.replace('rgba(', '')
+					.replace('rgb(', '')
+					.replace(')', '')
+					.split(',')
+				if (
+					// NOTE: (ISSUE#57): Default for unstyled tables is black bkgd, so use white instead
+					window.getComputedStyle(cell).getPropertyValue('background-color') == 'rgba(0, 0, 0, 0)' ||
+					window.getComputedStyle(cell).getPropertyValue('transparent')
+				) {
+					arrRGB2 = ['255', '255', '255']
+				}
 
-					// B: Create option object
-					let cellOpts = {
-						fontSize: jQuery(cell)
-							.css('font-size')
-							.replace(/[a-z]/gi, ''),
-						bold: jQuery(cell).css('font-weight') == 'bold' || Number(jQuery(cell).css('font-weight')) >= 500 ? true : false,
-						color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
-						fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
-						align: null,
-						border: null,
-						margin: null,
-						colspan: null,
-						rowspan: null,
-						valign: null,
-					}
-					if (['left', 'center', 'right', 'start', 'end'].indexOf(jQuery(cell).css('text-align')) > -1)
-						cellOpts.align = jQuery(cell)
-							.css('text-align')
-							.replace('start', 'left')
-							.replace('end', 'right')
-					if (['top', 'middle', 'bottom'].indexOf(jQuery(cell).css('vertical-align')) > -1) cellOpts.valign = jQuery(cell).css('vertical-align')
+				// B: Create option object
+				// TODO-3: TODO: let cellOpts:ITableCellOpts = {
+				let cellOpts = {
+					align: null,
+					bold:
+						window.getComputedStyle(cell).getPropertyValue('font-weight') == 'bold' || Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
+							? true
+							: false,
+					border: null,
+					color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
+					fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+					fontSize: Number(
+						window
+							.getComputedStyle(cell)
+							.getPropertyValue('font-size')
+							.replace(/[a-z]/gi, '')
+					),
+					margin: null,
+					colspan: Number(cell.getAttribute('colspan')) || null,
+					rowspan: Number(cell.getAttribute('rowspan')) || null,
+					valign: null,
+				}
+				if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1)
+					cellOpts.align = window
+						.getComputedStyle(cell)
+						.getPropertyValue('text-align')
+						.replace('start', 'left')
+						.replace('end', 'right')
+				if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1)
+					cellOpts.valign = window.getComputedStyle(cell).getPropertyValue('vertical-align')
 
-					// C: Add padding [margin] (if any)
-					// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
-					if (jQuery(cell).css('padding-left')) {
-						cellOpts.margin = []
-						jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], (_idx, val) => {
-							cellOpts.margin.push(
-								Math.round(
-									Number(
-										jQuery(cell)
-											.css(val)
-											.replace(/\D/gi, '')
-									)
-								)
-							)
-						})
-					}
-
-					// D: Add colspan/rowspan (if any)
-					if (jQuery(cell).attr('colspan')) cellOpts.colspan = jQuery(cell).attr('colspan')
-					if (jQuery(cell).attr('rowspan')) cellOpts.rowspan = jQuery(cell).attr('rowspan')
-
-					// E: Add border (if any)
-					if (
-						jQuery(cell).css('border-top-width') ||
-						jQuery(cell).css('border-right-width') ||
-						jQuery(cell).css('border-bottom-width') ||
-						jQuery(cell).css('border-left-width')
-					) {
-						cellOpts.border = []
-						jQuery.each(['top', 'right', 'bottom', 'left'], (_idx, val) => {
-							var intBorderW = Math.round(
+				// C: Add padding [margin] (if any)
+				// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
+				if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
+					cellOpts.margin = []
+					;['padding-top', 'padding-right', 'padding-bottom', 'padding-left'].forEach(val => {
+						cellOpts.margin.push(
+							Math.round(
 								Number(
-									jQuery(cell)
-										.css('border-' + val + '-width')
-										.replace('px', '')
+									window
+										.getComputedStyle(cell)
+										.getPropertyValue(val)
+										.replace(/\D/gi, '')
 								)
 							)
-							var arrRGB = []
-							arrRGB = jQuery(cell)
-								.css('border-' + val + '-color')
-								.replace(/\s+/gi, '')
-								.replace('rgba(', '')
-								.replace('rgb(', '')
-								.replace(')', '')
-								.split(',')
-							var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
-							cellOpts.border.push({ pt: intBorderW, color: strBorderC })
-						})
-					}
-
-					// F: Massage cell text so we honor linebreak tag as a line break during line parsing
-					let $cell2 = jQuery(cell).clone()
-					$cell2.html(
-						jQuery(cell)
-							.html()
-							.replace(/<br[^>]*>/gi, '\n')
-					)
-
-					// LAST: Add cell
-					arrObjTabCells.push({
-						text: $cell2.text().trim(),
-						options: cellOpts,
+						)
 					})
+				}
+
+				// D: Add border (if any)
+				if (
+					window.getComputedStyle(cell).getPropertyValue('border-top-width') ||
+					window.getComputedStyle(cell).getPropertyValue('border-right-width') ||
+					window.getComputedStyle(cell).getPropertyValue('border-bottom-width') ||
+					window.getComputedStyle(cell).getPropertyValue('border-left-width')
+				) {
+					cellOpts.border = []
+					;['top', 'right', 'bottom', 'left'].forEach(val => {
+						var intBorderW = Math.round(
+							Number(
+								window
+									.getComputedStyle(cell)
+									.getPropertyValue('border-' + val + '-width')
+									.replace('px', '')
+							)
+						)
+						var arrRGB = []
+						arrRGB = window
+							.getComputedStyle(cell)
+							.getPropertyValue('border-' + val + '-color')
+							.replace(/\s+/gi, '')
+							.replace('rgba(', '')
+							.replace('rgb(', '')
+							.replace(')', '')
+							.split(',')
+						var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
+						cellOpts.border.push({ pt: intBorderW, color: strBorderC })
+					})
+				}
+
+				// LAST: Add cell
+				arrObjTabCells.push({
+					text: cell.innerText, // `innerText` returns <br> as "\n", so linebreak etc. work later!
+					options: cellOpts,
 				})
+			})
 			switch (part) {
 				case 'thead':
 					arrObjTabHeadRows.push(arrObjTabCells)
