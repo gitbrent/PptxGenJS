@@ -1,7 +1,6 @@
 'use strict';
 
 var JSZip = require('jszip');
-var jquery = require('jquery');
 
 /**
  * PptxGenJS Enums
@@ -1636,7 +1635,7 @@ function componentToHex(c) {
     return hex.length == 1 ? '0' + hex : hex;
 }
 /**
- * Converts RGB colors from jQuery selectors to Hex for Presentation colors
+ * Converts RGB colors from css selectors to Hex for Presentation colors
  * @param {number} r - red value
  * @param {number} g - green value
  * @param {number} b - blue value
@@ -1721,9 +1720,8 @@ function parseTextToLines(cell, colWidth) {
     // B: Remove leading/trailing spaces
     var inStr = (cell.text || '').toString().trim();
     // C: Build line array
-    // FIXME: FIXME-3: change to `forEach`
-    jQuery.each(inStr.split('\n'), function (_idx, line) {
-        jQuery.each(line.split(' '), function (_idx, word) {
+    inStr.split('\n').forEach(function (line) {
+        line.split(' ').forEach(function (word) {
             if (strCurrLine.length + word.length + 1 < CPL) {
                 strCurrLine += word + ' ';
             }
@@ -2028,7 +2026,6 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     var arrColW = [];
     var arrTabColW = [];
     var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
-    var arrTableParts = ['thead', 'tbody', 'tfoot'];
     var intTabW = 0;
     // REALITY-CHECK:
     if (!document.getElementById(tabEleId))
@@ -2058,117 +2055,116 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         console.log("pptx.presLayout.width .. = " + pptx.presLayout.width / EMU);
     if (opts.verbose)
         console.log("emuSlideTabW (in)....... = " + emuSlideTabW / EMU);
-    // STEP 2: Grab table col widths
-    // ATTN: `arrTableParts.forEach((part, _idx) => {` --> NO! CAREFUL! We need to break out of loop using "return false" - forEach break col sizing badly
-    jQuery.each(arrTableParts, function (_idx, part) {
-        if (jQuery('#' + tabEleId + ' > ' + part + ' > tr').length > 0) {
-            jQuery('#' + tabEleId + ' > ' + part + ' > tr:first-child')
-                .find('> th, > td')
-                .each(function (idx, cell) {
-                // FIXME: This is a hack - guessing at col widths when colspan
-                if (jQuery(cell).attr('colspan')) {
-                    for (var idx = 0; idx < Number(jQuery(cell).attr('colspan')); idx++) {
-                        arrTabColW.push(Math.round(jQuery(cell).outerWidth() / Number(jQuery(cell).attr('colspan'))));
-                    }
-                }
-                else {
-                    arrTabColW.push(jQuery(cell).outerWidth());
-                }
-            });
-            return false; // break out of .each loop
+    // STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
+    var firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child th");
+    if (firstRowCells.length == 0)
+        firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child td");
+    firstRowCells.forEach(function (cell) {
+        if (cell.getAttribute('colspan')) {
+            // Guesstimate (divide evenly) col widths
+            // NOTE: both j$query and vanilla selectors return {0} when table is not visible)
+            for (var idx = 0; idx < Number(cell.getAttribute('colspan')); idx++) {
+                arrTabColW.push(Math.round(cell.offsetWidth / Number(cell.getAttribute('colspan'))));
+            }
+        }
+        else {
+            arrTabColW.push(cell.offsetWidth);
         }
     });
-    arrTabColW.forEach(function (colW, _idx) {
+    arrTabColW.forEach(function (colW) {
         intTabW += colW;
     });
     // STEP 3: Calc/Set column widths by using same column width percent from HTML table
     arrTabColW.forEach(function (colW, idx) {
         var intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2));
-        var intMinWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-min-width');
-        var intSetWidth = jQuery('#' + tabEleId + ' thead tr:first-child th:nth-child(' + (idx + 1) + ')').data('pptx-width');
+        var intMinWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-min-width'));
+        var intSetWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-width'));
         arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
     });
-    if (opts.verbose)
+    if (opts.verbose) {
         console.log("arrColW ................ = " + arrColW.toString());
-    // STEP 4: Iterate over each table element and create data arrays (text and opts)
-    // NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
-    arrTableParts.forEach(function (part, _idx) {
-        jQuery('#' + tabEleId + ' > ' + part + ' > tr').each(function (_idx, row) {
+    }
+    ['thead', 'tbody', 'tfoot'].forEach(function (part) {
+        document.querySelectorAll("#" + tabEleId + " " + part + " tr").forEach(function (row) {
             var arrObjTabCells = [];
-            jQuery(row)
-                .find('> th, > td')
-                .each(function (_idx, cell) {
+            // TODO-3: TODO: let arrObjTabCells:ITableCell[] = []
+            Array.from(row.cells).forEach(function (cell) {
                 // A: Get RGB text/bkgd colors
-                var arrRGB1 = [];
-                var arrRGB2 = [];
-                arrRGB1 = jQuery(cell)
-                    .css('color')
+                var arrRGB1 = window
+                    .getComputedStyle(cell)
+                    .getPropertyValue('color')
                     .replace(/\s+/gi, '')
                     .replace('rgba(', '')
                     .replace('rgb(', '')
                     .replace(')', '')
                     .split(',');
-                arrRGB2 = jQuery(cell)
-                    .css('background-color')
+                var arrRGB2 = window
+                    .getComputedStyle(cell)
+                    .getPropertyValue('background-color')
                     .replace(/\s+/gi, '')
                     .replace('rgba(', '')
                     .replace('rgb(', '')
                     .replace(')', '')
                     .split(',');
-                // ISSUE#57: jQuery default is this rgba value of below giving unstyled tables a black bkgd, so use white instead
-                // (FYI: if cell has `background:#000000` jQuery returns 'rgb(0, 0, 0)', so this soln is pretty solid)
-                if (jQuery(cell).css('background-color') == 'rgba(0, 0, 0, 0)' || jQuery(cell).css('background-color') == 'transparent')
-                    arrRGB2 = [255, 255, 255];
+                if (
+                // NOTE: (ISSUE#57): Default for unstyled tables is black bkgd, so use white instead
+                window.getComputedStyle(cell).getPropertyValue('background-color') == 'rgba(0, 0, 0, 0)' ||
+                    window.getComputedStyle(cell).getPropertyValue('transparent')) {
+                    arrRGB2 = ['255', '255', '255'];
+                }
                 // B: Create option object
+                // TODO-3: TODO: let cellOpts:ITableCellOpts = {
                 var cellOpts = {
-                    fontSize: jQuery(cell)
-                        .css('font-size')
-                        .replace(/[a-z]/gi, ''),
-                    bold: jQuery(cell).css('font-weight') == 'bold' || Number(jQuery(cell).css('font-weight')) >= 500 ? true : false,
+                    align: null,
+                    bold: window.getComputedStyle(cell).getPropertyValue('font-weight') == 'bold' || Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
+                        ? true
+                        : false,
+                    border: null,
                     color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
                     fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
-                    align: null,
-                    border: null,
+                    fontSize: Number(window
+                        .getComputedStyle(cell)
+                        .getPropertyValue('font-size')
+                        .replace(/[a-z]/gi, '')),
                     margin: null,
-                    colspan: null,
-                    rowspan: null,
+                    colspan: Number(cell.getAttribute('colspan')) || null,
+                    rowspan: Number(cell.getAttribute('rowspan')) || null,
                     valign: null,
                 };
-                if (['left', 'center', 'right', 'start', 'end'].indexOf(jQuery(cell).css('text-align')) > -1)
-                    cellOpts.align = jQuery(cell)
-                        .css('text-align')
+                if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1)
+                    cellOpts.align = window
+                        .getComputedStyle(cell)
+                        .getPropertyValue('text-align')
                         .replace('start', 'left')
                         .replace('end', 'right');
-                if (['top', 'middle', 'bottom'].indexOf(jQuery(cell).css('vertical-align')) > -1)
-                    cellOpts.valign = jQuery(cell).css('vertical-align');
+                if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1)
+                    cellOpts.valign = window.getComputedStyle(cell).getPropertyValue('vertical-align');
                 // C: Add padding [margin] (if any)
                 // NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
-                if (jQuery(cell).css('padding-left')) {
+                if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
                     cellOpts.margin = [];
-                    jQuery.each(['padding-top', 'padding-right', 'padding-bottom', 'padding-left'], function (_idx, val) {
-                        cellOpts.margin.push(Math.round(Number(jQuery(cell)
-                            .css(val)
+                    ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'].forEach(function (val) {
+                        cellOpts.margin.push(Math.round(Number(window
+                            .getComputedStyle(cell)
+                            .getPropertyValue(val)
                             .replace(/\D/gi, ''))));
                     });
                 }
-                // D: Add colspan/rowspan (if any)
-                if (jQuery(cell).attr('colspan'))
-                    cellOpts.colspan = jQuery(cell).attr('colspan');
-                if (jQuery(cell).attr('rowspan'))
-                    cellOpts.rowspan = jQuery(cell).attr('rowspan');
-                // E: Add border (if any)
-                if (jQuery(cell).css('border-top-width') ||
-                    jQuery(cell).css('border-right-width') ||
-                    jQuery(cell).css('border-bottom-width') ||
-                    jQuery(cell).css('border-left-width')) {
+                // D: Add border (if any)
+                if (window.getComputedStyle(cell).getPropertyValue('border-top-width') ||
+                    window.getComputedStyle(cell).getPropertyValue('border-right-width') ||
+                    window.getComputedStyle(cell).getPropertyValue('border-bottom-width') ||
+                    window.getComputedStyle(cell).getPropertyValue('border-left-width')) {
                     cellOpts.border = [];
-                    jQuery.each(['top', 'right', 'bottom', 'left'], function (_idx, val) {
-                        var intBorderW = Math.round(Number(jQuery(cell)
-                            .css('border-' + val + '-width')
+                    ['top', 'right', 'bottom', 'left'].forEach(function (val) {
+                        var intBorderW = Math.round(Number(window
+                            .getComputedStyle(cell)
+                            .getPropertyValue('border-' + val + '-width')
                             .replace('px', '')));
                         var arrRGB = [];
-                        arrRGB = jQuery(cell)
-                            .css('border-' + val + '-color')
+                        arrRGB = window
+                            .getComputedStyle(cell)
+                            .getPropertyValue('border-' + val + '-color')
                             .replace(/\s+/gi, '')
                             .replace('rgba(', '')
                             .replace('rgb(', '')
@@ -2178,14 +2174,9 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                         cellOpts.border.push({ pt: intBorderW, color: strBorderC });
                     });
                 }
-                // F: Massage cell text so we honor linebreak tag as a line break during line parsing
-                var $cell2 = jQuery(cell).clone();
-                $cell2.html(jQuery(cell)
-                    .html()
-                    .replace(/<br[^>]*>/gi, '\n'));
                 // LAST: Add cell
                 arrObjTabCells.push({
-                    text: $cell2.text().trim(),
+                    text: cell.innerText,
                     options: cellOpts,
                 });
             });
@@ -2400,14 +2391,18 @@ function slideObjectToXml(slide) {
                 // so a simple loop below in XML building wont suffice to build table correctly.
                 // We have to build an actual grid now
                 /*
-                        EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
+                    EX: (A0:rowspan=3, B1:rowspan=2, C1:colspan=2)
 
-                        /------|------|------|------\
-                        |  A0  |  B0  |  C0  |  D0  |
-                        |      |  B1  |  C1  |      |
-                        |      |      |  C2  |  D2  |
-                        \------|------|------|------/
-                    */
+                    /------|------|------|------\
+                    |  A0  |  B0  |  C0  |  D0  |
+                    |      |  B1  |  C1  |      |
+                    |      |      |  C2  |  D2  |
+                    \------|------|------|------/
+                */
+                /*
+                    Object ex: key = rowIdx / val = [cells] cellIdx { 0:{type: "tablecell", text: Array(1), options: {…}}, 1:... }
+                    {0: {…}, 1: {…}, 2: {…}, 3: {…}}
+                */
                 arrTabRows_1.forEach(function (row, rIdx) {
                     // A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
                     if (!objTableGrid_1[rIdx])
@@ -2442,16 +2437,17 @@ function slideObjectToXml(slide) {
                         }
                     });
                 });
-                /* DEBUG: Only useful for rowspan/colspan testing
+                /* DEBUG: useful for rowspan/colspan testing
                 if ( objTabOpts.verbose ) {
                     console.table(objTableGrid);
                     var arrText = [];
-                    jQuery.each(objTableGrid, function(i,row){ var arrRow = []; jQuery.each(row,function(i,cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
+                    objTableGrid.forEach(function(row){ let arrRow = []; row.forEach(row,function(cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
                     console.table( arrText );
                 }
                 */
                 // STEP 4: Build table rows/cells
-                jQuery.each(objTableGrid_1, function (rIdx, rowObj) {
+                Object.entries(objTableGrid_1).forEach(function (_a) {
+                    var rIdx = _a[0], rowObj = _a[1];
                     // A: Table Height provided without rowH? Then distribute rows
                     var intRowH = 0; // IMPORTANT: Default must be zero for auto-sizing to work
                     if (Array.isArray(objTabOpts_1.rowH) && objTabOpts_1.rowH[rIdx])
@@ -2465,7 +2461,9 @@ function slideObjectToXml(slide) {
                     // B: Start row
                     strXml_1 += '<a:tr h="' + intRowH + '">';
                     // C: Loop over each CELL
-                    jQuery.each(rowObj, function (_cIdx, cell) {
+                    Object.entries(rowObj).forEach(function (_a) {
+                        var _cIdx = _a[0], cellObj = _a[1];
+                        var cell = cellObj;
                         // 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
                         if (cell.hmerge)
                             return;
@@ -2535,7 +2533,7 @@ function slideObjectToXml(slide) {
                                 '  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>';
                         }
                         else if (cellOpts.border && Array.isArray(cellOpts.border)) {
-                            jQuery.each([{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }], function (_i, obj) {
+                            [{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(function (obj) {
                                 if (cellOpts.border[obj.idx]) {
                                     var strC = '<a:solidFill><a:srgbClr val="' +
                                         (cellOpts.border[obj.idx].color ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +
@@ -3309,8 +3307,8 @@ function genXmlTextBody(slideObj) {
         // C: Inherit any main options (color, fontSize, etc.)
         // We only pass the text.options to genXmlTextRun (not the Slide.options),
         // so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
-        // TODO-3: convert to Object.values or whatever in ES6
-        jQuery.each(opts, function (key, val) {
+        Object.entries(opts).forEach(function (_a) {
+            var key = _a[0], val = _a[1];
             // NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
             if (key != 'bullet' && !textObj.options[key])
                 textObj.options[key] = val;
@@ -6759,7 +6757,6 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var jQuery$1 = jquery;
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6926,33 +6923,32 @@ var PptxGenJS = /** @class */ (function () {
         this.writeFileToBrowser = function (exportName, blobContent) {
             return new Promise(function (resolve, _reject) {
                 // STEP 1: Create element
-                var a = document.createElement('a');
-                a.setAttribute('style', 'display:none;');
-                document.body.appendChild(a);
+                var eleLink = document.createElement('a');
+                eleLink.setAttribute('style', 'display:none;');
+                document.body.appendChild(eleLink);
                 // STEP 2: Download file to browser
                 // DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
                 if (window.navigator.msSaveOrOpenBlob) {
                     // @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
                     var blob_1 = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
-                    jQuery$1(a).click(function () {
+                    eleLink.onclick = function () {
                         window.navigator.msSaveOrOpenBlob(blob_1, exportName);
-                    });
-                    a.click();
+                    };
+                    eleLink.click();
                     // Clean-up
-                    document.body.removeChild(a);
+                    document.body.removeChild(eleLink);
                     // Done
                     resolve(exportName);
                 }
                 else if (window.URL.createObjectURL) {
-                    var blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
-                    var url_1 = window.URL.createObjectURL(blob);
-                    a.href = url_1;
-                    a.download = exportName;
-                    a.click();
+                    var url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
+                    eleLink.href = url_1;
+                    eleLink.download = exportName;
+                    eleLink.click();
                     // Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
                     setTimeout(function () {
                         window.URL.revokeObjectURL(url_1);
-                        document.body.removeChild(a);
+                        document.body.removeChild(eleLink);
                     }, 100);
                     // Done
                     resolve(exportName);
