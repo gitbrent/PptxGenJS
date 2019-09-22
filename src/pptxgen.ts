@@ -298,6 +298,52 @@ export default class PptxGenJS {
 
 	/**
 	 * Create and export the .pptx file
+	 * @param {string} exportName - output file type
+	 * @param {Blob} content - output file type
+	 * @return {Promise<string>} Promise with file name
+	 */
+	writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> => {
+		return new Promise((resolve, _reject) => {
+			// STEP 1: Create element
+			let eleLink = document.createElement('a')
+			eleLink.setAttribute('style', 'display:none;')
+			document.body.appendChild(eleLink)
+
+			// STEP 2: Download file to browser
+			// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
+			if (window.navigator.msSaveOrOpenBlob) {
+				// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
+				let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
+				eleLink.onclick = function() {
+					window.navigator.msSaveOrOpenBlob(blob, exportName)
+				}
+				eleLink.click()
+
+				// Clean-up
+				document.body.removeChild(eleLink)
+
+				// Done
+				resolve(exportName)
+			} else if (window.URL.createObjectURL) {
+				let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
+				eleLink.href = url
+				eleLink.download = exportName
+				eleLink.click()
+
+				// Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
+				setTimeout(() => {
+					window.URL.revokeObjectURL(url)
+					document.body.removeChild(eleLink)
+				}, 100)
+
+				// Done
+				resolve(exportName)
+			}
+		})
+	}
+
+	/**
+	 * Create and export the .pptx file
 	 * @param {WRITE_OUTPUT_TYPE} outputType - output file type
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
@@ -381,7 +427,7 @@ export default class PptxGenJS {
 							zip.generateAsync({ type: 'nodebuffer' }).then(content => { resolve(content) })
 						} else if (outputType) {
 							// B: Node [fs]: Output type user option or default
-							resolve(zip.generateAsync({ type: outputType || 'nodebuffer' }))
+							resolve(zip.generateAsync({ type: outputType }))
 						} else {
 							// C: Browser: Output blob as app/ms-pptx
 							resolve(zip.generateAsync({ type: 'blob' }))
@@ -391,52 +437,6 @@ export default class PptxGenJS {
 						reject(err)
 					})
 			})
-		})
-	}
-
-	/**
-	 * Create and export the .pptx file
-	 * @param {string} exportName - output file type
-	 * @param {Blob} content - output file type
-	 * @return {Promise<string>} Promise with file name
-	 */
-	writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> => {
-		return new Promise((resolve, _reject) => {
-			// STEP 1: Create element
-			let eleLink = document.createElement('a')
-			eleLink.setAttribute('style', 'display:none;')
-			document.body.appendChild(eleLink)
-
-			// STEP 2: Download file to browser
-			// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
-			if (window.navigator.msSaveOrOpenBlob) {
-				// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
-				let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
-				eleLink.onclick = function() {
-					window.navigator.msSaveOrOpenBlob(blob, exportName)
-				}
-				eleLink.click()
-
-				// Clean-up
-				document.body.removeChild(eleLink)
-
-				// Done
-				resolve(exportName)
-			} else if (window.URL.createObjectURL) {
-				let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
-				eleLink.href = url
-				eleLink.download = exportName
-				eleLink.click()
-
-				// Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
-				setTimeout(() => {
-					window.URL.revokeObjectURL(url)
-					document.body.removeChild(eleLink)
-				}, 100)
-
-				// Done
-				resolve(exportName)
-			}
 		})
 	}
 
@@ -461,7 +461,7 @@ export default class PptxGenJS {
 
 	/**
 	 * Export the current Presenation to selected/default type
-	 * @param {JSZIP_OUTPUT_TYPE} outputType - Master Slide name
+	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file
 	 * @since 3.0.0
 	 */
@@ -495,7 +495,7 @@ export default class PptxGenJS {
 					: exportName + '.pptx'
 				: 'Presenation.pptx'
 
-			this.exportPresentation()
+			this.exportPresentation(fs ? 'nodebuffer' : null)
 				.then(content => {
 					if (fs) {
 						// Node: Output
