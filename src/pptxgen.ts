@@ -376,9 +376,9 @@ export default class PptxGenJS {
 				// STEP 6: Wait for Promises (if any) then generate the PPTX file
 				Promise.all(arrChartPromises)
 					.then(() => {
-						// A: stream file
 						if (outputType == 'STREAM') {
-							resolve(zip.generateAsync({ type: 'nodebuffer' }))
+							// A: stream file
+							zip.generateAsync({ type: 'nodebuffer' }).then(content => { resolve(content) })
 						} else if (outputType) {
 							// B: Node [fs]: Output type user option or default
 							resolve(zip.generateAsync({ type: outputType || 'nodebuffer' }))
