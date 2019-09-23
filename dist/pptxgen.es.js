@@ -6601,10 +6601,11 @@ function createShadowElement(options, defaults) {
  * PptxGenJS: Media Methods
  */
 /**
-* Encode Image/Audio/Video into base64
-*/
+ * Encode Image/Audio/Video into base64
+ */
 function encodeSlideMediaRels(layout) {
-    var _this = this;
+    var fs = typeof require !== 'undefined' ? require('fs') : null; // NodeJS
+    var https = typeof require !== 'undefined' ? require('https') : null; // NodeJS
     var imageProms = [];
     // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
     layout.relsMedia
@@ -6613,10 +6614,10 @@ function encodeSlideMediaRels(layout) {
     })
         .forEach(function (rel) {
         imageProms.push(new Promise(function (resolve, reject) {
-            if (_this && typeof _this.fs === 'function' && rel.path.indexOf('http') != 0) {
+            if (fs && rel.path.indexOf('http') != 0) {
                 // DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
                 try {
-                    var bitmap = _this.fs.readFileSync(rel.path);
+                    var bitmap = fs.readFileSync(rel.path);
                     rel.data = Buffer.from(bitmap).toString('base64');
                     resolve('done');
                 }
@@ -6625,8 +6626,8 @@ function encodeSlideMediaRels(layout) {
                     reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString());
                 }
             }
-            else if (_this && typeof _this.fs === 'function' && rel.path.indexOf('http') == 0) {
-                _this.https.get(rel.path, function (res) {
+            else if (fs && https && rel.path.indexOf('http') == 0) {
+                https.get(rel.path, function (res) {
                     var rawData = '';
                     res.setEncoding('binary'); // IMPORTANT: Only binary encoding works
                     res.on('data', function (chunk) { return (rawData += chunk); });
@@ -6680,11 +6681,12 @@ function encodeSlideMediaRels(layout) {
         return rel.isSvgPng && rel.data;
     })
         .forEach(function (rel) {
-        // A:
-        if (_this && typeof _this.fs === 'function')
-            throw 'Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)';
-        // B:
-        imageProms.push(createSvgPngPreview(rel));
+        if (fs) {
+            console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)');
+        }
+        else {
+            imageProms.push(createSvgPngPreview(rel));
+        }
     });
     return imageProms;
 }
@@ -6820,6 +6822,47 @@ var PptxGenJS = /** @class */ (function () {
         };
         /**
          * Create and export the .pptx file
+         * @param {string} exportName - output file type
+         * @param {Blob} content - output file type
+         * @return {Promise<string>} Promise with file name
+         */
+        this.writeFileToBrowser = function (exportName, blobContent) {
+            return new Promise(function (resolve, _reject) {
+                // STEP 1: Create element
+                var eleLink = document.createElement('a');
+                eleLink.setAttribute('style', 'display:none;');
+                document.body.appendChild(eleLink);
+                // STEP 2: Download file to browser
+                // DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
+                if (window.navigator.msSaveOrOpenBlob) {
+                    // @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
+                    var blob_1 = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+                    eleLink.onclick = function () {
+                        window.navigator.msSaveOrOpenBlob(blob_1, exportName);
+                    };
+                    eleLink.click();
+                    // Clean-up
+                    document.body.removeChild(eleLink);
+                    // Done
+                    resolve(exportName);
+                }
+                else if (window.URL.createObjectURL) {
+                    var url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
+                    eleLink.href = url_1;
+                    eleLink.download = exportName;
+                    eleLink.click();
+                    // Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
+                    setTimeout(function () {
+                        window.URL.revokeObjectURL(url_1);
+                        document.body.removeChild(eleLink);
+                    }, 100);
+                    // Done
+                    resolve(exportName);
+                }
+            });
+        };
+        /**
+         * Create and export the .pptx file
          * @param {WRITE_OUTPUT_TYPE} outputType - output file type
          * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
          */
@@ -6893,13 +6936,13 @@ var PptxGenJS = /** @class */ (function () {
                     // STEP 6: Wait for Promises (if any) then generate the PPTX file
                     Promise.all(arrChartPromises)
                         .then(function () {
-                        // A: stream file
                         if (outputType == 'STREAM') {
-                            resolve(zip.generateAsync({ type: 'nodebuffer' }));
+                            // A: stream file
+                            zip.generateAsync({ type: 'nodebuffer' }).then(function (content) { resolve(content); });
                         }
                         else if (outputType) {
                             // B: Node [fs]: Output type user option or default
-                            resolve(zip.generateAsync({ type: outputType || 'nodebuffer' }));
+                            resolve(zip.generateAsync({ type: outputType }));
                         }
                         else {
                             // C: Browser: Output blob as app/ms-pptx
@@ -6910,47 +6953,6 @@ var PptxGenJS = /** @class */ (function () {
                         reject(err);
                     });
                 });
-            });
-        };
-        /**
-         * Create and export the .pptx file
-         * @param {string} exportName - output file type
-         * @param {Blob} content - output file type
-         * @return {Promise<string>} Promise with file name
-         */
-        this.writeFileToBrowser = function (exportName, blobContent) {
-            return new Promise(function (resolve, _reject) {
-                // STEP 1: Create element
-                var eleLink = document.createElement('a');
-                eleLink.setAttribute('style', 'display:none;');
-                document.body.appendChild(eleLink);
-                // STEP 2: Download file to browser
-                // DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
-                    var blob_1 = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
-                    eleLink.onclick = function () {
-                        window.navigator.msSaveOrOpenBlob(blob_1, exportName);
-                    };
-                    eleLink.click();
-                    // Clean-up
-                    document.body.removeChild(eleLink);
-                    // Done
-                    resolve(exportName);
-                }
-                else if (window.URL.createObjectURL) {
-                    var url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
-                    eleLink.href = url_1;
-                    eleLink.download = exportName;
-                    eleLink.click();
-                    // Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
-                    setTimeout(function () {
-                        window.URL.revokeObjectURL(url_1);
-                        document.body.removeChild(eleLink);
-                    }, 100);
-                    // Done
-                    resolve(exportName);
-                }
             });
         };
         // Set available layouts
@@ -7153,7 +7155,7 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Export the current Presenation to selected/default type
-     * @param {JSZIP_OUTPUT_TYPE} outputType - Master Slide name
+     * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file
      * @since 3.0.0
      */
@@ -7187,7 +7189,7 @@ var PptxGenJS = /** @class */ (function () {
                     ? exportName
                     : exportName + '.pptx'
                 : 'Presenation.pptx';
-            _this.exportPresentation()
+            _this.exportPresentation(fs ? 'nodebuffer' : null)
                 .then(function (content) {
                 if (fs) {
                     // Node: Output
