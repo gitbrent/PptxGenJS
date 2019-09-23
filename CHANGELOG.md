@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Coming In [3.0]:
 - `save()` will be renamed, return a Promise
 - jQuery is no longer required
-- Many **BREAKING CHANGES**
+- Major **BREAKING CHANGES**
 
 
 ## [3.0.0] - 2019-12-31
