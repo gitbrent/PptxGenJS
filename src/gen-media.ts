@@ -6,9 +6,11 @@ import { IMG_BROKEN } from './core-enums'
 import { ISlide, ISlideLayout, ISlideRelMedia } from './core-interfaces'
 
 /**
-* Encode Image/Audio/Video into base64
-*/
+ * Encode Image/Audio/Video into base64
+ */
 export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<string>[] {
+	const fs = typeof require !== 'undefined' ? require('fs') : null // NodeJS
+	const https = typeof require !== 'undefined' ? require('https') : null // NodeJS
 	let imageProms: Promise<string>[] = []
 
 	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
@@ -19,18 +21,18 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 		.forEach(rel => {
 			imageProms.push(
 				new Promise((resolve, reject) => {
-					if (this && typeof this.fs === 'function' && rel.path.indexOf('http') != 0) {
+					if (fs && rel.path.indexOf('http') != 0) {
 						// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 						try {
-							let bitmap = this.fs.readFileSync(rel.path)
+							let bitmap = fs.readFileSync(rel.path)
 							rel.data = Buffer.from(bitmap).toString('base64')
 							resolve('done')
 						} catch (ex) {
 							rel.data = IMG_BROKEN
 							reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
 						}
-					} else if (this && typeof this.fs === 'function' && rel.path.indexOf('http') == 0) {
-						this.https.get(rel.path, res => {
+					} else if (fs && https && rel.path.indexOf('http') == 0) {
+						https.get(rel.path, res => {
 							var rawData = ''
 							res.setEncoding('binary') // IMPORTANT: Only binary encoding works
 							res.on('data', chunk => (rawData += chunk))
@@ -85,11 +87,13 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 			return rel.isSvgPng && rel.data
 		})
 		.forEach(rel => {
-			// A:
-			if (this && typeof this.fs === 'function') throw 'Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)'
-
-			// B:
-			imageProms.push(createSvgPngPreview(rel))
+			if (fs) {
+				console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
+				rel.data = IMG_BROKEN
+				imageProms.push(Promise.resolve('done'))
+			} else {
+				imageProms.push(createSvgPngPreview(rel))
+			}
 		})
 
 	return imageProms
@@ -137,15 +141,17 @@ function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
  * TODO: Should return a Promise
  */
 function getSizeFromImage(inImgUrl: string): { width: number; height: number } {
-	if (typeof this.sizeOf === 'function') {
+	const sizeOf = typeof require !== 'undefined' ? require('sizeof') : null // NodeJS
+
+	if (sizeOf) {
 		try {
-			let dimensions = this.sizeOf(inImgUrl)
+			let dimensions = sizeOf(inImgUrl)
 			return { width: dimensions.width, height: dimensions.height }
 		} catch (ex) {
 			console.error('ERROR: sizeOf: Unable to load image: ' + inImgUrl)
 			return { width: 0, height: 0 }
 		}
-	} else if (typeof Image === 'function') {
+	} else if (Image && typeof Image === 'function') {
 		// A: Create
 		let image = new Image()
 
