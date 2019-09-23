@@ -410,8 +410,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	// NOTE: We create 3 arrays instead of one so we can loop over body then show header/footer rows on first and last page
 	;['thead', 'tbody', 'tfoot'].forEach(part => {
 		document.querySelectorAll(`#${tabEleId} ${part} tr`).forEach((row: HTMLTableRowElement) => {
-			let arrObjTabCells = []
-			// TODO-3: TODO: let arrObjTabCells:ITableCell[] = []
+			let arrObjTabCells: ITableCell[] = []
 			Array.from(row.cells).forEach(cell => {
 				// A: Get RGB text/bkgd colors
 				let arrRGB1 = window
@@ -439,8 +438,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				}
 
 				// B: Create option object
-				// TODO-3: TODO: let cellOpts:ITableCellOpts = {
-				let cellOpts = {
+				let cellOpts: ITableCellOpts = {
 					align: null,
 					bold:
 						window.getComputedStyle(cell).getPropertyValue('font-weight') == 'bold' || Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
@@ -460,28 +458,30 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					rowspan: Number(cell.getAttribute('rowspan')) || null,
 					valign: null,
 				}
-				if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1)
-					cellOpts.align = window
+				if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
+					let align = window
 						.getComputedStyle(cell)
 						.getPropertyValue('text-align')
 						.replace('start', 'left')
 						.replace('end', 'right')
-				if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1)
-					cellOpts.valign = window.getComputedStyle(cell).getPropertyValue('vertical-align')
+					cellOpts.align = align == 'center' ? 'center' : align == 'left' ? 'left' : align == 'right' ? 'right' : null
+				}
+				if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
+					let valign = window.getComputedStyle(cell).getPropertyValue('vertical-align')
+					cellOpts.valign = valign == 'top' ? 'top' : valign == 'middle' ? 'middle' : valign == 'bottom' ? 'bottom' : null
+				}
 
 				// C: Add padding [margin] (if any)
 				// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
 				if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
-					cellOpts.margin = []
-					;['padding-top', 'padding-right', 'padding-bottom', 'padding-left'].forEach(val => {
-						cellOpts.margin.push(
-							Math.round(
-								Number(
-									window
-										.getComputedStyle(cell)
-										.getPropertyValue(val)
-										.replace(/\D/gi, '')
-								)
+					cellOpts.margin = [0, 0, 0, 0]
+					new Array('padding-top', 'padding-right', 'padding-bottom', 'padding-left').forEach((val, idx) => {
+						cellOpts[idx] = Math.round(
+							Number(
+								window
+									.getComputedStyle(cell)
+									.getPropertyValue(val)
+									.replace(/\D/gi, '')
 							)
 						)
 					})
@@ -494,9 +494,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					window.getComputedStyle(cell).getPropertyValue('border-bottom-width') ||
 					window.getComputedStyle(cell).getPropertyValue('border-left-width')
 				) {
-					cellOpts.border = []
-					;['top', 'right', 'bottom', 'left'].forEach(val => {
-						var intBorderW = Math.round(
+					cellOpts.border = [null, null, null, null]
+					new Array('top', 'right', 'bottom', 'left').forEach((val, idx) => {
+						let intBorderW = Math.round(
 							Number(
 								window
 									.getComputedStyle(cell)
@@ -504,7 +504,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 									.replace('px', '')
 							)
 						)
-						var arrRGB = []
+						let arrRGB = []
 						arrRGB = window
 							.getComputedStyle(cell)
 							.getPropertyValue('border-' + val + '-color')
@@ -513,13 +513,14 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 							.replace('rgb(', '')
 							.replace(')', '')
 							.split(',')
-						var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
-						cellOpts.border.push({ pt: intBorderW, color: strBorderC })
+						let strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
+						cellOpts.border[idx]({ pt: intBorderW, color: strBorderC })
 					})
 				}
 
 				// LAST: Add cell
 				arrObjTabCells.push({
+					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: cell.innerText, // `innerText` returns <br> as "\n", so linebreak etc. work later!
 					options: cellOpts,
 				})
