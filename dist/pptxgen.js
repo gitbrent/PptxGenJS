@@ -5505,6 +5505,11 @@ var PptxGenJS = function(){
 						color:    rgbToHex( Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2]) ),
 						fill:     rgbToHex( Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2]) )
 					};
+					var fontFamily = jQuery(cell).css('font-family').replace(/["]/gi,'').split(", ")[0];
+					if (fontFamily !== "" && fontFamily !== "inherit"  && fontFamily !== "initial") {
+						objOpts.fontFace = fontFamily;
+					}
+
 					if ( ['left','center','right','start','end'].indexOf(jQuery(cell).css('text-align')) > -1 ) objOpts.align = jQuery(cell).css('text-align').replace('start','left').replace('end','right');
 					if ( ['top','middle','bottom'].indexOf(jQuery(cell).css('vertical-align')) > -1 ) objOpts.valign = jQuery(cell).css('vertical-align');
 
