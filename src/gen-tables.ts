@@ -447,6 +447,12 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					border: null,
 					color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
 					fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+					fontFace:
+						(window.getComputedStyle(cell).getPropertyValue('font-family') || '')
+							.split(',')[0]
+							.replace(/\"/g, '')
+							.replace('inherit', '')
+							.replace('initial', '') || null,
 					fontSize: Number(
 						window
 							.getComputedStyle(cell)
@@ -458,6 +464,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					rowspan: Number(cell.getAttribute('rowspan')) || null,
 					valign: null,
 				}
+
 				if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
 					let align = window
 						.getComputedStyle(cell)
@@ -476,7 +483,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
 					cellOpts.margin = [0, 0, 0, 0]
 					new Array('padding-top', 'padding-right', 'padding-bottom', 'padding-left').forEach((val, idx) => {
-						cellOpts[idx] = Math.round(
+						cellOpts.margin[idx] = Math.round(
 							Number(
 								window
 									.getComputedStyle(cell)
@@ -514,7 +521,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 							.replace(')', '')
 							.split(',')
 						let strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
-						cellOpts.border[idx]({ pt: intBorderW, color: strBorderC })
+						cellOpts.border[idx] = { pt: intBorderW, color: strBorderC }
 					})
 				}
 
