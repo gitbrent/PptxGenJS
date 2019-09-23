@@ -134,6 +134,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `dataNoEffects`        | boolean |         | `false`   | whether to omit effects on data | (*Doughnut/Pie Charts*) `true` or `false` |
 | `displayBlanksAs`      | string  |         | `span`    | whether to draw line or gap | (*Line Charts*) `span` or `gap` |
 | `gridLineColor`        | string  |         | `000000`  | grid line color            | hex color code. Ex: `{ gridLineColor:'0088CC' }`     |
+| `lineDash`   | string  |        | `solid` | (*Bar/Scatter Chart*) border line dash style | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
 | `lineDataSymbol`       | string  |         | `circle`  | symbol used on line marker | `circle`,`dash`,`diamond`,`dot`,`none`,`square`,`triangle` |
 | `lineDataSymbolSize`   | number  | points  | `6`       | size of line data symbol   | 1-256. Ex: `{ lineDataSymbolSize:12 }` |
 | `lineDataSymbolLineSize` | number | points | `0.75`    | size of data symbol outline   | 1-256. Ex: `{ lineDataSymbolLineSize:12 }` |
