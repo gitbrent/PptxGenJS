@@ -30,13 +30,13 @@
   "dependencies": {
     "express": "^4.17.1",
     "https": "^1.0.0",
-    "image-size": "^0.7.2",
-    "jsdom": "^14.0.0",
+    "image-size": "^0.8.1",
+    "jsdom": "^15.1.0",
     "jszip": "^3.2.2"
   },
   "devDependencies": {
     "@types/jszip": "^3.1.6",
-    "@types/node": "^12.0.2",
+    "@types/node": "^12.7.5",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-delete-lines": "0.0.7",
@@ -44,8 +44,8 @@
     "gulp-insert": "^0.5.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
-    "rollup": "^1.17.0",
-    "rollup-plugin-typescript2": "^0.21.1",
+    "rollup": "^1.21.4",
+    "rollup-plugin-typescript2": "^0.21.2",
     "typescript": "3.3.1"
   },
   "repository": {
