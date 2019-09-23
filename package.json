@@ -13,9 +13,9 @@
 	"dependencies": {
 		"express": "^4.16.4",
 		"https": "^1.0.0",
-		"image-size": "^0.7.2",
+		"image-size": "^0.8.1",
 		"jquery": "^3.3.1",
-		"jsdom": "^14.1.0",
+		"jsdom": "^15.1.1",
 		"jszip": "^3.1.5"
 	},
 	"devDependencies": {
