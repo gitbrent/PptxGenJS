@@ -10,6 +10,7 @@ dist/*
 examples/*
 libs/*
 CHANGELOG.md
+src/*
 
 lib/core/metadata.js
 lib/core/MetadataBlog.js
@@ -23,3 +24,4 @@ website/node_modules
 
 website/i18n/*
 !website/i18n/en.json
+.rpt2_cache
