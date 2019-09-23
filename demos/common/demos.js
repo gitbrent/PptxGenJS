@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.0.0-beta2
-* BLD.: 20190910
+* BLD.: 20190922
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -65,25 +65,25 @@ var gDemoTitleText = { fontSize:14, color:'0088CC', bold:true };
 var gDemoTitleTextBk = { fontSize:14, color:'0088CC', bold:true, breakLine:true };
 var gDemoTitleOpts = { fontSize:13, color:'9F9F9F' };
 var gPaths = {
-	'starlabsBkgd': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.4.0/examples/images/starlabs_bkgd.jpg' },
-	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.4.0/examples/images/starlabs_logo.png' },
+	'starlabsBkgd': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/starlabs_bkgd.jpg' },
+	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/starlabs_logo.png' },
 	'wikimedia1'  : { path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg' },
 	'wikimedia2'  : { path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png' },
 	'wikimedia_svg1': { path:'https://upload.wikimedia.org/wikipedia/commons/2/28/Cadenas-ferme-vert.svg' },
 	'wikimedia_svg2': { path:'https://upload.wikimedia.org/wikipedia/commons/3/3b/Crystal_Clear_action_go.svg' },
-	'ccCopyRemix'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_copyremix.gif' },
-	'ccLogo'       : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/cc_logo.jpg' },
-	'ccLicenseComp': { path:'images/cc_license_comp.png' },
+	'ccCopyRemix'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/cc_copyremix.gif' },
+	'ccLogo'       : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/cc_logo.jpg' },
+	'ccLicenseComp': { path:'common/images/cc_license_comp.png' },
 	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/images/cc_dj.gif' },
 	'gifAnimTrippy': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/images/trippy.gif' },
 	'chicagoBean'  : { path:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Chicago_Bean_Bohne_%2822038051679%29.jpg/256px-Chicago_Bean_Bohne_%2822038051679%29.jpg?op=paramTest&ampersandTest' },
-	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.avi' },
-	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.m4v' },
+	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.avi' },
+	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.m4v' },
 	'sample_mov': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/media/sample.mov' },
-	'sample_mp4': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.mp4' },
-	'sample_mpg': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.mpg' },
-	'sample_mp3': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.mp3' },
-	'sample_wav': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/media/sample.wav' }
+	'sample_mp4': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.mp4' },
+	'sample_mpg': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.mpg' },
+	'sample_mp3': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.mp3' },
+	'sample_wav': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.wav' }
 }
 
 // ==================================================================================================================
@@ -109,8 +109,8 @@ function execGenSlidesFuncs(type) {
 	if ( NODEJS ) {
 		var PptxGenJsLib;
 		var fs = require('fs');
-		if (fs.existsSync('../dist/pptxgen.js')) {
-			PptxGenJsLib = require('../dist/pptxgen.js'); // for LOCAL TESTING
+		if (fs.existsSync('../../dist/pptxgen.cjs.js')) {
+			PptxGenJsLib = require('../../dist/pptxgen.cjs.js'); // for LOCAL TESTING
 		}
 		else {
 			PptxGenJsLib = require("pptxgenjs");
@@ -136,8 +136,9 @@ function execGenSlidesFuncs(type) {
 
 	// STEP 4: Create Master Slides (from the old `pptxgen.masters.js` file - `gObjPptxMasters` items)
 	{
-		var objBkg = { path:(NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, '../examples') : gPaths.starlabsBkgd.path) };
-		var objImg = { path:(NODEJS ? gPaths.starlabsLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.starlabsLogo.path), x:4.6, y:3.5, w:4, h:1.8 };
+		// TODO: TODO-3: Change URLs - "examples" is now "demos/common"
+		var objBkg = { path:(NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, '../common') : gPaths.starlabsBkgd.path) };
+		var objImg = { path:(NODEJS ? gPaths.starlabsLogo.path.replace(/http.+\/examples/, '../common') : gPaths.starlabsLogo.path), x:4.6, y:3.5, w:4, h:1.8 };
 
 		// TITLE_SLIDE
 		pptx.defineSlideMaster({
@@ -1514,7 +1515,7 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
-		if (NODEJS) slide.addImage({ path:(NODEJS ? gPaths.ccCopyRemix.path.replace(/http.+\/examples/, '../examples') : gPaths.ccCopyRemix.path), x:0.5, y:1.0, w:1.2, h:1.2 });
+		if (NODEJS) slide.addImage({ path:(NODEJS ? gPaths.ccCopyRemix.path.replace(/http.+\/examples/, '../common') : gPaths.ccCopyRemix.path), x:0.5, y:1.0, w:1.2, h:1.2 });
 
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
@@ -2344,12 +2345,12 @@ function genSlides_Image(pptx) {
 
 		// TOP: 1
 		slide.addText('Type: Animated GIF', { x:0.5, y:0.6, w:2.5, h:0.4, color:'0088CC' });
-		slide.addImage({ x:1.0, y:1.1, w:1.5, h:1.5, path:(NODEJS ? gPaths.gifAnimTrippy.path.replace(/http.+\/examples/, '../examples') : gPaths.gifAnimTrippy.path) });
+		slide.addImage({ x:1.0, y:1.1, w:1.5, h:1.5, path:(NODEJS ? gPaths.gifAnimTrippy.path.replace(/http.+\/examples/, '../common') : gPaths.gifAnimTrippy.path) });
 		slide.addText('(use slide Show)', { x:1.0, y:2.7, w:1.5, h:0.3, color:'696969', fill:'FFFCCC', align:'center', fontSize:10 });
 
 		// TOP: 2
 		slide.addText('Type: GIF', { x:4.35, y:0.6, w:1.4, h:0.4, color:'0088CC' });
-		slide.addImage({ x:4.4, y:1.05, w:1.2, h:1.2, path:(NODEJS ? gPaths.ccDjGif.path.replace(/http.+\/examples/, '../examples') : gPaths.ccDjGif.path) });
+		slide.addImage({ x:4.4, y:1.05, w:1.2, h:1.2, path:(NODEJS ? gPaths.ccDjGif.path.replace(/http.+\/examples/, '../common') : gPaths.ccDjGif.path) });
 
 		// TOP: 3
 		slide.addText('Type: base64 PNG', { x:7.2, y:0.6, w:2.4, h:0.4, color:'0088CC' });
@@ -2413,7 +2414,7 @@ function genSlides_Image(pptx) {
 		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
 			// TEST USING RELATIVE PATHS/LOCAL FILES (OFFICE.COM)
 			slide.addText('Type: PNG (path:"../images")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'CC0033' });
-			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
+			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../common') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
 		}
 	}
 
@@ -2443,7 +2444,8 @@ function genSlides_Image(pptx) {
 		// TOP-RIGHT:
 		slide.addText('Rounding: `true`',  { x:10.0, y:0.60, w:3.0, h:0.3, color:'0088CC' });
 		slide.addImage({
-			path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path),
+			// TODO-3: TODO:
+			path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path),
 			x:9.9, y:1.1, w:2.5, h:2.5,
 			rounding:true
 		});
@@ -2457,19 +2459,19 @@ function genSlides_Media(pptx) {
 	slide1.addTable( [ [{ text:'Media: Misc Video Formats; YouTube', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	slide1.addText('Video: m4v', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:(NODEJS ? gPaths.sample_m4v.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_m4v.path) });
+	slide1.addMedia({ x:0.5, y:1.0, w:4.00, h:2.27, type:'video', path:(NODEJS ? gPaths.sample_m4v.path.replace(/http.+\/examples/, '../common') : gPaths.sample_m4v.path) });
 
 	slide1.addText('Video: mpg', { x:5.5, y:0.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:5.5, y:1.0, w:3.00, h:2.05, type:'video', path:(NODEJS ? gPaths.sample_mpg.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mpg.path) });
+	slide1.addMedia({ x:5.5, y:1.0, w:3.00, h:2.05, type:'video', path:(NODEJS ? gPaths.sample_mpg.path.replace(/http.+\/examples/, '../common') : gPaths.sample_mpg.path) });
 
 	slide1.addText('Video: mov', { x:9.4, y:0.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:9.4, y:1.0, w:3.00, h:1.71, type:'video', path:(NODEJS ? gPaths.sample_mov.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mov.path) });
+	slide1.addMedia({ x:9.4, y:1.0, w:3.00, h:1.71, type:'video', path:(NODEJS ? gPaths.sample_mov.path.replace(/http.+\/examples/, '../common') : gPaths.sample_mov.path) });
 
 	slide1.addText('Video: mp4', { x:0.5, y:3.6, w:4.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:0.5, y:4.0, w:4.00, h:3.00, type:'video', path:(NODEJS ? gPaths.sample_mp4.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mp4.path) });
+	slide1.addMedia({ x:0.5, y:4.0, w:4.00, h:3.00, type:'video', path:(NODEJS ? gPaths.sample_mp4.path.replace(/http.+\/examples/, '../common') : gPaths.sample_mp4.path) });
 
 	slide1.addText('Video: avi', { x:5.5, y:3.6, w:3.00, h:0.4, color:'0088CC' });
-	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:(NODEJS ? gPaths.sample_avi.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_avi.path) });
+	slide1.addMedia({ x:5.5, y:4.0, w:3.00, h:2.25, type:'video', path:(NODEJS ? gPaths.sample_avi.path.replace(/http.+\/examples/, '../common') : gPaths.sample_avi.path) });
 
 	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
 	if ( !NODEJS && $ && $('#chkYoutube').prop('checked') ) {
@@ -2489,10 +2491,10 @@ function genSlides_Media(pptx) {
 	slide2.addTable( [ [{ text:'Media: Misc Audio Formats', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	slide2.addText('Audio: mp3', { x:0.5, y:0.6, w:4.00, h:0.4, color:'0088CC' });
-	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_mp3.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_mp3.path) });
+	slide2.addMedia({ x:0.5, y:1.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_mp3.path.replace(/http.+\/examples/, '../common') : gPaths.sample_mp3.path) });
 
 	slide2.addText('Audio: wav', { x:0.5, y:2.6, w:4.00, h:0.4, color:'0088CC' });
-	slide2.addMedia({ x:0.5, y:3.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_wav.path.replace(/http.+\/examples/, '../examples') : gPaths.sample_wav.path) });
+	slide2.addMedia({ x:0.5, y:3.0, w:4.00, h:0.3, type:'audio', path:(NODEJS ? gPaths.sample_wav.path.replace(/http.+\/examples/, '../common') : gPaths.sample_wav.path) });
 
 	if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
 		// TEST USING LOCAL FILES (OFFICE.COM)
@@ -2789,7 +2791,7 @@ function genSlides_Master(pptx) {
 	var slide4 = pptx.addSlide('MASTER_SLIDE');
 	slide4.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide4.addText('Image Placeholder', { placeholder:'title' });
-	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../examples') : gPaths.ccLogo.path) });
+	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path) });
 
 	var dataChartPieLocs = [
 		{
