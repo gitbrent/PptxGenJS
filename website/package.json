@@ -10,7 +10,7 @@
     "deploy": "./node_modules/gulp/bin/gulp.js"
   },
   "devDependencies": {
-    "docusaurus": "^1.6.2",
+    "docusaurus": "^1.13.0",
     "gulp": "^4.0.0",
     "gulp-clean-css": "^4.0.0",
     "gulp-cli": "^2.0.1",
