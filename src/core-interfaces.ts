@@ -171,7 +171,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	catLabelFormatCode?: string
 	dataBorder?: IBorderOptions
 	lineSize?: number
-	lineDash?: string
+	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 	radarStyle?: string
 	shadow?: IShadowOptions
 	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
