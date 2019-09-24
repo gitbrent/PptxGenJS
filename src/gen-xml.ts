@@ -565,12 +565,13 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						return rel.rId == slideItemObj.imageRid
 					})[0]['extn'] == 'svg'
 				) {
-					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '"/>'
-					strSlideXml += '<a:extLst>'
+					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
+					strSlideXml += ' <a:extLst>'
 					strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">'
-					strSlideXml += '    <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>'
+					strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>'
 					strSlideXml += '  </a:ext>'
-					strSlideXml += '</a:extLst>'
+					strSlideXml += ' </a:extLst>'
+					strSlideXml += '</a:blip>'
 				} else {
 					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
 				}

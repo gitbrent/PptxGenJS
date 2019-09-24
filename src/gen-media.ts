@@ -81,7 +81,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 			)
 		})
 
-	// B: SVG: base64 data still reqs a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
+	// B: SVG: base64 data still requires a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
 	layout.relsMedia
 		.filter(rel => {
 			return rel.isSvgPng && rel.data
@@ -132,7 +132,7 @@ function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
 		}
 
 		// C: Load image
-		image.src = typeof rel.data === 'string' ? rel.data : ''
+		image.src = typeof rel.data === 'string' ? rel.data : IMG_BROKEN
 	})
 }
 

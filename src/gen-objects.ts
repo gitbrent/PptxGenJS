@@ -380,7 +380,7 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 		newObject.imageRid = imageRelId
 		target.relsMedia.push({
 			path: strImagePath || strImageData,
-			type: 'image/' + strImgExtn,
+			type: 'image/svg+xml',
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId + 1,

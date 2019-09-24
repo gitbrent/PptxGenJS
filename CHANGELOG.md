@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Removed: jQuery is no longer required (!)
 - Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
+- Fixed: SVG support has several issues [\#528](https://github.com/gitbrent/PptxGenJS/pull/528) ([RicardoNiepel](https://github.com/RicardoNiepel))
 - Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
 - Fixed: Tables not being displayed after update [\#559](https://github.com/gitbrent/PptxGenJS/issue/559) ([emartz404](https://github.com/emartz404))
 - Fixed: Exporting images corrupting file. [\#578](https://github.com/gitbrent/PptxGenJS/issue/578) ([joeberth](https://github.com/joeberth))
