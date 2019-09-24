@@ -88,9 +88,9 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 		})
 		.forEach(rel => {
 			if (fs) {
-				console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
+				//console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
 				rel.data = IMG_BROKEN
-				imageProms.push(Promise.resolve('done'))
+				imageProms.push(Promise.resolve().then(()=>{return 'done'}))
 			} else {
 				imageProms.push(createSvgPngPreview(rel))
 			}

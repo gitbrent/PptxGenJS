@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.0.0-beta2
-* BLD.: 20190922
+* BLD.: 20190923
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -2376,7 +2376,6 @@ function genSlides_Image(pptx) {
 		slide.addText('Type: SVG', { x:9.5, y:3.3, w:4.0, h:0.4, color:'0088CC' });
 		slide.addImage({ path:gPaths.wikimedia_svg1.path, x:9.5, y:3.8, w:2.0, h:2.0 }); // TEST: `path`
 		slide.addImage({ data:svgBase64, x:11.1, y:5.1, w:1.5, h:1.5 }); // TEST: `data`
-		slide.addText('(not supported in Node)', { x:9.1, y:6.8, w:3.5, h:0.3, color:'696969', fill:'FFFCCC', align:'center', fontSize:10 });
 
 		// TEST: Ensure framework corrects for missing all header
 		// (Please **DO NOT** pass base64 data without the header! This is a JUNK TEST!)
