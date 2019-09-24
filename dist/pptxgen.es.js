@@ -2085,7 +2085,6 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     ['thead', 'tbody', 'tfoot'].forEach(function (part) {
         document.querySelectorAll("#" + tabEleId + " " + part + " tr").forEach(function (row) {
             var arrObjTabCells = [];
-            // TODO-3: TODO: let arrObjTabCells:ITableCell[] = []
             Array.from(row.cells).forEach(function (cell) {
                 // A: Get RGB text/bkgd colors
                 var arrRGB1 = window
@@ -2111,7 +2110,6 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     arrRGB2 = ['255', '255', '255'];
                 }
                 // B: Create option object
-                // TODO-3: TODO: let cellOpts:ITableCellOpts = {
                 var cellOpts = {
                     align: null,
                     bold: window.getComputedStyle(cell).getPropertyValue('font-weight') == 'bold' || Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
@@ -2120,6 +2118,11 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     border: null,
                     color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
                     fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+                    fontFace: (window.getComputedStyle(cell).getPropertyValue('font-family') || '')
+                        .split(',')[0]
+                        .replace(/\"/g, '')
+                        .replace('inherit', '')
+                        .replace('initial', '') || null,
                     fontSize: Number(window
                         .getComputedStyle(cell)
                         .getPropertyValue('font-size')
@@ -2129,23 +2132,27 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     rowspan: Number(cell.getAttribute('rowspan')) || null,
                     valign: null,
                 };
-                if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1)
-                    cellOpts.align = window
+                if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
+                    var align = window
                         .getComputedStyle(cell)
                         .getPropertyValue('text-align')
                         .replace('start', 'left')
                         .replace('end', 'right');
-                if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1)
-                    cellOpts.valign = window.getComputedStyle(cell).getPropertyValue('vertical-align');
+                    cellOpts.align = align == 'center' ? 'center' : align == 'left' ? 'left' : align == 'right' ? 'right' : null;
+                }
+                if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
+                    var valign = window.getComputedStyle(cell).getPropertyValue('vertical-align');
+                    cellOpts.valign = valign == 'top' ? 'top' : valign == 'middle' ? 'middle' : valign == 'bottom' ? 'bottom' : null;
+                }
                 // C: Add padding [margin] (if any)
                 // NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
                 if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
-                    cellOpts.margin = [];
-                    ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'].forEach(function (val) {
-                        cellOpts.margin.push(Math.round(Number(window
+                    cellOpts.margin = [0, 0, 0, 0];
+                    new Array('padding-top', 'padding-right', 'padding-bottom', 'padding-left').forEach(function (val, idx) {
+                        cellOpts.margin[idx] = Math.round(Number(window
                             .getComputedStyle(cell)
                             .getPropertyValue(val)
-                            .replace(/\D/gi, ''))));
+                            .replace(/\D/gi, '')));
                     });
                 }
                 // D: Add border (if any)
@@ -2153,8 +2160,8 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     window.getComputedStyle(cell).getPropertyValue('border-right-width') ||
                     window.getComputedStyle(cell).getPropertyValue('border-bottom-width') ||
                     window.getComputedStyle(cell).getPropertyValue('border-left-width')) {
-                    cellOpts.border = [];
-                    ['top', 'right', 'bottom', 'left'].forEach(function (val) {
+                    cellOpts.border = [null, null, null, null];
+                    new Array('top', 'right', 'bottom', 'left').forEach(function (val, idx) {
                         var intBorderW = Math.round(Number(window
                             .getComputedStyle(cell)
                             .getPropertyValue('border-' + val + '-width')
@@ -2169,11 +2176,12 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                             .replace(')', '')
                             .split(',');
                         var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]));
-                        cellOpts.border.push({ pt: intBorderW, color: strBorderC });
+                        cellOpts.border[idx] = { pt: intBorderW, color: strBorderC };
                     });
                 }
                 // LAST: Add cell
                 arrObjTabCells.push({
+                    type: SLIDE_OBJECT_TYPES.tablecell,
                     text: cell.innerText,
                     options: cellOpts,
                 });
@@ -2703,12 +2711,13 @@ function slideObjectToXml(slide) {
                     (slide['relsMedia'] || []).filter(function (rel) {
                         return rel.rId == slideItemObj.imageRid;
                     })[0]['extn'] == 'svg') {
-                    strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '"/>';
-                    strSlideXml += '<a:extLst>';
+                    strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
+                    strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
-                    strSlideXml += '    <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
+                    strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
                     strSlideXml += '  </a:ext>';
-                    strSlideXml += '</a:extLst>';
+                    strSlideXml += ' </a:extLst>';
+                    strSlideXml += '</a:blip>';
                 }
                 else {
                     strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>';
@@ -2811,9 +2820,10 @@ function slideObjectToXml(slide) {
     });
     // STEP 5: Add slide numbers last (if any)
     if (slide.slideNumberObj) {
+        // TODO: TODO-3:
         // FIXME: slide numbers not working
-        console.log('FIXME: slideNumberObj');
-        console.log(slide);
+        //console.log('FIXME: slideNumberObj')
+        //console.log(slide)
         strSlideXml +=
             '<p:sp>' +
                 '  <p:nvSpPr>' +
@@ -4178,7 +4188,7 @@ function addImageDefinition(target, opt) {
         newObject.imageRid = imageRelId;
         target.relsMedia.push({
             path: strImagePath || strImageData,
-            type: 'image/' + strImgExtn,
+            type: 'image/svg+xml',
             extn: strImgExtn,
             data: strImageData || '',
             rId: imageRelId + 1,
@@ -6675,14 +6685,16 @@ function encodeSlideMediaRels(layout) {
             }
         }));
     });
-    // B: SVG: base64 data still reqs a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
+    // B: SVG: base64 data still requires a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
     layout.relsMedia
         .filter(function (rel) {
         return rel.isSvgPng && rel.data;
     })
         .forEach(function (rel) {
         if (fs) {
-            console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)');
+            //console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
+            rel.data = IMG_BROKEN;
+            imageProms.push(Promise.resolve().then(function () { return 'done'; }));
         }
         else {
             imageProms.push(createSvgPngPreview(rel));
@@ -6722,7 +6734,7 @@ function createSvgPngPreview(rel) {
             reject(ex.toString());
         };
         // C: Load image
-        image.src = typeof rel.data === 'string' ? rel.data : '';
+        image.src = typeof rel.data === 'string' ? rel.data : IMG_BROKEN;
     });
 }
 
@@ -6760,7 +6772,7 @@ function createSvgPngPreview(rel) {
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
-        this._version = '3.0.0-beta2';
+        this._version = '3.0.0-beta.4';
         // Global props
         this._charts = CHART_TYPES;
         this._colors = SCHEME_COLOR_NAMES;
