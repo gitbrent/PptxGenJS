@@ -79,13 +79,13 @@ declare namespace PptxGenJS {
     sizing?: ImageSizingOptions;
   }
 
-  export type ImageOptions = ImageBaseOptions | DataOrPath;
+  export type ImageOptions = ImageBaseOptions & DataOrPath;
 
   export interface MediaBaseOptions extends PositionOptions {
     onlineVideoLink?: string;
     type?: 'audio' | 'online' | 'video';
   }
-  export type MediaOptions = MediaBaseOptions | DataOrPath;
+  export type MediaOptions = MediaBaseOptions & DataOrPath;
 
   export interface BorderOptions {
     pt: number | string;
