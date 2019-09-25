@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - See [Coming Soon in 3.0](https://github.com/GitBrent/PptxGenJS#coming-soon) for more details
 
 
-## [2.6.0] - 2019-09-??
+## [2.6.0] - 2019-09-24
 ### Added
 - Host the Examples demo webpage online [\#505](https://github.com/gitbrent/PptxGenJS/pull/505) ([multiplegeorges](https://github.com/multiplegeorges))
 - Add types key to package.json [\#529](https://github.com/gitbrent/PptxGenJS/pull/529) ([adamlong5](https://github.com/adamlong5))
