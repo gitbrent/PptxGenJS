@@ -1,7 +1,7 @@
 /*
  * NAME: nodejs-demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: 20190204
+ * DATE: 20190924
  * DESC: PptxGenJS feature demos for Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  *
