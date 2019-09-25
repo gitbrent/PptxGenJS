@@ -78,7 +78,7 @@ if ( NODEJS || APPJS ) {
 var PptxGenJS = function(){
 	// APP
 	var APP_VER = "2.6.0-beta";
-	var APP_BLD = "20190507";
+	var APP_BLD = "20190926";
 
 	// CONSTANTS
 	var MASTER_OBJECTS = {
@@ -4149,7 +4149,7 @@ var PptxGenJS = function(){
 	}
 
 	function genXmlParagraphProperties(textObj, isDefault) {
-		var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
+		var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '', paraPropXmlCore = '';
 		var bulletLvl0Margin = 342900;
 		var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
 

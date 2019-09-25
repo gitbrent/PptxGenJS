@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed: lineDash Option is not in documentation [\#526](https://github.com/gitbrent/PptxGenJS/issue/526) ([Jank1310](https://github.com/Jank1310))
 - Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
 - Fixed: ReferenceError: strXmlBullet is not defined [\#587](https://github.com/gitbrent/PptxGenJS/issue/587) ([Saurabh-Chandil](https://github.com/Saurabh-Chandil))
+- Fixed: Getting paraPropXmlCore not defined error - line 4200 in pptxgen.bundle.js missing "var" declaration [\#596](https://github.com/gitbrent/PptxGenJS/issue/596) ([rajeearyal](https://github.com/rajeearyal))
 ### Removed
 
 
