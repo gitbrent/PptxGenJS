@@ -226,7 +226,7 @@ These include:
 **************************************************************************************************
 # Coming Soon ⏰
 
-The library is currently being rewritten in TypeScript for version 3.0 which will be completed by the end of 2019.  
+The library is currently being rewritten in TypeScript for version 3.0 which will be completed before the end of 2019.  
 
 Visit the "version-3.0" branch to try it out
 * [PptxGenJS 3.0 Preview](https://github.com/gitbrent/PptxGenJS/tree/version-3.0)
