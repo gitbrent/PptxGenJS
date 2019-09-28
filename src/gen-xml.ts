@@ -190,7 +190,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					'      <a:tbl>' +
 					'        <a:tblPr/>'
 				// + '        <a:tblPr bandRow="1"/>';
-				// FIXME: Support banded rows, first/last row, etc.
+				// TODO: Support banded rows, first/last row, etc.
 				// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
 				// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
 
@@ -252,7 +252,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 								// A: Set this cell
 								objTableGrid[rIdx][currColIdx] = cell
 
-								// B: Handle `colspan` or `rowspan` (a {cell} cant have both! FIXME: FUTURE: ROWSPAN & COLSPAN in same cell)
+								// B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
 								if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
 									for (var idy = 1; idy < Number(cell.options.colspan); idy++) {
 										objTableGrid[rIdx][currColIdx + idy] = { hmerge: true, text: 'hmerge' }
@@ -303,7 +303,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 						// 2: OPTIONS: Build/set cell options
 						let cellOpts = cell.options || ({} as ITableCell['options'])
-						/// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
 						cell.options = cellOpts
 
 						// B: Inherit some options from table when cell options dont exist
@@ -345,7 +344,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 							cellMargin[2] * ONEPT +
 							'"'
 
-						// FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+						// TODO: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 3: ROWSPAN: Add dummy cells for any active rowspan
 						if (cell.vmerge) {
@@ -357,7 +356,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>'
 
 						// 5: Borders: Add any borders
-						/// TODO=3: FIXME: stop using `none` if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
 						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type == 'none') {
 							strXml += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>'
 							strXml += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>'
@@ -507,7 +505,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strSlideXml += '</a:effectLst>'
 				}
 
-				/* FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
+				/* TODO: FUTURE: Text wrapping (copied from MS-PPTX export)
 					// Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
 					if ( slideItemObj.options.textWrap ) {
 						strSlideXml += '<a:extLst>'
@@ -974,7 +972,7 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 		if (typeof opts.hyperlink !== 'object') throw "ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` "
 		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw "ERROR: 'hyperlink requires either `url` or `slide`'"
 		else if (opts.hyperlink.url) {
-			// FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
+			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
 			runProps +=
 				'<a:hlinkClick r:id="rId' +
