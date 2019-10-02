@@ -24,7 +24,7 @@ export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: s
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 type MediaType = 'audio' | 'online' | 'video'
 
-export interface PositionOptions {
+export interface PositionOptions { 
 	x?: Coord
 	y?: Coord
 	w?: Coord
@@ -399,8 +399,18 @@ export interface ISlideMasterOptions {
 	width?: number
 	margin?: Margin
 	bkgd?: string
-	objects?: [{}]
+	objects?: [
+		{ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: { options: ITextOpts } } | { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
+	]
 	slideNumber?: ISlideNumber
+}
+export interface ISlideMstrObjPlchldrOpts {
+	name: string
+	type: PLACEHOLDER_TYPES
+	x: Coord
+	y: Coord
+	w: Coord
+	h: Coord
 }
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_TYPE_NAMES | IChartMulti[]

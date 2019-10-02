@@ -19,6 +19,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
+	PLACEHOLDER_TYPES,
 } from './core-enums'
 import {
 	ISlide,
@@ -37,6 +38,7 @@ import {
 	ITableOptions,
 	TableRow,
 	OptsChartGridLine,
+	ISlideMstrObjPlchldrOpts,
 } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { getSlidesForTableRows } from './gen-tables'
@@ -552,8 +554,20 @@ export function addNotesDefinition(target: ISlide, notes: string) {
  * @param {Object} `opt`
  * @param {ISlide} `target` slide object that the placeholder should be added to
  */
-export function addPlaceholderDefinition(target: ISlide, text: string, opt: object) {
+export function addPlaceholderDefinition(target: ISlide, text: string, opt: ISlideMstrObjPlchldrOpts) {
+	// FIXME: there are several tpyes - not all placeholders are text!
+	// but it seems to work (see below) - INVESTIGATE: how it s/b written
 	return addTextDefinition(target, text, opt, true)
+
+	/*
+	this works, albeit not for masters, - it UNDOCUMENTED (oops) and why is type=body (s/b image?), or if we do use body as the locale (like title), than whats 'image' for?
+	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path) });
+
+	// TODO: TODO-3: this has never worked
+	// https://github.com/gitbrent/PptxGenJS/issues/599
+	if (opt.type == PLACEHOLDER_TYPES.title || opt.type == PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
+	else if (opt.type == PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
+	*/
 }
 
 /**
