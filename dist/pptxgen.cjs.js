@@ -2367,7 +2367,7 @@ function slideObjectToXml(slide) {
                     '      <a:tbl>' +
                     '        <a:tblPr/>';
                 // + '        <a:tblPr bandRow="1"/>';
-                // FIXME: Support banded rows, first/last row, etc.
+                // TODO: Support banded rows, first/last row, etc.
                 // NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
                 // <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
                 // STEP 2: Set column widths
@@ -2426,7 +2426,7 @@ function slideObjectToXml(slide) {
                             if (!objTableGrid_1[rIdx][currColIdx]) {
                                 // A: Set this cell
                                 objTableGrid_1[rIdx][currColIdx] = cell;
-                                // B: Handle `colspan` or `rowspan` (a {cell} cant have both! FIXME: FUTURE: ROWSPAN & COLSPAN in same cell)
+                                // B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
                                 if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
                                     for (var idy = 1; idy < Number(cell.options.colspan); idy++) {
                                         objTableGrid_1[rIdx][currColIdx + idy] = { hmerge: true, text: 'hmerge' };
@@ -2477,7 +2477,6 @@ function slideObjectToXml(slide) {
                             return;
                         // 2: OPTIONS: Build/set cell options
                         var cellOpts = cell.options || {};
-                        /// TODO-3: FIXME: ONLY MAKE CELLS with objects! if (typeof cell === 'number' || typeof cell === 'string') cell = { text: cell.toString() }
                         cell.options = cellOpts;
                         ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(function (name) {
                             if (objTabOpts_1[name] && !cellOpts[name] && cellOpts[name] != 0)
@@ -2514,7 +2513,7 @@ function slideObjectToXml(slide) {
                             '" marB="' +
                             cellMargin[2] * ONEPT +
                             '"';
-                        // FIXME: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+                        // TODO: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 3: ROWSPAN: Add dummy cells for any active rowspan
                         if (cell.vmerge) {
                             strXml_1 += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
@@ -2523,7 +2522,6 @@ function slideObjectToXml(slide) {
                         // 4: Set CELL content and properties ==================================
                         strXml_1 += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>';
                         // 5: Borders: Add any borders
-                        /// TODO=3: FIXME: stop using `none` if (cellOpts.border && typeof cellOpts.border === 'string' && cellOpts.border.toLowerCase() == 'none') {
                         if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type == 'none') {
                             strXml_1 += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>';
                             strXml_1 += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>';
@@ -2665,7 +2663,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '</a:outerShdw>';
                     strSlideXml += '</a:effectLst>';
                 }
-                /* FIXME: FUTURE: Text wrapping (copied from MS-PPTX export)
+                /* TODO: FUTURE: Text wrapping (copied from MS-PPTX export)
                     // Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
                     if ( slideItemObj.options.textWrap ) {
                         strSlideXml += '<a:extLst>'
@@ -2822,10 +2820,9 @@ function slideObjectToXml(slide) {
     });
     // STEP 5: Add slide numbers last (if any)
     if (slide.slideNumberObj) {
-        // TODO: TODO-3:
         // FIXME: slide numbers not working
-        //console.log('FIXME: slideNumberObj')
-        //console.log(slide)
+        console.log('FIXME: slideNumberObj');
+        console.log(slide);
         strSlideXml +=
             '<p:sp>' +
                 '  <p:nvSpPr>' +
@@ -3109,7 +3106,7 @@ function genXmlTextRunProperties(opts, isDefault) {
         else if (!opts.hyperlink.url && !opts.hyperlink.slide)
             throw "ERROR: 'hyperlink requires either `url` or `slide`'";
         else if (opts.hyperlink.url) {
-            // FIXME-20170410: FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
+            // TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
             //runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
             runProps +=
                 '<a:hlinkClick r:id="rId' +
@@ -4350,7 +4347,18 @@ function addNotesDefinition(target, notes) {
  * @param {ISlide} `target` slide object that the placeholder should be added to
  */
 function addPlaceholderDefinition(target, text, opt) {
+    // FIXME: there are several tpyes - not all placeholders are text!
+    // but it seems to work (see below) - INVESTIGATE: how it s/b written
     return addTextDefinition(target, text, opt, true);
+    /*
+    this works, albeit not for masters, - it UNDOCUMENTED (oops) and why is type=body (s/b image?), or if we do use body as the locale (like title), than whats 'image' for?
+    slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path) });
+
+    // TODO: TODO-3: this has never worked
+    // https://github.com/gitbrent/PptxGenJS/issues/599
+    if (opt.type == PLACEHOLDER_TYPES.title || opt.type == PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
+    else if (opt.type == PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
+    */
 }
 /**
  * Adds a shape object to a slide definition.
