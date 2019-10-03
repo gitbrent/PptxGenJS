@@ -254,7 +254,7 @@ export default class PptxGenJS {
 	 */
 	getSlide = (slideNum: number): ISlide => {
 		return this.slides.filter(slide => {
-			return slide.number == slideNum
+			return slide.number === slideNum
 		})[0]
 	}
 
@@ -268,7 +268,7 @@ export default class PptxGenJS {
 
 		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
 		this.slideLayouts.filter(layout => {
-			return layout.name == DEF_PRES_LAYOUT_NAME
+			return layout.name === DEF_PRES_LAYOUT_NAME
 		})[0].slideNumberObj = slideNum
 	}
 
@@ -286,9 +286,9 @@ export default class PptxGenJS {
 				let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
 
 				// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-				if (data.indexOf(',') == -1 && data.indexOf(';') == -1) data = 'image/png;base64,' + data
-				else if (data.indexOf(',') == -1) data = 'image/png;base64,' + data
-				else if (data.indexOf(';') == -1) data = 'image/png;' + data
+				if (data.indexOf(',') === -1 && data.indexOf(';') === -1) data = 'image/png;base64,' + data
+				else if (data.indexOf(',') === -1) data = 'image/png;base64,' + data
+				else if (data.indexOf(';') === -1) data = 'image/png;' + data
 
 				// C: Add media
 				zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true })
@@ -422,7 +422,7 @@ export default class PptxGenJS {
 				// STEP 6: Wait for Promises (if any) then generate the PPTX file
 				Promise.all(arrChartPromises)
 					.then(() => {
-						if (outputType == 'STREAM') {
+						if (outputType === 'STREAM') {
 							// A: stream file
 							zip.generateAsync({ type: 'nodebuffer' }).then(content => { resolve(content) })
 						} else if (outputType) {
@@ -529,7 +529,7 @@ export default class PptxGenJS {
 			slideNumber: this.slides.length + 1,
 			slideLayout: masterSlideName
 				? this.slideLayouts.filter(layout => {
-						return layout.name == masterSlideName
+						return layout.name === masterSlideName
 				  })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
 				: this.LAYOUTS[DEF_PRES_LAYOUT],
 		})
@@ -584,7 +584,7 @@ export default class PptxGenJS {
 			opts,
 			opts && opts.masterSlideName
 				? this.slideLayouts.filter(layout => {
-						return layout.name == opts.masterSlideName
+						return layout.name === opts.masterSlideName
 				  })[0]
 				: null
 		)
