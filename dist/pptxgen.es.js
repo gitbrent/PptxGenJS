@@ -6801,7 +6801,7 @@ var PptxGenJS = /** @class */ (function () {
          */
         this.getSlide = function (slideNum) {
             return _this.slides.filter(function (slide) {
-                return slide.number == slideNum;
+                return slide.number === slideNum;
             })[0];
         };
         /**
@@ -6813,7 +6813,7 @@ var PptxGenJS = /** @class */ (function () {
             _this.masterSlide.slideNumberObj = slideNum;
             // 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
             _this.slideLayouts.filter(function (layout) {
-                return layout.name == DEF_PRES_LAYOUT_NAME;
+                return layout.name === DEF_PRES_LAYOUT_NAME;
             })[0].slideNumberObj = slideNum;
         };
         /**
@@ -6829,11 +6829,11 @@ var PptxGenJS = /** @class */ (function () {
                     // A: Loop vars
                     var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
                     // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-                    if (data.indexOf(',') == -1 && data.indexOf(';') == -1)
+                    if (data.indexOf(',') === -1 && data.indexOf(';') === -1)
                         data = 'image/png;base64,' + data;
-                    else if (data.indexOf(',') == -1)
+                    else if (data.indexOf(',') === -1)
                         data = 'image/png;base64,' + data;
-                    else if (data.indexOf(';') == -1)
+                    else if (data.indexOf(';') === -1)
                         data = 'image/png;' + data;
                     // C: Add media
                     zip.file(rel.Target.replace('..', 'ppt'), data.split(',').pop(), { base64: true });
@@ -6956,7 +6956,7 @@ var PptxGenJS = /** @class */ (function () {
                     // STEP 6: Wait for Promises (if any) then generate the PPTX file
                     Promise.all(arrChartPromises)
                         .then(function () {
-                        if (outputType == 'STREAM') {
+                        if (outputType === 'STREAM') {
                             // A: stream file
                             zip.generateAsync({ type: 'nodebuffer' }).then(function (content) { resolve(content); });
                         }
@@ -7200,7 +7200,7 @@ var PptxGenJS = /** @class */ (function () {
     PptxGenJS.prototype.writeFile = function (exportName) {
         var _this = this;
         return new Promise(function (resolve, reject) {
-            var fs = typeof require !== 'undefined' ? require('fs') : null; // NodeJS
+            var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
             var fileName = exportName
                 ? exportName
                     .toString()
@@ -7242,7 +7242,7 @@ var PptxGenJS = /** @class */ (function () {
             slideNumber: this.slides.length + 1,
             slideLayout: masterSlideName
                 ? this.slideLayouts.filter(function (layout) {
-                    return layout.name == masterSlideName;
+                    return layout.name === masterSlideName;
                 })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
                 : this.LAYOUTS[DEF_PRES_LAYOUT],
         });
@@ -7287,7 +7287,7 @@ var PptxGenJS = /** @class */ (function () {
         if (opts === void 0) { opts = {}; }
         genTableToSlides(this, tableElementId, opts, opts && opts.masterSlideName
             ? this.slideLayouts.filter(function (layout) {
-                return layout.name == opts.masterSlideName;
+                return layout.name === opts.masterSlideName;
             })[0]
             : null);
     };
