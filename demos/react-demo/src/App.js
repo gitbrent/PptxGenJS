@@ -8,7 +8,7 @@ function App() {
 		let pptx = new pptxgen();
 		console.log(`pptx.version = ${pptx.version}`);
 		let slide = pptx.addSlide();
-		slide.addText({ text: "React Demo!", options: { x: 1, y: 1, fontSize: 36 } });
+		slide.addText("React Demo!", { x: 1, y: 1, fontSize: 36 });
 		pptx.writeFile("react-demo.pptx");
 	}
 
