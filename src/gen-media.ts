@@ -9,7 +9,7 @@ import { ISlide, ISlideLayout, ISlideRelMedia } from './core-interfaces'
  * Encode Image/Audio/Video into base64
  */
 export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<string>[] {
-	const fs = typeof require !== 'undefined' ? require('fs') : null // NodeJS
+	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 	const https = typeof require !== 'undefined' ? require('https') : null // NodeJS
 	let imageProms: Promise<string>[] = []
 

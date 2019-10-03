@@ -485,7 +485,7 @@ export default class PptxGenJS {
 	 */
 	writeFile(exportName?: string): Promise<string> {
 		return new Promise((resolve, reject) => {
-			const fs = typeof require !== 'undefined' ? require('fs') : null // NodeJS
+			const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 			let fileName = exportName
 				? exportName
 						.toString()
