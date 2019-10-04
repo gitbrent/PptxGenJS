@@ -28,7 +28,6 @@
     "path": false
   },
   "dependencies": {
-    "express": "^4.17.1",
     "https": "^1.0.0",
     "image-size": "^0.8.1",
     "jsdom": "^15.1.0",
@@ -37,6 +36,7 @@
   "devDependencies": {
     "@types/jszip": "^3.1.6",
     "@types/node": "^12.7.5",
+	"express": "^4.17.1",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-delete-lines": "0.0.7",
