@@ -35,7 +35,7 @@ import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber,
 
 let imageSizingXml = {
 	cover: function(imgSize, boxDim) {
-		var imgRatio = imgSize.h / imgSize.w,
+		let imgRatio = imgSize.h / imgSize.w,
 			boxRatio = boxDim.h / boxDim.w,
 			isBoxBased = boxRatio > imgRatio,
 			width = isBoxBased ? boxDim.h / imgRatio : boxDim.w,
@@ -45,7 +45,7 @@ let imageSizingXml = {
 		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
 	contain: function(imgSize, boxDim) {
-		var imgRatio = imgSize.h / imgSize.w,
+		let imgRatio = imgSize.h / imgSize.w,
 			boxRatio = boxDim.h / boxDim.w,
 			widthBased = boxRatio > imgRatio,
 			width = widthBased ? boxDim.w : boxDim.h / imgRatio,
@@ -55,7 +55,7 @@ let imageSizingXml = {
 		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
 	crop: function(imageSize, boxDim) {
-		var l = boxDim.x,
+		let l = boxDim.x,
 			r = imageSize.w - (boxDim.x + boxDim.w),
 			t = boxDim.y,
 			b = imageSize.h - (boxDim.y + boxDim.h),
@@ -79,7 +79,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 	// STEP 1: Add background
 	if (slide.bkgd) {
 		strSlideXml += genXmlColorSelection(null, slide.bkgd)
-	} else if (!slide.bkgd && slide.name && slide.name == DEF_PRES_LAYOUT_NAME) {
+	} else if (!slide.bkgd && slide.name && slide.name === DEF_PRES_LAYOUT_NAME) {
 		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
 		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
 	}
@@ -116,7 +116,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 		if ((slide as ISlide).slideLayout !== undefined && (slide as ISlide).slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
 			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => {
-				return object.options.placeholder == slideItemObj.options.placeholder
+				return object.options.placeholder === slideItemObj.options.placeholder
 			})[0]
 		}
 
@@ -130,10 +130,10 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
-			if (placeholderObj.options.x || placeholderObj.options.x == 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide.presLayout)
-			if (placeholderObj.options.y || placeholderObj.options.y == 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide.presLayout)
-			if (placeholderObj.options.w || placeholderObj.options.w == 0) cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide.presLayout)
-			if (placeholderObj.options.h || placeholderObj.options.h == 0) cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout)
+			if (placeholderObj.options.x || placeholderObj.options.x === 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide.presLayout)
+			if (placeholderObj.options.y || placeholderObj.options.y === 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide.presLayout)
+			if (placeholderObj.options.w || placeholderObj.options.w === 0) cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide.presLayout)
+			if (placeholderObj.options.h || placeholderObj.options.h === 0) cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout)
 		}
 		//
 		if (slideItemObj.shape) shapeType = getShapeInfo(slideItemObj.shape)
@@ -175,12 +175,12 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					'  </p:nvGraphicFramePr>' +
 					'  <p:xfrm>' +
 					'    <a:off x="' +
-					(x || (x == 0 ? 0 : EMU)) +
+					(x || (x === 0 ? 0 : EMU)) +
 					'" y="' +
-					(y || (y == 0 ? 0 : EMU)) +
+					(y || (y === 0 ? 0 : EMU)) +
 					'"/>' +
 					'    <a:ext cx="' +
-					(cx || (cx == 0 ? 0 : EMU)) +
+					(cx || (cx === 0 ? 0 : EMU)) +
 					'" cy="' +
 					(cy || EMU) +
 					'"/>' +
@@ -199,7 +199,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				// A: Col widths provided?
 				if (Array.isArray(objTabOpts.colW)) {
 					strXml += '<a:tblGrid>'
-					for (var col = 0; col < intColCnt; col++) {
+					for (let col = 0; col < intColCnt; col++) {
 						strXml +=
 							'<a:gridCol w="' +
 							Math.round(inch2Emu(objTabOpts.colW[col]) || (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt) +
@@ -212,7 +212,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					intColW = objTabOpts.colW ? objTabOpts.colW : EMU
 					if (slideItemObj.options.w && !objTabOpts.colW) intColW = Math.round((typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt)
 					strXml += '<a:tblGrid>'
-					for (var col = 0; col < intColCnt; col++) {
+					for (let col = 0; col < intColCnt; col++) {
 						strXml += '<a:gridCol w="' + intColW + '"/>'
 					}
 					strXml += '</a:tblGrid>'
@@ -245,8 +245,8 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						// Therefore, for each cell we run 0->colCount to determine the correct slot for it to reside
 						// as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
 						// E.g.: the 2nd element in the row array may actually go into the 5th table grid row cell b/c of colspans!
-						for (var idx = 0; cIdx + idx < intColCnt; idx++) {
-							var currColIdx = cIdx + idx
+						for (let idx = 0; cIdx + idx < intColCnt; idx++) {
+							let currColIdx = cIdx + idx
 
 							if (!objTableGrid[rIdx][currColIdx]) {
 								// A: Set this cell
@@ -254,11 +254,11 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 								// B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
 								if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
-									for (var idy = 1; idy < Number(cell.options.colspan); idy++) {
+									for (let idy = 1; idy < Number(cell.options.colspan); idy++) {
 										objTableGrid[rIdx][currColIdx + idy] = { hmerge: true, text: 'hmerge' }
 									}
 								} else if (cell && cell.options && cell.options.rowspan && !isNaN(Number(cell.options.rowspan))) {
-									for (var idz = 1; idz < Number(cell.options.rowspan); idz++) {
+									for (let idz = 1; idz < Number(cell.options.rowspan); idz++) {
 										if (!objTableGrid[rIdx + idz]) objTableGrid[rIdx + idz] = {}
 										objTableGrid[rIdx + idz][currColIdx] = { vmerge: true, text: 'vmerge' }
 									}
@@ -274,7 +274,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				/* DEBUG: useful for rowspan/colspan testing
 				if ( objTabOpts.verbose ) {
 					console.table(objTableGrid);
-					var arrText = [];
+					let arrText = [];
 					objTableGrid.forEach(function(row){ let arrRow = []; row.forEach(row,function(cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
 					console.table( arrText );
 				}
@@ -308,7 +308,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						// B: Inherit some options from table when cell options dont exist
 						// @see: http://officeopenxml.com/drwTableCellProperties-alignment.php
 						;['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(name => {
-							if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] != 0) cellOpts[name] = objTabOpts[name]
+							if (objTabOpts[name] && !cellOpts[name] && cellOpts[name] !== 0) cellOpts[name] = objTabOpts[name]
 						})
 
 						let cellValign = cellOpts.valign
@@ -331,7 +331,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 								  ((cell.optImp && cell.optImp.fill) || (typeof cellOpts.fill === 'string' ? cellOpts.fill.replace('#', '') : '')).toUpperCase() +
 								  '"/></a:solidFill>'
 								: ''
-						let cellMargin = cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
+						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
 						let cellMarginXml =
 							' marL="' +
@@ -356,7 +356,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 						strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>'
 
 						// 5: Borders: Add any borders
-						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type == 'none') {
+						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
 							strXml += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>'
 							strXml += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>'
 							strXml += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>'
@@ -378,14 +378,14 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 										(cellOpts.border[obj.idx].color ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +
 										'"/></a:solidFill>'
 									let intW =
-										cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt == 0)
+										cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt === 0)
 											? ONEPT * Number(cellOpts.border[obj.idx].pt)
 											: ONEPT
 									strXml += '<a:' + obj.name + ' w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strC + '</a:' + obj.name + '>'
 								} else strXml += '<a:' + obj.name + ' w="0"><a:miter lim="400000"/></a:' + obj.name + '>'
 							})
 						} else if (cellOpts.border && !Array.isArray(cellOpts.border)) {
-							let intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT
+							let intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt === 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT
 							let strClr =
 								'<a:solidFill><a:srgbClr val="' +
 								(cellOpts.border.color ? cellOpts.border.color.replace('#', '') : DEF_CELL_BORDER.color) +
@@ -408,7 +408,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 						// LAST: COLSPAN: Add a 'merged' col for each column being merged (SEE: http://officeopenxml.com/drwTableGrid.php)
 						if (cellOpts.colspan) {
-							for (var tmp = 1; tmp < Number(cellOpts.colspan); tmp++) {
+							for (let tmp = 1; tmp < Number(cellOpts.colspan); tmp++) {
 								strXml += '<a:tc hMerge="1"><a:tcPr/></a:tc>'
 							}
 						}
@@ -434,7 +434,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			case SLIDE_OBJECT_TYPES.text:
 			case SLIDE_OBJECT_TYPES.placeholder:
 				// Lines can have zero cy, but text should not
-				if (!slideItemObj.options.line && cy == 0) cy = EMU * 0.3
+				if (!slideItemObj.options.line && cy === 0) cy = EMU * 0.3
 
 				// Margin/Padding/Inset for textboxes
 				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
@@ -449,7 +449,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin * ONEPT
 				}
 
-				if (shapeType == null) shapeType = getShapeInfo(null)
+				if (shapeType === null) shapeType = getShapeInfo(null)
 
 				// A: Start SHAPE =======================================================
 				strSlideXml += '<p:sp>'
@@ -527,7 +527,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.image:
-				var sizing = slideItemObj.options.sizing,
+				let sizing = slideItemObj.options.sizing,
 					rounding = slideItemObj.options.rounding,
 					width = cx,
 					height = cy
@@ -557,11 +557,11 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				// NOTE: This works for both cases: either `path` or `data` contains the SVG
 				if (
 					(slide['relsMedia'] || []).filter(rel => {
-						return rel.rId == slideItemObj.imageRid
+						return rel.rId === slideItemObj.imageRid
 					})[0] &&
 					(slide['relsMedia'] || []).filter(rel => {
-						return rel.rId == slideItemObj.imageRid
-					})[0]['extn'] == 'svg'
+						return rel.rId === slideItemObj.imageRid
+					})[0]['extn'] === 'svg'
 				) {
 					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
 					strSlideXml += ' <a:extLst>'
@@ -574,7 +574,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
 				}
 				if (sizing && sizing.type) {
-					var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide.presLayout) : cx,
+					let boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide.presLayout) : cx,
 						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide.presLayout) : cy,
 						boxX = getSmartParseNumber(sizing.x || 0, 'X', slide.presLayout),
 						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide.presLayout)
@@ -597,7 +597,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.media:
-				if (slideItemObj.mtype == 'online') {
+				if (slideItemObj.mtype === 'online') {
 					strSlideXml += '<p:pic>'
 					strSlideXml += ' <p:nvPicPr>'
 					// IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preview image rId, PowerPoint throws error!
@@ -670,6 +670,9 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				strSlideXml += '  </a:graphicData>'
 				strSlideXml += ' </a:graphic>'
 				strSlideXml += '</p:graphicFrame>'
+				break
+
+			default:
 				break
 		}
 	})
@@ -749,7 +752,7 @@ function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { 
 	slide.rels.forEach((rel: ISlideRel) => {
 		lastRid = Math.max(lastRid, rel.rId)
 		if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
-			if (rel.data == 'slide') {
+			if (rel.data === 'slide') {
 				strXml +=
 					'<Relationship Id="rId' +
 					rel.rId +
@@ -848,6 +851,8 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 				case 'justify':
 					paragraphPropXml += ' algn="just"'
 					break
+				default:
+					break
 			}
 		}
 
@@ -873,7 +878,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 		// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
 		if (typeof textObj.options.bullet === 'object') {
 			if (textObj.options.bullet.type) {
-				if (textObj.options.bullet.type.toString().toLowerCase() == 'number') {
+				if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
 					paragraphPropXml +=
 						' marL="' +
 						(textObj.options.indentLevel && textObj.options.indentLevel > 0
@@ -886,10 +891,10 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 						'arabicPeriod'}" startAt="${textObj.options.bullet.startAt || '1'}"/>`
 				}
 			} else if (textObj.options.bullet.code) {
-				var bulletCode = '&#x' + textObj.options.bullet.code + ';'
+				let bulletCode = '&#x' + textObj.options.bullet.code + ';'
 
 				// Check value for hex-ness (s/b 4 char hex)
-				if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false) {
+				if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) === false) {
 					console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!')
 					bulletCode = BULLET_TYPES['DEFAULT']
 				}
@@ -902,7 +907,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 					'"'
 				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
 			}
-		} else if (textObj.options.bullet == true) {
+		} else if (textObj.options.bullet === true) {
 			paragraphPropXml +=
 				' marL="' +
 				(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
@@ -1042,10 +1047,10 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 		bodyProperties += slideObject.options.bodyProp.wrap ? ' wrap="' + slideObject.options.bodyProp.wrap + '"' : ' wrap="square"'
 
 		// B: Textbox margins [padding]
-		if (slideObject.options.bodyProp.lIns || slideObject.options.bodyProp.lIns == 0) bodyProperties += ' lIns="' + slideObject.options.bodyProp.lIns + '"'
-		if (slideObject.options.bodyProp.tIns || slideObject.options.bodyProp.tIns == 0) bodyProperties += ' tIns="' + slideObject.options.bodyProp.tIns + '"'
-		if (slideObject.options.bodyProp.rIns || slideObject.options.bodyProp.rIns == 0) bodyProperties += ' rIns="' + slideObject.options.bodyProp.rIns + '"'
-		if (slideObject.options.bodyProp.bIns || slideObject.options.bodyProp.bIns == 0) bodyProperties += ' bIns="' + slideObject.options.bodyProp.bIns + '"'
+		if (slideObject.options.bodyProp.lIns || slideObject.options.bodyProp.lIns === 0) bodyProperties += ' lIns="' + slideObject.options.bodyProp.lIns + '"'
+		if (slideObject.options.bodyProp.tIns || slideObject.options.bodyProp.tIns === 0) bodyProperties += ' tIns="' + slideObject.options.bodyProp.tIns + '"'
+		if (slideObject.options.bodyProp.rIns || slideObject.options.bodyProp.rIns === 0) bodyProperties += ' rIns="' + slideObject.options.bodyProp.rIns + '"'
+		if (slideObject.options.bodyProp.bIns || slideObject.options.bodyProp.bIns === 0) bodyProperties += ' bIns="' + slideObject.options.bodyProp.bIns + '"'
 
 		// C: Add rtl after margins
 		bodyProperties += ' rtlCol="0"'
@@ -1072,7 +1077,7 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 	}
 
 	// LAST: Return Close bodyProp
-	return slideObject.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties
+	return slideObject.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties
 }
 
 /**
@@ -1085,12 +1090,12 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	let opts: IObjectOptions = slideObj.options || {}
 	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
-	if (opts && slideObj.type != SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text == null)) return ''
+	if (opts && slideObj.type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null)) return ''
 
 	// Vars
 	let arrTextObjects: IText[] = []
-	let tagStart = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
-	let tagClose = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
+	let tagStart = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
+	let tagClose = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
 	let strSlideXml = tagStart
 
 	// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
@@ -1111,7 +1116,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		slideObj.text.forEach((obj, idx) => {
 			// A: Set options
 			obj.options = obj.options || opts || {}
-			if (idx == 0 && obj.options && !obj.options.bullet && opts.bullet) obj.options.bullet = opts.bullet
+			if (idx === 0 && obj.options && !obj.options.bullet && opts.bullet) obj.options.bullet = opts.bullet
 
 			// B: Cast to text-object and fix line-breaks (if needed)
 			if (typeof obj.text === 'string' || typeof obj.text === 'number') {
@@ -1155,7 +1160,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		// B: 'lstStyle'
 		// NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
 		// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
-		if (opts.h == 0 && opts.line && opts.align) {
+		if (opts.h === 0 && opts.line && opts.align) {
 			strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
 		} else if (slideObj.type === 'placeholder') {
 			strSlideXml += '<a:lstStyle>'
@@ -1169,7 +1174,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	// STEP 4: Loop over each text object and create paragraph props, text run, etc.
 	arrTextObjects.forEach((textObj, idx) => {
 		// Clear/Increment loop vars
-		paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
+		let paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
 		textObj.options.lineIdx = idx
 
 		// A: Inherit pPr-type options from parent shape's `options`
@@ -1180,10 +1185,10 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
 
 		textObj.options.lineIdx = idx
-		var paragraphPropXml = genXmlParagraphProperties(textObj, false)
+		paragraphPropXml = genXmlParagraphProperties(textObj, false)
 
 		// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
-		if (idx == 0) {
+		if (idx === 0) {
 			// Add paragraphProperties right after <p> before textrun(s) begin
 			strSlideXml += '<a:p>' + paragraphPropXml
 		} else if (idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined')) {
@@ -1195,7 +1200,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 		Object.entries(opts).forEach(([key, val]) => {
 			// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-			if (key != 'bullet' && !textObj.options[key]) textObj.options[key] = val
+			if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
 		})
 
 		// D: Add formatted textrun
@@ -1204,7 +1209,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 
 	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
 	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
-	if (slideObj.type == SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
+	if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 		if (opts.fontFace) {
 			strSlideXml +=
 				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
@@ -1266,11 +1271,11 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[],
 	// STEP 1: Add standard/any media types used in Presenation
 	strXml += '<Default Extension="png" ContentType="image/png"/>'
 	strXml += '<Default Extension="gif" ContentType="image/gif"/>'
-	strXml += '<Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
-	strXml += '<Default Extension="mp4" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
+	strXml += '<Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
+	strXml += '<Default Extension="mp4" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
 	slides.forEach(slide => {
 		;(slide.relsMedia || []).forEach(rel => {
-			if (rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1) {
+			if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1) {
 				strXml += '<Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>'
 			}
 		})
@@ -1323,7 +1328,7 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[],
 		strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 	})
 	masterSlide.relsMedia.forEach(rel => {
-		if (rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1)
+		if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1)
 			strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>'
 	})
 
@@ -1426,7 +1431,7 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 	strXml += '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster" Target="slideMasters/slideMaster1.xml"/>'
-	for (var idx = 1; idx <= slides.length; idx++) {
+	for (let idx = 1; idx <= slides.length; idx++) {
 		strXml +=
 			'<Relationship Id="rId' + ++intRelNum + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide' + idx + '.xml"/>'
 	}
@@ -1800,7 +1805,7 @@ export function correctShadowOptions(IShadowOptions: IShadowOptions) {
 	if (!IShadowOptions || IShadowOptions === null) return
 
 	// OPT: `type`
-	if (IShadowOptions.type != 'outer' && IShadowOptions.type != 'inner' && IShadowOptions.type != 'none') {
+	if (IShadowOptions.type !== 'outer' && IShadowOptions.type !== 'inner' && IShadowOptions.type !== 'none') {
 		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
 		IShadowOptions.type = 'outer'
 	}
@@ -1833,14 +1838,14 @@ export function correctShadowOptions(IShadowOptions: IShadowOptions) {
 export function getShapeInfo(shapeName) {
 	if (!shapeName) return PowerPointShapes.RECTANGLE
 
-	if (typeof shapeName == 'object' && shapeName.name && shapeName.displayName && shapeName.avLst) return shapeName
+	if (typeof shapeName === 'object' && shapeName.name && shapeName.displayName && shapeName.avLst) return shapeName
 
 	if (PowerPointShapes[shapeName]) return PowerPointShapes[shapeName]
 
-	var objShape = Object.keys(PowerPointShapes).filter((key: string) => {
-		return PowerPointShapes[key].name == shapeName || PowerPointShapes[key].displayName
+	let objShape = Object.keys(PowerPointShapes).filter((key: string) => {
+		return PowerPointShapes[key].name === shapeName || PowerPointShapes[key].displayName
 	})[0]
-	if (typeof objShape !== 'undefined' && objShape != null) return objShape
+	if (typeof objShape !== 'undefined' && objShape !== null) return objShape
 
 	return PowerPointShapes.RECTANGLE
 }
