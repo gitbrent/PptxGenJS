@@ -12,10 +12,11 @@ pptx.writeFile("react-demo.pptx");`;
 
 	function runDemo() {
 		let pptx = new pptxgen();
-		console.log(`pptx.version = ${pptx.version}`);
 		let slide = pptx.addSlide();
-		slide.addText("React Demo!", { x: 1, y: 1, w:'80%', h:1, fontSize: 36, fill:'eeeeee', align:'center' });
+		slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee", align: "center" });
 		pptx.writeFile("react-demo.pptx");
+
+		console.log(`pptx.version = ${pptx.version}`);
 	}
 
 	return (
