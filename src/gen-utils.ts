@@ -14,20 +14,20 @@ import { IChartOpts, ILayout, ShapeFill } from './core-interfaces'
  */
 export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ILayout): number {
 	// FIRST: Convert string numeric value if reqd
-	if (typeof size == 'string' && !isNaN(Number(size))) size = Number(size)
+	if (typeof size === 'string' && !isNaN(Number(size))) size = Number(size)
 
 	// CASE 1: Number in inches
 	// Assume any number less than 100 is inches
-	if (typeof size == 'number' && size < 100) return inch2Emu(size)
+	if (typeof size === 'number' && size < 100) return inch2Emu(size)
 
 	// CASE 2: Number is already converted to something other than inches
 	// Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
-	if (typeof size == 'number' && size >= 100) return size
+	if (typeof size === 'number' && size >= 100) return size
 
 	// CASE 3: Percentage (ex: '50%')
-	if (typeof size == 'string' && size.indexOf('%') > -1) {
-		if (xyDir && xyDir == 'X') return Math.round((parseFloat(size) / 100) * layout.width)
-		if (xyDir && xyDir == 'Y') return Math.round((parseFloat(size) / 100) * layout.height)
+	if (typeof size === 'string' && size.indexOf('%') > -1) {
+		if (xyDir && xyDir === 'X') return Math.round((parseFloat(size) / 100) * layout.width)
+		if (xyDir && xyDir === 'Y') return Math.round((parseFloat(size) / 100) * layout.height)
 
 		// Default: Assume width (x/cx)
 		return Math.round((parseFloat(size) / 100) * layout.width)
@@ -45,8 +45,8 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
  */
 export function getUuid(uuidFormat: string): string {
 	return uuidFormat.replace(/[xy]/g, function(c) {
-		var r = (Math.random() * 16) | 0,
-			v = c == 'x' ? r : (r & 0x3) | 0x8
+		let r = (Math.random() * 16) | 0,
+			v = c === 'x' ? r : (r & 0x3) | 0x8
 		return v.toString(16)
 	})
 }
@@ -114,8 +114,8 @@ export function convertRotationDegrees(d: number): number {
  * @returns {string} hex string
  */
 export function componentToHex(c: number): string {
-	var hex = c.toString(16)
-	return hex.length == 1 ? '0' + hex : hex
+	let hex = c.toString(16)
+	return hex.length === 1 ? '0' + hex : hex
 }
 
 /**
@@ -143,7 +143,7 @@ export function rgbToHex(r: number, g: number, b: number): string {
 export function createColorElement(colorStr: string, innerElements?: string): string {
 	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
 
-	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) == -1) {
+	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
 		console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values')
 		colorStr = DEF_FONT_COLOR
 	}
@@ -171,7 +171,7 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 	}
 
 	if (shapeFill) {
-		if (typeof shapeFill == 'string') colorVal = shapeFill
+		if (typeof shapeFill === 'string') colorVal = shapeFill
 		else {
 			if (shapeFill.type) fillType = shapeFill.type
 			if (shapeFill.color) colorVal = shapeFill.color
@@ -181,6 +181,8 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 		switch (fillType) {
 			case 'solid':
 				outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>'
+				break
+			default:
 				break
 		}
 	}
