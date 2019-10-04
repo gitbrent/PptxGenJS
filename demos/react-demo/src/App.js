@@ -4,11 +4,17 @@ import "./App.css";
 import pptxgen from "./pptxgen.es.js"; // copied from `PptxGenJS/dist` (Why:react-starter-kit only supports local deps)
 
 function App() {
+	const demoCode = `import pptxgen from "pptxgenjs";\n
+let pptx = new pptxgen();
+let slide = pptx.addSlide();
+slide.addText("React Demo!", \{ x:1, y:1, w:'80%', h:1, fontSize:36, fill:'eeeeee', align:'center' \});
+pptx.writeFile("react-demo.pptx");`;
+
 	function runDemo() {
 		let pptx = new pptxgen();
 		console.log(`pptx.version = ${pptx.version}`);
 		let slide = pptx.addSlide();
-		slide.addText("React Demo!", { x: 1, y: 1, fontSize: 36 });
+		slide.addText("React Demo!", { x: 1, y: 1, w:'80%', h:1, fontSize: 36, fill:'eeeeee', align:'center' });
 		pptx.writeFile("react-demo.pptx");
 	}
 
@@ -78,12 +84,10 @@ function App() {
 					<p className="lead">Sample React application to demonstrate using the PptxGenJS library as a module.</p>
 					<hr className="my-4" />
 
-					<p>Demo code:</p>
-
-					<p>
-						<code>import pptxgen from "pptxgenjs";</code>
-						<code>let pptx = new pptxgen();</code>
-					</p>
+					<h5 className="text-info">Demo Code</h5>
+					<pre className="my-4">
+						<code className="language-javascript">{demoCode}</code>
+					</pre>
 
 					<button type="button" className="btn btn-success w-25" onClick={ev => runDemo()}>
 						Run Demo

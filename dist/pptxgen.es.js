@@ -6622,7 +6622,7 @@ function createShadowElement(options, defaults) {
  * Encode Image/Audio/Video into base64
  */
 function encodeSlideMediaRels(layout) {
-    var fs = typeof require !== 'undefined' ? require('fs') : null; // NodeJS
+    var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
     var https = typeof require !== 'undefined' ? require('https') : null; // NodeJS
     var imageProms = [];
     // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
