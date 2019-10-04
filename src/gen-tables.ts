@@ -20,7 +20,7 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 	let strCurrLine = ''
 
 	// A: Allow a single space/whitespace as cell text (user-requested feature)
-	if (cell.text && cell.text.toString().trim() == '') return [' ']
+	if (cell.text && cell.text.toString().trim().length === 0) return [' ']
 
 	// B: Remove leading/trailing spaces
 	let inStr = (cell.text || '').toString().trim()
@@ -86,13 +86,13 @@ export function getSlidesForTableRows(
 	// STEP 1: Calculate margins
 	{
 		// Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
-		if (!tabOpts.slideMargin && tabOpts.slideMargin != 0) tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
+		if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0) tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
 
 		if (masterSlide && typeof masterSlide.margin !== 'undefined') {
 			if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
 			else if (!isNaN(Number(masterSlide.margin)))
 				arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)]
-		} else if (tabOpts.slideMargin || tabOpts.slideMargin == 0) {
+		} else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
 			if (Array.isArray(tabOpts.slideMargin)) arrInchMargins = tabOpts.slideMargin
 			else if (!isNaN(tabOpts.slideMargin)) arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin]
 		}
@@ -149,7 +149,7 @@ export function getSlidesForTableRows(
 		// No column widths provided? Then distribute cols.
 		else {
 			tabOpts.colW = []
-			for (var iCol = 0; iCol < numCols; iCol++) {
+			for (let iCol = 0; iCol < numCols; iCol++) {
 				tabOpts.colW.push(emuSlideTabW / EMU / numCols)
 			}
 		}
@@ -347,7 +347,7 @@ export function getSlidesForTableRows(
  */
 export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
 	let opts = options || {}
-	opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5
+	opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout.width
 	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = []
 	let arrObjTabBodyRows: [ITableToSlidesCell[]?] = []
@@ -379,7 +379,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 
 	// STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
 	let firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child th`)
-	if (firstRowCells.length == 0) firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child td`)
+	if (firstRowCells.length === 0) firstRowCells = document.querySelectorAll(`#${tabEleId} tr:first-child td`)
 	firstRowCells.forEach((cell: HTMLElement) => {
 		if (cell.getAttribute('colspan')) {
 			// Guesstimate (divide evenly) col widths
@@ -431,7 +431,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					.split(',')
 				if (
 					// NOTE: (ISSUE#57): Default for unstyled tables is black bkgd, so use white instead
-					window.getComputedStyle(cell).getPropertyValue('background-color') == 'rgba(0, 0, 0, 0)' ||
+					window.getComputedStyle(cell).getPropertyValue('background-color') === 'rgba(0, 0, 0, 0)' ||
 					window.getComputedStyle(cell).getPropertyValue('transparent')
 				) {
 					arrRGB2 = ['255', '255', '255']
@@ -441,7 +441,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				let cellOpts: ITableCellOpts = {
 					align: null,
 					bold:
-						window.getComputedStyle(cell).getPropertyValue('font-weight') == 'bold' || Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
+						window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
+						Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
 							? true
 							: false,
 					border: null,
@@ -471,11 +472,11 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 						.getPropertyValue('text-align')
 						.replace('start', 'left')
 						.replace('end', 'right')
-					cellOpts.align = align == 'center' ? 'center' : align == 'left' ? 'left' : align == 'right' ? 'right' : null
+					cellOpts.align = align === 'center' ? 'center' : align === 'left' ? 'left' : align === 'right' ? 'right' : null
 				}
 				if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
 					let valign = window.getComputedStyle(cell).getPropertyValue('vertical-align')
-					cellOpts.valign = valign == 'top' ? 'top' : valign == 'middle' ? 'middle' : valign == 'bottom' ? 'bottom' : null
+					cellOpts.valign = valign === 'top' ? 'top' : valign === 'middle' ? 'middle' : valign === 'bottom' ? 'bottom' : null
 				}
 
 				// C: Add padding [margin] (if any)
@@ -557,7 +558,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 			let newSlide = pptx.addSlide(opts.masterSlideName || null)
 
 			// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idx == 0) opts.y = opts.y || arrInchMargins[0]
+			if (idx === 0) opts.y = opts.y || arrInchMargins[0]
 			if (idx > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
 			if (opts.verbose) console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
