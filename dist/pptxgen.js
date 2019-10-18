@@ -3842,8 +3842,14 @@ var PptxGenJS = function(){
 		strXml += ' <c:crossAx val="'+ crossAxId +'"/>';
 		strXml += ' <c:crosses val="'+ crosses +'"/>';
 		strXml += ' <c:crossBetween val="'+ ( opts.type.name === 'scatter' || opts.hasArea ? 'midCat' : 'between' ) +'"/>';
-		if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';
-		strXml += '</c:valAx>';
+		if ( opts.valAxisMajorUnit ) strXml += ' <c:majorUnit val="'+ opts.valAxisMajorUnit +'"/>';    
+    if ( opts.valAxisDisplayUnit ) {
+      strXml += ' <c:dispUnits>';
+      strXml += ' <c:builtInUnit val="'+ opts.valAxisDisplayUnit +'"/>';
+      strXml += ' <c:dispUnitsLbl/>';
+      strXml += ' </c:dispUnits>';
+    }
+    strXml += '</c:valAx>';
 
 		return strXml;
 	}
