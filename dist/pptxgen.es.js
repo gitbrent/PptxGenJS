@@ -1,3 +1,4 @@
+/* PptxGenJS 3.0.0-beta.5 @ 2019-10-20T21:00:11.104Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2123,7 +2124,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
                     fontFace: (window.getComputedStyle(cell).getPropertyValue('font-family') || '')
                         .split(',')[0]
-                        .replace(/\"/g, '')
+                        .replace(/"/g, '')
                         .replace('inherit', '')
                         .replace('initial', '') || null,
                     fontSize: Number(window
@@ -2869,7 +2870,7 @@ function slideObjectToXml(slide) {
             strSlideXml += '</a:defRPr>';
         }
         strSlideXml += '</a:lvl1pPr></a:lstStyle>';
-        strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum">' + '<a:rPr lang="en-US"/><a:t></a:t></a:fld>' + '<a:endParaRPr lang="en-US"/></a:p>';
+        strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum"><a:rPr lang="en-US"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>';
         strSlideXml += '</p:txBody></p:sp>';
     }
     // STEP 6: Close spTree and finalize slide XML
@@ -3864,7 +3865,7 @@ var _chartCounter = 0;
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FIXME :ISlide|ISlideLayout*/) {
+function createSlideObject(slideDef, target) {
     // STEP 1: Add background
     if (slideDef.bkgd) {
         addBackgroundDefinition(slideDef.bkgd, target);
@@ -3873,16 +3874,17 @@ function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FIXME :IS
     if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
         slideDef.objects.forEach(function (object, idx) {
             var key = Object.keys(object)[0];
+            var tgt = target;
             if (MASTER_OBJECTS[key] && key === 'chart')
-                addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target);
+                addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts);
             else if (MASTER_OBJECTS[key] && key === 'image')
-                addImageDefinition(target, object[key]);
+                addImageDefinition(tgt, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'line')
-                addShapeDefinition(target, BASE_SHAPES.LINE, object[key]);
+                addShapeDefinition(tgt, BASE_SHAPES.LINE, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'rect')
-                addShapeDefinition(target, BASE_SHAPES.RECTANGLE, object[key]);
+                addShapeDefinition(tgt, BASE_SHAPES.RECTANGLE, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'text')
-                addTextDefinition(target, object[key].text, object[key].options, false);
+                addTextDefinition(tgt, object[key].text, object[key].options, false);
             else if (MASTER_OBJECTS[key] && key === 'placeholder') {
                 // TODO: 20180820: Check for existing `name`?
                 object[key].options.placeholder = object[key].options.name;
@@ -3890,7 +3892,7 @@ function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FIXME :IS
                 object[key].options.placeholderType = object[key].options.type;
                 delete object[key].options.type; // remap name for earier handling internally
                 object[key].options.placeholderIdx = 100 + idx;
-                addPlaceholderDefinition(target, object[key].text, object[key].options);
+                addPlaceholderDefinition(tgt, object[key].text, object[key].options);
             }
         });
     }
