@@ -52,7 +52,7 @@ let _chartCounter: number = 0
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef:ISlideMasterOptions, target /*FIXME :ISlide|ISlideLayout*/) {
+export function createSlideObject(slideDef:ISlideMasterOptions, target:ISlideLayout) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -62,11 +62,12 @@ export function createSlideObject(slideDef:ISlideMasterOptions, target /*FIXME :
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
 		slideDef.objects.forEach((object, idx: number) => {
 			let key = Object.keys(object)[0]
-			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(object[key].type, object[key].data, object[key].opts, target)
-			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(target, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(target, BASE_SHAPES.LINE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(target, BASE_SHAPES.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(target, object[key].text, object[key].options, false)
+			let tgt = target as ISlide
+			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
+			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, BASE_SHAPES.LINE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, BASE_SHAPES.RECTANGLE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, object[key].text, object[key].options, false)
 			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
@@ -74,7 +75,7 @@ export function createSlideObject(slideDef:ISlideMasterOptions, target /*FIXME :
 				object[key].options.placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
 				object[key].options.placeholderIdx = 100 + idx
-				addPlaceholderDefinition(target, object[key].text, object[key].options)
+				addPlaceholderDefinition(tgt, object[key].text, object[key].options)
 			}
 		})
 	}
@@ -892,7 +893,7 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
  * @param {String|Object} bkg - color string or an object with image definition
  * @param {ISlide} target - slide object that the background is set to
  */
-function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide) {
+function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide|ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
