@@ -7,21 +7,23 @@ import { ISlide, ISlideLayout, ISlideRelMedia } from './core-interfaces'
 
 /**
  * Encode Image/Audio/Video into base64
+ * @param {ISlide | ISlideLayout} layout - slide layout
+ * @return {Promise} promise of generating the rels
  */
 export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<string>[] {
 	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
-	const https = typeof require !== 'undefined' ? require('https') : null // NodeJS
+	const https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null // NodeJS
 	let imageProms: Promise<string>[] = []
 
 	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
 	layout.relsMedia
 		.filter(rel => {
-			return rel.type != 'online' && !rel.data
+			return rel.type !== 'online' && !rel.data
 		})
 		.forEach(rel => {
 			imageProms.push(
 				new Promise((resolve, reject) => {
-					if (fs && rel.path.indexOf('http') != 0) {
+					if (fs && rel.path.indexOf('http') !== 0) {
 						// DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 						try {
 							let bitmap = fs.readFileSync(rel.path)
@@ -31,9 +33,9 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 							rel.data = IMG_BROKEN
 							reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString())
 						}
-					} else if (fs && https && rel.path.indexOf('http') == 0) {
+					} else if (fs && https && rel.path.indexOf('http') === 0) {
 						https.get(rel.path, res => {
-							var rawData = ''
+							let rawData = ''
 							res.setEncoding('binary') // IMPORTANT: Only binary encoding works
 							res.on('data', chunk => (rawData += chunk))
 							res.on('end', () => {
@@ -90,7 +92,11 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 			if (fs) {
 				//console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
 				rel.data = IMG_BROKEN
-				imageProms.push(Promise.resolve().then(()=>{return 'done'}))
+				imageProms.push(
+					Promise.resolve().then(() => {
+						return 'done'
+					})
+				)
 			} else {
 				imageProms.push(createSvgPngPreview(rel))
 			}
@@ -99,6 +105,11 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 	return imageProms
 }
 
+/**
+ * Create SVG preview image
+ * @param {ISlideRelMedia} rel - slide rel
+ * @return {Promise} promise
+ */
 function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
 	return new Promise((resolve, reject) => {
 		// A: Create
@@ -107,7 +118,7 @@ function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
 		// B: Set onload event
 		image.onload = () => {
 			// First: Check for any errors: This is the best method (try/catch wont work, etc.)
-			if (image.width + image.height == 0) {
+			if (image.width + image.height === 0) {
 				image.onerror('h/w=0')
 			}
 			let canvas: HTMLCanvasElement = document.createElement('CANVAS') as HTMLCanvasElement
@@ -158,10 +169,10 @@ function getSizeFromImage(inImgUrl: string): { width: number; height: number } {
 		// B: Set onload event
 		image.onload = () => {
 			// FIRST: Check for any errors: This is the best method (try/catch wont work, etc.)
-			if (image.width + image.height == 0) {
+			if (image.width + image.height === 0) {
 				return { width: 0, height: 0 }
 			}
-			var obj = { width: image.width, height: image.height }
+			let obj = { width: image.width, height: image.height }
 			return obj
 		}
 		image.onerror = () => {
