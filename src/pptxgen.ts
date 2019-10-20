@@ -248,9 +248,9 @@ export default class PptxGenJS {
 
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
+	 * @since 3.0.0
 	 * @param {number} slideNum - slide number
 	 * @return {ISlide} Slide
-	 * @since 3.0.0
 	 */
 	getSlide = (slideNum: number): ISlide => {
 		return this.slides.filter(slide => {
@@ -281,7 +281,7 @@ export default class PptxGenJS {
 	createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
-			if (rel.type != 'online' && rel.type != 'hyperlink') {
+			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
 				// A: Loop vars
 				let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
 
@@ -299,7 +299,7 @@ export default class PptxGenJS {
 	/**
 	 * Create and export the .pptx file
 	 * @param {string} exportName - output file type
-	 * @param {Blob} content - output file type
+	 * @param {Blob} blobContent - Blob content
 	 * @return {Promise<string>} Promise with file name
 	 */
 	writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> => {
@@ -362,14 +362,14 @@ export default class PptxGenJS {
 			})
 			arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(this.masterSlide))
 
-			// STEP 6: Wait for Promises (if any) then generate the PPTX file
+			// STEP 2: Wait for Promises (if any) then generate the PPTX file
 			Promise.all(arrMediaPromises).then(() => {
-				// STEP 1: Add empty placeholder objects to slides that don't already have them
+				// A: Add empty placeholder objects to slides that don't already have them
 				this.slides.forEach(slide => {
 					if (slide.slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
 				})
 
-				// STEP 2: Add all required folders and files
+				// B: Add all required folders and files
 				zip.folder('_rels')
 				zip.folder('docProps')
 				zip.folder('ppt').folder('_rels')
@@ -393,7 +393,7 @@ export default class PptxGenJS {
 				zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
 				zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
 
-				// STEP 3: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
+				// C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
 				this.slideLayouts.forEach((layout, idx) => {
 					zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', genXml.makeXmlLayout(layout))
 					zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx + 1, this.slideLayouts))
@@ -410,7 +410,7 @@ export default class PptxGenJS {
 				zip.file('ppt/notesMasters/notesMaster1.xml', genXml.makeXmlNotesMaster())
 				zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', genXml.makeXmlNotesMasterRel())
 
-				// STEP 4: Create all Rels (images, media, chart data)
+				// D: Create all Rels (images, media, chart data)
 				this.slideLayouts.forEach(layout => {
 					this.createChartMediaRels(layout, zip, arrChartPromises)
 				})
@@ -419,12 +419,14 @@ export default class PptxGenJS {
 				})
 				this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
 
-				// STEP 6: Wait for Promises (if any) then generate the PPTX file
+				// E: Wait for Promises (if any) then generate the PPTX file
 				Promise.all(arrChartPromises)
 					.then(() => {
 						if (outputType === 'STREAM') {
 							// A: stream file
-							zip.generateAsync({ type: 'nodebuffer' }).then(content => { resolve(content) })
+							zip.generateAsync({ type: 'nodebuffer' }).then(content => {
+								resolve(content)
+							})
 						} else if (outputType) {
 							// B: Node [fs]: Output type user option or default
 							resolve(zip.generateAsync({ type: outputType }))
@@ -444,8 +446,8 @@ export default class PptxGenJS {
 
 	/**
 	 * Export the current Presenation to stream
-	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 * @since 3.0.0
+	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
 	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
 		return new Promise((resolve, reject) => {
@@ -461,9 +463,9 @@ export default class PptxGenJS {
 
 	/**
 	 * Export the current Presenation to selected/default type
+	 * @since 3.0.0
 	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file
-	 * @since 3.0.0
 	 */
 	write(outputType: JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
 		return new Promise((resolve, reject) => {
@@ -479,9 +481,9 @@ export default class PptxGenJS {
 
 	/**
 	 * Export the current Presenation to local file (initiates download in browsers)
+	 * @since 3.0.0
 	 * @param {string} exportName - file name
 	 * @returns {Promise<string>} file name
-	 * @since 3.0.0
 	 */
 	writeFile(exportName?: string): Promise<string> {
 		return new Promise((resolve, reject) => {
@@ -573,9 +575,9 @@ export default class PptxGenJS {
 
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+	 * @note `verbose` option is undocumented; used for verbose output of layout process
 	 * @param {string} tabEleId - HTMLElementID of the table
 	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
-	 * @note `verbose` option is undocumented; used for verbose output of layout process
 	 */
 	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
 		genTable.genTableToSlides(
