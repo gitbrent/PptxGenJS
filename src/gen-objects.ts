@@ -38,7 +38,7 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
-    ISlideMasterOptions,
+	ISlideMasterOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
@@ -52,7 +52,7 @@ let _chartCounter: number = 0
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef:ISlideMasterOptions, target:ISlideLayout) {
+export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -893,7 +893,7 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
  * @param {String|Object} bkg - color string or an object with image definition
  * @param {ISlide} target - slide object that the background is set to
  */
-function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide|ISlideLayout) {
+function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide | ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
