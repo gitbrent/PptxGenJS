@@ -54,12 +54,42 @@ gulp.task("clean", () => {
     .pipe(gulp.dest("./dist/"));
 });
 
+gulp.task("cjs", () => {
+  return gulp
+    .src(["./src/bld/pptxgen.cjs.js"])
+    .pipe(
+      insert.prepend(
+        "/* PptxGenJS " +
+          pkg.version +
+          " @ " +
+          new Date().toISOString() +
+          " */\n"
+      )
+    )
+    .pipe(gulp.dest("./dist/"));
+});
+
+gulp.task("es", () => {
+  return gulp
+    .src(["./src/bld/pptxgen.es.js"])
+    .pipe(
+      insert.prepend(
+        "/* PptxGenJS " +
+          pkg.version +
+          " @ " +
+          new Date().toISOString() +
+          " */\n"
+      )
+    )
+    .pipe(gulp.dest("./dist/"));
+});
+
 // Build/Deploy
-gulp.task("default", gulp.series("build", "clean"), () => {
+gulp.task("default", gulp.series("build", "clean", "cjs", "es"), () => {
   console.log("... dist/pptxgen.min.js done!");
 });
 
 // Watch
 exports.default = function() {
-  watch("src/*.ts", series("build", "clean"));
+  watch("src/*.ts", series("build", "clean", "cjs", "es"));
 };
