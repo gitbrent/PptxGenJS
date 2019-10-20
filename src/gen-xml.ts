@@ -724,7 +724,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			strSlideXml += '</a:defRPr>'
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
-		strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum">' + '<a:rPr lang="en-US"/><a:t></a:t></a:fld>' + '<a:endParaRPr lang="en-US"/></a:p>'
+		strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum"><a:rPr lang="en-US"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>'
 		strSlideXml += '</p:txBody></p:sp>'
 	}
 

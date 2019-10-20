@@ -451,7 +451,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					fontFace:
 						(window.getComputedStyle(cell).getPropertyValue('font-family') || '')
 							.split(',')[0]
-							.replace(/\"/g, '')
+							.replace(/"/g, '')
 							.replace('inherit', '')
 							.replace('initial', '') || null,
 					fontSize: Number(

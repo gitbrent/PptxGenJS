@@ -38,9 +38,10 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
+    ISlideMasterOptions,
 } from './core-interfaces'
-import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { getSlidesForTableRows } from './gen-tables'
+import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -51,7 +52,7 @@ let _chartCounter: number = 0
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FIXME :ISlide|ISlideLayout*/) {
+export function createSlideObject(slideDef:ISlideMasterOptions, target /*FIXME :ISlide|ISlideLayout*/) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -61,7 +62,7 @@ export function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FI
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
 		slideDef.objects.forEach((object, idx: number) => {
 			let key = Object.keys(object)[0]
-			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target)
+			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(object[key].type, object[key].data, object[key].opts, target)
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(target, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(target, BASE_SHAPES.LINE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(target, BASE_SHAPES.RECTANGLE, object[key])
