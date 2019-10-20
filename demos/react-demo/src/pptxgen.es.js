@@ -1529,21 +1529,21 @@ var PowerPointShapes = Object.freeze({
  */
 function getSmartParseNumber(size, xyDir, layout) {
     // FIRST: Convert string numeric value if reqd
-    if (typeof size == 'string' && !isNaN(Number(size)))
+    if (typeof size === 'string' && !isNaN(Number(size)))
         size = Number(size);
     // CASE 1: Number in inches
     // Assume any number less than 100 is inches
-    if (typeof size == 'number' && size < 100)
+    if (typeof size === 'number' && size < 100)
         return inch2Emu(size);
     // CASE 2: Number is already converted to something other than inches
     // Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
-    if (typeof size == 'number' && size >= 100)
+    if (typeof size === 'number' && size >= 100)
         return size;
     // CASE 3: Percentage (ex: '50%')
-    if (typeof size == 'string' && size.indexOf('%') > -1) {
-        if (xyDir && xyDir == 'X')
+    if (typeof size === 'string' && size.indexOf('%') > -1) {
+        if (xyDir && xyDir === 'X')
             return Math.round((parseFloat(size) / 100) * layout.width);
-        if (xyDir && xyDir == 'Y')
+        if (xyDir && xyDir === 'Y')
             return Math.round((parseFloat(size) / 100) * layout.height);
         // Default: Assume width (x/cx)
         return Math.round((parseFloat(size) / 100) * layout.width);
@@ -1559,7 +1559,7 @@ function getSmartParseNumber(size, xyDir, layout) {
  */
 function getUuid(uuidFormat) {
     return uuidFormat.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0, v = c == 'x' ? r : (r & 0x3) | 0x8;
+        var r = (Math.random() * 16) | 0, v = c === 'x' ? r : (r & 0x3) | 0x8;
         return v.toString(16);
     });
 }
@@ -1630,7 +1630,7 @@ function convertRotationDegrees(d) {
  */
 function componentToHex(c) {
     var hex = c.toString(16);
-    return hex.length == 1 ? '0' + hex : hex;
+    return hex.length === 1 ? '0' + hex : hex;
 }
 /**
  * Converts RGB colors from css selectors to Hex for Presentation colors
@@ -1656,7 +1656,7 @@ function rgbToHex(r, g, b) {
  */
 function createColorElement(colorStr, innerElements) {
     var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
-    if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) == -1) {
+    if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
         console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values');
         colorStr = DEF_FONT_COLOR;
     }
@@ -1679,7 +1679,7 @@ function genXmlColorSelection(shapeFill, backColor) {
         outText += "<p:bg><p:bgPr>" + genXmlColorSelection(backColor.replace('#', '')) + "<a:effectLst/></p:bgPr></p:bg>";
     }
     if (shapeFill) {
-        if (typeof shapeFill == 'string')
+        if (typeof shapeFill === 'string')
             colorVal = shapeFill;
         else {
             if (shapeFill.type)
@@ -1692,6 +1692,8 @@ function genXmlColorSelection(shapeFill, backColor) {
         switch (fillType) {
             case 'solid':
                 outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>';
+                break;
+            default:
                 break;
         }
     }
@@ -1713,7 +1715,7 @@ function parseTextToLines(cell, colWidth) {
     var arrLines = [];
     var strCurrLine = '';
     // A: Allow a single space/whitespace as cell text (user-requested feature)
-    if (cell.text && cell.text.toString().trim() == '')
+    if (cell.text && cell.text.toString().trim().length === 0)
         return [' '];
     // B: Remove leading/trailing spaces
     var inStr = (cell.text || '').toString().trim();
@@ -1767,7 +1769,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
     // STEP 1: Calculate margins
     {
         // Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
-        if (!tabOpts.slideMargin && tabOpts.slideMargin != 0)
+        if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0)
             tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0];
         if (masterSlide && typeof masterSlide.margin !== 'undefined') {
             if (Array.isArray(masterSlide.margin))
@@ -1775,7 +1777,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             else if (!isNaN(Number(masterSlide.margin)))
                 arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)];
         }
-        else if (tabOpts.slideMargin || tabOpts.slideMargin == 0) {
+        else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
             if (Array.isArray(tabOpts.slideMargin))
                 arrInchMargins = tabOpts.slideMargin;
             else if (!isNaN(tabOpts.slideMargin))
@@ -2016,7 +2018,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
 function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     if (options === void 0) { options = {}; }
     var opts = options || {};
-    opts.slideMargin = opts.slideMargin || opts.slideMargin == 0 ? opts.slideMargin : 0.5;
+    opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5;
     var emuSlideTabW = opts.w || pptx.presLayout.width;
     var arrObjTabHeadRows = [];
     var arrObjTabBodyRows = [];
@@ -2055,7 +2057,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         console.log("emuSlideTabW (in)....... = " + emuSlideTabW / EMU);
     // STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
     var firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child th");
-    if (firstRowCells.length == 0)
+    if (firstRowCells.length === 0)
         firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child td");
     firstRowCells.forEach(function (cell) {
         if (cell.getAttribute('colspan')) {
@@ -2105,14 +2107,15 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     .split(',');
                 if (
                 // NOTE: (ISSUE#57): Default for unstyled tables is black bkgd, so use white instead
-                window.getComputedStyle(cell).getPropertyValue('background-color') == 'rgba(0, 0, 0, 0)' ||
+                window.getComputedStyle(cell).getPropertyValue('background-color') === 'rgba(0, 0, 0, 0)' ||
                     window.getComputedStyle(cell).getPropertyValue('transparent')) {
                     arrRGB2 = ['255', '255', '255'];
                 }
                 // B: Create option object
                 var cellOpts = {
                     align: null,
-                    bold: window.getComputedStyle(cell).getPropertyValue('font-weight') == 'bold' || Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
+                    bold: window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
+                        Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
                         ? true
                         : false,
                     border: null,
@@ -2138,11 +2141,11 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                         .getPropertyValue('text-align')
                         .replace('start', 'left')
                         .replace('end', 'right');
-                    cellOpts.align = align == 'center' ? 'center' : align == 'left' ? 'left' : align == 'right' ? 'right' : null;
+                    cellOpts.align = align === 'center' ? 'center' : align === 'left' ? 'left' : align === 'right' ? 'right' : null;
                 }
                 if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
                     var valign = window.getComputedStyle(cell).getPropertyValue('vertical-align');
-                    cellOpts.valign = valign == 'top' ? 'top' : valign == 'middle' ? 'middle' : valign == 'bottom' ? 'bottom' : null;
+                    cellOpts.valign = valign === 'top' ? 'top' : valign === 'middle' ? 'middle' : valign === 'bottom' ? 'bottom' : null;
                 }
                 // C: Add padding [margin] (if any)
                 // NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
@@ -2208,7 +2211,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         // A: Create new Slide
         var newSlide = pptx.addSlide(opts.masterSlideName || null);
         // B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-        if (idx == 0)
+        if (idx === 0)
             opts.y = opts.y || arrInchMargins[0];
         if (idx > 0)
             opts.y = opts.newSlideStartY || arrInchMargins[0];
@@ -2257,7 +2260,7 @@ function slideObjectToXml(slide) {
     if (slide.bkgd) {
         strSlideXml += genXmlColorSelection(null, slide.bkgd);
     }
-    else if (!slide.bkgd && slide.name && slide.name == DEF_PRES_LAYOUT_NAME) {
+    else if (!slide.bkgd && slide.name && slide.name === DEF_PRES_LAYOUT_NAME) {
         // NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
         strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>';
     }
@@ -2287,7 +2290,7 @@ function slideObjectToXml(slide) {
         var shapeType = null;
         if (slide.slideLayout !== undefined && slide.slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
             placeholderObj = slide['slideLayout']['data'].filter(function (object) {
-                return object.options.placeholder == slideItemObj.options.placeholder;
+                return object.options.placeholder === slideItemObj.options.placeholder;
             })[0];
         }
         // A: Set option vars
@@ -2302,13 +2305,13 @@ function slideObjectToXml(slide) {
             cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide.presLayout);
         // If using a placeholder then inherit it's position
         if (placeholderObj) {
-            if (placeholderObj.options.x || placeholderObj.options.x == 0)
+            if (placeholderObj.options.x || placeholderObj.options.x === 0)
                 x = getSmartParseNumber(placeholderObj.options.x, 'X', slide.presLayout);
-            if (placeholderObj.options.y || placeholderObj.options.y == 0)
+            if (placeholderObj.options.y || placeholderObj.options.y === 0)
                 y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide.presLayout);
-            if (placeholderObj.options.w || placeholderObj.options.w == 0)
+            if (placeholderObj.options.w || placeholderObj.options.w === 0)
                 cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide.presLayout);
-            if (placeholderObj.options.h || placeholderObj.options.h == 0)
+            if (placeholderObj.options.h || placeholderObj.options.h === 0)
                 cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout);
         }
         //
@@ -2350,12 +2353,12 @@ function slideObjectToXml(slide) {
                     '  </p:nvGraphicFramePr>' +
                     '  <p:xfrm>' +
                     '    <a:off x="' +
-                    (x || (x == 0 ? 0 : EMU)) +
+                    (x || (x === 0 ? 0 : EMU)) +
                     '" y="' +
-                    (y || (y == 0 ? 0 : EMU)) +
+                    (y || (y === 0 ? 0 : EMU)) +
                     '"/>' +
                     '    <a:ext cx="' +
-                    (cx || (cx == 0 ? 0 : EMU)) +
+                    (cx || (cx === 0 ? 0 : EMU)) +
                     '" cy="' +
                     (cy || EMU) +
                     '"/>' +
@@ -2419,8 +2422,8 @@ function slideObjectToXml(slide) {
                         // Therefore, for each cell we run 0->colCount to determine the correct slot for it to reside
                         // as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
                         // E.g.: the 2nd element in the row array may actually go into the 5th table grid row cell b/c of colspans!
-                        for (var idx = 0; cIdx + idx < intColCnt_1; idx++) {
-                            var currColIdx = cIdx + idx;
+                        for (var idx_1 = 0; cIdx + idx_1 < intColCnt_1; idx_1++) {
+                            var currColIdx = cIdx + idx_1;
                             if (!objTableGrid_1[rIdx][currColIdx]) {
                                 // A: Set this cell
                                 objTableGrid_1[rIdx][currColIdx] = cell;
@@ -2446,7 +2449,7 @@ function slideObjectToXml(slide) {
                 /* DEBUG: useful for rowspan/colspan testing
                 if ( objTabOpts.verbose ) {
                     console.table(objTableGrid);
-                    var arrText = [];
+                    let arrText = [];
                     objTableGrid.forEach(function(row){ let arrRow = []; row.forEach(row,function(cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
                     console.table( arrText );
                 }
@@ -2477,7 +2480,7 @@ function slideObjectToXml(slide) {
                         var cellOpts = cell.options || {};
                         cell.options = cellOpts;
                         ['align', 'bold', 'border', 'color', 'fill', 'fontFace', 'fontSize', 'margin', 'underline', 'valign'].forEach(function (name) {
-                            if (objTabOpts_1[name] && !cellOpts[name] && cellOpts[name] != 0)
+                            if (objTabOpts_1[name] && !cellOpts[name] && cellOpts[name] !== 0)
                                 cellOpts[name] = objTabOpts_1[name];
                         });
                         var cellValign = cellOpts.valign
@@ -2499,7 +2502,7 @@ function slideObjectToXml(slide) {
                                 ((cell.optImp && cell.optImp.fill) || (typeof cellOpts.fill === 'string' ? cellOpts.fill.replace('#', '') : '')).toUpperCase() +
                                 '"/></a:solidFill>'
                             : '';
-                        var cellMargin = cellOpts.margin == 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
+                        var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
                         var cellMarginXml = ' marL="' +
@@ -2520,7 +2523,7 @@ function slideObjectToXml(slide) {
                         // 4: Set CELL content and properties ==================================
                         strXml_1 += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>';
                         // 5: Borders: Add any borders
-                        if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type == 'none') {
+                        if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
                             strXml_1 += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>';
                             strXml_1 += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>';
                             strXml_1 += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>';
@@ -2542,7 +2545,7 @@ function slideObjectToXml(slide) {
                                     var strC = '<a:solidFill><a:srgbClr val="' +
                                         (cellOpts.border[obj.idx].color ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +
                                         '"/></a:solidFill>';
-                                    var intW = cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt == 0)
+                                    var intW = cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt === 0)
                                         ? ONEPT * Number(cellOpts.border[obj.idx].pt)
                                         : ONEPT;
                                     strXml_1 += '<a:' + obj.name + ' w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strC + '</a:' + obj.name + '>';
@@ -2552,7 +2555,7 @@ function slideObjectToXml(slide) {
                             });
                         }
                         else if (cellOpts.border && !Array.isArray(cellOpts.border)) {
-                            var intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt == 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT;
+                            var intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt === 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT;
                             var strClr = '<a:solidFill><a:srgbClr val="' +
                                 (cellOpts.border.color ? cellOpts.border.color.replace('#', '') : DEF_CELL_BORDER.color) +
                                 '"/></a:solidFill>';
@@ -2593,7 +2596,7 @@ function slideObjectToXml(slide) {
             case SLIDE_OBJECT_TYPES.text:
             case SLIDE_OBJECT_TYPES.placeholder:
                 // Lines can have zero cy, but text should not
-                if (!slideItemObj.options.line && cy == 0)
+                if (!slideItemObj.options.line && cy === 0)
                     cy = EMU * 0.3;
                 // Margin/Padding/Inset for textboxes
                 if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
@@ -2608,7 +2611,7 @@ function slideObjectToXml(slide) {
                     slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin * ONEPT;
                     slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin * ONEPT;
                 }
-                if (shapeType == null)
+                if (shapeType === null)
                     shapeType = getShapeInfo(null);
                 // A: Start SHAPE =======================================================
                 strSlideXml += '<p:sp>';
@@ -2704,11 +2707,11 @@ function slideObjectToXml(slide) {
                 strSlideXml += '<p:blipFill>';
                 // NOTE: This works for both cases: either `path` or `data` contains the SVG
                 if ((slide['relsMedia'] || []).filter(function (rel) {
-                    return rel.rId == slideItemObj.imageRid;
+                    return rel.rId === slideItemObj.imageRid;
                 })[0] &&
                     (slide['relsMedia'] || []).filter(function (rel) {
-                        return rel.rId == slideItemObj.imageRid;
-                    })[0]['extn'] == 'svg') {
+                        return rel.rId === slideItemObj.imageRid;
+                    })[0]['extn'] === 'svg') {
                     strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
                     strSlideXml += ' <a:extLst>';
                     strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
@@ -2740,7 +2743,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:pic>';
                 break;
             case SLIDE_OBJECT_TYPES.media:
-                if (slideItemObj.mtype == 'online') {
+                if (slideItemObj.mtype === 'online') {
                     strSlideXml += '<p:pic>';
                     strSlideXml += ' <p:nvPicPr>';
                     // IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preview image rId, PowerPoint throws error!
@@ -2813,6 +2816,8 @@ function slideObjectToXml(slide) {
                 strSlideXml += '  </a:graphicData>';
                 strSlideXml += ' </a:graphic>';
                 strSlideXml += '</p:graphicFrame>';
+                break;
+            default:
                 break;
         }
     });
@@ -2888,7 +2893,7 @@ function slideObjectRelationsToXml(slide, defaultRels) {
     slide.rels.forEach(function (rel) {
         lastRid = Math.max(lastRid, rel.rId);
         if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
-            if (rel.data == 'slide') {
+            if (rel.data === 'slide') {
                 strXml +=
                     '<Relationship Id="rId' +
                         rel.rId +
@@ -2985,6 +2990,8 @@ function genXmlParagraphProperties(textObj, isDefault) {
                 case 'justify':
                     paragraphPropXml += ' algn="just"';
                     break;
+                default:
+                    break;
             }
         }
         if (textObj.options.lineSpacing) {
@@ -3006,7 +3013,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
         // EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
         if (typeof textObj.options.bullet === 'object') {
             if (textObj.options.bullet.type) {
-                if (textObj.options.bullet.type.toString().toLowerCase() == 'number') {
+                if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
                     paragraphPropXml +=
                         ' marL="' +
                             (textObj.options.indentLevel && textObj.options.indentLevel > 0
@@ -3022,7 +3029,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
             else if (textObj.options.bullet.code) {
                 var bulletCode = '&#x' + textObj.options.bullet.code + ';';
                 // Check value for hex-ness (s/b 4 char hex)
-                if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) == false) {
+                if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) === false) {
                     console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
                     bulletCode = BULLET_TYPES['DEFAULT'];
                 }
@@ -3035,7 +3042,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
                 strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>';
             }
         }
-        else if (textObj.options.bullet == true) {
+        else if (textObj.options.bullet === true) {
             paragraphPropXml +=
                 ' marL="' +
                     (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
@@ -3167,13 +3174,13 @@ function genXmlBodyProperties(slideObject) {
         // A: Enable or disable textwrapping none or square
         bodyProperties += slideObject.options.bodyProp.wrap ? ' wrap="' + slideObject.options.bodyProp.wrap + '"' : ' wrap="square"';
         // B: Textbox margins [padding]
-        if (slideObject.options.bodyProp.lIns || slideObject.options.bodyProp.lIns == 0)
+        if (slideObject.options.bodyProp.lIns || slideObject.options.bodyProp.lIns === 0)
             bodyProperties += ' lIns="' + slideObject.options.bodyProp.lIns + '"';
-        if (slideObject.options.bodyProp.tIns || slideObject.options.bodyProp.tIns == 0)
+        if (slideObject.options.bodyProp.tIns || slideObject.options.bodyProp.tIns === 0)
             bodyProperties += ' tIns="' + slideObject.options.bodyProp.tIns + '"';
-        if (slideObject.options.bodyProp.rIns || slideObject.options.bodyProp.rIns == 0)
+        if (slideObject.options.bodyProp.rIns || slideObject.options.bodyProp.rIns === 0)
             bodyProperties += ' rIns="' + slideObject.options.bodyProp.rIns + '"';
-        if (slideObject.options.bodyProp.bIns || slideObject.options.bodyProp.bIns == 0)
+        if (slideObject.options.bodyProp.bIns || slideObject.options.bodyProp.bIns === 0)
             bodyProperties += ' bIns="' + slideObject.options.bodyProp.bIns + '"';
         // C: Add rtl after margins
         bodyProperties += ' rtlCol="0"';
@@ -3199,7 +3206,7 @@ function genXmlBodyProperties(slideObject) {
         bodyProperties += '</a:bodyPr>';
     }
     // LAST: Return Close bodyProp
-    return slideObject.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties;
+    return slideObject.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties;
 }
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
@@ -3211,12 +3218,12 @@ function genXmlBodyProperties(slideObject) {
 function genXmlTextBody(slideObj) {
     var opts = slideObj.options || {};
     // FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
-    if (opts && slideObj.type != SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text == null))
+    if (opts && slideObj.type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null))
         return '';
     // Vars
     var arrTextObjects = [];
-    var tagStart = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>';
-    var tagClose = slideObj.type == SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>';
+    var tagStart = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>';
+    var tagClose = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>';
     var strSlideXml = tagStart;
     // STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
     /* CASES:
@@ -3235,7 +3242,7 @@ function genXmlTextBody(slideObj) {
         slideObj.text.forEach(function (obj, idx) {
             // A: Set options
             obj.options = obj.options || opts || {};
-            if (idx == 0 && obj.options && !obj.options.bullet && opts.bullet)
+            if (idx === 0 && obj.options && !obj.options.bullet && opts.bullet)
                 obj.options.bullet = opts.bullet;
             // B: Cast to text-object and fix line-breaks (if needed)
             if (typeof obj.text === 'string' || typeof obj.text === 'number') {
@@ -3276,7 +3283,7 @@ function genXmlTextBody(slideObj) {
         // B: 'lstStyle'
         // NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
         // FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
-        if (opts.h == 0 && opts.line && opts.align) {
+        if (opts.h === 0 && opts.line && opts.align) {
             strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>';
         }
         else if (slideObj.type === 'placeholder') {
@@ -3291,7 +3298,7 @@ function genXmlTextBody(slideObj) {
     // STEP 4: Loop over each text object and create paragraph props, text run, etc.
     arrTextObjects.forEach(function (textObj, idx) {
         // Clear/Increment loop vars
-        paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '');
+        var paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '');
         textObj.options.lineIdx = idx;
         // A: Inherit pPr-type options from parent shape's `options`
         textObj.options.align = textObj.options.align || opts.align;
@@ -3300,9 +3307,9 @@ function genXmlTextBody(slideObj) {
         textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore;
         textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter;
         textObj.options.lineIdx = idx;
-        var paragraphPropXml = genXmlParagraphProperties(textObj, false);
+        paragraphPropXml = genXmlParagraphProperties(textObj, false);
         // B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
-        if (idx == 0) {
+        if (idx === 0) {
             // Add paragraphProperties right after <p> before textrun(s) begin
             strSlideXml += '<a:p>' + paragraphPropXml;
         }
@@ -3315,7 +3322,7 @@ function genXmlTextBody(slideObj) {
         Object.entries(opts).forEach(function (_a) {
             var key = _a[0], val = _a[1];
             // NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-            if (key != 'bullet' && !textObj.options[key])
+            if (key !== 'bullet' && !textObj.options[key])
                 textObj.options[key] = val;
         });
         // D: Add formatted textrun
@@ -3323,7 +3330,7 @@ function genXmlTextBody(slideObj) {
     });
     // STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
     // NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
-    if (slideObj.type == SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
+    if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
         if (opts.fontFace) {
             strSlideXml +=
                 '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">';
@@ -3376,11 +3383,11 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
     // STEP 1: Add standard/any media types used in Presenation
     strXml += '<Default Extension="png" ContentType="image/png"/>';
     strXml += '<Default Extension="gif" ContentType="image/gif"/>';
-    strXml += '<Default Extension="m4v" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
-    strXml += '<Default Extension="mp4" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn != type)
+    strXml += '<Default Extension="m4v" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
+    strXml += '<Default Extension="mp4" ContentType="video/mp4"/>'; // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
     slides.forEach(function (slide) {
         (slide.relsMedia || []).forEach(function (rel) {
-            if (rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1) {
+            if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1) {
                 strXml += '<Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>';
             }
         });
@@ -3428,7 +3435,7 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
         strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
     });
     masterSlide.relsMedia.forEach(function (rel) {
-        if (rel.type != 'image' && rel.type != 'online' && rel.type != 'chart' && rel.extn != 'm4v' && strXml.indexOf(rel.type) == -1)
+        if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1)
             strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>';
     });
     // LAST: Finish XML (Resume core)
@@ -3807,7 +3814,7 @@ function correctShadowOptions(IShadowOptions) {
     if (!IShadowOptions || IShadowOptions === null)
         return;
     // OPT: `type`
-    if (IShadowOptions.type != 'outer' && IShadowOptions.type != 'inner' && IShadowOptions.type != 'none') {
+    if (IShadowOptions.type !== 'outer' && IShadowOptions.type !== 'inner' && IShadowOptions.type !== 'none') {
         console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.');
         IShadowOptions.type = 'outer';
     }
@@ -3835,14 +3842,14 @@ function correctShadowOptions(IShadowOptions) {
 function getShapeInfo(shapeName) {
     if (!shapeName)
         return PowerPointShapes.RECTANGLE;
-    if (typeof shapeName == 'object' && shapeName.name && shapeName.displayName && shapeName.avLst)
+    if (typeof shapeName === 'object' && shapeName.name && shapeName.displayName && shapeName.avLst)
         return shapeName;
     if (PowerPointShapes[shapeName])
         return PowerPointShapes[shapeName];
     var objShape = Object.keys(PowerPointShapes).filter(function (key) {
-        return PowerPointShapes[key].name == shapeName || PowerPointShapes[key].displayName;
+        return PowerPointShapes[key].name === shapeName || PowerPointShapes[key].displayName;
     })[0];
-    if (typeof objShape !== 'undefined' && objShape != null)
+    if (typeof objShape !== 'undefined' && objShape !== null)
         return objShape;
     return PowerPointShapes.RECTANGLE;
 }
@@ -3866,17 +3873,17 @@ function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FIXME :IS
     if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
         slideDef.objects.forEach(function (object, idx) {
             var key = Object.keys(object)[0];
-            if (MASTER_OBJECTS[key] && key == 'chart')
+            if (MASTER_OBJECTS[key] && key === 'chart')
                 addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target);
-            else if (MASTER_OBJECTS[key] && key == 'image')
+            else if (MASTER_OBJECTS[key] && key === 'image')
                 addImageDefinition(target, object[key]);
-            else if (MASTER_OBJECTS[key] && key == 'line')
+            else if (MASTER_OBJECTS[key] && key === 'line')
                 addShapeDefinition(target, BASE_SHAPES.LINE, object[key]);
-            else if (MASTER_OBJECTS[key] && key == 'rect')
+            else if (MASTER_OBJECTS[key] && key === 'rect')
                 addShapeDefinition(target, BASE_SHAPES.RECTANGLE, object[key]);
-            else if (MASTER_OBJECTS[key] && key == 'text')
+            else if (MASTER_OBJECTS[key] && key === 'text')
                 addTextDefinition(target, object[key].text, object[key].options, false);
-            else if (MASTER_OBJECTS[key] && key == 'placeholder') {
+            else if (MASTER_OBJECTS[key] && key === 'placeholder') {
                 // TODO: 20180820: Check for existing `name`?
                 object[key].options.placeholder = object[key].options.name;
                 delete object[key].options.name; // remap name for earier handling internally
@@ -3919,7 +3926,7 @@ function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FIXME :IS
  */
 function addChartDefinition(target, type, data, opt) {
     function correctGridLineOptions(glOpts) {
-        if (!glOpts || glOpts.style == 'none')
+        if (!glOpts || glOpts.style === 'none')
             return;
         if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
             console.warn('Warning: chart.gridLine.size must be greater than 0.');
@@ -3986,8 +3993,8 @@ function addChartDefinition(target, type, data, opt) {
         options.barDir = 'col';
     // IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
     if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-        options.dataLabelPosition = options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr';
-    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors == true || options.dataLabelBkgrdColors == false ? options.dataLabelBkgrdColors : false;
+        options.dataLabelPosition = options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr';
+    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
     if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
         options.legendPos = 'r';
     // barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
@@ -4022,37 +4029,37 @@ function addChartDefinition(target, type, data, opt) {
         });
     }
     // Set gridline defaults
-    options.catGridLine = options.catGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
-    options.valGridLine = options.valGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {});
-    options.serGridLine = options.serGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
+    options.catGridLine = options.catGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
+    options.valGridLine = options.valGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {});
+    options.serGridLine = options.serGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
     correctGridLineOptions(options.catGridLine);
     correctGridLineOptions(options.valGridLine);
     correctGridLineOptions(options.serGridLine);
     correctShadowOptions(options.shadow);
     // C: Options: plotArea
-    options.showDataTable = options.showDataTable == true || options.showDataTable == false ? options.showDataTable : false;
-    options.showDataTableHorzBorder = options.showDataTableHorzBorder == true || options.showDataTableHorzBorder == false ? options.showDataTableHorzBorder : true;
-    options.showDataTableVertBorder = options.showDataTableVertBorder == true || options.showDataTableVertBorder == false ? options.showDataTableVertBorder : true;
-    options.showDataTableOutline = options.showDataTableOutline == true || options.showDataTableOutline == false ? options.showDataTableOutline : true;
-    options.showDataTableKeys = options.showDataTableKeys == true || options.showDataTableKeys == false ? options.showDataTableKeys : true;
-    options.showLabel = options.showLabel == true || options.showLabel == false ? options.showLabel : false;
-    options.showLegend = options.showLegend == true || options.showLegend == false ? options.showLegend : false;
-    options.showPercent = options.showPercent == true || options.showPercent == false ? options.showPercent : true;
-    options.showTitle = options.showTitle == true || options.showTitle == false ? options.showTitle : false;
-    options.showValue = options.showValue == true || options.showValue == false ? options.showValue : false;
+    options.showDataTable = options.showDataTable === true || options.showDataTable === false ? options.showDataTable : false;
+    options.showDataTableHorzBorder = options.showDataTableHorzBorder === true || options.showDataTableHorzBorder === false ? options.showDataTableHorzBorder : true;
+    options.showDataTableVertBorder = options.showDataTableVertBorder === true || options.showDataTableVertBorder === false ? options.showDataTableVertBorder : true;
+    options.showDataTableOutline = options.showDataTableOutline === true || options.showDataTableOutline === false ? options.showDataTableOutline : true;
+    options.showDataTableKeys = options.showDataTableKeys === true || options.showDataTableKeys === false ? options.showDataTableKeys : true;
+    options.showLabel = options.showLabel === true || options.showLabel === false ? options.showLabel : false;
+    options.showLegend = options.showLegend === true || options.showLegend === false ? options.showLegend : false;
+    options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true;
+    options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false;
+    options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false;
     options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true;
     options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true;
     options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true;
     options.v3DRotX = !isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30;
     options.v3DRotY = !isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30;
-    options.v3DRAngAx = options.v3DRAngAx == true || options.v3DRAngAx == false ? options.v3DRAngAx : true;
+    options.v3DRAngAx = options.v3DRAngAx === true || options.v3DRAngAx === false ? options.v3DRAngAx : true;
     options.v3DPerspective = !isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30;
     // D: Options: chart
     options.barGapWidthPct = !isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150;
     options.barGapDepthPct = !isNaN(options.barGapDepthPct) && options.barGapDepthPct >= 0 && options.barGapDepthPct <= 1000 ? options.barGapDepthPct : 150;
     options.chartColors = Array.isArray(options.chartColors)
         ? options.chartColors
-        : options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT
+        : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
             ? PIECHART_COLORS
             : BARCHART_COLORS;
     options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null;
@@ -4060,13 +4067,13 @@ function addChartDefinition(target, type, data, opt) {
     options.border = options.border && typeof options.border === 'object' ? options.border : null;
     if (options.border && (!options.border.pt || isNaN(options.border.pt)))
         options.border.pt = 1;
-    if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length != 6))
+    if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6))
         options.border.color = '363636';
     //
     options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
     if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
         options.dataBorder.pt = 0.75;
-    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6))
+    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
         options.dataBorder.color = 'F9F9F9';
     //
     if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER)
@@ -4074,7 +4081,7 @@ function addChartDefinition(target, type, data, opt) {
     options.dataLabelFormatCode =
         options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
             ? options.dataLabelFormatCode
-            : options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT
+            : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
                 ? '0%'
                 : '#,##0';
     //
@@ -4132,7 +4139,7 @@ function addImageDefinition(target, opt) {
         console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
         return null;
     }
-    else if (strImageData && strImageData.toLowerCase().indexOf('base64,') == -1) {
+    else if (strImageData && strImageData.toLowerCase().indexOf('base64,') === -1) {
         console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
         return null;
     }
@@ -4168,7 +4175,7 @@ function addImageDefinition(target, opt) {
         placeholder: opt.placeholder,
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-    if (strImgExtn == 'svg') {
+    if (strImgExtn === 'svg') {
         // SVG files consume *TWO* rId's: (a png version and the svg image)
         // <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
         // <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
@@ -4243,14 +4250,14 @@ function addMediaDefinition(target, opt) {
         type: SLIDE_OBJECT_TYPES.media,
     };
     // STEP 1: REALITY-CHECK
-    if (!strPath && !strData && strType != 'online') {
+    if (!strPath && !strData && strType !== 'online') {
         throw "addMedia() error: either 'data' or 'path' are required!";
     }
-    else if (strData && strData.toLowerCase().indexOf('base64,') == -1) {
+    else if (strData && strData.toLowerCase().indexOf('base64,') === -1) {
         throw "addMedia() error: `data` value lacks a base64 header! Ex: 'video/mpeg;base64,NMP[...]')";
     }
     // Online Video: requires `link`
-    if (strType == 'online' && !strLink) {
+    if (strType === 'online' && !strLink) {
         throw 'addMedia() error: online videos require `link` value';
     }
     // FIXME: 20190707
@@ -4267,7 +4274,7 @@ function addMediaDefinition(target, opt) {
     slideData.options.h = intSizeY;
     // STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
     // NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-    if (strType == 'online') {
+    if (strType === 'online') {
         // A: Add video
         target.relsMedia.push({
             path: strPath || 'preencoded' + strExtn,
@@ -4354,8 +4361,8 @@ function addPlaceholderDefinition(target, text, opt) {
 
     // TODO: TODO-3: this has never worked
     // https://github.com/gitbrent/PptxGenJS/issues/599
-    if (opt.type == PLACEHOLDER_TYPES.title || opt.type == PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
-    else if (opt.type == PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
+    if (opt.type === PLACEHOLDER_TYPES.title || opt.type === PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
+    else if (opt.type === PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
     */
 }
 /**
@@ -4376,12 +4383,12 @@ function addShapeDefinition(target, shape, opt) {
     if (!shape || typeof shape !== 'object')
         throw 'Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`';
     // 2: Set options defaults
-    options.x = options.x || (options.x == 0 ? 0 : 1);
-    options.y = options.y || (options.y == 0 ? 0 : 1);
-    options.w = options.w || (options.w == 0 ? 0 : 1);
-    options.h = options.h || (options.h == 0 ? 0 : 1);
-    options.line = options.line || (shape.name == 'line' ? '333333' : null);
-    options.lineSize = options.lineSize || (shape.name == 'line' ? 1 : null);
+    options.x = options.x || (options.x === 0 ? 0 : 1);
+    options.y = options.y || (options.y === 0 ? 0 : 1);
+    options.w = options.w || (options.w === 0 ? 0 : 1);
+    options.h = options.h || (options.h === 0 ? 0 : 1);
+    options.line = options.line || (shape.name === 'line' ? '333333' : null);
+    options.lineSize = options.lineSize || (shape.name === 'line' ? 1 : null);
     if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0)
         options.lineDash = 'solid';
     // 3: Add object to slide
@@ -4403,7 +4410,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     // STEP 1: REALITY-CHECK
     {
         // A: check for empty
-        if (tableRows == null || tableRows.length == 0 || !Array.isArray(tableRows)) {
+        if (tableRows === null || tableRows.length === 0 || !Array.isArray(tableRows)) {
             throw "addTable: Array expected! EX: 'slide.addTable( [rows], {options} );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)";
         }
         // B: check for non-well-formatted array (ex: rows=['a','b'] instead of [['a','b']])
@@ -4445,14 +4452,14 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         arrRows.push(newRow);
     });
     // STEP 3: Set options
-    opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', presLayout);
-    opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU / 2), 'Y', presLayout);
+    opt.x = getSmartParseNumber(opt.x || (opt.x === 0 ? 0 : EMU / 2), 'X', presLayout);
+    opt.y = getSmartParseNumber(opt.y || (opt.y === 0 ? 0 : EMU / 2), 'Y', presLayout);
     if (opt.h)
         opt.h = getSmartParseNumber(opt.h, 'Y', presLayout); // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
     opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false;
     opt.fontSize = opt.fontSize || DEF_FONT_SIZE;
     opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0;
-    opt.margin = opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT;
+    opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT;
     if (typeof opt.margin === 'number')
         opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)];
     if (opt.autoPageLineWeight > 1)
@@ -4487,7 +4494,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
             opt.w = Math.floor(Number(opt.colW) * arrRows[0].length);
         }
-        else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length) {
+        else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length !== arrRows[0].length) {
             console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.');
             var numColWidth = Math.floor((presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length);
             opt.colW = [];
@@ -4528,7 +4535,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                 // ARG0: `text`
                 if (typeof cell.text === 'number')
                     row[idy].text = row[idy].text.toString();
-                else if (typeof cell.text === 'undefined' || cell.text == null)
+                else if (typeof cell.text === 'undefined' || cell.text === null)
                     row[idy].text = '';
                 // ARG1: `options`: ensure options exists
                 row[idy].options = cell.options || {};
@@ -4544,7 +4551,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     });
     // STEP 6: Auto-Paging: (via {options} and used internally)
     // (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
-    if (opt && opt.autoPage == false) {
+    if (opt && opt.autoPage === false) {
         // Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
         createHyperlinkRels(target, arrRows);
         // Add data (NOTE: Use `extend` to avoid mutation)
@@ -4588,7 +4595,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
     if (!opt.bodyProp)
         opt.bodyProp = {};
     var newObject = {
-        text: (Array.isArray(text) && text.length == 0 ? '' : text || '') || '',
+        text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
         type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
         options: opt,
         shape: opt.shape,
@@ -4600,7 +4607,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
             opt.color = opt.color || target.color || DEF_FONT_COLOR; // Set color (options > inherit from Slide > default to black)
         }
         // B
-        if (opt.shape && opt.shape.name == 'line') {
+        if (opt.shape && opt.shape.name === 'line') {
             opt.line = opt.line || '333333';
             opt.lineSize = opt.lineSize || 1;
         }
@@ -4610,7 +4617,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         newObject.options.bodyProp.autoFit = opt.autoFit || false; // If true, shape will collapse to text size (Fit To shape)
         newObject.options.bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null; // VALS: [t,ctr,b]
         newObject.options.bodyProp.vert = opt.vert || null; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
-        if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0) {
+        if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
             newObject.options.bodyProp.lIns = inch2Emu(opt.inset);
             newObject.options.bodyProp.rIns = inch2Emu(opt.inset);
             newObject.options.bodyProp.tIns = inch2Emu(opt.inset);
@@ -4652,8 +4659,8 @@ function addPlaceholdersToSlideLayouts(slide) {
             // NOTE: Check to ensure a placeholder does not already exist on the Slide
             // They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
             if (slide.data.filter(function (slideObj) {
-                return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholder;
-            }).length == 0) {
+                return slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder;
+            }).length === 0) {
                 addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false);
             }
         }
@@ -4672,7 +4679,7 @@ function addBackgroundDefinition(bkg, target) {
         if (!bkg.src)
             bkg.src = 'preencoded.png';
         var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
-        if (strImgExtn == 'jpg')
+        if (strImgExtn === 'jpg')
             strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
         var intRels = target.relsMedia.length + 1;
         target.relsMedia.push({
@@ -4881,8 +4888,8 @@ var Slide = /** @class */ (function () {
  */
 /**
  * Based on passed data, creates Excel Worksheet that is used as a data source for a chart.
- * @param {ISlideRelChart} `chartObject` chart object
- * @param {JSZip} `zip` file that the resulting XLSX should be added to
+ * @param {ISlideRelChart} chartObject - chart object
+ * @param {JSZip} zip - file that the resulting XLSX should be added to
  * @return {Promise} promise of generating the XLSX file
  */
 function createExcelWorksheet(chartObject, zip) {
@@ -4963,102 +4970,102 @@ function createExcelWorksheet(chartObject, zip) {
         // sharedStrings.xml
         {
             // A: Start XML
-            var strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+            var strSharedStrings_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
             if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
-                strSharedStrings +=
+                strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">';
             }
             else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
-                strSharedStrings +=
+                strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">';
             }
             else {
-                strSharedStrings +=
+                strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' +
                         (data[0].labels.length + data.length + 1) +
                         '" uniqueCount="' +
                         (data[0].labels.length + data.length + 1) +
                         '">';
                 // B: Add 'blank' for A1
-                strSharedStrings += '<si><t xml:space="preserve"></t></si>';
+                strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
             }
             // C: Add `name`/Series
             if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
                 data.forEach(function (objData, idx) {
-                    if (idx == 0)
-                        strSharedStrings += '<si><t>' + 'X-Axis' + '</t></si>';
+                    if (idx === 0)
+                        strSharedStrings_1 += '<si><t>' + 'X-Axis' + '</t></si>';
                     else {
-                        strSharedStrings += '<si><t>' + encodeXmlEntities(objData.name || ' ') + '</t></si>';
-                        strSharedStrings += '<si><t>' + encodeXmlEntities('Size ' + idx) + '</t></si>';
+                        strSharedStrings_1 += '<si><t>' + encodeXmlEntities(objData.name || ' ') + '</t></si>';
+                        strSharedStrings_1 += '<si><t>' + encodeXmlEntities('Size ' + idx) + '</t></si>';
                     }
                 });
             }
             else {
                 data.forEach(function (objData) {
-                    strSharedStrings += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>';
+                    strSharedStrings_1 += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>';
                 });
             }
             // D: Add `labels`/Categories
-            if (chartObject.opts.type != CHART_TYPES.BUBBLE && chartObject.opts.type != CHART_TYPES.SCATTER) {
+            if (chartObject.opts.type !== CHART_TYPES.BUBBLE && chartObject.opts.type !== CHART_TYPES.SCATTER) {
                 data[0].labels.forEach(function (label) {
-                    strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>';
+                    strSharedStrings_1 += '<si><t>' + encodeXmlEntities(label) + '</t></si>';
                 });
             }
-            strSharedStrings += '</sst>\n';
-            zipExcel.file('xl/sharedStrings.xml', strSharedStrings);
+            strSharedStrings_1 += '</sst>\n';
+            zipExcel.file('xl/sharedStrings.xml', strSharedStrings_1);
         }
         // tables/table1.xml
         {
-            var strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            if (chartObject.opts.type == CHART_TYPES.BUBBLE) ;
-            else if (chartObject.opts.type == CHART_TYPES.SCATTER) {
-                strTableXml +=
+            var strTableXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+            if (chartObject.opts.type === CHART_TYPES.BUBBLE) ;
+            else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+                strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
                         LETTERS[data.length - 1] +
                         (data[0].values.length + 1) +
                         '" totalsRowShown="0">';
-                strTableXml += '<tableColumns count="' + data.length + '">';
+                strTableXml_1 += '<tableColumns count="' + data.length + '">';
                 data.forEach(function (_obj, idx) {
-                    strTableXml += '<tableColumn id="' + (idx + 1) + '" name="' + (idx == 0 ? 'X-Values' : 'Y-Value ' + idx) + '" />';
+                    strTableXml_1 += '<tableColumn id="' + (idx + 1) + '" name="' + (idx === 0 ? 'X-Values' : 'Y-Value ' + idx) + '" />';
                 });
             }
             else {
-                strTableXml +=
+                strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
                         LETTERS[data.length] +
                         (data[0].labels.length + 1) +
                         '" totalsRowShown="0">';
-                strTableXml += '<tableColumns count="' + (data.length + 1) + '">';
-                strTableXml += '<tableColumn id="1" name=" " />';
+                strTableXml_1 += '<tableColumns count="' + (data.length + 1) + '">';
+                strTableXml_1 += '<tableColumn id="1" name=" " />';
                 data.forEach(function (obj, idx) {
-                    strTableXml += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />';
+                    strTableXml_1 += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />';
                 });
             }
-            strTableXml += '</tableColumns>';
-            strTableXml += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0" />';
-            strTableXml += '</table>';
-            zipExcel.file('xl/tables/table1.xml', strTableXml);
+            strTableXml_1 += '</tableColumns>';
+            strTableXml_1 += '<tableStyleInfo showFirstColumn="0" showLastColumn="0" showRowStripes="1" showColumnStripes="0" />';
+            strTableXml_1 += '</table>';
+            zipExcel.file('xl/tables/table1.xml', strTableXml_1);
         }
         // worksheets/sheet1.xml
         {
-            var strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            strSheetXml +=
+            var strSheetXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+            strSheetXml_1 +=
                 '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">';
             if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
-                strSheetXml += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />';
+                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />';
             }
             else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
-                strSheetXml += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />';
+                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />';
             }
             else {
-                strSheetXml += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />';
+                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />';
             }
-            strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
-            strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
-            if (chartObject.opts.type == CHART_TYPES.BUBBLE) {
-                strSheetXml += '<cols>';
-                strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
-                strSheetXml += '</cols>';
+            strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
+            strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
+            if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+                strSheetXml_1 += '<cols>';
+                strSheetXml_1 += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
+                strSheetXml_1 += '</cols>';
                 /* EX: INPUT: `data`
                 [
                     { name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
@@ -5072,43 +5079,43 @@ function createExcelWorksheet(chartObject, zip) {
                     2|    11    |     22     |      4     |     33     |      8     |
                     -|----------|------------|------------|------------|------------|
                 */
-                strSheetXml += '<sheetData>';
+                strSheetXml_1 += '<sheetData>';
                 // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml += '<row r="1" spans="1:' + intBubbleCols + '">';
-                strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
+                strSheetXml_1 += '<row r="1" spans="1:' + intBubbleCols + '">';
+                strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
                 for (var idx = 1; idx < intBubbleCols; idx++) {
-                    strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
-                    strSheetXml += '<v>' + idx + '</v>';
-                    strSheetXml += '</c>';
+                    strSheetXml_1 += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    strSheetXml_1 += '<v>' + idx + '</v>';
+                    strSheetXml_1 += '</c>';
                 }
-                strSheetXml += '</row>';
+                strSheetXml_1 += '</row>';
                 // B: Add row for each X-Axis value (Y-Axis* value is optional)
                 data[0].values.forEach(function (val, idx) {
                     // Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
-                    strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + intBubbleCols + '">';
-                    strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>';
+                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + intBubbleCols + '">';
+                    strSheetXml_1 += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>';
                     // Add Y-Axis 1->N (idy=0 = Xaxis)
                     var idxColLtr = 1;
                     for (var idy = 1; idy < data.length; idy++) {
                         // y-value
-                        strSheetXml += '<c r="' + (idxColLtr < 26 ? LETTERS[idxColLtr] : 'A' + LETTERS[idxColLtr % LETTERS.length]) + '' + (idx + 2) + '">';
-                        strSheetXml += '<v>' + (data[idy].values[idx] || '') + '</v>';
-                        strSheetXml += '</c>';
+                        strSheetXml_1 += '<c r="' + (idxColLtr < 26 ? LETTERS[idxColLtr] : 'A' + LETTERS[idxColLtr % LETTERS.length]) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<v>' + (data[idy].values[idx] || '') + '</v>';
+                        strSheetXml_1 += '</c>';
                         idxColLtr++;
                         // y-size
-                        strSheetXml += '<c r="' + (idxColLtr < 26 ? LETTERS[idxColLtr] : 'A' + LETTERS[idxColLtr % LETTERS.length]) + '' + (idx + 2) + '">';
-                        strSheetXml += '<v>' + (data[idy].sizes[idx] || '') + '</v>';
-                        strSheetXml += '</c>';
+                        strSheetXml_1 += '<c r="' + (idxColLtr < 26 ? LETTERS[idxColLtr] : 'A' + LETTERS[idxColLtr % LETTERS.length]) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<v>' + (data[idy].sizes[idx] || '') + '</v>';
+                        strSheetXml_1 += '</c>';
                         idxColLtr++;
                     }
-                    strSheetXml += '</row>';
+                    strSheetXml_1 += '</row>';
                 });
             }
-            else if (chartObject.opts.type == CHART_TYPES.SCATTER) {
-                strSheetXml += '<cols>';
-                strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
+            else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+                strSheetXml_1 += '<cols>';
+                strSheetXml_1 += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
                 //data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
-                strSheetXml += '</cols>';
+                strSheetXml_1 += '</cols>';
                 /* EX: INPUT: `data`
                 [
                     { name:'X-Axis'  , values:[10,11,12,13,14,15,16,17,18,19,20] },
@@ -5122,36 +5129,36 @@ function createExcelWorksheet(chartObject, zip) {
                     2|    11    |     22     |
                     -|----------|------------|
                 */
-                strSheetXml += '<sheetData>';
+                strSheetXml_1 += '<sheetData>';
                 // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml += '<row r="1" spans="1:' + data.length + '">';
-                strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
+                strSheetXml_1 += '<row r="1" spans="1:' + data.length + '">';
+                strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
                 for (var idx = 1; idx < data.length; idx++) {
-                    strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
-                    strSheetXml += '<v>' + idx + '</v>';
-                    strSheetXml += '</c>';
+                    strSheetXml_1 += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    strSheetXml_1 += '<v>' + idx + '</v>';
+                    strSheetXml_1 += '</c>';
                 }
-                strSheetXml += '</row>';
+                strSheetXml_1 += '</row>';
                 // B: Add row for each X-Axis value (Y-Axis* value is optional)
                 data[0].values.forEach(function (val, idx) {
                     // Leading col is reserved for the 'X-Axis' value, so hard-code it, then loop over col values
-                    strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + data.length + '">';
-                    strSheetXml += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>';
+                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + data.length + '">';
+                    strSheetXml_1 += '<c r="A' + (idx + 2) + '"><v>' + val + '</v></c>';
                     // Add Y-Axis 1->N
                     for (var idy = 1; idy < data.length; idy++) {
-                        strSheetXml += '<c r="' + (idy < 26 ? LETTERS[idy] : 'A' + LETTERS[idy % LETTERS.length]) + '' + (idx + 2) + '">';
-                        strSheetXml += '<v>' + (data[idy].values[idx] || data[idy].values[idx] == 0 ? data[idy].values[idx] : '') + '</v>';
-                        strSheetXml += '</c>';
+                        strSheetXml_1 += '<c r="' + (idy < 26 ? LETTERS[idy] : 'A' + LETTERS[idy % LETTERS.length]) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<v>' + (data[idy].values[idx] || data[idy].values[idx] === 0 ? data[idy].values[idx] : '') + '</v>';
+                        strSheetXml_1 += '</c>';
                     }
-                    strSheetXml += '</row>';
+                    strSheetXml_1 += '</row>';
                 });
             }
             else {
-                strSheetXml += '<cols>';
-                strSheetXml += '<col min="1" max="1" width="11" customWidth="1" />';
+                strSheetXml_1 += '<cols>';
+                strSheetXml_1 += '<col min="1" max="1" width="11" customWidth="1" />';
                 //data.forEach(function(){ strSheetXml += '<col min="10" max="100" width="10" customWidth="1" />' });
-                strSheetXml += '</cols>';
-                strSheetXml += '<sheetData>';
+                strSheetXml_1 += '</cols>';
+                strSheetXml_1 += '<sheetData>';
                 /* EX: INPUT: `data`
                 [
                     { name:'Red', labels:['Jan..May-17'], values:[11,13,14,15,16] },
@@ -5170,39 +5177,39 @@ function createExcelWorksheet(chartObject, zip) {
                     -|-------|-----|-----|-----|
                 */
                 // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml += '<row r="1" spans="1:' + (data.length + 1) + '">';
-                strSheetXml += '<c r="A1" t="s"><v>0</v></c>';
+                strSheetXml_1 += '<row r="1" spans="1:' + (data.length + 1) + '">';
+                strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
                 for (var idx = 1; idx <= data.length; idx++) {
                     // FIXME: Max cols is 52
-                    strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
-                    strSheetXml += '<v>' + idx + '</v>';
-                    strSheetXml += '</c>';
+                    strSheetXml_1 += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    strSheetXml_1 += '<v>' + idx + '</v>';
+                    strSheetXml_1 += '</c>';
                 }
-                strSheetXml += '</row>';
+                strSheetXml_1 += '</row>';
                 // B: Add data row(s) for each category
                 data[0].labels.forEach(function (_cat, idx) {
                     // Leading col is reserved for the label, so hard-code it, then loop over col values
-                    strSheetXml += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + 1) + '">';
-                    strSheetXml += '<c r="A' + (idx + 2) + '" t="s">';
-                    strSheetXml += '<v>' + (data.length + idx + 1) + '</v>';
-                    strSheetXml += '</c>';
+                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + 1) + '">';
+                    strSheetXml_1 += '<c r="A' + (idx + 2) + '" t="s">';
+                    strSheetXml_1 += '<v>' + (data.length + idx + 1) + '</v>';
+                    strSheetXml_1 += '</c>';
                     for (var idy = 0; idy < data.length; idy++) {
-                        strSheetXml += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">';
-                        strSheetXml += '<v>' + (data[idy].values[idx] || '') + '</v>';
-                        strSheetXml += '</c>';
+                        strSheetXml_1 += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<v>' + (data[idy].values[idx] || '') + '</v>';
+                        strSheetXml_1 += '</c>';
                     }
-                    strSheetXml += '</row>';
+                    strSheetXml_1 += '</row>';
                 });
             }
-            strSheetXml += '</sheetData>';
-            strSheetXml += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />';
+            strSheetXml_1 += '</sheetData>';
+            strSheetXml_1 += '<pageMargins left="0.7" right="0.7" top="0.75" bottom="0.75" header="0.3" footer="0.3" />';
             // Link the `table1.xml` file to define an actual Table in Excel
-            // NOTE: This onyl works with scatter charts - all others give a "cannot find linked file" error
+            // NOTE: This only works with scatter charts - all others give a "cannot find linked file" error
             // ....: Since we dont need the table anyway (chart data can be edited/range selected, etc.), just dont use this
             // ....: Leaving this so nobody foolishly attempts to add this in the future
             // strSheetXml += '<tableParts count="1"><tablePart r:id="rId1" /></tableParts>';
-            strSheetXml += '</worksheet>\n';
-            zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml);
+            strSheetXml_1 += '</worksheet>\n';
+            zipExcel.file('xl/worksheets/sheet1.xml', strSheetXml_1);
         }
         // C: Add XLSX to PPTX export
         zipExcel
@@ -5229,6 +5236,8 @@ function createExcelWorksheet(chartObject, zip) {
 /**
  * Main entry point method for create charts
  * @see: http://www.datypic.com/sc/ooxml/s-dml-chart.xsd.html
+ * @param {ISlideRelChart} rel - chart object
+ * @return {string} XML
  */
 function makeXmlCharts(rel) {
     var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
@@ -5258,11 +5267,11 @@ function makeXmlCharts(rel) {
             strXml += '<c:autoTitleDeleted val="1"/>';
         }
         // Add 3D view tag
-        if (rel.opts.type == CHART_TYPES.BAR3D) {
+        if (rel.opts.type === CHART_TYPES.BAR3D) {
             strXml += '<c:view3D>';
             strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>';
             strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>';
-            strXml += ' <c:rAngAx val="' + (rel.opts.v3DRAngAx == false ? 0 : 1) + '"/>';
+            strXml += ' <c:rAngAx val="' + (rel.opts.v3DRAngAx === false ? 0 : 1) + '"/>';
             strXml += ' <c:perspective val="' + rel.opts.v3DPerspective + '"/>';
             strXml += '</c:view3D>';
         }
@@ -5319,15 +5328,15 @@ function makeXmlCharts(rel) {
             strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY);
         }
         if (rel.opts.valAxes) {
-            strXml += makeValueAxis(getMix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY);
+            strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]), AXIS_ID_VALUE_PRIMARY);
             if (rel.opts.valAxes[1]) {
-                strXml += makeValueAxis(getMix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY);
+                strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]), AXIS_ID_VALUE_SECONDARY);
             }
         }
         else {
-            strXml += makeValueAxis(rel.opts, AXIS_ID_VALUE_PRIMARY);
+            strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY);
             // Add series axis for 3D bar
-            if (rel.opts.type == CHART_TYPES.BAR3D) {
+            if (rel.opts.type === CHART_TYPES.BAR3D) {
                 strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY);
             }
         }
@@ -5337,10 +5346,10 @@ function makeXmlCharts(rel) {
         // NOTE: DataTable goes between '</c:valAx>' and '<c:spPr>'
         if (rel.opts.showDataTable) {
             strXml += '<c:dTable>';
-            strXml += '  <c:showHorzBorder val="' + (rel.opts.showDataTableHorzBorder == false ? 0 : 1) + '"/>';
-            strXml += '  <c:showVertBorder val="' + (rel.opts.showDataTableVertBorder == false ? 0 : 1) + '"/>';
-            strXml += '  <c:showOutline    val="' + (rel.opts.showDataTableOutline == false ? 0 : 1) + '"/>';
-            strXml += '  <c:showKeys       val="' + (rel.opts.showDataTableKeys == false ? 0 : 1) + '"/>';
+            strXml += '  <c:showHorzBorder val="' + (rel.opts.showDataTableHorzBorder === false ? 0 : 1) + '"/>';
+            strXml += '  <c:showVertBorder val="' + (rel.opts.showDataTableVertBorder === false ? 0 : 1) + '"/>';
+            strXml += '  <c:showOutline    val="' + (rel.opts.showDataTableOutline === false ? 0 : 1) + '"/>';
+            strXml += '  <c:showKeys       val="' + (rel.opts.showDataTableKeys === false ? 0 : 1) + '"/>';
             strXml += '  <c:spPr>';
             strXml += '    <a:noFill/>';
             strXml +=
@@ -5446,11 +5455,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
         case CHART_TYPES.RADAR:
             // 1: Start Chart
             strXml += '<c:' + chartType + 'Chart>';
-            if (chartType == CHART_TYPES.BAR || chartType == CHART_TYPES.BAR3D) {
+            if (chartType === CHART_TYPES.BAR || chartType === CHART_TYPES.BAR3D) {
                 strXml += '<c:barDir val="' + opts.barDir + '"/>';
                 strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
             }
-            if (chartType == CHART_TYPES.RADAR) {
+            if (chartType === CHART_TYPES.RADAR) {
                 strXml += '<c:radarStyle val="' + opts.radarStyle + '"/>';
             }
             strXml += '<c:varyColors val="0"/>';
@@ -5486,7 +5495,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 // Fill and Border
                 var strSerColor = opts.chartColors ? opts.chartColors[colorIndex_1 % opts.chartColors.length] : null;
                 strXml += '  <c:spPr>';
-                if (strSerColor == 'transparent') {
+                if (strSerColor === 'transparent') {
                     strXml += '<a:noFill/>';
                 }
                 else if (opts.chartColorsOpacity) {
@@ -5495,8 +5504,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 else {
                     strXml += '<a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
                 }
-                if (chartType == CHART_TYPES.LINE) {
-                    if (opts.lineSize == 0) {
+                if (chartType === CHART_TYPES.LINE) {
+                    if (opts.lineSize === 0) {
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
@@ -5516,7 +5525,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:spPr>';
                 // Data Labels per series
                 // [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
-                if (chartType != CHART_TYPES.RADAR) {
+                if (chartType !== CHART_TYPES.RADAR) {
                     strXml += '  <c:dLbls>';
                     strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
                     if (opts.dataLabelBkgrdColors) {
@@ -5535,7 +5544,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      </a:pPr></a:p>';
                     strXml += '    </c:txPr>';
                     // Setting dLblPos tag for bar3D seems to break the generated chart
-                    if (chartType != CHART_TYPES.AREA && chartType != CHART_TYPES.BAR3D) {
+                    if (chartType !== CHART_TYPES.AREA && chartType !== CHART_TYPES.BAR3D) {
                         strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>';
                     }
                     strXml += '    <c:showLegendKey val="0"/>';
@@ -5548,7 +5557,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '  </c:dLbls>';
                 }
                 // 'c:marker' tag: `lineDataSymbol`
-                if (chartType == CHART_TYPES.LINE || chartType == CHART_TYPES.RADAR) {
+                if (chartType === CHART_TYPES.LINE || chartType === CHART_TYPES.RADAR) {
                     strXml += '<c:marker>';
                     strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>';
                     if (opts.lineDataSymbolSize) {
@@ -5573,7 +5582,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // Color chart bars various colors
                 // Allow users with a single data set to pass their own array of colors (check for this using != ours)
-                if ((chartType == CHART_TYPES.BAR || chartType == CHART_TYPES.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
+                if ((chartType === CHART_TYPES.BAR || chartType === CHART_TYPES.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || [];
@@ -5640,14 +5649,14 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '        <c:formatCode>General</c:formatCode>';
                     strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>';
                     obj.values.forEach(function (value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>';
+                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
                     });
                     strXml += '      </c:numCache>';
                     strXml += '    </c:numRef>';
                     strXml += '  </c:val>';
                 }
                 // Option: `smooth`
-                if (chartType == CHART_TYPES.LINE)
+                if (chartType === CHART_TYPES.LINE)
                     strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>';
                 // 4: Close "SERIES"
                 strXml += '</c:ser>';
@@ -5669,7 +5678,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '    </c:txPr>';
                 // NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
                 // Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
-                if (opts.type != CHART_TYPES.AREA && opts.type != CHART_TYPES.RADAR && !isMultiTypeChart)
+                if (opts.type !== CHART_TYPES.AREA && opts.type !== CHART_TYPES.RADAR && !isMultiTypeChart)
                     strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>';
                 strXml += '    <c:showLegendKey val="0"/>';
                 strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
@@ -5681,16 +5690,16 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:dLbls>';
             }
             // 4: Add more chart options (gapWidth, line Marker, etc.)
-            if (chartType == CHART_TYPES.BAR) {
+            if (chartType === CHART_TYPES.BAR) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
                 strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>';
             }
-            else if (chartType == CHART_TYPES.BAR3D) {
+            else if (chartType === CHART_TYPES.BAR3D) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
                 strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>';
                 strXml += '  <c:shape val="' + opts.bar3DShape + '"/>';
             }
-            else if (chartType == CHART_TYPES.LINE) {
+            else if (chartType === CHART_TYPES.LINE) {
                 strXml += '  <c:marker val="1"/>';
             }
             // 5: Add axisId (NOTE: order matters! (category comes first))
@@ -5732,7 +5741,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  <c:spPr>';
                 {
                     var strSerColor = opts.chartColors[colorIndex_1 % opts.chartColors.length];
-                    if (strSerColor == 'transparent') {
+                    if (strSerColor === 'transparent') {
                         strXml += '<a:noFill/>';
                     }
                     else if (opts.chartColorsOpacity) {
@@ -5741,7 +5750,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     else {
                         strXml += '<a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
                     }
-                    if (opts.lineSize == 0) {
+                    if (opts.lineSize === 0) {
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
@@ -5754,6 +5763,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:spPr>';
                 // 'c:marker' tag: `lineDataSymbol`
                 {
+                    var strSerColor = opts.chartColors[colorIndex_1 % opts.chartColors.length];
                     strXml += '<c:marker>';
                     strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>';
                     if (opts.lineDataSymbolSize) {
@@ -5778,11 +5788,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // Option: scatter data point labels
                 if (opts.showLabel) {
-                    var chartUuid = getUuid('-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
-                    if (obj.labels && (opts.dataLabelFormatScatter == 'custom' || opts.dataLabelFormatScatter == 'customXY')) {
+                    var chartUuid_1 = getUuid('-xxxx-xxxx-xxxx-xxxxxxxxxxxx');
+                    if (obj.labels && (opts.dataLabelFormatScatter === 'custom' || opts.dataLabelFormatScatter === 'customXY')) {
                         strXml += '<c:dLbls>';
                         obj.labels.forEach(function (label, idx) {
-                            if (opts.dataLabelFormatScatter == 'custom' || opts.dataLabelFormatScatter == 'customXY') {
+                            if (opts.dataLabelFormatScatter === 'custom' || opts.dataLabelFormatScatter === 'customXY') {
                                 strXml += '  <c:dLbl>';
                                 strXml += '    <c:idx val="' + idx + '"/>';
                                 strXml += '    <c:tx>';
@@ -5802,7 +5812,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                                 // Apply XY values at end of custom label
                                 // Do not apply the values if the label was empty or just spaces
                                 // This allows for selective labelling where required
-                                if (opts.dataLabelFormatScatter == 'customXY' && !/^ *$/.test(label)) {
+                                if (opts.dataLabelFormatScatter === 'customXY' && !/^ *$/.test(label)) {
                                     strXml += '          	<a:r>';
                                     strXml += '          		<a:rPr lang="' + (opts.lang || 'en-US') + '" baseline="0" dirty="0"/>';
                                     strXml += '          		<a:t> (</a:t>';
@@ -5854,7 +5864,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                                 strXml += '			<c15:showDataLabelsRange val="0"/>';
                                 strXml += '		</c:ext>';
                                 strXml += '      <c:ext uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}" xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart">';
-                                strXml += '			<c16:uniqueId val="{' + '00000000'.substring(0, 8 - (idx + 1).toString().length).toString() + (idx + 1) + chartUuid + '}"/>';
+                                strXml += '			<c16:uniqueId val="{' + '00000000'.substring(0, 8 - (idx + 1).toString().length).toString() + (idx + 1) + chartUuid_1 + '}"/>';
                                 strXml += '      </c:ext>';
                                 strXml += '		</c:extLst>';
                                 strXml += '</c:dLbl>';
@@ -5862,7 +5872,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         });
                         strXml += '</c:dLbls>';
                     }
-                    if (opts.dataLabelFormatScatter == 'XY') {
+                    if (opts.dataLabelFormatScatter === 'XY') {
                         strXml += '<c:dLbls>';
                         strXml += '	<c:spPr>';
                         strXml += '		<a:noFill/>';
@@ -5899,7 +5909,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // Color bar chart bars various colors
                 // Allow users with a single data set to pass their own array of colors (check for this using != ours)
-                if ((data.length === 1 || opts.valueBarColors) && opts.chartColors != BARCHART_COLORS) {
+                if ((data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || [];
@@ -5931,7 +5941,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      <c:formatCode>General</c:formatCode>';
                     strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
                     data[0].values.forEach(function (value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>';
+                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -5945,7 +5955,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
                     strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
                     data[0].values.forEach(function (_value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (obj.values[idx] || obj.values[idx] == 0 ? obj.values[idx] : '') + '</c:v></c:pt>';
+                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (obj.values[idx] || obj.values[idx] === 0 ? obj.values[idx] : '') + '</c:v></c:pt>';
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -6018,7 +6028,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 {
                     strXml += '<c:spPr>';
                     var strSerColor = opts.chartColors[colorIndex_1 % opts.chartColors.length];
-                    if (strSerColor == 'transparent') {
+                    if (strSerColor === 'transparent') {
                         strXml += '<a:noFill/>';
                     }
                     else if (opts.chartColorsOpacity) {
@@ -6027,7 +6037,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     else {
                         strXml += '<a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>';
                     }
-                    if (opts.lineSize == 0) {
+                    if (opts.lineSize === 0) {
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else if (opts.dataBorder) {
@@ -6058,7 +6068,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      <c:formatCode>General</c:formatCode>';
                     strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
                     data[0].values.forEach(function (value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>';
+                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -6073,7 +6083,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     // NOTE: Use pt count and iterate over data[0] (X-Axis) as user can have more values than data (eg: timeline where only first few months are populated)
                     strXml += '      <c:ptCount val="' + data[0].values.length + '"/>';
                     data[0].values.forEach(function (_value, idx) {
-                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (obj.values[idx] || obj.values[idx] == 0 ? obj.values[idx] : '') + '</c:v></c:pt>';
+                        strXml += '<c:pt idx="' + idx + '"><c:v>' + (obj.values[idx] || obj.values[idx] === 0 ? obj.values[idx] : '') + '</c:v></c:pt>';
                     });
                     strXml += '    </c:numCache>';
                     strXml += '  </c:numRef>';
@@ -6133,7 +6143,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             break;
         case CHART_TYPES.DOUGHNUT:
         case CHART_TYPES.PIE:
-            // Use the same var name so code blocks from barChart are interchangeable
+            // Use the same let name so code blocks from barChart are interchangeable
             var obj = data[0];
             /* EX:
                 data: [
@@ -6208,7 +6218,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '        </a:defRPr>';
                 strXml += '      </a:pPr></a:p>';
                 strXml += '    </c:txPr>';
-                if (chartType == CHART_TYPES.PIE) {
+                if (chartType === CHART_TYPES.PIE) {
                     strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'inEnd') + '"/>';
                 }
                 strXml += '    <c:showLegendKey val="0"/>';
@@ -6235,7 +6245,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
 				  </a:p>\
 				</c:txPr>\
 				' +
-                    (chartType == CHART_TYPES.PIE ? '<c:dLblPos val="ctr"/>' : '') +
+                    (chartType === CHART_TYPES.PIE ? '<c:dLblPos val="ctr"/>' : '') +
                     '\
 				<c:showLegendKey val="0"/>\
 				<c:showVal val="0"/>\
@@ -6264,7 +6274,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '      <c:numCache>';
             strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>';
             obj.values.forEach(function (value, idx) {
-                strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value == 0 ? value : '') + '</c:v></c:pt>';
+                strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
             });
             strXml += '      </c:numCache>';
             strXml += '    </c:numRef>';
@@ -6272,19 +6282,28 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 4: Close "SERIES"
             strXml += '  </c:ser>';
             strXml += '  <c:firstSliceAng val="0"/>';
-            if (chartType == CHART_TYPES.DOUGHNUT)
+            if (chartType === CHART_TYPES.DOUGHNUT)
                 strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
             strXml += '</c:' + chartType + 'Chart>';
             // Done with Doughnut/Pie
             break;
+        default:
+            break;
     }
     return strXml;
 }
+/**
+ * Create Category axis
+ * @param {IChartOpts} opts - chart options
+ * @param {string} axisId - value
+ * @param {string} valAxisId - value
+ * @return {string} XML
+ */
 function makeCatAxis(opts, axisId, valAxisId) {
     var strXml = '';
     // Build cat axis tag
     // NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-    if (opts.type == CHART_TYPES.SCATTER || opts.type == CHART_TYPES.BUBBLE) {
+    if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
         strXml += '<c:valAx>';
     }
     else {
@@ -6292,14 +6311,14 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     strXml += '  <c:axId val="' + axisId + '"/>';
     strXml += '  <c:scaling>';
-    strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '"/>';
-    if (opts.catAxisMaxVal || opts.catAxisMaxVal == 0)
+    strXml += '<c:orientation val="' + (opts.catAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>';
+    if (opts.catAxisMaxVal || opts.catAxisMaxVal === 0)
         strXml += '<c:max val="' + opts.catAxisMaxVal + '"/>';
-    if (opts.catAxisMinVal || opts.catAxisMinVal == 0)
+    if (opts.catAxisMinVal || opts.catAxisMinVal === 0)
         strXml += '<c:min val="' + opts.catAxisMinVal + '"/>';
     strXml += '</c:scaling>';
     strXml += '  <c:delete val="' + (opts.catAxisHidden ? 1 : 0) + '"/>';
-    strXml += '  <c:axPos val="' + (opts.barDir == 'col' ? 'b' : 'l') + '"/>';
+    strXml += '  <c:axPos val="' + (opts.barDir === 'col' ? 'b' : 'l') + '"/>';
     strXml += opts.catGridLine.style !== 'none' ? createGridLineElement(opts.catGridLine) : '';
     // '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
     if (opts.showCatAxisTitle) {
@@ -6312,7 +6331,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
         });
     }
     // NOTE: Adding Val Axis Formatting if scatter or bubble charts
-    if (opts.type == CHART_TYPES.SCATTER || opts.type == CHART_TYPES.BUBBLE) {
+    if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
         strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>';
     }
     else {
@@ -6326,11 +6345,11 @@ function makeCatAxis(opts, axisId, valAxisId) {
     else {
         strXml += '  <c:majorTickMark val="' + (opts.catAxisMajorTickMark || 'out') + '"/>';
         strXml += '  <c:minorTickMark val="' + (opts.catAxisMajorTickMark || 'none') + '"/>';
-        strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') + '"/>';
+        strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>';
     }
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="12700" cap="flat">';
-    strXml += opts.catAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
+    strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
     strXml += '      <a:prstDash val="solid"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
@@ -6359,7 +6378,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     if (opts.catLabelFormatCode) {
         ['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(function (opt) {
             // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) == -1)) {
+            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) === -1)) {
                 console.warn('`' + opt + "` must be one of: 'days','months','years' !");
                 opts[opt] = null;
             }
@@ -6377,7 +6396,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     // Close cat axis tag
     // NOTE: Added closing tag of val or cat axis based on chart type
-    if (opts.type == CHART_TYPES.SCATTER || opts.type == CHART_TYPES.BUBBLE) {
+    if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
         strXml += '</c:valAx>';
     }
     else {
@@ -6389,9 +6408,10 @@ function makeCatAxis(opts, axisId, valAxisId) {
  * Create Value Axis (Used by `bar3D`)
  * @param {IChartOpts} opts - chart options
  * @param {string} valAxisId - value
+ * @return {string} XML
  */
-function makeValueAxis(opts, valAxisId) {
-    var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir == 'col' ? 'l' : 'b') : opts.barDir == 'col' ? 'r' : 't';
+function makeValAxis(opts, valAxisId) {
+    var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir === 'col' ? 'r' : 't';
     var strXml = '';
     var isRight = axisPos === 'r' || axisPos === 't';
     var crosses = isRight ? 'max' : 'autoZero';
@@ -6399,15 +6419,15 @@ function makeValueAxis(opts, valAxisId) {
     strXml += '<c:valAx>';
     strXml += '  <c:axId val="' + valAxisId + '"/>';
     strXml += '  <c:scaling>';
-    strXml += '    <c:orientation val="' + (opts.valAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '"/>';
-    if (opts.valAxisMaxVal || opts.valAxisMaxVal == 0)
+    strXml += '    <c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>';
+    if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0)
         strXml += '<c:max val="' + opts.valAxisMaxVal + '"/>';
-    if (opts.valAxisMinVal || opts.valAxisMinVal == 0)
+    if (opts.valAxisMinVal || opts.valAxisMinVal === 0)
         strXml += '<c:min val="' + opts.valAxisMinVal + '"/>';
     strXml += '  </c:scaling>';
     strXml += '  <c:delete val="' + (opts.valAxisHidden ? 1 : 0) + '"/>';
     strXml += '  <c:axPos val="' + axisPos + '"/>';
-    if (opts.valGridLine.style != 'none')
+    if (opts.valGridLine.style !== 'none')
         strXml += createGridLineElement(opts.valGridLine);
     // '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
     if (opts.showValAxisTitle) {
@@ -6428,11 +6448,11 @@ function makeValueAxis(opts, valAxisId) {
     else {
         strXml += ' <c:majorTickMark val="' + (opts.valAxisMajorTickMark || 'out') + '"/>';
         strXml += ' <c:minorTickMark val="' + (opts.valAxisMinorTickMark || 'none') + '"/>';
-        strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || opts.barDir == 'col' ? 'nextTo' : 'low') + '"/>';
+        strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || opts.barDir === 'col' ? 'nextTo' : 'low') + '"/>';
     }
     strXml += ' <c:spPr>';
     strXml += '   <a:ln w="12700" cap="flat">';
-    strXml += opts.valAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
+    strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
     strXml += '     <a:prstDash val="solid"/>';
     strXml += '     <a:round/>';
     strXml += '   </a:ln>';
@@ -6457,7 +6477,7 @@ function makeValueAxis(opts, valAxisId) {
             (opts.type === CHART_TYPES.SCATTER ||
                 (Array.isArray(opts.type) &&
                     opts.type.filter(function (type) {
-                        return type.type == CHART_TYPES.AREA;
+                        return type.type === CHART_TYPES.AREA;
                     }).length > 0
                     ? true
                     : false)
@@ -6474,15 +6494,16 @@ function makeValueAxis(opts, valAxisId) {
  * @param {IChartOpts} opts - chart options
  * @param {string} axisId - axis ID
  * @param {string} valAxisId - value
+ * @return {string} XML
  */
 function makeSerAxis(opts, axisId, valAxisId) {
     var strXml = '';
     // Build ser axis tag
     strXml += '<c:serAx>';
     strXml += '  <c:axId val="' + axisId + '"/>';
-    strXml += '  <c:scaling><c:orientation val="' + (opts.serAxisOrientation || (opts.barDir == 'col' ? 'minMax' : 'minMax')) + '"/></c:scaling>';
+    strXml += '  <c:scaling><c:orientation val="' + (opts.serAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/></c:scaling>';
     strXml += '  <c:delete val="' + (opts.serAxisHidden ? 1 : 0) + '"/>';
-    strXml += '  <c:axPos val="' + (opts.barDir == 'col' ? 'b' : 'l') + '"/>';
+    strXml += '  <c:axPos val="' + (opts.barDir === 'col' ? 'b' : 'l') + '"/>';
     strXml += opts.serGridLine.style !== 'none' ? createGridLineElement(opts.serGridLine) : '';
     // '<c:title>' comes between '</c:majorGridlines>' and '<c:numFmt>'
     if (opts.showSerAxisTitle) {
@@ -6497,10 +6518,10 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += '  <c:numFmt formatCode="' + (opts.serLabelFormatCode || 'General') + '" sourceLinked="0"/>';
     strXml += '  <c:majorTickMark val="out"/>';
     strXml += '  <c:minorTickMark val="none"/>';
-    strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir == 'col' ? 'low' : 'nextTo') + '"/>';
+    strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>';
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="12700" cap="flat">';
-    strXml += opts.serAxisLineShow == false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
+    strXml += opts.serAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
     strXml += '      <a:prstDash val="solid"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
@@ -6526,7 +6547,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
     if (opts.serLabelFormatCode) {
         ['serAxisBaseTimeUnit', 'serAxisMajorTimeUnit', 'serAxisMinorTimeUnit'].forEach(function (opt) {
             // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) == -1)) {
+            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) === -1)) {
                 console.warn('`' + opt + "` must be one of: 'days','months','years' !");
                 opts[opt] = null;
             }
@@ -6552,7 +6573,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
  * @return {string} XML `<c:title>`
  */
 function genXmlTitle(opts) {
-    var align = opts.titleAlign == 'left' || opts.titleAlign == 'right' ? "<a:pPr algn=\"" + opts.titleAlign.substring(0, 1) + "\">" : "<a:pPr>";
+    var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"" + opts.titleAlign.substring(0, 1) + "\">" : "<a:pPr>";
     var rotate = opts.rotate ? "<a:bodyPr rot=\"" + convertRotationDegrees(opts.rotate) + "\"/>" : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
     var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize) + '00"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
     var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
@@ -6561,24 +6582,9 @@ function genXmlTitle(opts) {
     return "<c:title>\n\t  <c:tx>\n\t    <c:rich>\n\t      " + rotate + "\n\t      <a:lstStyle/>\n\t      <a:p>\n\t        " + align + "\n\t        <a:defRPr " + sizeAttr + " b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:defRPr>\n\t      </a:pPr>\n\t      <a:r>\n\t        <a:rPr " + sizeAttr + " b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:rPr>\n\t        <a:t>" + (encodeXmlEntities(opts.title) || '') + "</a:t>\n\t      </a:r>\n\t    </a:p>\n\t    </c:rich>\n\t  </c:tx>\n\t  " + layout + "\n\t  <c:overlay val=\"0\"/>\n\t</c:title>";
 }
 /**
- * Create Grid Line Element
- * @param {Object} glOpts {size, color, style}
- * @param {Object} defaults {size, color, style}
- * @param {String} type "major"(default) | "minor"
- */
-function createGridLineElement(glOpts) {
-    var strXml = '<c:majorGridlines>';
-    strXml += ' <c:spPr>';
-    strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">';
-    strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in PR 135
-    strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>';
-    strXml += '  </a:ln>';
-    strXml += ' </c:spPr>';
-    strXml += '</c:majorGridlines>';
-    return strXml;
-}
-/**
- * DESC: Calc and return excel column name (eg: 'A2')
+ * Calc and return excel column name for a given column length
+ * @param {number} length - col length
+ * @return {string} column name (ex: 'A2')
  */
 function getExcelColName(length) {
     var strName = '';
@@ -6598,9 +6604,9 @@ function getExcelColName(length) {
  * @param {Object} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+ * @return {string} XML
  */
 function createShadowElement(options, defaults) {
-    ///if (options === 'none') {
     if (options === null) {
         return '<a:effectLst/>';
     }
@@ -6614,25 +6620,43 @@ function createShadowElement(options, defaults) {
     strXml += '</a:effectLst>';
     return strXml;
 }
+/**
+ * Create Grid Line Element
+ * @param {OptsChartGridLine} glOpts {size, color, style}
+ * @return {string} XML
+ */
+function createGridLineElement(glOpts) {
+    var strXml = '<c:majorGridlines>';
+    strXml += ' <c:spPr>';
+    strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">';
+    strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in [Pull #135]
+    strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>';
+    strXml += '  </a:ln>';
+    strXml += ' </c:spPr>';
+    strXml += '</c:majorGridlines>';
+    return strXml;
+}
 
 /**
  * PptxGenJS: Media Methods
  */
 /**
  * Encode Image/Audio/Video into base64
+ * @param {ISlide | ISlideLayout} layout - slide layout
+ * @return {Promise} promise of generating the rels
  */
 function encodeSlideMediaRels(layout) {
-    var fs = typeof require !== 'undefined' ? require('fs') : null; // NodeJS
-    var https = typeof require !== 'undefined' ? require('https') : null; // NodeJS
+    var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
+    var https = typeof require !== 'undefined' && typeof window === 'undefined' ? require('https') : null; // NodeJS
     var imageProms = [];
     // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
     layout.relsMedia
         .filter(function (rel) {
-        return rel.type != 'online' && !rel.data;
+        return rel.type !== 'online' && !rel.data;
     })
         .forEach(function (rel) {
         imageProms.push(new Promise(function (resolve, reject) {
-            if (fs && rel.path.indexOf('http') != 0) {
+            if (fs && rel.path.indexOf('http') !== 0) {
                 // DESIGN: Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
                 try {
                     var bitmap = fs.readFileSync(rel.path);
@@ -6644,7 +6668,7 @@ function encodeSlideMediaRels(layout) {
                     reject('ERROR: Unable to read media: "' + rel.path + '"\n' + ex.toString());
                 }
             }
-            else if (fs && https && rel.path.indexOf('http') == 0) {
+            else if (fs && https && rel.path.indexOf('http') === 0) {
                 https.get(rel.path, function (res) {
                     var rawData = '';
                     res.setEncoding('binary'); // IMPORTANT: Only binary encoding works
@@ -6702,7 +6726,9 @@ function encodeSlideMediaRels(layout) {
         if (fs) {
             //console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
             rel.data = IMG_BROKEN;
-            imageProms.push(Promise.resolve().then(function () { return 'done'; }));
+            imageProms.push(Promise.resolve().then(function () {
+                return 'done';
+            }));
         }
         else {
             imageProms.push(createSvgPngPreview(rel));
@@ -6710,6 +6736,11 @@ function encodeSlideMediaRels(layout) {
     });
     return imageProms;
 }
+/**
+ * Create SVG preview image
+ * @param {ISlideRelMedia} rel - slide rel
+ * @return {Promise} promise
+ */
 function createSvgPngPreview(rel) {
     return new Promise(function (resolve, reject) {
         // A: Create
@@ -6717,7 +6748,7 @@ function createSvgPngPreview(rel) {
         // B: Set onload event
         image.onload = function () {
             // First: Check for any errors: This is the best method (try/catch wont work, etc.)
-            if (image.width + image.height == 0) {
+            if (image.width + image.height === 0) {
                 image.onerror('h/w=0');
             }
             var canvas = document.createElement('CANVAS');
@@ -6795,9 +6826,9 @@ var PptxGenJS = /** @class */ (function () {
         };
         /**
          * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
+         * @since 3.0.0
          * @param {number} slideNum - slide number
          * @return {ISlide} Slide
-         * @since 3.0.0
          */
         this.getSlide = function (slideNum) {
             return _this.slides.filter(function (slide) {
@@ -6825,7 +6856,7 @@ var PptxGenJS = /** @class */ (function () {
         this.createChartMediaRels = function (slide, zip, chartPromises) {
             slide.relsChart.forEach(function (rel) { return chartPromises.push(createExcelWorksheet(rel, zip)); });
             slide.relsMedia.forEach(function (rel) {
-                if (rel.type != 'online' && rel.type != 'hyperlink') {
+                if (rel.type !== 'online' && rel.type !== 'hyperlink') {
                     // A: Loop vars
                     var data = rel.data && typeof rel.data === 'string' ? rel.data : '';
                     // B: Users will undoubtedly pass various string formats, so correct prefixes as needed
@@ -6843,7 +6874,7 @@ var PptxGenJS = /** @class */ (function () {
         /**
          * Create and export the .pptx file
          * @param {string} exportName - output file type
-         * @param {Blob} content - output file type
+         * @param {Blob} blobContent - Blob content
          * @return {Promise<string>} Promise with file name
          */
         this.writeFileToBrowser = function (exportName, blobContent) {
@@ -6899,14 +6930,14 @@ var PptxGenJS = /** @class */ (function () {
                     arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(layout));
                 });
                 arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(_this.masterSlide));
-                // STEP 6: Wait for Promises (if any) then generate the PPTX file
+                // STEP 2: Wait for Promises (if any) then generate the PPTX file
                 Promise.all(arrMediaPromises).then(function () {
-                    // STEP 1: Add empty placeholder objects to slides that don't already have them
+                    // A: Add empty placeholder objects to slides that don't already have them
                     _this.slides.forEach(function (slide) {
                         if (slide.slideLayout)
                             addPlaceholdersToSlideLayouts(slide);
                     });
-                    // STEP 2: Add all required folders and files
+                    // B: Add all required folders and files
                     zip.folder('_rels');
                     zip.folder('docProps');
                     zip.folder('ppt').folder('_rels');
@@ -6929,7 +6960,7 @@ var PptxGenJS = /** @class */ (function () {
                     zip.file('ppt/presProps.xml', makeXmlPresProps());
                     zip.file('ppt/tableStyles.xml', makeXmlTableStyles());
                     zip.file('ppt/viewProps.xml', makeXmlViewProps());
-                    // STEP 3: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
+                    // C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
                     _this.slideLayouts.forEach(function (layout, idx) {
                         zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', makeXmlLayout(layout));
                         zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', makeXmlSlideLayoutRel(idx + 1, _this.slideLayouts));
@@ -6945,7 +6976,7 @@ var PptxGenJS = /** @class */ (function () {
                     zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', makeXmlMasterRel(_this.masterSlide, _this.slideLayouts));
                     zip.file('ppt/notesMasters/notesMaster1.xml', makeXmlNotesMaster());
                     zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', makeXmlNotesMasterRel());
-                    // STEP 4: Create all Rels (images, media, chart data)
+                    // D: Create all Rels (images, media, chart data)
                     _this.slideLayouts.forEach(function (layout) {
                         _this.createChartMediaRels(layout, zip, arrChartPromises);
                     });
@@ -6953,12 +6984,14 @@ var PptxGenJS = /** @class */ (function () {
                         _this.createChartMediaRels(slide, zip, arrChartPromises);
                     });
                     _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
-                    // STEP 6: Wait for Promises (if any) then generate the PPTX file
+                    // E: Wait for Promises (if any) then generate the PPTX file
                     Promise.all(arrChartPromises)
                         .then(function () {
                         if (outputType === 'STREAM') {
                             // A: stream file
-                            zip.generateAsync({ type: 'nodebuffer' }).then(function (content) { resolve(content); });
+                            zip.generateAsync({ type: 'nodebuffer' }).then(function (content) {
+                                resolve(content);
+                            });
                         }
                         else if (outputType) {
                             // B: Node [fs]: Output type user option or default
@@ -7158,8 +7191,8 @@ var PptxGenJS = /** @class */ (function () {
     // EXPORT METHODS
     /**
      * Export the current Presenation to stream
-     * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
      * @since 3.0.0
+     * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
      */
     PptxGenJS.prototype.stream = function () {
         var _this = this;
@@ -7175,9 +7208,9 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Export the current Presenation to selected/default type
+     * @since 3.0.0
      * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file
-     * @since 3.0.0
      */
     PptxGenJS.prototype.write = function (outputType) {
         var _this = this;
@@ -7193,9 +7226,9 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Export the current Presenation to local file (initiates download in browsers)
+     * @since 3.0.0
      * @param {string} exportName - file name
      * @returns {Promise<string>} file name
-     * @since 3.0.0
      */
     PptxGenJS.prototype.writeFile = function (exportName) {
         var _this = this;
@@ -7279,9 +7312,9 @@ var PptxGenJS = /** @class */ (function () {
     // HTML-TO-SLIDES METHODS
     /**
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+     * @note `verbose` option is undocumented; used for verbose output of layout process
      * @param {string} tabEleId - HTMLElementID of the table
      * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
-     * @note `verbose` option is undocumented; used for verbose output of layout process
      */
     PptxGenJS.prototype.tableToSlides = function (tableElementId, opts) {
         if (opts === void 0) { opts = {}; }
