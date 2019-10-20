@@ -3,49 +3,48 @@
  */
 
 import {
-	EMU,
-	ONEPT,
-	MASTER_OBJECTS,
 	BARCHART_COLORS,
-	PIECHART_COLORS,
-	DEF_CELL_MARGIN_PT,
+	BASE_SHAPES,
+	CHART_TYPE_NAMES,
 	CHART_TYPES,
+	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SLIDE_MARGIN_IN,
+	EMU,
 	IMG_PLAYBTN,
-	BASE_SHAPES,
-	CHART_TYPE_NAMES,
+	MASTER_OBJECTS,
+	ONEPT,
+	PIECHART_COLORS,
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
-	PLACEHOLDER_TYPES,
 } from './core-enums'
 import {
-	ISlide,
-	ITextOpts,
-	ILayout,
-	ISlideLayout,
-	ISlideObject,
-	IMediaOpts,
-	IChartOpts,
 	IChartMulti,
+	IChartOpts,
 	IImageOpts,
-	ITableCell,
-	IText,
+	ILayout,
+	IMediaOpts,
 	IShape,
 	IShapeOptions,
-	ITableOptions,
-	TableRow,
-	OptsChartGridLine,
+	ISlide,
+	ISlideLayout,
 	ISlideMstrObjPlchldrOpts,
+	ISlideObject,
+	ITableCell,
+	ITableOptions,
+	IText,
+	ITextOpts,
+	OptsChartGridLine,
+	TableRow,
 } from './core-interfaces'
 import { getSmartParseNumber, inch2Emu } from './gen-utils'
 import { getSlidesForTableRows } from './gen-tables'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
-var _chartCounter: number = 0
+let _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
@@ -62,12 +61,12 @@ export function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FI
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
 		slideDef.objects.forEach((object, idx: number) => {
 			let key = Object.keys(object)[0]
-			if (MASTER_OBJECTS[key] && key == 'chart') addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target)
-			else if (MASTER_OBJECTS[key] && key == 'image') addImageDefinition(target, object[key])
-			else if (MASTER_OBJECTS[key] && key == 'line') addShapeDefinition(target, BASE_SHAPES.LINE, object[key])
-			else if (MASTER_OBJECTS[key] && key == 'rect') addShapeDefinition(target, BASE_SHAPES.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key == 'text') addTextDefinition(target, object[key].text, object[key].options, false)
-			else if (MASTER_OBJECTS[key] && key == 'placeholder') {
+			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(object.chart.type, object.chart.data, object.chart.opts, target)
+			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(target, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(target, BASE_SHAPES.LINE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(target, BASE_SHAPES.RECTANGLE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(target, object[key].text, object[key].options, false)
+			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
 				delete object[key].options.name // remap name for earier handling internally
@@ -112,7 +111,7 @@ export function createSlideObject(slideDef /*:ISlideMasterOptions*/, target /*FI
  */
 export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt: IChartOpts): object {
 	function correctGridLineOptions(glOpts: OptsChartGridLine) {
-		if (!glOpts || glOpts.style == 'none') return
+		if (!glOpts || glOpts.style === 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
 			console.warn('Warning: chart.gridLine.size must be greater than 0.')
 			delete glOpts.size // delete prop to used defaults
@@ -181,8 +180,8 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
 	// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
 	if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-		options.dataLabelPosition = options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr'
-	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors == true || options.dataLabelBkgrdColors == false ? options.dataLabelBkgrdColors : false
+		options.dataLabelPosition = options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr'
+	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false
 	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 	if (['clustered', 'standard', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
@@ -202,7 +201,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	// `layout` allows the override of PPT defaults to maximize space
 	if (options.layout) {
 		;['x', 'y', 'w', 'h'].forEach(key => {
-			var val = options.layout[key]
+			let val = options.layout[key]
 			if (isNaN(Number(val)) || val < 0 || val > 1) {
 				console.warn('Warning: chart.layout.' + key + ' can only be 0-1')
 				delete options.layout[key] // remove invalid value so that default will be used
@@ -211,32 +210,32 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	}
 
 	// Set gridline defaults
-	options.catGridLine = options.catGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
-	options.valGridLine = options.valGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
-	options.serGridLine = options.serGridLine || (options.type == CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
+	options.catGridLine = options.catGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
+	options.valGridLine = options.valGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
+	options.serGridLine = options.serGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
 	correctGridLineOptions(options.catGridLine)
 	correctGridLineOptions(options.valGridLine)
 	correctGridLineOptions(options.serGridLine)
 	correctShadowOptions(options.shadow)
 
 	// C: Options: plotArea
-	options.showDataTable = options.showDataTable == true || options.showDataTable == false ? options.showDataTable : false
-	options.showDataTableHorzBorder = options.showDataTableHorzBorder == true || options.showDataTableHorzBorder == false ? options.showDataTableHorzBorder : true
-	options.showDataTableVertBorder = options.showDataTableVertBorder == true || options.showDataTableVertBorder == false ? options.showDataTableVertBorder : true
-	options.showDataTableOutline = options.showDataTableOutline == true || options.showDataTableOutline == false ? options.showDataTableOutline : true
-	options.showDataTableKeys = options.showDataTableKeys == true || options.showDataTableKeys == false ? options.showDataTableKeys : true
-	options.showLabel = options.showLabel == true || options.showLabel == false ? options.showLabel : false
-	options.showLegend = options.showLegend == true || options.showLegend == false ? options.showLegend : false
-	options.showPercent = options.showPercent == true || options.showPercent == false ? options.showPercent : true
-	options.showTitle = options.showTitle == true || options.showTitle == false ? options.showTitle : false
-	options.showValue = options.showValue == true || options.showValue == false ? options.showValue : false
+	options.showDataTable = options.showDataTable === true || options.showDataTable === false ? options.showDataTable : false
+	options.showDataTableHorzBorder = options.showDataTableHorzBorder === true || options.showDataTableHorzBorder === false ? options.showDataTableHorzBorder : true
+	options.showDataTableVertBorder = options.showDataTableVertBorder === true || options.showDataTableVertBorder === false ? options.showDataTableVertBorder : true
+	options.showDataTableOutline = options.showDataTableOutline === true || options.showDataTableOutline === false ? options.showDataTableOutline : true
+	options.showDataTableKeys = options.showDataTableKeys === true || options.showDataTableKeys === false ? options.showDataTableKeys : true
+	options.showLabel = options.showLabel === true || options.showLabel === false ? options.showLabel : false
+	options.showLegend = options.showLegend === true || options.showLegend === false ? options.showLegend : false
+	options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true
+	options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false
+	options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false
 	options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true
 	options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true
 	options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true
 
 	options.v3DRotX = !isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30
 	options.v3DRotY = !isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30
-	options.v3DRAngAx = options.v3DRAngAx == true || options.v3DRAngAx == false ? options.v3DRAngAx : true
+	options.v3DRAngAx = options.v3DRAngAx === true || options.v3DRAngAx === false ? options.v3DRAngAx : true
 	options.v3DPerspective = !isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30
 
 	// D: Options: chart
@@ -245,25 +244,25 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
-		: options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT
+		: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
 		? PIECHART_COLORS
 		: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
 	//
 	options.border = options.border && typeof options.border === 'object' ? options.border : null
 	if (options.border && (!options.border.pt || isNaN(options.border.pt))) options.border.pt = 1
-	if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length != 6)) options.border.color = '363636'
+	if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6)) options.border.color = '363636'
 	//
 	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
 	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75
-	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length != 6))
+	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
 		options.dataBorder.color = 'F9F9F9'
 	//
 	if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatCode = 'General'
 	options.dataLabelFormatCode =
 		options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
 			? options.dataLabelFormatCode
-			: options.type == CHART_TYPES.PIE || options.type == CHART_TYPES.DOUGHNUT
+			: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
 			? '0%'
 			: '#,##0'
 	//
@@ -324,7 +323,7 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 	if (!strImagePath && !strImageData) {
 		console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!")
 		return null
-	} else if (strImageData && strImageData.toLowerCase().indexOf('base64,') == -1) {
+	} else if (strImageData && strImageData.toLowerCase().indexOf('base64,') === -1) {
 		console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')")
 		return null
 	}
@@ -365,7 +364,7 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-	if (strImgExtn == 'svg') {
+	if (strImgExtn === 'svg') {
 		// SVG files consume *TWO* rId's: (a png version and the svg image)
 		// <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
 		// <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
@@ -444,13 +443,13 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 	}
 
 	// STEP 1: REALITY-CHECK
-	if (!strPath && !strData && strType != 'online') {
+	if (!strPath && !strData && strType !== 'online') {
 		throw "addMedia() error: either 'data' or 'path' are required!"
-	} else if (strData && strData.toLowerCase().indexOf('base64,') == -1) {
+	} else if (strData && strData.toLowerCase().indexOf('base64,') === -1) {
 		throw "addMedia() error: `data` value lacks a base64 header! Ex: 'video/mpeg;base64,NMP[...]')"
 	}
 	// Online Video: requires `link`
-	if (strType == 'online' && !strLink) {
+	if (strType === 'online' && !strLink) {
 		throw 'addMedia() error: online videos require `link` value'
 	}
 
@@ -471,7 +470,7 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 
 	// STEP 4: Add this media to this Slide Rels (rId/rels count spans all slides! Count all media to get next rId)
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
-	if (strType == 'online') {
+	if (strType === 'online') {
 		// A: Add video
 		target.relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
@@ -565,8 +564,8 @@ export function addPlaceholderDefinition(target: ISlide, text: string, opt: ISli
 
 	// TODO: TODO-3: this has never worked
 	// https://github.com/gitbrent/PptxGenJS/issues/599
-	if (opt.type == PLACEHOLDER_TYPES.title || opt.type == PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
-	else if (opt.type == PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
+	if (opt.type === PLACEHOLDER_TYPES.title || opt.type === PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
+	else if (opt.type === PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
 	*/
 }
 
@@ -589,12 +588,12 @@ export function addShapeDefinition(target: ISlide, shape: IShape, opt: IShapeOpt
 	if (!shape || typeof shape !== 'object') throw 'Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`'
 
 	// 2: Set options defaults
-	options.x = options.x || (options.x == 0 ? 0 : 1)
-	options.y = options.y || (options.y == 0 ? 0 : 1)
-	options.w = options.w || (options.w == 0 ? 0 : 1)
-	options.h = options.h || (options.h == 0 ? 0 : 1)
-	options.line = options.line || (shape.name == 'line' ? '333333' : null)
-	options.lineSize = options.lineSize || (shape.name == 'line' ? 1 : null)
+	options.x = options.x || (options.x === 0 ? 0 : 1)
+	options.y = options.y || (options.y === 0 ? 0 : 1)
+	options.w = options.w || (options.w === 0 ? 0 : 1)
+	options.h = options.h || (options.h === 0 ? 0 : 1)
+	options.line = options.line || (shape.name === 'line' ? '333333' : null)
+	options.lineSize = options.lineSize || (shape.name === 'line' ? 1 : null)
 	if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
 
 	// 3: Add object to slide
@@ -626,7 +625,7 @@ export function addTableDefinition(
 	// STEP 1: REALITY-CHECK
 	{
 		// A: check for empty
-		if (tableRows == null || tableRows.length == 0 || !Array.isArray(tableRows)) {
+		if (tableRows === null || tableRows.length === 0 || !Array.isArray(tableRows)) {
 			throw `addTable: Array expected! EX: 'slide.addTable( [rows], {options} );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`
 		}
 
@@ -668,13 +667,13 @@ export function addTableDefinition(
 	})
 
 	// STEP 3: Set options
-	opt.x = getSmartParseNumber(opt.x || (opt.x == 0 ? 0 : EMU / 2), 'X', presLayout)
-	opt.y = getSmartParseNumber(opt.y || (opt.y == 0 ? 0 : EMU / 2), 'Y', presLayout)
+	opt.x = getSmartParseNumber(opt.x || (opt.x === 0 ? 0 : EMU / 2), 'X', presLayout)
+	opt.y = getSmartParseNumber(opt.y || (opt.y === 0 ? 0 : EMU / 2), 'Y', presLayout)
 	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
 	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
 	opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0
-	opt.margin = opt.margin == 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
+	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
 	if (opt.autoPageLineWeight > 1) opt.autoPageLineWeight = 1
 	else if (opt.autoPageLineWeight < -1) opt.autoPageLineWeight = -1
@@ -704,12 +703,12 @@ export function addTableDefinition(
 	} else if (opt.colW) {
 		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
 			opt.w = Math.floor(Number(opt.colW) * arrRows[0].length)
-		} else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length != arrRows[0].length) {
+		} else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length !== arrRows[0].length) {
 			console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.')
 
-			var numColWidth = Math.floor((presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length)
+			let numColWidth = Math.floor((presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length)
 			opt.colW = []
-			for (var idx = 0; idx < arrRows[0].length; idx++) {
+			for (let idx = 0; idx < arrRows[0].length; idx++) {
 				opt.colW.push(numColWidth)
 			}
 			opt.w = Math.floor(numColWidth * arrRows[0].length)
@@ -741,7 +740,7 @@ export function addTableDefinition(
 			} else if (typeof cell === 'object') {
 				// ARG0: `text`
 				if (typeof cell.text === 'number') row[idy].text = row[idy].text.toString()
-				else if (typeof cell.text === 'undefined' || cell.text == null) row[idy].text = ''
+				else if (typeof cell.text === 'undefined' || cell.text === null) row[idy].text = ''
 
 				// ARG1: `options`: ensure options exists
 				row[idy].options = cell.options || {}
@@ -759,7 +758,7 @@ export function addTableDefinition(
 
 	// STEP 6: Auto-Paging: (via {options} and used internally)
 	// (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
-	if (opt && opt.autoPage == false) {
+	if (opt && opt.autoPage === false) {
 		// Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
 		createHyperlinkRels(target, arrRows)
 
@@ -806,7 +805,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 	let opt: ITextOpts = opts || {}
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
-		text: (Array.isArray(text) && text.length == 0 ? '' : text || '') || '',
+		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
 		type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
 		options: opt,
 		shape: opt.shape,
@@ -820,7 +819,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		}
 
 		// B
-		if (opt.shape && opt.shape.name == 'line') {
+		if (opt.shape && opt.shape.name === 'line') {
 			opt.line = opt.line || '333333'
 			opt.lineSize = opt.lineSize || 1
 		}
@@ -833,7 +832,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		newObject.options.bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
 		newObject.options.bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 
-		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset == 0) {
+		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
 			newObject.options.bodyProp.lIns = inch2Emu(opt.inset)
 			newObject.options.bodyProp.rIns = inch2Emu(opt.inset)
 			newObject.options.bodyProp.tIns = inch2Emu(opt.inset)
@@ -876,8 +875,8 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (
 				slide.data.filter(slideObj => {
-					return slideObj.options && slideObj.options.placeholder == slideLayoutObj.options.placeholder
-				}).length == 0
+					return slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder
+				}).length === 0
 			) {
 				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
 			}
@@ -898,7 +897,7 @@ function addBackgroundDefinition(bkg: string | { src?: string; path?: string; da
 		bkg.src = bkg.src || bkg.path || null
 		if (!bkg.src) bkg.src = 'preencoded.png'
 		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
-		if (strImgExtn == 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
+		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
 		let intRels = target.relsMedia.length + 1
 		target.relsMedia.push({
