@@ -5067,7 +5067,7 @@ var PptxGenJS = function(){
 			rels: [],
 			slideNumberObj: null,
 			layout: inMasterName || '[ default ]',
-			layoutObj: objLayout,
+			layoutObj: objLayout
 		};
 
 		// ==========================================================================
