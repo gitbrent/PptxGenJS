@@ -5067,7 +5067,7 @@ var PptxGenJS = function(){
 			rels: [],
 			slideNumberObj: null,
 			layout: inMasterName || '[ default ]',
-			layoutObj: objLayout
+			layoutObj: objLayout,
 		};
 
 		// ==========================================================================
@@ -5093,6 +5093,10 @@ var PptxGenJS = function(){
 				return gObjPptx.slides[slideNum].slideNumberObj;
 			}
 		};
+
+		slideObj.background = function ( bkg ) {
+			gObjPptxGenerators.addBackgroundDefinition(bkg, gObjPptx.slides[slideNum]);
+		}
 
 		/**
 		 * Generate the chart based on input data.
