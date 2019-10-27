@@ -609,8 +609,8 @@ export function addShapeDefinition(target: ISlide, shape: IShape, opt: IShapeOpt
  * @param {ITableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presenation layout
- * TODO: FIXME:
- * TODO: FIXME:
+ * @param {Function} addSlide - method
+ * @param {Function} getSlide - method
  */
 export function addTableDefinition(
 	target: ISlide,
