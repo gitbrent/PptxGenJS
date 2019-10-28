@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.5 @ 2019-10-20T21:00:11.098Z */
+/* PptxGenJS 3.0.0-beta.5 @ 2019-10-28T04:50:09.872Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2824,11 +2824,8 @@ function slideObjectToXml(slide) {
                 break;
         }
     });
-    // STEP 5: Add slide numbers last (if any)
+    // STEP 5: Add slide numbers (if any) last
     if (slide.slideNumberObj) {
-        // FIXME: slide numbers not working
-        console.log('FIXME: slideNumberObj');
-        console.log(slide);
         strSlideXml +=
             '<p:sp>' +
                 '  <p:nvSpPr>' +
@@ -2852,7 +2849,6 @@ function slideObjectToXml(slide) {
                 '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
                 '    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
                 '  </p:spPr>';
-        // ISSUE #68: "Page number styling"
         strSlideXml += '<p:txBody>';
         strSlideXml += '  <a:bodyPr/>';
         strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
@@ -4405,8 +4401,8 @@ function addShapeDefinition(target, shape, opt) {
  * @param {ITableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presenation layout
- * TODO: FIXME:
- * TODO: FIXME:
+ * @param {Function} addSlide - method
+ * @param {Function} getSlide - method
  */
 function addTableDefinition(target, tableRows, options, slideLayout, presLayout, addSlide, getSlide) {
     var opt = options && typeof options === 'object' ? options : {};
@@ -4753,13 +4749,11 @@ var Slide = /** @class */ (function () {
         this.rels = [];
         this.relsChart = [];
         this.relsMedia = [];
-        this.slideNumber = null;
         this.slideLayout = params.slideLayout || null;
         // NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
         // `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
         // so, lastly, add to the Slide now.
-        if (this.slideLayout && this.slideLayout.slideNumberObj && !this._slideNumber)
-            this.slideNumber = this.slideLayout.slideNumberObj;
+        this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null;
     }
     Object.defineProperty(Slide.prototype, "bkgd", {
         get: function () {
@@ -4787,6 +4781,7 @@ var Slide = /** @class */ (function () {
         },
         set: function (value) {
             // NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
+            this.slideNumberObj = value;
             this._slideNumber = value;
             this._setSlideNum(value);
         },
