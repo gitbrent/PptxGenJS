@@ -40,6 +40,7 @@ export default class Slide {
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
+    public slideNumberObj: ISlideNumber
 
 	constructor(params: { addSlide: Function; getSlide: Function; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this.addSlide = params.addSlide
@@ -52,13 +53,11 @@ export default class Slide {
 		this.rels = []
 		this.relsChart = []
 		this.relsMedia = []
-		this.slideNumber = null
 		this.slideLayout = params.slideLayout || null
-
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		// so, lastly, add to the Slide now.
-		if (this.slideLayout && this.slideLayout.slideNumberObj && !this._slideNumber) this.slideNumber = this.slideLayout.slideNumberObj
+		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj: null
 	}
 
 	public set bkgd(value: string) {
@@ -77,6 +76,7 @@ export default class Slide {
 
 	public set slideNumber(value: ISlideNumber) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
+		this.slideNumberObj = value
 		this._slideNumber = value
 		this._setSlideNum(value)
 	}

@@ -677,11 +677,8 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		}
 	})
 
-	// STEP 5: Add slide numbers last (if any)
+	// STEP 5: Add slide numbers (if any) last
 	if (slide.slideNumberObj) {
-		// FIXME: slide numbers not working
-		console.log('FIXME: slideNumberObj')
-		console.log(slide)
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
@@ -705,7 +702,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
 			'    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
 			'  </p:spPr>'
-		// ISSUE #68: "Page number styling"
 		strSlideXml += '<p:txBody>'
 		strSlideXml += '  <a:bodyPr/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
