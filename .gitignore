@@ -6,6 +6,7 @@ bower_components/
 *.icloud
 *.lock
 
+demos/*
 dist/*
 examples/*
 libs/*
