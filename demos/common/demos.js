@@ -237,11 +237,10 @@ function execGenSlidesFuncs(type) {
 
 	// LAST: Export Presentation
 	if ( NODEJS ) {
-		pptx.writeFile('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
-		console.log('\nDemo file created:\n * '+'PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
+		return pptx.writeFile('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
 	}
 	else {
-		pptx.writeFile('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
+		return pptx.writeFile('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
 	}
 }
 
