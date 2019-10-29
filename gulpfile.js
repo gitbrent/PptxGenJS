@@ -4,10 +4,9 @@ const rollupTypescript = require('rollup-plugin-typescript2')
 const { watch, series } = require('gulp')
 const gulp = require('gulp'),
 	concat = require('gulp-concat'),
-	sourcemaps = require('gulp-sourcemaps'),
 	ignore = require('gulp-ignore'),
 	insert = require('gulp-insert'),
-	deleteLines = require('gulp-delete-lines'),
+	source = require('gulp-sourcemaps'),
 	uglify = require('gulp-uglify')
 
 gulp.task('build', () => {
@@ -51,9 +50,9 @@ gulp.task('min', () => {
 		.pipe(concat('pptxgen.min.js'))
 		.pipe(uglify())
 		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
-		.pipe(sourcemaps.init())
+		.pipe(source.init())
 		.pipe(ignore.exclude(['**/*.map']))
-		.pipe(sourcemaps.write('./'))
+		.pipe(source.write('./'))
 		.pipe(gulp.dest('./dist/'))
 })
 
