@@ -1828,10 +1828,10 @@ var PptxGenJS = function(){
 			if ( outputType && JSZIP_OUTPUT_TYPES.indexOf(outputType) >= 0 ) {
 				zip.generateAsync({ type:outputType }).then(gObjPptx.saveCallback);
 			}
-			else if ( NODEJS && !gObjPptx.isBrowser ) {
+			else if ( !gObjPptx.isBrowser ) {
 				if ( gObjPptx.saveCallback ) {
 					if ( strExportName.indexOf('http') == 0 ) {
-						zip.generateAsync({type:'nodebuffer'}).then(function(content){ gObjPptx.saveCallback(content); });
+						zip.generateAsync({type:'nodebuffer'}).then(function(content){ gObjPptx.saveCallback(new Blob([content], {type: "application/vnd.openxmlformats-officedocument.presentationml.presentation"})); });
 					}
 					else {
 						zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, function(){ gObjPptx.saveCallback(strExportName); } ); });

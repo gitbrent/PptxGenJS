@@ -82,7 +82,7 @@ declare namespace PptxGenJS {
   export type ImageOptions = ImageBaseOptions & DataOrPath;
 
   export interface MediaBaseOptions extends PositionOptions {
-    onlineVideoLink?: string;
+    link?: string;
     type?: 'audio' | 'online' | 'video';
   }
   export type MediaOptions = MediaBaseOptions & DataOrPath;
