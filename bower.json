@@ -5,8 +5,7 @@
     "dist/pptxgen.js"
   ],
   "dependencies": {
-    "jquery": "^3.3.1",
-    "jszip": "^3.1.5"
+    "jszip": "^3.2.2"
   },
   "authors": [
     "Brent Ely <https://github.com/gitbrent>"
