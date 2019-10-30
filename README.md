@@ -241,14 +241,12 @@ New Features
   * Promise-based export methods support lots of output methods: ArrayBuffer, Blob, stream, etc.
 
 Beta Features
-* Angular/React integration is MUCH EASIER now - demos coming soon (use `dist/pptxgen.es.js`)
+* Angular/React integration is MUCH EASIER now - check ./demos
 
 Outstanding Features
-* TypeScript definitions and docs are out-of-date
-* SlideNumbers do not work
-* Other small items
+* TypeScript definitions are out-of-date
 
-Coming in 3.0/3.1
+Coming in 3.1
 * Sections
 
 **************************************************************************************************
