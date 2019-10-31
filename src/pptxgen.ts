@@ -136,6 +136,7 @@ export default class PptxGenJS {
 		return this._rtlMode
 	}
 
+	// TODO: This can be dropped in 3.0 right?
 	/**
 	 * `isBrowser` Presentation Option:
 	 * Target: Angular/React/Webpack, etc. This setting affects how files are saved: using `fs` for Node.js or browser libs
