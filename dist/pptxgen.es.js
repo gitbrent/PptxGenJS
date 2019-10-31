@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.5 @ 2019-10-29T03:32:32.141Z */
+/* PptxGenJS 3.0.0-beta.5 @ 2019-10-31T04:41:18.887Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -4757,6 +4757,7 @@ var Slide = /** @class */ (function () {
         get: function () {
             return this._bkgd;
         },
+        // TODO: add comments (also add to index.d.ts)
         set: function (value) {
             this._bkgd = value;
         },
@@ -4767,6 +4768,7 @@ var Slide = /** @class */ (function () {
         get: function () {
             return this._color;
         },
+        // TODO: add comments (also add to index.d.ts)
         set: function (value) {
             this._color = value;
         },
@@ -4777,6 +4779,7 @@ var Slide = /** @class */ (function () {
         get: function () {
             return this._slideNumber;
         },
+        // TODO: add comments (also add to index.d.ts)
         set: function (value) {
             // NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
             this.slideNumberObj = value;
@@ -6808,7 +6811,7 @@ function createSvgPngPreview(rel) {
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
-        this._version = '3.0.0-beta.5';
+        this._version = '3.0.0-beta.6';
         // Global props
         this._charts = CHART_TYPES;
         this._colors = SCHEME_COLOR_NAMES;

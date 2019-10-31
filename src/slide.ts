@@ -60,6 +60,7 @@ export default class Slide {
 		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj: null
 	}
 
+	// TODO: add comments (also add to index.d.ts)
 	public set bkgd(value: string) {
 		this._bkgd = value
 	}
@@ -67,6 +68,7 @@ export default class Slide {
 		return this._bkgd
 	}
 
+	// TODO: add comments (also add to index.d.ts)
 	public set color(value: string) {
 		this._color = value
 	}
@@ -74,6 +76,7 @@ export default class Slide {
 		return this._color
 	}
 
+	// TODO: add comments (also add to index.d.ts)
 	public set slideNumber(value: ISlideNumber) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		this.slideNumberObj = value
