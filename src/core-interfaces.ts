@@ -4,8 +4,6 @@
 
 import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES } from './core-enums'
 
-// FIXME: WONT FORMAT ANYMORE!!! ("TSTypeAliasDeclaration" error)
-
 // Common
 // ======
 
@@ -24,7 +22,7 @@ export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: s
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 type MediaType = 'audio' | 'online' | 'video'
 
-export interface PositionOptions { 
+export interface PositionOptions {
 	x?: Coord
 	y?: Coord
 	w?: Coord
