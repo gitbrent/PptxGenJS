@@ -234,20 +234,18 @@ Visit the "version-3.0" branch to try it out
 New Features
 * Brand-new TypeScript/ES6 Class codebase eliminated dozens of bugs and greatly increased stability
 * Code is logically separated into 10+ files, making pull requests and maintenance easier
+* jQuery is gone! Now the only dependency is JSZip
+* Angular/React integration is MUCH EASIER now - check ./demos
 * Completely rewritten Table AutoPaging and HTML-to-PowerPoint methods - faster and much more accurate
 * Save/Export:
   * `save()` method is gone!
   * Three new export methods are used now: `stream()` [node], `write()` [node], `writeFile()` [browser]
   * Promise-based export methods support lots of output methods: ArrayBuffer, Blob, stream, etc.
 
-Beta Features
-* Angular/React integration is MUCH EASIER now - check ./demos
+Please Help Test
+* See tracking issue here: [\#616](https://github.com/gitbrent/PptxGenJS/issue/616)
 
-Outstanding Features
-* TypeScript definitions are out-of-date
 
-Coming in 3.1
-* Sections
 
 **************************************************************************************************
 # Contributors ✨
