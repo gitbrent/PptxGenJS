@@ -56,6 +56,18 @@ gulp.task('min', () => {
 		.pipe(gulp.dest('./dist/'))
 })
 
+gulp.task('bundle', () => {
+	return gulp
+		.src(['./libs/*', './src/bld/pptxgen.gulp.js'])
+		.pipe(concat('pptxgen.bundle.js'))
+		.pipe(uglify())
+		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
+		.pipe(source.init())
+		.pipe(ignore.exclude(['**/*.map']))
+		.pipe(source.write('./'))
+		.pipe(gulp.dest('./dist/'))
+})
+
 gulp.task('cjs', () => {
 	return gulp
 		.src(['./src/bld/pptxgen.cjs.js'])
@@ -71,11 +83,11 @@ gulp.task('es', () => {
 })
 
 // Build/Deploy
-gulp.task('default', gulp.series('build', 'min', 'cjs', 'es'), () => {
+gulp.task('default', gulp.series('build', 'min', 'cjs', 'es', 'bundle'), () => {
 	console.log('... dist/pptxgen.min.js done!')
 })
 
 // Watch
 exports.default = function() {
-	watch('src/*.ts', series('build', 'min', 'cjs', 'es'))
+	watch('src/*.ts', series('build', 'min', 'cjs', 'es', 'bundle'))
 }
