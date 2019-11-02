@@ -5,13 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Coming In [3.0]:
-- `save()` will be renamed, return a Promise
-- jQuery is no longer required
-- Major **BREAKING CHANGES**
+### Coming In [3.1]:
+- Sections
 
 
-## [3.0.0] - 2019-12-31
+## [3.0.0] - 2019-11-31
 ### Added
 - Ability to specify numbered list format [\#452](https://github.com/gitbrent/PptxGenJS/issue/452) ([mayvazyan](https://github.com/mayvazyan))
 - New cat/val axis options: majorTickMark/minorTickMark [\#473](https://github.com/gitbrent/PptxGenJS/pull/473) ([RokasDie](https://github.com/RokasDie))
@@ -30,12 +28,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 
 
-## [2.6.0] - 2019-??-??
+## [2.6.0] - 2019-09-24
 ### Added
 - Host the Examples demo webpage online [\#505](https://github.com/gitbrent/PptxGenJS/pull/505) ([multiplegeorges](https://github.com/multiplegeorges))
+- Add types key to package.json [\#529](https://github.com/gitbrent/PptxGenJS/pull/529) ([adamlong5](https://github.com/adamlong5))
+- Add support for font family css when export HTML table to slide. [\#571](https://github.com/gitbrent/PptxGenJS/pull/571) ([Jank1310](https://github.com/twatson83))
 ### Changed
 - Fixed: MIME type is ppt now instead of "application/zip"
 - Fixed: Not Able to add background image from the www source [\#497](https://github.com/gitbrent/PptxGenJS/issue/497) ([nish25sp](https://github.com/nish25sp))
+- Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
+- Fixed: lineDash Option is not in documentation [\#526](https://github.com/gitbrent/PptxGenJS/issue/526) ([Jank1310](https://github.com/Jank1310))
+- Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
+- Fixed: ReferenceError: strXmlBullet is not defined [\#587](https://github.com/gitbrent/PptxGenJS/issue/587) ([Saurabh-Chandil](https://github.com/Saurabh-Chandil))
+- Fixed: Getting paraPropXmlCore not defined error - line 4200 in pptxgen.bundle.js missing "var" declaration [\#596](https://github.com/gitbrent/PptxGenJS/issue/596) ([rajeearyal](https://github.com/rajeearyal))
 ### Removed
 
 
