@@ -48,7 +48,6 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Unimplemented Features](#unimplemented-features)
-- [Coming Soon ⏰](#coming-soon-)
 - [Contributors ✨](#contributors-)
 - [License](#license)
 
@@ -64,12 +63,11 @@ Use JavaScript to create a PowerPoint presentation with your web browser right n
 ### CDN
 ```html
 <!-- Bundle: Easiest to use, supports all browsers -->
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.bundle.js"></script>
 
 <!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/libs/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.min.js"></script>
 ```
 
 ### Download
@@ -79,24 +77,24 @@ Use JavaScript to create a PowerPoint presentation with your web browser right n
 <script src="PptxGenJS/libs/pptxgen.bundle.js"></script>
 
 <!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
-<script src="PptxGenJS/libs/jquery.min.js"></script>
 <script src="PptxGenJS/libs/jszip.min.js"></script>
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
-<!-- IE11 requires Promises polyfill -->
-<!-- <script src="PptxGenJS/libs/promise.min.js"></script> -->
+<!-- <script src="PptxGenJS/libs/promise.min.js"></script> IE11 requires Promises polyfill -->
 ```
 
 ### Npm
 [PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
+```bash
+npm install pptxgenjs --save
+```
 ```javascript
-npm install pptxgenjs
-
-var pptx = require("pptxgenjs");
+let PptxGenJS = require("pptxgenjs");
+let pptx = new PptxGenJS();
 ```
 
 ### Yarn
-```ksh
-yarn install pptxgenjs
+```bash
+yarn add pptxgenjs
 ```
 
 **************************************************************************************************
@@ -110,9 +108,9 @@ PptxGenJS PowerPoint presentations are created via JavaScript by following 4 bas
 
 ```javascript
 var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
-slide.addText('Hello World!', { x:1.5, y:1.5, fontSize:18, color:'363636' });
-pptx.save('Sample Presentation');
+var slide = pptx.addSlide();
+slide.addText('Hello World!', { x:1.5, y:1.5, fontSize:18, color:'363636'. align:'center' });
+pptx.writeFile('Sample Presentation');
 ```
 That's really all there is to it!
 
@@ -172,21 +170,9 @@ That's really all there is to it!
 
 
 **************************************************************************************************
-# Full PowerPoint Shape Library
-If you are planning on creating Shapes (basically anything other than Text, Tables or Rectangles), then you'll want to
-include the `pptxgen.shapes.js` library.
-
-The shapes file contains a complete PowerPoint Shape object array thanks to the [officegen project](https://github.com/Ziv-Barber/officegen).
-
-```javascript
-<script src="PptxGenJS/dist/pptxgen.shapes.js"></script>
-```
-
-
-**************************************************************************************************
 # Typescript Definitions
 
-As of version 2.3.0, typescript definitions are available (`pptxgen.d.ts`).
+As of version 2.3.0, typescript definitions are available (`types/index.d.ts`).
 
 
 **************************************************************************************************
@@ -222,31 +208,6 @@ These include:
 * Outlines
 * SmartArt
 
-
-**************************************************************************************************
-# Coming Soon ⏰
-
-The library is currently being rewritten in TypeScript for version 3.0 which will be completed by the end of 2019.  
-
-Visit the "version-3.0" branch to try it out
-* [PptxGenJS 3.0 Preview](https://github.com/gitbrent/PptxGenJS/tree/version-3.0)
-
-New Features
-* Brand-new TypeScript/ES6 Class codebase eliminated dozens of bugs and greatly increased stability
-* Code is logically separated into 10+ files, making pull requests and maintenance easier
-* Completely rewritten Table AutoPaging and HTML-to-PowerPoint methods - faster and much more accurate
-* Save/Export:
- * Promise-based export methods - no more callbacks
- * Two new methods (Write and WriteFile) will replace `save()`
- * Supports all types of output methods: ArrayBuffer, Blob, etc.
-
-Outstanding Dev Items
-* Angular/React integration has not been completed as of yet (but it will be MUCH EASIER once it is finalized)
-* TypeScript definitions are not up-to-date
-* SlideNumbers do not work
-* `save()` is still the only export method: `write()` & `writeFile()` are coming in September
-* Correct MIME type for zip exports
-* Other small items
 
 **************************************************************************************************
 # Contributors ✨
