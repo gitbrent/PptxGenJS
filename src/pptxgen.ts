@@ -58,7 +58,13 @@ export default class PptxGenJS {
 	// Property getters/setters
 
 	/**
-	 * Presentation Layout: 'screen4x3', 'screen16x9', 'widescreen', etc.
+	 * Presentation layout name
+	 * Available Layouts:
+	 * 'LAYOUT_4x3'   (10" x 7.5")
+	 * 'LAYOUT_16x9'  (10" x 5.625")
+	 * 'LAYOUT_16x10' (10" x 6.25")
+	 * 'LAYOUT_WIDE'  (13.33" x 7.5")
+	 * 'LAYOUT_USER'  (user specified, can be any size)
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 	 */
 	private _layout: string
@@ -76,6 +82,9 @@ export default class PptxGenJS {
 		return this._layout
 	}
 
+	/**
+	* Library Version
+	*/
 	private _version: string = '3.0.0-beta.6'
 	public get version(): string {
 		return this._version
