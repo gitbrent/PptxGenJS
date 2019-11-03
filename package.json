@@ -36,7 +36,8 @@
   "devDependencies": {
     "@types/jszip": "^3.1.6",
     "@types/node": "^12.7.5",
-	"express": "^4.17.1",
+    "doctoc": "^1.4.0",
+    "express": "^4.17.1",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-delete-lines": "0.0.7",
