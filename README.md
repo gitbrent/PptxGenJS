@@ -1,50 +1,33 @@
-[![MIT Licence](https://img.shields.io/github/license/gitbrent/pptxgenjs.svg)](https://opensource.org/licenses/mit-license.php)  [![Dependency Status](https://david-dm.org/gitbrent/pptxgenjs/status.svg)](https://david-dm.org/gitbrent/pptxgenjs)  [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs)  [![Package Quality](http://npm.packagequality.com/shield/pptxgenjs.png?style=flat-square)](https://github.com/gitbrent/pptxgenjs)  [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)  [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
+
+[![Package Quality](http://npm.packagequality.com/shield/pptxgenjs.png?style=flat-square)](https://github.com/gitbrent/pptxgenjs)  [![Dependency Status](https://david-dm.org/gitbrent/pptxgenjs/status.svg)](https://david-dm.org/gitbrent/pptxgenjs)  [![Known Vulnerabilities](https://snyk.io/test/npm/pptxgenjs/badge.svg)](https://snyk.io/test/npm/pptxgenjs)  [![npm downloads](https://img.shields.io/npm/dm/pptxgenjs.svg)](https://www.npmjs.com/package/pptxgenjs)  [![jsdelivr downloads](https://data.jsdelivr.com/v1/package/gh/gitbrent/pptxgenjs/badge)](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)  [![typescripts definitions](https://img.shields.io/npm/types/pptxgenjs)](https://img.shields.io/npm/types/pptxgenjs)
 
 # PptxGenJS
 
-## JavaScript library that creates PowerPoint presentations
-
-Quickly and easily create PowerPoint presentations with a few simple JavaScript commands in client web browsers or Node desktop apps.
-
-### Main Features
-* Widely Supported: Creates and downloads presentations on all current web browsers (Chrome, Edge, Firefox, etc.) and IE11
-* Full Featured: Slides can include Charts, Images, Media, Shapes, Tables and Text (plus Master Slides/Templates)
-* Easy To Use: Entire PowerPoint presentations can be created in a few lines of code
-* Modern: Pure JavaScript solution - everything necessary to create PowerPoint PPT exports is included
-
-### Additional Features
-* Use the unique [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to copy an HTML table into 1 or more Slides with a single command
+JavaScript library that creates PowerPoint presentations
+* Creates presentations on all current web browsers and IE11
+* Slides can include Charts, Images, Media, Shapes, Tables and Text, etc.
+* Powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform any HTML table into a presentation
+* Modern, pure JavaScript, promise-based library
+* Only a single dependency (JSZip)
+* Easy Angular/React integration (available via npm, cjs or es files)
 
 **************************************************************************************************
 
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-**Table of Contents**  (*generated with [DocToc](https://github.com/thlorenz/doctoc)*)
+**Table of Contents**
 
-- [Live Demo](#live-demo)
-  - [Installation](#installation)
-    - [CDN](#cdn)
-    - [Download](#download)
-    - [Npm](#npm)
-    - [Yarn](#yarn)
-- [Quick Start Guide](#quick-start-guide)
-- [Library API](#library-api)
-  - [Presentation Creation/Options](#presentation-creationoptions)
-  - [Slide Creation/Options](#slide-creationoptions)
-  - [Saving a Presentation](#saving-a-presentation)
-  - [Master Slides and Corporate Branding](#master-slides-and-corporate-branding)
-  - [Adding Charts](#adding-charts)
-  - [Adding Images](#adding-images)
-  - [Adding Media (Audio/Video/YouTube)](#adding-media-audiovideoyoutube)
-  - [Adding Shapes](#adding-shapes)
-  - [Adding Tables](#adding-tables)
-  - [Adding Text](#adding-text)
-  - [Including Speaker Notes](#including-speaker-notes)
-  - [Using Scheme Colors](#using-scheme-colors)
-- [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
-- [Integration with Other Libraries](#integration-with-other-libraries)
-- [Full PowerPoint Shape Library](#full-powerpoint-shape-library)
-- [Typescript Definitions](#typescript-definitions)
+- [Demo](#demo)
+- [Installation](#installation)
+  - [CDN](#cdn)
+  - [Download](#download)
+  - [Npm](#npm)
+  - [Yarn](#yarn)
+  - [Additional Builds](#additional-builds)
+- [Documentation](#documentation)
+  - [Quick Start Guide](#quick-start-guide)
+  - [Library API](#library-api)
+  - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Unimplemented Features](#unimplemented-features)
@@ -54,13 +37,17 @@ Quickly and easily create PowerPoint presentations with a few simple JavaScript 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 **************************************************************************************************
-# Live Demo
-Use JavaScript to create a PowerPoint presentation with your web browser right now:  
-[https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
+# Demo
+Use JavaScript to create a PowerPoint presentation with your web browser right now!  
+* [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
 
-## Installation
+The complete library demo is also online.
+* [https://gitbrent.github.io/PptxGenJS/demo/](https://gitbrent.github.io/PptxGenJS/demo/)
 
-### CDN
+
+# Installation
+
+## CDN
 ```html
 <!-- Bundle: Easiest to use, supports all browsers -->
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.bundle.js"></script>
@@ -70,7 +57,7 @@ Use JavaScript to create a PowerPoint presentation with your web browser right n
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.min.js"></script>
 ```
 
-### Download
+## Download
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 ```html
 <!-- Bundle: Easiest to use, supports all browsers -->
@@ -82,7 +69,7 @@ Use JavaScript to create a PowerPoint presentation with your web browser right n
 <!-- <script src="PptxGenJS/libs/promise.min.js"></script> IE11 requires Promises polyfill -->
 ```
 
-### Npm
+## Npm
 [PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
 ```bash
 npm install pptxgenjs --save
@@ -92,13 +79,20 @@ let PptxGenJS = require("pptxgenjs");
 let pptx = new PptxGenJS();
 ```
 
-### Yarn
+## Yarn
 ```bash
 yarn add pptxgenjs
 ```
 
+## Additional Builds
+* CommonJS: `dist/pptxgenjs.cjs.js`
+* ES Module: `dist/pptxgenjs.es.js`
+
 **************************************************************************************************
-# Quick Start Guide
+
+# Documentation
+
+## Quick Start Guide
 PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
 1. Create a new Presentation
@@ -109,70 +103,51 @@ PptxGenJS PowerPoint presentations are created via JavaScript by following 4 bas
 ```javascript
 var pptx = new PptxGenJS();
 var slide = pptx.addSlide();
-slide.addText('Hello World!', { x:1.5, y:1.5, fontSize:18, color:'363636'. align:'center' });
+slide.addText(
+  'Hello World from PptxGenJS!',
+  { x:1, y:1, w:'80%', h:3, color:'363636', align:'center', fill:'f1f1f1' }
+);
 pptx.writeFile('Sample Presentation');
 ```
 That's really all there is to it!
 
 
 **************************************************************************************************
-# Library API
+## Library API
+Full documentation and code examples are available
+- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)  
+- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)  
+- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)  
+- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
+- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving.html)
+- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters.html)
+- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts.html)
+- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images.html)
+- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media.html)
+- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html)
+- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)
+- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
+- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html)
+- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
+- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/installation.html)  
+- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration.html)
 
-## Presentation Creation/Options
-[Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)  
-[Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)  
-
-## Slide Creation/Options
-[Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)  
-[Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
-
-## Saving a Presentation
-[Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving.html)
-
-## Master Slides and Corporate Branding
-[Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters.html)
-
-## Adding Charts
-[Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts.html)
-
-## Adding Images
-[Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images.html)
-
-## Adding Media (Audio/Video/YouTube)
-[Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media.html)
-
-## Adding Shapes
-[Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html)
-
-## Adding Tables
-[Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)
-
-## Adding Text
-[Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
-
-## Including Speaker Notes
-[Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html)
-
-## Using Scheme Colors
-[Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
+Note: Typescript Definitions are included
 
 
 **************************************************************************************************
-# HTML-to-PowerPoint Feature
+## HTML-to-PowerPoint Feature
+Easily convert HTML tables to PowerPoint presentations in a single call.
 
-[HTML-to-PowerPoint](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html)
+```javascript
+var pptx = new PptxGenJS();
+pptx.tableToSlides('tableId');
+pptx.writeFile('HTML-table.pptx');
+```
 
-
-**************************************************************************************************
-# Integration with Other Libraries
-
-[Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration.html)
-
-
-**************************************************************************************************
-# Typescript Definitions
-
-As of version 2.3.0, typescript definitions are available (`types/index.d.ts`).
+Learn more:
+- [HTML-to-PowerPoint Documentation](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html)
+- [Online HTML-to-PowerPoint Demo](https://gitbrent.github.io/PptxGenJS/demo/#tab2)
 
 
 **************************************************************************************************
