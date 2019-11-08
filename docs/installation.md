@@ -33,15 +33,21 @@ title: Installation
 <!-- <script src="PptxGenJS/libs/promise.min.js"></script> -->
 ```
 
-### Npm
+## Npm
 [PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
+```bash
+npm install pptxgenjs --save
+```
 ```javascript
-npm install pptxgenjs
-
-var pptx = require("pptxgenjs");
+let PptxGenJS = require("pptxgenjs");
+let pptx = new PptxGenJS();
 ```
 
-### Yarn
-```ksh
+## Yarn
+```bash
 yarn add pptxgenjs
 ```
+
+## Additional Builds
+* CommonJS: `dist/pptxgenjs.cjs.js`
+* ES Module: `dist/pptxgenjs.es.js`
