@@ -4,7 +4,9 @@ title: Quick Start Guide
 ---
 
 ## Library Support
-* Integrates with Angular, React and Electron
+* Include via `<script>` for web applications
+* npm/yarn installation for Angular, React, Electron, or NodeJS
+
 
 ## Creating a Presentation
 PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
@@ -14,13 +16,17 @@ PptxGenJS PowerPoint presentations are created via JavaScript by following 4 bas
 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 4. Save the Presentation
 
-### Code Example
+### Simple Example
 ```javascript
 var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
+var slide = pptx.addSlide();
 slide.addText('Hello World!', { x:1.5, y:1.5, fontSize:18, color:'363636' });
-pptx.save('Sample Presentation');
+pptx.writeFile('Sample Presentation');
 ```
-
-### Presentation Done
 That's really all there is to it!
+
+
+## TypeScript Support
+If you're using Angular or React, the included TypeScript definitions file brings the documentation to you.
+
+[[TODO:show screen cap]]
