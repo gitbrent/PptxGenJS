@@ -404,7 +404,7 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 
 	// STEP 5: Hyperlink support
 	if (typeof objHyperlink === 'object') {
-		if (!objHyperlink.url && !objHyperlink.slide) throw 'ERROR: `hyperlink` option requires either: `url` or `slide`'
+		if (!objHyperlink.url && !objHyperlink.slide) throw new Error('ERROR: `hyperlink` option requires either: `url` or `slide`')
 		else {
 			imageRelId++
 
