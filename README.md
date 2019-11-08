@@ -244,6 +244,7 @@ New Features
 
 Please Help Test
 * See tracking issue here: [\#616](https://github.com/gitbrent/PptxGenJS/issue/616)
+* [Version 3.0 Migration Guide](https://github.com/gitbrent/PptxGenJS/wiki/Version-3.0-Migration-Guide)
 
 
 
