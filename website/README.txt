@@ -1,8 +1,8 @@
 // build site
-npm run-script build
+npm run build
 
 // serve site locally
-npm run-script start
+npm run start
 
 // deploy site
-npm run-script deploy
+npm run deploy
