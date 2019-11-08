@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.5 @ 2019-10-31T04:41:18.880Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-11-02T22:26:32.764Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6813,6 +6813,9 @@ function createSvgPngPreview(rel) {
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
+        /**
+        * Library Version
+        */
         this._version = '3.0.0-beta.6';
         // Global props
         this._charts = CHART_TYPES;
