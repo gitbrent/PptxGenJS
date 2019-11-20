@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-11-02T22:26:32.764Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-11-20T03:21:26.747Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4214,7 +4214,7 @@ function addImageDefinition(target, opt) {
     // STEP 5: Hyperlink support
     if (typeof objHyperlink === 'object') {
         if (!objHyperlink.url && !objHyperlink.slide)
-            throw 'ERROR: `hyperlink` option requires either: `url` or `slide`';
+            throw new Error('ERROR: `hyperlink` option requires either: `url` or `slide`');
         else {
             imageRelId++;
             target.rels.push({
@@ -4726,7 +4726,7 @@ function createHyperlinkRels(target, text) {
                     type: SLIDE_OBJECT_TYPES.hyperlink,
                     data: text.options.hyperlink.slide ? 'slide' : 'dummy',
                     rId: relId,
-                    Target: text.options.hyperlink.url || text.options.hyperlink.slide.toString(),
+                    Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
                 });
                 text.options.hyperlink.rId = relId;
             }
@@ -7212,10 +7212,10 @@ var PptxGenJS = /** @class */ (function () {
         });
     };
     /**
-     * Export the current Presenation to selected/default type
+     * Export the current Presenation as JSZip content with the selected type
      * @since 3.0.0
      * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
-     * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file
+     * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
      */
     PptxGenJS.prototype.write = function (outputType) {
         var _this = this;
@@ -7230,10 +7230,10 @@ var PptxGenJS = /** @class */ (function () {
         });
     };
     /**
-     * Export the current Presenation to local file (initiates download in browsers)
+     * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
      * @since 3.0.0
      * @param {string} exportName - file name
-     * @returns {Promise<string>} file name
+     * @returns {Promise<string>} the presentation name
      */
     PptxGenJS.prototype.writeFile = function (exportName) {
         var _this = this;
