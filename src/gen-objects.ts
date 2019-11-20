@@ -41,7 +41,7 @@ import {
 	ISlideMasterOptions,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { getSmartParseNumber, inch2Emu } from './gen-utils'
+import { getSmartParseNumber, inch2Emu, encodeXmlEntities } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -942,8 +942,8 @@ function createHyperlinkRels(target: ISlide, text: number | string | IText | ITe
 				target.rels.push({
 					type: SLIDE_OBJECT_TYPES.hyperlink,
 					data: text.options.hyperlink.slide ? 'slide' : 'dummy',
-					rId: relId,
-					Target: text.options.hyperlink.url || text.options.hyperlink.slide.toString(),
+					rId: relId, 
+					Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
 				})
 
 				text.options.hyperlink.rId = relId
