@@ -2743,7 +2743,7 @@ var PptxGenJS = function(){
 					          <a:lstStyle/>\
 					          <a:p>\
 					            <a:pPr rtl="0">\
-					              <a:defRPr sz="1197" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">\
+					              <a:defRPr sz="'+ (opts.dTableFontSize || DEF_FONT_SIZE) +'00" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">\
 					                <a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>\
 					                <a:latin typeface="+mn-lt"/>\
 					                <a:ea typeface="+mn-ea"/>\
