@@ -851,6 +851,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 
 		if ((newObject.options.valign || '').toLowerCase().startsWith('b')) newObject.options.bodyProp.anchor = TEXT_VALIGN.b
 		else if ((newObject.options.valign || '').toLowerCase().startsWith('c')) newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr
+		else if ((newObject.options.valign || '').toLowerCase().startsWith('m')) newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr
 		else if ((newObject.options.valign || '').toLowerCase().startsWith('t')) newObject.options.bodyProp.anchor = TEXT_VALIGN.t
 	}
 
@@ -859,6 +860,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 
 	// STEP 4: Create hyperlinks
 	createHyperlinkRels(target, newObject.text || '')
+
 
 	// LAST: Add object to Slide
 	target.data.push(newObject)
