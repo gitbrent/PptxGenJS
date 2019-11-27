@@ -820,6 +820,11 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
 		}
 
+		// A.2: Placeholder should inherit their bullets or override them, so don't default them
+		if (!opt.placeholder || isPlaceholder) {
+			opt.bullet = opt.bullet || false
+		}
+
 		// B
 		if (opt.shape && opt.shape.name === 'line') {
 			opt.line = opt.line || '333333'

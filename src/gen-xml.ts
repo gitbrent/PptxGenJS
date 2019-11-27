@@ -911,8 +911,10 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 				bulletLvl0Margin +
 				'"'
 			strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + BULLET_TYPES['DEFAULT'] + '"/>'
-		} else {
-			strXmlBullet = '<a:buNone/>'
+		} else if ( textObj.options.bullet === false ){
+        // We only add this when the user explicitely asks for no bullet.
+        // Otherwise it can override the master defaults
+			strXmlBullet = '<a:buNone/>';
 		}
 
 		// B: Close Paragraph-Properties
