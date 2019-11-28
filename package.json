@@ -8,7 +8,7 @@
 	"description": "JavaScript PowerPoint Library",
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
-	"main": "dist/pptxgen.min.js",
+	"main": "dist/pptxgen.js",
 	"types": "dist/pptxgen.d.ts",
 	"dependencies": {
 		"express": "^4.16.4",
