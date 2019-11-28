@@ -1834,7 +1834,17 @@ var PptxGenJS = function(){
 						zip.generateAsync({type:'nodebuffer'}).then(function(content){ gObjPptx.saveCallback(content); });
 					}
 					else {
-						zip.generateAsync({type:'nodebuffer'}).then(function(content){ fs.writeFile(strExportName, content, function(){ gObjPptx.saveCallback(strExportName); } ); });
+						zip.generateNodeStream({ type: "nodebuffer", streamFiles: true })
+						.pipe(fs.createWriteStream(strExportName))
+						.on("finish", function() {
+							// JSZip generates a readable stream with a "end" event,
+							// but is piped here in a writable stream which emits a "finish" event.
+							gObjPptx.saveCallback(strExportName);
+						})
+						.on("error", function(e) {
+							console.error(e);
+							gObjPptx.saveCallback(null);
+						});
 					}
 				}
 				else {
@@ -1900,16 +1910,10 @@ var PptxGenJS = function(){
 				chartPromises.push(gObjPptxGenerators.createExcelWorksheet(rel, zip));
 			}
 			else if ( rel.type != 'online' && rel.type != 'hyperlink' ) {
-				// A: Loop vars
-				var data = rel.data;
-
-				// B: Users will undoubtedly pass various string formats, so correct prefixes as needed
-				if      ( data.indexOf(',') == -1 && data.indexOf(';') == -1 ) data = 'image/png;base64,' + data;
-				else if ( data.indexOf(',') == -1                            ) data = 'image/png;base64,' + data;
-				else if ( data.indexOf(';') == -1                            ) data = 'image/png;' + data;
-
-				// C: Add media
-				zip.file( rel.Target.replace('..','ppt'), data.split(',').pop(), {base64:true} );
+				let stream = fs.createReadStream(rel.path);
+				zip.file(rel.Target.replace("..", "ppt"), stream, {
+					base64: true
+				});
 			}
 		});
 	}
@@ -2026,15 +2030,7 @@ var PptxGenJS = function(){
 			if ( rel.type != 'online' && rel.type != 'chart' && !rel.data && arrRelsDone.indexOf(rel.path) == -1 ) {
 				// Node local-file encoding is syncronous, so we can load all images here, then call export with a callback (if any)
 				if ( NODEJS && rel.path.indexOf('http') != 0 ) {
-					try {
-						var bitmap = fs.readFileSync(rel.path);
-						rel.data = Buffer.from(bitmap).toString('base64');
-					}
-					catch(ex) {
-						console.error('ERROR....: Unable to read media: "'+rel.path+'"');
-						console.error('DETAILS..: '+ex);
-						rel.data = IMG_BROKEN;
-					}
+					//Do not do anything here
 				}
 				else if ( NODEJS && rel.path.indexOf('http') == 0 ) {
 					intRels++;
