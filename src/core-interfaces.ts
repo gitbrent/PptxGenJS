@@ -484,6 +484,8 @@ export interface ISlideObject {
 	mtype?: MediaType
 	mediaRid?: number
 	shape?: IShape
+
+	placeholder?
 }
 
 export interface ISlideLayout {

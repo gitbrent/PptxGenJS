@@ -2,7 +2,7 @@
  * PptxGenJS Slide Class
  */
 
-import { CHART_TYPE_NAMES } from './core-enums'
+import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES } from './core-enums'
 import {
 	IChartMulti,
 	IChartOpts,
@@ -22,7 +22,9 @@ import {
 	ITextOpts,
 	TableRow,
 } from './core-interfaces'
+
 import * as genObj from './gen-objects'
+import TextElement from './elements/text'
 
 export default class Slide {
 	private _bkgd: string
@@ -40,7 +42,7 @@ export default class Slide {
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
-    public slideNumberObj: ISlideNumber
+	public slideNumberObj: ISlideNumber
 
 	constructor(params: { addSlide: Function; getSlide: Function; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this.addSlide = params.addSlide
@@ -57,7 +59,19 @@ export default class Slide {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		// so, lastly, add to the Slide now.
-		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj: null
+		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null
+	}
+
+	private _registerLink(data, target) {
+		const relId = this.rels.length + target.relsChart.length + target.relsMedia.length + 1
+		this.rels.push({
+			type: SLIDE_OBJECT_TYPES.hyperlink,
+			data,
+			rId: relId,
+			Target: target,
+		})
+
+		return relId
 	}
 
 	// TODO: add comments (also add to index.d.ts)
@@ -181,7 +195,9 @@ export default class Slide {
 	 * @since: 1.0.0
 	 */
 	addText(text: string | IText[], options?: ITextOpts): Slide {
-		genObj.addTextDefinition(this, text, options, false)
+		this.data.push(new TextElement(text, options, this._registerLink.bind(this)))
 		return this
+		//genObj.addTextDefinition(this, text, options, false)
+		//return this
 	}
 }

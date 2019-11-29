@@ -877,7 +877,8 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (
 				slide.data.filter(slideObj => {
-					return slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder
+					const placeholder = slideObj.placeholder || (slideObj.options && slideObj.options.placeholder)
+					return placeholder === slideLayoutObj.options.placeholder
 				}).length === 0
 			) {
 				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
@@ -942,7 +943,7 @@ function createHyperlinkRels(target: ISlide, text: number | string | IText | ITe
 				target.rels.push({
 					type: SLIDE_OBJECT_TYPES.hyperlink,
 					data: text.options.hyperlink.slide ? 'slide' : 'dummy',
-					rId: relId, 
+					rId: relId,
 					Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
 				})
 

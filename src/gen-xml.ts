@@ -32,6 +32,7 @@ import {
 	ITextOpts,
 } from './core-interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees } from './gen-utils'
+import TextElement from './elements/text'
 
 let imageSizingXml = {
 	cover: function(imgSize, boxDim) {
@@ -73,7 +74,7 @@ let imageSizingXml = {
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide: ISlide | ISlideLayout): string {
-	let strSlideXml: string = slide.name ? '<p:cSld name="' + slide.name + '">' : '<p:cSld>'
+	let strSlideXml: string = slide.name ? `<p:cSld name="${slide.name}">` : '<p:cSld>'
 	let intTableNum: number = 1
 
 	// STEP 1: Add background
@@ -105,7 +106,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
 	// STEP 4: Loop over all Slide.data objects and add them to this slide
-	slide.data.forEach((slideItemObj: ISlideObject, idx: number) => {
+	slide.data.forEach((slideItemObj: ISlideObject | TextElement, idx: number) => {
 		let x = 0,
 			y = 0,
 			cx = getSmartParseNumber('75%', 'X', slide.presLayout),
@@ -113,6 +114,17 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		let placeholderObj: ISlideObject
 		let locationAttr = ''
 		let shapeType = null
+
+		if (slideItemObj instanceof TextElement) {
+			strSlideXml += slideItemObj.render(idx, slide.presLayout, placeholder => {
+				return genXmlPlaceholder(
+					slide['slideLayout']['data'].filter((object: ISlideObject) => {
+						return object.options.placeholder === placeholder
+					})[0]
+				)
+			})
+			return
+		}
 
 		if ((slide as ISlide).slideLayout !== undefined && (slide as ISlide).slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
 			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => {
@@ -281,7 +293,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				*/
 
 				// STEP 4: Build table rows/cells
-				Object.entries(objTableGrid).forEach(([rIdx,rowObj]) => {
+				Object.entries(objTableGrid).forEach(([rIdx, rowObj]) => {
 					// A: Table Height provided without rowH? Then distribute rows
 					let intRowH = 0 // IMPORTANT: Default must be zero for auto-sizing to work
 					if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx]) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]))
@@ -295,8 +307,8 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strXml += '<a:tr h="' + intRowH + '">'
 
 					// C: Loop over each CELL
-					Object.entries(rowObj).forEach(([_cIdx,cellObj]) => {
-						let cell:ITableCell = cellObj
+					Object.entries(rowObj).forEach(([_cIdx, cellObj]) => {
+						let cell: ITableCell = cellObj
 
 						// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 						if (cell.hmerge) return
@@ -371,7 +383,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 							strXml +=
 								'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
 						} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
-							[{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(obj => {
+							;[{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(obj => {
 								if (cellOpts.border[obj.idx]) {
 									let strC =
 										'<a:solidFill><a:srgbClr val="' +
@@ -1159,9 +1171,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		if (opts.h === 0 && opts.line && opts.align) {
 			strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
 		} else if (slideObj.type === 'placeholder') {
-			strSlideXml += '<a:lstStyle>'
-			strSlideXml += genXmlParagraphProperties(slideObj, true)
-			strSlideXml += '</a:lstStyle>'
+			strSlideXml += `<a:lstStyle>${genXmlParagraphProperties(slideObj, true)}</a:lstStyle>`
 		} else {
 			strSlideXml += '<a:lstStyle/>'
 		}
@@ -1207,15 +1217,14 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 	if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 		if (opts.fontFace) {
-			strSlideXml +=
-				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
-			strSlideXml += '<a:latin typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '<a:ea typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '<a:cs typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '</a:endParaRPr>'
+			strSlideXml += strSlideXml += `
+			<a:endParaRPr lang="${opts.lang ? opts.lang : 'en-US'}"${opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : ''} dirty="0">
+              <a:latin typeface="${opts.fontFace}" charset="0"/>
+			  <a:ea typeface="${opts.fontFace}" charset="0"/>
+			  <a:cs typeface="${opts.fontFace}" charset="0"/>
+			</a:endParaRPr>`
 		} else {
-			strSlideXml +=
-				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0"/>'
+			strSlideXml += `<a:endParaRPr lang="${opts.lang ? opts.lang : 'en-US'}"${opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : ''} dirty="0"/>`
 		}
 	} else {
 		strSlideXml += '<a:endParaRPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>' // NOTE: Added 20180101 to address PPT-2007 issues
