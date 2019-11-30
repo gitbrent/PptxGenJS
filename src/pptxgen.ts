@@ -43,8 +43,8 @@
  * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
  */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE } from './core-enums'
-import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
+import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE, EMU } from './core-enums'
+import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
 import { PowerPointShapes } from './core-shapes'
 import Slide from './slide'
 import * as genCharts from './gen-charts'
@@ -59,12 +59,13 @@ export default class PptxGenJS {
 
 	/**
 	 * Presentation layout name
-	 * Available Layouts:
-	 * 'LAYOUT_4x3'   (10" x 7.5")
-	 * 'LAYOUT_16x9'  (10" x 5.625")
-	 * 'LAYOUT_16x10' (10" x 6.25")
-	 * 'LAYOUT_WIDE'  (13.33" x 7.5")
-	 * 'LAYOUT_USER'  (user specified, can be any size)
+	 * Standard layouts:
+	 * - 'LAYOUT_4x3'   (10" x 7.5")
+	 * - 'LAYOUT_16x9'  (10" x 5.625")
+	 * - 'LAYOUT_16x10' (10" x 6.25")
+	 * - 'LAYOUT_WIDE'  (13.33" x 7.5")
+	 * Custom layouts:
+	 * Use `pptx.defineLayout()` to create custom layouts (e.g.: 'A4')
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 	 */
 	private _layout: string
@@ -83,8 +84,8 @@ export default class PptxGenJS {
 	}
 
 	/**
-	* Library Version
-	*/
+	 * Library Version
+	 */
 	private _version: string = '3.0.0-beta.7'
 	public get version(): string {
 		return this._version
@@ -193,7 +194,6 @@ export default class PptxGenJS {
 			LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as ILayout,
 			LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 } as ILayout,
 			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
-			LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
 		}
 
 		// Core
@@ -549,6 +549,23 @@ export default class PptxGenJS {
 		this.slides.push(newSlide)
 
 		return newSlide
+	}
+
+	/**
+	 * Define a custom Slide Layout
+	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
+	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+	 * @param {IUserLayout} layout - an object with user-defined w/h
+	 */
+	defineLayout(layout: IUserLayout) {
+		if (!layout) console.warn('defineLayout requires `{name, width, height}`')
+		else if (!layout.name) console.warn('defineLayout requires `name`')
+		else if (!layout.width) console.warn('defineLayout requires `width`')
+		else if (!layout.height) console.warn('defineLayout requires `height`')
+		else if (typeof layout.height !== 'number') console.warn('defineLayout `height` should be a number (inches)')
+		else if (typeof layout.width !== 'number') console.warn('defineLayout `width` should be a number (inches)')
+
+		this.LAYOUTS[layout.name] = { name: layout.name, width: Math.round(Number(layout.width) * EMU), height: Math.round(Number(layout.height) * EMU) }
 	}
 
 	/**

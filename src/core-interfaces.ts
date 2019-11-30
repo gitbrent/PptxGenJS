@@ -386,6 +386,11 @@ export interface ILayout {
 	width?: number
 	height?: number
 }
+export interface IUserLayout {
+	name: string
+	width: number
+	height: number
+}
 export interface ISlideNumber extends PositionOptions {
 	fontFace?: string
 	fontSize?: number
