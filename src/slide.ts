@@ -27,6 +27,7 @@ import * as genObj from './gen-objects'
 export default class Slide {
 	private _bkgd: string
 	private _color: string
+	private _hidden: boolean
 	private _setSlideNum: Function
 	private _slideNumber: ISlideNumber
 
@@ -40,7 +41,7 @@ export default class Slide {
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
-    public slideNumberObj: ISlideNumber
+	public slideNumberObj: ISlideNumber
 
 	constructor(params: { addSlide: Function; getSlide: Function; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this.addSlide = params.addSlide
@@ -57,7 +58,7 @@ export default class Slide {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		// so, lastly, add to the Slide now.
-		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj: null
+		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null
 	}
 
 	// TODO: add comments (also add to index.d.ts)
@@ -74,6 +75,14 @@ export default class Slide {
 	}
 	public get color(): string {
 		return this._color
+	}
+
+	// TODO: add comments (also add to index.d.ts)
+	public set hidden(value: boolean) {
+		this._hidden = value
+	}
+	public get hidden(): boolean {
+		return this._hidden
 	}
 
 	// TODO: add comments (also add to index.d.ts)
