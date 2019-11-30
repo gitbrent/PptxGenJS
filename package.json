@@ -5,7 +5,7 @@
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
   },
-  "description": "JavaScript PowerPoint Library",
+  "description": "Create PowerPoint Presentations with JavaScript",
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
   "license": "MIT",
   "main": "dist/pptxgen.min.js",
@@ -64,10 +64,10 @@
     "js-create-powerpoint",
     "js-create-pptx",
     "js-generate-powerpoint",
-    "js-generate-powerpoint-charts",
     "js-powerpoint",
     "js-powerpoint-pptx",
-    "js-powerpoint-library"
+    "js-powerpoint-library",
+    "typescript-powerpoint"
   ],
   "bugs": {
     "url": "https://github.com/gitbrent/PptxGenJS/issues"
