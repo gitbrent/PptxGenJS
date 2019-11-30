@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.7 @ 2019-11-30T17:07:05.798Z */
+/* PptxGenJS 3.0.0-beta.7 @ 2019-11-30T17:36:43.138Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -6823,8 +6823,8 @@ var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
         /**
-        * Library Version
-        */
+         * Library Version
+         */
         this._version = '3.0.0-beta.7';
         // Global props
         this._charts = CHART_TYPES;
@@ -7028,7 +7028,6 @@ var PptxGenJS = /** @class */ (function () {
             LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 },
             LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 },
             LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 },
-            LAYOUT_USER: { name: 'custom', width: 12192000, height: 6858000 },
         };
         // Core
         this._author = 'PptxGenJS';
@@ -7295,6 +7294,27 @@ var PptxGenJS = /** @class */ (function () {
         });
         this.slides.push(newSlide);
         return newSlide;
+    };
+    /**
+     * Define a custom Slide Layout
+     * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
+     * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+     * @param {IUserLayout} layout - an object with user-defined w/h
+     */
+    PptxGenJS.prototype.defineLayout = function (layout) {
+        if (!layout)
+            console.warn('defineLayout requires `{name, width, height}`');
+        else if (!layout.name)
+            console.warn('defineLayout requires `name`');
+        else if (!layout.width)
+            console.warn('defineLayout requires `width`');
+        else if (!layout.height)
+            console.warn('defineLayout requires `height`');
+        else if (typeof layout.height !== 'number')
+            console.warn('defineLayout `height` should be a number (inches)');
+        else if (typeof layout.width !== 'number')
+            console.warn('defineLayout `width` should be a number (inches)');
+        this.LAYOUTS[layout.name] = { name: layout.name, width: Math.round(Number(layout.width) * EMU), height: Math.round(Number(layout.height) * EMU) };
     };
     /**
      * Adds a new slide master [layout] to the Presentation
