@@ -1,12 +1,12 @@
 /*\
-|*|  :: pptxgen.js ::
+|*|  :: pptxgen.ts ::
 |*|
 |*|  JavaScript framework that creates PowerPoint (pptx) presentations
 |*|  https://github.com/gitbrent/PptxGenJS
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2019 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2020 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
 |*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
