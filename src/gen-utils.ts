@@ -1,5 +1,5 @@
 /**
- * PptxGenJS Utils
+ * PptxGenJS: Utility Methods
  */
 
 import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './core-enums'
