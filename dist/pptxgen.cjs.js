@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-11-20T03:21:26.747Z */
+/* PptxGenJS 3.0.0-beta.7 @ 2019-11-30T17:07:05.793Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1521,7 +1521,7 @@ var PowerPointShapes = Object.freeze({
 });
 
 /**
- * PptxGenJS Utils
+ * PptxGenJS: Utility Methods
  */
 /**
  * Convert string percentages to number relative to slide size
@@ -4777,6 +4777,17 @@ var Slide = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
+    Object.defineProperty(Slide.prototype, "hidden", {
+        get: function () {
+            return this._hidden;
+        },
+        // TODO: add comments (also add to index.d.ts)
+        set: function (value) {
+            this._hidden = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Slide.prototype, "slideNumber", {
         get: function () {
             return this._slideNumber;
@@ -6780,14 +6791,14 @@ function createSvgPngPreview(rel) {
 }
 
 /*\
-|*|  :: pptxgen.js ::
+|*|  :: pptxgen.ts ::
 |*|
 |*|  JavaScript framework that creates PowerPoint (pptx) presentations
 |*|  https://github.com/gitbrent/PptxGenJS
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2019 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2020 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
 |*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
@@ -6816,7 +6827,7 @@ var PptxGenJS = /** @class */ (function () {
         /**
         * Library Version
         */
-        this._version = '3.0.0-beta.6';
+        this._version = '3.0.0-beta.7';
         // Global props
         this._charts = CHART_TYPES;
         this._colors = SCHEME_COLOR_NAMES;
