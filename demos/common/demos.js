@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.0.0-beta4
-* BLD.: 20191020
+* VER.: 3.0.0-beta.7
+* BLD.: 20191130
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -846,9 +846,9 @@ function genSlides_Chart(pptx) {
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
 
-			catGridLine: { style: "none" },
+			catGridLine: { style: 'none' },
 			catAxisHidden: true,
-			valGridLine: { color: "cc6699", style: "dash", size: 1 },
+			valGridLine: { color: 'cc6699', style: 'dash', size: 1 },
 
 			showLegend   : true,
 			title        : 'No CatAxis, ValGridLine=style:dash',
@@ -873,9 +873,9 @@ function genSlides_Chart(pptx) {
 			showValue          : true,
 
 			catAxisHidden: true,
-			catGridLine  : { style: "none" },
+			catGridLine  : { style: 'none' },
 			valAxisHidden: true,
-			valGridLine  : { style: "none" },
+			valGridLine  : { style: 'none' },
 
 			showLegend: true,
 			legendPos : 'b',
@@ -901,9 +901,9 @@ function genSlides_Chart(pptx) {
 			showCatAxisTitle: true,
 
 			valAxisOrientation: 'maxMin',
-			valGridLine: { style: "none" },
+			valGridLine: { style: 'none' },
 			valAxisHidden: true,
-			catGridLine: { color: "cc6699", style: "dash", size: 1 },
+			catGridLine: { color: 'cc6699', style: 'dash', size: 1 },
 
 			titleColor   : '33CF22',
 			titleFontFace: 'Helvetica Neue',
@@ -1912,7 +1912,7 @@ function genSlides_Chart(pptx) {
 					}, {
 						showValAxisTitle: true,
 						valAxisTitle: 'Secondary Value Axis',
-						valGridLine: { style: "none" }
+						valGridLine: { style: 'none' }
 					}
 				],
 
