@@ -1,4 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Saving Presentations · PptxGenJS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Saving a Presentation is usually as easy as providing a filename to `save()`. More options are available,"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Saving Presentations · PptxGenJS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://gitbrent.github.io/PptxGenJS/index.html"/><meta property="og:description" content="Saving a Presentation is usually as easy as providing a filename to `save()`. More options are available,"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://gitbrent.github.io/PptxGenJS/img/pptxgenjs.png"/><link rel="shortcut icon" href="/PptxGenJS/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/hybrid.min.css"/><script>
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Saving Presentations · PptxGenJS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="Several methods are available when generating a presentation."/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Saving Presentations · PptxGenJS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://gitbrent.github.io/PptxGenJS/index.html"/><meta property="og:description" content="Several methods are available when generating a presentation."/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://gitbrent.github.io/PptxGenJS/img/pptxgenjs.png"/><link rel="shortcut icon" href="/PptxGenJS/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/hybrid.min.css"/><script>
               (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
               (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
               m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
@@ -62,49 +62,65 @@
                 };
               }
             });
-        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Saving Presentations</h1></header><article><div><span><p>Saving a Presentation is usually as easy as providing a filename to <code>save()</code>. More options are available,
-examples of which can be found below.</p>
-<hr>
-<h2><a class="anchor" aria-hidden="true" id="client-browser"></a><a href="#client-browser" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Client Browser</h2>
-<h3><a class="anchor" aria-hidden="true" id="download"></a><a href="#download" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Download</h3>
-<p>Simply provide a filename to have the file automatically pushed to users (browser download prompt appears)</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// EX: provide filename</span>
-pptx.save(<span class="hljs-string">'Demo-Save'</span>);
-</code></pre>
-<h3><a class="anchor" aria-hidden="true" id="blob-and-other-formats"></a><a href="#blob-and-other-formats" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Blob and Other Formats</h3>
-<p>The presentation can be received in given format by using a callback and specifying output type.</p>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Save using various JSZip output types: ['arraybuffer', 'base64', 'blob', etc]</span>
-pptx.save(<span class="hljs-string">'jszip'</span>, saveCallback, <span class="hljs-string">'arraybuffer'</span>);
-
-<span class="hljs-comment">// EX: Save as Blob for sending to cloud data store like Amazon AWS or OneDrive</span>
-pptx.save(<span class="hljs-string">'jszip'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">blob</span>)</span>{ <span class="hljs-built_in">console</span>.log(blob) }, <span class="hljs-string">'blob'</span>);
-</code></pre>
-<hr>
-<h2><a class="anchor" aria-hidden="true" id="nodejs"></a><a href="#nodejs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Node.js</h2>
+        </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Saving Presentations</h1></header><article><div><span><p>Several methods are available when generating a presentation.</p>
 <ul>
-<li>Node can accept a callback function that will return the filename once the save is complete</li>
-<li>Node can also be used to stream a powerpoint file - simply pass a filename that begins with &quot;http&quot;</li>
-<li>Output type can be specified by passing an optional <a href="https://stuk.github.io/jszip/documentation/api_jszip/generate_async.html">JSZip output type</a></li>
+<li>All methods return a Promise</li>
+<li>Working examples are available under <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos">/demos</a></li>
 </ul>
-<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Example A: File will be saved to the local working directory (`__dirname`)</span>
-pptx.save(<span class="hljs-string">'Node_Demo'</span>);
+<hr>
+<h2><a class="anchor" aria-hidden="true" id="export-methods"></a><a href="#export-methods" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Export Methods</h2>
+<h3><a class="anchor" aria-hidden="true" id="regular-file"></a><a href="#regular-file" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Regular File</h3>
+<p>Export the presentation as a regular flat file. Browser-based apps will prompt the user to download the file and push a
+PowerPoint Presentation MIME-type pptx file. Node.js apps will use <code>fs</code> to save the file to the local file system.</p>
+<h4><a class="anchor" aria-hidden="true" id="example"></a><a href="#example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// For simple cases, you can omit `then`</span>
+pptx.writeFile(<span class="hljs-string">'Browser-PowerPoint-Demo.pptx'</span>);
 
-<span class="hljs-comment">// Example B: Inline callback function</span>
-pptx.save(<span class="hljs-string">'Node_Demo'</span>, <span class="hljs-function"><span class="hljs-keyword">function</span>(<span class="hljs-params">filename</span>)</span>{ <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Created: '</span>+filename); });
+<span class="hljs-comment">// Using Promise to determine when the file has actually completed generating</span>
+pptx.writeFile(<span class="hljs-string">'Browser-PowerPoint-Demo.pptx'</span>);
+    .then(<span class="hljs-function"><span class="hljs-params">fileName</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">`created file: <span class="hljs-subst">${fileName}</span>`</span>);
+    });
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="blob-and-other-types"></a><a href="#blob-and-other-types" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Blob and Other Types</h3>
+<p>Export the presentation into other data formats for cloud storage, etc.</p>
+<ul>
+<li>Available formats: <code>arraybuffer</code>, <code>base64</code>, <code>binarystring</code>, <code>blob</code>, <code>nodebuffer</code>, <code>uint8array</code></li>
+</ul>
+<h4><a class="anchor" aria-hidden="true" id="example-1"></a><a href="#example-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<pre><code class="hljs css language-javascript">pptx.write(<span class="hljs-string">'base64'</span>)
+    .then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"write as base64: Here are 0-100 chars of `data`:\n"</span>);
+        <span class="hljs-built_in">console</span>.log(data.substring(<span class="hljs-number">0</span>, <span class="hljs-number">100</span>));
+    })
+    .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.error(err);
+    });
+</code></pre>
+<h3><a class="anchor" aria-hidden="true" id="stream"></a><a href="#stream" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Stream</h3>
+<p>Export the presentation into a binary stream format for cloud storage, etc.</p>
+<h4><a class="anchor" aria-hidden="true" id="example-2"></a><a href="#example-2" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Example</h4>
+<pre><code class="hljs css language-javascript"><span class="hljs-comment">// Ex using: `const app = express();``</span>
+pptx.stream()
+    .then(<span class="hljs-function"><span class="hljs-params">data</span> =&gt;</span> {
+        app.get(<span class="hljs-string">"/"</span>, (req, res) =&gt; {
+            res.writeHead(<span class="hljs-number">200</span>, { <span class="hljs-string">"Content-disposition"</span>: <span class="hljs-string">"attachment;filename="</span> + fileName, <span class="hljs-string">"Content-Length"</span>: data.length });
+            res.end(<span class="hljs-keyword">new</span> Buffer(data, <span class="hljs-string">"binary"</span>));
+        });
 
-<span class="hljs-comment">// Example C: Predefined callback function</span>
-pptx.save(<span class="hljs-string">'Node_Demo'</span>, saveCallback);
-
-<span class="hljs-comment">// Example D: Use a filename of "http" or "https" to receive the powerpoint binary data in your callback</span>
-<span class="hljs-comment">// (Used for streaming the presentation file via http.  See the `nodejs-demo.js` file for a working example.)</span>
-pptx.save(<span class="hljs-string">'http'</span>, streamCallback);
-
-<span class="hljs-comment">// Example E: Save using various JSZip output types: ['arraybuffer', 'base64', 'binarystring', 'blob', 'nodebuffer', 'uint8array']</span>
-pptx.save(<span class="hljs-string">'jszip'</span>, saveCallback, <span class="hljs-string">'base64'</span>);
+        app.listen(<span class="hljs-number">3000</span>, () =&gt; {
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"PptxGenJS Node Stream Demo app listening on port 3000!"</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"Visit: http://localhost:3000/"</span>);
+            <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"(press Ctrl-C to quit demo)"</span>);
+        });
+    })
+    .catch(<span class="hljs-function"><span class="hljs-params">err</span> =&gt;</span> {
+        <span class="hljs-built_in">console</span>.log(<span class="hljs-string">"ERROR: "</span> + err);
+    });
 </code></pre>
 <hr>
 <h2><a class="anchor" aria-hidden="true" id="saving-multiple-presentations"></a><a href="#saving-multiple-presentations" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Saving Multiple Presentations</h2>
-<h3><a class="anchor" aria-hidden="true" id="client-browser-1"></a><a href="#client-browser-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Client Browser</h3>
+<h3><a class="anchor" aria-hidden="true" id="client-browser"></a><a href="#client-browser" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Client Browser</h3>
 <ul>
 <li>In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.</li>
 </ul>
@@ -112,29 +128,28 @@ pptx.save(<span class="hljs-string">'jszip'</span>, saveCallback, <span class="h
 
 <span class="hljs-comment">// Presentation 1:</span>
 pptx = <span class="hljs-keyword">new</span> PptxGenJS();
-pptx.addNewSlide().addText(<span class="hljs-string">'Presentation 1'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
-pptx.save(<span class="hljs-string">'PptxGenJS-Presentation-1'</span>);
+pptx.addSlide().addText(<span class="hljs-string">'Presentation 1'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
+pptx.writeFile(<span class="hljs-string">'PptxGenJS-Presentation-1'</span>);
 
 <span class="hljs-comment">// Presentation 2:</span>
 pptx = <span class="hljs-keyword">new</span> PptxGenJS();
-pptx.addNewSlide().addText(<span class="hljs-string">'Presentation 2'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
-pptx.save(<span class="hljs-string">'PptxGenJS-Presentation-2'</span>);
+pptx.addSlide().addText(<span class="hljs-string">'Presentation 2'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
+pptx.writeFile(<span class="hljs-string">'PptxGenJS-Presentation-2'</span>);
 </code></pre>
-<h3><a class="anchor" aria-hidden="true" id="nodejs-1"></a><a href="#nodejs-1" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Node.js</h3>
+<h3><a class="anchor" aria-hidden="true" id="nodejs"></a><a href="#nodejs" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Node.js</h3>
 <ul>
 <li>See <code>examples/nodejs-demo.js</code> for a working demo with multiple presentations, callbacks, streaming, etc.</li>
 </ul>
-<pre><code class="hljs css language-javascript"><span class="hljs-keyword">var</span> PptxGenJS = <span class="hljs-built_in">require</span>(<span class="hljs-string">"pptxgenjs"</span>);
-<span class="hljs-keyword">var</span> pptx = <span class="hljs-literal">null</span>;
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">let</span> PptxGenJS = <span class="hljs-built_in">require</span>(<span class="hljs-string">"pptxgenjs"</span>);
 
 <span class="hljs-comment">// Presentation 1:</span>
-pptx = <span class="hljs-keyword">new</span> PptxGenJS();
-pptx.addNewSlide().addText(<span class="hljs-string">'Presentation 1'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
-pptx.save(<span class="hljs-string">'PptxGenJS-NodePres-1'</span>);
+<span class="hljs-keyword">let</span> pptx1 = <span class="hljs-keyword">new</span> PptxGenJS();
+pptx1.addSlide().addText(<span class="hljs-string">'Presentation 1'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
+pptx1.writeFile(<span class="hljs-string">'PptxGenJS-NodePres-1'</span>);
 
 <span class="hljs-comment">// Presentation 2:</span>
-pptx = <span class="hljs-keyword">new</span> PptxGenJS();
-pptx.addNewSlide().addText(<span class="hljs-string">'Presentation 2'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
-pptx.save(<span class="hljs-string">'PptxGenJS-NodePres-2'</span>);
+<span class="hljs-keyword">let</span> pptx2 = <span class="hljs-keyword">new</span> PptxGenJS();
+pptx2.addSlide().addText(<span class="hljs-string">'Presentation 2'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>});
+pptx2.writeFile(<span class="hljs-string">'PptxGenJS-NodePres-2'</span>);
 </code></pre>
-</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/PptxGenJS/docs/usage-slide-options.html"><span class="arrow-prev">← </span><span>Slide Methods</span></a><a class="docs-next button" href="/PptxGenJS/docs/html-to-powerpoint.html"><span class="function-name-prevnext">HTML-to-PowerPoint</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#client-browser">Client Browser</a><ul class="toc-headings"><li><a href="#download">Download</a></li><li><a href="#blob-and-other-formats">Blob and Other Formats</a></li></ul></li><li><a href="#nodejs">Node.js</a></li><li><a href="#saving-multiple-presentations">Saving Multiple Presentations</a><ul class="toc-headings"><li><a href="#client-browser-1">Client Browser</a></li><li><a href="#nodejs-1">Node.js</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/PptxGenJS/" class="nav-home"><img src="/PptxGenJS/img/pptxgenjs.svg" alt="PptxGenJS" width="66" height="58"/></a><div><h5>Documentation</h5><a href="/PptxGenJS/docs/quick-start.html">Getting Started With PptxGenJS</a><a href="/PptxGenJS/docs/installation.html">PowerPoint Library API Reference</a><a href="/PptxGenJS/docs/usage-pres-create.html">PowerPoint JavaScript Code Samples</a></div><div><h5>More</h5><a href="https://jsfiddle.net/gitbrent/gx34jy59/" target="_blank">JSFiddle Demo Presentation</a><a href="https://github.com/gitbrent/pptxgenjs/issues" target="_blank">PptxGenJS GitHub Issues</a><a href="http://stackoverflow.com/questions/tagged/pptxgenjs" target="_blank">PptxGenJS on Stack Overflow</a></div><div><h5>Social</h5><a href="https://plus.google.com/u/3/115743568393356344951">Google Plus</a><a href="https://twitter.com/pptxgenjs">Twitter</a><a href="https://www.pinterest.com/pptxgenjs">Pinterest</a></div></section><section class="copyright">Copyright © 2019 Brent Ely</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/PptxGenJS/docs/usage-slide-options.html"><span class="arrow-prev">← </span><span>Slide Methods</span></a><a class="docs-next button" href="/PptxGenJS/docs/html-to-powerpoint.html"><span class="function-name-prevnext">HTML-to-PowerPoint</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#export-methods">Export Methods</a><ul class="toc-headings"><li><a href="#regular-file">Regular File</a></li><li><a href="#blob-and-other-types">Blob and Other Types</a></li><li><a href="#stream">Stream</a></li></ul></li><li><a href="#saving-multiple-presentations">Saving Multiple Presentations</a><ul class="toc-headings"><li><a href="#client-browser">Client Browser</a></li><li><a href="#nodejs">Node.js</a></li></ul></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/PptxGenJS/" class="nav-home"><img src="/PptxGenJS/img/pptxgenjs.svg" alt="PptxGenJS" width="66" height="58"/></a><div><h5>Documentation</h5><a href="/PptxGenJS/docs/quick-start.html">Getting Started With PptxGenJS</a><a href="/PptxGenJS/docs/installation.html">PowerPoint Library API Reference</a><a href="/PptxGenJS/docs/usage-pres-create.html">PowerPoint JavaScript Code Samples</a></div><div><h5>More</h5><a href="https://jsfiddle.net/gitbrent/gx34jy59/" target="_blank">JSFiddle Demo Presentation</a><a href="https://github.com/gitbrent/pptxgenjs/issues" target="_blank">PptxGenJS GitHub Issues</a><a href="http://stackoverflow.com/questions/tagged/pptxgenjs" target="_blank">PptxGenJS on Stack Overflow</a></div><div><h5>Social</h5><a href="https://plus.google.com/u/3/115743568393356344951">Google Plus</a><a href="https://twitter.com/pptxgenjs">Twitter</a><a href="https://www.pinterest.com/pptxgenjs">Pinterest</a></div></section><section class="copyright">Copyright © 2019 Brent Ely</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>
