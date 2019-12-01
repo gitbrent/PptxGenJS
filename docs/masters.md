@@ -12,7 +12,7 @@ PptxGenJS allows you to define Slide Master Layouts via objects that can then be
 functionality.  This enables you to easily create a Master Slide using code.
 
 Slide Masters are created by calling the `defineSlideMaster()` method along with an options object
-(same style used in Slides).  Once defined, you can pass the Master title to `addNewSlide()` and that Slide will
+(same style used in Slides).  Once defined, you can pass the Master title to `addSlide()` and that Slide will
 use the Layout previously defined.  See the demo under /examples for several working examples.
 
 The defined Masters become first-class Layouts in the exported PowerPoint presentation and can be changed
@@ -52,7 +52,7 @@ pptx.defineSlideMaster({
 var slide = pptx.addNewSlide('MASTER_SLIDE');
 slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, fontSize:18 });
 
-pptx.save();
+pptx.writeFile();
 ```
 
 ### Slide Master Example Output
@@ -96,12 +96,12 @@ pptx.defineSlideMaster({
   slideNumber: { x:0.3, y:'95%' }
 });
 
-var slide = pptx.addNewSlide('PLACEHOLDER_SLIDE');
+var slide = pptx.addSlide('PLACEHOLDER_SLIDE');
 
 // Add text, charts, etc. to any placeholder using its `name`
 slide.addText('Body Placeholder here!', { placeholder:'body' });
 
-pptx.save();
+pptx.writeFile();
 ```
 
 ### Placeholder Example Output

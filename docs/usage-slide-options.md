@@ -3,14 +3,6 @@ id: usage-slide-options
 title: Slide Methods
 ---
 
-## Page Number
-Returns the page/slide number for the given Slide.
-
-### Page Number Syntax
-```javascript
-var slideNumber = slide.pageNumber();
-```
-
 ## Slide Numbers
 
 ### Slide Number Syntax
