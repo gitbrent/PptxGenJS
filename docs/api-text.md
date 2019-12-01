@@ -65,7 +65,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 ## Text Examples
 ```javascript
 var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
+var slide = pptx.addSlide();
 
 // EX: Dynamic location using percentages
 slide.addText('^ (50%/50%)', {x:'50%', y:'50%'});
@@ -89,8 +89,8 @@ slide.addText('Line 1\nLine 2\nLine 3', { x:2, y:3, color:'DDDD00', fontSize:90 
 // EX: Format individual words or lines by passing an array of text objects with `text` and `options`
 slide.addText(
     [
-        { text:'word-level', options:{ fontSize:36, color:'99ABCC', align:'r', breakLine:true } },
-        { text:'formatting', options:{ fontSize:48, color:'FFFF00', align:'c' } }
+        { text:'word-level', options:{ fontSize:36, color:'99ABCC', align:'right', breakLine:true } },
+        { text:'formatting', options:{ fontSize:48, color:'FFFF00', align:'center' } }
     ],
     { x:0.5, y:4.1, w:8.5, h:2.0, fill:'F1F1F1' }
 );
@@ -156,11 +156,11 @@ slide.addText(
 // Line-breaks work as well
 slide.addText(
     [
-        { text:'word-level\nformatting', options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'r', breakLine:true } },
-        { text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'c' } }
+        { text:'word-level\nformatting', options:{ fontSize:36, fontFace:'Courier New', color:'99ABCC', align:'right', breakLine:true } },
+        { text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'center' } }
     ],
     { x:0.5, y:4.1, w:8.5, h:2.0, margin:0.1, fill:'232323' }
 );
 
-pptx.save('Demo-Text');
+pptx.writeFile('Demo-Text');
 ```

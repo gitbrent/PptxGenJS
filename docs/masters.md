@@ -49,7 +49,7 @@ pptx.defineSlideMaster({
   slideNumber: { x:0.3, y:'90%' }
 });
 
-var slide = pptx.addNewSlide('MASTER_SLIDE');
+var slide = pptx.addSlide('MASTER_SLIDE');
 slide.addText('How To Create PowerPoint Presentations with JavaScript', { x:0.5, y:0.7, fontSize:18 });
 
 pptx.writeFile();

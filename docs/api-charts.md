@@ -205,7 +205,7 @@ There are lots of Slides filled with Charts you can copy:
 ### Line Chart Sample
 ```javascript
 var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
+var slide = pptx.addSlide();
 
 // Chart Type: LINE
 var dataChartAreaLine = [
@@ -222,5 +222,5 @@ var dataChartAreaLine = [
 ];
 slide.addChart( pptx.charts.LINE, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
 
-pptx.save('Demo-Line-Chart');
+pptx.writeFile('Demo-Line-Chart');
 ```

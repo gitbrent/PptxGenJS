@@ -91,7 +91,7 @@ professional looking Presentations with a single line of code which can be embed
 
 Add a button to a webpage that will create a Presentation using whatever table data is present:
 ```html
-<button onclick="{ var pptx=new PptxGenJS(); pptx.tableToSlides('tableId'); pptx.save(); }"
+<button onclick="{ var pptx=new PptxGenJS(); pptx.tableToSlides('tableId'); pptx.writeFile(); }"
  type="button">Export to PPTX</button>
 ```
 

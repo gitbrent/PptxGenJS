@@ -84,13 +84,13 @@ var pptx = null;
 
 // Presentation 1:
 pptx = new PptxGenJS();
-pptx.addNewSlide().addText('Presentation 1', {x:1, y:1});
-pptx.save('PptxGenJS-Presentation-1');
+pptx.addSlide().addText('Presentation 1', {x:1, y:1});
+pptx.writeFile('PptxGenJS-Presentation-1');
 
 // Presentation 2:
 pptx = new PptxGenJS();
-pptx.addNewSlide().addText('Presentation 2', {x:1, y:1});
-pptx.save('PptxGenJS-Presentation-2');
+pptx.addSlide().addText('Presentation 2', {x:1, y:1});
+pptx.writeFile('PptxGenJS-Presentation-2');
 ```
 
 ### Node.js
@@ -101,11 +101,11 @@ let PptxGenJS = require("pptxgenjs");
 
 // Presentation 1:
 let pptx1 = new PptxGenJS();
-pptx1.addNewSlide().addText('Presentation 1', {x:1, y:1});
-pptx1.save('PptxGenJS-NodePres-1');
+pptx1.addSlide().addText('Presentation 1', {x:1, y:1});
+pptx1.writeFile('PptxGenJS-NodePres-1');
 
 // Presentation 2:
 let pptx2 = new PptxGenJS();
-pptx2.addNewSlide().addText('Presentation 2', {x:1, y:1});
-pptx2.save('PptxGenJS-NodePres-2');
+pptx2.addSlide().addText('Presentation 2', {x:1, y:1});
+pptx2.writeFile('PptxGenJS-NodePres-2');
 ```
