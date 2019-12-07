@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.0.0-beta.7
-* BLD.: 20191130
+* BLD.: 20191207
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -97,7 +97,7 @@ function getTimestamp() {
 // ==================================================================================================================
 
 function runEveryTest() {
-	execGenSlidesFuncs( ['Master', 'Chart', 'Image', 'Media', 'Shape', 'Text', 'Table'] );
+	return execGenSlidesFuncs( ['Master', 'Chart', 'Image', 'Media', 'Shape', 'Text', 'Table'] );
 
 	// Dont run this automatically as Html2Pptx needs table to be visible as of 2.2.0
 	// if ( typeof table2slides1 !== 'undefined' ) table2slides1();
