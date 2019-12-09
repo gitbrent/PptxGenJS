@@ -423,7 +423,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
  * @param {ISlideRelChart} rel - chart object
  * @return {string} XML
  */
-export function makeXmlCharts(rel: ISlideRelChart):string {
+export function makeXmlCharts(rel: ISlideRelChart): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 	let usesSecondaryValAxis = false
 
@@ -1853,7 +1853,7 @@ function genXmlTitle(opts: IChartTitleOpts): string {
  * @param {number} length - col length
  * @return {string} column name (ex: 'A2')
  */
-function getExcelColName(length: number):string {
+function getExcelColName(length: number): string {
 	let strName = ''
 
 	if (length <= 26) {
@@ -1872,13 +1872,17 @@ function getExcelColName(length: number):string {
  * @param {Object} opts optional shadow properties
  * @param {Object} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
- *	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+ * @example { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
  * @return {string} XML
  */
-function createShadowElement(options: IShadowOptions, defaults: object):string {
-	if (options === null) {
+function createShadowElement(options: IShadowOptions, defaults: object): string {
+	if (!options) {
+		return '<a:effectLst/>'
+	} else if (typeof options !== 'object') {
+		console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
 		return '<a:effectLst/>'
 	}
+
 	let strXml = '<a:effectLst>',
 		opts = getMix(defaults, options),
 		type = opts['type'] || 'outer',
@@ -1905,7 +1909,7 @@ function createShadowElement(options: IShadowOptions, defaults: object):string {
  * @param {OptsChartGridLine} glOpts {size, color, style}
  * @return {string} XML
  */
-function createGridLineElement(glOpts: OptsChartGridLine):string {
+function createGridLineElement(glOpts: OptsChartGridLine): string {
 	let strXml: string = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
 	strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">'
