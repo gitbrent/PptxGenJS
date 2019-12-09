@@ -682,6 +682,11 @@ export function addTableDefinition(
 	// Set default color if needed (table option > inherit from Slide > default to black)
 	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR
 
+	if (typeof opt.border === 'string') {
+		console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`")
+		opt.border = null
+	}
+
 	// Set/Calc table width
 	// Get slide margins - start with default values, then adjust if master or slide margins exist
 	let arrTableMargin = DEF_SLIDE_MARGIN_IN
@@ -942,7 +947,7 @@ function createHyperlinkRels(target: ISlide, text: number | string | IText | ITe
 				target.rels.push({
 					type: SLIDE_OBJECT_TYPES.hyperlink,
 					data: text.options.hyperlink.slide ? 'slide' : 'dummy',
-					rId: relId, 
+					rId: relId,
 					Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
 				})
 
