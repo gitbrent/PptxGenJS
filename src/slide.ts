@@ -25,6 +25,7 @@ import {
 
 import * as genObj from './gen-objects'
 import TextElement from './elements/text'
+import ShapeElement from './elements/simple-shape'
 
 export default class Slide {
 	private _bkgd: string
@@ -170,7 +171,7 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	addShape(shape: IShape, options?: IShapeOptions): Slide {
-		genObj.addShapeDefinition(this, shape, options)
+		this.data.push(new ShapeElement(shape, options))
 		return this
 	}
 

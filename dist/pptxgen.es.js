@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-12-09T08:59:11.601Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-09T13:59:46.857Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2353,6 +2353,27 @@ var Position = /** @class */ (function () {
 }());
 //# sourceMappingURL=position.js.map
 
+var DASH_VALUES = ['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'];
+var LineElement = /** @class */ (function () {
+    function LineElement(_a) {
+        var _b = _a.size, size = _b === void 0 ? 1 : _b, _c = _a.color, color = _c === void 0 ? '333333' : _c, dash = _a.dash, head = _a.head, tail = _a.tail;
+        this.color = color;
+        this.size = size;
+        if (!DASH_VALUES.includes(dash))
+            this.dash = 'solid';
+        else
+            this.dash = dash;
+        this.dash = dash;
+        this.head = head;
+        this.tail = tail;
+    }
+    LineElement.prototype.render = function () {
+        return "\n    <a:ln" + (this.size ? " w=\"" + this.size * ONEPT + "\"" : '') + ">\n        " + genXmlColorSelection(this.color) + "\n        " + (this.dash ? "<a:prstDash val=\"" + this.dash + "\"/>" : '') + "\n        " + (this.head ? "<a:headEnd type=\"" + this.head + "\"/>" : '') + "\n        " + (this.tail ? "<a:tailEnd type=\"" + this.tail + "\"/>" : '') + "\n\t</a:ln>";
+    };
+    return LineElement;
+}());
+//# sourceMappingURL=line.js.map
+
 var Bullet = /** @class */ (function () {
     function Bullet(bullet) {
         if (bullet === false) {
@@ -2528,20 +2549,6 @@ var TextFragment = /** @class */ (function () {
 }());
 //# sourceMappingURL=text-fragment.js.map
 
-var LineElement = /** @class */ (function () {
-    function LineElement(_a) {
-        var _b = _a.size, size = _b === void 0 ? 1 : _b, _c = _a.color, color = _c === void 0 ? '333333' : _c, dash = _a.dash, head = _a.head, tail = _a.tail;
-        this.color = color;
-        this.size = size;
-        this.dash = dash;
-        this.head = head;
-        this.tail = tail;
-    }
-    LineElement.prototype.render = function () {
-        return "\n    <a:ln" + (this.size ? " w=\"" + this.size * ONEPT + "\"" : '') + ">\n        " + genXmlColorSelection(this.color) + "\n        " + (this.dash ? "<a:prstDash val=\"" + this.dash + "\"/>" : '') + "\n        " + (this.head ? "<a:headEnd type=\"" + this.head + "\"/>" : '') + "\n        " + (this.tail ? "<a:tailEnd type=\"" + this.tail + "\"/>" : '') + "\n\t</a:ln>";
-    };
-    return LineElement;
-}());
 var buildFragments = function (inputText, opts, registerLink) {
     var fragments = inputText;
     if (typeof inputText === 'string' || typeof inputText === 'number') {
@@ -2603,7 +2610,7 @@ var TextElement = /** @class */ (function () {
         if (!opts.placeholder) {
             this.color = opts.color || DEF_FONT_COLOR; // Set color (options > inherit from Slide > default to black)
         }
-        if (opts.shape && opts.shape.name === 'line') {
+        if (opts.line || (opts.shape && opts.shape.name === 'line')) {
             this.line = new LineElement({
                 color: opts.line,
                 size: opts.lineSize,
@@ -2681,6 +2688,43 @@ var TextElement = /** @class */ (function () {
     };
     return TextElement;
 }());
+//# sourceMappingURL=text.js.map
+
+var defaultsToOne = function (x) { return x || (x === 0 ? 0 : 1); };
+var SimpleShapeElement = /** @class */ (function () {
+    function SimpleShapeElement(shape, opts) {
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        this.shape = new ShapeElement(shape);
+        this.fill = opts.fill;
+        this.rectRadius = opts.rectRadius;
+        if (opts.line || shape.name === 'line') {
+            this.line = new LineElement({
+                color: opts.line || '333333',
+                size: opts.lineSize,
+                dash: opts.lineDash,
+                head: opts.lineHead,
+                tail: opts.lineTail,
+            });
+        }
+        this.position = new Position({
+            x: defaultsToOne(opts.x),
+            y: defaultsToOne(opts.y),
+            h: defaultsToOne(opts.h),
+            w: defaultsToOne(opts.w),
+            flipV: opts.flipV,
+            flipH: opts.flipH,
+            rotate: opts.rotate,
+        });
+        if (opts.shadow) {
+            this.shadow = new ShadowElement(opts.shadow);
+        }
+    }
+    SimpleShapeElement.prototype.render = function (idx, presLayout) {
+        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr />\n\t\t    <p:nvPr />\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + this.shape.render(this.rectRadius, this.position, presLayout) + "\n            " + (this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n    </p:sp>";
+    };
+    return SimpleShapeElement;
+}());
+//# sourceMappingURL=simple-shape.js.map
 
 /**
  * PptxGenJS: XML Generation
@@ -2742,9 +2786,13 @@ function slideObjectToXml(slide) {
         if (slideItemObj instanceof TextElement) {
             strSlideXml += slideItemObj.render(idx, slide.presLayout, function (placeholder) {
                 return genXmlPlaceholder(slide['slideLayout']['data'].filter(function (object) {
-                    return object.options.placeholder === placeholder;
+                    return object.options && object.options.placeholder === placeholder;
                 })[0]);
             });
+            return;
+        }
+        if (slideItemObj instanceof SimpleShapeElement) {
+            strSlideXml += slideItemObj.render(idx, slide.presLayout);
             return;
         }
         if (slide.slideLayout !== undefined && slide.slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
@@ -4300,6 +4348,7 @@ function getShapeInfo(shapeName) {
         return objShape;
     return PowerPointShapes.RECTANGLE;
 }
+//# sourceMappingURL=gen-xml.js.map
 
 /**
  * PptxGenJS: Slide object generators
@@ -4311,7 +4360,7 @@ var _chartCounter = 0;
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-function createSlideObject(slideDef, target) {
+function createSlideObject(slideDef, target, registerLink) {
     // STEP 1: Add background
     if (slideDef.bkgd) {
         addBackgroundDefinition(slideDef.bkgd, target);
@@ -4325,12 +4374,15 @@ function createSlideObject(slideDef, target) {
                 addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts);
             else if (MASTER_OBJECTS[key] && key === 'image')
                 addImageDefinition(tgt, object[key]);
-            else if (MASTER_OBJECTS[key] && key === 'line')
-                addShapeDefinition(tgt, BASE_SHAPES.LINE, object[key]);
-            else if (MASTER_OBJECTS[key] && key === 'rect')
-                addShapeDefinition(tgt, BASE_SHAPES.RECTANGLE, object[key]);
-            else if (MASTER_OBJECTS[key] && key === 'text')
-                addTextDefinition(tgt, object[key].text, object[key].options, false);
+            else if (MASTER_OBJECTS[key] && key === 'line') {
+                tgt.data.push(new SimpleShapeElement(BASE_SHAPES.LINE, object[key]));
+            }
+            else if (MASTER_OBJECTS[key] && key === 'rect') {
+                tgt.data.push(new SimpleShapeElement(BASE_SHAPES.RECTANGLE, object[key]));
+            }
+            else if (MASTER_OBJECTS[key] && key === 'text') {
+                tgt.data.push(new TextElement(object[key].text, object[key].options, registerLink));
+            }
             else if (MASTER_OBJECTS[key] && key === 'placeholder') {
                 // TODO: 20180820: Check for existing `name`?
                 object[key].options.placeholder = object[key].options.name;
@@ -4814,35 +4866,6 @@ function addPlaceholderDefinition(target, text, opt) {
     */
 }
 /**
- * Adds a shape object to a slide definition.
- * @param {IShape} shape shape const object (pptx.shapes)
- * @param {IShapeOptions} opt
- * @param {ISlide} target slide object that the shape should be added to
- */
-function addShapeDefinition(target, shape, opt) {
-    var options = typeof opt === 'object' ? opt : {};
-    var newObject = {
-        type: SLIDE_OBJECT_TYPES.text,
-        shape: shape,
-        options: options,
-        text: null,
-    };
-    // 1: Reality check
-    if (!shape || typeof shape !== 'object')
-        throw 'Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`';
-    // 2: Set options defaults
-    options.x = options.x || (options.x === 0 ? 0 : 1);
-    options.y = options.y || (options.y === 0 ? 0 : 1);
-    options.w = options.w || (options.w === 0 ? 0 : 1);
-    options.h = options.h || (options.h === 0 ? 0 : 1);
-    options.line = options.line || (shape.name === 'line' ? '333333' : null);
-    options.lineSize = options.lineSize || (shape.name === 'line' ? 1 : null);
-    if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0)
-        options.lineDash = 'solid';
-    // 3: Add object to slide
-    target.data.push(newObject);
-}
-/**
  * Adds a table object to a slide definition.
  * @param {ISlide} target - slide object that the table should be added to
  * @param {TableRow[]} arrTabRows - table data
@@ -5110,7 +5133,7 @@ function addPlaceholdersToSlideLayouts(slide) {
                 var placeholder = slideObj.placeholder || (slideObj.options && slideObj.options.placeholder);
                 return placeholder === slideLayoutObj.options.placeholder;
             }).length === 0) {
-                addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false);
+                slide.data.push(new TextElement('', { placeholder: slideLayoutObj.options.placeholder }, function () { return null; }));
             }
         }
     });
@@ -5182,7 +5205,6 @@ function createHyperlinkRels(target, text) {
         }
     });
 }
-//# sourceMappingURL=gen-objects.js.map
 
 /**
  * PptxGenJS Slide Class
@@ -5316,7 +5338,7 @@ var Slide = /** @class */ (function () {
      * @return {Slide} this class
      */
     Slide.prototype.addShape = function (shape, options) {
-        addShapeDefinition(this, shape, options);
+        this.data.push(new SimpleShapeElement(shape, options));
         return this;
     };
     /**
@@ -7770,8 +7792,18 @@ var PptxGenJS = /** @class */ (function () {
             margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
             slideNumberObj: slideMasterOpts.slideNumber || null,
         };
+        var registerLink = function (data, target) {
+            var relId = newLayout.rels.length + target.relsChart.length + target.relsMedia.length + 1;
+            newLayout.rels.push({
+                type: SLIDE_OBJECT_TYPES.hyperlink,
+                data: data,
+                rId: relId,
+                Target: target,
+            });
+            return relId;
+        };
         // STEP 1: Create the Slide Master/Layout
-        createSlideObject(slideMasterOpts, newLayout);
+        createSlideObject(slideMasterOpts, newLayout, registerLink);
         // STEP 2: Add it to layout defs
         this.slideLayouts.push(newLayout);
         // STEP 3: Add slideNumber to master slide (if any)
@@ -7795,6 +7827,5 @@ var PptxGenJS = /** @class */ (function () {
     };
     return PptxGenJS;
 }());
-//# sourceMappingURL=pptxgen.js.map
 
 export default PptxGenJS;

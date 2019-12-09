@@ -44,6 +44,9 @@ import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
+import TextElement from './elements/text'
+import ShapeElement from './elements/simple-shape'
+
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter: number = 0
 
@@ -52,7 +55,7 @@ let _chartCounter: number = 0
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout) {
+export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout, registerLink) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -65,10 +68,13 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 			let tgt = target as ISlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, BASE_SHAPES.LINE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, BASE_SHAPES.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, object[key].text, object[key].options, false)
-			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
+			else if (MASTER_OBJECTS[key] && key === 'line') {
+				tgt.data.push(new ShapeElement(BASE_SHAPES.LINE, object[key]))
+			} else if (MASTER_OBJECTS[key] && key === 'rect') {
+				tgt.data.push(new ShapeElement(BASE_SHAPES.RECTANGLE, object[key]))
+			} else if (MASTER_OBJECTS[key] && key === 'text') {
+				tgt.data.push(new TextElement(object[key].text, object[key].options, registerLink))
+			} else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
 				delete object[key].options.name // remap name for earier handling internally
@@ -881,7 +887,7 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 					return placeholder === slideLayoutObj.options.placeholder
 				}).length === 0
 			) {
-				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
+				slide.data.push(new TextElement('', { placeholder: slideLayoutObj.options.placeholder }, () => null))
 			}
 		}
 	})

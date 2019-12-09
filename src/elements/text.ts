@@ -5,33 +5,8 @@ import { inch2Emu, genXmlColorSelection } from '../gen-utils'
 import ShadowElement from './shadow'
 import Shape from './shape'
 import Position from './position'
+import LineElement from './line'
 import TextFragment from './text-fragment'
-
-class LineElement {
-	size
-	color
-	dash
-	head
-	tail
-
-	constructor({ size = 1, color = '333333', dash, head, tail }) {
-		this.color = color
-		this.size = size
-		this.dash = dash
-		this.head = head
-		this.tail = tail
-	}
-
-	render() {
-		return `
-    <a:ln${this.size ? ` w="${this.size * ONEPT}"` : ''}>
-        ${genXmlColorSelection(this.color)}
-        ${this.dash ? `<a:prstDash val="${this.dash}"/>` : ''}
-        ${this.head ? `<a:headEnd type="${this.head}"/>` : ''}
-        ${this.tail ? `<a:tailEnd type="${this.tail}"/>` : ''}
-	</a:ln>`
-	}
-}
 
 const buildFragments = (inputText, opts, registerLink) => {
 	let fragments = inputText
@@ -132,7 +107,7 @@ export default class TextElement {
 			this.color = opts.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
 		}
 
-		if (opts.shape && opts.shape.name === 'line') {
+		if (opts.line || (opts.shape && opts.shape.name === 'line')) {
 			this.line = new LineElement({
 				color: opts.line,
 				size: opts.lineSize,

@@ -43,7 +43,16 @@
  * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
  */
 
-import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE } from './core-enums'
+import {
+	CHART_TYPES,
+	DEF_PRES_LAYOUT_NAME,
+	DEF_PRES_LAYOUT,
+	DEF_SLIDE_MARGIN_IN,
+	JSZIP_OUTPUT_TYPE,
+	SCHEME_COLOR_NAMES,
+	WRITE_OUTPUT_TYPE,
+	SLIDE_OBJECT_TYPES,
+} from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts } from './core-interfaces'
 import { PowerPointShapes } from './core-shapes'
 import Slide from './slide'
@@ -558,7 +567,7 @@ export default class PptxGenJS {
 	defineSlideMaster(slideMasterOpts: ISlideMasterOptions) {
 		if (!slideMasterOpts.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
-		let newLayout: ISlideLayout = {
+		const newLayout: ISlideLayout = {
 			presLayout: this.presLayout,
 			name: slideMasterOpts.title,
 			number: 1000 + this.slideLayouts.length + 1,
@@ -571,8 +580,20 @@ export default class PptxGenJS {
 			slideNumberObj: slideMasterOpts.slideNumber || null,
 		}
 
+		const registerLink = (data, target) => {
+			const relId = newLayout.rels.length + target.relsChart.length + target.relsMedia.length + 1
+			newLayout.rels.push({
+				type: SLIDE_OBJECT_TYPES.hyperlink,
+				data,
+				rId: relId,
+				Target: target,
+			})
+
+			return relId
+		}
+
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(slideMasterOpts, newLayout)
+		genObj.createSlideObject(slideMasterOpts, newLayout, registerLink)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)

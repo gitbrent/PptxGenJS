@@ -33,6 +33,7 @@ import {
 } from './core-interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees } from './gen-utils'
 import TextElement from './elements/text'
+import ShapeElement from './elements/simple-shape'
 
 let imageSizingXml = {
 	cover: function(imgSize, boxDim) {
@@ -119,10 +120,14 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			strSlideXml += slideItemObj.render(idx, slide.presLayout, placeholder => {
 				return genXmlPlaceholder(
 					slide['slideLayout']['data'].filter((object: ISlideObject) => {
-						return object.options.placeholder === placeholder
+						return object.options && object.options.placeholder === placeholder
 					})[0]
 				)
 			})
+			return
+		}
+		if (slideItemObj instanceof ShapeElement) {
+			strSlideXml += slideItemObj.render(idx, slide.presLayout)
 			return
 		}
 
