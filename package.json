@@ -16,7 +16,8 @@
   "types": "types",
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -cw"
+    "watch": "rollup -cw",
+    "dist": "gulp min cjs es bundle"
   },
   "browser": {
     "express": false,

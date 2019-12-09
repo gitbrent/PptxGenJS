@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-11-20T03:21:26.753Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-09T08:24:39.520Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -115,6 +115,7 @@ var SLIDE_OBJECT_TYPES;
     SLIDE_OBJECT_TYPES["tablecell"] = "tablecell";
     SLIDE_OBJECT_TYPES["text"] = "text";
     SLIDE_OBJECT_TYPES["notes"] = "notes";
+    SLIDE_OBJECT_TYPES["newtext"] = "newtext";
 })(SLIDE_OBJECT_TYPES || (SLIDE_OBJECT_TYPES = {}));
 var PLACEHOLDER_TYPES;
 (function (PLACEHOLDER_TYPES) {
@@ -1517,6 +1518,7 @@ var PowerPointShapes = Object.freeze({
         }
     }
 });
+//# sourceMappingURL=core-shapes.js.map
 
 /**
  * PptxGenJS Utils
@@ -2232,6 +2234,445 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     });
 }
 
+var ShadowElement = /** @class */ (function () {
+    function ShadowElement(options) {
+        var _a = options.type, inputType = _a === void 0 ? 'outer' : _a, _b = options.blur, blur = _b === void 0 ? 8 : _b, _c = options.offset, offset = _c === void 0 ? 4 : _c, _d = options.angle, inputAngle = _d === void 0 ? 270 : _d, _e = options.color, color = _e === void 0 ? '000000' : _e, _f = options.opacity, inputOpacity = _f === void 0 ? 0.75 : _f;
+        var type = inputType;
+        if (type !== 'outer' && type !== 'inner' && type !== 'none') {
+            console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.');
+            type = 'outer';
+        }
+        var angle = inputAngle;
+        if (angle) {
+            if (isNaN(Number(angle)) || angle < 0 || angle > 359) {
+                console.warn('Warning: shadow.angle can only be 0-359');
+                angle = 270;
+            }
+            // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+            angle = Math.round(Number(angle));
+        }
+        var opacity = inputOpacity;
+        if (opacity) {
+            if (isNaN(Number(opacity)) || opacity < 0 || opacity > 1) {
+                console.warn('Warning: shadow.opacity can only be 0-1');
+                opacity = 0.75;
+            }
+            // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+            opacity = Number(opacity);
+        }
+        this.type = type;
+        this.blur = blur * ONEPT;
+        this.offset = offset * ONEPT;
+        this.angle = angle * 60000;
+        this.color = color;
+        this.opacity = opacity * 100000;
+    }
+    ShadowElement.prototype.render = function () {
+        var tag = "a:" + this.type + "Shdw";
+        return "\n\t<a:effectLst>\n        <" + tag + " \n         sx=\"100000\" \n         sy=\"100000\" \n         kx=\"0\" \n         ky=\"0\" \n         algn=\"bl\" \n         rotWithShape=\"0\" \n         blurRad=\"" + this.blur + "\" \n         dist=\"" + this.offset + "\" \n         dir=\"" + this.angle + "\">\n\t\t\t<a:srgbClr val=\"" + this.color + "\">\n\t\t\t<a:alpha val=\"" + this.opacity + "\"/></a:srgbClr>\n\t\t</" + tag + ">'\n\t</a:effectLst>";
+    };
+    return ShadowElement;
+}());
+
+var ShapeElement = /** @class */ (function () {
+    function ShapeElement(input) {
+        var shapeConfig = input;
+        if (!input)
+            shapeConfig = PowerPointShapes.RECTANGLE;
+        if (typeof input === 'string') {
+            if (PowerPointShapes[input]) {
+                shapeConfig = PowerPointShapes[input];
+            }
+            shapeConfig = Object.keys(PowerPointShapes).filter(function (key) {
+                return PowerPointShapes[key].name === input || PowerPointShapes[key].displayName;
+            })[0];
+        }
+        if (!shapeConfig)
+            shapeConfig = PowerPointShapes.RECTANGLE;
+        this.displayName = shapeConfig.displayName;
+        this.name = shapeConfig.name;
+        this.avLst = shapeConfig.avLst;
+    }
+    ShapeElement.prototype.render = function (rectRadius, position, presLayout) {
+        var radius = rectRadius && Math.round((rectRadius * EMU * 100000) / Math.min(position.cx(presLayout), position.cy(presLayout)));
+        return "\n            <a:prstGeom prst=\"" + this.name + "\">\n                <a:avLst>" + (rectRadius ? "<a:gd name=\"adj\" fmla=\"val " + radius + "\"/>" : '') + "</a:avLst>\n            </a:prstGeom>\n        ";
+    };
+    return ShapeElement;
+}());
+
+var Position = /** @class */ (function () {
+    function Position(_a) {
+        var x = _a.x, y = _a.y, w = _a.w, h = _a.h, flipH = _a.flipH, flipV = _a.flipV, rotate = _a.rotate;
+        this.x = x;
+        this.y = y;
+        this.w = w;
+        this.h = h;
+        this.flipH = flipH;
+        this.flipV = flipV;
+        this.rotate = rotate;
+    }
+    Position.prototype.cx = function (presLayout) {
+        if (typeof this.w !== 'undefined')
+            return getSmartParseNumber(this.w, 'X', presLayout);
+    };
+    Position.prototype.cy = function (presLayout) {
+        if (typeof this.h !== 'undefined')
+            return getSmartParseNumber(this.h, 'Y', presLayout);
+    };
+    Position.prototype.render = function (presLayout) {
+        if (typeof this.x === 'undefined' && typeof this.y === 'undefined' && typeof this.w === 'undefined' && typeof this.h === 'undefined') {
+            return '';
+        }
+        var locationAttr = '';
+        var x;
+        var y;
+        var cx;
+        var cy;
+        if (typeof this.x !== 'undefined')
+            x = getSmartParseNumber(this.x, 'X', presLayout);
+        if (typeof this.y !== 'undefined')
+            y = getSmartParseNumber(this.y, 'Y', presLayout);
+        if (typeof this.w !== 'undefined')
+            cx = getSmartParseNumber(this.w, 'X', presLayout);
+        if (typeof this.h !== 'undefined')
+            cy = getSmartParseNumber(this.h, 'Y', presLayout);
+        if (this.flipH)
+            locationAttr += ' flipH="1"';
+        if (this.flipV)
+            locationAttr += ' flipV="1"';
+        if (this.rotate)
+            locationAttr += ' rot="' + convertRotationDegrees(this.rotate) + '"';
+        return "\n            <a:xfrm" + locationAttr + ">\n                <a:off x=\"" + x + "\" y=\"" + y + "\"/>\n                <a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/>\n            </a:xfrm>";
+    };
+    return Position;
+}());
+
+var Bullet = /** @class */ (function () {
+    function Bullet(bullet) {
+        if (bullet === false) {
+            this.enabled = false;
+            return;
+        }
+        if (!bullet && bullet !== false) {
+            this.inherit = true;
+            this.enabled = false;
+            return;
+        }
+        if (bullet === true) {
+            this.enabled = true;
+            this.default = true;
+            return;
+        }
+        this.code = bullet.code;
+        this.type = bullet.type.toString().toLowerCase();
+        this.style = bullet.style || 'arabicPeriod';
+        this.startAt = bullet.startAt || '1';
+        // Check value for hex-ness (s/b 4 char hex)
+        if (this.code && /^[0-9A-Fa-f]{4}$/.test(this.code) === false) {
+            console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
+            this.bulletCode = BULLET_TYPES['DEFAULT'];
+        }
+        this.bulletCode = this.code && "&#x" + this.code + ";";
+        this.enabled = this.code || this.type === 'number';
+        this.style = bullet.style;
+    }
+    Bullet.prototype.render = function () {
+        if (this.enabled && this.type === 'number') {
+            return "<a:buSzPct val=\"100000\"/><a:buFont typeface=\"+mj-lt\"/><a:buAutoNum type=\"" + this.style + "\" startAt=\"" + this.startAt + "\"/>";
+        }
+        else if (this.enabled && this.code) {
+            return "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + this.bulletCode + "\"/>";
+        }
+        else if (this.enabled && this.default) {
+            return "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + BULLET_TYPES['DEFAULT'] + "\"/>";
+        }
+        else if (!this.enabled && !this.inherit) {
+            return '<a:buNone/>';
+        }
+        return '';
+    };
+    return Bullet;
+}());
+
+var HyperLink = /** @class */ (function () {
+    function HyperLink(_a, registerLink) {
+        var url = _a.url, slide = _a.slide, tooltip = _a.tooltip;
+        if (!url && !slide)
+            throw "ERROR: 'hyperlink requires either `url` or `slide`'";
+        this.url = url;
+        this.slide = slide;
+        this.tooltip = tooltip;
+        this.rId = registerLink(this.slide ? 'slide' : 'dummy', encodeXmlEntities(this.url) || this.slide.toString());
+    }
+    HyperLink.prototype.render = function () {
+        if (this.url) {
+            // TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
+            //runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
+            return "<a:hlinkClick r:id=\"rI" + this.rId + "\" \n            invalidUrl=\"\" \n            action=\"\" \n            tgtFrame=\"\" \n            tooltip=\"" + (this.tooltip ? encodeXmlEntities(this.tooltip) : '') + "\" \n            history=\"1\" \n            highlightClick=\"0\" endSnd=\"0\"/>";
+        }
+        else if (this.slide) {
+            return "<a:hlinkClick r:id=\"rId" + this.rId + "\" action=\"ppaction://hlinksldjump\" tooltip=\"" + (this.tooltip ? encodeXmlEntities(this.tooltip) : '') + "\"/>";
+        }
+    };
+    return HyperLink;
+}());
+
+var alignment = function (align) {
+    switch (align) {
+        case 'left':
+            return ' algn="l"';
+        case 'right':
+            return ' algn="r"';
+        case 'center':
+            return ' algn="ctr"';
+        case 'justify':
+            return ' algn="just"';
+        default:
+            return '';
+    }
+};
+var TextFragment = /** @class */ (function () {
+    function TextFragment(text, options, registerLink) {
+        this.text = text;
+        var paraSpaceBefore = options.paraSpaceBefore, paraSpaceAfter = options.paraSpaceAfter, indentLevel = options.indentLevel;
+        if (indentLevel && !isNaN(Number(indentLevel)) && Number(this.indentLevel) > 0)
+            this.indentLevel = Number(indentLevel);
+        if (paraSpaceBefore && !isNaN(Number(paraSpaceBefore)) && Number(this.paraSpaceBefore) > 0)
+            this.paraSpaceBefore = Number(paraSpaceBefore);
+        if (paraSpaceAfter && !isNaN(Number(paraSpaceAfter)) && Number(this.paraSpaceAfter) > 0)
+            this.paraSpaceAfter = Number(paraSpaceAfter);
+        this.bullet = new Bullet(options.bullet);
+        if (options.hyperlink) {
+            this.hyperlink = new HyperLink(options.hyperlink, registerLink);
+        }
+        var alignInput = (options.align || '').toLowerCase();
+        if (alignInput.startsWith('c'))
+            this.align = TEXT_HALIGN.center;
+        else if (alignInput.startsWith('l'))
+            this.align = TEXT_HALIGN.left;
+        else if (alignInput.startsWith('r'))
+            this.align = TEXT_HALIGN.right;
+        else if (alignInput.startsWith('j'))
+            this.align = TEXT_HALIGN.justify;
+        this.rtlMode = options.rtlMode;
+        this.lineSpacing = options.lineSpacing && !isNaN(options.lineSpacing) ? options.lineSpacing : null;
+        this.paraSpaceBefore = options.paraSpaceBefore;
+        this.paraSpaceAfter = options.paraSpaceAfter;
+        this.lang = options.lang;
+        this.fontFace = options.fontFace;
+        this.fontSize = options.fontSize;
+        this.charSpacing = options.charSpacing;
+        this.color = options.color;
+        this.bold = options.bold;
+        this.italic = options.italic;
+        this.strike = options.strike;
+        this.underline = options.underline;
+        this.subscript = options.subscript;
+        this.superscript = options.superscript;
+        this.outline = options.outline;
+    }
+    TextFragment.prototype.render = function () {
+        var bulletLvl0Margin = 342900;
+        // B: 'lstStyle'
+        // NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
+        // FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
+        //if (opts.h === 0 && opts.line && opts.align) {
+        //strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
+        //} else if (slideObj.type === 'placeholder') {
+        //strSlideXml += `<a:lstStyle>${genXmlParagraphProperties(slideObj, true)}</a:lstStyle>`
+        //} else {
+        //strSlideXml += '<a:lstStyle/>'
+        //}
+        var marginLeft = this.indentLevel && this.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * this.indentLevel : bulletLvl0Margin;
+        return "\n        <a:pPr " + [
+            this.rtlMode ? ' rtl="1" ' : '',
+            alignment(this.align),
+            this.indentLevel ? " lvl=\"" + this.indentLevel + "\"" : '',
+            this.bullet.enabled ? " marL=\"" + marginLeft + "\" indent=\"-" + bulletLvl0Margin + "\"" : '',
+        ].join('') + ">\n          " + [
+            // IMPORTANT: the body element require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
+            this.lineSpacing ? "<a:lnSpc><a:spcPts val=\"" + this.lineSpacing + "00\"/></a:lnSpc>" : '',
+            this.paraSpaceBefore ? "<a:spcBef><a:spcPts val=\"" + this.paraSpaceBefore * 100 + "\"/></a:spcBef>" : '',
+            this.paraSpaceAfter ? "<a:spcAft><a:spcPts val=\"" + this.paraSpaceAfter * 100 + "\"/></a:spcAft>" : '',
+            this.bullet.render(),
+        ].join('') + "\n        </a:pPr>\n        <a:r>\n            <a:rPr lang=\"" + (this.lang ? this.lang : 'en-US') + "\"" + (this.lang ? ' altLang="en-US"' : '') + " " + [
+            // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+            this.fontSize ? " sz=\"" + Math.round(this.fontSize) + "00\"" : '',
+            this.bold ? ' b="1"' : '',
+            this.italic ? ' i="1"' : '',
+            this.strike ? ' strike="sngStrike"' : '',
+            this.underline || this.hyperlink ? ' u="sng"' : '',
+            this.subscript ? ' baseline="-40000"' : this.superscript ? ' baseline="30000"' : '',
+            // IMPORTANT: Also disable kerning; otherwise text won't actually expand
+            this.charSpacing ? " spc=\"" + this.charSpacing * 100 + "\" kern=\"0\"" : '',
+            'dirty="0"',
+        ].join('') + " > " + [
+            this.color ? genXmlColorSelection(this.color) : '',
+            // NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
+            this.fontFace
+                ? "\n                    <a:latin typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"0\"/>\n                    <a:ea typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"-122\"/>\n                    <a:cs typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"-120\"/>"
+                : '',
+            this.outline ? "<a:ln w=\"" + Math.round((this.outline.size || 0.75) * ONEPT) + "\">" + genXmlColorSelection(this.outline.color || 'FFFFFF') + "</a:ln>" : '',
+            this.hyperlink ? this.hyperlink.render() : '',
+        ].join('') + "\n            </a:rPr>\n            <a:t>" + encodeXmlEntities(this.text) + "</a:t>\n        </a:r>\n        ";
+    };
+    return TextFragment;
+}());
+
+var LineElement = /** @class */ (function () {
+    function LineElement(_a) {
+        var _b = _a.size, size = _b === void 0 ? 1 : _b, _c = _a.color, color = _c === void 0 ? '333333' : _c, dash = _a.dash, head = _a.head, tail = _a.tail;
+        this.color = color;
+        this.size = size;
+        this.dash = dash;
+        this.head = head;
+        this.tail = tail;
+    }
+    LineElement.prototype.render = function () {
+        return "\n    <a:ln" + (this.size ? " w=\"" + this.size * ONEPT + "\"" : '') + ">\n        " + genXmlColorSelection(this.color) + "\n        " + (this.dash ? "<a:prstDash val=\"" + this.dash + "\"/>" : '') + "\n        " + (this.head ? "<a:headEnd type=\"" + this.head + "\"/>" : '') + "\n        " + (this.tail ? "<a:tailEnd type=\"" + this.tail + "\"/>" : '') + "\n\t</a:ln>";
+    };
+    return LineElement;
+}());
+var buildFragments = function (inputText, opts, registerLink) {
+    var fragments = inputText;
+    if (typeof inputText === 'string' || typeof inputText === 'number') {
+        fragments = [{ text: inputText.toString(), options: opts || {} }];
+    }
+    if (!fragments)
+        return [];
+    return fragments.flatMap(function (_a, idx) {
+        var fragmentText = _a.text, options = _a.options;
+        var text = fragmentText.replace(/\r*\n/g, CRLF);
+        var breakLine = opts.breakLine || options.breakLine || false;
+        if (text.indexOf(CRLF) > -1) {
+            // Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
+            text = text.replace(/\r\n$/g, '');
+            // Plain strings like "hello \n world" or "first line\n" need to have lineBreaks set to become 2 separate lines as intended
+            breakLine = true;
+        }
+        var config = {
+            bullet: options.bullet,
+            align: options.align,
+            rtlMode: options.rtlMode,
+            lineSpacing: options.lineSpacing,
+            indentLevel: options.indentLevel,
+            paraSpaceBefore: options.paraSpaceBefore,
+            paraSpaceAfter: options.paraSpaceAfter,
+            lang: options.lang,
+            fontFace: options.fontFace,
+            fontSize: options.fontSize,
+            charSpacing: options.charSpacing,
+            color: options.color,
+            bold: options.bold,
+            italic: options.italic,
+            strike: options.strike,
+            underline: options.underline,
+            subscript: options.subscript,
+            superscript: options.superscript,
+            outline: options.outline,
+            hyperlink: options.hyperlink,
+        };
+        if (breakLine) {
+            return text.split(CRLF).map(function (line, lineIdx) {
+                return new TextFragment(line, config, registerLink);
+            });
+        }
+        else {
+            return new TextFragment(text, config, registerLink);
+        }
+    });
+};
+var TextElement = /** @class */ (function () {
+    function TextElement(text, opts, registerLink) {
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        this.fragments = buildFragments(text, opts, registerLink);
+        this.shape = new ShapeElement(opts.shape);
+        this.fill = opts.fill;
+        this.lang = opts.lang;
+        this.placeholder = opts.placeholder;
+        // A: Placeholders should inherit their colors or override them, so don't default them
+        if (!opts.placeholder) {
+            this.color = opts.color || DEF_FONT_COLOR; // Set color (options > inherit from Slide > default to black)
+        }
+        if (opts.shape && opts.shape.name === 'line') {
+            this.line = new LineElement({
+                color: opts.line,
+                size: opts.lineSize,
+                dash: opts.lineDash,
+                head: opts.lineHead,
+                tail: opts.lineTail,
+            });
+        }
+        this.position = new Position({
+            x: opts.x,
+            y: opts.y,
+            h: opts.h,
+            w: opts.w,
+            flipV: opts.flipV,
+            flipH: opts.flipH,
+            rotate: opts.rotate,
+        });
+        this.rectRadius = opts.rectRadius;
+        // D: Transform text options to bodyProperties as thats how we build XML
+        this.autoFit = opts.autoFit || false; // If true, shape will collapse to text size (Fit To shape)
+        this.shrinkText = opts.shrinkText || false;
+        this.anchor = !opts.placeholder ? TEXT_VALIGN.ctr : null; // VALS: [t,ctr,b]
+        this.vert = opts.vert || null; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+        this.isTextBox = opts.isTextBox;
+        // Margin/Padding/Inset for textboxes
+        if ((opts.inset && !isNaN(Number(opts.inset))) || opts.inset === 0) {
+            var inset = inch2Emu(opts.inset);
+            this.lIns = inset;
+            this.rIns = inset;
+            this.tIns = inset;
+            this.bIns = inset;
+        }
+        if (opts.margin && Array.isArray(opts.margin)) {
+            this.lIns = opts.margin[0] * ONEPT || 0;
+            this.rIns = opts.margin[1] * ONEPT || 0;
+            this.bIns = opts.margin[2] * ONEPT || 0;
+            this.tIns = opts.margin[3] * ONEPT || 0;
+        }
+        else if (typeof opts.margin === 'number') {
+            var marginSize = opts.margin * ONEPT;
+            this.lIns = marginSize;
+            this.rIns = marginSize;
+            this.bIns = marginSize;
+            this.tIns = marginSize;
+        }
+        var valignInput = (opts.valign || '').toLowerCase();
+        if (valignInput.startsWith('b'))
+            this.anchor = TEXT_VALIGN.b;
+        else if (valignInput.startsWith('c'))
+            this.anchor = TEXT_VALIGN.ctr;
+        else if (valignInput.startsWith('m'))
+            this.anchor = TEXT_VALIGN.ctr;
+        else if (valignInput.startsWith('t'))
+            this.anchor = TEXT_VALIGN.t;
+        this.wrap = opts.wrap || 'square';
+        if (opts.shadow) {
+            this.shadow = new ShadowElement(opts.shadow);
+        }
+    }
+    TextElement.prototype.render = function (idx, presLayout, renderPlaceholder) {
+        // F: NEW: Add autofit type tags
+        // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
+        // MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
+        // NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
+        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr" + (this.isTextBox ? ' txBox="1"}' : '') + "/>\n\t\t    <p:nvPr>\n                " + (this.placeholder ? renderPlaceholder(this.placeholder) : '') + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + this.shape.render(this.rectRadius, this.position, presLayout) + "\n            " + (this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n        <p:txBody>\n            <a:bodyPr " + [
+            "wrap=\"" + this.wrap + "\"",
+            this.lIns || this.lIns === 0 ? "lIns=\"" + this.lIns + "\"" : '',
+            this.tIns || this.tIns === 0 ? "tIns=\"" + this.tIns + "\"" : '',
+            this.rIns || this.rIns === 0 ? "rIns=\"" + this.rIns + "\"" : '',
+            this.bIns || this.bIns === 0 ? "bIns=\"" + this.bIns + "\"" : '',
+            'rtlCol="0"',
+            this.anchor ? "anchor=\"" + this.anchor + "\"" : '',
+            this.vert ? "vert=\"" + this.vert + "\"" : '',
+        ].join(' ') + ">\n                " + (this.shrinkText ? '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' : '') + "\n                " + (this.autoFit !== false ? '<a:spAutoFit/>' : '') + "\n            </a:bodyPr>\n\n            <a:lstStyle/>\n            <a:p>\n                " + this.fragments.map(function (fragment) { return fragment.render(); }).join('</a:p><a:p>') + "\n                " + '' /* NOTE: Added 20180101 to address PPT-2007 issues */ + "\n\t\t        <a:endParaRPr lang=\"" + (this.lang || 'en-US') + "\" dirty=\"0\"/>\n            </a:p>\n        </p:txBody>\n    </p:sp>";
+    };
+    return TextElement;
+}());
+
 /**
  * PptxGenJS: XML Generation
  */
@@ -2255,7 +2696,7 @@ var imageSizingXml = {
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide) {
-    var strSlideXml = slide.name ? '<p:cSld name="' + slide.name + '">' : '<p:cSld>';
+    var strSlideXml = slide.name ? "<p:cSld name=\"" + slide.name + "\">" : '<p:cSld>';
     var intTableNum = 1;
     // STEP 1: Add background
     if (slide.bkgd) {
@@ -2289,6 +2730,14 @@ function slideObjectToXml(slide) {
         var placeholderObj;
         var locationAttr = '';
         var shapeType = null;
+        if (slideItemObj instanceof TextElement) {
+            strSlideXml += slideItemObj.render(idx, slide.presLayout, function (placeholder) {
+                return genXmlPlaceholder(slide['slideLayout']['data'].filter(function (object) {
+                    return object.options.placeholder === placeholder;
+                })[0]);
+            });
+            return;
+        }
         if (slide.slideLayout !== undefined && slide.slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
             placeholderObj = slide['slideLayout']['data'].filter(function (object) {
                 return object.options.placeholder === slideItemObj.options.placeholder;
@@ -3284,9 +3733,7 @@ function genXmlTextBody(slideObj) {
             strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>';
         }
         else if (slideObj.type === 'placeholder') {
-            strSlideXml += '<a:lstStyle>';
-            strSlideXml += genXmlParagraphProperties(slideObj, true);
-            strSlideXml += '</a:lstStyle>';
+            strSlideXml += "<a:lstStyle>" + genXmlParagraphProperties(slideObj, true) + "</a:lstStyle>";
         }
         else {
             strSlideXml += '<a:lstStyle/>';
@@ -3329,16 +3776,10 @@ function genXmlTextBody(slideObj) {
     // NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
     if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
         if (opts.fontFace) {
-            strSlideXml +=
-                '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">';
-            strSlideXml += '<a:latin typeface="' + opts.fontFace + '" charset="0"/>';
-            strSlideXml += '<a:ea typeface="' + opts.fontFace + '" charset="0"/>';
-            strSlideXml += '<a:cs typeface="' + opts.fontFace + '" charset="0"/>';
-            strSlideXml += '</a:endParaRPr>';
+            strSlideXml += strSlideXml += "\n\t\t\t<a:endParaRPr lang=\"" + (opts.lang ? opts.lang : 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize) + "00\"" : '') + " dirty=\"0\">\n              <a:latin typeface=\"" + opts.fontFace + "\" charset=\"0\"/>\n\t\t\t  <a:ea typeface=\"" + opts.fontFace + "\" charset=\"0\"/>\n\t\t\t  <a:cs typeface=\"" + opts.fontFace + "\" charset=\"0\"/>\n\t\t\t</a:endParaRPr>";
         }
         else {
-            strSlideXml +=
-                '<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0"/>';
+            strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang ? opts.lang : 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize) + "00\"" : '') + " dirty=\"0\"/>";
         }
     }
     else {
@@ -4657,7 +5098,8 @@ function addPlaceholdersToSlideLayouts(slide) {
             // NOTE: Check to ensure a placeholder does not already exist on the Slide
             // They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
             if (slide.data.filter(function (slideObj) {
-                return slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder;
+                var placeholder = slideObj.placeholder || (slideObj.options && slideObj.options.placeholder);
+                return placeholder === slideLayoutObj.options.placeholder;
             }).length === 0) {
                 addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false);
             }
@@ -4753,6 +5195,16 @@ var Slide = /** @class */ (function () {
         // so, lastly, add to the Slide now.
         this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null;
     }
+    Slide.prototype._registerLink = function (data, target) {
+        var relId = this.rels.length + target.relsChart.length + target.relsMedia.length + 1;
+        this.rels.push({
+            type: SLIDE_OBJECT_TYPES.hyperlink,
+            data: data,
+            rId: relId,
+            Target: target,
+        });
+        return relId;
+    };
     Object.defineProperty(Slide.prototype, "bkgd", {
         get: function () {
             return this._bkgd;
@@ -4877,8 +5329,10 @@ var Slide = /** @class */ (function () {
      * @since: 1.0.0
      */
     Slide.prototype.addText = function (text, options) {
-        addTextDefinition(this, text, options, false);
+        this.data.push(new TextElement(text, options, this._registerLink.bind(this)));
         return this;
+        //genObj.addTextDefinition(this, text, options, false)
+        //return this
     };
     return Slide;
 }());
