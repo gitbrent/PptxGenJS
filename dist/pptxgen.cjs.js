@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.7 @ 2019-11-30T17:36:43.133Z */
+/* PptxGenJS 3.0.0-beta.7 @ 2019-12-09T05:11:35.800Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3807,35 +3807,37 @@ function makeXmlViewProps() {
 }
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {IShadowOptions} IShadowOptions - shadow options
+ * @param {ShadowOptions} IShadowOptions - shadow options
  */
-function correctShadowOptions(IShadowOptions) {
-    if (!IShadowOptions || IShadowOptions === null)
+function correctShadowOptions(ShadowOptions) {
+    if (!ShadowOptions || typeof ShadowOptions !== 'object') {
+        //console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
         return;
+    }
     // OPT: `type`
-    if (IShadowOptions.type !== 'outer' && IShadowOptions.type !== 'inner' && IShadowOptions.type !== 'none') {
+    if (ShadowOptions.type !== 'outer' && ShadowOptions.type !== 'inner' && ShadowOptions.type !== 'none') {
         console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.');
-        IShadowOptions.type = 'outer';
+        ShadowOptions.type = 'outer';
     }
     // OPT: `angle`
-    if (IShadowOptions.angle) {
+    if (ShadowOptions.angle) {
         // A: REALITY-CHECK
-        if (isNaN(Number(IShadowOptions.angle)) || IShadowOptions.angle < 0 || IShadowOptions.angle > 359) {
+        if (isNaN(Number(ShadowOptions.angle)) || ShadowOptions.angle < 0 || ShadowOptions.angle > 359) {
             console.warn('Warning: shadow.angle can only be 0-359');
-            IShadowOptions.angle = 270;
+            ShadowOptions.angle = 270;
         }
         // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-        IShadowOptions.angle = Math.round(Number(IShadowOptions.angle));
+        ShadowOptions.angle = Math.round(Number(ShadowOptions.angle));
     }
     // OPT: `opacity`
-    if (IShadowOptions.opacity) {
+    if (ShadowOptions.opacity) {
         // A: REALITY-CHECK
-        if (isNaN(Number(IShadowOptions.opacity)) || IShadowOptions.opacity < 0 || IShadowOptions.opacity > 1) {
+        if (isNaN(Number(ShadowOptions.opacity)) || ShadowOptions.opacity < 0 || ShadowOptions.opacity > 1) {
             console.warn('Warning: shadow.opacity can only be 0-1');
-            IShadowOptions.opacity = 0.75;
+            ShadowOptions.opacity = 0.75;
         }
         // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-        IShadowOptions.opacity = Number(IShadowOptions.opacity);
+        ShadowOptions.opacity = Number(ShadowOptions.opacity);
     }
 }
 function getShapeInfo(shapeName) {
@@ -4469,6 +4471,10 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     // Set default color if needed (table option > inherit from Slide > default to black)
     if (!opt.color)
         opt.color = opt.color || DEF_FONT_COLOR;
+    if (typeof opt.border === 'string') {
+        console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`");
+        opt.border = null;
+    }
     // Set/Calc table width
     // Get slide margins - start with default values, then adjust if master or slide margins exist
     var arrTableMargin = DEF_SLIDE_MARGIN_IN;
@@ -6616,11 +6622,15 @@ function getExcelColName(length) {
  * @param {Object} opts optional shadow properties
  * @param {Object} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
- *	{ type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+ * @example { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
  * @return {string} XML
  */
 function createShadowElement(options, defaults) {
-    if (options === null) {
+    if (!options) {
+        return '<a:effectLst/>';
+    }
+    else if (typeof options !== 'object') {
+        console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`");
         return '<a:effectLst/>';
     }
     var strXml = '<a:effectLst>', opts = getMix(defaults, options), type = opts['type'] || 'outer', blur = opts['blur'] * ONEPT, offset = opts['offset'] * ONEPT, angle = opts['angle'] * 60000, color = opts['color'], opacity = opts['opacity'] * 100000, rotateWithShape = opts['rotateWithShape'] ? 1 : 0;
