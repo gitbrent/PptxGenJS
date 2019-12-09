@@ -83,8 +83,8 @@ export default class PptxGenJS {
 	}
 
 	/**
-	* Library Version
-	*/
+	 * Library Version
+	 */
 	private _version: string = '3.0.0-beta.6'
 	public get version(): string {
 		return this._version

@@ -157,7 +157,7 @@ export default class TextElement {
 		// D: Transform text options to bodyProperties as thats how we build XML
 		this.autoFit = opts.autoFit || false // If true, shape will collapse to text size (Fit To shape)
 		this.shrinkText = opts.shrinkText || false
-		this.anchor = !opts.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
+		this.anchor = opts.placeholder ? null : TEXT_VALIGN.ctr // VALS: [t,ctr,b]
 		this.vert = opts.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 
 		this.isTextBox = opts.isTextBox
