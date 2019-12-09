@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-12-09T13:59:46.856Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-09T17:53:14.356Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2376,6 +2376,19 @@ var LineElement = /** @class */ (function () {
 }());
 //# sourceMappingURL=line.js.map
 
+var TextFragment = /** @class */ (function () {
+    function TextFragment(text, paragraphConfig, runConfig) {
+        this.text = text;
+        this.paragraphConfig = paragraphConfig;
+        this.runConfig = runConfig;
+    }
+    TextFragment.prototype.render = function () {
+        return "\n\t\t" + this.paragraphConfig.render('a:pPr') + "\n        <a:r>\n            " + this.runConfig.render('a:rPr') + "\n            <a:t>" + encodeXmlEntities(this.text) + "</a:t>\n        </a:r>\n        ";
+    };
+    return TextFragment;
+}());
+//# sourceMappingURL=text-fragment.js.map
+
 var Bullet = /** @class */ (function () {
     function Bullet(bullet) {
         if (bullet === false) {
@@ -2424,6 +2437,113 @@ var Bullet = /** @class */ (function () {
 }());
 //# sourceMappingURL=bullet.js.map
 
+var alignment = function (align) {
+    switch (align) {
+        case 'left':
+            return ' algn="l"';
+        case 'right':
+            return ' algn="r"';
+        case 'center':
+            return ' algn="ctr"';
+        case 'justify':
+            return ' algn="just"';
+        default:
+            return '';
+    }
+};
+var TextElement = /** @class */ (function () {
+    function TextElement(_a) {
+        var rtlMode = _a.rtlMode, paraSpaceBefore = _a.paraSpaceBefore, paraSpaceAfter = _a.paraSpaceAfter, indentLevel = _a.indentLevel, bullet = _a.bullet, align = _a.align, lineSpacing = _a.lineSpacing;
+        if (indentLevel && !isNaN(Number(indentLevel)) && Number(this.indentLevel) > 0) {
+            this.indentLevel = Number(indentLevel);
+        }
+        if (paraSpaceBefore && !isNaN(Number(paraSpaceBefore)) && Number(this.paraSpaceBefore) > 0) {
+            this.paraSpaceBefore = Number(paraSpaceBefore);
+        }
+        if (paraSpaceAfter && !isNaN(Number(paraSpaceAfter)) && Number(this.paraSpaceAfter) > 0) {
+            this.paraSpaceAfter = Number(paraSpaceAfter);
+        }
+        this.bullet = new Bullet(bullet);
+        var alignInput = (align || '').toLowerCase();
+        if (alignInput.startsWith('c'))
+            this.align = TEXT_HALIGN.center;
+        else if (alignInput.startsWith('l'))
+            this.align = TEXT_HALIGN.left;
+        else if (alignInput.startsWith('r'))
+            this.align = TEXT_HALIGN.right;
+        else if (alignInput.startsWith('j'))
+            this.align = TEXT_HALIGN.justify;
+        this.rtlMode = rtlMode;
+        this.lineSpacing = lineSpacing && !isNaN(lineSpacing) ? lineSpacing : null;
+    }
+    TextElement.prototype.render = function (tag, body) {
+        if (body === void 0) { body = ''; }
+        var bulletLvl0Margin = 342900;
+        var marginLeft = this.indentLevel && this.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * this.indentLevel : bulletLvl0Margin;
+        return "\n        <" + tag + " " + [
+            this.rtlMode ? ' rtl="1" ' : '',
+            alignment(this.align),
+            this.indentLevel ? " lvl=\"" + this.indentLevel + "\"" : '',
+            this.bullet.enabled ? " marL=\"" + marginLeft + "\" indent=\"-" + bulletLvl0Margin + "\"" : '',
+        ].join('') + ">\n          " + [
+            // IMPORTANT: the body element require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
+            this.lineSpacing ? "<a:lnSpc><a:spcPts val=\"" + this.lineSpacing + "00\"/></a:lnSpc>" : '',
+            this.paraSpaceBefore ? "<a:spcBef><a:spcPts val=\"" + this.paraSpaceBefore * 100 + "\"/></a:spcBef>" : '',
+            this.paraSpaceAfter ? "<a:spcAft><a:spcPts val=\"" + this.paraSpaceAfter * 100 + "\"/></a:spcAft>" : '',
+            this.bullet.render(),
+        ].join('') + "\n\t\t\t" + body + "\n        </" + tag + ">\n    ";
+    };
+    return TextElement;
+}());
+//# sourceMappingURL=paragraph-properties.js.map
+
+var RunProperties = /** @class */ (function () {
+    function RunProperties(options) {
+        this.lang = options.lang || 'en-US';
+        this.altLang = options.lang ? '' : 'en-US';
+        this.fontFace = options.fontFace;
+        // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+        this.fontSize = options.fontSize && Math.round(options.fontSize);
+        this.charSpacing = options.charSpacing;
+        this.color = options.color;
+        this.bold = options.bold;
+        this.italic = options.italic;
+        this.strike = options.strike;
+        this.underline = options.underline;
+        this.subscript = options.subscript;
+        this.superscript = options.superscript;
+        this.outline = options.outline;
+        if (options.hyperlink) {
+            this.hyperlink = options.hyperlink;
+        }
+    }
+    RunProperties.prototype.render = function (tag) {
+        return "<" + tag + " " + [
+            " lang=\"" + this.lang + "\"",
+            this.altLang ? " altLang=\"" + this.altLang + "\"" : '',
+            this.fontSize ? " sz=\"" + this.fontSize + "00\"" : '',
+            this.bold ? ' b="1"' : '',
+            this.italic ? ' i="1"' : '',
+            this.strike ? ' strike="sngStrike"' : '',
+            this.underline || this.hyperlink ? ' u="sng"' : '',
+            this.subscript ? ' baseline="-40000"' : this.superscript ? ' baseline="30000"' : '',
+            // IMPORTANT: Also disable kerning; otherwise text won't actually expand
+            this.charSpacing ? " spc=\"" + this.charSpacing * 100 + "\" kern=\"0\"" : '',
+            ' dirty="0"',
+        ].join('') + " > " + [
+            this.color ? genXmlColorSelection(this.color) : '',
+            // NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
+            this.fontFace
+                ? "\n                    <a:latin typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"0\"/>\n                    <a:ea typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"-122\"/>\n                    <a:cs typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"-120\"/>"
+                : '',
+            this.outline ? "<a:ln w=\"" + Math.round((this.outline.size || 0.75) * ONEPT) + "\">" + genXmlColorSelection(this.outline.color || 'FFFFFF') + "</a:ln>" : '',
+            this.hyperlink ? this.hyperlink.render() : '',
+        ].join('') + "\n      </" + tag + ">\n";
+    };
+    return RunProperties;
+}());
+//# sourceMappingURL=run-properties.js.map
+
 var HyperLink = /** @class */ (function () {
     function HyperLink(_a, registerLink) {
         var url = _a.url, slide = _a.slide, tooltip = _a.tooltip;
@@ -2448,127 +2568,24 @@ var HyperLink = /** @class */ (function () {
 }());
 //# sourceMappingURL=hyperlink.js.map
 
-var alignment = function (align) {
-    switch (align) {
-        case 'left':
-            return ' algn="l"';
-        case 'right':
-            return ' algn="r"';
-        case 'center':
-            return ' algn="ctr"';
-        case 'justify':
-            return ' algn="just"';
-        default:
-            return '';
-    }
-};
-var TextFragment = /** @class */ (function () {
-    function TextFragment(text, options, registerLink) {
-        this.text = text;
-        var paraSpaceBefore = options.paraSpaceBefore, paraSpaceAfter = options.paraSpaceAfter, indentLevel = options.indentLevel;
-        if (indentLevel && !isNaN(Number(indentLevel)) && Number(this.indentLevel) > 0)
-            this.indentLevel = Number(indentLevel);
-        if (paraSpaceBefore && !isNaN(Number(paraSpaceBefore)) && Number(this.paraSpaceBefore) > 0)
-            this.paraSpaceBefore = Number(paraSpaceBefore);
-        if (paraSpaceAfter && !isNaN(Number(paraSpaceAfter)) && Number(this.paraSpaceAfter) > 0)
-            this.paraSpaceAfter = Number(paraSpaceAfter);
-        this.bullet = new Bullet(options.bullet);
-        if (options.hyperlink) {
-            this.hyperlink = new HyperLink(options.hyperlink, registerLink);
-        }
-        var alignInput = (options.align || '').toLowerCase();
-        if (alignInput.startsWith('c'))
-            this.align = TEXT_HALIGN.center;
-        else if (alignInput.startsWith('l'))
-            this.align = TEXT_HALIGN.left;
-        else if (alignInput.startsWith('r'))
-            this.align = TEXT_HALIGN.right;
-        else if (alignInput.startsWith('j'))
-            this.align = TEXT_HALIGN.justify;
-        this.rtlMode = options.rtlMode;
-        this.lineSpacing = options.lineSpacing && !isNaN(options.lineSpacing) ? options.lineSpacing : null;
-        this.paraSpaceBefore = options.paraSpaceBefore;
-        this.paraSpaceAfter = options.paraSpaceAfter;
-        this.lang = options.lang;
-        this.fontFace = options.fontFace;
-        this.fontSize = options.fontSize;
-        this.charSpacing = options.charSpacing;
-        this.color = options.color;
-        this.bold = options.bold;
-        this.italic = options.italic;
-        this.strike = options.strike;
-        this.underline = options.underline;
-        this.subscript = options.subscript;
-        this.superscript = options.superscript;
-        this.outline = options.outline;
-    }
-    TextFragment.prototype.render = function () {
-        var bulletLvl0Margin = 342900;
-        // B: 'lstStyle'
-        // NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
-        // FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
-        //if (opts.h === 0 && opts.line && opts.align) {
-        //strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
-        //} else if (slideObj.type === 'placeholder') {
-        //strSlideXml += `<a:lstStyle>${genXmlParagraphProperties(slideObj, true)}</a:lstStyle>`
-        //} else {
-        //strSlideXml += '<a:lstStyle/>'
-        //}
-        var marginLeft = this.indentLevel && this.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * this.indentLevel : bulletLvl0Margin;
-        return "\n        <a:pPr " + [
-            this.rtlMode ? ' rtl="1" ' : '',
-            alignment(this.align),
-            this.indentLevel ? " lvl=\"" + this.indentLevel + "\"" : '',
-            this.bullet.enabled ? " marL=\"" + marginLeft + "\" indent=\"-" + bulletLvl0Margin + "\"" : '',
-        ].join('') + ">\n          " + [
-            // IMPORTANT: the body element require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-            this.lineSpacing ? "<a:lnSpc><a:spcPts val=\"" + this.lineSpacing + "00\"/></a:lnSpc>" : '',
-            this.paraSpaceBefore ? "<a:spcBef><a:spcPts val=\"" + this.paraSpaceBefore * 100 + "\"/></a:spcBef>" : '',
-            this.paraSpaceAfter ? "<a:spcAft><a:spcPts val=\"" + this.paraSpaceAfter * 100 + "\"/></a:spcAft>" : '',
-            this.bullet.render(),
-        ].join('') + "\n        </a:pPr>\n        <a:r>\n            <a:rPr lang=\"" + (this.lang ? this.lang : 'en-US') + "\"" + (this.lang ? ' altLang="en-US"' : '') + " " + [
-            // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
-            this.fontSize ? " sz=\"" + Math.round(this.fontSize) + "00\"" : '',
-            this.bold ? ' b="1"' : '',
-            this.italic ? ' i="1"' : '',
-            this.strike ? ' strike="sngStrike"' : '',
-            this.underline || this.hyperlink ? ' u="sng"' : '',
-            this.subscript ? ' baseline="-40000"' : this.superscript ? ' baseline="30000"' : '',
-            // IMPORTANT: Also disable kerning; otherwise text won't actually expand
-            this.charSpacing ? " spc=\"" + this.charSpacing * 100 + "\" kern=\"0\"" : '',
-            'dirty="0"',
-        ].join('') + " > " + [
-            this.color ? genXmlColorSelection(this.color) : '',
-            // NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
-            this.fontFace
-                ? "\n                    <a:latin typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"0\"/>\n                    <a:ea typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"-122\"/>\n                    <a:cs typeface=\"" + this.fontFace + "\" pitchFamily=\"34\" charset=\"-120\"/>"
-                : '',
-            this.outline ? "<a:ln w=\"" + Math.round((this.outline.size || 0.75) * ONEPT) + "\">" + genXmlColorSelection(this.outline.color || 'FFFFFF') + "</a:ln>" : '',
-            this.hyperlink ? this.hyperlink.render() : '',
-        ].join('') + "\n            </a:rPr>\n            <a:t>" + encodeXmlEntities(this.text) + "</a:t>\n        </a:r>\n        ";
-    };
-    return TextFragment;
-}());
-//# sourceMappingURL=text-fragment.js.map
-
-var buildFragments = function (inputText, opts, registerLink) {
+var buildFragments = function (inputText, inputBreakLine, registerLink) {
     var fragments = inputText;
     if (typeof inputText === 'string' || typeof inputText === 'number') {
-        fragments = [{ text: inputText.toString(), options: opts || {} }];
+        fragments = [{ text: inputText.toString(), options: {} }];
     }
     if (!fragments)
         return [];
     return fragments.flatMap(function (_a, idx) {
         var fragmentText = _a.text, options = _a.options;
         var text = fragmentText.replace(/\r*\n/g, CRLF);
-        var breakLine = opts.breakLine || options.breakLine || false;
+        var breakLine = inputBreakLine || options.breakLine || false;
         if (text.indexOf(CRLF) > -1) {
             // Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
             text = text.replace(/\r\n$/g, '');
             // Plain strings like "hello \n world" or "first line\n" need to have lineBreaks set to become 2 separate lines as intended
             breakLine = true;
         }
-        var config = {
+        var paragraphProperties = new TextElement({
             bullet: options.bullet,
             align: options.align,
             rtlMode: options.rtlMode,
@@ -2576,6 +2593,8 @@ var buildFragments = function (inputText, opts, registerLink) {
             indentLevel: options.indentLevel,
             paraSpaceBefore: options.paraSpaceBefore,
             paraSpaceAfter: options.paraSpaceAfter,
+        });
+        var runProperties = new RunProperties({
             lang: options.lang,
             fontFace: options.fontFace,
             fontSize: options.fontSize,
@@ -2588,22 +2607,22 @@ var buildFragments = function (inputText, opts, registerLink) {
             subscript: options.subscript,
             superscript: options.superscript,
             outline: options.outline,
-            hyperlink: options.hyperlink,
-        };
+            hyperlink: options.hyperlink && new HyperLink(options.hyperlink, registerLink),
+        });
         if (breakLine) {
             return text.split(CRLF).map(function (line, lineIdx) {
-                return new TextFragment(line, config, registerLink);
+                return new TextFragment(line, paragraphProperties, runProperties);
             });
         }
         else {
-            return new TextFragment(text, config, registerLink);
+            return new TextFragment(text, paragraphProperties, runProperties);
         }
     });
 };
-var TextElement = /** @class */ (function () {
-    function TextElement(text, opts, registerLink) {
+var TextElement$1 = /** @class */ (function () {
+    function TextElement$1(text, opts, registerLink) {
         this.type = SLIDE_OBJECT_TYPES.newtext;
-        this.fragments = buildFragments(text, opts, registerLink);
+        this.fragments = buildFragments(text, opts.breakLine, registerLink);
         this.shape = new ShapeElement(opts.shape);
         this.fill = opts.fill;
         this.lang = opts.lang;
@@ -2671,13 +2690,37 @@ var TextElement = /** @class */ (function () {
         if (opts.shadow) {
             this.shadow = new ShadowElement(opts.shadow);
         }
+        this.paragraphProperties = new TextElement({
+            bullet: opts.bullet,
+            align: opts.align,
+            rtlMode: opts.rtlMode,
+            lineSpacing: opts.lineSpacing,
+            indentLevel: opts.indentLevel,
+            paraSpaceBefore: opts.paraSpaceBefore,
+            paraSpaceAfter: opts.paraSpaceAfter,
+        });
+        this.runProperties = new RunProperties({
+            lang: opts.lang,
+            fontFace: opts.fontFace,
+            fontSize: opts.fontSize,
+            charSpacing: opts.charSpacing,
+            color: opts.color,
+            bold: opts.bold,
+            italic: opts.italic,
+            strike: opts.strike,
+            underline: opts.underline,
+            subscript: opts.subscript,
+            superscript: opts.superscript,
+            outline: opts.outline,
+            hyperlink: opts.hyperlink && new HyperLink(opts.hyperlink, registerLink),
+        });
     }
-    TextElement.prototype.render = function (idx, presLayout, renderPlaceholder) {
+    TextElement$1.prototype.render = function (idx, presLayout, renderPlaceholder) {
         // F: NEW: Add autofit type tags
         // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
         // MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
         // NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
-        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr" + (this.isTextBox ? ' txBox="1"}' : '') + "/>\n\t\t    <p:nvPr>\n                " + (this.placeholder ? renderPlaceholder(this.placeholder) : '') + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + this.shape.render(this.rectRadius, this.position, presLayout) + "\n            " + (this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n        <p:txBody>\n            <a:bodyPr " + [
+        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr" + (this.isTextBox ? ' txBox="1"}' : '') + "/>\n\t\t    <p:nvPr>\n                " + renderPlaceholder(this.placeholder) + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + this.shape.render(this.rectRadius, this.position, presLayout) + "\n            " + (this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n        <p:txBody>\n            <a:bodyPr " + [
             "wrap=\"" + this.wrap + "\"",
             this.lIns || this.lIns === 0 ? "lIns=\"" + this.lIns + "\"" : '',
             this.tIns || this.tIns === 0 ? "tIns=\"" + this.tIns + "\"" : '',
@@ -2686,9 +2729,9 @@ var TextElement = /** @class */ (function () {
             'rtlCol="0"',
             this.anchor ? "anchor=\"" + this.anchor + "\"" : '',
             this.vert ? "vert=\"" + this.vert + "\"" : '',
-        ].join(' ') + ">\n                " + (this.shrinkText ? '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' : '') + "\n                " + (this.autoFit !== false ? '<a:spAutoFit/>' : '') + "\n            </a:bodyPr>\n\n            <a:lstStyle/>\n            <a:p>\n                " + this.fragments.map(function (fragment) { return fragment.render(); }).join('</a:p><a:p>') + "\n                " + '' /* NOTE: Added 20180101 to address PPT-2007 issues */ + "\n\t\t        <a:endParaRPr lang=\"" + (this.lang || 'en-US') + "\" dirty=\"0\"/>\n            </a:p>\n        </p:txBody>\n    </p:sp>";
+        ].join(' ') + ">\n                " + (this.shrinkText ? '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' : '') + "\n                " + (this.autoFit !== false ? '<a:spAutoFit/>' : '') + "\n            </a:bodyPr>\n\n            <a:lstStyle>\n                " + this.paragraphProperties.render('a:lvl1pPr', this.runProperties.render('a:defRPr')) + "\n            </a:lstStyle>\n            <a:p>\n                " + this.fragments.map(function (fragment) { return fragment.render(); }).join('</a:p><a:p>') + "\n                " + '' /* NOTE: Added 20180101 to address PPT-2007 issues */ + "\n\t\t        <a:endParaRPr lang=\"" + (this.lang || 'en-US') + "\" dirty=\"0\"/>\n            </a:p>\n        </p:txBody>\n    </p:sp>";
     };
-    return TextElement;
+    return TextElement$1;
 }());
 //# sourceMappingURL=text.js.map
 
@@ -2727,6 +2770,57 @@ var SimpleShapeElement = /** @class */ (function () {
     return SimpleShapeElement;
 }());
 //# sourceMappingURL=simple-shape.js.map
+
+/*! *****************************************************************************
+Copyright (c) Microsoft Corporation. All rights reserved.
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use
+this file except in compliance with the License. You may obtain a copy of the
+License at http://www.apache.org/licenses/LICENSE-2.0
+
+THIS CODE IS PROVIDED ON AN *AS IS* BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT LIMITATION ANY IMPLIED
+WARRANTIES OR CONDITIONS OF TITLE, FITNESS FOR A PARTICULAR PURPOSE,
+MERCHANTABLITY OR NON-INFRINGEMENT.
+
+See the Apache Version 2.0 License for specific language governing permissions
+and limitations under the License.
+***************************************************************************** */
+
+function __rest(s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) if (e.indexOf(p[i]) < 0)
+            t[p[i]] = s[p[i]];
+    return t;
+}
+
+var PlaceholderText = /** @class */ (function () {
+    function PlaceholderText(text, options, index, registerLink) {
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        var name = options.name, _a = options.type, type = _a === void 0 ? 'body' : _a, textOptions = __rest(options
+        // We default to no bullet in the placeholder (different from the slide
+        // that inherits by default)
+        , ["name", "type"]);
+        // We default to no bullet in the placeholder (different from the slide
+        // that inherits by default)
+        if (!textOptions.bullet)
+            textOptions.bullet = false;
+        var textElement = new TextElement$1(text, textOptions, registerLink);
+        this.name = name;
+        this.textElement = textElement;
+        this.placeholderType = type;
+        this.placeholderIndex = index;
+    }
+    PlaceholderText.prototype.renderPlaceholderInfo = function () {
+        return "<p:ph idx=\"" + this.placeholderIndex + "\" type=\"" + this.placeholderType + "\" " + (this.textElement.fragments.length > 0 ? ' hasCustomPrompt="1"' : '') + " />";
+    };
+    PlaceholderText.prototype.render = function (idx, presLayout) {
+        return this.textElement.render(idx, presLayout, this.renderPlaceholderInfo.bind(this));
+    };
+    return PlaceholderText;
+}());
 
 /**
  * PptxGenJS: XML Generation
@@ -2785,15 +2879,24 @@ function slideObjectToXml(slide) {
         var placeholderObj;
         var locationAttr = '';
         var shapeType = null;
-        if (slideItemObj instanceof TextElement) {
+        if (slideItemObj instanceof TextElement$1) {
             strSlideXml += slideItemObj.render(idx, slide.presLayout, function (placeholder) {
-                return genXmlPlaceholder(slide['slideLayout']['data'].filter(function (object) {
-                    return object.options && object.options.placeholder === placeholder;
-                })[0]);
+                if (!placeholder)
+                    return '';
+                var found = slide['slideLayout']['data'].filter(function (object) {
+                    return object instanceof PlaceholderText && object.name === placeholder;
+                })[0];
+                if (!found)
+                    return '';
+                return found.renderPlaceholderInfo();
             });
             return;
         }
         if (slideItemObj instanceof SimpleShapeElement) {
+            strSlideXml += slideItemObj.render(idx, slide.presLayout);
+            return;
+        }
+        if (slideItemObj instanceof PlaceholderText) {
             strSlideXml += slideItemObj.render(idx, slide.presLayout);
             return;
         }
@@ -4350,7 +4453,6 @@ function getShapeInfo(shapeName) {
         return objShape;
     return PowerPointShapes.RECTANGLE;
 }
-//# sourceMappingURL=gen-xml.js.map
 
 /**
  * PptxGenJS: Slide object generators
@@ -4383,16 +4485,11 @@ function createSlideObject(slideDef, target, registerLink) {
                 tgt.data.push(new SimpleShapeElement(BASE_SHAPES.RECTANGLE, object[key]));
             }
             else if (MASTER_OBJECTS[key] && key === 'text') {
-                tgt.data.push(new TextElement(object[key].text, object[key].options, registerLink));
+                tgt.data.push(new TextElement$1(object[key].text, object[key].options, registerLink));
             }
             else if (MASTER_OBJECTS[key] && key === 'placeholder') {
                 // TODO: 20180820: Check for existing `name`?
-                object[key].options.placeholder = object[key].options.name;
-                delete object[key].options.name; // remap name for earier handling internally
-                object[key].options.placeholderType = object[key].options.type;
-                delete object[key].options.type; // remap name for earier handling internally
-                object[key].options.placeholderIdx = 100 + idx;
-                addPlaceholderDefinition(tgt, object[key].text, object[key].options);
+                tgt.data.push(new PlaceholderText(object[key].text, object[key].options, 100 + idx, registerLink));
             }
         });
     }
@@ -4848,26 +4945,6 @@ function addNotesDefinition(target, notes) {
     });
 }
 /**
- * Adds a placeholder object to a slide definition.
- * @param {String} `text`
- * @param {Object} `opt`
- * @param {ISlide} `target` slide object that the placeholder should be added to
- */
-function addPlaceholderDefinition(target, text, opt) {
-    // FIXME: there are several tpyes - not all placeholders are text!
-    // but it seems to work (see below) - INVESTIGATE: how it s/b written
-    return addTextDefinition(target, text, opt, true);
-    /*
-    this works, albeit not for masters, - it UNDOCUMENTED (oops) and why is type=body (s/b image?), or if we do use body as the locale (like title), than whats 'image' for?
-    slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path) });
-
-    // TODO: TODO-3: this has never worked
-    // https://github.com/gitbrent/PptxGenJS/issues/599
-    if (opt.type === PLACEHOLDER_TYPES.title || opt.type === PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
-    else if (opt.type === PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
-    */
-}
-/**
  * Adds a table object to a slide definition.
  * @param {ISlide} target - slide object that the table should be added to
  * @param {TableRow[]} arrTabRows - table data
@@ -5056,86 +5133,20 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     }
 }
 /**
- * Adds a text object to a slide definition.
- * @param {string|IText[]} text
- * @param {ITextOpts} opt
- * @param {ISlide} target - slide object that the text should be added to
- * @param {boolean} isPlaceholder` is this a placeholder object
- * @since: 1.0.0
- */
-function addTextDefinition(target, text, opts, isPlaceholder) {
-    var opt = opts || {};
-    if (!opt.bodyProp)
-        opt.bodyProp = {};
-    var newObject = {
-        text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
-        type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
-        options: opt,
-        shape: opt.shape,
-    };
-    // STEP 1: Set some options
-    {
-        // A: Placeholders should inherit their colors or override them, so don't default them
-        if (!opt.placeholder) {
-            opt.color = opt.color || target.color || DEF_FONT_COLOR; // Set color (options > inherit from Slide > default to black)
-        }
-        // B
-        if (opt.shape && opt.shape.name === 'line') {
-            opt.line = opt.line || '333333';
-            opt.lineSize = opt.lineSize || 1;
-        }
-        // C
-        newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null;
-        // D: Transform text options to bodyProperties as thats how we build XML
-        newObject.options.bodyProp.autoFit = opt.autoFit || false; // If true, shape will collapse to text size (Fit To shape)
-        newObject.options.bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null; // VALS: [t,ctr,b]
-        newObject.options.bodyProp.vert = opt.vert || null; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
-        if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
-            newObject.options.bodyProp.lIns = inch2Emu(opt.inset);
-            newObject.options.bodyProp.rIns = inch2Emu(opt.inset);
-            newObject.options.bodyProp.tIns = inch2Emu(opt.inset);
-            newObject.options.bodyProp.bIns = inch2Emu(opt.inset);
-        }
-    }
-    // STEP 2: Transform `align`/`valign` to XML values, store in bodyProp for XML gen
-    {
-        if ((newObject.options.align || '').toLowerCase().startsWith('c'))
-            newObject.options.bodyProp.align = TEXT_HALIGN.center;
-        else if ((newObject.options.align || '').toLowerCase().startsWith('l'))
-            newObject.options.bodyProp.align = TEXT_HALIGN.left;
-        else if ((newObject.options.align || '').toLowerCase().startsWith('r'))
-            newObject.options.bodyProp.align = TEXT_HALIGN.right;
-        else if ((newObject.options.align || '').toLowerCase().startsWith('j'))
-            newObject.options.bodyProp.align = TEXT_HALIGN.justify;
-        if ((newObject.options.valign || '').toLowerCase().startsWith('b'))
-            newObject.options.bodyProp.anchor = TEXT_VALIGN.b;
-        else if ((newObject.options.valign || '').toLowerCase().startsWith('c'))
-            newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr;
-        else if ((newObject.options.valign || '').toLowerCase().startsWith('t'))
-            newObject.options.bodyProp.anchor = TEXT_VALIGN.t;
-    }
-    // STEP 3: ROBUST: Set rational values for some shadow props if needed
-    correctShadowOptions(opt.shadow);
-    // STEP 4: Create hyperlinks
-    createHyperlinkRels(target, newObject.text || '');
-    // LAST: Add object to Slide
-    target.data.push(newObject);
-}
-/**
  * Adds placeholder objects to slide
  * @param {ISlide} slide - slide object containing layouts
  */
 function addPlaceholdersToSlideLayouts(slide) {
     (slide.slideLayout.data || []).forEach(function (slideLayoutObj) {
-        if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
+        if (slideLayoutObj instanceof PlaceholderText) {
             // A: Search for this placeholder on Slide before we add
             // NOTE: Check to ensure a placeholder does not already exist on the Slide
             // They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
             if (slide.data.filter(function (slideObj) {
                 var placeholder = slideObj.placeholder || (slideObj.options && slideObj.options.placeholder);
-                return placeholder === slideLayoutObj.options.placeholder;
+                return placeholder === slideLayoutObj.name;
             }).length === 0) {
-                slide.data.push(new TextElement('', { placeholder: slideLayoutObj.options.placeholder }, function () { return null; }));
+                slide.data.push(new TextElement$1('', { placeholder: slideLayoutObj.name }, function () { return null; }));
             }
         }
     });
@@ -5363,13 +5374,14 @@ var Slide = /** @class */ (function () {
      * @since: 1.0.0
      */
     Slide.prototype.addText = function (text, options) {
-        this.data.push(new TextElement(text, options, this._registerLink.bind(this)));
+        this.data.push(new TextElement$1(text, options, this._registerLink.bind(this)));
         return this;
         //genObj.addTextDefinition(this, text, options, false)
         //return this
     };
     return Slide;
 }());
+//# sourceMappingURL=slide.js.map
 
 /**
  * PptxGenJS: Chart Generation
@@ -7829,5 +7841,6 @@ var PptxGenJS = /** @class */ (function () {
     };
     return PptxGenJS;
 }());
+//# sourceMappingURL=pptxgen.js.map
 
 module.exports = PptxGenJS;

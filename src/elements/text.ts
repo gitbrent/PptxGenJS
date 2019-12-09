@@ -8,16 +8,20 @@ import Position from './position'
 import LineElement from './line'
 import TextFragment from './text-fragment'
 
-const buildFragments = (inputText, opts, registerLink) => {
+import ParagraphProperties from './paragraph-properties'
+import RunProperties from './run-properties'
+import Hyperlink from './hyperlink'
+
+const buildFragments = (inputText, inputBreakLine, registerLink) => {
 	let fragments = inputText
 	if (typeof inputText === 'string' || typeof inputText === 'number') {
-		fragments = [{ text: inputText.toString(), options: opts || {} }]
+		fragments = [{ text: inputText.toString(), options: {} }]
 	}
 	if (!fragments) return []
 
 	return fragments.flatMap(({ text: fragmentText, options }, idx) => {
 		let text = fragmentText.replace(/\r*\n/g, CRLF)
-		let breakLine = opts.breakLine || options.breakLine || false
+		let breakLine = inputBreakLine || options.breakLine || false
 
 		if (text.indexOf(CRLF) > -1) {
 			// Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
@@ -26,7 +30,7 @@ const buildFragments = (inputText, opts, registerLink) => {
 			breakLine = true
 		}
 
-		const config = {
+		const paragraphProperties = new ParagraphProperties({
 			bullet: options.bullet,
 			align: options.align,
 			rtlMode: options.rtlMode,
@@ -34,6 +38,8 @@ const buildFragments = (inputText, opts, registerLink) => {
 			indentLevel: options.indentLevel,
 			paraSpaceBefore: options.paraSpaceBefore,
 			paraSpaceAfter: options.paraSpaceAfter,
+		})
+		const runProperties = new RunProperties({
 			lang: options.lang,
 			fontFace: options.fontFace,
 			fontSize: options.fontSize,
@@ -46,15 +52,15 @@ const buildFragments = (inputText, opts, registerLink) => {
 			subscript: options.subscript,
 			superscript: options.superscript,
 			outline: options.outline,
-			hyperlink: options.hyperlink,
-		}
+			hyperlink: options.hyperlink && new Hyperlink(options.hyperlink, registerLink),
+		})
 
 		if (breakLine) {
 			return text.split(CRLF).map((line, lineIdx) => {
-				return new TextFragment(line, config, registerLink)
+				return new TextFragment(line, paragraphProperties, runProperties)
 			})
 		} else {
-			return new TextFragment(text, config, registerLink)
+			return new TextFragment(text, paragraphProperties, runProperties)
 		}
 	})
 }
@@ -93,8 +99,11 @@ export default class TextElement {
 	shadow
 	placeholder
 
+	paragraphProperties
+	runProperties
+
 	constructor(text, opts, registerLink) {
-		this.fragments = buildFragments(text, opts, registerLink)
+		this.fragments = buildFragments(text, opts.breakLine, registerLink)
 		this.shape = new Shape(opts.shape)
 
 		this.fill = opts.fill
@@ -169,6 +178,31 @@ export default class TextElement {
 		if (opts.shadow) {
 			this.shadow = new ShadowElement(opts.shadow)
 		}
+
+		this.paragraphProperties = new ParagraphProperties({
+			bullet: opts.bullet,
+			align: opts.align,
+			rtlMode: opts.rtlMode,
+			lineSpacing: opts.lineSpacing,
+			indentLevel: opts.indentLevel,
+			paraSpaceBefore: opts.paraSpaceBefore,
+			paraSpaceAfter: opts.paraSpaceAfter,
+		})
+		this.runProperties = new RunProperties({
+			lang: opts.lang,
+			fontFace: opts.fontFace,
+			fontSize: opts.fontSize,
+			charSpacing: opts.charSpacing,
+			color: opts.color,
+			bold: opts.bold,
+			italic: opts.italic,
+			strike: opts.strike,
+			underline: opts.underline,
+			subscript: opts.subscript,
+			superscript: opts.superscript,
+			outline: opts.outline,
+			hyperlink: opts.hyperlink && new Hyperlink(opts.hyperlink, registerLink),
+		})
 	}
 
 	render(idx, presLayout, renderPlaceholder) {
@@ -183,7 +217,7 @@ export default class TextElement {
             <p:cNvPr id="${idx + 2}" name="Object ${idx + 1}"/>
             <p:cNvSpPr${this.isTextBox ? ' txBox="1"}' : ''}/>
 		    <p:nvPr>
-                ${this.placeholder ? renderPlaceholder(this.placeholder) : ''}
+                ${renderPlaceholder(this.placeholder)}
 		    </p:nvPr>
         </p:nvSpPr>
 
@@ -209,7 +243,12 @@ export default class TextElement {
                 ${this.autoFit !== false ? '<a:spAutoFit/>' : ''}
             </a:bodyPr>
 
-            <a:lstStyle/>
+            <a:lstStyle>
+                ${this.paragraphProperties.render(
+                    'a:lvl1pPr',
+                    this.runProperties.render('a:defRPr')
+                )}
+            </a:lstStyle>
             <a:p>
                 ${this.fragments.map(fragment => fragment.render()).join('</a:p><a:p>')}
                 ${'' /* NOTE: Added 20180101 to address PPT-2007 issues */}

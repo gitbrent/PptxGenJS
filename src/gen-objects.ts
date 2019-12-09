@@ -46,6 +46,7 @@ import { correctShadowOptions } from './gen-xml'
 
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
+import PlaceholderTextElement from './elements/placeholder-text'
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter: number = 0
@@ -76,12 +77,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 				tgt.data.push(new TextElement(object[key].text, object[key].options, registerLink))
 			} else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
-				object[key].options.placeholder = object[key].options.name
-				delete object[key].options.name // remap name for earier handling internally
-				object[key].options.placeholderType = object[key].options.type
-				delete object[key].options.type // remap name for earier handling internally
-				object[key].options.placeholderIdx = 100 + idx
-				addPlaceholderDefinition(tgt, object[key].text, object[key].options)
+				tgt.data.push(new PlaceholderTextElement(object[key].text, object[key].options, 100 + idx, registerLink))
 			}
 		})
 	}
@@ -877,17 +873,17 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 	// Add all placeholders on this Slide that dont already exist
 	;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
-		if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
+		if (slideLayoutObj instanceof PlaceholderTextElement) {
 			// A: Search for this placeholder on Slide before we add
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (
 				slide.data.filter(slideObj => {
 					const placeholder = slideObj.placeholder || (slideObj.options && slideObj.options.placeholder)
-					return placeholder === slideLayoutObj.options.placeholder
+					return placeholder === slideLayoutObj.name
 				}).length === 0
 			) {
-				slide.data.push(new TextElement('', { placeholder: slideLayoutObj.options.placeholder }, () => null))
+				slide.data.push(new TextElement('', { placeholder: slideLayoutObj.name }, () => null))
 			}
 		}
 	})
