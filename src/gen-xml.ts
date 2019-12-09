@@ -281,7 +281,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				*/
 
 				// STEP 4: Build table rows/cells
-				Object.entries(objTableGrid).forEach(([rIdx,rowObj]) => {
+				Object.entries(objTableGrid).forEach(([rIdx, rowObj]) => {
 					// A: Table Height provided without rowH? Then distribute rows
 					let intRowH = 0 // IMPORTANT: Default must be zero for auto-sizing to work
 					if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx]) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]))
@@ -295,8 +295,8 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strXml += '<a:tr h="' + intRowH + '">'
 
 					// C: Loop over each CELL
-					Object.entries(rowObj).forEach(([_cIdx,cellObj]) => {
-						let cell:ITableCell = cellObj
+					Object.entries(rowObj).forEach(([_cIdx, cellObj]) => {
+						let cell: ITableCell = cellObj
 
 						// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
 						if (cell.hmerge) return
@@ -371,7 +371,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 							strXml +=
 								'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
 						} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
-							[{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(obj => {
+							;[{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(obj => {
 								if (cellOpts.border[obj.idx]) {
 									let strC =
 										'<a:solidFill><a:srgbClr val="' +
@@ -1795,39 +1795,42 @@ export function makeXmlViewProps(): string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {IShadowOptions} IShadowOptions - shadow options
+ * @param {ShadowOptions} IShadowOptions - shadow options
  */
-export function correctShadowOptions(IShadowOptions: IShadowOptions) {
-	if (!IShadowOptions || IShadowOptions === null) return
+export function correctShadowOptions(ShadowOptions: IShadowOptions) {
+	if (!ShadowOptions || typeof ShadowOptions !== 'object') {
+		//console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
+		return
+	}
 
 	// OPT: `type`
-	if (IShadowOptions.type !== 'outer' && IShadowOptions.type !== 'inner' && IShadowOptions.type !== 'none') {
+	if (ShadowOptions.type !== 'outer' && ShadowOptions.type !== 'inner' && ShadowOptions.type !== 'none') {
 		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
-		IShadowOptions.type = 'outer'
+		ShadowOptions.type = 'outer'
 	}
 
 	// OPT: `angle`
-	if (IShadowOptions.angle) {
+	if (ShadowOptions.angle) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(IShadowOptions.angle)) || IShadowOptions.angle < 0 || IShadowOptions.angle > 359) {
+		if (isNaN(Number(ShadowOptions.angle)) || ShadowOptions.angle < 0 || ShadowOptions.angle > 359) {
 			console.warn('Warning: shadow.angle can only be 0-359')
-			IShadowOptions.angle = 270
+			ShadowOptions.angle = 270
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		IShadowOptions.angle = Math.round(Number(IShadowOptions.angle))
+		ShadowOptions.angle = Math.round(Number(ShadowOptions.angle))
 	}
 
 	// OPT: `opacity`
-	if (IShadowOptions.opacity) {
+	if (ShadowOptions.opacity) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(IShadowOptions.opacity)) || IShadowOptions.opacity < 0 || IShadowOptions.opacity > 1) {
+		if (isNaN(Number(ShadowOptions.opacity)) || ShadowOptions.opacity < 0 || ShadowOptions.opacity > 1) {
 			console.warn('Warning: shadow.opacity can only be 0-1')
-			IShadowOptions.opacity = 0.75
+			ShadowOptions.opacity = 0.75
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		IShadowOptions.opacity = Number(IShadowOptions.opacity)
+		ShadowOptions.opacity = Number(ShadowOptions.opacity)
 	}
 }
 
