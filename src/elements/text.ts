@@ -104,7 +104,11 @@ export default class TextElement {
 
 	constructor(text, opts, registerLink) {
 		this.fragments = buildFragments(text, opts.breakLine, registerLink)
-		this.shape = new Shape(opts.shape)
+		if (!opts.placeholder || opts.shape) {
+			this.shape = new Shape(opts.shape)
+		} else {
+			this.shape = null
+		}
 
 		this.fill = opts.fill
 		this.lang = opts.lang
@@ -173,7 +177,7 @@ export default class TextElement {
 		else if (valignInput.startsWith('m')) this.anchor = TEXT_VALIGN.ctr
 		else if (valignInput.startsWith('t')) this.anchor = TEXT_VALIGN.t
 
-		this.wrap = opts.wrap || 'square'
+		this.wrap = opts.wrap || (opts.placeholder && 'square')
 
 		if (opts.shadow) {
 			this.shadow = new ShadowElement(opts.shadow)
@@ -215,7 +219,7 @@ export default class TextElement {
     <p:sp>
         <p:nvSpPr>
             <p:cNvPr id="${idx + 2}" name="Object ${idx + 1}"/>
-            <p:cNvSpPr${this.isTextBox ? ' txBox="1"}' : ''}/>
+            <p:cNvSpPr${this.isTextBox ? ' txBox="1"' : ''}/>
 		    <p:nvPr>
                 ${renderPlaceholder(this.placeholder)}
 		    </p:nvPr>
@@ -223,14 +227,21 @@ export default class TextElement {
 
         <p:spPr>
             ${this.position.render(presLayout)}
-            ${this.shape.render(this.rectRadius, this.position, presLayout)}
-            ${this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>'}
+            ${this.shape ? this.shape.render(this.rectRadius, this.position, presLayout) : ''}
+            ${
+				this.fill
+					? genXmlColorSelection(this.fill)
+					: // We only default to no fill if we have not specified a placeholder
+					this.placeholder
+					? ''
+					: '<a:noFill/>'
+			}
             ${this.line ? this.line.render() : ''}
             ${this.shadow ? this.shadow.render() : ''}
 		</p:spPr>
         <p:txBody>
             <a:bodyPr ${[
-				`wrap="${this.wrap}"`,
+				this.wrap ? `wrap="${this.wrap}"` : '',
 				this.lIns || this.lIns === 0 ? `lIns="${this.lIns}"` : '',
 				this.tIns || this.tIns === 0 ? `tIns="${this.tIns}"` : '',
 				this.rIns || this.rIns === 0 ? `rIns="${this.rIns}"` : '',
@@ -244,10 +255,7 @@ export default class TextElement {
             </a:bodyPr>
 
             <a:lstStyle>
-                ${this.paragraphProperties.render(
-                    'a:lvl1pPr',
-                    this.runProperties.render('a:defRPr')
-                )}
+                ${this.paragraphProperties.render('a:lvl1pPr', this.runProperties.render('a:defRPr'))}
             </a:lstStyle>
             <a:p>
                 ${this.fragments.map(fragment => fragment.render()).join('</a:p><a:p>')}
