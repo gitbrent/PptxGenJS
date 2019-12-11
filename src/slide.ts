@@ -24,8 +24,10 @@ import {
 } from './core-interfaces'
 
 import * as genObj from './gen-objects'
+import { createImageConfig } from './gen-utils'
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
+import ImageElement from './elements/image'
 
 export default class Slide {
 	private _bkgd: string
@@ -64,7 +66,7 @@ export default class Slide {
 	}
 
 	private _registerLink(data, target) {
-		const relId = this.rels.length + target.relsChart.length + target.relsMedia.length + 1
+		const relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1
 		this.rels.push({
 			type: SLIDE_OBJECT_TYPES.hyperlink,
 			data,
@@ -72,6 +74,22 @@ export default class Slide {
 			Target: target,
 		})
 
+		return relId
+	}
+
+	private _registerImage({ path, data = '' }, extension, fromSvgSize) {
+		// (rId/rels count spans all slides! Count all images to get next rId)
+		const relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1
+		this.relsMedia.push(
+			createImageConfig({
+				relId,
+                Target: `../media/image-${this.number}-${this.relsMedia.length + 1}.${extension}`,
+				path,
+				data,
+				extension,
+				fromSvgSize,
+			})
+		)
 		return relId
 	}
 
@@ -139,7 +157,15 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	addImage(options: IImageOpts): Slide {
-		genObj.addImageDefinition(this, options)
+		if (!options.path && !options.data) {
+			console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!")
+			return null
+		} else if (options.data && options.data.toLowerCase().indexOf('base64,') === -1) {
+			console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')")
+			return null
+		}
+
+		this.data.push(new ImageElement(options, this._registerImage.bind(this), this._registerLink.bind(this)))
 		return this
 	}
 

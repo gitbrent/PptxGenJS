@@ -189,3 +189,26 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 
 	return outText
 }
+
+export const createImageConfig = ({ relId, data = '', path = '', extension, Target, fromSvgSize }) => {
+	const mediaConfig = {
+		rId: relId,
+		type: `image/${extension === 'svg' ? 'svg+xml' : extension}`,
+
+		path: path,
+		data: data,
+
+		extn: extension,
+		Target,
+
+		isSvgPng: false,
+		svgSize: null,
+	}
+
+	if (fromSvgSize) {
+		mediaConfig.isSvgPng = true
+		mediaConfig.svgSize = fromSvgSize
+	}
+
+	return mediaConfig
+}

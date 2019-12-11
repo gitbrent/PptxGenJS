@@ -47,6 +47,7 @@ import { correctShadowOptions } from './gen-xml'
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
+import ImageElement from './elements/image'
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter: number = 0
@@ -56,7 +57,7 @@ let _chartCounter: number = 0
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout, registerLink) {
+export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout, registerImage, registerLink) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -68,8 +69,9 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 			let key = Object.keys(object)[0]
 			let tgt = target as ISlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
-			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'line') {
+			else if (MASTER_OBJECTS[key] && key === 'image') {
+				tgt.data.push(new ImageElement(object[key], registerImage, registerLink))
+			} else if (MASTER_OBJECTS[key] && key === 'line') {
 				tgt.data.push(new ShapeElement(BASE_SHAPES.LINE, object[key]))
 			} else if (MASTER_OBJECTS[key] && key === 'rect') {
 				tgt.data.push(new ShapeElement(BASE_SHAPES.RECTANGLE, object[key]))

@@ -61,6 +61,7 @@ import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
+import { createImageConfig } from './gen-utils'
 import * as JSZip from 'jszip'
 
 export default class PptxGenJS {
@@ -581,7 +582,7 @@ export default class PptxGenJS {
 		}
 
 		const registerLink = (data, target) => {
-			const relId = newLayout.rels.length + target.relsChart.length + target.relsMedia.length + 1
+			const relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1
 			newLayout.rels.push({
 				type: SLIDE_OBJECT_TYPES.hyperlink,
 				data,
@@ -592,8 +593,23 @@ export default class PptxGenJS {
 			return relId
 		}
 
+		const registerImage = ({ path, data = '' }, extension, fromSvgSize) => {
+			const relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1
+			newLayout.relsMedia.push(
+				createImageConfig({
+					relId,
+					path,
+					Target: `../media/image-${newLayout.number}-${newLayout.relsMedia.length + 1}.${extension}`,
+					data,
+					extension,
+					fromSvgSize,
+				})
+			)
+			return relId
+		}
+
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(slideMasterOpts, newLayout, registerLink)
+		genObj.createSlideObject(slideMasterOpts, newLayout, registerImage, registerLink)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
