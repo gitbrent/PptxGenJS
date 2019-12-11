@@ -37,39 +37,6 @@ import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
 import ImageElement from './elements/image'
 
-let imageSizingXml = {
-	cover: function(imgSize, boxDim) {
-		let imgRatio = imgSize.h / imgSize.w,
-			boxRatio = boxDim.h / boxDim.w,
-			isBoxBased = boxRatio > imgRatio,
-			width = isBoxBased ? boxDim.h / imgRatio : boxDim.w,
-			height = isBoxBased ? boxDim.h : boxDim.w * imgRatio,
-			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
-			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
-		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
-	},
-	contain: function(imgSize, boxDim) {
-		let imgRatio = imgSize.h / imgSize.w,
-			boxRatio = boxDim.h / boxDim.w,
-			widthBased = boxRatio > imgRatio,
-			width = widthBased ? boxDim.w : boxDim.h / imgRatio,
-			height = widthBased ? boxDim.w * imgRatio : boxDim.h,
-			hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)),
-			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
-		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
-	},
-	crop: function(imageSize, boxDim) {
-		let l = boxDim.x,
-			r = imageSize.w - (boxDim.x + boxDim.w),
-			t = boxDim.y,
-			b = imageSize.h - (boxDim.y + boxDim.h),
-			lPerc = Math.round(1e5 * (l / imageSize.w)),
-			rPerc = Math.round(1e5 * (r / imageSize.w)),
-			tPerc = Math.round(1e5 * (t / imageSize.h)),
-			bPerc = Math.round(1e5 * (b / imageSize.h))
-		return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '"/><a:stretch/>'
-	},
-}
 
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
@@ -116,7 +83,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			cy = 0
 		let placeholderObj: ISlideObject
 		let locationAttr = ''
-		let shapeType = null
 
 		if (slideItemObj instanceof TextElement || slideItemObj instanceof ImageElement) {
 			strSlideXml += slideItemObj.render(idx, slide.presLayout, placeholder => {
@@ -156,8 +122,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			if (placeholderObj.options.h || placeholderObj.options.h === 0) cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout)
 		}
 		//
-		if (slideItemObj.shape) shapeType = getShapeInfo(slideItemObj.shape)
-		//
+
 		if (slideItemObj.options.flipH) locationAttr += ' flipH="1"'
 		if (slideItemObj.options.flipV) locationAttr += ' flipV="1"'
 		if (slideItemObj.options.rotate) locationAttr += ' rot="' + convertRotationDegrees(slideItemObj.options.rotate) + '"'
@@ -449,171 +414,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 
 				// LAST: Increment counter
 				intTableNum++
-				break
-
-			case SLIDE_OBJECT_TYPES.text:
-			case SLIDE_OBJECT_TYPES.placeholder:
-				// Lines can have zero cy, but text should not
-				if (!slideItemObj.options.line && cy === 0) cy = EMU * 0.3
-
-				// Margin/Padding/Inset for textboxes
-				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-					slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin[0] * ONEPT || 0
-					slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin[1] * ONEPT || 0
-					slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin[2] * ONEPT || 0
-					slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin[3] * ONEPT || 0
-				} else if (typeof slideItemObj.options.margin === 'number') {
-					slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin * ONEPT
-					slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin * ONEPT
-					slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin * ONEPT
-					slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin * ONEPT
-				}
-
-				if (shapeType === null) shapeType = getShapeInfo(null)
-
-				// A: Start SHAPE =======================================================
-				strSlideXml += '<p:sp>'
-
-				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += '<p:nvSpPr><p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '"/>'
-				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
-				strSlideXml += '<p:nvPr>'
-				strSlideXml += slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)
-				strSlideXml += '</p:nvPr>'
-				strSlideXml += '</p:nvSpPr><p:spPr>'
-				strSlideXml += '<a:xfrm' + locationAttr + '>'
-				strSlideXml += '<a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>'
-				strSlideXml +=
-					'<a:prstGeom prst="' +
-					shapeType.name +
-					'"><a:avLst>' +
-					(slideItemObj.options.rectRadius
-						? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
-						: '') +
-					'</a:avLst></a:prstGeom>'
-
-				// Option: FILL
-				strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>'
-
-				// shape Type: LINE: line color
-				if (slideItemObj.options.line) {
-					strSlideXml += '<a:ln' + (slideItemObj.options.lineSize ? ' w="' + slideItemObj.options.lineSize * ONEPT + '"' : '') + '>'
-					strSlideXml += genXmlColorSelection(slideItemObj.options.line)
-					if (slideItemObj.options.lineDash) strSlideXml += '<a:prstDash val="' + slideItemObj.options.lineDash + '"/>'
-					if (slideItemObj.options.lineHead) strSlideXml += '<a:headEnd type="' + slideItemObj.options.lineHead + '"/>'
-					if (slideItemObj.options.lineTail) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.lineTail + '"/>'
-					strSlideXml += '</a:ln>'
-				}
-
-				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
-				if (slideItemObj.options.shadow) {
-					slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer'
-					slideItemObj.options.shadow.blur = (slideItemObj.options.shadow.blur || 8) * ONEPT
-					slideItemObj.options.shadow.offset = (slideItemObj.options.shadow.offset || 4) * ONEPT
-					slideItemObj.options.shadow.angle = (slideItemObj.options.shadow.angle || 270) * 60000
-					slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || '000000'
-					slideItemObj.options.shadow.opacity = (slideItemObj.options.shadow.opacity || 0.75) * 100000
-
-					strSlideXml += '<a:effectLst>'
-					strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw sx="100000" sy="100000" kx="0" ky="0" '
-					strSlideXml += ' algn="bl" rotWithShape="0" blurRad="' + slideItemObj.options.shadow.blur + '" '
-					strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">'
-					strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">'
-					strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>'
-					strSlideXml += '</a:outerShdw>'
-					strSlideXml += '</a:effectLst>'
-				}
-
-				/* TODO: FUTURE: Text wrapping (copied from MS-PPTX export)
-					// Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
-					if ( slideItemObj.options.textWrap ) {
-						strSlideXml += '<a:extLst>'
-									+ '<a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
-									+ '<ma14:wrappingTextBoxFlag xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main" val="1"/>'
-									+ '</a:ext>'
-									+ '</a:extLst>';
-					}
-					*/
-
-				// B: Close shape Properties
-				strSlideXml += '</p:spPr>'
-
-				// C: Add formatted text (text body "bodyPr")
-				strSlideXml += genXmlTextBody(slideItemObj)
-
-				// LAST: Close SHAPE =======================================================
-				strSlideXml += '</p:sp>'
-				break
-
-			case SLIDE_OBJECT_TYPES.image:
-				let sizing = slideItemObj.options.sizing,
-					rounding = slideItemObj.options.rounding,
-					width = cx,
-					height = cy
-
-				strSlideXml += '<p:pic>'
-				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">'
-				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink.rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'"/>'
-				if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink.rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'" action="ppaction://hlinksldjump"/>'
-				strSlideXml += '    </p:cNvPr>'
-				strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
-				strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
-				strSlideXml += '  </p:nvPicPr>'
-				strSlideXml += '<p:blipFill>'
-				// NOTE: This works for both cases: either `path` or `data` contains the SVG
-				if (
-					(slide['relsMedia'] || []).filter(rel => {
-						return rel.rId === slideItemObj.imageRid
-					})[0] &&
-					(slide['relsMedia'] || []).filter(rel => {
-						return rel.rId === slideItemObj.imageRid
-					})[0]['extn'] === 'svg'
-				) {
-					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
-					strSlideXml += ' <a:extLst>'
-					strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">'
-					strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>'
-					strSlideXml += '  </a:ext>'
-					strSlideXml += ' </a:extLst>'
-					strSlideXml += '</a:blip>'
-				} else {
-					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
-				}
-				if (sizing && sizing.type) {
-					let boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide.presLayout) : cx,
-						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide.presLayout) : cy,
-						boxX = getSmartParseNumber(sizing.x || 0, 'X', slide.presLayout),
-						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide.presLayout)
-
-					strSlideXml += imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY })
-					width = boxW
-					height = boxH
-				} else {
-					strSlideXml += '  <a:stretch><a:fillRect/></a:stretch>'
-				}
-				strSlideXml += '</p:blipFill>'
-				strSlideXml += '<p:spPr>'
-				strSlideXml += ' <a:xfrm' + locationAttr + '>'
-				strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>'
-				strSlideXml += ' </a:xfrm>'
-				strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>'
-				strSlideXml += '</p:spPr>'
-				strSlideXml += '</p:pic>'
 				break
 
 			case SLIDE_OBJECT_TYPES.media:
