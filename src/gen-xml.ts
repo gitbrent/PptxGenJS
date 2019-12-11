@@ -37,7 +37,6 @@ import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
 import ImageElement from './elements/image'
 
-
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
  * @param {ISlide|ISlideLayout} slideObject - slide object created within createSlideObject

@@ -177,8 +177,8 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	// STEP 2: Set default options/decode user options
 	// A: Core
 	options.type = type
-	options.x = typeof options.x !== 'undefined' && options.x != null && !isNaN(Number(options.x)) ? options.x : 1
-	options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1
+	options.x = typeof options.x !== 'undefined' && options.x != null ? options.x : 1
+	options.y = typeof options.y !== 'undefined' && options.y != null ? options.y : 1
 	options.w = options.w || '50%'
 	options.h = options.h || '50%'
 

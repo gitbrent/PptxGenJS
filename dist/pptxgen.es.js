@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-12-09T17:53:14.358Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-11T17:15:04.404Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -1703,6 +1703,24 @@ function genXmlColorSelection(shapeFill, backColor) {
     }
     return outText;
 }
+var createImageConfig = function (_a) {
+    var relId = _a.relId, _b = _a.data, data = _b === void 0 ? '' : _b, _c = _a.path, path = _c === void 0 ? '' : _c, extension = _a.extension, Target = _a.Target, fromSvgSize = _a.fromSvgSize;
+    var mediaConfig = {
+        rId: relId,
+        type: "image/" + (extension === 'svg' ? 'svg+xml' : extension),
+        path: path,
+        data: data,
+        extn: extension,
+        Target: Target,
+        isSvgPng: false,
+        svgSize: null,
+    };
+    if (fromSvgSize) {
+        mediaConfig.isSvgPng = true;
+        mediaConfig.svgSize = fromSvgSize;
+    }
+    return mediaConfig;
+};
 //# sourceMappingURL=gen-utils.js.map
 
 /**
@@ -2621,7 +2639,12 @@ var TextElement$1 = /** @class */ (function () {
     function TextElement$1(text, opts, registerLink) {
         this.type = SLIDE_OBJECT_TYPES.newtext;
         this.fragments = buildFragments(text, opts.breakLine, registerLink);
-        this.shape = new ShapeElement(opts.shape);
+        if (!opts.placeholder || opts.shape) {
+            this.shape = new ShapeElement(opts.shape);
+        }
+        else {
+            this.shape = null;
+        }
         this.fill = opts.fill;
         this.lang = opts.lang;
         this.placeholder = opts.placeholder;
@@ -2684,7 +2707,7 @@ var TextElement$1 = /** @class */ (function () {
             this.anchor = TEXT_VALIGN.ctr;
         else if (valignInput.startsWith('t'))
             this.anchor = TEXT_VALIGN.t;
-        this.wrap = opts.wrap || 'square';
+        this.wrap = opts.wrap || (opts.placeholder && 'square');
         if (opts.shadow) {
             this.shadow = new ShadowElement(opts.shadow);
         }
@@ -2718,8 +2741,13 @@ var TextElement$1 = /** @class */ (function () {
         // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
         // MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
         // NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
-        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr" + (this.isTextBox ? ' txBox="1"}' : '') + "/>\n\t\t    <p:nvPr>\n                " + renderPlaceholder(this.placeholder) + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + this.shape.render(this.rectRadius, this.position, presLayout) + "\n            " + (this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n        <p:txBody>\n            <a:bodyPr " + [
-            "wrap=\"" + this.wrap + "\"",
+        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr" + (this.isTextBox ? ' txBox="1"' : '') + "/>\n\t\t    <p:nvPr>\n                " + renderPlaceholder(this.placeholder) + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + (this.shape ? this.shape.render(this.rectRadius, this.position, presLayout) : '') + "\n            " + (this.fill
+            ? genXmlColorSelection(this.fill)
+            : // We only default to no fill if we have not specified a placeholder
+                this.placeholder
+                    ? ''
+                    : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n        <p:txBody>\n            <a:bodyPr " + [
+            this.wrap ? "wrap=\"" + this.wrap + "\"" : '',
             this.lIns || this.lIns === 0 ? "lIns=\"" + this.lIns + "\"" : '',
             this.tIns || this.tIns === 0 ? "tIns=\"" + this.tIns + "\"" : '',
             this.rIns || this.rIns === 0 ? "rIns=\"" + this.rIns + "\"" : '',
@@ -2819,24 +2847,177 @@ var PlaceholderText = /** @class */ (function () {
     };
     return PlaceholderText;
 }());
+//# sourceMappingURL=placeholder-text.js.map
+
+var unitConverter = function (presLayout) { return ({
+    x: function (x) { return getSmartParseNumber(x, 'X', presLayout); },
+    y: function (y) { return getSmartParseNumber(y, 'Y', presLayout); },
+}); };
+var findExtension = function (data, path) {
+    if (data === void 0) { data = ''; }
+    if (path === void 0) { path = ''; }
+    // STEP 1: Set extension
+    // NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
+    var strImgExtn = path
+        .substring(path.lastIndexOf('/') + 1)
+        .split('?')[0]
+        .split('.')
+        .pop()
+        .split('#')[0] || 'png';
+    // However, pre-encoded images can be whatever mime-type they want (and good for them!)
+    if (data && /image\/(\w+)\;/.exec(data) && /image\/(\w+)\;/.exec(data).length > 0) {
+        strImgExtn = /image\/(\w+)\;/.exec(data)[1];
+    }
+    else if (data && data.toLowerCase().indexOf('image/svg+xml') > -1) {
+        strImgExtn = 'svg';
+    }
+    return strImgExtn;
+};
+var Sizing = /** @class */ (function () {
+    function Sizing(options, source) {
+        this.sizingType = options.type;
+        this.x = options.x;
+        this.y = options.y;
+        this.w = options.w;
+        this.h = options.h;
+        this.sourceW = source.w;
+        this.sourceH = source.h;
+    }
+    Object.defineProperty(Sizing.prototype, "boxRatio", {
+        get: function () {
+            return this.h / this.w;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Sizing.prototype, "imgRatio", {
+        get: function () {
+            return this.sourceH / this.sourceW;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Sizing.prototype.renderCover = function (unit) {
+        var h = unit.y(this.h);
+        var w = unit.x(this.w);
+        var imgRatio = unit.y(this.sourceH) / unit.x(this.sourceW);
+        var boxRatio = h / w;
+        var isBoxBased = boxRatio > imgRatio;
+        var width = isBoxBased ? h / this.imgRatio : w;
+        var height = isBoxBased ? h : w * imgRatio;
+        var hzPerc = Math.round(1e5 * 0.5 * (1 - w / width));
+        var vzPerc = Math.round(1e5 * 0.5 * (1 - h / height));
+        return "<a:srcRect l=\"" + hzPerc + "\" r=\"" + hzPerc + "\" t=\"" + vzPerc + "\" b=\"" + vzPerc + "\"/><a:stretch/>";
+    };
+    Sizing.prototype.renderContain = function (unit) {
+        var h = unit.y(this.h);
+        var w = unit.x(this.w);
+        var imgRatio = unit.y(this.sourceH) / unit.x(this.sourceW);
+        var boxRatio = h / w;
+        var widthBased = boxRatio > imgRatio;
+        var width = widthBased ? w : h / imgRatio;
+        var height = widthBased ? w * imgRatio : h;
+        var hzPerc = Math.round(1e5 * 0.5 * (1 - w / width));
+        var vzPerc = Math.round(1e5 * 0.5 * (1 - h / height));
+        return "<a:srcRect l=\"" + hzPerc + "\" r=\"" + hzPerc + "\" t=\"" + vzPerc + "\" b=\"" + vzPerc + "\"/><a:stretch/>";
+    };
+    Sizing.prototype.renderCrop = function (unit) {
+        var imageW = unit.x(this.sourceW);
+        var imageH = unit.y(this.sourceH);
+        var l = unit.x(this.x);
+        var r = imageW - (l + unit.x(this.w));
+        var t = unit.y(this.y);
+        var b = imageH - (t + unit.y(this.h));
+        var lPerc = Math.round(1e5 * (l / imageW));
+        var rPerc = Math.round(1e5 * (r / imageW));
+        var tPerc = Math.round(1e5 * (t / imageH));
+        var bPerc = Math.round(1e5 * (b / imageH));
+        return "<a:srcRect l=\"" + lPerc + "\" r=\"" + rPerc + "\" t=\"" + tPerc + "\" b=\"" + bPerc + "\"/><a:stretch/>";
+    };
+    Sizing.prototype.render = function (presLayout) {
+        var unitConv = unitConverter(presLayout);
+        if (this.sizingType === 'cover') {
+            return this.renderCover(unitConv);
+        }
+        if (this.sizingType === 'contain') {
+            return this.renderContain(unitConv);
+        }
+        if (this.sizingType === 'crop') {
+            return this.renderCrop(unitConv);
+        }
+        return '';
+    };
+    return Sizing;
+}());
+var ImageElement = /** @class */ (function () {
+    function ImageElement(options, registerImage, registerLink) {
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        this.image = options.image;
+        this.rounding = options.rounding;
+        this.placeholder = options.placeholder;
+        this.sourceH = options.h;
+        this.sourceW = options.w;
+        this.position = new Position({
+            x: options.x,
+            y: options.y,
+            h: (options.sizing && options.sizing.h) || options.h,
+            w: (options.sizing && options.sizing.w) || options.w,
+            flipV: options.flipV,
+            flipH: options.flipH,
+            rotate: options.rotate,
+        });
+        if (options.sizing) {
+            this.sizing = new Sizing({
+                type: options.sizing.type || 'cover',
+                x: options.sizing.x || options.x,
+                y: options.sizing.y || options.y,
+                w: options.sizing.w || options.w,
+                h: options.sizing.h || options.h,
+            }, {
+                w: options.w,
+                h: options.h,
+            });
+        }
+        var extension = findExtension(options.data, options.path);
+        this.image = options.path || 'preencoded.png';
+        // STEP 4: Add this image to this Slide Rels
+        if (extension === 'svg') {
+            // SVG files consume *TWO* rId's: (a png version and the svg image)
+            this.imgId = registerImage({
+                data: options.data,
+                // not sure why we add png to data here
+                path: options.path || options.data + "png",
+            }, 'png', { w: options.w, h: options.h });
+            this.svgImgId = registerImage({
+                data: options.data,
+                path: options.path || options.data,
+            }, 'svg');
+            this.isSvg = true;
+        }
+        else {
+            this.imgId = registerImage({
+                data: options.data,
+                path: options.path || options.data + "." + extension,
+            }, extension);
+        }
+        if (options.hyperlink) {
+            this.hyperlink = new HyperLink(options.hyperlink, registerLink);
+        }
+    }
+    ImageElement.prototype.render = function (idx, presLayout, renderPlaceholder) {
+        return "\n    <p:pic>\n\t    <p:nvPicPr>\n\t        <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(this.image) + "\">\n                " + (this.hyperlink ? this.hyperlink.render() : '') + "\n\t\t\t</p:cNvPr>\n                <p:cNvPicPr>\n                <a:picLocks noChangeAspect=\"1\"/>\n            </p:cNvPicPr>\n            <p:nvPr>" + renderPlaceholder(this.placeholder) + "</p:nvPr>\n\t\t</p:nvPicPr>\n        <p:blipFill>\n        " + (
+        /* NOTE: This works for both cases: either `path` or `data` contains the SVG */
+        this.isSvg
+            ? "\n\t\t\t<a:blip r:embed=\"rId" + this.imgId + "\">\n\t\t\t    <a:extLst>\n\t\t\t        <a:ext uri=\"{96DAC541-7B7A-43D3-8B79-37D633B846F1}\">\n                        <asvg:svgBlip \n                            xmlns:asvg=\"http://schemas.microsoft.com/office/drawing/2016/SVG/main\" \n                            r:embed=\"rId" + this.svgImgId + "\"/>\n\t\t\t\t    </a:ext>\n\t\t\t\t</a:extLst>\n            </a:blip>"
+            : "<a:blip r:embed=\"rId" + this.imgId + "\"/>") + "\n        " + (this.sizing ? this.sizing.render(presLayout) : '<a:stretch><a:fillRect/></a:stretch>') + "\n\t\t</p:blipFill>\n\t\t<p:spPr>\n\t\t    " + this.position.render(presLayout) + "\n\t\t    <a:prstGeom prst=\"" + (this.rounding ? 'ellipse' : 'rect') + "\"><a:avLst/></a:prstGeom>\n\t\t</p:spPr>\n\t</p:pic>";
+    };
+    return ImageElement;
+}());
+//# sourceMappingURL=image.js.map
 
 /**
  * PptxGenJS: XML Generation
  */
-var imageSizingXml = {
-    cover: function (imgSize, boxDim) {
-        var imgRatio = imgSize.h / imgSize.w, boxRatio = boxDim.h / boxDim.w, isBoxBased = boxRatio > imgRatio, width = isBoxBased ? boxDim.h / imgRatio : boxDim.w, height = isBoxBased ? boxDim.h : boxDim.w * imgRatio, hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)), vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
-        return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>';
-    },
-    contain: function (imgSize, boxDim) {
-        var imgRatio = imgSize.h / imgSize.w, boxRatio = boxDim.h / boxDim.w, widthBased = boxRatio > imgRatio, width = widthBased ? boxDim.w : boxDim.h / imgRatio, height = widthBased ? boxDim.w * imgRatio : boxDim.h, hzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.w / width)), vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height));
-        return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>';
-    },
-    crop: function (imageSize, boxDim) {
-        var l = boxDim.x, r = imageSize.w - (boxDim.x + boxDim.w), t = boxDim.y, b = imageSize.h - (boxDim.y + boxDim.h), lPerc = Math.round(1e5 * (l / imageSize.w)), rPerc = Math.round(1e5 * (r / imageSize.w)), tPerc = Math.round(1e5 * (t / imageSize.h)), bPerc = Math.round(1e5 * (b / imageSize.h));
-        return '<a:srcRect l="' + lPerc + '" r="' + rPerc + '" t="' + tPerc + '" b="' + bPerc + '"/><a:stretch/>';
-    },
-};
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
  * @param {ISlide|ISlideLayout} slideObject - slide object created within createSlideObject
@@ -2876,8 +3057,7 @@ function slideObjectToXml(slide) {
         var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide.presLayout), cy = 0;
         var placeholderObj;
         var locationAttr = '';
-        var shapeType = null;
-        if (slideItemObj instanceof TextElement$1) {
+        if (slideItemObj instanceof TextElement$1 || slideItemObj instanceof ImageElement) {
             strSlideXml += slideItemObj.render(idx, slide.presLayout, function (placeholder) {
                 if (!placeholder)
                     return '';
@@ -2890,11 +3070,7 @@ function slideObjectToXml(slide) {
             });
             return;
         }
-        if (slideItemObj instanceof SimpleShapeElement) {
-            strSlideXml += slideItemObj.render(idx, slide.presLayout);
-            return;
-        }
-        if (slideItemObj instanceof PlaceholderText) {
+        if (slideItemObj instanceof SimpleShapeElement || slideItemObj instanceof PlaceholderText) {
             strSlideXml += slideItemObj.render(idx, slide.presLayout);
             return;
         }
@@ -2924,9 +3100,6 @@ function slideObjectToXml(slide) {
             if (placeholderObj.options.h || placeholderObj.options.h === 0)
                 cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout);
         }
-        //
-        if (slideItemObj.shape)
-            shapeType = getShapeInfo(slideItemObj.shape);
         //
         if (slideItemObj.options.flipH)
             locationAttr += ' flipH="1"';
@@ -3202,155 +3375,6 @@ function slideObjectToXml(slide) {
                 strSlideXml += strXml_1;
                 // LAST: Increment counter
                 intTableNum++;
-                break;
-            case SLIDE_OBJECT_TYPES.text:
-            case SLIDE_OBJECT_TYPES.placeholder:
-                // Lines can have zero cy, but text should not
-                if (!slideItemObj.options.line && cy === 0)
-                    cy = EMU * 0.3;
-                // Margin/Padding/Inset for textboxes
-                if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-                    slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin[0] * ONEPT || 0;
-                    slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin[1] * ONEPT || 0;
-                    slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin[2] * ONEPT || 0;
-                    slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin[3] * ONEPT || 0;
-                }
-                else if (typeof slideItemObj.options.margin === 'number') {
-                    slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin * ONEPT;
-                    slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin * ONEPT;
-                    slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin * ONEPT;
-                    slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin * ONEPT;
-                }
-                if (shapeType === null)
-                    shapeType = getShapeInfo(null);
-                // A: Start SHAPE =======================================================
-                strSlideXml += '<p:sp>';
-                // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-                strSlideXml += '<p:nvSpPr><p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '"/>';
-                strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>');
-                strSlideXml += '<p:nvPr>';
-                strSlideXml += slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj);
-                strSlideXml += '</p:nvPr>';
-                strSlideXml += '</p:nvSpPr><p:spPr>';
-                strSlideXml += '<a:xfrm' + locationAttr + '>';
-                strSlideXml += '<a:off x="' + x + '" y="' + y + '"/>';
-                strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
-                strSlideXml +=
-                    '<a:prstGeom prst="' +
-                        shapeType.name +
-                        '"><a:avLst>' +
-                        (slideItemObj.options.rectRadius
-                            ? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
-                            : '') +
-                        '</a:avLst></a:prstGeom>';
-                // Option: FILL
-                strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>';
-                // shape Type: LINE: line color
-                if (slideItemObj.options.line) {
-                    strSlideXml += '<a:ln' + (slideItemObj.options.lineSize ? ' w="' + slideItemObj.options.lineSize * ONEPT + '"' : '') + '>';
-                    strSlideXml += genXmlColorSelection(slideItemObj.options.line);
-                    if (slideItemObj.options.lineDash)
-                        strSlideXml += '<a:prstDash val="' + slideItemObj.options.lineDash + '"/>';
-                    if (slideItemObj.options.lineHead)
-                        strSlideXml += '<a:headEnd type="' + slideItemObj.options.lineHead + '"/>';
-                    if (slideItemObj.options.lineTail)
-                        strSlideXml += '<a:tailEnd type="' + slideItemObj.options.lineTail + '"/>';
-                    strSlideXml += '</a:ln>';
-                }
-                // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
-                if (slideItemObj.options.shadow) {
-                    slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer';
-                    slideItemObj.options.shadow.blur = (slideItemObj.options.shadow.blur || 8) * ONEPT;
-                    slideItemObj.options.shadow.offset = (slideItemObj.options.shadow.offset || 4) * ONEPT;
-                    slideItemObj.options.shadow.angle = (slideItemObj.options.shadow.angle || 270) * 60000;
-                    slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || '000000';
-                    slideItemObj.options.shadow.opacity = (slideItemObj.options.shadow.opacity || 0.75) * 100000;
-                    strSlideXml += '<a:effectLst>';
-                    strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
-                    strSlideXml += ' algn="bl" rotWithShape="0" blurRad="' + slideItemObj.options.shadow.blur + '" ';
-                    strSlideXml += ' dist="' + slideItemObj.options.shadow.offset + '" dir="' + slideItemObj.options.shadow.angle + '">';
-                    strSlideXml += '<a:srgbClr val="' + slideItemObj.options.shadow.color + '">';
-                    strSlideXml += '<a:alpha val="' + slideItemObj.options.shadow.opacity + '"/></a:srgbClr>';
-                    strSlideXml += '</a:outerShdw>';
-                    strSlideXml += '</a:effectLst>';
-                }
-                /* TODO: FUTURE: Text wrapping (copied from MS-PPTX export)
-                    // Commented out b/c i'm not even sure this works - current code produces text that wraps in shapes and textboxes, so...
-                    if ( slideItemObj.options.textWrap ) {
-                        strSlideXml += '<a:extLst>'
-                                    + '<a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}">'
-                                    + '<ma14:wrappingTextBoxFlag xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main" val="1"/>'
-                                    + '</a:ext>'
-                                    + '</a:extLst>';
-                    }
-                    */
-                // B: Close shape Properties
-                strSlideXml += '</p:spPr>';
-                // C: Add formatted text (text body "bodyPr")
-                strSlideXml += genXmlTextBody(slideItemObj);
-                // LAST: Close SHAPE =======================================================
-                strSlideXml += '</p:sp>';
-                break;
-            case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy;
-                strSlideXml += '<p:pic>';
-                strSlideXml += '  <p:nvPicPr>';
-                strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">';
-                if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
-                    strSlideXml +=
-                        '<a:hlinkClick r:id="rId' +
-                            slideItemObj.hyperlink.rId +
-                            '" tooltip="' +
-                            (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-                            '"/>';
-                if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
-                    strSlideXml +=
-                        '<a:hlinkClick r:id="rId' +
-                            slideItemObj.hyperlink.rId +
-                            '" tooltip="' +
-                            (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-                            '" action="ppaction://hlinksldjump"/>';
-                strSlideXml += '    </p:cNvPr>';
-                strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
-                strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
-                strSlideXml += '  </p:nvPicPr>';
-                strSlideXml += '<p:blipFill>';
-                // NOTE: This works for both cases: either `path` or `data` contains the SVG
-                if ((slide['relsMedia'] || []).filter(function (rel) {
-                    return rel.rId === slideItemObj.imageRid;
-                })[0] &&
-                    (slide['relsMedia'] || []).filter(function (rel) {
-                        return rel.rId === slideItemObj.imageRid;
-                    })[0]['extn'] === 'svg') {
-                    strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">';
-                    strSlideXml += ' <a:extLst>';
-                    strSlideXml += '  <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">';
-                    strSlideXml += '   <asvg:svgBlip xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" r:embed="rId' + slideItemObj.imageRid + '"/>';
-                    strSlideXml += '  </a:ext>';
-                    strSlideXml += ' </a:extLst>';
-                    strSlideXml += '</a:blip>';
-                }
-                else {
-                    strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>';
-                }
-                if (sizing && sizing.type) {
-                    var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide.presLayout) : cx, boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide.presLayout) : cy, boxX = getSmartParseNumber(sizing.x || 0, 'X', slide.presLayout), boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide.presLayout);
-                    strSlideXml += imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY });
-                    width = boxW;
-                    height = boxH;
-                }
-                else {
-                    strSlideXml += '  <a:stretch><a:fillRect/></a:stretch>';
-                }
-                strSlideXml += '</p:blipFill>';
-                strSlideXml += '<p:spPr>';
-                strSlideXml += ' <a:xfrm' + locationAttr + '>';
-                strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>';
-                strSlideXml += '  <a:ext cx="' + width + '" cy="' + height + '"/>';
-                strSlideXml += ' </a:xfrm>';
-                strSlideXml += ' <a:prstGeom prst="' + (rounding ? 'ellipse' : 'rect') + '"><a:avLst/></a:prstGeom>';
-                strSlideXml += '</p:spPr>';
-                strSlideXml += '</p:pic>';
                 break;
             case SLIDE_OBJECT_TYPES.media:
                 if (slideItemObj.mtype === 'online') {
@@ -4437,20 +4461,6 @@ function correctShadowOptions(IShadowOptions) {
         IShadowOptions.opacity = Number(IShadowOptions.opacity);
     }
 }
-function getShapeInfo(shapeName) {
-    if (!shapeName)
-        return PowerPointShapes.RECTANGLE;
-    if (typeof shapeName === 'object' && shapeName.name && shapeName.displayName && shapeName.avLst)
-        return shapeName;
-    if (PowerPointShapes[shapeName])
-        return PowerPointShapes[shapeName];
-    var objShape = Object.keys(PowerPointShapes).filter(function (key) {
-        return PowerPointShapes[key].name === shapeName || PowerPointShapes[key].displayName;
-    })[0];
-    if (typeof objShape !== 'undefined' && objShape !== null)
-        return objShape;
-    return PowerPointShapes.RECTANGLE;
-}
 
 /**
  * PptxGenJS: Slide object generators
@@ -4462,7 +4472,7 @@ var _chartCounter = 0;
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-function createSlideObject(slideDef, target, registerLink) {
+function createSlideObject(slideDef, target, registerImage, registerLink) {
     // STEP 1: Add background
     if (slideDef.bkgd) {
         addBackgroundDefinition(slideDef.bkgd, target);
@@ -4474,8 +4484,9 @@ function createSlideObject(slideDef, target, registerLink) {
             var tgt = target;
             if (MASTER_OBJECTS[key] && key === 'chart')
                 addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts);
-            else if (MASTER_OBJECTS[key] && key === 'image')
-                addImageDefinition(tgt, object[key]);
+            else if (MASTER_OBJECTS[key] && key === 'image') {
+                tgt.data.push(new ImageElement(object[key], registerImage, registerLink));
+            }
             else if (MASTER_OBJECTS[key] && key === 'line') {
                 tgt.data.push(new SimpleShapeElement(BASE_SHAPES.LINE, object[key]));
             }
@@ -4581,8 +4592,8 @@ function addChartDefinition(target, type, data, opt) {
     // STEP 2: Set default options/decode user options
     // A: Core
     options.type = type;
-    options.x = typeof options.x !== 'undefined' && options.x != null && !isNaN(Number(options.x)) ? options.x : 1;
-    options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1;
+    options.x = typeof options.x !== 'undefined' && options.x != null ? options.x : 1;
+    options.y = typeof options.y !== 'undefined' && options.y != null ? options.y : 1;
     options.w = options.w || '50%';
     options.h = options.h || '50%';
     // B: Options: misc
@@ -4705,127 +4716,6 @@ function addChartDefinition(target, type, data, opt) {
     });
     target.data.push(resultObject);
     return resultObject;
-}
-/**
- * Adds an image object to a slide definition.
- * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
- * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
- * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
- */
-function addImageDefinition(target, opt) {
-    var newObject = {
-        type: null,
-        text: null,
-        options: null,
-        image: null,
-        imageRid: null,
-        hyperlink: null,
-    };
-    // FIRST: Set vars for this image (object param replaces positional args in 1.1.0)
-    var intPosX = opt.x || 0;
-    var intPosY = opt.y || 0;
-    var intWidth = opt.w || 0;
-    var intHeight = opt.h || 0;
-    var sizing = opt.sizing || null;
-    var objHyperlink = opt.hyperlink || '';
-    var strImageData = opt.data || '';
-    var strImagePath = opt.path || '';
-    var imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1;
-    // REALITY-CHECK:
-    if (!strImagePath && !strImageData) {
-        console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
-        return null;
-    }
-    else if (strImageData && strImageData.toLowerCase().indexOf('base64,') === -1) {
-        console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
-        return null;
-    }
-    // STEP 1: Set extension
-    // NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
-    var strImgExtn = strImagePath
-        .substring(strImagePath.lastIndexOf('/') + 1)
-        .split('?')[0]
-        .split('.')
-        .pop()
-        .split('#')[0] || 'png';
-    // However, pre-encoded images can be whatever mime-type they want (and good for them!)
-    if (strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0) {
-        strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1];
-    }
-    else if (strImageData && strImageData.toLowerCase().indexOf('image/svg+xml') > -1) {
-        strImgExtn = 'svg';
-    }
-    // STEP 2: Set type/path
-    newObject.type = 'image';
-    newObject.image = strImagePath || 'preencoded.png';
-    // STEP 3: Set image properties & options
-    // FIXME: Measure actual image when no intWidth/intHeight params passed
-    // ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
-    // if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
-    newObject.options = {
-        x: intPosX || 0,
-        y: intPosY || 0,
-        w: intWidth || 1,
-        h: intHeight || 1,
-        rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
-        sizing: sizing,
-        placeholder: opt.placeholder,
-    };
-    // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-    if (strImgExtn === 'svg') {
-        // SVG files consume *TWO* rId's: (a png version and the svg image)
-        // <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
-        // <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
-        target.relsMedia.push({
-            path: strImagePath || strImageData + 'png',
-            type: 'image/png',
-            extn: 'png',
-            data: strImageData || '',
-            rId: imageRelId,
-            Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
-            isSvgPng: true,
-            svgSize: { w: newObject.options.w, h: newObject.options.h },
-        });
-        newObject.imageRid = imageRelId;
-        target.relsMedia.push({
-            path: strImagePath || strImageData,
-            type: 'image/svg+xml',
-            extn: strImgExtn,
-            data: strImageData || '',
-            rId: imageRelId + 1,
-            Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
-        });
-        newObject.imageRid = imageRelId + 1;
-    }
-    else {
-        target.relsMedia.push({
-            path: strImagePath || 'preencoded.' + strImgExtn,
-            type: 'image/' + strImgExtn,
-            extn: strImgExtn,
-            data: strImageData || '',
-            rId: imageRelId,
-            Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
-        });
-        newObject.imageRid = imageRelId;
-    }
-    // STEP 5: Hyperlink support
-    if (typeof objHyperlink === 'object') {
-        if (!objHyperlink.url && !objHyperlink.slide)
-            throw new Error('ERROR: `hyperlink` option requires either: `url` or `slide`');
-        else {
-            imageRelId++;
-            target.rels.push({
-                type: SLIDE_OBJECT_TYPES.hyperlink,
-                data: objHyperlink.slide ? 'slide' : 'dummy',
-                rId: imageRelId,
-                Target: objHyperlink.url || objHyperlink.slide.toString(),
-            });
-            objHyperlink.rId = imageRelId;
-            newObject.hyperlink = objHyperlink;
-        }
-    }
-    // STEP 6: Add object to slide
-    target.data.push(newObject);
 }
 /**
  * Adds a media object to a slide definition.
@@ -5239,13 +5129,27 @@ var Slide = /** @class */ (function () {
         this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null;
     }
     Slide.prototype._registerLink = function (data, target) {
-        var relId = this.rels.length + target.relsChart.length + target.relsMedia.length + 1;
+        var relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1;
         this.rels.push({
             type: SLIDE_OBJECT_TYPES.hyperlink,
             data: data,
             rId: relId,
             Target: target,
         });
+        return relId;
+    };
+    Slide.prototype._registerImage = function (_a, extension, fromSvgSize) {
+        var path = _a.path, _b = _a.data, data = _b === void 0 ? '' : _b;
+        // (rId/rels count spans all slides! Count all images to get next rId)
+        var relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1;
+        this.relsMedia.push(createImageConfig({
+            relId: relId,
+            Target: "../media/image-" + this.number + "-" + (this.relsMedia.length + 1) + "." + extension,
+            path: path,
+            data: data,
+            extension: extension,
+            fromSvgSize: fromSvgSize,
+        }));
         return relId;
     };
     Object.defineProperty(Slide.prototype, "bkgd", {
@@ -5320,7 +5224,15 @@ var Slide = /** @class */ (function () {
      * @return {Slide} this class
      */
     Slide.prototype.addImage = function (options) {
-        addImageDefinition(this, options);
+        if (!options.path && !options.data) {
+            console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
+            return null;
+        }
+        else if (options.data && options.data.toLowerCase().indexOf('base64,') === -1) {
+            console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
+            return null;
+        }
+        this.data.push(new ImageElement(options, this._registerImage.bind(this), this._registerLink.bind(this)));
         return this;
     };
     /**
@@ -7805,7 +7717,7 @@ var PptxGenJS = /** @class */ (function () {
             slideNumberObj: slideMasterOpts.slideNumber || null,
         };
         var registerLink = function (data, target) {
-            var relId = newLayout.rels.length + target.relsChart.length + target.relsMedia.length + 1;
+            var relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1;
             newLayout.rels.push({
                 type: SLIDE_OBJECT_TYPES.hyperlink,
                 data: data,
@@ -7814,8 +7726,21 @@ var PptxGenJS = /** @class */ (function () {
             });
             return relId;
         };
+        var registerImage = function (_a, extension, fromSvgSize) {
+            var path = _a.path, _b = _a.data, data = _b === void 0 ? '' : _b;
+            var relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1;
+            newLayout.relsMedia.push(createImageConfig({
+                relId: relId,
+                path: path,
+                Target: "../media/image-" + newLayout.number + "-" + (newLayout.relsMedia.length + 1) + "." + extension,
+                data: data,
+                extension: extension,
+                fromSvgSize: fromSvgSize,
+            }));
+            return relId;
+        };
         // STEP 1: Create the Slide Master/Layout
-        createSlideObject(slideMasterOpts, newLayout, registerLink);
+        createSlideObject(slideMasterOpts, newLayout, registerImage, registerLink);
         // STEP 2: Add it to layout defs
         this.slideLayouts.push(newLayout);
         // STEP 3: Add slideNumber to master slide (if any)
@@ -7839,6 +7764,5 @@ var PptxGenJS = /** @class */ (function () {
     };
     return PptxGenJS;
 }());
-//# sourceMappingURL=pptxgen.js.map
 
 export default PptxGenJS;
