@@ -140,6 +140,7 @@ export default class ImageElement {
 	image
 	sizing
 	rounding
+	opacity
 
 	isSvg
 	placeholder
@@ -150,6 +151,13 @@ export default class ImageElement {
 		this.image = options.image
 		this.rounding = options.rounding
 		this.placeholder = options.placeholder
+
+		if (options.opacity && options.opacity) {
+			const numberOpacity = parseFloat(options.opacity)
+			if (numberOpacity < 1 && numberOpacity >= 0) {
+				this.opacity = parseFloat(options.opacity)
+			}
+		}
 
 		this.sourceH = options.h
 		this.sourceW = options.w
@@ -244,21 +252,21 @@ export default class ImageElement {
             <p:nvPr>${renderPlaceholder(this.placeholder)}</p:nvPr>
 		</p:nvPicPr>
         <p:blipFill>
-        ${
-			/* NOTE: This works for both cases: either `path` or `data` contains the SVG */
-			this.isSvg
-				? `
 			<a:blip r:embed="rId${this.imgId}">
-			    <a:extLst>
-			        <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">
-                        <asvg:svgBlip 
-                            xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" 
-                            r:embed="rId${this.svgImgId}"/>
-				    </a:ext>
-				</a:extLst>
-            </a:blip>`
-				: `<a:blip r:embed="rId${this.imgId}"/>`
-		}
+            ${
+				/* NOTE: This works for both cases: either `path` or `data` contains the SVG */
+				this.isSvg
+					? `<a:extLst>
+                <a:ext uri="{96DAC541-7B7A-43D3-8B79-37D633B846F1}">
+                    <asvg:svgBlip
+                        xmlns:asvg="http://schemas.microsoft.com/office/drawing/2016/SVG/main" 
+                        r:embed="rId${this.svgImgId}"/>
+                    </a:ext>
+                </a:extLst>`
+					: ''
+			}
+                ${this.opacity ? `<a:alphaModFix amt="${this.opacity * 100000}"/>` : ''}
+            </a:blip>
         ${this.sizing ? this.sizing.render(presLayout) : '<a:stretch><a:fillRect/></a:stretch>'}
 		</p:blipFill>
 		<p:spPr>

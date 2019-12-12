@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-12-11T17:15:04.402Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-12T08:37:04.642Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2957,6 +2957,12 @@ var ImageElement = /** @class */ (function () {
         this.image = options.image;
         this.rounding = options.rounding;
         this.placeholder = options.placeholder;
+        if (options.opacity && options.opacity) {
+            var numberOpacity = parseFloat(options.opacity);
+            if (numberOpacity < 1 && numberOpacity >= 0) {
+                this.opacity = parseFloat(options.opacity);
+            }
+        }
         this.sourceH = options.h;
         this.sourceW = options.w;
         this.position = new Position({
@@ -3007,15 +3013,14 @@ var ImageElement = /** @class */ (function () {
         }
     }
     ImageElement.prototype.render = function (idx, presLayout, renderPlaceholder) {
-        return "\n    <p:pic>\n\t    <p:nvPicPr>\n\t        <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(this.image) + "\">\n                " + (this.hyperlink ? this.hyperlink.render() : '') + "\n\t\t\t</p:cNvPr>\n                <p:cNvPicPr>\n                <a:picLocks noChangeAspect=\"1\"/>\n            </p:cNvPicPr>\n            <p:nvPr>" + renderPlaceholder(this.placeholder) + "</p:nvPr>\n\t\t</p:nvPicPr>\n        <p:blipFill>\n        " + (
+        return "\n    <p:pic>\n\t    <p:nvPicPr>\n\t        <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(this.image) + "\">\n                " + (this.hyperlink ? this.hyperlink.render() : '') + "\n\t\t\t</p:cNvPr>\n                <p:cNvPicPr>\n                <a:picLocks noChangeAspect=\"1\"/>\n            </p:cNvPicPr>\n            <p:nvPr>" + renderPlaceholder(this.placeholder) + "</p:nvPr>\n\t\t</p:nvPicPr>\n        <p:blipFill>\n\t\t\t<a:blip r:embed=\"rId" + this.imgId + "\">\n            " + (
         /* NOTE: This works for both cases: either `path` or `data` contains the SVG */
         this.isSvg
-            ? "\n\t\t\t<a:blip r:embed=\"rId" + this.imgId + "\">\n\t\t\t    <a:extLst>\n\t\t\t        <a:ext uri=\"{96DAC541-7B7A-43D3-8B79-37D633B846F1}\">\n                        <asvg:svgBlip \n                            xmlns:asvg=\"http://schemas.microsoft.com/office/drawing/2016/SVG/main\" \n                            r:embed=\"rId" + this.svgImgId + "\"/>\n\t\t\t\t    </a:ext>\n\t\t\t\t</a:extLst>\n            </a:blip>"
-            : "<a:blip r:embed=\"rId" + this.imgId + "\"/>") + "\n        " + (this.sizing ? this.sizing.render(presLayout) : '<a:stretch><a:fillRect/></a:stretch>') + "\n\t\t</p:blipFill>\n\t\t<p:spPr>\n\t\t    " + this.position.render(presLayout) + "\n\t\t    <a:prstGeom prst=\"" + (this.rounding ? 'ellipse' : 'rect') + "\"><a:avLst/></a:prstGeom>\n\t\t</p:spPr>\n\t</p:pic>";
+            ? "<a:extLst>\n                <a:ext uri=\"{96DAC541-7B7A-43D3-8B79-37D633B846F1}\">\n                    <asvg:svgBlip\n                        xmlns:asvg=\"http://schemas.microsoft.com/office/drawing/2016/SVG/main\" \n                        r:embed=\"rId" + this.svgImgId + "\"/>\n                    </a:ext>\n                </a:extLst>"
+            : '') + "\n                " + (this.opacity ? "<a:alphaModFix amt=\"" + this.opacity * 100000 + "\"/>" : '') + "\n            </a:blip>\n        " + (this.sizing ? this.sizing.render(presLayout) : '<a:stretch><a:fillRect/></a:stretch>') + "\n\t\t</p:blipFill>\n\t\t<p:spPr>\n\t\t    " + this.position.render(presLayout) + "\n\t\t    <a:prstGeom prst=\"" + (this.rounding ? 'ellipse' : 'rect') + "\"><a:avLst/></a:prstGeom>\n\t\t</p:spPr>\n\t</p:pic>";
     };
     return ImageElement;
 }());
-//# sourceMappingURL=image.js.map
 
 /**
  * PptxGenJS: XML Generation
@@ -5293,7 +5298,6 @@ var Slide = /** @class */ (function () {
     };
     return Slide;
 }());
-//# sourceMappingURL=slide.js.map
 
 /**
  * PptxGenJS: Chart Generation
@@ -7766,5 +7770,6 @@ var PptxGenJS = /** @class */ (function () {
     };
     return PptxGenJS;
 }());
+//# sourceMappingURL=pptxgen.js.map
 
 module.exports = PptxGenJS;
