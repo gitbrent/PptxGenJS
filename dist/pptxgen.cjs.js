@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-12-12T08:37:04.642Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-12T16:25:22.062Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1526,26 +1526,66 @@ var PowerPointShapes = Object.freeze({
 /**
  * PptxGenJS Utils
  */
+var CALC_EXPR = /^calc\((.+)\)$/;
+var processCalcArray = function (values, calc) {
+    values.forEach(function (v, index) {
+        if (v === '-')
+            values[index + 1] = -values[index + 1];
+    });
+    values = values.filter(function (v) { return v !== '-' && v !== '+'; });
+    values.forEach(function (v, index) {
+        if (v === '/') {
+            values[index + 1] = values[index - 1] / values[index + 1];
+            values[index - 1] = 0;
+        }
+        if (v === '*') {
+            values[index + 1] = values[index - 1] * values[index + 1];
+            values[index - 1] = 0;
+        }
+    });
+    var result = values.filter(function (v) { return v !== '*' && v !== '/'; }).reduce(function (x, y) { return x + y; }, 0);
+    return result;
+};
 /**
  * Convert string percentages to number relative to slide size
  * @param {number|string} size - numeric ("5.5") or percentage ("90%")
  * @param {'X' | 'Y'} xyDir - direction
  * @param {ILayout} layout - presentation layout
  * @returns {number} calculated size
+ *
  */
 function getSmartParseNumber(size, xyDir, layout) {
     // FIRST: Convert string numeric value if reqd
     if (typeof size === 'string' && !isNaN(Number(size)))
         size = Number(size);
-    // CASE 1: Number in inches
+    // Number in inches
     // Assume any number less than 100 is inches
     if (typeof size === 'number' && size < 100)
         return inch2Emu(size);
-    // CASE 2: Number is already converted to something other than inches
+    // Number is already converted to something other than inches
     // Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
     if (typeof size === 'number' && size >= 100)
         return size;
-    // CASE 3: Percentage (ex: '50%')
+    if (typeof size === 'string' && CALC_EXPR.test(size)) {
+        var _a = size.match(CALC_EXPR), calc = _a[1];
+        var values = calc
+            .replace('+', ' + ')
+            .replace('-', ' - ')
+            .replace('*', ' * ')
+            .replace('/', ' / ')
+            .split(/\s/)
+            .filter(function (v) { return v; });
+        var parsedValues = values.map(function (v) {
+            if (v === '+' || v === '-' || v === '/' || v === '*')
+                return v;
+            var scalar = Number(v);
+            if (!Number.isNaN(scalar))
+                return scalar;
+            return getSmartParseNumber(v, xyDir, layout);
+        });
+        return processCalcArray(parsedValues);
+    }
+    // Percentage (ex: '50%')
     if (typeof size === 'string' && size.indexOf('%') > -1) {
         if (xyDir && xyDir === 'X')
             return Math.round((parseFloat(size) / 100) * layout.width);
@@ -1554,7 +1594,20 @@ function getSmartParseNumber(size, xyDir, layout) {
         // Default: Assume width (x/cx)
         return Math.round((parseFloat(size) / 100) * layout.width);
     }
+    if (typeof size === 'string' && size.indexOf('in') > -1)
+        return inch2Emu(parseFloat(size));
+    if (typeof size === 'string' && size.indexOf('cm') > -1)
+        return inch2Emu(parseFloat(size) / 2.54);
+    // viewport height and width (by analogy to the css vh and vw
+    // units)
+    if (typeof size === 'string' && size.indexOf('vh') > -1) {
+        return Math.round((parseFloat(size) / 100) * layout.height);
+    }
+    if (typeof size === 'string' && size.indexOf('vw') > -1) {
+        return Math.round((parseFloat(size) / 100) * layout.width);
+    }
     // LAST: Default value
+    console.warn("could not parse size " + size + ", using default value 0 instead");
     return 0;
 }
 /**
@@ -2255,7 +2308,6 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
             newSlide.addText(opts.addText.text, opts.addText.opts || {});
     });
 }
-//# sourceMappingURL=gen-tables.js.map
 
 var ShadowElement = /** @class */ (function () {
     function ShadowElement(options) {
@@ -2371,7 +2423,6 @@ var Position = /** @class */ (function () {
     };
     return Position;
 }());
-//# sourceMappingURL=position.js.map
 
 var DASH_VALUES = ['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'];
 var LineElement = /** @class */ (function () {
@@ -2392,7 +2443,6 @@ var LineElement = /** @class */ (function () {
     };
     return LineElement;
 }());
-//# sourceMappingURL=line.js.map
 
 var TextFragment = /** @class */ (function () {
     function TextFragment(text, paragraphConfig, runConfig) {
@@ -2405,7 +2455,6 @@ var TextFragment = /** @class */ (function () {
     };
     return TextFragment;
 }());
-//# sourceMappingURL=text-fragment.js.map
 
 var Bullet = /** @class */ (function () {
     function Bullet(bullet) {
@@ -2560,7 +2609,6 @@ var RunProperties = /** @class */ (function () {
     };
     return RunProperties;
 }());
-//# sourceMappingURL=run-properties.js.map
 
 var HyperLink = /** @class */ (function () {
     function HyperLink(_a, registerLink) {
@@ -2584,7 +2632,6 @@ var HyperLink = /** @class */ (function () {
     };
     return HyperLink;
 }());
-//# sourceMappingURL=hyperlink.js.map
 
 var buildFragments = function (inputText, inputBreakLine, registerLink) {
     var fragments = inputText;
@@ -2761,7 +2808,6 @@ var TextElement$1 = /** @class */ (function () {
     };
     return TextElement$1;
 }());
-//# sourceMappingURL=text.js.map
 
 var defaultsToOne = function (x) { return x || (x === 0 ? 0 : 1); };
 var SimpleShapeElement = /** @class */ (function () {
@@ -2797,7 +2843,6 @@ var SimpleShapeElement = /** @class */ (function () {
     };
     return SimpleShapeElement;
 }());
-//# sourceMappingURL=simple-shape.js.map
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -7052,7 +7097,6 @@ function createGridLineElement(glOpts) {
     strXml += '</c:majorGridlines>';
     return strXml;
 }
-//# sourceMappingURL=gen-charts.js.map
 
 /**
  * PptxGenJS: Media Methods
@@ -7770,6 +7814,5 @@ var PptxGenJS = /** @class */ (function () {
     };
     return PptxGenJS;
 }());
-//# sourceMappingURL=pptxgen.js.map
 
 module.exports = PptxGenJS;

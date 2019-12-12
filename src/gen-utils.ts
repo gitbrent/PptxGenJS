@@ -5,26 +5,68 @@
 import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './core-enums'
 import { IChartOpts, ILayout, ShapeFill } from './core-interfaces'
 
+const CALC_EXPR = /^calc\((.+)\)$/
+const processCalcArray = (values, calc) => {
+	values.forEach((v, index) => {
+		if (v === '-') values[index + 1] = -values[index + 1]
+	})
+	values = values.filter(v => v !== '-' && v !== '+')
+
+	values.forEach((v, index) => {
+		if (v === '/') {
+			values[index + 1] = values[index - 1] / values[index + 1]
+			values[index - 1] = 0
+		}
+		if (v === '*') {
+			values[index + 1] = values[index - 1] * values[index + 1]
+			values[index - 1] = 0
+		}
+	})
+	const result = values.filter(v => v !== '*' && v !== '/').reduce((x, y) => x + y, 0)
+	return result
+}
+
 /**
  * Convert string percentages to number relative to slide size
  * @param {number|string} size - numeric ("5.5") or percentage ("90%")
  * @param {'X' | 'Y'} xyDir - direction
  * @param {ILayout} layout - presentation layout
  * @returns {number} calculated size
+ *
  */
 export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ILayout): number {
 	// FIRST: Convert string numeric value if reqd
 	if (typeof size === 'string' && !isNaN(Number(size))) size = Number(size)
 
-	// CASE 1: Number in inches
+	// Number in inches
 	// Assume any number less than 100 is inches
 	if (typeof size === 'number' && size < 100) return inch2Emu(size)
 
-	// CASE 2: Number is already converted to something other than inches
+	// Number is already converted to something other than inches
 	// Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
 	if (typeof size === 'number' && size >= 100) return size
 
-	// CASE 3: Percentage (ex: '50%')
+	if (typeof size === 'string' && CALC_EXPR.test(size)) {
+		const [, calc] = size.match(CALC_EXPR)
+		const values = calc
+			.replace('+', ' + ')
+			.replace('-', ' - ')
+			.replace('*', ' * ')
+			.replace('/', ' / ')
+			.split(/\s/)
+			.filter(v => v)
+
+		const parsedValues = values.map(v => {
+			if (v === '+' || v === '-' || v === '/' || v === '*') return v
+
+			const scalar = Number(v)
+			if (!Number.isNaN(scalar)) return scalar
+			return getSmartParseNumber(v, xyDir, layout)
+		})
+		return processCalcArray(parsedValues, calc)
+	}
+
+	// Percentage (ex: '50%')
 	if (typeof size === 'string' && size.indexOf('%') > -1) {
 		if (xyDir && xyDir === 'X') return Math.round((parseFloat(size) / 100) * layout.width)
 		if (xyDir && xyDir === 'Y') return Math.round((parseFloat(size) / 100) * layout.height)
@@ -33,7 +75,20 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
 		return Math.round((parseFloat(size) / 100) * layout.width)
 	}
 
+	if (typeof size === 'string' && size.indexOf('in') > -1) return inch2Emu(parseFloat(size))
+	if (typeof size === 'string' && size.indexOf('cm') > -1) return inch2Emu(parseFloat(size) / 2.54)
+
+	// viewport height and width (by analogy to the css vh and vw
+	// units)
+	if (typeof size === 'string' && size.indexOf('vh') > -1) {
+		return Math.round((parseFloat(size) / 100) * layout.height)
+	}
+	if (typeof size === 'string' && size.indexOf('vw') > -1) {
+		return Math.round((parseFloat(size) / 100) * layout.width)
+	}
+
 	// LAST: Default value
+	console.warn(`could not parse size ${size}, using default value 0 instead`)
 	return 0
 }
 
