@@ -36,6 +36,7 @@ import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
 import ImageElement from './elements/image'
+import ChartElement from './elements/chart'
 
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
@@ -94,7 +95,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			})
 			return
 		}
-		if (slideItemObj instanceof ShapeElement || slideItemObj instanceof PlaceholderTextElement) {
+		if (slideItemObj instanceof ShapeElement || slideItemObj instanceof PlaceholderTextElement || slideItemObj instanceof ChartElement) {
 			strSlideXml += slideItemObj.render(idx, slide.presLayout)
 			return
 		}
@@ -470,25 +471,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					strSlideXml += ' </p:spPr>'
 					strSlideXml += '</p:pic>'
 				}
-				break
-
-			case SLIDE_OBJECT_TYPES.chart:
-				strSlideXml += '<p:graphicFrame>'
-				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + '"/>'
-				strSlideXml += '   <p:cNvGraphicFramePr/>'
-				strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
-				strSlideXml += ' </p:nvGraphicFramePr>'
-				strSlideXml += ' <p:xfrm>'
-				strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
-				strSlideXml += ' </p:xfrm>'
-				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
-				strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
-				strSlideXml += '   <c:chart r:id="rId' + slideItemObj.chartRid + '" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>'
-				strSlideXml += '  </a:graphicData>'
-				strSlideXml += ' </a:graphic>'
-				strSlideXml += '</p:graphicFrame>'
 				break
 
 			default:
@@ -1607,44 +1589,6 @@ export function makeXmlTableStyles(): string {
  */
 export function makeXmlViewProps(): string {
 	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<p:viewPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"><p:normalViewPr horzBarState="maximized"><p:restoredLeft sz="15611"/><p:restoredTop sz="94610"/></p:normalViewPr><p:slideViewPr><p:cSldViewPr snapToGrid="0" snapToObjects="1"><p:cViewPr varScale="1"><p:scale><a:sx n="136" d="100"/><a:sy n="136" d="100"/></p:scale><p:origin x="216" y="312"/></p:cViewPr><p:guideLst/></p:cSldViewPr></p:slideViewPr><p:notesTextViewPr><p:cViewPr><p:scale><a:sx n="1" d="1"/><a:sy n="1" d="1"/></p:scale><p:origin x="0" y="0"/></p:cViewPr></p:notesTextViewPr><p:gridSpacing cx="76200" cy="76200"/></p:viewPr>`
-}
-
-/**
- * Checks shadow options passed by user and performs corrections if needed.
- * @param {IShadowOptions} IShadowOptions - shadow options
- */
-export function correctShadowOptions(IShadowOptions: IShadowOptions) {
-	if (!IShadowOptions || IShadowOptions === null) return
-
-	// OPT: `type`
-	if (IShadowOptions.type !== 'outer' && IShadowOptions.type !== 'inner' && IShadowOptions.type !== 'none') {
-		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
-		IShadowOptions.type = 'outer'
-	}
-
-	// OPT: `angle`
-	if (IShadowOptions.angle) {
-		// A: REALITY-CHECK
-		if (isNaN(Number(IShadowOptions.angle)) || IShadowOptions.angle < 0 || IShadowOptions.angle > 359) {
-			console.warn('Warning: shadow.angle can only be 0-359')
-			IShadowOptions.angle = 270
-		}
-
-		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		IShadowOptions.angle = Math.round(Number(IShadowOptions.angle))
-	}
-
-	// OPT: `opacity`
-	if (IShadowOptions.opacity) {
-		// A: REALITY-CHECK
-		if (isNaN(Number(IShadowOptions.opacity)) || IShadowOptions.opacity < 0 || IShadowOptions.opacity > 1) {
-			console.warn('Warning: shadow.opacity can only be 0-1')
-			IShadowOptions.opacity = 0.75
-		}
-
-		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		IShadowOptions.opacity = Number(IShadowOptions.opacity)
-	}
 }
 
 export function getShapeInfo(shapeName) {

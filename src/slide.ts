@@ -28,6 +28,7 @@ import { createImageConfig } from './gen-utils'
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import ImageElement from './elements/image'
+import ChartElement from './elements/chart'
 
 export default class Slide {
 	private _bkgd: string
@@ -83,7 +84,7 @@ export default class Slide {
 		this.relsMedia.push(
 			createImageConfig({
 				relId,
-                Target: `../media/image-${this.number}-${this.relsMedia.length + 1}.${extension}`,
+				Target: `../media/image-${this.number}-${this.relsMedia.length + 1}.${extension}`,
 				path,
 				data,
 				extension,
@@ -92,6 +93,23 @@ export default class Slide {
 		)
 		return relId
 	}
+
+	private _registerChart(globalId, options, data) {
+		const chartRid = this.relsChart.length + 1
+
+		this.relsChart.push({
+			rId: chartRid,
+			data,
+			opts: options,
+			type: options.type,
+			globalId: globalId,
+			fileName: 'chart' + globalId + '.xml',
+			Target: '/ppt/charts/chart' + globalId + '.xml',
+		})
+
+        return chartRid
+	}
+
 
 	// TODO: add comments (also add to index.d.ts)
 	public set bkgd(value: string) {
@@ -145,7 +163,7 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts): Slide {
-		genObj.addChartDefinition(this, type, data, options)
+		this.data.push(new ChartElement(type, data, options, this._registerChart.bind(this)))
 		return this
 	}
 

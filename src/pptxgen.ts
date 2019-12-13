@@ -608,8 +608,24 @@ export default class PptxGenJS {
 			return relId
 		}
 
+		const registerChart = (globalId, options, data) => {
+			const chartRid = newLayout.relsChart.length + 1
+
+			newLayout.relsChart.push({
+				rId: chartRid,
+				data,
+				opts: options,
+				type: options.type,
+				globalId: globalId,
+				fileName: 'chart' + globalId + '.xml',
+				Target: '/ppt/charts/chart' + globalId + '.xml',
+			})
+
+			return chartRid
+		}
+
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(slideMasterOpts, newLayout, registerImage, registerLink)
+		genObj.createSlideObject(slideMasterOpts, newLayout, registerImage, registerLink, registerChart)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)

@@ -1,5 +1,15 @@
 import { getSmartParseNumber, convertRotationDegrees } from '../gen-utils'
 
+interface PositionOptions {
+	x: number | string
+	y: number | string
+	w: number | string
+	h: number | string
+	flipH?: boolean
+	flipV?: boolean
+	rotate?: boolean
+}
+
 export default class Position {
 	x
 	y
@@ -10,7 +20,7 @@ export default class Position {
 	flipV
 	rotate
 
-	constructor({ x, y, w, h, flipH, flipV, rotate }) {
+	constructor({ x, y, w, h, flipH, flipV, rotate }: PositionOptions) {
 		this.x = x
 		this.y = y
 		this.w = w
@@ -29,7 +39,7 @@ export default class Position {
 		if (typeof this.h !== 'undefined') return getSmartParseNumber(this.h, 'Y', presLayout)
 	}
 
-	render(presLayout) {
+	render(presLayout, tag = 'a:xfrm') {
 		if (typeof this.x === 'undefined' && typeof this.y === 'undefined' && typeof this.w === 'undefined' && typeof this.h === 'undefined') {
 			return ''
 		}
@@ -50,9 +60,9 @@ export default class Position {
 		if (this.rotate) locationAttr += ' rot="' + convertRotationDegrees(this.rotate) + '"'
 
 		return `
-            <a:xfrm${locationAttr}>
+            <${tag}${locationAttr}>
                 <a:off x="${x}" y="${y}"/>
                 <a:ext cx="${cx}" cy="${cy}"/>
-            </a:xfrm>`
+            </${tag}>`
 	}
 }

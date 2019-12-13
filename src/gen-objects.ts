@@ -42,12 +42,12 @@ import {
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities } from './gen-utils'
-import { correctShadowOptions } from './gen-xml'
 
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
 import ImageElement from './elements/image'
+import ChartElement from './elements/chart'
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter: number = 0
@@ -57,7 +57,7 @@ let _chartCounter: number = 0
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout, registerImage, registerLink) {
+export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout, registerImage, registerLink, registerChart) {
 	// STEP 1: Add background
 	if (slideDef.bkgd) {
 		addBackgroundDefinition(slideDef.bkgd, target)
@@ -68,8 +68,9 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 		slideDef.objects.forEach((object, idx: number) => {
 			let key = Object.keys(object)[0]
 			let tgt = target as ISlide
-			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
-			else if (MASTER_OBJECTS[key] && key === 'image') {
+			if (MASTER_OBJECTS[key] && key === 'chart') {
+				tgt.data.push(new ChartElement(object[key].type, object[key].data, object[key].opts, registerChart))
+			} else if (MASTER_OBJECTS[key] && key === 'image') {
 				tgt.data.push(new ImageElement(object[key], registerImage, registerLink))
 			} else if (MASTER_OBJECTS[key] && key === 'line') {
 				tgt.data.push(new ShapeElement(BASE_SHAPES.LINE, object[key]))
@@ -88,215 +89,6 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
 		target.slideNumberObj = slideDef.slideNumber
 	}
-}
-
-/**
- * Generate the chart based on input data.
- * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
- *
- * @param {CHART_TYPE_NAMES | IChartMulti[]} `type` should belong to: 'column', 'pie'
- * @param {[]} `data` a JSON object with follow the following format
- * @param {IChartOpts} `opt` chart options
- * @param {ISlide} `target` slide object that the chart will be added to
- * @return {object} chart object
- * {
- *   title: 'eSurvey chart',
- *   data: [
- *		{
- *			name: 'Income',
- *			labels: ['2005', '2006', '2007', '2008', '2009'],
- *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
- *		},
- *		{
- *			name: 'Expense',
- *			labels: ['2005', '2006', '2007', '2008', '2009'],
- *			values: [18.1, 22.8, 23.9, 25.1, 25]
- *		}
- *	 ]
- *	}
- */
-export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt: IChartOpts): object {
-	function correctGridLineOptions(glOpts: OptsChartGridLine) {
-		if (!glOpts || glOpts.style === 'none') return
-		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
-			console.warn('Warning: chart.gridLine.size must be greater than 0.')
-			delete glOpts.size // delete prop to used defaults
-		}
-		if (glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0) {
-			console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.')
-			delete glOpts.style
-		}
-	}
-
-	let chartId = ++_chartCounter
-	let resultObject = {
-		type: null,
-		text: null,
-		options: null,
-		chartRid: null,
-	}
-	// DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
-	// EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
-	// Multi-Type Charts
-	let tmpOpt
-	let tmpData = [],
-		options: IChartOpts
-	if (Array.isArray(type)) {
-		// For multi-type charts there needs to be data for each type,
-		// as well as a single data source for non-series operations.
-		// The data is indexed below to keep the data in order when segmented
-		// into types.
-		type.forEach(obj => {
-			tmpData = tmpData.concat(obj.data)
-		})
-		tmpOpt = data || opt
-	} else {
-		tmpData = data
-		tmpOpt = opt
-	}
-	tmpData.forEach((item, i) => {
-		item.index = i
-	})
-	options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {}
-
-	// STEP 1: TODO: check for reqd fields, correct type, etc
-	// `type` exists in CHART_TYPES
-	// Array.isArray(data)
-	/*
-		if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
-			&& rel.data[0].labels && Array.isArray(rel.data[0].labels)
-			&& rel.data[0].values && Array.isArray(rel.data[0].values) ) {
-			obj = rel.data[0];
-		}
-		else {
-			console.warn("USAGE: addChart( 'pie', [ {name:'Sales', labels:['Jan','Feb'], values:[10,20]} ], {x:1, y:1} )");
-			return;
-		}
-		*/
-
-	// STEP 2: Set default options/decode user options
-	// A: Core
-	options.type = type
-	options.x = typeof options.x !== 'undefined' && options.x != null ? options.x : 1
-	options.y = typeof options.y !== 'undefined' && options.y != null ? options.y : 1
-	options.w = options.w || '50%'
-	options.h = options.h || '50%'
-
-	// B: Options: misc
-	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
-	// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-	if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-		options.dataLabelPosition = options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr'
-	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false
-	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
-	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
-	if (['clustered', 'standard', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) options.barGrouping = 'standard'
-	if (options.barGrouping.indexOf('tacked') > -1) {
-		options.dataLabelPosition = 'ctr' // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
-		if (!options.barGapWidthPct) options.barGapWidthPct = 50
-	}
-	// 3D bar: ST_Shape
-	if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0) options.bar3DShape = 'box'
-	// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
-	// Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
-	if (['circle', 'dash', 'diamond', 'dot', 'none', 'square', 'triangle'].indexOf(options.lineDataSymbol || '') < 0) options.lineDataSymbol = 'circle'
-	if (['gap', 'span'].indexOf(options.displayBlanksAs || '') < 0) options.displayBlanksAs = 'span'
-	if (['standard', 'marker', 'filled'].indexOf(options.radarStyle || '') < 0) options.radarStyle = 'standard'
-	options.lineDataSymbolSize = options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize) ? options.lineDataSymbolSize : 6
-	options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT
-	// `layout` allows the override of PPT defaults to maximize space
-	if (options.layout) {
-		;['x', 'y', 'w', 'h'].forEach(key => {
-			let val = options.layout[key]
-			if (isNaN(Number(val)) || val < 0 || val > 1) {
-				console.warn('Warning: chart.layout.' + key + ' can only be 0-1')
-				delete options.layout[key] // remove invalid value so that default will be used
-			}
-		})
-	}
-
-	// Set gridline defaults
-	options.catGridLine = options.catGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
-	options.valGridLine = options.valGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
-	options.serGridLine = options.serGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
-	correctGridLineOptions(options.catGridLine)
-	correctGridLineOptions(options.valGridLine)
-	correctGridLineOptions(options.serGridLine)
-	correctShadowOptions(options.shadow)
-
-	// C: Options: plotArea
-	options.showDataTable = options.showDataTable === true || options.showDataTable === false ? options.showDataTable : false
-	options.showDataTableHorzBorder = options.showDataTableHorzBorder === true || options.showDataTableHorzBorder === false ? options.showDataTableHorzBorder : true
-	options.showDataTableVertBorder = options.showDataTableVertBorder === true || options.showDataTableVertBorder === false ? options.showDataTableVertBorder : true
-	options.showDataTableOutline = options.showDataTableOutline === true || options.showDataTableOutline === false ? options.showDataTableOutline : true
-	options.showDataTableKeys = options.showDataTableKeys === true || options.showDataTableKeys === false ? options.showDataTableKeys : true
-	options.showLabel = options.showLabel === true || options.showLabel === false ? options.showLabel : false
-	options.showLegend = options.showLegend === true || options.showLegend === false ? options.showLegend : false
-	options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true
-	options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false
-	options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false
-	options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true
-	options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true
-	options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true
-
-	options.v3DRotX = !isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30
-	options.v3DRotY = !isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30
-	options.v3DRAngAx = options.v3DRAngAx === true || options.v3DRAngAx === false ? options.v3DRAngAx : true
-	options.v3DPerspective = !isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30
-
-	// D: Options: chart
-	options.barGapWidthPct = !isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150
-	options.barGapDepthPct = !isNaN(options.barGapDepthPct) && options.barGapDepthPct >= 0 && options.barGapDepthPct <= 1000 ? options.barGapDepthPct : 150
-
-	options.chartColors = Array.isArray(options.chartColors)
-		? options.chartColors
-		: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-		? PIECHART_COLORS
-		: BARCHART_COLORS
-	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
-	//
-	options.border = options.border && typeof options.border === 'object' ? options.border : null
-	if (options.border && (!options.border.pt || isNaN(options.border.pt))) options.border.pt = 1
-	if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6)) options.border.color = '363636'
-	//
-	options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null
-	if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt))) options.dataBorder.pt = 0.75
-	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
-		options.dataBorder.color = 'F9F9F9'
-	//
-	if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatCode = 'General'
-	options.dataLabelFormatCode =
-		options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
-			? options.dataLabelFormatCode
-			: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-			? '0%'
-			: '#,##0'
-	//
-	// Set default format for Scatter chart labels to custom string if not defined
-	if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatScatter = 'custom'
-	//
-	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
-	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
-	options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero'
-
-	// STEP 4: Set props
-	resultObject.type = 'chart'
-	resultObject.options = options
-	resultObject.chartRid = target.relsChart.length + 1
-
-	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-	target.relsChart.push({
-		rId: target.relsChart.length + 1,
-		data: tmpData,
-		opts: options,
-		type: options.type,
-		globalId: chartId,
-		fileName: 'chart' + chartId + '.xml',
-		Target: '/ppt/charts/chart' + chartId + '.xml',
-	})
-
-	target.data.push(resultObject)
-	return resultObject
 }
 
 /**
