@@ -48,6 +48,7 @@ import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
 import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
+import SlideNumberElement from './elements/slide-number'
 
 /** counter for included charts (used for index in their filenames) */
 let _chartCounter: number = 0
@@ -85,9 +86,9 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 		})
 	}
 
-	// STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
+	// STEP 3: Add Slide Numbers
 	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-		target.slideNumberObj = slideDef.slideNumber
+		target.data.push(new SlideNumberElement(slideDef.slideNumber))
 	}
 }
 

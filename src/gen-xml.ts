@@ -37,6 +37,7 @@ import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
 import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
+import SlideNumberElement from './elements/slide-number'
 
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
@@ -95,7 +96,12 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			})
 			return
 		}
-		if (slideItemObj instanceof ShapeElement || slideItemObj instanceof PlaceholderTextElement || slideItemObj instanceof ChartElement) {
+		if (
+			slideItemObj instanceof ShapeElement ||
+			slideItemObj instanceof PlaceholderTextElement ||
+			slideItemObj instanceof ChartElement ||
+			slideItemObj instanceof SlideNumberElement
+		) {
 			strSlideXml += slideItemObj.render(idx, slide.presLayout)
 			return
 		}
@@ -477,53 +483,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				break
 		}
 	})
-
-	// STEP 5: Add slide numbers (if any) last
-	if (slide.slideNumberObj) {
-		strSlideXml +=
-			'<p:sp>' +
-			'  <p:nvSpPr>' +
-			'    <p:cNvPr id="25" name="Slide Number Placeholder 24"/>' +
-			'    <p:cNvSpPr><a:spLocks noGrp="1"/></p:cNvSpPr>' +
-			'    <p:nvPr><p:ph type="sldNum" sz="quarter" idx="4294967295"/></p:nvPr>' +
-			'  </p:nvSpPr>' +
-			'  <p:spPr>' +
-			'    <a:xfrm>' +
-			'      <a:off x="' +
-			getSmartParseNumber(slide.slideNumberObj.x, 'X', slide.presLayout) +
-			'" y="' +
-			getSmartParseNumber(slide.slideNumberObj.y, 'Y', slide.presLayout) +
-			'"/>' +
-			'      <a:ext cx="' +
-			(slide.slideNumberObj.w ? getSmartParseNumber(slide.slideNumberObj.w, 'X', slide.presLayout) : 800000) +
-			'" cy="' +
-			(slide.slideNumberObj.h ? getSmartParseNumber(slide.slideNumberObj.h, 'Y', slide.presLayout) : 300000) +
-			'"/>' +
-			'    </a:xfrm>' +
-			'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
-			'    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
-			'  </p:spPr>'
-		strSlideXml += '<p:txBody>'
-		strSlideXml += '  <a:bodyPr/>'
-		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
-		if (slide.slideNumberObj.fontFace || slide.slideNumberObj.fontSize || slide.slideNumberObj.color) {
-			strSlideXml += '<a:defRPr sz="' + (slide.slideNumberObj.fontSize ? Math.round(slide.slideNumberObj.fontSize) : '12') + '00">'
-			if (slide.slideNumberObj.color) strSlideXml += genXmlColorSelection(slide.slideNumberObj.color)
-			if (slide.slideNumberObj.fontFace)
-				strSlideXml +=
-					'<a:latin typeface="' +
-					slide.slideNumberObj.fontFace +
-					'"/><a:ea typeface="' +
-					slide.slideNumberObj.fontFace +
-					'"/><a:cs typeface="' +
-					slide.slideNumberObj.fontFace +
-					'"/>'
-			strSlideXml += '</a:defRPr>'
-		}
-		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
-		strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum"><a:rPr lang="en-US"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>'
-		strSlideXml += '</p:txBody></p:sp>'
-	}
 
 	// STEP 6: Close spTree and finalize slide XML
 	strSlideXml += '</p:spTree>'

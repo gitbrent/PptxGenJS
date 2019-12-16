@@ -232,7 +232,6 @@ export default class PptxGenJS {
 				relsChart: [],
 				relsMedia: [],
 				margin: DEF_SLIDE_MARGIN_IN,
-				slideNumberObj: null,
 			},
 		]
 		this.slides = []
@@ -253,7 +252,6 @@ export default class PptxGenJS {
 			relsChart: [],
 			relsMedia: [],
 			slideLayout: null,
-			slideNumberObj: null,
 		}
 	}
 
@@ -276,20 +274,6 @@ export default class PptxGenJS {
 		return this.slides.filter(slide => {
 			return slide.number === slideNum
 		})[0]
-	}
-
-	/**
-	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
-	 * @param {ISlideNumber} slideNum - slide number config
-	 */
-	setSlideNumber = (slideNum: ISlideNumber) => {
-		// 1: Add slideNumber to slideMaster1.xml
-		this.masterSlide.slideNumberObj = slideNum
-
-		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-		this.slideLayouts.filter(layout => {
-			return layout.name === DEF_PRES_LAYOUT_NAME
-		})[0].slideNumberObj = slideNum
 	}
 
 	/**
@@ -547,7 +531,6 @@ export default class PptxGenJS {
 			addSlide: this.addNewSlide,
 			getSlide: this.getSlide,
 			presLayout: this.presLayout,
-			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,
 			slideLayout: masterSlideName
 				? this.slideLayouts.filter(layout => {
@@ -578,7 +561,6 @@ export default class PptxGenJS {
 			relsChart: [],
 			relsMedia: [],
 			margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
-			slideNumberObj: slideMasterOpts.slideNumber || null,
 		}
 
 		const registerLink = (data, target) => {
@@ -629,9 +611,6 @@ export default class PptxGenJS {
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
-
-		// STEP 3: Add slideNumber to master slide (if any)
-		if (newLayout.slideNumberObj && !this.masterSlide.slideNumberObj) this.masterSlide.slideNumberObj = newLayout.slideNumberObj
 	}
 
 	// HTML-TO-SLIDES METHODS

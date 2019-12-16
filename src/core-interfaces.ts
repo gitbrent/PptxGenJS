@@ -3,6 +3,7 @@
  */
 
 import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES } from './core-enums'
+import SlideNumberElement from './elements/slide-number'
 
 // Common
 // ======
@@ -400,7 +401,7 @@ export interface ISlideMasterOptions {
 	objects?: [
 		{ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: { options: ITextOpts } } | { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 	]
-	slideNumber?: ISlideNumber
+	slideNumber?: any
 }
 export interface ISlideMstrObjPlchldrOpts {
 	name: string
@@ -505,7 +506,6 @@ export interface ISlideLayout {
 	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: Margin
-	slideNumberObj?: ISlideNumber
 }
 export interface ISlide {
 	addChart: Function
@@ -528,7 +528,6 @@ export interface ISlide {
 	relsChart: ISlideRelChart[]
 	relsMedia: ISlideRelMedia[]
 	slideLayout: ISlideLayout
-	slideNumberObj?: ISlideNumber // FIXME rename
 }
 export interface IPresentation {
 	author: string

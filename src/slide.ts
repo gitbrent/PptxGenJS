@@ -29,12 +29,11 @@ import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
+import SlideNumberElement from './elements/slide-number'
 
 export default class Slide {
 	private _bkgd: string
 	private _color: string
-	private _setSlideNum: Function
-	private _slideNumber: ISlideNumber
 
 	public addSlide: Function
 	public getSlide: Function
@@ -46,13 +45,11 @@ export default class Slide {
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
-	public slideNumberObj: ISlideNumber
 
-	constructor(params: { addSlide: Function; getSlide: Function; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
+	constructor(params: { addSlide: Function; getSlide: Function; presLayout: ILayout; slideNumber: number; slideLayout?: ISlideLayout }) {
 		this.addSlide = params.addSlide
 		this.getSlide = params.getSlide
 		this.presLayout = params.presLayout
-		this._setSlideNum = params.setSlideNum
 		this.name = 'Slide ' + params.slideNumber
 		this.number = params.slideNumber
 		this.data = []
@@ -60,10 +57,6 @@ export default class Slide {
 		this.relsChart = []
 		this.relsMedia = []
 		this.slideLayout = params.slideLayout || null
-		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
-		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
-		// so, lastly, add to the Slide now.
-		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null
 	}
 
 	private _registerLink(data, target) {
@@ -107,9 +100,8 @@ export default class Slide {
 			Target: '/ppt/charts/chart' + globalId + '.xml',
 		})
 
-        return chartRid
+		return chartRid
 	}
-
 
 	// TODO: add comments (also add to index.d.ts)
 	public set bkgd(value: string) {
@@ -127,17 +119,14 @@ export default class Slide {
 		return this._color
 	}
 
-	// TODO: add comments (also add to index.d.ts)
-	public set slideNumber(value: ISlideNumber) {
-		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
-		this.slideNumberObj = value
-		this._slideNumber = value
-		this._setSlideNum(value)
-	}
-	public get slideNumber(): ISlideNumber {
-		return this._slideNumber
+	slideNumber(value) {
+		return this.addSlideNumber(value)
 	}
 
+	addSlideNumber(value) {
+		this.data.push(new SlideNumberElement(value))
+		return this
+	}
 	/**
 	 * Generate the chart based on input data.
 	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
