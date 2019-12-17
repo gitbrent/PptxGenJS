@@ -6,13 +6,14 @@ bower_components/
 *.icloud
 *.lock
 
-demo/*
-demos/*
-dist/*
-examples/*
-libs/*
+css/
+demo/
+demos/
+dist/
+examples/
+libs/
 CHANGELOG.md
-src/*
+src/
 
 lib/core/metadata.js
 lib/core/MetadataBlog.js
