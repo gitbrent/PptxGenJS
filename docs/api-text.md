@@ -164,3 +164,24 @@ slide.addText(
 
 pptx.writeFile('Demo-Text');
 ```
+
+## Break Line Option
+Use the `breakLine` option to force line breaks when composing text objects using complex objects.
+
+```javascript
+let arrTextObjs1 = [
+    { text:'1st line', options:{ fontSize:24, color:'99ABCC', breakLine:true } },
+    { text:'2nd line', options:{ fontSize:36, color:'FFFF00', breakLine:true } },
+    { text:'3rd line', options:{ fontSize:48, color:'0088CC' } }
+];
+slide.addText( arrTextObjs1, { x:.5, y:1, w:8, h:2, fill:'232323' } );
+
+let arrTextObjs2 = [
+    { text:'1st line', options:{ fontSize:24, color:'99ABCC', breakLine:false } },
+    { text:'2nd line', options:{ fontSize:36, color:'FFFF00', breakLine:false } },
+    { text:'3rd line', options:{ fontSize:48, color:'0088CC' } }
+];
+slide.addText( arrTextObjs2, { x:.5, y:4, w:8, h:2, fill:'232323' } );
+```
+
+![breakLine option](/PptxGenJS/docs/assets/ex-text-breakLine.png)
