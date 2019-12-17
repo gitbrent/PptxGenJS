@@ -63,6 +63,7 @@ import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 import { createImageConfig } from './gen-utils'
 import * as JSZip from 'jszip'
+import themeXML from './templates/theme'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -115,6 +116,8 @@ export default class PptxGenJS {
 	public get company(): string {
 		return this._company
 	}
+
+	public fontFamily: string
 
 	/**
 	 * Sets the Presentation's Revision
@@ -391,7 +394,7 @@ export default class PptxGenJS {
 				zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company))
 				zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision))
 				zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
-				zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
+				zip.file('ppt/theme/theme1.xml', themeXML(this.fontFamily))
 				zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this.presLayout, this.rtlMode))
 				zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
 				zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
