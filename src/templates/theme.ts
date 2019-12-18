@@ -48,48 +48,67 @@ const scriptFonts = `
         <a:font script="Tfng" typeface="Ebrima"/>
 `
 
-export default function makeXmlTheme(fontFamily): string {
+export const colorSchemeXML = ({
+	dark1 = '000000',
+	dark2 = '44546A',
+	light1 = 'FFFFFF',
+	light2 = 'E7E6E6',
+	accent1 = '4472C4',
+	accent2 = 'ED7D31',
+	accent3 = 'A5A5A5',
+	accent4 = 'FFC000',
+	accent5 = '5B9BD5',
+	accent6 = '70AD47',
+	hLink = '0563C1',
+	folHLink = '954F72',
+} = {}) => {
+	return `<a:clrScheme name="Sublime">
+      <a:dk1>
+        <a:sysClr val="windowText" lastClr="${dark1}"/>
+      </a:dk1>
+      <a:lt1>
+        <a:sysClr val="window" lastClr="${light1}"/>
+      </a:lt1>
+      <a:dk2>
+        <a:srgbClr val="${dark2}"/>
+      </a:dk2>
+      <a:lt2>
+        <a:srgbClr val="${light2}"/>
+      </a:lt2>
+      <a:accent1>
+        <a:srgbClr val="${accent1}"/>
+      </a:accent1>
+      <a:accent2>
+        <a:srgbClr val="${accent2}"/>
+      </a:accent2>
+      <a:accent3>
+        <a:srgbClr val="${accent3}"/>
+      </a:accent3>
+      <a:accent4>
+        <a:srgbClr val="${accent4}"/>
+      </a:accent4>
+      <a:accent5>
+        <a:srgbClr val="${accent5}"/>
+      </a:accent5>
+      <a:accent6>
+        <a:srgbClr val="${accent6}"/>
+      </a:accent6>
+      <a:hlink>
+        <a:srgbClr val="${hLink}"/>
+      </a:hlink>
+      <a:folHlink>
+        <a:srgbClr val="${folHLink}"/>
+      </a:folHlink>
+    </a:clrScheme>`
+}
+
+const DEFAULT_SCHEME = colorSchemeXML({})
+
+export default function makeXmlTheme(fontFamily, colorScheme = DEFAULT_SCHEME): string {
 	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Sublime Theme">
   <a:themeElements>
-    <a:clrScheme name="Sublime">
-      <a:dk1>
-        <a:sysClr val="windowText" lastClr="000000"/>
-      </a:dk1>
-      <a:lt1>
-        <a:sysClr val="window" lastClr="FFFFFF"/>
-      </a:lt1>
-      <a:dk2>
-        <a:srgbClr val="44546A"/>
-      </a:dk2>
-      <a:lt2>
-        <a:srgbClr val="E7E6E6"/>
-      </a:lt2>
-      <a:accent1>
-        <a:srgbClr val="4472C4"/>
-      </a:accent1>
-      <a:accent2>
-        <a:srgbClr val="ED7D31"/>
-      </a:accent2>
-      <a:accent3>
-        <a:srgbClr val="A5A5A5"/>
-      </a:accent3>
-      <a:accent4>
-        <a:srgbClr val="FFC000"/>
-      </a:accent4>
-      <a:accent5>
-        <a:srgbClr val="5B9BD5"/>
-      </a:accent5>
-      <a:accent6>
-        <a:srgbClr val="70AD47"/>
-      </a:accent6>
-      <a:hlink>
-        <a:srgbClr val="0563C1"/>
-      </a:hlink>
-      <a:folHlink>
-        <a:srgbClr val="954F72"/>
-      </a:folHlink>
-    </a:clrScheme>
+    ${colorScheme}
     <a:fontScheme name="Sublime">
       <a:majorFont>
         <a:latin typeface="${fontFamily || 'Calibri Light'}" panose="020F0302020204030204"/>
