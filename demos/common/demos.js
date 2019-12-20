@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.0.0-beta.8
-* BLD.: 20191208
+* VER.: 3.0.0-beta.9
+* BLD.: 20191219
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -55,7 +55,7 @@ var CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 c
 var gArrNamesF = ['Markiplier','Jack','Brian','Paul','Ev','Ann','Michelle','Jenny','Lara','Kathryn'];
 var gArrNamesL = ['Johnson','Septiceye','Lapston','Lewis','Clark','Griswold','Hart','Cube','Malloy','Capri'];
 var gStrHello = 'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好';
-var gOptsTabOpts = { x:0.5, y:0.13, w:12.33, colW:[9,3.33] }; // LAYOUT_WIDE w=13.33
+var gOptsTabOpts = { x:0.5, y:0.13, colW:[9,3.33] }; // LAYOUT_WIDE w=13.33
 var gOptsTextL = { color:'9F9F9F', margin:3, border:[null,null,{pt:'1',color:'CFCFCF'},null] };
 var gOptsOptsR = { color:'9F9F9F', margin:3, border:[0,0,{pt:'1',color:'CFCFCF'},0], align:'right' };
 var gOptsTextR = { text:'PptxGenJS', options:gOptsOptsR };
@@ -455,7 +455,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
 		slide.addTable( [['margin:[30,5,5,30]']], { x:10.5,y:1.1, margin:[30,5,5,30], w:2.2, fill:'F1F1F1' } );
 
-		slide.addTable( [[{text:'no border and number zero', options:{margin:5}}, {text:0, options:{margin:5}}]], { x:0.5, y:1.9, w:3, fill:'f2f9fc', border:{type:'none'}, colW:[2.5,0.5] } );
+		slide.addTable( [[{text:'no border and number zero', options:{margin:5}}, {text:0, options:{margin:5}}]], { x:0.5, y:1.9, fill:'f2f9fc', border:{type:'none'}, colW:[2.5,0.5] } );
 		slide.addTable( [[{text:'text-obj margin:0', options:{margin:0}}]], { x:4.0, y:1.9, w:2, fill:'f2f9fc' } );
 
 		// Test margin option when using both plain and text object cells
@@ -513,7 +513,7 @@ function genSlides_Table(pptx) {
 		// Table cell: Use the exact same code from addText to do the same word-level formatting within a cell
 		slide.addText('Table:', { x:1, y:5, w:3, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
-		var opts2 = { x:2.5, y:5, w:9, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6], border:{pt:'1'}, fill:'F1F1F1' }
+		var opts2 = { x:2.5, y:5, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6], border:{pt:'1'}, fill:'F1F1F1' }
 		var arrTabRows = [
 			[
 				{ text:'Cell 1A',       options:{fontFace:'Arial'  } },
@@ -566,7 +566,7 @@ function genSlides_Table(pptx) {
 					{ text:'3'   , options:{fontSize:60, fontFace:'Times', color:'33ccef'} }
 				]}
 			]],
-			{ x:0.6, y:4.75, w:12, h:2, fontSize:24, colW:[8,2,2], valign:'middle', border:{pt:'1'}, fill:'F1F1F1' }
+			{ x:0.6, y:4.75, h:2, fontSize:24, colW:[8,2,2], valign:'middle', border:{pt:'1'}, fill:'F1F1F1' }
 		);
 	}
 
