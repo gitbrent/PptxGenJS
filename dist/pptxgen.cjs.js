@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.7 @ 2019-12-09T05:11:35.800Z */
+/* PptxGenJS 3.0.0-beta.7 @ 2019-12-20T04:32:26.747Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4419,6 +4419,13 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         if (!tableRows[0] || !Array.isArray(tableRows[0])) {
             throw "addTable: 'rows' should be an array of cells! EX: 'slide.addTable( [ ['A'], ['B'], {text:'C',options:{align:'center'}} ] );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)";
         }
+        // TODO: FUTURE: This is wacky and wont function right (shows .w value when there is none from demo.js?!) 20191219
+        /*
+        if (opt.w && opt.colW) {
+            console.warn('addTable: please use either `colW` or `w` - not both (table will use `colW` and ignore `w`)')
+            console.log(`${opt.w} ${opt.colW}`)
+        }
+        */
     }
     // STEP 2: Transform `tableRows` into well-formatted ITableCell's
     // tableRows can be object or plain text array: `[{text:'cell 1'}, {text:'cell 2', options:{color:'ff0000'}}]` | `["cell 1", "cell 2"]`
@@ -4493,22 +4500,26 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         }
     */
     // Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
-    if (opt.w) {
-        opt.w = getSmartParseNumber(opt.w, 'X', presLayout);
-    }
-    else if (opt.colW) {
+    if (opt.colW) {
+        var firstRowColCnt = arrRows[0].length;
+        // Ex: `colW = 3` or `colW = '3'`
         if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
-            opt.w = Math.floor(Number(opt.colW) * arrRows[0].length);
+            opt.w = Math.floor(Number(opt.colW) * firstRowColCnt);
+            opt.colW = null; // IMPORTANT: Unset `colW` so table is created using `opt.w`, which will evenly divide cols
         }
-        else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length !== arrRows[0].length) {
-            console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.');
-            var numColWidth = Math.floor((presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length);
-            opt.colW = [];
-            for (var idx = 0; idx < arrRows[0].length; idx++) {
-                opt.colW.push(numColWidth);
-            }
-            opt.w = Math.floor(numColWidth * arrRows[0].length);
+        // Ex: `colW=[3]` but with >1 cols (same as above, user is saying "use this width for all")
+        else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length === 1 && firstRowColCnt > 1) {
+            opt.w = Math.floor(Number(opt.colW) * firstRowColCnt);
+            opt.colW = null; // IMPORTANT: Unset `colW` so table is created using `opt.w`, which will evenly divide cols
         }
+        // Err: Mismatched colW and cols count
+        else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length !== firstRowColCnt) {
+            console.warn('addTable: mismatch: (colW.length != data.length) Therefore, defaulting to evenly distributed col widths.');
+            opt.colW = null;
+        }
+    }
+    else if (opt.w) {
+        opt.w = getSmartParseNumber(opt.w, 'X', presLayout);
     }
     else {
         opt.w = Math.floor(presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]);
@@ -6837,7 +6848,7 @@ var PptxGenJS = /** @class */ (function () {
         /**
          * Library Version
          */
-        this._version = '3.0.0-beta.7';
+        this._version = '3.0.0-beta.9';
         // Global props
         this._charts = CHART_TYPES;
         this._colors = SCHEME_COLOR_NAMES;
