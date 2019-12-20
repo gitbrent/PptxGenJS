@@ -31,102 +31,6 @@ const findExtension = (data = '', path = '') => {
 	return strImgExtn
 }
 
-class Sizing {
-	sizingType
-
-	sourceW
-	sourceH
-
-	x
-	y
-	w
-	h
-
-	constructor(options, source) {
-		this.sizingType = options.type
-		this.x = options.x
-		this.y = options.y
-		this.w = options.w
-		this.h = options.h
-
-		this.sourceW = source.w
-		this.sourceH = source.h
-	}
-
-	get boxRatio() {
-		return this.h / this.w
-	}
-
-	get imgRatio() {
-		return this.sourceH / this.sourceW
-	}
-
-	renderCover(unit) {
-		const h = unit.y(this.h)
-		const w = unit.x(this.w)
-
-		const imgRatio = unit.y(this.sourceH) / unit.x(this.sourceW)
-		const boxRatio = h / w
-
-		const isBoxBased = boxRatio > imgRatio
-		const width = isBoxBased ? h / this.imgRatio : w
-		const height = isBoxBased ? h : w * imgRatio
-		const hzPerc = Math.round(1e5 * 0.5 * (1 - w / width))
-		const vzPerc = Math.round(1e5 * 0.5 * (1 - h / height))
-		return `<a:srcRect l="${hzPerc}" r="${hzPerc}" t="${vzPerc}" b="${vzPerc}"/><a:stretch/>`
-	}
-
-	renderContain(unit) {
-		const h = unit.y(this.h)
-		const w = unit.x(this.w)
-
-		const imgRatio = unit.y(this.sourceH) / unit.x(this.sourceW)
-		const boxRatio = h / w
-
-		const widthBased = boxRatio > imgRatio
-		const width = widthBased ? w : h / imgRatio
-		const height = widthBased ? w * imgRatio : h
-		const hzPerc = Math.round(1e5 * 0.5 * (1 - w / width))
-		const vzPerc = Math.round(1e5 * 0.5 * (1 - h / height))
-		return `<a:srcRect l="${hzPerc}" r="${hzPerc}" t="${vzPerc}" b="${vzPerc}"/><a:stretch/>`
-	}
-
-	renderCrop(unit) {
-		const imageW = unit.x(this.sourceW)
-		const imageH = unit.y(this.sourceH)
-
-		const l = unit.x(this.x)
-		const r = imageW - (l + unit.x(this.w))
-		const t = unit.y(this.y)
-		const b = imageH - (t + unit.y(this.h))
-
-		const lPerc = Math.round(1e5 * (l / imageW))
-		const rPerc = Math.round(1e5 * (r / imageW))
-		const tPerc = Math.round(1e5 * (t / imageH))
-		const bPerc = Math.round(1e5 * (b / imageH))
-
-		return `<a:srcRect l="${lPerc}" r="${rPerc}" t="${tPerc}" b="${bPerc}"/><a:stretch/>`
-	}
-
-	render(presLayout) {
-		const unitConv = unitConverter(presLayout)
-
-		if (this.sizingType === 'cover') {
-			return this.renderCover(unitConv)
-		}
-
-		if (this.sizingType === 'contain') {
-			return this.renderContain(unitConv)
-		}
-
-		if (this.sizingType === 'crop') {
-			return this.renderCrop(unitConv)
-		}
-
-		return ''
-	}
-}
-
 export default class ImageElement {
 	type = SLIDE_OBJECT_TYPES.newtext
 	imgId
@@ -138,7 +42,9 @@ export default class ImageElement {
 	position
 
 	image
-	sizing
+
+	objectFit
+
 	rounding
 	opacity
 
@@ -152,10 +58,10 @@ export default class ImageElement {
 		this.rounding = options.rounding
 		this.placeholder = options.placeholder
 
-		if (options.opacity && options.opacity) {
+		if (options.opacity) {
 			const numberOpacity = parseFloat(options.opacity)
 			if (numberOpacity < 1 && numberOpacity >= 0) {
-				this.opacity = parseFloat(options.opacity)
+				this.opacity = numberOpacity
 			}
 		}
 
@@ -165,30 +71,15 @@ export default class ImageElement {
 		this.position = new Position({
 			x: options.x,
 			y: options.y,
-
-			h: (options.sizing && options.sizing.h) || options.h,
-			w: (options.sizing && options.sizing.w) || options.w,
+			h: options.h,
+			w: options.w,
 
 			flipV: options.flipV,
 			flipH: options.flipH,
 			rotate: options.rotate,
 		})
 
-		if (options.sizing) {
-			this.sizing = new Sizing(
-				{
-					type: options.sizing.type || 'cover',
-					x: options.sizing.x || options.x,
-					y: options.sizing.y || options.y,
-					w: options.sizing.w || options.w,
-					h: options.sizing.h || options.h,
-				},
-				{
-					w: options.w,
-					h: options.h,
-				}
-			)
-		}
+		this.objectFit = new ObjectFit(options.objectFit || 'fill', this.position, options.imageFormat)
 
 		let newObject: any = {
 			type: null,
@@ -267,12 +158,116 @@ export default class ImageElement {
 			}
                 ${this.opacity ? `<a:alphaModFix amt="${this.opacity * 100000}"/>` : ''}
             </a:blip>
-        ${this.sizing ? this.sizing.render(presLayout) : '<a:stretch><a:fillRect/></a:stretch>'}
+        ${this.objectFit.render(presLayout)}
 		</p:blipFill>
 		<p:spPr>
 		    ${this.position.render(presLayout)}
 		    <a:prstGeom prst="${this.rounding ? 'ellipse' : 'rect'}"><a:avLst/></a:prstGeom>
 		</p:spPr>
 	</p:pic>`
+	}
+}
+
+class ObjectFit {
+	fitType
+
+	sourceW
+	sourceH
+
+	x
+	y
+	w
+	h
+
+	constructor(fitType = 'fill', position, source) {
+		this.fitType = fitType
+		this.x = position.x
+		this.y = position.y
+		this.w = position.w
+		this.h = position.h
+
+		if ((this.fitType !== 'fill' || this.fitType !== 'none') && (!source || !source.width || !source.height)) {
+			console.warn(`You need to specify full the width and height of the source for objectFit "${this.fitType}"`)
+			this.fitType = 'fill'
+		} else {
+			this.sourceW = source.width
+			this.sourceH = source.height
+		}
+	}
+
+	get boxRatio() {
+		return this.h / this.w
+	}
+
+	get imgRatio() {
+		return parseFloat(this.sourceH) / parseFloat(this.sourceW)
+	}
+
+	renderCover(unit) {
+		const h = unit.y(this.h)
+		const w = unit.x(this.w)
+
+		const boxRatio = h / w
+
+		const isBoxBased = boxRatio > this.imgRatio
+		const width = isBoxBased ? h / this.imgRatio : w
+		const height = isBoxBased ? h : w * this.imgRatio
+		const hzPerc = Math.round(1e5 * 0.5 * (1 - w / width))
+		const vzPerc = Math.round(1e5 * 0.5 * (1 - h / height))
+		return `<a:srcRect l="${hzPerc}" r="${hzPerc}" t="${vzPerc}" b="${vzPerc}"/><a:stretch/>`
+	}
+
+	renderContain(unit) {
+		const h = unit.y(this.h)
+		const w = unit.x(this.w)
+
+		const boxRatio = h / w
+
+		const widthBased = boxRatio > this.imgRatio
+		const width = widthBased ? w : h / this.imgRatio
+		const height = widthBased ? w * this.imgRatio : h
+		const hzPerc = Math.round(1e5 * 0.5 * (1 - w / width))
+		const vzPerc = Math.round(1e5 * 0.5 * (1 - h / height))
+		return `<a:srcRect l="${hzPerc}" r="${hzPerc}" t="${vzPerc}" b="${vzPerc}"/><a:stretch/>`
+	}
+
+	renderCrop(unit) {
+		const imageW = unit.x(this.sourceW)
+		const imageH = unit.y(this.sourceH)
+
+		const l = unit.x(this.x)
+		const r = imageW - (l + unit.x(this.w))
+		const t = unit.y(this.y)
+		const b = imageH - (t + unit.y(this.h))
+
+		const lPerc = Math.round(1e5 * (l / imageW))
+		const rPerc = Math.round(1e5 * (r / imageW))
+		const tPerc = Math.round(1e5 * (t / imageH))
+		const bPerc = Math.round(1e5 * (b / imageH))
+
+		return `<a:srcRect l="${lPerc}" r="${rPerc}" t="${tPerc}" b="${bPerc}"/><a:stretch/>`
+	}
+
+	render(presLayout) {
+		const unitConv = unitConverter(presLayout)
+
+		if (this.fitType === 'cover') {
+			return this.renderCover(unitConv)
+		}
+
+		if (this.fitType === 'contain') {
+			return this.renderContain(unitConv)
+		}
+
+		if (this.fitType === 'crop') {
+			return this.renderCrop(unitConv)
+		}
+
+		if (this.fitType === 'none') {
+			return ''
+		}
+
+		// Format for fill as default
+		return '<a:stretch><a:fillRect/></a:stretch>'
 	}
 }
