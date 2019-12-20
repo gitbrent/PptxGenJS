@@ -635,6 +635,14 @@ export function addTableDefinition(
 		if (!tableRows[0] || !Array.isArray(tableRows[0])) {
 			throw `addTable: 'rows' should be an array of cells! EX: 'slide.addTable( [ ['A'], ['B'], {text:'C',options:{align:'center'}} ] );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`
 		}
+
+		// TODO: FUTURE: This is wacky and wont function right (shows .w value when there is none from demo.js?!) 20191219
+		/*
+		if (opt.w && opt.colW) {
+			console.warn('addTable: please use either `colW` or `w` - not both (table will use `colW` and ignore `w`)')
+			console.log(`${opt.w} ${opt.colW}`)
+		}
+		*/
 	}
 
 	// STEP 2: Transform `tableRows` into well-formatted ITableCell's
@@ -705,13 +713,7 @@ export function addTableDefinition(
 	*/
 
 	// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
-	if (opt.w && opt.colW) {
-		console.warn('addTable: please use either `colW` or `w` - not both (table will use `w`, ignoring `colW`)')
-	}
-	//
-	if (opt.w) {
-		opt.w = getSmartParseNumber(opt.w, 'X', presLayout)
-	} else if (opt.colW) {
+	if (opt.colW) {
 		let firstRowColCnt = arrRows[0].length
 
 		// Ex: `colW = 3` or `colW = '3'`
@@ -729,6 +731,8 @@ export function addTableDefinition(
 			console.warn('addTable: mismatch: (colW.length != data.length) Therefore, defaulting to evenly distributed col widths.')
 			opt.colW = null
 		}
+	} else if (opt.w) {
+		opt.w = getSmartParseNumber(opt.w, 'X', presLayout)
 	} else {
 		opt.w = Math.floor(presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3])
 	}
