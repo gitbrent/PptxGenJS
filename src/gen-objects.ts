@@ -705,20 +705,29 @@ export function addTableDefinition(
 	*/
 
 	// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+	if (opt.w && opt.colW) {
+		console.warn('addTable: please use either `colW` or `w` - not both (table will use `w`, ignoring `colW`)')
+	}
+	//
 	if (opt.w) {
 		opt.w = getSmartParseNumber(opt.w, 'X', presLayout)
 	} else if (opt.colW) {
-		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
-			opt.w = Math.floor(Number(opt.colW) * arrRows[0].length)
-		} else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length !== arrRows[0].length) {
-			console.warn('addTable: colW.length != data.length! Defaulting to evenly distributed col widths.')
+		let firstRowColCnt = arrRows[0].length
 
-			let numColWidth = Math.floor((presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3]) / arrRows[0].length)
-			opt.colW = []
-			for (let idx = 0; idx < arrRows[0].length; idx++) {
-				opt.colW.push(numColWidth)
-			}
-			opt.w = Math.floor(numColWidth * arrRows[0].length)
+		// Ex: `colW = 3` or `colW = '3'`
+		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
+			opt.w = Math.floor(Number(opt.colW) * firstRowColCnt)
+			opt.colW = null // IMPORTANT: Unset `colW` so table is created using `opt.w`, which will evenly divide cols
+		}
+		// Ex: `colW=[3]` but with >1 cols (same as above, user is saying "use this width for all")
+		else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length === 1 && firstRowColCnt > 1) {
+			opt.w = Math.floor(Number(opt.colW) * firstRowColCnt)
+			opt.colW = null // IMPORTANT: Unset `colW` so table is created using `opt.w`, which will evenly divide cols
+		}
+		// Err: Mismatched colW and cols count
+		else if (opt.colW && Array.isArray(opt.colW) && opt.colW.length !== firstRowColCnt) {
+			console.warn('addTable: mismatch: (colW.length != data.length) Therefore, defaulting to evenly distributed col widths.')
+			opt.colW = null
 		}
 	} else {
 		opt.w = Math.floor(presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3])
