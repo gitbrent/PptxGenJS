@@ -64,6 +64,7 @@ import * as genXml from './gen-xml'
 import { createImageConfig } from './gen-utils'
 import * as JSZip from 'jszip'
 import Theme from './elements/theme'
+import SlideLayouts, { Master } from './slideLayouts'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -187,7 +188,7 @@ export default class PptxGenJS {
 	private slides: ISlide[]
 
 	/** slide layout definition objects, used for generating slide layout files */
-	private slideLayouts: ISlideLayout[]
+	private slideLayouts: SlideLayouts
 	private LAYOUTS: object
 
 	// Global props
@@ -234,19 +235,7 @@ export default class PptxGenJS {
 		this._isBrowser = false
 		this._theme = new Theme()
 		//
-		this.slideLayouts = [
-			{
-				presLayout: this._presLayout,
-				name: DEF_PRES_LAYOUT_NAME,
-				number: 1000,
-				slide: null,
-				data: [],
-				rels: [],
-				relsChart: [],
-				relsMedia: [],
-				margin: DEF_SLIDE_MARGIN_IN,
-			},
-		]
+		this.slideLayouts = new SlideLayouts(this._presLayout)
 		this.slides = []
 		this.masterSlide = {
 			addChart: null,
@@ -399,7 +388,7 @@ export default class PptxGenJS {
 				zip.folder('ppt/theme')
 				zip.folder('ppt/notesMasters').folder('_rels')
 				zip.folder('ppt/notesSlides').folder('_rels')
-				zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide))
+				zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts.asList(), this.masterSlide))
 				zip.file('_rels/.rels', genXml.makeXmlRootRels())
 				zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company))
 				zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision))
@@ -413,17 +402,17 @@ export default class PptxGenJS {
 				// C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
 				this.slideLayouts.forEach((layout, idx) => {
 					zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', genXml.makeXmlLayout(layout))
-					zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx + 1, this.slideLayouts))
+					zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx + 1, this.slideLayouts.asList()))
 				})
 				this.slides.forEach((slide, idx) => {
 					zip.file('ppt/slides/slide' + (idx + 1) + '.xml', genXml.makeXmlSlide(slide))
-					zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, idx + 1))
+					zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts.asList(), idx + 1))
 					// Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
 					zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', genXml.makeXmlNotesSlide(slide))
 					zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', genXml.makeXmlNotesSlideRel(idx + 1))
 				})
-				zip.file('ppt/slideMasters/slideMaster1.xml', genXml.makeXmlMaster(this.masterSlide, this.slideLayouts))
-				zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts))
+				zip.file('ppt/slideMasters/slideMaster1.xml', genXml.makeXmlMaster(this.masterSlide, this.slideLayouts.asList()))
+				zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts.asList()))
 				zip.file('ppt/notesMasters/notesMaster1.xml', genXml.makeXmlNotesMaster())
 				zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', genXml.makeXmlNotesMasterRel())
 
@@ -545,11 +534,7 @@ export default class PptxGenJS {
 			getSlide: this.getSlide,
 			presLayout: this.presLayout,
 			slideNumber: this.slides.length + 1,
-			slideLayout: masterSlideName
-				? this.slideLayouts.filter(layout => {
-						return layout.name === masterSlideName
-				  })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
-				: this.LAYOUTS[DEF_PRES_LAYOUT],
+			slideLayout: this.slideLayouts.provide(masterSlideName),
 		})
 
 		this.slides.push(newSlide)
@@ -561,69 +546,8 @@ export default class PptxGenJS {
 	 * Adds a new slide master [layout] to the Presentation
 	 * @param {ISlideMasterOptions} slideMasterOpts - layout definition
 	 */
-	defineSlideMaster(slideMasterOpts: ISlideMasterOptions) {
-		if (!slideMasterOpts.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
-
-		const newLayout: ISlideLayout = {
-			presLayout: this.presLayout,
-			name: slideMasterOpts.title,
-			number: 1000 + this.slideLayouts.length + 1,
-			slide: null,
-			data: [],
-			rels: [],
-			relsChart: [],
-			relsMedia: [],
-			margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
-		}
-
-		const registerLink = (data, target) => {
-			const relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1
-			newLayout.rels.push({
-				type: SLIDE_OBJECT_TYPES.hyperlink,
-				data,
-				rId: relId,
-				Target: target,
-			})
-
-			return relId
-		}
-
-		const registerImage = ({ path, data = '' }, extension, fromSvgSize) => {
-			const relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1
-			newLayout.relsMedia.push(
-				createImageConfig({
-					relId,
-					path,
-					Target: `../media/image-${newLayout.number}-${newLayout.relsMedia.length + 1}.${extension}`,
-					data,
-					extension,
-					fromSvgSize,
-				})
-			)
-			return relId
-		}
-
-		const registerChart = (globalId, options, data) => {
-			const chartRid = newLayout.relsChart.length + 1
-
-			newLayout.relsChart.push({
-				rId: chartRid,
-				data,
-				opts: options,
-				type: options.type,
-				globalId: globalId,
-				fileName: 'chart' + globalId + '.xml',
-				Target: '/ppt/charts/chart' + globalId + '.xml',
-			})
-
-			return chartRid
-		}
-
-		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(slideMasterOpts, newLayout, registerImage, registerLink, registerChart)
-
-		// STEP 2: Add it to layout defs
-		this.slideLayouts.push(newLayout)
+	defineSlideMaster(slideMasterOpts: ISlideMasterOptions): Master {
+		return this.slideLayouts.newFromConfig(slideMasterOpts.title, slideMasterOpts)
 	}
 
 	// HTML-TO-SLIDES METHODS
@@ -635,15 +559,6 @@ export default class PptxGenJS {
 	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
 	 */
 	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
-		genTable.genTableToSlides(
-			this,
-			tableElementId,
-			opts,
-			opts && opts.masterSlideName
-				? this.slideLayouts.filter(layout => {
-						return layout.name === opts.masterSlideName
-				  })[0]
-				: null
-		)
+		genTable.genTableToSlides(this, tableElementId, opts, opts && this.slideLayouts.get(opts.masterSlideName))
 	}
 }

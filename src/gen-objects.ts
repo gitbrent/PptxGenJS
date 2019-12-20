@@ -58,39 +58,6 @@ let _chartCounter: number = 0
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout, registerImage, registerLink, registerChart) {
-	// STEP 1: Add background
-	if (slideDef.bkgd) {
-		addBackgroundDefinition(slideDef.bkgd, target)
-	}
-
-	// STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
-	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-		slideDef.objects.forEach((object, idx: number) => {
-			let key = Object.keys(object)[0]
-			let tgt = target as ISlide
-			if (MASTER_OBJECTS[key] && key === 'chart') {
-				tgt.data.push(new ChartElement(object[key].type, object[key].data, object[key].opts, registerChart))
-			} else if (MASTER_OBJECTS[key] && key === 'image') {
-				tgt.data.push(new ImageElement(object[key], registerImage, registerLink))
-			} else if (MASTER_OBJECTS[key] && key === 'line') {
-				tgt.data.push(new ShapeElement(BASE_SHAPES.LINE, object[key]))
-			} else if (MASTER_OBJECTS[key] && key === 'rect') {
-				tgt.data.push(new ShapeElement(BASE_SHAPES.RECTANGLE, object[key]))
-			} else if (MASTER_OBJECTS[key] && key === 'text') {
-				tgt.data.push(new TextElement(object[key].text, object[key].options, registerLink))
-			} else if (MASTER_OBJECTS[key] && key === 'placeholder') {
-				// TODO: 20180820: Check for existing `name`?
-				tgt.data.push(new PlaceholderTextElement(object[key].text, object[key].options, 100 + idx, registerLink))
-			}
-		})
-	}
-
-	// STEP 3: Add Slide Numbers
-	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-		target.data.push(new SlideNumberElement(slideDef.slideNumber))
-	}
-}
 
 /**
  * Adds a media object to a slide definition.
@@ -458,7 +425,9 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 					return placeholder === slideLayoutObj.name
 				}).length === 0
 			) {
-				slide.data.push(new TextElement('', { placeholder: slideLayoutObj.name }, () => null))
+				if (slideLayoutObj.placeholderType !== 'pic') {
+					slide.data.push(new TextElement('', { placeholder: slideLayoutObj.name }, () => null))
+				}
 			}
 		}
 	})

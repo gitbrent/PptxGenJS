@@ -29,6 +29,6 @@ export default class PlaceholderText {
 	}
 
 	render(idx, presLayout) {
-		return this.textElement.render(idx, presLayout, this.renderPlaceholderInfo.bind(this))
+		return this.textElement.render(idx, presLayout, this)
 	}
 }

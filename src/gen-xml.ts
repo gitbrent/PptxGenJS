@@ -86,14 +86,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		let locationAttr = ''
 
 		if (slideItemObj instanceof TextElement || slideItemObj instanceof ImageElement) {
-			strSlideXml += slideItemObj.render(idx, slide.presLayout, placeholder => {
-				if (!placeholder) return ''
-				const found = slide['slideLayout']['data'].filter((object: ISlideObject) => {
-					return object instanceof PlaceholderTextElement && object.name === placeholder
-				})[0]
-				if (!found) return ''
-				return found.renderPlaceholderInfo()
-			})
+			strSlideXml += slideItemObj.render(idx, slide.presLayout, slide['slideLayout'].getPlaceholder(slideItemObj.placeholder))
 			return
 		}
 		if (

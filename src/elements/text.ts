@@ -12,7 +12,7 @@ import ParagraphProperties from './paragraph-properties'
 import RunProperties from './run-properties'
 import Hyperlink from './hyperlink'
 
-const buildFragments = (inputText, inputBreakLine, registerLink) => {
+const buildFragments = (inputText, inputBreakLine, relations) => {
 	let fragments = inputText
 	if (typeof inputText === 'string' || typeof inputText === 'number') {
 		fragments = [{ text: inputText.toString(), options: {} }]
@@ -52,7 +52,7 @@ const buildFragments = (inputText, inputBreakLine, registerLink) => {
 			subscript: options.subscript,
 			superscript: options.superscript,
 			outline: options.outline,
-			hyperlink: options.hyperlink && new Hyperlink(options.hyperlink, registerLink),
+			hyperlink: options.hyperlink && new Hyperlink(options.hyperlink, relations),
 		})
 
 		if (breakLine) {
@@ -102,8 +102,8 @@ export default class TextElement {
 	paragraphProperties
 	runProperties
 
-	constructor(text, opts, registerLink) {
-		this.fragments = buildFragments(text, opts.breakLine, registerLink)
+	constructor(text, opts, relations) {
+		this.fragments = buildFragments(text, opts.breakLine, relations)
 		if (!opts.placeholder || opts.shape) {
 			this.shape = new Shape(opts.shape)
 		} else {
@@ -205,11 +205,11 @@ export default class TextElement {
 			subscript: opts.subscript,
 			superscript: opts.superscript,
 			outline: opts.outline,
-			hyperlink: opts.hyperlink && new Hyperlink(opts.hyperlink, registerLink),
+			hyperlink: opts.hyperlink && new Hyperlink(opts.hyperlink, relations),
 		})
 	}
 
-	render(idx, presLayout, renderPlaceholder) {
+	render(idx, presLayout, placeholder) {
 		// F: NEW: Add autofit type tags
 		// MS-PPT > Format shape > Text Options: "Shrink text on overflow"
 
@@ -221,7 +221,7 @@ export default class TextElement {
             <p:cNvPr id="${idx + 2}" name="Object ${idx + 1}"/>
             <p:cNvSpPr${this.isTextBox ? ' txBox="1"' : ''}/>
 		    <p:nvPr>
-                ${renderPlaceholder(this.placeholder)}
+            ${placeholder ? placeholder.renderPlaceholderInfo() : ''}
 		    </p:nvPr>
         </p:nvSpPr>
 

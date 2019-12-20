@@ -16,7 +16,7 @@ export default class ChartElement {
 	chartId
 	position
 
-	constructor(type, data, opts, registerChart) {
+	constructor(type, data, opts, relations) {
 		// DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
 		// EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
 		// Multi-Type Charts
@@ -53,7 +53,7 @@ export default class ChartElement {
 		let globalChartId = ++_chartCounter
 
 		options.type = type
-		this.chartId = registerChart(globalChartId, cleanChartOptions(options), tmpData)
+		this.chartId = relations.registerChart(globalChartId, cleanChartOptions(options), tmpData)
 	}
 
 	render(idx, presLayout) {

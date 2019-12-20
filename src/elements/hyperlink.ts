@@ -6,14 +6,14 @@ export default class HyperLink {
 	tooltip
 	rId
 
-	constructor({ url, slide, tooltip }, registerLink) {
+	constructor({ url, slide, tooltip }, relations) {
 		if (!url && !slide) throw "ERROR: 'hyperlink requires either `url` or `slide`'"
 
 		this.url = url
 		this.slide = slide
 		this.tooltip = tooltip
 
-		this.rId = registerLink(this.slide ? 'slide' : 'dummy', encodeXmlEntities(this.url) || this.slide.toString())
+		this.rId = relations.registerLink(this.slide ? 'slide' : 'dummy', encodeXmlEntities(this.url) || this.slide.toString())
 	}
 
 	render() {

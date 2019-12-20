@@ -53,7 +53,7 @@ export default class ImageElement {
 
 	hyperlink
 
-	constructor(options, registerImage, registerLink) {
+	constructor(options, relations) {
 		this.image = options.image
 		this.rounding = options.rounding
 		this.placeholder = options.placeholder
@@ -97,7 +97,7 @@ export default class ImageElement {
 		// STEP 4: Add this image to this Slide Rels
 		if (extension === 'svg') {
 			// SVG files consume *TWO* rId's: (a png version and the svg image)
-			this.imgId = registerImage(
+			this.imgId = relations.registerImage(
 				{
 					data: options.data,
 					// not sure why we add png to data here
@@ -107,7 +107,7 @@ export default class ImageElement {
 				{ w: options.w, h: options.h }
 			)
 
-			this.svgImgId = registerImage(
+			this.svgImgId = relations.registerImage(
 				{
 					data: options.data,
 					path: options.path || options.data,
@@ -116,7 +116,7 @@ export default class ImageElement {
 			)
 			this.isSvg = true
 		} else {
-			this.imgId = registerImage(
+			this.imgId = relations.registerImage(
 				{
 					data: options.data,
 					path: options.path || `${options.data}.${extension}`,
@@ -126,11 +126,11 @@ export default class ImageElement {
 		}
 
 		if (options.hyperlink) {
-			this.hyperlink = new Hyperlink(options.hyperlink, registerLink)
+			this.hyperlink = new Hyperlink(options.hyperlink, relations)
 		}
 	}
 
-	render(idx, presLayout, renderPlaceholder) {
+	render(idx, presLayout, placeholder) {
 		return `
     <p:pic>
 	    <p:nvPicPr>
@@ -140,7 +140,9 @@ export default class ImageElement {
                 <p:cNvPicPr>
                 <a:picLocks noChangeAspect="1"/>
             </p:cNvPicPr>
-            <p:nvPr>${renderPlaceholder(this.placeholder)}</p:nvPr>
+                <p:nvPr>
+                    ${placeholder ? placeholder.renderPlaceholderInfo() : ''}
+                </p:nvPr>
 		</p:nvPicPr>
         <p:blipFill>
 			<a:blip r:embed="rId${this.imgId}">

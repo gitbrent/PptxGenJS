@@ -25,6 +25,7 @@ import {
 
 import * as genObj from './gen-objects'
 import { createImageConfig } from './gen-utils'
+import Relations from './relations'
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import ImageElement from './elements/image'
@@ -34,6 +35,7 @@ import SlideNumberElement from './elements/slide-number'
 export default class Slide {
 	private _bkgd: string
 	private _color: string
+	private relations
 
 	public addSlide: Function
 	public getSlide: Function
@@ -41,9 +43,6 @@ export default class Slide {
 	public name: string
 	public number: number
 	public data: ISlideObject[]
-	public rels: ISlideRel[]
-	public relsChart: ISlideRelChart[]
-	public relsMedia: ISlideRelMedia[]
 	public slideLayout: ISlideLayout
 
 	constructor(params: { addSlide: Function; getSlide: Function; presLayout: ILayout; slideNumber: number; slideLayout?: ISlideLayout }) {
@@ -53,54 +52,20 @@ export default class Slide {
 		this.name = 'Slide ' + params.slideNumber
 		this.number = params.slideNumber
 		this.data = []
-		this.rels = []
-		this.relsChart = []
-		this.relsMedia = []
 		this.slideLayout = params.slideLayout || null
+		this.relations = new Relations()
 	}
 
-	private _registerLink(data, target) {
-		const relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1
-		this.rels.push({
-			type: SLIDE_OBJECT_TYPES.hyperlink,
-			data,
-			rId: relId,
-			Target: target,
-		})
-
-		return relId
+	public get rels() {
+		return this.relations.rels
 	}
 
-	private _registerImage({ path, data = '' }, extension, fromSvgSize) {
-		// (rId/rels count spans all slides! Count all images to get next rId)
-		const relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1
-		this.relsMedia.push(
-			createImageConfig({
-				relId,
-				Target: `../media/image-${this.number}-${this.relsMedia.length + 1}.${extension}`,
-				path,
-				data,
-				extension,
-				fromSvgSize,
-			})
-		)
-		return relId
+	public get relsChart() {
+		return this.relations.relsChart
 	}
 
-	private _registerChart(globalId, options, data) {
-		const chartRid = this.relsChart.length + 1
-
-		this.relsChart.push({
-			rId: chartRid,
-			data,
-			opts: options,
-			type: options.type,
-			globalId: globalId,
-			fileName: 'chart' + globalId + '.xml',
-			Target: '/ppt/charts/chart' + globalId + '.xml',
-		})
-
-		return chartRid
+	public get relsMedia() {
+		return this.relations.relsMedia
 	}
 
 	// TODO: add comments (also add to index.d.ts)
@@ -152,7 +117,7 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts): Slide {
-		this.data.push(new ChartElement(type, data, options, this._registerChart.bind(this)))
+		this.data.push(new ChartElement(type, data, options, this.relations))
 		return this
 	}
 
@@ -172,7 +137,7 @@ export default class Slide {
 			return null
 		}
 
-		this.data.push(new ImageElement(options, this._registerImage.bind(this), this._registerLink.bind(this)))
+		this.data.push(new ImageElement(options, this.relations))
 		return this
 	}
 
@@ -229,7 +194,7 @@ export default class Slide {
 	 * @since: 1.0.0
 	 */
 	addText(text: string | IText[], options?: ITextOpts): Slide {
-		this.data.push(new TextElement(text, options, this._registerLink.bind(this)))
+		this.data.push(new TextElement(text, options, this.relations))
 		return this
 		//genObj.addTextDefinition(this, text, options, false)
 		//return this
