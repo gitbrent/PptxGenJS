@@ -9,6 +9,7 @@ export default class PlaceholderImage extends Placeholder {
 	public position: Position
 	public objectFit?: 'cover' | 'contain' | 'fill' | 'none'
 	opacity?: number
+	colorBlend?
 
 	constructor(options, index) {
 		super(options.name, options.type || 'pic', index)
@@ -25,6 +26,7 @@ export default class PlaceholderImage extends Placeholder {
 		})
 
 		this.objectFit = options.objectFit
+		this.colorBlend = options.colorBlend
 
 		if (options.opacity) {
 			const numberOpacity = parseFloat(options.opacity)

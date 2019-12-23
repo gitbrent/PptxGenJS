@@ -1,6 +1,6 @@
 import { SLIDE_OBJECT_TYPES } from '../core-enums'
 
-import { getSmartParseNumber, encodeXmlEntities } from '../gen-utils'
+import { getSmartParseNumber, encodeXmlEntities, genXmlColorSelection } from '../gen-utils'
 
 import Hyperlink from './hyperlink'
 import Position from './position'
@@ -49,6 +49,8 @@ export default class ImageElement {
 	rounding
 	opacity
 
+	colorBlend
+
 	isSvg
 	placeholder
 
@@ -58,6 +60,8 @@ export default class ImageElement {
 		this.image = options.image
 		this.rounding = options.rounding
 		this.placeholder = options.placeholder
+
+		this.colorBlend = options.colorBlend
 
 		if (options.opacity) {
 			const numberOpacity = parseFloat(options.opacity)
@@ -144,6 +148,8 @@ export default class ImageElement {
 
 		const objectFit = new ObjectFit(this.objectFit || (placeholder && placeholder.objectFit), correctedPosition, this.imageFormat)
 		const opacity = this.opacity || (placeholder && placeholder.opacity)
+		const colorBlend = this.colorBlend || (placeholder && placeholder.colorBlend)
+
 		return `
     <p:pic>
 	    <p:nvPicPr>
@@ -172,6 +178,7 @@ export default class ImageElement {
 					: ''
 			}
                 ${opacity ? `<a:alphaModFix amt="${opacity * 100000}"/>` : ''}
+                ${colorBlend ? duoToneEffect(colorBlend) : ''}
             </a:blip>
         ${objectFit.render(presLayout)}
 		</p:blipFill>
@@ -285,4 +292,13 @@ class ObjectFit {
 		// Format for fill as default
 		return '<a:stretch><a:fillRect/></a:stretch>'
 	}
+}
+
+const duoToneEffect = ({ darkColor = '226622', lightColor = 'FFFFFF' }) => {
+	return `
+            <a:duotone>
+              <a:srgbClr val="${darkColor}"/>
+              <a:srgbClr val="${lightColor}"/>
+            </a:duotone>
+    `
 }
