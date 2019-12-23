@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-12-18T17:06:52.866Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-23T10:03:01.611Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1758,24 +1758,6 @@ function genXmlColorSelection(shapeFill, backColor) {
     }
     return outText;
 }
-var createImageConfig = function (_a) {
-    var relId = _a.relId, _b = _a.data, data = _b === void 0 ? '' : _b, _c = _a.path, path = _c === void 0 ? '' : _c, extension = _a.extension, Target = _a.Target, fromSvgSize = _a.fromSvgSize;
-    var mediaConfig = {
-        rId: relId,
-        type: "image/" + (extension === 'svg' ? 'svg+xml' : extension),
-        path: path,
-        data: data,
-        extn: extension,
-        Target: Target,
-        isSvgPng: false,
-        svgSize: null,
-    };
-    if (fromSvgSize) {
-        mediaConfig.isSvgPng = true;
-        mediaConfig.svgSize = fromSvgSize;
-    }
-    return mediaConfig;
-};
 //# sourceMappingURL=gen-utils.js.map
 
 /**
@@ -2617,14 +2599,14 @@ var RunProperties = /** @class */ (function () {
 //# sourceMappingURL=run-properties.js.map
 
 var HyperLink = /** @class */ (function () {
-    function HyperLink(_a, registerLink) {
+    function HyperLink(_a, relations) {
         var url = _a.url, slide = _a.slide, tooltip = _a.tooltip;
         if (!url && !slide)
             throw "ERROR: 'hyperlink requires either `url` or `slide`'";
         this.url = url;
         this.slide = slide;
         this.tooltip = tooltip;
-        this.rId = registerLink(this.slide ? 'slide' : 'dummy', encodeXmlEntities(this.url) || this.slide.toString());
+        this.rId = relations.registerLink(this.slide ? 'slide' : 'dummy', encodeXmlEntities(this.url) || this.slide.toString());
     }
     HyperLink.prototype.render = function () {
         if (this.url) {
@@ -2640,7 +2622,7 @@ var HyperLink = /** @class */ (function () {
 }());
 //# sourceMappingURL=hyperlink.js.map
 
-var buildFragments = function (inputText, inputBreakLine, registerLink) {
+var buildFragments = function (inputText, inputBreakLine, relations) {
     var fragments = inputText;
     if (typeof inputText === 'string' || typeof inputText === 'number') {
         fragments = [{ text: inputText.toString(), options: {} }];
@@ -2679,7 +2661,7 @@ var buildFragments = function (inputText, inputBreakLine, registerLink) {
             subscript: options.subscript,
             superscript: options.superscript,
             outline: options.outline,
-            hyperlink: options.hyperlink && new HyperLink(options.hyperlink, registerLink),
+            hyperlink: options.hyperlink && new HyperLink(options.hyperlink, relations),
         });
         if (breakLine) {
             return text.split(CRLF).map(function (line, lineIdx) {
@@ -2692,9 +2674,9 @@ var buildFragments = function (inputText, inputBreakLine, registerLink) {
     });
 };
 var TextElement$1 = /** @class */ (function () {
-    function TextElement$1(text, opts, registerLink) {
+    function TextElement$1(text, opts, relations) {
         this.type = SLIDE_OBJECT_TYPES.newtext;
-        this.fragments = buildFragments(text, opts.breakLine, registerLink);
+        this.fragments = buildFragments(text, opts.breakLine, relations);
         if (!opts.placeholder || opts.shape) {
             this.shape = new ShapeElement(opts.shape);
         }
@@ -2789,15 +2771,15 @@ var TextElement$1 = /** @class */ (function () {
             subscript: opts.subscript,
             superscript: opts.superscript,
             outline: opts.outline,
-            hyperlink: opts.hyperlink && new HyperLink(opts.hyperlink, registerLink),
+            hyperlink: opts.hyperlink && new HyperLink(opts.hyperlink, relations),
         });
     }
-    TextElement$1.prototype.render = function (idx, presLayout, renderPlaceholder) {
+    TextElement$1.prototype.render = function (idx, presLayout, placeholder) {
         // F: NEW: Add autofit type tags
         // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
         // MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
         // NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
-        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr" + (this.isTextBox ? ' txBox="1"' : '') + "/>\n\t\t    <p:nvPr>\n                " + renderPlaceholder(this.placeholder) + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + (this.shape ? this.shape.render(this.rectRadius, this.position, presLayout) : '') + "\n            " + (this.fill
+        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr" + (this.isTextBox ? ' txBox="1"' : '') + "/>\n\t\t    <p:nvPr>\n            " + (placeholder ? placeholder.renderPlaceholderInfo() : '') + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + (this.shape ? this.shape.render(this.rectRadius, this.position, presLayout) : '') + "\n            " + (this.fill
             ? genXmlColorSelection(this.fill)
             : // We only default to no fill if we have not specified a placeholder
                 this.placeholder
@@ -2817,42 +2799,6 @@ var TextElement$1 = /** @class */ (function () {
 }());
 //# sourceMappingURL=text.js.map
 
-var defaultsToOne = function (x) { return x || (x === 0 ? 0 : 1); };
-var SimpleShapeElement = /** @class */ (function () {
-    function SimpleShapeElement(shape, opts) {
-        this.type = SLIDE_OBJECT_TYPES.newtext;
-        this.shape = new ShapeElement(shape);
-        this.fill = opts.fill;
-        this.rectRadius = opts.rectRadius;
-        if (opts.line || shape.name === 'line') {
-            this.line = new LineElement({
-                color: opts.line || '333333',
-                size: opts.lineSize,
-                dash: opts.lineDash,
-                head: opts.lineHead,
-                tail: opts.lineTail,
-            });
-        }
-        this.position = new Position({
-            x: defaultsToOne(opts.x),
-            y: defaultsToOne(opts.y),
-            h: defaultsToOne(opts.h),
-            w: defaultsToOne(opts.w),
-            flipV: opts.flipV,
-            flipH: opts.flipH,
-            rotate: opts.rotate,
-        });
-        if (opts.shadow) {
-            this.shadow = new ShadowElement(opts.shadow);
-        }
-    }
-    SimpleShapeElement.prototype.render = function (idx, presLayout) {
-        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr />\n\t\t    <p:nvPr />\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + this.shape.render(this.rectRadius, this.position, presLayout) + "\n            " + (this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n    </p:sp>";
-    };
-    return SimpleShapeElement;
-}());
-//# sourceMappingURL=simple-shape.js.map
-
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
@@ -2867,6 +2813,20 @@ MERCHANTABLITY OR NON-INFRINGEMENT.
 See the Apache Version 2.0 License for specific language governing permissions
 and limitations under the License.
 ***************************************************************************** */
+/* global Reflect, Promise */
+
+var extendStatics = function(d, b) {
+    extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return extendStatics(d, b);
+};
+
+function __extends(d, b) {
+    extendStatics(d, b);
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+}
 
 function __rest(s, e) {
     var t = {};
@@ -2878,10 +2838,30 @@ function __rest(s, e) {
     return t;
 }
 
-var PlaceholderText = /** @class */ (function () {
-    function PlaceholderText(text, options, index, registerLink) {
+var Placeholder = /** @class */ (function () {
+    function Placeholder(name, type, index) {
+        if (type === void 0) { type = 'body'; }
         this.type = SLIDE_OBJECT_TYPES.newtext;
-        var name = options.name, _a = options.type, type = _a === void 0 ? 'body' : _a, textOptions = __rest(options
+        this.name = name;
+        this.placeholderType = type;
+        this.placeholderIndex = index;
+    }
+    Placeholder.prototype.renderPlaceholderInfo = function () {
+        return "<p:ph idx=\"" + this.placeholderIndex + "\" type=\"" + this.placeholderType + "\" />";
+    };
+    Placeholder.prototype.render = function (idx, presLayout) {
+        throw new Error('not implemented');
+    };
+    return Placeholder;
+}());
+//# sourceMappingURL=placeholder.js.map
+
+var PlaceholderText = /** @class */ (function (_super) {
+    __extends(PlaceholderText, _super);
+    function PlaceholderText(text, options, index, relations) {
+        var _this = _super.call(this, options.name, options.type, index) || this;
+        _this.type = SLIDE_OBJECT_TYPES.newtext;
+        var name = options.name, _a = options.type, textOptions = __rest(options
         // We default to no bullet in the placeholder (different from the slide
         // that inherits by default)
         , ["name", "type"]);
@@ -2889,433 +2869,25 @@ var PlaceholderText = /** @class */ (function () {
         // that inherits by default)
         if (!textOptions.bullet)
             textOptions.bullet = false;
-        var textElement = new TextElement$1(text, textOptions, registerLink);
-        this.name = name;
-        this.textElement = textElement;
-        this.placeholderType = type;
-        this.placeholderIndex = index;
+        _this.textElement = new TextElement$1(text, textOptions, relations);
+        return _this;
     }
+    Object.defineProperty(PlaceholderText.prototype, "position", {
+        get: function () {
+            return this.textElement.position;
+        },
+        enumerable: true,
+        configurable: true
+    });
     PlaceholderText.prototype.renderPlaceholderInfo = function () {
         return "<p:ph idx=\"" + this.placeholderIndex + "\" type=\"" + this.placeholderType + "\" " + (this.textElement.fragments.length > 0 ? ' hasCustomPrompt="1"' : '') + " />";
     };
     PlaceholderText.prototype.render = function (idx, presLayout) {
-        return this.textElement.render(idx, presLayout, this.renderPlaceholderInfo.bind(this));
+        return this.textElement.render(idx, presLayout, this);
     };
     return PlaceholderText;
-}());
+}(Placeholder));
 //# sourceMappingURL=placeholder-text.js.map
-
-var unitConverter = function (presLayout) { return ({
-    x: function (x) { return getSmartParseNumber(x, 'X', presLayout); },
-    y: function (y) { return getSmartParseNumber(y, 'Y', presLayout); },
-}); };
-var findExtension = function (data, path) {
-    if (data === void 0) { data = ''; }
-    if (path === void 0) { path = ''; }
-    // STEP 1: Set extension
-    // NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
-    var strImgExtn = path
-        .substring(path.lastIndexOf('/') + 1)
-        .split('?')[0]
-        .split('.')
-        .pop()
-        .split('#')[0] || 'png';
-    // However, pre-encoded images can be whatever mime-type they want (and good for them!)
-    if (data && /image\/(\w+)\;/.exec(data) && /image\/(\w+)\;/.exec(data).length > 0) {
-        strImgExtn = /image\/(\w+)\;/.exec(data)[1];
-    }
-    else if (data && data.toLowerCase().indexOf('image/svg+xml') > -1) {
-        strImgExtn = 'svg';
-    }
-    return strImgExtn;
-};
-var Sizing = /** @class */ (function () {
-    function Sizing(options, source) {
-        this.sizingType = options.type;
-        this.x = options.x;
-        this.y = options.y;
-        this.w = options.w;
-        this.h = options.h;
-        this.sourceW = source.w;
-        this.sourceH = source.h;
-    }
-    Object.defineProperty(Sizing.prototype, "boxRatio", {
-        get: function () {
-            return this.h / this.w;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(Sizing.prototype, "imgRatio", {
-        get: function () {
-            return this.sourceH / this.sourceW;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Sizing.prototype.renderCover = function (unit) {
-        var h = unit.y(this.h);
-        var w = unit.x(this.w);
-        var imgRatio = unit.y(this.sourceH) / unit.x(this.sourceW);
-        var boxRatio = h / w;
-        var isBoxBased = boxRatio > imgRatio;
-        var width = isBoxBased ? h / this.imgRatio : w;
-        var height = isBoxBased ? h : w * imgRatio;
-        var hzPerc = Math.round(1e5 * 0.5 * (1 - w / width));
-        var vzPerc = Math.round(1e5 * 0.5 * (1 - h / height));
-        return "<a:srcRect l=\"" + hzPerc + "\" r=\"" + hzPerc + "\" t=\"" + vzPerc + "\" b=\"" + vzPerc + "\"/><a:stretch/>";
-    };
-    Sizing.prototype.renderContain = function (unit) {
-        var h = unit.y(this.h);
-        var w = unit.x(this.w);
-        var imgRatio = unit.y(this.sourceH) / unit.x(this.sourceW);
-        var boxRatio = h / w;
-        var widthBased = boxRatio > imgRatio;
-        var width = widthBased ? w : h / imgRatio;
-        var height = widthBased ? w * imgRatio : h;
-        var hzPerc = Math.round(1e5 * 0.5 * (1 - w / width));
-        var vzPerc = Math.round(1e5 * 0.5 * (1 - h / height));
-        return "<a:srcRect l=\"" + hzPerc + "\" r=\"" + hzPerc + "\" t=\"" + vzPerc + "\" b=\"" + vzPerc + "\"/><a:stretch/>";
-    };
-    Sizing.prototype.renderCrop = function (unit) {
-        var imageW = unit.x(this.sourceW);
-        var imageH = unit.y(this.sourceH);
-        var l = unit.x(this.x);
-        var r = imageW - (l + unit.x(this.w));
-        var t = unit.y(this.y);
-        var b = imageH - (t + unit.y(this.h));
-        var lPerc = Math.round(1e5 * (l / imageW));
-        var rPerc = Math.round(1e5 * (r / imageW));
-        var tPerc = Math.round(1e5 * (t / imageH));
-        var bPerc = Math.round(1e5 * (b / imageH));
-        return "<a:srcRect l=\"" + lPerc + "\" r=\"" + rPerc + "\" t=\"" + tPerc + "\" b=\"" + bPerc + "\"/><a:stretch/>";
-    };
-    Sizing.prototype.render = function (presLayout) {
-        var unitConv = unitConverter(presLayout);
-        if (this.sizingType === 'cover') {
-            return this.renderCover(unitConv);
-        }
-        if (this.sizingType === 'contain') {
-            return this.renderContain(unitConv);
-        }
-        if (this.sizingType === 'crop') {
-            return this.renderCrop(unitConv);
-        }
-        return '';
-    };
-    return Sizing;
-}());
-var ImageElement = /** @class */ (function () {
-    function ImageElement(options, registerImage, registerLink) {
-        this.type = SLIDE_OBJECT_TYPES.newtext;
-        this.image = options.image;
-        this.rounding = options.rounding;
-        this.placeholder = options.placeholder;
-        if (options.opacity && options.opacity) {
-            var numberOpacity = parseFloat(options.opacity);
-            if (numberOpacity < 1 && numberOpacity >= 0) {
-                this.opacity = parseFloat(options.opacity);
-            }
-        }
-        this.sourceH = options.h;
-        this.sourceW = options.w;
-        this.position = new Position({
-            x: options.x,
-            y: options.y,
-            h: (options.sizing && options.sizing.h) || options.h,
-            w: (options.sizing && options.sizing.w) || options.w,
-            flipV: options.flipV,
-            flipH: options.flipH,
-            rotate: options.rotate,
-        });
-        if (options.sizing) {
-            this.sizing = new Sizing({
-                type: options.sizing.type || 'cover',
-                x: options.sizing.x || options.x,
-                y: options.sizing.y || options.y,
-                w: options.sizing.w || options.w,
-                h: options.sizing.h || options.h,
-            }, {
-                w: options.w,
-                h: options.h,
-            });
-        }
-        var extension = findExtension(options.data, options.path);
-        this.image = options.path || 'preencoded.png';
-        // STEP 4: Add this image to this Slide Rels
-        if (extension === 'svg') {
-            // SVG files consume *TWO* rId's: (a png version and the svg image)
-            this.imgId = registerImage({
-                data: options.data,
-                // not sure why we add png to data here
-                path: options.path || options.data + "png",
-            }, 'png', { w: options.w, h: options.h });
-            this.svgImgId = registerImage({
-                data: options.data,
-                path: options.path || options.data,
-            }, 'svg');
-            this.isSvg = true;
-        }
-        else {
-            this.imgId = registerImage({
-                data: options.data,
-                path: options.path || options.data + "." + extension,
-            }, extension);
-        }
-        if (options.hyperlink) {
-            this.hyperlink = new HyperLink(options.hyperlink, registerLink);
-        }
-    }
-    ImageElement.prototype.render = function (idx, presLayout, renderPlaceholder) {
-        return "\n    <p:pic>\n\t    <p:nvPicPr>\n\t        <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(this.image) + "\">\n                " + (this.hyperlink ? this.hyperlink.render() : '') + "\n\t\t\t</p:cNvPr>\n                <p:cNvPicPr>\n                <a:picLocks noChangeAspect=\"1\"/>\n            </p:cNvPicPr>\n            <p:nvPr>" + renderPlaceholder(this.placeholder) + "</p:nvPr>\n\t\t</p:nvPicPr>\n        <p:blipFill>\n\t\t\t<a:blip r:embed=\"rId" + this.imgId + "\">\n            " + (
-        /* NOTE: This works for both cases: either `path` or `data` contains the SVG */
-        this.isSvg
-            ? "<a:extLst>\n                <a:ext uri=\"{96DAC541-7B7A-43D3-8B79-37D633B846F1}\">\n                    <asvg:svgBlip\n                        xmlns:asvg=\"http://schemas.microsoft.com/office/drawing/2016/SVG/main\" \n                        r:embed=\"rId" + this.svgImgId + "\"/>\n                    </a:ext>\n                </a:extLst>"
-            : '') + "\n                " + (this.opacity ? "<a:alphaModFix amt=\"" + this.opacity * 100000 + "\"/>" : '') + "\n            </a:blip>\n        " + (this.sizing ? this.sizing.render(presLayout) : '<a:stretch><a:fillRect/></a:stretch>') + "\n\t\t</p:blipFill>\n\t\t<p:spPr>\n\t\t    " + this.position.render(presLayout) + "\n\t\t    <a:prstGeom prst=\"" + (this.rounding ? 'ellipse' : 'rect') + "\"><a:avLst/></a:prstGeom>\n\t\t</p:spPr>\n\t</p:pic>";
-    };
-    return ImageElement;
-}());
-//# sourceMappingURL=image.js.map
-
-function correctGridLineOptions(glOpts) {
-    if (!glOpts || glOpts.style === 'none')
-        return;
-    if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
-        console.warn('Warning: chart.gridLine.size must be greater than 0.');
-        delete glOpts.size; // delete prop to used defaults
-    }
-    if (glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0) {
-        console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
-        delete glOpts.style;
-    }
-    return glOpts;
-}
-/**
- * Checks shadow options passed by user and performs corrections if needed.
- * @param {IShadowOptions} IShadowOptions - shadow options
- */
-function correctShadowOptions(IShadowOptions) {
-    if (!IShadowOptions || IShadowOptions === null)
-        return;
-    // OPT: `type`
-    if (IShadowOptions.type !== 'outer' && IShadowOptions.type !== 'inner' && IShadowOptions.type !== 'none') {
-        console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.');
-        IShadowOptions.type = 'outer';
-    }
-    // OPT: `angle`
-    if (IShadowOptions.angle) {
-        // A: REALITY-CHECK
-        if (isNaN(Number(IShadowOptions.angle)) || IShadowOptions.angle < 0 || IShadowOptions.angle > 359) {
-            console.warn('Warning: shadow.angle can only be 0-359');
-            IShadowOptions.angle = 270;
-        }
-        // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-        IShadowOptions.angle = Math.round(Number(IShadowOptions.angle));
-    }
-    // OPT: `opacity`
-    if (IShadowOptions.opacity) {
-        // A: REALITY-CHECK
-        if (isNaN(Number(IShadowOptions.opacity)) || IShadowOptions.opacity < 0 || IShadowOptions.opacity > 1) {
-            console.warn('Warning: shadow.opacity can only be 0-1');
-            IShadowOptions.opacity = 0.75;
-        }
-        // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-        IShadowOptions.opacity = Number(IShadowOptions.opacity);
-    }
-}
-var cleanChartOptions = function (options) {
-    // STEP 1: TODO: check for reqd fields, correct type, etc
-    // `type` exists in CHART_TYPES
-    // Array.isArray(data)
-    /*
-        if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
-            && rel.data[0].labels && Array.isArray(rel.data[0].labels)
-            && rel.data[0].values && Array.isArray(rel.data[0].values) ) {
-            obj = rel.data[0];
-        }
-        else {
-            console.warn("USAGE: addChart( 'pie', [ {name:'Sales', labels:['Jan','Feb'], values:[10,20]} ], {x:1, y:1} )");
-            return;
-        }
-        */
-    // B: Options: misc
-    if (['bar', 'col'].indexOf(options.barDir || '') < 0)
-        options.barDir = 'col';
-    // IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-    if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-        options.dataLabelPosition = options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr';
-    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
-    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
-        options.legendPos = 'r';
-    // barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
-    if (['clustered', 'standard', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-        options.barGrouping = 'standard';
-    if (options.barGrouping.indexOf('tacked') > -1) {
-        options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
-        if (!options.barGapWidthPct)
-            options.barGapWidthPct = 50;
-    }
-    // 3D bar: ST_Shape
-    if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0)
-        options.bar3DShape = 'box';
-    // lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
-    // Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
-    if (['circle', 'dash', 'diamond', 'dot', 'none', 'square', 'triangle'].indexOf(options.lineDataSymbol || '') < 0)
-        options.lineDataSymbol = 'circle';
-    if (['gap', 'span'].indexOf(options.displayBlanksAs || '') < 0)
-        options.displayBlanksAs = 'span';
-    if (['standard', 'marker', 'filled'].indexOf(options.radarStyle || '') < 0)
-        options.radarStyle = 'standard';
-    options.lineDataSymbolSize = options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize) ? options.lineDataSymbolSize : 6;
-    options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT;
-    // `layout` allows the override of PPT defaults to maximize space
-    if (options.layout) {
-        ['x', 'y', 'w', 'h'].forEach(function (key) {
-            var val = options.layout[key];
-            if (isNaN(Number(val)) || val < 0 || val > 1) {
-                console.warn('Warning: chart.layout.' + key + ' can only be 0-1');
-                delete options.layout[key]; // remove invalid value so that default will be used
-            }
-        });
-    }
-    // Set gridline defaults
-    options.catGridLine = options.catGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
-    options.valGridLine = options.valGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {});
-    options.serGridLine = options.serGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
-    correctGridLineOptions(options.catGridLine);
-    correctGridLineOptions(options.valGridLine);
-    correctGridLineOptions(options.serGridLine);
-    correctShadowOptions(options.shadow);
-    // C: Options: plotArea
-    options.showDataTable = options.showDataTable === true || options.showDataTable === false ? options.showDataTable : false;
-    options.showDataTableHorzBorder = options.showDataTableHorzBorder === true || options.showDataTableHorzBorder === false ? options.showDataTableHorzBorder : true;
-    options.showDataTableVertBorder = options.showDataTableVertBorder === true || options.showDataTableVertBorder === false ? options.showDataTableVertBorder : true;
-    options.showDataTableOutline = options.showDataTableOutline === true || options.showDataTableOutline === false ? options.showDataTableOutline : true;
-    options.showDataTableKeys = options.showDataTableKeys === true || options.showDataTableKeys === false ? options.showDataTableKeys : true;
-    options.showLabel = options.showLabel === true || options.showLabel === false ? options.showLabel : false;
-    options.showLegend = options.showLegend === true || options.showLegend === false ? options.showLegend : false;
-    options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true;
-    options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false;
-    options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false;
-    options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true;
-    options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true;
-    options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true;
-    options.v3DRotX = !isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30;
-    options.v3DRotY = !isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30;
-    options.v3DRAngAx = options.v3DRAngAx === true || options.v3DRAngAx === false ? options.v3DRAngAx : true;
-    options.v3DPerspective = !isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30;
-    // D: Options: chart
-    options.barGapWidthPct = !isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150;
-    options.barGapDepthPct = !isNaN(options.barGapDepthPct) && options.barGapDepthPct >= 0 && options.barGapDepthPct <= 1000 ? options.barGapDepthPct : 150;
-    options.chartColors = Array.isArray(options.chartColors)
-        ? options.chartColors
-        : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-            ? PIECHART_COLORS
-            : BARCHART_COLORS;
-    options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null;
-    //
-    options.border = options.border && typeof options.border === 'object' ? options.border : null;
-    if (options.border && (!options.border.pt || isNaN(options.border.pt)))
-        options.border.pt = 1;
-    if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6))
-        options.border.color = '363636';
-    //
-    options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
-    if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
-        options.dataBorder.pt = 0.75;
-    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
-        options.dataBorder.color = 'F9F9F9';
-    //
-    if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER)
-        options.dataLabelFormatCode = 'General';
-    options.dataLabelFormatCode =
-        options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
-            ? options.dataLabelFormatCode
-            : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-                ? '0%'
-                : '#,##0';
-    //
-    // Set default format for Scatter chart labels to custom string if not defined
-    if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER)
-        options.dataLabelFormatScatter = 'custom';
-    //
-    options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2;
-    options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null;
-    options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero';
-    return options;
-};
-//# sourceMappingURL=chart-options.js.map
-
-var _chartCounter = 0;
-/*
- * This class manages the inclusing of a chart in a slide
- * The logic to generate the chart itself (and then its ooxml is in a separate
- * class)
- */
-var ChartElement = /** @class */ (function () {
-    function ChartElement(type, data, opts, registerChart) {
-        this.type = SLIDE_OBJECT_TYPES.newtext;
-        // DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
-        // EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
-        // Multi-Type Charts
-        var tmpOpt;
-        var tmpData = [];
-        if (Array.isArray(type)) {
-            // For multi-type charts there needs to be data for each type,
-            // as well as a single data source for non-series operations.
-            // The data is indexed below to keep the data in order when segmented
-            // into types.
-            type.forEach(function (obj) {
-                tmpData = tmpData.concat(obj.data);
-            });
-            tmpOpt = data || opts;
-        }
-        else {
-            tmpData = data;
-            tmpOpt = opts;
-        }
-        tmpData.forEach(function (item, i) {
-            item.index = i;
-        });
-        var options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {};
-        this.position = new Position({
-            x: typeof options.x !== 'undefined' && options.x != null ? options.x : 1,
-            y: typeof options.y !== 'undefined' && options.y != null ? options.y : 1,
-            w: options.w || '50%',
-            h: options.w || '50%',
-        });
-        // This should probably be managed somewhere else (within register). We
-        // keep it that way as long as masters work differently than slides.
-        var globalChartId = ++_chartCounter;
-        options.type = type;
-        this.chartId = registerChart(globalChartId, cleanChartOptions(options), tmpData);
-    }
-    ChartElement.prototype.render = function (idx, presLayout) {
-        return "\n        <p:graphicFrame>\n\t\t    <p:nvGraphicFramePr>\n\t\t\t    <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Chart " + (idx + 1) + "\"/>\n\t\t\t    <p:cNvGraphicFramePr/>\n\t\t\t    <p:nvPr></p:nvPr>\n\t\t\t</p:nvGraphicFramePr>\n\t\t\t" + this.position.render(presLayout, 'p:xfrm') + "\n\t\t\t<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">\n\t\t\t\t<a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/chart\">\n                    <c:chart \n                        r:id=\"rId" + this.chartId + "\" \n                        xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\"/>\n                </a:graphicData>\n\t\t\t</a:graphic>\n\t\t</p:graphicFrame>";
-    };
-    return ChartElement;
-}());
-//# sourceMappingURL=chart.js.map
-
-var SlideNumberElement = /** @class */ (function () {
-    function SlideNumberElement(_a) {
-        var x = _a.x, y = _a.y, w = _a.w, h = _a.h, runOptions = __rest(_a, ["x", "y", "w", "h"]);
-        this.type = SLIDE_OBJECT_TYPES.newtext;
-        this.fieldId = getUuid('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx');
-        this.position = new Position({
-            x: x,
-            y: y,
-            w: w || 800000,
-            h: h || 300000,
-        });
-        this.runProperties = new RunProperties(runOptions);
-    }
-    SlideNumberElement.prototype.render = function (idx, presLayout) {
-        return "\n\t\t<p:sp>\n\t\t    <p:nvSpPr>\n\t\t\t    <p:cNvPr id=\"" + (idx + 1) + "\" name=\"Slide Number Placeholder 24\"/>\n\t\t\t    <p:cNvSpPr txBox=\"1\"></p:cNvSpPr>\n\t\t\t    <p:nvPr userDrawn=\"1\" />\n\t\t\t</p:nvSpPr>\n\n\t\t\t<p:spPr>\n\t\t\t    " + this.position.render(presLayout) + "\n\t\t\t    <a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom>\n                <a:extLst><a:ext uri=\"{C572A759-6A51-4108-AA02-DFA0A04FC94B}\">\n                    <ma14:wrappingTextBoxFlag val=\"0\"\n                        xmlns:ma14=\"http://schemas.microsoft.com/office/mac/drawingml/2011/main\"/>\n                </a:ext></a:extLst>\n\t\t\t</p:spPr>\n\n\t\t    <p:txBody>\n\t\t        <a:bodyPr/>\n\t\t        <a:lstStyle><a:lvl1pPr>\n\t\t            " + this.runProperties.render('a:defRPr') + "\n\t\t        </a:lvl1pPr></a:lstStyle>\n                <a:p>\n                    <a:fld id=\"{" + this.fieldId + "}\" type=\"slidenum\">\n                    <a:rPr lang=\"en-US\"/><a:t>\u2039N\u00B0\u203A</a:t>\n                    </a:fld>\n                    <a:endParaRPr lang=\"en-US\"/>\n                </a:p>\n            </p:txBody>\n        </p:sp>";
-    };
-    return SlideNumberElement;
-}());
-//# sourceMappingURL=slide-number.js.map
 
 /**
  * PptxGenJS: Slide object generators
@@ -3325,42 +2897,6 @@ var SlideNumberElement = /** @class */ (function () {
  * @param {ISlideMasterOptions} slideDef - slide definition
  * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-function createSlideObject(slideDef, target, registerImage, registerLink, registerChart) {
-    // STEP 1: Add background
-    if (slideDef.bkgd) {
-        addBackgroundDefinition(slideDef.bkgd, target);
-    }
-    // STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
-    if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-        slideDef.objects.forEach(function (object, idx) {
-            var key = Object.keys(object)[0];
-            var tgt = target;
-            if (MASTER_OBJECTS[key] && key === 'chart') {
-                tgt.data.push(new ChartElement(object[key].type, object[key].data, object[key].opts, registerChart));
-            }
-            else if (MASTER_OBJECTS[key] && key === 'image') {
-                tgt.data.push(new ImageElement(object[key], registerImage, registerLink));
-            }
-            else if (MASTER_OBJECTS[key] && key === 'line') {
-                tgt.data.push(new SimpleShapeElement(BASE_SHAPES.LINE, object[key]));
-            }
-            else if (MASTER_OBJECTS[key] && key === 'rect') {
-                tgt.data.push(new SimpleShapeElement(BASE_SHAPES.RECTANGLE, object[key]));
-            }
-            else if (MASTER_OBJECTS[key] && key === 'text') {
-                tgt.data.push(new TextElement$1(object[key].text, object[key].options, registerLink));
-            }
-            else if (MASTER_OBJECTS[key] && key === 'placeholder') {
-                // TODO: 20180820: Check for existing `name`?
-                tgt.data.push(new PlaceholderText(object[key].text, object[key].options, 100 + idx, registerLink));
-            }
-        });
-    }
-    // STEP 3: Add Slide Numbers
-    if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-        target.data.push(new SlideNumberElement(slideDef.slideNumber));
-    }
-}
 /**
  * Adds a media object to a slide definition.
  * @param {ISlide} `target` - slide object that the text will be added to
@@ -3678,40 +3214,12 @@ function addPlaceholdersToSlideLayouts(slide) {
                 var placeholder = slideObj.placeholder || (slideObj.options && slideObj.options.placeholder);
                 return placeholder === slideLayoutObj.name;
             }).length === 0) {
-                slide.data.push(new TextElement$1('', { placeholder: slideLayoutObj.name }, function () { return null; }));
+                if (slideLayoutObj.placeholderType !== 'pic') {
+                    slide.data.push(new TextElement$1('', { placeholder: slideLayoutObj.name }, function () { return null; }));
+                }
             }
         }
     });
-}
-/* -------------------------------------------------------------------------------- */
-/**
- * Adds a background image or color to a slide definition.
- * @param {String|Object} bkg - color string or an object with image definition
- * @param {ISlide} target - slide object that the background is set to
- */
-function addBackgroundDefinition(bkg, target) {
-    if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
-        // Allow the use of only the data key (`path` isnt reqd)
-        bkg.src = bkg.src || bkg.path || null;
-        if (!bkg.src)
-            bkg.src = 'preencoded.png';
-        var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
-        if (strImgExtn === 'jpg')
-            strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
-        var intRels = target.relsMedia.length + 1;
-        target.relsMedia.push({
-            path: bkg.src,
-            type: SLIDE_OBJECT_TYPES.image,
-            extn: strImgExtn,
-            data: bkg.data || null,
-            rId: intRels,
-            Target: '../media/image' + (target.relsMedia.length + 1) + '.' + strImgExtn,
-        });
-        target.bkgdImgRid = intRels;
-    }
-    else if (bkg && typeof bkg === 'string') {
-        target.bkgd = bkg;
-    }
 }
 /**
  * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
@@ -3752,23 +3260,13 @@ function createHyperlinkRels(target, text) {
 }
 //# sourceMappingURL=gen-objects.js.map
 
-/**
- * PptxGenJS Slide Class
- */
-var Slide = /** @class */ (function () {
-    function Slide(params) {
-        this.addSlide = params.addSlide;
-        this.getSlide = params.getSlide;
-        this.presLayout = params.presLayout;
-        this.name = 'Slide ' + params.slideNumber;
-        this.number = params.slideNumber;
-        this.data = [];
+var Relations = /** @class */ (function () {
+    function Relations() {
         this.rels = [];
         this.relsChart = [];
         this.relsMedia = [];
-        this.slideLayout = params.slideLayout || null;
     }
-    Slide.prototype._registerLink = function (data, target) {
+    Relations.prototype.registerLink = function (data, target) {
         var relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1;
         this.rels.push({
             type: SLIDE_OBJECT_TYPES.hyperlink,
@@ -3778,21 +3276,29 @@ var Slide = /** @class */ (function () {
         });
         return relId;
     };
-    Slide.prototype._registerImage = function (_a, extension, fromSvgSize) {
+    Relations.prototype.registerImage = function (_a, extension, fromSvgSize) {
         var path = _a.path, _b = _a.data, data = _b === void 0 ? '' : _b;
         // (rId/rels count spans all slides! Count all images to get next rId)
         var relId = this.rels.length + this.relsChart.length + this.relsMedia.length + 1;
-        this.relsMedia.push(createImageConfig({
-            relId: relId,
-            Target: "../media/image-" + this.number + "-" + (this.relsMedia.length + 1) + "." + extension,
+        var Target = "../media/image-" + Math.random() + "." + extension;
+        var mediaConfig = {
+            rId: relId,
+            type: "image/" + (extension === 'svg' ? 'svg+xml' : extension),
             path: path,
             data: data,
-            extension: extension,
-            fromSvgSize: fromSvgSize,
-        }));
+            extn: extension,
+            Target: Target,
+            isSvgPng: false,
+            svgSize: null,
+        };
+        if (fromSvgSize) {
+            mediaConfig.isSvgPng = true;
+            mediaConfig.svgSize = fromSvgSize;
+        }
+        this.relsMedia.push(mediaConfig);
         return relId;
     };
-    Slide.prototype._registerChart = function (globalId, options, data) {
+    Relations.prototype.registerChart = function (globalId, options, data) {
         var chartRid = this.relsChart.length + 1;
         this.relsChart.push({
             rId: chartRid,
@@ -3805,6 +3311,509 @@ var Slide = /** @class */ (function () {
         });
         return chartRid;
     };
+    return Relations;
+}());
+//# sourceMappingURL=relations.js.map
+
+var defaultsToOne = function (x) { return x || (x === 0 ? 0 : 1); };
+var SimpleShapeElement = /** @class */ (function () {
+    function SimpleShapeElement(shape, opts) {
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        this.shape = new ShapeElement(shape);
+        this.fill = opts.fill;
+        this.rectRadius = opts.rectRadius;
+        if (opts.line || shape.name === 'line') {
+            this.line = new LineElement({
+                color: opts.line || '333333',
+                size: opts.lineSize,
+                dash: opts.lineDash,
+                head: opts.lineHead,
+                tail: opts.lineTail,
+            });
+        }
+        this.position = new Position({
+            x: defaultsToOne(opts.x),
+            y: defaultsToOne(opts.y),
+            h: defaultsToOne(opts.h),
+            w: defaultsToOne(opts.w),
+            flipV: opts.flipV,
+            flipH: opts.flipH,
+            rotate: opts.rotate,
+        });
+        if (opts.shadow) {
+            this.shadow = new ShadowElement(opts.shadow);
+        }
+    }
+    SimpleShapeElement.prototype.render = function (idx, presLayout) {
+        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\"/>\n            <p:cNvSpPr />\n\t\t    <p:nvPr />\n        </p:nvSpPr>\n\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n            " + this.shape.render(this.rectRadius, this.position, presLayout) + "\n            " + (this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>') + "\n            " + (this.line ? this.line.render() : '') + "\n            " + (this.shadow ? this.shadow.render() : '') + "\n\t\t</p:spPr>\n    </p:sp>";
+    };
+    return SimpleShapeElement;
+}());
+//# sourceMappingURL=simple-shape.js.map
+
+var unitConverter = function (presLayout) { return ({
+    x: function (x) { return getSmartParseNumber(x, 'X', presLayout); },
+    y: function (y) { return getSmartParseNumber(y, 'Y', presLayout); },
+}); };
+var findExtension = function (data, path) {
+    if (data === void 0) { data = ''; }
+    if (path === void 0) { path = ''; }
+    // STEP 1: Set extension
+    // NOTE: Split to address URLs with params (eg: `path/brent.jpg?someParam=true`)
+    var strImgExtn = path
+        .substring(path.lastIndexOf('/') + 1)
+        .split('?')[0]
+        .split('.')
+        .pop()
+        .split('#')[0] || 'png';
+    // However, pre-encoded images can be whatever mime-type they want (and good for them!)
+    if (data && /image\/(\w+)\;/.exec(data) && /image\/(\w+)\;/.exec(data).length > 0) {
+        strImgExtn = /image\/(\w+)\;/.exec(data)[1];
+    }
+    else if (data && data.toLowerCase().indexOf('image/svg+xml') > -1) {
+        strImgExtn = 'svg';
+    }
+    return strImgExtn;
+};
+var ImageElement = /** @class */ (function () {
+    function ImageElement(options, relations) {
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        this.image = options.image;
+        this.rounding = options.rounding;
+        this.placeholder = options.placeholder;
+        this.colorBlend = options.colorBlend;
+        if (options.opacity) {
+            var numberOpacity = parseFloat(options.opacity);
+            if (numberOpacity < 1 && numberOpacity >= 0) {
+                this.opacity = numberOpacity;
+            }
+        }
+        this.position = new Position({
+            x: options.x,
+            y: options.y,
+            h: options.h,
+            w: options.w,
+            flipV: options.flipV,
+            flipH: options.flipH,
+            rotate: options.rotate,
+        });
+        this.objectFit = options.objectFit;
+        this.imageFormat = options.imageFormat;
+        if ((this.objectFit !== 'fill' || this.objectFit !== 'none') && (!this.imageFormat || !this.imageFormat.width || !this.imageFormat.height)) {
+            console.warn("You need to specify full the width and height of the source for objectFit \"" + this.objectFit + "\"");
+            this.objectFit = 'fill';
+        }
+        var extension = findExtension(options.data, options.path);
+        this.image = options.path || 'preencoded.png';
+        // STEP 4: Add this image to this Slide Rels
+        if (extension === 'svg') {
+            // SVG files consume *TWO* rId's: (a png version and the svg image)
+            this.imgId = relations.registerImage({
+                data: options.data,
+                // not sure why we add png to data here
+                path: options.path || options.data + "png",
+            }, 'png', { w: options.w, h: options.h });
+            this.svgImgId = relations.registerImage({
+                data: options.data,
+                path: options.path || options.data,
+            }, 'svg');
+            this.isSvg = true;
+        }
+        else {
+            this.imgId = relations.registerImage({
+                data: options.data,
+                path: options.path || options.data + "." + extension,
+            }, extension);
+        }
+        if (options.hyperlink) {
+            this.hyperlink = new HyperLink(options.hyperlink, relations);
+        }
+    }
+    ImageElement.prototype.render = function (idx, presLayout, placeholder) {
+        var placeholderPosition = placeholder ? placeholder.position : {};
+        var correctedPosition = {
+            x: this.position.x || placeholderPosition.x,
+            y: this.position.y || placeholderPosition.y,
+            h: this.position.h || placeholderPosition.h,
+            w: this.position.w || placeholderPosition.w,
+        };
+        var objectFit = new ObjectFit(this.objectFit || (placeholder && placeholder.objectFit), correctedPosition, this.imageFormat);
+        var opacity = this.opacity || (placeholder && placeholder.opacity);
+        var colorBlend = this.colorBlend || (placeholder && placeholder.colorBlend);
+        return "\n    <p:pic>\n\t    <p:nvPicPr>\n\t        <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(this.image) + "\">\n                " + (this.hyperlink ? this.hyperlink.render() : '') + "\n\t\t\t</p:cNvPr>\n                <p:cNvPicPr>\n                <a:picLocks noChangeAspect=\"1\"/>\n            </p:cNvPicPr>\n                <p:nvPr>\n                    " + (placeholder ? placeholder.renderPlaceholderInfo() : '') + "\n                </p:nvPr>\n\t\t</p:nvPicPr>\n        <p:blipFill>\n\t\t\t<a:blip r:embed=\"rId" + this.imgId + "\">\n            " + (
+        /* NOTE: This works for both cases: either `path` or `data` contains the SVG */
+        this.isSvg
+            ? "<a:extLst>\n                <a:ext uri=\"{96DAC541-7B7A-43D3-8B79-37D633B846F1}\">\n                    <asvg:svgBlip\n                        xmlns:asvg=\"http://schemas.microsoft.com/office/drawing/2016/SVG/main\" \n                        r:embed=\"rId" + this.svgImgId + "\"/>\n                    </a:ext>\n                </a:extLst>"
+            : '') + "\n                " + (opacity ? "<a:alphaModFix amt=\"" + opacity * 100000 + "\"/>" : '') + "\n                " + (colorBlend ? duoToneEffect(colorBlend) : '') + "\n            </a:blip>\n        " + objectFit.render(presLayout) + "\n\t\t</p:blipFill>\n\t\t<p:spPr>\n\t\t    " + this.position.render(presLayout) + "\n\t\t    <a:prstGeom prst=\"" + (this.rounding ? 'ellipse' : 'rect') + "\"><a:avLst/></a:prstGeom>\n\t\t</p:spPr>\n\t</p:pic>";
+    };
+    return ImageElement;
+}());
+var ObjectFit = /** @class */ (function () {
+    function ObjectFit(fitType, position, source) {
+        if (fitType === void 0) { fitType = 'fill'; }
+        this.fitType = fitType;
+        this.x = position.x;
+        this.y = position.y;
+        this.w = position.w;
+        this.h = position.h;
+        if ((this.fitType !== 'fill' || this.fitType !== 'none') && (!source || !source.width || !source.height)) {
+            console.warn("You need to specify full the width and height of the source for objectFit \"" + this.fitType + "\"");
+            this.fitType = 'fill';
+        }
+        else {
+            this.sourceW = source.width;
+            this.sourceH = source.height;
+        }
+    }
+    Object.defineProperty(ObjectFit.prototype, "boxRatio", {
+        get: function () {
+            return this.h / this.w;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(ObjectFit.prototype, "imgRatio", {
+        get: function () {
+            return parseFloat(this.sourceH) / parseFloat(this.sourceW);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    ObjectFit.prototype.renderCover = function (unit) {
+        var h = unit.y(this.h);
+        var w = unit.x(this.w);
+        var boxRatio = h / w;
+        var isBoxBased = boxRatio > this.imgRatio;
+        var width = isBoxBased ? h / this.imgRatio : w;
+        var height = isBoxBased ? h : w * this.imgRatio;
+        var hzPerc = Math.round(1e5 * 0.5 * (1 - w / width));
+        var vzPerc = Math.round(1e5 * 0.5 * (1 - h / height));
+        return "<a:srcRect l=\"" + hzPerc + "\" r=\"" + hzPerc + "\" t=\"" + vzPerc + "\" b=\"" + vzPerc + "\"/><a:stretch/>";
+    };
+    ObjectFit.prototype.renderContain = function (unit) {
+        var h = unit.y(this.h);
+        var w = unit.x(this.w);
+        var boxRatio = h / w;
+        var widthBased = boxRatio > this.imgRatio;
+        var width = widthBased ? w : h / this.imgRatio;
+        var height = widthBased ? w * this.imgRatio : h;
+        var hzPerc = Math.round(1e5 * 0.5 * (1 - w / width));
+        var vzPerc = Math.round(1e5 * 0.5 * (1 - h / height));
+        return "<a:srcRect l=\"" + hzPerc + "\" r=\"" + hzPerc + "\" t=\"" + vzPerc + "\" b=\"" + vzPerc + "\"/><a:stretch/>";
+    };
+    ObjectFit.prototype.renderCrop = function (unit) {
+        var imageW = unit.x(this.sourceW);
+        var imageH = unit.y(this.sourceH);
+        var l = unit.x(this.x);
+        var r = imageW - (l + unit.x(this.w));
+        var t = unit.y(this.y);
+        var b = imageH - (t + unit.y(this.h));
+        var lPerc = Math.round(1e5 * (l / imageW));
+        var rPerc = Math.round(1e5 * (r / imageW));
+        var tPerc = Math.round(1e5 * (t / imageH));
+        var bPerc = Math.round(1e5 * (b / imageH));
+        return "<a:srcRect l=\"" + lPerc + "\" r=\"" + rPerc + "\" t=\"" + tPerc + "\" b=\"" + bPerc + "\"/><a:stretch/>";
+    };
+    ObjectFit.prototype.render = function (presLayout) {
+        var unitConv = unitConverter(presLayout);
+        if (this.fitType === 'cover') {
+            return this.renderCover(unitConv);
+        }
+        if (this.fitType === 'contain') {
+            return this.renderContain(unitConv);
+        }
+        if (this.fitType === 'crop') {
+            return this.renderCrop(unitConv);
+        }
+        if (this.fitType === 'none') {
+            return '';
+        }
+        // Format for fill as default
+        return '<a:stretch><a:fillRect/></a:stretch>';
+    };
+    return ObjectFit;
+}());
+var duoToneEffect = function (_a) {
+    var _b = _a.darkColor, darkColor = _b === void 0 ? '226622' : _b, _c = _a.lightColor, lightColor = _c === void 0 ? 'FFFFFF' : _c;
+    return "\n            <a:duotone>\n              <a:srgbClr val=\"" + darkColor + "\"/>\n              <a:srgbClr val=\"" + lightColor + "\"/>\n            </a:duotone>\n    ";
+};
+//# sourceMappingURL=image.js.map
+
+function correctGridLineOptions(glOpts) {
+    if (!glOpts || glOpts.style === 'none')
+        return;
+    if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
+        console.warn('Warning: chart.gridLine.size must be greater than 0.');
+        delete glOpts.size; // delete prop to used defaults
+    }
+    if (glOpts.style && ['solid', 'dash', 'dot'].indexOf(glOpts.style) < 0) {
+        console.warn('Warning: chart.gridLine.style options: `solid`, `dash`, `dot`.');
+        delete glOpts.style;
+    }
+    return glOpts;
+}
+/**
+ * Checks shadow options passed by user and performs corrections if needed.
+ * @param {IShadowOptions} IShadowOptions - shadow options
+ */
+function correctShadowOptions(IShadowOptions) {
+    if (!IShadowOptions || IShadowOptions === null)
+        return;
+    // OPT: `type`
+    if (IShadowOptions.type !== 'outer' && IShadowOptions.type !== 'inner' && IShadowOptions.type !== 'none') {
+        console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.');
+        IShadowOptions.type = 'outer';
+    }
+    // OPT: `angle`
+    if (IShadowOptions.angle) {
+        // A: REALITY-CHECK
+        if (isNaN(Number(IShadowOptions.angle)) || IShadowOptions.angle < 0 || IShadowOptions.angle > 359) {
+            console.warn('Warning: shadow.angle can only be 0-359');
+            IShadowOptions.angle = 270;
+        }
+        // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+        IShadowOptions.angle = Math.round(Number(IShadowOptions.angle));
+    }
+    // OPT: `opacity`
+    if (IShadowOptions.opacity) {
+        // A: REALITY-CHECK
+        if (isNaN(Number(IShadowOptions.opacity)) || IShadowOptions.opacity < 0 || IShadowOptions.opacity > 1) {
+            console.warn('Warning: shadow.opacity can only be 0-1');
+            IShadowOptions.opacity = 0.75;
+        }
+        // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+        IShadowOptions.opacity = Number(IShadowOptions.opacity);
+    }
+}
+var cleanChartOptions = function (options) {
+    // STEP 1: TODO: check for reqd fields, correct type, etc
+    // `type` exists in CHART_TYPES
+    // Array.isArray(data)
+    /*
+        if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
+            && rel.data[0].labels && Array.isArray(rel.data[0].labels)
+            && rel.data[0].values && Array.isArray(rel.data[0].values) ) {
+            obj = rel.data[0];
+        }
+        else {
+            console.warn("USAGE: addChart( 'pie', [ {name:'Sales', labels:['Jan','Feb'], values:[10,20]} ], {x:1, y:1} )");
+            return;
+        }
+        */
+    // B: Options: misc
+    if (['bar', 'col'].indexOf(options.barDir || '') < 0)
+        options.barDir = 'col';
+    // IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
+    if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
+        options.dataLabelPosition = options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr';
+    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
+    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
+        options.legendPos = 'r';
+    // barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
+    if (['clustered', 'standard', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+        options.barGrouping = 'standard';
+    if (options.barGrouping.indexOf('tacked') > -1) {
+        options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
+        if (!options.barGapWidthPct)
+            options.barGapWidthPct = 50;
+    }
+    // 3D bar: ST_Shape
+    if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0)
+        options.bar3DShape = 'box';
+    // lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
+    // Spec has [plus,star,x] however neither PPT2013 nor PPT-Online support them
+    if (['circle', 'dash', 'diamond', 'dot', 'none', 'square', 'triangle'].indexOf(options.lineDataSymbol || '') < 0)
+        options.lineDataSymbol = 'circle';
+    if (['gap', 'span'].indexOf(options.displayBlanksAs || '') < 0)
+        options.displayBlanksAs = 'span';
+    if (['standard', 'marker', 'filled'].indexOf(options.radarStyle || '') < 0)
+        options.radarStyle = 'standard';
+    options.lineDataSymbolSize = options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize) ? options.lineDataSymbolSize : 6;
+    options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT;
+    // `layout` allows the override of PPT defaults to maximize space
+    if (options.layout) {
+        ['x', 'y', 'w', 'h'].forEach(function (key) {
+            var val = options.layout[key];
+            if (isNaN(Number(val)) || val < 0 || val > 1) {
+                console.warn('Warning: chart.layout.' + key + ' can only be 0-1');
+                delete options.layout[key]; // remove invalid value so that default will be used
+            }
+        });
+    }
+    // Set gridline defaults
+    options.catGridLine = options.catGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
+    options.valGridLine = options.valGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {});
+    options.serGridLine = options.serGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
+    correctGridLineOptions(options.catGridLine);
+    correctGridLineOptions(options.valGridLine);
+    correctGridLineOptions(options.serGridLine);
+    correctShadowOptions(options.shadow);
+    // C: Options: plotArea
+    options.showDataTable = options.showDataTable === true || options.showDataTable === false ? options.showDataTable : false;
+    options.showDataTableHorzBorder = options.showDataTableHorzBorder === true || options.showDataTableHorzBorder === false ? options.showDataTableHorzBorder : true;
+    options.showDataTableVertBorder = options.showDataTableVertBorder === true || options.showDataTableVertBorder === false ? options.showDataTableVertBorder : true;
+    options.showDataTableOutline = options.showDataTableOutline === true || options.showDataTableOutline === false ? options.showDataTableOutline : true;
+    options.showDataTableKeys = options.showDataTableKeys === true || options.showDataTableKeys === false ? options.showDataTableKeys : true;
+    options.showLabel = options.showLabel === true || options.showLabel === false ? options.showLabel : false;
+    options.showLegend = options.showLegend === true || options.showLegend === false ? options.showLegend : false;
+    options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true;
+    options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false;
+    options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false;
+    options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true;
+    options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true;
+    options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true;
+    options.v3DRotX = !isNaN(options.v3DRotX) && options.v3DRotX >= -90 && options.v3DRotX <= 90 ? options.v3DRotX : 30;
+    options.v3DRotY = !isNaN(options.v3DRotY) && options.v3DRotY >= 0 && options.v3DRotY <= 360 ? options.v3DRotY : 30;
+    options.v3DRAngAx = options.v3DRAngAx === true || options.v3DRAngAx === false ? options.v3DRAngAx : true;
+    options.v3DPerspective = !isNaN(options.v3DPerspective) && options.v3DPerspective >= 0 && options.v3DPerspective <= 240 ? options.v3DPerspective : 30;
+    // D: Options: chart
+    options.barGapWidthPct = !isNaN(options.barGapWidthPct) && options.barGapWidthPct >= 0 && options.barGapWidthPct <= 1000 ? options.barGapWidthPct : 150;
+    options.barGapDepthPct = !isNaN(options.barGapDepthPct) && options.barGapDepthPct >= 0 && options.barGapDepthPct <= 1000 ? options.barGapDepthPct : 150;
+    options.chartColors = Array.isArray(options.chartColors)
+        ? options.chartColors
+        : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
+            ? PIECHART_COLORS
+            : BARCHART_COLORS;
+    options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null;
+    //
+    options.border = options.border && typeof options.border === 'object' ? options.border : null;
+    if (options.border && (!options.border.pt || isNaN(options.border.pt)))
+        options.border.pt = 1;
+    if (options.border && (!options.border.color || typeof options.border.color !== 'string' || options.border.color.length !== 6))
+        options.border.color = '363636';
+    //
+    options.dataBorder = options.dataBorder && typeof options.dataBorder === 'object' ? options.dataBorder : null;
+    if (options.dataBorder && (!options.dataBorder.pt || isNaN(options.dataBorder.pt)))
+        options.dataBorder.pt = 0.75;
+    if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
+        options.dataBorder.color = 'F9F9F9';
+    //
+    if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER)
+        options.dataLabelFormatCode = 'General';
+    options.dataLabelFormatCode =
+        options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
+            ? options.dataLabelFormatCode
+            : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
+                ? '0%'
+                : '#,##0';
+    //
+    // Set default format for Scatter chart labels to custom string if not defined
+    if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER)
+        options.dataLabelFormatScatter = 'custom';
+    //
+    options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2;
+    options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null;
+    options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero';
+    return options;
+};
+//# sourceMappingURL=chart-options.js.map
+
+var _chartCounter = 0;
+/*
+ * This class manages the inclusing of a chart in a slide
+ * The logic to generate the chart itself (and then its ooxml is in a separate
+ * class)
+ */
+var ChartElement = /** @class */ (function () {
+    function ChartElement(type, data, opts, relations) {
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        // DESIGN: `type` can an object (ex: `pptx.charts.DOUGHNUT`) or an array of chart objects
+        // EX: addChartDefinition([ { type:pptx.charts.BAR, data:{name:'', labels:[], values[]} }, {<etc>} ])
+        // Multi-Type Charts
+        var tmpOpt;
+        var tmpData = [];
+        if (Array.isArray(type)) {
+            // For multi-type charts there needs to be data for each type,
+            // as well as a single data source for non-series operations.
+            // The data is indexed below to keep the data in order when segmented
+            // into types.
+            type.forEach(function (obj) {
+                tmpData = tmpData.concat(obj.data);
+            });
+            tmpOpt = data || opts;
+        }
+        else {
+            tmpData = data;
+            tmpOpt = opts;
+        }
+        tmpData.forEach(function (item, i) {
+            item.index = i;
+        });
+        var options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {};
+        this.position = new Position({
+            x: typeof options.x !== 'undefined' && options.x != null ? options.x : 1,
+            y: typeof options.y !== 'undefined' && options.y != null ? options.y : 1,
+            w: options.w || '50%',
+            h: options.w || '50%',
+        });
+        // This should probably be managed somewhere else (within register). We
+        // keep it that way as long as masters work differently than slides.
+        var globalChartId = ++_chartCounter;
+        options.type = type;
+        this.chartId = relations.registerChart(globalChartId, cleanChartOptions(options), tmpData);
+    }
+    ChartElement.prototype.render = function (idx, presLayout) {
+        return "\n        <p:graphicFrame>\n\t\t    <p:nvGraphicFramePr>\n\t\t\t    <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Chart " + (idx + 1) + "\"/>\n\t\t\t    <p:cNvGraphicFramePr/>\n\t\t\t    <p:nvPr></p:nvPr>\n\t\t\t</p:nvGraphicFramePr>\n\t\t\t" + this.position.render(presLayout, 'p:xfrm') + "\n\t\t\t<a:graphic xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\">\n\t\t\t\t<a:graphicData uri=\"http://schemas.openxmlformats.org/drawingml/2006/chart\">\n                    <c:chart \n                        r:id=\"rId" + this.chartId + "\" \n                        xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\"/>\n                </a:graphicData>\n\t\t\t</a:graphic>\n\t\t</p:graphicFrame>";
+    };
+    return ChartElement;
+}());
+//# sourceMappingURL=chart.js.map
+
+var SlideNumberElement = /** @class */ (function () {
+    function SlideNumberElement(_a) {
+        var x = _a.x, y = _a.y, w = _a.w, h = _a.h, runOptions = __rest(_a, ["x", "y", "w", "h"]);
+        this.type = SLIDE_OBJECT_TYPES.newtext;
+        this.fieldId = getUuid('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx');
+        this.position = new Position({
+            x: x,
+            y: y,
+            w: w || 800000,
+            h: h || 300000,
+        });
+        this.runProperties = new RunProperties(runOptions);
+    }
+    SlideNumberElement.prototype.render = function (idx, presLayout) {
+        return "\n\t\t<p:sp>\n\t\t    <p:nvSpPr>\n\t\t\t    <p:cNvPr id=\"" + (idx + 1) + "\" name=\"Slide Number Placeholder 24\"/>\n\t\t\t    <p:cNvSpPr txBox=\"1\"></p:cNvSpPr>\n\t\t\t    <p:nvPr userDrawn=\"1\" />\n\t\t\t</p:nvSpPr>\n\n\t\t\t<p:spPr>\n\t\t\t    " + this.position.render(presLayout) + "\n\t\t\t    <a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom>\n                <a:extLst><a:ext uri=\"{C572A759-6A51-4108-AA02-DFA0A04FC94B}\">\n                    <ma14:wrappingTextBoxFlag val=\"0\"\n                        xmlns:ma14=\"http://schemas.microsoft.com/office/mac/drawingml/2011/main\"/>\n                </a:ext></a:extLst>\n\t\t\t</p:spPr>\n\n\t\t    <p:txBody>\n\t\t        <a:bodyPr/>\n\t\t        <a:lstStyle><a:lvl1pPr>\n\t\t            " + this.runProperties.render('a:defRPr') + "\n\t\t        </a:lvl1pPr></a:lstStyle>\n                <a:p>\n                    <a:fld id=\"{" + this.fieldId + "}\" type=\"slidenum\">\n                    <a:rPr lang=\"en-US\"/><a:t>\u2039N\u00B0\u203A</a:t>\n                    </a:fld>\n                    <a:endParaRPr lang=\"en-US\"/>\n                </a:p>\n            </p:txBody>\n        </p:sp>";
+    };
+    return SlideNumberElement;
+}());
+//# sourceMappingURL=slide-number.js.map
+
+/**
+ * PptxGenJS Slide Class
+ */
+var Slide = /** @class */ (function () {
+    function Slide(params) {
+        this.addSlide = params.addSlide;
+        this.getSlide = params.getSlide;
+        this.presLayout = params.presLayout;
+        this.name = 'Slide ' + params.slideNumber;
+        this.number = params.slideNumber;
+        this.data = [];
+        this.slideLayout = params.slideLayout || null;
+        this.relations = new Relations();
+    }
+    Object.defineProperty(Slide.prototype, "rels", {
+        get: function () {
+            return this.relations.rels;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Slide.prototype, "relsChart", {
+        get: function () {
+            return this.relations.relsChart;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Slide.prototype, "relsMedia", {
+        get: function () {
+            return this.relations.relsMedia;
+        },
+        enumerable: true,
+        configurable: true
+    });
     Object.defineProperty(Slide.prototype, "bkgd", {
         get: function () {
             return this._bkgd;
@@ -3859,7 +3868,7 @@ var Slide = /** @class */ (function () {
      * @return {Slide} this class
      */
     Slide.prototype.addChart = function (type, data, options) {
-        this.data.push(new ChartElement(type, data, options, this._registerChart.bind(this)));
+        this.data.push(new ChartElement(type, data, options, this.relations));
         return this;
     };
     /**
@@ -3878,7 +3887,7 @@ var Slide = /** @class */ (function () {
             console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
             return null;
         }
-        this.data.push(new ImageElement(options, this._registerImage.bind(this), this._registerLink.bind(this)));
+        this.data.push(new ImageElement(options, this.relations));
         return this;
     };
     /**
@@ -3930,7 +3939,7 @@ var Slide = /** @class */ (function () {
      * @since: 1.0.0
      */
     Slide.prototype.addText = function (text, options) {
-        this.data.push(new TextElement$1(text, options, this._registerLink.bind(this)));
+        this.data.push(new TextElement$1(text, options, this.relations));
         return this;
         //genObj.addTextDefinition(this, text, options, false)
         //return this
@@ -5835,6 +5844,36 @@ function createSvgPngPreview(rel) {
 }
 //# sourceMappingURL=gen-media.js.map
 
+var PlaceholderImage = /** @class */ (function (_super) {
+    __extends(PlaceholderImage, _super);
+    function PlaceholderImage(options, index) {
+        var _this = _super.call(this, options.name, options.type || 'pic', index) || this;
+        _this.type = SLIDE_OBJECT_TYPES.newtext;
+        _this.position = new Position({
+            x: options.x,
+            y: options.y,
+            h: options.h,
+            w: options.w,
+            flipV: options.flipV,
+            flipH: options.flipH,
+            rotate: options.rotate,
+        });
+        _this.objectFit = options.objectFit;
+        _this.colorBlend = options.colorBlend;
+        if (options.opacity) {
+            var numberOpacity = parseFloat(options.opacity);
+            if (numberOpacity < 1 && numberOpacity >= 0) {
+                _this.opacity = numberOpacity;
+            }
+        }
+        return _this;
+    }
+    PlaceholderImage.prototype.render = function (idx, presLayout) {
+        return "\n    <p:sp>\n        <p:nvSpPr>\n            <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Placeholder " + (idx + 1) + "\"/>\n            <p:cNvSpPr />\n\t\t    <p:nvPr>\n            " + this.renderPlaceholderInfo() + "\n\t\t    </p:nvPr>\n        </p:nvSpPr>\n        <p:spPr>\n            " + this.position.render(presLayout) + "\n\t\t    <a:prstGeom prst=\"rect\"><a:avLst/></a:prstGeom>\n        </p:spPr>\n    </p:sp>\n    ";
+    };
+    return PlaceholderImage;
+}(Placeholder));
+
 /**
  * PptxGenJS: XML Generation
  */
@@ -5878,20 +5917,13 @@ function slideObjectToXml(slide) {
         var placeholderObj;
         var locationAttr = '';
         if (slideItemObj instanceof TextElement$1 || slideItemObj instanceof ImageElement) {
-            strSlideXml += slideItemObj.render(idx, slide.presLayout, function (placeholder) {
-                if (!placeholder)
-                    return '';
-                var found = slide['slideLayout']['data'].filter(function (object) {
-                    return object instanceof PlaceholderText && object.name === placeholder;
-                })[0];
-                if (!found)
-                    return '';
-                return found.renderPlaceholderInfo();
-            });
+            var placeholder = slide['slideLayout'] && slide['slideLayout'].getPlaceholder(slideItemObj.placeholder);
+            strSlideXml += slideItemObj.render(idx, slide.presLayout, placeholder);
             return;
         }
         if (slideItemObj instanceof SimpleShapeElement ||
             slideItemObj instanceof PlaceholderText ||
+            slideItemObj instanceof PlaceholderImage ||
             slideItemObj instanceof ChartElement ||
             slideItemObj instanceof SlideNumberElement) {
             strSlideXml += slideItemObj.render(idx, slide.presLayout);
@@ -7171,7 +7203,6 @@ function makeXmlTableStyles() {
 function makeXmlViewProps() {
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + CRLF + "<p:viewPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><p:normalViewPr horzBarState=\"maximized\"><p:restoredLeft sz=\"15611\"/><p:restoredTop sz=\"94610\"/></p:normalViewPr><p:slideViewPr><p:cSldViewPr snapToGrid=\"0\" snapToObjects=\"1\"><p:cViewPr varScale=\"1\"><p:scale><a:sx n=\"136\" d=\"100\"/><a:sy n=\"136\" d=\"100\"/></p:scale><p:origin x=\"216\" y=\"312\"/></p:cViewPr><p:guideLst/></p:cSldViewPr></p:slideViewPr><p:notesTextViewPr><p:cViewPr><p:scale><a:sx n=\"1\" d=\"1\"/><a:sy n=\"1\" d=\"1\"/></p:scale><p:origin x=\"0\" y=\"0\"/></p:cViewPr></p:notesTextViewPr><p:gridSpacing cx=\"76200\" cy=\"76200\"/></p:viewPr>";
 }
-//# sourceMappingURL=gen-xml.js.map
 
 var scriptFonts = "\n        <a:font script=\"Jpan\" typeface=\"\u6E38\u30B4\u30B7\u30C3\u30AF Light\"/>\n        <a:font script=\"Hang\" typeface=\"\uB9D1\uC740 \uACE0\uB515\"/>\n        <a:font script=\"Hans\" typeface=\"\u7B49\u7EBF Light\"/>\n        <a:font script=\"Hant\" typeface=\"\u65B0\u7D30\u660E\u9AD4\"/>\n        <a:font script=\"Arab\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Hebr\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Thai\" typeface=\"Angsana New\"/>\n        <a:font script=\"Ethi\" typeface=\"Nyala\"/>\n        <a:font script=\"Beng\" typeface=\"Vrinda\"/>\n        <a:font script=\"Gujr\" typeface=\"Shruti\"/>\n        <a:font script=\"Khmr\" typeface=\"MoolBoran\"/>\n        <a:font script=\"Knda\" typeface=\"Tunga\"/>\n        <a:font script=\"Guru\" typeface=\"Raavi\"/>\n        <a:font script=\"Cans\" typeface=\"Euphemia\"/>\n        <a:font script=\"Cher\" typeface=\"Plantagenet Cherokee\"/>\n        <a:font script=\"Yiii\" typeface=\"Microsoft Yi Baiti\"/>\n        <a:font script=\"Tibt\" typeface=\"Microsoft Himalaya\"/>\n        <a:font script=\"Thaa\" typeface=\"MV Boli\"/>\n        <a:font script=\"Deva\" typeface=\"Mangal\"/>\n        <a:font script=\"Telu\" typeface=\"Gautami\"/>\n        <a:font script=\"Taml\" typeface=\"Latha\"/>\n        <a:font script=\"Syrc\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Orya\" typeface=\"Kalinga\"/>\n        <a:font script=\"Mlym\" typeface=\"Kartika\"/>\n        <a:font script=\"Laoo\" typeface=\"DokChampa\"/>\n        <a:font script=\"Sinh\" typeface=\"Iskoola Pota\"/>\n        <a:font script=\"Mong\" typeface=\"Mongolian Baiti\"/>\n        <a:font script=\"Viet\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Uigh\" typeface=\"Microsoft Uighur\"/>\n        <a:font script=\"Geor\" typeface=\"Sylfaen\"/>\n        <a:font script=\"Armn\" typeface=\"Arial\"/>\n        <a:font script=\"Bugi\" typeface=\"Leelawadee UI\"/>\n        <a:font script=\"Bopo\" typeface=\"Microsoft JhengHei\"/>\n        <a:font script=\"Java\" typeface=\"Javanese Text\"/>\n        <a:font script=\"Lisu\" typeface=\"Segoe UI\"/>\n        <a:font script=\"Mymr\" typeface=\"Myanmar Text\"/>\n        <a:font script=\"Nkoo\" typeface=\"Ebrima\"/>\n        <a:font script=\"Olck\" typeface=\"Nirmala UI\"/>\n        <a:font script=\"Osma\" typeface=\"Ebrima\"/>\n        <a:font script=\"Phag\" typeface=\"Phagspa\"/>\n        <a:font script=\"Syrn\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Syrj\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Syre\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Sora\" typeface=\"Nirmala UI\"/>\n        <a:font script=\"Tale\" typeface=\"Microsoft Tai Le\"/>\n        <a:font script=\"Talu\" typeface=\"Microsoft New Tai Lue\"/>\n        <a:font script=\"Tfng\" typeface=\"Ebrima\"/>\n";
 var colorSchemeXML = function (_a) {
@@ -7183,6 +7214,7 @@ function makeXmlTheme(fontFamily, colorScheme) {
     if (colorScheme === void 0) { colorScheme = DEFAULT_SCHEME; }
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n<a:theme xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" name=\"Sublime Theme\">\n  <a:themeElements>\n    " + colorScheme + "\n    <a:fontScheme name=\"Sublime\">\n      <a:majorFont>\n        <a:latin typeface=\"" + (fontFamily || 'Calibri Light') + "\" panose=\"020F0302020204030204\"/>\n        <a:ea typeface=\"\"/>\n        <a:cs typeface=\"\"/>\n        " + scriptFonts + "\n      </a:majorFont>\n      <a:minorFont>\n        <a:latin typeface=\"" + (fontFamily || 'Calibri') + "\" panose=\"020F0502020204030204\"/>\n        <a:ea typeface=\"\"/>\n        <a:cs typeface=\"\"/>\n        " + scriptFonts + "\n      </a:minorFont>\n    </a:fontScheme>\n    <a:fmtScheme name=\"Sublime\">\n      <a:fillStyleLst>\n        <a:solidFill>\n          <a:schemeClr val=\"phClr\"/>\n        </a:solidFill>\n        <a:gradFill rotWithShape=\"1\">\n          <a:gsLst>\n            <a:gs pos=\"0\">\n              <a:schemeClr val=\"phClr\">\n                <a:lumMod val=\"110000\"/>\n                <a:satMod val=\"105000\"/>\n                <a:tint val=\"67000\"/>\n              </a:schemeClr>\n            </a:gs>\n            <a:gs pos=\"50000\">\n              <a:schemeClr val=\"phClr\">\n                <a:lumMod val=\"105000\"/>\n                <a:satMod val=\"103000\"/>\n                <a:tint val=\"73000\"/>\n              </a:schemeClr>\n            </a:gs>\n            <a:gs pos=\"100000\">\n              <a:schemeClr val=\"phClr\">\n                <a:lumMod val=\"105000\"/>\n                <a:satMod val=\"109000\"/>\n                <a:tint val=\"81000\"/>\n              </a:schemeClr>\n            </a:gs>\n          </a:gsLst>\n          <a:lin ang=\"5400000\" scaled=\"0\"/>\n        </a:gradFill>\n        <a:gradFill rotWithShape=\"1\">\n          <a:gsLst>\n            <a:gs pos=\"0\">\n              <a:schemeClr val=\"phClr\">\n                <a:satMod val=\"103000\"/>\n                <a:lumMod val=\"102000\"/>\n                <a:tint val=\"94000\"/>\n              </a:schemeClr>\n            </a:gs>\n            <a:gs pos=\"50000\">\n              <a:schemeClr val=\"phClr\">\n                <a:satMod val=\"110000\"/>\n                <a:lumMod val=\"100000\"/>\n                <a:shade val=\"100000\"/>\n              </a:schemeClr>\n            </a:gs>\n            <a:gs pos=\"100000\">\n              <a:schemeClr val=\"phClr\">\n                <a:lumMod val=\"99000\"/>\n                <a:satMod val=\"120000\"/>\n                <a:shade val=\"78000\"/>\n              </a:schemeClr>\n            </a:gs>\n          </a:gsLst>\n          <a:lin ang=\"5400000\" scaled=\"0\"/>\n        </a:gradFill>\n      </a:fillStyleLst>\n      <a:lnStyleLst>\n        <a:ln w=\"6350\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">\n          <a:solidFill>\n            <a:schemeClr val=\"phClr\"/>\n          </a:solidFill>\n          <a:prstDash val=\"solid\"/>\n          <a:miter lim=\"800000\"/>\n        </a:ln>\n        <a:ln w=\"12700\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">\n          <a:solidFill>\n            <a:schemeClr val=\"phClr\"/>\n          </a:solidFill>\n          <a:prstDash val=\"solid\"/>\n          <a:miter lim=\"800000\"/>\n        </a:ln>\n        <a:ln w=\"19050\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">\n          <a:solidFill>\n            <a:schemeClr val=\"phClr\"/>\n          </a:solidFill>\n          <a:prstDash val=\"solid\"/>\n          <a:miter lim=\"800000\"/>\n        </a:ln>\n      </a:lnStyleLst>\n      <a:effectStyleLst>\n        <a:effectStyle>\n          <a:effectLst/>\n        </a:effectStyle>\n        <a:effectStyle>\n          <a:effectLst/>\n        </a:effectStyle>\n        <a:effectStyle>\n          <a:effectLst>\n            <a:outerShdw blurRad=\"57150\" dist=\"19050\" dir=\"5400000\" algn=\"ctr\" rotWithShape=\"0\">\n              <a:srgbClr val=\"000000\">\n                <a:alpha val=\"63000\"/>\n              </a:srgbClr>\n            </a:outerShdw>\n          </a:effectLst>\n        </a:effectStyle>\n      </a:effectStyleLst>\n      <a:bgFillStyleLst>\n        <a:solidFill>\n          <a:schemeClr val=\"phClr\"/>\n        </a:solidFill>\n        <a:solidFill>\n          <a:schemeClr val=\"phClr\">\n            <a:tint val=\"95000\"/>\n            <a:satMod val=\"170000\"/>\n          </a:schemeClr>\n        </a:solidFill>\n        <a:gradFill rotWithShape=\"1\">\n          <a:gsLst>\n            <a:gs pos=\"0\">\n              <a:schemeClr val=\"phClr\">\n                <a:tint val=\"93000\"/>\n                <a:satMod val=\"150000\"/>\n                <a:shade val=\"98000\"/>\n                <a:lumMod val=\"102000\"/>\n              </a:schemeClr>\n            </a:gs>\n            <a:gs pos=\"50000\">\n              <a:schemeClr val=\"phClr\">\n                <a:tint val=\"98000\"/>\n                <a:satMod val=\"130000\"/>\n                <a:shade val=\"90000\"/>\n                <a:lumMod val=\"103000\"/>\n              </a:schemeClr>\n            </a:gs>\n            <a:gs pos=\"100000\">\n              <a:schemeClr val=\"phClr\">\n                <a:shade val=\"63000\"/>\n                <a:satMod val=\"120000\"/>\n              </a:schemeClr>\n            </a:gs>\n          </a:gsLst>\n          <a:lin ang=\"5400000\" scaled=\"0\"/>\n        </a:gradFill>\n      </a:bgFillStyleLst>\n    </a:fmtScheme>\n  </a:themeElements>\n  <a:objectDefaults/>\n  <a:extraClrSchemeLst/>\n  <a:extLst>\n    <a:ext uri=\"{05A4C25C-085E-4340-85A3-A5531E510DB2}\">\n      <thm15:themeFamily xmlns:thm15=\"http://schemas.microsoft.com/office/thememl/2012/main\" name=\"Sublime Theme\" id=\"{62F939B6-93AF-4DB8-9C6B-D6C7DFDC589F}\" vid=\"{4A3C46E8-61CC-4603-A589-7422A47A8E4A}\"/>\n    </a:ext>\n  </a:extLst>\n</a:theme>\n";
 }
+//# sourceMappingURL=theme.js.map
 
 var Theme = /** @class */ (function () {
     function Theme(fontFamily, colorScheme) {
@@ -7193,6 +7225,165 @@ var Theme = /** @class */ (function () {
         return makeXmlTheme(this.fontFamily, this.colorScheme && colorSchemeXML(this.colorScheme));
     };
     return Theme;
+}());
+//# sourceMappingURL=theme.js.map
+
+var Master = /** @class */ (function () {
+    function Master(title, number, layout) {
+        this.slide = null;
+        this.data = [];
+        if (!title)
+            throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
+        this.name = title;
+        this.relations = new Relations();
+        this.placeholders = new Map();
+        this.presLayout = layout;
+        this.number = number;
+        this.margin = DEF_SLIDE_MARGIN_IN;
+    }
+    Object.defineProperty(Master.prototype, "rels", {
+        get: function () {
+            return this.relations.rels;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Master.prototype, "relsChart", {
+        get: function () {
+            return this.relations.relsChart;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(Master.prototype, "relsMedia", {
+        get: function () {
+            return this.relations.relsMedia;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Master.prototype.configureBackground = function (bkg) {
+        if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
+            // Allow the use of only the data key (`path` isnt reqd)
+            bkg.src = bkg.src || bkg.path || null;
+            if (!bkg.src)
+                bkg.src = 'preencoded.png';
+            // Handle "blah.jpg?width=540" etc.
+            var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0];
+            // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]",
+            // so correct exttnesion to avoid content warnings at PPT startup
+            if (strImgExtn === 'jpg')
+                strImgExtn = 'jpeg';
+            this.bkgdImgRid = this.relations.registerImage({ data: bkg.data, path: bkg.src }, strImgExtn);
+        }
+        else if (bkg && typeof bkg === 'string') {
+            this.bkgd = bkg;
+        }
+    };
+    Master.prototype.fromConfig = function (slideDef) {
+        var _this = this;
+        if (slideDef.bkgd) {
+            this.configureBackground(slideDef.bkgd);
+        }
+        // STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
+        if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
+            slideDef.objects.forEach(function (object, idx) {
+                var key = Object.keys(object)[0];
+                if (MASTER_OBJECTS[key] && key === 'chart') {
+                    _this.data.push(new ChartElement(object[key].type, object[key].data, object[key].opts, _this.relations));
+                }
+                else if (MASTER_OBJECTS[key] && key === 'image') {
+                    _this.data.push(new ImageElement(object[key], _this.relations));
+                }
+                else if (MASTER_OBJECTS[key] && key === 'line') {
+                    _this.data.push(new SimpleShapeElement(BASE_SHAPES.LINE, object[key]));
+                }
+                else if (MASTER_OBJECTS[key] && key === 'rect') {
+                    _this.data.push(new SimpleShapeElement(BASE_SHAPES.RECTANGLE, object[key]));
+                }
+                else if (MASTER_OBJECTS[key] && key === 'text') {
+                    _this.data.push(new TextElement$1(object[key].text, object[key].options, _this.relations));
+                }
+                else if (MASTER_OBJECTS[key] && key === 'placeholder') {
+                    var _a = object[key], options = _a.options, text = _a.text;
+                    var placeholder = void 0;
+                    if (options.type === 'pic') {
+                        placeholder = new PlaceholderImage(options, 100 + idx);
+                    }
+                    else {
+                        placeholder = new PlaceholderText(text, options, 100 + idx, _this.relations);
+                    }
+                    if (_this.placeholders.has(placeholder.name)) {
+                        console.warn("Duplicate placeholders with name \"" + placeholder.name + "\"");
+                        return;
+                    }
+                    _this.placeholders.set(placeholder.name, placeholder);
+                    _this.data.push(placeholder);
+                }
+            });
+        }
+        // STEP 3: Add Slide Numbers
+        if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
+            this.data.push(new SlideNumberElement(slideDef.slideNumber));
+        }
+    };
+    Master.prototype.getPlaceholder = function (placeholderName) {
+        if (placeholderName && this.placeholders.has(placeholderName)) {
+            return this.placeholders.get(placeholderName);
+        }
+        return null;
+    };
+    return Master;
+}());
+var SlideLayouts = /** @class */ (function () {
+    function SlideLayouts(presLayout) {
+        this.layoutsOrder = [];
+        this.layouts = new Map();
+        this.presLayout = presLayout;
+        this.new(DEF_PRES_LAYOUT_NAME);
+    }
+    SlideLayouts.prototype.add = function (layoutId, newLayout) {
+        if (this.layouts.has(layoutId)) {
+            throw Error('Cannot redefine a layout');
+        }
+        this.layoutsOrder.push(layoutId);
+        this.layouts.set(layoutId, newLayout);
+    };
+    SlideLayouts.prototype.get = function (layoutId) {
+        return this.layouts.get(layoutId);
+    };
+    SlideLayouts.prototype.provide = function (layoutId) {
+        if (layoutId && this.layouts.has(layoutId))
+            return this.layouts.get(layoutId);
+        return this.layouts.get(DEF_PRES_LAYOUT_NAME);
+    };
+    SlideLayouts.prototype.new = function (name) {
+        var newMasterLayout = new Master(name, 1000 + this.layoutsOrder.length + 1, this.presLayout);
+        this.add(name, newMasterLayout);
+        return newMasterLayout;
+    };
+    SlideLayouts.prototype.newFromConfig = function (name, config) {
+        var newMasterLayout = this.new(name);
+        if (config.margin) {
+            newMasterLayout.margin = config.margin;
+        }
+        newMasterLayout.fromConfig(config);
+        return newMasterLayout;
+    };
+    SlideLayouts.prototype.asList = function () {
+        var _this = this;
+        return this.layoutsOrder.map(function (l) { return _this.get(l); });
+    };
+    SlideLayouts.prototype.forEach = function (arg1, arg2) {
+        return this.asList().forEach(arg1, arg2);
+    };
+    SlideLayouts.prototype.map = function (arg1, arg2) {
+        return this.asList().map(arg1, arg2);
+    };
+    SlideLayouts.prototype.filter = function (arg1, arg2) {
+        return this.asList().filter(arg1, arg2);
+    };
+    return SlideLayouts;
 }());
 
 /*\
@@ -7359,7 +7550,7 @@ var PptxGenJS = /** @class */ (function () {
                     zip.folder('ppt/theme');
                     zip.folder('ppt/notesMasters').folder('_rels');
                     zip.folder('ppt/notesSlides').folder('_rels');
-                    zip.file('[Content_Types].xml', makeXmlContTypes(_this.slides, _this.slideLayouts, _this.masterSlide));
+                    zip.file('[Content_Types].xml', makeXmlContTypes(_this.slides, _this.slideLayouts.asList(), _this.masterSlide));
                     zip.file('_rels/.rels', makeXmlRootRels());
                     zip.file('docProps/app.xml', makeXmlApp(_this.slides, _this.company));
                     zip.file('docProps/core.xml', makeXmlCore(_this.title, _this.subject, _this.author, _this.revision));
@@ -7372,17 +7563,17 @@ var PptxGenJS = /** @class */ (function () {
                     // C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
                     _this.slideLayouts.forEach(function (layout, idx) {
                         zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', makeXmlLayout(layout));
-                        zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', makeXmlSlideLayoutRel(idx + 1, _this.slideLayouts));
+                        zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', makeXmlSlideLayoutRel(idx + 1, _this.slideLayouts.asList()));
                     });
                     _this.slides.forEach(function (slide, idx) {
                         zip.file('ppt/slides/slide' + (idx + 1) + '.xml', makeXmlSlide(slide));
-                        zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', makeXmlSlideRel(_this.slides, _this.slideLayouts, idx + 1));
+                        zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', makeXmlSlideRel(_this.slides, _this.slideLayouts.asList(), idx + 1));
                         // Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
                         zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', makeXmlNotesSlide(slide));
                         zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', makeXmlNotesSlideRel(idx + 1));
                     });
-                    zip.file('ppt/slideMasters/slideMaster1.xml', makeXmlMaster(_this.masterSlide, _this.slideLayouts));
-                    zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', makeXmlMasterRel(_this.masterSlide, _this.slideLayouts));
+                    zip.file('ppt/slideMasters/slideMaster1.xml', makeXmlMaster(_this.masterSlide, _this.slideLayouts.asList()));
+                    zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', makeXmlMasterRel(_this.masterSlide, _this.slideLayouts.asList()));
                     zip.file('ppt/notesMasters/notesMaster1.xml', makeXmlNotesMaster());
                     zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', makeXmlNotesMasterRel());
                     // D: Create all Rels (images, media, chart data)
@@ -7441,19 +7632,7 @@ var PptxGenJS = /** @class */ (function () {
         this._isBrowser = false;
         this._theme = new Theme();
         //
-        this.slideLayouts = [
-            {
-                presLayout: this._presLayout,
-                name: DEF_PRES_LAYOUT_NAME,
-                number: 1000,
-                slide: null,
-                data: [],
-                rels: [],
-                relsChart: [],
-                relsMedia: [],
-                margin: DEF_SLIDE_MARGIN_IN,
-            },
-        ];
+        this.slideLayouts = new SlideLayouts(this._presLayout);
         this.slides = [];
         this.masterSlide = {
             addChart: null,
@@ -7687,11 +7866,7 @@ var PptxGenJS = /** @class */ (function () {
             getSlide: this.getSlide,
             presLayout: this.presLayout,
             slideNumber: this.slides.length + 1,
-            slideLayout: masterSlideName
-                ? this.slideLayouts.filter(function (layout) {
-                    return layout.name === masterSlideName;
-                })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
-                : this.LAYOUTS[DEF_PRES_LAYOUT],
+            slideLayout: this.slideLayouts.provide(masterSlideName),
         });
         this.slides.push(newSlide);
         return newSlide;
@@ -7701,59 +7876,7 @@ var PptxGenJS = /** @class */ (function () {
      * @param {ISlideMasterOptions} slideMasterOpts - layout definition
      */
     PptxGenJS.prototype.defineSlideMaster = function (slideMasterOpts) {
-        if (!slideMasterOpts.title)
-            throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
-        var newLayout = {
-            presLayout: this.presLayout,
-            name: slideMasterOpts.title,
-            number: 1000 + this.slideLayouts.length + 1,
-            slide: null,
-            data: [],
-            rels: [],
-            relsChart: [],
-            relsMedia: [],
-            margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
-        };
-        var registerLink = function (data, target) {
-            var relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1;
-            newLayout.rels.push({
-                type: SLIDE_OBJECT_TYPES.hyperlink,
-                data: data,
-                rId: relId,
-                Target: target,
-            });
-            return relId;
-        };
-        var registerImage = function (_a, extension, fromSvgSize) {
-            var path = _a.path, _b = _a.data, data = _b === void 0 ? '' : _b;
-            var relId = newLayout.rels.length + newLayout.relsChart.length + newLayout.relsMedia.length + 1;
-            newLayout.relsMedia.push(createImageConfig({
-                relId: relId,
-                path: path,
-                Target: "../media/image-" + newLayout.number + "-" + (newLayout.relsMedia.length + 1) + "." + extension,
-                data: data,
-                extension: extension,
-                fromSvgSize: fromSvgSize,
-            }));
-            return relId;
-        };
-        var registerChart = function (globalId, options, data) {
-            var chartRid = newLayout.relsChart.length + 1;
-            newLayout.relsChart.push({
-                rId: chartRid,
-                data: data,
-                opts: options,
-                type: options.type,
-                globalId: globalId,
-                fileName: 'chart' + globalId + '.xml',
-                Target: '/ppt/charts/chart' + globalId + '.xml',
-            });
-            return chartRid;
-        };
-        // STEP 1: Create the Slide Master/Layout
-        createSlideObject(slideMasterOpts, newLayout, registerImage, registerLink, registerChart);
-        // STEP 2: Add it to layout defs
-        this.slideLayouts.push(newLayout);
+        return this.slideLayouts.newFromConfig(slideMasterOpts.title, slideMasterOpts);
     };
     // HTML-TO-SLIDES METHODS
     /**
@@ -7764,11 +7887,7 @@ var PptxGenJS = /** @class */ (function () {
      */
     PptxGenJS.prototype.tableToSlides = function (tableElementId, opts) {
         if (opts === void 0) { opts = {}; }
-        genTableToSlides(this, tableElementId, opts, opts && opts.masterSlideName
-            ? this.slideLayouts.filter(function (layout) {
-                return layout.name === opts.masterSlideName;
-            })[0]
-            : null);
+        genTableToSlides(this, tableElementId, opts, opts && this.slideLayouts.get(opts.masterSlideName));
     };
     return PptxGenJS;
 }());
