@@ -1,27 +1,27 @@
 import { SLIDE_OBJECT_TYPES } from '../core-enums'
+import Placeholder from './placeholder'
+import Relations from '../relations'
+
 import TextElement from './text'
 
-export default class PlaceholderText {
+export default class PlaceholderText extends Placeholder {
 	type = SLIDE_OBJECT_TYPES.newtext
 
-	name
-	textElement
-	placeholderType
-	placeholderIndex
+	private textElement
 
-	constructor(text, options, index, registerLink) {
+	constructor(text: string, options, index: number, relations: Relations) {
+		super(options.name, options.type, index)
 		const { name, type = 'body', ...textOptions } = options
 
 		// We default to no bullet in the placeholder (different from the slide
 		// that inherits by default)
 		if (!textOptions.bullet) textOptions.bullet = false
 
-		const textElement = new TextElement(text, textOptions, registerLink)
+		this.textElement = new TextElement(text, textOptions, relations)
+	}
 
-		this.name = name
-		this.textElement = textElement
-		this.placeholderType = type
-		this.placeholderIndex = index
+	get position() {
+		return this.textElement.position
 	}
 
 	renderPlaceholderInfo() {

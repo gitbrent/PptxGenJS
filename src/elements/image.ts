@@ -44,6 +44,7 @@ export default class ImageElement {
 	image
 
 	objectFit
+	imageFormat
 
 	rounding
 	opacity
@@ -65,9 +66,6 @@ export default class ImageElement {
 			}
 		}
 
-		this.sourceH = options.h
-		this.sourceW = options.w
-
 		this.position = new Position({
 			x: options.x,
 			y: options.y,
@@ -79,7 +77,12 @@ export default class ImageElement {
 			rotate: options.rotate,
 		})
 
-		this.objectFit = new ObjectFit(options.objectFit || 'fill', this.position, options.imageFormat)
+		this.objectFit = options.objectFit
+		this.imageFormat = options.imageFormat
+		if ((this.objectFit !== 'fill' || this.objectFit !== 'none') && (!this.imageFormat || !this.imageFormat.width || !this.imageFormat.height)) {
+			console.warn(`You need to specify full the width and height of the source for objectFit "${this.objectFit}"`)
+			this.objectFit = 'fill'
+		}
 
 		let newObject: any = {
 			type: null,
@@ -131,6 +134,16 @@ export default class ImageElement {
 	}
 
 	render(idx, presLayout, placeholder) {
+		const placeholderPosition = placeholder ? placeholder.position : {}
+		const correctedPosition = {
+			x: this.position.x || placeholderPosition.x,
+			y: this.position.y || placeholderPosition.y,
+			h: this.position.h || placeholderPosition.h,
+			w: this.position.w || placeholderPosition.w,
+		}
+
+		const objectFit = new ObjectFit(this.objectFit || (placeholder && placeholder.objectFit), correctedPosition, this.imageFormat)
+		const opacity = this.opacity || (placeholder && placeholder.opacity)
 		return `
     <p:pic>
 	    <p:nvPicPr>
@@ -158,9 +171,9 @@ export default class ImageElement {
                 </a:extLst>`
 					: ''
 			}
-                ${this.opacity ? `<a:alphaModFix amt="${this.opacity * 100000}"/>` : ''}
+                ${opacity ? `<a:alphaModFix amt="${opacity * 100000}"/>` : ''}
             </a:blip>
-        ${this.objectFit.render(presLayout)}
+        ${objectFit.render(presLayout)}
 		</p:blipFill>
 		<p:spPr>
 		    ${this.position.render(presLayout)}

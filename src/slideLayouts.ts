@@ -5,9 +5,12 @@ import Relations from './relations'
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
+import PlaceholderImageElement from './elements/placeholder-image'
 import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
 import SlideNumberElement from './elements/slide-number'
+
+type Placeholder = PlaceholderImageElement & PlaceholderTextElement
 
 export class Master {
 	name
@@ -23,7 +26,7 @@ export class Master {
 	bkgd
 	bkgdImgRid
 
-	placeholders: Map<string, PlaceholderTextElement>
+	placeholders: Map<string, Placeholder>
 
 	constructor(title, number, layout) {
 		if (!title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
@@ -87,7 +90,13 @@ export class Master {
 				} else if (MASTER_OBJECTS[key] && key === 'text') {
 					this.data.push(new TextElement(object[key].text, object[key].options, this.relations))
 				} else if (MASTER_OBJECTS[key] && key === 'placeholder') {
-					const placeholder = new PlaceholderTextElement(object[key].text, object[key].options, 100 + idx, this.relations)
+					const { options, text } = object[key]
+					let placeholder
+					if (options.type === 'pic') {
+						placeholder = new PlaceholderImageElement(options, 100 + idx)
+					} else {
+						placeholder = new PlaceholderTextElement(text, options, 100 + idx, this.relations)
+					}
 					if (this.placeholders.has(placeholder.name)) {
 						console.warn(`Duplicate placeholders with name "${placeholder.name}"`)
 						return

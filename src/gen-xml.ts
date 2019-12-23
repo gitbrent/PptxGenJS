@@ -35,6 +35,7 @@ import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber,
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
+import PlaceholderImageElement from './elements/placeholder-image'
 import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
 import SlideNumberElement from './elements/slide-number'
@@ -86,12 +87,14 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		let locationAttr = ''
 
 		if (slideItemObj instanceof TextElement || slideItemObj instanceof ImageElement) {
-			strSlideXml += slideItemObj.render(idx, slide.presLayout, slide['slideLayout'].getPlaceholder(slideItemObj.placeholder))
+			const placeholder = slide['slideLayout'] && slide['slideLayout'].getPlaceholder(slideItemObj.placeholder)
+			strSlideXml += slideItemObj.render(idx, slide.presLayout, placeholder)
 			return
 		}
 		if (
 			slideItemObj instanceof ShapeElement ||
 			slideItemObj instanceof PlaceholderTextElement ||
+			slideItemObj instanceof PlaceholderImageElement ||
 			slideItemObj instanceof ChartElement ||
 			slideItemObj instanceof SlideNumberElement
 		) {
