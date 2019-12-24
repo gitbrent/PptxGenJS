@@ -772,7 +772,7 @@ function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { 
 	})
 	;(slide.relsChart || []).forEach((rel: ISlideRelChart) => {
 		lastRid = Math.max(lastRid, rel.rId)
-		strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
+		strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>'
 	})
 	;(slide.relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		lastRid = Math.max(lastRid, rel.rId)
