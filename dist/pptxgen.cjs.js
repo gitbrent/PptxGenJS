@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.7 @ 2019-12-20T04:32:26.747Z */
+/* PptxGenJS 3.0.0-beta.9 @ 2019-12-24T23:42:17.865Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2918,7 +2918,7 @@ function slideObjectRelationsToXml(slide, defaultRels) {
     });
     (slide.relsChart || []).forEach(function (rel) {
         lastRid = Math.max(lastRid, rel.rId);
-        strXml += '<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>';
+        strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>';
     });
     (slide.relsMedia || []).forEach(function (rel) {
         lastRid = Math.max(lastRid, rel.rId);
