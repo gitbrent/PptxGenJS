@@ -12,6 +12,7 @@ export default class Bullet {
 	startAt
 
 	bulletCode
+	color
 
 	constructor(bullet) {
 		if (bullet === false) {
@@ -43,6 +44,7 @@ export default class Bullet {
 			this.bulletCode = BULLET_TYPES['DEFAULT']
 		}
 		this.bulletCode = this.code && `&#x${this.code};`
+		this.color = bullet.color
 
 		this.enabled = this.code || this.type === 'number'
 
@@ -50,12 +52,14 @@ export default class Bullet {
 	}
 
 	render() {
+		const color = this.color ? `<a:buClr><a:srgbClr val="${this.color}"/></a:buClr>` : ''
+
 		if (this.enabled && this.type === 'number') {
-			return `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${this.style}" startAt="${this.startAt}"/>`
+			return `${color}<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${this.style}" startAt="${this.startAt}"/>`
 		} else if (this.enabled && this.code) {
-			return `<a:buSzPct val="100000"/><a:buChar char="${this.bulletCode}"/>`
+			return `${color}<a:buSzPct val="100000"/><a:buChar char="${this.bulletCode}"/>`
 		} else if (this.enabled && this.default) {
-			return `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
+			return `${color}<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
 		} else if (!this.enabled && !this.inherit) {
 			return '<a:buNone/>'
 		}
