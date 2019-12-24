@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.6 @ 2019-12-23T10:03:01.613Z */
+/* PptxGenJS 3.0.0-beta.6 @ 2019-12-24T12:19:18.846Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2434,8 +2434,8 @@ var TextFragment = /** @class */ (function () {
         this.paragraphConfig = paragraphConfig;
         this.runConfig = runConfig;
     }
-    TextFragment.prototype.render = function () {
-        return "\n\t\t" + this.paragraphConfig.render('a:pPr') + "\n        <a:r>\n            " + this.runConfig.render('a:rPr') + "\n            <a:t>" + encodeXmlEntities(this.text) + "</a:t>\n        </a:r>\n        ";
+    TextFragment.prototype.render = function (presLayout) {
+        return "\n\t\t" + this.paragraphConfig.render(presLayout, 'a:pPr') + "\n        <a:r>\n            " + this.runConfig.render('a:rPr') + "\n            <a:t>" + encodeXmlEntities(this.text) + "</a:t>\n        </a:r>\n        ";
     };
     return TextFragment;
 }());
@@ -2467,18 +2467,27 @@ var Bullet = /** @class */ (function () {
             this.bulletCode = BULLET_TYPES['DEFAULT'];
         }
         this.bulletCode = this.code && "&#x" + this.code + ";";
+        this.color = bullet.color;
         this.enabled = this.code || this.type === 'number';
-        this.style = bullet.style;
+        this.indent = bullet.indent;
     }
+    Bullet.prototype.renderIndentProps = function (presLayout, indentLevel) {
+        if (!this.enabled)
+            return '';
+        var bulletLvl0Margin = this.indent ? getSmartParseNumber(this.indent, 'X', presLayout) : 342900;
+        var marginLeft = indentLevel && indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * indentLevel : bulletLvl0Margin;
+        return " marL=\"" + marginLeft + "\" indent=\"-" + bulletLvl0Margin + "\"";
+    };
     Bullet.prototype.render = function () {
+        var color = this.color ? "<a:buClr><a:srgbClr val=\"" + this.color + "\"/></a:buClr>" : '';
         if (this.enabled && this.type === 'number') {
-            return "<a:buSzPct val=\"100000\"/><a:buFont typeface=\"+mj-lt\"/><a:buAutoNum type=\"" + this.style + "\" startAt=\"" + this.startAt + "\"/>";
+            return color + "<a:buSzPct val=\"100000\"/><a:buFont typeface=\"+mj-lt\"/><a:buAutoNum type=\"" + this.style + "\" startAt=\"" + this.startAt + "\"/>";
         }
         else if (this.enabled && this.code) {
-            return "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + this.bulletCode + "\"/>";
+            return color + "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + this.bulletCode + "\"/>";
         }
         else if (this.enabled && this.default) {
-            return "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + BULLET_TYPES['DEFAULT'] + "\"/>";
+            return color + "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + BULLET_TYPES['DEFAULT'] + "\"/>";
         }
         else if (!this.enabled && !this.inherit) {
             return '<a:buNone/>';
@@ -2487,7 +2496,6 @@ var Bullet = /** @class */ (function () {
     };
     return Bullet;
 }());
-//# sourceMappingURL=bullet.js.map
 
 var alignment = function (align) {
     switch (align) {
@@ -2528,15 +2536,13 @@ var TextElement = /** @class */ (function () {
         this.rtlMode = rtlMode;
         this.lineSpacing = lineSpacing && !isNaN(lineSpacing) ? lineSpacing : null;
     }
-    TextElement.prototype.render = function (tag, body) {
+    TextElement.prototype.render = function (presLayout, tag, body) {
         if (body === void 0) { body = ''; }
-        var bulletLvl0Margin = 342900;
-        var marginLeft = this.indentLevel && this.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * this.indentLevel : bulletLvl0Margin;
         return "\n        <" + tag + " " + [
             this.rtlMode ? ' rtl="1" ' : '',
             alignment(this.align),
             this.indentLevel ? " lvl=\"" + this.indentLevel + "\"" : '',
-            this.bullet.enabled ? " marL=\"" + marginLeft + "\" indent=\"-" + bulletLvl0Margin + "\"" : '',
+            this.bullet.renderIndentProps(presLayout, this.indentLevel),
         ].join('') + ">\n          " + [
             // IMPORTANT: the body element require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
             this.lineSpacing ? "<a:lnSpc><a:spcPts val=\"" + this.lineSpacing + "00\"/></a:lnSpc>" : '',
@@ -2547,7 +2553,6 @@ var TextElement = /** @class */ (function () {
     };
     return TextElement;
 }());
-//# sourceMappingURL=paragraph-properties.js.map
 
 var RunProperties = /** @class */ (function () {
     function RunProperties(options) {
@@ -2791,7 +2796,7 @@ var TextElement$1 = /** @class */ (function () {
             'rtlCol="0"',
             this.anchor ? "anchor=\"" + this.anchor + "\"" : '',
             this.vert ? "vert=\"" + this.vert + "\"" : '',
-        ].join(' ') + ">\n                " + (this.shrinkText ? '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' : '') + "\n                " + (this.autoFit !== false ? '<a:spAutoFit/>' : '') + "\n            </a:bodyPr>\n\n            <a:lstStyle>\n                " + this.paragraphProperties.render('a:lvl1pPr', this.runProperties.render('a:defRPr')) + "\n            </a:lstStyle>\n            <a:p>\n                " + this.fragments.map(function (fragment) { return fragment.render(); }).join('</a:p><a:p>') + "\n                " + '' /* NOTE: Added 20180101 to address PPT-2007 issues */ + "\n\t\t        <a:endParaRPr lang=\"" + (this.lang || 'en-US') + "\" dirty=\"0\"/>\n            </a:p>\n        </p:txBody>\n    </p:sp>";
+        ].join(' ') + ">\n                " + (this.shrinkText ? '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' : '') + "\n                " + (this.autoFit !== false ? '<a:spAutoFit/>' : '') + "\n            </a:bodyPr>\n\n            <a:lstStyle>\n                " + this.paragraphProperties.render(presLayout, 'a:lvl1pPr', this.runProperties.render('a:defRPr')) + "\n            </a:lstStyle>\n            <a:p>\n                " + this.fragments.map(function (fragment) { return fragment.render(); }).join('</a:p><a:p>') + "\n                " + '' /* NOTE: Added 20180101 to address PPT-2007 issues */ + "\n\t\t        <a:endParaRPr lang=\"" + (this.lang || 'en-US') + "\" dirty=\"0\"/>\n            </a:p>\n        </p:txBody>\n    </p:sp>";
     };
     return TextElement$1;
 }());
@@ -5871,6 +5876,7 @@ var PlaceholderImage = /** @class */ (function (_super) {
     };
     return PlaceholderImage;
 }(Placeholder));
+//# sourceMappingURL=placeholder-image.js.map
 
 /**
  * PptxGenJS: XML Generation
@@ -7201,6 +7207,7 @@ function makeXmlTableStyles() {
 function makeXmlViewProps() {
     return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + CRLF + "<p:viewPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"><p:normalViewPr horzBarState=\"maximized\"><p:restoredLeft sz=\"15611\"/><p:restoredTop sz=\"94610\"/></p:normalViewPr><p:slideViewPr><p:cSldViewPr snapToGrid=\"0\" snapToObjects=\"1\"><p:cViewPr varScale=\"1\"><p:scale><a:sx n=\"136\" d=\"100\"/><a:sy n=\"136\" d=\"100\"/></p:scale><p:origin x=\"216\" y=\"312\"/></p:cViewPr><p:guideLst/></p:cSldViewPr></p:slideViewPr><p:notesTextViewPr><p:cViewPr><p:scale><a:sx n=\"1\" d=\"1\"/><a:sy n=\"1\" d=\"1\"/></p:scale><p:origin x=\"0\" y=\"0\"/></p:cViewPr></p:notesTextViewPr><p:gridSpacing cx=\"76200\" cy=\"76200\"/></p:viewPr>";
 }
+//# sourceMappingURL=gen-xml.js.map
 
 var scriptFonts = "\n        <a:font script=\"Jpan\" typeface=\"\u6E38\u30B4\u30B7\u30C3\u30AF Light\"/>\n        <a:font script=\"Hang\" typeface=\"\uB9D1\uC740 \uACE0\uB515\"/>\n        <a:font script=\"Hans\" typeface=\"\u7B49\u7EBF Light\"/>\n        <a:font script=\"Hant\" typeface=\"\u65B0\u7D30\u660E\u9AD4\"/>\n        <a:font script=\"Arab\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Hebr\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Thai\" typeface=\"Angsana New\"/>\n        <a:font script=\"Ethi\" typeface=\"Nyala\"/>\n        <a:font script=\"Beng\" typeface=\"Vrinda\"/>\n        <a:font script=\"Gujr\" typeface=\"Shruti\"/>\n        <a:font script=\"Khmr\" typeface=\"MoolBoran\"/>\n        <a:font script=\"Knda\" typeface=\"Tunga\"/>\n        <a:font script=\"Guru\" typeface=\"Raavi\"/>\n        <a:font script=\"Cans\" typeface=\"Euphemia\"/>\n        <a:font script=\"Cher\" typeface=\"Plantagenet Cherokee\"/>\n        <a:font script=\"Yiii\" typeface=\"Microsoft Yi Baiti\"/>\n        <a:font script=\"Tibt\" typeface=\"Microsoft Himalaya\"/>\n        <a:font script=\"Thaa\" typeface=\"MV Boli\"/>\n        <a:font script=\"Deva\" typeface=\"Mangal\"/>\n        <a:font script=\"Telu\" typeface=\"Gautami\"/>\n        <a:font script=\"Taml\" typeface=\"Latha\"/>\n        <a:font script=\"Syrc\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Orya\" typeface=\"Kalinga\"/>\n        <a:font script=\"Mlym\" typeface=\"Kartika\"/>\n        <a:font script=\"Laoo\" typeface=\"DokChampa\"/>\n        <a:font script=\"Sinh\" typeface=\"Iskoola Pota\"/>\n        <a:font script=\"Mong\" typeface=\"Mongolian Baiti\"/>\n        <a:font script=\"Viet\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Uigh\" typeface=\"Microsoft Uighur\"/>\n        <a:font script=\"Geor\" typeface=\"Sylfaen\"/>\n        <a:font script=\"Armn\" typeface=\"Arial\"/>\n        <a:font script=\"Bugi\" typeface=\"Leelawadee UI\"/>\n        <a:font script=\"Bopo\" typeface=\"Microsoft JhengHei\"/>\n        <a:font script=\"Java\" typeface=\"Javanese Text\"/>\n        <a:font script=\"Lisu\" typeface=\"Segoe UI\"/>\n        <a:font script=\"Mymr\" typeface=\"Myanmar Text\"/>\n        <a:font script=\"Nkoo\" typeface=\"Ebrima\"/>\n        <a:font script=\"Olck\" typeface=\"Nirmala UI\"/>\n        <a:font script=\"Osma\" typeface=\"Ebrima\"/>\n        <a:font script=\"Phag\" typeface=\"Phagspa\"/>\n        <a:font script=\"Syrn\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Syrj\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Syre\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Sora\" typeface=\"Nirmala UI\"/>\n        <a:font script=\"Tale\" typeface=\"Microsoft Tai Le\"/>\n        <a:font script=\"Talu\" typeface=\"Microsoft New Tai Lue\"/>\n        <a:font script=\"Tfng\" typeface=\"Ebrima\"/>\n";
 var colorSchemeXML = function (_a) {
@@ -7383,6 +7390,7 @@ var SlideLayouts = /** @class */ (function () {
     };
     return SlideLayouts;
 }());
+//# sourceMappingURL=slideLayouts.js.map
 
 /*\
 |*|  :: pptxgen.js ::
