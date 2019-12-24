@@ -99,8 +99,8 @@ export default class TextElement {
 	shadow
 	placeholder
 
-	paragraphProperties
-	runProperties
+    paragraphProperties: ParagraphProperties
+    runProperties: RunProperties
 
 	constructor(text, opts, relations) {
 		this.fragments = buildFragments(text, opts.breakLine, relations)
@@ -255,7 +255,7 @@ export default class TextElement {
             </a:bodyPr>
 
             <a:lstStyle>
-                ${this.paragraphProperties.render('a:lvl1pPr', this.runProperties.render('a:defRPr'))}
+                ${this.paragraphProperties.render(presLayout, 'a:lvl1pPr', this.runProperties.render('a:defRPr'))}
             </a:lstStyle>
             <a:p>
                 ${this.fragments.map(fragment => fragment.render()).join('</a:p><a:p>')}

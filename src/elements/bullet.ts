@@ -1,4 +1,5 @@
 import { BULLET_TYPES } from '../core-enums'
+import { getSmartParseNumber } from '../gen-utils'
 
 export default class Bullet {
 	enabled
@@ -13,6 +14,7 @@ export default class Bullet {
 
 	bulletCode
 	color
+	indent
 
 	constructor(bullet) {
 		if (bullet === false) {
@@ -47,8 +49,16 @@ export default class Bullet {
 		this.color = bullet.color
 
 		this.enabled = this.code || this.type === 'number'
+		this.indent = bullet.indent
+	}
 
-		this.style = bullet.style
+	renderIndentProps(presLayout, indentLevel) {
+		if (!this.enabled) return ''
+
+		let bulletLvl0Margin = this.indent ? getSmartParseNumber(this.indent, 'X', presLayout) : 342900
+		const marginLeft = indentLevel && indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * indentLevel : bulletLvl0Margin
+
+		return ` marL="${marginLeft}" indent="-${bulletLvl0Margin}"`
 	}
 
 	render() {

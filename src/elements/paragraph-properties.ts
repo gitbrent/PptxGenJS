@@ -50,17 +50,13 @@ export default class TextElement {
 		this.lineSpacing = lineSpacing && !isNaN(lineSpacing) ? lineSpacing : null
 	}
 
-	render(tag, body = '') {
-		let bulletLvl0Margin = 342900
-
-		const marginLeft = this.indentLevel && this.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * this.indentLevel : bulletLvl0Margin
-
+	render(presLayout, tag, body = '') {
 		return `
         <${tag} ${[
 			this.rtlMode ? ' rtl="1" ' : '',
 			alignment(this.align),
 			this.indentLevel ? ` lvl="${this.indentLevel}"` : '',
-			this.bullet.enabled ? ` marL="${marginLeft}" indent="-${bulletLvl0Margin}"` : '',
+			this.bullet.renderIndentProps(presLayout, this.indentLevel),
 		].join('')}>
           ${[
 				// IMPORTANT: the body element require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)

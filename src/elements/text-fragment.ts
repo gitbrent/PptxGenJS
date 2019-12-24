@@ -1,10 +1,13 @@
 import { encodeXmlEntities } from '../gen-utils'
 
+import ParagraphProperties from './paragraph-properties'
+import RunProperties from './run-properties'
+
 export default class TextFragment {
 	text
 
-	paragraphConfig
-	runConfig
+	paragraphConfig: ParagraphProperties
+	runConfig: RunProperties
 
 	constructor(text, paragraphConfig, runConfig) {
 		this.text = text
@@ -12,9 +15,9 @@ export default class TextFragment {
 		this.runConfig = runConfig
 	}
 
-	render() {
+	render(presLayout) {
 		return `
-		${this.paragraphConfig.render('a:pPr')}
+		${this.paragraphConfig.render(presLayout, 'a:pPr')}
         <a:r>
             ${this.runConfig.render('a:rPr')}
             <a:t>${encodeXmlEntities(this.text)}</a:t>
