@@ -61,6 +61,12 @@ export interface IShadowOptions {
 	color?: string
 }
 
+export interface IGlowOptions {
+	size: number
+	opacity: number
+	color?: string
+}
+
 // TODO:
 //   export type ChartOptions = ChartBaseOptions | ChartAxesOptions | ChartBarDataLineOptions | Chart3DBarOptions;
 
@@ -344,6 +350,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	color?: string
 	fontFace?: string
 	fontSize?: number
+	glow?: IGlowOptions
 	hyperlink?: HyperLink
 	indentLevel?: number
 	inset?: number

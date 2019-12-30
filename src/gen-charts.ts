@@ -1866,6 +1866,8 @@ function getExcelColName(length: number): string {
 	return strName
 }
 
+
+// TODO: should not generate `a:effectLst` wrapper and should move to gen-effects.ts
 /**
  * NOTE: Used by both: text and lineChart
  * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
