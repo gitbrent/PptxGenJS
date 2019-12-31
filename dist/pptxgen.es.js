@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.9 @ 2019-12-24T23:42:17.870Z */
+/* PptxGenJS 3.0.0-beta.9 @ 2019-12-31T21:35:22.581Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -4651,7 +4651,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
             newObject.options.bodyProp.align = TEXT_HALIGN.justify;
         if ((newObject.options.valign || '').toLowerCase().startsWith('b'))
             newObject.options.bodyProp.anchor = TEXT_VALIGN.b;
-        else if ((newObject.options.valign || '').toLowerCase().startsWith('c'))
+        else if ((newObject.options.valign || '').toLowerCase().startsWith('m'))
             newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr;
         else if ((newObject.options.valign || '').toLowerCase().startsWith('t'))
             newObject.options.bodyProp.anchor = TEXT_VALIGN.t;
