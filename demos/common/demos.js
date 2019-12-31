@@ -2603,7 +2603,7 @@ function genSlides_Text(pptx) {
 		);
 
 		// 4: Hyperlinks
-		slide.addText("Hyperlinks:", { x:7.0, y:6.0, w:1.75, h:0.3, margin:0, color:'0088CC' });
+		slide.addText("Hyperlinks:", { x:7.0, y:6.0, w:1.75, h:0.3, margin:0.123, color:'0088CC' });
 		slide.addText(
 			[
 				{ text:'Link with Tooltip', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } },

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sections
 
 
-## [3.0.0] - 2019-11-31
+## [3.0.0] - 2019-12-31
 ### Added
 - Ability to specify numbered list format [\#452](https://github.com/gitbrent/PptxGenJS/issue/452) ([mayvazyan](https://github.com/mayvazyan))
 - New cat/val axis options: majorTickMark/minorTickMark [\#473](https://github.com/gitbrent/PptxGenJS/pull/473) ([RokasDie](https://github.com/RokasDie))
@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed: Exporting images corrupting file. [\#578](https://github.com/gitbrent/PptxGenJS/issue/578) ([joeberth](https://github.com/joeberth))
 - Fixed: Multiple files getting downloaded if multiple base64 images are added. [\#581](https://github.com/gitbrent/PptxGenJS/issue/581) ([akshaymagapu](https://github.com/akshaymagapu))
 - Fixed: Links in tables won't work on tables generated with autoPage [\#583](https://github.com/gitbrent/PptxGenJS/issue/583) ([githuis](https://github.com/githuis))
+- Fixed: Added rounding of margin values to avoid invalid XML [\#633](https://github.com/gitbrent/PptxGenJS/pull/633) ([kevinresol](https://github.com/kevinresol))
 ### Removed
 - Removed: jQuery is no longer required (!)
 
