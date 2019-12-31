@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.9 @ 2019-12-31T21:35:22.576Z */
+/* PptxGenJS 3.0.0-beta.9 @ 2019-12-31T21:53:51.653Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2603,16 +2603,16 @@ function slideObjectToXml(slide) {
                     cy = EMU * 0.3;
                 // Margin/Padding/Inset for textboxes
                 if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-                    slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin[0] * ONEPT || 0;
-                    slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin[1] * ONEPT || 0;
-                    slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin[2] * ONEPT || 0;
-                    slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin[3] * ONEPT || 0;
+                    slideItemObj.options.bodyProp.lIns = Math.round(slideItemObj.options.margin[0] * ONEPT || 0);
+                    slideItemObj.options.bodyProp.rIns = Math.round(slideItemObj.options.margin[1] * ONEPT || 0);
+                    slideItemObj.options.bodyProp.bIns = Math.round(slideItemObj.options.margin[2] * ONEPT || 0);
+                    slideItemObj.options.bodyProp.tIns = Math.round(slideItemObj.options.margin[3] * ONEPT || 0);
                 }
                 else if (typeof slideItemObj.options.margin === 'number') {
-                    slideItemObj.options.bodyProp.lIns = slideItemObj.options.margin * ONEPT;
-                    slideItemObj.options.bodyProp.rIns = slideItemObj.options.margin * ONEPT;
-                    slideItemObj.options.bodyProp.bIns = slideItemObj.options.margin * ONEPT;
-                    slideItemObj.options.bodyProp.tIns = slideItemObj.options.margin * ONEPT;
+                    slideItemObj.options.bodyProp.lIns = Math.round(slideItemObj.options.margin * ONEPT);
+                    slideItemObj.options.bodyProp.rIns = Math.round(slideItemObj.options.margin * ONEPT);
+                    slideItemObj.options.bodyProp.bIns = Math.round(slideItemObj.options.margin * ONEPT);
+                    slideItemObj.options.bodyProp.tIns = Math.round(slideItemObj.options.margin * ONEPT);
                 }
                 if (shapeType === null)
                     shapeType = getShapeInfo(null);
