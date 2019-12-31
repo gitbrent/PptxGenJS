@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.0.0-beta.9
-* BLD.: 20191219
+* BLD.: 20191231
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -264,14 +264,14 @@ function genSlides_Table(pptx) {
 				{ text: 'Top Rgt', options: { valign:'top', align:'right' , fontFace:'Verdana' } }
 			],
 			[
-				{ text: 'Ctr Lft', options: { valign:'middle', align:'left' } },
-				{ text: 'Ctr Ctr', options: { valign:'center', align:'center'  } },
-				{ text: 'Ctr Rgt', options: { valign:'center'     , align:'right'    } }
+				{ text: 'Mdl Lft', options: { valign:'middle', align:'left'   } },
+				{ text: 'Mdl Ctr', options: { valign:'middle', align:'center' } },
+				{ text: 'Mdl Rgt', options: { valign:'middle', align:'right'  } }
 			],
 			[
-				{ text: 'Btm Lft', options: { valign:'bottom', align:'left' } },
-				{ text: 'Btm Ctr', options: { valign:'btm',    align:'center' } },
-				{ text: 'Btm Rgt', options: { valign:'bottom',      align:'right' } }
+				{ text: 'Btm Lft', options: { valign:'bottom', align:'left'   } },
+				{ text: 'Btm Ctr', options: { valign:'bottom', align:'center' } },
+				{ text: 'Btm Rgt', options: { valign:'bottom', align:'right'  } }
 			]
 		];
 		slide.addTable(
@@ -2582,7 +2582,7 @@ function genSlides_Text(pptx) {
 		// 1: Line-Breaks
 		slide.addText("Line-Breaks:", { x:7.0, y:0.6, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
-			'***Line Breaks / Multi Lines***\n\nFirst line\nSecond line\nThird line',
+			'***Line Breaks / Multi Lines***\nFirst line\nSecond line\nThird line',
 			{ x:7.0, y:1.0, w:5.75, h:1.6, valign:'middle', align:'center', color:'6c6c6c', fontSize:16, fill:'F2F2F2', line:{pt:'2',color:'C7C7C7'} }
 		);
 
@@ -2697,17 +2697,17 @@ function genSlides_Text(pptx) {
 
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
 		slide.addText([
-				{ text:'Textbox align (ctr/ctr)', options:{ fontSize:32 } },
+				{ text:'Textbox align (center/middle)', options:{ fontSize:32 } },
 				{ text:'Character Spacing 16', options:{ fontSize:16, charSpacing:16 } }
 			],
 			{ x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'middle', align:'center', isTextBox:true }
 		);
 		slide.addText(
-			[{ text:'(top/lft)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
+			[{ text:'(left/top)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
 			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'top', align:'left', margin:15 }
 		);
 		slide.addText(
-			[{ text:'Textbox' }, { text:'(btm/rgt)', options:{ fontSize:12 } }],
+			[{ text:'Textbox' }, { text:'(right/bottom)', options:{ fontSize:12 } }],
 			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'bottom', align:'right', margin:0 }
 		);
 
