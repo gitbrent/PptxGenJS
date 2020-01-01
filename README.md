@@ -100,8 +100,8 @@ PptxGenJS PowerPoint presentations are created via JavaScript by following 4 bas
 4. Save the Presentation
 
 ```javascript
-var pptx = new PptxGenJS();
-var slide = pptx.addSlide();
+let pptx = new PptxGenJS();
+let slide = pptx.addSlide();
 slide.addText(
   'Hello World from PptxGenJS!',
   { x:1, y:1, w:'80%', h:3, color:'363636', align:'center', fill:'f1f1f1' }
@@ -163,8 +163,8 @@ Here is a small [jsFiddle](https://jsfiddle.net/gitbrent/gx34jy59/5/) that is al
 
 Sometimes implementing a new library can be a difficult task and the slightest mistake will keep something from working. We've all been there!
 
-If you are having issues getting a presentation to generate, check out the demos in the `examples` directory. There
-are demos for both Nodejs and client-browsers that contain working examples of every available library feature.
+If you are having issues getting a presentation to generate, check out the code in the `demos` directory. There
+are demos for both client browsers, node and react that contain working examples of every available library feature.
 
 * Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/gx34jy59/)
 * [View questions tagged `PptxGenJS` on StackOverflow](https://stackoverflow.com/questions/tagged/pptxgenjs?sort=votes&pageSize=50).  If you can't find your question, [ask it yourself](https://stackoverflow.com/questions/ask?tags=PptxGenJS) - be sure to tag it `PptxGenJS`.
@@ -201,6 +201,6 @@ PowerPoint shape definitions and some XML code via [Officegen Project](https://g
 **************************************************************************************************
 # License
 
-Copyright &copy; 2015-2019 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
+Copyright &copy; 2015-2020 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)
