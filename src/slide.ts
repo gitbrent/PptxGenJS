@@ -1,5 +1,5 @@
 /**
- * PptxGenJS Slide Class
+ * PptxGenJS: Slide Class
  */
 
 import { CHART_TYPE_NAMES } from './core-enums'
@@ -25,11 +25,7 @@ import {
 import * as genObj from './gen-objects'
 
 export default class Slide {
-	private _bkgd: string
-	private _color: string
-	private _hidden: boolean
 	private _setSlideNum: Function
-	private _slideNumber: ISlideNumber
 
 	public addSlide: Function
 	public getSlide: Function
@@ -61,7 +57,10 @@ export default class Slide {
 		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null
 	}
 
-	// TODO: add comments (also add to index.d.ts)
+	/**
+	 * @type {string}
+	 */
+	private _bkgd: string
 	public set bkgd(value: string) {
 		this._bkgd = value
 	}
@@ -69,7 +68,10 @@ export default class Slide {
 		return this._bkgd
 	}
 
-	// TODO: add comments (also add to index.d.ts)
+	/**
+	 * @type {string}
+	 */
+	private _color: string
 	public set color(value: string) {
 		this._color = value
 	}
@@ -77,7 +79,10 @@ export default class Slide {
 		return this._color
 	}
 
-	// TODO: add comments (also add to index.d.ts)
+	/**
+	 * @type {boolean}
+	 */
+	private _hidden: boolean
 	public set hidden(value: boolean) {
 		this._hidden = value
 	}
@@ -85,7 +90,10 @@ export default class Slide {
 		return this._hidden
 	}
 
-	// TODO: add comments (also add to index.d.ts)
+	/**
+	 * @type {ISlideNumber}
+	 */
+	private _slideNumber: ISlideNumber
 	public set slideNumber(value: ISlideNumber) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		this.slideNumberObj = value
@@ -177,7 +185,7 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	addTable(arrTabRows: TableRow[], options?: ITableOptions): Slide {
-		// FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
+		// FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, arrTabRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}
