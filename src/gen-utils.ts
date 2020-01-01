@@ -52,7 +52,7 @@ export function getUuid(uuidFormat: string): string {
 }
 
 /**
- * TODO: What does this mehtod do again??
+ * TODO: What does this method do again??
  * shallow mix, returns new object
  */
 export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
