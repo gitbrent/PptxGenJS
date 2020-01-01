@@ -1,7 +1,7 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import pptxgen from "./pptxgen.es.js"; // copied from `PptxGenJS/dist` (Why:react-starter-kit only supports local deps)
+import pptxgen from "./pptxgen.es.js"; // src=`PptxGenJS/dist` (Why?: react-starter-kit only supports local deps)
 
 function App() {
 	const demoCode = `import pptxgen from "pptxgenjs";\n
