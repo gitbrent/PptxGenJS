@@ -43,16 +43,18 @@
  * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
  */
 
+const VERSION = '3.0.0-beta.10'
+
+import * as JSZip from 'jszip'
+import Slide from './slide'
 import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE, EMU } from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
 import { PowerPointShapes } from './core-shapes'
-import Slide from './slide'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
-import * as JSZip from 'jszip'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -66,6 +68,7 @@ export default class PptxGenJS {
 	 * - 'LAYOUT_WIDE'  (13.33" x 7.5")
 	 * Custom layouts:
 	 * Use `pptx.defineLayout()` to create custom layouts (e.g.: 'A4')
+	 * @type {string}
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 	 */
 	private _layout: string
@@ -84,13 +87,16 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * Library Version
+	 * PptxGenJS Library Version
 	 */
-	private _version: string = '3.0.0-beta.9'
+	private _version: string = VERSION
 	public get version(): string {
 		return this._version
 	}
 
+	/**
+	 * @type {string}
+	 */
 	private _author: string
 	public set author(value: string) {
 		this._author = value
@@ -99,6 +105,9 @@ export default class PptxGenJS {
 		return this._author
 	}
 
+	/**
+	 * @type {string}
+	 */
 	private _company: string
 	public set company(value: string) {
 		this._company = value
@@ -108,8 +117,8 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * Sets the Presentation's Revision
-	 * PowerPoint requires `revision` be a number only (without "." or ",") (otherwise, PPT will throw errors upon opening Presentation!)
+	 * @type {string}
+	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PPT will throw errors upon opening!)
 	 */
 	private _revision: string
 	public set revision(value: string) {
@@ -119,6 +128,9 @@ export default class PptxGenJS {
 		return this._revision
 	}
 
+	/**
+	 * @type {string}
+	 */
 	private _subject: string
 	public set subject(value: string) {
 		this._subject = value
@@ -127,6 +139,9 @@ export default class PptxGenJS {
 		return this._subject
 	}
 
+	/**
+	 * @type {string}
+	 */
 	private _title: string
 	public set title(value: string) {
 		this._title = value
@@ -137,6 +152,7 @@ export default class PptxGenJS {
 
 	/**
 	 * Whether Right-to-Left (RTL) mode is enabled
+	 * @type {boolean}
 	 */
 	private _rtlMode: boolean
 	public set rtlMode(value: boolean) {
@@ -144,19 +160,6 @@ export default class PptxGenJS {
 	}
 	public get rtlMode(): boolean {
 		return this._rtlMode
-	}
-
-	// TODO: This can be dropped in 3.0 right?
-	/**
-	 * `isBrowser` Presentation Option:
-	 * Target: Angular/React/Webpack, etc. This setting affects how files are saved: using `fs` for Node.js or browser libs
-	 */
-	private _isBrowser: boolean
-	public set isBrowser(value: boolean) {
-		this._isBrowser = value
-	}
-	public get isBrowser(): boolean {
-		return this._isBrowser
 	}
 
 	/** master slide layout object */
@@ -209,7 +212,6 @@ export default class PptxGenJS {
 			height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
 		}
 		this._rtlMode = false
-		this._isBrowser = false
 		//
 		this.slideLayouts = [
 			{
