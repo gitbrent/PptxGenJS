@@ -16,22 +16,24 @@ export = PptxGenJS
 
 declare class PptxGenJS {
 	/**
-	* Library Version
+	* PptxGenJS Library Version
 	*/
 	readonly version: string
 
 	// Presentation Props
 
 	/**
-	 * Presentation layout name
-	 * Available Layouts:
-	 * 'LAYOUT_4x3'   (10" x 7.5")
-	 * 'LAYOUT_16x9'  (10" x 5.625")
-	 * 'LAYOUT_16x10' (10" x 6.25")
-	 * 'LAYOUT_WIDE'  (13.33" x 7.5")
-	 * 'LAYOUT_USER'  (user specified, can be any size)
-	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
-	 */
+     * Presentation layout name
+     * Standard layouts:
+     * - 'LAYOUT_4x3'   (10" x 7.5")
+     * - 'LAYOUT_16x9'  (10" x 5.625")
+     * - 'LAYOUT_16x10' (10" x 6.25")
+     * - 'LAYOUT_WIDE'  (13.33" x 7.5")
+     * Custom layouts:
+     * Use `pptx.defineLayout()` to create custom layouts (e.g.: 'A4')
+     * @type {string}
+     * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+     */
 	layout: string
 	/**
 	 * Whether Right-to-Left (RTL) mode is enabled
@@ -41,6 +43,10 @@ declare class PptxGenJS {
 	// Presentation Metadata
 	author: string
 	company: string
+	/**
+     * @type {string}
+     * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PPT will throw errors upon opening!)
+     */
 	revision: string
 	subject: string
 	title: string
@@ -53,6 +59,13 @@ declare class PptxGenJS {
 	 * @returns {ISlide} the new Slide
 	 */
 	addSlide(masterSlideName?: string): PptxGenJS.Slide
+	/**
+     * Define a custom Slide Layout
+     * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
+     * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+     * @param {IUserLayout} layout - an object with user-defined w/h
+     */
+    defineLayout(layout: PptxGenJS.IUserLayout): void;
 	/**
 	 * Adds a new slide master [layout] to the Presentation
 	 * @param {ISlideMasterOptions} slideMasterOpts - layout definition
@@ -508,6 +521,11 @@ declare namespace PptxGenJS {
 		name: string
 		width?: number
 		height?: number
+	}
+	export interface IUserLayout {
+	    name: string;
+	    width: number;
+	    height: number;
 	}
 	export interface ISlideNumber extends PositionOptions {
 		fontFace?: string
