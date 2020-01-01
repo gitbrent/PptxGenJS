@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.9 @ 2019-12-31T21:53:51.658Z */
+/* PptxGenJS 3.0.0-beta.9 @ 2019-12-31T22:20:26.480Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -156,6 +156,720 @@ var BASE_SHAPES = Object.freeze({
 // IMAGES (base64)
 var IMG_BROKEN = 'data:image/png;base64,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';
 var IMG_PLAYBTN = 'data:image/png;base64,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';
+
+/**
+ * PptxGenJS: Utility Methods
+ */
+/**
+ * Convert string percentages to number relative to slide size
+ * @param {number|string} size - numeric ("5.5") or percentage ("90%")
+ * @param {'X' | 'Y'} xyDir - direction
+ * @param {ILayout} layout - presentation layout
+ * @returns {number} calculated size
+ */
+function getSmartParseNumber(size, xyDir, layout) {
+    // FIRST: Convert string numeric value if reqd
+    if (typeof size === 'string' && !isNaN(Number(size)))
+        size = Number(size);
+    // CASE 1: Number in inches
+    // Assume any number less than 100 is inches
+    if (typeof size === 'number' && size < 100)
+        return inch2Emu(size);
+    // CASE 2: Number is already converted to something other than inches
+    // Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
+    if (typeof size === 'number' && size >= 100)
+        return size;
+    // CASE 3: Percentage (ex: '50%')
+    if (typeof size === 'string' && size.indexOf('%') > -1) {
+        if (xyDir && xyDir === 'X')
+            return Math.round((parseFloat(size) / 100) * layout.width);
+        if (xyDir && xyDir === 'Y')
+            return Math.round((parseFloat(size) / 100) * layout.height);
+        // Default: Assume width (x/cx)
+        return Math.round((parseFloat(size) / 100) * layout.width);
+    }
+    // LAST: Default value
+    return 0;
+}
+/**
+ * Basic UUID Generator Adapted
+ * @link https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523
+ * @param {string} uuidFormat - UUID format
+ * @returns {string} UUID
+ */
+function getUuid(uuidFormat) {
+    return uuidFormat.replace(/[xy]/g, function (c) {
+        var r = (Math.random() * 16) | 0, v = c === 'x' ? r : (r & 0x3) | 0x8;
+        return v.toString(16);
+    });
+}
+/**
+ * TODO: What does this mehtod do again??
+ * shallow mix, returns new object
+ */
+function getMix(o1, o2, etc) {
+    var objMix = {};
+    var _loop_1 = function (i) {
+        var oN = arguments_1[i];
+        if (oN)
+            Object.keys(oN).forEach(function (key) {
+                objMix[key] = oN[key];
+            });
+    };
+    var arguments_1 = arguments;
+    for (var i = 0; i <= arguments.length; i++) {
+        _loop_1(i);
+    }
+    return objMix;
+}
+/**
+ * Replace special XML characters with HTML-encoded strings
+ * @param {string} xml - XML string to encode
+ * @returns {string} escaped XML
+ */
+function encodeXmlEntities(xml) {
+    // NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
+    if (typeof xml === 'undefined' || xml == null)
+        return '';
+    return xml
+        .toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/\'/g, '&apos;');
+}
+/**
+ * Convert inches into EMU
+ * @param {number|string} inches - as string or number
+ * @returns {number} EMU value
+ */
+function inch2Emu(inches) {
+    // FIRST: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
+    // Any value over 100 damn sure isnt inches, must be EMU already, so just return it
+    if (typeof inches === 'number' && inches > 100)
+        return inches;
+    if (typeof inches === 'string')
+        inches = Number(inches.replace(/in*/gi, ''));
+    return Math.round(EMU * inches);
+}
+/**
+ * Convert degrees (0..360) to PowerPoint `rot` value
+ *
+ * @param {number} d - degrees
+ * @returns {number} rot - value
+ */
+function convertRotationDegrees(d) {
+    d = d || 0;
+    return (d > 360 ? d - 360 : d) * 60000;
+}
+/**
+ * Converts component value to hex value
+ * @param {number} c - component color
+ * @returns {string} hex string
+ */
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length === 1 ? '0' + hex : hex;
+}
+/**
+ * Converts RGB colors from css selectors to Hex for Presentation colors
+ * @param {number} r - red value
+ * @param {number} g - green value
+ * @param {number} b - blue value
+ * @returns {string} XML string
+ */
+function rgbToHex(r, g, b) {
+    if (!Number.isInteger(r)) {
+        try {
+            console.warn('Integer expected!');
+        }
+        catch (ex) { }
+    }
+    return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase();
+}
+/**
+ * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
+ * @param {string} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
+ * @returns {string} XML string
+ */
+function createColorElement(colorStr, innerElements) {
+    var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
+    if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
+        console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values');
+        colorStr = DEF_FONT_COLOR;
+    }
+    var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
+    var colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"';
+    return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>';
+}
+/**
+ * Create color selection
+ * @param {ShapeFill} shapeFill - options
+ * @param {string} backColor - color string
+ * @returns {string} XML string
+ */
+function genXmlColorSelection(shapeFill, backColor) {
+    var colorVal = '';
+    var fillType = 'solid';
+    var internalElements = '';
+    var outText = '';
+    if (backColor && typeof backColor === 'string') {
+        outText += "<p:bg><p:bgPr>" + genXmlColorSelection(backColor.replace('#', '')) + "<a:effectLst/></p:bgPr></p:bg>";
+    }
+    if (shapeFill) {
+        if (typeof shapeFill === 'string')
+            colorVal = shapeFill;
+        else {
+            if (shapeFill.type)
+                fillType = shapeFill.type;
+            if (shapeFill.color)
+                colorVal = shapeFill.color;
+            if (shapeFill.alpha)
+                internalElements += '<a:alpha val="' + (100 - shapeFill.alpha) + '000"/>';
+        }
+        switch (fillType) {
+            case 'solid':
+                outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>';
+                break;
+            default:
+                break;
+        }
+    }
+    return outText;
+}
+
+/**
+ * PptxGenJS: Table Generation
+ */
+/**
+ * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
+ * @param {ITableCell} cell - table cell
+ * @param {number} colWidth - table column width
+ * @return {string[]} XML
+ */
+function parseTextToLines(cell, colWidth) {
+    var CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (An approximation of the Golden Ratio)
+    var CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
+    var arrLines = [];
+    var strCurrLine = '';
+    // A: Allow a single space/whitespace as cell text (user-requested feature)
+    if (cell.text && cell.text.toString().trim().length === 0)
+        return [' '];
+    // B: Remove leading/trailing spaces
+    var inStr = (cell.text || '').toString().trim();
+    // C: Build line array
+    inStr.split('\n').forEach(function (line) {
+        line.split(' ').forEach(function (word) {
+            if (strCurrLine.length + word.length + 1 < CPL) {
+                strCurrLine += word + ' ';
+            }
+            else {
+                if (strCurrLine)
+                    arrLines.push(strCurrLine);
+                strCurrLine = word + ' ';
+            }
+        });
+        // All words for this line have been exhausted, flush buffer to new line, clear line var
+        if (strCurrLine)
+            arrLines.push(strCurrLine.trim() + CRLF);
+        strCurrLine = '';
+    });
+    // D: Remove trailing linebreak
+    arrLines[arrLines.length - 1] = arrLines[arrLines.length - 1].trim();
+    return arrLines;
+}
+/**
+ * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
+ * @param {[ITableToSlidesCell[]?]} tableRows - HTMLElementID of the table
+ * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
+ * @param {ILayout} presLayout - Presentation layout
+ * @param {ISlideLayout} masterSlide - master slide (if any)
+ * @return {TableRowSlide[]} array of table rows
+ */
+function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
+    if (tableRows === void 0) { tableRows = []; }
+    if (tabOpts === void 0) { tabOpts = {}; }
+    var arrInchMargins = DEF_SLIDE_MARGIN_IN, emuTabCurrH = 0, emuSlideTabW = EMU * 1, emuSlideTabH = EMU * 1, numCols = 0, tableRowSlides = [
+        {
+            rows: [],
+        },
+    ];
+    if (tabOpts.verbose) {
+        console.log("-- VERBOSE MODE ----------------------------------");
+        console.log(".. (PARAMETERS)");
+        console.log("presLayout.height ......... = " + presLayout.height / EMU);
+        console.log("tabOpts.h ................. = " + tabOpts.h);
+        console.log("tabOpts.w ................. = " + tabOpts.w);
+        console.log("tabOpts.colW .............. = " + tabOpts.colW);
+        console.log("tabOpts.slideMargin ....... = " + (tabOpts.slideMargin || ''));
+        console.log(".. (/PARAMETERS)");
+    }
+    // STEP 1: Calculate margins
+    {
+        // Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
+        if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0)
+            tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0];
+        if (masterSlide && typeof masterSlide.margin !== 'undefined') {
+            if (Array.isArray(masterSlide.margin))
+                arrInchMargins = masterSlide.margin;
+            else if (!isNaN(Number(masterSlide.margin)))
+                arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)];
+        }
+        else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
+            if (Array.isArray(tabOpts.slideMargin))
+                arrInchMargins = tabOpts.slideMargin;
+            else if (!isNaN(tabOpts.slideMargin))
+                arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin];
+        }
+        if (tabOpts.verbose)
+            console.log('arrInchMargins ......... = ' + arrInchMargins.toString());
+    }
+    // STEP 2: Calculate number of columns
+    {
+        // NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
+        // ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
+        tableRows[0].forEach(function (cell) {
+            if (!cell)
+                cell = { type: SLIDE_OBJECT_TYPES.tablecell };
+            var cellOpts = cell.options || null;
+            numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1);
+        });
+        if (tabOpts.verbose)
+            console.log('numCols ................ = ' + numCols);
+    }
+    // STEP 3: Calculate tabOpts.w if tabOpts.colW was provided
+    if (!tabOpts.w && tabOpts.colW) {
+        if (Array.isArray(tabOpts.colW))
+            tabOpts.colW.forEach(function (val) {
+                typeof tabOpts.w !== 'number' ? (tabOpts.w = 0 + val) : (tabOpts.w += val);
+            });
+        else {
+            tabOpts.w = tabOpts.colW * numCols;
+        }
+    }
+    // STEP 4: Calculate usable space/table size (now that total usable space is known)
+    {
+        emuSlideTabW =
+            typeof tabOpts.w === 'number'
+                ? inch2Emu(tabOpts.w)
+                : presLayout.width - inch2Emu((typeof tabOpts.x === 'number' ? tabOpts.x : arrInchMargins[1]) + arrInchMargins[3]);
+        if (tabOpts.verbose)
+            console.log('emuSlideTabW (in) ...... = ' + (emuSlideTabW / EMU).toFixed(1));
+    }
+    // STEP 5: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
+    if (!tabOpts.colW || !Array.isArray(tabOpts.colW)) {
+        if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
+            var arrColW_1 = [];
+            tableRows[0].forEach(function () {
+                arrColW_1.push(tabOpts.colW);
+            });
+            tabOpts.colW = [];
+            arrColW_1.forEach(function (val) {
+                if (Array.isArray(tabOpts.colW))
+                    tabOpts.colW.push(val);
+            });
+        }
+        // No column widths provided? Then distribute cols.
+        else {
+            tabOpts.colW = [];
+            for (var iCol = 0; iCol < numCols; iCol++) {
+                tabOpts.colW.push(emuSlideTabW / EMU / numCols);
+            }
+        }
+    }
+    // STEP 6: **MAIN** Iterate over rows, add table content, create new slides as rows overflow
+    var iRow = 0;
+    var _loop_1 = function () {
+        var row = tableRows.shift();
+        iRow++;
+        // A: Row variables
+        var maxLineHeight = 0;
+        var linesRow = [];
+        var maxCellMarTopEmu = 0;
+        var maxCellMarBtmEmu = 0;
+        // B: Create new row in data model
+        var currSlide = tableRowSlides[tableRowSlides.length - 1];
+        var newRowSlide = [];
+        row.forEach(function (cell) {
+            newRowSlide.push({
+                type: SLIDE_OBJECT_TYPES.tablecell,
+                text: '',
+                options: cell.options,
+            });
+            if (cell.options.margin && cell.options.margin[0] && cell.options.margin[0] * ONEPT > maxCellMarTopEmu)
+                maxCellMarTopEmu = cell.options.margin[0] * ONEPT;
+            else if (tabOpts.margin && tabOpts.margin[0] && tabOpts.margin[0] * ONEPT > maxCellMarTopEmu)
+                maxCellMarTopEmu = tabOpts.margin[0] * ONEPT;
+            if (cell.options.margin && cell.options.margin[2] && cell.options.margin[2] * ONEPT > maxCellMarBtmEmu)
+                maxCellMarBtmEmu = cell.options.margin[2] * ONEPT;
+            else if (tabOpts.margin && tabOpts.margin[2] && tabOpts.margin[2] * ONEPT > maxCellMarBtmEmu)
+                maxCellMarBtmEmu = tabOpts.margin[2] * ONEPT;
+        });
+        // C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
+        emuSlideTabH =
+            tabOpts.h && typeof tabOpts.h === 'number'
+                ? tabOpts.h
+                : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0);
+        if (tabOpts.verbose)
+            console.log('emuSlideTabH (in) ...... = ' + (emuSlideTabH / EMU).toFixed(1));
+        // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
+        if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+            emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2]);
+        }
+        else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
+            emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2]);
+            // Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
+            if (typeof tabOpts.h === 'number' && emuSlideTabH < tabOpts.h)
+                emuSlideTabH = tabOpts.h;
+        }
+        else if (typeof tabOpts.h === 'number' && typeof tabOpts.y === 'number')
+            emuSlideTabH = tabOpts.h ? tabOpts.h : presLayout.height - inch2Emu((tabOpts.y / EMU || arrInchMargins[0]) + arrInchMargins[2]);
+        //if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: emuSlideTabH .. = ${(emuSlideTabH / EMU).toFixed(1)}`)
+        // E: **BUILD DATA SET** | Iterate over cells: split text into lines[], set `lineHeight`
+        row.forEach(function (cell, iCell) {
+            var newCell = {
+                type: SLIDE_OBJECT_TYPES.tablecell,
+                text: '',
+                options: cell.options,
+                lines: [],
+                lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
+                    (LINEH_MODIFIER + (tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : 0))) /
+                    100),
+            };
+            //if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(2)}`)
+            // 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
+            if (newCell.options.rowspan)
+                newCell.lineHeight = 0;
+            // 2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
+            newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null;
+            // 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
+            newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT);
+            // 4: Add to array
+            linesRow.push(newCell);
+        });
+        // F: Start row height with margins
+        if (tabOpts.verbose)
+            console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: maxCellMarTopEmu=" + maxCellMarTopEmu + " / maxCellMarBtmEmu=" + maxCellMarBtmEmu);
+        emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu;
+        // G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
+        if (emuTabCurrH + maxLineHeight <= emuSlideTabH)
+            currSlide.rows.push(newRowSlide);
+        /* H: **PAGE DATA SET**
+         * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
+         * Design: Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line.
+         * Therefore, build the whole row, 1-line-at-a-time, spanning all columns.
+         * That way, when the vertical size limit is hit, all lines pick up where they need to on the subsequent slide.
+         */
+        if (tabOpts.verbose)
+            console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: START...");
+        var _loop_2 = function () {
+            // A: Add new Slide if there is no more space to fix 1 new line
+            if (emuTabCurrH + maxLineHeight > emuSlideTabH) {
+                if (tabOpts.verbose)
+                    console.log("** NEW SLIDE CREATED *****************************************" +
+                        (" (why?): " + (emuTabCurrH / EMU).toFixed(2) + "+" + (maxLineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU));
+                // 1: Add a new slide
+                tableRowSlides.push({
+                    rows: [],
+                });
+                // 2: Reset current table height for new Slide
+                emuTabCurrH = 0; // This row's emuRowH w/b added below
+                // 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
+                if (tabOpts.addHeaderToEach && tabOpts._arrObjTabHeadRows) {
+                    // A: Add remaining cell lines
+                    var newRowSlide_1 = [];
+                    linesRow.forEach(function (cell) {
+                        newRowSlide_1.push({
+                            type: SLIDE_OBJECT_TYPES.tablecell,
+                            text: cell.lines.join(''),
+                            options: cell.options,
+                        });
+                    });
+                    tableRows.unshift(newRowSlide_1);
+                    // B: Add header row(s)
+                    newRowSlide_1 = [];
+                    tabOpts._arrObjTabHeadRows[0].forEach(function (cell) {
+                        newRowSlide_1.push(cell);
+                    });
+                    tableRows.unshift(newRowSlide_1);
+                    return "break";
+                }
+                else {
+                    // A: Add new row to new slide
+                    var currSlide_1 = tableRowSlides[tableRowSlides.length - 1];
+                    var newRowSlide_2 = [];
+                    row.forEach(function (cell) {
+                        newRowSlide_2.push({
+                            type: SLIDE_OBJECT_TYPES.tablecell,
+                            text: '',
+                            options: cell.options,
+                        });
+                    });
+                    currSlide_1.rows.push(newRowSlide_2);
+                }
+            }
+            // B: Add a line of text to 1-N cells that still have `lines`
+            linesRow.forEach(function (cell, idx) {
+                if (cell.lines.length > 0) {
+                    // 1
+                    var currSlide_2 = tableRowSlides[tableRowSlides.length - 1];
+                    currSlide_2.rows[currSlide_2.rows.length - 1][idx].text +=
+                        (currSlide_2.rows[currSlide_2.rows.length - 1][idx].text.length > 0 && !RegExp(/\n$/g).test(currSlide_2.rows[currSlide_2.rows.length - 1][idx].text)
+                            ? CRLF
+                            : '').replace(/[\r\n]+$/g, CRLF) + cell.lines.shift();
+                    // 2
+                    if (cell.lineHeight > maxLineHeight)
+                        maxLineHeight = cell.lineHeight;
+                }
+            });
+            // C: Increase table height by one line height as 1-N cells below are
+            emuTabCurrH += maxLineHeight;
+            if (tabOpts.verbose)
+                console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: one line added ... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2));
+        };
+        while (linesRow.filter(function (cell) {
+            return cell.lines.length > 0;
+        }).length > 0) {
+            var state_1 = _loop_2();
+            if (state_1 === "break")
+                break;
+        }
+        if (tabOpts.verbose)
+            console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: ...COMPLETE ...... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2) + " ( emuSlideTabH = " + (emuSlideTabH / EMU).toFixed(2) + " )");
+    };
+    while (tableRows.length > 0) {
+        _loop_1();
+    }
+    if (tabOpts.verbose) {
+        console.log("\n|================================================|\n| FINAL: tableRowSlides.length = " + tableRowSlides.length);
+        console.log(tableRowSlides);
+        //console.log(JSON.stringify(tableRowSlides,null,2))
+        console.log("|================================================|\n\n");
+    }
+    return tableRowSlides;
+}
+/**
+ * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+ * @param {string} tabEleId - HTMLElementID of the table
+ * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+ */
+function genTableToSlides(pptx, tabEleId, options, masterSlide) {
+    if (options === void 0) { options = {}; }
+    var opts = options || {};
+    opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5;
+    var emuSlideTabW = opts.w || pptx.presLayout.width;
+    var arrObjTabHeadRows = [];
+    var arrObjTabBodyRows = [];
+    var arrObjTabFootRows = [];
+    var arrColW = [];
+    var arrTabColW = [];
+    var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+    var intTabW = 0;
+    // REALITY-CHECK:
+    if (!document.getElementById(tabEleId))
+        throw 'tableToSlides: Table ID "' + tabEleId + '" does not exist!';
+    // STEP 1: Set margins
+    if (masterSlide && masterSlide.margin) {
+        if (Array.isArray(masterSlide.margin))
+            arrInchMargins = masterSlide.margin;
+        else if (!isNaN(masterSlide.margin))
+            arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin];
+        opts.slideMargin = arrInchMargins;
+    }
+    else if (opts && opts.slideMargin) {
+        if (Array.isArray(opts.slideMargin))
+            arrInchMargins = opts.slideMargin;
+        else if (!isNaN(opts.slideMargin))
+            arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin];
+    }
+    emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout.width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3]);
+    if (opts.verbose)
+        console.log('-- VERBOSE MODE ----------------------------------');
+    if (opts.verbose)
+        console.log("opts.h ................. = " + opts.h);
+    if (opts.verbose)
+        console.log("opts.w ................. = " + opts.w);
+    if (opts.verbose)
+        console.log("pptx.presLayout.width .. = " + pptx.presLayout.width / EMU);
+    if (opts.verbose)
+        console.log("emuSlideTabW (in)....... = " + emuSlideTabW / EMU);
+    // STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
+    var firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child th");
+    if (firstRowCells.length === 0)
+        firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child td");
+    firstRowCells.forEach(function (cell) {
+        if (cell.getAttribute('colspan')) {
+            // Guesstimate (divide evenly) col widths
+            // NOTE: both j$query and vanilla selectors return {0} when table is not visible)
+            for (var idx = 0; idx < Number(cell.getAttribute('colspan')); idx++) {
+                arrTabColW.push(Math.round(cell.offsetWidth / Number(cell.getAttribute('colspan'))));
+            }
+        }
+        else {
+            arrTabColW.push(cell.offsetWidth);
+        }
+    });
+    arrTabColW.forEach(function (colW) {
+        intTabW += colW;
+    });
+    // STEP 3: Calc/Set column widths by using same column width percent from HTML table
+    arrTabColW.forEach(function (colW, idx) {
+        var intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2));
+        var intMinWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-min-width'));
+        var intSetWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-width'));
+        arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
+    });
+    if (opts.verbose) {
+        console.log("arrColW ................ = " + arrColW.toString());
+    }
+    ['thead', 'tbody', 'tfoot'].forEach(function (part) {
+        document.querySelectorAll("#" + tabEleId + " " + part + " tr").forEach(function (row) {
+            var arrObjTabCells = [];
+            Array.from(row.cells).forEach(function (cell) {
+                // A: Get RGB text/bkgd colors
+                var arrRGB1 = window
+                    .getComputedStyle(cell)
+                    .getPropertyValue('color')
+                    .replace(/\s+/gi, '')
+                    .replace('rgba(', '')
+                    .replace('rgb(', '')
+                    .replace(')', '')
+                    .split(',');
+                var arrRGB2 = window
+                    .getComputedStyle(cell)
+                    .getPropertyValue('background-color')
+                    .replace(/\s+/gi, '')
+                    .replace('rgba(', '')
+                    .replace('rgb(', '')
+                    .replace(')', '')
+                    .split(',');
+                if (
+                // NOTE: (ISSUE#57): Default for unstyled tables is black bkgd, so use white instead
+                window.getComputedStyle(cell).getPropertyValue('background-color') === 'rgba(0, 0, 0, 0)' ||
+                    window.getComputedStyle(cell).getPropertyValue('transparent')) {
+                    arrRGB2 = ['255', '255', '255'];
+                }
+                // B: Create option object
+                var cellOpts = {
+                    align: null,
+                    bold: window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
+                        Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
+                        ? true
+                        : false,
+                    border: null,
+                    color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
+                    fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+                    fontFace: (window.getComputedStyle(cell).getPropertyValue('font-family') || '')
+                        .split(',')[0]
+                        .replace(/"/g, '')
+                        .replace('inherit', '')
+                        .replace('initial', '') || null,
+                    fontSize: Number(window
+                        .getComputedStyle(cell)
+                        .getPropertyValue('font-size')
+                        .replace(/[a-z]/gi, '')),
+                    margin: null,
+                    colspan: Number(cell.getAttribute('colspan')) || null,
+                    rowspan: Number(cell.getAttribute('rowspan')) || null,
+                    valign: null,
+                };
+                if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
+                    var align = window
+                        .getComputedStyle(cell)
+                        .getPropertyValue('text-align')
+                        .replace('start', 'left')
+                        .replace('end', 'right');
+                    cellOpts.align = align === 'center' ? 'center' : align === 'left' ? 'left' : align === 'right' ? 'right' : null;
+                }
+                if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
+                    var valign = window.getComputedStyle(cell).getPropertyValue('vertical-align');
+                    cellOpts.valign = valign === 'top' ? 'top' : valign === 'middle' ? 'middle' : valign === 'bottom' ? 'bottom' : null;
+                }
+                // C: Add padding [margin] (if any)
+                // NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
+                if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
+                    cellOpts.margin = [0, 0, 0, 0];
+                    new Array('padding-top', 'padding-right', 'padding-bottom', 'padding-left').forEach(function (val, idx) {
+                        cellOpts.margin[idx] = Math.round(Number(window
+                            .getComputedStyle(cell)
+                            .getPropertyValue(val)
+                            .replace(/\D/gi, '')));
+                    });
+                }
+                // D: Add border (if any)
+                if (window.getComputedStyle(cell).getPropertyValue('border-top-width') ||
+                    window.getComputedStyle(cell).getPropertyValue('border-right-width') ||
+                    window.getComputedStyle(cell).getPropertyValue('border-bottom-width') ||
+                    window.getComputedStyle(cell).getPropertyValue('border-left-width')) {
+                    cellOpts.border = [null, null, null, null];
+                    new Array('top', 'right', 'bottom', 'left').forEach(function (val, idx) {
+                        var intBorderW = Math.round(Number(window
+                            .getComputedStyle(cell)
+                            .getPropertyValue('border-' + val + '-width')
+                            .replace('px', '')));
+                        var arrRGB = [];
+                        arrRGB = window
+                            .getComputedStyle(cell)
+                            .getPropertyValue('border-' + val + '-color')
+                            .replace(/\s+/gi, '')
+                            .replace('rgba(', '')
+                            .replace('rgb(', '')
+                            .replace(')', '')
+                            .split(',');
+                        var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]));
+                        cellOpts.border[idx] = { pt: intBorderW, color: strBorderC };
+                    });
+                }
+                // LAST: Add cell
+                arrObjTabCells.push({
+                    type: SLIDE_OBJECT_TYPES.tablecell,
+                    text: cell.innerText,
+                    options: cellOpts,
+                });
+            });
+            switch (part) {
+                case 'thead':
+                    arrObjTabHeadRows.push(arrObjTabCells);
+                    break;
+                case 'tbody':
+                    arrObjTabBodyRows.push(arrObjTabCells);
+                    break;
+                case 'tfoot':
+                    arrObjTabFootRows.push(arrObjTabCells);
+                    break;
+                default:
+            }
+        });
+    });
+    // STEP 5: Break table into Slides as needed
+    // Pass head-rows as there is an option to add to each table and the parse func needs this data to fulfill that option
+    opts._arrObjTabHeadRows = arrObjTabHeadRows || null;
+    opts.colW = arrColW;
+    getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows, arrObjTabFootRows), opts, pptx.presLayout, masterSlide).forEach(function (slide, idx) {
+        // A: Create new Slide
+        var newSlide = pptx.addSlide(opts.masterSlideName || null);
+        // B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+        if (idx === 0)
+            opts.y = opts.y || arrInchMargins[0];
+        if (idx > 0)
+            opts.y = opts.newSlideStartY || arrInchMargins[0];
+        if (opts.verbose)
+            console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y);
+        // C: Add table to Slide
+        newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false });
+        // D: Add any additional objects
+        if (opts.addImage)
+            newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h });
+        if (opts.addShape)
+            newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {});
+        if (opts.addTable)
+            newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {});
+        if (opts.addText)
+            newSlide.addText(opts.addText.text, opts.addText.opts || {});
+    });
+}
 
 /**
 * PptxGenJS - All PowerPoint Shapes
@@ -1517,720 +2231,6 @@ var PowerPointShapes = Object.freeze({
         }
     }
 });
-
-/**
- * PptxGenJS: Utility Methods
- */
-/**
- * Convert string percentages to number relative to slide size
- * @param {number|string} size - numeric ("5.5") or percentage ("90%")
- * @param {'X' | 'Y'} xyDir - direction
- * @param {ILayout} layout - presentation layout
- * @returns {number} calculated size
- */
-function getSmartParseNumber(size, xyDir, layout) {
-    // FIRST: Convert string numeric value if reqd
-    if (typeof size === 'string' && !isNaN(Number(size)))
-        size = Number(size);
-    // CASE 1: Number in inches
-    // Assume any number less than 100 is inches
-    if (typeof size === 'number' && size < 100)
-        return inch2Emu(size);
-    // CASE 2: Number is already converted to something other than inches
-    // Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
-    if (typeof size === 'number' && size >= 100)
-        return size;
-    // CASE 3: Percentage (ex: '50%')
-    if (typeof size === 'string' && size.indexOf('%') > -1) {
-        if (xyDir && xyDir === 'X')
-            return Math.round((parseFloat(size) / 100) * layout.width);
-        if (xyDir && xyDir === 'Y')
-            return Math.round((parseFloat(size) / 100) * layout.height);
-        // Default: Assume width (x/cx)
-        return Math.round((parseFloat(size) / 100) * layout.width);
-    }
-    // LAST: Default value
-    return 0;
-}
-/**
- * Basic UUID Generator Adapted
- * @link https://stackoverflow.com/questions/105034/create-guid-uuid-in-javascript#answer-2117523
- * @param {string} uuidFormat - UUID format
- * @returns {string} UUID
- */
-function getUuid(uuidFormat) {
-    return uuidFormat.replace(/[xy]/g, function (c) {
-        var r = (Math.random() * 16) | 0, v = c === 'x' ? r : (r & 0x3) | 0x8;
-        return v.toString(16);
-    });
-}
-/**
- * TODO: What does this mehtod do again??
- * shallow mix, returns new object
- */
-function getMix(o1, o2, etc) {
-    var objMix = {};
-    var _loop_1 = function (i) {
-        var oN = arguments_1[i];
-        if (oN)
-            Object.keys(oN).forEach(function (key) {
-                objMix[key] = oN[key];
-            });
-    };
-    var arguments_1 = arguments;
-    for (var i = 0; i <= arguments.length; i++) {
-        _loop_1(i);
-    }
-    return objMix;
-}
-/**
- * Replace special XML characters with HTML-encoded strings
- * @param {string} xml - XML string to encode
- * @returns {string} escaped XML
- */
-function encodeXmlEntities(xml) {
-    // NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
-    if (typeof xml === 'undefined' || xml == null)
-        return '';
-    return xml
-        .toString()
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;')
-        .replace(/\'/g, '&apos;');
-}
-/**
- * Convert inches into EMU
- * @param {number|string} inches - as string or number
- * @returns {number} EMU value
- */
-function inch2Emu(inches) {
-    // FIRST: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
-    // Any value over 100 damn sure isnt inches, must be EMU already, so just return it
-    if (typeof inches === 'number' && inches > 100)
-        return inches;
-    if (typeof inches === 'string')
-        inches = Number(inches.replace(/in*/gi, ''));
-    return Math.round(EMU * inches);
-}
-/**
- * Convert degrees (0..360) to PowerPoint `rot` value
- *
- * @param {number} d - degrees
- * @returns {number} rot - value
- */
-function convertRotationDegrees(d) {
-    d = d || 0;
-    return (d > 360 ? d - 360 : d) * 60000;
-}
-/**
- * Converts component value to hex value
- * @param {number} c - component color
- * @returns {string} hex string
- */
-function componentToHex(c) {
-    var hex = c.toString(16);
-    return hex.length === 1 ? '0' + hex : hex;
-}
-/**
- * Converts RGB colors from css selectors to Hex for Presentation colors
- * @param {number} r - red value
- * @param {number} g - green value
- * @param {number} b - blue value
- * @returns {string} XML string
- */
-function rgbToHex(r, g, b) {
-    if (!Number.isInteger(r)) {
-        try {
-            console.warn('Integer expected!');
-        }
-        catch (ex) { }
-    }
-    return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase();
-}
-/**
- * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
- * @param {string} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
- * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
- * @returns {string} XML string
- */
-function createColorElement(colorStr, innerElements) {
-    var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
-    if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
-        console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values');
-        colorStr = DEF_FONT_COLOR;
-    }
-    var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
-    var colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"';
-    return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>';
-}
-/**
- * Create color selection
- * @param {ShapeFill} shapeFill - options
- * @param {string} backColor - color string
- * @returns {string} XML string
- */
-function genXmlColorSelection(shapeFill, backColor) {
-    var colorVal = '';
-    var fillType = 'solid';
-    var internalElements = '';
-    var outText = '';
-    if (backColor && typeof backColor === 'string') {
-        outText += "<p:bg><p:bgPr>" + genXmlColorSelection(backColor.replace('#', '')) + "<a:effectLst/></p:bgPr></p:bg>";
-    }
-    if (shapeFill) {
-        if (typeof shapeFill === 'string')
-            colorVal = shapeFill;
-        else {
-            if (shapeFill.type)
-                fillType = shapeFill.type;
-            if (shapeFill.color)
-                colorVal = shapeFill.color;
-            if (shapeFill.alpha)
-                internalElements += '<a:alpha val="' + (100 - shapeFill.alpha) + '000"/>';
-        }
-        switch (fillType) {
-            case 'solid':
-                outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>';
-                break;
-            default:
-                break;
-        }
-    }
-    return outText;
-}
-
-/**
- * PptxGenJS: Table Generation
- */
-/**
- * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
- * @param {ITableCell} cell - table cell
- * @param {number} colWidth - table column width
- * @return {string[]} XML
- */
-function parseTextToLines(cell, colWidth) {
-    var CHAR = 2.2 + (cell.options && cell.options.autoPageCharWeight ? cell.options.autoPageCharWeight : 0); // Character Constant (An approximation of the Golden Ratio)
-    var CPL = (colWidth * EMU) / (((cell.options && cell.options.fontSize) || DEF_FONT_SIZE) / CHAR); // Chars-Per-Line
-    var arrLines = [];
-    var strCurrLine = '';
-    // A: Allow a single space/whitespace as cell text (user-requested feature)
-    if (cell.text && cell.text.toString().trim().length === 0)
-        return [' '];
-    // B: Remove leading/trailing spaces
-    var inStr = (cell.text || '').toString().trim();
-    // C: Build line array
-    inStr.split('\n').forEach(function (line) {
-        line.split(' ').forEach(function (word) {
-            if (strCurrLine.length + word.length + 1 < CPL) {
-                strCurrLine += word + ' ';
-            }
-            else {
-                if (strCurrLine)
-                    arrLines.push(strCurrLine);
-                strCurrLine = word + ' ';
-            }
-        });
-        // All words for this line have been exhausted, flush buffer to new line, clear line var
-        if (strCurrLine)
-            arrLines.push(strCurrLine.trim() + CRLF);
-        strCurrLine = '';
-    });
-    // D: Remove trailing linebreak
-    arrLines[arrLines.length - 1] = arrLines[arrLines.length - 1].trim();
-    return arrLines;
-}
-/**
- * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {[ITableToSlidesCell[]?]} tableRows - HTMLElementID of the table
- * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
- * @param {ILayout} presLayout - Presentation layout
- * @param {ISlideLayout} masterSlide - master slide (if any)
- * @return {TableRowSlide[]} array of table rows
- */
-function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
-    if (tableRows === void 0) { tableRows = []; }
-    if (tabOpts === void 0) { tabOpts = {}; }
-    var arrInchMargins = DEF_SLIDE_MARGIN_IN, emuTabCurrH = 0, emuSlideTabW = EMU * 1, emuSlideTabH = EMU * 1, numCols = 0, tableRowSlides = [
-        {
-            rows: [],
-        },
-    ];
-    if (tabOpts.verbose) {
-        console.log("-- VERBOSE MODE ----------------------------------");
-        console.log(".. (PARAMETERS)");
-        console.log("presLayout.height ......... = " + presLayout.height / EMU);
-        console.log("tabOpts.h ................. = " + tabOpts.h);
-        console.log("tabOpts.w ................. = " + tabOpts.w);
-        console.log("tabOpts.colW .............. = " + tabOpts.colW);
-        console.log("tabOpts.slideMargin ....... = " + (tabOpts.slideMargin || ''));
-        console.log(".. (/PARAMETERS)");
-    }
-    // STEP 1: Calculate margins
-    {
-        // Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
-        if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0)
-            tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0];
-        if (masterSlide && typeof masterSlide.margin !== 'undefined') {
-            if (Array.isArray(masterSlide.margin))
-                arrInchMargins = masterSlide.margin;
-            else if (!isNaN(Number(masterSlide.margin)))
-                arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)];
-        }
-        else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
-            if (Array.isArray(tabOpts.slideMargin))
-                arrInchMargins = tabOpts.slideMargin;
-            else if (!isNaN(tabOpts.slideMargin))
-                arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin];
-        }
-        if (tabOpts.verbose)
-            console.log('arrInchMargins ......... = ' + arrInchMargins.toString());
-    }
-    // STEP 2: Calculate number of columns
-    {
-        // NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
-        // ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
-        tableRows[0].forEach(function (cell) {
-            if (!cell)
-                cell = { type: SLIDE_OBJECT_TYPES.tablecell };
-            var cellOpts = cell.options || null;
-            numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1);
-        });
-        if (tabOpts.verbose)
-            console.log('numCols ................ = ' + numCols);
-    }
-    // STEP 3: Calculate tabOpts.w if tabOpts.colW was provided
-    if (!tabOpts.w && tabOpts.colW) {
-        if (Array.isArray(tabOpts.colW))
-            tabOpts.colW.forEach(function (val) {
-                typeof tabOpts.w !== 'number' ? (tabOpts.w = 0 + val) : (tabOpts.w += val);
-            });
-        else {
-            tabOpts.w = tabOpts.colW * numCols;
-        }
-    }
-    // STEP 4: Calculate usable space/table size (now that total usable space is known)
-    {
-        emuSlideTabW =
-            typeof tabOpts.w === 'number'
-                ? inch2Emu(tabOpts.w)
-                : presLayout.width - inch2Emu((typeof tabOpts.x === 'number' ? tabOpts.x : arrInchMargins[1]) + arrInchMargins[3]);
-        if (tabOpts.verbose)
-            console.log('emuSlideTabW (in) ...... = ' + (emuSlideTabW / EMU).toFixed(1));
-    }
-    // STEP 5: Calculate column widths if not provided (emuSlideTabW will be used below to determine lines-per-col)
-    if (!tabOpts.colW || !Array.isArray(tabOpts.colW)) {
-        if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
-            var arrColW_1 = [];
-            tableRows[0].forEach(function () {
-                arrColW_1.push(tabOpts.colW);
-            });
-            tabOpts.colW = [];
-            arrColW_1.forEach(function (val) {
-                if (Array.isArray(tabOpts.colW))
-                    tabOpts.colW.push(val);
-            });
-        }
-        // No column widths provided? Then distribute cols.
-        else {
-            tabOpts.colW = [];
-            for (var iCol = 0; iCol < numCols; iCol++) {
-                tabOpts.colW.push(emuSlideTabW / EMU / numCols);
-            }
-        }
-    }
-    // STEP 6: **MAIN** Iterate over rows, add table content, create new slides as rows overflow
-    var iRow = 0;
-    var _loop_1 = function () {
-        var row = tableRows.shift();
-        iRow++;
-        // A: Row variables
-        var maxLineHeight = 0;
-        var linesRow = [];
-        var maxCellMarTopEmu = 0;
-        var maxCellMarBtmEmu = 0;
-        // B: Create new row in data model
-        var currSlide = tableRowSlides[tableRowSlides.length - 1];
-        var newRowSlide = [];
-        row.forEach(function (cell) {
-            newRowSlide.push({
-                type: SLIDE_OBJECT_TYPES.tablecell,
-                text: '',
-                options: cell.options,
-            });
-            if (cell.options.margin && cell.options.margin[0] && cell.options.margin[0] * ONEPT > maxCellMarTopEmu)
-                maxCellMarTopEmu = cell.options.margin[0] * ONEPT;
-            else if (tabOpts.margin && tabOpts.margin[0] && tabOpts.margin[0] * ONEPT > maxCellMarTopEmu)
-                maxCellMarTopEmu = tabOpts.margin[0] * ONEPT;
-            if (cell.options.margin && cell.options.margin[2] && cell.options.margin[2] * ONEPT > maxCellMarBtmEmu)
-                maxCellMarBtmEmu = cell.options.margin[2] * ONEPT;
-            else if (tabOpts.margin && tabOpts.margin[2] && tabOpts.margin[2] * ONEPT > maxCellMarBtmEmu)
-                maxCellMarBtmEmu = tabOpts.margin[2] * ONEPT;
-        });
-        // C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
-        emuSlideTabH =
-            tabOpts.h && typeof tabOpts.h === 'number'
-                ? tabOpts.h
-                : presLayout.height - inch2Emu(arrInchMargins[0] + arrInchMargins[2]) - (tabOpts.y && typeof tabOpts.y === 'number' ? tabOpts.y : 0);
-        if (tabOpts.verbose)
-            console.log('emuSlideTabH (in) ...... = ' + (emuSlideTabH / EMU).toFixed(1));
-        // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
-        if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
-            emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2]);
-        }
-        else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
-            emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2]);
-            // Use whichever is greater: area between margins or the table H provided (dont shrink usable area - the whole point of over-riding X on paging is to *increarse* usable space)
-            if (typeof tabOpts.h === 'number' && emuSlideTabH < tabOpts.h)
-                emuSlideTabH = tabOpts.h;
-        }
-        else if (typeof tabOpts.h === 'number' && typeof tabOpts.y === 'number')
-            emuSlideTabH = tabOpts.h ? tabOpts.h : presLayout.height - inch2Emu((tabOpts.y / EMU || arrInchMargins[0]) + arrInchMargins[2]);
-        //if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: emuSlideTabH .. = ${(emuSlideTabH / EMU).toFixed(1)}`)
-        // E: **BUILD DATA SET** | Iterate over cells: split text into lines[], set `lineHeight`
-        row.forEach(function (cell, iCell) {
-            var newCell = {
-                type: SLIDE_OBJECT_TYPES.tablecell,
-                text: '',
-                options: cell.options,
-                lines: [],
-                lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
-                    (LINEH_MODIFIER + (tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : 0))) /
-                    100),
-            };
-            //if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(2)}`)
-            // 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
-            if (newCell.options.rowspan)
-                newCell.lineHeight = 0;
-            // 2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
-            newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null;
-            // 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
-            newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT);
-            // 4: Add to array
-            linesRow.push(newCell);
-        });
-        // F: Start row height with margins
-        if (tabOpts.verbose)
-            console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: maxCellMarTopEmu=" + maxCellMarTopEmu + " / maxCellMarBtmEmu=" + maxCellMarBtmEmu);
-        emuTabCurrH += maxCellMarTopEmu + maxCellMarBtmEmu;
-        // G: Only create a new row if there is room, otherwise, it'll be an empty row as "A:" below will create a new Slide before loop can populate this row
-        if (emuTabCurrH + maxLineHeight <= emuSlideTabH)
-            currSlide.rows.push(newRowSlide);
-        /* H: **PAGE DATA SET**
-         * Add text one-line-a-time to this row's cells until: lines are exhausted OR table height limit is hit
-         * Design: Building cells L-to-R/loop style wont work as one could be 100 lines and another 1 line.
-         * Therefore, build the whole row, 1-line-at-a-time, spanning all columns.
-         * That way, when the vertical size limit is hit, all lines pick up where they need to on the subsequent slide.
-         */
-        if (tabOpts.verbose)
-            console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: START...");
-        var _loop_2 = function () {
-            // A: Add new Slide if there is no more space to fix 1 new line
-            if (emuTabCurrH + maxLineHeight > emuSlideTabH) {
-                if (tabOpts.verbose)
-                    console.log("** NEW SLIDE CREATED *****************************************" +
-                        (" (why?): " + (emuTabCurrH / EMU).toFixed(2) + "+" + (maxLineHeight / EMU).toFixed(2) + " > " + emuSlideTabH / EMU));
-                // 1: Add a new slide
-                tableRowSlides.push({
-                    rows: [],
-                });
-                // 2: Reset current table height for new Slide
-                emuTabCurrH = 0; // This row's emuRowH w/b added below
-                // 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
-                if (tabOpts.addHeaderToEach && tabOpts._arrObjTabHeadRows) {
-                    // A: Add remaining cell lines
-                    var newRowSlide_1 = [];
-                    linesRow.forEach(function (cell) {
-                        newRowSlide_1.push({
-                            type: SLIDE_OBJECT_TYPES.tablecell,
-                            text: cell.lines.join(''),
-                            options: cell.options,
-                        });
-                    });
-                    tableRows.unshift(newRowSlide_1);
-                    // B: Add header row(s)
-                    newRowSlide_1 = [];
-                    tabOpts._arrObjTabHeadRows[0].forEach(function (cell) {
-                        newRowSlide_1.push(cell);
-                    });
-                    tableRows.unshift(newRowSlide_1);
-                    return "break";
-                }
-                else {
-                    // A: Add new row to new slide
-                    var currSlide_1 = tableRowSlides[tableRowSlides.length - 1];
-                    var newRowSlide_2 = [];
-                    row.forEach(function (cell) {
-                        newRowSlide_2.push({
-                            type: SLIDE_OBJECT_TYPES.tablecell,
-                            text: '',
-                            options: cell.options,
-                        });
-                    });
-                    currSlide_1.rows.push(newRowSlide_2);
-                }
-            }
-            // B: Add a line of text to 1-N cells that still have `lines`
-            linesRow.forEach(function (cell, idx) {
-                if (cell.lines.length > 0) {
-                    // 1
-                    var currSlide_2 = tableRowSlides[tableRowSlides.length - 1];
-                    currSlide_2.rows[currSlide_2.rows.length - 1][idx].text +=
-                        (currSlide_2.rows[currSlide_2.rows.length - 1][idx].text.length > 0 && !RegExp(/\n$/g).test(currSlide_2.rows[currSlide_2.rows.length - 1][idx].text)
-                            ? CRLF
-                            : '').replace(/[\r\n]+$/g, CRLF) + cell.lines.shift();
-                    // 2
-                    if (cell.lineHeight > maxLineHeight)
-                        maxLineHeight = cell.lineHeight;
-                }
-            });
-            // C: Increase table height by one line height as 1-N cells below are
-            emuTabCurrH += maxLineHeight;
-            if (tabOpts.verbose)
-                console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: one line added ... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2));
-        };
-        while (linesRow.filter(function (cell) {
-            return cell.lines.length > 0;
-        }).length > 0) {
-            var state_1 = _loop_2();
-            if (state_1 === "break")
-                break;
-        }
-        if (tabOpts.verbose)
-            console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: ...COMPLETE ...... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2) + " ( emuSlideTabH = " + (emuSlideTabH / EMU).toFixed(2) + " )");
-    };
-    while (tableRows.length > 0) {
-        _loop_1();
-    }
-    if (tabOpts.verbose) {
-        console.log("\n|================================================|\n| FINAL: tableRowSlides.length = " + tableRowSlides.length);
-        console.log(tableRowSlides);
-        //console.log(JSON.stringify(tableRowSlides,null,2))
-        console.log("|================================================|\n\n");
-    }
-    return tableRowSlides;
-}
-/**
- * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
- * @param {string} tabEleId - HTMLElementID of the table
- * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
- */
-function genTableToSlides(pptx, tabEleId, options, masterSlide) {
-    if (options === void 0) { options = {}; }
-    var opts = options || {};
-    opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5;
-    var emuSlideTabW = opts.w || pptx.presLayout.width;
-    var arrObjTabHeadRows = [];
-    var arrObjTabBodyRows = [];
-    var arrObjTabFootRows = [];
-    var arrColW = [];
-    var arrTabColW = [];
-    var arrInchMargins = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
-    var intTabW = 0;
-    // REALITY-CHECK:
-    if (!document.getElementById(tabEleId))
-        throw 'tableToSlides: Table ID "' + tabEleId + '" does not exist!';
-    // STEP 1: Set margins
-    if (masterSlide && masterSlide.margin) {
-        if (Array.isArray(masterSlide.margin))
-            arrInchMargins = masterSlide.margin;
-        else if (!isNaN(masterSlide.margin))
-            arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin];
-        opts.slideMargin = arrInchMargins;
-    }
-    else if (opts && opts.slideMargin) {
-        if (Array.isArray(opts.slideMargin))
-            arrInchMargins = opts.slideMargin;
-        else if (!isNaN(opts.slideMargin))
-            arrInchMargins = [opts.slideMargin, opts.slideMargin, opts.slideMargin, opts.slideMargin];
-    }
-    emuSlideTabW = (opts.w ? inch2Emu(opts.w) : pptx.presLayout.width) - inch2Emu(arrInchMargins[1] + arrInchMargins[3]);
-    if (opts.verbose)
-        console.log('-- VERBOSE MODE ----------------------------------');
-    if (opts.verbose)
-        console.log("opts.h ................. = " + opts.h);
-    if (opts.verbose)
-        console.log("opts.w ................. = " + opts.w);
-    if (opts.verbose)
-        console.log("pptx.presLayout.width .. = " + pptx.presLayout.width / EMU);
-    if (opts.verbose)
-        console.log("emuSlideTabW (in)....... = " + emuSlideTabW / EMU);
-    // STEP 2: Grab table col widths - just find the first availble row, either thead/tbody/tfoot, others may have colspsna,s who cares, we only need col widths from 1
-    var firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child th");
-    if (firstRowCells.length === 0)
-        firstRowCells = document.querySelectorAll("#" + tabEleId + " tr:first-child td");
-    firstRowCells.forEach(function (cell) {
-        if (cell.getAttribute('colspan')) {
-            // Guesstimate (divide evenly) col widths
-            // NOTE: both j$query and vanilla selectors return {0} when table is not visible)
-            for (var idx = 0; idx < Number(cell.getAttribute('colspan')); idx++) {
-                arrTabColW.push(Math.round(cell.offsetWidth / Number(cell.getAttribute('colspan'))));
-            }
-        }
-        else {
-            arrTabColW.push(cell.offsetWidth);
-        }
-    });
-    arrTabColW.forEach(function (colW) {
-        intTabW += colW;
-    });
-    // STEP 3: Calc/Set column widths by using same column width percent from HTML table
-    arrTabColW.forEach(function (colW, idx) {
-        var intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2));
-        var intMinWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-min-width'));
-        var intSetWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-width'));
-        arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
-    });
-    if (opts.verbose) {
-        console.log("arrColW ................ = " + arrColW.toString());
-    }
-    ['thead', 'tbody', 'tfoot'].forEach(function (part) {
-        document.querySelectorAll("#" + tabEleId + " " + part + " tr").forEach(function (row) {
-            var arrObjTabCells = [];
-            Array.from(row.cells).forEach(function (cell) {
-                // A: Get RGB text/bkgd colors
-                var arrRGB1 = window
-                    .getComputedStyle(cell)
-                    .getPropertyValue('color')
-                    .replace(/\s+/gi, '')
-                    .replace('rgba(', '')
-                    .replace('rgb(', '')
-                    .replace(')', '')
-                    .split(',');
-                var arrRGB2 = window
-                    .getComputedStyle(cell)
-                    .getPropertyValue('background-color')
-                    .replace(/\s+/gi, '')
-                    .replace('rgba(', '')
-                    .replace('rgb(', '')
-                    .replace(')', '')
-                    .split(',');
-                if (
-                // NOTE: (ISSUE#57): Default for unstyled tables is black bkgd, so use white instead
-                window.getComputedStyle(cell).getPropertyValue('background-color') === 'rgba(0, 0, 0, 0)' ||
-                    window.getComputedStyle(cell).getPropertyValue('transparent')) {
-                    arrRGB2 = ['255', '255', '255'];
-                }
-                // B: Create option object
-                var cellOpts = {
-                    align: null,
-                    bold: window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
-                        Number(window.getComputedStyle(cell).getPropertyValue('font-weight')) >= 500
-                        ? true
-                        : false,
-                    border: null,
-                    color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
-                    fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
-                    fontFace: (window.getComputedStyle(cell).getPropertyValue('font-family') || '')
-                        .split(',')[0]
-                        .replace(/"/g, '')
-                        .replace('inherit', '')
-                        .replace('initial', '') || null,
-                    fontSize: Number(window
-                        .getComputedStyle(cell)
-                        .getPropertyValue('font-size')
-                        .replace(/[a-z]/gi, '')),
-                    margin: null,
-                    colspan: Number(cell.getAttribute('colspan')) || null,
-                    rowspan: Number(cell.getAttribute('rowspan')) || null,
-                    valign: null,
-                };
-                if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
-                    var align = window
-                        .getComputedStyle(cell)
-                        .getPropertyValue('text-align')
-                        .replace('start', 'left')
-                        .replace('end', 'right');
-                    cellOpts.align = align === 'center' ? 'center' : align === 'left' ? 'left' : align === 'right' ? 'right' : null;
-                }
-                if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
-                    var valign = window.getComputedStyle(cell).getPropertyValue('vertical-align');
-                    cellOpts.valign = valign === 'top' ? 'top' : valign === 'middle' ? 'middle' : valign === 'bottom' ? 'bottom' : null;
-                }
-                // C: Add padding [margin] (if any)
-                // NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
-                if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
-                    cellOpts.margin = [0, 0, 0, 0];
-                    new Array('padding-top', 'padding-right', 'padding-bottom', 'padding-left').forEach(function (val, idx) {
-                        cellOpts.margin[idx] = Math.round(Number(window
-                            .getComputedStyle(cell)
-                            .getPropertyValue(val)
-                            .replace(/\D/gi, '')));
-                    });
-                }
-                // D: Add border (if any)
-                if (window.getComputedStyle(cell).getPropertyValue('border-top-width') ||
-                    window.getComputedStyle(cell).getPropertyValue('border-right-width') ||
-                    window.getComputedStyle(cell).getPropertyValue('border-bottom-width') ||
-                    window.getComputedStyle(cell).getPropertyValue('border-left-width')) {
-                    cellOpts.border = [null, null, null, null];
-                    new Array('top', 'right', 'bottom', 'left').forEach(function (val, idx) {
-                        var intBorderW = Math.round(Number(window
-                            .getComputedStyle(cell)
-                            .getPropertyValue('border-' + val + '-width')
-                            .replace('px', '')));
-                        var arrRGB = [];
-                        arrRGB = window
-                            .getComputedStyle(cell)
-                            .getPropertyValue('border-' + val + '-color')
-                            .replace(/\s+/gi, '')
-                            .replace('rgba(', '')
-                            .replace('rgb(', '')
-                            .replace(')', '')
-                            .split(',');
-                        var strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]));
-                        cellOpts.border[idx] = { pt: intBorderW, color: strBorderC };
-                    });
-                }
-                // LAST: Add cell
-                arrObjTabCells.push({
-                    type: SLIDE_OBJECT_TYPES.tablecell,
-                    text: cell.innerText,
-                    options: cellOpts,
-                });
-            });
-            switch (part) {
-                case 'thead':
-                    arrObjTabHeadRows.push(arrObjTabCells);
-                    break;
-                case 'tbody':
-                    arrObjTabBodyRows.push(arrObjTabCells);
-                    break;
-                case 'tfoot':
-                    arrObjTabFootRows.push(arrObjTabCells);
-                    break;
-                default:
-            }
-        });
-    });
-    // STEP 5: Break table into Slides as needed
-    // Pass head-rows as there is an option to add to each table and the parse func needs this data to fulfill that option
-    opts._arrObjTabHeadRows = arrObjTabHeadRows || null;
-    opts.colW = arrColW;
-    getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows, arrObjTabFootRows), opts, pptx.presLayout, masterSlide).forEach(function (slide, idx) {
-        // A: Create new Slide
-        var newSlide = pptx.addSlide(opts.masterSlideName || null);
-        // B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-        if (idx === 0)
-            opts.y = opts.y || arrInchMargins[0];
-        if (idx > 0)
-            opts.y = opts.newSlideStartY || arrInchMargins[0];
-        if (opts.verbose)
-            console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y);
-        // C: Add table to Slide
-        newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false });
-        // D: Add any additional objects
-        if (opts.addImage)
-            newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h });
-        if (opts.addShape)
-            newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {});
-        if (opts.addTable)
-            newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {});
-        if (opts.addText)
-            newSlide.addText(opts.addText.text, opts.addText.opts || {});
-    });
-}
 
 /**
  * PptxGenJS: XML Generation
@@ -6840,13 +6840,26 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
+/**
+ * PPTX Units are "DXA" (except for font sizing)
+ * ....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
+ * ....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
+ * SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
+ *
+ * OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
+ *
+ * REFERENCES:
+ * @see [Structure of a PresentationML document (Open XML SDK)](https://msdn.microsoft.com/en-us/library/office/gg278335.aspx)
+ * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
+ */
+var VERSION = '3.0.0-beta.10';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
         /**
-         * Library Version
+         * PptxGenJS Library Version
          */
-        this._version = '3.0.0-beta.9';
+        this._version = VERSION;
         // Global props
         this._charts = CHART_TYPES;
         this._colors = SCHEME_COLOR_NAMES;
@@ -7063,7 +7076,6 @@ var PptxGenJS = /** @class */ (function () {
             height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
         };
         this._rtlMode = false;
-        this._isBrowser = false;
         //
         this.slideLayouts = [
             {
@@ -7180,16 +7192,6 @@ var PptxGenJS = /** @class */ (function () {
         },
         set: function (value) {
             this._rtlMode = value;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PptxGenJS.prototype, "isBrowser", {
-        get: function () {
-            return this._isBrowser;
-        },
-        set: function (value) {
-            this._isBrowser = value;
         },
         enumerable: true,
         configurable: true
