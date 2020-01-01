@@ -80,6 +80,7 @@ gulp.task('es', () => {
 		.src(['./src/bld/pptxgen.es.js'])
 		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
 		.pipe(gulp.dest('./dist/'))
+		.pipe(gulp.dest('./demos/react-demo/src/'))
 })
 
 // Build/Deploy
