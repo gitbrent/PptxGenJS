@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0-beta.9 @ 2019-12-31T22:20:26.476Z */
+/* PptxGenJS 3.0.0 @ 2020-01-01T17:05:07.163Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -206,7 +206,7 @@ function getUuid(uuidFormat) {
     });
 }
 /**
- * TODO: What does this mehtod do again??
+ * TODO: What does this method do again??
  * shallow mix, returns new object
  */
 function getMix(o1, o2, etc) {
@@ -334,8 +334,6 @@ function genXmlColorSelection(shapeFill, backColor) {
         switch (fillType) {
             case 'solid':
                 outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>';
-                break;
-            default:
                 break;
         }
     }
@@ -841,7 +839,6 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                 case 'tfoot':
                     arrObjTabFootRows.push(arrObjTabCells);
                     break;
-                default:
             }
         });
     });
@@ -2820,8 +2817,6 @@ function slideObjectToXml(slide) {
                 strSlideXml += ' </a:graphic>';
                 strSlideXml += '</p:graphicFrame>';
                 break;
-            default:
-                break;
         }
     });
     // STEP 5: Add slide numbers (if any) last
@@ -2988,8 +2983,6 @@ function genXmlParagraphProperties(textObj, isDefault) {
                     break;
                 case 'justify':
                     paragraphPropXml += ' algn="just"';
-                    break;
-                default:
                     break;
             }
         }
@@ -4752,7 +4745,7 @@ function createHyperlinkRels(target, text) {
 }
 
 /**
- * PptxGenJS Slide Class
+ * PptxGenJS: Slide Class
  */
 var Slide = /** @class */ (function () {
     function Slide(params) {
@@ -4776,7 +4769,6 @@ var Slide = /** @class */ (function () {
         get: function () {
             return this._bkgd;
         },
-        // TODO: add comments (also add to index.d.ts)
         set: function (value) {
             this._bkgd = value;
         },
@@ -4787,7 +4779,6 @@ var Slide = /** @class */ (function () {
         get: function () {
             return this._color;
         },
-        // TODO: add comments (also add to index.d.ts)
         set: function (value) {
             this._color = value;
         },
@@ -4798,7 +4789,6 @@ var Slide = /** @class */ (function () {
         get: function () {
             return this._hidden;
         },
-        // TODO: add comments (also add to index.d.ts)
         set: function (value) {
             this._hidden = value;
         },
@@ -4809,7 +4799,6 @@ var Slide = /** @class */ (function () {
         get: function () {
             return this._slideNumber;
         },
-        // TODO: add comments (also add to index.d.ts)
         set: function (value) {
             // NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
             this.slideNumberObj = value;
@@ -4895,7 +4884,7 @@ var Slide = /** @class */ (function () {
      * @return {Slide} this class
      */
     Slide.prototype.addTable = function (arrTabRows, options) {
-        // FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
+        // FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
         addTableDefinition(this, arrTabRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide);
         return this;
     };
@@ -6317,8 +6306,6 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '</c:' + chartType + 'Chart>';
             // Done with Doughnut/Pie
             break;
-        default:
-            break;
     }
     return strXml;
 }
@@ -6842,19 +6829,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-/**
- * PPTX Units are "DXA" (except for font sizing)
- * ....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
- * ....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
- * SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
- *
- * OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
- *
- * REFERENCES:
- * @see [Structure of a PresentationML document (Open XML SDK)](https://msdn.microsoft.com/en-us/library/office/gg278335.aspx)
- * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
- */
-var VERSION = '3.0.0-beta.10';
+var VERSION = '3.0.0';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
