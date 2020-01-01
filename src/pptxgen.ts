@@ -43,8 +43,6 @@
  * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
  */
 
-const VERSION = '3.0.0-beta.10'
-
 import * as JSZip from 'jszip'
 import Slide from './slide'
 import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE, EMU } from './core-enums'
@@ -55,6 +53,8 @@ import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
+
+const VERSION = '3.0.0'
 
 export default class PptxGenJS {
 	// Property getters/setters
