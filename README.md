@@ -1,6 +1,6 @@
 <h1 align="center">PptxGenJS</h1>
 <h5 align="center">
-  JavaScript PowerPoint Presentations
+  Create JavaScript PowerPoint Presentations
 </h5>
 <p align="center">
   <a href="https://github.com/gitbrent/PptxGenJS/">
