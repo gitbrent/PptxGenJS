@@ -124,8 +124,8 @@ yarn add pptxgenjs
 
 ## Additional Builds
 
-- CommonJS: `dist/pptxgenjs.cjs.js`
-- ES Module: `dist/pptxgenjs.es.js`
+- CommonJS: `dist/pptxgen.cjs.js`
+- ES Module: `dist/pptxgen.es.js`
 
 ---
 
