@@ -44,14 +44,6 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 # Features
 
-**Modern architecture**
-
-- Supports client web browsers, NodeJS, and React/Angular/Electron
-- Save/stream methods return a promise
-- Easy Angular/React integration (available via npm, cjs or es files)
-- Only a single dependency (JSZip)
-- Typescript definitions are included
-
 **Extensive browser support**
 
 - Create/download presentations on all current desktop & mobile web browsers
@@ -62,19 +54,26 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 - Slides can include Charts, Images, Media, Shapes, Tables, Text and more.
 - SVG images (PowerPoint online and 2019+ desktop)
 
+**Modern architecture**
+
+- Supports client web browsers, NodeJS, and React/Angular/Electron
+- Save/stream methods return a promise
+- Easy Angular/React integration (available via npm, cjs or es files)
+- Only a single dependency (JSZip)
+- Typescript definitions are included
+
 **HTML to PowerPoint**
 
 - Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform any HTML table into a presentation
 
 # Live Demo
 
-Use JavaScript to create a PowerPoint presentation with your web browser right now!
+Use the online demo to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo
+which showcases every available feature.
 
-- [https://gitbrent.github.io/PptxGenJS](https://gitbrent.github.io/PptxGenJS)
-
-The complete library demo is also online.
-
-- [https://gitbrent.github.io/PptxGenJS/demo/](https://gitbrent.github.io/PptxGenJS/demo/)
+- [Simple Demo](https://gitbrent.github.io/PptxGenJS)
+- [Complete Feature Demo](https://gitbrent.github.io/PptxGenJS/demo/)
+- [PptxGenJS jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
 
 # Installation
 
@@ -142,6 +141,7 @@ PptxGenJS PowerPoint presentations are created via JavaScript by following 4 bas
 
 ```javascript
 let pptx = new PptxGenJS();
+
 let slide = pptx.addSlide();
 
 let textboxText = "Hello World from PptxGenJS!";
@@ -183,15 +183,15 @@ Full documentation and code examples are available
 Easily convert HTML tables to PowerPoint presentations in a single call.
 
 ```javascript
-var pptx = new PptxGenJS();
-pptx.tableToSlides("tableId");
-pptx.writeFile("HTML-table.pptx");
+let pptx = new PptxGenJS();
+pptx.tableToSlides("tableElementId");
+pptx.writeFile("HTML2PPT.pptx");
 ```
 
 Learn more:
 
 - [HTML-to-PowerPoint Documentation](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html)
-- [Online HTML-to-PowerPoint Demo](https://gitbrent.github.io/PptxGenJS/demo/#tab2)
+- [Online HTML-to-PowerPoint Demo](https://gitbrent.github.io/PptxGenJS/demo/#html2pptx)
 
 ---
 
