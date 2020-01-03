@@ -24,7 +24,7 @@ title: Installation
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 ```html
 <!-- Bundle: Easiest to use, supports all browsers -->
-<script src="PptxGenJS/libs/pptxgen.bundle.js"></script>
+<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 
 <!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
 <script src="PptxGenJS/libs/jszip.min.js"></script>
@@ -49,5 +49,5 @@ yarn add pptxgenjs
 ```
 
 ## Additional Builds
-* CommonJS: `dist/pptxgenjs.cjs.js`
-* ES Module: `dist/pptxgenjs.es.js`
+* CommonJS: `dist/pptxgen.cjs.js`
+* ES Module: `dist/pptxgen.es.js`
