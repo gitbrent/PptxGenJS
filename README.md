@@ -47,29 +47,28 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 **Extensive browser support**
 
 - Create/download presentations on all current desktop & mobile web browsers
-- IE11 is supported (requires included Promises polyfill)
+- IE11 is supported via included Promises polyfill
 
 **Major PowerPoint object types**
 
 - Slides can include Charts, Images, Media, Shapes, Tables, Text and more.
-- SVG images (PowerPoint online and 2019+ desktop)
+- SVG images and YouTube videos are supported when viewed in PowerPoint online/2019+ desktop application
 
 **Modern architecture**
 
 - Supports client web browsers, NodeJS, and React/Angular/Electron
-- Save/stream methods return a promise
+- Export methods return promises
+- Client browsers have only a single dependency: JSZip
 - Easy Angular/React integration (available via npm, cjs or es files)
-- Only a single dependency (JSZip)
-- Typescript definitions are included
+- Typescript definitions included
 
 **HTML to PowerPoint**
 
-- Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform any HTML table into a presentation
+- Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
 
 # Live Demo
 
-Use the online demo to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo
-which showcases every available feature.
+Use the online demo to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
 - [Simple Demo](https://gitbrent.github.io/PptxGenJS)
 - [Complete Feature Demo](https://gitbrent.github.io/PptxGenJS/demo/)
