@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.0.0
-* BLD.: 20200101
+* BLD.: 20200102
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -65,25 +65,25 @@ var gDemoTitleText = { fontSize:14, color:'0088CC', bold:true };
 var gDemoTitleTextBk = { fontSize:14, color:'0088CC', bold:true, breakLine:true };
 var gDemoTitleOpts = { fontSize:13, color:'9F9F9F' };
 var gPaths = {
-	'starlabsBkgd': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/starlabs_bkgd.jpg' },
-	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/starlabs_logo.png' },
+	'starlabsBkgd': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_bkgd.jpg' },
+	'starlabsLogo': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_logo.png' },
 	'wikimedia1'  : { path:'https://upload.wikimedia.org/wikipedia/en/a/a9/Example.jpg' },
 	'wikimedia2'  : { path:'https://upload.wikimedia.org/wikipedia/commons/1/17/PNG-Gradient_hex.png' },
 	'wikimedia_svg1': { path:'https://upload.wikimedia.org/wikipedia/commons/2/28/Cadenas-ferme-vert.svg' },
 	'wikimedia_svg2': { path:'https://upload.wikimedia.org/wikipedia/commons/3/3b/Crystal_Clear_action_go.svg' },
-	'ccCopyRemix'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/cc_copyremix.gif' },
-	'ccLogo'       : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/images/cc_logo.jpg' },
+	'ccCopyRemix'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_copyremix.gif' },
+	'ccLogo'       : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_logo.jpg' },
 	'ccLicenseComp': { path:'common/images/cc_license_comp.png' },
-	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/images/cc_dj.gif' },
-	'gifAnimTrippy': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/images/trippy.gif' },
+	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_dj.gif' },
+	'gifAnimTrippy': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/trippy.gif' },
 	'chicagoBean'  : { path:'https://upload.wikimedia.org/wikipedia/commons/thumb/d/d1/Chicago_Bean_Bohne_%2822038051679%29.jpg/256px-Chicago_Bean_Bohne_%2822038051679%29.jpg?op=paramTest&ampersandTest' },
-	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.avi' },
-	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.m4v' },
-	'sample_mov': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/examples/media/sample.mov' },
-	'sample_mp4': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.mp4' },
-	'sample_mpg': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.mpg' },
-	'sample_mp3': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.mp3' },
-	'sample_wav': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.5.0/examples/media/sample.wav' }
+	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi' },
+	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.m4v' },
+	'sample_mov': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mov' },
+	'sample_mp4': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mp4' },
+	'sample_mpg': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mpg' },
+	'sample_mp3': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mp3' },
+	'sample_wav': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.wav' }
 }
 
 // ==================================================================================================================
