@@ -398,8 +398,12 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	// STEP 3: Calc/Set column widths by using same column width percent from HTML table
 	arrTabColW.forEach((colW, idx) => {
 		let intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
-		let intMinWidth = Number(document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`).getAttribute('data-pptx-min-width'))
-		let intSetWidth = Number(document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`).getAttribute('data-pptx-width'))
+		let intMinWidth = 0
+		let colSelectorMin = document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`)
+		if (colSelectorMin) intMinWidth = Number(colSelectorMin.getAttribute('data-pptx-min-width'))
+		let intSetWidth = 0
+		let colSelectorSet = document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`)
+		if (colSelectorSet) intMinWidth = Number(colSelectorSet.getAttribute('data-pptx-width'))
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
 	if (opts.verbose) {
