@@ -92,7 +92,7 @@ Use the online demo to create a simple presentation to see how easy it is to use
 
 ```html
 <!-- Bundle: Easiest to use, supports all browsers -->
-<script src="PptxGenJS/libs/pptxgen.bundle.js"></script>
+<script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 
 <!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
 <script src="PptxGenJS/libs/jszip.min.js"></script>
