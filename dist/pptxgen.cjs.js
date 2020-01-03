@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0 @ 2020-01-01T17:05:07.163Z */
+/* PptxGenJS 3.0.0 @ 2020-01-03T04:16:16.503Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -717,9 +717,14 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     // STEP 3: Calc/Set column widths by using same column width percent from HTML table
     arrTabColW.forEach(function (colW, idx) {
         var intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2));
-        var intMinWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-min-width'));
-        var intSetWidth = Number(document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")").getAttribute('data-pptx-width'));
-        arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
+        var intMinWidth = 0;
+        var colSelectorMin = document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")");
+        if (colSelectorMin)
+            intMinWidth = Number(colSelectorMin.getAttribute('data-pptx-min-width'));
+        var colSelectorSet = document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idx + 1) + ")");
+        if (colSelectorSet)
+            intMinWidth = Number(colSelectorSet.getAttribute('data-pptx-width'));
+        arrColW.push( intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
     });
     if (opts.verbose) {
         console.log("arrColW ................ = " + arrColW.toString());
