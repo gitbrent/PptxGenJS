@@ -1,0 +1,9 @@
+{
+	"rules": {
+		"no-var-keyword": true,
+		"switch-default": true,
+		"triple-equals": {
+			"options": ["allow-null-check"]
+		}
+	}
+}

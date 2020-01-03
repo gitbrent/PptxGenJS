@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "declarationDir": "./out",
+    "lib": ["dom", "es2015"],
+    "module": "es6",
+    "noImplicitAny": false,
+    "outDir": "./out",
+    "sourceMap": true,
+    "target": "es5"
+  },
+  "include": ["src/**/*"],
+  "exclude": ["node_modules"]
+}

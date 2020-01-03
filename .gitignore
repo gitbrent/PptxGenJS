@@ -11,6 +11,5 @@ website/
 demo/
 demos/
 docs/
-.rpt2_cache
-src
+/.rpt2_cache
 src/bld
