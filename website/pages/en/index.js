@@ -19,7 +19,7 @@ const tryCodeBlock = `
 	    "BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好",
 	    { x:0, y:1, w:'100%', h:2, align:'c', color:'0088CC', fill:'F1F1F1', fontSize:24 }
 	);
-	pptx.save('PptxGenJS-Demo');
+	pptx.writeFile('PptxGenJS-Demo');
 `;
 
 /* ========== */
