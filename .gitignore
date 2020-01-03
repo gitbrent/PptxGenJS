@@ -9,7 +9,6 @@ bower_components/
 /.idea
 website/
 demo/
-demos/
 docs/
 /.rpt2_cache
 src/bld
