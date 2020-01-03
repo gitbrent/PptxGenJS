@@ -1,5 +1,5 @@
 /**
- * PptxGenJS: Slide object generators
+ * PptxGenJS: Slide Object Generators
  */
 
 import {

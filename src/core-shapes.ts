@@ -1,5 +1,5 @@
 /**
-* PptxGenJS - All PowerPoint Shapes
+* PptxGenJS: All PowerPoint Shapes
 */
 export const PowerPointShapes = Object.freeze({
 	ACTION_BUTTON_BACK_OR_PREVIOUS: {
