@@ -32,7 +32,6 @@
   - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
-- [Unimplemented Features](#unimplemented-features)
 - [Contributors](#contributors)
 - [License](#license)
 
@@ -212,20 +211,6 @@ are demos for both client browsers, node and react that contain working examples
 
 - Use a pre-configured jsFiddle to test with: [PptxGenJS Fiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
 - [View questions tagged `PptxGenJS` on StackOverflow](https://stackoverflow.com/questions/tagged/pptxgenjs?sort=votes&pageSize=50). If you can't find your question, [ask it yourself](https://stackoverflow.com/questions/ask?tags=PptxGenJS) - be sure to tag it `PptxGenJS`.
-
----
-
-# Unimplemented Features
-
-The PptxGenJS library is not designed to replicate all the functionality of PowerPoint, meaning several features
-are not on the development roadmap.
-
-These include:
-
-- Animations
-- Importing Existing Presentations and/or Templates
-- Outlines
-- SmartArt
 
 ---
 
