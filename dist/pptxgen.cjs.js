@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0 @ 2020-01-03T04:16:16.503Z */
+/* PptxGenJS 3.0.0 @ 2020-01-03T05:24:04.569Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -876,7 +876,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
 }
 
 /**
-* PptxGenJS - All PowerPoint Shapes
+* PptxGenJS: All PowerPoint Shapes
 */
 var PowerPointShapes = Object.freeze({
     ACTION_BUTTON_BACK_OR_PREVIOUS: {
@@ -3854,7 +3854,7 @@ function getShapeInfo(shapeName) {
 }
 
 /**
- * PptxGenJS: Slide object generators
+ * PptxGenJS: Slide Object Generators
  */
 /** counter for included charts (used for index in their filenames) */
 var _chartCounter = 0;
