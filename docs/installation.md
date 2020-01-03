@@ -4,8 +4,8 @@ title: Installation
 ---
 
 ## Installation Notes
-* Dependencies: `jQuery` and `jsZip`
-* Bundle Includes: `jquery.min.js`, `jszip.min.js`, and `promise.min.js`
+* Dependencies: `JSZip`
+* Bundle Includes: `jszip.min.js`, and `promise.min.js`
 * IE11 Support: The `promise.min.js` promise polyfill is **required**
 
 ## Installation Methods
@@ -13,12 +13,11 @@ title: Installation
 ### CDN
 ```html
 <!-- Bundle: Easiest to use, supports all browsers -->
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.bundle.js"></script>
 
 <!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/libs/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@2.5.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.min.js"></script>
 ```
 
 ### Download
@@ -28,22 +27,27 @@ title: Installation
 <script src="PptxGenJS/libs/pptxgen.bundle.js"></script>
 
 <!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
-<script src="PptxGenJS/libs/jquery.min.js"></script>
 <script src="PptxGenJS/libs/jszip.min.js"></script>
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
 <!-- IE11 requires Promises polyfill -->
 <!-- <script src="PptxGenJS/libs/promise.min.js"></script> -->
 ```
 
-### Npm
+## Npm
 [PptxGenJS NPM Home](https://www.npmjs.com/package/pptxgenjs)
+```bash
+npm install pptxgenjs --save
+```
 ```javascript
-npm install pptxgenjs
-
-var pptx = require("pptxgenjs");
+let PptxGenJS = require("pptxgenjs");
+let pptx = new PptxGenJS();
 ```
 
-### Yarn
-```ksh
-yarn install pptxgenjs
+## Yarn
+```bash
+yarn add pptxgenjs
 ```
+
+## Additional Builds
+* CommonJS: `dist/pptxgenjs.cjs.js`
+* ES Module: `dist/pptxgenjs.es.js`

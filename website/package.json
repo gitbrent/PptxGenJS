@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "docusaurus": "^1.14.0",
-    "gulp": "^4.0.0",
+    "gulp": "^4.0.2",
     "gulp-clean-css": "^4.2.0",
     "gulp-cli": "^2.2.0",
     "gulp-string-replace": "^1.1.2"

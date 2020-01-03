@@ -38,7 +38,7 @@ files may work and some may not.  Video codecs are weird and painful like that.
 ## Media Examples
 ```javascript
 var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
+var slide = pptx.addSlide();
 
 // EX: Media by path
 slide.addMedia({ type:'video', path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/2.1.0/examples/media/sample.mov', x:1.0, y:1.0, w:3.0, h:2.0 });
@@ -50,5 +50,5 @@ slide.addMedia({ type:'audio', data:'audio/mp3;base64,iVtDafDrBF[...]=', x:3.0, 
 // EX: YouTube video
 slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:1.0, y:4.0, w:8.0, h:4.5 });
 
-pptx.save('Demo-Media');
+pptx.writeFile('Demo-Media');
 ```

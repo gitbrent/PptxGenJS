@@ -5,7 +5,7 @@ title: Adding a Slide
 
 ## Syntax
 ```javascript
-var slide = pptx.addNewSlide();
+var slide = pptx.addSlide();
 ```
 
 See [Slide Options](/PptxGenJS/docs/usage-slide-options.html) for features such as Slide Numbers.
@@ -15,7 +15,7 @@ See [Slide Options](/PptxGenJS/docs/usage-slide-options.html) for features such 
 
 ### Master Slide Syntax
 ```javascript
-var slide = pptx.addNewSlide('MASTER_NAME');
+var slide = pptx.addSlide('MASTER_NAME');
 ```
 
 (See [Master Slides](/PptxGenJS/docs/masters.html) for more about creating masters/templates)
@@ -23,10 +23,7 @@ var slide = pptx.addNewSlide('MASTER_NAME');
 ### Master Slide Examples
 ```javascript
 // Create a new Slide that will inherit properties from a pre-defined master page (margins, logos, text, background, etc.)
-var slide1 = pptx.addNewSlide('TITLE_SLIDE');
-
-// The background color can be overridden on a per-slide basis:
-var slide2 = pptx.addNewSlide('TITLE_SLIDE', {bkgd:'FFFCCC'});
+var slide = pptx.addSlide('TITLE_SLIDE');
 ```
 
 
@@ -43,7 +40,7 @@ var slide2 = pptx.addNewSlide('TITLE_SLIDE', {bkgd:'FFFCCC'});
 ### Default Slide Color Examples
 ```javascript
 // Set slide background color
-slide.back  = 'F1F1F1';
+slide.bkgd = 'F1F1F1';
 
 // Set slide default font color
 slide.color = '696969';

@@ -114,7 +114,7 @@ slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
 ## Table Examples
 ```javascript
 var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
+var slide = pptx.addSlide();
 slide.addText('Demo-03: Table', { x:0.5, y:0.25, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
 // TABLE 1: Single-row table
@@ -136,16 +136,16 @@ slide.addTable( rows, tabOpts );
 // --------
 var rows = [
     [
-        { text:'Top Lft', options:{ valign:'t', align:'l', fontFace:'Arial'   } },
-        { text:'Top Ctr', options:{ valign:'t', align:'c', fontFace:'Verdana' } },
-        { text:'Top Rgt', options:{ valign:'t', align:'r', fontFace:'Courier' } }
+        { text:'Top Lft', options:{ valign:'top', align:'left', fontFace:'Arial'   } },
+        { text:'Top Ctr', options:{ valign:'top', align:'center', fontFace:'Verdana' } },
+        { text:'Top Rgt', options:{ valign:'top', align:'right', fontFace:'Courier' } }
     ],
 ];
-var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', fontSize:18, color:'6f9fc9', valign:'m'} };
+var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', fontSize:18, color:'6f9fc9', valign:'ctr'} };
 slide.addTable( rows, tabOpts );
 
 // Multiline Text / Line Breaks - use either "\r" or "\n"
 slide.addTable( ['Line 1\nLine 2\nLine 3'], { x:2, y:3, w:4 });
 
-pptx.save('Demo-Tables');
+pptx.writeFile('Demo-Tables');
 ```

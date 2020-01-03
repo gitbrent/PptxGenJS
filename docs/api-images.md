@@ -13,8 +13,8 @@ Either provide a URL location or base64 data to create an image.
 * `data` is a base64 string representing an encoded image
 
 ## Supported Formats
-* Image (png, jpg, gif and animated gif, etc.)
-* Note: SVG images are not supported in PowerPoint or PowerPoint Online
+* Image (png, jpg, svg, gif and animated gif, etc.)
+* Note: SVG images are only supported in the newest version of PowerPoint or PowerPoint Online
 
 ## Image Options
 | Option       | Type    | Unit   | Default  | Description         | Possible Values  |
@@ -32,7 +32,7 @@ Either provide a URL location or base64 data to create an image.
 ## Image Examples
 ```javascript
 var pptx = new PptxGenJS();
-var slide = pptx.addNewSlide();
+var slide = pptx.addSlide();
 
 // EX: Image by local URL
 slide.addImage({ path:'images/chart_world_peace_near.png', x:1, y:1, w:8.0, h:4.0 });
@@ -50,7 +50,7 @@ slide.addImage({
   path:'images/chart_world_peace_near.png',
 });
 
-pptx.save('Demo-Images');
+pptx.writeFile('Demo-Images');
 ```
 
 ## Image Sizing

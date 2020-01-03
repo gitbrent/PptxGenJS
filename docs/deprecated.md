@@ -3,6 +3,11 @@ id: deprecated
 title: Deprecated
 ---
 
+## Version 3.0 Breaking Changes
+
+Please see the [Version 3.0 Migration Guide](https://github.com/gitbrent/PptxGenJS/wiki/Version-3.0-Migration-Guide)
+
+
 ## Version 2.0 Breaking Changes
 
 Please note that version 2.0.0 enabled some much needed cleanup, but may break your previous code...
