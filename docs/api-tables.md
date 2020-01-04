@@ -74,7 +74,7 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
 as the `text` value allows fine-grained control over the text inside cells.
 * Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
-* See below for examples or view the `examples/pptxgenjs-demo.html` page for lots more
+* See below for examples or view the `demos/browser/index.html` page for lots more
 
 ## Table Cell Formatting Examples
 ```javascript
@@ -84,31 +84,31 @@ var rows = [];
 rows.push( ['First', 'Second', 'Third'] );
 // Row Two: set/override formatting for each cell
 rows.push([
-    { text:'1st', options:{color:'ff0000'} },
-    { text:'2nd', options:{color:'00ff00'} },
-    { text:'3rd', options:{color:'0000ff'} }
+  { text:'1st', options:{color:'ff0000'} },
+  { text:'2nd', options:{color:'00ff00'} },
+  { text:'3rd', options:{color:'0000ff'} }
 ]);
 slide.addTable( rows, { x:0.5, y:1.0, w:9.0, color:'363636' } );
 
 // TABLE 2: Using word-level formatting inside cells
 // NOTE: An array of text/options objects provides fine-grained control over formatting
 var arrObjText = [
-    { text:'Red ',   options:{color:'FF0000'} },
-    { text:'Green ', options:{color:'00FF00'} },
-    { text:'Blue',   options:{color:'0000FF'} }
+  { text:'Red ',   options:{color:'FF0000'} },
+  { text:'Green ', options:{color:'00FF00'} },
+  { text:'Blue',   options:{color:'0000FF'} }
 ];
 // EX A: Pass an array of text objects to `addText()`
-slide.addText( arrObjText, { x:0.5, y:2.75, w:9, h:2, margin:0.1, fill:'232323' } );
+slide.addText( arrObjText, { x:0.5, y:2.0, w:9, h:1, margin:0.1, fill:'232323' } );
 
 // EX B: Pass the same objects as a cell's `text` value
 var arrTabRows = [
-    [
-        { text:'Cell 1 A',  options:{fontFace:'Arial'  } },
-        { text:'Cell 1 B',  options:{fontFace:'Courier'} },
-        { text: arrObjText, options:{fill:'232323'}      }
-    ]
+  [
+    { text:'Cell 1 A',  options:{fontFace:'Arial'  } },
+    { text:'Cell 1 B',  options:{fontFace:'Courier'} },
+    { text: arrObjText, options:{fill:'232323'}      }
+  ]
 ];
-slide.addTable( arrTabRows, { x:0.5, y:5, w:9, h:2, colW:[1.5,1.5,6] } );
+slide.addTable( arrTabRows, { x:0.5, y:3.5, w:9, h:1, colW:[1.5,1.5,6] } );
 ```
 
 ## Table Examples
@@ -119,15 +119,15 @@ slide.addText('Demo-03: Table', { x:0.5, y:0.25, fontSize:18, fontFace:'Arial', 
 
 // TABLE 1: Single-row table
 // --------
-var rows = [ 'Cell 1', 'Cell 2', 'Cell 3' ];
+var rows = [ ['Cell 1', 'Cell 2', 'Cell 3'] ];
 var tabOpts = { x:0.5, y:1.0, w:9.0, fill:'F7F7F7', fontSize:14, color:'363636' };
 slide.addTable( rows, tabOpts );
 
 // TABLE 2: Multi-row table (each rows array element is an array of cells)
 // --------
 var rows = [
-    ['A1', 'B1', 'C1'],
-    ['A2', 'B2', 'C2']
+  ['A1', 'B1', 'C1'],
+  ['A2', 'B2', 'C2']
 ];
 var tabOpts = { x:0.5, y:2.0, w:9.0, fill:'F7F7F7', fontSize:18, color:'6f9fc9' };
 slide.addTable( rows, tabOpts );
@@ -135,17 +135,17 @@ slide.addTable( rows, tabOpts );
 // TABLE 3: Formatting at a cell level - use this to selectively override table's cell options
 // --------
 var rows = [
-    [
-        { text:'Top Lft', options:{ valign:'top', align:'left', fontFace:'Arial'   } },
-        { text:'Top Ctr', options:{ valign:'top', align:'center', fontFace:'Verdana' } },
-        { text:'Top Rgt', options:{ valign:'top', align:'right', fontFace:'Courier' } }
-    ],
+  [
+    { text:'Top Lft', options:{ valign:'top', align:'left',   fontFace:'Arial'   } },
+    { text:'Top Ctr', options:{ valign:'top', align:'center', fontFace:'Verdana' } },
+    { text:'Top Rgt', options:{ valign:'top', align:'right',  fontFace:'Courier' } }
+  ],
 ];
-var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', fontSize:18, color:'6f9fc9', valign:'ctr'} };
+var tabOpts = { x:0.5, y:4.5, w:9.0, rowH:0.6, fill:'F7F7F7', fontSize:18, color:'6f9fc9', valign:'center' };
 slide.addTable( rows, tabOpts );
 
 // Multiline Text / Line Breaks - use either "\r" or "\n"
-slide.addTable( ['Line 1\nLine 2\nLine 3'], { x:2, y:3, w:4 });
+slide.addTable( [['Line 1\nLine 2\nLine 3']], { x:2, y:3, w:4 });
 
 pptx.writeFile('Demo-Tables');
 ```

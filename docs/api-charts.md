@@ -195,7 +195,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 
 ## Chart Examples
 ### Tons of Sample Code
-Please check the `examples/pptxgenjs-demo.js` file for almost 3,000 lines of well-documented examples, including charts.
+Please check the `demos/common/demos.js` file for almost 3,000 lines of well-documented examples, including charts.
 
 There are lots of Slides filled with Charts you can copy:
 
@@ -220,7 +220,7 @@ var dataChartAreaLine = [
     values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
   }
 ];
-slide.addChart( pptx.charts.LINE, dataChartAreaLine, { x:1.0, y:1.0, w:12, h:6 } );
+slide.addChart( pptx.charts.LINE, dataChartAreaLine, { x:1, y:1, w:8, h:4 } );
 
 pptx.writeFile('Demo-Line-Chart');
 ```

@@ -38,28 +38,20 @@ slide.addText("some string", {SHAPE, OPTIONS});
 ## Shape Examples
 ```javascript
 var pptx = new PptxGenJS();
-pptx.setLayout('LAYOUT_WIDE');
 
-var slide = pptx.addSlide();
+// Plain shapes:
+var slide1 = pptx.addSlide();
+slide1.addShape(pptx.shapes.RECTANGLE, { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
+slide1.addShape(pptx.shapes.OVAL,      { x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC' } });
+slide1.addShape(pptx.shapes.LINE,      { x:4.2, y:4.4, w:5.0, h:0.0, line:'FF0000', lineSize:1 });
+slide1.addShape(pptx.shapes.LINE,      { x:4.2, y:4.8, w:5.0, h:0.0, line:'FF0000', lineSize:2, lineHead:'triangle' });
 
-// LINE
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.40, w:5, h:0, line:'FF0000', lineSize:1 });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:4.80, w:5, h:0, line:'FF0000', lineSize:2, lineHead:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.20, w:5, h:0, line:'FF0000', lineSize:3, lineTail:'triangle' });
-slide.addShape(pptx.shapes.LINE,      { x:4.15, y:5.60, w:5, h:0, line:'FF0000', lineSize:4, lineHead:'triangle', lineTail:'triangle' });
-
-// DIAGONAL LINE
-slide.addShape(pptx.shapes.LINE,      { x:0, y:0, w:5.0, h:0, line:'FF0000', rotate:45 });
-
-// RECTANGLE
-slide.addShape(pptx.shapes.RECTANGLE, { x:0.50, y:0.75, w:5, h:3, fill:'FF0000' });
-
-// OVAL
-slide.addShape(pptx.shapes.OVAL,      { x:4.15, y:0.75, w:5, h:2, fill:{ type:'solid', color:'0088CC', alpha:25 } });
-
-// Adding text to Shapes:
-slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:0.40, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', lineSize:3 });
-slide.addText('RIGHT-TRIANGLE', { shape:pptx.shapes.RIGHT_TRIANGLE, align:'c', x:7.00, y:4.3, w:6, h:3, fill:'0088CC', line:'000000', flipH:true });
+// Shapes with Text:
+var slide2 = pptx.addSlide();
+slide2.addText('RECTANGLE',   { shape:pptx.shapes.RECTANGLE, x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'center', fontSize:14 });
+slide2.addText('OVAL',        { shape:pptx.shapes.OVAL,      x:5.4, y:0.8, w:3.0, h:1.5, fill:'F38E00', align:'center', fontSize:14 });
+slide2.addText('LINE size=1', { shape:pptx.shapes.LINE, align:'center', x:4.2, y:4.4, w:5, h:0, line:'FF0000', lineSize:1, lineDash:'lgDash' });
+slide2.addText('LINE size=2', { shape:pptx.shapes.LINE, align:'left',   x:4.2, y:4.8, w:5, h:0, line:'FF0000', lineSize:2, lineTail:'triangle' });
 
 pptx.writeFile('Demo-Shapes');
 ```

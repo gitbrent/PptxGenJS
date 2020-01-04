@@ -1,6 +1,6 @@
 ---
 id: masters
-title: Master Slides
+title: Masters and Placeholders
 ---
 
 ## Slide Masters
@@ -23,10 +23,10 @@ via View > Slide Master and will affect the Slides created using that layout.
 | :------------ | :------ | :----- | :------- | :----------- | :-------------------- |
 | `bkgd`        | string  |        | `ffffff` | color        | hex color code or [scheme color constant](#scheme-colors). Ex: `{ bkgd:'0088CC' }` |
 | `bkgd`        | object  |        |          | image | object with path OR data. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}` |
-| `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
 | `margin`      | number  | inches | `1.0`    | Slide margins      | 0.0 through Slide.width |
 | `margin`      | array   |        |          | Slide margins      | array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
 | `objects`     | array   |        |          | Objects for Slide  | object with type and options. Type:`chart`,`image`,`line`,`rect` or `text`. [Example](https://github.com/gitbrent/PptxGenJS#slide-master-examples) |
+| `slideNumber` | object  |        |          | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent |
 | `title`       | string  |        |          | Layout title/name  | some title |
 
 **TIP:**
@@ -35,7 +35,7 @@ Pre-encode your images (base64) and add the string as the optional data key/val 
 ### Slide Master Example
 ```javascript
 var pptx = new PptxGenJS();
-pptx.setLayout('LAYOUT_WIDE');
+pptx.layout = 'LAYOUT_WIDE';
 
 pptx.defineSlideMaster({
   title: 'MASTER_SLIDE',
@@ -80,7 +80,7 @@ name when adding text or other objects.
 ### Placeholder Example
 ```javascript
 var pptx = new PptxGenJS();
-pptx.setLayout('LAYOUT_WIDE');
+pptx.layout = 'LAYOUT_WIDE';
 
 pptx.defineSlideMaster({
   title: 'PLACEHOLDER_SLIDE',
@@ -111,5 +111,5 @@ Using the 'PLACEHOLDER_SLIDE' defined above to produce a Slide:
 
 
 ## More Examples and Demos
-There are several Master Slides defined in the Demo: `examples/pptxgenjs-demo.html` including examples using placeholders.
+There are several Master Slides defined in the Demo: `demos/browser/index.html` including examples using placeholders.
 ![PptxGenJS Master Slide Demo](/PptxGenJS/docs/assets/ex-master-slide-demo.png)

@@ -94,7 +94,8 @@ pptx.writeFile('PptxGenJS-Presentation-2');
 ```
 
 ### Node.js
-* See `examples/nodejs-demo.js` for a working demo with multiple presentations, callbacks, streaming, etc.
+- See `demos/node/demo.js` for a working demo with multiple presentations, promises, etc.
+- See `demos/node/demo_stream.js` for a working demo using streaming
 
 ```javascript
 let PptxGenJS = require("pptxgenjs");

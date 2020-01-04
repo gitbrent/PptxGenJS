@@ -834,7 +834,7 @@ tables. Use this option to ensure there is no wasted space and to guarantee a pr
 Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
 as the `text` value allows fine-grained control over the text inside cells.
 * Available formatting options are here: [Text Options](#text-options)
-* See below for examples or view the `examples/pptxgenjs-demo.html` page for lots more
+* See below for examples or view the `demos/browser/index.html` page for lots more
 
 ### Table Cell Formatting Examples
 ```javascript
