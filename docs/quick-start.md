@@ -29,4 +29,4 @@ That's really all there is to it!
 ## TypeScript Support
 If you're using Angular or React, the included TypeScript definitions file brings the documentation to you.
 
-[[TODO:show screen cap]]
+![TypeScript Support](/PptxGenJS/docs/assets/ex-typescript.png)
