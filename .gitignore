@@ -7,7 +7,6 @@ bower_components/
 *.lock
 
 css/
-demo/
 demos/
 dist/
 examples/
