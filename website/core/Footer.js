@@ -73,7 +73,7 @@ class Footer extends React.Component {
 					<div>
 						<h5>More</h5>
 						<a
-							href="https://jsfiddle.net/gitbrent/gx34jy59/"
+							href="https://jsfiddle.net/gitbrent/L1uctxm0/"
 							target="_blank">
 							JSFiddle Demo Presentation
 						</a>

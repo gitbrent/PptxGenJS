@@ -39,7 +39,7 @@ class Help extends React.Component {
 			<p>If you are having issues getting a presentation to generate, check out the demos in the `examples` directory.</p>
 			<p>There are demos for both Nodejs and client-browsers that contain working examples of every available library feature.</p>
 			<ul>
-				<li>Use a pre-configured jsFiddle to test with: <a href="https://jsfiddle.net/gitbrent/gx34jy59/5/">PptxGenJS Fiddle</a></li>
+				<li>Use a pre-configured jsFiddle to test with: <a href="https://jsfiddle.net/gitbrent/L1uctxm0/">PptxGenJS Fiddle</a></li>
 				<li>Use Ask Question on <a href="http://stackoverflow.com/">StackOverflow</a> - be sure to tag it with "PptxGenJS"</li>
 			</ul>
 

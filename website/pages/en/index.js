@@ -206,7 +206,7 @@ const TryOutLiveDemo = props => (
           `<Button class="button" style="margin-bottom:1rem" href="javascript:" onclick="eval(document.getElementById('try').getElementsByClassName('hljs')[0].innerText); if(ga)ga('send','event','Link','click','Demo-Simple');">Generate Demo Presentation</Button>` +
 		  '<p>Complete examples of all available features:</p>' +
 		  `<Button class="button" style="margin-bottom:1rem" href="javascript:" onclick="location.href='./demo'">More PptxGenJS Examples</Button>` +
-          '<p>There is also a pre-configured <a href="https://jsfiddle.net/gitbrent/gx34jy59/">jsFiddle demo</a> available.</p>'
+          '<p>There is also a pre-configured <a href="https://jsfiddle.net/gitbrent/L1uctxm0/">jsFiddle demo</a> available.</p>'
       }
     ]}
   </Block>
