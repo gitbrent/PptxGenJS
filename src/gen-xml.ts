@@ -960,7 +960,6 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 			runProps += createGlowElement(opts.glow, DEF_TEXT_GLOW);
 			// TODO: shadow and other effects
 			runProps += '</a:effectLst>';
-			console.log(runProps);
 		}
 		if (opts.fontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
