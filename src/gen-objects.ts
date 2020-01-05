@@ -247,8 +247,8 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
 		: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-		? PIECHART_COLORS
-		: BARCHART_COLORS
+			? PIECHART_COLORS
+			: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
 	//
 	options.border = options.border && typeof options.border === 'object' ? options.border : null
@@ -265,8 +265,8 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 		options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
 			? options.dataLabelFormatCode
 			: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-			? '0%'
-			: '#,##0'
+				? '0%'
+				: '#,##0'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
 	if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatScatter = 'custom'
@@ -363,6 +363,7 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 		rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
 		sizing: sizing,
 		placeholder: opt.placeholder,
+		rotate: opt.rotate || 0
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -888,7 +889,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
  */
 export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 	// Add all placeholders on this Slide that dont already exist
-	;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
+	; (slide.slideLayout.data || []).forEach(slideLayoutObj => {
 		if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
 			// A: Search for this placeholder on Slide before we add
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
