@@ -31,14 +31,28 @@ export default class Position {
         this.rotate = rotate
     }
 
-    cx(presLayout) {
+    cx(presLayout): number {
         if (typeof this.w !== 'undefined')
             return getSmartParseNumber(this.w, 'X', presLayout)
     }
 
-    cy(presLayout) {
+    cy(presLayout): number {
         if (typeof this.h !== 'undefined')
             return getSmartParseNumber(this.h, 'Y', presLayout)
+    }
+
+    xPos(presLayout) {
+        const cx = this.cx(presLayout)
+        if (typeof this.x === 'undefined' || typeof cx === 'undefined') return
+        const x = getSmartParseNumber(this.x, 'X', presLayout)
+        return [x, x + cx]
+    }
+
+    yPos(presLayout): number[] {
+        const cy = this.cy(presLayout)
+        if (typeof this.y === 'undefined' || typeof cy === 'undefined') return
+        const y = getSmartParseNumber(this.y, 'Y', presLayout)
+        return [y, y + cy]
     }
 
     render(presLayout, tag = 'a:xfrm') {

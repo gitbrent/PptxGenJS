@@ -26,6 +26,7 @@ import ChartElement from './elements/chart'
 import SlideNumberElement from './elements/slide-number'
 import TableElement from './elements/table'
 import MediaElement from './elements/media'
+import GroupElement from './elements/group'
 
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
@@ -90,6 +91,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
             element instanceof ChartElement ||
             element instanceof TableElement ||
             element instanceof MediaElement ||
+            element instanceof GroupElement ||
             element instanceof SlideNumberElement
         ) {
             strSlideXml += element.render(idx, slide.presLayout)

@@ -33,6 +33,7 @@ import ChartElement from './elements/chart'
 import SlideNumberElement from './elements/slide-number'
 import TableElement from './elements/table'
 import MediaElement from './elements/media'
+import GroupElement from './elements/group'
 
 export default class Slide {
     private _bkgd: string
@@ -228,5 +229,11 @@ export default class Slide {
         return this
         //genObj.addTextDefinition(this, text, options, false)
         //return this
+    }
+
+    newGroup() {
+        const group = new GroupElement(this.relations)
+        this.data.push(group)
+        return group
     }
 }
