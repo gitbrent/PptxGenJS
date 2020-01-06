@@ -18,7 +18,7 @@ export default class Relations {
         return relId
     }
 
-    registerImage({ path, data = '' }, extension, fromSvgSize) {
+    registerImage({ path, data = '' }, extension, fromSvgSize = false) {
         // (rId/rels count spans all slides! Count all images to get next rId)
         const relId =
             this.rels.length + this.relsChart.length + this.relsMedia.length + 1
@@ -61,5 +61,34 @@ export default class Relations {
         })
 
         return chartRid
+    }
+
+    registerMedia({ path, type, extn, data = null, target = null }) {
+        const relId =
+            this.rels.length + this.relsChart.length + this.relsMedia.length + 1
+
+        let config = {
+            rId: relId,
+            type,
+            path,
+            extn,
+            data,
+            Target: null
+        }
+        if (type === 'online') {
+            config.Target = target
+            this.relsMedia.push(config)
+            return [relId]
+        }
+
+        const Target = `../media/image-${Math.random()}.${extn}`
+        config.Target = Target
+        this.relsMedia.push(config)
+
+        const relId2 = relId + 1
+        const config2 = { ...config, Target, rId: relId2 }
+        this.relsMedia.push(config2)
+
+        return [relId, relId2]
     }
 }

@@ -32,6 +32,7 @@ import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
 import SlideNumberElement from './elements/slide-number'
 import TableElement from './elements/table'
+import MediaElement from './elements/media'
 
 export default class Slide {
     private _bkgd: string
@@ -165,7 +166,7 @@ export default class Slide {
      * @return {Slide} this class
      */
     addMedia(options: IMediaOpts): Slide {
-        genObj.addMediaDefinition(this, options)
+        this.data.push(new MediaElement(options, this.relations))
         return this
     }
 

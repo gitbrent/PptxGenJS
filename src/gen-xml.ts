@@ -1,43 +1,22 @@
-/**
- * PptxGenJS: XML Generation
- */
-
 import {
-    BULLET_TYPES,
     CRLF,
-    DEF_CELL_BORDER,
-    DEF_CELL_MARGIN_PT,
-    EMU,
     LAYOUT_IDX_SERIES_BASE,
-    ONEPT,
     PLACEHOLDER_TYPES,
     SLDNUMFLDID,
-    SLIDE_OBJECT_TYPES,
     DEF_PRES_LAYOUT_NAME
 } from './core-enums'
 import { PowerPointShapes } from './core-shapes'
 import {
     ILayout,
-    IShadowOptions,
     ISlide,
     ISlideLayout,
     ISlideObject,
     ISlideRel,
     ISlideRelChart,
-    ISlideRelMedia,
-    ITableCell,
-    ITableCellOpts,
-    IObjectOptions,
-    IText,
-    ITextOpts
+    ISlideRelMedia
 } from './core-interfaces'
-import {
-    encodeXmlEntities,
-    inch2Emu,
-    genXmlColorSelection,
-    getSmartParseNumber,
-    convertRotationDegrees
-} from './gen-utils'
+import { encodeXmlEntities, genXmlColorSelection } from './gen-utils'
+
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import PlaceholderTextElement from './elements/placeholder-text'
@@ -46,6 +25,7 @@ import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
 import SlideNumberElement from './elements/slide-number'
 import TableElement from './elements/table'
+import MediaElement from './elements/media'
 
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
@@ -65,7 +45,8 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
         slide.name &&
         slide.name === DEF_PRES_LAYOUT_NAME
     ) {
-        // NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
+        // NOTE: Default [white] background is needed on slideMaster1.xml
+        // to avoid gray background in Keynote (and Finder previews)
         strSlideXml +=
             '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
     }
@@ -94,169 +75,27 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
         '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
     // STEP 4: Loop over all Slide.data objects and add them to this slide
-    slide.data.forEach(
-        (slideItemObj: ISlideObject | TextElement, idx: number) => {
-            let x = 0,
-                y = 0,
-                cx = getSmartParseNumber('75%', 'X', slide.presLayout),
-                cy = 0
-            let placeholderObj: ISlideObject
-            let locationAttr = ''
-
-            if (
-                slideItemObj instanceof TextElement ||
-                slideItemObj instanceof ImageElement
-            ) {
-                const placeholder =
-                    slide['slideLayout'] &&
-                    slide['slideLayout'].getPlaceholder(
-                        slideItemObj.placeholder
-                    )
-                strSlideXml += slideItemObj.render(
-                    idx,
-                    slide.presLayout,
-                    placeholder
-                )
-                return
-            }
-            if (
-                slideItemObj instanceof ShapeElement ||
-                slideItemObj instanceof PlaceholderTextElement ||
-                slideItemObj instanceof PlaceholderImageElement ||
-                slideItemObj instanceof ChartElement ||
-                slideItemObj instanceof TableElement ||
-                slideItemObj instanceof SlideNumberElement
-            ) {
-                strSlideXml += slideItemObj.render(idx, slide.presLayout)
-                return
-            }
-
-            // A: Set option vars
-            slideItemObj.options = slideItemObj.options || {}
-
-            if (typeof slideItemObj.options.x !== 'undefined')
-                x = getSmartParseNumber(
-                    slideItemObj.options.x,
-                    'X',
-                    slide.presLayout
-                )
-            if (typeof slideItemObj.options.y !== 'undefined')
-                y = getSmartParseNumber(
-                    slideItemObj.options.y,
-                    'Y',
-                    slide.presLayout
-                )
-            if (typeof slideItemObj.options.w !== 'undefined')
-                cx = getSmartParseNumber(
-                    slideItemObj.options.w,
-                    'X',
-                    slide.presLayout
-                )
-            if (typeof slideItemObj.options.h !== 'undefined')
-                cy = getSmartParseNumber(
-                    slideItemObj.options.h,
-                    'Y',
-                    slide.presLayout
-                )
-
-            if (slideItemObj.options.flipH) locationAttr += ' flipH="1"'
-            if (slideItemObj.options.flipV) locationAttr += ' flipV="1"'
-            if (slideItemObj.options.rotate)
-                locationAttr +=
-                    ' rot="' +
-                    convertRotationDegrees(slideItemObj.options.rotate) +
-                    '"'
-
-            // B: Add OBJECT to the current Slide
-            switch (slideItemObj.type) {
-                case SLIDE_OBJECT_TYPES.media:
-                    if (slideItemObj.mtype === 'online') {
-                        strSlideXml += '<p:pic>'
-                        strSlideXml += ' <p:nvPicPr>'
-                        // IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preview image rId, PowerPoint throws error!
-                        strSlideXml +=
-                            ' <p:cNvPr id="' +
-                            (slideItemObj.mediaRid + 2) +
-                            '" name="Picture' +
-                            (idx + 1) +
-                            '"/>'
-                        strSlideXml += ' <p:cNvPicPr/>'
-                        strSlideXml += ' <p:nvPr>'
-                        strSlideXml +=
-                            '  <a:videoFile r:link="rId' +
-                            slideItemObj.mediaRid +
-                            '"/>'
-                        strSlideXml += ' </p:nvPr>'
-                        strSlideXml += ' </p:nvPicPr>'
-                        // NOTE: `blip` is diferent than videos; also there's no preview "p:extLst" above but exists in videos
-                        strSlideXml +=
-                            ' <p:blipFill><a:blip r:embed="rId' +
-                            (slideItemObj.mediaRid + 1) +
-                            '"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>' // NOTE: Preview image is required!
-                        strSlideXml += ' <p:spPr>'
-                        strSlideXml += '  <a:xfrm' + locationAttr + '>'
-                        strSlideXml += '   <a:off x="' + x + '" y="' + y + '"/>'
-                        strSlideXml +=
-                            '   <a:ext cx="' + cx + '" cy="' + cy + '"/>'
-                        strSlideXml += '  </a:xfrm>'
-                        strSlideXml +=
-                            '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
-                        strSlideXml += ' </p:spPr>'
-                        strSlideXml += '</p:pic>'
-                    } else {
-                        strSlideXml += '<p:pic>'
-                        strSlideXml += ' <p:nvPicPr>'
-                        // IMPORTANT: <p:cNvPr id="" value is critical - if not the same number as preiew image rId, PowerPoint throws error!
-                        strSlideXml +=
-                            ' <p:cNvPr id="' +
-                            (slideItemObj.mediaRid + 2) +
-                            '" name="' +
-                            slideItemObj.media
-                                .split('/')
-                                .pop()
-                                .split('.')
-                                .shift() +
-                            '"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>'
-                        strSlideXml +=
-                            ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
-                        strSlideXml += ' <p:nvPr>'
-                        strSlideXml +=
-                            '  <a:videoFile r:link="rId' +
-                            slideItemObj.mediaRid +
-                            '"/>'
-                        strSlideXml += '  <p:extLst>'
-                        strSlideXml +=
-                            '   <p:ext uri="{DAA4B4D4-6D71-4841-9C94-3DE7FCFB9230}">'
-                        strSlideXml +=
-                            '    <p14:media xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" r:embed="rId' +
-                            (slideItemObj.mediaRid + 1) +
-                            '"/>'
-                        strSlideXml += '   </p:ext>'
-                        strSlideXml += '  </p:extLst>'
-                        strSlideXml += ' </p:nvPr>'
-                        strSlideXml += ' </p:nvPicPr>'
-                        strSlideXml +=
-                            ' <p:blipFill><a:blip r:embed="rId' +
-                            (slideItemObj.mediaRid + 2) +
-                            '"/><a:stretch><a:fillRect/></a:stretch></p:blipFill>' // NOTE: Preview image is required!
-                        strSlideXml += ' <p:spPr>'
-                        strSlideXml += '  <a:xfrm' + locationAttr + '>'
-                        strSlideXml += '   <a:off x="' + x + '" y="' + y + '"/>'
-                        strSlideXml +=
-                            '   <a:ext cx="' + cx + '" cy="' + cy + '"/>'
-                        strSlideXml += '  </a:xfrm>'
-                        strSlideXml +=
-                            '  <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>'
-                        strSlideXml += ' </p:spPr>'
-                        strSlideXml += '</p:pic>'
-                    }
-                    break
-
-                default:
-                    break
-            }
+    slide.data.forEach((element: ISlideObject | TextElement, idx: number) => {
+        if (element instanceof TextElement || element instanceof ImageElement) {
+            const placeholder =
+                slide['slideLayout'] &&
+                slide['slideLayout'].getPlaceholder(element.placeholder)
+            strSlideXml += element.render(idx, slide.presLayout, placeholder)
+            return
         }
-    )
+        if (
+            element instanceof ShapeElement ||
+            element instanceof PlaceholderTextElement ||
+            element instanceof PlaceholderImageElement ||
+            element instanceof ChartElement ||
+            element instanceof TableElement ||
+            element instanceof MediaElement ||
+            element instanceof SlideNumberElement
+        ) {
+            strSlideXml += element.render(idx, slide.presLayout)
+            return
+        }
+    })
 
     // STEP 6: Close spTree and finalize slide XML
     strSlideXml += '</p:spTree>'
