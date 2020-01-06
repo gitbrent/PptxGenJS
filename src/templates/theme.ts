@@ -49,20 +49,20 @@ const scriptFonts = `
 `
 
 export const colorSchemeXML = ({
-	dark1 = '000000',
-	dark2 = '44546A',
-	light1 = 'FFFFFF',
-	light2 = 'E7E6E6',
-	accent1 = '4472C4',
-	accent2 = 'ED7D31',
-	accent3 = 'A5A5A5',
-	accent4 = 'FFC000',
-	accent5 = '5B9BD5',
-	accent6 = '70AD47',
-	hLink = '0563C1',
-	folHLink = '954F72',
+    dark1 = '000000',
+    dark2 = '44546A',
+    light1 = 'FFFFFF',
+    light2 = 'E7E6E6',
+    accent1 = '4472C4',
+    accent2 = 'ED7D31',
+    accent3 = 'A5A5A5',
+    accent4 = 'FFC000',
+    accent5 = '5B9BD5',
+    accent6 = '70AD47',
+    hLink = '0563C1',
+    folHLink = '954F72'
 } = {}) => {
-	return `<a:clrScheme name="Sublime">
+    return `<a:clrScheme name="Sublime">
       <a:dk1>
         <a:sysClr val="windowText" lastClr="${dark1}"/>
       </a:dk1>
@@ -104,20 +104,25 @@ export const colorSchemeXML = ({
 
 const DEFAULT_SCHEME = colorSchemeXML({})
 
-export default function makeXmlTheme(fontFamily, colorScheme = DEFAULT_SCHEME): string {
-	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+export default function makeXmlTheme(
+    fontFamily,
+    colorScheme = DEFAULT_SCHEME
+): string {
+    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Sublime Theme">
   <a:themeElements>
     ${colorScheme}
     <a:fontScheme name="Sublime">
       <a:majorFont>
-        <a:latin typeface="${fontFamily || 'Calibri Light'}" panose="020F0302020204030204"/>
+        <a:latin typeface="${fontFamily ||
+            'Calibri Light'}" panose="020F0302020204030204"/>
         <a:ea typeface=""/>
         <a:cs typeface=""/>
         ${scriptFonts}
       </a:majorFont>
       <a:minorFont>
-        <a:latin typeface="${fontFamily || 'Calibri'}" panose="020F0502020204030204"/>
+        <a:latin typeface="${fontFamily ||
+            'Calibri'}" panose="020F0502020204030204"/>
         <a:ea typeface=""/>
         <a:cs typeface=""/>
         ${scriptFonts}

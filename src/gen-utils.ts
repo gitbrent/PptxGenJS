@@ -2,28 +2,35 @@
  * PptxGenJS Utils
  */
 
-import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './core-enums'
+import {
+    EMU,
+    REGEX_HEX_COLOR,
+    SCHEME_COLOR_NAMES,
+    DEF_FONT_COLOR
+} from './core-enums'
 import { IChartOpts, ILayout, ShapeFill } from './core-interfaces'
 
 const CALC_EXPR = /^calc\((.+)\)$/
 const processCalcArray = (values, calc) => {
-	values.forEach((v, index) => {
-		if (v === '-') values[index + 1] = -values[index + 1]
-	})
-	values = values.filter(v => v !== '-' && v !== '+')
+    values.forEach((v, index) => {
+        if (v === '-') values[index + 1] = -values[index + 1]
+    })
+    values = values.filter(v => v !== '-' && v !== '+')
 
-	values.forEach((v, index) => {
-		if (v === '/') {
-			values[index + 1] = values[index - 1] / values[index + 1]
-			values[index - 1] = 0
-		}
-		if (v === '*') {
-			values[index + 1] = values[index - 1] * values[index + 1]
-			values[index - 1] = 0
-		}
-	})
-	const result = values.filter(v => v !== '*' && v !== '/').reduce((x, y) => x + y, 0)
-	return result
+    values.forEach((v, index) => {
+        if (v === '/') {
+            values[index + 1] = values[index - 1] / values[index + 1]
+            values[index - 1] = 0
+        }
+        if (v === '*') {
+            values[index + 1] = values[index - 1] * values[index + 1]
+            values[index - 1] = 0
+        }
+    })
+    const result = values
+        .filter(v => v !== '*' && v !== '/')
+        .reduce((x, y) => x + y, 0)
+    return result
 }
 
 /**
@@ -34,62 +41,70 @@ const processCalcArray = (values, calc) => {
  * @returns {number} calculated size
  *
  */
-export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ILayout): number {
-	// FIRST: Convert string numeric value if reqd
-	if (typeof size === 'string' && !isNaN(Number(size))) size = Number(size)
+export function getSmartParseNumber(
+    size: number | string,
+    xyDir: 'X' | 'Y',
+    layout: ILayout
+): number {
+    // FIRST: Convert string numeric value if reqd
+    if (typeof size === 'string' && !isNaN(Number(size))) size = Number(size)
 
-	// Number in inches
-	// Assume any number less than 100 is inches
-	if (typeof size === 'number' && size < 100) return inch2Emu(size)
+    // Number in inches
+    // Assume any number less than 100 is inches
+    if (typeof size === 'number' && size < 100) return inch2Emu(size)
 
-	// Number is already converted to something other than inches
-	// Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
-	if (typeof size === 'number' && size >= 100) return size
+    // Number is already converted to something other than inches
+    // Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
+    if (typeof size === 'number' && size >= 100) return size
 
-	if (typeof size === 'string' && CALC_EXPR.test(size)) {
-		const [, calc] = size.match(CALC_EXPR)
-		const values = calc
-			.replace('+', ' + ')
-			.replace('-', ' - ')
-			.replace('*', ' * ')
-			.replace('/', ' / ')
-			.split(/\s/)
-			.filter(v => v)
+    if (typeof size === 'string' && CALC_EXPR.test(size)) {
+        const [, calc] = size.match(CALC_EXPR)
+        const values = calc
+            .replace('+', ' + ')
+            .replace('-', ' - ')
+            .replace('*', ' * ')
+            .replace('/', ' / ')
+            .split(/\s/)
+            .filter(v => v)
 
-		const parsedValues = values.map(v => {
-			if (v === '+' || v === '-' || v === '/' || v === '*') return v
+        const parsedValues = values.map(v => {
+            if (v === '+' || v === '-' || v === '/' || v === '*') return v
 
-			const scalar = Number(v)
-			if (!Number.isNaN(scalar)) return scalar
-			return getSmartParseNumber(v, xyDir, layout)
-		})
-		return processCalcArray(parsedValues, calc)
-	}
+            const scalar = Number(v)
+            if (!Number.isNaN(scalar)) return scalar
+            return getSmartParseNumber(v, xyDir, layout)
+        })
+        return processCalcArray(parsedValues, calc)
+    }
 
-	// Percentage (ex: '50%')
-	if (typeof size === 'string' && size.indexOf('%') > -1) {
-		if (xyDir && xyDir === 'X') return Math.round((parseFloat(size) / 100) * layout.width)
-		if (xyDir && xyDir === 'Y') return Math.round((parseFloat(size) / 100) * layout.height)
+    // Percentage (ex: '50%')
+    if (typeof size === 'string' && size.indexOf('%') > -1) {
+        if (xyDir && xyDir === 'X')
+            return Math.round((parseFloat(size) / 100) * layout.width)
+        if (xyDir && xyDir === 'Y')
+            return Math.round((parseFloat(size) / 100) * layout.height)
 
-		// Default: Assume width (x/cx)
-		return Math.round((parseFloat(size) / 100) * layout.width)
-	}
+        // Default: Assume width (x/cx)
+        return Math.round((parseFloat(size) / 100) * layout.width)
+    }
 
-	if (typeof size === 'string' && size.indexOf('in') > -1) return inch2Emu(parseFloat(size))
-	if (typeof size === 'string' && size.indexOf('cm') > -1) return inch2Emu(parseFloat(size) / 2.54)
+    if (typeof size === 'string' && size.indexOf('in') > -1)
+        return inch2Emu(parseFloat(size))
+    if (typeof size === 'string' && size.indexOf('cm') > -1)
+        return inch2Emu(parseFloat(size) / 2.54)
 
-	// viewport height and width (by analogy to the css vh and vw
-	// units)
-	if (typeof size === 'string' && size.indexOf('vh') > -1) {
-		return Math.round((parseFloat(size) / 100) * layout.height)
-	}
-	if (typeof size === 'string' && size.indexOf('vw') > -1) {
-		return Math.round((parseFloat(size) / 100) * layout.width)
-	}
+    // viewport height and width (by analogy to the css vh and vw
+    // units)
+    if (typeof size === 'string' && size.indexOf('vh') > -1) {
+        return Math.round((parseFloat(size) / 100) * layout.height)
+    }
+    if (typeof size === 'string' && size.indexOf('vw') > -1) {
+        return Math.round((parseFloat(size) / 100) * layout.width)
+    }
 
-	// LAST: Default value
-	console.warn(`could not parse size ${size}, using default value 0 instead`)
-	return 0
+    // LAST: Default value
+    console.warn(`could not parse size ${size}, using default value 0 instead`)
+    return 0
 }
 
 /**
@@ -99,11 +114,11 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
  * @returns {string} UUID
  */
 export function getUuid(uuidFormat: string): string {
-	return uuidFormat.replace(/[xy]/g, function(c) {
-		let r = (Math.random() * 16) | 0,
-			v = c === 'x' ? r : (r & 0x3) | 0x8
-		return v.toString(16)
-	})
+    return uuidFormat.replace(/[xy]/g, function(c) {
+        let r = (Math.random() * 16) | 0,
+            v = c === 'x' ? r : (r & 0x3) | 0x8
+        return v.toString(16)
+    })
 }
 
 /**
@@ -111,15 +126,15 @@ export function getUuid(uuidFormat: string): string {
  * shallow mix, returns new object
  */
 export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
-	let objMix = {}
-	for (let i = 0; i <= arguments.length; i++) {
-		let oN = arguments[i]
-		if (oN)
-			Object.keys(oN).forEach(key => {
-				objMix[key] = oN[key]
-			})
-	}
-	return objMix
+    let objMix = {}
+    for (let i = 0; i <= arguments.length; i++) {
+        let oN = arguments[i]
+        if (oN)
+            Object.keys(oN).forEach(key => {
+                objMix[key] = oN[key]
+            })
+    }
+    return objMix
 }
 
 /**
@@ -128,15 +143,15 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
  * @returns {string} escaped XML
  */
 export function encodeXmlEntities(xml: string): string {
-	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
-	if (typeof xml === 'undefined' || xml == null) return ''
-	return xml
-		.toString()
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/\'/g, '&apos;')
+    // NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
+    if (typeof xml === 'undefined' || xml == null) return ''
+    return xml
+        .toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/\'/g, '&apos;')
 }
 
 /**
@@ -145,11 +160,11 @@ export function encodeXmlEntities(xml: string): string {
  * @returns {number} EMU value
  */
 export function inch2Emu(inches: number | string): number {
-	// FIRST: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
-	// Any value over 100 damn sure isnt inches, must be EMU already, so just return it
-	if (typeof inches === 'number' && inches > 100) return inches
-	if (typeof inches === 'string') inches = Number(inches.replace(/in*/gi, ''))
-	return Math.round(EMU * inches)
+    // FIRST: Provide Caller Safety: Numbers may get conv<->conv during flight, so be kind and do some simple checks to ensure inches were passed
+    // Any value over 100 damn sure isnt inches, must be EMU already, so just return it
+    if (typeof inches === 'number' && inches > 100) return inches
+    if (typeof inches === 'string') inches = Number(inches.replace(/in*/gi, ''))
+    return Math.round(EMU * inches)
 }
 
 /**
@@ -159,8 +174,8 @@ export function inch2Emu(inches: number | string): number {
  * @returns {number} rot - value
  */
 export function convertRotationDegrees(d: number): number {
-	d = d || 0
-	return (d > 360 ? d - 360 : d) * 60000
+    d = d || 0
+    return (d > 360 ? d - 360 : d) * 60000
 }
 
 /**
@@ -169,8 +184,8 @@ export function convertRotationDegrees(d: number): number {
  * @returns {string} hex string
  */
 export function componentToHex(c: number): string {
-	let hex = c.toString(16)
-	return hex.length === 1 ? '0' + hex : hex
+    let hex = c.toString(16)
+    return hex.length === 1 ? '0' + hex : hex
 }
 
 /**
@@ -181,12 +196,16 @@ export function componentToHex(c: number): string {
  * @returns {string} XML string
  */
 export function rgbToHex(r: number, g: number, b: number): string {
-	if (!Number.isInteger(r)) {
-		try {
-			console.warn('Integer expected!')
-		} catch (ex) {}
-	}
-	return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase()
+    if (!Number.isInteger(r)) {
+        try {
+            console.warn('Integer expected!')
+        } catch (ex) {}
+    }
+    return (
+        componentToHex(r) +
+        componentToHex(g) +
+        componentToHex(b)
+    ).toUpperCase()
 }
 
 /**
@@ -195,18 +214,40 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-export function createColorElement(colorStr: string, innerElements?: string): string {
-	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
+export function createColorElement(
+    colorStr: string,
+    innerElements?: string
+): string {
+    let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
 
-	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
-		console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values')
-		colorStr = DEF_FONT_COLOR
-	}
+    if (
+        !isHexaRgb &&
+        Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1
+    ) {
+        console.warn(
+            '"' +
+                colorStr +
+                '" is not a valid scheme color or hexa RGB! "' +
+                DEF_FONT_COLOR +
+                '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values'
+        )
+        colorStr = DEF_FONT_COLOR
+    }
 
-	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"'
+    let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
+    let colorAttr =
+        ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"'
 
-	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
+    return innerElements
+        ? '<a:' +
+              tagName +
+              colorAttr +
+              '>' +
+              innerElements +
+              '</a:' +
+              tagName +
+              '>'
+        : '<a:' + tagName + colorAttr + '/>'
 }
 
 /**
@@ -215,55 +256,72 @@ export function createColorElement(colorStr: string, innerElements?: string): st
  * @param {string} backColor - color string
  * @returns {string} XML string
  */
-export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): string {
-	let colorVal = ''
-	let fillType = 'solid'
-	let internalElements = ''
-	let outText = ''
+export function genXmlColorSelection(
+    shapeFill: ShapeFill,
+    backColor?: string
+): string {
+    let colorVal = ''
+    let fillType = 'solid'
+    let internalElements = ''
+    let outText = ''
 
-	if (backColor && typeof backColor === 'string') {
-		outText += `<p:bg><p:bgPr>${genXmlColorSelection(backColor.replace('#', ''))}<a:effectLst/></p:bgPr></p:bg>`
-	}
+    if (backColor && typeof backColor === 'string') {
+        outText += `<p:bg><p:bgPr>${genXmlColorSelection(
+            backColor.replace('#', '')
+        )}<a:effectLst/></p:bgPr></p:bg>`
+    }
 
-	if (shapeFill) {
-		if (typeof shapeFill === 'string') colorVal = shapeFill
-		else {
-			if (shapeFill.type) fillType = shapeFill.type
-			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += '<a:alpha val="' + (100 - shapeFill.alpha) + '000"/>'
-		}
+    if (shapeFill) {
+        if (typeof shapeFill === 'string') colorVal = shapeFill
+        else {
+            if (shapeFill.type) fillType = shapeFill.type
+            if (shapeFill.color) colorVal = shapeFill.color
+            if (shapeFill.alpha)
+                internalElements +=
+                    '<a:alpha val="' + (100 - shapeFill.alpha) + '000"/>'
+        }
 
-		switch (fillType) {
-			case 'solid':
-				outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>'
-				break
-			default:
-				break
-		}
-	}
+        switch (fillType) {
+            case 'solid':
+                outText +=
+                    '<a:solidFill>' +
+                    createColorElement(colorVal, internalElements) +
+                    '</a:solidFill>'
+                break
+            default:
+                break
+        }
+    }
 
-	return outText
+    return outText
 }
 
-export const createImageConfig = ({ relId, data = '', path = '', extension, Target, fromSvgSize }) => {
-	const mediaConfig = {
-		rId: relId,
-		type: `image/${extension === 'svg' ? 'svg+xml' : extension}`,
+export const createImageConfig = ({
+    relId,
+    data = '',
+    path = '',
+    extension,
+    Target,
+    fromSvgSize
+}) => {
+    const mediaConfig = {
+        rId: relId,
+        type: `image/${extension === 'svg' ? 'svg+xml' : extension}`,
 
-		path: path,
-		data: data,
+        path: path,
+        data: data,
 
-		extn: extension,
-		Target,
+        extn: extension,
+        Target,
 
-		isSvgPng: false,
-		svgSize: null,
-	}
+        isSvgPng: false,
+        svgSize: null
+    }
 
-	if (fromSvgSize) {
-		mediaConfig.isSvgPng = true
-		mediaConfig.svgSize = fromSvgSize
-	}
+    if (fromSvgSize) {
+        mediaConfig.isSvgPng = true
+        mediaConfig.svgSize = fromSvgSize
+    }
 
-	return mediaConfig
+    return mediaConfig
 }

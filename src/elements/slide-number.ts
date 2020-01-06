@@ -5,24 +5,24 @@ import Position from './position'
 import RunProperties from './run-properties'
 
 export default class SlideNumberElement {
-	type = SLIDE_OBJECT_TYPES.newtext
+    type = SLIDE_OBJECT_TYPES.newtext
 
-	position
-	runProperties
-	fieldId
+    position
+    runProperties
+    fieldId
 
-	constructor({ x, y, w, h, ...runOptions }) {
-		this.fieldId = getUuid('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
-		this.position = new Position({
-			x,
-			y,
-			w: w || 800000,
-			h: h || 300000,
-		})
-		this.runProperties = new RunProperties(runOptions)
-	}
-	render(idx, presLayout) {
-		return `
+    constructor({ x, y, w, h, ...runOptions }) {
+        this.fieldId = getUuid('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
+        this.position = new Position({
+            x,
+            y,
+            w: w || 800000,
+            h: h || 300000
+        })
+        this.runProperties = new RunProperties(runOptions)
+    }
+    render(idx, presLayout) {
+        return `
 		<p:sp>
 		    <p:nvSpPr>
 			    <p:cNvPr id="${idx + 1}" name="Slide Number Placeholder 24"/>
@@ -52,5 +52,5 @@ export default class SlideNumberElement {
                 </a:p>
             </p:txBody>
         </p:sp>`
-	}
+    }
 }

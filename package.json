@@ -8,8 +8,8 @@
   "description": "JavaScript PowerPoint Library",
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
   "license": "MIT",
-  "main": "dist/pptxgen.min.js",
-  "module": "dist/pptxgen.es.js",
+  "main": "src/bld/pptxgen.min.js",
+  "module": "src/bld/pptxgen.es.js",
   "files": [
     "dist"
   ],
