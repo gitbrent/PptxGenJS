@@ -31,6 +31,7 @@ import ShapeElement from './elements/simple-shape'
 import ImageElement from './elements/image'
 import ChartElement from './elements/chart'
 import SlideNumberElement from './elements/slide-number'
+import TableElement from './elements/table'
 
 export default class Slide {
     private _bkgd: string
@@ -199,14 +200,17 @@ export default class Slide {
      */
     addTable(arrTabRows: TableRow[], options?: ITableOptions): Slide {
         // FIXME: TODO-3: we pass `this` - we dont need to pass layouts - they can be read from this!
-        genObj.addTableDefinition(
-            this,
-            arrTabRows,
-            options,
-            this.slideLayout,
-            this.presLayout,
-            this.addSlide,
-            this.getSlide
+
+        this.data.push(
+            new TableElement(
+                this,
+                arrTabRows,
+                options,
+                this.slideLayout,
+                this.presLayout,
+                this.addSlide,
+                this.getSlide
+            )
         )
         return this
     }
