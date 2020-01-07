@@ -1,14 +1,15 @@
 {
   "name": "pptxgenjs",
-  "version": "3.0.0",
+  "version": "3.1.0-beta",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
   },
-  "description": "Create PowerPoint Presentations with JavaScript",
+  "description": "Create JavaScript PowerPoint Presentations",
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
   "license": "MIT",
-  "main": "dist/pptxgen.min.js",
+  "browser": "dist/pptxgen.min.js",
+  "main": "dist/pptxgen.cjs.js",
   "module": "dist/pptxgen.es.js",
   "files": [
     "dist"
@@ -59,7 +60,6 @@
     "javascript-generate-pptx",
     "javascript-powerpoint",
     "javascript-powerpoint-charts",
-    "javascript-powerpoint-online",
     "javascript-pptx",
     "js-create-powerpoint",
     "js-create-pptx",
