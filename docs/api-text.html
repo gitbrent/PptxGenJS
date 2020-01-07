@@ -1,0 +1,248 @@
+<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/><meta http-equiv="X-UA-Compatible" content="IE=edge"/><title>Adding Text · PptxGenJS</title><meta name="viewport" content="width=device-width"/><meta name="generator" content="Docusaurus"/><meta name="description" content="## Syntax"/><meta name="docsearch:language" content="en"/><meta property="og:title" content="Adding Text · PptxGenJS"/><meta property="og:type" content="website"/><meta property="og:url" content="https://gitbrent.github.io/PptxGenJS/index.html"/><meta property="og:description" content="## Syntax"/><meta name="twitter:card" content="summary"/><meta name="twitter:image" content="https://gitbrent.github.io/PptxGenJS/img/pptxgenjs.png"/><link rel="shortcut icon" href="/PptxGenJS/img/favicon.png"/><link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/hybrid.min.css"/><script>
+              (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+              (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+              })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+              ga('create', 'UA-75147115-1', 'auto');
+              ga('send', 'pageview');
+            </script><script type="text/javascript" src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.bundle.js"></script><script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script><script src="/PptxGenJS/js/scrollSpy.js"></script><link rel="stylesheet" href="/PptxGenJS/css/main.css"/><script src="/PptxGenJS/js/codetabs.js"></script></head><body class="sideNavVisible separateOnPageNav"><div class="fixedHeaderContainer"><div class="headerWrapper wrapper"><header><a href="/PptxGenJS/"><img class="logo" src="/PptxGenJS/img/pptxgenjs.svg" alt="PptxGenJS"/><h2 class="headerTitleWithLogo">PptxGenJS</h2></a><div class="navigationWrapper navigationSlider"><nav class="slidingNav"><ul class="nav-site nav-site-internal"><li class=""><a href="https://github.com/gitbrent/PptxGenJS/releases" target="_self">Download</a></li><li class="siteNavGroupActive"><a href="/PptxGenJS/docs/quick-start.html" target="_self">Get Started</a></li><li class="siteNavGroupActive"><a href="/PptxGenJS/docs/installation.html" target="_self">API Documentation</a></li><li class=""><a href="https://github.com/gitbrent/PptxGenJS/" target="_self">GitHub</a></li></ul></nav></div></header></div></div><div class="navPusher"><div class="docMainWrapper wrapper"><div class="docsNavContainer" id="docsNav"><nav class="toc"><div class="toggleNav"><section class="navWrapper wrapper"><div class="navBreadcrumb wrapper"><div class="navToggle" id="navToggler"><div class="hamburger-menu"><div class="line1"></div><div class="line2"></div><div class="line3"></div></div></div><h2><i>›</i><span>API Reference</span></h2><div class="tocToggler" id="tocToggler"><i class="icon-toc"></i></div></div><div class="navGroups"><div class="navGroup"><h3 class="navGroupCategoryTitle">Get Started</h3><ul class=""><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/installation.html">Installation</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/quick-start.html">Quick Start Guide</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Usage</h3><ul class=""><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-pres-create.html">Creating a Presentation</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-pres-options.html">Presentation Options</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-add-slide.html">Adding a Slide</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-slide-options.html">Slide Methods</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/usage-saving.html">Saving Presentations</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Features</h3><ul class=""><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/html-to-powerpoint.html">HTML-to-PowerPoint</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/integration.html">Library Integration</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/masters.html">Masters and Placeholders</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/shapes-and-schemes.html">Shapes and Schemes</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">API Reference</h3><ul class=""><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-charts.html">Adding Charts</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-images.html">Adding Images</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-media.html">Adding Media</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-shapes.html">Adding Shapes</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/api-tables.html">Adding Tables</a></li><li class="navListItem navListItemActive"><a class="navItem" href="/PptxGenJS/docs/api-text.html">Adding Text</a></li><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/speaker-notes.html">Speaker Notes</a></li></ul></div><div class="navGroup"><h3 class="navGroupCategoryTitle">Misc</h3><ul class=""><li class="navListItem"><a class="navItem" href="/PptxGenJS/docs/deprecated.html">Deprecated</a></li></ul></div></div></section></div><script>
+            var coll = document.getElementsByClassName('collapsible');
+            var checkActiveCategory = true;
+            for (var i = 0; i < coll.length; i++) {
+              var links = coll[i].nextElementSibling.getElementsByTagName('*');
+              if (checkActiveCategory){
+                for (var j = 0; j < links.length; j++) {
+                  if (links[j].classList.contains('navListItemActive')){
+                    coll[i].nextElementSibling.classList.toggle('hide');
+                    coll[i].childNodes[1].classList.toggle('rotate');
+                    checkActiveCategory = false;
+                    break;
+                  }
+                }
+              }
+
+              coll[i].addEventListener('click', function() {
+                var arrow = this.childNodes[1];
+                arrow.classList.toggle('rotate');
+                var content = this.nextElementSibling;
+                content.classList.toggle('hide');
+              });
+            }
+
+            document.addEventListener('DOMContentLoaded', function() {
+              createToggler('#navToggler', '#docsNav', 'docsSliderActive');
+              createToggler('#tocToggler', 'body', 'tocActive');
+
+              var headings = document.querySelector('.toc-headings');
+              headings && headings.addEventListener('click', function(event) {
+                var el = event.target;
+                while(el !== headings){
+                  if (el.tagName === 'A') {
+                    document.body.classList.remove('tocActive');
+                    break;
+                  } else{
+                    el = el.parentNode;
+                  }
+                }
+              }, false);
+
+              function createToggler(togglerSelector, targetSelector, className) {
+                var toggler = document.querySelector(togglerSelector);
+                var target = document.querySelector(targetSelector);
+
+                if (!toggler) {
+                  return;
+                }
+
+                toggler.onclick = function(event) {
+                  event.preventDefault();
+
+                  target.classList.toggle(className);
+                };
+              }
+            });
+        </script></nav></div><div class="container mainContainer docsContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 id="__docusaurus" class="postHeaderTitle">Adding Text</h1></header><article><div><span><h2><a class="anchor" aria-hidden="true" id="syntax"></a><a href="#syntax" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Syntax</h2>
+<pre><code class="hljs css language-javascript">slide.addText(<span class="hljs-string">'TEXT'</span>, {OPTIONS});
+slide.addText(<span class="hljs-string">'Line 1\nLine 2'</span>, {OPTIONS});
+slide.addText([ {<span class="hljs-attr">text</span>:<span class="hljs-string">'TEXT'</span>, <span class="hljs-attr">options</span>:{OPTIONS}} ]);
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="text-options"></a><a href="#text-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Text Options</h2>
+<table>
+<thead>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Unit</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>x</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"><code>1.0</code></td><td style="text-align:left">horizontal location</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{x:'50%'}</code> will place object in the middle of the Slide)</td></tr>
+<tr><td style="text-align:left"><code>y</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"><code>1.0</code></td><td style="text-align:left">vertical location</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
+<tr><td style="text-align:left"><code>w</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">width</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{w:'50%'}</code> will make object 50% width of the Slide)</td></tr>
+<tr><td style="text-align:left"><code>h</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">height</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
+<tr><td style="text-align:left"><code>align</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>left</code></td><td style="text-align:left">alignment</td><td style="text-align:left"><code>left</code> or <code>center</code> or <code>right</code></td></tr>
+<tr><td style="text-align:left"><code>autoFit</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">&quot;Fit to Shape&quot;</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>bold</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">bold text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>breakLine</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">appends a line break</td><td style="text-align:left"><code>true</code> or <code>false</code> (only applies when used in text options) Ex: <code>{text:'hi', options:{breakLine:true}}</code></td></tr>
+<tr><td style="text-align:left"><code>bullet</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">bulleted text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>bullet</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">bullet options (number type or choose any unicode char)</td><td style="text-align:left">object with <code>type</code> or <code>code</code>. Ex: <code>bullet:{type:'number'}</code>. Ex: <code>bullet:{code:'2605'}</code></td></tr>
+<tr><td style="text-align:left"><code>charSpacing</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">character spacing</td><td style="text-align:left">1-256. Ex: <code>{ charSpacing:12 }</code></td></tr>
+<tr><td style="text-align:left"><code>color</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">text color</td><td style="text-align:left">hex color code or <a href="#scheme-colors">scheme color constant</a>. Ex: <code>{ color:'0088CC' }</code></td></tr>
+<tr><td style="text-align:left"><code>fill</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">fill/bkgd color</td><td style="text-align:left">hex color code or <a href="#scheme-colors">scheme color constant</a>. Ex: <code>{ color:'0088CC' }</code></td></tr>
+<tr><td style="text-align:left"><code>fontFace</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">font face</td><td style="text-align:left">Ex: <code>{ fontFace:'Arial'}</code></td></tr>
+<tr><td style="text-align:left"><code>fontSize</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">font size</td><td style="text-align:left">1-256. Ex: <code>{ fontSize:12 }</code></td></tr>
+<tr><td style="text-align:left"><code>hyperlink</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">add hyperlink</td><td style="text-align:left">object with <code>url</code> or <code>slide</code> (<code>tooltip</code> optional). Ex: <code>{ hyperlink:{url:'https://github.com'} }</code></td></tr>
+<tr><td style="text-align:left"><code>indentLevel</code></td><td style="text-align:left">number</td><td style="text-align:left">level</td><td style="text-align:left"><code>0</code></td><td style="text-align:left">bullet indent level</td><td style="text-align:left">1-32. Ex: <code>{ indentLevel:1 }</code></td></tr>
+<tr><td style="text-align:left"><code>inset</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">inset/padding</td><td style="text-align:left">1-256. Ex: <code>{ inset:1.25 }</code></td></tr>
+<tr><td style="text-align:left"><code>isTextBox</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">PPT &quot;Textbox&quot;</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>italic</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">italic text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>lang</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>en-US</code></td><td style="text-align:left">language setting</td><td style="text-align:left">Ex: <code>{ lang:'zh-TW' }</code> (Set this when using non-English fonts like Chinese)</td></tr>
+<tr><td style="text-align:left"><code>line</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">line/border</td><td style="text-align:left">adds a border. Ex: <code>line:{ pt:'2', color:'A9A9A9' }</code></td></tr>
+<tr><td style="text-align:left"><code>lineSpacing</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">line spacing points</td><td style="text-align:left">1-256. Ex: <code>{ lineSpacing:28 }</code></td></tr>
+<tr><td style="text-align:left"><code>margin</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">margin</td><td style="text-align:left">0-99 (ProTip: use the same value from CSS <code>padding</code>)</td></tr>
+<tr><td style="text-align:left"><code>outline</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">text outline options</td><td style="text-align:left">Options: <code>color</code> &amp; <code>size</code>. Ex: <code>outline:{ size:1.5, color:'FF0000' }</code></td></tr>
+<tr><td style="text-align:left"><code>paraSpaceAfter</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">paragraph spacing</td><td style="text-align:left">Paragraph Spacing: After.  Ex: <code>{ paraSpaceAfter:12 }</code></td></tr>
+<tr><td style="text-align:left"><code>paraSpaceBefore</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">paragraph spacing</td><td style="text-align:left">Paragraph Spacing: Before. Ex: <code>{ paraSpaceBefore:12 }</code></td></tr>
+<tr><td style="text-align:left"><code>rectRadius</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"></td><td style="text-align:left">rounding radius</td><td style="text-align:left">rounding radius for <code>ROUNDED_RECTANGLE</code> text shapes</td></tr>
+<tr><td style="text-align:left"><code>rotate</code></td><td style="text-align:left">integer</td><td style="text-align:left">degrees</td><td style="text-align:left"><code>0</code></td><td style="text-align:left">text rotation degrees</td><td style="text-align:left">0-360. Ex: <code>{rotate:180}</code></td></tr>
+<tr><td style="text-align:left"><code>rtlMode</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">enable Right-to-Left mode</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>shadow</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">text shadow options</td><td style="text-align:left">see options below. Ex: <code>shadow:{ type:'outer' }</code></td></tr>
+<tr><td style="text-align:left"><code>shrinkText</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">shrink text option</td><td style="text-align:left">whether to shrink text to fit textbox. Ex: <code>{ shrinkText:true }</code></td></tr>
+<tr><td style="text-align:left"><code>strike</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">text strikethrough</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>subscript</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">subscript text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>superscript</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">superscript text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>underline</code></td><td style="text-align:left">boolean</td><td style="text-align:left"></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">underline text</td><td style="text-align:left"><code>true</code> or <code>false</code></td></tr>
+<tr><td style="text-align:left"><code>valign</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">vertical alignment</td><td style="text-align:left"><code>top</code> or <code>middle</code> or <code>bottom</code></td></tr>
+<tr><td style="text-align:left"><code>vert</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>horz</code></td><td style="text-align:left">text direction</td><td style="text-align:left"><code>eaVert</code> or <code>horz</code> or <code>mongolianVert</code> or <code>vert</code> or <code>vert270</code> or <code>wordArtVert</code> or <code>wordArtVertRtl</code></td></tr>
+</tbody>
+</table>
+<h2><a class="anchor" aria-hidden="true" id="text-shadow-options"></a><a href="#text-shadow-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Text Shadow Options</h2>
+<table>
+<thead>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Unit</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+</thead>
+<tbody>
+<tr><td style="text-align:left"><code>type</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left">outer</td><td style="text-align:left">shadow type</td><td style="text-align:left"><code>outer</code> or <code>inner</code></td></tr>
+<tr><td style="text-align:left"><code>angle</code></td><td style="text-align:left">number</td><td style="text-align:left">degrees</td><td style="text-align:left"></td><td style="text-align:left">shadow angle</td><td style="text-align:left">0-359. Ex: <code>{ angle:180 }</code></td></tr>
+<tr><td style="text-align:left"><code>blur</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">blur size</td><td style="text-align:left">1-256. Ex: <code>{ blur:3 }</code></td></tr>
+<tr><td style="text-align:left"><code>color</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">text color</td><td style="text-align:left">hex color code or <a href="#scheme-colors">scheme color constant</a>. Ex: <code>{ color:'0088CC' }</code></td></tr>
+<tr><td style="text-align:left"><code>offset</code></td><td style="text-align:left">number</td><td style="text-align:left">points</td><td style="text-align:left"></td><td style="text-align:left">offset size</td><td style="text-align:left">1-256. Ex: <code>{ offset:8 }</code></td></tr>
+<tr><td style="text-align:left"><code>opacity</code></td><td style="text-align:left">number</td><td style="text-align:left">percent</td><td style="text-align:left"></td><td style="text-align:left">opacity</td><td style="text-align:left">0-1. Ex: <code>opacity:0.75</code></td></tr>
+</tbody>
+</table>
+<h2><a class="anchor" aria-hidden="true" id="text-examples"></a><a href="#text-examples" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Text Examples</h2>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">var</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
+<span class="hljs-keyword">var</span> slide = pptx.addSlide();
+
+<span class="hljs-comment">// EX: Dynamic location using percentages</span>
+slide.addText(<span class="hljs-string">'^ (50%/50%)'</span>, {<span class="hljs-attr">x</span>:<span class="hljs-string">'50%'</span>, <span class="hljs-attr">y</span>:<span class="hljs-string">'50%'</span>});
+
+<span class="hljs-comment">// EX: Basic formatting</span>
+slide.addText(<span class="hljs-string">'Hello'</span>,  { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">0.7</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">3</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'0000FF'</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">64</span> });
+slide.addText(<span class="hljs-string">'World!'</span>, { <span class="hljs-attr">x</span>:<span class="hljs-number">2.7</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">5</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'DDDD00'</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">90</span> });
+
+<span class="hljs-comment">// EX: More formatting options</span>
+slide.addText(
+    <span class="hljs-string">'Arial, 32pt, green, bold, underline, 0 inset'</span>,
+    { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">5.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-string">'90%'</span>, <span class="hljs-attr">margin</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Arial'</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">32</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'00CC00'</span>, <span class="hljs-attr">bold</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">underline</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">isTextBox</span>:<span class="hljs-literal">true</span> }
+);
+
+<span class="hljs-comment">// EX: Format some text</span>
+slide.addText(<span class="hljs-string">'Hello World!'</span>, { <span class="hljs-attr">x</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">4</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Arial'</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">42</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'00CC00'</span>, <span class="hljs-attr">bold</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">italic</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">underline</span>:<span class="hljs-literal">true</span> } );
+
+<span class="hljs-comment">// EX: Multiline Text / Line Breaks - use "\n" to create line breaks inside text strings</span>
+slide.addText(<span class="hljs-string">'Line 1\nLine 2\nLine 3'</span>, { <span class="hljs-attr">x</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">3</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'DDDD00'</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">90</span> });
+
+<span class="hljs-comment">// EX: Format individual words or lines by passing an array of text objects with `text` and `options`</span>
+slide.addText(
+    [
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'word-level'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">36</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'99ABCC'</span>, <span class="hljs-attr">align</span>:<span class="hljs-string">'right'</span>, <span class="hljs-attr">breakLine</span>:<span class="hljs-literal">true</span> } },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'formatting'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">48</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'FFFF00'</span>, <span class="hljs-attr">align</span>:<span class="hljs-string">'center'</span> } }
+    ],
+    { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">4.1</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">8.5</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">2.0</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F1F1F1'</span> }
+);
+
+<span class="hljs-comment">// EX: Bullets</span>
+slide.addText(<span class="hljs-string">'Regular, black circle bullet'</span>, { <span class="hljs-attr">x</span>:<span class="hljs-number">8.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.4</span>, <span class="hljs-attr">w</span>:<span class="hljs-string">'30%'</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">bullet</span>:<span class="hljs-literal">true</span> });
+<span class="hljs-comment">// Use line-break character to bullet multiple lines</span>
+slide.addText(<span class="hljs-string">'Line 1\nLine 2\nLine 3'</span>, { <span class="hljs-attr">x</span>:<span class="hljs-number">8.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">2.4</span>, <span class="hljs-attr">w</span>:<span class="hljs-string">'30%'</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F2F2F2'</span>, <span class="hljs-attr">bullet</span>:{<span class="hljs-attr">type</span>:<span class="hljs-string">'number'</span>} });
+<span class="hljs-comment">// Bullets can also be applied on a per-line level</span>
+slide.addText(
+    [
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'I have a star bullet'</span>    , <span class="hljs-attr">options</span>:{<span class="hljs-attr">bullet</span>:{<span class="hljs-attr">code</span>:<span class="hljs-string">'2605'</span>}, <span class="hljs-attr">color</span>:<span class="hljs-string">'CC0000'</span>} },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'I have a triangle bullet'</span>, <span class="hljs-attr">options</span>:{<span class="hljs-attr">bullet</span>:{<span class="hljs-attr">code</span>:<span class="hljs-string">'25BA'</span>}, <span class="hljs-attr">color</span>:<span class="hljs-string">'00CD00'</span>} },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'no bullets on this line'</span> , <span class="hljs-attr">options</span>:{<span class="hljs-attr">fontSize</span>:<span class="hljs-number">12</span>} },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'I have a normal bullet'</span>  , <span class="hljs-attr">options</span>:{<span class="hljs-attr">bullet</span>:<span class="hljs-literal">true</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'0000AB'</span>} }
+    ],
+    { <span class="hljs-attr">x</span>:<span class="hljs-number">8.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">5.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-string">'30%'</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">1.4</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'ABABAB'</span>, <span class="hljs-attr">margin</span>:<span class="hljs-number">1</span> }
+);
+
+<span class="hljs-comment">// EX: Paragraph Spacing</span>
+slide.addText(
+    <span class="hljs-string">'Paragraph spacing - before:12pt / after:24pt'</span>,
+    { <span class="hljs-attr">x</span>:<span class="hljs-number">1.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.5</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F1F1F1'</span>, <span class="hljs-attr">paraSpaceBefore</span>:<span class="hljs-number">12</span>, <span class="hljs-attr">paraSpaceAfter</span>:<span class="hljs-number">24</span> }
+);
+
+<span class="hljs-comment">// EX: Hyperlink: Web</span>
+slide.addText(
+    [{
+        <span class="hljs-attr">text</span>: <span class="hljs-string">'PptxGenJS Project'</span>,
+        <span class="hljs-attr">options</span>: { <span class="hljs-attr">hyperlink</span>:{ <span class="hljs-attr">url</span>:<span class="hljs-string">'https://github.com/gitbrent/pptxgenjs'</span>, <span class="hljs-attr">tooltip</span>:<span class="hljs-string">'Visit Homepage'</span> } }
+    }],
+    { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">5</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">1</span> }
+);
+<span class="hljs-comment">// EX: Hyperlink: Slide in Presentation</span>
+slide.addText(
+    [{
+        <span class="hljs-attr">text</span>: <span class="hljs-string">'Slide #2'</span>,
+        <span class="hljs-attr">options</span>: { <span class="hljs-attr">hyperlink</span>:{ <span class="hljs-attr">slide</span>:<span class="hljs-string">'2'</span>, <span class="hljs-attr">tooltip</span>:<span class="hljs-string">'Go to Summary Slide'</span> } }
+    }],
+    { <span class="hljs-attr">x</span>:<span class="hljs-number">1.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">2.5</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">5</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">1</span> }
+);
+
+<span class="hljs-comment">// EX: Drop/Outer Shadow</span>
+slide.addText(
+    <span class="hljs-string">'Outer Shadow'</span>,
+    {
+        <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">6.0</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">36</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'0088CC'</span>,
+        <span class="hljs-attr">shadow</span>: {<span class="hljs-attr">type</span>:<span class="hljs-string">'outer'</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'696969'</span>, <span class="hljs-attr">blur</span>:<span class="hljs-number">3</span>, <span class="hljs-attr">offset</span>:<span class="hljs-number">10</span>, <span class="hljs-attr">angle</span>:<span class="hljs-number">45</span>}
+    }
+);
+
+<span class="hljs-comment">// EX: Text Outline</span>
+slide.addText(
+    <span class="hljs-string">'Text Outline'</span>,
+    {
+        <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">6.0</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">36</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'0088CC'</span>,
+        <span class="hljs-attr">outline</span>: {<span class="hljs-attr">size</span>:<span class="hljs-number">1.5</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'696969'</span>}
+    }
+);
+
+<span class="hljs-comment">// EX: Formatting can be applied at the word/line level</span>
+<span class="hljs-comment">// Provide an array of text objects with the formatting options for that `text` string value</span>
+<span class="hljs-comment">// Line-breaks work as well</span>
+slide.addText(
+    [
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'word-level\nformatting'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">36</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Courier New'</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'99ABCC'</span>, <span class="hljs-attr">align</span>:<span class="hljs-string">'right'</span>, <span class="hljs-attr">breakLine</span>:<span class="hljs-literal">true</span> } },
+        { <span class="hljs-attr">text</span>:<span class="hljs-string">'...in the same textbox'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">48</span>, <span class="hljs-attr">fontFace</span>:<span class="hljs-string">'Arial'</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'FFFF00'</span>, <span class="hljs-attr">align</span>:<span class="hljs-string">'center'</span> } }
+    ],
+    { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">4.1</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">8.5</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">2.0</span>, <span class="hljs-attr">margin</span>:<span class="hljs-number">0.1</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'232323'</span> }
+);
+
+pptx.writeFile(<span class="hljs-string">'Demo-Text'</span>);
+</code></pre>
+<h2><a class="anchor" aria-hidden="true" id="break-line-option"></a><a href="#break-line-option" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Break Line Option</h2>
+<p>Use the <code>breakLine</code> option to force line breaks when composing text objects using complex objects.</p>
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">let</span> arrTextObjs1 = [
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'1st line'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">24</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'99ABCC'</span>, <span class="hljs-attr">breakLine</span>:<span class="hljs-literal">true</span> } },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'2nd line'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">36</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'FFFF00'</span>, <span class="hljs-attr">breakLine</span>:<span class="hljs-literal">true</span> } },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'3rd line'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">48</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'0088CC'</span> } }
+];
+slide.addText( arrTextObjs1, { <span class="hljs-attr">x</span>:<span class="hljs-number">.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">8</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'232323'</span> } );
+
+<span class="hljs-keyword">let</span> arrTextObjs2 = [
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'1st line'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">24</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'99ABCC'</span>, <span class="hljs-attr">breakLine</span>:<span class="hljs-literal">false</span> } },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'2nd line'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">36</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'FFFF00'</span>, <span class="hljs-attr">breakLine</span>:<span class="hljs-literal">false</span> } },
+    { <span class="hljs-attr">text</span>:<span class="hljs-string">'3rd line'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">fontSize</span>:<span class="hljs-number">48</span>, <span class="hljs-attr">color</span>:<span class="hljs-string">'0088CC'</span> } }
+];
+slide.addText( arrTextObjs2, { <span class="hljs-attr">x</span>:<span class="hljs-number">.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">4</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">8</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">2</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'232323'</span> } );
+</code></pre>
+<p><img src="/PptxGenJS/docs/assets/ex-text-breakLine.png" alt="breakLine option"></p>
+</span></div></article></div><div class="docs-prevnext"><a class="docs-prev button" href="/PptxGenJS/docs/api-tables.html"><span class="arrow-prev">← </span><span>Adding Tables</span></a><a class="docs-next button" href="/PptxGenJS/docs/speaker-notes.html"><span>Speaker Notes</span><span class="arrow-next"> →</span></a></div></div></div><nav class="onPageNav"><ul class="toc-headings"><li><a href="#syntax">Syntax</a></li><li><a href="#text-options">Text Options</a></li><li><a href="#text-shadow-options">Text Shadow Options</a></li><li><a href="#text-examples">Text Examples</a></li><li><a href="#break-line-option">Break Line Option</a></li></ul></nav></div><footer class="nav-footer" id="footer"><section class="sitemap"><a href="/PptxGenJS/" class="nav-home"><img src="/PptxGenJS/img/pptxgenjs.svg" alt="PptxGenJS" width="66" height="58"/></a><div><h5>Documentation</h5><a href="/PptxGenJS/docs/quick-start.html">Getting Started With PptxGenJS</a><a href="/PptxGenJS/docs/installation.html">PowerPoint Library API Reference</a><a href="/PptxGenJS/docs/usage-pres-create.html">PowerPoint JavaScript Code Samples</a></div><div><h5>More</h5><a href="https://jsfiddle.net/gitbrent/L1uctxm0/" target="_blank">JSFiddle Demo Presentation</a><a href="https://github.com/gitbrent/pptxgenjs/issues" target="_blank">PptxGenJS GitHub Issues</a><a href="http://stackoverflow.com/questions/tagged/pptxgenjs" target="_blank">PptxGenJS on Stack Overflow</a></div><div><h5>Social</h5><a href="https://plus.google.com/u/3/115743568393356344951">Google Plus</a><a href="https://twitter.com/pptxgenjs">Twitter</a><a href="https://www.pinterest.com/pptxgenjs">Pinterest</a></div></section><section class="copyright">Copyright © 2020 Brent Ely</section></footer></div><script>window.twttr=(function(d,s, id){var js,fjs=d.getElementsByTagName(s)[0],t=window.twttr||{};if(d.getElementById(id))return t;js=d.createElement(s);js.id=id;js.src='https://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js, fjs);t._e = [];t.ready = function(f) {t._e.push(f);};return t;}(document, 'script', 'twitter-wjs'));</script></body></html>
