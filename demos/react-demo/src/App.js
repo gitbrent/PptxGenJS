@@ -1,7 +1,8 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import pptxgen from "./pptxgen.es.js"; // src=`PptxGenJS/dist` (Why?: react-starter-kit only supports local deps)
+//import pptxgen from "./pptxgen.es.js"; // LOCAL DEV TESTING src=`PptxGenJS/dist`
+import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
 
 function App() {
 	const demoCode = `import pptxgen from "pptxgenjs";\n

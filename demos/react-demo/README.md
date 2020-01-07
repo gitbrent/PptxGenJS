@@ -27,6 +27,13 @@ Your app is ready to be deployed!
 
 See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
+### `npm run deploy`
+
+BDE: Use gh-pages to push app built for github.io [see more](https://bit.ly/CRA-deploy)
+BDE: [Demo React App](https://gitbrent.github.io/PptxGenJS/demos/pptxgenjs-react-demo/)
+
+---
+
 ### `npm run eject`
 
 **Note: this is a one-way operation. Once you `eject`, you can’t go back!**
