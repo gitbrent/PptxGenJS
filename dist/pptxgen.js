@@ -4047,7 +4047,7 @@ var PptxGenJS = function(){
 				}
 
 				// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
-				if ( obj.text.split(CRLF).length > 0 ) {
+				if ( typeof obj.text === 'string' && obj.text.split(CRLF).length > 0 ) {
 					obj.text.toString().split(CRLF).forEach(function(line,idx){
 						// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 2)
 						line += ( obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '' );
