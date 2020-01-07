@@ -1,0 +1,16 @@
+{
+  "files": {
+    "main.css": "/PptxGenJS/react-demo/static/css/main.b100e6da.chunk.css",
+    "main.js": "/PptxGenJS/react-demo/static/js/main.7cead5c5.chunk.js",
+    "main.js.map": "/PptxGenJS/react-demo/static/js/main.7cead5c5.chunk.js.map",
+    "runtime-main.js": "/PptxGenJS/react-demo/static/js/runtime-main.92350afb.js",
+    "runtime-main.js.map": "/PptxGenJS/react-demo/static/js/runtime-main.92350afb.js.map",
+    "static/js/2.61dbd13b.chunk.js": "/PptxGenJS/react-demo/static/js/2.61dbd13b.chunk.js",
+    "static/js/2.61dbd13b.chunk.js.map": "/PptxGenJS/react-demo/static/js/2.61dbd13b.chunk.js.map",
+    "index.html": "/PptxGenJS/react-demo/index.html",
+    "precache-manifest.333e8faa4ac8e856394f77c255311b56.js": "/PptxGenJS/react-demo/precache-manifest.333e8faa4ac8e856394f77c255311b56.js",
+    "service-worker.js": "/PptxGenJS/react-demo/service-worker.js",
+    "static/css/main.b100e6da.chunk.css.map": "/PptxGenJS/react-demo/static/css/main.b100e6da.chunk.css.map",
+    "static/media/logo.svg": "/PptxGenJS/react-demo/static/media/logo.bcad93ae.svg"
+  }
+}
