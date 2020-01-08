@@ -44,7 +44,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 							})
 							res.on('error', ex => {
 								rel.data = IMG_BROKEN
-								reject('ERROR: Unable to load image: "' + rel.path + '"\n' + ex.toString())
+								reject(`ERROR! Unable to load image: ${rel.path}`)
 							})
 						})
 					} else {
@@ -63,7 +63,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 											resolve('done')
 										})
 										.catch(ex => {
-											reject(ex.toString())
+											reject(ex)
 										})
 								}
 							}
@@ -71,7 +71,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 						}
 						xhr.onerror = ex => {
 							rel.data = IMG_BROKEN
-							reject('ERROR: Unable to load image: "' + rel.path + '"\n' + ex.toString())
+							reject(`ERROR! Unable to load image: ${rel.path}`)
 						}
 
 						// B: Execute request
@@ -139,7 +139,7 @@ function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
 		}
 		image.onerror = ex => {
 			rel.data = IMG_BROKEN
-			reject(ex.toString())
+			reject(`ERROR! Unable to load image: ${rel.path}`)
 		}
 
 		// C: Load image
