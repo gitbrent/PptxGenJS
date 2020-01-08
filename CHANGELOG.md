@@ -5,14 +5,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Coming In [3.1]:
+### Coming In [3.x]:
 - Sections
 
 
 ## [3.0.1] - 2020-01-07
 ### Changed
 - Fixed: JSZip not found under Node.js [\#638](https://github.com/gitbrent/PptxGenJS/issue/638) ([rse](https://github.com/rse))
-- Fixed: react demo fixes and new build for [demo-react online](https://gitbrent.github.io/PptxGenJS/demo-react/index.html)
+- Fixed: react demo fixes and new build for [demo-react online](https://gitbrent.github.io/PptxGenJS/demo-react/index.html) ([gitbrent](https://github.com/gitbrent))
+- Fixed: added missing catch on media promise.all to handle 404 media links ([gitbrent](https://github.com/gitbrent))
+- Fixed: replaced wikimedia links in common/demos.js with github raw content links ([gitbrent](https://github.com/gitbrent))
 
 
 
