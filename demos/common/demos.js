@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.0.0
-* BLD.: 20200102
+* VER.: 3.0.1
+* BLD.: 20200107
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
