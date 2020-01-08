@@ -29,7 +29,7 @@ See the section about [deployment](https://facebook.github.io/create-react-app/d
 
 ### Deploy Webapp
 
-BDE: Copy contents of `./build` to gh-pages branch `./react-demo`
+BDE: Copy contents of `./build` to gh-pages branch `./demo-react`
 BDE: [Demo React App](https://gitbrent.github.io/PptxGenJS/demo-react/index.html)
 
 ---

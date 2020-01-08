@@ -8,7 +8,7 @@
     "react-dom": "^16.10.1",
     "react-scripts": "3.1.2"
   },
-  "homepage": "https://gitbrent.github.io/PptxGenJS/react-demo",
+  "homepage": "https://gitbrent.github.io/PptxGenJS/demo-react",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
