@@ -12,7 +12,8 @@
   "main": "dist/pptxgen.cjs.js",
   "module": "dist/pptxgen.es.js",
   "files": [
-    "dist"
+    "dist",
+    "types"
   ],
   "types": "types",
   "scripts": {
