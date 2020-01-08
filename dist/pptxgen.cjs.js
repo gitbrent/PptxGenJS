@@ -1,4 +1,4 @@
-/* PptxGenJS 3.0.0 @ 2020-01-03T05:24:04.569Z */
+/* PptxGenJS 3.0.1 @ 2020-01-08T05:21:47.374Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6705,7 +6705,7 @@ function encodeSlideMediaRels(layout) {
                     });
                     res.on('error', function (ex) {
                         rel.data = IMG_BROKEN;
-                        reject('ERROR: Unable to load image: "' + rel.path + '"\n' + ex.toString());
+                        reject("ERROR! Unable to load image: " + rel.path);
                     });
                 });
             }
@@ -6726,7 +6726,7 @@ function encodeSlideMediaRels(layout) {
                                 resolve('done');
                             })
                                 .catch(function (ex) {
-                                reject(ex.toString());
+                                reject(ex);
                             });
                         }
                     };
@@ -6734,7 +6734,7 @@ function encodeSlideMediaRels(layout) {
                 };
                 xhr_1.onerror = function (ex) {
                     rel.data = IMG_BROKEN;
-                    reject('ERROR: Unable to load image: "' + rel.path + '"\n' + ex.toString());
+                    reject("ERROR! Unable to load image: " + rel.path);
                 };
                 // B: Execute request
                 xhr_1.open('GET', rel.path);
@@ -6796,7 +6796,7 @@ function createSvgPngPreview(rel) {
         };
         image.onerror = function (ex) {
             rel.data = IMG_BROKEN;
-            reject(ex.toString());
+            reject("ERROR! Unable to load image: " + rel.path);
         };
         // C: Load image
         image.src = typeof rel.data === 'string' ? rel.data : IMG_BROKEN;
@@ -6834,7 +6834,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.0.0';
+var VERSION = '3.0.1';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6961,7 +6961,14 @@ var PptxGenJS = /** @class */ (function () {
                 });
                 arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(_this.masterSlide));
                 // STEP 2: Wait for Promises (if any) then generate the PPTX file
-                Promise.all(arrMediaPromises).then(function () {
+                Promise.all(arrMediaPromises)
+                    .catch(function (err) {
+                    console.error("ERROR! pptxgenjs export media:");
+                    console.error(err);
+                    return null;
+                    // FIXME: TODO: 20200107: if one image fails to load (eg 404), then *NONE* of the images load b/c of the `.all`...
+                })
+                    .then(function () {
                     // A: Add empty placeholder objects to slides that don't already have them
                     _this.slides.forEach(function (slide) {
                         if (slide.slideLayout)
@@ -7033,7 +7040,7 @@ var PptxGenJS = /** @class */ (function () {
                         }
                     })
                         .catch(function (err) {
-                        reject(err);
+                        throw new Error(err);
                     });
                 });
             });
