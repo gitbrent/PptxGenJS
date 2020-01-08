@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="updated" content="2020-01-03">
+	<meta name="updated" content="2020-01-07">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -177,7 +177,7 @@
 
 			runEveryTest()
 			.catch(err => {
-				throw new Error(err);
+				console.error(err.toString());
 			})
 			.then(() => {
 				console.log('..done!');
