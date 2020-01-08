@@ -9,6 +9,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sections
 
 
+## [3.0.1] - 2020-01-07
+### Changed
+- Fixed: JSZip not found under Node.js [\#638](https://github.com/gitbrent/PptxGenJS/issue/638) ([rse](https://github.com/rse))
+- Fixed: react demo fixes and new build for [demo-react online](https://gitbrent.github.io/PptxGenJS/demo-react/index.html)
+
+
+
 ## [3.0.0] - 2020-01-01
 ### Added
 - Ability to specify numbered list format [\#452](https://github.com/gitbrent/PptxGenJS/issue/452) ([mayvazyan](https://github.com/mayvazyan))
