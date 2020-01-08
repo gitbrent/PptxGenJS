@@ -231,6 +231,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true
 	options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false
 	options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false
+	options.showLeaderLines = options.showLeaderLines === true || options.showLeaderLines === false ? options.showLeaderLines : false
 	options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true
 	options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true
 	options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true

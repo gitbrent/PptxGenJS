@@ -752,7 +752,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 					strXml += '    <c:showSerName val="0"/>'
 					strXml += '    <c:showPercent val="0"/>'
 					strXml += '    <c:showBubbleSize val="0"/>'
-					strXml += '    <c:showLeaderLines val="0"/>'
+					strXml += '    <c:showLeaderLines val="' + (opts.showLeaderLines ? '1' : '0') + '"/>'
 					strXml += '  </c:dLbls>'
 				}
 
@@ -889,7 +889,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '    <c:showSerName val="0"/>'
 				strXml += '    <c:showPercent val="0"/>'
 				strXml += '    <c:showBubbleSize val="0"/>'
-				strXml += '    <c:showLeaderLines val="0"/>'
+				strXml += '    <c:showLeaderLines val="' + (opts.showLeaderLines ? '1' : '0') + '"/>'
 				strXml += '  </c:dLbls>'
 			}
 
@@ -1483,7 +1483,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			strXml += '	<c:showSerName val="0"/>'
 			strXml += '	<c:showPercent val="1"/>'
 			strXml += '	<c:showBubbleSize val="0"/>'
-			strXml += '	<c:showLeaderLines val="0"/>'
+			strXml += '	<c:showLeaderLines val="' + (opts.showLeaderLines ? '1' : '0') + '"/>'
 			strXml += '</c:dLbls>'
 
 			// 2: "Categories"

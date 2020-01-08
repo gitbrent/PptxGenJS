@@ -301,6 +301,7 @@ declare namespace PptxGenJS {
 		holeSize?: number
 		showTitle?: boolean
 		showValue?: boolean
+		showLeaderLines?: boolean
 		showPercent?: boolean
 		catLabelFormatCode?: string
 		dataBorder?: IBorderOptions
