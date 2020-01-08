@@ -24,14 +24,12 @@
     "fs": false,
     "https": false,
     "image-size": false,
-    "jsdom": false,
     "os": false,
     "path": false
   },
   "dependencies": {
     "https": "^1.0.0",
     "image-size": "^0.8.3",
-    "jsdom": "^15.2.1",
     "jszip": "^3.2.2"
   },
   "devDependencies": {
