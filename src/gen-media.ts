@@ -17,9 +17,7 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 
 	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
 	layout.relsMedia
-		.filter(rel => {
-			return rel.type !== 'online' && !rel.data
-		})
+		.filter(rel => rel.type !== 'online' && !rel.data)
 		.forEach(rel => {
 			imageProms.push(
 				new Promise((resolve, reject) => {
@@ -85,18 +83,12 @@ export function encodeSlideMediaRels(layout: ISlide | ISlideLayout): Promise<str
 
 	// B: SVG: base64 data still requires a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
 	layout.relsMedia
-		.filter(rel => {
-			return rel.isSvgPng && rel.data
-		})
+		.filter(rel => rel.isSvgPng && rel.data)
 		.forEach(rel => {
 			if (fs) {
 				//console.log('Sorry, SVG is not supported in Node (more info: https://github.com/gitbrent/PptxGenJS/issues/401)')
 				rel.data = IMG_BROKEN
-				imageProms.push(
-					Promise.resolve().then(() => {
-						return 'done'
-					})
-				)
+				imageProms.push(Promise.resolve().then(() => 'done'))
 			} else {
 				imageProms.push(createSvgPngPreview(rel))
 			}
