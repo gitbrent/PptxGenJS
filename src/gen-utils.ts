@@ -81,7 +81,7 @@ export function encodeXmlEntities(xml: string): string {
 		.replace(/</g, '&lt;')
 		.replace(/>/g, '&gt;')
 		.replace(/"/g, '&quot;')
-		.replace(/\'/g, '&apos;')
+		.replace(/'/g, '&apos;')
 }
 
 /**
@@ -126,11 +126,6 @@ export function componentToHex(c: number): string {
  * @returns {string} XML string
  */
 export function rgbToHex(r: number, g: number, b: number): string {
-	if (!Number.isInteger(r)) {
-		try {
-			console.warn('Integer expected!')
-		} catch (ex) {}
-	}
 	return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase()
 }
 
@@ -183,6 +178,7 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 				outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`
 				break
 			default:
+				outText += '' // @note need a statement as having only "break" is removed by rollup, then tiggers "no-default" js-linter
 				break
 		}
 	}

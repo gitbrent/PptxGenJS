@@ -935,9 +935,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 
 			// 2: Series: (One for each Y-Axis)
 			colorIndex = -1
-			data.filter((_obj, idx) => {
-				return idx > 0
-			}).forEach((obj, idx) => {
+			data.filter((_obj, idx) => idx > 0).forEach((obj, idx) => {
 				colorIndex++
 				strXml += '<c:ser>'
 				strXml += '  <c:idx val="' + idx + '"/>'
@@ -1235,9 +1233,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			// 2: Series: (One for each Y-Axis)
 			colorIndex = -1
 			let idxColLtr = 1
-			data.filter((_obj, idx) => {
-				return idx > 0
-			}).forEach((obj, idx) => {
+			data.filter((_obj, idx) => idx > 0).forEach((obj, idx) => {
 				colorIndex++
 				strXml += '<c:ser>'
 				strXml += '  <c:idx val="' + idx + '"/>'
@@ -1533,6 +1529,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			// Done with Doughnut/Pie
 			break
 		default:
+			strXml += ''
 			break
 	}
 
@@ -1711,13 +1708,7 @@ function makeValAxis(opts: IChartOpts, valAxisId: string): string {
 	strXml += ' <c:crosses val="' + crosses + '"/>'
 	strXml +=
 		' <c:crossBetween val="' +
-		(opts.type === CHART_TYPES.SCATTER ||
-		(Array.isArray(opts.type) &&
-		opts.type.filter(type => {
-			return type.type === CHART_TYPES.AREA
-		}).length > 0
-			? true
-			: false)
+		(opts.type === CHART_TYPES.SCATTER || (Array.isArray(opts.type) && opts.type.filter(type => type.type === CHART_TYPES.AREA).length > 0 ? true : false)
 			? 'midCat'
 			: 'between') +
 		'"/>'

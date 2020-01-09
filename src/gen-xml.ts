@@ -673,6 +673,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				break
 
 			default:
+				strSlideXml += ''
 				break
 		}
 	})
@@ -848,6 +849,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 					paragraphPropXml += ' algn="just"'
 					break
 				default:
+					paragraphPropXml += ''
 					break
 			}
 		}

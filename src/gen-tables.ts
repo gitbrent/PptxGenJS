@@ -243,11 +243,7 @@ export function getSlidesForTableRows(
 		 * That way, when the vertical size limit is hit, all lines pick up where they need to on the subsequent slide.
 		 */
 		if (tabOpts.verbose) console.log(`- SLIDE [${tableRowSlides.length}]: ROW [${iRow}]: START...`)
-		while (
-			linesRow.filter(cell => {
-				return cell.lines.length > 0
-			}).length > 0
-		) {
+		while (linesRow.filter(cell => cell.lines.length > 0).length > 0) {
 			// A: Add new Slide if there is no more space to fix 1 new line
 			if (emuTabCurrH + maxLineHeight > emuSlideTabH) {
 				if (tabOpts.verbose)
@@ -358,7 +354,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	let intTabW = 0
 
 	// REALITY-CHECK:
-	if (!document.getElementById(tabEleId)) throw 'tableToSlides: Table ID "' + tabEleId + '" does not exist!'
+	if (!document.getElementById(tabEleId)) throw new Error('tableToSlides: Table ID "' + tabEleId + '" does not exist!')
 
 	// STEP 1: Set margins
 	if (masterSlide && masterSlide.margin) {
