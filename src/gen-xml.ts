@@ -115,9 +115,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		let shapeType = null
 
 		if ((slide as ISlide).slideLayout !== undefined && (slide as ISlide).slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
-			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => {
-				return object.options.placeholder === slideItemObj.options.placeholder
-			})[0]
+			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => object.options.placeholder === slideItemObj.options.placeholder)[0]
 		}
 
 		// A: Set option vars
@@ -212,7 +210,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					intColW = objTabOpts.colW ? objTabOpts.colW : EMU
 					if (slideItemObj.options.w && !objTabOpts.colW) intColW = Math.round((typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt)
 					strXml += '<a:tblGrid>'
-					for (let col = 0; col < intColCnt; col++) {
+					for (let colw = 0; colw < intColCnt; colw++) {
 						strXml += '<a:gridCol w="' + intColW + '"/>'
 					}
 					strXml += '</a:tblGrid>'
@@ -556,12 +554,8 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				strSlideXml += '<p:blipFill>'
 				// NOTE: This works for both cases: either `path` or `data` contains the SVG
 				if (
-					(slide['relsMedia'] || []).filter(rel => {
-						return rel.rId === slideItemObj.imageRid
-					})[0] &&
-					(slide['relsMedia'] || []).filter(rel => {
-						return rel.rId === slideItemObj.imageRid
-					})[0]['extn'] === 'svg'
+					(slide['relsMedia'] || []).filter(rel => rel.rId === slideItemObj.imageRid)[0] &&
+					(slide['relsMedia'] || []).filter(rel => rel.rId === slideItemObj.imageRid)[0]['extn'] === 'svg'
 				) {
 					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
 					strSlideXml += ' <a:extLst>'
@@ -1383,11 +1377,7 @@ export function makeXmlApp(slides: ISlide[], company: string): string {
 			<vt:lpstr>Arial</vt:lpstr>
 			<vt:lpstr>Calibri</vt:lpstr>
 			<vt:lpstr>Office Theme</vt:lpstr>
-			${slides
-				.map((_slideObj, idx) => {
-					return '<vt:lpstr>Slide ' + (idx + 1) + '</vt:lpstr>\n'
-				})
-				.join('')}
+			${slides.map((_slideObj, idx) => '<vt:lpstr>Slide ' + (idx + 1) + '</vt:lpstr>\n').join('')}
 		</vt:vector>
 	</TitlesOfParts>
 	<Company>${company}</Company>
@@ -1555,9 +1545,7 @@ export function makeXmlLayout(layout: ISlideLayout): string {
  */
 export function makeXmlMaster(slide: ISlide, layouts: ISlideLayout[]): string {
 	// NOTE: Pass layouts as static rels because they are not referenced any time
-	let layoutDefs = layouts.map((_layoutDef, idx) => {
-		return '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slide.rels.length + idx + 1) + '"/>'
-	})
+	let layoutDefs = layouts.map((_layoutDef, idx) => '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slide.rels.length + idx + 1) + '"/>')
 
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
@@ -1843,9 +1831,7 @@ export function getShapeInfo(shapeName) {
 
 	if (PowerPointShapes[shapeName]) return PowerPointShapes[shapeName]
 
-	let objShape = Object.keys(PowerPointShapes).filter((key: string) => {
-		return PowerPointShapes[key].name === shapeName || PowerPointShapes[key].displayName
-	})[0]
+	let objShape = Object.keys(PowerPointShapes).filter((key: string) => PowerPointShapes[key].name === shapeName || PowerPointShapes[key].displayName)[0]
 	if (typeof objShape !== 'undefined' && objShape !== null) return objShape
 
 	return PowerPointShapes.RECTANGLE

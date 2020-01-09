@@ -544,6 +544,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					arrObjTabFootRows.push(arrObjTabCells)
 					break
 				default:
+					console.log(`table parsing: unexpected table part: ${part}`)
+					break
 			}
 		})
 	})
