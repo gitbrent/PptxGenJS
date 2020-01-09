@@ -1,17 +1,6 @@
-import { SLIDE_OBJECT_TYPES } from '../core-enums'
-
 import {
-    IChartMulti,
-    IChartOpts,
     IImageOpts,
-    ILayout,
     IMediaOpts,
-    ISlideLayout,
-    ISlideNumber,
-    ISlideRel,
-    ISlideRelChart,
-    ISlideRelMedia,
-    ISlideObject,
     IShape,
     IShapeOptions,
     ITableOptions,
@@ -22,6 +11,7 @@ import {
 
 import Relations from '../relations'
 
+import ElementInterface from './element-interface'
 import TextElement from './text'
 import ShapeElement from './simple-shape'
 import ImageElement from './image'
@@ -29,9 +19,7 @@ import ChartElement from './chart'
 import SlideNumberElement from './slide-number'
 import MediaElement from './media'
 
-export default class GroupElement {
-    type = SLIDE_OBJECT_TYPES.newtext
-
+export default class GroupElement implements ElementInterface {
     data = []
     relations: Relations
 

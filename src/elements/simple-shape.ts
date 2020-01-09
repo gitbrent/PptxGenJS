@@ -1,12 +1,8 @@
-import {
-    CRLF,
-    ONEPT,
-    TEXT_VALIGN,
-    DEF_FONT_COLOR,
-    SLIDE_OBJECT_TYPES
-} from '../core-enums'
+import { CRLF, ONEPT, TEXT_VALIGN, DEF_FONT_COLOR } from '../core-enums'
 
 import { inch2Emu, genXmlColorSelection } from '../gen-utils'
+
+import ElementInterface from './element-interface'
 
 import ShadowElement from './shadow'
 import Shape from './shape'
@@ -15,9 +11,7 @@ import Line from './line'
 
 const defaultsToOne = x => x || (x === 0 ? 0 : 1)
 
-export default class SimpleShapeElement {
-    type = SLIDE_OBJECT_TYPES.newtext
-
+export default class SimpleShapeElement implements ElementInterface {
     shape
     fill
     color

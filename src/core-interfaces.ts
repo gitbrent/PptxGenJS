@@ -10,6 +10,7 @@ import {
     PLACEHOLDER_TYPES
 } from './core-enums'
 import SlideNumberElement from './elements/slide-number'
+import ElementInterface from './elements/element-interface'
 
 // Common
 // ======
@@ -306,7 +307,7 @@ export interface ITableToSlidesOpts extends ITableOptions {
     autoPageLineWeight?: number // -1.0 to 1.0
     colW?: number | number[]
     masterSlideName?: string
-    masterSlide?: ISlideLayout
+    masterSlide?: Master
     newSlideStartY?: number
     slideMargin?: Margin
     verbose?: boolean // Undocumented; shows verbose output
@@ -462,18 +463,17 @@ export interface ISlideMasterOptions {
     margin?: Margin
     bkgd?: string
     objects?: [
-
-            | { chart: {} }
-            | { image: {} }
-            | { line: {} }
-            | { rect: {} }
-            | { text: { options: ITextOpts } }
-            | {
-                  placeholder: {
-                      options: ISlideMstrObjPlchldrOpts
-                      text?: string
-                  }
+        | { chart: {} }
+        | { image: {} }
+        | { line: {} }
+        | { rect: {} }
+        | { text: { options: ITextOpts } }
+        | {
+              placeholder: {
+                  options: ISlideMstrObjPlchldrOpts
+                  text?: string
               }
+          }
     ]
     slideNumber?: any
 }
@@ -543,84 +543,4 @@ export interface IObjectOptions
     // placeholder
     placeholderIdx?: number
     placeholderType?: PLACEHOLDER_TYPES
-}
-export interface ISlideObject {
-    type: SLIDE_OBJECT_TYPES
-    options?: IObjectOptions
-    // text
-    text?: string | IText[]
-    // table
-    arrTabRows?: [ITableCell[]?]
-    // chart
-    chartRid?: number
-    // image:
-    image?: string
-    imageRid?: number
-    hyperlink?: HyperLink
-    // media
-    media?: string
-    mtype?: MediaType
-    mediaRid?: number
-    shape?: IShape
-
-    placeholder?
-}
-
-export interface ISlideLayout {
-    presLayout: ILayout
-    name: string
-    number: number
-    bkgd?: string
-    bkgdImgRid?: number
-    slide?: {
-        back: string
-        bkgdImgRid?: number
-        color: string
-        hidden?: boolean
-    }
-    data: Array<ISlideObject>
-    rels: Array<ISlideRel>
-    relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
-    relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
-    margin?: Margin
-}
-export interface ISlide {
-    addChart: Function
-    addImage: Function
-    addMedia: Function
-    addNotes: Function
-    addShape: Function
-    addTable: Function
-    addText: Function
-    bkgd?: string
-    bkgdImgRid?: number // FIXME rename
-    color?: string
-    data?: ISlideObject[]
-    hidden?: boolean
-    margin?: Margin
-    name?: string
-    number: number
-    presLayout: ILayout
-    rels: ISlideRel[]
-    relsChart: ISlideRelChart[]
-    relsMedia: ISlideRelMedia[]
-    slideLayout: ISlideLayout
-}
-export interface IPresentation {
-    author: string
-    company: string
-    revision: string
-    subject: string
-    title: string
-    isBrowser: boolean
-    fileName: string
-    fileExtn: string
-    pptLayout: ILayout
-    rtlMode: boolean
-    saveCallback?: null
-    masterSlide?: ISlide
-    chartCounter: number
-    imageCounter: number
-    slides?: ISlide[]
-    slideLayouts?: ISlideLayout[]
 }

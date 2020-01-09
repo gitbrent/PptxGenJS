@@ -1,11 +1,8 @@
-import { SLIDE_OBJECT_TYPES } from '../core-enums'
 import Placeholder from './placeholder'
 import ImageElement from './image'
 import Position from './position'
 
 export default class PlaceholderImage extends Placeholder {
-    type = SLIDE_OBJECT_TYPES.newtext
-
     public position: Position
     public objectFit?: 'cover' | 'contain' | 'fill' | 'none'
     opacity?: number

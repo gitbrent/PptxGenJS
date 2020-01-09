@@ -1,7 +1,6 @@
-import { SLIDE_OBJECT_TYPES } from '../core-enums'
-
 import { cleanChartOptions } from '../chart-options'
 import Position from './position'
+import ElementInterface from './element-interface'
 
 let _chartCounter: number = 0
 
@@ -11,8 +10,7 @@ let _chartCounter: number = 0
  * class)
  */
 
-export default class ChartElement {
-    type = SLIDE_OBJECT_TYPES.newtext
+export default class ChartElement implements ElementInterface {
     chartId
     position
 

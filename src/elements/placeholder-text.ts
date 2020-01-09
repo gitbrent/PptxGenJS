@@ -1,12 +1,9 @@
-import { SLIDE_OBJECT_TYPES } from '../core-enums'
 import Placeholder from './placeholder'
 import Relations from '../relations'
 
 import TextElement from './text'
 
 export default class PlaceholderText extends Placeholder {
-    type = SLIDE_OBJECT_TYPES.newtext
-
     private textElement
 
     constructor(text: string, options, index: number, relations: Relations) {

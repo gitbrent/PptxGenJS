@@ -1,9 +1,7 @@
-import { SLIDE_OBJECT_TYPES } from '../core-enums'
+import ElementInterface from './element-interface'
 import Position from './position'
 
-export default class Placeholder {
-    type = SLIDE_OBJECT_TYPES.newtext
-
+export default class Placeholder implements ElementInterface {
     public name: string
     public position: Position
 
@@ -22,5 +20,6 @@ export default class Placeholder {
 
     public render(idx, presLayout) {
         throw new Error('not implemented')
+        return ''
     }
 }

@@ -3,15 +3,18 @@
  */
 
 import { IMG_BROKEN } from './core-enums'
-import { ISlide, ISlideLayout, ISlideRelMedia } from './core-interfaces'
+import { ISlideRelMedia } from './core-interfaces'
+
+import Slide from './slide'
+import { Master } from './slideLayouts'
 
 /**
  * Encode Image/Audio/Video into base64
- * @param {ISlide | ISlideLayout} layout - slide layout
+ * @param {Slide | Master} layout - slide layout
  * @return {Promise} promise of generating the rels
  */
 export function encodeSlideMediaRels(
-    layout: ISlide | ISlideLayout
+    layout: Slide | Master
 ): Promise<string>[] {
     const fs =
         typeof require !== 'undefined' && typeof window === 'undefined'

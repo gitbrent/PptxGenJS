@@ -8,6 +8,8 @@ import {
 
 import { inch2Emu, genXmlColorSelection } from '../gen-utils'
 
+import ElementInterface from './element-interface'
+
 import ShadowElement from './shadow'
 import Shape from './shape'
 import Position from './position'
@@ -76,7 +78,7 @@ const buildFragments = (inputText, inputBreakLine, relations) => {
     })
 }
 
-export default class TextElement {
+export default class TextElement implements ElementInterface {
     type = SLIDE_OBJECT_TYPES.newtext
 
     fragments

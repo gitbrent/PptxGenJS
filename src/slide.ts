@@ -9,12 +9,10 @@ import {
     IImageOpts,
     ILayout,
     IMediaOpts,
-    ISlideLayout,
     ISlideNumber,
     ISlideRel,
     ISlideRelChart,
     ISlideRelMedia,
-    ISlideObject,
     IShape,
     IShapeOptions,
     ITableOptions,
@@ -26,6 +24,8 @@ import {
 import * as genObj from './gen-objects'
 import { createImageConfig } from './gen-utils'
 import Relations from './relations'
+import { Master } from './slideLayouts'
+
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
 import ImageElement from './elements/image'
@@ -35,28 +35,35 @@ import TableElement from './elements/table'
 import MediaElement from './elements/media'
 import GroupElement from './elements/group'
 
+import ElementInterface from './elements/element-interface'
+
+const emptyFcn = function() {}
+
 export default class Slide {
     private _bkgd: string
     private _color: string
-    private relations
+    private relations: Relations
 
     public addSlide: Function
     public getSlide: Function
-    public presLayout: ILayout
+    public presLayout?: ILayout
     public name: string
     public number: number
-    public data: ISlideObject[]
-    public slideLayout: ISlideLayout
+    public data: ElementInterface[]
+    public slideLayout: Master
+    public notes: string[]
+
+    public hidden: boolean
 
     constructor(params: {
-        addSlide: Function
-        getSlide: Function
+        addSlide?: Function
+        getSlide?: Function
         presLayout: ILayout
         slideNumber: number
-        slideLayout?: ISlideLayout
+        slideLayout?: Master
     }) {
-        this.addSlide = params.addSlide
-        this.getSlide = params.getSlide
+        this.addSlide = params.addSlide || emptyFcn
+        this.getSlide = params.getSlide || emptyFcn
         this.presLayout = params.presLayout
         this.name = 'Slide ' + params.slideNumber
         this.number = params.slideNumber
@@ -178,7 +185,7 @@ export default class Slide {
      * @return {Slide} this class
      */
     addNotes(notes: string): Slide {
-        genObj.addNotesDefinition(this, notes)
+        this.notes.push(notes)
         return this
     }
 
@@ -227,8 +234,6 @@ export default class Slide {
     addText(text: string | IText[], options?: ITextOpts): Slide {
         this.data.push(new TextElement(text, options, this.relations))
         return this
-        //genObj.addTextDefinition(this, text, options, false)
-        //return this
     }
 
     newGroup() {

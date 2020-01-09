@@ -1,14 +1,15 @@
-import { SLIDE_OBJECT_TYPES, IMG_PLAYBTN } from '../core-enums'
+import { IMG_PLAYBTN } from '../core-enums'
 
 import { getSmartParseNumber, encodeXmlEntities } from '../gen-utils'
+
+import ElementInterface from './element-interface'
 
 import Hyperlink from './hyperlink'
 import Position from './position'
 
 import Relations from '../relations'
 
-export default class MediaElement {
-    type = SLIDE_OBJECT_TYPES.newtext
+export default class MediaElement implements ElementInterface {
     videoId
     mediaId
     previewId

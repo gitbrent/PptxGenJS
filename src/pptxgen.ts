@@ -55,8 +55,6 @@ import {
 } from './core-enums'
 import {
     ILayout,
-    ISlide,
-    ISlideLayout,
     ISlideMasterOptions,
     ISlideNumber,
     ITableToSlidesOpts
@@ -189,10 +187,10 @@ export default class PptxGenJS {
     }
 
     /** master slide layout object */
-    private masterSlide: ISlide
+    private masterSlide: Slide
 
     /** this Presentation's Slide objects */
-    private slides: ISlide[]
+    private slides: Slide[]
 
     /** slide layout definition objects, used for generating slide layout files */
     private slideLayouts: SlideLayouts
@@ -264,32 +262,18 @@ export default class PptxGenJS {
         //
         this.slideLayouts = new SlideLayouts(this._presLayout)
         this.slides = []
-        this.masterSlide = {
-            addChart: null,
-            addImage: null,
-            addMedia: null,
-            addNotes: null,
-            addShape: null,
-            addTable: null,
-            addText: null,
-            //
-            presLayout: this._presLayout,
-            name: null,
-            number: null,
-            data: [],
-            rels: [],
-            relsChart: [],
-            relsMedia: [],
-            slideLayout: null
-        }
+        this.masterSlide = new Slide({
+            presLayout: this.presLayout,
+            slideNumber: 0
+        })
     }
 
     /**
      * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
      * @param {string} masterName - slide master name
-     * @return {ISlide} new Slide
+     * @return {Slide} new Slide
      */
-    addNewSlide = (masterName: string): ISlide => {
+    addNewSlide = (masterName: string): Slide => {
         return this.addSlide(masterName)
     }
 
@@ -297,9 +281,9 @@ export default class PptxGenJS {
      * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
      * @since 3.0.0
      * @param {number} slideNum - slide number
-     * @return {ISlide} Slide
+     * @return {Slide} Slide
      */
-    getSlide = (slideNum: number): ISlide => {
+    getSlide = (slideNum: number): Slide => {
         return this.slides.filter(slide => {
             return slide.number === slideNum
         })[0]
@@ -307,12 +291,12 @@ export default class PptxGenJS {
 
     /**
      * Create all chart and media rels for this Presenation
-     * @param {ISlide | ISlideLayout} slide - slide with rels
+     * @param {Slide | Master} slide - slide with rels
      * @param {JSZIP} zip - JSZip instance
      * @param {Promise<any>[]} chartPromises - promise array
      */
     createChartMediaRels = (
-        slide: ISlide | ISlideLayout,
+        slide: Slide | Master,
         zip: JSZip,
         chartPromises: Promise<any>[]
     ) => {
@@ -674,9 +658,9 @@ export default class PptxGenJS {
     /**
      * Add a Slide to Presenation
      * @param {string} masterSlideName - Master Slide name
-     * @returns {ISlide} the new Slide
+     * @returns {Slide} the new Slide
      */
-    addSlide(masterSlideName?: string): ISlide {
+    addSlide(masterSlideName?: string): Slide {
         let newSlide = new Slide({
             addSlide: this.addNewSlide,
             getSlide: this.getSlide,

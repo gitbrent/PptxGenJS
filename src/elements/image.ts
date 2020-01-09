@@ -1,10 +1,10 @@
-import { SLIDE_OBJECT_TYPES } from '../core-enums'
-
 import {
     getSmartParseNumber,
     encodeXmlEntities,
     genXmlColorSelection
 } from '../gen-utils'
+
+import ElementInterface from './element-interface'
 
 import Hyperlink from './hyperlink'
 import Position from './position'
@@ -39,8 +39,7 @@ const findExtension = (data = '', path = '') => {
     return strImgExtn
 }
 
-export default class ImageElement {
-    type = SLIDE_OBJECT_TYPES.newtext
+export default class ImageElement implements ElementInterface {
     imgId
     svgImgId
 

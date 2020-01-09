@@ -1,5 +1,5 @@
 import { PowerPointShapes } from '../core-shapes'
-import { EMU, PLACEHOLDER_TYPES } from '../core-enums'
+import { EMU } from '../core-enums'
 
 export default class ShapeElement {
     displayName

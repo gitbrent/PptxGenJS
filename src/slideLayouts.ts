@@ -6,6 +6,7 @@ import {
 } from './core-enums'
 
 import Relations from './relations'
+import ElementInterface from './elements/element-interface'
 
 import TextElement from './elements/text'
 import ShapeElement from './elements/simple-shape'
@@ -22,8 +23,8 @@ export class Master {
 
     number
     slide = null
-    data = []
-    margin
+    data: ElementInterface[] = []
+    margin: [number, number, number, number]
     relations
 
     presLayout

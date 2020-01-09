@@ -1,12 +1,11 @@
 import { getUuid } from '../gen-utils'
-import { SLIDE_OBJECT_TYPES } from '../core-enums'
+
+import ElementInterface from './element-interface'
 
 import Position from './position'
 import RunProperties from './run-properties'
 
-export default class SlideNumberElement {
-    type = SLIDE_OBJECT_TYPES.newtext
-
+export default class SlideNumberElement implements ElementInterface {
     position
     runProperties
     fieldId
@@ -21,7 +20,7 @@ export default class SlideNumberElement {
         })
         this.runProperties = new RunProperties(runOptions)
     }
-    render(idx, presLayout) {
+    render(idx, presLayout, placeholder) {
         return `
 		<p:sp>
 		    <p:nvSpPr>

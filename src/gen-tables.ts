@@ -14,7 +14,6 @@ import {
 import PptxGenJS from './pptxgen'
 import {
     ILayout,
-    ISlideLayout,
     ITableCell,
     ITableToSlidesCell,
     ITableToSlidesOpts,
@@ -22,6 +21,7 @@ import {
     TableRowSlide,
     ITableCellOpts
 } from './core-interfaces'
+import { Master } from './slideLayouts'
 import { inch2Emu, rgbToHex } from './gen-utils'
 
 /**
@@ -75,14 +75,14 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
  * @param {[ITableToSlidesCell[]?]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
  * @param {ILayout} presLayout - Presentation layout
- * @param {ISlideLayout} masterSlide - master slide (if any)
+ * @param {Master} masterSlide - master slide (if any)
  * @return {TableRowSlide[]} array of table rows
  */
 export function getSlidesForTableRows(
     tableRows: [ITableToSlidesCell[]?] = [],
     tabOpts: ITableToSlidesOpts = {},
     presLayout: ILayout,
-    masterSlide: ISlideLayout
+    masterSlide: Master
 ): TableRowSlide[] {
     let arrInchMargins = DEF_SLIDE_MARGIN_IN,
         emuTabCurrH = 0,
@@ -487,7 +487,7 @@ export function genTableToSlides(
     pptx: PptxGenJS,
     tabEleId: string,
     options: ITableToSlidesOpts = {},
-    masterSlide: ISlideLayout
+    masterSlide: Master
 ) {
     let opts = options || {}
     opts.slideMargin =
