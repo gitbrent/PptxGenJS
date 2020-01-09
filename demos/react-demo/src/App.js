@@ -17,7 +17,7 @@ pptx.writeFile("react-demo.pptx");`;
 		let pptx = new pptxgen();
 		let slide = pptx.addSlide();
 		slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee", align: "center" });
-		pptx.writeFile("react-demo.pptx");
+		pptx.writeFile("pptxgenjs-demo-react.pptx");
 
 		console.log(`pptx.version = ${pptx.version}`);
 	}
