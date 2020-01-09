@@ -1737,19 +1737,19 @@ export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMod
 		pptLayout.width +
 		'"/>' +
 		'<p:defaultTextStyle>' //+'<a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
-	for (let idx = 1; idx < 10; idx++) {
+	for (let idy = 1; idy < 10; idy++) {
 		strXml +=
 			'<a:lvl' +
-			idx +
+			idy +
 			'pPr marL="' +
-			(idx - 1) * 457200 +
+			(idy - 1) * 457200 +
 			'" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">' +
 			'<a:defRPr sz="1800" kern="1200">' +
 			'<a:solidFill><a:schemeClr val="tx1"/></a:solidFill>' +
 			'<a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
 			'</a:defRPr>' +
 			'</a:lvl' +
-			idx +
+			idy +
 			'pPr>'
 	}
 	strXml += '</p:defaultTextStyle>'
