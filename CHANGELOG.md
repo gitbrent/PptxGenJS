@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.1.0] - 2020-?-?
 ### Added
+- Include types in package.json files [\#641](https://github.com/gitbrent/PptxGenJS/pull/641) ([cronin4392](https://github.com/cronin4392))
 ### Changed
 ### Removed
 - Removed: jsdom no longer a dependency in `package.json` ([gitbrent](https://github.com/gitbrent))
