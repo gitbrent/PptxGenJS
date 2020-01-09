@@ -446,13 +446,13 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
 
 	// STEP 1: REALITY-CHECK
 	if (!strPath && !strData && strType !== 'online') {
-		throw "addMedia() error: either 'data' or 'path' are required!"
+		throw new Error("addMedia() error: either 'data' or 'path' are required!")
 	} else if (strData && strData.toLowerCase().indexOf('base64,') === -1) {
-		throw "addMedia() error: `data` value lacks a base64 header! Ex: 'video/mpeg;base64,NMP[...]')"
+		throw new Error("addMedia() error: `data` value lacks a base64 header! Ex: 'video/mpeg;base64,NMP[...]')")
 	}
 	// Online Video: requires `link`
 	if (strType === 'online' && !strLink) {
-		throw 'addMedia() error: online videos require `link` value'
+		throw new Error('addMedia() error: online videos require `link` value')
 	}
 
 	// FIXME: 20190707
@@ -587,7 +587,7 @@ export function addShapeDefinition(target: ISlide, shape: IShape, opt: IShapeOpt
 	}
 
 	// 1: Reality check
-	if (!shape || typeof shape !== 'object') throw 'Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`'
+	if (!shape || typeof shape !== 'object') throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`')
 
 	// 2: Set options defaults
 	options.x = options.x || (options.x === 0 ? 0 : 1)
@@ -628,12 +628,14 @@ export function addTableDefinition(
 	{
 		// A: check for empty
 		if (tableRows === null || tableRows.length === 0 || !Array.isArray(tableRows)) {
-			throw `addTable: Array expected! EX: 'slide.addTable( [rows], {options} );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`
+			throw new Error(`addTable: Array expected! EX: 'slide.addTable( [rows], {options} );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`)
 		}
 
 		// B: check for non-well-formatted array (ex: rows=['a','b'] instead of [['a','b']])
 		if (!tableRows[0] || !Array.isArray(tableRows[0])) {
-			throw `addTable: 'rows' should be an array of cells! EX: 'slide.addTable( [ ['A'], ['B'], {text:'C',options:{align:'center'}} ] );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`
+			throw new Error(
+				`addTable: 'rows' should be an array of cells! EX: 'slide.addTable( [ ['A'], ['B'], {text:'C',options:{align:'center'}} ] );' (https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)`
+			)
 		}
 
 		// TODO: FUTURE: This is wacky and wont function right (shows .w value when there is none from demo.js?!) 20191219

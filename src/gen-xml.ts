@@ -970,8 +970,8 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 
 	// Hyperlink support
 	if (opts.hyperlink) {
-		if (typeof opts.hyperlink !== 'object') throw "ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` "
-		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw "ERROR: 'hyperlink requires either `url` or `slide`'"
+		if (typeof opts.hyperlink !== 'object') throw new Error("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ")
+		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw new Error("ERROR: 'hyperlink requires either `url` or `slide`'")
 		else if (opts.hyperlink.url) {
 			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)

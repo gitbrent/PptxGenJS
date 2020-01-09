@@ -176,9 +176,7 @@ function getSizeFromImage(inImgUrl: string): { width: number; height: number } {
 			return obj
 		}
 		image.onerror = () => {
-			try {
-				console.error('ERROR: image.onload: Unable to load image: ' + inImgUrl)
-			} catch (ex) {}
+			console.error(`ERROR: image.onload: Unable to load image: ${inImgUrl}`)
 		}
 
 		// C: Load image
