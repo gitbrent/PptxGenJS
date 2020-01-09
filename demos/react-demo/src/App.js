@@ -1,14 +1,16 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-//import pptxgen from "./pptxgen.es.js"; // LOCAL DEV TESTING src=`PptxGenJS/dist`
-import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
+import pptxgen from "./pptxgen.es.js"; // LOCAL DEV TESTING src=`PptxGenJS/dist`
+//import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
 
 function App() {
-	const demoCode = `import pptxgen from "pptxgenjs";\n
+	const demoCode = `import pptxgen from "pptxgenjs";
 let pptx = new pptxgen();
+
 let slide = pptx.addSlide();
-slide.addText("React Demo!", \{ x:1, y:1, w:'80%', h:1, fontSize:36, fill:'eeeeee', align:'center' \});
+slide.addText("React Demo!", { x:1, y:1, w:'80%', h:1, fontSize:36, fill:'eeeeee', align:'center' });
+
 pptx.writeFile("react-demo.pptx");`;
 
 	function runDemo() {
@@ -23,7 +25,7 @@ pptx.writeFile("react-demo.pptx");`;
 	return (
 		<div>
 			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-				<a className="navbar-brand" href="#">
+				<a className="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
 					<img src={logo} width="30" height="30" className="d-inline-block align-top mr-2" alt="" />
 					PptxGenJS
 				</a>
@@ -42,7 +44,7 @@ pptx.writeFile("react-demo.pptx");`;
 				<div className="collapse navbar-collapse" id="navbarColor01">
 					<ul className="navbar-nav mr-auto">
 						<li className="nav-item active">
-							<a className="nav-link" href="#">
+							<a className="nav-link" href="https://gitbrent.github.io/PptxGenJS/demo-react/index.html">
 								Home <span className="sr-only">(current)</span>
 							</a>
 						</li>
