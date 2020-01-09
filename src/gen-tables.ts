@@ -298,12 +298,12 @@ export function getSlidesForTableRows(
 			}
 
 			// B: Add a line of text to 1-N cells that still have `lines`
-			linesRow.forEach((cell, idx) => {
+			linesRow.forEach((cell, idxR) => {
 				if (cell.lines.length > 0) {
 					// 1
 					let currSlide = tableRowSlides[tableRowSlides.length - 1]
-					currSlide.rows[currSlide.rows.length - 1][idx].text +=
-						(currSlide.rows[currSlide.rows.length - 1][idx].text.length > 0 && !RegExp(/\n$/g).test(currSlide.rows[currSlide.rows.length - 1][idx].text)
+					currSlide.rows[currSlide.rows.length - 1][idxR].text +=
+						(currSlide.rows[currSlide.rows.length - 1][idxR].text.length > 0 && !RegExp(/\n$/g).test(currSlide.rows[currSlide.rows.length - 1][idxR].text)
 							? CRLF
 							: ''
 						).replace(/[\r\n]+$/g, CRLF) + cell.lines.shift()
@@ -380,7 +380,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 		if (cell.getAttribute('colspan')) {
 			// Guesstimate (divide evenly) col widths
 			// NOTE: both j$query and vanilla selectors return {0} when table is not visible)
-			for (let idx = 0; idx < Number(cell.getAttribute('colspan')); idx++) {
+			for (let idxc = 0; idxc < Number(cell.getAttribute('colspan')); idxc++) {
 				arrTabColW.push(Math.round(cell.offsetWidth / Number(cell.getAttribute('colspan'))))
 			}
 		} else {
@@ -392,13 +392,13 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	})
 
 	// STEP 3: Calc/Set column widths by using same column width percent from HTML table
-	arrTabColW.forEach((colW, idx) => {
+	arrTabColW.forEach((colW, idxW) => {
 		let intCalcWidth = Number(((Number(emuSlideTabW) * ((colW / intTabW) * 100)) / 100 / EMU).toFixed(2))
 		let intMinWidth = 0
-		let colSelectorMin = document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`)
+		let colSelectorMin = document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idxW + 1})`)
 		if (colSelectorMin) intMinWidth = Number(colSelectorMin.getAttribute('data-pptx-min-width'))
 		let intSetWidth = 0
-		let colSelectorSet = document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idx + 1})`)
+		let colSelectorSet = document.querySelector(`#${tabEleId} thead tr:first-child th:nth-child(${idxW + 1})`)
 		if (colSelectorSet) intMinWidth = Number(colSelectorSet.getAttribute('data-pptx-width'))
 		arrColW.push(intSetWidth ? intSetWidth : intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth)
 	})
@@ -483,8 +483,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
 				if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
 					cellOpts.margin = [0, 0, 0, 0]
-					new Array('padding-top', 'padding-right', 'padding-bottom', 'padding-left').forEach((val, idx) => {
-						cellOpts.margin[idx] = Math.round(
+					let sides = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left']
+					sides.forEach((val, idxs) => {
+						cellOpts.margin[idxs] = Math.round(
 							Number(
 								window
 									.getComputedStyle(cell)
@@ -503,7 +504,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					window.getComputedStyle(cell).getPropertyValue('border-left-width')
 				) {
 					cellOpts.border = [null, null, null, null]
-					new Array('top', 'right', 'bottom', 'left').forEach((val, idx) => {
+					let sides = ['top', 'right', 'bottom', 'left']
+					sides.forEach((val, idxb) => {
 						let intBorderW = Math.round(
 							Number(
 								window
@@ -522,7 +524,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 							.replace(')', '')
 							.split(',')
 						let strBorderC = rgbToHex(Number(arrRGB[0]), Number(arrRGB[1]), Number(arrRGB[2]))
-						cellOpts.border[idx] = { pt: intBorderW, color: strBorderC }
+						cellOpts.border[idxb] = { pt: intBorderW, color: strBorderC }
 					})
 				}
 
@@ -555,13 +557,13 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	opts._arrObjTabHeadRows = arrObjTabHeadRows || null
 	opts.colW = arrColW
 	getSlidesForTableRows([...arrObjTabHeadRows, ...arrObjTabBodyRows, ...arrObjTabFootRows] as [ITableToSlidesCell[]], opts, pptx.presLayout, masterSlide).forEach(
-		(slide, idx) => {
+		(slide, idxTr) => {
 			// A: Create new Slide
 			let newSlide = pptx.addSlide(opts.masterSlideName || null)
 
 			// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idx === 0) opts.y = opts.y || arrInchMargins[0]
-			if (idx > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
+			if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
+			if (idxTr > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
 			if (opts.verbose) console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
 			// C: Add table to Slide
