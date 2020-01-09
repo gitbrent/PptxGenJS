@@ -1318,7 +1318,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				// E: '<c:bubbleSize>'
 				strXml += '  <c:bubbleSize>'
 				strXml += '    <c:numRef>'
-				strXml += '      <c:f>Sheet1!' + '$' + getExcelColName(idxColLtr) + '$2:$' + getExcelColName(idx + 2) + '$' + (obj.sizes.length + 1) + '</c:f>'
+				strXml += '      <c:f>Sheet1!$' + getExcelColName(idxColLtr) + '$2:$' + getExcelColName(idx + 2) + '$' + (obj.sizes.length + 1) + '</c:f>'
 				idxColLtr++
 				strXml += '      <c:numCache>'
 				strXml += '        <c:formatCode>General</c:formatCode>'
@@ -1465,37 +1465,32 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += '  </c:dLbl>'
 			})
-			strXml +=
-				'<c:numFmt formatCode="' +
-				opts.dataLabelFormatCode +
-				'" sourceLinked="0"/>\
-				<c:txPr>\
-				  <a:bodyPr/>\
-				  <a:lstStyle/>\
-				  <a:p>\
-					<a:pPr>\
-					  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">\
-						<a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>\
-					  </a:defRPr>\
-					</a:pPr>\
-				  </a:p>\
-				</c:txPr>\
-				' +
-				(chartType === CHART_TYPES.PIE ? '<c:dLblPos val="ctr"/>' : '') +
-				'\
-				<c:showLegendKey val="0"/>\
-				<c:showVal val="0"/>\
-				<c:showCatName val="1"/>\
-				<c:showSerName val="0"/>\
-				<c:showPercent val="1"/>\
-				<c:showBubbleSize val="0"/>\
-				<c:showLeaderLines val="0"/>'
+			strXml += `<c:numFmt formatCode="${opts.dataLabelFormatCode}" sourceLinked="0"/>`
+			strXml += '	<c:txPr>'
+			strXml += '	  <a:bodyPr/>'
+			strXml += '	  <a:lstStyle/>'
+			strXml += '	  <a:p>'
+			strXml += '		<a:pPr>'
+			strXml += '		  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">'
+			strXml += '			<a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>'
+			strXml += '		  </a:defRPr>'
+			strXml += '		</a:pPr>'
+			strXml += '	  </a:p>'
+			strXml += '	</c:txPr>'
+			strXml += chartType === CHART_TYPES.PIE ? '<c:dLblPos val="ctr"/>' : ''
+			strXml += '	<c:showLegendKey val="0"/>'
+			strXml += '	<c:showVal val="0"/>'
+			strXml += '	<c:showCatName val="1"/>'
+			strXml += '	<c:showSerName val="0"/>'
+			strXml += '	<c:showPercent val="1"/>'
+			strXml += '	<c:showBubbleSize val="0"/>'
+			strXml += '	<c:showLeaderLines val="0"/>'
 			strXml += '</c:dLbls>'
 
 			// 2: "Categories"
 			strXml += '<c:cat>'
 			strXml += '  <c:strRef>'
-			strXml += '    <c:f>Sheet1!' + '$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
+			strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 			strXml += '    <c:strCache>'
 			strXml += '	     <c:ptCount val="' + obj.labels.length + '"/>'
 			obj.labels.forEach((label, idx) => {
@@ -1508,7 +1503,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			// 3: Create vals
 			strXml += '  <c:val>'
 			strXml += '    <c:numRef>'
-			strXml += '      <c:f>Sheet1!' + '$B$2:$B$' + (obj.labels.length + 1) + '</c:f>'
+			strXml += '      <c:f>Sheet1!$B$2:$B$' + (obj.labels.length + 1) + '</c:f>'
 			strXml += '      <c:numCache>'
 			strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
 			obj.values.forEach((value, idx) => {

@@ -27,7 +27,7 @@
 |*|  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 |*|  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-|*|  SOFTWARE. 
+|*|  SOFTWARE.
 \*/
 
 /**
@@ -79,7 +79,7 @@ export default class PptxGenJS {
 			this._layout = value
 			this._presLayout = newLayout
 		} else {
-			throw 'UNKNOWN-LAYOUT'
+			throw new Error('UNKNOWN-LAYOUT')
 		}
 	}
 	public get layout(): string {
@@ -254,9 +254,7 @@ export default class PptxGenJS {
 	 * @param {string} masterName - slide master name
 	 * @return {ISlide} new Slide
 	 */
-	addNewSlide = (masterName: string): ISlide => {
-		return this.addSlide(masterName)
-	}
+	addNewSlide = (masterName: string): ISlide => this.addSlide(masterName)
 
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
@@ -264,11 +262,7 @@ export default class PptxGenJS {
 	 * @param {number} slideNum - slide number
 	 * @return {ISlide} Slide
 	 */
-	getSlide = (slideNum: number): ISlide => {
-		return this.slides.filter(slide => {
-			return slide.number === slideNum
-		})[0]
-	}
+	getSlide = (slideNum: number): ISlide => this.slides.filter(slide => slide.number === slideNum)[0]
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
@@ -279,9 +273,7 @@ export default class PptxGenJS {
 		this.masterSlide.slideNumberObj = slideNum
 
 		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-		this.slideLayouts.filter(layout => {
-			return layout.name === DEF_PRES_LAYOUT_NAME
-		})[0].slideNumberObj = slideNum
+		this.slideLayouts.filter(layout => layout.name === DEF_PRES_LAYOUT_NAME)[0].slideNumberObj = slideNum
 	}
 
 	/**
@@ -314,8 +306,8 @@ export default class PptxGenJS {
 	 * @param {Blob} blobContent - Blob content
 	 * @return {Promise<string>} Promise with file name
 	 */
-	writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> => {
-		return new Promise((resolve, _reject) => {
+	writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> =>
+		new Promise((resolve, _reject) => {
 			// STEP 1: Create element
 			let eleLink = document.createElement('a')
 			eleLink.setAttribute('style', 'display:none;')
@@ -352,15 +344,14 @@ export default class PptxGenJS {
 				resolve(exportName)
 			}
 		})
-	}
 
 	/**
 	 * Create and export the .pptx file
 	 * @param {WRITE_OUTPUT_TYPE} outputType - output file type
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
-	exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
-		return new Promise((resolve, reject) => {
+	exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> =>
+		new Promise((resolve, reject) => {
 			let arrChartPromises: Promise<string>[] = []
 			let arrMediaPromises: Promise<string>[] = []
 			let zip: JSZip = new JSZip()
@@ -459,7 +450,6 @@ export default class PptxGenJS {
 						})
 				})
 		})
-	}
 
 	// EXPORT METHODS
 
@@ -549,9 +539,7 @@ export default class PptxGenJS {
 			setSlideNum: this.setSlideNumber,
 			slideNumber: this.slides.length + 1,
 			slideLayout: masterSlideName
-				? this.slideLayouts.filter(layout => {
-						return layout.name === masterSlideName
-				  })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
+				? this.slideLayouts.filter(layout => layout.name === masterSlideName)[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
 				: this.LAYOUTS[DEF_PRES_LAYOUT],
 		})
 
@@ -620,11 +608,7 @@ export default class PptxGenJS {
 			this,
 			tableElementId,
 			opts,
-			opts && opts.masterSlideName
-				? this.slideLayouts.filter(layout => {
-						return layout.name === opts.masterSlideName
-				  })[0]
-				: null
+			opts && opts.masterSlideName ? this.slideLayouts.filter(layout => layout.name === opts.masterSlideName)[0] : null
 		)
 	}
 }
