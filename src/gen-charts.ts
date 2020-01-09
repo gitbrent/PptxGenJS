@@ -773,12 +773,11 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) +
 						'</a:solidFill>'
 
-					let symbolLineColor = opts.lineDataSymbolLineColor || strSerColor
 					strXml +=
 						'    <a:ln w="' +
 						opts.lineDataSymbolLineSize +
 						'" cap="flat"><a:solidFill>' +
-						createColorElement(symbolLineColor) +
+						createColorElement(opts.lineDataSymbolLineColor || strSerColor) +
 						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					strXml += '    <a:effectLst/>'
 					strXml += '  </c:spPr>'
@@ -990,12 +989,12 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						'    <a:solidFill>' +
 						createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) +
 						'</a:solidFill>'
-					let symbolLineColor = opts.lineDataSymbolLineColor || strSerColor
+
 					strXml +=
 						'    <a:ln w="' +
 						opts.lineDataSymbolLineSize +
 						'" cap="flat"><a:solidFill>' +
-						createColorElement(symbolLineColor) +
+						createColorElement(opts.lineDataSymbolLineColor || strSerColor) +
 						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					strXml += '    <a:effectLst/>'
 					strXml += '  </c:spPr>'
