@@ -256,9 +256,9 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
 				strSheetXml += '<row r="1" spans="1:' + intBubbleCols + '">'
 				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
-				for (let idx = 1; idx < intBubbleCols; idx++) {
-					strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">' // NOTE: use `t="s"` for label cols!
-					strSheetXml += '<v>' + idx + '</v>'
+				for (let idxBc = 1; idxBc < intBubbleCols; idxBc++) {
+					strSheetXml += '<c r="' + (idxBc < 26 ? LETTERS[idxBc] : 'A' + LETTERS[idxBc % LETTERS.length]) + '1" t="s">' // NOTE: use `t="s"` for label cols!
+					strSheetXml += '<v>' + idxBc + '</v>'
 					strSheetXml += '</c>'
 				}
 				strSheetXml += '</row>'
@@ -307,9 +307,9 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				// A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
 				strSheetXml += '<row r="1" spans="1:' + data.length + '">'
 				strSheetXml += '<c r="A1" t="s"><v>0</v></c>'
-				for (let idx = 1; idx < data.length; idx++) {
-					strSheetXml += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">' // NOTE: use `t="s"` for label cols!
-					strSheetXml += '<v>' + idx + '</v>'
+				for (let idxSd = 1; idxSd < data.length; idxSd++) {
+					strSheetXml += '<c r="' + (idxSd < 26 ? LETTERS[idxSd] : 'A' + LETTERS[idxSd % LETTERS.length]) + '1" t="s">' // NOTE: use `t="s"` for label cols!
+					strSheetXml += '<v>' + idxSd + '</v>'
 					strSheetXml += '</c>'
 				}
 				strSheetXml += '</row>'
@@ -544,23 +544,22 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 				'    <a:ln w="9525" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:schemeClr val="tx1"><a:lumMod val="15000"/><a:lumOff val="85000"/></a:schemeClr></a:solidFill><a:round/></a:ln>'
 			strXml += '    <a:effectLst/>'
 			strXml += '  </c:spPr>'
-			strXml +=
-				'  <c:txPr>\
-						  <a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="ellipsis" vert="horz" wrap="square" anchor="ctr" anchorCtr="1"/>\
-						  <a:lstStyle/>\
-						  <a:p>\
-							<a:pPr rtl="0">\
-							  <a:defRPr sz="1197" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">\
-								<a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>\
-								<a:latin typeface="+mn-lt"/>\
-								<a:ea typeface="+mn-ea"/>\
-								<a:cs typeface="+mn-cs"/>\
-							  </a:defRPr>\
-							</a:pPr>\
-							<a:endParaRPr lang="en-US"/>\
-						  </a:p>\
-						</c:txPr>\
-					  </c:dTable>'
+			strXml += '  <c:txPr>'
+			strXml += '	  <a:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="ellipsis" vert="horz" wrap="square" anchor="ctr" anchorCtr="1"/>'
+			strXml += '	  <a:lstStyle/>'
+			strXml += '	  <a:p>'
+			strXml += '		<a:pPr rtl="0">'
+			strXml += '		  <a:defRPr sz="1197" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">'
+			strXml += '			<a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>'
+			strXml += '			<a:latin typeface="+mn-lt"/>'
+			strXml += '			<a:ea typeface="+mn-ea"/>'
+			strXml += '			<a:cs typeface="+mn-cs"/>'
+			strXml += '		  </a:defRPr>'
+			strXml += '		</a:pPr>'
+			strXml += '		<a:endParaRPr lang="en-US"/>'
+			strXml += '	  </a:p>'
+			strXml += '	</c:txPr>'
+			strXml += '</c:dTable>'
 		}
 
 		strXml += '  <c:spPr>'
