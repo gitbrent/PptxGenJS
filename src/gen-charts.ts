@@ -694,22 +694,22 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Fill and Border
-				let strSerColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
+				let seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 
 				strXml += '  <c:spPr>'
-				if (strSerColor === 'transparent') {
+				if (seriesColor === 'transparent') {
 					strXml += '<a:noFill/>'
 				} else if (opts.chartColorsOpacity) {
-					strXml += '<a:solidFill>' + createColorElement(strSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
+					strXml += '<a:solidFill>' + createColorElement(seriesColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
 				} else {
-					strXml += '<a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
+					strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 				}
 
 				if (chartType === CHART_TYPES.LINE) {
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 				} else if (opts.dataBorder) {
@@ -732,7 +732,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 					strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
 					if (opts.dataLabelBkgrdColors) {
 						strXml += '    <c:spPr>'
-						strXml += '       <a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
+						strXml += '       <a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 						strXml += '    </c:spPr>'
 					}
 					strXml += '    <c:txPr>'
@@ -777,7 +777,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						'    <a:ln w="' +
 						opts.lineDataSymbolLineSize +
 						'" cap="flat"><a:solidFill>' +
-						createColorElement(opts.lineDataSymbolLineColor || strSerColor) +
+						createColorElement(opts.lineDataSymbolLineColor || seriesColor) +
 						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					strXml += '    <a:effectLst/>'
 					strXml += '  </c:spPr>'
@@ -952,20 +952,20 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				// 'c:spPr': Fill, Border, Line, LineStyle (dash, etc.), Shadow
 				strXml += '  <c:spPr>'
 				{
-					let strSerColor = opts.chartColors[colorIndex % opts.chartColors.length]
+					let tmpSerColor = opts.chartColors[colorIndex % opts.chartColors.length]
 
-					if (strSerColor === 'transparent') {
+					if (tmpSerColor === 'transparent') {
 						strXml += '<a:noFill/>'
 					} else if (opts.chartColorsOpacity) {
-						strXml += '<a:solidFill>' + createColorElement(strSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
+						strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
 					} else {
-						strXml += '<a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
+						strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 					}
 
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 
@@ -976,8 +976,6 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 
 				// 'c:marker' tag: `lineDataSymbol`
 				{
-					let strSerColor = opts.chartColors[colorIndex % opts.chartColors.length]
-
 					strXml += '<c:marker>'
 					strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>'
 					if (opts.lineDataSymbolSize) {
@@ -994,7 +992,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						'    <a:ln w="' +
 						opts.lineDataSymbolLineSize +
 						'" cap="flat"><a:solidFill>' +
-						createColorElement(opts.lineDataSymbolLineColor || strSerColor) +
+						createColorElement(opts.lineDataSymbolLineColor || opts.chartColors[colorIndex % opts.chartColors.length]) +
 						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					strXml += '    <a:effectLst/>'
 					strXml += '  </c:spPr>'
@@ -1257,14 +1255,14 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				{
 					strXml += '<c:spPr>'
 
-					let strSerColor = opts.chartColors[colorIndex % opts.chartColors.length]
+					let tmpSerColor = opts.chartColors[colorIndex % opts.chartColors.length]
 
-					if (strSerColor === 'transparent') {
+					if (tmpSerColor === 'transparent') {
 						strXml += '<a:noFill/>'
 					} else if (opts.chartColorsOpacity) {
-						strXml += '<a:solidFill>' + createColorElement(strSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
+						strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
 					} else {
-						strXml += '<a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
+						strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 					}
 
 					if (opts.lineSize === 0) {
@@ -1277,7 +1275,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 							createColorElement(opts.dataBorder.color) +
 							'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(strSerColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 

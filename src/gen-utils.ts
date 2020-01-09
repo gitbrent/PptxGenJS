@@ -175,12 +175,12 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 		else {
 			if (shapeFill.type) fillType = shapeFill.type
 			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += '<a:alpha val="' + (100 - shapeFill.alpha) + '000"/>'
+			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>`
 		}
 
 		switch (fillType) {
 			case 'solid':
-				outText += '<a:solidFill>' + createColorElement(colorVal, internalElements) + '</a:solidFill>'
+				outText += `<a:solidFill>${createColorElement(colorVal, internalElements)}</a:solidFill>`
 				break
 			default:
 				break
