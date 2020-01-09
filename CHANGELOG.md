@@ -9,6 +9,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sections
 
 
+## [3.1.0] - 2020-?-?
+### Added
+### Changed
+### Removed
+- Removed: jsdom no longer a dependency in `package.json` ([gitbrent](https://github.com/gitbrent))
+
+
+
 ## [3.0.1] - 2020-01-07
 ### Changed
 - Fixed: JSZip not found under Node.js [\#638](https://github.com/gitbrent/PptxGenJS/issue/638) ([rse](https://github.com/rse))
