@@ -569,9 +569,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>'
 
 		// OPTION: Border
-		strXml += rel.opts.border
-			? '<a:ln w="' + rel.opts.border.pt * ONEPT + '"' + ' cap="flat">' + genXmlColorSelection(rel.opts.border.color) + '</a:ln>'
-			: '<a:ln><a:noFill/></a:ln>'
+		strXml += rel.opts.border ? `<a:ln w="${rel.opts.border.pt * ONEPT}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
 
 		// Close shapeProp/plotArea before Legend
 		strXml += '    <a:effectLst/>'

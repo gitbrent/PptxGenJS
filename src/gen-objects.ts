@@ -341,8 +341,8 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 			.split('#')[0] || 'png'
 
 	// However, pre-encoded images can be whatever mime-type they want (and good for them!)
-	if (strImageData && /image\/(\w+)\;/.exec(strImageData) && /image\/(\w+)\;/.exec(strImageData).length > 0) {
-		strImgExtn = /image\/(\w+)\;/.exec(strImageData)[1]
+	if (strImageData && /image\/(\w+);/.exec(strImageData) && /image\/(\w+);/.exec(strImageData).length > 0) {
+		strImgExtn = /image\/(\w+);/.exec(strImageData)[1]
 	} else if (strImageData && strImageData.toLowerCase().indexOf('image/svg+xml') > -1) {
 		strImgExtn = 'svg'
 	}

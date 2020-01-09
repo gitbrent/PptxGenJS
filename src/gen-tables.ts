@@ -483,8 +483,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				// NOTE: Margins translate: px->pt 1:1 (e.g.: a 20px padded cell looks the same in PPTX as 20pt Text Inset/Padding)
 				if (window.getComputedStyle(cell).getPropertyValue('padding-left')) {
 					cellOpts.margin = [0, 0, 0, 0]
-					let sides = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left']
-					sides.forEach((val, idxs) => {
+					let sidesPad = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left']
+					sidesPad.forEach((val, idxs) => {
 						cellOpts.margin[idxs] = Math.round(
 							Number(
 								window
@@ -504,8 +504,8 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					window.getComputedStyle(cell).getPropertyValue('border-left-width')
 				) {
 					cellOpts.border = [null, null, null, null]
-					let sides = ['top', 'right', 'bottom', 'left']
-					sides.forEach((val, idxb) => {
+					let sidesBor = ['top', 'right', 'bottom', 'left']
+					sidesBor.forEach((val, idxb) => {
 						let intBorderW = Math.round(
 							Number(
 								window
