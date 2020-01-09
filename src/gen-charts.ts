@@ -159,7 +159,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			// C: Add `name`/Series
 			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
 				data.forEach((objData, idx) => {
-					if (idx === 0) strSharedStrings += '<si><t>' + 'X-Axis' + '</t></si>'
+					if (idx === 0) strSharedStrings += '<si><t>X-Axis</t></si>'
 					else {
 						strSharedStrings += '<si><t>' + encodeXmlEntities(objData.name || ' ') + '</t></si>'
 						strSharedStrings += '<si><t>' + encodeXmlEntities('Size ' + idx) + '</t></si>'
@@ -819,7 +819,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 					if (opts.catLabelFormatCode) {
 						// Use 'numRef' as catLabelFormatCode implies that we are expecting numbers here
 						strXml += '  <c:numRef>'
-						strXml += '    <c:f>Sheet1!' + '$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
+						strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 						strXml += '    <c:numCache>'
 						strXml += '      <c:formatCode>' + opts.catLabelFormatCode + '</c:formatCode>'
 						strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
@@ -830,7 +830,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						strXml += '  </c:numRef>'
 					} else {
 						strXml += '  <c:strRef>'
-						strXml += '    <c:f>Sheet1!' + '$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
+						strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 						strXml += '    <c:strCache>'
 						strXml += '	     <c:ptCount val="' + obj.labels.length + '"/>'
 						obj.labels.forEach((label, idx) => {
@@ -846,7 +846,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				{
 					strXml += '  <c:val>'
 					strXml += '    <c:numRef>'
-					strXml += '      <c:f>Sheet1!' + '$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
+					strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
 					strXml += '      <c:numCache>'
 					strXml += '        <c:formatCode>General</c:formatCode>'
 					strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
@@ -1103,8 +1103,8 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						strXml += '		</a:p>'
 						strXml += '	</c:txPr>'
 						strXml += '	<c:showLegendKey val="0"/>'
-						strXml += '	<c:showVal val="' + opts.showLabel ? '1' : '0' + '"/>'
-						strXml += '	<c:showCatName val="' + opts.showLabel ? '1' : '0' + '"/>'
+						strXml += ` <c:showVal val="${opts.showLabel ? '1' : '0'}"/>`
+						strXml += ` <c:showCatName val="${opts.showLabel ? '1' : '0'}"/>`
 						strXml += '	<c:showSerName val="0"/>'
 						strXml += '	<c:showPercent val="0"/>'
 						strXml += '	<c:showBubbleSize val="0"/>'
