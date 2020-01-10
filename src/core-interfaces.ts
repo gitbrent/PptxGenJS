@@ -207,6 +207,7 @@ export interface IImageOpts extends PositionOptions, OptsDataOrPath {
 	hyperlink?: HyperLink
 	rounding?: boolean
 	placeholder?: any
+	rotate?: number
 }
 export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
 	link: string

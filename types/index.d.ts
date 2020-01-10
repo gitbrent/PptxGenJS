@@ -343,6 +343,7 @@ declare namespace PptxGenJS {
 		hyperlink?: HyperLink
 		rounding?: boolean
 		placeholder?: any
+		rotate?: number
 	}
 	export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
 		link: string
