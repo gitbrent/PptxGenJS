@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.0.1
-* BLD.: 20200107
+* VER.: 3.1.0
+* BLD.: 20200109
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -76,6 +76,7 @@ var gPaths = {
 	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_dj.gif' },
 	'gifAnimTrippy': { path:'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/images/trippy.gif' },
 	'chicagoBean'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest' },
+	'tokyoSubway' : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/tokyo-subway-route-map.jpg' },
 	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi' },
 	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.m4v' },
 	'sample_mov': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.mov' },
@@ -2382,7 +2383,56 @@ function genSlides_Image(pptx) {
 		//slide.addImage({ data:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/doh_this_isnt_base64_data.gif',  x:0.5, y:0.5, w:1.0, h:1.0 });
 	}
 
-	// SLIDE 2: Image URLs -----------------------------------------------------------------------------------
+	// SLIDE 2: Image Sizing -----------------------------------------------------------------------------------
+	{
+		var slide = pptx.addSlide();
+		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
+		slide.slideNumber = { x:'50%', y:'95%', w:1, h:1, color:'0088CC' };
+		slide.addTable( [ [{ text:'Image Examples: Image Sizing/Rounding', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+
+		// TOP: 1
+		slide.addText('Sizing: Orig `w:6, h:2.7`', { x:0.5, y:0.6, w:3.0, h:0.3, color:'0088CC' });
+		slide.addImage({ data:LOGO_STARLABS, x:0.5, y:1.1, w:6.0, h:2.69 });
+
+		// TOP: 2
+		slide.addText("Sizing: `contain, w:3`", { x:0.6, y:4.25, w:3.0, h:0.3, color:'0088CC' });
+		slide.addShape(pptx.shapes.RECTANGLE,{ x:0.6, y:4.65, w:3, h:2, fill:'F1F1F1' });
+		slide.addImage({ data:LOGO_STARLABS, x:0.6, y:4.65, w:5.0, h:1.5, sizing:{ type:'contain', w:3, h:2 } });
+
+		// TOP: 3
+		slide.addText('Sizing: `cover, w:3, h:2`',   { x:5.3, y:4.25, w:3.0, h:0.3, color:'0088CC' });
+		slide.addShape(pptx.shapes.RECTANGLE,{ x:5.3, y:4.65, w:3, h:2, fill:'F1F1F1' });
+		slide.addImage({ data:LOGO_STARLABS, x:5.3, y:4.65, w:3.0, h:1.5, sizing:{ type:'cover', w:3, h:2 } });
+
+		// TOP: 4
+		slide.addText('Sizing: `crop, w:3, h:2`',    { x:10.0, y:4.25, w:3.0, h:0.3, color:'0088CC' });
+		slide.addShape(pptx.shapes.RECTANGLE,{ x:10, y:4.65, w:3, h:1.5, fill:'F1F1F1' });
+		slide.addImage({ data:LOGO_STARLABS, x:10.0, y:4.65, w:5.0, h:1.5, sizing:{ type:'crop', w:3, h:1.5, x:0.5, y:0.5 } });
+
+		// TOP-RIGHT:
+		slide.addText('Rounding: `rounding:true`', { x:10.0, y:0.60, w:3.0, h:0.3, color:'0088CC' });
+		slide.addImage({
+			path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path),
+			x:9.9, y:1.1, w:2.5, h:2.5,
+			rounding:true
+		});
+	}
+
+	// SLIDE 3: Image Rotation -----------------------------------------------------------------------------------
+	{
+		var slide = pptx.addSlide();
+		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
+		slide.slideNumber = { x:'50%', y:'95%', w:1, h:1, color:'0088CC' };
+		slide.addTable( [ [{ text:'Image Examples: Image Rotation', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+
+		// EXAMPLES
+		slide.addText('Rotate: `rotate:45`, `rotate:180`, `rotate:315`', { x:0.5, y:0.6, w:6.0, h:0.3, color:'0088CC' });
+		slide.addImage({ path:gPaths.tokyoSubway.path, x:0.78, y:2.46, w:4.3, h:3, rotate:45 });
+		slide.addImage({ path:gPaths.tokyoSubway.path, x:4.52, y:2.25, w:4.3, h:3, rotate:180 });
+		slide.addImage({ path:gPaths.tokyoSubway.path, x:8.25, y:2.84, w:4.3, h:3, rotate:315 });
+	}
+
+	// SLIDE 4: Image URLs -----------------------------------------------------------------------------------
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
@@ -2413,39 +2463,6 @@ function genSlides_Image(pptx) {
 			slide.addText('Type: PNG (path:"../images")', { x:6.6, y:2.7, w:4.5, h:0.4, color:'CC0033' });
 			slide.addImage({ path:(NODEJS ? gPaths.ccLicenseComp.path.replace(/http.+\/examples/, '../common') : gPaths.ccLicenseComp.path), x:6.6, y:3.2, w:6.3, h:3.7 });
 		}
-	}
-
-	// SLIDE 3: Image Sizing -----------------------------------------------------------------------------------
-	{
-		var slide = pptx.addSlide();
-		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
-		slide.slideNumber = { x:'50%', y:'95%', w:1, h:1, color:'0088CC' };
-		slide.addTable( [ [{ text:'Image Examples: Image Sizing/Rounding', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
-
-		// TOP: 1
-		slide.addText('Sizing: None',      { x:0.5, y:0.6, w:3.0, h:0.3, color:'0088CC' });
-		slide.addImage({ data:LOGO_STARLABS, x:0.5, y:1.1, w:5.0, h:2.5 });
-
-		// TOP: 2
-		slide.addText("Sizing: `contain`", { x:0.6, y:4.25, w:3.0, h:0.3, color:'0088CC' });
-		slide.addImage({ data:LOGO_STARLABS, x:0.6, y:4.65, w:5.0, h:2.5, sizing:{ type:'contain', w:3, h:1.5 } });
-
-		// TOP: 3
-		slide.addText('Sizing: `cover`',   { x:5.3, y:4.25, w:3.0, h:0.3, color:'0088CC' });
-		slide.addImage({ data:LOGO_STARLABS, x:5.3, y:4.65, w:3.0, h:1.5, sizing:{ type:'cover', w:4, h:1.88 } });
-
-		// TOP: 4
-		slide.addText('Sizing: `crop`',    { x:10.0, y:4.25, w:3.0, h:0.3, color:'0088CC' });
-		slide.addImage({ data:LOGO_STARLABS, x:10.0, y:4.65, w:5.0, h:2.5, sizing:{ type:'crop', w:3, h:1.5, x:0.5, y:0.5 } });
-
-		// TOP-RIGHT:
-		slide.addText('Rounding: `true`',  { x:10.0, y:0.60, w:3.0, h:0.3, color:'0088CC' });
-		slide.addImage({
-			// TODO-3: TODO:
-			path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path),
-			x:9.9, y:1.1, w:2.5, h:2.5,
-			rounding:true
-		});
 	}
 }
 
