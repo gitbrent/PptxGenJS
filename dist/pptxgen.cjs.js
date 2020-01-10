@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-09T05:19:37.073Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-10T04:50:41.781Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4128,10 +4128,18 @@ function addImageDefinition(target, opt) {
     var imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1;
     // REALITY-CHECK:
     if (!strImagePath && !strImageData) {
-        console.error("ERROR: `addImage()` requires either 'data' or 'path' parameter!");
+        console.error("ERROR: addImage() requires either 'data' or 'path' parameter!");
         return null;
     }
-    else if (strImageData && strImageData.toLowerCase().indexOf('base64,') === -1) {
+    else if (strImagePath && typeof strImagePath !== 'string') {
+        console.error("ERROR: addImage() 'path' should be a string, ex: {path:'/img/sample.png'} - you sent " + strImagePath);
+        return null;
+    }
+    else if (strImageData && typeof strImageData !== 'string') {
+        console.error("ERROR: addImage() 'data' should be a string, ex: {data:'image/png;base64,NMP[...]'} - you sent " + strImageData);
+        return null;
+    }
+    else if (strImageData && typeof strImageData === 'string' && strImageData.toLowerCase().indexOf('base64,') === -1) {
         console.error("ERROR: Image `data` value lacks a base64 header! Ex: 'image/png;base64,NMP[...]')");
         return null;
     }
@@ -4165,6 +4173,7 @@ function addImageDefinition(target, opt) {
         rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
         sizing: sizing,
         placeholder: opt.placeholder,
+        rotate: opt.rotate || 0,
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
