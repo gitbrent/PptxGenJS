@@ -491,7 +491,7 @@ declare namespace PptxGenJS {
 		lineIdx?: number
 		lineSize?: number
 		lineSpacing?: number
-		margin?: number
+		margin?: Margin
 		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number
 		paraSpaceBefore?: number
