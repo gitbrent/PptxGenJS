@@ -1100,7 +1100,7 @@ function genSlides_Chart(pptx) {
 	function slide5() {
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
-		slide.addTable( [ [{ text:'Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisMajorUnit`, `valAxisLabelFormatCode`', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisDisplayUnit`, `valAxisMajorUnit`, `valAxisLabelFormatCode`', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// TOP-LEFT
 		slide.addChart(
@@ -1118,6 +1118,7 @@ function genSlides_Chart(pptx) {
 				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384'],
 				catLabelFormatCode: "yyyy-mm",
 				valAxisMajorUnit: 15,
+				valAxisDisplayUnit: 'hundreds',
 				valAxisMaxVal: 45,
 				showTitle: true,
 				titleFontSize: 14,

@@ -1615,11 +1615,11 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 				opts[opt] = null
 			}
 		})
-		if (opts.catAxisBaseTimeUnit) strXml += ' <c:baseTimeUnit  val="' + opts.catAxisBaseTimeUnit.toLowerCase() + '"/>'
-		if (opts.catAxisMajorTimeUnit) strXml += ' <c:majorTimeUnit val="' + opts.catAxisMajorTimeUnit.toLowerCase() + '"/>'
-		if (opts.catAxisMinorTimeUnit) strXml += ' <c:minorTimeUnit val="' + opts.catAxisMinorTimeUnit.toLowerCase() + '"/>'
-		if (opts.catAxisMajorUnit) strXml += ' <c:majorUnit     val="' + opts.catAxisMajorUnit + '"/>'
-		if (opts.catAxisMinorUnit) strXml += ' <c:minorUnit     val="' + opts.catAxisMinorUnit + '"/>'
+		if (opts.catAxisBaseTimeUnit) strXml += '<c:baseTimeUnit val="' + opts.catAxisBaseTimeUnit.toLowerCase() + '"/>'
+		if (opts.catAxisMajorTimeUnit) strXml += '<c:majorTimeUnit val="' + opts.catAxisMajorTimeUnit.toLowerCase() + '"/>'
+		if (opts.catAxisMinorTimeUnit) strXml += '<c:minorTimeUnit val="' + opts.catAxisMinorTimeUnit.toLowerCase() + '"/>'
+		if (opts.catAxisMajorUnit) strXml += '<c:majorUnit val="' + opts.catAxisMajorUnit + '"/>'
+		if (opts.catAxisMinorUnit) strXml += '<c:minorUnit val="' + opts.catAxisMinorUnit + '"/>'
 	}
 
 	// Close cat axis tag
@@ -1705,6 +1705,7 @@ function makeValAxis(opts: IChartOpts, valAxisId: string): string {
 			: 'between') +
 		'"/>'
 	if (opts.valAxisMajorUnit) strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>'
+	if (opts.valAxisDisplayUnit) strXml += `<c:dispUnits><c:builtInUnit val="${opts.valAxisDisplayUnit}"/><c:dispUnitsLbl/></c:dispUnits>`
 	strXml += '</c:valAx>'
 
 	return strXml

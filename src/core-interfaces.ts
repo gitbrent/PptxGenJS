@@ -191,6 +191,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	valAxisLabelFontBold?: boolean
 	valAxisLabelColor?: string
 	valAxisLabelFontFace?: string
+	valAxisDisplayUnit: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 	valAxisMajorUnit?: number
 	valAxisMajorTickMark?: ChartAxisTickMark
 	valAxisMinorTickMark?: ChartAxisTickMark
