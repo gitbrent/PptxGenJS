@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-10T04:50:41.781Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-11T21:16:56.060Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6393,15 +6393,15 @@ function makeCatAxis(opts, axisId, valAxisId) {
             }
         });
         if (opts.catAxisBaseTimeUnit)
-            strXml += ' <c:baseTimeUnit  val="' + opts.catAxisBaseTimeUnit.toLowerCase() + '"/>';
+            strXml += '<c:baseTimeUnit val="' + opts.catAxisBaseTimeUnit.toLowerCase() + '"/>';
         if (opts.catAxisMajorTimeUnit)
-            strXml += ' <c:majorTimeUnit val="' + opts.catAxisMajorTimeUnit.toLowerCase() + '"/>';
+            strXml += '<c:majorTimeUnit val="' + opts.catAxisMajorTimeUnit.toLowerCase() + '"/>';
         if (opts.catAxisMinorTimeUnit)
-            strXml += ' <c:minorTimeUnit val="' + opts.catAxisMinorTimeUnit.toLowerCase() + '"/>';
+            strXml += '<c:minorTimeUnit val="' + opts.catAxisMinorTimeUnit.toLowerCase() + '"/>';
         if (opts.catAxisMajorUnit)
-            strXml += ' <c:majorUnit     val="' + opts.catAxisMajorUnit + '"/>';
+            strXml += '<c:majorUnit val="' + opts.catAxisMajorUnit + '"/>';
         if (opts.catAxisMinorUnit)
-            strXml += ' <c:minorUnit     val="' + opts.catAxisMinorUnit + '"/>';
+            strXml += '<c:minorUnit val="' + opts.catAxisMinorUnit + '"/>';
     }
     // Close cat axis tag
     // NOTE: Added closing tag of val or cat axis based on chart type
@@ -6489,6 +6489,8 @@ function makeValAxis(opts, valAxisId) {
             '"/>';
     if (opts.valAxisMajorUnit)
         strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>';
+    if (opts.valAxisDisplayUnit)
+        strXml += "<c:dispUnits><c:builtInUnit val=\"" + opts.valAxisDisplayUnit + "\"/><c:dispUnitsLbl/></c:dispUnits>";
     strXml += '</c:valAx>';
     return strXml;
 }
