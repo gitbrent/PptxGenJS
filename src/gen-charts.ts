@@ -1848,7 +1848,6 @@ function getExcelColName(length: number): string {
 }
 
 /**
- * NOTE: Used by both: text and lineChart
  * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
  * @param {Object} opts optional shadow properties
  * @param {Object} defaults defaults for unspecified properties in `opts`
@@ -1877,7 +1876,7 @@ function createShadowElement(options: IShadowOptions, defaults: object): string 
 	strXml += '<a:' + type + 'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="' + blur + '" '
 	strXml += 'rotWithShape="' + +rotateWithShape + '"'
 	strXml += ' dist="' + offset + '" dir="' + angle + '">'
-	strXml += '<a:srgbClr val="' + color + '">' // TODO: should accept scheme colors implemented in Issue #135
+	strXml += '<a:srgbClr val="' + color + '">'
 	strXml += '<a:alpha val="' + opacity + '"/></a:srgbClr>'
 	strXml += '</a:' + type + 'Shdw>'
 	strXml += '</a:effectLst>'
