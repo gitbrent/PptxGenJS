@@ -2,8 +2,8 @@
  * PptxGenJS: Utility Methods
  */
 
-import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR } from './core-enums'
-import { IChartOpts, ILayout, ShapeFill } from './core-interfaces'
+import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR, ONEPT } from './core-enums'
+import { IChartOpts, ILayout, ShapeFill, IGlowOptions } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -147,6 +147,27 @@ export function createColorElement(colorStr: string, innerElements?: string): st
 	let colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"'
 
 	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
+}
+
+/**
+ * Creates `a:glow` element
+ * @param {Object} opts glow properties
+ * @param {Object} defaults defaults for unspecified properties in `opts`
+ * @see http://officeopenxml.com/drwSp-effects.php
+ *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
+ */
+export function createGlowElement(options: IGlowOptions, defaults: IGlowOptions): string {
+	let strXml = '',
+		opts = getMix(defaults, options),
+		size = opts['size'] * ONEPT,
+		color = opts['color'],
+		opacity = opts['opacity'] * 100000
+
+	strXml += `<a:glow rad="${size}">`
+	strXml += createColorElement(color, `<a:alpha val="${opacity}"/>`)
+	strXml += `</a:glow>`
+
+	return strXml
 }
 
 /**

@@ -14,6 +14,7 @@ import {
 	SLDNUMFLDID,
 	SLIDE_OBJECT_TYPES,
 	DEF_PRES_LAYOUT_NAME,
+	DEF_TEXT_GLOW,
 } from './core-enums'
 import { PowerPointShapes } from './core-shapes'
 import {
@@ -31,7 +32,7 @@ import {
 	IText,
 	ITextOpts,
 } from './core-interfaces'
-import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees } from './gen-utils'
+import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement } from './gen-utils'
 
 let imageSizingXml = {
 	cover: function(imgSize, boxDim) {
@@ -949,6 +950,12 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 			runProps += '<a:ln w="' + Math.round((opts.outline.size || 0.75) * ONEPT) + '">' + genXmlColorSelection(opts.outline.color || 'FFFFFF') + '</a:ln>'
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
+		if (opts.glow) {
+			runProps += '<a:effectLst>'
+			runProps += createGlowElement(opts.glow, DEF_TEXT_GLOW)
+			// FUTURE: shadow and other effects
+			runProps += '</a:effectLst>'
+		}
 		if (opts.fontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
 			runProps +=

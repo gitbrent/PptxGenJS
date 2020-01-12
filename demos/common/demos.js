@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.1.0
-* BLD.: 20200109
+* BLD.: 20200111
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -2564,11 +2564,69 @@ function genSlides_Shape(pptx) {
 }
 
 function genSlides_Text(pptx) {
-	// SLIDE 1: Multi-Line Formatting, Hyperlinks, Text Shadow, Text Outline, Line Breaks, Line Spacing
+	// SLIDE 1: Text alignment, percent x/y, etc.
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
-		slide.addTable( [ [{ text:'Text Examples: Multi-Line Formatting, Hyperlinks, Text Shadow, Text Outline, Line Breaks, Line Spacing', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		// Slide colors: bkgd/fore
+		slide.bkgd = '030303';
+		slide.color = '9F9F9F';
+		// Title
+		slide.addTable( [ [{ text:'Text Examples: Text alignment, percent x/y, etc.', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+
+		// Actual Textbox shape (can have any Height, can wrap text, etc.)
+		slide.addText([
+				{ text:'Textbox align (center/middle)', options:{ fontSize:32 } },
+				{ text:'Character Spacing 16', options:{ fontSize:16, charSpacing:16 } }
+			],
+			{ x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'middle', align:'center', isTextBox:true }
+		);
+		slide.addText(
+			[{ text:'(left/top)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
+			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'top', align:'left', margin:15 }
+		);
+		slide.addText(
+			[{ text:'Textbox' }, { text:'(right/bottom)', options:{ fontSize:12 } }],
+			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'bottom', align:'right', margin:0 }
+		);
+
+		slide.addText('^ (50%/50%)', { x:'50%', y:'50%', w:2 });
+
+		slide.addText('Plain x/y coords', { x:10, y:4.35, w:3 });
+
+		slide.addText('Escaped chars: \' " & < >', { x:10, y:5.35, w:3 });
+
+		slide.addText(
+			[
+				{ text:'Sub'},
+				{ text:'Subscript', options:{ subscript:true } },
+				{ text:' // Super'},
+				{ text:'Superscript', options:{ superscript:true } }
+			],
+			{ x:10, y:6.3, w:3.3 }
+		);
+
+		// TEST: using {option}: Add text box with multiline options:
+		slide.addText(
+			[
+				{ text:'word-level\nformatting', options:{ fontSize:32, fontFace:'Courier New', color:'99ABCC', align:'right', breakLine:true } },
+				{ text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'center' } }
+			],
+			{ x:0.5, y:4.3, w:8.5, h:2.5, margin:0.1, fill:'232323' }
+		);
+
+		var objOptions = {
+			x:0, y:7, w:'100%', h:0.5, align:'center',
+			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
+		};
+		slide.addText('Text: Arial, 24, green, bold, italic, underline, margin:0', objOptions);
+	}
+
+	// SLIDE 2: Multi-Line Formatting, Line Breaks, Line Spacing
+	{
+		var slide = pptx.addSlide();
+		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
+		slide.addTable( [ [{ text:'Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// LEFT COLUMN ------------------------------------------------------------
 
@@ -2576,23 +2634,17 @@ function genSlides_Text(pptx) {
 		slide.addText("Word-Level Formatting:", { x:0.5, y:0.6, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
 			[
-				{ text:'1st line', options:{ fontSize:24, fontFace:'Courier New', color:pptx.colors.ACCENT6, align:'right',  breakLine:true } },
-				{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:pptx.colors.ACCENT2, align:'center', breakLine:true } },
-				{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:pptx.colors.ACCENT3, align:'left',   breakLine:true } },
-				{ text:'4th line', options:{ fontSize:38, fontFace:'Arial',       color:pptx.colors.ACCENT4, align:'center', strike:true, breakLine:true } },
-				{ text:'5th line', options:{ fontSize:36, fontFace:'Times',       color:pptx.colors.ACCENT5, align:'right',  breakLine:true } }
+				{ text:'Courier New ', options:{ fontSize:36, fontFace:'Courier New', color:pptx.colors.ACCENT6 } },
+				{ text:'36', options:{ fontSize:36, fontFace:'Courier New', color:pptx.colors.ACCENT1, breakLine:true } },
+				{ text:'Arial ', options:{ fontSize:48, fontFace:'Arial', color:pptx.colors.ACCENT2 } },
+				{ text:'48', options:{ fontSize:48, fontFace:'Courier New', color:pptx.colors.ACCENT1, breakLine:true } },
+				{ text:'Verdana 48', options:{ fontSize:48, fontFace:'Verdana', color:pptx.colors.ACCENT3, align:'left', breakLine:true } },
+				{ text:'Strikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT4, align:'center', strike:true, breakLine:true } },
+				{ text:'Underline', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT4, align:'center', underline:true, breakLine:true } },
+				{ text:'\nTimes 36', options:{ fontSize:36, fontFace:'Times', color:pptx.colors.ACCENT5, align:'right',  breakLine:true } }
 			],
-			{ x:0.5, y:1.0, w:5.75, h:3.25, margin:5, fill:pptx.colors.TEXT1 }
+			{ x:0.5, y:1.0, w:5.75, h:6.0, margin:5, fill:pptx.colors.TEXT1 }
 		);
-
-		// 2: Text Effects: Outline
-		slide.addText("Text Outline:", { x:0.5, y:4.5, w:'40%', h:0.3, margin:0, color:'0088CC' });
-		slide.addText("Green Outline", { x:0.5, y:4.9, w:'40%', h:0.6, fontSize:36, color:'0088CC', outline:{size:1.5, color:pptx.colors.ACCENT6} });
-
-		// 3: Text Effects: Shadow
-		var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.6 };
-		slide.addText("Text Shadow:", { x:0.5, y:5.9, w:'40%', h:0.3, margin:0, color:'0088CC' });
-		slide.addText("type=outer, offset=10, blur=3", { x:0.5, y:6.3, w:6, h:0.6, fontSize:32, color:'0088cc', shadow:shadowOpts });
 
 		// RIGHT COLUMN ------------------------------------------------------------
 
@@ -2604,36 +2656,23 @@ function genSlides_Text(pptx) {
 		);
 
 		// 2: Line-Spacing
-		slide.addText("Line-Spacing (text):", { x:7.0, y:2.7, w:'40%', h:0.3, margin:0, color:'0088CC' });
+		slide.addText("Line-Spacing (text):", { x:7.0, y:3.3, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
 			'lineSpacing\n40pt',
-			{ x:7.0, y:3.1, w:5.75, h:1.17, align:'center', fill:'f1f1f1', color:'363636', lineSpacing:40 }
+			{ x:7.0, y:3.72, w:5.75, h:1.17, align:'center', fill:'f1f1f1', color:'363636', lineSpacing:40 }
 		);
 
 		// 3: Line-Spacing
-		slide.addText("Line-Spacing (bullets):", { x:7.0, y:4.4, w:'40%', h:0.3, margin:0, color:'0088CC' });
+		slide.addText("Line-Spacing (bullets):", { x:7.0, y:5.6, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
 			[
 				{ text:'lineSpacing\n35pt', options:{ fontSize:24, bullet:true, color:'99ABCC', lineSpacing:35 } }
 			],
-			{ x:7.0, y:4.8, w:5.75, h:1, margin:[0,0,0,10], fill:'f1f1f1' }
-		);
-
-		// 4: Hyperlinks
-		slide.addText("Hyperlinks:", { x:7.0, y:6.0, w:1.75, h:0.3, margin:0.123, color:'0088CC' });
-		slide.addText(
-			[
-				{ text:'Link with Tooltip', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } },
-				{ text:'  ...  ' },
-				{ text:'Link without Tooltip', options:{hyperlink:{url:'https://github.com/gitbrent'}} },
-				{ text:'  ...  ' },
-				{ text:'Link to Slide #4', options:{hyperlink:{slide:'4'}} }
-			],
-			{ x:7.0, y:6.4, w:5.75, h:0.6, margin:10, fill:'F1F1F1', fontSize:14 }
+			{ x:7.0, y:6.0, w:5.75, h:1, margin:[0,0,0,10], fill:'f1f1f1' }
 		);
 	}
 
-	// SLIDE 2: Bullets
+	// SLIDE 3: Bullets
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
@@ -2702,65 +2741,42 @@ function genSlides_Text(pptx) {
 		);
 	}
 
-	// SLIDE 3: Text alignment, percent x/y, etc.
+	// SLIDE 4: Hyperlinks, Text Shadow, Text Outline, Text Glow
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
-		// Slide colors: bkgd/fore
-		slide.bkgd = '030303';
-		slide.color = '9F9F9F';
-		// Title
-		slide.addTable( [ [{ text:'Text Examples: Text alignment, percent x/y, etc.', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Text Examples: Hyperlinks, Text Shadow, Text Outline, Text Glow', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
-		// Actual Textbox shape (can have any Height, can wrap text, etc.)
-		slide.addText([
-				{ text:'Textbox align (center/middle)', options:{ fontSize:32 } },
-				{ text:'Character Spacing 16', options:{ fontSize:16, charSpacing:16 } }
-			],
-			{ x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'middle', align:'center', isTextBox:true }
+		// 2: Text Effects: Outline
+		slide.addText("Text Outline:", { x:0.5, y:0.6, w:'90%', h:0.3, margin:0, color:'0088CC' });
+		slide.addText("size:2, color:ACCENT3", { x:0.5, y:1.0, w:'90%', h:1.1, fontSize:72, color:'0088CC', outline:{size:2, color:pptx.colors.ACCENT3} });
+
+		// 3: Text Effects: Glow
+		slide.addText("Text Glow:", { x:0.5, y:2.6, w:'90%', h:0.3, margin:0, color:'0088CC' });
+		slide.addText("size:10, color:ACCENT2", { x:0.5, y:3.0, w:'90%', h:1.1, fontSize:72, color:'0088CC', glow:{size:10, opacity:.25, color:pptx.colors.ACCENT2} });
+
+		// 4: Text Effects: Shadow
+		var shadowOpts = { type:'outer', color:'696969', blur:3, offset:10, angle:45, opacity:0.6 };
+		slide.addText("Text Shadow:", { x:0.5, y:4.6, w:'90%', h:0.3, margin:0, color:'0088CC' });
+		slide.addText("type:outer, offset:10, blur:3", { x:0.5, y:4.9, w:'90%', h:0.5, fontSize:32, color:'0088cc', shadow:shadowOpts });
+
+		// Hyperlinks
+		slide.addText("Hyperlinks:", { x:0.5, y:6.0, w:'90%', h:0.3, margin:0.123, color:'0088CC' });
+		slide.addText(
+			[{ text:'Link with Tooltip', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } }],
+			{ x:0.5, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
 		slide.addText(
-			[{ text:'(left/top)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
-			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'top', align:'left', margin:15 }
+			[{ text:'Link without Tooltip', options:{hyperlink:{url:'https://github.com/gitbrent'}} }],
+			{ x:5.0, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
 		slide.addText(
-			[{ text:'Textbox' }, { text:'(right/bottom)', options:{ fontSize:12 } }],
-			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'bottom', align:'right', margin:0 }
+			[{ text:'Link to Slide #4', options:{hyperlink:{slide:'4'}} }],
+			{ x:9.5, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
-
-		slide.addText('^ (50%/50%)', { x:'50%', y:'50%', w:2 });
-
-		slide.addText('Plain x/y coords', { x:10, y:4.35, w:3 });
-
-		slide.addText('Escaped chars: \' " & < >', { x:10, y:5.35, w:3 });
-
-		slide.addText(
-			[
-				{ text:'Sub'},
-				{ text:'Subscript', options:{ subscript:true } },
-				{ text:' // Super'},
-				{ text:'Superscript', options:{ superscript:true } }
-			],
-			{ x:10, y:6.3, w:3.3 }
-		);
-
-		// TEST: using {option}: Add text box with multiline options:
-		slide.addText(
-			[
-				{ text:'word-level\nformatting', options:{ fontSize:32, fontFace:'Courier New', color:'99ABCC', align:'right', breakLine:true } },
-				{ text:'...in the same textbox', options:{ fontSize:48, fontFace:'Arial', color:'FFFF00', align:'center' } }
-			],
-			{ x:0.5, y:4.3, w:8.5, h:2.5, margin:0.1, fill:'232323' }
-		);
-
-		var objOptions = {
-			x:0, y:7, w:'100%', h:0.5, align:'center',
-			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
-		};
-		slide.addText('Text: Arial, 24, green, bold, italic, underline, margin:0', objOptions);
 	}
 
-	// SLIDE 4: Scheme Colors
+	// SLIDE 5: Scheme Colors
 	{
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
