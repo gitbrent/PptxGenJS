@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-11T21:16:56.065Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-12T05:05:14.018Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -22,6 +22,7 @@ var DEF_PRES_LAYOUT = 'LAYOUT_16x9';
 var DEF_PRES_LAYOUT_NAME = 'DEFAULT';
 var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 var DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+var DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 };
 var AXIS_ID_VALUE_PRIMARY = '2094734552';
 var AXIS_ID_VALUE_SECONDARY = '2094734553';
 var AXIS_ID_CATEGORY_PRIMARY = '2094734554';
@@ -297,6 +298,20 @@ function createColorElement(colorStr, innerElements) {
     var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
     var colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"';
     return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>';
+}
+/**
+ * Creates `a:glow` element
+ * @param {Object} opts glow properties
+ * @param {Object} defaults defaults for unspecified properties in `opts`
+ * @see http://officeopenxml.com/drwSp-effects.php
+ *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
+ */
+function createGlowElement(options, defaults) {
+    var strXml = '', opts = getMix(defaults, options), size = opts['size'] * ONEPT, color = opts['color'], opacity = opts['opacity'] * 100000;
+    strXml += "<a:glow rad=\"" + size + "\">";
+    strXml += createColorElement(color, "<a:alpha val=\"" + opacity + "\"/>");
+    strXml += "</a:glow>";
+    return strXml;
 }
 /**
  * Create color selection
@@ -3085,6 +3100,12 @@ function genXmlTextRunProperties(opts, isDefault) {
         }
         if (opts.color)
             runProps += genXmlColorSelection(opts.color);
+        if (opts.glow) {
+            runProps += '<a:effectLst>';
+            runProps += createGlowElement(opts.glow, DEF_TEXT_GLOW);
+            // FUTURE: shadow and other effects
+            runProps += '</a:effectLst>';
+        }
         if (opts.fontFace) {
             // NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
             runProps +=
@@ -6601,7 +6622,6 @@ function getExcelColName(length) {
     return strName;
 }
 /**
- * NOTE: Used by both: text and lineChart
  * Creates `a:innerShdw` or `a:outerShdw` depending on pass options `opts`.
  * @param {Object} opts optional shadow properties
  * @param {Object} defaults defaults for unspecified properties in `opts`
@@ -6621,7 +6641,7 @@ function createShadowElement(options, defaults) {
     strXml += '<a:' + type + 'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="' + blur + '" ';
     strXml += 'rotWithShape="' + +rotateWithShape + '"';
     strXml += ' dist="' + offset + '" dir="' + angle + '">';
-    strXml += '<a:srgbClr val="' + color + '">'; // TODO: should accept scheme colors implemented in Issue #135
+    strXml += '<a:srgbClr val="' + color + '">';
     strXml += '<a:alpha val="' + opacity + '"/></a:srgbClr>';
     strXml += '</a:' + type + 'Shdw>';
     strXml += '</a:effectLst>';
