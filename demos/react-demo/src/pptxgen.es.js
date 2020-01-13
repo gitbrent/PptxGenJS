@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-12T05:05:14.018Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-13T00:32:23.806Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -5403,7 +5403,7 @@ function makeXmlCharts(rel) {
             strXml += '	  <a:lstStyle/>';
             strXml += '	  <a:p>';
             strXml += '		<a:pPr rtl="0">';
-            strXml += '		  <a:defRPr sz="1197" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">';
+            strXml += "       <a:defRPr sz=\"" + (rel.opts.dataTableFontSize || DEF_FONT_SIZE) + "00\" b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\" kern=\"1200\" baseline=\"0\">";
             strXml += '			<a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>';
             strXml += '			<a:latin typeface="+mn-lt"/>';
             strXml += '			<a:ea typeface="+mn-ea"/>';
