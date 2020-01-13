@@ -165,6 +165,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	showDataTableOutline?: boolean
 	showDataTableVertBorder?: boolean
 	showLabel?: boolean
+	showLeaderLines?: boolean
 	showLegend?: boolean
 	showPercent?: boolean
 	showSerAxisTitle?: boolean

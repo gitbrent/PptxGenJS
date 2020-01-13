@@ -638,8 +638,8 @@ function genSlides_Chart(pptx) {
 	var dataChartPieStat = [
 		{
 			name  : 'Project Status',
-			labels: ['Red', 'Amber', 'Green', 'Unknown'],
-			values: [8, 20, 30, 2]
+			labels: ['Red', 'Amber', 'Green', 'Complete', 'Cancelled', 'Unknown'],
+			values: [25, 5, 5, 5, 5, 5]
 		}
 	];
 	var dataChartPieLocs = [
@@ -1522,30 +1522,39 @@ function genSlides_Chart(pptx) {
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart(
 			pptx.charts.PIE, dataChartPieStat,
-			{x:0.5, y:0.5, w:4.2, h:3.2, showLegend:true, legendPos:'left', legendFontFace:'Courier New'}
+			{
+				x:0.5, y:0.5, w:4.2, h:3.2,
+				legendPos:'left',
+				legendFontFace:'Courier New',
+				showLegend : true,
+				showLeaderLines: true,
+				showPercent: false,
+				showValue  : true,
+			}
 		);
 
-		// TOP-RIGHT
+		// TOP-MIDDLE
 		slide.addText( '.', {x:5.6, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t'} );
+		slide.addChart( pptx.charts.PIE, dataChartPieStat, {x:5.6, y:0.5, w:3.2, h:3.2, showLegend:true, legendPos:'t' } );
 
 		// BTM-LEFT
 		slide.addText( '.', {x:0.5, y:4.0, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:0.5, y:4.0, w:4.2, h:3.2, showLegend:true, legendPos:'r'} );
 
-		// BTM-RIGHT
+		// BTM-MIDDLE
 		slide.addText( '.', {x:5.6, y:4.0, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:5.6, y:4.0, w:3.2, h:3.2, showLegend:true, legendPos:'b'} );
 
 		// BOTH: TOP-RIGHT
-		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		// DEMO: `legendFontSize`, `titleAlign`, `titlePos`
+		slide.addText( '.', {x:9.8, y:0.5, w:3.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
 		slide.addChart( pptx.charts.PIE, dataChartPieLocs,
 		{
 			x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'},
 			showLegend: true,
 			legendPos: 't',
 			showTitle: true,
+			showLeaderLines: true,
 			title:'Left Title & Large Legend',
 
 			legendFontSize: 14,
@@ -1565,7 +1574,7 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var optsChartPie1 = { x:0.5, y:1.0, w:6.0, h:6.0,
-			chartColors: ['FC0000','FFCC00','009900','6600CC'],
+			chartColors: ['FC0000','FFCC00','009900','0088CC','696969','6600CC'],
 			dataBorder       : { pt:'2', color:'F1F1F1' },
 			dataLabelColor   : 'FFFFFF',
 			dataLabelFontSize: 14,

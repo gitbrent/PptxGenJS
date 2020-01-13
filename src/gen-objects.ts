@@ -231,6 +231,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true
 	options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false
 	options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false
+	options.showLeaderLines = options.showLeaderLines === true || options.showLeaderLines === false ? options.showLeaderLines : false
 	options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true
 	options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true
 	options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true
@@ -261,12 +262,8 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 		options.dataBorder.color = 'F9F9F9'
 	//
 	if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatCode = 'General'
-	options.dataLabelFormatCode =
-		options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
-			? options.dataLabelFormatCode
-			: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-			? '0%'
-			: '#,##0'
+	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
+	if (options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
 	if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatScatter = 'custom'

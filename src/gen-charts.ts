@@ -752,7 +752,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 					strXml += '    <c:showSerName val="0"/>'
 					strXml += '    <c:showPercent val="0"/>'
 					strXml += '    <c:showBubbleSize val="0"/>'
-					strXml += '    <c:showLeaderLines val="0"/>'
+					strXml += `    <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
 					strXml += '  </c:dLbls>'
 				}
 
@@ -889,7 +889,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '    <c:showSerName val="0"/>'
 				strXml += '    <c:showPercent val="0"/>'
 				strXml += '    <c:showBubbleSize val="0"/>'
-				strXml += '    <c:showLeaderLines val="0"/>'
+				strXml += `    <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
 				strXml += '  </c:dLbls>'
 			}
 
@@ -1442,7 +1442,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dLbl>'
 				strXml += '  <c:idx val="' + idx + '"/>'
-				strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>'
+				strXml += `    <c:numFmt formatCode="${opts.dataLabelFormatCode||'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/><a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
@@ -1464,7 +1464,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += '  </c:dLbl>'
 			})
-			strXml += `<c:numFmt formatCode="${opts.dataLabelFormatCode}" sourceLinked="0"/>`
+			strXml += ` <c:numFmt formatCode="${opts.dataLabelFormatCode||'General'}" sourceLinked="0"/>`
 			strXml += '	<c:txPr>'
 			strXml += '	  <a:bodyPr/>'
 			strXml += '	  <a:lstStyle/>'
@@ -1483,7 +1483,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			strXml += '	<c:showSerName val="0"/>'
 			strXml += '	<c:showPercent val="1"/>'
 			strXml += '	<c:showBubbleSize val="0"/>'
-			strXml += '	<c:showLeaderLines val="0"/>'
+			strXml += ` <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
 			strXml += '</c:dLbls>'
 
 			// 2: "Categories"

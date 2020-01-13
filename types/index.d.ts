@@ -202,140 +202,143 @@ declare namespace PptxGenJS {
 
 	export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 		type: CHART_TYPE_NAMES | IChartMulti[]
-		layout?: PositionOptions
-		barDir?: string
-		barGrouping?: string
-		barGapWidthPct?: number
-		barGapDepthPct?: number
+		axisPos?: string
 		bar3DShape?: string
-		catAxisLineShow?: boolean
-		catAxisMaxVal?: number
-		catAxisMinVal?: number
+		barDir?: string
+		barGapDepthPct?: number
+		barGapWidthPct?: number
+		barGrouping?: string
+		border?: IBorderOptions
+		catAxes?: Array<number>
+		catAxisBaseTimeUnit?: string
 		catAxisHidden?: boolean
-		catAxisOrientation?: 'minMax' | 'minMax'
-		catAxisLabelRotate?: number
+		catAxisLabelColor?: string
 		catAxisLabelFontBold?: boolean
+		catAxisLabelFontFace?: string
+		catAxisLabelFontSize?: number
+		catAxisLabelFrequency?: string
+		catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+		catAxisLabelRotate?: number
+		catAxisLineShow?: boolean
+		catAxisMajorTickMark?: ChartAxisTickMark
+		catAxisMajorTimeUnit?: string
+		catAxisMajorUnit?: string
+		catAxisMaxVal?: number
+		catAxisMinorTickMark?: ChartAxisTickMark
+		catAxisMinorTimeUnit?: string
+		catAxisMinorUnit?: string
+		catAxisMinVal?: number
+		catAxisOrientation?: 'minMax' | 'minMax'
+		catAxisTitle?: string
 		catAxisTitleColor?: string
 		catAxisTitleFontFace?: string
 		catAxisTitleFontSize?: number
 		catAxisTitleRotate?: number
-		catAxisTitle?: string
-		catAxisLabelFontSize?: number
-		catAxisLabelColor?: string
-		catAxisLabelFontFace?: string
-		catAxisLabelFrequency?: string
-		catAxisBaseTimeUnit?: string
-		catAxisMajorTimeUnit?: string
-		catAxisMinorTimeUnit?: string
-		catAxisMajorUnit?: string
-		catAxisMinorUnit?: string
-		catAxisMajorTickMark?: ChartAxisTickMark
-		catAxisMinorTickMark?: ChartAxisTickMark
 		catGridLine?: OptsChartGridLine
-		valGridLine?: OptsChartGridLine
+		catLabelFormatCode?: string
 		chartColors?: Array<string>
 		chartColorsOpacity?: number
-		showLabel?: boolean
-		lang?: string
-		dataNoEffects?: string
-		dataLabelFormatScatter?: string
-		dataLabelFormatCode?: string
+		dataBorder?: IBorderOptions
 		dataLabelBkgrdColors?: boolean
-		dataLabelFontSize?: number
 		dataLabelColor?: string
+		dataLabelFontBold?: boolean
 		dataLabelFontFace?: string
+		dataLabelFontSize?: number
+		dataLabelFormatCode?: string
+		dataLabelFormatScatter?: string
 		dataLabelPosition?: string
+		dataNoEffects?: string
+		dataTableFontSize?: number
 		displayBlanksAs?: string
 		fill?: string
-		border?: IBorderOptions
 		hasArea?: boolean
-		catAxes?: Array<number>
-		valAxes?: Array<number>
-		lineDataSymbol?: string
-		lineDataSymbolSize?: number
-		lineDataSymbolLineColor?: string
-		lineDataSymbolLineSize?: number
-		showLegend?: boolean
-		showCatAxisTitle?: boolean
-		legendPos?: string
+		holeSize?: number
+		invertedColors?: string
+		lang?: string
+		layout?: PositionOptions
+		legendColor?: string
 		legendFontFace?: string
 		legendFontSize?: number
-		legendColor?: string
+		legendPos?: string
+		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+		lineDataSymbol?: string
+		lineDataSymbolLineColor?: string
+		lineDataSymbolLineSize?: number
+		lineDataSymbolSize?: number
+		lineSize?: number
 		lineSmooth?: boolean
-		invertedColors?: string
-		serAxisOrientation?: string
+		radarStyle?: string
+		serAxisBaseTimeUnit?: string
 		serAxisHidden?: boolean
-		serGridLine?: OptsChartGridLine
-		showSerAxisTitle?: boolean
-		serLabelFormatCode?: string
-		serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
-		serAxisLineShow?: boolean
-		serAxisLabelFontSize?: string
 		serAxisLabelColor?: string
 		serAxisLabelFontFace?: string
+		serAxisLabelFontSize?: string
 		serAxisLabelFrequency?: string
-		serAxisBaseTimeUnit?: string
+		serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+		serAxisLineShow?: boolean
 		serAxisMajorTimeUnit?: string
-		serAxisMinorTimeUnit?: string
 		serAxisMajorUnit?: number
+		serAxisMinorTimeUnit?: string
 		serAxisMinorUnit?: number
+		serAxisOrientation?: string
+		serAxisTitle?: string
 		serAxisTitleColor?: string
 		serAxisTitleFontFace?: string
 		serAxisTitleFontSize?: number
 		serAxisTitleRotate?: number
-		serAxisTitle?: string
+		serGridLine?: OptsChartGridLine
+		serLabelFormatCode?: string
+		shadow?: IShadowOptions
+		showCatAxisTitle?: boolean
 		showDataTable?: boolean
 		showDataTableHorzBorder?: boolean
-		showDataTableVertBorder?: boolean
-		showDataTableOutline?: boolean
 		showDataTableKeys?: boolean
+		showDataTableOutline?: boolean
+		showDataTableVertBorder?: boolean
+		showLabel?: boolean
+		showLeaderLines?: boolean
+		showLegend?: boolean
+		showPercent?: boolean
+		showSerAxisTitle?: boolean
+		showTitle?: boolean
+		showValAxisTitle?: boolean
+		showValue?: boolean
 		title?: string
-		titleFontSize?: number
+		titleAlign?: string
 		titleColor?: string
 		titleFontFace?: string
-		titleRotate?: number
-		titleAlign?: string
+		titleFontSize?: number
 		titlePos?: { x: number; y: number }
-		dataLabelFontBold?: boolean
-		valueBarColors?: Array<string>
-		holeSize?: number
-		showTitle?: boolean
-		showValue?: boolean
-		showPercent?: boolean
-		catLabelFormatCode?: string
-		dataBorder?: IBorderOptions
-		lineSize?: number
-		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
-		radarStyle?: string
-		shadow?: IShadowOptions
-		catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
-		valAxisOrientation?: 'minMax' | 'minMax'
+		titleRotate?: number
+		v3DPerspective?: number
+		v3DRAngAx?: boolean
+		v3DRotX?: number
+		v3DRotY?: number
+		valAxes?: Array<number>
 		valAxisCrossesAt?: string | number
-		valAxisMaxVal?: number
-		valAxisMinVal?: number
+		valAxisDisplayUnit: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 		valAxisHidden?: boolean
+		valAxisLabelColor?: string
+		valAxisLabelFontBold?: boolean
+		valAxisLabelFontFace?: string
+		valAxisLabelFontSize?: number
+		valAxisLabelFormatCode?: string
+		valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+		valAxisLabelRotate?: number
+		valAxisLineShow?: boolean
+		valAxisMajorTickMark?: ChartAxisTickMark
+		valAxisMajorUnit?: number
+		valAxisMaxVal?: number
+		valAxisMinorTickMark?: ChartAxisTickMark
+		valAxisMinVal?: number
+		valAxisOrientation?: 'minMax' | 'minMax'
+		valAxisTitle?: string
 		valAxisTitleColor?: string
 		valAxisTitleFontFace?: string
 		valAxisTitleFontSize?: number
 		valAxisTitleRotate?: number
-		valAxisTitle?: string
-		valAxisLabelFormatCode?: string
-		valAxisLineShow?: boolean
-		valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
-		valAxisLabelRotate?: number
-		valAxisLabelFontSize?: number
-		valAxisLabelFontBold?: boolean
-		valAxisLabelColor?: string
-		valAxisLabelFontFace?: string
-		valAxisMajorUnit?: number
-		valAxisMajorTickMark?: ChartAxisTickMark
-		valAxisMinorTickMark?: ChartAxisTickMark
-		showValAxisTitle?: boolean
-		axisPos?: string
-		v3DRotX?: number
-		v3DRotY?: number
-		v3DRAngAx?: boolean
-		v3DPerspective?: number
+		valGridLine?: OptsChartGridLine
+		valueBarColors?: Array<string>
 	}
 	export interface IImageOpts extends PositionOptions, OptsDataOrPath {
 		type?: 'audio' | 'online' | 'video'
