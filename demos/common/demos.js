@@ -1674,7 +1674,6 @@ function genSlides_Chart(pptx) {
 			fill: 'f2f9fc',
 			//catAxisOrientation: 'maxMin',
 			//valAxisOrientation: 'maxMin',
-			showCatAxisTitle: false,
 			showValAxisTitle: false,
 			lineSize: 0,
 
