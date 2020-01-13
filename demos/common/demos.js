@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.1.0
-* BLD.: 20200111
+* BLD.: 20200112
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -1033,7 +1033,8 @@ function genSlides_Chart(pptx) {
 			showDataTableKeys:       true,
 			showDataTableHorzBorder: false,
 			showDataTableVertBorder: false,
-			showDataTableOutline:    false
+			showDataTableOutline:    false,
+			dataTableFontSize: 10
 		};
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar3 );
 
