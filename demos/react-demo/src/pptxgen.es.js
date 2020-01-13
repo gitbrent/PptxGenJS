@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-13T00:32:23.806Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-13T02:36:48.241Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -4058,6 +4058,7 @@ function addChartDefinition(target, type, data, opt) {
     options.showPercent = options.showPercent === true || options.showPercent === false ? options.showPercent : true;
     options.showTitle = options.showTitle === true || options.showTitle === false ? options.showTitle : false;
     options.showValue = options.showValue === true || options.showValue === false ? options.showValue : false;
+    options.showLeaderLines = options.showLeaderLines === true || options.showLeaderLines === false ? options.showLeaderLines : false;
     options.catAxisLineShow = typeof options.catAxisLineShow !== 'undefined' ? options.catAxisLineShow : true;
     options.valAxisLineShow = typeof options.valAxisLineShow !== 'undefined' ? options.valAxisLineShow : true;
     options.serAxisLineShow = typeof options.serAxisLineShow !== 'undefined' ? options.serAxisLineShow : true;
@@ -4089,12 +4090,9 @@ function addChartDefinition(target, type, data, opt) {
     //
     if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER)
         options.dataLabelFormatCode = 'General';
-    options.dataLabelFormatCode =
-        options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string'
-            ? options.dataLabelFormatCode
-            : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
-                ? '0%'
-                : '#,##0';
+    options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0';
+    if (options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT)
+        options.dataLabelFormatCode = options.showPercent ? '0%' : 'General';
     //
     // Set default format for Scatter chart labels to custom string if not defined
     if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER)
@@ -5592,7 +5590,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '    <c:showSerName val="0"/>';
                     strXml += '    <c:showPercent val="0"/>';
                     strXml += '    <c:showBubbleSize val="0"/>';
-                    strXml += '    <c:showLeaderLines val="0"/>';
+                    strXml += "    <c:showLeaderLines val=\"" + (opts.showLeaderLines ? '1' : '0') + "\"/>";
                     strXml += '  </c:dLbls>';
                 }
                 // 'c:marker' tag: `lineDataSymbol`
@@ -5724,7 +5722,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '    <c:showSerName val="0"/>';
                 strXml += '    <c:showPercent val="0"/>';
                 strXml += '    <c:showBubbleSize val="0"/>';
-                strXml += '    <c:showLeaderLines val="0"/>';
+                strXml += "    <c:showLeaderLines val=\"" + (opts.showLeaderLines ? '1' : '0') + "\"/>";
                 strXml += '  </c:dLbls>';
             }
             // 4: Add more chart options (gapWidth, line Marker, etc.)
@@ -6239,7 +6237,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             obj.labels.forEach(function (_label, idx) {
                 strXml += '<c:dLbl>';
                 strXml += '  <c:idx val="' + idx + '"/>';
-                strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
+                strXml += "    <c:numFmt formatCode=\"" + (opts.dataLabelFormatCode || 'General') + "\" sourceLinked=\"0\"/>";
                 strXml += '    <c:txPr>';
                 strXml += '      <a:bodyPr/><a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
@@ -6261,7 +6259,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '    <c:showBubbleSize val="0"/>';
                 strXml += '  </c:dLbl>';
             });
-            strXml += "<c:numFmt formatCode=\"" + opts.dataLabelFormatCode + "\" sourceLinked=\"0\"/>";
+            strXml += " <c:numFmt formatCode=\"" + (opts.dataLabelFormatCode || 'General') + "\" sourceLinked=\"0\"/>";
             strXml += '	<c:txPr>';
             strXml += '	  <a:bodyPr/>';
             strXml += '	  <a:lstStyle/>';
@@ -6280,7 +6278,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '	<c:showSerName val="0"/>';
             strXml += '	<c:showPercent val="1"/>';
             strXml += '	<c:showBubbleSize val="0"/>';
-            strXml += '	<c:showLeaderLines val="0"/>';
+            strXml += " <c:showLeaderLines val=\"" + (opts.showLeaderLines ? '1' : '0') + "\"/>";
             strXml += '</c:dLbls>';
             // 2: "Categories"
             strXml += '<c:cat>';
