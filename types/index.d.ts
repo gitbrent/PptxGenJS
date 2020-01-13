@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.0.0
+// Type definitions for pptxgenjs 3.1.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -9,10 +9,6 @@
 export as namespace PptxGenJS
 
 export = PptxGenJS
-
-// TESTING:
-//let newppt = new PptxGenJS()
-//newppt.addSlide().
 
 declare class PptxGenJS {
 	/**
@@ -156,6 +152,7 @@ declare namespace PptxGenJS {
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 	export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 	export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
+	export type BkgdOpts = { src?: string; path?: string; data?: string }
 	type MediaType = 'audio' | 'online' | 'video'
 
 	export interface PositionOptions {
@@ -194,6 +191,11 @@ declare namespace PptxGenJS {
 		opacity: number
 		blur?: number
 		offset?: number
+		color?: string
+	}
+	export interface IGlowOptions {
+		size: number
+		opacity: number
 		color?: string
 	}
 
@@ -482,9 +484,10 @@ declare namespace PptxGenJS {
 		bullet?: boolean | { type?: string; code?: string; style?: string; startAt?: number }
 		charSpacing?: number
 		color?: string
-		fill?: Color
+		fill?: ShapeFill
 		fontFace?: string
 		fontSize?: number
+		glow?: IGlowOptions
 		hyperlink?: HyperLink
 		indentLevel?: number
 		inset?: number
@@ -529,9 +532,9 @@ declare namespace PptxGenJS {
 		height?: number
 	}
 	export interface IUserLayout {
-	    name: string;
-	    width: number;
-	    height: number;
+		name: string
+		width: number
+		height: number
 	}
 	export interface ISlideNumber extends PositionOptions {
 		fontFace?: string
@@ -543,15 +546,9 @@ declare namespace PptxGenJS {
 		height?: number
 		width?: number
 		margin?: Margin
-		bkgd?: string
+		bkgd?: string | BkgdOpts
 		objects?: [
-
-				| { chart: {} }
-				| { image: {} }
-				| { line: {} }
-				| { rect: {} }
-				| { text: { options: ITextOpts } }
-				| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
+			{ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: { options: ITextOpts } } | { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 		]
 		slideNumber?: ISlideNumber
 	}
@@ -700,6 +697,8 @@ declare namespace PptxGenJS {
 		slideLayouts?: ISlideLayout[]
 	}
 
+	// SLIDE
+	// =====
 	export class Slide {
 		bkgd: string
 		color: string
