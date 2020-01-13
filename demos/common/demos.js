@@ -2338,6 +2338,7 @@ function genSlides_Chart(pptx) {
 	slide15();
 	slide16();
 	slide17();
+	slide18();
 }
 
 function genSlides_Image(pptx) {
