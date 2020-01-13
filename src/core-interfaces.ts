@@ -20,6 +20,7 @@ export type VAlign = 'top' | 'middle' | 'bottom'
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
+export type BkgdOpts = { src?: string; path?: string; data?: string }
 type MediaType = 'audio' | 'online' | 'video'
 
 export interface PositionOptions {
@@ -351,6 +352,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	bullet?: boolean | { type?: string; code?: string; style?: string; startAt?: number }
 	charSpacing?: number
 	color?: string
+	fill?: ShapeFill
 	fontFace?: string
 	fontSize?: number
 	glow?: IGlowOptions
@@ -412,7 +414,7 @@ export interface ISlideMasterOptions {
 	height?: number
 	width?: number
 	margin?: Margin
-	bkgd?: string
+	bkgd?: string | BkgdOpts
 	objects?: [
 		{ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: { options: ITextOpts } } | { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 	]

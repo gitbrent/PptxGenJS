@@ -39,6 +39,7 @@ import {
 	OptsChartGridLine,
 	TableRow,
 	ISlideMasterOptions,
+    BkgdOpts,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities } from './gen-utils'
@@ -910,10 +911,10 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {String|Object} bkg - color string or an object with image definition
+ * @param {String|BkgdOpts} bkg - color string or an object with image definition
  * @param {ISlide} target - slide object that the background is set to
  */
-function addBackgroundDefinition(bkg: string | { src?: string; path?: string; data?: string }, target: ISlide | ISlideLayout) {
+function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlide | ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null

@@ -482,6 +482,7 @@ declare namespace PptxGenJS {
 		bullet?: boolean | { type?: string; code?: string; style?: string; startAt?: number }
 		charSpacing?: number
 		color?: string
+		fill?: Color
 		fontFace?: string
 		fontSize?: number
 		hyperlink?: HyperLink
