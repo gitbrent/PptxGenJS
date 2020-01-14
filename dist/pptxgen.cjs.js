@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-13T02:36:48.237Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-14T04:55:45.352Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4661,19 +4661,19 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
     }
     // STEP 2: Transform `align`/`valign` to XML values, store in bodyProp for XML gen
     {
-        if ((newObject.options.align || '').toLowerCase().startsWith('c'))
+        if ((newObject.options.align || '').toLowerCase().indexOf('c') === 0)
             newObject.options.bodyProp.align = TEXT_HALIGN.center;
-        else if ((newObject.options.align || '').toLowerCase().startsWith('l'))
+        else if ((newObject.options.align || '').toLowerCase().indexOf('l') === 0)
             newObject.options.bodyProp.align = TEXT_HALIGN.left;
-        else if ((newObject.options.align || '').toLowerCase().startsWith('r'))
+        else if ((newObject.options.align || '').toLowerCase().indexOf('r') === 0)
             newObject.options.bodyProp.align = TEXT_HALIGN.right;
-        else if ((newObject.options.align || '').toLowerCase().startsWith('j'))
+        else if ((newObject.options.align || '').toLowerCase().indexOf('j') === 0)
             newObject.options.bodyProp.align = TEXT_HALIGN.justify;
-        if ((newObject.options.valign || '').toLowerCase().startsWith('b'))
+        if ((newObject.options.valign || '').toLowerCase().indexOf('b') === 0)
             newObject.options.bodyProp.anchor = TEXT_VALIGN.b;
-        else if ((newObject.options.valign || '').toLowerCase().startsWith('m'))
+        else if ((newObject.options.valign || '').toLowerCase().indexOf('m') === 0)
             newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr;
-        else if ((newObject.options.valign || '').toLowerCase().startsWith('t'))
+        else if ((newObject.options.valign || '').toLowerCase().indexOf('t') === 0)
             newObject.options.bodyProp.anchor = TEXT_VALIGN.t;
     }
     // STEP 3: ROBUST: Set rational values for some shadow props if needed
@@ -4702,7 +4702,7 @@ function addPlaceholdersToSlideLayouts(slide) {
 /* -------------------------------------------------------------------------------- */
 /**
  * Adds a background image or color to a slide definition.
- * @param {String|Object} bkg - color string or an object with image definition
+ * @param {String|BkgdOpts} bkg - color string or an object with image definition
  * @param {ISlide} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg, target) {
