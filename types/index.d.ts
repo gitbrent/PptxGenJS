@@ -185,6 +185,10 @@ declare namespace PptxGenJS {
 	}
 	type MediaType = 'audio' | 'online' | 'video'
 
+	export interface FontOptions {
+		fontFace?: string
+		fontSize?: number
+	}
 	export interface PositionOptions {
 		x?: Coord
 		y?: Coord
@@ -408,11 +412,9 @@ declare namespace PptxGenJS {
 		rotate?: number
 		shadow?: IShadowOptions
 	}
-	export interface IChartTitleOpts {
+	export interface IChartTitleOpts extends FontOptions {
 		title: string
 		color?: String
-		fontSize?: number
-		fontFace?: string
 		rotate?: number
 		titleAlign?: string
 		titlePos?: {
@@ -457,7 +459,7 @@ declare namespace PptxGenJS {
 		slideMargin?: Margin
 		verbose?: boolean
 	}
-	export interface ITableCellOpts {
+	export interface ITableCellOpts extends FontOptions {
 		autoPageCharWeight?: number
 		autoPageLineWeight?: number
 		align?: HAlign
@@ -466,13 +468,11 @@ declare namespace PptxGenJS {
 		color?: Color
 		colspan?: number
 		fill?: ShapeFill
-		fontFace?: string
-		fontSize?: number
 		margin?: Margin
 		rowspan?: number
 		valign?: VAlign
 	}
-	export interface ITableOptions extends PositionOptions {
+	export interface ITableOptions extends PositionOptions, FontOptions {
 		align?: HAlign
 		autoPage?: boolean
 		autoPageCharWeight?: number
@@ -482,7 +482,6 @@ declare namespace PptxGenJS {
 		colspan?: number
 		colW?: number | number[]
 		fill?: Color
-		fontSize?: number
 		margin?: Margin
 		newSlideStartY?: number
 		rowW?: number | number[]
@@ -509,7 +508,7 @@ declare namespace PptxGenJS {
 	export interface TableRowSlide {
 		rows: ITableRow[]
 	}
-	export interface ITextOpts extends PositionOptions, OptsDataOrPath {
+	export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
 		align?: HAlign
 		autoFit?: boolean
 		bodyProp?: {
@@ -536,8 +535,6 @@ declare namespace PptxGenJS {
 		charSpacing?: number
 		color?: string
 		fill?: ShapeFill
-		fontFace?: string
-		fontSize?: number
 		glow?: IGlowOptions
 		hyperlink?: HyperLink
 		indentLevel?: number
@@ -587,9 +584,7 @@ declare namespace PptxGenJS {
 		width: number
 		height: number
 	}
-	export interface ISlideNumber extends PositionOptions {
-		fontFace?: string
-		fontSize?: number
+	export interface ISlideNumber extends PositionOptions, FontOptions {
 		color?: string
 	}
 	export interface ISlideMasterOptions {

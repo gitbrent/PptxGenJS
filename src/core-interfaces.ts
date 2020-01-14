@@ -23,6 +23,10 @@ export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 export type BkgdOpts = { src?: string; path?: string; data?: string }
 type MediaType = 'audio' | 'online' | 'video'
 
+export interface FontOptions {
+	fontFace?: string
+	fontSize?: number
+}
 export interface PositionOptions {
 	x?: Coord
 	y?: Coord
@@ -252,11 +256,9 @@ export interface IShapeOptions extends PositionOptions {
 	shadow?: IShadowOptions
 }
 
-export interface IChartTitleOpts {
+export interface IChartTitleOpts extends FontOptions {
 	title: string
 	color?: String
-	fontSize?: number
-	fontFace?: string
 	rotate?: number
 	titleAlign?: string
 	titlePos?: { x: number; y: number }
@@ -285,7 +287,7 @@ export interface ITableToSlidesOpts extends ITableOptions {
 	slideMargin?: Margin
 	verbose?: boolean // Undocumented; shows verbose output
 }
-export interface ITableCellOpts {
+export interface ITableCellOpts extends FontOptions {
 	autoPageCharWeight?: number
 	autoPageLineWeight?: number
 	align?: HAlign
@@ -294,13 +296,11 @@ export interface ITableCellOpts {
 	color?: Color
 	colspan?: number
 	fill?: ShapeFill
-	fontFace?: string
-	fontSize?: number
 	margin?: Margin
 	rowspan?: number
 	valign?: VAlign
 }
-export interface ITableOptions extends PositionOptions {
+export interface ITableOptions extends PositionOptions, FontOptions {
 	align?: HAlign
 	autoPage?: boolean
 	autoPageCharWeight?: number
@@ -310,7 +310,6 @@ export interface ITableOptions extends PositionOptions {
 	colspan?: number
 	colW?: number | number[]
 	fill?: Color
-	fontSize?: number
 	margin?: Margin
 	newSlideStartY?: number
 	rowW?: number | number[]
@@ -340,7 +339,7 @@ export interface TableRowSlide {
 	rows: ITableRow[]
 }
 
-export interface ITextOpts extends PositionOptions, OptsDataOrPath {
+export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
 	align?: HAlign
 	autoFit?: boolean
 	bodyProp?: {
@@ -361,8 +360,6 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	charSpacing?: number
 	color?: string
 	fill?: ShapeFill
-	fontFace?: string
-	fontSize?: number
 	glow?: IGlowOptions
 	hyperlink?: HyperLink
 	indentLevel?: number
@@ -412,9 +409,7 @@ export interface IUserLayout {
 	width: number
 	height: number
 }
-export interface ISlideNumber extends PositionOptions {
-	fontFace?: string
-	fontSize?: number
+export interface ISlideNumber extends PositionOptions, FontOptions {
 	color?: string
 }
 export interface ISlideMasterOptions {
