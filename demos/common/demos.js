@@ -1462,6 +1462,13 @@ function genSlides_Chart(pptx) {
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
+		var arrDataAreaSm = [
+			{
+				name  : 'Small Samples',
+				labels: ['Q1','Q2','Q3','Q4'],
+				values: [15, 46, 31, 85]
+			}
+		];
 		var arrDataTimeline2ser = [
 			{
 				name  : 'Actual Sales',
@@ -1479,9 +1486,13 @@ function genSlides_Chart(pptx) {
 		var optsChartLine1 = {
 			x:0.5, y:0.6, w:'45%', h:3,
 			catAxisLabelRotate: 45,
-			catAxisOrientation:'maxMin', valAxisOrientation:'maxMin'
+			fill: 'D1E1F1',
+			chartColors: ['0088CC'],
+			chartColorsOpacity: 25,
+			dataBorder: {pt:2, color:'FFFFFF'},
+			showValue: true
 		};
-		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine1 );
+		slide.addChart( pptx.charts.AREA, arrDataAreaSm, optsChartLine1 );
 
 		// TOP-RIGHT
 		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
@@ -1489,6 +1500,7 @@ function genSlides_Chart(pptx) {
 			chartColorsOpacity: 25,
 			valAxisLabelRotate: 5,
 			dataBorder: {pt:2, color:'FFFFFF'},
+			showValue: false,
 			fill: 'D1E1F1'
 		};
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
