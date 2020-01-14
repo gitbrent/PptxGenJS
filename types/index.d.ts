@@ -44,6 +44,7 @@ declare class PptxGenJS {
 	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PPT will throw errors upon opening!)
 	 */
 	revision: string
+	shapes: {[key: string]: PptxGenJS.IShape}
 	subject: string
 	title: string
 
