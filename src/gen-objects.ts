@@ -39,7 +39,7 @@ import {
 	OptsChartGridLine,
 	TableRow,
 	ISlideMasterOptions,
-    BkgdOpts,
+	BkgdOpts,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities } from './gen-utils'
@@ -869,14 +869,14 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 
 	// STEP 2: Transform `align`/`valign` to XML values, store in bodyProp for XML gen
 	{
-		if ((newObject.options.align || '').toLowerCase().startsWith('c')) newObject.options.bodyProp.align = TEXT_HALIGN.center
-		else if ((newObject.options.align || '').toLowerCase().startsWith('l')) newObject.options.bodyProp.align = TEXT_HALIGN.left
-		else if ((newObject.options.align || '').toLowerCase().startsWith('r')) newObject.options.bodyProp.align = TEXT_HALIGN.right
-		else if ((newObject.options.align || '').toLowerCase().startsWith('j')) newObject.options.bodyProp.align = TEXT_HALIGN.justify
+		if ((newObject.options.align || '').toLowerCase().indexOf('c') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.center
+		else if ((newObject.options.align || '').toLowerCase().indexOf('l') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.left
+		else if ((newObject.options.align || '').toLowerCase().indexOf('r') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.right
+		else if ((newObject.options.align || '').toLowerCase().indexOf('j') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.justify
 
-		if ((newObject.options.valign || '').toLowerCase().startsWith('b')) newObject.options.bodyProp.anchor = TEXT_VALIGN.b
-		else if ((newObject.options.valign || '').toLowerCase().startsWith('m')) newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr
-		else if ((newObject.options.valign || '').toLowerCase().startsWith('t')) newObject.options.bodyProp.anchor = TEXT_VALIGN.t
+		if ((newObject.options.valign || '').toLowerCase().indexOf('b') === 0) newObject.options.bodyProp.anchor = TEXT_VALIGN.b
+		else if ((newObject.options.valign || '').toLowerCase().indexOf('m') === 0) newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr
+		else if ((newObject.options.valign || '').toLowerCase().indexOf('t') === 0) newObject.options.bodyProp.anchor = TEXT_VALIGN.t
 	}
 
 	// STEP 3: ROBUST: Set rational values for some shadow props if needed
