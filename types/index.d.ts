@@ -318,7 +318,7 @@ declare namespace PptxGenJS {
 		v3DRotY?: number
 		valAxes?: Array<number>
 		valAxisCrossesAt?: string | number
-		valAxisDisplayUnit: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
+		valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 		valAxisHidden?: boolean
 		valAxisLabelColor?: string
 		valAxisLabelFontBold?: boolean
