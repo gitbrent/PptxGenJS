@@ -1,9 +1,9 @@
 {
-  "name": "pptxgenjs",
-  "version": "3.0.0-beta.6",
+  "name": "bulletpoints",
+  "version": "0.6.0",
   "author": {
-    "name": "Brent Ely",
-    "url": "https://github.com/gitbrent/"
+    "name": "Steve Genoud",
+    "url": "https://github.com/sgenoud/"
   },
   "description": "JavaScript PowerPoint Library",
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
@@ -54,7 +54,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/gitbrent/PptxGenJS.git"
+    "url": "git+https://github.com/sgenoud/bulletpoints.git"
   },
   "keywords": [
     "javascript-create-powerpoint",
@@ -73,6 +73,6 @@
     "js-powerpoint-library"
   ],
   "bugs": {
-    "url": "https://github.com/gitbrent/PptxGenJS/issues"
+    "url": "https://github.com/sgenoud/bulletpoints/issues"
   }
 }
