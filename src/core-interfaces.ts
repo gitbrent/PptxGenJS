@@ -576,4 +576,5 @@ export interface IPresentation {
 	imageCounter: number
 	slides?: ISlide[]
 	slideLayouts?: ISlideLayout[]
+	shapes: {[key: string]: IShape}
 }
