@@ -95,138 +95,6 @@ function slideObjectToXml(slide: Slide | Master): string {
     return strSlideXml
 }
 
-/**
- * Transforms slide relations to XML string.
- * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
- * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
- * @param {Slide | Master} slide - slide object whose relations are being transformed
- * @param {{ target: string; type: string }[]} defaultRels - array of default relations
- * @return {string} XML
- */
-function slideObjectRelationsToXml(
-    slide: Slide | Master,
-    defaultRels: { target: string; type: string }[]
-): string {
-    let lastRid = 0 // stores maximum rId used for dynamic relations
-    let strXml =
-        XML_HEADER +
-        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
-
-    // STEP 1: Add all rels for this Slide
-    slide.rels.forEach((rel: ISlideRel) => {
-        lastRid = Math.max(lastRid, rel.rId)
-        if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
-            if (rel.data === 'slide') {
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide"' +
-                    ' Target="slide' +
-                    rel.Target +
-                    '.xml"/>'
-            } else {
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/hyperlink"' +
-                    ' Target="' +
-                    rel.Target +
-                    '" TargetMode="External"/>'
-            }
-        } else if (rel.type.toLowerCase().indexOf('notesSlide') > -1) {
-            strXml +=
-                '<Relationship Id="rId' +
-                rel.rId +
-                '" Target="' +
-                rel.Target +
-                '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
-        }
-    })
-    ;(slide.relsChart || []).forEach((rel: ISlideRelChart) => {
-        lastRid = Math.max(lastRid, rel.rId)
-        strXml +=
-            '<Relationship Id="rId' +
-            rel.rId +
-            '" Target="' +
-            rel.Target +
-            '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart"/>'
-    })
-    ;(slide.relsMedia || []).forEach((rel: ISlideRelMedia) => {
-        lastRid = Math.max(lastRid, rel.rId)
-        if (rel.type.toLowerCase().indexOf('image') > -1) {
-            strXml +=
-                '<Relationship Id="rId' +
-                rel.rId +
-                '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="' +
-                rel.Target +
-                '"/>'
-        } else if (rel.type.toLowerCase().indexOf('audio') > -1) {
-            // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-            if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' +
-                    rel.Target +
-                    '"/>'
-            else
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/audio" Target="' +
-                    rel.Target +
-                    '"/>'
-        } else if (rel.type.toLowerCase().indexOf('video') > -1) {
-            // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-            if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Type="http://schemas.microsoft.com/office/2007/relationships/media" Target="' +
-                    rel.Target +
-                    '"/>'
-            else
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video" Target="' +
-                    rel.Target +
-                    '"/>'
-        } else if (rel.type.toLowerCase().indexOf('online') > -1) {
-            // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
-            if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Type="http://schemas.microsoft.com/office/2007/relationships/image" Target="' +
-                    rel.Target +
-                    '"/>'
-            else
-                strXml +=
-                    '<Relationship Id="rId' +
-                    rel.rId +
-                    '" Target="' +
-                    rel.Target +
-                    '" TargetMode="External" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/video"/>'
-        }
-    })
-
-    // STEP 2: Add default rels
-    defaultRels.forEach((rel, idx) => {
-        strXml +=
-            '<Relationship Id="rId' +
-            (lastRid + idx + 1) +
-            '" Type="' +
-            rel.type +
-            '" Target="' +
-            rel.target +
-            '"/>'
-    })
-
-    strXml += '</Relationships>'
-    return strXml
-}
-
 // XML-GEN: First 6 functions create the base /ppt files
 
 /**
@@ -612,11 +480,10 @@ export function makeXmlSlideLayoutRel(
     layoutNumber: number,
     slideLayouts: Master[]
 ): string {
-    return slideObjectRelationsToXml(slideLayouts[layoutNumber - 1], [
+    return slideLayouts[layoutNumber - 1].relations.render([
         {
             target: '../slideMasters/slideMaster1.xml',
-            type:
-                'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideMaster'
+            type: 'slideMaster'
         }
     ])
 }
@@ -633,19 +500,18 @@ export function makeXmlSlideRel(
     slideLayouts: Master[],
     slideNumber: number
 ): string {
-    return slideObjectRelationsToXml(slides[slideNumber - 1], [
+    return slides[slideNumber - 1].relations.render([
         {
-            target:
-                '../slideLayouts/slideLayout' +
-                getLayoutIdxForSlide(slides, slideLayouts, slideNumber) +
-                '.xml',
-            type:
-                'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout'
+            target: `../slideLayouts/slideLayout${getLayoutIdxForSlide(
+                slides,
+                slideLayouts,
+                slideNumber
+            )}.xml`,
+            type: 'slideLayout'
         },
         {
-            target: '../notesSlides/notesSlide' + slideNumber + '.xml',
-            type:
-                'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide'
+            target: `../notesSlides/notesSlide${slideNumber}.xml`,
+            type: 'notesSlide'
         }
     ])
 }
@@ -676,17 +542,15 @@ export function makeXmlMasterRel(
     let defaultRels = slideLayouts.map((_layoutDef, idx) => {
         return {
             target: `../slideLayouts/slideLayout${idx + 1}.xml`,
-            type:
-                'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout'
+            type: 'slideLayout'
         }
     })
     defaultRels.push({
         target: '../theme/theme1.xml',
-        type:
-            'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme'
+        type: 'theme'
     })
 
-    return slideObjectRelationsToXml(masterSlide, defaultRels)
+    return masterSlide.relations.render(defaultRels)
 }
 
 /**

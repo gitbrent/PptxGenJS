@@ -1,4 +1,24 @@
 import { SLIDE_OBJECT_TYPES } from './core-enums'
+import XML_HEADER from './templates/xml-header'
+
+const relationship = (id, rType, target, other: [string, string][] = []) => {
+    return [
+        `<Relationship Id="rId${id}"`,
+        ` Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/${rType}"`,
+        ` Target="${target}"`,
+        other.map((k, v) => ` ${k}="${v}"`).join(''),
+        '/>'
+    ].join('')
+}
+
+const relationship2007 = (id, rType, target) => {
+    return [
+        `<Relationship Id="rId${id}"`,
+        ` Type="http://schemas.microsoft.com/office/2007/relationships/${rType}"`,
+        ` Target="${target}"`,
+        '/>'
+    ].join('')
+}
 
 export default class Relations {
     rels = []
@@ -90,5 +110,69 @@ export default class Relations {
         this.relsMedia.push(config2)
 
         return [relId, relId2]
+    }
+
+    render(defaultRels) {
+        let lastRid = 0 // stores maximum rId used for dynamic relations
+        let strXml = [
+            XML_HEADER,
+            '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
+        ].join('')
+
+        this.rels.forEach(rel => {
+            lastRid = Math.max(lastRid, rel.rId)
+            if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
+                if (rel.data === 'slide') {
+                    strXml += relationship(
+                        rel.rId,
+                        'slide',
+                        `slide${rel.Target}.xml`
+                    )
+                } else {
+                    strXml += relationship(rel.rId, 'hyperlink', rel.Target, [
+                        ['TargetMode', 'External']
+                    ])
+                }
+            } else if (rel.type.toLowerCase().indexOf('notesslide') > -1) {
+                strXml += relationship(rel.rId, 'notesSlide', rel.Target)
+            }
+        })
+
+        this.relsChart.forEach(rel => {
+            lastRid = Math.max(lastRid, rel.rId)
+            strXml += relationship(rel.rId, 'chart', rel.Target)
+        })
+
+        this.relsMedia.forEach(rel => {
+            lastRid = Math.max(lastRid, rel.rId)
+            if (rel.type.toLowerCase().indexOf('image') > -1) {
+                strXml += relationship(rel.rId, 'image', rel.Target)
+            } else if (rel.type.toLowerCase().indexOf('audio') > -1) {
+                // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+                if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
+                    strXml += relationship2007(rel.rId, 'media', rel.Target)
+                else strXml += relationship(rel.rId, 'audio', rel.Target)
+            } else if (rel.type.toLowerCase().indexOf('video') > -1) {
+                // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+                if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
+                    strXml += relationship2007(rel.rId, 'media', rel.Target)
+                else strXml += relationship(rel.rId, 'video', rel.Target)
+            } else if (rel.type.toLowerCase().indexOf('online') > -1) {
+                // As media has *TWO* rel entries per item, check for first one, if found add second rel with alt style
+                if (strXml.indexOf(' Target="' + rel.Target + '"') > -1)
+                    strXml += relationship2007(rel.rId, 'image', rel.Target)
+                else
+                    strXml += relationship(rel.rId, 'video', rel.Target, [
+                        ['TargetMode', 'External']
+                    ])
+            }
+        })
+
+        defaultRels.forEach((rel, idx) => {
+            strXml += relationship(lastRid + idx + 1, rel.type, rel.target)
+        })
+
+        strXml += '</Relationships>'
+        return strXml
     }
 }
