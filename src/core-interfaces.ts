@@ -415,9 +415,13 @@ export interface ISlideMasterOptions {
 	width?: number
 	margin?: Margin
 	bkgd?: string | BkgdOpts
-	objects?: [
-		{ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: { options: ITextOpts } } | { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
-	]
+	objects?: (
+		| { chart: {} }
+		| { image: {} }
+		| { line: {} }
+		| { rect: {} }
+		| { text: { options: ITextOpts } }
+		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } })[]
 	slideNumber?: ISlideNumber
 }
 export interface ISlideMstrObjPlchldrOpts {
