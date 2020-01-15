@@ -70,6 +70,7 @@ import { createImageConfig } from './gen-utils'
 import * as JSZip from 'jszip'
 import Theme from './elements/theme'
 import SlideLayouts, { Master } from './slideLayouts'
+import NOTES_MASTER from './templates/notes-master'
 
 export default class PptxGenJS {
     // Property getters/setters
@@ -526,10 +527,7 @@ export default class PptxGenJS {
                         this.slideLayouts.asList()
                     )
                 )
-                zip.file(
-                    'ppt/notesMasters/notesMaster1.xml',
-                    genXml.makeXmlNotesMaster()
-                )
+                zip.file('ppt/notesMasters/notesMaster1.xml', NOTES_MASTER)
                 zip.file(
                     'ppt/notesMasters/_rels/notesMaster1.xml.rels',
                     genXml.makeXmlNotesMasterRel()

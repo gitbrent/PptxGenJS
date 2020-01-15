@@ -5,6 +5,7 @@
     "lib": ["dom", "es2015"],
     "module": "es6",
     "noImplicitAny": false,
+    "downlevelIteration": true,
     "outDir": "./out",
     "sourceMap": true,
     "target": "es5"

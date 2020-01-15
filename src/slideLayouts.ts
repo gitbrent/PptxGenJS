@@ -21,20 +21,18 @@ type Placeholder = PlaceholderImageElement & PlaceholderTextElement
 export class Master {
     name
 
-    number
-    slide = null
     data: ElementInterface[] = []
     margin: [number, number, number, number]
-    relations
+    relations: Relations
 
     presLayout
 
-    bkgd
-    bkgdImgRid
+    bkgd?: string
+    bkgdImgRid?: number
 
     placeholders: Map<string, Placeholder>
 
-    constructor(title, number, layout) {
+    constructor(title: string, layout) {
         if (!title)
             throw Error(
                 'defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)'
@@ -45,7 +43,6 @@ export class Master {
         this.placeholders = new Map()
 
         this.presLayout = layout
-        this.number = number
 
         this.margin = DEF_SLIDE_MARGIN_IN
     }
@@ -202,11 +199,7 @@ export default class SlideLayouts {
     }
 
     new(name: string): Master {
-        const newMasterLayout = new Master(
-            name,
-            1000 + this.layoutsOrder.length + 1,
-            this.presLayout
-        )
+        const newMasterLayout = new Master(name, this.presLayout)
         this.add(name, newMasterLayout)
         return newMasterLayout
     }
