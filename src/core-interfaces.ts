@@ -391,7 +391,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
             | 'vert270'
             | 'wordArtVert'
             | 'wordArtVertRtl'
-        wrap?: boolean
+        wrap?: string
     }
     bold?: boolean
     breakLine?: boolean
@@ -435,7 +435,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
         | 'vert270'
         | 'wordArtVert'
         | 'wordArtVertRtl'
-    wrap?: boolean
+    wrap?: string
 }
 export interface IText {
     text: string
