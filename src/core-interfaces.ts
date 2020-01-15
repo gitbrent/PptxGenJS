@@ -412,6 +412,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
     lineIdx?: number
     lineSize?: number
     lineSpacing?: number
+    margin?: Margin
     outline?: { color: Color; size: number }
     paraSpaceAfter?: number
     paraSpaceBefore?: number

@@ -1,13 +1,14 @@
 import {
     getSmartParseNumber,
     encodeXmlEntities,
-    genXmlColorSelection
+    genXmlColorSelection,
+    genericParseFloat
 } from '../gen-utils'
 
 import ElementInterface from './element-interface'
 
-import Hyperlink from './hyperlink'
-import Position from './position'
+import Hyperlink, { HyperLinkOptions } from './hyperlink'
+import Position, { PositionOptions } from './position'
 
 const unitConverter = presLayout => ({
     x: x => getSmartParseNumber(x, 'X', presLayout),
@@ -39,31 +40,48 @@ const findExtension = (data = '', path = '') => {
     return strImgExtn
 }
 
+export type ObjectFitOptions = 'none' | 'fill' | 'cover' | 'contain' | 'crop'
+export type ColorBlend = { darkColor?: string; lightColor?: string }
+type ImageFormat = { height: string | number; width: string | number }
+
+export type ImageOptions = PositionOptions & {
+    image?: string
+    rounding?: boolean
+    opacity?: number | string
+    placeholder?: string
+    colorBlend?: ColorBlend
+    objectFit?: ObjectFitOptions
+    imageFormat?: ImageFormat
+    data?: string
+    path?: string
+    hyperlink?: HyperLinkOptions
+}
+
 export default class ImageElement implements ElementInterface {
-    imgId
-    svgImgId
+    imgId: number
+    svgImgId: number
 
     sourceH
     sourceW
 
-    position
+    position: Position
 
-    image
+    image?: string
 
-    objectFit
-    imageFormat
+    objectFit: ObjectFitOptions
+    imageFormat?: ImageFormat
 
-    rounding
-    opacity
+    rounding?: boolean
+    opacity?: number
 
-    colorBlend
+    colorBlend: ColorBlend
 
-    isSvg
-    placeholder
+    isSvg?: boolean
+    placeholder?: string
 
-    hyperlink
+    hyperlink?: Hyperlink
 
-    constructor(options, relations) {
+    constructor(options: ImageOptions, relations) {
         this.image = options.image
         this.rounding = options.rounding
         this.placeholder = options.placeholder
@@ -71,7 +89,7 @@ export default class ImageElement implements ElementInterface {
         this.colorBlend = options.colorBlend
 
         if (options.opacity) {
-            const numberOpacity = parseFloat(options.opacity)
+            const numberOpacity = genericParseFloat(options.opacity)
             if (numberOpacity < 1 && numberOpacity >= 0) {
                 this.opacity = numberOpacity
             }
@@ -91,7 +109,8 @@ export default class ImageElement implements ElementInterface {
         this.objectFit = options.objectFit
         this.imageFormat = options.imageFormat
         if (
-            (this.objectFit !== 'fill' || this.objectFit !== 'none') &&
+            this.objectFit !== 'fill' &&
+            this.objectFit !== 'none' &&
             (!this.imageFormat ||
                 !this.imageFormat.width ||
                 !this.imageFormat.height)
@@ -223,7 +242,11 @@ class ObjectFit {
     w
     h
 
-    constructor(fitType = 'fill', position, source) {
+    constructor(
+        fitType = 'fill',
+        position: { x; y; w; h },
+        source: ImageFormat
+    ) {
         this.fitType = fitType
         this.x = position.x
         this.y = position.y
@@ -321,7 +344,10 @@ class ObjectFit {
     }
 }
 
-const duoToneEffect = ({ darkColor = '226622', lightColor = 'FFFFFF' }) => {
+const duoToneEffect = ({
+    darkColor = '226622',
+    lightColor = 'FFFFFF'
+}: ColorBlend) => {
     return `
             <a:duotone>
               <a:srgbClr val="${darkColor}"/>

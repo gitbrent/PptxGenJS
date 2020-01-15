@@ -1,14 +1,23 @@
 import { ONEPT } from '../core-enums'
 
-export default class ShadowElement {
-    type
-    blur
-    offset
-    angle
-    color
-    opacity
+export interface ShadowOptions {
+    type?: 'outer' | 'inner' | 'none'
+    blur?: number
+    offset?: number
+    angle?: number
+    color?: string
+    opacity?: number | string
+}
 
-    constructor(options) {
+export default class ShadowElement {
+    type: 'outer' | 'inner' | 'none'
+    blur: number
+    offset: number
+    angle: number
+    color: string
+    opacity: number
+
+    constructor(options: ShadowOptions) {
         const {
             type: inputType = 'outer',
             blur = 8,
@@ -37,15 +46,20 @@ export default class ShadowElement {
             angle = Math.round(Number(angle))
         }
 
-        let opacity = inputOpacity
-        if (opacity) {
-            if (isNaN(Number(opacity)) || opacity < 0 || opacity > 1) {
+        let opacity
+        if (inputOpacity) {
+            const parsedOpacity = Number(inputOpacity)
+            if (
+                isNaN(parsedOpacity) ||
+                parsedOpacity < 0 ||
+                parsedOpacity > 1
+            ) {
                 console.warn('Warning: shadow.opacity can only be 0-1')
                 opacity = 0.75
+            } else {
+                // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
+                opacity = parsedOpacity
             }
-
-            // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-            opacity = Number(opacity)
         }
 
         this.type = type

@@ -1,12 +1,19 @@
-import Placeholder from './placeholder'
+import Placeholder, { PlaceholderOptions } from './placeholder'
 import Relations from '../relations'
 
-import TextElement from './text'
+import TextElement, { TextOptions } from './text'
+
+export type PlaceholderTextOptions = TextOptions & PlaceholderOptions
 
 export default class PlaceholderText extends Placeholder {
     private textElement
 
-    constructor(text: string, options, index: number, relations: Relations) {
+    constructor(
+        text: string,
+        options: PlaceholderTextOptions,
+        index: number,
+        relations: Relations
+    ) {
         super(options.name, options.type, index)
         const { name, type = 'body', ...textOptions } = options
 

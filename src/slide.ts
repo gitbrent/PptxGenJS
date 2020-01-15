@@ -42,7 +42,8 @@ const emptyFcn = function() {}
 export default class Slide {
     private _bkgd: string
     private _color: string
-    private relations: Relations
+
+    public relations: Relations
 
     public addSlide: Function
     public getSlide: Function
@@ -105,7 +106,7 @@ export default class Slide {
     }
 
     addSlideNumber(value) {
-        this.data.push(new SlideNumberElement(value))
+        this.data.push(new SlideNumberElement(value, this.relations))
         return this
     }
     /**

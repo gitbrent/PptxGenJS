@@ -1,24 +1,24 @@
 import { getSmartParseNumber, convertRotationDegrees } from '../gen-utils'
 
-interface PositionOptions {
-    x: number | string
-    y: number | string
-    w: number | string
-    h: number | string
+export interface PositionOptions {
+    x?: number | string
+    y?: number | string
+    w?: number | string
+    h?: number | string
     flipH?: boolean
     flipV?: boolean
-    rotate?: boolean
+    rotate?: number
 }
 
 export default class Position {
-    x
-    y
-    w
-    h
+    x?: number | string
+    y?: number | string
+    w?: number | string
+    h?: number | string
 
-    flipH
-    flipV
-    rotate
+    flipH?: boolean
+    flipV?: boolean
+    rotate?: number
 
     constructor({ x, y, w, h, flipH, flipV, rotate }: PositionOptions) {
         this.x = x

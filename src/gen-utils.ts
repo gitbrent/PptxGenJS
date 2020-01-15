@@ -325,3 +325,10 @@ export const createImageConfig = ({
 
     return mediaConfig
 }
+
+export const genericParseFloat = (n: number | string) => {
+    if (typeof n === 'string') {
+        return parseFloat(n)
+    }
+    return n
+}

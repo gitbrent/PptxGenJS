@@ -154,7 +154,9 @@ export class Master {
 
         // STEP 3: Add Slide Numbers
         if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-            this.data.push(new SlideNumberElement(slideDef.slideNumber))
+            this.data.push(
+                new SlideNumberElement(slideDef.slideNumber, this.relations)
+            )
         }
     }
 

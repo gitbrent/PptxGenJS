@@ -1,13 +1,28 @@
 import { PowerPointShapes } from '../core-shapes'
 import { EMU } from '../core-enums'
+import Position from './position'
+
+export type ShapeConfig =
+    | string
+    | {
+          displayName: string
+          name: string
+          avLst: { [key: string]: number }
+      }
+
+export type ShapeOptions = {
+    rectRadius?: number
+}
 
 export default class ShapeElement {
-    displayName
-    name
-    avLst
+    displayName: string
+    name: string
+    avLst: string
 
-    constructor(input) {
-        let shapeConfig = input
+    rectRadius?: number
+
+    constructor(input?: ShapeConfig, options: ShapeOptions = {}) {
+        let shapeConfig
         if (!input) shapeConfig = PowerPointShapes.RECTANGLE
 
         if (typeof input === 'string') {
@@ -21,6 +36,8 @@ export default class ShapeElement {
                     PowerPointShapes[key].displayName
                 )
             })[0]
+        } else {
+            shapeConfig = input
         }
 
         if (!shapeConfig) shapeConfig = PowerPointShapes.RECTANGLE
@@ -28,20 +45,29 @@ export default class ShapeElement {
         this.displayName = shapeConfig.displayName
         this.name = shapeConfig.name
         this.avLst = shapeConfig.avLst
+
+        if (options.rectRadius) {
+            this.rectRadius = options.rectRadius * EMU * 100000
+        }
     }
 
-    render(rectRadius, position, presLayout) {
+    private renderRadius(position, presLayout) {
+        if (!this.rectRadius) return ''
+
+        const smallerSide = Math.min(
+            position.cx(presLayout),
+            position.cy(presLayout)
+        )
         const radius =
-            rectRadius &&
-            Math.round(
-                (rectRadius * EMU * 100000) /
-                    Math.min(position.cx(presLayout), position.cy(presLayout))
-            )
+            this.rectRadius && Math.round(this.rectRadius / smallerSide)
+
+        return `<a:gd name="adj" fmla="val ${radius}"/>`
+    }
+
+    render(position: Position, presLayout) {
         return `
             <a:prstGeom prst="${this.name}">
-                <a:avLst>${
-                    rectRadius ? `<a:gd name="adj" fmla="val ${radius}"/>` : ''
-                }</a:avLst>
+                <a:avLst>${this.renderRadius(position, presLayout)}</a:avLst>
             </a:prstGeom>
         `
     }

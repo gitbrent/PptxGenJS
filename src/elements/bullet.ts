@@ -1,22 +1,33 @@
 import { BULLET_TYPES } from '../core-enums'
 import { getSmartParseNumber } from '../gen-utils'
 
+export type BulletOptions =
+    | boolean
+    | {
+          code?: string
+          type?: string
+          style?: string
+          startAt?: number
+          color?: string
+          indent?: string | number
+      }
+
 export default class Bullet {
-    enabled
-    default
-    inherit
+    enabled: boolean
+    default: boolean
+    inherit: boolean
 
-    code
-    type
+    code?: string
+    type?: string
 
-    style
-    startAt
+    style?: string
+    startAt?: number
 
-    bulletCode
-    color
-    indent
+    bulletCode?: string
+    color?: string
+    indent?: string | number
 
-    constructor(bullet) {
+    constructor(bullet?: BulletOptions) {
         if (bullet === false) {
             this.enabled = false
             return
@@ -38,7 +49,7 @@ export default class Bullet {
         this.type = bullet.type.toString().toLowerCase()
 
         this.style = bullet.style || 'arabicPeriod'
-        this.startAt = bullet.startAt || '1'
+        this.startAt = bullet.startAt || 1
 
         // Check value for hex-ness (s/b 4 char hex)
         if (this.code && /^[0-9A-Fa-f]{4}$/.test(this.code) === false) {
@@ -50,7 +61,7 @@ export default class Bullet {
         this.bulletCode = this.code && `&#x${this.code};`
         this.color = bullet.color
 
-        this.enabled = this.code || this.type === 'number'
+        this.enabled = !!this.code || this.type === 'number'
         this.indent = bullet.indent
     }
 

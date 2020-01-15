@@ -1,4 +1,5 @@
 import Placeholder from './placeholder'
+import Position from './Position'
 
 export default interface Element {
     placeholder?: string

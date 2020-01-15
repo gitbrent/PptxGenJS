@@ -1,12 +1,22 @@
 import { encodeXmlEntities } from '../gen-utils'
+import Relations from '../relations'
+
+export interface HyperLinkOptions {
+    url?: string
+    slide?: number
+    tooltip?: string
+}
 
 export default class HyperLink {
-    url
-    slide
-    tooltip
-    rId
+    url?: string
+    slide?: number
+    tooltip?: string
+    rId?: number
 
-    constructor({ url, slide, tooltip }, relations) {
+    constructor(
+        { url, slide, tooltip }: HyperLinkOptions,
+        relations: Relations
+    ) {
         if (!url && !slide)
             throw "ERROR: 'hyperlink requires either `url` or `slide`'"
 

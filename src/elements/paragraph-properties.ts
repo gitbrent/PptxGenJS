@@ -1,6 +1,6 @@
 import { TEXT_VALIGN, TEXT_HALIGN } from '../core-enums'
 
-import Bullet from './bullet'
+import Bullet, { BulletOptions } from './bullet'
 
 const alignment = align => {
     switch (align) {
@@ -17,14 +17,24 @@ const alignment = align => {
     }
 }
 
-export default class TextElement {
-    bullet
-    align
-    lineSpacing
-    indentLevel
-    paraSpaceBefore
-    paraSpaceAfter
-    rtlMode
+export interface ParagraphPropertiesOptions {
+    rtlMode?: boolean
+    paraSpaceBefore?: number | string
+    paraSpaceAfter?: number | string
+    indentLevel?: number | string
+    bullet?: BulletOptions
+    align?: string
+    lineSpacing?: number
+}
+
+export default class ParagraphProperties {
+    bullet: Bullet
+    align: TEXT_HALIGN
+    lineSpacing?: number
+    indentLevel?: number
+    paraSpaceBefore?: number
+    paraSpaceAfter?: number
+    rtlMode?: boolean
 
     constructor({
         rtlMode,
@@ -71,7 +81,7 @@ export default class TextElement {
             lineSpacing && !isNaN(lineSpacing) ? lineSpacing : null
     }
 
-    render(presLayout, tag, body = '') {
+    render(presLayout, tag: string, body: string = ''): string {
         return `
         <${tag} ${[
             this.rtlMode ? ' rtl="1" ' : '',

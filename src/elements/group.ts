@@ -19,16 +19,20 @@ import ChartElement from './chart'
 import SlideNumberElement from './slide-number'
 import MediaElement from './media'
 
+import Position from './position'
+
+type PositionnedElement = ElementInterface & { position: Position }
+
 export default class GroupElement implements ElementInterface {
-    data = []
+    data: PositionnedElement[] = []
     relations: Relations
 
-    constructor(relations) {
+    constructor(relations: Relations) {
         this.relations = relations
     }
 
     addSlideNumber(value): GroupElement {
-        this.data.push(new SlideNumberElement(value))
+        this.data.push(new SlideNumberElement(value, this.relations))
         return this
     }
 
@@ -74,13 +78,13 @@ export default class GroupElement implements ElementInterface {
 
     render(idx, presLayout) {
         const xPos = this.data
-            .map(x => x.position.xPos(presLayout))
+            .map(x => x.position && x.position.xPos(presLayout))
             .filter(x => !!x)
         const minX = Math.min(...xPos.map(([x0]) => x0))
         const maxX = Math.max(...xPos.map(([, x1]) => x1))
 
         const yPos = this.data
-            .map(y => y.position.yPos(presLayout))
+            .map(y => y.position && y.position.yPos(presLayout))
             .filter(y => !!y)
         const minY = Math.min(...yPos.map(([y0]) => y0))
         const maxY = Math.max(...yPos.map(([, y1]) => y1))

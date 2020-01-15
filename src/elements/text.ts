@@ -7,92 +7,58 @@ import {
 } from '../core-enums'
 
 import { inch2Emu, genXmlColorSelection } from '../gen-utils'
+import Relations from '../relations'
 
 import ElementInterface from './element-interface'
 
-import ShadowElement from './shadow'
-import Shape from './shape'
-import Position from './position'
+import ShadowElement, { ShadowOptions } from './shadow'
+import Shape, { ShapeConfig, ShapeOptions } from './shape'
+import Position, { PositionOptions } from './position'
 import LineElement from './line'
-import TextFragment from './text-fragment'
+import TextFragment, { buildFragments, FragmentOptions } from './text-fragment'
 
-import ParagraphProperties from './paragraph-properties'
-import RunProperties from './run-properties'
-import Hyperlink from './hyperlink'
+import ParagraphProperties, {
+    ParagraphPropertiesOptions
+} from './paragraph-properties'
+import RunProperties, { RunPropertiesOptions } from './run-properties'
 
-const buildFragments = (inputText, inputBreakLine, relations) => {
-    let fragments = inputText
-    if (typeof inputText === 'string' || typeof inputText === 'number') {
-        fragments = [{ text: inputText.toString(), options: {} }]
+export type TextOptions = PositionOptions &
+    ParagraphPropertiesOptions &
+    RunPropertiesOptions &
+    ShapeOptions & {
+        breakLine?: boolean
+        shape?: ShapeConfig
+        fill?: string
+        placeholder?: string
+        autoFit?: boolean
+        line?: string
+        lineSize?: number
+        lineDash?: string
+        lineHead?: string
+        lineTail?: string
+        vert?: string
+        isTextBox?: boolean
+        shrinkText?: boolean
+        inset?: number
+        margin?: number | [number, number, number, number]
+        valign?: string
+        shadow?: ShadowOptions
+        wrap?: boolean
     }
-    if (!fragments) return []
-
-    return fragments.flatMap(({ text: fragmentText, options }, idx) => {
-        let text = fragmentText.replace(/\r*\n/g, CRLF)
-        let breakLine = inputBreakLine || options.breakLine || false
-
-        if (text.indexOf(CRLF) > -1) {
-            // Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
-            text = text.replace(/\r\n$/g, '')
-            // Plain strings like "hello \n world" or "first line\n" need to have lineBreaks set to become 2 separate lines as intended
-            breakLine = true
-        }
-
-        const paragraphProperties = new ParagraphProperties({
-            bullet: options.bullet,
-            align: options.align,
-            rtlMode: options.rtlMode,
-            lineSpacing: options.lineSpacing,
-            indentLevel: options.indentLevel,
-            paraSpaceBefore: options.paraSpaceBefore,
-            paraSpaceAfter: options.paraSpaceAfter
-        })
-        const runProperties = new RunProperties({
-            lang: options.lang,
-            fontFace: options.fontFace,
-            fontSize: options.fontSize,
-            charSpacing: options.charSpacing,
-            color: options.color,
-            bold: options.bold,
-            italic: options.italic,
-            strike: options.strike,
-            underline: options.underline,
-            subscript: options.subscript,
-            superscript: options.superscript,
-            outline: options.outline,
-            hyperlink:
-                options.hyperlink && new Hyperlink(options.hyperlink, relations)
-        })
-
-        if (breakLine) {
-            return text.split(CRLF).map((line, lineIdx) => {
-                return new TextFragment(
-                    line,
-                    paragraphProperties,
-                    runProperties
-                )
-            })
-        } else {
-            return new TextFragment(text, paragraphProperties, runProperties)
-        }
-    })
-}
 
 export default class TextElement implements ElementInterface {
     type = SLIDE_OBJECT_TYPES.newtext
 
-    fragments
-    shape
+    fragments: TextFragment[]
+    shape: Shape
     fill
     color
     lang
 
-    position
+    position: Position
 
     line
     lineSize
-
-    rectRadius
 
     autoFit
     shrinkText
@@ -110,15 +76,19 @@ export default class TextElement implements ElementInterface {
     wrap
 
     shadow
-    placeholder
+    placeholder?: string
 
     paragraphProperties: ParagraphProperties
     runProperties: RunProperties
 
-    constructor(text, opts, relations) {
+    constructor(
+        text: FragmentOptions,
+        opts: TextOptions,
+        relations: Relations
+    ) {
         this.fragments = buildFragments(text, opts.breakLine, relations)
         if (!opts.placeholder || opts.shape) {
-            this.shape = new Shape(opts.shape)
+            this.shape = new Shape(opts.shape, { rectRadius: opts.rectRadius })
         } else {
             this.shape = null
         }
@@ -126,14 +96,14 @@ export default class TextElement implements ElementInterface {
         this.fill = opts.fill
         this.lang = opts.lang
 
-        this.placeholder = opts.placeholder
+        if (opts.placeholder) this.placeholder = opts.placeholder
 
         // A: Placeholders should inherit their colors or override them, so don't default them
         if (!opts.placeholder) {
             this.color = opts.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
         }
 
-        if (opts.line || (opts.shape && opts.shape.name === 'line')) {
+        if (opts.line || (this.shape && this.shape.name === 'line')) {
             this.line = new LineElement({
                 color: opts.line,
                 size: opts.lineSize,
@@ -152,8 +122,6 @@ export default class TextElement implements ElementInterface {
             flipH: opts.flipH,
             rotate: opts.rotate
         })
-
-        this.rectRadius = opts.rectRadius
 
         // D: Transform text options to bodyProperties as thats how we build XML
         this.autoFit = opts.autoFit || false // If true, shape will collapse to text size (Fit To shape)
@@ -205,22 +173,24 @@ export default class TextElement implements ElementInterface {
             paraSpaceBefore: opts.paraSpaceBefore,
             paraSpaceAfter: opts.paraSpaceAfter
         })
-        this.runProperties = new RunProperties({
-            lang: opts.lang,
-            fontFace: opts.fontFace,
-            fontSize: opts.fontSize,
-            charSpacing: opts.charSpacing,
-            color: opts.color,
-            bold: opts.bold,
-            italic: opts.italic,
-            strike: opts.strike,
-            underline: opts.underline,
-            subscript: opts.subscript,
-            superscript: opts.superscript,
-            outline: opts.outline,
-            hyperlink:
-                opts.hyperlink && new Hyperlink(opts.hyperlink, relations)
-        })
+        this.runProperties = new RunProperties(
+            {
+                lang: opts.lang,
+                fontFace: opts.fontFace,
+                fontSize: opts.fontSize,
+                charSpacing: opts.charSpacing,
+                color: opts.color,
+                bold: opts.bold,
+                italic: opts.italic,
+                strike: opts.strike,
+                underline: opts.underline,
+                subscript: opts.subscript,
+                superscript: opts.superscript,
+                outline: opts.outline,
+                hyperlink: opts.hyperlink
+            },
+            relations
+        )
     }
 
     render(idx, presLayout, placeholder) {
@@ -241,15 +211,7 @@ export default class TextElement implements ElementInterface {
 
         <p:spPr>
             ${this.position.render(presLayout)}
-            ${
-                this.shape
-                    ? this.shape.render(
-                          this.rectRadius,
-                          this.position,
-                          presLayout
-                      )
-                    : ''
-            }
+            ${this.shape ? this.shape.render(this.position, presLayout) : ''}
             ${
                 this.fill
                     ? genXmlColorSelection(this.fill)
@@ -289,7 +251,7 @@ export default class TextElement implements ElementInterface {
             </a:lstStyle>
             <a:p>
                 ${this.fragments
-                    .map(fragment => fragment.render())
+                    .map(fragment => fragment.render(presLayout))
                     .join('</a:p><a:p>')}
                 ${'' /* NOTE: Added 20180101 to address PPT-2007 issues */}
 		        <a:endParaRPr lang="${this.lang || 'en-US'}" dirty="0"/>

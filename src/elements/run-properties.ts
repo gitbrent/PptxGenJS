@@ -1,25 +1,44 @@
 import { ONEPT } from '../core-enums'
 import { genXmlColorSelection } from '../gen-utils'
+import Relations from '../relations'
+
+import Hyperlink, { HyperLinkOptions } from './hyperlink'
+
+export interface RunPropertiesOptions {
+    lang?: string
+    fontFace?: string
+    fontSize?: number
+    charSpacing?: number
+    color?: string
+    bold?: boolean
+    italic?: boolean
+    strike?: boolean
+    underline?: boolean
+    subscript?: boolean
+    superscript?: boolean
+    outline?: { size?: number; color?: string }
+    hyperlink?: HyperLinkOptions
+}
 
 export default class RunProperties {
-    lang
-    altLang
+    lang: string
+    altLang: string
 
-    fontFace
-    fontSize
-    charSpacing
-    color
-    bold
-    italic
-    strike
-    underline
-    subscript
-    superscript
-    outline
+    fontFace?: string
+    fontSize?: number
+    charSpacing?: number
+    color?: string
+    bold: boolean
+    italic: boolean
+    strike: boolean
+    underline: boolean
+    subscript: boolean
+    superscript: boolean
 
-    hyperlink
+    outline?: { size: number; color: string }
+    hyperlink?: Hyperlink
 
-    constructor(options) {
+    constructor(options: RunPropertiesOptions, relations: Relations) {
         this.lang = options.lang || 'en-US'
         this.altLang = options.lang ? '' : 'en-US'
         this.fontFace = options.fontFace
@@ -27,16 +46,22 @@ export default class RunProperties {
         this.fontSize = options.fontSize && Math.round(options.fontSize)
         this.charSpacing = options.charSpacing
         this.color = options.color
-        this.bold = options.bold
-        this.italic = options.italic
-        this.strike = options.strike
-        this.underline = options.underline
-        this.subscript = options.subscript
-        this.superscript = options.superscript
-        this.outline = options.outline
+        this.bold = !!options.bold
+        this.italic = !!options.italic
+        this.strike = !!options.strike
+        this.underline = !!options.underline
+        this.subscript = !!options.subscript
+        this.superscript = !!options.superscript
+
+        if (options.outline) {
+            this.outline = {
+                size: options.outline.size || 0.75,
+                color: options.outline.color || 'FFFFFF'
+            }
+        }
 
         if (options.hyperlink) {
-            this.hyperlink = options.hyperlink
+            this.hyperlink = new Hyperlink(options.hyperlink, relations)
         }
     }
 
@@ -68,10 +93,8 @@ export default class RunProperties {
                 : '',
             this.outline
                 ? `<a:ln w="${Math.round(
-                      (this.outline.size || 0.75) * ONEPT
-                  )}">${genXmlColorSelection(
-                      this.outline.color || 'FFFFFF'
-                  )}</a:ln>`
+                      this.outline.size * ONEPT
+                  )}">${genXmlColorSelection(this.outline.color)}</a:ln>`
                 : '',
             this.hyperlink ? this.hyperlink.render() : ''
         ].join('')}

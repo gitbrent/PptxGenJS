@@ -38,7 +38,7 @@ export function addPlaceholdersToSlideLayouts(slide: Slide) {
                         new TextElement(
                             '',
                             { placeholder: slideLayoutObj.name },
-                            () => null
+                            slide.relations
                         )
                     )
                 }

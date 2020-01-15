@@ -4,34 +4,46 @@ import { inch2Emu, genXmlColorSelection } from '../gen-utils'
 
 import ElementInterface from './element-interface'
 
-import ShadowElement from './shadow'
-import Shape from './shape'
-import Position from './position'
+import ShadowElement, { ShadowOptions } from './shadow'
+import Shape, { ShapeOptions as SO, ShapeConfig } from './shape'
+import Position, { PositionOptions } from './position'
 import Line from './line'
 
 const defaultsToOne = x => x || (x === 0 ? 0 : 1)
 
+type FullColor = string | { type: string; color: string; alpha?: number }
+
+export type ShapeOptions = PositionOptions &
+    SO & {
+        fill?: FullColor
+        color?: string
+        rectRadius?: number
+        line?: string
+        lineSize?: number
+        lineDash?: string
+        lineHead?: string
+        lineTail?: string
+        shadow?: ShadowOptions
+    }
+
 export default class SimpleShapeElement implements ElementInterface {
-    shape
-    fill
-    color
+    shape: Shape
+    fill?: FullColor
+    color?: string
 
-    position
+    position: Position
+    line?: Line
+    rectRadius?: number
 
-    line
-    lineSize
+    shadow?: ShadowElement
 
-    rectRadius
-
-    shadow
-
-    constructor(shape, opts) {
-        this.shape = new Shape(shape)
+    constructor(shape: ShapeConfig, opts: ShapeOptions) {
+        this.shape = new Shape(shape, { rectRadius: opts.rectRadius })
 
         this.fill = opts.fill
         this.rectRadius = opts.rectRadius
 
-        if (opts.line || shape.name === 'line') {
+        if (opts.line || this.shape.name === 'line') {
             this.line = new Line({
                 color: opts.line || '333333',
                 size: opts.lineSize,
@@ -67,7 +79,7 @@ export default class SimpleShapeElement implements ElementInterface {
 
         <p:spPr>
             ${this.position.render(presLayout)}
-            ${this.shape.render(this.rectRadius, this.position, presLayout)}
+            ${this.shape.render(this.position, presLayout)}
             ${this.fill ? genXmlColorSelection(this.fill) : '<a:noFill/>'}
             ${this.line ? this.line.render() : ''}
             ${this.shadow ? this.shadow.render() : ''}

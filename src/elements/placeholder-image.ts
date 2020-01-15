@@ -1,14 +1,23 @@
-import Placeholder from './placeholder'
-import ImageElement from './image'
-import Position from './position'
+import { genericParseFloat } from '../gen-utils'
+
+import Placeholder, { PlaceholderOptions } from './placeholder'
+import ImageElement, { ObjectFitOptions, ColorBlend } from './image'
+import Position, { PositionOptions } from './position'
+
+export type PlaceholderImageOptions = PositionOptions &
+    PlaceholderOptions & {
+        objectFit?: ObjectFitOptions
+        colorBlend?: ColorBlend
+        opacity?: number
+    }
 
 export default class PlaceholderImage extends Placeholder {
     public position: Position
-    public objectFit?: 'cover' | 'contain' | 'fill' | 'none'
+    public objectFit?: ObjectFitOptions
     opacity?: number
-    colorBlend?
+    colorBlend?: ColorBlend
 
-    constructor(options, index) {
+    constructor(options: PlaceholderImageOptions, index) {
         super(options.name, options.type || 'pic', index)
 
         this.position = new Position({
@@ -26,7 +35,7 @@ export default class PlaceholderImage extends Placeholder {
         this.colorBlend = options.colorBlend
 
         if (options.opacity) {
-            const numberOpacity = parseFloat(options.opacity)
+            const numberOpacity = genericParseFloat(options.opacity)
             if (numberOpacity < 1 && numberOpacity >= 0) {
                 this.opacity = numberOpacity
             }

@@ -10,7 +10,7 @@ export default class SlideNumberElement implements ElementInterface {
     runProperties
     fieldId
 
-    constructor({ x, y, w, h, ...runOptions }) {
+    constructor({ x, y, w, h, ...runOptions }, relations) {
         this.fieldId = getUuid('xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx')
         this.position = new Position({
             x,
@@ -18,7 +18,7 @@ export default class SlideNumberElement implements ElementInterface {
             w: w || 800000,
             h: h || 300000
         })
-        this.runProperties = new RunProperties(runOptions)
+        this.runProperties = new RunProperties(runOptions, relations)
     }
     render(idx, presLayout, placeholder) {
         return `

@@ -1,6 +1,11 @@
 import ElementInterface from './element-interface'
 import Position from './position'
 
+export type PlaceholderOptions = {
+    name: string
+    type: string
+}
+
 export default class Placeholder implements ElementInterface {
     public name: string
     public position: Position
