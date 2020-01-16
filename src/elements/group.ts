@@ -21,7 +21,8 @@ import MediaElement from './media'
 
 import Position from './position'
 
-type PositionnedElement = ElementInterface & { position: Position }
+type PosFcn = (n: any) => [number, number]
+type PositionnedElement = ElementInterface & { position: { xPos; yPos } }
 
 export default class GroupElement implements ElementInterface {
     data: PositionnedElement[] = []
@@ -29,6 +30,32 @@ export default class GroupElement implements ElementInterface {
 
     constructor(relations: Relations) {
         this.relations = relations
+    }
+
+    get position() {
+        const elements = this.data
+
+        return {
+            xPos(presLayout) {
+                const xPos = elements
+                    .map(x => x.position && x.position.xPos(presLayout))
+                    .filter(x => !!x)
+                const minX = Math.min(...xPos.map(([x0]) => x0))
+                const maxX = Math.max(...xPos.map(([, x1]) => x1))
+
+                return [minX, maxX]
+            },
+
+            yPos(presLayout) {
+                const yPos = elements
+                    .map(y => y.position && y.position.yPos(presLayout))
+                    .filter(y => !!y)
+                const minY = Math.min(...yPos.map(([y0]) => y0))
+                const maxY = Math.max(...yPos.map(([, y1]) => y1))
+
+                return [minY, maxY]
+            }
+        }
     }
 
     addSlideNumber(value): GroupElement {
@@ -76,18 +103,15 @@ export default class GroupElement implements ElementInterface {
         return this
     }
 
-    render(idx, presLayout) {
-        const xPos = this.data
-            .map(x => x.position && x.position.xPos(presLayout))
-            .filter(x => !!x)
-        const minX = Math.min(...xPos.map(([x0]) => x0))
-        const maxX = Math.max(...xPos.map(([, x1]) => x1))
+    newGroup() {
+        const group = new GroupElement(this.relations)
+        this.data.push(group)
+        return group
+    }
 
-        const yPos = this.data
-            .map(y => y.position && y.position.yPos(presLayout))
-            .filter(y => !!y)
-        const minY = Math.min(...yPos.map(([y0]) => y0))
-        const maxY = Math.max(...yPos.map(([, y1]) => y1))
+    render(idx, presLayout) {
+        const [minX, maxX] = this.position.xPos(presLayout)
+        const [minY, maxY] = this.position.yPos(presLayout)
 
         return `
       <p:grpSp>
