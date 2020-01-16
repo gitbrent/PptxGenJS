@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-14T04:55:45.352Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-16T02:47:07.356Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3753,17 +3753,19 @@ function makeXmlPresentation(slides, pptLayout, rtlMode) {
         'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ' +
         (rtlMode ? 'rtl="1" ' : '') +
         'saveSubsetFonts="1" autoCompressPictures="0">';
-    // IMPORTANT: Steps 1-2-3 must be in this order or PPT will give corruption message on open!
-    // STEP 1: Add slide master
+    // STEP 1: Add slide master (SPEC: tag 1 under <presentation>)
     strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
-    // STEP 2: Add all Slides
+    // STEP 2: Add Notes Master (SPEC: tag 2 under <presentation>)
+    // (NOTE: length+2 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic))
+    // IMPORTANT: In this order (mtches PPT2019) PPT will give corruption message on open!
+    // (20200115): (Swap this and STEP 3 is okay - WTF) Seems to work fine without this, so leaving out for now
+    //strXml += `<p:notesMasterIdLst><p:notesMasterId r:id="rId${slides.length + 2}"/></p:notesMasterIdLst>`
+    // STEP 3: Add all Slides (SPEC: tag 3 under <presentation>)
     strXml += '<p:sldIdLst>';
     for (var idx = 0; idx < slides.length; idx++) {
         strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>';
     }
     strXml += '</p:sldIdLst>';
-    // STEP 3: Add Notes Master (NOTE: length+2 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic))
-    strXml += '<p:notesMasterIdLst><p:notesMasterId r:id="rId' + (slides.length + 2) + '"/></p:notesMasterIdLst>';
     // STEP 4: Build SLIDE text styles
     strXml +=
         '<p:sldSz cx="' +
@@ -3776,7 +3778,7 @@ function makeXmlPresentation(slides, pptLayout, rtlMode) {
             '" cy="' +
             pptLayout.width +
             '"/>' +
-            '<p:defaultTextStyle>'; //+'<a:defPPr><a:defRPr lang="en-US"/></a:defPPr>'
+            '<p:defaultTextStyle>';
     for (var idy = 1; idy < 10; idy++) {
         strXml +=
             '<a:lvl' +
@@ -3793,6 +3795,7 @@ function makeXmlPresentation(slides, pptLayout, rtlMode) {
                 'pPr>';
     }
     strXml += '</p:defaultTextStyle>';
+    //strXml += '<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>'
     strXml += '</p:presentation>';
     return strXml;
 }
