@@ -77,11 +77,15 @@ Use the online demo to create a simple presentation to see how easy it is to use
 
 ## CDN
 
-```html
-<!-- Bundle: Easiest to use, supports all browsers -->
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.bundle.js"></script>
+[jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
 
-<!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
+Bundle: Modern Browsers and IE11
+```html
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.bundle.js"></script>
+```
+
+Min files: Modern Browsers
+```html
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/libs/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.min.js"></script>
 ```
@@ -90,14 +94,15 @@ Use the online demo to create a simple presentation to see how easy it is to use
 
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
+Bundle: Modern Browsers and IE11
 ```html
-<!-- Bundle: Easiest to use, supports all browsers -->
 <script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
+```
 
-<!-- Individual files: Add only what's needed to avoid clobbering loaded libraries -->
+Min files: Modern Browsers
+```html
 <script src="PptxGenJS/libs/jszip.min.js"></script>
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
-<!-- <script src="PptxGenJS/libs/promise.min.js"></script> IE11 requires Promises polyfill -->
 ```
 
 ## Npm
@@ -106,11 +111,6 @@ Use the online demo to create a simple presentation to see how easy it is to use
 
 ```bash
 npm install pptxgenjs --save
-```
-
-```javascript
-let PptxGenJS = require("pptxgenjs");
-let pptx = new PptxGenJS();
 ```
 
 ## Yarn
@@ -171,7 +171,6 @@ Full documentation and code examples are available
 - [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
 - [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html)
 - [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
-- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/installation.html)
 - [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration.html)
 
 ---
