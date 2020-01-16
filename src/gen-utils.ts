@@ -9,29 +9,8 @@ import {
     DEF_FONT_COLOR
 } from './core-enums'
 import { IChartOpts, ILayout, ShapeFill } from './core-interfaces'
+import calc, { CALC_EXPR } from './calc'
 
-const CALC_EXPR = /^calc\((.+)\)$/
-const processCalcArray = (values, calc) => {
-    values.forEach((v, index) => {
-        if (v === '-') values[index + 1] = -values[index + 1]
-    })
-    values = values.filter(v => v !== '-' && v !== '+')
-
-    values.forEach((v, index) => {
-        if (v === '/') {
-            values[index + 1] = values[index - 1] / values[index + 1]
-            values[index - 1] = 0
-        }
-        if (v === '*') {
-            values[index + 1] = values[index - 1] * values[index + 1]
-            values[index - 1] = 0
-        }
-    })
-    const result = values
-        .filter(v => v !== '*' && v !== '/')
-        .reduce((x, y) => x + y, 0)
-    return result
-}
 
 /**
  * Convert string percentages to number relative to slide size
@@ -58,23 +37,7 @@ export function getSmartParseNumber(
     if (typeof size === 'number' && size >= 100) return size
 
     if (typeof size === 'string' && CALC_EXPR.test(size)) {
-        const [, calc] = size.match(CALC_EXPR)
-        const values = calc
-            .replace('+', ' + ')
-            .replace('-', ' - ')
-            .replace('*', ' * ')
-            .replace('/', ' / ')
-            .split(/\s/)
-            .filter(v => v)
-
-        const parsedValues = values.map(v => {
-            if (v === '+' || v === '-' || v === '/' || v === '*') return v
-
-            const scalar = Number(v)
-            if (!Number.isNaN(scalar)) return scalar
-            return getSmartParseNumber(v, xyDir, layout)
-        })
-        return processCalcArray(parsedValues, calc)
+      return calc(size, v => getSmartParseNumber(v, xyDir, layout))
     }
 
     // Percentage (ex: '50%')
