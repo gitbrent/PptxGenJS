@@ -1,4 +1,4 @@
-/* PptxGenJS 0.7.0 @ 2020-01-16T09:29:35.840Z */
+/* PptxGenJS 0.8.0 @ 2020-01-16T13:43:03.930Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -1963,7 +1963,8 @@ function rgbToHex(r, g, b) {
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-function createColorElement(colorStr, innerElements) {
+function createColorElement(color, innerElements) {
+    var colorStr = translateColor(color);
     var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
     if (!isHexaRgb &&
         Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
@@ -2032,6 +2033,11 @@ var genericParseFloat = function (n) {
     }
     return n;
 };
+var translateColor = function (color) {
+    if (!color || typeof color !== 'string')
+        return color;
+    return color.replace('#', '');
+};
 //# sourceMappingURL=gen-utils.js.map
 
 var ShadowElement = /** @class */ (function () {
@@ -2069,7 +2075,7 @@ var ShadowElement = /** @class */ (function () {
         this.blur = blur * ONEPT;
         this.offset = offset * ONEPT;
         this.angle = angle * 60000;
-        this.color = color;
+        this.color = translateColor(color);
         this.opacity = opacity * 100000;
     }
     ShadowElement.prototype.render = function () {
@@ -2200,7 +2206,7 @@ var DASH_VALUES = [
 var LineElement = /** @class */ (function () {
     function LineElement(_a) {
         var _b = _a.size, size = _b === void 0 ? 1 : _b, _c = _a.color, color = _c === void 0 ? '333333' : _c, dash = _a.dash, head = _a.head, tail = _a.tail;
-        this.color = color;
+        this.color = translateColor(color);
         this.size = size;
         if (!DASH_VALUES.includes(dash))
             this.dash = 'solid';
@@ -2243,7 +2249,7 @@ var Bullet = /** @class */ (function () {
             this.bulletCode = BULLET_TYPES['DEFAULT'];
         }
         this.bulletCode = this.code && "&#x" + this.code + ";";
-        this.color = bullet.color;
+        this.color = translateColor(bullet.color);
         this.enabled = !!this.code || this.type === 'number';
         this.indent = bullet.indent;
     }
@@ -2385,7 +2391,7 @@ var RunProperties = /** @class */ (function () {
         // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
         this.fontSize = options.fontSize && Math.round(options.fontSize);
         this.charSpacing = options.charSpacing;
-        this.color = options.color;
+        this.color = translateColor(options.color);
         this.bold = !!options.bold;
         this.italic = !!options.italic;
         this.strike = !!options.strike;
@@ -2395,7 +2401,7 @@ var RunProperties = /** @class */ (function () {
         if (options.outline) {
             this.outline = {
                 size: options.outline.size || 0.75,
-                color: options.outline.color || 'FFFFFF'
+                color: translateColor(options.outline.color) || 'FFFFFF'
             };
         }
         if (options.hyperlink) {
@@ -2571,7 +2577,7 @@ var TextElement = /** @class */ (function () {
         else {
             this.shape = null;
         }
-        this.fill = opts.fill;
+        this.fill = translateColor(opts.fill);
         this.lang = opts.lang;
         if (opts.placeholder)
             this.placeholder = opts.placeholder;
@@ -2656,8 +2662,7 @@ var defaultsToOne = function (x) { return x || (x === 0 ? 0 : 1); };
 var SimpleShapeElement = /** @class */ (function () {
     function SimpleShapeElement(shape, opts) {
         this.shape = new ShapeElement(shape, { rectRadius: opts.rectRadius });
-        this.fill = opts.fill;
-        this.rectRadius = opts.rectRadius;
+        this.fill = translateColor(opts.fill);
         if (opts.line || this.shape.name === 'line') {
             this.line = new LineElement({
                 color: opts.line || '333333',
@@ -2878,7 +2883,7 @@ var ObjectFit = /** @class */ (function () {
 }());
 var duoToneEffect = function (_a) {
     var _b = _a.darkColor, darkColor = _b === void 0 ? '226622' : _b, _c = _a.lightColor, lightColor = _c === void 0 ? 'FFFFFF' : _c;
-    return "\n            <a:duotone>\n              <a:srgbClr val=\"" + darkColor + "\"/>\n              <a:srgbClr val=\"" + lightColor + "\"/>\n            </a:duotone>\n    ";
+    return "\n            <a:duotone>\n              <a:srgbClr val=\"" + translateColor(darkColor) + "\"/>\n              <a:srgbClr val=\"" + translateColor(lightColor) + "\"/>\n            </a:duotone>\n    ";
 };
 //# sourceMappingURL=image.js.map
 
@@ -4515,6 +4520,7 @@ var GroupElement = /** @class */ (function () {
     };
     return GroupElement;
 }());
+//# sourceMappingURL=group.js.map
 
 /**
  * PptxGenJS Slide Class
@@ -4688,6 +4694,7 @@ var Slide = /** @class */ (function () {
     };
     return Slide;
 }());
+//# sourceMappingURL=slide.js.map
 
 /**
  * PptxGenJS: Chart Generation
@@ -8753,7 +8760,7 @@ function makeXmlViewProps() {
 var scriptFonts = "\n        <a:font script=\"Jpan\" typeface=\"\u6E38\u30B4\u30B7\u30C3\u30AF Light\"/>\n        <a:font script=\"Hang\" typeface=\"\uB9D1\uC740 \uACE0\uB515\"/>\n        <a:font script=\"Hans\" typeface=\"\u7B49\u7EBF Light\"/>\n        <a:font script=\"Hant\" typeface=\"\u65B0\u7D30\u660E\u9AD4\"/>\n        <a:font script=\"Arab\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Hebr\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Thai\" typeface=\"Angsana New\"/>\n        <a:font script=\"Ethi\" typeface=\"Nyala\"/>\n        <a:font script=\"Beng\" typeface=\"Vrinda\"/>\n        <a:font script=\"Gujr\" typeface=\"Shruti\"/>\n        <a:font script=\"Khmr\" typeface=\"MoolBoran\"/>\n        <a:font script=\"Knda\" typeface=\"Tunga\"/>\n        <a:font script=\"Guru\" typeface=\"Raavi\"/>\n        <a:font script=\"Cans\" typeface=\"Euphemia\"/>\n        <a:font script=\"Cher\" typeface=\"Plantagenet Cherokee\"/>\n        <a:font script=\"Yiii\" typeface=\"Microsoft Yi Baiti\"/>\n        <a:font script=\"Tibt\" typeface=\"Microsoft Himalaya\"/>\n        <a:font script=\"Thaa\" typeface=\"MV Boli\"/>\n        <a:font script=\"Deva\" typeface=\"Mangal\"/>\n        <a:font script=\"Telu\" typeface=\"Gautami\"/>\n        <a:font script=\"Taml\" typeface=\"Latha\"/>\n        <a:font script=\"Syrc\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Orya\" typeface=\"Kalinga\"/>\n        <a:font script=\"Mlym\" typeface=\"Kartika\"/>\n        <a:font script=\"Laoo\" typeface=\"DokChampa\"/>\n        <a:font script=\"Sinh\" typeface=\"Iskoola Pota\"/>\n        <a:font script=\"Mong\" typeface=\"Mongolian Baiti\"/>\n        <a:font script=\"Viet\" typeface=\"Times New Roman\"/>\n        <a:font script=\"Uigh\" typeface=\"Microsoft Uighur\"/>\n        <a:font script=\"Geor\" typeface=\"Sylfaen\"/>\n        <a:font script=\"Armn\" typeface=\"Arial\"/>\n        <a:font script=\"Bugi\" typeface=\"Leelawadee UI\"/>\n        <a:font script=\"Bopo\" typeface=\"Microsoft JhengHei\"/>\n        <a:font script=\"Java\" typeface=\"Javanese Text\"/>\n        <a:font script=\"Lisu\" typeface=\"Segoe UI\"/>\n        <a:font script=\"Mymr\" typeface=\"Myanmar Text\"/>\n        <a:font script=\"Nkoo\" typeface=\"Ebrima\"/>\n        <a:font script=\"Olck\" typeface=\"Nirmala UI\"/>\n        <a:font script=\"Osma\" typeface=\"Ebrima\"/>\n        <a:font script=\"Phag\" typeface=\"Phagspa\"/>\n        <a:font script=\"Syrn\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Syrj\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Syre\" typeface=\"Estrangelo Edessa\"/>\n        <a:font script=\"Sora\" typeface=\"Nirmala UI\"/>\n        <a:font script=\"Tale\" typeface=\"Microsoft Tai Le\"/>\n        <a:font script=\"Talu\" typeface=\"Microsoft New Tai Lue\"/>\n        <a:font script=\"Tfng\" typeface=\"Ebrima\"/>\n";
 var colorSchemeXML = function (_a) {
     var _b = _a === void 0 ? {} : _a, _c = _b.dark1, dark1 = _c === void 0 ? '000000' : _c, _d = _b.dark2, dark2 = _d === void 0 ? '44546A' : _d, _e = _b.light1, light1 = _e === void 0 ? 'FFFFFF' : _e, _f = _b.light2, light2 = _f === void 0 ? 'E7E6E6' : _f, _g = _b.accent1, accent1 = _g === void 0 ? '4472C4' : _g, _h = _b.accent2, accent2 = _h === void 0 ? 'ED7D31' : _h, _j = _b.accent3, accent3 = _j === void 0 ? 'A5A5A5' : _j, _k = _b.accent4, accent4 = _k === void 0 ? 'FFC000' : _k, _l = _b.accent5, accent5 = _l === void 0 ? '5B9BD5' : _l, _m = _b.accent6, accent6 = _m === void 0 ? '70AD47' : _m, _o = _b.hLink, hLink = _o === void 0 ? '0563C1' : _o, _p = _b.folHLink, folHLink = _p === void 0 ? '954F72' : _p;
-    return "<a:clrScheme name=\"Sublime\">\n      <a:dk1>\n        <a:sysClr val=\"windowText\" lastClr=\"" + dark1 + "\"/>\n      </a:dk1>\n      <a:lt1>\n        <a:sysClr val=\"window\" lastClr=\"" + light1 + "\"/>\n      </a:lt1>\n      <a:dk2>\n        <a:srgbClr val=\"" + dark2 + "\"/>\n      </a:dk2>\n      <a:lt2>\n        <a:srgbClr val=\"" + light2 + "\"/>\n      </a:lt2>\n      <a:accent1>\n        <a:srgbClr val=\"" + accent1 + "\"/>\n      </a:accent1>\n      <a:accent2>\n        <a:srgbClr val=\"" + accent2 + "\"/>\n      </a:accent2>\n      <a:accent3>\n        <a:srgbClr val=\"" + accent3 + "\"/>\n      </a:accent3>\n      <a:accent4>\n        <a:srgbClr val=\"" + accent4 + "\"/>\n      </a:accent4>\n      <a:accent5>\n        <a:srgbClr val=\"" + accent5 + "\"/>\n      </a:accent5>\n      <a:accent6>\n        <a:srgbClr val=\"" + accent6 + "\"/>\n      </a:accent6>\n      <a:hlink>\n        <a:srgbClr val=\"" + hLink + "\"/>\n      </a:hlink>\n      <a:folHlink>\n        <a:srgbClr val=\"" + folHLink + "\"/>\n      </a:folHlink>\n    </a:clrScheme>";
+    return "<a:clrScheme name=\"Sublime\">\n      <a:dk1>\n        <a:sysClr val=\"windowText\" lastClr=\"" + translateColor(dark1) + "\"/>\n      </a:dk1>\n      <a:lt1>\n        <a:sysClr val=\"window\" lastClr=\"" + translateColor(light1) + "\"/>\n      </a:lt1>\n      <a:dk2>\n        <a:srgbClr val=\"" + translateColor(dark2) + "\"/>\n      </a:dk2>\n      <a:lt2>\n        <a:srgbClr val=\"" + translateColor(light2) + "\"/>\n      </a:lt2>\n      <a:accent1>\n        <a:srgbClr val=\"" + translateColor(accent1) + "\"/>\n      </a:accent1>\n      <a:accent2>\n        <a:srgbClr val=\"" + translateColor(accent2) + "\"/>\n      </a:accent2>\n      <a:accent3>\n        <a:srgbClr val=\"" + translateColor(accent3) + "\"/>\n      </a:accent3>\n      <a:accent4>\n        <a:srgbClr val=\"" + translateColor(accent4) + "\"/>\n      </a:accent4>\n      <a:accent5>\n        <a:srgbClr val=\"" + translateColor(accent5) + "\"/>\n      </a:accent5>\n      <a:accent6>\n        <a:srgbClr val=\"" + translateColor(accent6) + "\"/>\n      </a:accent6>\n      <a:hlink>\n        <a:srgbClr val=\"" + translateColor(hLink) + "\"/>\n      </a:hlink>\n      <a:folHlink>\n        <a:srgbClr val=\"" + translateColor(folHLink) + "\"/>\n      </a:folHlink>\n    </a:clrScheme>";
 };
 var DEFAULT_SCHEME = colorSchemeXML({});
 function makeXmlTheme(fontFamily, colorScheme) {
