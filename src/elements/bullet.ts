@@ -1,5 +1,5 @@
 import { BULLET_TYPES } from '../core-enums'
-import { getSmartParseNumber } from '../gen-utils'
+import { getSmartParseNumber, translateColor } from '../gen-utils'
 
 export type BulletOptions =
     | boolean
@@ -59,7 +59,7 @@ export default class Bullet {
             this.bulletCode = BULLET_TYPES['DEFAULT']
         }
         this.bulletCode = this.code && `&#x${this.code};`
-        this.color = bullet.color
+        this.color = translateColor(bullet.color)
 
         this.enabled = !!this.code || this.type === 'number'
         this.indent = bullet.indent

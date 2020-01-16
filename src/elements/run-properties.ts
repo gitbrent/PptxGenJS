@@ -1,5 +1,5 @@
 import { ONEPT } from '../core-enums'
-import { genXmlColorSelection } from '../gen-utils'
+import { genXmlColorSelection, translateColor } from '../gen-utils'
 import Relations from '../relations'
 
 import Hyperlink, { HyperLinkOptions } from './hyperlink'
@@ -45,7 +45,7 @@ export default class RunProperties {
         // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
         this.fontSize = options.fontSize && Math.round(options.fontSize)
         this.charSpacing = options.charSpacing
-        this.color = options.color
+        this.color = translateColor(options.color)
         this.bold = !!options.bold
         this.italic = !!options.italic
         this.strike = !!options.strike
@@ -56,7 +56,7 @@ export default class RunProperties {
         if (options.outline) {
             this.outline = {
                 size: options.outline.size || 0.75,
-                color: options.outline.color || 'FFFFFF'
+                color: translateColor(options.outline.color) || 'FFFFFF'
             }
         }
 

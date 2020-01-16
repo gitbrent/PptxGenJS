@@ -10,6 +10,8 @@ import ElementInterface from './element-interface'
 import Hyperlink, { HyperLinkOptions } from './hyperlink'
 import Position, { PositionOptions } from './position'
 
+import { translateColor } from '../gen-utils'
+
 const unitConverter = presLayout => ({
     x: x => getSmartParseNumber(x, 'X', presLayout),
     y: y => getSmartParseNumber(y, 'Y', presLayout)
@@ -350,8 +352,8 @@ const duoToneEffect = ({
 }: ColorBlend) => {
     return `
             <a:duotone>
-              <a:srgbClr val="${darkColor}"/>
-              <a:srgbClr val="${lightColor}"/>
+              <a:srgbClr val="${translateColor(darkColor)}"/>
+              <a:srgbClr val="${translateColor(lightColor)}"/>
             </a:duotone>
     `
 }

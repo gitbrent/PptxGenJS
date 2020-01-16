@@ -1,6 +1,6 @@
 import { CRLF, ONEPT, TEXT_VALIGN, DEF_FONT_COLOR } from '../core-enums'
 
-import { inch2Emu, genXmlColorSelection } from '../gen-utils'
+import { inch2Emu, genXmlColorSelection, translateColor } from '../gen-utils'
 
 import ElementInterface from './element-interface'
 
@@ -33,15 +33,13 @@ export default class SimpleShapeElement implements ElementInterface {
 
     position: Position
     line?: Line
-    rectRadius?: number
 
     shadow?: ShadowElement
 
     constructor(shape: ShapeConfig, opts: ShapeOptions) {
         this.shape = new Shape(shape, { rectRadius: opts.rectRadius })
 
-        this.fill = opts.fill
-        this.rectRadius = opts.rectRadius
+        this.fill = translateColor(opts.fill)
 
         if (opts.line || this.shape.name === 'line') {
             this.line = new Line({

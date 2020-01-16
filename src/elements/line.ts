@@ -1,5 +1,5 @@
 import { ONEPT } from '../core-enums'
-import { genXmlColorSelection } from '../gen-utils'
+import { genXmlColorSelection, translateColor } from '../gen-utils'
 
 const DASH_VALUES = [
     'dash',
@@ -20,7 +20,7 @@ export default class LineElement {
     tail
 
     constructor({ size = 1, color = '333333', dash, head, tail }) {
-        this.color = color
+        this.color = translateColor(color)
         this.size = size
 
         if (!DASH_VALUES.includes(dash)) this.dash = 'solid'

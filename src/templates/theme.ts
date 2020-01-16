@@ -1,3 +1,5 @@
+import { translateColor } from '../gen-utils'
+
 const scriptFonts = `
         <a:font script="Jpan" typeface="游ゴシック Light"/>
         <a:font script="Hang" typeface="맑은 고딕"/>
@@ -64,40 +66,40 @@ export const colorSchemeXML = ({
 } = {}) => {
     return `<a:clrScheme name="Sublime">
       <a:dk1>
-        <a:sysClr val="windowText" lastClr="${dark1}"/>
+        <a:sysClr val="windowText" lastClr="${translateColor(dark1)}"/>
       </a:dk1>
       <a:lt1>
-        <a:sysClr val="window" lastClr="${light1}"/>
+        <a:sysClr val="window" lastClr="${translateColor(light1)}"/>
       </a:lt1>
       <a:dk2>
-        <a:srgbClr val="${dark2}"/>
+        <a:srgbClr val="${translateColor(dark2)}"/>
       </a:dk2>
       <a:lt2>
-        <a:srgbClr val="${light2}"/>
+        <a:srgbClr val="${translateColor(light2)}"/>
       </a:lt2>
       <a:accent1>
-        <a:srgbClr val="${accent1}"/>
+        <a:srgbClr val="${translateColor(accent1)}"/>
       </a:accent1>
       <a:accent2>
-        <a:srgbClr val="${accent2}"/>
+        <a:srgbClr val="${translateColor(accent2)}"/>
       </a:accent2>
       <a:accent3>
-        <a:srgbClr val="${accent3}"/>
+        <a:srgbClr val="${translateColor(accent3)}"/>
       </a:accent3>
       <a:accent4>
-        <a:srgbClr val="${accent4}"/>
+        <a:srgbClr val="${translateColor(accent4)}"/>
       </a:accent4>
       <a:accent5>
-        <a:srgbClr val="${accent5}"/>
+        <a:srgbClr val="${translateColor(accent5)}"/>
       </a:accent5>
       <a:accent6>
-        <a:srgbClr val="${accent6}"/>
+        <a:srgbClr val="${translateColor(accent6)}"/>
       </a:accent6>
       <a:hlink>
-        <a:srgbClr val="${hLink}"/>
+        <a:srgbClr val="${translateColor(hLink)}"/>
       </a:hlink>
       <a:folHlink>
-        <a:srgbClr val="${folHLink}"/>
+        <a:srgbClr val="${translateColor(folHLink)}"/>
       </a:folHlink>
     </a:clrScheme>`
 }

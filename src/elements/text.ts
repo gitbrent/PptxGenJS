@@ -1,6 +1,6 @@
 import { CRLF, ONEPT, TEXT_VALIGN, DEF_FONT_COLOR } from '../core-enums'
 
-import { inch2Emu, genXmlColorSelection } from '../gen-utils'
+import { inch2Emu, translateColor, genXmlColorSelection } from '../gen-utils'
 import Relations from '../relations'
 
 import ElementInterface from './element-interface'
@@ -67,7 +67,7 @@ export default class TextElement implements ElementInterface {
             this.shape = null
         }
 
-        this.fill = opts.fill
+        this.fill = translateColor(opts.fill)
         this.lang = opts.lang
 
         if (opts.placeholder) this.placeholder = opts.placeholder

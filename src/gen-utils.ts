@@ -215,9 +215,10 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @returns {string} XML string
  */
 export function createColorElement(
-    colorStr: string,
+    color: string,
     innerElements?: string
 ): string {
+    let colorStr = translateColor(color)
     let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
 
     if (
@@ -331,4 +332,9 @@ export const genericParseFloat = (n: number | string) => {
         return parseFloat(n)
     }
     return n
+}
+
+export const translateColor = color => {
+    if (!color || typeof color !== 'string') return color
+    return color.replace('#', '')
 }

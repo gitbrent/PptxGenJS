@@ -1,4 +1,5 @@
 import { ONEPT } from '../core-enums'
+import { translateColor } from '../gen-utils'
 
 export interface ShadowOptions {
     type?: 'outer' | 'inner' | 'none'
@@ -66,7 +67,7 @@ export default class ShadowElement {
         this.blur = blur * ONEPT
         this.offset = offset * ONEPT
         this.angle = angle * 60000
-        this.color = color
+        this.color = translateColor(color)
         this.opacity = opacity * 100000
     }
 
