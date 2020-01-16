@@ -1,15 +1,33 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-import pptxgen from "./pptxgen.es.js"; // LOCAL DEV TESTING src=`PptxGenJS/dist`
-//import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
+//import pptxgen from "./pptxgen.es.js"; // LOCAL DEV TESTING src=`PptxGenJS/dist`
+import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
 
 function App() {
 	const demoCode = `import pptxgen from "pptxgenjs";
+
 let pptx = new pptxgen();
 
 let slide = pptx.addSlide();
-slide.addText("React Demo!", { x:1, y:1, w:'80%', h:1, fontSize:36, fill:'eeeeee', align:'center' });
+
+slide.addText(
+  "React Demo!",
+  { x:1, y:1, w:'80%', h:1, fontSize:36, fill:'eeeeee', align:'center' }
+);
+
+pptx.writeFile("react-demo.pptx");`;
+
+	const demoCodeTsx = `import * as pptxgen from "pptxgenjs";
+
+let pptx = new pptxgen();
+
+let slide = pptx.addSlide();
+
+slide.addText(
+  "React Demo!",
+  { x:1, y:1, w:'80%', h:1, fontSize:36, fill:'eeeeee', align:pptxgen.TEXT_HALIGN.center }
+);
 
 pptx.writeFile("react-demo.pptx");`;
 
@@ -88,10 +106,20 @@ pptx.writeFile("react-demo.pptx");`;
 					<p className="lead">Sample React application to demonstrate using the PptxGenJS library as a module.</p>
 					<hr className="my-4" />
 
-					<h5 className="text-info">Demo Code</h5>
-					<pre className="my-4">
-						<code className="language-javascript">{demoCode}</code>
-					</pre>
+					<div class="row">
+						<div class="col-12 col-md">
+							<h5 className="text-info">Demo Code (.js)</h5>
+							<pre className="my-4">
+								<code className="language-javascript">{demoCode}</code>
+							</pre>
+						</div>
+						<div class="col-12 col-md">
+							<h5 className="text-info">Demo Code (.tsx)</h5>
+							<pre className="my-4">
+								<code className="language-javascript">{demoCodeTsx}</code>
+							</pre>
+						</div>
+					</div>
 
 					<button type="button" className="btn btn-success w-25" onClick={ev => runDemo()}>
 						Run Demo
