@@ -8,7 +8,6 @@
   "description": "Create JavaScript PowerPoint Presentations",
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
   "license": "MIT",
-  "browser": "dist/pptxgen.min.js",
   "main": "dist/pptxgen.cjs.js",
   "module": "dist/pptxgen.es.js",
   "files": [
