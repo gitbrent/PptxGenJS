@@ -1,5 +1,7 @@
-/* PptxGenJS 0.8.0 @ 2020-01-16T13:43:03.929Z */
+/* PptxGenJS 0.9.0 @ 2020-01-16T16:22:21.365Z */
 'use strict';
+
+Object.defineProperty(exports, '__esModule', { value: true });
 
 var JSZip = require('jszip');
 
@@ -1586,6 +1588,17 @@ function __rest(s, e) {
     return t;
 }
 
+function __values(o) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator], i = 0;
+    if (m) return m.call(o);
+    return {
+        next: function () {
+            if (o && i >= o.length) o = void 0;
+            return { value: o && o[i++], done: !o };
+        }
+    };
+}
+
 function __read(o, n) {
     var m = typeof Symbol === "function" && o[Symbol.iterator];
     if (!m) return o;
@@ -1771,11 +1784,8 @@ var Relations = /** @class */ (function () {
 }());
 //# sourceMappingURL=relations.js.map
 
-/**
- * PptxGenJS Utils
- */
 var CALC_EXPR = /^calc\((.+)\)$/;
-var processCalcArray = function (values, calc) {
+var processCalcArray = function (values, calcExpr) {
     values.forEach(function (v, index) {
         if (v === '-')
             values[index + 1] = -values[index + 1];
@@ -1783,19 +1793,119 @@ var processCalcArray = function (values, calc) {
     values = values.filter(function (v) { return v !== '-' && v !== '+'; });
     values.forEach(function (v, index) {
         if (v === '/') {
-            values[index + 1] = values[index - 1] / values[index + 1];
-            values[index - 1] = 0;
+            var nominator = values[index - 1];
+            var denominator = values[index + 1];
+            if (typeof nominator !== 'number' ||
+                typeof denominator !== 'number') {
+                console.warn("Bad calc expression (division) \"" + calcExpr + "\"");
+                values[index + 1] = 0;
+                values[index - 1] = 0;
+            }
+            else {
+                values[index + 1] = nominator / denominator;
+                values[index - 1] = 0;
+            }
         }
         if (v === '*') {
-            values[index + 1] = values[index - 1] * values[index + 1];
-            values[index - 1] = 0;
+            var firstVal = values[index - 1];
+            var secondVal = values[index + 1];
+            if (typeof firstVal !== 'number' || typeof secondVal !== 'number') {
+                console.warn("Bad calc expression (multiplication) \"" + calcExpr + "\"");
+                values[index + 1] = 0;
+                values[index - 1] = 0;
+            }
+            else {
+                values[index + 1] = firstVal * secondVal;
+                values[index - 1] = 0;
+            }
         }
     });
     var result = values
         .filter(function (v) { return v !== '*' && v !== '/'; })
+        .map(function (n) { return Number(n); })
         .reduce(function (x, y) { return x + y; }, 0);
     return result;
 };
+var processParentheses = function (valueArray, calcExpr) {
+    var e_1, _a;
+    var withParenthesesDone = [];
+    var parenLevel = 0;
+    var currentParen = [];
+    try {
+        for (var valueArray_1 = __values(valueArray), valueArray_1_1 = valueArray_1.next(); !valueArray_1_1.done; valueArray_1_1 = valueArray_1.next()) {
+            var value = valueArray_1_1.value;
+            if (value === ')' && parenLevel === 0) {
+                console.warn("parenthesis mismatch in " + calcExpr);
+                return 0;
+            }
+            else if (value === ')' && parenLevel === 1) {
+                withParenthesesDone.push(processParentheses(currentParen, calcExpr));
+                currentParen = [];
+                parenLevel = 0;
+            }
+            else if (value === ')' && parenLevel > 1) {
+                parenLevel -= 1;
+            }
+            else if (parenLevel === 0 && value !== '(' && value !== ')') {
+                withParenthesesDone.push(value);
+            }
+            else if (parenLevel > 0 && value !== '(' && value !== ')') {
+                currentParen.push(value);
+            }
+            else if (value === '(') {
+                parenLevel += 1;
+            }
+        }
+    }
+    catch (e_1_1) { e_1 = { error: e_1_1 }; }
+    finally {
+        try {
+            if (valueArray_1_1 && !valueArray_1_1.done && (_a = valueArray_1.return)) _a.call(valueArray_1);
+        }
+        finally { if (e_1) throw e_1.error; }
+    }
+    if (parenLevel > 0) {
+        console.warn("parenthesis mismatch in \"" + calcExpr + "\"");
+        return 0;
+    }
+    return processCalcArray(withParenthesesDone, calcExpr);
+};
+var calc = (function (calcExpr, parseValue) {
+    if (!CALC_EXPR.test(calcExpr)) {
+        console.warn("Not a valid calc expression \"" + calcExpr + "\"");
+        return 0;
+    }
+    var _a = __read(calcExpr.match(CALC_EXPR), 2), calc = _a[1];
+    var values = calc
+        .replace(/calc/g, '')
+        .replace(/\(/g, ' ( ')
+        .replace(/\)/g, ' ) ')
+        .replace(/\+/g, ' + ')
+        .replace(/-/g, ' - ')
+        .replace(/\*/g, ' * ')
+        .replace(/\//g, ' / ')
+        .split(/\s/)
+        .filter(function (v) { return v; });
+    var parsedValues = values.map(function (v) {
+        if (v === '+' ||
+            v === '-' ||
+            v === '/' ||
+            v === '*' ||
+            v === '(' ||
+            v === ')')
+            return v;
+        var scalar = Number(v);
+        if (!Number.isNaN(scalar))
+            return scalar;
+        return parseValue(v);
+    });
+    return processParentheses(parsedValues, calcExpr);
+});
+//# sourceMappingURL=calc.js.map
+
+/**
+ * PptxGenJS Utils
+ */
 /**
  * Convert string percentages to number relative to slide size
  * @param {number|string} size - numeric ("5.5") or percentage ("90%")
@@ -1817,23 +1927,7 @@ function getSmartParseNumber(size, xyDir, layout) {
     if (typeof size === 'number' && size >= 100)
         return size;
     if (typeof size === 'string' && CALC_EXPR.test(size)) {
-        var _a = __read(size.match(CALC_EXPR), 2), calc = _a[1];
-        var values = calc
-            .replace('+', ' + ')
-            .replace('-', ' - ')
-            .replace('*', ' * ')
-            .replace('/', ' / ')
-            .split(/\s/)
-            .filter(function (v) { return v; });
-        var parsedValues = values.map(function (v) {
-            if (v === '+' || v === '-' || v === '/' || v === '*')
-                return v;
-            var scalar = Number(v);
-            if (!Number.isNaN(scalar))
-                return scalar;
-            return getSmartParseNumber(v, xyDir, layout);
-        });
-        return processCalcArray(parsedValues);
+        return calc(size, function (v) { return getSmartParseNumber(v, xyDir, layout); });
     }
     // Percentage (ex: '50%')
     if (typeof size === 'string' && size.indexOf('%') > -1) {
@@ -8080,7 +8174,6 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
             newSlide.addText(opts.addText.text, opts.addText.opts || {});
     });
 }
-//# sourceMappingURL=gen-tables.js.map
 
 var PlaceholderImage = /** @class */ (function (_super) {
     __extends(PlaceholderImage, _super);
@@ -9311,6 +9404,7 @@ var PptxGenJS = /** @class */ (function () {
     };
     return PptxGenJS;
 }());
-//# sourceMappingURL=pptxgen.js.map
 
-module.exports = PptxGenJS;
+exports.CALC_EXPR = CALC_EXPR;
+exports.calc = calc;
+exports.default = PptxGenJS;
