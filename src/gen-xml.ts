@@ -201,11 +201,14 @@ export function makeXmlContTypes(
  * @returns XML
  */
 export function makeXmlRootRels(): string {
-    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
-		<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>
-		<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>
-		<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>
-		</Relationships>`
+    return [
+        XML_HEADER,
+        '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">',
+        '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/extended-properties" Target="docProps/app.xml"/>',
+        '<Relationship Id="rId2" Type="http://schemas.openxmlformats.org/package/2006/relationships/metadata/core-properties" Target="docProps/core.xml"/>',
+        '<Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="ppt/presentation.xml"/>',
+        '</Relationships>'
+    ].join('')
 }
 
 /**
@@ -215,7 +218,7 @@ export function makeXmlRootRels(): string {
  * @returns XML
  */
 export function makeXmlApp(slides: Slide[], company: string): string {
-    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
+    return `${XML_HEADER}<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
 	<TotalTime>0</TotalTime>
 	<Words>0</Words>
 	<Application>Microsoft Office PowerPoint</Application>
@@ -270,7 +273,7 @@ export function makeXmlCore(
     author: string,
     revision: string
 ): string {
-    return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+    return `${XML_HEADER}
 	<cp:coreProperties xmlns:cp="http://schemas.openxmlformats.org/package/2006/metadata/core-properties" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:dcterms="http://purl.org/dc/terms/" xmlns:dcmitype="http://purl.org/dc/dcmitype/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 		<dc:title>${encodeXmlEntities(title)}</dc:title>
 		<dc:subject>${encodeXmlEntities(subject)}</dc:subject>
@@ -293,7 +296,7 @@ export function makeXmlCore(
  */
 export function makeXmlPresentationRels(slides: Array<Slide>): string {
     let intRelNum = 1
-    let strXml =
+    let strXml = XML_HEADER
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
     strXml +=
         '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
