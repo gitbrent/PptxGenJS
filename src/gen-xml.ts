@@ -104,135 +104,96 @@ function slideObjectToXml(slide: Slide | Master): string {
  * @param {Slide} masterSlide - master slide
  * @returns XML
  */
+
 export function makeXmlContTypes(
     slides: Slide[],
     slideLayouts: Master[],
     masterSlide?: Slide
 ): string {
-    let strXml =
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
-    strXml +=
-        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
-    strXml += '<Default Extension="xml" ContentType="application/xml"/>'
-    strXml +=
-        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>'
-    strXml += '<Default Extension="jpeg" ContentType="image/jpeg"/>'
-    strXml += '<Default Extension="jpg" ContentType="image/jpg"/>'
+    const EXCLUDES = new Set([
+        'image',
+        'online',
+        'chart',
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/gif',
+        'video/mp4'
+    ])
+    const extensions = new Map()
 
-    // STEP 1: Add standard/any media types used in Presenation
-    strXml += '<Default Extension="png" ContentType="image/png"/>'
-    strXml += '<Default Extension="gif" ContentType="image/gif"/>'
-    strXml += '<Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
-    strXml += '<Default Extension="mp4" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
-    slides.forEach(slide => {
-        ;(slide.relsMedia || []).forEach(rel => {
-            if (
-                rel.type !== 'image' &&
-                rel.type !== 'online' &&
-                rel.type !== 'chart' &&
-                rel.extn !== 'm4v' &&
-                strXml.indexOf(rel.type) === -1
-            ) {
-                strXml +=
-                    '<Default Extension="' +
-                    rel.extn +
-                    '" ContentType="' +
-                    rel.type +
-                    '"/>'
-            }
+    const allSlidesLike = [...slides, ...slideLayouts, masterSlide]
+
+    allSlidesLike.forEach(slide =>
+        slide.relations.relsMedia.forEach(({ type, extn }) => {
+            if (EXCLUDES.has(type) || extensions.has(type) || extn === 'm4v')
+                return
+            extensions.set(type, extn)
         })
-    })
-    strXml +=
-        '<Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>'
-    strXml +=
-        '<Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>'
+    )
+    const allExtensions = [...extensions.entries()]
 
-    // STEP 2: Add presentation and slide master(s)/slide(s)
-    strXml +=
-        '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>'
-    strXml +=
-        '<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>'
-    slides.forEach((slide, idx) => {
-        strXml +=
-            '<Override PartName="/ppt/slideMasters/slideMaster' +
-            (idx + 1) +
-            '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>'
-        strXml +=
-            '<Override PartName="/ppt/slides/slide' +
-            (idx + 1) +
-            '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
-        // Add charts if any
-        slide.relsChart.forEach(rel => {
-            strXml +=
-                ' <Override PartName="' +
-                rel.Target +
-                '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
-        })
-    })
-
-    // STEP 3: Core PPT
-    strXml +=
-        '<Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>'
-    strXml +=
-        '<Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>'
-    strXml +=
-        '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>'
-    strXml +=
-        '<Override PartName="/ppt/tableStyles.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>'
-
-    // STEP 4: Add Slide Layouts
-    slideLayouts.forEach((layout, idx) => {
-        strXml +=
-            '<Override PartName="/ppt/slideLayouts/slideLayout' +
-            (idx + 1) +
-            '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>'
-        ;(layout.relsChart || []).forEach(rel => {
-            strXml +=
-                ' <Override PartName="' +
-                rel.Target +
-                '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
-        })
-    })
-
-    // STEP 5: Add notes slide(s)
-    slides.forEach((_slide, idx) => {
-        strXml +=
-            ' <Override PartName="/ppt/notesSlides/notesSlide' +
-            (idx + 1) +
-            '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>'
-    })
-
-    // STEP 6: Add rels
-    masterSlide.relsChart.forEach(rel => {
-        strXml +=
-            ' <Override PartName="' +
-            rel.Target +
-            '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
-    })
-    masterSlide.relsMedia.forEach(rel => {
-        if (
-            rel.type !== 'image' &&
-            rel.type !== 'online' &&
-            rel.type !== 'chart' &&
-            rel.extn !== 'm4v' &&
-            strXml.indexOf(rel.type) === -1
+    const allChartTargets = []
+    allSlidesLike.forEach(slide => {
+        return slide.relations.relsChart.forEach(({ Target }) =>
+            allChartTargets.push(Target)
         )
-            strXml +=
-                ' <Default Extension="' +
-                rel.extn +
-                '" ContentType="' +
-                rel.type +
-                '"/>'
     })
 
-    // LAST: Finish XML (Resume core)
-    strXml +=
-        ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>'
-    strXml +=
-        ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>'
-    strXml += '</Types>'
+    const extensionsInfo = allExtensions.map(
+        ([type, extn]) => `<Default Extension="${extn}" ContentType="${type}"/>`
+    )
 
-    return strXml
+    const slidesInfo = slides.map((slide, idx) => {
+        const index = idx + 1
+        return [
+            `<Override PartName="/ppt/slideMasters/slideMaster${index}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>`,
+            `<Override PartName="/ppt/slides/slide${index}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>`,
+            ` <Override PartName="/ppt/notesSlides/notesSlide${index}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesSlide+xml"/>`
+        ].join('')
+    })
+
+    const slideLayoutInfo = slideLayouts.map((layout, idx) => {
+        const index = idx + 1
+        return `<Override PartName="/ppt/slideLayouts/slideLayout${index}.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>`
+    })
+
+    const chartInfos = allChartTargets.map(
+        t =>
+            ` <Override PartName="${t}" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>`
+    )
+
+    return [
+        XML_HEADER,
+        '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">',
+        '<Default Extension="xml" ContentType="application/xml"/>',
+        '<Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>',
+        '<Default Extension="jpeg" ContentType="image/jpeg"/>',
+        '<Default Extension="jpg" ContentType="image/jpg"/>',
+        // STEP 1: Add standard/any media types used in Presenation
+        '<Default Extension="png" ContentType="image/png"/>',
+        '<Default Extension="gif" ContentType="image/gif"/>',
+        // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
+        '<Default Extension="m4v" ContentType="video/mp4"/>',
+        '<Default Extension="mp4" ContentType="video/mp4"/>',
+        ...extensionsInfo,
+        '<Default Extension="vml" ContentType="application/vnd.openxmlformats-officedocument.vmlDrawing"/>',
+        '<Default Extension="xlsx" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"/>',
+
+        '<Override PartName="/ppt/presentation.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presentation.main+xml"/>',
+        '<Override PartName="/ppt/notesMasters/notesMaster1.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.notesMaster+xml"/>',
+        '<Override PartName="/ppt/presProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.presProps+xml"/>',
+        '<Override PartName="/ppt/viewProps.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.viewProps+xml"/>',
+        '<Override PartName="/ppt/theme/theme1.xml" ContentType="application/vnd.openxmlformats-officedocument.theme+xml"/>',
+        '<Override PartName="/ppt/tableStyles.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.tableStyles+xml"/>',
+
+        ...slidesInfo,
+        ...slideLayoutInfo,
+        ...chartInfos,
+        ' <Override PartName="/docProps/core.xml" ContentType="application/vnd.openxmlformats-package.core-properties+xml"/>',
+        ' <Override PartName="/docProps/app.xml" ContentType="application/vnd.openxmlformats-officedocument.extended-properties+xml"/>',
+        '</Types>'
+    ].join('')
 }
 
 /**
