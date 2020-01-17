@@ -1542,6 +1542,11 @@ function genSlides_Chart(pptx) {
 				showLeaderLines: true,
 				showPercent: false,
 				showValue  : true,
+				chartColors      : ['FC0000','FFCC00','009900','0088CC','696969','6600CC'],
+				dataBorder       : { pt:'2', color:'F1F1F1' },
+				dataLabelColor   : 'FFFFFF',
+				dataLabelFontSize: 14,
+				dataLabelPosition: 'bestFit', // 'bestFit' | 'outEnd' | 'inEnd' | 'ctr'
 			}
 		);
 
