@@ -177,10 +177,10 @@
 			console.log('Running all demos...');
 
 			runEveryTest()
-			.catch(err => {
+			.catch(function(err) {
 				console.error(err.toString());
 			})
-			.then(() => {
+			.then(function() {
 				console.log('..done!');
 			});
 		}
