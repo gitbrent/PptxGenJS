@@ -46,7 +46,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 **Extensive browser support**
 
 - Create/download presentations on all current desktop & mobile web browsers
-- IE11 is supported via included Promises polyfill
+- IE11 is supported via bundle polyfill
 
 **Major PowerPoint object types**
 
