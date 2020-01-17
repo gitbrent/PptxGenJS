@@ -36,9 +36,9 @@ export interface OptsDataOrPath {
 export interface OptsChartData {
 	index?: number
 	name?: string
-	labels?: Array<string>
-	values?: Array<number>
-	sizes?: Array<number>
+	labels?: string[]
+	values?: number[]
+	sizes?: number[]
 }
 export interface OptsChartGridLine {
 	size?: number
@@ -79,7 +79,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	barGapWidthPct?: number
 	barGrouping?: string
 	border?: IBorderOptions
-	catAxes?: Array<number>
+	catAxes?: number[]
 	catAxisBaseTimeUnit?: string
 	catAxisHidden?: boolean
 	catAxisLabelColor?: string
@@ -92,7 +92,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	catAxisLineShow?: boolean
 	catAxisMajorTickMark?: ChartAxisTickMark
 	catAxisMajorTimeUnit?: string
-	catAxisMajorUnit?: string
+	catAxisMajorUnit?: number
 	catAxisMaxVal?: number
 	catAxisMinorTickMark?: ChartAxisTickMark
 	catAxisMinorTimeUnit?: string
@@ -106,7 +106,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	catAxisTitleRotate?: number
 	catGridLine?: OptsChartGridLine
 	catLabelFormatCode?: string
-	chartColors?: Array<string>
+	chartColors?: string[]
 	chartColorsOpacity?: number
 	dataBorder?: IBorderOptions
 	dataLabelBkgrdColors?: boolean
@@ -115,8 +115,8 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	dataLabelFontFace?: string
 	dataLabelFontSize?: number
 	dataLabelFormatCode?: string
-	dataLabelFormatScatter?: string
-	dataLabelPosition?: string
+	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
+	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't'
 	dataNoEffects?: string
 	dataTableFontSize?: number
 	displayBlanksAs?: string
@@ -131,13 +131,13 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	legendFontSize?: number
 	legendPos?: string
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
-	lineDataSymbol?: string
+	lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
 	lineDataSymbolLineColor?: string
 	lineDataSymbolLineSize?: number
 	lineDataSymbolSize?: number
 	lineSize?: number
 	lineSmooth?: boolean
-	radarStyle?: string
+	radarStyle?: 'standard' | 'marker' | 'filled'
 	serAxisBaseTimeUnit?: string
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
@@ -184,7 +184,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	v3DRAngAx?: boolean
 	v3DRotX?: number
 	v3DRotY?: number
-	valAxes?: Array<number>
+	valAxes?: number[]
 	valAxisCrossesAt?: string | number
 	valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 	valAxisHidden?: boolean
@@ -208,7 +208,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	valAxisTitleFontSize?: number
 	valAxisTitleRotate?: number
 	valGridLine?: OptsChartGridLine
-	valueBarColors?: Array<string>
+	valueBarColors?: string[]
 }
 export interface IImageOpts extends PositionOptions, OptsDataOrPath {
 	type?: 'audio' | 'online' | 'video'
@@ -435,7 +435,7 @@ export interface ISlideMstrObjPlchldrOpts {
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_TYPE_NAMES | IChartMulti[]
 	opts: IChartOpts
-	data: Array<OptsChartData>
+	data: OptsChartData[]
 	rId: number
 	Target: string
 	globalId: number
@@ -520,10 +520,10 @@ export interface ISlideLayout {
 		color: string
 		hidden?: boolean
 	}
-	data: Array<ISlideObject>
-	rels: Array<ISlideRel>
-	relsChart: Array<ISlideRelChart> // needed as we use args:"ISlide|ISlideLayout" often
-	relsMedia: Array<ISlideRelMedia> // needed as we use args:"ISlide|ISlideLayout" often
+	data: ISlideObject[]
+	rels: ISlideRel[]
+	relsChart: ISlideRelChart[] // needed as we use args:"ISlide|ISlideLayout" often
+	relsMedia: ISlideRelMedia[] // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: Margin
 	slideNumberObj?: ISlideNumber
 }
