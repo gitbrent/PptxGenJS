@@ -744,7 +744,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 					strXml += '    </c:txPr>'
 					// Setting dLblPos tag for bar3D seems to break the generated chart
 					if (chartType !== CHART_TYPES.AREA && chartType !== CHART_TYPES.BAR3D) {
-						strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
+						if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 					}
 					strXml += '    <c:showLegendKey val="0"/>'
 					strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
@@ -882,7 +882,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				// NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
 				// Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
 				if (opts.type !== CHART_TYPES.AREA && opts.type !== CHART_TYPES.RADAR && !isMultiTypeChart)
-					strXml += '<c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
+					if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
@@ -1059,18 +1059,16 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 								strXml += '    	</a:ln>'
 								strXml += '    	<a:effectLst/>'
 								strXml += '    </c:spPr>'
+								if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 								strXml += '    <c:showLegendKey val="0"/>'
 								strXml += '    <c:showVal val="0"/>'
 								strXml += '    <c:showCatName val="0"/>'
 								strXml += '    <c:showSerName val="0"/>'
 								strXml += '    <c:showPercent val="0"/>'
 								strXml += '    <c:showBubbleSize val="0"/>'
-								strXml += '	  <c:showLeaderLines val="1"/>'
+								strXml += '	   <c:showLeaderLines val="1"/>'
 								strXml += '    <c:extLst>'
-								strXml += '      <c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">'
-								strXml += '			<c15:dlblFieldTable/>'
-								strXml += '			<c15:showDataLabelsRange val="0"/>'
-								strXml += '		</c:ext>'
+								strXml += '      <c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart"/>'
 								strXml += '      <c:ext uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}" xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart">'
 								strXml += '			<c16:uniqueId val="{' + '00000000'.substring(0, 8 - (idx + 1).toString().length).toString() + (idx + 1) + chartUuid + '}"/>'
 								strXml += '      </c:ext>'
@@ -1101,6 +1099,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 						strXml += '	    	<a:endParaRPr lang="en-US"/>'
 						strXml += '		</a:p>'
 						strXml += '	</c:txPr>'
+						if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 						strXml += '	<c:showLegendKey val="0"/>'
 						strXml += ` <c:showVal val="${opts.showLabel ? '1' : '0'}"/>`
 						strXml += ` <c:showCatName val="${opts.showLabel ? '1' : '0'}"/>`
@@ -1194,7 +1193,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '        </a:defRPr>'
 				strXml += '      </a:pPr></a:p>'
 				strXml += '    </c:txPr>'
-				strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'outEnd') + '"/>'
+				if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
@@ -1348,7 +1347,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '        </a:defRPr>'
 				strXml += '      </a:pPr></a:p>'
 				strXml += '    </c:txPr>'
-				strXml += '    <c:dLblPos val="ctr"/>'
+				if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
@@ -1442,7 +1441,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dLbl>'
 				strXml += '  <c:idx val="' + idx + '"/>'
-				strXml += `    <c:numFmt formatCode="${opts.dataLabelFormatCode||'General'}" sourceLinked="0"/>`
+				strXml += `    <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
 				strXml += '    <c:txPr>'
 				strXml += '      <a:bodyPr/><a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
@@ -1464,7 +1463,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '    <c:showBubbleSize val="0"/>'
 				strXml += '  </c:dLbl>'
 			})
-			strXml += ` <c:numFmt formatCode="${opts.dataLabelFormatCode||'General'}" sourceLinked="0"/>`
+			strXml += ` <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
 			strXml += '	<c:txPr>'
 			strXml += '	  <a:bodyPr/>'
 			strXml += '	  <a:lstStyle/>'
@@ -1587,7 +1586,7 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 	strXml += '    </a:ln>'
 	strXml += '  </c:spPr>'
 	strXml += '  <c:txPr>'
-	strXml += '    <a:bodyPr ' + (opts.catAxisLabelRotate ? 'rot="' + convertRotationDegrees(opts.catAxisLabelRotate) + '"' : '') + '/>' // don't specify rot 0 so we get the auto behavior
+	strXml += '    <a:bodyPr' + (opts.catAxisLabelRotate ? ' rot="' + convertRotationDegrees(opts.catAxisLabelRotate) + '"' : '') + '/>' // don't specify rot 0 so we get the auto behavior
 	strXml += '    <a:lstStyle/>'
 	strXml += '    <a:p>'
 	strXml += '    <a:pPr>'

@@ -1635,9 +1635,9 @@ function genSlides_Chart(pptx) {
 		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataScatter1 = [
-			{ name:'X-Axis',    values:[0,1,2,3,4,5,6,7,8,9] },
-			{ name:'Y-Value 1', values:[13, 20, 21, 25] },
-			{ name:'Y-Value 2', values:[21, 22, 25, 49] }
+			{ name:'X-Axis',    values:[0,1,2,3,4,5] },
+			{ name:'Y-Value 1', values:[90, 80, 70, 85, 75, 92], labels:['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
+			{ name:'Y-Value 2', values:[21, 32, 40, 49, 31, 29], labels:['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'] },
 		];
 		var arrDataScatter2 = [
 			{ name:'X-Axis',   values:[1, 2, 3, 4, 5, 6] },
@@ -1647,8 +1647,8 @@ function genSlides_Chart(pptx) {
 		];
 		var arrDataScatterLabels = [
 		    { name:'X-Axis',    values:[1, 10, 20, 30, 40, 50] },
-		    { name:'Y-Value 1', values:[11, 23, 31, 45], labels:['Red 1', 'Red 2', 'Red 3', 'Red 4'] },
-		    { name:'Y-Value 2', values:[21, 38, 47, 59], labels:['Blue 1', 'Blue 2', 'Blue 3', 'Blue 4'] }
+		    { name:'Y-Value 1', values:[11, 23, 31, 45, 47, 35], labels:['Red 1', 'Red 2', 'Red 3', 'Red 4', 'Red 5', 'Red 6'] },
+		    { name:'Y-Value 2', values:[21, 38, 47, 59, 51, 25], labels:['Blue 1', 'Blue 2', 'Blue 3', 'Blue 4', 'Blue 5', 'Blue 6'] }
 		];
 
 		// TOP-LEFT
@@ -1658,10 +1658,12 @@ function genSlides_Chart(pptx) {
 			valAxisTitleFontSize: 14,
 			showValAxisTitle    : true,
 			lineSize: 0,
-			catAxisTitle        : "Last 10 Months",
+			catAxisTitle        : "Last 6 Months",
 			catAxisTitleColor   : "428442",
 			catAxisTitleFontSize: 14,
-			showCatAxisTitle    : true
+			showCatAxisTitle    : true,
+			showLabel           : true, // Must be set to true or labels will not be shown
+			dataLabelPosition   : 'b', // Options: 't'|'b'|'l'|'r'|'ctr'
 		};
 		slide.addChart( pptx.charts.SCATTER, arrDataScatter1, optsChartScat1 );
 
@@ -1696,6 +1698,7 @@ function genSlides_Chart(pptx) {
 
 			// Data Labels
 			showLabel             : true, // Must be set to true or labels will not be shown
+			dataLabelPosition     : 'r', // Options: 't'|'b'|'l'|'r'|'ctr'
 			dataLabelFormatScatter: 'custom', // Can be set to `custom` (default), `customXY`, or `XY`.
 		};
 		slide.addChart( pptx.charts.SCATTER, arrDataScatterLabels, optsChartScat3 );
