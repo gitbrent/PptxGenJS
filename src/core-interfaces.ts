@@ -46,6 +46,15 @@ export interface OptsChartGridLine {
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
 
+// TODO: FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
+/*
+export interface OptsDataLabelPosition {
+	pie: 'ctr' | 'inEnd' | 'outEnd' | 'bestFit'
+	scatter: 'b' | 'ctr' | 'l' | 'r' | 't'
+	// TODO: add all othere chart types
+}
+*/
+
 // Opts
 // ====
 export interface IBorderOptions {
@@ -116,7 +125,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	dataLabelFontSize?: number
 	dataLabelFormatCode?: string
 	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't'
+	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
 	dataNoEffects?: string
 	dataTableFontSize?: number
 	displayBlanksAs?: string
