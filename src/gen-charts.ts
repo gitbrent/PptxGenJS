@@ -786,11 +786,11 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				if ((chartType === CHART_TYPES.BAR || chartType === CHART_TYPES.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
-						let arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || []
+						let arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
-						strXml += '      <c:invertIfNegative val="' + (opts.invertedColors ? 0 : 1) + '"/>'
+						strXml += '      <c:invertIfNegative val="0"/>'
 						strXml += '    <c:bubble3D val="0"/>'
 						strXml += '    <c:spPr>'
 						if (opts.lineSize === 0) {
@@ -1124,7 +1124,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
-						strXml += '      <c:invertIfNegative val="' + (opts.invertedColors ? 0 : 1) + '"/>'
+						strXml += '      <c:invertIfNegative val="0"/>'
 						strXml += '    <c:bubble3D val="0"/>'
 						strXml += '    <c:spPr>'
 						if (opts.lineSize === 0) {

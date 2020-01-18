@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.1.0
-* BLD.: 20200112
+* BLD.: 20200117
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -1163,18 +1163,20 @@ function genSlides_Chart(pptx) {
 				{
 					name  : 'Two Color Series',
 					labels: ['Jan', 'Feb','Mar', 'Apr', 'May', 'Jun'],
-					values: [.20, .30, .10, .25, .15, .05]
+					values: [.20, -.30, -.10, .25, .15, .05]
 				}
 			],
 			{  x:0.5, y:4.0, w:'45%', h:3,
-				barDir: 'bar',
+				barDir: 'col', // `col`(vert) | `bar`(horiz)
 				showValue: true,
 				dataLabelPosition: 'outEnd',
 				dataLabelFormatCode: '#%',
 				valAxisLabelFormatCode: '0.#0',
-				chartColors: ['0077BF','4E9D2D','ECAA00'],
+				chartColors: ['0077BF','4E9D2D','ECAA00','5FC4E3','DE4216','154384', '7D666A','A3C961','EF907B','9BA0A3'],
 				valAxisMaxVal: .40,
-				barGapWidthPct: 50
+				barGapWidthPct: 50,
+				showLegend : true,
+	            legendPos  :  'r',
 			}
 		);
 
