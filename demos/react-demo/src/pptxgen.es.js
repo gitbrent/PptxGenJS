@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0-beta @ 2020-01-17T04:57:34.055Z */
+/* PptxGenJS 3.1.0-beta @ 2020-01-18T05:52:39.591Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -5625,10 +5625,10 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 if ((chartType === CHART_TYPES.BAR || chartType === CHART_TYPES.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
-                        var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || [];
+                        var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
                         strXml += '  <c:dPt>';
                         strXml += '    <c:idx val="' + index + '"/>';
-                        strXml += '      <c:invertIfNegative val="' + (opts.invertedColors ? 0 : 1) + '"/>';
+                        strXml += '      <c:invertIfNegative val="0"/>';
                         strXml += '    <c:bubble3D val="0"/>';
                         strXml += '    <c:spPr>';
                         if (opts.lineSize === 0) {
@@ -5953,7 +5953,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || [];
                         strXml += '  <c:dPt>';
                         strXml += '    <c:idx val="' + index + '"/>';
-                        strXml += '      <c:invertIfNegative val="' + (opts.invertedColors ? 0 : 1) + '"/>';
+                        strXml += '      <c:invertIfNegative val="0"/>';
                         strXml += '    <c:bubble3D val="0"/>';
                         strXml += '    <c:spPr>';
                         if (opts.lineSize === 0) {
