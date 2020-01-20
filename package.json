@@ -26,6 +26,7 @@
   "types": "types",
   "scripts": {
     "build": "rollup -c",
+    "prepublish": "rollup -c",
     "watch": "rollup -cw"
   },
   "dependencies": {
