@@ -8,19 +8,7 @@
   "description": "JavaScript PowerPoint Library",
   "homepage": "https://gitbrent.github.io/PptxGenJS/",
   "license": "MIT",
-  "main": "dist/pptxgen.cjs.js",
-  "browser": "dist/pptxgen.min.js",
-  "module": "dist/pptxgen.es.js",
-  "files": [
-    "dist",
-    "types"
-  ],
-  "types": "types",
-  "scripts": {
-    "build": "rollup -c",
-    "watch": "rollup -cw",
-    "dist": "gulp min cjs es bundle"
-  },
+  "main": "dist/bulletpoints.cjs.js",
   "browser": {
     "express": false,
     "fs": false,
@@ -30,7 +18,18 @@
     "os": false,
     "path": false
   },
+  "module": "dist/bulletpoints.es.js",
+  "files": [
+    "dist",
+    "types"
+  ],
+  "types": "types",
+  "scripts": {
+    "build": "rollup -c",
+    "watch": "rollup -cw"
+  },
   "dependencies": {
+    "calc-units": "0.2.0",
     "https": "^1.0.0",
     "image-size": "^0.8.1",
     "jsdom": "^15.1.0",
@@ -41,15 +40,11 @@
     "@types/node": "^12.7.5",
     "doctoc": "^1.4.0",
     "express": "^4.17.1",
-    "gulp": "^4.0.2",
-    "gulp-concat": "^2.6.1",
-    "gulp-delete-lines": "0.0.7",
-    "gulp-ignore": "^2.0.2",
-    "gulp-insert": "^0.5.0",
-    "gulp-sourcemaps": "^2.6.5",
-    "gulp-uglify": "^3.0.2",
     "prettier": "^1.19.1",
     "rollup": "^1.21.4",
+    "rollup-plugin-banner": "^0.2.1",
+    "rollup-plugin-clear": "^2.0.7",
+    "rollup-plugin-terser": "^5.2.0",
     "rollup-plugin-typescript2": "^0.21.2",
     "tslint": "^5.20.1",
     "typescript": "3.3.1"
