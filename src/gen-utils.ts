@@ -1,6 +1,7 @@
 /**
  * PptxGenJS Utils
  */
+import calc, { CALC_EXPR } from 'calc-units'
 
 import {
     EMU,
@@ -9,8 +10,6 @@ import {
     DEF_FONT_COLOR
 } from './core-enums'
 import { IChartOpts, ILayout, ShapeFill } from './core-interfaces'
-import calc, { CALC_EXPR } from './calc'
-
 
 /**
  * Convert string percentages to number relative to slide size
@@ -37,7 +36,7 @@ export function getSmartParseNumber(
     if (typeof size === 'number' && size >= 100) return size
 
     if (typeof size === 'string' && CALC_EXPR.test(size)) {
-      return calc(size, v => getSmartParseNumber(v, xyDir, layout))
+        return calc(size, v => getSmartParseNumber(v, xyDir, layout))
     }
 
     // Percentage (ex: '50%')

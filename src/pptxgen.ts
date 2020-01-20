@@ -72,10 +72,6 @@ import Theme from './elements/theme'
 import SlideLayouts, { Master } from './slideLayouts'
 import NOTES_MASTER from './templates/notes-master'
 
-import calc, { CALC_EXPR } from './calc'
-
-export { calc, CALC_EXPR }
-
 export default class PptxGenJS {
     // Property getters/setters
 
