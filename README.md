@@ -4,7 +4,7 @@
 </h5>
 <p align="center">
   <a href="https://github.com/gitbrent/PptxGenJS/">
-    <img alt="PptxGenJS Sample Slides" title="PptxGenJS Sample Slides" src="https://raw.githubusercontent.com/gitbrent/PptxGenJS/gh-pages/img/readme_banner.jpg"/>
+    <img alt="PptxGenJS Sample Slides" title="PptxGenJS Sample Slides" src="https://raw.githubusercontent.com/gitbrent/PptxGenJS/gh-pages/img/readme_banner.png"/>
   </a>
 </p>
 <br/>
