@@ -136,7 +136,6 @@ function execGenSlidesFuncs(type) {
 
 	// STEP 4: Create Master Slides (from the old `pptxgen.masters.js` file - `gObjPptxMasters` items)
 	{
-		// TODO: TODO-3: Change URLs - "examples" is now "demos/common"
 		var objBkg = { path:(NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, '../common') : gPaths.starlabsBkgd.path) };
 		var objImg = { path:(NODEJS ? gPaths.starlabsLogo.path.replace(/http.+\/examples/, '../common') : gPaths.starlabsLogo.path), x:4.6, y:3.5, w:4, h:1.8 };
 
@@ -220,6 +219,29 @@ function execGenSlidesFuncs(type) {
 				}
 			]
 		});
+
+		// PLACEHOLDER_SLIDE
+		/* FUTURE: ISSUE#599
+		pptx.defineSlideMaster({
+		  title : 'PLACEHOLDER_SLIDE',
+		  margin: [0.5, 0.25, 1.00, 0.25],
+		  bkgd  : 'FFFFFF',
+		  objects: [
+			  { 'placeholder':
+			  	{
+					options: {type:'body'},
+					image: {x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml}
+				}
+			},
+			  { 'placeholder':
+				  {
+					  options: { name:'body', type:'body', x:0.6, y:1.5, w:12, h:5.25 },
+					  text: '(supports custom placeholder text!)'
+				  }
+			  }
+		  ],
+		  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }
+	  });*/
 
 		// MISC: Only used for Issues, ad-hoc slides etc (for screencaps)
 		pptx.defineSlideMaster({
@@ -2872,6 +2894,8 @@ function genSlides_Master(pptx) {
 	slide6.addNotes('Master name: `THANKS_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide6.addText('Thank You!', { placeholder:'thanksText' });
 	//slide6.addText('github.com/gitbrent', { placeholder:'body' });
+
+	//var slide7 = pptx.addSlide('PLACEHOLDER_SLIDE');
 
 	// LEGACY-TEST-ONLY: To check deprecated functionality
 	/*

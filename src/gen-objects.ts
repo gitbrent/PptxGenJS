@@ -59,9 +59,9 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 		addBackgroundDefinition(slideDef.bkgd, target)
 	}
 
-	// STEP 2: Add all Slide Master objects in the order they were given (Issue#53)
+	// STEP 2: Add all Slide Master objects in the order they were given
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-		slideDef.objects.forEach((object, idx: number) => {
+		slideDef.objects.forEach((object, idx) => {
 			let key = Object.keys(object)[0]
 			let tgt = target as ISlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
@@ -76,7 +76,22 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 				object[key].options.placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
 				object[key].options.placeholderIdx = 100 + idx
-				addPlaceholderDefinition(tgt, object[key].text, object[key].options)
+				if (object[key].text) addTextDefinition(tgt, object[key].text, object[key].options, true)
+				// TODO: ISSUE#599 - only text is suported now (add more below)
+				//else if (object[key].image) addImageDefinition(tgt, object[key].image)
+				/* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
+					<p:sp>
+				  <p:nvSpPr>
+					<p:cNvPr id="7" name="Picture Placeholder 6">
+					  <a:extLst>
+						<a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">
+						  <a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{CE1AE45D-8641-0F4F-BDB5-080E69CCB034}"/>
+						</a:ext>
+					  </a:extLst>
+					</p:cNvPr>
+					<p:cNvSpPr>
+				*/
+
 			}
 		})
 	}
@@ -552,28 +567,6 @@ export function addNotesDefinition(target: ISlide, notes: string) {
 		type: SLIDE_OBJECT_TYPES.notes,
 		text: notes,
 	})
-}
-
-/**
- * Adds a placeholder object to a slide definition.
- * @param {String} `text`
- * @param {Object} `opt`
- * @param {ISlide} `target` slide object that the placeholder should be added to
- */
-export function addPlaceholderDefinition(target: ISlide, text: string, opt: ISlideMstrObjPlchldrOpts) {
-	// FIXME: there are several tpyes - not all placeholders are text!
-	// but it seems to work (see below) - INVESTIGATE: how it s/b written
-	return addTextDefinition(target, text, opt, true)
-
-	/*
-	this works, albeit not for masters, - it UNDOCUMENTED (oops) and why is type=body (s/b image?), or if we do use body as the locale (like title), than whats 'image' for?
-	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path) });
-
-	// TODO: TODO-3: this has never worked
-	// https://github.com/gitbrent/PptxGenJS/issues/599
-	if (opt.type === PLACEHOLDER_TYPES.title || opt.type === PLACEHOLDER_TYPES.body) return addTextDefinition(target, text, opt, true)
-	else if (opt.type === PLACEHOLDER_TYPES.image ) return addImageDefinition(target, opt)
-	*/
 }
 
 /**
