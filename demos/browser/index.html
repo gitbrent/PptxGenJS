@@ -7,7 +7,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.1.0">
-	<meta name="updated" content="2020-01-09">
+	<meta name="updated" content="2020-01-20">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -139,8 +139,10 @@
 		.tabHtmlToPpt tbody td { background: var(--light); color: var(--dark); }
 		.tabHtmlToPpt th, .tabHtmlToPpt td { border: 1px solid var(--light); padding: 4px 8px; }
 	</style>
-	<script src="https://code.jquery.com/jquery-3.4.1.slim.js" integrity="sha256-BTlTdQO9/fascB1drekrDVkaKd9PkwBymMlHOiG+qLI=" crossorigin="anonymous"></script>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/images/base64Images.js" async></script>
 
@@ -159,14 +161,12 @@
 	<script src="../SiteAssets/pptxgenjs/demos/demo.js"></script>
 	-->
 	<!-- LOCAL TESTING:
-	<script src="../../libs/promise.min.js"></script>
+	<script src="../../dist/pptxgen.bundle.js"></script>
 	<script src="../../libs/jszip.min.js"></script>
 	<script src="../../dist/pptxgen.min.js"></script>
 	<script src="../common/demos.js"></script>
 	-->
-	<!-- LOCAL TESTING: BUNDLE:
-	<script src="../../dist/pptxgen.bundle.js"></script>
-	-->
+
 	<script>
 		// ==================================================================================================================
 
@@ -602,801 +602,838 @@
 		$(document).ready(function(){ doAppStart() });
 	</script>
 </head>
-<body class="bg-light mx-5 my-4">
-	<header class="container-fluid mb-4">
-		<div class="row align-items-top">
-			<div class="col">
-				<h1 class="text-primary"><a href="https://github.com/GitBrent/PptxGenJS" title="GitHub Project Page" target="_blank">PptxGenJS</a> Demos</h1>
-				<h5 class="text-info">JavaScript PowerPoint Generation Library</h5>
-			</div>
-			<div class="col-auto">
-				<div class="row no-gutters mb-2">
-					<div class="col">
-						<button id="btnRun" type="button" class="btn btn-lg btn-success w-100" onclick="runAllDemos()">Run All Demos</button>
-					</div>
-				</div>
-				<div class="row no-gutters">
-					<div class="col pr-2">
-						<button id="btnGit" type="button" class="btn btn-sm btn-dark px-3 w-100" onclick="window.open('https://github.com/gitbrent/PptxGenJS')">GitHub&nbsp;Site</button>
-					</div>
-					<div class="col-auto">
-						<button id="btnDoc" type="button" class="btn btn-sm btn-dark px-3 w-100" onclick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation.html')">API&nbsp;Documentation</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</header>
+<body class="bg-light">
+	<nav class="navbar navbar-expand-lg bg-dark">
+		<a class="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
+			<img src="images/favicon.png" width="30" height="30" class="d-inline-block align-top mr-2" alt="" />
+			PptxGenJS
+		</a>
+		<button
+			class="navbar-toggler"
+			type="button"
+			data-toggle="collapse"
+			data-target="#navbarColor01"
+			aria-controls="navbarColor01"
+			aria-expanded="false"
+			aria-label="Toggle navigation"
+		>
+			<span class="navbar-toggler-icon"></span>
+		</button>
 
-	<ul class="nav nav-pills nav-justified" id="myTab" role="tablist">
-		<li class="nav-item">
-			<a class="nav-link text-uppercase active" id="introduction-tab" data-toggle="tab" href="#introduction" onclick="location.href='#introduction'" role="tab" aria-controls="introduction" aria-selected="true">Introduction</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-uppercase" id="html2pptx-tab" data-toggle="tab" href="#html2pptx" onclick="location.href='#html2pptx'" role="tab" aria-controls="html2pptx" aria-selected="false">HTML to PPTX</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-uppercase" id="charts-tab" data-toggle="tab" href="#charts" onclick="location.href='#charts'" role="tab" aria-controls="charts" aria-selected="false">Charts</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-uppercase" id="images-tab" data-toggle="tab" href="#images" onclick="location.href='#images'" role="tab" aria-controls="images" aria-selected="false">Images &amp; Media</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-uppercase" id="shapes-tab" data-toggle="tab" href="#shapes" onclick="location.href='#shapes'" role="tab" aria-controls="shapes" aria-selected="false">Shapes &amp; Text</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-uppercase" id="tables-tab" data-toggle="tab" href="#tables" onclick="location.href='#tables'" role="tab" aria-controls="tables" aria-selected="false">Tables</a>
-		</li>
-		<li class="nav-item">
-			<a class="nav-link text-uppercase" id="templates-tab" data-toggle="tab" href="#templates" onclick="location.href='#templates'" role="tab" aria-controls="templates" aria-selected="false">Templates</a>
-		</li>
-	</ul>
-	<main class="tab-content mb-4">
-		<div class="tab-pane shadow p-4 active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
-			<h4 class="text-primary">Library Information</h4>
-			<div class="container-fluid mb-4">
-				<div id="infoBar" class="row align-items-center">
-				</div>
-			</div>
-			<hr>
-			<h5 id="tab1sec1" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow active"></div>
-				Simple Presentation
-			</h5>
-			<div class="text-center">
-				<pre class="mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
-				<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-basic').text() )">Basic Slide Demo</button>
-			</div>
-			<h5 id="tab1sec2" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow"></div>
-				Code Sandbox
-			</h5>
-			<div style="display:none">
-				<div class="bde-callout-info">
-					<div class="h5">Editable Code</div>
-					<div>Use the area below to easily try out various library features.</div>
-				</div>
-				<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true"></code></pre>
-				<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
-			</div>
+		<div class="collapse navbar-collapse" id="navbarColor01">
+			<ul class="navbar-nav mr-auto">
+				<li class="nav-item active">
+					<a class="nav-link" href="https://gitbrent.github.io/PptxGenJS/demo/index.html">
+						Demo Home <span class="sr-only">(current)</span>
+					</a>
+				</li>
+			</ul>
+			<form class="form-inline my-2 my-lg-0">
+				<button
+					type="button"
+					class="btn btn-outline-secondary mx-2 my-2 my-sm-0"
+					onClick="window.open('https://github.com/gitbrent/PptxGenJS/releases')">
+					Download
+				</button>
+				<button
+					type="button"
+					class="btn btn-outline-secondary mx-2 my-2 my-sm-0"
+					onClick="window.open('https://github.com/gitbrent/PptxGenJS')">
+					GitHub Project
+				</button>
+				<button
+					type="button"
+					class="btn btn-outline-secondary mx-2 my-2 my-sm-0"
+					onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation.html')">
+					API Documentation
+				</button>
+			</form>
 		</div>
-		<div class="tab-pane shadow p-4" id="html2pptx" role="tabpanel" aria-labelledby="html2pptx-tab">
-			<h4 class="text-primary">HTML to PowerPoint</h4>
-			<p>
-				Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code class="language-javascript p-1">pptx.tableToSlides('tableId');</code><br> View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html"
-					target="_blank">HTML to PowerPoint documentation</a> for full details and examples
-			</p>
-			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow"></div>
-				Usage Notes &amp; Tips
-			</h5>
-			<div class="mb-4" style="display:none">
-				Usage:
-				<ul>
-					<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
-					<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
-				</ul>
-				Tips:
-				<ul>
-					<li>If you need to modify your table before creating the Presenation, use jQuery to clone() it and do the modifications on that table</li>
-					<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
-					<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
-				</ul>
+	</nav>
+
+	<div class="mx-5 my-4">
+		<header class="container-fluid mb-4">
+			<div class="row align-items-middle">
+				<div class="col">
+					<h2 class="text-primary mb-0">PptxGenJS Feature Demos</h2>
+				</div>
+				<div class="col-auto">
+					<button id="btnRun" type="button" class="btn btn-lg btn-success px-5" onclick="runAllDemos()">Run All Demos</button>
+				</div>
 			</div>
-			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow active"></div>
-				Demo: tableToSlides Options
-			</h5>
-			<div class="container-fluid m-0 p-2">
-				<div class="row mb-3">
-					<div class="col-3">
-						<div class="card h-100">
-							<h6 class="card-header">Table Setup</h6>
-							<div class="card-body">
-								<div class="row align-items-start">
-									<div class="col">
-										<label for="numTab2SlideRows">Table Rows</label>
-										<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4" onchange="buildDataTable()">
-									</div>
-									<div class="col">
-										<label for="numTab2Padding">Cell Padding</label>
-										<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10" onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
-										<!--<small class="text-info">(points)</small>-->
+		</header>
+
+		<ul class="nav nav-pills nav-justified" id="myTab" role="tablist">
+			<li class="nav-item">
+				<a class="nav-link text-uppercase active" id="introduction-tab" data-toggle="tab" href="#introduction" onclick="location.href='#introduction'" role="tab" aria-controls="introduction" aria-selected="true">Introduction</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-uppercase" id="html2pptx-tab" data-toggle="tab" href="#html2pptx" onclick="location.href='#html2pptx'" role="tab" aria-controls="html2pptx" aria-selected="false">HTML to PPTX</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-uppercase" id="charts-tab" data-toggle="tab" href="#charts" onclick="location.href='#charts'" role="tab" aria-controls="charts" aria-selected="false">Charts</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-uppercase" id="images-tab" data-toggle="tab" href="#images" onclick="location.href='#images'" role="tab" aria-controls="images" aria-selected="false">Images &amp; Media</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-uppercase" id="shapes-tab" data-toggle="tab" href="#shapes" onclick="location.href='#shapes'" role="tab" aria-controls="shapes" aria-selected="false">Shapes &amp; Text</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-uppercase" id="tables-tab" data-toggle="tab" href="#tables" onclick="location.href='#tables'" role="tab" aria-controls="tables" aria-selected="false">Tables</a>
+			</li>
+			<li class="nav-item">
+				<a class="nav-link text-uppercase" id="templates-tab" data-toggle="tab" href="#templates" onclick="location.href='#templates'" role="tab" aria-controls="templates" aria-selected="false">Templates</a>
+			</li>
+		</ul>
+		<main class="tab-content mb-4">
+			<div class="tab-pane shadow p-4 active" id="introduction" role="tabpanel" aria-labelledby="introduction-tab">
+				<h4 class="text-primary">Library Information</h4>
+				<div class="container-fluid mb-4">
+					<div id="infoBar" class="row align-items-center">
+					</div>
+				</div>
+				<hr>
+				<h5 id="tab1sec1" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+					<div class="arrow active"></div>
+					Simple Presentation
+				</h5>
+				<div class="text-center">
+					<pre class="mb-3"><code id="demo-basic" class="language-javascript"></code></pre>
+					<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-basic').text() )">Basic Slide Demo</button>
+				</div>
+				<h5 id="tab1sec2" class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+					<div class="arrow"></div>
+					Code Sandbox
+				</h5>
+				<div style="display:none">
+					<div class="bde-callout-info">
+						<div class="h5">Editable Code</div>
+						<div>Use the area below to easily try out various library features.</div>
+					</div>
+					<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true"></code></pre>
+					<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
+				</div>
+			</div>
+			<div class="tab-pane shadow p-4" id="html2pptx" role="tabpanel" aria-labelledby="html2pptx-tab">
+				<h4 class="text-primary">HTML to PowerPoint</h4>
+				<p>
+					Reproduces an HTML table into 1 or more slides (auto-paging) using the syntax <code class="language-javascript p-1">pptx.tableToSlides('tableId');</code><br> View the <a href="https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html"
+						target="_blank">HTML to PowerPoint documentation</a> for full details and examples
+				</p>
+				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+					<div class="arrow"></div>
+					Usage Notes &amp; Tips
+				</h5>
+				<div class="mb-4" style="display:none">
+					Usage:
+					<ul>
+						<li>Supported cell styling includes background colors, borders, fonts, padding, etc.</li>
+						<li>Slide margin settings can be set using options, or by providing a Master Slide definition</li>
+					</ul>
+					Tips:
+					<ul>
+						<li>If you need to modify your table before creating the Presenation, use jQuery to clone() it and do the modifications on that table</li>
+						<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
+						<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
+					</ul>
+				</div>
+				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+					<div class="arrow active"></div>
+					Demo: tableToSlides Options
+				</h5>
+				<div class="container-fluid m-0 p-2">
+					<div class="row mb-3">
+						<div class="col-3">
+							<div class="card h-100">
+								<h6 class="card-header">Table Setup</h6>
+								<div class="card-body">
+									<div class="row align-items-start">
+										<div class="col">
+											<label for="numTab2SlideRows">Table Rows</label>
+											<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4" onchange="buildDataTable()">
+										</div>
+										<div class="col">
+											<label for="numTab2Padding">Cell Padding</label>
+											<input id="numTab2Padding" class="form-control" type="number" min="0" max="25" value="10" onchange="$('#tabAutoPaging th, #tabAutoPaging td').css('padding',$('#numTab2Padding').val()+'px')">
+											<!--<small class="text-info">(points)</small>-->
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
-					</div>
-					<div class="col-6">
-						<div class="card">
-							<h6 class="card-header">Paging Options</h6>
-							<div class="card-body">
-								<div class="row">
-									<div class="col">
-										<label>Repeat Table Head on each Slide</label>
-										<div class="form-control">
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y">
-												<label class="form-check-label" for="radioHeadY">Yes</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N" checked>
-												<label class="form-check-label" for="radioHeadN">No</label>
-											</div>
-										</div>
-										<code>addHeaderToEach</code>
-									</div>
-									<div class="col">
-										<label>Starting top location (<code>y</code>) after first slide</label>
-										<div class="form-check form-check-inline w-100">
-											<div class="col px-0 text-nowrap">
-												<div class="form-control">
-													<input class="form-check-input" type="checkbox" id="checkStartY" onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
-													<label class="form-check-label" for="checkStartY">Enable?</label>
+						<div class="col-6">
+							<div class="card">
+								<h6 class="card-header">Paging Options</h6>
+								<div class="card-body">
+									<div class="row">
+										<div class="col">
+											<label>Repeat Table Head on each Slide</label>
+											<div class="form-control">
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="radio" name="radioHead" id="radioHeadY" value="Y">
+													<label class="form-check-label" for="radioHeadY">Yes</label>
+												</div>
+												<div class="form-check form-check-inline">
+													<input class="form-check-input" type="radio" name="radioHead" id="radioHeadN" value="N" checked>
+													<label class="form-check-label" for="radioHeadN">No</label>
 												</div>
 											</div>
-											<div class="col px-0">
-												<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
-											</div>
+											<code>addHeaderToEach</code>
 										</div>
-										<code>newSlideStartY</code>
+										<div class="col">
+											<label>Starting top location (<code>y</code>) after first slide</label>
+											<div class="form-check form-check-inline w-100">
+												<div class="col px-0 text-nowrap">
+													<div class="form-control">
+														<input class="form-check-input" type="checkbox" id="checkStartY" onclick="$('#numTab2SlideStartY').prop('disabled',function(i,v){ return !v; });">
+														<label class="form-check-label" for="checkStartY">Enable?</label>
+													</div>
+												</div>
+												<div class="col px-0">
+													<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
+												</div>
+											</div>
+											<code>newSlideStartY</code>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-3">
+							<div class="card h-100">
+								<h6 class="card-header">Master Slide</h6>
+								<div class="card-body">
+									<div class="row align-items-start">
+										<div class="col">
+											<label>Select a Master Slide</label>
+											<select id="selSlideMaster" class="form-control">
+												<option value="" selected="selected">(None)</option>
+											</select>
+										</div>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
-					<div class="col-3">
-						<div class="card h-100">
-							<h6 class="card-header">Master Slide</h6>
-							<div class="card-body">
-								<div class="row align-items-start">
-									<div class="col">
-										<label>Select a Master Slide</label>
-										<select id="selSlideMaster" class="form-control">
-											<option value="" selected="selected">(None)</option>
-										</select>
+					<table id="tabAutoPaging" class="tabDemo">
+						<thead>
+							<tr style="font-family:Courier">
+								<th data-pptx-width="0.6" style="width:5%; background-color: rgb(68, 136, 221, 0.75);"><b>Row</b></th>
+								<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
+								<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
+								<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
+							</tr>
+						</thead>
+						<tbody></tbody>
+					</table>
+					<div class="text-center p-3">
+						<button type="button" class="btn btn-success w-25 mr-3" onclick="table2slides1()">Demo Table Above</button>
+						<button type="button" class="btn btn-outline-success w-25" onclick="table2slides2()">Demo Table Above (add dynamic text)</button>
+					</div>
+				</div>
+				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+					<div class="arrow"></div>
+					Demo: Misc Table Styles
+				</h5>
+				<div class="container-fluid m-0 p-2" style="display:none;">
+					<div class="row">
+						<div class="col-6">
+							<div class="card">
+								<h6 class="card-header">Plain/Unstyled Table</h6>
+								<div class="card-body">
+									<table id="tabNoStyle" class="w-100">
+										<thead>
+											<tr>
+												<th>Company</th>
+												<th>Contact</th>
+												<th>Feedback</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Tesla &amp; SpaceX</td>
+												<td>elon@tesla.com</td>
+												<td>"PptxGenJS is as good as our rockets!" - Elon</td>
+											</tr>
+											<tr>
+												<td>Apple Inc.</td>
+												<td>tim@apple.com</td>
+												<td>"Keynote team needs to hire you ASAP!" - Tim</td>
+											</tr>
+											<tr>
+												<td>Microsoft Inc.</td>
+												<td>ceo@microsoft.com</td>
+												<td>"PowerPoint team needs to hire you!" - Satya</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="mt-5 text-center">
+										<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabNoStyle')">Unstyled Demo</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-6">
+							<div class="card">
+								<h6 class="card-header">CSS via <code>&lt;style&gt;</code></h6>
+								<div class="card-body">
+									<table id="tabInheritStyle" class="tabHtmlToPpt w-100">
+										<thead>
+											<tr>
+												<th>Company</th>
+												<th>Contact</th>
+												<th>Feedback</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr>
+												<td>Tesla &amp; SpaceX</td>
+												<td>elon@tesla.com</td>
+												<td>"PptxGenJS is as good as our rockets!" - Elon</td>
+											</tr>
+											<tr>
+												<td>Apple Inc.</td>
+												<td>tim@apple.com</td>
+												<td>"Keynote team needs to hire you ASAP!" - Tim</td>
+											</tr>
+											<tr>
+												<td>Microsoft Inc.</td>
+												<td>ceo@microsoft.com</td>
+												<td>"PowerPoint team needs to hire you!" - Satya</td>
+											</tr>
+										</tbody>
+									</table>
+									<div class="mt-3 text-center">
+										<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabInheritStyle')">Stylesheet Demo</button>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-				<table id="tabAutoPaging" class="tabDemo">
-					<thead>
-						<tr style="font-family:Courier">
-							<th data-pptx-width="0.6" style="width:5%; background-color: rgb(68, 136, 221, 0.75);"><b>Row</b></th>
-							<th data-pptx-min-width="0.8" style="width:10%">Last Name</th>
-							<th data-pptx-min-width="0.8" style="width:10%">First Name</th>
-							<th style="width:75%; border-right:1px solid rgba(0,255,0,0.7);">Description</th>
-						</tr>
-					</thead>
-					<tbody></tbody>
-				</table>
-				<div class="text-center p-3">
-					<button type="button" class="btn btn-success w-25 mr-3" onclick="table2slides1()">Demo Table Above</button>
-					<button type="button" class="btn btn-outline-success w-25" onclick="table2slides2()">Demo Table Above (add dynamic text)</button>
+				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+					<div class="arrow"></div>
+					Demo: Rowspans/Colspans
+				</h5>
+				<div class="card-deck m-0 p-2" style="display:none;">
+					<div class="card">
+						<h6 class="card-header">Colspan</h6>
+						<div class="card-body">
+							<table id="tabColspan" class="tabHtmlToPpt w-100">
+								<thead>
+									<tr>
+										<th class="tg-header">First Name</th>
+										<th class="tg-header">Last Name</th>
+										<th class="tg-header" colspan="2">Colspan TH</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Jill</td>
+										<td>Smith</td>
+										<td>12</td>
+										<td>34</td>
+									</tr>
+									<tr>
+										<td>Eve</td>
+										<td>Pilgrim</td>
+										<td>56</td>
+										<td>67</td>
+									</tr>
+									<tr>
+										<td>Scott</td>
+										<td>Jackson</td>
+										<td>89</td>
+										<td>99</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="mt-3 text-center">
+								<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Rowspan</h6>
+						<div class="card-body">
+							<table id="tabRowspan" class="tabHtmlToPpt w-100">
+								<thead>
+									<tr>
+										<th class="tg-header">Last Name</th>
+										<th class="tg-header">First Name</th>
+										<th class="tg-header">Count</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td rowspan="3">Smith</td>
+										<td>Liz</td>
+										<td>50</td>
+									</tr>
+									<tr>
+										<td>Eve</td>
+										<td>94</td>
+									</tr>
+									<tr>
+										<td>Scott</td>
+										<td>101</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="mt-3 text-center">
+								<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
+							</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Rowspan and Colspan</h6>
+						<div class="card-body">
+							<table id="tabRowColspan" class="tabHtmlToPpt w-100">
+								<thead>
+									<tr>
+										<th class="tg-header" colspan="2">Name</th>
+										<th class="tg-header" rowspan="2">Count</th>
+									</tr>
+									<tr>
+										<th class="tg-header">Last</th>
+										<th class="tg-header">First</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Smith</td>
+										<td>Liz</td>
+										<td>50</td>
+									</tr>
+									<tr>
+										<td>Eve</td>
+										<td>Williams</td>
+										<td>94</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="mt-3 text-center">
+								<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabRowColspan')">Rowspan/Colspan Demo</button>
+								<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
+							</div>
+						</div>
+					</div>
+				</div>
+				<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
+					<div class="arrow"></div>
+					Demo: Single Lines, Large Cell Text
+				</h5>
+				<div class="card-deck m-0 p-2" style="display:none;">
+					<div class="card mb-4">
+						<h6 class="card-header">Example: Lots of Single-Line Rows</h6>
+						<div class="card-body">
+							<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
+								<thead>
+									<tr>
+										<th class="tg-header">A</th>
+										<th class="tg-header">B</th>
+										<th class="tg-header">C</th>
+									</tr>
+								</thead>
+								<tbody>
+								</tbody>
+							</table>
+							<div class="mt-3 text-center">
+								<button type="button" class="btn btn-success w-50" onclick="table2slidesDemoForTab('tabLotsOfLines',{verbose:true})">Single-Line Rows Demo</button>
+							</div>
+						</div>
+					</div>
+					<div class="card mb-4">
+						<h6 class="card-header">Example: Paging needed due to cell with large amount of text</h6>
+						<div class="card-body">
+							<table id="tabLargeCellText" class="tabHtmlToPpt">
+								<thead>
+									<tr>
+										<th class="tg-header">Executive Status</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>?</td>
+									</tr>
+								</tbody>
+							</table>
+							<div class="mt-3 text-center">
+								<button type="button" class="btn btn-success w-50" onclick="table2slidesDemoForTab('tabLargeCellText')">Large Cell Text Demo</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<!-- FUTURE:
+					<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
+					 onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
+					 <div class="arrow active"></div>Table With Bullets
+					</div>
+					<div class="sectionBox">
+					 <table id="tableWithBullets" style="width:50%; font-family:Arial;">
+					  <tbody>
+						  <tr>
+							  <td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+								  <ul>
+									  <li><b>Bold Text</b></li>
+									  <ol>
+										  <li>Nested</li>
+										  <li>Nested</li>
+										  <li>Nested</li>
+									  </ol>
+									  <li><u>Underline Text</u></li>
+								  </ul>
+							  </td>
+							  <td style="border:1px solid #c7c7c7; background:white; text-align:left;">
+								  <ul>
+									  <li>Level 1
+										  <ul>
+											  <li>Level 2
+												  <ul>
+													  <li><a href="https://google.com">Level 3 Link</a></li>
+													  <li><a href="https://amazon.com">Level 3 Link</a></li>
+												  </ul>
+											  </li>
+										  </ul>
+									  </li>
+								  </ul>
+							  </td>
+						  </tr>
+					  </tbody>
+					 </table>
+					 <div style="text-align:center; padding:20px;">
+					  <input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesBullets()" value="Bullet Table Demo">
+					 </div>
+					</div>
+					-->
+			</div>
+			<div class="tab-pane shadow p-4" id="charts" role="tabpanel" aria-labelledby="charts-tab">
+				<h4 class="text-primary">Chart Demos</h4>
+				<p>
+					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-charts.html" target="_blank">chart documentation</a> for full details and examples
+				</p>
+				<div class="d-flex flex-wrap mb-1">
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Bar Chart</h6>
+						<div class="card-body text-nowrap">
+							<div>Slide 1 - <span>Vertical/Horizontal bars</span></div>
+							<div>Slide 2 - <span>Grid/Axis options</span></div>
+							<div>Slide 3 - <span>Stacked/PercentStacked bars</span></div>
+							<div>Slide 4 - <span>Lots of bars</span></div>
+							<div>Slide 5 - <span>Bar colors, units, formats</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">3D Bar Chart</h6>
+						<div class="card-body">
+							<div>Slide 6 - <span>3D Bar, Cone, Cylinder, Pyramid</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Tornado Chart</h6>
+						<div class="card-body">
+							<div>Slide 7 - <span>Tornado Type</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Line Chart</h6>
+						<div class="card-body">
+							<div>Slide 8 - <span>Smoothing, Shadow, Size, Symbols</span></div>
+							<div>Slide 9 - <span>Data Symbol, Size</span></div>
+							<div>Slide 10 - <span>Lots of Categories</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Area Chart</h6>
+						<div class="card-body">
+							<div>Slide 11 - <span>Opacity and other options</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Pie Chart</h6>
+						<div class="card-body">
+							<div>Slide 12 - <span>Various options</span></div>
+							<div>Slide 13 - <span>Doughnut Type</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">X Y (Scatter) Chart</h6>
+						<div class="card-body">
+							<div>Slide 14 - <span>Various Options</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Bubble Chart</h6>
+						<div class="card-body">
+							<div>Slide 15 - <span>Various Options</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Radar Chart</h6>
+						<div class="card-body">
+							<div>Slide 16 - <span>Various Options</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Multi-Type Chart</h6>
+						<div class="card-body">
+							<div>Slide 17 - <span>Various Mixed-Chart Types</span></div>
+						</div>
+					</div>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Chart Options</h6>
+						<div class="card-body">
+							<div>Slide 18 - <span>Shadows and Transparent Color</span></div>
+						</div>
+					</div>
+				</div>
+				<div class="text-center">
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs('Chart')">Generate Chart Demo</button>
 				</div>
 			</div>
-			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow"></div>
-				Demo: Misc Table Styles
-			</h5>
-			<div class="container-fluid m-0 p-2" style="display:none;">
-				<div class="row">
-					<div class="col-6">
-						<div class="card">
-							<h6 class="card-header">Plain/Unstyled Table</h6>
-							<div class="card-body">
-								<table id="tabNoStyle" class="w-100">
-									<thead>
-										<tr>
-											<th>Company</th>
-											<th>Contact</th>
-											<th>Feedback</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>Tesla &amp; SpaceX</td>
-											<td>elon@tesla.com</td>
-											<td>"PptxGenJS is as good as our rockets!" - Elon</td>
-										</tr>
-										<tr>
-											<td>Apple Inc.</td>
-											<td>tim@apple.com</td>
-											<td>"Keynote team needs to hire you ASAP!" - Tim</td>
-										</tr>
-										<tr>
-											<td>Microsoft Inc.</td>
-											<td>ceo@microsoft.com</td>
-											<td>"PowerPoint team needs to hire you!" - Satya</td>
-										</tr>
-									</tbody>
-								</table>
-								<div class="mt-5 text-center">
-									<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabNoStyle')">Unstyled Demo</button>
+			<div class="tab-pane shadow p-4" id="images" role="tabpanel" aria-labelledby="images-tab">
+				<h4 class="text-primary">Image Demos</h4>
+				<p>
+					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-images.html" target="_blank">image documentation</a> for full details and examples
+				</p>
+				<div class="card-deck mb-4">
+					<div class="card">
+						<h6 class="card-header">Image Types and Sources</h6>
+						<div class="card-body">
+							<div>Slide 1</div>
+							<div>- Type: Animated GIF <small class="text-warning ml-2">(use Slide Show)</small></div>
+							<div>- Type: GIF</div>
+							<div>- Type: JPG</div>
+							<div>- Type: PNG</div>
+							<div>- Type: SVG</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Sizing and Rounding</h6>
+						<div class="card-body">
+							<div>Slide 2</div>
+							<div>- Image Rounding</div>
+							<div>- Sizing: Contain</div>
+							<div>- Sizing: Cover</div>
+							<div>- Sizing: Crop</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Image Rotation</h6>
+						<div class="card-body">
+							<div>Slide 3</div>
+							<div>- Rotate: 45</div>
+							<div>- Rotate: 180</div>
+							<div>- Rotate: 315</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Image URLs</h6>
+						<div class="card-body">
+							<div>Slide 4</div>
+							<div>- Using GitHub CDN</div>
+							<div>- Using Wikimedia URL</div>
+							<div>- Using URL variables, etc</div>
+						</div>
+					</div>
+				</div>
+				<div class="text-center">
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Image'])">Image Demo</button>
+				</div>
+				<h4 class="text-primary mt-4">Media Demos</h4>
+				<p>
+					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-media.html" target="_blank">media documentation</a> for full details and examples
+				</p>
+				<div class="card-deck mb-4">
+					<div class="card">
+						<h6 class="card-header">Video</h6>
+						<div class="card-body">
+							<div>Slide 1</div>
+							<div>- Various formats (most OS's wont have every format codec - <abbr title="Your Milage May Vary">YMMV</abbr>)</div>
+							<div>- YouTube (only supported in PowerPoint Online / PowerPoint desktop v16+)</div>
+							<div class="form-control my-2">
+								<div class="form-check form-check-inline">
+									<input class="form-check-input" id="chkYoutube" type="checkbox">
+									<label class="form-check-label" for="chkYoutube">Include YouTube video?</label>
 								</div>
 							</div>
+							<small class="text-warning">NOTE: opening a presentation with a YouTube video will show a content warning in desktop PowerPoint v15 or earlier</small>
 						</div>
 					</div>
-					<div class="col-6">
-						<div class="card">
-							<h6 class="card-header">CSS via <code>&lt;style&gt;</code></h6>
-							<div class="card-body">
-								<table id="tabInheritStyle" class="tabHtmlToPpt w-100">
-									<thead>
-										<tr>
-											<th>Company</th>
-											<th>Contact</th>
-											<th>Feedback</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr>
-											<td>Tesla &amp; SpaceX</td>
-											<td>elon@tesla.com</td>
-											<td>"PptxGenJS is as good as our rockets!" - Elon</td>
-										</tr>
-										<tr>
-											<td>Apple Inc.</td>
-											<td>tim@apple.com</td>
-											<td>"Keynote team needs to hire you ASAP!" - Tim</td>
-										</tr>
-										<tr>
-											<td>Microsoft Inc.</td>
-											<td>ceo@microsoft.com</td>
-											<td>"PowerPoint team needs to hire you!" - Satya</td>
-										</tr>
-									</tbody>
-								</table>
-								<div class="mt-3 text-center">
-									<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabInheritStyle')">Stylesheet Demo</button>
-								</div>
-							</div>
+					<div class="card">
+						<h6 class="card-header">Audio</h6>
+						<div class="card-body">
+							<div>Slide 2</div>
+							<div>- Misc Audio formats (mp3, wav)</div>
 						</div>
 					</div>
 				</div>
+				<div class="text-center">
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Media'])">Media Demo</button>
+				</div>
 			</div>
-			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow"></div>
-				Demo: Rowspans/Colspans
-			</h5>
-			<div class="card-deck m-0 p-2" style="display:none;">
-				<div class="card">
-					<h6 class="card-header">Colspan</h6>
-					<div class="card-body">
-						<table id="tabColspan" class="tabHtmlToPpt w-100">
-							<thead>
-								<tr>
-									<th class="tg-header">First Name</th>
-									<th class="tg-header">Last Name</th>
-									<th class="tg-header" colspan="2">Colspan TH</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Jill</td>
-									<td>Smith</td>
-									<td>12</td>
-									<td>34</td>
-								</tr>
-								<tr>
-									<td>Eve</td>
-									<td>Pilgrim</td>
-									<td>56</td>
-									<td>67</td>
-								</tr>
-								<tr>
-									<td>Scott</td>
-									<td>Jackson</td>
-									<td>89</td>
-									<td>99</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="mt-3 text-center">
-							<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabColspan')">Colspan Demo</button>
+			<div class="tab-pane shadow p-4" id="shapes" role="tabpanel" aria-labelledby="shapes-tab">
+				<h4 class="text-primary">Shape Demos</h4>
+				<p>
+					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html" target="_blank">shape documentation</a> for full details and examples
+				</p>
+				<div class="card-deck mb-4">
+					<div class="card">
+						<h6 class="card-header">Core Shape Types</h6>
+						<div class="card-body">
+							<div>Slide 1</div>
+							<div>- Shapes: Rectangle, Line, Oval, Triangle</div>
+							<div>- Shapes: Flipped, With and Without Text</div>
+							<div>- Shape Borders</div>
+							<div>- Lines: With and Without Arrowheads</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Core Shape Types with Text</h6>
+						<div class="card-body">
+							<div>Slide 2</div>
+							<div>- Shapes: Rectangle, Line, Oval, Triangle</div>
+							<div>- Shapes: Flipped, With and Without Text</div>
+							<div>- Shape Borders</div>
+							<div>- Lines: With and Without Arrowheads</div>
 						</div>
 					</div>
 				</div>
-				<div class="card">
-					<h6 class="card-header">Rowspan</h6>
-					<div class="card-body">
-						<table id="tabRowspan" class="tabHtmlToPpt w-100">
-							<thead>
-								<tr>
-									<th class="tg-header">Last Name</th>
-									<th class="tg-header">First Name</th>
-									<th class="tg-header">Count</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td rowspan="3">Smith</td>
-									<td>Liz</td>
-									<td>50</td>
-								</tr>
-								<tr>
-									<td>Eve</td>
-									<td>94</td>
-								</tr>
-								<tr>
-									<td>Scott</td>
-									<td>101</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="mt-3 text-center">
-							<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabRowspan')">Rowspan Demo</button>
+				<div class="text-center">
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Shape'])">Shape Demo</button>
+				</div>
+				<h4 class="text-primary mt-4">Text Demos</h4>
+				<p>
+					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-text.html" target="_blank">text documentation</a> for full details and examples
+				</p>
+				<div class="card-deck mb-4">
+					<div class="card">
+						<h6 class="card-header">Text Alignment</h6>
+						<div class="card-body">
+							<div>Slide 1</div>
+							<div>- Text alignment</div>
+							<div>- x/y percent values</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Text Types</h6>
+						<div class="card-body">
+							<div>Slide 2</div>
+							<div>- Word-Level Formatting</div>
+							<div>- Multi-Line Text</div>
+							<div>- Line Spcaing</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Text Effects/Hyperlinks</h6>
+						<div class="card-body">
+							<div>Slide 3</div>
+							<div>- Text Outline</div>
+							<div>- Text Glow</div>
+							<div>- Text Shadow</div>
+							<div>- Hyperlinks</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Text Bullets</h6>
+						<div class="card-body">
+							<div>Slide 4</div>
+							<div>- Regular</div>
+							<div>- Custom Shapes</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Text Schemes</h6>
+						<div class="card-body">
+							<div>Slide 5</div>
+							<div>- Scheme Colors</div>
 						</div>
 					</div>
 				</div>
-				<div class="card">
-					<h6 class="card-header">Rowspan and Colspan</h6>
-					<div class="card-body">
-						<table id="tabRowColspan" class="tabHtmlToPpt w-100">
-							<thead>
-								<tr>
-									<th class="tg-header" colspan="2">Name</th>
-									<th class="tg-header" rowspan="2">Count</th>
-								</tr>
-								<tr>
-									<th class="tg-header">Last</th>
-									<th class="tg-header">First</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>Smith</td>
-									<td>Liz</td>
-									<td>50</td>
-								</tr>
-								<tr>
-									<td>Eve</td>
-									<td>Williams</td>
-									<td>94</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="mt-3 text-center">
-							<button type="button" class="btn btn-success w-75" onclick="table2slidesDemoForTab('tabRowColspan')">Rowspan/Colspan Demo</button>
-							<!-- DEBUG <button type="button" class="flatBtn flatBtn-blueMd" onclick="$('#tabRowColspan tbody').append($('#tabRowColspan tbody tr:first-child').clone())">Add Table Row</button>-->
+				<div class="text-center">
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Text'])">Text Demo</button>
+				</div>
+			</div>
+			<div class="tab-pane shadow p-4" id="tables" role="tabpanel" aria-labelledby="tables-tab">
+				<h4 class="text-primary">Table Demos</h4>
+				<p>
+					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-table.html" target="_blank">table documentation</a> for full details and examples
+				</p>
+				<div class="card-deck mb-4">
+					<div class="card">
+						<h6 class="card-header">Table Layout/Format</h6>
+						<div class="card-body">
+							<div>Slide 1</div>
+							<div>- Text Alignment</div>
+							<div>- Cell Styles</div>
+							<div>- Row Height / Col Width</div>
+							<div class="mt-2">Slide 2</div>
+							<div>- Colspans/Rowspans</div>
+							<div class="mt-2">Slide 3</div>
+							<div>- Extreme Colspans/Rowspans</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Cell Formatting</h6>
+						<div class="card-body">
+							<div>Slide 4</div>
+							<div>- Cell Margins</div>
+							<div>- Complex Cell Borders</div>
+							<div>- Escaped Special Characters</div>
+							<div class="mt-2">Slide 5</div>
+							<div>- Cell Text Formatting Overview</div>
+							<div class="mt-2">Slide 6</div>
+							<div>- Cell Text Formatting Examples</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Table Auto-Paging</h6>
+						<div class="card-body">
+							<div>Slide 7+</div>
+							<div>- Test basic functionality</div>
+							<div>- Test with small table dimensions</div>
+							<div>- Test with correct starting <code>{y:4.0}</code></div>
+							<div>- Test with <code>{ newSlideStartY:0.5 }</code></div>
+							<div>- Test with <code>{ autoPage:false }</code></div>
+							<div>- Tables with various <code>autoPageLineWeight</code> values</div>
+							<div>- Tables with various <code>autoPageCharWeight</code> values</div>
 						</div>
 					</div>
 				</div>
+				<div class="text-center">
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Table'])">Table Demo</button>
+				</div>
 			</div>
-			<h5 class="mt-4 text-primary bde-arrow-cont" onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');" title="Click to Show/Hide">
-				<div class="arrow"></div>
-				Demo: Single Lines, Large Cell Text
-			</h5>
-			<div class="card-deck m-0 p-2" style="display:none;">
-				<div class="card mb-4">
-					<h6 class="card-header">Example: Lots of Single-Line Rows</h6>
-					<div class="card-body">
-						<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
-							<thead>
-								<tr>
-									<th class="tg-header">A</th>
-									<th class="tg-header">B</th>
-									<th class="tg-header">C</th>
-								</tr>
-							</thead>
-							<tbody>
-							</tbody>
-						</table>
-						<div class="mt-3 text-center">
-							<button type="button" class="btn btn-success w-50" onclick="table2slidesDemoForTab('tabLotsOfLines',{verbose:true})">Single-Line Rows Demo</button>
+			<div class="tab-pane shadow p-4" id="templates" role="tabpanel" aria-labelledby="templates-tab">
+				<h4 class="text-primary">Slide Masters / Templates / Layouts</h4>
+				<p>
+					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/masters.html" target="_blank">masters documentation</a> for full details and examples
+				</p>
+				<div class="card-deck mb-4">
+					<div class="card" style="max-width:18%">
+						<h6 class="card-header">Misc Master Slides</h6>
+						<div class="card-body">
+							<div>Slide 1 - <span>TITLE_SLIDE</span></div>
+							<div>Slide 2 - <span>MASTER_SLIDE</span></div>
+							<div>Slide 3 - <span>MASTER_SLIDE</span></div>
+							<div>Slide 4 - <span>MASTER_SLIDE</span></div>
+							<div>Slide 5 - <span>MASTER_SLIDE</span></div>
+							<div>Slide 6 - <span>THANKS_SLIDE</span></div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Creating Slide Masters is easy!</h6>
+						<div class="card-body">
+							<pre class="mb-3"><code id="demo-master" class="language-javascript"></code></pre>
 						</div>
 					</div>
 				</div>
-				<div class="card mb-4">
-					<h6 class="card-header">Example: Paging needed due to cell with large amount of text</h6>
-					<div class="card-body">
-						<table id="tabLargeCellText" class="tabHtmlToPpt">
-							<thead>
-								<tr>
-									<th class="tg-header">Executive Status</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr>
-									<td>?</td>
-								</tr>
-							</tbody>
-						</table>
-						<div class="mt-3 text-center">
-							<button type="button" class="btn btn-success w-50" onclick="table2slidesDemoForTab('tabLargeCellText')">Large Cell Text Demo</button>
-						</div>
-					</div>
+				<div class="text-center">
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Master'])">Master Demo</button>
 				</div>
 			</div>
-			<!-- FUTURE:
-				<div class="sectionTitle" style="cursor:pointer" title="Click to Show/Hide"
-				 onclick="$(this).next('div').toggle('slow'); $(this).find('.arrow').toggleClass('active');">
-				 <div class="arrow active"></div>Table With Bullets
-				</div>
-				<div class="sectionBox">
-				 <table id="tableWithBullets" style="width:50%; font-family:Arial;">
-				  <tbody>
-					  <tr>
-						  <td style="border:1px solid #c7c7c7; background:white; text-align:left;">
-							  <ul>
-								  <li><b>Bold Text</b></li>
-								  <ol>
-									  <li>Nested</li>
-									  <li>Nested</li>
-									  <li>Nested</li>
-								  </ol>
-								  <li><u>Underline Text</u></li>
-							  </ul>
-						  </td>
-						  <td style="border:1px solid #c7c7c7; background:white; text-align:left;">
-							  <ul>
-								  <li>Level 1
-									  <ul>
-										  <li>Level 2
-											  <ul>
-												  <li><a href="https://google.com">Level 3 Link</a></li>
-												  <li><a href="https://amazon.com">Level 3 Link</a></li>
-											  </ul>
-										  </li>
-									  </ul>
-								  </li>
-							  </ul>
-						  </td>
-					  </tr>
-				  </tbody>
-				 </table>
-				 <div style="text-align:center; padding:20px;">
-				  <input type="button" class="flatBtn flatBtn-nsBlue" onclick="table2slidesBullets()" value="Bullet Table Demo">
-				 </div>
-				</div>
-				-->
-		</div>
-		<div class="tab-pane shadow p-4" id="charts" role="tabpanel" aria-labelledby="charts-tab">
-			<h4 class="text-primary">Chart Demos</h4>
-			<p>
-				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-charts.html" target="_blank">chart documentation</a> for full details and examples
-			</p>
-			<div class="d-flex flex-wrap mb-1">
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Bar Chart</h6>
-					<div class="card-body text-nowrap">
-						<div>Slide 1 - <span>Vertical/Horizontal bars</span></div>
-						<div>Slide 2 - <span>Grid/Axis options</span></div>
-						<div>Slide 3 - <span>Stacked/PercentStacked bars</span></div>
-						<div>Slide 4 - <span>Lots of bars</span></div>
-						<div>Slide 5 - <span>Bar colors, units, formats</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">3D Bar Chart</h6>
-					<div class="card-body">
-						<div>Slide 6 - <span>3D Bar, Cone, Cylinder, Pyramid</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Tornado Chart</h6>
-					<div class="card-body">
-						<div>Slide 7 - <span>Tornado Type</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Line Chart</h6>
-					<div class="card-body">
-						<div>Slide 8 - <span>Smoothing, Shadow, Size, Symbols</span></div>
-						<div>Slide 9 - <span>Data Symbol, Size</span></div>
-						<div>Slide 10 - <span>Lots of Categories</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Area Chart</h6>
-					<div class="card-body">
-						<div>Slide 11 - <span>Opacity and other options</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Pie Chart</h6>
-					<div class="card-body">
-						<div>Slide 12 - <span>Various options</span></div>
-						<div>Slide 13 - <span>Doughnut Type</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">X Y (Scatter) Chart</h6>
-					<div class="card-body">
-						<div>Slide 14 - <span>Various Options</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Bubble Chart</h6>
-					<div class="card-body">
-						<div>Slide 15 - <span>Various Options</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Radar Chart</h6>
-					<div class="card-body">
-						<div>Slide 16 - <span>Various Options</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Multi-Type Chart</h6>
-					<div class="card-body">
-						<div>Slide 17 - <span>Various Mixed-Chart Types</span></div>
-					</div>
-				</div>
-				<div class="card mr-4 mb-4 flex-grow-1">
-					<h6 class="card-header">Chart Options</h6>
-					<div class="card-body">
-						<div>Slide 18 - <span>Shadows and Transparent Color</span></div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center">
-				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs('Chart')">Generate Chart Demo</button>
-			</div>
-		</div>
-		<div class="tab-pane shadow p-4" id="images" role="tabpanel" aria-labelledby="images-tab">
-			<h4 class="text-primary">Image Demos</h4>
-			<p>
-				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-images.html" target="_blank">image documentation</a> for full details and examples
-			</p>
-			<div class="card-deck mb-4">
-				<div class="card">
-					<h6 class="card-header">Image Types and Sources</h6>
-					<div class="card-body">
-						<div>Slide 1</div>
-						<div>- Type: Animated GIF <small class="text-warning ml-2">(use Slide Show)</small></div>
-						<div>- Type: GIF</div>
-						<div>- Type: JPG</div>
-						<div>- Type: PNG</div>
-						<div>- Type: SVG</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Sizing and Rounding</h6>
-					<div class="card-body">
-						<div>Slide 2</div>
-						<div>- Image Rounding</div>
-						<div>- Sizing: Contain</div>
-						<div>- Sizing: Cover</div>
-						<div>- Sizing: Crop</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Image Rotation</h6>
-					<div class="card-body">
-						<div>Slide 3</div>
-						<div>- Rotate: 45</div>
-						<div>- Rotate: 180</div>
-						<div>- Rotate: 315</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Image URLs</h6>
-					<div class="card-body">
-						<div>Slide 4</div>
-						<div>- Using GitHub CDN</div>
-						<div>- Using Wikimedia URL</div>
-						<div>- Using URL variables, etc</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center">
-				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Image'])">Image Demo</button>
-			</div>
-			<h4 class="text-primary mt-4">Media Demos</h4>
-			<p>
-				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-media.html" target="_blank">media documentation</a> for full details and examples
-			</p>
-			<div class="card-deck mb-4">
-				<div class="card">
-					<h6 class="card-header">Video</h6>
-					<div class="card-body">
-						<div>Slide 1</div>
-						<div>- Various formats (most OS's wont have every format codec - <abbr title="Your Milage May Vary">YMMV</abbr>)</div>
-						<div>- YouTube (only supported in PowerPoint Online / PowerPoint desktop v16+)</div>
-						<div class="form-control my-2">
-							<div class="form-check form-check-inline">
-								<input class="form-check-input" id="chkYoutube" type="checkbox">
-								<label class="form-check-label" for="chkYoutube">Include YouTube video?</label>
-							</div>
-						</div>
-						<small class="text-warning">NOTE: opening a presentation with a YouTube video will show a content warning in desktop PowerPoint v15 or earlier</small>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Audio</h6>
-					<div class="card-body">
-						<div>Slide 2</div>
-						<div>- Misc Audio formats (mp3, wav)</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center">
-				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Media'])">Media Demo</button>
-			</div>
-		</div>
-		<div class="tab-pane shadow p-4" id="shapes" role="tabpanel" aria-labelledby="shapes-tab">
-			<h4 class="text-primary">Shape Demos</h4>
-			<p>
-				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html" target="_blank">shape documentation</a> for full details and examples
-			</p>
-			<div class="card-deck mb-4">
-				<div class="card">
-					<h6 class="card-header">Core Shape Types</h6>
-					<div class="card-body">
-						<div>Slide 1</div>
-						<div>- Shapes: Rectangle, Line, Oval, Triangle</div>
-						<div>- Shapes: Flipped, With and Without Text</div>
-						<div>- Shape Borders</div>
-						<div>- Lines: With and Without Arrowheads</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Core Shape Types with Text</h6>
-					<div class="card-body">
-						<div>Slide 2</div>
-						<div>- Shapes: Rectangle, Line, Oval, Triangle</div>
-						<div>- Shapes: Flipped, With and Without Text</div>
-						<div>- Shape Borders</div>
-						<div>- Lines: With and Without Arrowheads</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center">
-				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Shape'])">Shape Demo</button>
-			</div>
-			<h4 class="text-primary mt-4">Text Demos</h4>
-			<p>
-				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-text.html" target="_blank">text documentation</a> for full details and examples
-			</p>
-			<div class="card-deck mb-4">
-				<div class="card">
-					<h6 class="card-header">Text Alignment</h6>
-					<div class="card-body">
-						<div>Slide 1</div>
-						<div>- Text alignment</div>
-						<div>- x/y percent values</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Text Types</h6>
-					<div class="card-body">
-						<div>Slide 2</div>
-						<div>- Word-Level Formatting</div>
-						<div>- Multi-Line Text</div>
-						<div>- Line Spcaing</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Text Effects/Hyperlinks</h6>
-					<div class="card-body">
-						<div>Slide 3</div>
-						<div>- Text Outline</div>
-						<div>- Text Glow</div>
-						<div>- Text Shadow</div>
-						<div>- Hyperlinks</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Text Bullets</h6>
-					<div class="card-body">
-						<div>Slide 4</div>
-						<div>- Regular</div>
-						<div>- Custom Shapes</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Text Schemes</h6>
-					<div class="card-body">
-						<div>Slide 5</div>
-						<div>- Scheme Colors</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center">
-				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Text'])">Text Demo</button>
-			</div>
-		</div>
-		<div class="tab-pane shadow p-4" id="tables" role="tabpanel" aria-labelledby="tables-tab">
-			<h4 class="text-primary">Table Demos</h4>
-			<p>
-				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-table.html" target="_blank">table documentation</a> for full details and examples
-			</p>
-			<div class="card-deck mb-4">
-				<div class="card">
-					<h6 class="card-header">Table Layout/Format</h6>
-					<div class="card-body">
-						<div>Slide 1</div>
-						<div>- Text Alignment</div>
-						<div>- Cell Styles</div>
-						<div>- Row Height / Col Width</div>
-						<div class="mt-2">Slide 2</div>
-						<div>- Colspans/Rowspans</div>
-						<div class="mt-2">Slide 3</div>
-						<div>- Extreme Colspans/Rowspans</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Cell Formatting</h6>
-					<div class="card-body">
-						<div>Slide 4</div>
-						<div>- Cell Margins</div>
-						<div>- Complex Cell Borders</div>
-						<div>- Escaped Special Characters</div>
-						<div class="mt-2">Slide 5</div>
-						<div>- Cell Text Formatting Overview</div>
-						<div class="mt-2">Slide 6</div>
-						<div>- Cell Text Formatting Examples</div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Table Auto-Paging</h6>
-					<div class="card-body">
-						<div>Slide 7+</div>
-						<div>- Test basic functionality</div>
-						<div>- Test with small table dimensions</div>
-						<div>- Test with correct starting <code>{y:4.0}</code></div>
-						<div>- Test with <code>{ newSlideStartY:0.5 }</code></div>
-						<div>- Test with <code>{ autoPage:false }</code></div>
-						<div>- Tables with various <code>autoPageLineWeight</code> values</div>
-						<div>- Tables with various <code>autoPageCharWeight</code> values</div>
-					</div>
-				</div>
-			</div>
-			<div class="text-center">
-				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Table'])">Table Demo</button>
-			</div>
-		</div>
-		<div class="tab-pane shadow p-4" id="templates" role="tabpanel" aria-labelledby="templates-tab">
-			<h4 class="text-primary">Slide Masters / Templates / Layouts</h4>
-			<p>
-				View the <a href="https://gitbrent.github.io/PptxGenJS/docs/masters.html" target="_blank">masters documentation</a> for full details and examples
-			</p>
-			<div class="card-deck mb-4">
-				<div class="card" style="max-width:18%">
-					<h6 class="card-header">Misc Master Slides</h6>
-					<div class="card-body">
-						<div>Slide 1 - <span>TITLE_SLIDE</span></div>
-						<div>Slide 2 - <span>MASTER_SLIDE</span></div>
-						<div>Slide 3 - <span>MASTER_SLIDE</span></div>
-						<div>Slide 4 - <span>MASTER_SLIDE</span></div>
-						<div>Slide 5 - <span>MASTER_SLIDE</span></div>
-						<div>Slide 6 - <span>THANKS_SLIDE</span></div>
-					</div>
-				</div>
-				<div class="card">
-					<h6 class="card-header">Creating Slide Masters is easy!</h6>
-					<div class="card-body">
-						<pre class="mb-3"><code id="demo-master" class="language-javascript"></code></pre>
-					</div>
-				</div>
-			</div>
-			<div class="text-center">
-				<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Master'])">Master Demo</button>
-			</div>
-		</div>
-	</main>
+		</main>
+	</div>
 </body>
 </html>
