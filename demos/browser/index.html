@@ -147,9 +147,9 @@
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/images/base64Images.js" async></script>
 
 	<!-- RELEASE (CDN)
-	-->
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js"></script>
+	-->
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/dist/pptxgen.bundle.js"></script>
@@ -161,11 +161,11 @@
 	<script src="../SiteAssets/pptxgenjs/demos/demo.js"></script>
 	-->
 	<!-- LOCAL TESTING:
-	<script src="../../dist/pptxgen.bundle.js"></script>
 	<script src="../../libs/jszip.min.js"></script>
 	<script src="../../dist/pptxgen.min.js"></script>
-	<script src="../common/demos.js"></script>
 	-->
+	<script src="../../dist/pptxgen.bundle.js"></script>
+	<script src="../common/demos.js"></script>
 
 	<script>
 		// ==================================================================================================================
@@ -175,14 +175,24 @@
 		}
 
 		function runAllDemos() {
-			console.log('Running all demos...');
-
+			if (console.time) console.time('runAllDemos');
 			runEveryTest()
 			.catch(function(err) {
 				console.error(err.toString());
 			})
 			.then(function() {
-				console.log('..done!');
+				if (console.timeEnd) console.timeEnd('runAllDemos');
+			});
+		}
+
+		function execGenSlidesFunc(type) {
+			if (console.time) console.time('execGenSlidesFunc: '+type);
+			execGenSlidesFuncs(type)
+			.catch(function(err) {
+				console.error(err.toString());
+			})
+			.then(function() {
+				if (console.timeEnd) console.timeEnd('execGenSlidesFunc: '+type);
 			});
 		}
 
@@ -1189,7 +1199,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs('Chart')">Generate Chart Demo</button>
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Chart')">Generate Chart Demo</button>
 				</div>
 			</div>
 			<div class="tab-pane shadow p-4" id="images" role="tabpanel" aria-labelledby="images-tab">
@@ -1239,7 +1249,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Image'])">Image Demo</button>
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Image')">Image Demo</button>
 				</div>
 				<h4 class="text-primary mt-4">Media Demos</h4>
 				<p>
@@ -1270,7 +1280,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Media'])">Media Demo</button>
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Media')">Media Demo</button>
 				</div>
 			</div>
 			<div class="tab-pane shadow p-4" id="shapes" role="tabpanel" aria-labelledby="shapes-tab">
@@ -1301,7 +1311,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Shape'])">Shape Demo</button>
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Shape')">Shape Demo</button>
 				</div>
 				<h4 class="text-primary mt-4">Text Demos</h4>
 				<p>
@@ -1352,7 +1362,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Text'])">Text Demo</button>
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Text')">Text Demo</button>
 				</div>
 			</div>
 			<div class="tab-pane shadow p-4" id="tables" role="tabpanel" aria-labelledby="tables-tab">
@@ -1402,7 +1412,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Table'])">Table Demo</button>
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Table')">Table Demo</button>
 				</div>
 			</div>
 			<div class="tab-pane shadow p-4" id="templates" role="tabpanel" aria-labelledby="templates-tab">
@@ -1430,7 +1440,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFuncs(['Master'])">Master Demo</button>
+					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Master')">Master Demo</button>
 				</div>
 			</div>
 		</main>

@@ -122,7 +122,6 @@ function execGenSlidesFuncs(type) {
 	else {
 		pptx = new PptxGenJS();
 	}
-	//if (console.log) console.log(' * pptxgenjs ver: '+ pptx.version); // Loaded okay?
 
 	// STEP 2: Set Presentation props (as QA test only - these are not required)
 	pptx.title = 'PptxGenJS Test Suite Presentation';
@@ -255,7 +254,11 @@ function execGenSlidesFuncs(type) {
 
 	// STEP 5: Run requested test
 	var arrTypes = ( typeof type === 'string' ? [type] : type );
-	arrTypes.forEach(function(type,idx){ eval( 'genSlides_'+type+'(pptx)' ); });
+	arrTypes.forEach(function(type,idx){
+		//if (console.time) console.time(type);
+		eval( 'genSlides_'+type+'(pptx)' );
+		//if (console.timeEnd) console.timeEnd(type);
+	});
 
 	// LAST: Export Presentation
 	if ( NODEJS ) {
