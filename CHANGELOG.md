@@ -16,15 +16,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added text glow option [\#630](https://github.com/gitbrent/PptxGenJS/pull/630) ([kevinresol](https://github.com/kevinresol))
 - Ability to rotate image [\#639](https://github.com/gitbrent/PptxGenJS/pull/639) ([alabaki](https://github.com/alabaki))
 - Include types in package.json files [\#641](https://github.com/gitbrent/PptxGenJS/pull/641) ([cronin4392](https://github.com/cronin4392))
-- New demo Image slide for Image Rotation ([gitbrent](https://github.com/gitbrent))
 - Added new chart option `showLeaderLines` [\#642](https://github.com/gitbrent/PptxGenJS/pull/642) ([cronin4392](https://github.com/cronin4392))
+- New demo Image slide for Image Rotation ([gitbrent](https://github.com/gitbrent))
 ### Changed
 - Fixed: Empty color negative values on barchart [\#285](https://github.com/gitbrent/PptxGenJS/issue/285) ([andrei-cs](https://github.com/andrei-cs)) ([Slidemagic](https://github.com/Slidemagic))
 - Fixed: Add missing margin type from ITextOpts [\#643](https://github.com/gitbrent/PptxGenJS/pull/643) ([cronin4392](https://github.com/cronin4392))
 - Fixed: Scatter plot `dataLabelPosition` [\#644](https://github.com/gitbrent/PptxGenJS/issue/644) ([afarghaly10](https://github.com/afarghaly10))
 - Fixed: Added new babel polyfill for IE11; other IE11 fixes in demo, etc. [\#648](https://github.com/gitbrent/PptxGenJS/issue/648) ([YakQin](https://github.com/YakQin))
 ### Removed
-- Removed: jsdom no longer a dependency in `package.json` ([gitbrent](https://github.com/gitbrent))
+- Removed: jsdom pkg is no longer a dependency in `package.json` ([gitbrent](https://github.com/gitbrent))
 
 
 
