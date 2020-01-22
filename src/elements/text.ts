@@ -31,6 +31,7 @@ export type TextOptions = PositionOptions &
         lineDash?: string
         lineHead?: string
         lineTail?: string
+        lineCap?: string
         isTextBox?: boolean
         shadow?: ShadowOptions
     }
@@ -83,7 +84,8 @@ export default class TextElement implements ElementInterface {
                 size: opts.lineSize,
                 dash: opts.lineDash,
                 head: opts.lineHead,
-                tail: opts.lineTail
+                tail: opts.lineTail,
+                cap: opts.lineCap
             })
         }
 

@@ -23,6 +23,7 @@ export type ShapeOptions = PositionOptions &
         lineDash?: string
         lineHead?: string
         lineTail?: string
+        lineCap?: string
         shadow?: ShadowOptions
     }
 
@@ -47,7 +48,8 @@ export default class SimpleShapeElement implements ElementInterface {
                 size: opts.lineSize,
                 dash: opts.lineDash,
                 head: opts.lineHead,
-                tail: opts.lineTail
+                tail: opts.lineTail,
+                cap: opts.lineCap
             })
         }
 

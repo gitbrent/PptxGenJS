@@ -12,14 +12,18 @@ const DASH_VALUES = [
     'sysDot'
 ]
 
+// https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_ST_LineCap_topic_ID0EPMVNB.html#topic_ID0EPMVNB
+const CAP_VALUES = ['flat', 'rnd', 'sq']
+
 export default class LineElement {
     size
     color
     dash
     head
     tail
+    cap
 
-    constructor({ size = 1, color = '333333', dash, head, tail }) {
+    constructor({ size = 1, color = '333333', dash, head, tail, cap }) {
         this.color = translateColor(color)
         this.size = size
 
@@ -29,6 +33,11 @@ export default class LineElement {
         this.dash = dash
         this.head = head
         this.tail = tail
+
+        // omitting cap if uknown value
+        // assumed 'sq' when empty
+        // https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_ln_topic_ID0EJR3IB.html#topic_ID0EJR3IB
+        if (CAP_VALUES.includes(cap)) this.cap = cap
     }
 
     render() {
@@ -38,6 +47,7 @@ export default class LineElement {
         ${this.dash ? `<a:prstDash val="${this.dash}"/>` : ''}
         ${this.head ? `<a:headEnd type="${this.head}"/>` : ''}
         ${this.tail ? `<a:tailEnd type="${this.tail}"/>` : ''}
-	</a:ln>`
+        ${this.cap ? `<a:cap type="${this.cap}"/>` : ''}
+    </a:ln>`
     }
 }
