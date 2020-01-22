@@ -147,9 +147,9 @@
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/images/base64Images.js" async></script>
 
 	<!-- RELEASE (CDN)
+	-->
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js"></script>
-	-->
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/dist/pptxgen.bundle.js"></script>
@@ -163,9 +163,9 @@
 	<!-- LOCAL TESTING:
 	<script src="../../libs/jszip.min.js"></script>
 	<script src="../../dist/pptxgen.min.js"></script>
-	-->
 	<script src="../../dist/pptxgen.bundle.js"></script>
 	<script src="../common/demos.js"></script>
+	-->
 
 	<script>
 		// ==================================================================================================================
@@ -176,23 +176,31 @@
 
 		function runAllDemos() {
 			if (console.time) console.time('runAllDemos');
+			$('#modalBusy').modal('show');
+
 			runEveryTest()
 			.catch(function(err) {
 				console.error(err.toString());
+				$('#modalBusy').modal('hide');
 			})
 			.then(function() {
 				if (console.timeEnd) console.timeEnd('runAllDemos');
+				$('#modalBusy').modal('hide');
 			});
 		}
 
 		function execGenSlidesFunc(type) {
 			if (console.time) console.time('execGenSlidesFunc: '+type);
+			$('#modalBusy').modal('show');
+
 			execGenSlidesFuncs(type)
 			.catch(function(err) {
 				console.error(err.toString());
+				$('#modalBusy').modal('hide');
 			})
 			.then(function() {
 				if (console.timeEnd) console.timeEnd('execGenSlidesFunc: '+type);
+				$('#modalBusy').modal('hide');
 			});
 		}
 
@@ -613,6 +621,22 @@
 	</script>
 </head>
 <body class="bg-light">
+	<div id="modalBusy" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static" >
+	  <div class="modal-dialog modal-dialog-centered" role="document">
+	    <div class="modal-content">
+	      <div class="modal-body">
+	        <h3 class="text-primary">Please Wait</h3>
+			<div class="text-dark">Creating and saving presentation...</div>
+	      </div>
+		  <div class="modal-footer bg-light">
+			  <div class="progress w-100" style="height:2rem;">
+				  <div class="progress-bar progress-bar-striped progress-bar-animated w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+			  </div>
+		  </div>
+	    </div>
+	  </div>
+	</div>
+
 	<nav class="navbar navbar-expand-lg bg-dark">
 		<a class="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
 			<img src="images/favicon.png" width="30" height="30" class="d-inline-block align-top mr-2" alt="" />
