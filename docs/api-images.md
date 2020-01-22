@@ -17,17 +17,18 @@ Either provide a URL location or base64 data to create an image.
 * Note: SVG images are only supported in the newest version of PowerPoint or PowerPoint Online
 
 ## Image Options
-| Option       | Type    | Unit   | Default  | Description         | Possible Values  |
-| :----------- | :------ | :----- | :------- | :------------------ | :--------------- |
-| `x`          | number  | inches | `1.0`    | horizontal location | 0-n |
-| `y`          | number  | inches | `1.0`    | vertical location   | 0-n |
-| `w`          | number  | inches | `1.0`    | width               | 0-n |
-| `h`          | number  | inches | `1.0`    | height              | 0-n |
-| `data`       | string  |        |          | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
-| `hyperlink`  | string  |        |          | add hyperlink | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
-| `path`       | string  |        |          | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
-| `rounding`   | boolean |        | `false`  | image rounding      | Shapes an image into a circle |
-| `sizing`     | object  |        |          | transforms image    | See [Image Sizing](#image-sizing) |
+| Option       | Type    | Unit    | Default  | Description         | Possible Values  |
+| :----------- | :------ | :------ | :------- | :------------------ | :--------------- |
+| `x`          | number  | inches  | `1.0`    | horizontal location | 0-n |
+| `y`          | number  | inches  | `1.0`    | vertical location   | 0-n |
+| `w`          | number  | inches  | `1.0`    | width               | 0-n |
+| `h`          | number  | inches  | `1.0`    | height              | 0-n |
+| `data`       | string  |         |          | image data (base64) | base64-encoded image string. (either `data` or `path` is required) |
+| `hyperlink`  | string  |         |          | add hyperlink | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
+| `path`       | string  |         |          | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
+| `rotate`     | integer | degrees | `0`      | image rotation      | 0-360. Ex: `{rotate:180}` |
+| `rounding`   | boolean |         | `false`  | image rounding      | Shapes an image into a circle |
+| `sizing`     | object  |         |          | transforms image    | See [Image Sizing](#image-sizing) |
 
 ## Image Examples
 ```javascript
@@ -56,13 +57,13 @@ pptx.writeFile('Demo-Images');
 ## Image Sizing
 The `sizing` option provides cropping and scaling an image to a specified area. The property expects an object with the following structure:
 
-| Property     | Type    | Unit   | Default           | Description                                   | Possible Values  |
-| :----------- | :------ | :----- | :---------------- | :-------------------------------------------- | :--------------- |
-| `type`       | string  |        |                   | sizing algorithm                              | `'crop'`, `'contain'` or `'cover'` |
-| `w`          | number  | inches | `w` of the image  | area width                                    | 0-n |
-| `h`          | number  | inches | `h` of the image  | area height                                   | 0-n |
-| `x`          | number  | inches | `0`               | area horizontal position related to the image | 0-n (effective for `crop` only) |
-| `y`          | number  | inches | `0`               | area vertical position related to the image   | 0-n (effective for `crop` only)|
+| Property     | Type    | Unit    | Default           | Description                                   | Possible Values  |
+| :----------- | :------ | :------ | :---------------- | :-------------------------------------------- | :--------------- |
+| `type`       | string  |         |                   | sizing algorithm                              | `'crop'`, `'contain'` or `'cover'` |
+| `w`          | number  | inches  | `w` of the image  | area width                                    | 0-n |
+| `h`          | number  | inches  | `h` of the image  | area height                                   | 0-n |
+| `x`          | number  | inches  | `0`               | area horizontal position related to the image | 0-n (effective for `crop` only) |
+| `y`          | number  | inches  | `0`               | area vertical position related to the image   | 0-n (effective for `crop` only)|
 
 Particular `type` values behave as follows:
 * `contain` works as CSS property `background-size` — shrinks the image (ratio preserved) to the area given by `w` and `h` so that the image is completely visible. If the area's ratio differs from the image ratio, an empty space will surround the image.

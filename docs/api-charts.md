@@ -32,7 +32,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 * Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
 
 ## Chart Options
-### General, Legend, Title
+### General, Data Table, Legend, Title
 | Option          | Type    | Unit    | Default   | Description                        | Possible Values  |
 | :-------------- | :------ | :------ | :-------- | :--------------------------------- | :--------------- |
 | `x`             | number  | inches  | `1.0`     | horizontal location                | 0-n OR 'n%'. (Ex: `{x:'50%'}` places object in middle of the Slide) |
@@ -42,6 +42,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `border`        | object  |         |           | chart border                  | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
 | `chartColors`   | array   |         |           | data colors                        | array of hex color codes. Ex: `['0088CC','FFCC00']` |
 | `chartColorsOpacity` | number | percent | `100` | data color opacity percent         | 1-100. Ex: `{ chartColorsOpacity:50 }` |
+| `dataTableFontSize`  | number |     |           | data table font size               | 1-256. Ex: `{ dataTableFontSize: 13 }`|
 | `fill`          | string  |         |           | fill/background color              | hex color code. Ex: `{ fill:'0088CC' }` |
 | `holeSize`      | number  | percent | `50`      | doughnut hole size                 | 1-100. Ex: `{ holeSize:50 }` |
 | `invertedColors`| array   |         |           | data colors for negative numbers   | array of hex color codes. Ex: `['0088CC','FFCC00']` |
@@ -57,6 +58,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `showDataTableVertBorder` | boolean |     | `true`    | show Data Table vertical borders    | `true` or `false` (Not available for Pie/Doughnut charts) |
 | `showDataTableOutline`    | boolean |     | `true`    | show Data Table table outline       | `true` or `false` (Not available for Pie/Doughnut charts) |
 | `showLabel`     | boolean |         | `false`   | show data labels                   | `true` or `false` |
+| `showLeaderLines`| boolean |        | `false`   | show leader lines                  | `true` or `false` |
 | `showLegend`    | boolean |         | `false`   | show chart legend                  | `true` or `false` |
 | `showPercent`   | boolean |         | `false`   | show data percent                  | `true` or `false` |
 | `showTitle`     | boolean |         | `false`   | show chart title                   | `true` or `false` |
@@ -98,6 +100,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | `catGridLine`          | object  |         | `none`       | category grid line style      | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
 | `showCatAxisTitle`     | boolean |         | `false`      | show category (vert) title   | `true` or `false`.  Ex:`{ showCatAxisTitle:true }` |
 | `showValAxisTitle`     | boolean |         | `false`      | show values (horiz) title    | `true` or `false`.  Ex:`{ showValAxisTitle:true }` |
+| `valAxisDisplayUnit`   | string  |         |              | display units                | `billions`, `hundredMillions`, `hundreds`, `hundredThousands`, `millions`, `tenMillions`, `tenThousands`, `thousands`, `trillions` |
 | `valAxisHidden`        | boolean |         | `false`      | hide value-axis              | `true` or `false`   |
 | `valAxisLabelColor`    | string  |         | `000000`     | value-axis color             | hex color code. Ex: `{ valAxisLabelColor:'0088CC' }` |
 | `valAxisLabelFontBold` | boolean |         | `false`      | make val axis label bold     | `true` or `false` |

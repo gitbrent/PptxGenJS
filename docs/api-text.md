@@ -28,6 +28,7 @@ slide.addText([ {text:'TEXT', options:{OPTIONS}} ]);
 | `fill`       | string  |         |           | fill/bkgd color     | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
 | `fontFace`   | string  |         |           | font face           | Ex: `{ fontFace:'Arial'}` |
 | `fontSize`   | number  | points  |           | font size           | 1-256. Ex: `{ fontSize:12 }` |
+| `glow`       | object  |         |           | text glow           | object with `size`, `opacity`, `color` (opt). Ex: `glow:{size:10, opacity:0.75, color:'0088CC'}` |
 | `hyperlink`  | string  |         |           | add hyperlink       | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }` |
 | `indentLevel`| number  | level   | `0`       | bullet indent level | 1-32. Ex: `{ indentLevel:1 }` |
 | `inset`      | number  | inches  |           | inset/padding       | 1-256. Ex: `{ inset:1.25 }` |
