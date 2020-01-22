@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sections
 
 
+## [3.2.0] - 2020-?-?
+### Added
+### Changed
+
+
+
 ## [3.1.0] - 2020-01-21
 ### Added
 - Added `valAxisDispUnits` [\#606](https://github.com/gitbrent/PptxGenJS/pull/606) ([AmrutPatil](https://github.com/AmrutPatil))
@@ -17,12 +23,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Ability to rotate image [\#639](https://github.com/gitbrent/PptxGenJS/pull/639) ([alabaki](https://github.com/alabaki))
 - Include types in package.json files [\#641](https://github.com/gitbrent/PptxGenJS/pull/641) ([cronin4392](https://github.com/cronin4392))
 - Added new chart option `showLeaderLines` [\#642](https://github.com/gitbrent/PptxGenJS/pull/642) ([cronin4392](https://github.com/cronin4392))
-- New demo Image slide for Image Rotation; New busy progress modal ([gitbrent](https://github.com/gitbrent))
 ### Changed
 - Fixed: Empty color negative values on barchart [\#285](https://github.com/gitbrent/PptxGenJS/issue/285) ([andrei-cs](https://github.com/andrei-cs)) ([Slidemagic](https://github.com/Slidemagic))
 - Fixed: Add missing margin type from ITextOpts [\#643](https://github.com/gitbrent/PptxGenJS/pull/643) ([cronin4392](https://github.com/cronin4392))
 - Fixed: Scatter plot `dataLabelPosition` [\#644](https://github.com/gitbrent/PptxGenJS/issue/644) ([afarghaly10](https://github.com/afarghaly10))
 - Fixed: Added new babel polyfill for IE11; other IE11 fixes in demo, etc. [\#648](https://github.com/gitbrent/PptxGenJS/issue/648) ([YakQin](https://github.com/YakQin))
+- Updated Demo: added support for light/dark mode; new Image slide for rotation; new busy progress modal ([gitbrent](https://github.com/gitbrent))
 ### Removed
 - Removed: jsdom pkg is no longer a dependency in `package.json` ([gitbrent](https://github.com/gitbrent))
 
