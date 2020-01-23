@@ -21,7 +21,7 @@ export default class LineElement {
     dash
     head
     tail
-    cap
+    cap = 'sq'
 
     constructor({ size = 1, color = '333333', dash, head, tail, cap }) {
         this.color = translateColor(color)
@@ -42,12 +42,11 @@ export default class LineElement {
 
     render() {
         return `
-    <a:ln${this.size ? ` w="${this.size * ONEPT}"` : ''}>
+    <a:ln${this.size ? ` w="${this.size * ONEPT}"` : ''} cap="${this.cap}">
         ${genXmlColorSelection(this.color)}
         ${this.dash ? `<a:prstDash val="${this.dash}"/>` : ''}
         ${this.head ? `<a:headEnd type="${this.head}"/>` : ''}
         ${this.tail ? `<a:tailEnd type="${this.tail}"/>` : ''}
-        ${this.cap ? `<a:cap type="${this.cap}"/>` : ''}
     </a:ln>`
     }
 }
