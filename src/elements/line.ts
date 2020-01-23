@@ -15,7 +15,7 @@ const DASH_VALUES = [
 export default class LineElement {
     size
     color
-    dash = 'solid'
+    dash
     head
     tail
 
