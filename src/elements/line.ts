@@ -15,7 +15,7 @@ const DASH_VALUES = [
 export default class LineElement {
     size
     color
-    dash
+    dash = 'solid'
     head
     tail
 
@@ -23,10 +23,8 @@ export default class LineElement {
         this.color = translateColor(color)
         this.size = size
 
-        if (!DASH_VALUES.includes(dash)) this.dash = 'solid'
-        else this.dash = dash
+        if (DASH_VALUES.includes(dash)) this.dash = dash
 
-        this.dash = dash
         this.head = head
         this.tail = tail
     }
