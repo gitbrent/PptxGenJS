@@ -21,7 +21,7 @@ export default class LineElement {
     dash
     head
     tail
-    cap = 'sq'
+    cap
 
     constructor({ size = 1, color = '333333', dash, head, tail, cap }) {
         this.color = translateColor(color)
@@ -34,15 +34,14 @@ export default class LineElement {
         this.head = head
         this.tail = tail
 
-        // omitting cap if uknown value
-        // assumed 'sq' when empty
-        // https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_ln_topic_ID0EJR3IB.html#topic_ID0EJR3IB
+        // omitting cap if unknown value
+        // assumed "sq" by default
         if (CAP_VALUES.includes(cap)) this.cap = cap
     }
 
     render() {
         return `
-    <a:ln${this.size ? ` w="${this.size * ONEPT}"` : ''} cap="${this.cap}">
+    <a:ln${this.size ? ` w="${this.size * ONEPT}"` : ''}${this.cap ? ` cap="${this.cap}"` : ''}>
         ${genXmlColorSelection(this.color)}
         ${this.dash ? `<a:prstDash val="${this.dash}"/>` : ''}
         ${this.head ? `<a:headEnd type="${this.head}"/>` : ''}
