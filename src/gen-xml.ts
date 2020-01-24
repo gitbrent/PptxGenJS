@@ -16,7 +16,7 @@ import {
 	DEF_PRES_LAYOUT_NAME,
 	DEF_TEXT_GLOW,
 } from './core-enums'
-import { PowerPointShapes } from './core-shapes'
+import { Shapes } from './core-shapes'
 import {
 	ILayout,
 	IShadowOptions,
@@ -1835,14 +1835,14 @@ export function correctShadowOptions(ShadowOptions: IShadowOptions) {
 }
 
 export function getShapeInfo(shapeName) {
-	if (!shapeName) return PowerPointShapes.RECTANGLE
+	if (!shapeName) return Shapes.RECTANGLE
 
 	if (typeof shapeName === 'object' && shapeName.name && shapeName.displayName && shapeName.avLst) return shapeName
 
-	if (PowerPointShapes[shapeName]) return PowerPointShapes[shapeName]
+	if (Shapes[shapeName]) return Shapes[shapeName]
 
-	let objShape = Object.keys(PowerPointShapes).filter((key: string) => PowerPointShapes[key].name === shapeName || PowerPointShapes[key].displayName)[0]
+	let objShape = Object.keys(Shapes).filter((key: string) => Shapes[key].name === shapeName || Shapes[key].displayName)[0]
 	if (typeof objShape !== 'undefined' && objShape !== null) return objShape
 
-	return PowerPointShapes.RECTANGLE
+	return Shapes.RECTANGLE
 }

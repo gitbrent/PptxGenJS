@@ -47,7 +47,7 @@ import * as JSZip from 'jszip'
 import Slide from './slide'
 import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE, EMU } from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
-import { PowerPointShapes } from './core-shapes'
+import { Shapes } from './core-shapes'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
@@ -181,8 +181,8 @@ export default class PptxGenJS {
 	public get colors(): typeof SCHEME_COLOR_NAMES {
 		return this._colors
 	}
-	private _shapes = PowerPointShapes
-	public get shapes(): typeof PowerPointShapes {
+	private _shapes = Shapes
+	public get shapes(): typeof Shapes {
 		return this._shapes
 	}
 	private _presLayout: ILayout
