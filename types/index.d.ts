@@ -140,6 +140,19 @@ declare namespace PptxGenJS {
 	}
 	// ======
 
+	// charts and shapes for `pptxgen.charts.` `pptxgen.shapes.`
+	export enum charts {
+		'AREA' = 'area',
+		'BAR' = 'bar',
+		'BAR3D' = 'bar3D',
+		'BUBBLE' = 'bubble',
+		'DOUGHNUT' = 'doughnut',
+		'LINE' = 'line',
+		'PIE' = 'pie',
+		'RADAR' = 'radar',
+		'SCATTER' = 'scatter',
+	}
+
 	/**
 	 * Coordinate (string is in the form of 'N%')
 	 */

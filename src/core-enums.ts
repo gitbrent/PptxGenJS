@@ -145,6 +145,20 @@ export enum CHART_TYPES {
 	'RADAR' = 'radar',
 	'SCATTER' = 'scatter',
 }
+/**
+* for index.d.ts, `pptxgen.charts.AREA` etc
+*/
+export enum charts {
+	'AREA' = 'area',
+	'BAR' = 'bar',
+	'BAR3D' = 'bar3D',
+	'BUBBLE' = 'bubble',
+	'DOUGHNUT' = 'doughnut',
+	'LINE' = 'line',
+	'PIE' = 'pie',
+	'RADAR' = 'radar',
+	'SCATTER' = 'scatter',
+}
 
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
