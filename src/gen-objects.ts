@@ -30,7 +30,6 @@ import {
 	IShapeOptions,
 	ISlide,
 	ISlideLayout,
-	ISlideMstrObjPlchldrOpts,
 	ISlideObject,
 	ITableCell,
 	ITableOptions,
@@ -188,7 +187,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 
 	// STEP 2: Set default options/decode user options
 	// A: Core
-	options.type = type
+	options._type = type
 	options.x = typeof options.x !== 'undefined' && options.x != null && !isNaN(Number(options.x)) ? options.x : 1
 	options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1
 	options.w = options.w || '50%'
@@ -198,7 +197,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
 	// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
 	if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-		options.dataLabelPosition = options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr'
+		options.dataLabelPosition = options._type === CHART_TYPES.PIE || options._type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr'
 	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false
 	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
@@ -228,9 +227,9 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	}
 
 	// Set gridline defaults
-	options.catGridLine = options.catGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
-	options.valGridLine = options.valGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
-	options.serGridLine = options.serGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
+	options.catGridLine = options.catGridLine || (options._type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
+	options.valGridLine = options.valGridLine || (options._type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
+	options.serGridLine = options.serGridLine || (options._type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
 	correctGridLineOptions(options.catGridLine)
 	correctGridLineOptions(options.valGridLine)
 	correctGridLineOptions(options.serGridLine)
@@ -263,7 +262,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
-		: options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
+		: options._type === CHART_TYPES.PIE || options._type === CHART_TYPES.DOUGHNUT
 		? PIECHART_COLORS
 		: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
@@ -277,12 +276,12 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
 		options.dataBorder.color = 'F9F9F9'
 	//
-	if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatCode = 'General'
+	if (!options.dataLabelFormatCode && options._type === CHART_TYPES.SCATTER) options.dataLabelFormatCode = 'General'
 	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
-	if (options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
+	if (options._type === CHART_TYPES.PIE || options._type === CHART_TYPES.DOUGHNUT) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
-	if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER) options.dataLabelFormatScatter = 'custom'
+	if (!options.dataLabelFormatScatter && options._type === CHART_TYPES.SCATTER) options.dataLabelFormatScatter = 'custom'
 	//
 	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
@@ -298,7 +297,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 		rId: target.relsChart.length + 1,
 		data: tmpData,
 		opts: options,
-		type: options.type,
+		type: options._type,
 		globalId: chartId,
 		fileName: 'chart' + chartId + '.xml',
 		Target: '/ppt/charts/chart' + chartId + '.xml',

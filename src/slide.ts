@@ -128,7 +128,11 @@ export default class Slide {
 	 * }
 	 * @return {Slide} this class
 	 */
+	// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts): Slide {
+		// Set `_type` on IChartOpts as its what is used as object is passed around
+		let optionsWithType: IChartOpts = options || {}
+		optionsWithType._type = type
 		genObj.addChartDefinition(this, type, data, options)
 		return this
 	}

@@ -139,10 +139,10 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		{
 			// A: Start XML
 			let strSharedStrings = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPES.BUBBLE) {
 				strSharedStrings +=
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">'
-			} else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+			} else if (chartObject.opts._type === CHART_TYPES.SCATTER) {
 				strSharedStrings +=
 					'<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">'
 			} else {
@@ -157,7 +157,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// C: Add `name`/Series
-			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPES.BUBBLE) {
 				data.forEach((objData, idx) => {
 					if (idx === 0) strSharedStrings += '<si><t>X-Axis</t></si>'
 					else {
@@ -172,7 +172,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			}
 
 			// D: Add `labels`/Categories
-			if (chartObject.opts.type !== CHART_TYPES.BUBBLE && chartObject.opts.type !== CHART_TYPES.SCATTER) {
+			if (chartObject.opts._type !== CHART_TYPES.BUBBLE && chartObject.opts._type !== CHART_TYPES.SCATTER) {
 				data[0].labels.forEach(label => {
 					strSharedStrings += '<si><t>' + encodeXmlEntities(label) + '</t></si>'
 				})
@@ -185,13 +185,13 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		// tables/table1.xml
 		{
 			let strTableXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
-			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPES.BUBBLE) {
 				/*
 				strTableXml += '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:'+ LETTERS[data.length-1] + (data[0].values.length+1) +'" totalsRowShown="0">';
 				strTableXml += '<tableColumns count="' + (data.length) +'">';
 				data.forEach(function(obj,idx){ strTableXml += '<tableColumn id="'+ (idx+1) +'" name="'+ (idx==0 ? 'X-Values' : 'Y-Value '+idx) +'" />' });
 				*/
-			} else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+			} else if (chartObject.opts._type === CHART_TYPES.SCATTER) {
 				strTableXml +=
 					'<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
 					LETTERS[data.length - 1] +
@@ -224,9 +224,9 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 			let strSheetXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'
 			strSheetXml +=
 				'<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">'
-			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPES.BUBBLE) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />'
-			} else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+			} else if (chartObject.opts._type === CHART_TYPES.SCATTER) {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />'
 			} else {
 				strSheetXml += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />'
@@ -234,7 +234,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 
 			strSheetXml += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>'
 			strSheetXml += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />'
-			if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+			if (chartObject.opts._type === CHART_TYPES.BUBBLE) {
 				strSheetXml += '<cols>'
 				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
 				strSheetXml += '</cols>'
@@ -284,7 +284,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					}
 					strSheetXml += '</row>'
 				})
-			} else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+			} else if (chartObject.opts._type === CHART_TYPES.SCATTER) {
 				strSheetXml += '<cols>'
 				strSheetXml += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />'
 				//data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
@@ -452,7 +452,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			strXml += '<c:autoTitleDeleted val="1"/>'
 		}
 		// Add 3D view tag
-		if (rel.opts.type === CHART_TYPES.BAR3D) {
+		if (rel.opts._type === CHART_TYPES.BAR3D) {
 			strXml += '<c:view3D>'
 			strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>'
 			strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>'
@@ -481,8 +481,8 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 	}
 
 	// A: Create Chart XML -----------------------------------------------------------
-	if (Array.isArray(rel.opts.type)) {
-		rel.opts.type.forEach(type => {
+	if (Array.isArray(rel.opts._type)) {
+		rel.opts._type.forEach(type => {
 			// TODO: FIXME: theres `options` on chart rels??
 			let options = getMix(rel.opts, type.options) as IChartOpts
 			//let options: IChartOpts = { type: type.type, }
@@ -492,11 +492,11 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId, true)
 		})
 	} else {
-		strXml += makeChartType(rel.opts.type, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, false)
+		strXml += makeChartType(rel.opts._type, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, false)
 	}
 
 	// B: Axes -----------------------------------------------------------
-	if (rel.opts.type !== CHART_TYPES.PIE && rel.opts.type !== CHART_TYPES.DOUGHNUT) {
+	if (rel.opts._type !== CHART_TYPES.PIE && rel.opts._type !== CHART_TYPES.DOUGHNUT) {
 		// Param check
 		if (rel.opts.valAxes && !usesSecondaryValAxis) {
 			throw new Error('Secondary axis must be used by one of the multiple charts')
@@ -523,7 +523,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY)
 
 			// Add series axis for 3D bar
-			if (rel.opts.type === CHART_TYPES.BAR3D) {
+			if (rel.opts._type === CHART_TYPES.BAR3D) {
 				strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			}
 		}
@@ -604,7 +604,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 	strXml += '  <c:plotVisOnly val="1"/>'
 	strXml += '  <c:dispBlanksAs val="' + rel.opts.displayBlanksAs + '"/>'
-	if (rel.opts.type === CHART_TYPES.SCATTER) strXml += '<c:showDLblsOverMax val="1"/>'
+	if (rel.opts._type === CHART_TYPES.SCATTER) strXml += '<c:showDLblsOverMax val="1"/>'
 
 	strXml += '</c:chart>'
 
@@ -881,7 +881,7 @@ function makeChartType(chartType: CHART_TYPE_NAMES, data: OptsChartData[], opts:
 				strXml += '    </c:txPr>'
 				// NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
 				// Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
-				if (opts.type !== CHART_TYPES.AREA && opts.type !== CHART_TYPES.RADAR && !isMultiTypeChart)
+				if (opts._type !== CHART_TYPES.AREA && opts._type !== CHART_TYPES.RADAR && !isMultiTypeChart)
 					if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
@@ -1539,7 +1539,7 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 
 	// Build cat axis tag
 	// NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-	if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
+	if (opts._type === CHART_TYPES.SCATTER || opts._type === CHART_TYPES.BUBBLE) {
 		strXml += '<c:valAx>'
 	} else {
 		strXml += '<c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
@@ -1564,12 +1564,12 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 		})
 	}
 	// NOTE: Adding Val Axis Formatting if scatter or bubble charts
-	if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
+	if (opts._type === CHART_TYPES.SCATTER || opts._type === CHART_TYPES.BUBBLE) {
 		strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>'
 	} else {
 		strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode || 'General') + '" sourceLinked="0"/>'
 	}
-	if (opts.type === CHART_TYPES.SCATTER) {
+	if (opts._type === CHART_TYPES.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
 		strXml += '  <c:minorTickMark val="none"/>'
 		strXml += '  <c:tickLblPos val="nextTo"/>'
@@ -1623,7 +1623,7 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 
 	// Close cat axis tag
 	// NOTE: Added closing tag of val or cat axis based on chart type
-	if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
+	if (opts._type === CHART_TYPES.SCATTER || opts._type === CHART_TYPES.BUBBLE) {
 		strXml += '</c:valAx>'
 	} else {
 		strXml += '</c:' + (opts.catLabelFormatCode ? 'dateAx' : 'catAx') + '>'
@@ -1666,7 +1666,7 @@ function makeValAxis(opts: IChartOpts, valAxisId: string): string {
 		})
 	}
 	strXml += ' <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>'
-	if (opts.type === CHART_TYPES.SCATTER) {
+	if (opts._type === CHART_TYPES.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
 		strXml += '  <c:minorTickMark val="none"/>'
 		strXml += '  <c:tickLblPos val="nextTo"/>'
@@ -1699,7 +1699,7 @@ function makeValAxis(opts: IChartOpts, valAxisId: string): string {
 	strXml += ' <c:crosses val="' + crosses + '"/>'
 	strXml +=
 		' <c:crossBetween val="' +
-		(opts.type === CHART_TYPES.SCATTER || (Array.isArray(opts.type) && opts.type.filter(type => type.type === CHART_TYPES.AREA).length > 0 ? true : false)
+		(opts._type === CHART_TYPES.SCATTER || (Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPES.AREA).length > 0 ? true : false)
 			? 'midCat'
 			: 'between') +
 		'"/>'

@@ -76,11 +76,10 @@ export interface IGlowOptions {
 	color?: string
 }
 
-// TODO:
-//   export type ChartOptions = ChartBaseOptions | ChartAxesOptions | ChartBarDataLineOptions | Chart3DBarOptions;
-
+// TODO: divide chart opts into sections, then:
+// `export type ChartOptions = ChartBaseOptions | ChartAxesOptions | ChartBarDataLineOptions | Chart3DBarOptions;`
 export interface IChartOpts extends PositionOptions, OptsChartGridLine {
-	type: CHART_TYPE_NAMES | IChartMulti[]
+	_type?: CHART_TYPE_NAMES | IChartMulti[]
 	axisPos?: string
 	bar3DShape?: string
 	barDir?: string
