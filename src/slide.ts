@@ -107,7 +107,7 @@ export default class Slide {
 	/**
 	 * Generate the chart based on input data.
 	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
-	 * @param {CHART_TYPE_NAMES|IChartMulti[]} `type` - chart type
+	 * @param {CHART_TYPE_NAMES|IChartMulti[]} type - chart type
 	 * @param {object[]} data - a JSON object with follow the following format
 	 * @param {IChartOpts} options - chart options
 	 * @example
@@ -180,13 +180,13 @@ export default class Slide {
 	/**
 	 * Add shape object to Slide
 	 * @note can be recursive
-	 * @param {TableRow[]} arrTabRows - table rows
+	 * @param {TableRow[]} tableRows - table rows
 	 * @param {ITableOptions} options - table options
 	 * @return {Slide} this class
 	 */
-	addTable(arrTabRows: TableRow[], options?: ITableOptions): Slide {
+	addTable(tableRows: TableRow[], options?: ITableOptions): Slide {
 		// FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, arrTabRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
+		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}
 
@@ -195,7 +195,6 @@ export default class Slide {
 	 * @param {string|IText[]} text - text string or complex object
 	 * @param {ITextOpts} options - text options
 	 * @return {Slide} this class
-	 * @since: 1.0.0
 	 */
 	addText(text: string | IText[], options?: ITextOpts): Slide {
 		genObj.addTextDefinition(this, text, options, false)
