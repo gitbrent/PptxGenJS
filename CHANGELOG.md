@@ -17,12 +17,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.1.0] - 2020-01-21
 ### Added
-- Added `valAxisDispUnits` [\#606](https://github.com/gitbrent/PptxGenJS/pull/606) ([AmrutPatil](https://github.com/AmrutPatil))
+- Added `valAxisDisplayUnit` [\#606](https://github.com/gitbrent/PptxGenJS/pull/606) ([AmrutPatil](https://github.com/AmrutPatil))
 - Added `dataTableFontSize` chart option [\#622](https://github.com/gitbrent/PptxGenJS/pull/622) ([MehdiAroui](https://github.com/MehdiAroui))
-- Added text glow option [\#630](https://github.com/gitbrent/PptxGenJS/pull/630) ([kevinresol](https://github.com/kevinresol))
-- Ability to rotate image [\#639](https://github.com/gitbrent/PptxGenJS/pull/639) ([alabaki](https://github.com/alabaki))
+- Added text `glow` option [\#630](https://github.com/gitbrent/PptxGenJS/pull/630) ([kevinresol](https://github.com/kevinresol))
+- Ability to `rotate` image [\#639](https://github.com/gitbrent/PptxGenJS/pull/639) ([alabaki](https://github.com/alabaki))
 - Include types in package.json files [\#641](https://github.com/gitbrent/PptxGenJS/pull/641) ([cronin4392](https://github.com/cronin4392))
-- Added new chart option `showLeaderLines` [\#642](https://github.com/gitbrent/PptxGenJS/pull/642) ([cronin4392](https://github.com/cronin4392))
+- Added `showLeaderLines` chart option [\#642](https://github.com/gitbrent/PptxGenJS/pull/642) ([cronin4392](https://github.com/cronin4392))
 ### Changed
 - Fixed: Empty color negative values on barchart [\#285](https://github.com/gitbrent/PptxGenJS/issue/285) ([andrei-cs](https://github.com/andrei-cs)) ([Slidemagic](https://github.com/Slidemagic))
 - Fixed: Add missing margin type from ITextOpts [\#643](https://github.com/gitbrent/PptxGenJS/pull/643) ([cronin4392](https://github.com/cronin4392))
