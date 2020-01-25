@@ -2,7 +2,7 @@
  * PptxGenJS: Slide Class
  */
 
-import { CHART_TYPE_NAMES } from './core-enums'
+import { CHART_TYPE_NAMES, Shapes } from './core-enums'
 import {
 	IChartMulti,
 	IChartOpts,
@@ -15,7 +15,6 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	ISlideObject,
-	IShape,
 	IShapeOptions,
 	ITableOptions,
 	IText,
@@ -172,12 +171,15 @@ export default class Slide {
 
 	/**
 	 * Add shape object to Slide
-	 * @param {IShape} shape - shape object
+	 * @param {Shapes} shape - shape object
 	 * @param {IShapeOptions} options - shape options
 	 * @return {Slide} this class
 	 */
-	addShape(shape: IShape, options?: IShapeOptions): Slide {
-		genObj.addShapeDefinition(this, shape, options)
+	addShape(shape: Shapes, options?: IShapeOptions): Slide {
+		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
+		// But React/TypeScript users are passing the Shapes enum, which is a simple string
+		let shapeName = (typeof shape === 'object' && shape['name'] ? shape['name'] : shape)
+		genObj.addShapeDefinition(this, shapeName, options)
 		return this
 	}
 

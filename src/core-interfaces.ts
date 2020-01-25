@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES } from './core-enums'
+import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES, Shapes } from './core-enums'
 
 // Common
 // ======
@@ -232,11 +232,6 @@ export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
 	type?: MediaType
 }
 
-export interface IShape {
-	displayName: string
-	name: string
-	avLst: { [key: string]: number }
-}
 export interface IShapeOptions extends PositionOptions {
 	align?: HAlign
 	fill?: ShapeFill
@@ -382,7 +377,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	rotate?: number // (degree * 60,000)
 	rtlMode?: boolean
 	shadow?: IShadowOptions
-	shape?: IShape
+	shape?: Shapes
 	shrinkText?: boolean
 	strike?: boolean
 	subscript?: boolean
@@ -513,7 +508,7 @@ export interface ISlideObject {
 	media?: string
 	mtype?: MediaType
 	mediaRid?: number
-	shape?: IShape
+	shape?: Shapes
 }
 
 export interface ISlideLayout {

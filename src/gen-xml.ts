@@ -16,7 +16,6 @@ import {
 	DEF_PRES_LAYOUT_NAME,
 	DEF_TEXT_GLOW,
 } from './core-enums'
-import { Shapes } from './core-shapes'
 import {
 	ILayout,
 	IShadowOptions,
@@ -113,7 +112,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			cy = 0
 		let placeholderObj: ISlideObject
 		let locationAttr = ''
-		let shapeType = null
 
 		if ((slide as ISlide).slideLayout !== undefined && (slide as ISlide).slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
 			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => object.options.placeholder === slideItemObj.options.placeholder)[0]
@@ -134,8 +132,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 			if (placeholderObj.options.w || placeholderObj.options.w === 0) cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide.presLayout)
 			if (placeholderObj.options.h || placeholderObj.options.h === 0) cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout)
 		}
-		//
-		if (slideItemObj.shape) shapeType = getShapeInfo(slideItemObj.shape)
 		//
 		if (slideItemObj.options.flipH) locationAttr += ' flipH="1"'
 		if (slideItemObj.options.flipV) locationAttr += ' flipV="1"'
@@ -448,8 +444,6 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 					slideItemObj.options.bodyProp.tIns = Math.round(slideItemObj.options.margin * ONEPT)
 				}
 
-				if (shapeType === null) shapeType = getShapeInfo(null)
-
 				// A: Start SHAPE =======================================================
 				strSlideXml += '<p:sp>'
 
@@ -465,7 +459,7 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 				strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>'
 				strSlideXml +=
 					'<a:prstGeom prst="' +
-					shapeType.name +
+					slideItemObj.shape +
 					'"><a:avLst>' +
 					(slideItemObj.options.rectRadius
 						? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
@@ -1833,7 +1827,7 @@ export function correctShadowOptions(ShadowOptions: IShadowOptions) {
 		ShadowOptions.opacity = Number(ShadowOptions.opacity)
 	}
 }
-
+/*
 export function getShapeInfo(shapeName) {
 	if (!shapeName) return Shapes.RECTANGLE
 
@@ -1846,3 +1840,4 @@ export function getShapeInfo(shapeName) {
 
 	return Shapes.RECTANGLE
 }
+*/

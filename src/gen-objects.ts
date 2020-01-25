@@ -19,6 +19,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
+    Shapes,
 } from './core-enums'
 import {
 	IChartMulti,
@@ -26,7 +27,6 @@ import {
 	IImageOpts,
 	ILayout,
 	IMediaOpts,
-	IShape,
 	IShapeOptions,
 	ISlide,
 	ISlideLayout,
@@ -65,8 +65,8 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 			let tgt = target as ISlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, BASE_SHAPES.LINE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, BASE_SHAPES.RECTANGLE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, Shapes.LINE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, Shapes.RECTANGLE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, object[key].text, object[key].options, false)
 			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
@@ -574,25 +574,25 @@ export function addNotesDefinition(target: ISlide, notes: string) {
  * @param {IShapeOptions} opt
  * @param {ISlide} target slide object that the shape should be added to
  */
-export function addShapeDefinition(target: ISlide, shape: IShape, opt: IShapeOptions) {
+export function addShapeDefinition(target: ISlide, shapeName: Shapes, opt: IShapeOptions) {
 	let options = typeof opt === 'object' ? opt : {}
-	let newObject = {
+	let newObject:ISlideObject = {
 		type: SLIDE_OBJECT_TYPES.text,
-		shape: shape,
+		shape: shapeName || Shapes.RECTANGLE,
 		options: options,
 		text: null,
 	}
 
 	// 1: Reality check
-	if (!shape || typeof shape !== 'object') throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`')
+	if (!shapeName) throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`')
 
 	// 2: Set options defaults
 	options.x = options.x || (options.x === 0 ? 0 : 1)
 	options.y = options.y || (options.y === 0 ? 0 : 1)
 	options.w = options.w || (options.w === 0 ? 0 : 1)
 	options.h = options.h || (options.h === 0 ? 0 : 1)
-	options.line = options.line || (shape.name === 'line' ? '333333' : null)
-	options.lineSize = options.lineSize || (shape.name === 'line' ? 1 : null)
+	options.line = options.line || (shapeName === Shapes.LINE ? '333333' : null)
+	options.lineSize = options.lineSize || (shapeName === Shapes.LINE ? 1 : null)
 	if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
 
 	// 3: Add object to slide
@@ -827,7 +827,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
 		type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
 		options: opt,
-		shape: opt.shape,
+		shape: opt.shape || Shapes.RECTANGLE,
 	}
 
 	// STEP 1: Set some options
@@ -838,7 +838,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		}
 
 		// B
-		if (opt.shape && opt.shape.name === 'line') {
+		if (opt.shape === Shapes.LINE) {
 			opt.line = opt.line || '333333'
 			opt.lineSize = opt.lineSize || 1
 		}
