@@ -138,6 +138,9 @@ PptxGenJS PowerPoint presentations are created via JavaScript by following 4 bas
 4. Save the Presentation
 
 ```javascript
+
+let PptxGenJS = require("pptxgenjs");
+
 let pptx = new PptxGenJS();
 
 let slide = pptx.addSlide();
