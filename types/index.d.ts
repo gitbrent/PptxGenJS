@@ -595,7 +595,7 @@ declare namespace PptxGenJS {
 		color?: string
 	}
 	export interface IChartOpts extends PositionOptions, OptsChartGridLine {
-		type: CHART_TYPE_NAMES | IChartMulti[]
+		_type?: CHART_TYPE_NAMES | IChartMulti[]
 		axisPos?: string
 		bar3DShape?: string
 		barDir?: string
