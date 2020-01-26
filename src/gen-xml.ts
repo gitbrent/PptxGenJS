@@ -1827,17 +1827,3 @@ export function correctShadowOptions(ShadowOptions: IShadowOptions) {
 		ShadowOptions.opacity = Number(ShadowOptions.opacity)
 	}
 }
-/*
-export function getShapeInfo(shapeName) {
-	if (!shapeName) return Shapes.RECTANGLE
-
-	if (typeof shapeName === 'object' && shapeName.name && shapeName.displayName && shapeName.avLst) return shapeName
-
-	if (Shapes[shapeName]) return Shapes[shapeName]
-
-	let objShape = Object.keys(Shapes).filter((key: string) => Shapes[key].name === shapeName || Shapes[key].displayName)[0]
-	if (typeof objShape !== 'undefined' && objShape !== null) return objShape
-
-	return Shapes.RECTANGLE
-}
-*/
