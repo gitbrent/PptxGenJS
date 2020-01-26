@@ -4,9 +4,8 @@
 
 import {
 	BARCHART_COLORS,
-	BASE_SHAPES,
-	CHART_TYPE_NAMES,
-	CHART_TYPES,
+	CHART_NAME,
+	CHART_TYPE,
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
@@ -19,7 +18,8 @@ import {
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
-    Shapes,
+	SHAPE_NAME,
+	SHAPE_TYPE,
 } from './core-enums'
 import {
 	IChartMulti,
@@ -65,8 +65,8 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 			let tgt = target as ISlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, Shapes.LINE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, Shapes.RECTANGLE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, object[key].text, object[key].options, false)
 			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
@@ -90,7 +90,6 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 					</p:cNvPr>
 					<p:cNvSpPr>
 				*/
-
 			}
 		})
 	}
@@ -105,7 +104,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
  * Generate the chart based on input data.
  * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
  *
- * @param {CHART_TYPE_NAMES | IChartMulti[]} `type` should belong to: 'column', 'pie'
+ * @param {CHART_NAME | IChartMulti[]} `type` should belong to: 'column', 'pie'
  * @param {[]} `data` a JSON object with follow the following format
  * @param {IChartOpts} `opt` chart options
  * @param {ISlide} `target` slide object that the chart will be added to
@@ -126,7 +125,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
  *	 ]
  *	}
  */
-export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | IChartMulti[], data: [], opt: IChartOpts): object {
+export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMulti[], data: [], opt: IChartOpts): object {
 	function correctGridLineOptions(glOpts: OptsChartGridLine) {
 		if (!glOpts || glOpts.style === 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
@@ -171,7 +170,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {}
 
 	// STEP 1: TODO: check for reqd fields, correct type, etc
-	// `type` exists in CHART_TYPES
+	// `type` exists in CHART_TYPE
 	// Array.isArray(data)
 	/*
 		if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
@@ -197,7 +196,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	if (['bar', 'col'].indexOf(options.barDir || '') < 0) options.barDir = 'col'
 	// IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
 	if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-		options.dataLabelPosition = options._type === CHART_TYPES.PIE || options._type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr'
+		options.dataLabelPosition = options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT ? 'bestFit' : 'ctr'
 	options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false
 	if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r'
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
@@ -227,9 +226,9 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	}
 
 	// Set gridline defaults
-	options.catGridLine = options.catGridLine || (options._type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
-	options.valGridLine = options.valGridLine || (options._type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
-	options.serGridLine = options.serGridLine || (options._type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
+	options.catGridLine = options.catGridLine || (options._type === CHART_TYPE.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
+	options.valGridLine = options.valGridLine || (options._type === CHART_TYPE.SCATTER ? { color: 'D9D9D9', size: 1 } : {})
+	options.serGridLine = options.serGridLine || (options._type === CHART_TYPE.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' })
 	correctGridLineOptions(options.catGridLine)
 	correctGridLineOptions(options.valGridLine)
 	correctGridLineOptions(options.serGridLine)
@@ -262,7 +261,7 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
-		: options._type === CHART_TYPES.PIE || options._type === CHART_TYPES.DOUGHNUT
+		: options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
 		? PIECHART_COLORS
 		: BARCHART_COLORS
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
@@ -276,12 +275,12 @@ export function addChartDefinition(target: ISlide, type: CHART_TYPE_NAMES | ICha
 	if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
 		options.dataBorder.color = 'F9F9F9'
 	//
-	if (!options.dataLabelFormatCode && options._type === CHART_TYPES.SCATTER) options.dataLabelFormatCode = 'General'
+	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
 	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
-	if (options._type === CHART_TYPES.PIE || options._type === CHART_TYPES.DOUGHNUT) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
+	if (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
-	if (!options.dataLabelFormatScatter && options._type === CHART_TYPES.SCATTER) options.dataLabelFormatScatter = 'custom'
+	if (!options.dataLabelFormatScatter && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatScatter = 'custom'
 	//
 	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
@@ -574,11 +573,11 @@ export function addNotesDefinition(target: ISlide, notes: string) {
  * @param {IShapeOptions} opt
  * @param {ISlide} target slide object that the shape should be added to
  */
-export function addShapeDefinition(target: ISlide, shapeName: Shapes, opt: IShapeOptions) {
+export function addShapeDefinition(target: ISlide, shapeName: SHAPE_NAME, opt: IShapeOptions) {
 	let options = typeof opt === 'object' ? opt : {}
-	let newObject:ISlideObject = {
+	let newObject: ISlideObject = {
 		type: SLIDE_OBJECT_TYPES.text,
-		shape: shapeName || Shapes.RECTANGLE,
+		shape: shapeName || SHAPE_TYPE.RECTANGLE,
 		options: options,
 		text: null,
 	}
@@ -591,8 +590,8 @@ export function addShapeDefinition(target: ISlide, shapeName: Shapes, opt: IShap
 	options.y = options.y || (options.y === 0 ? 0 : 1)
 	options.w = options.w || (options.w === 0 ? 0 : 1)
 	options.h = options.h || (options.h === 0 ? 0 : 1)
-	options.line = options.line || (shapeName === Shapes.LINE ? '333333' : null)
-	options.lineSize = options.lineSize || (shapeName === Shapes.LINE ? 1 : null)
+	options.line = options.line || (shapeName === SHAPE_TYPE.LINE ? '333333' : null)
+	options.lineSize = options.lineSize || (shapeName === SHAPE_TYPE.LINE ? 1 : null)
 	if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
 
 	// 3: Add object to slide
@@ -827,7 +826,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
 		type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
 		options: opt,
-		shape: opt.shape || Shapes.RECTANGLE,
+		shape: opt.shape || SHAPE_TYPE.RECTANGLE,
 	}
 
 	// STEP 1: Set some options
@@ -838,7 +837,7 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 		}
 
 		// B
-		if (opt.shape === Shapes.LINE) {
+		if (opt.shape === SHAPE_TYPE.LINE) {
 			opt.line = opt.line || '333333'
 			opt.lineSize = opt.lineSize || 1
 		}

@@ -102,11 +102,10 @@ declare class PptxGenJS {
 declare namespace PptxGenJS {
 	// JSZIP
 	export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
-	/**
-	 * `core-interfaces.d.ts`
-	 * import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES, Shapes } from './core-enums'
-	 */
-	export type CHART_TYPE_NAMES = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
+
+	// `core-interfaces.d.ts`
+	// import { CHART_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES, SHAPE_NAME } from './core-enums'
+	export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
 	export enum SLIDE_OBJECT_TYPES {
 		'chart' = 'chart',
 		'hyperlink' = 'hyperlink',
@@ -138,191 +137,190 @@ declare namespace PptxGenJS {
 		'table' = 'tbl',
 		'media' = 'media'
 	}
-	export enum Shapes {
-		ACTION_BUTTON_BACK_OR_PREVIOUS = 'actionButtonBackPrevious',
-		ACTION_BUTTON_BEGINNING = 'actionButtonBeginning',
-		ACTION_BUTTON_CUSTOM = 'actionButtonBlank',
-		ACTION_BUTTON_DOCUMENT = 'actionButtonDocument',
-		ACTION_BUTTON_END = 'actionButtonEnd',
-		ACTION_BUTTON_FORWARD_OR_NEXT = 'actionButtonForwardNext',
-		ACTION_BUTTON_HELP = 'actionButtonHelp',
-		ACTION_BUTTON_HOME = 'actionButtonHome',
-		ACTION_BUTTON_INFORMATION = 'actionButtonInformation',
-		ACTION_BUTTON_MOVIE = 'actionButtonMovie',
-		ACTION_BUTTON_RETURN = 'actionButtonReturn',
-		ACTION_BUTTON_SOUND = 'actionButtonSound',
-		ARC = 'arc',
-		BALLOON = 'wedgeRoundRectCallout',
-		BENT_ARROW = 'bentArrow',
-		BENT_UP_ARROW = 'bentUpArrow',
-		BEVEL = 'bevel',
-		BLOCK_ARC = 'blockArc',
-		CAN = 'can',
-		CHART_PLUS = 'chartPlus',
-		CHART_STAR = 'chartStar',
-		CHART_X = 'chartX',
-		CHEVRON = 'chevron',
-		CHORD = 'chord',
-		CIRCULAR_ARROW = 'circularArrow',
-		CLOUD = 'cloud',
-		CLOUD_CALLOUT = 'cloudCallout',
-		CORNER = 'corner',
-		CORNER_TABS = 'cornerTabs',
-		CROSS = 'plus',
-		CUBE = 'cube',
-		CURVED_DOWN_ARROW = 'curvedDownArrow',
-		CURVED_DOWN_RIBBON = 'ellipseRibbon',
-		CURVED_LEFT_ARROW = 'curvedLeftArrow',
-		CURVED_RIGHT_ARROW = 'curvedRightArrow',
-		CURVED_UP_ARROW = 'curvedUpArrow',
-		CURVED_UP_RIBBON = 'ellipseRibbon2',
-		DECAGON = 'decagon',
-		DIAGONAL_STRIPE = 'diagStripe',
-		DIAMOND = 'diamond',
-		DODECAGON = 'dodecagon',
-		DONUT = 'donut',
-		DOUBLE_BRACE = 'bracePair',
-		DOUBLE_BRACKET = 'bracketPair',
-		DOUBLE_WAVE = 'doubleWave',
-		DOWN_ARROW = 'downArrow',
-		DOWN_ARROW_CALLOUT = 'downArrowCallout',
-		DOWN_RIBBON = 'ribbon',
-		EXPLOSION1 = 'irregularSeal1',
-		EXPLOSION2 = 'irregularSeal2',
-		FLOWCHART_ALTERNATE_PROCESS = 'flowChartAlternateProcess',
-		FLOWCHART_CARD = 'flowChartPunchedCard',
-		FLOWCHART_COLLATE = 'flowChartCollate',
-		FLOWCHART_CONNECTOR = 'flowChartConnector',
-		FLOWCHART_DATA = 'flowChartInputOutput',
-		FLOWCHART_DECISION = 'flowChartDecision',
-		FLOWCHART_DELAY = 'flowChartDelay',
-		FLOWCHART_DIRECT_ACCESS_STORAGE = 'flowChartMagneticDrum',
-		FLOWCHART_DISPLAY = 'flowChartDisplay',
-		FLOWCHART_DOCUMENT = 'flowChartDocument',
-		FLOWCHART_EXTRACT = 'flowChartExtract',
-		FLOWCHART_INTERNAL_STORAGE = 'flowChartInternalStorage',
-		FLOWCHART_MAGNETIC_DISK = 'flowChartMagneticDisk',
-		FLOWCHART_MANUAL_INPUT = 'flowChartManualInput',
-		FLOWCHART_MANUAL_OPERATION = 'flowChartManualOperation',
-		FLOWCHART_MERGE = 'flowChartMerge',
-		FLOWCHART_MULTIDOCUMENT = 'flowChartMultidocument',
-		FLOWCHART_OFFLINE_STORAGE = 'flowChartOfflineStorage',
-		FLOWCHART_OFFPAGE_CONNECTOR = 'flowChartOffpageConnector',
-		FLOWCHART_OR = 'flowChartOr',
-		FLOWCHART_PREDEFINED_PROCESS = 'flowChartPredefinedProcess',
-		FLOWCHART_PREPARATION = 'flowChartPreparation',
-		FLOWCHART_PROCESS = 'flowChartProcess',
-		FLOWCHART_PUNCHED_TAPE = 'flowChartPunchedTape',
-		FLOWCHART_SEQUENTIAL_ACCESS_STORAGE = 'flowChartMagneticTape',
-		FLOWCHART_SORT = 'flowChartSort',
-		FLOWCHART_STORED_DATA = 'flowChartOnlineStorage',
-		FLOWCHART_SUMMING_JUNCTION = 'flowChartSummingJunction',
-		FLOWCHART_TERMINATOR = 'flowChartTerminator',
-		FOLDED_CORNER = 'folderCorner',
-		FRAME = 'frame',
-		FUNNEL = 'funnel',
-		GEAR_6 = 'gear6',
-		GEAR_9 = 'gear9',
-		HALF_FRAME = 'halfFrame',
-		HEART = 'heart',
-		HEPTAGON = 'heptagon',
-		HEXAGON = 'hexagon',
-		HORIZONTAL_SCROLL = 'horizontalScroll',
-		ISOSCELES_TRIANGLE = 'triangle',
-		LEFT_ARROW = 'leftArrow',
-		LEFT_ARROW_CALLOUT = 'leftArrowCallout',
-		LEFT_BRACE = 'leftBrace',
-		LEFT_BRACKET = 'leftBracket',
-		LEFT_CIRCULAR_ARROW = 'leftCircularArrow',
-		LEFT_RIGHT_ARROW = 'leftRightArrow',
-		LEFT_RIGHT_ARROW_CALLOUT = 'leftRightArrowCallout',
-		LEFT_RIGHT_CIRCULAR_ARROW = 'leftRightCircularArrow',
-		LEFT_RIGHT_RIBBON = 'leftRightRibbon',
-		LEFT_RIGHT_UP_ARROW = 'leftRightUpArrow',
-		LEFT_UP_ARROW = 'leftUpArrow',
-		LIGHTNING_BOLT = 'lightningBolt',
-		LINE_CALLOUT_1 = 'borderCallout1',
-		LINE_CALLOUT_1_ACCENT_BAR = 'accentCallout1',
-		LINE_CALLOUT_1_BORDER_AND_ACCENT_BAR = 'accentBorderCallout1',
-		LINE_CALLOUT_1_NO_BORDER = 'callout1',
-		LINE_CALLOUT_2 = 'borderCallout2',
-		LINE_CALLOUT_2_ACCENT_BAR = 'accentCallout2',
-		LINE_CALLOUT_2_BORDER_AND_ACCENT_BAR = 'accentBorderCallout2',
-		LINE_CALLOUT_2_NO_BORDER = 'callout2',
-		LINE_CALLOUT_3 = 'borderCallout3',
-		LINE_CALLOUT_3_ACCENT_BAR = 'accentCallout3',
-		LINE_CALLOUT_3_BORDER_AND_ACCENT_BAR = 'accentBorderCallout3',
-		LINE_CALLOUT_3_NO_BORDER = 'callout3',
-		LINE_CALLOUT_4 = 'borderCallout3',
-		LINE_CALLOUT_4_ACCENT_BAR = 'accentCallout3',
-		LINE_CALLOUT_4_BORDER_AND_ACCENT_BAR = 'accentBorderCallout3',
-		LINE_CALLOUT_4_NO_BORDER = 'callout3',
-		LINE = 'line',
-		LINE_INVERSE = 'lineInv',
-		MATH_DIVIDE = 'mathDivide',
-		MATH_EQUAL = 'mathEqual',
-		MATH_MINUS = 'mathMinus',
-		MATH_MULTIPLY = 'mathMultiply',
-		MATH_NOT_EQUAL = 'mathNotEqual',
-		MATH_PLUS = 'mathPlus',
-		MOON = 'moon',
-		NON_ISOSCELES_TRAPEZOID = 'nonIsoscelesTrapezoid',
-		NOTCHED_RIGHT_ARROW = 'notchedRightArrow',
-		NO_SYMBOL = 'noSmoking',
-		OCTAGON = 'octagon',
-		OVAL = 'ellipse',
-		OVAL_CALLOUT = 'wedgeEllipseCallout',
-		PARALLELOGRAM = 'parallelogram',
-		PENTAGON = 'homePlate',
-		PIE = 'pie',
-		PIE_WEDGE = 'pieWedge',
-		PLAQUE = 'plaque',
-		PLAQUE_TABS = 'plaqueTabs',
-		QUAD_ARROW = 'quadArrow',
-		QUAD_ARROW_CALLOUT = 'quadArrowCallout',
-		RECTANGLE = 'rect',
-		RECTANGULAR_CALLOUT = 'wedgeRectCallout',
-		REGULAR_PENTAGON = 'pentagon',
-		RIGHT_ARROW = 'rightArrow',
-		RIGHT_ARROW_CALLOUT = 'rightArrowCallout',
-		RIGHT_BRACE = 'rightBrace',
-		RIGHT_BRACKET = 'rightBracket',
-		RIGHT_TRIANGLE = 'rtTriangle',
-		ROUNDED_RECTANGLE = 'roundRect',
-		ROUNDED_RECTANGULAR_CALLOUT = 'wedgeRoundRectCallout',
-		ROUND_1_RECTANGLE = 'round1Rect',
-		ROUND_2_DIAG_RECTANGLE = 'round2DiagRect',
-		ROUND_2_SAME_RECTANGLE = 'round2SameRect',
-		SMILEY_FACE = 'smileyFace',
-		SNIP_1_RECTANGLE = 'snip1Rect',
-		SNIP_2_DIAG_RECTANGLE = 'snip2DiagRect',
-		SNIP_2_SAME_RECTANGLE = 'snip2SameRect',
-		SNIP_ROUND_RECTANGLE = 'snipRoundRect',
-		SQUARE_TABS = 'squareTabs',
-		STAR_10_POINT = 'star10',
-		STAR_12_POINT = 'star12',
-		STAR_16_POINT = 'star16',
-		STAR_24_POINT = 'star24',
-		STAR_32_POINT = 'star32',
-		STAR_4_POINT = 'star4',
-		STAR_5_POINT = 'star5',
-		STAR_6_POINT = 'star6',
-		STAR_7_POINT = 'star7',
-		STAR_8_POINT = 'star8',
-		STRIPED_RIGHT_ARROW = 'stripedRightArrow',
-		SUN = 'sun',
-		SWOOSH_ARROW = 'swooshArrow',
-		TEAR = 'teardrop',
-		TRAPEZOID = 'trapezoid',
-		UP_ARROW = 'upArrow',
-		UP_ARROW_CALLOUT = 'upArrowCallout',
-		UP_DOWN_ARROW = 'upDownArrow',
-		UP_DOWN_ARROW_CALLOUT = 'upDownArrowCallout',
-		UP_RIBBON = 'ribbon2',
-		U_TURN_ARROW = 'uturnArrow',
-		VERTICAL_SCROLL = 'verticalScroll',
-		WAVE = 'wave',
-	}
+	export type SHAPE_NAME =
+		| 'actionButtonBackPrevious'
+		| 'actionButtonBeginning'
+		| 'actionButtonBlank'
+		| 'actionButtonDocument'
+		| 'actionButtonEnd'
+		| 'actionButtonForwardNext'
+		| 'actionButtonHelp'
+		| 'actionButtonHome'
+		| 'actionButtonInformation'
+		| 'actionButtonMovie'
+		| 'actionButtonReturn'
+		| 'actionButtonSound'
+		| 'arc'
+		| 'wedgeRoundRectCallout'
+		| 'bentArrow'
+		| 'bentUpArrow'
+		| 'bevel'
+		| 'blockArc'
+		| 'can'
+		| 'chartPlus'
+		| 'chartStar'
+		| 'chartX'
+		| 'chevron'
+		| 'chord'
+		| 'circularArrow'
+		| 'cloud'
+		| 'cloudCallout'
+		| 'corner'
+		| 'cornerTabs'
+		| 'plus'
+		| 'cube'
+		| 'curvedDownArrow'
+		| 'ellipseRibbon'
+		| 'curvedLeftArrow'
+		| 'curvedRightArrow'
+		| 'curvedUpArrow'
+		| 'ellipseRibbon2'
+		| 'decagon'
+		| 'diagStripe'
+		| 'diamond'
+		| 'dodecagon'
+		| 'donut'
+		| 'bracePair'
+		| 'bracketPair'
+		| 'doubleWave'
+		| 'downArrow'
+		| 'downArrowCallout'
+		| 'ribbon'
+		| 'irregularSeal1'
+		| 'irregularSeal2'
+		| 'flowChartAlternateProcess'
+		| 'flowChartPunchedCard'
+		| 'flowChartCollate'
+		| 'flowChartConnector'
+		| 'flowChartInputOutput'
+		| 'flowChartDecision'
+		| 'flowChartDelay'
+		| 'flowChartMagneticDrum'
+		| 'flowChartDisplay'
+		| 'flowChartDocument'
+		| 'flowChartExtract'
+		| 'flowChartInternalStorage'
+		| 'flowChartMagneticDisk'
+		| 'flowChartManualInput'
+		| 'flowChartManualOperation'
+		| 'flowChartMerge'
+		| 'flowChartMultidocument'
+		| 'flowChartOfflineStorage'
+		| 'flowChartOffpageConnector'
+		| 'flowChartOr'
+		| 'flowChartPredefinedProcess'
+		| 'flowChartPreparation'
+		| 'flowChartProcess'
+		| 'flowChartPunchedTape'
+		| 'flowChartMagneticTape'
+		| 'flowChartSort'
+		| 'flowChartOnlineStorage'
+		| 'flowChartSummingJunction'
+		| 'flowChartTerminator'
+		| 'folderCorner'
+		| 'frame'
+		| 'funnel'
+		| 'gear6'
+		| 'gear9'
+		| 'halfFrame'
+		| 'heart'
+		| 'heptagon'
+		| 'hexagon'
+		| 'horizontalScroll'
+		| 'triangle'
+		| 'leftArrow'
+		| 'leftArrowCallout'
+		| 'leftBrace'
+		| 'leftBracket'
+		| 'leftCircularArrow'
+		| 'leftRightArrow'
+		| 'leftRightArrowCallout'
+		| 'leftRightCircularArrow'
+		| 'leftRightRibbon'
+		| 'leftRightUpArrow'
+		| 'leftUpArrow'
+		| 'lightningBolt'
+		| 'borderCallout1'
+		| 'accentCallout1'
+		| 'accentBorderCallout1'
+		| 'callout1'
+		| 'borderCallout2'
+		| 'accentCallout2'
+		| 'accentBorderCallout2'
+		| 'callout2'
+		| 'borderCallout3'
+		| 'accentCallout3'
+		| 'accentBorderCallout3'
+		| 'callout3'
+		| 'borderCallout3'
+		| 'accentCallout3'
+		| 'accentBorderCallout3'
+		| 'callout3'
+		| 'line'
+		| 'lineInv'
+		| 'mathDivide'
+		| 'mathEqual'
+		| 'mathMinus'
+		| 'mathMultiply'
+		| 'mathNotEqual'
+		| 'mathPlus'
+		| 'moon'
+		| 'nonIsoscelesTrapezoid'
+		| 'notchedRightArrow'
+		| 'noSmoking'
+		| 'octagon'
+		| 'ellipse'
+		| 'wedgeEllipseCallout'
+		| 'parallelogram'
+		| 'homePlate'
+		| 'pie'
+		| 'pieWedge'
+		| 'plaque'
+		| 'plaqueTabs'
+		| 'quadArrow'
+		| 'quadArrowCallout'
+		| 'rect'
+		| 'wedgeRectCallout'
+		| 'pentagon'
+		| 'rightArrow'
+		| 'rightArrowCallout'
+		| 'rightBrace'
+		| 'rightBracket'
+		| 'rtTriangle'
+		| 'roundRect'
+		| 'wedgeRoundRectCallout'
+		| 'round1Rect'
+		| 'round2DiagRect'
+		| 'round2SameRect'
+		| 'smileyFace'
+		| 'snip1Rect'
+		| 'snip2DiagRect'
+		| 'snip2SameRect'
+		| 'snipRoundRect'
+		| 'squareTabs'
+		| 'star10'
+		| 'star12'
+		| 'star16'
+		| 'star24'
+		| 'star32'
+		| 'star4'
+		| 'star5'
+		| 'star6'
+		| 'star7'
+		| 'star8'
+		| 'stripedRightArrow'
+		| 'sun'
+		| 'swooshArrow'
+		| 'teardrop'
+		| 'trapezoid'
+		| 'upArrow'
+		| 'upArrowCallout'
+		| 'upDownArrow'
+		| 'upDownArrowCallout'
+		| 'ribbon2'
+		| 'uturnArrow'
+		| 'verticalScroll'
+		| 'wave'
 	// ======
 
 	// charts and shapes for `pptxgen.charts.` `pptxgen.shapes.`
@@ -335,7 +333,7 @@ declare namespace PptxGenJS {
 		'LINE' = 'line',
 		'PIE' = 'pie',
 		'RADAR' = 'radar',
-		'SCATTER' = 'scatter',
+		'SCATTER' = 'scatter'
 	}
 	export enum shapes {
 		ACTION_BUTTON_BACK_OR_PREVIOUS = 'actionButtonBackPrevious',
@@ -520,7 +518,7 @@ declare namespace PptxGenJS {
 		UP_RIBBON = 'ribbon2',
 		U_TURN_ARROW = 'uturnArrow',
 		VERTICAL_SCROLL = 'verticalScroll',
-		WAVE = 'wave',
+		WAVE = 'wave'
 	}
 
 	/**
@@ -595,7 +593,7 @@ declare namespace PptxGenJS {
 		color?: string
 	}
 	export interface IChartOpts extends PositionOptions, OptsChartGridLine {
-		_type?: CHART_TYPE_NAMES | IChartMulti[]
+		_type?: CHART_NAME | IChartMulti[]
 		axisPos?: string
 		bar3DShape?: string
 		barDir?: string
@@ -783,7 +781,7 @@ declare namespace PptxGenJS {
 		}
 	}
 	export interface IChartMulti {
-		type: CHART_TYPE_NAMES
+		type: CHART_NAME
 		data: []
 		options: {}
 	}
@@ -922,7 +920,7 @@ declare namespace PptxGenJS {
 		rotate?: number
 		rtlMode?: boolean
 		shadow?: IShadowOptions
-		shape?: Shapes
+		shape?: SHAPE_NAME
 		shrinkText?: boolean
 		strike?: boolean
 		subscript?: boolean
@@ -995,7 +993,7 @@ declare namespace PptxGenJS {
 		h: Coord
 	}
 	export interface ISlideRelChart extends OptsChartData {
-		type: CHART_TYPE_NAMES | IChartMulti[]
+		type: CHART_NAME | IChartMulti[]
 		opts: IChartOpts
 		data: OptsChartData[]
 		rId: number
@@ -1061,7 +1059,7 @@ declare namespace PptxGenJS {
 		media?: string
 		mtype?: MediaType
 		mediaRid?: number
-		shape?: Shapes
+		shape?: SHAPE_NAME
 	}
 	export interface ISlideLayout {
 		presLayout: ILayout
@@ -1156,7 +1154,7 @@ declare namespace PptxGenJS {
 		 * }
 		 * @return {Slide} this class
 		 */
-		addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts): Slide
+		addChart(type: CHART_NAME | IChartMulti[], data: [], options?: IChartOpts): Slide
 		/**
 		 * Add Image object
 		 * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
@@ -1180,11 +1178,11 @@ declare namespace PptxGenJS {
 		addNotes(notes: string): Slide
 		/**
 		 * Add shape object to Slide
-		 * @param {Shapes} shape - shape object
+		 * @param {SHAPE_NAME} shape - shape object
 		 * @param {IShapeOptions} options - shape options
 		 * @return {Slide} this class
 		 */
-		addShape(shape: Shapes, options?: IShapeOptions): Slide
+		addShape(shape: SHAPE_NAME, options?: IShapeOptions): Slide
 		/**
 		 * Add shape object to Slide
 		 * @note can be recursive

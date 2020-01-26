@@ -2,7 +2,7 @@
  * PptxGenJS: Slide Class
  */
 
-import { CHART_TYPE_NAMES, Shapes } from './core-enums'
+import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
 	IChartMulti,
 	IChartOpts,
@@ -106,7 +106,7 @@ export default class Slide {
 	/**
 	 * Generate the chart based on input data.
 	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
-	 * @param {CHART_TYPE_NAMES|IChartMulti[]} type - chart type
+	 * @param {CHART_NAME|IChartMulti[]} type - chart type
 	 * @param {object[]} data - a JSON object with follow the following format
 	 * @param {IChartOpts} options - chart options
 	 * @example
@@ -128,7 +128,7 @@ export default class Slide {
 	 * @return {Slide} this class
 	 */
 	// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
-	addChart(type: CHART_TYPE_NAMES | IChartMulti[], data: [], options?: IChartOpts): Slide {
+	addChart(type: CHART_NAME | IChartMulti[], data: [], options?: IChartOpts): Slide {
 		// Set `_type` on IChartOpts as its what is used as object is passed around
 		let optionsWithType: IChartOpts = options || {}
 		optionsWithType._type = type
@@ -171,14 +171,16 @@ export default class Slide {
 
 	/**
 	 * Add shape object to Slide
-	 * @param {Shapes} shape - shape object
+	 * @param {SHAPE_NAME} shapeName - shape name
 	 * @param {IShapeOptions} options - shape options
 	 * @return {Slide} this class
 	 */
-	addShape(shape: Shapes, options?: IShapeOptions): Slide {
+	addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide {
 		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
-		// But React/TypeScript users are passing the Shapes enum, which is a simple string
-		let shapeName = (typeof shape === 'object' && shape['name'] ? shape['name'] : shape)
+		// But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
+		// <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'
+		// TypeScript => `pptxgen.shapes.RECTANGLE` [string] "rect" ... shapeName = 'rect'
+		//let shapeNameDecode = typeof shapeName === 'object' && shapeName['name'] ? shapeName['name'] : shapeName
 		genObj.addShapeDefinition(this, shapeName, options)
 		return this
 	}

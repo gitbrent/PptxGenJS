@@ -45,7 +45,7 @@
 
 import * as JSZip from 'jszip'
 import Slide from './slide'
-import { CHART_TYPES, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE, EMU, Shapes } from './core-enums'
+import { CHART_TYPE, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE, EMU, SHAPE_TYPE } from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
@@ -172,16 +172,16 @@ export default class PptxGenJS {
 	private LAYOUTS: object
 
 	// Global props
-	private _charts = CHART_TYPES
-	public get charts(): typeof CHART_TYPES {
+	private _charts = CHART_TYPE
+	public get charts(): typeof CHART_TYPE {
 		return this._charts
 	}
 	private _colors = SCHEME_COLOR_NAMES
 	public get colors(): typeof SCHEME_COLOR_NAMES {
 		return this._colors
 	}
-	private _shapes = Shapes
-	public get shapes(): typeof Shapes {
+	private _shapes = SHAPE_TYPE
+	public get shapes(): typeof SHAPE_TYPE {
 		return this._shapes
 	}
 	private _presLayout: ILayout

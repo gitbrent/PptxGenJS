@@ -90,8 +90,21 @@ export enum TEXT_VALIGN {
 export const SLDNUMFLDID: string = '{F7021451-1387-4CA6-816F-3879F97B5CBC}'
 
 // ENUM
-/** `pptxgen.shapes` */
-export enum Shapes {
+
+export enum CHART_TYPE {
+	'AREA' = 'area',
+	'BAR' = 'bar',
+	'BAR3D' = 'bar3D',
+	'BUBBLE' = 'bubble',
+	'DOUGHNUT' = 'doughnut',
+	'LINE' = 'line',
+	'PIE' = 'pie',
+	'RADAR' = 'radar',
+	'SCATTER' = 'scatter',
+}
+export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
+
+export enum SHAPE_TYPE {
 	ACTION_BUTTON_BACK_OR_PREVIOUS = 'actionButtonBackPrevious',
 	ACTION_BUTTON_BEGINNING = 'actionButtonBeginning',
 	ACTION_BUTTON_CUSTOM = 'actionButtonBlank',
@@ -276,20 +289,190 @@ export enum Shapes {
 	VERTICAL_SCROLL = 'verticalScroll',
 	WAVE = 'wave',
 }
-/**
- * for index.d.ts, `pptxgen.charts.AREA` etc
- */
-export enum Charts {
-	'AREA' = 'area',
-	'BAR' = 'bar',
-	'BAR3D' = 'bar3D',
-	'BUBBLE' = 'bubble',
-	'DOUGHNUT' = 'doughnut',
-	'LINE' = 'line',
-	'PIE' = 'pie',
-	'RADAR' = 'radar',
-	'SCATTER' = 'scatter',
-}
+export type SHAPE_NAME =
+	| 'actionButtonBackPrevious'
+	| 'actionButtonBeginning'
+	| 'actionButtonBlank'
+	| 'actionButtonDocument'
+	| 'actionButtonEnd'
+	| 'actionButtonForwardNext'
+	| 'actionButtonHelp'
+	| 'actionButtonHome'
+	| 'actionButtonInformation'
+	| 'actionButtonMovie'
+	| 'actionButtonReturn'
+	| 'actionButtonSound'
+	| 'arc'
+	| 'wedgeRoundRectCallout'
+	| 'bentArrow'
+	| 'bentUpArrow'
+	| 'bevel'
+	| 'blockArc'
+	| 'can'
+	| 'chartPlus'
+	| 'chartStar'
+	| 'chartX'
+	| 'chevron'
+	| 'chord'
+	| 'circularArrow'
+	| 'cloud'
+	| 'cloudCallout'
+	| 'corner'
+	| 'cornerTabs'
+	| 'plus'
+	| 'cube'
+	| 'curvedDownArrow'
+	| 'ellipseRibbon'
+	| 'curvedLeftArrow'
+	| 'curvedRightArrow'
+	| 'curvedUpArrow'
+	| 'ellipseRibbon2'
+	| 'decagon'
+	| 'diagStripe'
+	| 'diamond'
+	| 'dodecagon'
+	| 'donut'
+	| 'bracePair'
+	| 'bracketPair'
+	| 'doubleWave'
+	| 'downArrow'
+	| 'downArrowCallout'
+	| 'ribbon'
+	| 'irregularSeal1'
+	| 'irregularSeal2'
+	| 'flowChartAlternateProcess'
+	| 'flowChartPunchedCard'
+	| 'flowChartCollate'
+	| 'flowChartConnector'
+	| 'flowChartInputOutput'
+	| 'flowChartDecision'
+	| 'flowChartDelay'
+	| 'flowChartMagneticDrum'
+	| 'flowChartDisplay'
+	| 'flowChartDocument'
+	| 'flowChartExtract'
+	| 'flowChartInternalStorage'
+	| 'flowChartMagneticDisk'
+	| 'flowChartManualInput'
+	| 'flowChartManualOperation'
+	| 'flowChartMerge'
+	| 'flowChartMultidocument'
+	| 'flowChartOfflineStorage'
+	| 'flowChartOffpageConnector'
+	| 'flowChartOr'
+	| 'flowChartPredefinedProcess'
+	| 'flowChartPreparation'
+	| 'flowChartProcess'
+	| 'flowChartPunchedTape'
+	| 'flowChartMagneticTape'
+	| 'flowChartSort'
+	| 'flowChartOnlineStorage'
+	| 'flowChartSummingJunction'
+	| 'flowChartTerminator'
+	| 'folderCorner'
+	| 'frame'
+	| 'funnel'
+	| 'gear6'
+	| 'gear9'
+	| 'halfFrame'
+	| 'heart'
+	| 'heptagon'
+	| 'hexagon'
+	| 'horizontalScroll'
+	| 'triangle'
+	| 'leftArrow'
+	| 'leftArrowCallout'
+	| 'leftBrace'
+	| 'leftBracket'
+	| 'leftCircularArrow'
+	| 'leftRightArrow'
+	| 'leftRightArrowCallout'
+	| 'leftRightCircularArrow'
+	| 'leftRightRibbon'
+	| 'leftRightUpArrow'
+	| 'leftUpArrow'
+	| 'lightningBolt'
+	| 'borderCallout1'
+	| 'accentCallout1'
+	| 'accentBorderCallout1'
+	| 'callout1'
+	| 'borderCallout2'
+	| 'accentCallout2'
+	| 'accentBorderCallout2'
+	| 'callout2'
+	| 'borderCallout3'
+	| 'accentCallout3'
+	| 'accentBorderCallout3'
+	| 'callout3'
+	| 'borderCallout3'
+	| 'accentCallout3'
+	| 'accentBorderCallout3'
+	| 'callout3'
+	| 'line'
+	| 'lineInv'
+	| 'mathDivide'
+	| 'mathEqual'
+	| 'mathMinus'
+	| 'mathMultiply'
+	| 'mathNotEqual'
+	| 'mathPlus'
+	| 'moon'
+	| 'nonIsoscelesTrapezoid'
+	| 'notchedRightArrow'
+	| 'noSmoking'
+	| 'octagon'
+	| 'ellipse'
+	| 'wedgeEllipseCallout'
+	| 'parallelogram'
+	| 'homePlate'
+	| 'pie'
+	| 'pieWedge'
+	| 'plaque'
+	| 'plaqueTabs'
+	| 'quadArrow'
+	| 'quadArrowCallout'
+	| 'rect'
+	| 'wedgeRectCallout'
+	| 'pentagon'
+	| 'rightArrow'
+	| 'rightArrowCallout'
+	| 'rightBrace'
+	| 'rightBracket'
+	| 'rtTriangle'
+	| 'roundRect'
+	| 'wedgeRoundRectCallout'
+	| 'round1Rect'
+	| 'round2DiagRect'
+	| 'round2SameRect'
+	| 'smileyFace'
+	| 'snip1Rect'
+	| 'snip2DiagRect'
+	| 'snip2SameRect'
+	| 'snipRoundRect'
+	| 'squareTabs'
+	| 'star10'
+	| 'star12'
+	| 'star16'
+	| 'star24'
+	| 'star32'
+	| 'star4'
+	| 'star5'
+	| 'star6'
+	| 'star7'
+	| 'star8'
+	| 'stripedRightArrow'
+	| 'sun'
+	| 'swooshArrow'
+	| 'teardrop'
+	| 'trapezoid'
+	| 'upArrow'
+	| 'upArrowCallout'
+	| 'upDownArrow'
+	| 'upDownArrowCallout'
+	| 'ribbon2'
+	| 'uturnArrow'
+	| 'verticalScroll'
+	| 'wave'
 
 export enum SCHEME_COLOR_NAMES {
 	'TEXT1' = 'tx1',
@@ -334,19 +517,6 @@ export enum PLACEHOLDER_TYPES {
 	'media' = 'media',
 }
 
-export type CHART_TYPE_NAMES = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
-export enum CHART_TYPES {
-	'AREA' = 'area',
-	'BAR' = 'bar',
-	'BAR3D' = 'bar3D',
-	'BUBBLE' = 'bubble',
-	'DOUGHNUT' = 'doughnut',
-	'LINE' = 'line',
-	'PIE' = 'pie',
-	'RADAR' = 'radar',
-	'SCATTER' = 'scatter',
-}
-
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
  * Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp
@@ -358,11 +528,6 @@ export enum BULLET_TYPES {
 	'STAR' = '&#x2605;',
 	'TRIANGLE' = '&#x25B6;',
 }
-
-export const BASE_SHAPES = Object.freeze({
-	RECTANGLE: { displayName: 'Rectangle', name: 'rect', avLst: {} },
-	LINE: { displayName: 'Line', name: 'line', avLst: {} },
-})
 
 // IMAGES (base64)
 export const IMG_BROKEN =

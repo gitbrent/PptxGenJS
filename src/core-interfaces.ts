@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_TYPE_NAMES, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES, Shapes } from './core-enums'
+import { CHART_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES, SHAPE_NAME } from './core-enums'
 
 // Common
 // ======
@@ -79,7 +79,7 @@ export interface IGlowOptions {
 // TODO: divide chart opts into sections, then:
 // `export type ChartOptions = ChartBaseOptions | ChartAxesOptions | ChartBarDataLineOptions | Chart3DBarOptions;`
 export interface IChartOpts extends PositionOptions, OptsChartGridLine {
-	_type?: CHART_TYPE_NAMES | IChartMulti[]
+	_type?: CHART_NAME | IChartMulti[]
 	axisPos?: string
 	bar3DShape?: string
 	barDir?: string
@@ -257,7 +257,7 @@ export interface IChartTitleOpts {
 	titlePos?: { x: number; y: number }
 }
 export interface IChartMulti {
-	type: CHART_TYPE_NAMES
+	type: CHART_NAME
 	data: []
 	options: {}
 }
@@ -377,7 +377,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath {
 	rotate?: number // (degree * 60,000)
 	rtlMode?: boolean
 	shadow?: IShadowOptions
-	shape?: Shapes
+	shape?: SHAPE_NAME
 	shrinkText?: boolean
 	strike?: boolean
 	subscript?: boolean
@@ -436,7 +436,7 @@ export interface ISlideMstrObjPlchldrOpts {
 	h: Coord
 }
 export interface ISlideRelChart extends OptsChartData {
-	type: CHART_TYPE_NAMES | IChartMulti[]
+	type: CHART_NAME | IChartMulti[]
 	opts: IChartOpts
 	data: OptsChartData[]
 	rId: number
@@ -508,7 +508,7 @@ export interface ISlideObject {
 	media?: string
 	mtype?: MediaType
 	mediaRid?: number
-	shape?: Shapes
+	shape?: SHAPE_NAME
 }
 
 export interface ISlideLayout {
