@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.0 @ 2020-01-22T02:21:48.604Z */
+/* PptxGenJS 3.2.0-beta @ 2020-01-26T06:03:31.273Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -84,6 +84,204 @@ var TEXT_VALIGN;
 })(TEXT_VALIGN || (TEXT_VALIGN = {}));
 var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 // ENUM
+var CHART_TYPE;
+(function (CHART_TYPE) {
+    CHART_TYPE["AREA"] = "area";
+    CHART_TYPE["BAR"] = "bar";
+    CHART_TYPE["BAR3D"] = "bar3D";
+    CHART_TYPE["BUBBLE"] = "bubble";
+    CHART_TYPE["DOUGHNUT"] = "doughnut";
+    CHART_TYPE["LINE"] = "line";
+    CHART_TYPE["PIE"] = "pie";
+    CHART_TYPE["RADAR"] = "radar";
+    CHART_TYPE["SCATTER"] = "scatter";
+})(CHART_TYPE || (CHART_TYPE = {}));
+var SHAPE_TYPE;
+(function (SHAPE_TYPE) {
+    SHAPE_TYPE["ACTION_BUTTON_BACK_OR_PREVIOUS"] = "actionButtonBackPrevious";
+    SHAPE_TYPE["ACTION_BUTTON_BEGINNING"] = "actionButtonBeginning";
+    SHAPE_TYPE["ACTION_BUTTON_CUSTOM"] = "actionButtonBlank";
+    SHAPE_TYPE["ACTION_BUTTON_DOCUMENT"] = "actionButtonDocument";
+    SHAPE_TYPE["ACTION_BUTTON_END"] = "actionButtonEnd";
+    SHAPE_TYPE["ACTION_BUTTON_FORWARD_OR_NEXT"] = "actionButtonForwardNext";
+    SHAPE_TYPE["ACTION_BUTTON_HELP"] = "actionButtonHelp";
+    SHAPE_TYPE["ACTION_BUTTON_HOME"] = "actionButtonHome";
+    SHAPE_TYPE["ACTION_BUTTON_INFORMATION"] = "actionButtonInformation";
+    SHAPE_TYPE["ACTION_BUTTON_MOVIE"] = "actionButtonMovie";
+    SHAPE_TYPE["ACTION_BUTTON_RETURN"] = "actionButtonReturn";
+    SHAPE_TYPE["ACTION_BUTTON_SOUND"] = "actionButtonSound";
+    SHAPE_TYPE["ARC"] = "arc";
+    SHAPE_TYPE["BALLOON"] = "wedgeRoundRectCallout";
+    SHAPE_TYPE["BENT_ARROW"] = "bentArrow";
+    SHAPE_TYPE["BENT_UP_ARROW"] = "bentUpArrow";
+    SHAPE_TYPE["BEVEL"] = "bevel";
+    SHAPE_TYPE["BLOCK_ARC"] = "blockArc";
+    SHAPE_TYPE["CAN"] = "can";
+    SHAPE_TYPE["CHART_PLUS"] = "chartPlus";
+    SHAPE_TYPE["CHART_STAR"] = "chartStar";
+    SHAPE_TYPE["CHART_X"] = "chartX";
+    SHAPE_TYPE["CHEVRON"] = "chevron";
+    SHAPE_TYPE["CHORD"] = "chord";
+    SHAPE_TYPE["CIRCULAR_ARROW"] = "circularArrow";
+    SHAPE_TYPE["CLOUD"] = "cloud";
+    SHAPE_TYPE["CLOUD_CALLOUT"] = "cloudCallout";
+    SHAPE_TYPE["CORNER"] = "corner";
+    SHAPE_TYPE["CORNER_TABS"] = "cornerTabs";
+    SHAPE_TYPE["CROSS"] = "plus";
+    SHAPE_TYPE["CUBE"] = "cube";
+    SHAPE_TYPE["CURVED_DOWN_ARROW"] = "curvedDownArrow";
+    SHAPE_TYPE["CURVED_DOWN_RIBBON"] = "ellipseRibbon";
+    SHAPE_TYPE["CURVED_LEFT_ARROW"] = "curvedLeftArrow";
+    SHAPE_TYPE["CURVED_RIGHT_ARROW"] = "curvedRightArrow";
+    SHAPE_TYPE["CURVED_UP_ARROW"] = "curvedUpArrow";
+    SHAPE_TYPE["CURVED_UP_RIBBON"] = "ellipseRibbon2";
+    SHAPE_TYPE["DECAGON"] = "decagon";
+    SHAPE_TYPE["DIAGONAL_STRIPE"] = "diagStripe";
+    SHAPE_TYPE["DIAMOND"] = "diamond";
+    SHAPE_TYPE["DODECAGON"] = "dodecagon";
+    SHAPE_TYPE["DONUT"] = "donut";
+    SHAPE_TYPE["DOUBLE_BRACE"] = "bracePair";
+    SHAPE_TYPE["DOUBLE_BRACKET"] = "bracketPair";
+    SHAPE_TYPE["DOUBLE_WAVE"] = "doubleWave";
+    SHAPE_TYPE["DOWN_ARROW"] = "downArrow";
+    SHAPE_TYPE["DOWN_ARROW_CALLOUT"] = "downArrowCallout";
+    SHAPE_TYPE["DOWN_RIBBON"] = "ribbon";
+    SHAPE_TYPE["EXPLOSION1"] = "irregularSeal1";
+    SHAPE_TYPE["EXPLOSION2"] = "irregularSeal2";
+    SHAPE_TYPE["FLOWCHART_ALTERNATE_PROCESS"] = "flowChartAlternateProcess";
+    SHAPE_TYPE["FLOWCHART_CARD"] = "flowChartPunchedCard";
+    SHAPE_TYPE["FLOWCHART_COLLATE"] = "flowChartCollate";
+    SHAPE_TYPE["FLOWCHART_CONNECTOR"] = "flowChartConnector";
+    SHAPE_TYPE["FLOWCHART_DATA"] = "flowChartInputOutput";
+    SHAPE_TYPE["FLOWCHART_DECISION"] = "flowChartDecision";
+    SHAPE_TYPE["FLOWCHART_DELAY"] = "flowChartDelay";
+    SHAPE_TYPE["FLOWCHART_DIRECT_ACCESS_STORAGE"] = "flowChartMagneticDrum";
+    SHAPE_TYPE["FLOWCHART_DISPLAY"] = "flowChartDisplay";
+    SHAPE_TYPE["FLOWCHART_DOCUMENT"] = "flowChartDocument";
+    SHAPE_TYPE["FLOWCHART_EXTRACT"] = "flowChartExtract";
+    SHAPE_TYPE["FLOWCHART_INTERNAL_STORAGE"] = "flowChartInternalStorage";
+    SHAPE_TYPE["FLOWCHART_MAGNETIC_DISK"] = "flowChartMagneticDisk";
+    SHAPE_TYPE["FLOWCHART_MANUAL_INPUT"] = "flowChartManualInput";
+    SHAPE_TYPE["FLOWCHART_MANUAL_OPERATION"] = "flowChartManualOperation";
+    SHAPE_TYPE["FLOWCHART_MERGE"] = "flowChartMerge";
+    SHAPE_TYPE["FLOWCHART_MULTIDOCUMENT"] = "flowChartMultidocument";
+    SHAPE_TYPE["FLOWCHART_OFFLINE_STORAGE"] = "flowChartOfflineStorage";
+    SHAPE_TYPE["FLOWCHART_OFFPAGE_CONNECTOR"] = "flowChartOffpageConnector";
+    SHAPE_TYPE["FLOWCHART_OR"] = "flowChartOr";
+    SHAPE_TYPE["FLOWCHART_PREDEFINED_PROCESS"] = "flowChartPredefinedProcess";
+    SHAPE_TYPE["FLOWCHART_PREPARATION"] = "flowChartPreparation";
+    SHAPE_TYPE["FLOWCHART_PROCESS"] = "flowChartProcess";
+    SHAPE_TYPE["FLOWCHART_PUNCHED_TAPE"] = "flowChartPunchedTape";
+    SHAPE_TYPE["FLOWCHART_SEQUENTIAL_ACCESS_STORAGE"] = "flowChartMagneticTape";
+    SHAPE_TYPE["FLOWCHART_SORT"] = "flowChartSort";
+    SHAPE_TYPE["FLOWCHART_STORED_DATA"] = "flowChartOnlineStorage";
+    SHAPE_TYPE["FLOWCHART_SUMMING_JUNCTION"] = "flowChartSummingJunction";
+    SHAPE_TYPE["FLOWCHART_TERMINATOR"] = "flowChartTerminator";
+    SHAPE_TYPE["FOLDED_CORNER"] = "folderCorner";
+    SHAPE_TYPE["FRAME"] = "frame";
+    SHAPE_TYPE["FUNNEL"] = "funnel";
+    SHAPE_TYPE["GEAR_6"] = "gear6";
+    SHAPE_TYPE["GEAR_9"] = "gear9";
+    SHAPE_TYPE["HALF_FRAME"] = "halfFrame";
+    SHAPE_TYPE["HEART"] = "heart";
+    SHAPE_TYPE["HEPTAGON"] = "heptagon";
+    SHAPE_TYPE["HEXAGON"] = "hexagon";
+    SHAPE_TYPE["HORIZONTAL_SCROLL"] = "horizontalScroll";
+    SHAPE_TYPE["ISOSCELES_TRIANGLE"] = "triangle";
+    SHAPE_TYPE["LEFT_ARROW"] = "leftArrow";
+    SHAPE_TYPE["LEFT_ARROW_CALLOUT"] = "leftArrowCallout";
+    SHAPE_TYPE["LEFT_BRACE"] = "leftBrace";
+    SHAPE_TYPE["LEFT_BRACKET"] = "leftBracket";
+    SHAPE_TYPE["LEFT_CIRCULAR_ARROW"] = "leftCircularArrow";
+    SHAPE_TYPE["LEFT_RIGHT_ARROW"] = "leftRightArrow";
+    SHAPE_TYPE["LEFT_RIGHT_ARROW_CALLOUT"] = "leftRightArrowCallout";
+    SHAPE_TYPE["LEFT_RIGHT_CIRCULAR_ARROW"] = "leftRightCircularArrow";
+    SHAPE_TYPE["LEFT_RIGHT_RIBBON"] = "leftRightRibbon";
+    SHAPE_TYPE["LEFT_RIGHT_UP_ARROW"] = "leftRightUpArrow";
+    SHAPE_TYPE["LEFT_UP_ARROW"] = "leftUpArrow";
+    SHAPE_TYPE["LIGHTNING_BOLT"] = "lightningBolt";
+    SHAPE_TYPE["LINE_CALLOUT_1"] = "borderCallout1";
+    SHAPE_TYPE["LINE_CALLOUT_1_ACCENT_BAR"] = "accentCallout1";
+    SHAPE_TYPE["LINE_CALLOUT_1_BORDER_AND_ACCENT_BAR"] = "accentBorderCallout1";
+    SHAPE_TYPE["LINE_CALLOUT_1_NO_BORDER"] = "callout1";
+    SHAPE_TYPE["LINE_CALLOUT_2"] = "borderCallout2";
+    SHAPE_TYPE["LINE_CALLOUT_2_ACCENT_BAR"] = "accentCallout2";
+    SHAPE_TYPE["LINE_CALLOUT_2_BORDER_AND_ACCENT_BAR"] = "accentBorderCallout2";
+    SHAPE_TYPE["LINE_CALLOUT_2_NO_BORDER"] = "callout2";
+    SHAPE_TYPE["LINE_CALLOUT_3"] = "borderCallout3";
+    SHAPE_TYPE["LINE_CALLOUT_3_ACCENT_BAR"] = "accentCallout3";
+    SHAPE_TYPE["LINE_CALLOUT_3_BORDER_AND_ACCENT_BAR"] = "accentBorderCallout3";
+    SHAPE_TYPE["LINE_CALLOUT_3_NO_BORDER"] = "callout3";
+    SHAPE_TYPE["LINE_CALLOUT_4"] = "borderCallout3";
+    SHAPE_TYPE["LINE_CALLOUT_4_ACCENT_BAR"] = "accentCallout3";
+    SHAPE_TYPE["LINE_CALLOUT_4_BORDER_AND_ACCENT_BAR"] = "accentBorderCallout3";
+    SHAPE_TYPE["LINE_CALLOUT_4_NO_BORDER"] = "callout3";
+    SHAPE_TYPE["LINE"] = "line";
+    SHAPE_TYPE["LINE_INVERSE"] = "lineInv";
+    SHAPE_TYPE["MATH_DIVIDE"] = "mathDivide";
+    SHAPE_TYPE["MATH_EQUAL"] = "mathEqual";
+    SHAPE_TYPE["MATH_MINUS"] = "mathMinus";
+    SHAPE_TYPE["MATH_MULTIPLY"] = "mathMultiply";
+    SHAPE_TYPE["MATH_NOT_EQUAL"] = "mathNotEqual";
+    SHAPE_TYPE["MATH_PLUS"] = "mathPlus";
+    SHAPE_TYPE["MOON"] = "moon";
+    SHAPE_TYPE["NON_ISOSCELES_TRAPEZOID"] = "nonIsoscelesTrapezoid";
+    SHAPE_TYPE["NOTCHED_RIGHT_ARROW"] = "notchedRightArrow";
+    SHAPE_TYPE["NO_SYMBOL"] = "noSmoking";
+    SHAPE_TYPE["OCTAGON"] = "octagon";
+    SHAPE_TYPE["OVAL"] = "ellipse";
+    SHAPE_TYPE["OVAL_CALLOUT"] = "wedgeEllipseCallout";
+    SHAPE_TYPE["PARALLELOGRAM"] = "parallelogram";
+    SHAPE_TYPE["PENTAGON"] = "homePlate";
+    SHAPE_TYPE["PIE"] = "pie";
+    SHAPE_TYPE["PIE_WEDGE"] = "pieWedge";
+    SHAPE_TYPE["PLAQUE"] = "plaque";
+    SHAPE_TYPE["PLAQUE_TABS"] = "plaqueTabs";
+    SHAPE_TYPE["QUAD_ARROW"] = "quadArrow";
+    SHAPE_TYPE["QUAD_ARROW_CALLOUT"] = "quadArrowCallout";
+    SHAPE_TYPE["RECTANGLE"] = "rect";
+    SHAPE_TYPE["RECTANGULAR_CALLOUT"] = "wedgeRectCallout";
+    SHAPE_TYPE["REGULAR_PENTAGON"] = "pentagon";
+    SHAPE_TYPE["RIGHT_ARROW"] = "rightArrow";
+    SHAPE_TYPE["RIGHT_ARROW_CALLOUT"] = "rightArrowCallout";
+    SHAPE_TYPE["RIGHT_BRACE"] = "rightBrace";
+    SHAPE_TYPE["RIGHT_BRACKET"] = "rightBracket";
+    SHAPE_TYPE["RIGHT_TRIANGLE"] = "rtTriangle";
+    SHAPE_TYPE["ROUNDED_RECTANGLE"] = "roundRect";
+    SHAPE_TYPE["ROUNDED_RECTANGULAR_CALLOUT"] = "wedgeRoundRectCallout";
+    SHAPE_TYPE["ROUND_1_RECTANGLE"] = "round1Rect";
+    SHAPE_TYPE["ROUND_2_DIAG_RECTANGLE"] = "round2DiagRect";
+    SHAPE_TYPE["ROUND_2_SAME_RECTANGLE"] = "round2SameRect";
+    SHAPE_TYPE["SMILEY_FACE"] = "smileyFace";
+    SHAPE_TYPE["SNIP_1_RECTANGLE"] = "snip1Rect";
+    SHAPE_TYPE["SNIP_2_DIAG_RECTANGLE"] = "snip2DiagRect";
+    SHAPE_TYPE["SNIP_2_SAME_RECTANGLE"] = "snip2SameRect";
+    SHAPE_TYPE["SNIP_ROUND_RECTANGLE"] = "snipRoundRect";
+    SHAPE_TYPE["SQUARE_TABS"] = "squareTabs";
+    SHAPE_TYPE["STAR_10_POINT"] = "star10";
+    SHAPE_TYPE["STAR_12_POINT"] = "star12";
+    SHAPE_TYPE["STAR_16_POINT"] = "star16";
+    SHAPE_TYPE["STAR_24_POINT"] = "star24";
+    SHAPE_TYPE["STAR_32_POINT"] = "star32";
+    SHAPE_TYPE["STAR_4_POINT"] = "star4";
+    SHAPE_TYPE["STAR_5_POINT"] = "star5";
+    SHAPE_TYPE["STAR_6_POINT"] = "star6";
+    SHAPE_TYPE["STAR_7_POINT"] = "star7";
+    SHAPE_TYPE["STAR_8_POINT"] = "star8";
+    SHAPE_TYPE["STRIPED_RIGHT_ARROW"] = "stripedRightArrow";
+    SHAPE_TYPE["SUN"] = "sun";
+    SHAPE_TYPE["SWOOSH_ARROW"] = "swooshArrow";
+    SHAPE_TYPE["TEAR"] = "teardrop";
+    SHAPE_TYPE["TRAPEZOID"] = "trapezoid";
+    SHAPE_TYPE["UP_ARROW"] = "upArrow";
+    SHAPE_TYPE["UP_ARROW_CALLOUT"] = "upArrowCallout";
+    SHAPE_TYPE["UP_DOWN_ARROW"] = "upDownArrow";
+    SHAPE_TYPE["UP_DOWN_ARROW_CALLOUT"] = "upDownArrowCallout";
+    SHAPE_TYPE["UP_RIBBON"] = "ribbon2";
+    SHAPE_TYPE["U_TURN_ARROW"] = "uturnArrow";
+    SHAPE_TYPE["VERTICAL_SCROLL"] = "verticalScroll";
+    SHAPE_TYPE["WAVE"] = "wave";
+})(SHAPE_TYPE || (SHAPE_TYPE = {}));
 var SCHEME_COLOR_NAMES;
 (function (SCHEME_COLOR_NAMES) {
     SCHEME_COLOR_NAMES["TEXT1"] = "tx1";
@@ -128,18 +326,6 @@ var PLACEHOLDER_TYPES;
     PLACEHOLDER_TYPES["table"] = "tbl";
     PLACEHOLDER_TYPES["media"] = "media";
 })(PLACEHOLDER_TYPES || (PLACEHOLDER_TYPES = {}));
-var CHART_TYPES;
-(function (CHART_TYPES) {
-    CHART_TYPES["AREA"] = "area";
-    CHART_TYPES["BAR"] = "bar";
-    CHART_TYPES["BAR3D"] = "bar3D";
-    CHART_TYPES["BUBBLE"] = "bubble";
-    CHART_TYPES["DOUGHNUT"] = "doughnut";
-    CHART_TYPES["LINE"] = "line";
-    CHART_TYPES["PIE"] = "pie";
-    CHART_TYPES["RADAR"] = "radar";
-    CHART_TYPES["SCATTER"] = "scatter";
-})(CHART_TYPES || (CHART_TYPES = {}));
 /**
  * NOTE: 20170304: BULLET_TYPES: Only default is used so far. I'd like to combine the two pieces of code that use these before implementing these as options
  * Since we close <p> within the text object bullets, its slightly more difficult than combining into a func and calling to get the paraProp
@@ -152,10 +338,6 @@ var BULLET_TYPES;
     BULLET_TYPES["STAR"] = "&#x2605;";
     BULLET_TYPES["TRIANGLE"] = "&#x25B6;";
 })(BULLET_TYPES || (BULLET_TYPES = {}));
-var BASE_SHAPES = Object.freeze({
-    RECTANGLE: { displayName: 'Rectangle', name: 'rect', avLst: {} },
-    LINE: { displayName: 'Line', name: 'line', avLst: {} },
-});
 // IMAGES (base64)
 var IMG_BROKEN = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAB3CAYAAAD1oOVhAAAGAUlEQVR4Xu2dT0xcRRzHf7tAYSsc0EBSIq2xEg8mtTGebVzEqOVIolz0siRE4gGTStqKwdpWsXoyGhMuyAVJOHBgqyvLNgonDkabeCBYW/8kTUr0wsJC+Wfm0bfuvn37Znbem9mR9303mJnf/Pb7ed95M7PDI5JIJPYJV5EC7e3t1N/fT62trdqViQCIu+bVgpIHEo/Hqbe3V/sdYVKHyWSSZmZm8ilVA0oeyNjYmEnaVC2Xvr6+qg5fAOJAz4DU1dURGzFSqZRVqtMpAFIGyMjICC0vL9PExIRWKADiAYTNshYWFrRCARAOEFZcCKWtrY0GBgaUTYkBRACIE4rKZwqACALR5RQAqQCIDqcASIVAVDsFQCSAqHQKgEgCUeUUAPEBRIVTAMQnEBvK5OQkbW9vk991CoAEAMQJxc86BUACAhKUUwAkQCBBOAVAAgbi1ykAogCIH6cAiCIgsk4BEIVAZJwCIIqBVLqiBxANQFgXS0tLND4+zl08AogmIG5OSSQS1gGKwgtANAIRcQqAaAbCe6YASBWA2E6xDyeyDUl7+AKQMkDYYevm5mZHabA/Li4uUiaTsYLau8QA4gLE/hU7wajyYtv1hReDAiAOxQcHBymbzark4BkbQKom/X8dp9Npmpqasn4BIAYAYSnYp+4BBEAMUcCwNOCQsAKZnp62NtQOw8WmwT09PUo+ijaHsOMx7GppaaH6+nolH0Z10K2tLVpdXbW6UfV3mNqBdHd3U1NTk2rtlMRfW1uj2dlZAFGirkRQAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAFGprkRsAJEQTWUTAGHqrm8caPzQ0WC1logbeiC7X3xJm0PvUmRzh45cuki1588FAmVn9BO6P3yF9utrqGH0MtW82S8UN9RA9v/4k7InjhcJFTs/TLVXLwmJV67S7vD7tHF5pKi46fYdosdOcOOGG8j1OcqefbFEJD9Q3GCwDhqT31HklS4A8VRgfYM2Op6k3bt/BQJl58J7lPvwg5JYNccepaMry0LPqFA7hCm39+NNyp2J0172b19QysGINj5CsRtpij57musOViH0QPJQXn6J9u7dlYJSFkbrMYolrwvDAJAC+WWdEpQz7FTgECeUCpzi6YxvvqXoM6eEhqnCSgDikEzUKUE7Aw7xuHctKB5OYU3dZlNR9syQdAaAcAYTC0pXF+39c09o2Ik+3EqxVKqiB7hbYAxZkk4pbBaEM+AQofv+wTrFwylBOQNABIGwavdfe4O2pg5elO+86l99nY58/VUF0byrYsjiSFluNlXYrOHcBar7+EogUADEQ0YRGHbzoKAASBkg2+9cpM1rV0tK2QOcXW7bLEFAARAXIF4w2DrDWoeUWaf4hQIgDiA8GPZ2iNfi0Q8UACkAIgrDbrJ385eDxaPLLrEsFAB5oG6lMPJQPLZZZKAACBGVhcG2Q+bmuLu2nk55e4jqPv1IeEoceiBeX7s2zCa5MAqdstl91vfXwaEGsv/rb5TtOFk6tWXOuJGh6KmnhO9sayrMninPx103JBtXblHkice58cINZP4Hyr5wpkgkdiChEmc4FWazLzenNKa/p0jncwDiqcD6BuWePk07t1asatZGoYQzSqA4nFJ7soNiP/+EUyfc25GI2GG53dHPrKo1g/1Cw4pIXLrzO+1c+/wg7tBbFDle/EbQcjFCPWQJCau5EoBoFpzXHYDwFNJcDiCaBed1ByA8hTSXA4hmwXndAQhPIc3lAKJZcF53AMJTSHM5gGgWnNcdgPAU0lwOIJoF53UHIDyFNJcfSiCdnZ0Ui8U0SxlMd7lcjubn561gh+Y1scFIU/0o/3sgeLO12E2k7UXKYumgFoAYdg8ACIAYpoBh6cAhAGKYAoalA4cAiGEKGJYOHAIghilgWDpwCIAYpoBh6cAhAGKYAoalA4cAiGEKGJYOHAIghilgWDpwCIAYpoBh6ZQ4JB6PKzviYthnNy4d9h+1M5mMlVckkUjsG5dhiBMCEMPg/wuOfrZZ/RSywQAAAABJRU5ErkJggg==';
 var IMG_PLAYBTN = 'data:image/png;base64,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';
@@ -891,1367 +1073,6 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
 }
 
 /**
-* PptxGenJS: All PowerPoint Shapes
-*/
-var PowerPointShapes = Object.freeze({
-    ACTION_BUTTON_BACK_OR_PREVIOUS: {
-        'displayName': 'Action Button: Back or Previous',
-        'name': 'actionButtonBackPrevious',
-        'avLst': {}
-    },
-    ACTION_BUTTON_BEGINNING: {
-        'displayName': 'Action Button: Beginning',
-        'name': 'actionButtonBeginning',
-        'avLst': {}
-    },
-    ACTION_BUTTON_CUSTOM: {
-        'displayName': 'Action Button: Custom',
-        'name': 'actionButtonBlank',
-        'avLst': {}
-    },
-    ACTION_BUTTON_DOCUMENT: {
-        'displayName': 'Action Button: Document',
-        'name': 'actionButtonDocument',
-        'avLst': {}
-    },
-    ACTION_BUTTON_END: {
-        'displayName': 'Action Button: End',
-        'name': 'actionButtonEnd',
-        'avLst': {}
-    },
-    ACTION_BUTTON_FORWARD_OR_NEXT: {
-        'displayName': 'Action Button: Forward or Next',
-        'name': 'actionButtonForwardNext',
-        'avLst': {}
-    },
-    ACTION_BUTTON_HELP: {
-        'displayName': 'Action Button: Help',
-        'name': 'actionButtonHelp',
-        'avLst': {}
-    },
-    ACTION_BUTTON_HOME: {
-        'displayName': 'Action Button: Home',
-        'name': 'actionButtonHome',
-        'avLst': {}
-    },
-    ACTION_BUTTON_INFORMATION: {
-        'displayName': 'Action Button: Information',
-        'name': 'actionButtonInformation',
-        'avLst': {}
-    },
-    ACTION_BUTTON_MOVIE: {
-        'displayName': 'Action Button: Movie',
-        'name': 'actionButtonMovie',
-        'avLst': {}
-    },
-    ACTION_BUTTON_RETURN: {
-        'displayName': 'Action Button: Return',
-        'name': 'actionButtonReturn',
-        'avLst': {}
-    },
-    ACTION_BUTTON_SOUND: {
-        'displayName': 'Action Button: Sound',
-        'name': 'actionButtonSound',
-        'avLst': {}
-    },
-    ARC: {
-        'displayName': 'Arc',
-        'name': 'arc',
-        'avLst': {
-            'adj1': 16200000,
-            'adj2': 0
-        }
-    },
-    BALLOON: {
-        'displayName': 'Rounded Rectangular Callout',
-        'name': 'wedgeRoundRectCallout',
-        'avLst': {
-            'adj1': -20833,
-            'adj2': 62500,
-            'adj3': 16667
-        }
-    },
-    BENT_ARROW: {
-        'displayName': 'Bent Arrow',
-        'name': 'bentArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 43750
-        }
-    },
-    BENT_UP_ARROW: {
-        'displayName': 'Bent-Up Arrow',
-        'name': 'bentUpArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000
-        }
-    },
-    BEVEL: {
-        'displayName': 'Bevel',
-        'name': 'bevel',
-        'avLst': {
-            'adj': 12500
-        }
-    },
-    BLOCK_ARC: {
-        'displayName': 'Block Arc',
-        'name': 'blockArc',
-        'avLst': {
-            'adj1': 10800000,
-            'adj2': 0,
-            'adj3': 25000
-        }
-    },
-    CAN: {
-        'displayName': 'Can',
-        'name': 'can',
-        'avLst': {
-            'adj': 25000
-        }
-    },
-    CHART_PLUS: {
-        'displayName': 'Chart Plus',
-        'name': 'chartPlus',
-        'avLst': {}
-    },
-    CHART_STAR: {
-        'displayName': 'Chart Star',
-        'name': 'chartStar',
-        'avLst': {}
-    },
-    CHART_X: {
-        'displayName': 'Chart X',
-        'name': 'chartX',
-        'avLst': {}
-    },
-    CHEVRON: {
-        'displayName': 'Chevron',
-        'name': 'chevron',
-        'avLst': {
-            'adj': 50000
-        }
-    },
-    CHORD: {
-        'displayName': 'Chord',
-        'name': 'chord',
-        'avLst': {
-            'adj1': 2700000,
-            'adj2': 16200000
-        }
-    },
-    CIRCULAR_ARROW: {
-        'displayName': 'Circular Arrow',
-        'name': 'circularArrow',
-        'avLst': {
-            'adj1': 12500,
-            'adj2': 1142319,
-            'adj3': 20457681,
-            'adj4': 10800000,
-            'adj5': 12500
-        }
-    },
-    CLOUD: {
-        'displayName': 'Cloud',
-        'name': 'cloud',
-        'avLst': {}
-    },
-    CLOUD_CALLOUT: {
-        'displayName': 'Cloud Callout',
-        'name': 'cloudCallout',
-        'avLst': {
-            'adj1': -20833,
-            'adj2': 62500
-        }
-    },
-    CORNER: {
-        'displayName': 'Corner',
-        'name': 'corner',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    CORNER_TABS: {
-        'displayName': 'Corner Tabs',
-        'name': 'cornerTabs',
-        'avLst': {}
-    },
-    CROSS: {
-        'displayName': 'Cross',
-        'name': 'plus',
-        'avLst': {
-            'adj': 25000
-        }
-    },
-    CUBE: {
-        'displayName': 'Cube',
-        'name': 'cube',
-        'avLst': {
-            'adj': 25000
-        }
-    },
-    CURVED_DOWN_ARROW: {
-        'displayName': 'Curved Down Arrow',
-        'name': 'curvedDownArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 50000,
-            'adj3': 25000
-        }
-    },
-    CURVED_DOWN_RIBBON: {
-        'displayName': 'Curved Down Ribbon',
-        'name': 'ellipseRibbon',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 50000,
-            'adj3': 12500
-        }
-    },
-    CURVED_LEFT_ARROW: {
-        'displayName': 'Curved Left Arrow',
-        'name': 'curvedLeftArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 50000,
-            'adj3': 25000
-        }
-    },
-    CURVED_RIGHT_ARROW: {
-        'displayName': 'Curved Right Arrow',
-        'name': 'curvedRightArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 50000,
-            'adj3': 25000
-        }
-    },
-    CURVED_UP_ARROW: {
-        'displayName': 'Curved Up Arrow',
-        'name': 'curvedUpArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 50000,
-            'adj3': 25000
-        }
-    },
-    CURVED_UP_RIBBON: {
-        'displayName': 'Curved Up Ribbon',
-        'name': 'ellipseRibbon2',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 50000,
-            'adj3': 12500
-        }
-    },
-    DECAGON: {
-        'displayName': 'Decagon',
-        'name': 'decagon',
-        'avLst': {
-            'vf': 105146
-        }
-    },
-    DIAGONAL_STRIPE: {
-        'displayName': 'Diagonal Stripe',
-        'name': 'diagStripe',
-        'avLst': {
-            'adj': 50000
-        }
-    },
-    DIAMOND: {
-        'displayName': 'Diamond',
-        'name': 'diamond',
-        'avLst': {}
-    },
-    DODECAGON: {
-        'displayName': 'Dodecagon',
-        'name': 'dodecagon',
-        'avLst': {}
-    },
-    DONUT: {
-        'displayName': 'Donut',
-        'name': 'donut',
-        'avLst': {
-            'adj': 25000
-        }
-    },
-    DOUBLE_BRACE: {
-        'displayName': 'Double Brace',
-        'name': 'bracePair',
-        'avLst': {
-            'adj': 8333
-        }
-    },
-    DOUBLE_BRACKET: {
-        'displayName': 'Double Bracket',
-        'name': 'bracketPair',
-        'avLst': {
-            'adj': 16667
-        }
-    },
-    DOUBLE_WAVE: {
-        'displayName': 'Double Wave',
-        'name': 'doubleWave',
-        'avLst': {
-            'adj1': 6250,
-            'adj2': 0
-        }
-    },
-    DOWN_ARROW: {
-        'displayName': 'Down Arrow',
-        'name': 'downArrow',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    DOWN_ARROW_CALLOUT: {
-        'displayName': 'Down Arrow Callout',
-        'name': 'downArrowCallout',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 64977
-        }
-    },
-    DOWN_RIBBON: {
-        'displayName': 'Down Ribbon',
-        'name': 'ribbon',
-        'avLst': {
-            'adj1': 16667,
-            'adj2': 50000
-        }
-    },
-    EXPLOSION1: {
-        'displayName': 'Explosion',
-        'name': 'irregularSeal1',
-        'avLst': {}
-    },
-    EXPLOSION2: {
-        'displayName': 'Explosion',
-        'name': 'irregularSeal2',
-        'avLst': {}
-    },
-    FLOWCHART_ALTERNATE_PROCESS: {
-        'displayName': 'Alternate process',
-        'name': 'flowChartAlternateProcess',
-        'avLst': {}
-    },
-    FLOWCHART_CARD: {
-        'displayName': 'Card',
-        'name': 'flowChartPunchedCard',
-        'avLst': {}
-    },
-    FLOWCHART_COLLATE: {
-        'displayName': 'Collate',
-        'name': 'flowChartCollate',
-        'avLst': {}
-    },
-    FLOWCHART_CONNECTOR: {
-        'displayName': 'Connector',
-        'name': 'flowChartConnector',
-        'avLst': {}
-    },
-    FLOWCHART_DATA: {
-        'displayName': 'Data',
-        'name': 'flowChartInputOutput',
-        'avLst': {}
-    },
-    FLOWCHART_DECISION: {
-        'displayName': 'Decision',
-        'name': 'flowChartDecision',
-        'avLst': {}
-    },
-    FLOWCHART_DELAY: {
-        'displayName': 'Delay',
-        'name': 'flowChartDelay',
-        'avLst': {}
-    },
-    FLOWCHART_DIRECT_ACCESS_STORAGE: {
-        'displayName': 'Direct Access Storage',
-        'name': 'flowChartMagneticDrum',
-        'avLst': {}
-    },
-    FLOWCHART_DISPLAY: {
-        'displayName': 'Display',
-        'name': 'flowChartDisplay',
-        'avLst': {}
-    },
-    FLOWCHART_DOCUMENT: {
-        'displayName': 'Document',
-        'name': 'flowChartDocument',
-        'avLst': {}
-    },
-    FLOWCHART_EXTRACT: {
-        'displayName': 'Extract',
-        'name': 'flowChartExtract',
-        'avLst': {}
-    },
-    FLOWCHART_INTERNAL_STORAGE: {
-        'displayName': 'Internal Storage',
-        'name': 'flowChartInternalStorage',
-        'avLst': {}
-    },
-    FLOWCHART_MAGNETIC_DISK: {
-        'displayName': 'Magnetic Disk',
-        'name': 'flowChartMagneticDisk',
-        'avLst': {}
-    },
-    FLOWCHART_MANUAL_INPUT: {
-        'displayName': 'Manual Input',
-        'name': 'flowChartManualInput',
-        'avLst': {}
-    },
-    FLOWCHART_MANUAL_OPERATION: {
-        'displayName': 'Manual Operation',
-        'name': 'flowChartManualOperation',
-        'avLst': {}
-    },
-    FLOWCHART_MERGE: {
-        'displayName': 'Merge',
-        'name': 'flowChartMerge',
-        'avLst': {}
-    },
-    FLOWCHART_MULTIDOCUMENT: {
-        'displayName': 'Multidocument',
-        'name': 'flowChartMultidocument',
-        'avLst': {}
-    },
-    FLOWCHART_OFFLINE_STORAGE: {
-        'displayName': 'Offline Storage',
-        'name': 'flowChartOfflineStorage',
-        'avLst': {}
-    },
-    FLOWCHART_OFFPAGE_CONNECTOR: {
-        'displayName': 'Off-page Connector',
-        'name': 'flowChartOffpageConnector',
-        'avLst': {}
-    },
-    FLOWCHART_OR: {
-        'displayName': 'Or',
-        'name': 'flowChartOr',
-        'avLst': {}
-    },
-    FLOWCHART_PREDEFINED_PROCESS: {
-        'displayName': 'Predefined Process',
-        'name': 'flowChartPredefinedProcess',
-        'avLst': {}
-    },
-    FLOWCHART_PREPARATION: {
-        'displayName': 'Preparation',
-        'name': 'flowChartPreparation',
-        'avLst': {}
-    },
-    FLOWCHART_PROCESS: {
-        'displayName': 'Process',
-        'name': 'flowChartProcess',
-        'avLst': {}
-    },
-    FLOWCHART_PUNCHED_TAPE: {
-        'displayName': 'Punched Tape',
-        'name': 'flowChartPunchedTape',
-        'avLst': {}
-    },
-    FLOWCHART_SEQUENTIAL_ACCESS_STORAGE: {
-        'displayName': 'Sequential Access Storage',
-        'name': 'flowChartMagneticTape',
-        'avLst': {}
-    },
-    FLOWCHART_SORT: {
-        'displayName': 'Sort',
-        'name': 'flowChartSort',
-        'avLst': {}
-    },
-    FLOWCHART_STORED_DATA: {
-        'displayName': 'Stored Data',
-        'name': 'flowChartOnlineStorage',
-        'avLst': {}
-    },
-    FLOWCHART_SUMMING_JUNCTION: {
-        'displayName': 'Summing Junction',
-        'name': 'flowChartSummingJunction',
-        'avLst': {}
-    },
-    FLOWCHART_TERMINATOR: {
-        'displayName': 'Terminator',
-        'name': 'flowChartTerminator',
-        'avLst': {}
-    },
-    FOLDED_CORNER: {
-        'displayName': 'Folded Corner',
-        'name': 'folderCorner',
-        'avLst': {}
-    },
-    FRAME: {
-        'displayName': 'Frame',
-        'name': 'frame',
-        'avLst': {
-            'adj1': 12500
-        }
-    },
-    FUNNEL: {
-        'displayName': 'Funnel',
-        'name': 'funnel',
-        'avLst': {}
-    },
-    GEAR_6: {
-        'displayName': 'Gear 6',
-        'name': 'gear6',
-        'avLst': {
-            'adj1': 15000,
-            'adj2': 3526
-        }
-    },
-    GEAR_9: {
-        'displayName': 'Gear 9',
-        'name': 'gear9',
-        'avLst': {
-            'adj1': 10000,
-            'adj2': 1763
-        }
-    },
-    HALF_FRAME: {
-        'displayName': 'Half Frame',
-        'name': 'halfFrame',
-        'avLst': {
-            'adj1': 33333,
-            'adj2': 33333
-        }
-    },
-    HEART: {
-        'displayName': 'Heart',
-        'name': 'heart',
-        'avLst': {}
-    },
-    HEPTAGON: {
-        'displayName': 'Heptagon',
-        'name': 'heptagon',
-        'avLst': {
-            'hf': 102572,
-            'vf': 105210
-        }
-    },
-    HEXAGON: {
-        'displayName': 'Hexagon',
-        'name': 'hexagon',
-        'avLst': {
-            'adj': 25000,
-            'vf': 115470
-        }
-    },
-    HORIZONTAL_SCROLL: {
-        'displayName': 'Horizontal Scroll',
-        'name': 'horizontalScroll',
-        'avLst': {
-            'adj': 12500
-        }
-    },
-    ISOSCELES_TRIANGLE: {
-        'displayName': 'Isosceles Triangle',
-        'name': 'triangle',
-        'avLst': {
-            'adj': 50000
-        }
-    },
-    LEFT_ARROW: {
-        'displayName': 'Left Arrow',
-        'name': 'leftArrow',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    LEFT_ARROW_CALLOUT: {
-        'displayName': 'Left Arrow Callout',
-        'name': 'leftArrowCallout',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 64977
-        }
-    },
-    LEFT_BRACE: {
-        'displayName': 'Left Brace',
-        'name': 'leftBrace',
-        'avLst': {
-            'adj1': 8333,
-            'adj2': 50000
-        }
-    },
-    LEFT_BRACKET: {
-        'displayName': 'Left Bracket',
-        'name': 'leftBracket',
-        'avLst': {
-            'adj': 8333
-        }
-    },
-    LEFT_CIRCULAR_ARROW: {
-        'displayName': 'Left Circular Arrow',
-        'name': 'leftCircularArrow',
-        'avLst': {
-            'adj1': 12500,
-            'adj2': -1142319,
-            'adj3': 1142319,
-            'adj4': 10800000,
-            'adj5': 12500
-        }
-    },
-    LEFT_RIGHT_ARROW: {
-        'displayName': 'Left-Right Arrow',
-        'name': 'leftRightArrow',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    LEFT_RIGHT_ARROW_CALLOUT: {
-        'displayName': 'Left-Right Arrow Callout',
-        'name': 'leftRightArrowCallout',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 48123
-        }
-    },
-    LEFT_RIGHT_CIRCULAR_ARROW: {
-        'displayName': 'Left Right Circular Arrow',
-        'name': 'leftRightCircularArrow',
-        'avLst': {
-            'adj1': 12500,
-            'adj2': 1142319,
-            'adj3': 20457681,
-            'adj4': 11942319,
-            'adj5': 12500
-        }
-    },
-    LEFT_RIGHT_RIBBON: {
-        'displayName': 'Left Right Ribbon',
-        'name': 'leftRightRibbon',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000,
-            'adj3': 16667
-        }
-    },
-    LEFT_RIGHT_UP_ARROW: {
-        'displayName': 'Left-Right-Up Arrow',
-        'name': 'leftRightUpArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000
-        }
-    },
-    LEFT_UP_ARROW: {
-        'displayName': 'Left-Up Arrow',
-        'name': 'leftUpArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000
-        }
-    },
-    LIGHTNING_BOLT: {
-        'displayName': 'Lightning Bolt',
-        'name': 'lightningBolt',
-        'avLst': {}
-    },
-    LINE_CALLOUT_1: {
-        'displayName': 'Line Callout 1',
-        'name': 'borderCallout1',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 112500,
-            'adj4': -38333
-        }
-    },
-    LINE_CALLOUT_1_ACCENT_BAR: {
-        'displayName': 'Line Callout 1 {Accent Bar}',
-        'name': 'accentCallout1',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 112500,
-            'adj4': -38333
-        }
-    },
-    LINE_CALLOUT_1_BORDER_AND_ACCENT_BAR: {
-        'displayName': 'Line Callout 1 {Border and Accent Bar}',
-        'name': 'accentBorderCallout1',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 112500,
-            'adj4': -38333
-        }
-    },
-    LINE_CALLOUT_1_NO_BORDER: {
-        'displayName': 'Line Callout 1 {No Border}',
-        'name': 'callout1',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 112500,
-            'adj4': -38333
-        }
-    },
-    LINE_CALLOUT_2: {
-        'displayName': 'Line Callout 2',
-        'name': 'borderCallout2',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 112500,
-            'adj6': -46667
-        }
-    },
-    LINE_CALLOUT_2_ACCENT_BAR: {
-        'displayName': 'Line Callout 2 {Accent Bar}',
-        'name': 'accentCallout2',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 112500,
-            'adj6': -46667
-        }
-    },
-    LINE_CALLOUT_2_BORDER_AND_ACCENT_BAR: {
-        'displayName': 'Line Callout 2 {Border and Accent Bar}',
-        'name': 'accentBorderCallout2',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 112500,
-            'adj6': -46667
-        }
-    },
-    LINE_CALLOUT_2_NO_BORDER: {
-        'displayName': 'Line Callout 2 {No Border}',
-        'name': 'callout2',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 112500,
-            'adj6': -46667
-        }
-    },
-    LINE_CALLOUT_3: {
-        'displayName': 'Line Callout 3',
-        'name': 'borderCallout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE_CALLOUT_3_ACCENT_BAR: {
-        'displayName': 'Line Callout 3 {Accent Bar}',
-        'name': 'accentCallout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE_CALLOUT_3_BORDER_AND_ACCENT_BAR: {
-        'displayName': 'Line Callout 3 {Border and Accent Bar}',
-        'name': 'accentBorderCallout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE_CALLOUT_3_NO_BORDER: {
-        'displayName': 'Line Callout 3 {No Border}',
-        'name': 'callout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE_CALLOUT_4: {
-        'displayName': 'Line Callout 3',
-        'name': 'borderCallout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE_CALLOUT_4_ACCENT_BAR: {
-        'displayName': 'Line Callout 3 {Accent Bar}',
-        'name': 'accentCallout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE_CALLOUT_4_BORDER_AND_ACCENT_BAR: {
-        'displayName': 'Line Callout 3 {Border and Accent Bar}',
-        'name': 'accentBorderCallout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE_CALLOUT_4_NO_BORDER: {
-        'displayName': 'Line Callout 3 {No Border}',
-        'name': 'callout3',
-        'avLst': {
-            'adj1': 18750,
-            'adj2': -8333,
-            'adj3': 18750,
-            'adj4': -16667,
-            'adj5': 100000,
-            'adj6': -16667,
-            'adj7': 112963,
-            'adj8': -8333
-        }
-    },
-    LINE: {
-        'displayName': 'Line',
-        'name': 'line',
-        'avLst': {}
-    },
-    LINE_INVERSE: {
-        'displayName': 'Straight Connector',
-        'name': 'lineInv',
-        'avLst': {}
-    },
-    MATH_DIVIDE: {
-        'displayName': 'Division',
-        'name': 'mathDivide',
-        'avLst': {
-            'adj1': 23520,
-            'adj2': 5880,
-            'adj3': 11760
-        }
-    },
-    MATH_EQUAL: {
-        'displayName': 'Equal',
-        'name': 'mathEqual',
-        'avLst': {
-            'adj1': 23520,
-            'adj2': 11760
-        }
-    },
-    MATH_MINUS: {
-        'displayName': 'Minus',
-        'name': 'mathMinus',
-        'avLst': {
-            'adj1': 23520
-        }
-    },
-    MATH_MULTIPLY: {
-        'displayName': 'Multiply',
-        'name': 'mathMultiply',
-        'avLst': {
-            'adj1': 23520
-        }
-    },
-    MATH_NOT_EQUAL: {
-        'displayName': 'Not Equal',
-        'name': 'mathNotEqual',
-        'avLst': {
-            'adj1': 23520,
-            'adj2': 6600000,
-            'adj3': 11760
-        }
-    },
-    MATH_PLUS: {
-        'displayName': 'Plus',
-        'name': 'mathPlus',
-        'avLst': {
-            'adj1': 23520
-        }
-    },
-    MOON: {
-        'displayName': 'Moon',
-        'name': 'moon',
-        'avLst': {
-            'adj': 50000
-        }
-    },
-    NON_ISOSCELES_TRAPEZOID: {
-        'displayName': 'Non-isosceles Trapezoid',
-        'name': 'nonIsoscelesTrapezoid',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000
-        }
-    },
-    NOTCHED_RIGHT_ARROW: {
-        'displayName': 'Notched Right Arrow',
-        'name': 'notchedRightArrow',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    NO_SYMBOL: {
-        'displayName': '"No" symbol',
-        'name': 'noSmoking',
-        'avLst': {
-            'adj': 18750
-        }
-    },
-    OCTAGON: {
-        'displayName': 'Octagon',
-        'name': 'octagon',
-        'avLst': {
-            'adj': 29289
-        }
-    },
-    OVAL: {
-        'displayName': 'Oval',
-        'name': 'ellipse',
-        'avLst': {}
-    },
-    OVAL_CALLOUT: {
-        'displayName': 'Oval Callout',
-        'name': 'wedgeEllipseCallout',
-        'avLst': {
-            'adj1': -20833,
-            'adj2': 62500
-        }
-    },
-    PARALLELOGRAM: {
-        'displayName': 'Parallelogram',
-        'name': 'parallelogram',
-        'avLst': {
-            'adj': 25000
-        }
-    },
-    PENTAGON: {
-        'displayName': 'Pentagon',
-        'name': 'homePlate',
-        'avLst': {
-            'adj': 50000
-        }
-    },
-    PIE: {
-        'displayName': 'Pie',
-        'name': 'pie',
-        'avLst': {
-            'adj1': 0,
-            'adj2': 16200000
-        }
-    },
-    PIE_WEDGE: {
-        'displayName': 'Pie',
-        'name': 'pieWedge',
-        'avLst': {}
-    },
-    PLAQUE: {
-        'displayName': 'Plaque',
-        'name': 'plaque',
-        'avLst': {
-            'adj': 16667
-        }
-    },
-    PLAQUE_TABS: {
-        'displayName': 'Plaque Tabs',
-        'name': 'plaqueTabs',
-        'avLst': {}
-    },
-    QUAD_ARROW: {
-        'displayName': 'Quad Arrow',
-        'name': 'quadArrow',
-        'avLst': {
-            'adj1': 22500,
-            'adj2': 22500,
-            'adj3': 22500
-        }
-    },
-    QUAD_ARROW_CALLOUT: {
-        'displayName': 'Quad Arrow Callout',
-        'name': 'quadArrowCallout',
-        'avLst': {
-            'adj1': 18515,
-            'adj2': 18515,
-            'adj3': 18515,
-            'adj4': 48123
-        }
-    },
-    RECTANGLE: {
-        'displayName': 'Rectangle',
-        'name': 'rect',
-        'avLst': {}
-    },
-    RECTANGULAR_CALLOUT: {
-        'displayName': 'Rectangular Callout',
-        'name': 'wedgeRectCallout',
-        'avLst': {
-            'adj1': -20833,
-            'adj2': 62500
-        }
-    },
-    REGULAR_PENTAGON: {
-        'displayName': 'Regular Pentagon',
-        'name': 'pentagon',
-        'avLst': {
-            'hf': 105146,
-            'vf': 110557
-        }
-    },
-    RIGHT_ARROW: {
-        'displayName': 'Right Arrow',
-        'name': 'rightArrow',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    RIGHT_ARROW_CALLOUT: {
-        'displayName': 'Right Arrow Callout',
-        'name': 'rightArrowCallout',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 64977
-        }
-    },
-    RIGHT_BRACE: {
-        'displayName': 'Right Brace',
-        'name': 'rightBrace',
-        'avLst': {
-            'adj1': 8333,
-            'adj2': 50000
-        }
-    },
-    RIGHT_BRACKET: {
-        'displayName': 'Right Bracket',
-        'name': 'rightBracket',
-        'avLst': {
-            'adj': 8333
-        }
-    },
-    RIGHT_TRIANGLE: {
-        'displayName': 'Right Triangle',
-        'name': 'rtTriangle',
-        'avLst': {}
-    },
-    ROUNDED_RECTANGLE: {
-        'displayName': 'Rounded Rectangle',
-        'name': 'roundRect',
-        'avLst': {
-            'adj': 16667
-        }
-    },
-    ROUNDED_RECTANGULAR_CALLOUT: {
-        'displayName': 'Rounded Rectangular Callout',
-        'name': 'wedgeRoundRectCallout',
-        'avLst': {
-            'adj1': -20833,
-            'adj2': 62500,
-            'adj3': 16667
-        }
-    },
-    ROUND_1_RECTANGLE: {
-        'displayName': 'Round Single Corner Rectangle',
-        'name': 'round1Rect',
-        'avLst': {
-            'adj': 16667
-        }
-    },
-    ROUND_2_DIAG_RECTANGLE: {
-        'displayName': 'Round Diagonal Corner Rectangle',
-        'name': 'round2DiagRect',
-        'avLst': {
-            'adj1': 16667,
-            'adj2': 0
-        }
-    },
-    ROUND_2_SAME_RECTANGLE: {
-        'displayName': 'Round Same Side Corner Rectangle',
-        'name': 'round2SameRect',
-        'avLst': {
-            'adj1': 16667,
-            'adj2': 0
-        }
-    },
-    SMILEY_FACE: {
-        'displayName': 'Smiley Face',
-        'name': 'smileyFace',
-        'avLst': {
-            'adj': 4653
-        }
-    },
-    SNIP_1_RECTANGLE: {
-        'displayName': 'Snip Single Corner Rectangle',
-        'name': 'snip1Rect',
-        'avLst': {
-            'adj': 16667
-        }
-    },
-    SNIP_2_DIAG_RECTANGLE: {
-        'displayName': 'Snip Diagonal Corner Rectangle',
-        'name': 'snip2DiagRect',
-        'avLst': {
-            'adj1': 0,
-            'adj2': 16667
-        }
-    },
-    SNIP_2_SAME_RECTANGLE: {
-        'displayName': 'Snip Same Side Corner Rectangle',
-        'name': 'snip2SameRect',
-        'avLst': {
-            'adj1': 16667,
-            'adj2': 0
-        }
-    },
-    SNIP_ROUND_RECTANGLE: {
-        'displayName': 'Snip and Round Single Corner Rectangle',
-        'name': 'snipRoundRect',
-        'avLst': {
-            'adj1': 16667,
-            'adj2': 16667
-        }
-    },
-    SQUARE_TABS: {
-        'displayName': 'Square Tabs',
-        'name': 'squareTabs',
-        'avLst': {}
-    },
-    STAR_10_POINT: {
-        'displayName': '10-Point Star',
-        'name': 'star10',
-        'avLst': {
-            'adj': 42533,
-            'hf': 105146
-        }
-    },
-    STAR_12_POINT: {
-        'displayName': '12-Point Star',
-        'name': 'star12',
-        'avLst': {
-            'adj': 37500
-        }
-    },
-    STAR_16_POINT: {
-        'displayName': '16-Point Star',
-        'name': 'star16',
-        'avLst': {
-            'adj': 37500
-        }
-    },
-    STAR_24_POINT: {
-        'displayName': '24-Point Star',
-        'name': 'star24',
-        'avLst': {
-            'adj': 37500
-        }
-    },
-    STAR_32_POINT: {
-        'displayName': '32-Point Star',
-        'name': 'star32',
-        'avLst': {
-            'adj': 37500
-        }
-    },
-    STAR_4_POINT: {
-        'displayName': '4-Point Star',
-        'name': 'star4',
-        'avLst': {
-            'adj': 12500
-        }
-    },
-    STAR_5_POINT: {
-        'displayName': '5-Point Star',
-        'name': 'star5',
-        'avLst': {
-            'adj': 19098,
-            'hf': 105146,
-            'vf': 110557
-        }
-    },
-    STAR_6_POINT: {
-        'displayName': '6-Point Star',
-        'name': 'star6',
-        'avLst': {
-            'adj': 28868,
-            'hf': 115470
-        }
-    },
-    STAR_7_POINT: {
-        'displayName': '7-Point Star',
-        'name': 'star7',
-        'avLst': {
-            'adj': 34601,
-            'hf': 102572,
-            'vf': 105210
-        }
-    },
-    STAR_8_POINT: {
-        'displayName': '8-Point Star',
-        'name': 'star8',
-        'avLst': {
-            'adj': 37500
-        }
-    },
-    STRIPED_RIGHT_ARROW: {
-        'displayName': 'Striped Right Arrow',
-        'name': 'stripedRightArrow',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    SUN: {
-        'displayName': 'Sun',
-        'name': 'sun',
-        'avLst': {
-            'adj': 25000
-        }
-    },
-    SWOOSH_ARROW: {
-        'displayName': 'Swoosh Arrow',
-        'name': 'swooshArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 16667
-        }
-    },
-    TEAR: {
-        'displayName': 'Teardrop',
-        'name': 'teardrop',
-        'avLst': {
-            'adj': 100000
-        }
-    },
-    TRAPEZOID: {
-        'displayName': 'Trapezoid',
-        'name': 'trapezoid',
-        'avLst': {
-            'adj': 25000
-        }
-    },
-    UP_ARROW: {
-        'displayName': 'Up Arrow',
-        'name': 'upArrow',
-        'avLst': {}
-    },
-    UP_ARROW_CALLOUT: {
-        'displayName': 'Up Arrow Callout',
-        'name': 'upArrowCallout',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 64977
-        }
-    },
-    UP_DOWN_ARROW: {
-        'displayName': 'Up-Down Arrow',
-        'name': 'upDownArrow',
-        'avLst': {
-            'adj1': 50000,
-            'adj2': 50000
-        }
-    },
-    UP_DOWN_ARROW_CALLOUT: {
-        'displayName': 'Up-Down Arrow Callout',
-        'name': 'upDownArrowCallout',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 48123
-        }
-    },
-    UP_RIBBON: {
-        'displayName': 'Up Ribbon',
-        'name': 'ribbon2',
-        'avLst': {
-            'adj1': 16667,
-            'adj2': 50000
-        }
-    },
-    U_TURN_ARROW: {
-        'displayName': 'U-Turn Arrow',
-        'name': 'uturnArrow',
-        'avLst': {
-            'adj1': 25000,
-            'adj2': 25000,
-            'adj3': 25000,
-            'adj4': 43750,
-            'adj5': 75000
-        }
-    },
-    VERTICAL_SCROLL: {
-        'displayName': 'Vertical Scroll',
-        'name': 'verticalScroll',
-        'avLst': {
-            'adj': 12500
-        }
-    },
-    WAVE: {
-        'displayName': 'Wave',
-        'name': 'wave',
-        'avLst': {
-            'adj1': 12500,
-            'adj2': 0
-        }
-    }
-});
-
-/**
  * PptxGenJS: XML Generation
  */
 var imageSizingXml = {
@@ -2307,7 +1128,6 @@ function slideObjectToXml(slide) {
         var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide.presLayout), cy = 0;
         var placeholderObj;
         var locationAttr = '';
-        var shapeType = null;
         if (slide.slideLayout !== undefined && slide.slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
             placeholderObj = slide['slideLayout']['data'].filter(function (object) { return object.options.placeholder === slideItemObj.options.placeholder; })[0];
         }
@@ -2332,9 +1152,6 @@ function slideObjectToXml(slide) {
             if (placeholderObj.options.h || placeholderObj.options.h === 0)
                 cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout);
         }
-        //
-        if (slideItemObj.shape)
-            shapeType = getShapeInfo(slideItemObj.shape);
         //
         if (slideItemObj.options.flipH)
             locationAttr += ' flipH="1"';
@@ -2629,8 +1446,6 @@ function slideObjectToXml(slide) {
                     slideItemObj.options.bodyProp.bIns = Math.round(slideItemObj.options.margin * ONEPT);
                     slideItemObj.options.bodyProp.tIns = Math.round(slideItemObj.options.margin * ONEPT);
                 }
-                if (shapeType === null)
-                    shapeType = getShapeInfo(null);
                 // A: Start SHAPE =======================================================
                 strSlideXml += '<p:sp>';
                 // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
@@ -2645,7 +1460,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
                 strSlideXml +=
                     '<a:prstGeom prst="' +
-                        shapeType.name +
+                        slideItemObj.shape +
                         '"><a:avLst>' +
                         (slideItemObj.options.rectRadius
                             ? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
@@ -3856,18 +2671,6 @@ function correctShadowOptions(ShadowOptions) {
         ShadowOptions.opacity = Number(ShadowOptions.opacity);
     }
 }
-function getShapeInfo(shapeName) {
-    if (!shapeName)
-        return PowerPointShapes.RECTANGLE;
-    if (typeof shapeName === 'object' && shapeName.name && shapeName.displayName && shapeName.avLst)
-        return shapeName;
-    if (PowerPointShapes[shapeName])
-        return PowerPointShapes[shapeName];
-    var objShape = Object.keys(PowerPointShapes).filter(function (key) { return PowerPointShapes[key].name === shapeName || PowerPointShapes[key].displayName; })[0];
-    if (typeof objShape !== 'undefined' && objShape !== null)
-        return objShape;
-    return PowerPointShapes.RECTANGLE;
-}
 
 /**
  * PptxGenJS: Slide Object Generators
@@ -3894,9 +2697,9 @@ function createSlideObject(slideDef, target) {
             else if (MASTER_OBJECTS[key] && key === 'image')
                 addImageDefinition(tgt, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'line')
-                addShapeDefinition(tgt, BASE_SHAPES.LINE, object[key]);
+                addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'rect')
-                addShapeDefinition(tgt, BASE_SHAPES.RECTANGLE, object[key]);
+                addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key]);
             else if (MASTER_OBJECTS[key] && key === 'text')
                 addTextDefinition(tgt, object[key].text, object[key].options, false);
             else if (MASTER_OBJECTS[key] && key === 'placeholder') {
@@ -3934,7 +2737,7 @@ function createSlideObject(slideDef, target) {
  * Generate the chart based on input data.
  * OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
  *
- * @param {CHART_TYPE_NAMES | IChartMulti[]} `type` should belong to: 'column', 'pie'
+ * @param {CHART_NAME | IChartMulti[]} `type` should belong to: 'column', 'pie'
  * @param {[]} `data` a JSON object with follow the following format
  * @param {IChartOpts} `opt` chart options
  * @param {ISlide} `target` slide object that the chart will be added to
@@ -3999,7 +2802,7 @@ function addChartDefinition(target, type, data, opt) {
     });
     options = tmpOpt && typeof tmpOpt === 'object' ? tmpOpt : {};
     // STEP 1: TODO: check for reqd fields, correct type, etc
-    // `type` exists in CHART_TYPES
+    // `type` exists in CHART_TYPE
     // Array.isArray(data)
     /*
         if ( Array.isArray(rel.data) && rel.data.length > 0 && typeof rel.data[0] === 'object'
@@ -4014,7 +2817,7 @@ function addChartDefinition(target, type, data, opt) {
         */
     // STEP 2: Set default options/decode user options
     // A: Core
-    options.type = type;
+    options._type = type;
     options.x = typeof options.x !== 'undefined' && options.x != null && !isNaN(Number(options.x)) ? options.x : 1;
     options.y = typeof options.y !== 'undefined' && options.y != null && !isNaN(Number(options.y)) ? options.y : 1;
     options.w = options.w || '50%';
@@ -4024,7 +2827,7 @@ function addChartDefinition(target, type, data, opt) {
         options.barDir = 'col';
     // IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
     if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-        options.dataLabelPosition = options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT ? 'bestFit' : 'ctr';
+        options.dataLabelPosition = options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT ? 'bestFit' : 'ctr';
     options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
     if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
         options.legendPos = 'r';
@@ -4060,9 +2863,9 @@ function addChartDefinition(target, type, data, opt) {
         });
     }
     // Set gridline defaults
-    options.catGridLine = options.catGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
-    options.valGridLine = options.valGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : {});
-    options.serGridLine = options.serGridLine || (options.type === CHART_TYPES.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
+    options.catGridLine = options.catGridLine || (options._type === CHART_TYPE.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
+    options.valGridLine = options.valGridLine || (options._type === CHART_TYPE.SCATTER ? { color: 'D9D9D9', size: 1 } : {});
+    options.serGridLine = options.serGridLine || (options._type === CHART_TYPE.SCATTER ? { color: 'D9D9D9', size: 1 } : { style: 'none' });
     correctGridLineOptions(options.catGridLine);
     correctGridLineOptions(options.valGridLine);
     correctGridLineOptions(options.serGridLine);
@@ -4091,7 +2894,7 @@ function addChartDefinition(target, type, data, opt) {
     options.barGapDepthPct = !isNaN(options.barGapDepthPct) && options.barGapDepthPct >= 0 && options.barGapDepthPct <= 1000 ? options.barGapDepthPct : 150;
     options.chartColors = Array.isArray(options.chartColors)
         ? options.chartColors
-        : options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT
+        : options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
             ? PIECHART_COLORS
             : BARCHART_COLORS;
     options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null;
@@ -4108,14 +2911,14 @@ function addChartDefinition(target, type, data, opt) {
     if (options.dataBorder && (!options.dataBorder.color || typeof options.dataBorder.color !== 'string' || options.dataBorder.color.length !== 6))
         options.dataBorder.color = 'F9F9F9';
     //
-    if (!options.dataLabelFormatCode && options.type === CHART_TYPES.SCATTER)
+    if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER)
         options.dataLabelFormatCode = 'General';
     options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0';
-    if (options.type === CHART_TYPES.PIE || options.type === CHART_TYPES.DOUGHNUT)
+    if (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)
         options.dataLabelFormatCode = options.showPercent ? '0%' : 'General';
     //
     // Set default format for Scatter chart labels to custom string if not defined
-    if (!options.dataLabelFormatScatter && options.type === CHART_TYPES.SCATTER)
+    if (!options.dataLabelFormatScatter && options._type === CHART_TYPE.SCATTER)
         options.dataLabelFormatScatter = 'custom';
     //
     options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2;
@@ -4130,7 +2933,7 @@ function addChartDefinition(target, type, data, opt) {
         rId: target.relsChart.length + 1,
         data: tmpData,
         opts: options,
-        type: options.type,
+        type: options._type,
         globalId: chartId,
         fileName: 'chart' + chartId + '.xml',
         Target: '/ppt/charts/chart' + chartId + '.xml',
@@ -4389,24 +3192,24 @@ function addNotesDefinition(target, notes) {
  * @param {IShapeOptions} opt
  * @param {ISlide} target slide object that the shape should be added to
  */
-function addShapeDefinition(target, shape, opt) {
+function addShapeDefinition(target, shapeName, opt) {
     var options = typeof opt === 'object' ? opt : {};
     var newObject = {
         type: SLIDE_OBJECT_TYPES.text,
-        shape: shape,
+        shape: shapeName || SHAPE_TYPE.RECTANGLE,
         options: options,
         text: null,
     };
     // 1: Reality check
-    if (!shape || typeof shape !== 'object')
+    if (!shapeName)
         throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`');
     // 2: Set options defaults
     options.x = options.x || (options.x === 0 ? 0 : 1);
     options.y = options.y || (options.y === 0 ? 0 : 1);
     options.w = options.w || (options.w === 0 ? 0 : 1);
     options.h = options.h || (options.h === 0 ? 0 : 1);
-    options.line = options.line || (shape.name === 'line' ? '333333' : null);
-    options.lineSize = options.lineSize || (shape.name === 'line' ? 1 : null);
+    options.line = options.line || (shapeName === SHAPE_TYPE.LINE ? '333333' : null);
+    options.lineSize = options.lineSize || (shapeName === SHAPE_TYPE.LINE ? 1 : null);
     if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0)
         options.lineDash = 'solid';
     // 3: Add object to slide
@@ -4631,7 +3434,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
         type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
         options: opt,
-        shape: opt.shape,
+        shape: opt.shape || SHAPE_TYPE.RECTANGLE,
     };
     // STEP 1: Set some options
     {
@@ -4640,7 +3443,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
             opt.color = opt.color || target.color || DEF_FONT_COLOR; // Set color (options > inherit from Slide > default to black)
         }
         // B
-        if (opt.shape && opt.shape.name === 'line') {
+        if (opt.shape === SHAPE_TYPE.LINE) {
             opt.line = opt.line || '333333';
             opt.lineSize = opt.lineSize || 1;
         }
@@ -4832,7 +3635,7 @@ var Slide = /** @class */ (function () {
     /**
      * Generate the chart based on input data.
      * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
-     * @param {CHART_TYPE_NAMES|IChartMulti[]} `type` - chart type
+     * @param {CHART_NAME|IChartMulti[]} type - chart type
      * @param {object[]} data - a JSON object with follow the following format
      * @param {IChartOpts} options - chart options
      * @example
@@ -4853,7 +3656,11 @@ var Slide = /** @class */ (function () {
      * }
      * @return {Slide} this class
      */
+    // TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
     Slide.prototype.addChart = function (type, data, options) {
+        // Set `_type` on IChartOpts as its what is used as object is passed around
+        var optionsWithType = options || {};
+        optionsWithType._type = type;
         addChartDefinition(this, type, data, options);
         return this;
     };
@@ -4889,24 +3696,29 @@ var Slide = /** @class */ (function () {
     };
     /**
      * Add shape object to Slide
-     * @param {IShape} shape - shape object
+     * @param {SHAPE_NAME} shapeName - shape name
      * @param {IShapeOptions} options - shape options
      * @return {Slide} this class
      */
-    Slide.prototype.addShape = function (shape, options) {
-        addShapeDefinition(this, shape, options);
+    Slide.prototype.addShape = function (shapeName, options) {
+        // NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
+        // But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
+        // <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'
+        // TypeScript => `pptxgen.shapes.RECTANGLE` [string] "rect" ... shapeName = 'rect'
+        //let shapeNameDecode = typeof shapeName === 'object' && shapeName['name'] ? shapeName['name'] : shapeName
+        addShapeDefinition(this, shapeName, options);
         return this;
     };
     /**
      * Add shape object to Slide
      * @note can be recursive
-     * @param {TableRow[]} arrTabRows - table rows
+     * @param {TableRow[]} tableRows - table rows
      * @param {ITableOptions} options - table options
      * @return {Slide} this class
      */
-    Slide.prototype.addTable = function (arrTabRows, options) {
+    Slide.prototype.addTable = function (tableRows, options) {
         // FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
-        addTableDefinition(this, arrTabRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide);
+        addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide);
         return this;
     };
     /**
@@ -4914,7 +3726,6 @@ var Slide = /** @class */ (function () {
      * @param {string|IText[]} text - text string or complex object
      * @param {ITextOpts} options - text options
      * @return {Slide} this class
-     * @since: 1.0.0
      */
     Slide.prototype.addText = function (text, options) {
         addTextDefinition(this, text, options, false);
@@ -5011,11 +3822,11 @@ function createExcelWorksheet(chartObject, zip) {
         {
             // A: Start XML
             var strSharedStrings_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
                 strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (intBubbleCols + 1) + '" uniqueCount="' + (intBubbleCols + 1) + '">';
             }
-            else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
                 strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">';
             }
@@ -5030,7 +3841,7 @@ function createExcelWorksheet(chartObject, zip) {
                 strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
             }
             // C: Add `name`/Series
-            if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
                 data.forEach(function (objData, idx) {
                     if (idx === 0)
                         strSharedStrings_1 += '<si><t>X-Axis</t></si>';
@@ -5046,7 +3857,7 @@ function createExcelWorksheet(chartObject, zip) {
                 });
             }
             // D: Add `labels`/Categories
-            if (chartObject.opts.type !== CHART_TYPES.BUBBLE && chartObject.opts.type !== CHART_TYPES.SCATTER) {
+            if (chartObject.opts._type !== CHART_TYPE.BUBBLE && chartObject.opts._type !== CHART_TYPE.SCATTER) {
                 data[0].labels.forEach(function (label) {
                     strSharedStrings_1 += '<si><t>' + encodeXmlEntities(label) + '</t></si>';
                 });
@@ -5057,8 +3868,8 @@ function createExcelWorksheet(chartObject, zip) {
         // tables/table1.xml
         {
             var strTableXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
-            if (chartObject.opts.type === CHART_TYPES.BUBBLE) ;
-            else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE) ;
+            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
                 strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
                         LETTERS[data.length - 1] +
@@ -5091,10 +3902,10 @@ function createExcelWorksheet(chartObject, zip) {
             var strSheetXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
             strSheetXml_1 +=
                 '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">';
-            if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />';
             }
-            else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />';
             }
             else {
@@ -5102,7 +3913,7 @@ function createExcelWorksheet(chartObject, zip) {
             }
             strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
             strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
-            if (chartObject.opts.type === CHART_TYPES.BUBBLE) {
+            if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
                 strSheetXml_1 += '<cols>';
                 strSheetXml_1 += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
                 strSheetXml_1 += '</cols>';
@@ -5151,7 +3962,7 @@ function createExcelWorksheet(chartObject, zip) {
                     strSheetXml_1 += '</row>';
                 });
             }
-            else if (chartObject.opts.type === CHART_TYPES.SCATTER) {
+            else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
                 strSheetXml_1 += '<cols>';
                 strSheetXml_1 += '<col min="1" max="' + data.length + '" width="11" customWidth="1" />';
                 //data.forEach((obj,idx)=>{ strSheetXml += '<col min="'+(idx+1)+'" max="'+(idx+1)+'" width="11" customWidth="1" />' });
@@ -5307,7 +4118,7 @@ function makeXmlCharts(rel) {
             strXml += '<c:autoTitleDeleted val="1"/>';
         }
         // Add 3D view tag
-        if (rel.opts.type === CHART_TYPES.BAR3D) {
+        if (rel.opts._type === CHART_TYPE.BAR3D) {
             strXml += '<c:view3D>';
             strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>';
             strXml += ' <c:rotY val="' + rel.opts.v3DRotY + '"/>';
@@ -5335,8 +4146,8 @@ function makeXmlCharts(rel) {
         }
     }
     // A: Create Chart XML -----------------------------------------------------------
-    if (Array.isArray(rel.opts.type)) {
-        rel.opts.type.forEach(function (type) {
+    if (Array.isArray(rel.opts._type)) {
+        rel.opts._type.forEach(function (type) {
             // TODO: FIXME: theres `options` on chart rels??
             var options = getMix(rel.opts, type.options);
             //let options: IChartOpts = { type: type.type, }
@@ -5347,10 +4158,10 @@ function makeXmlCharts(rel) {
         });
     }
     else {
-        strXml += makeChartType(rel.opts.type, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, false);
+        strXml += makeChartType(rel.opts._type, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, false);
     }
     // B: Axes -----------------------------------------------------------
-    if (rel.opts.type !== CHART_TYPES.PIE && rel.opts.type !== CHART_TYPES.DOUGHNUT) {
+    if (rel.opts._type !== CHART_TYPE.PIE && rel.opts._type !== CHART_TYPE.DOUGHNUT) {
         // Param check
         if (rel.opts.valAxes && !usesSecondaryValAxis) {
             throw new Error('Secondary axis must be used by one of the multiple charts');
@@ -5376,7 +4187,7 @@ function makeXmlCharts(rel) {
         else {
             strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY);
             // Add series axis for 3D bar
-            if (rel.opts.type === CHART_TYPES.BAR3D) {
+            if (rel.opts._type === CHART_TYPE.BAR3D) {
                 strXml += makeSerAxis(rel.opts, AXIS_ID_SERIES_PRIMARY, AXIS_ID_VALUE_PRIMARY);
             }
         }
@@ -5453,7 +4264,7 @@ function makeXmlCharts(rel) {
     }
     strXml += '  <c:plotVisOnly val="1"/>';
     strXml += '  <c:dispBlanksAs val="' + rel.opts.displayBlanksAs + '"/>';
-    if (rel.opts.type === CHART_TYPES.SCATTER)
+    if (rel.opts._type === CHART_TYPE.SCATTER)
         strXml += '<c:showDLblsOverMax val="1"/>';
     strXml += '</c:chart>';
     // D: CHARTSPACE SHAPE PROPS
@@ -5472,7 +4283,7 @@ function makeXmlCharts(rel) {
  * Create XML string for any given chart type
  * @example: <c:bubbleChart> or <c:lineChart>
  *
- * @param {CHART_TYPE_NAMES} `chartType` chart type name
+ * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
  * @param {IChartOpts} `opts` chart options
  * @param {string} `valAxisId`
@@ -5485,18 +4296,18 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
     // ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
     var strXml = '';
     switch (chartType) {
-        case CHART_TYPES.AREA:
-        case CHART_TYPES.BAR:
-        case CHART_TYPES.BAR3D:
-        case CHART_TYPES.LINE:
-        case CHART_TYPES.RADAR:
+        case CHART_TYPE.AREA:
+        case CHART_TYPE.BAR:
+        case CHART_TYPE.BAR3D:
+        case CHART_TYPE.LINE:
+        case CHART_TYPE.RADAR:
             // 1: Start Chart
             strXml += '<c:' + chartType + 'Chart>';
-            if (chartType === CHART_TYPES.BAR || chartType === CHART_TYPES.BAR3D) {
+            if (chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) {
                 strXml += '<c:barDir val="' + opts.barDir + '"/>';
                 strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
             }
-            if (chartType === CHART_TYPES.RADAR) {
+            if (chartType === CHART_TYPE.RADAR) {
                 strXml += '<c:radarStyle val="' + opts.radarStyle + '"/>';
             }
             strXml += '<c:varyColors val="0"/>';
@@ -5541,7 +4352,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 else {
                     strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
                 }
-                if (chartType === CHART_TYPES.LINE) {
+                if (chartType === CHART_TYPE.LINE) {
                     if (opts.lineSize === 0) {
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
@@ -5562,7 +4373,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:spPr>';
                 // Data Labels per series
                 // [20190117] NOTE: Adding these to RADAR chart causes unrecoverable corruption!
-                if (chartType !== CHART_TYPES.RADAR) {
+                if (chartType !== CHART_TYPE.RADAR) {
                     strXml += '  <c:dLbls>';
                     strXml += '    <c:numFmt formatCode="' + opts.dataLabelFormatCode + '" sourceLinked="0"/>';
                     if (opts.dataLabelBkgrdColors) {
@@ -5581,7 +4392,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      </a:pPr></a:p>';
                     strXml += '    </c:txPr>';
                     // Setting dLblPos tag for bar3D seems to break the generated chart
-                    if (chartType !== CHART_TYPES.AREA && chartType !== CHART_TYPES.BAR3D) {
+                    if (chartType !== CHART_TYPE.AREA && chartType !== CHART_TYPE.BAR3D) {
                         if (opts.dataLabelPosition)
                             strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
                     }
@@ -5595,7 +4406,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '  </c:dLbls>';
                 }
                 // 'c:marker' tag: `lineDataSymbol`
-                if (chartType === CHART_TYPES.LINE || chartType === CHART_TYPES.RADAR) {
+                if (chartType === CHART_TYPE.LINE || chartType === CHART_TYPE.RADAR) {
                     strXml += '<c:marker>';
                     strXml += '  <c:symbol val="' + opts.lineDataSymbol + '"/>';
                     if (opts.lineDataSymbolSize) {
@@ -5619,7 +4430,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // Color chart bars various colors
                 // Allow users with a single data set to pass their own array of colors (check for this using != ours)
-                if ((chartType === CHART_TYPES.BAR || chartType === CHART_TYPES.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
+                if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
@@ -5631,7 +4442,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         if (opts.lineSize === 0) {
                             strXml += '<a:ln><a:noFill/></a:ln>';
                         }
-                        else if (chartType === CHART_TYPES.BAR) {
+                        else if (chartType === CHART_TYPE.BAR) {
                             strXml += '<a:solidFill>';
                             strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>';
                             strXml += '</a:solidFill>';
@@ -5693,7 +4504,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '  </c:val>';
                 }
                 // Option: `smooth`
-                if (chartType === CHART_TYPES.LINE)
+                if (chartType === CHART_TYPE.LINE)
                     strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>';
                 // 4: Close "SERIES"
                 strXml += '</c:ser>';
@@ -5715,7 +4526,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '    </c:txPr>';
                 // NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
                 // Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
-                if (opts.type !== CHART_TYPES.AREA && opts.type !== CHART_TYPES.RADAR && !isMultiTypeChart)
+                if (opts._type !== CHART_TYPE.AREA && opts._type !== CHART_TYPE.RADAR && !isMultiTypeChart)
                     if (opts.dataLabelPosition)
                         strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
                 strXml += '    <c:showLegendKey val="0"/>';
@@ -5728,16 +4539,16 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:dLbls>';
             }
             // 4: Add more chart options (gapWidth, line Marker, etc.)
-            if (chartType === CHART_TYPES.BAR) {
+            if (chartType === CHART_TYPE.BAR) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
                 strXml += '  <c:overlap val="' + ((opts.barGrouping || '').indexOf('tacked') > -1 ? 100 : 0) + '"/>';
             }
-            else if (chartType === CHART_TYPES.BAR3D) {
+            else if (chartType === CHART_TYPE.BAR3D) {
                 strXml += '  <c:gapWidth val="' + opts.barGapWidthPct + '"/>';
                 strXml += '  <c:gapDepth val="' + opts.barGapDepthPct + '"/>';
                 strXml += '  <c:shape val="' + opts.bar3DShape + '"/>';
             }
-            else if (chartType === CHART_TYPES.LINE) {
+            else if (chartType === CHART_TYPE.LINE) {
                 strXml += '  <c:marker val="1"/>';
             }
             // 5: Add axisId (NOTE: order matters! (category comes first))
@@ -5748,7 +4559,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '</c:' + chartType + 'Chart>';
             // end switch
             break;
-        case CHART_TYPES.SCATTER:
+        case CHART_TYPE.SCATTER:
             /*
                 `data` = [
                     { name:'X-Axis',    values:[1,2,3,4,5,6,7,8,9,10,11,12] },
@@ -6032,7 +4843,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '</c:' + chartType + 'Chart>';
             // end switch
             break;
-        case CHART_TYPES.BUBBLE:
+        case CHART_TYPE.BUBBLE:
             /*
                 `data` = [
                     { name:'X-Axis',     values:[1,2,3,4,5,6,7,8,9,10,11,12] },
@@ -6176,8 +4987,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '</c:' + chartType + 'Chart>';
             // end switch
             break;
-        case CHART_TYPES.DOUGHNUT:
-        case CHART_TYPES.PIE:
+        case CHART_TYPE.DOUGHNUT:
+        case CHART_TYPE.PIE:
             // Use the same let name so code blocks from barChart are interchangeable
             var obj = data[0];
             /* EX:
@@ -6253,7 +5064,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '        </a:defRPr>';
                 strXml += '      </a:pPr></a:p>';
                 strXml += '    </c:txPr>';
-                if (chartType === CHART_TYPES.PIE) {
+                if (chartType === CHART_TYPE.PIE) {
                     strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'inEnd') + '"/>';
                 }
                 strXml += '    <c:showLegendKey val="0"/>';
@@ -6276,7 +5087,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '		</a:pPr>';
             strXml += '	  </a:p>';
             strXml += '	</c:txPr>';
-            strXml += chartType === CHART_TYPES.PIE ? '<c:dLblPos val="ctr"/>' : '';
+            strXml += chartType === CHART_TYPE.PIE ? '<c:dLblPos val="ctr"/>' : '';
             strXml += '	<c:showLegendKey val="0"/>';
             strXml += '	<c:showVal val="0"/>';
             strXml += '	<c:showCatName val="1"/>';
@@ -6312,7 +5123,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             // 4: Close "SERIES"
             strXml += '  </c:ser>';
             strXml += '  <c:firstSliceAng val="0"/>';
-            if (chartType === CHART_TYPES.DOUGHNUT)
+            if (chartType === CHART_TYPE.DOUGHNUT)
                 strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
             strXml += '</c:' + chartType + 'Chart>';
             // Done with Doughnut/Pie
@@ -6334,7 +5145,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     var strXml = '';
     // Build cat axis tag
     // NOTE: Scatter and Bubble chart need two Val axises as they display numbers on x axis
-    if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
+    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
         strXml += '<c:valAx>';
     }
     else {
@@ -6362,13 +5173,13 @@ function makeCatAxis(opts, axisId, valAxisId) {
         });
     }
     // NOTE: Adding Val Axis Formatting if scatter or bubble charts
-    if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
+    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
         strXml += '  <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>';
     }
     else {
         strXml += '  <c:numFmt formatCode="' + (opts.catLabelFormatCode || 'General') + '" sourceLinked="0"/>';
     }
-    if (opts.type === CHART_TYPES.SCATTER) {
+    if (opts._type === CHART_TYPE.SCATTER) {
         strXml += '  <c:majorTickMark val="none"/>';
         strXml += '  <c:minorTickMark val="none"/>';
         strXml += '  <c:tickLblPos val="nextTo"/>';
@@ -6427,7 +5238,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     // Close cat axis tag
     // NOTE: Added closing tag of val or cat axis based on chart type
-    if (opts.type === CHART_TYPES.SCATTER || opts.type === CHART_TYPES.BUBBLE) {
+    if (opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
         strXml += '</c:valAx>';
     }
     else {
@@ -6471,7 +5282,7 @@ function makeValAxis(opts, valAxisId) {
         });
     }
     strXml += ' <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>';
-    if (opts.type === CHART_TYPES.SCATTER) {
+    if (opts._type === CHART_TYPE.SCATTER) {
         strXml += '  <c:majorTickMark val="none"/>';
         strXml += '  <c:minorTickMark val="none"/>';
         strXml += '  <c:tickLblPos val="nextTo"/>';
@@ -6505,7 +5316,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += ' <c:crosses val="' + crosses + '"/>';
     strXml +=
         ' <c:crossBetween val="' +
-            (opts.type === CHART_TYPES.SCATTER || (Array.isArray(opts.type) && opts.type.filter(function (type) { return type.type === CHART_TYPES.AREA; }).length > 0 ? true : false)
+            (opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(function (type) { return type.type === CHART_TYPE.AREA; }).length > 0 ? true : false)
                 ? 'midCat'
                 : 'between') +
             '"/>';
@@ -6832,7 +5643,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.1.0';
+var VERSION = '3.2.0-beta';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6841,9 +5652,9 @@ var PptxGenJS = /** @class */ (function () {
          */
         this._version = VERSION;
         // Global props
-        this._charts = CHART_TYPES;
+        this._charts = CHART_TYPE;
         this._colors = SCHEME_COLOR_NAMES;
-        this._shapes = PowerPointShapes;
+        this._shapes = SHAPE_TYPE;
         /**
          * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
          * @param {string} masterName - slide master name
