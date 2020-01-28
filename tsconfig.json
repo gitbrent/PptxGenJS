@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "declaration": true,
-    "declarationDir": "./out",
+    "declarationDir": "./out/defs",
     "lib": ["dom", "es2015"],
     "module": "es6",
     "noImplicitAny": false,
