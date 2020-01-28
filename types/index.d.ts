@@ -4,6 +4,7 @@
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
 //                 Nicholas Tietz-Sokolsky <https://github.com/ntietz>
 //                 David Adams <https://github.com/iota-pi>
+//                 Stephen Cronin <https://github.com/cronin4392>
 // TypeScript Version: 3.x
 
 export as namespace PptxGenJS
@@ -44,7 +45,6 @@ declare class PptxGenJS {
 	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PPT will throw errors upon opening!)
 	 */
 	revision: string
-	shapes: {[key: string]: PptxGenJS.IShape}
 	subject: string
 	title: string
 
