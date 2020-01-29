@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.1-beta @ 2020-01-28T05:43:54.445Z */
+/* PptxGenJS 3.1.1-beta @ 2020-01-29T04:32:35.284Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2709,8 +2709,7 @@ function createSlideObject(slideDef, target) {
                 object[key].options.placeholderType = object[key].options.type;
                 delete object[key].options.type; // remap name for earier handling internally
                 object[key].options.placeholderIdx = 100 + idx;
-                if (object[key].text)
-                    addTextDefinition(tgt, object[key].text, object[key].options, true);
+                addTextDefinition(tgt, object[key].text, object[key].options, true);
                 // TODO: ISSUE#599 - only text is suported now (add more below)
                 //else if (object[key].image) addImageDefinition(tgt, object[key].image)
                 /* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
