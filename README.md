@@ -132,21 +132,40 @@ yarn add pptxgenjs
 
 PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
-1. Create a new Presentation
-2. Add a Slide
-3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-4. Save the Presentation
+### Angular/React, ES6, TypeScript
+```typescript
+import pptxgen from "pptxgenjs";
 
-```javascript
-let pptx = new PptxGenJS();
+// 1. Create a new Presentation
+let pres = new pptxgen();
 
-let slide = pptx.addSlide();
+// 2. Add a Slide
+let slide = pres.addSlide();
 
+// 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 let textboxText = "Hello World from PptxGenJS!";
 let textboxOpts = { x: 1, y: 1, align: "center", color: "363636", fill: "f1f1f1" };
 slide.addText(textboxText, textboxOpts);
 
-pptx.writeFile("Sample Presentation");
+// 4. Save the Presentation
+pres.writeFile("Sample Presentation.pptx");
+```
+
+### Script/Web Browser
+```javascript
+// 1. Create a new Presentation
+let pres = new PptxGenJS();
+
+// 2. Add a Slide
+let slide = pres.addSlide();
+
+// 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
+let textboxText = "Hello World from PptxGenJS!";
+let textboxOpts = { x: 1, y: 1, align: "center", color: "363636", fill: "f1f1f1" };
+slide.addText(textboxText, textboxOpts);
+
+// 4. Save the Presentation
+pres.writeFile("Sample Presentation.pptx");
 ```
 
 That's really all there is to it!
