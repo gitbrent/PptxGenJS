@@ -24,6 +24,7 @@ var NODEJS = false;
 if (NODEJS) { var LOGO_STARLABS; }
 
 // Constants
+var TESTMODE = false
 var CUST_NAME = 'S.T.A.R. Laboratories';
 var USER_NAME = 'Barry Allen';
 var COLOR_RED = 'FF0000';
@@ -1554,8 +1555,8 @@ function genSlides_Chart(pptx) {
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
-		// INTERNAL USE: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
-		if (NODEJS) slide.addImage({ path:(NODEJS ? gPaths.ccCopyRemix.path.replace(/http.+\/examples/, '../common') : gPaths.ccCopyRemix.path), x:0.5, y:1.0, w:1.2, h:1.2 });
+		// [TEST][INTERNAL USE]: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
+		if (TESTMODE) slide.addImage({ path:(NODEJS ? gPaths.ccCopyRemix.path.replace(/http.+\/examples/, '../common') : gPaths.ccCopyRemix.path), x:0.5, y:1.0, w:1.2, h:1.2 });
 
 		// TOP-LEFT
 		slide.addText( '.', {x:0.5, y:0.5, w:4.2, h:3.2, fill:'F1F1F1', color:'F1F1F1'} );
