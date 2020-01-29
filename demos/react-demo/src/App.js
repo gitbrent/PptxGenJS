@@ -1,8 +1,8 @@
 import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
-//import pptxgen from "./pptxgen.es.js"; // LOCAL DEV TESTING src=`PptxGenJS/dist`
-import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
+import pptxgen from "./pptxgen.es.js"; // LOCAL DEV TESTING src=`PptxGenJS/dist`
+//import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
 
 function App() {
 	const demoCode = `import pptxgen from "pptxgenjs";
@@ -33,7 +33,26 @@ pptx.writeFile("react-demo.pptx");`;
 
 	function runDemo() {
 		let pptx = new pptxgen();
-		let slide = pptx.addSlide();
+		pptx.defineSlideMaster({
+			title: "MASTER_SLIDE",
+			bkgd: "FFFFFF",
+			margin: [0.5, 0.25, 1.0, 0.25],
+			slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
+			objects: [{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: "003b75" } }, { image: { x: 11.45, y: 5.95, w: 1.67, h: 0.75, data: "logo" } }]
+		});
+		let slide = pptx.addSlide('MASTER_SLIDE');
+
+		let dataChartRadar = [
+		  {
+		    name  : 'Region 1',
+		    labels: ['May', 'June', 'July', 'August', 'September'],
+		    values: [26, 53, 100, 75, 41]
+		   }
+		];
+		slide.addChart( pptx.charts.RADAR, dataChartRadar, { x:0.36, y:2.25, w:4.0, h:3, radarStyle:'standard' } );
+
+		slide.addShape( pptx.shapes.RECTANGLE, {x:4.36, y:2.36, w:5, h:2.5, fill:'FF6699'});
+
 		slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee", align: "center" });
 		pptx.writeFile("pptxgenjs-demo-react.pptx");
 
