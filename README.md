@@ -28,6 +28,8 @@
   - [Additional Builds](#additional-builds)
 - [Documentation](#documentation)
   - [Quick Start Guide](#quick-start-guide)
+    - [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
+    - [Script/Web Browser](#scriptweb-browser)
   - [Library API](#library-api)
   - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
 - [Issues / Suggestions](#issues--suggestions)
