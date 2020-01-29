@@ -9,7 +9,7 @@
 
 export as namespace PptxGenJS
 
-export = PptxGenJS
+export default PptxGenJS
 
 declare class PptxGenJS {
 	/**
