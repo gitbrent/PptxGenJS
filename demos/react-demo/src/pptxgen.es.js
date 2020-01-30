@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-01-26T06:03:31.278Z */
+/* PptxGenJS 3.1.1 @ 2020-01-30T04:55:23.640Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -530,6 +530,14 @@ function genXmlColorSelection(shapeFill, backColor) {
         }
     }
     return outText;
+}
+/**
+ * Get a new rel ID (rId) for charts, media, etc.
+ * @param {ISlide} target - the slide to use
+ * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
+ */
+function getNewRelId(target) {
+    return target.rels.length + target.relsChart.length + target.relsMedia.length + 1;
 }
 
 /**
@@ -2707,8 +2715,7 @@ function createSlideObject(slideDef, target) {
                 object[key].options.placeholderType = object[key].options.type;
                 delete object[key].options.type; // remap name for earier handling internally
                 object[key].options.placeholderIdx = 100 + idx;
-                if (object[key].text)
-                    addTextDefinition(tgt, object[key].text, object[key].options, true);
+                addTextDefinition(tgt, object[key].text, object[key].options, true);
                 // TODO: ISSUE#599 - only text is suported now (add more below)
                 //else if (object[key].image) addImageDefinition(tgt, object[key].image)
                 /* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
@@ -2925,10 +2932,10 @@ function addChartDefinition(target, type, data, opt) {
     // STEP 4: Set props
     resultObject.type = 'chart';
     resultObject.options = options;
-    resultObject.chartRid = target.relsChart.length + 1;
+    resultObject.chartRid = getNewRelId(target);
     // STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     target.relsChart.push({
-        rId: target.relsChart.length + 1,
+        rId: getNewRelId(target),
         data: tmpData,
         opts: options,
         type: options._type,
@@ -2944,6 +2951,8 @@ function addChartDefinition(target, type, data, opt) {
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
  * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
  * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
+ * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
+ * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
 function addImageDefinition(target, opt) {
     var newObject = {
@@ -2963,7 +2972,7 @@ function addImageDefinition(target, opt) {
     var objHyperlink = opt.hyperlink || '';
     var strImageData = opt.data || '';
     var strImagePath = opt.path || '';
-    var imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1;
+    var imageRelId = getNewRelId(target);
     // REALITY-CHECK:
     if (!strImagePath && !strImageData) {
         console.error("ERROR: addImage() requires either 'data' or 'path' parameter!");
@@ -3553,7 +3562,7 @@ function createHyperlinkRels(target, text) {
             else if (!text.options.hyperlink.url && !text.options.hyperlink.slide)
                 console.log("ERROR: 'hyperlink requires either: `url` or `slide`'");
             else {
-                var relId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1;
+                var relId = getNewRelId(target);
                 target.rels.push({
                     type: SLIDE_OBJECT_TYPES.hyperlink,
                     data: text.options.hyperlink.slide ? 'slide' : 'dummy',
@@ -3631,31 +3640,14 @@ var Slide = /** @class */ (function () {
         configurable: true
     });
     /**
-     * Generate the chart based on input data.
-     * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
+     * Add chart to Slide
      * @param {CHART_NAME|IChartMulti[]} type - chart type
-     * @param {object[]} data - a JSON object with follow the following format
+     * @param {object[]} data - data object
      * @param {IChartOpts} options - chart options
-     * @example
-     * {
-     *   title: 'eSurvey chart',
-     *   data: [
-     *		{
-     *			name: 'Income',
-     *			labels: ['2005', '2006', '2007', '2008', '2009'],
-     *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
-     *		},
-     *		{
-     *			name: 'Expense',
-     *			labels: ['2005', '2006', '2007', '2008', '2009'],
-     *			values: [18.1, 22.8, 23.9, 25.1, 25]
-     *		}
-     *	 ]
-     * }
-     * @return {Slide} this class
+     * @return {Slide} this Slide
      */
-    // TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
     Slide.prototype.addChart = function (type, data, options) {
+        // TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
         // Set `_type` on IChartOpts as its what is used as object is passed around
         var optionsWithType = options || {};
         optionsWithType._type = type;
@@ -3663,40 +3655,38 @@ var Slide = /** @class */ (function () {
         return this;
     };
     /**
-     * Add Image object
-     * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
-     * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
+     * Add image to Slide
      * @param {IImageOpts} options - image options
-     * @return {Slide} this class
+     * @return {Slide} this Slide
      */
     Slide.prototype.addImage = function (options) {
         addImageDefinition(this, options);
         return this;
     };
     /**
-     * Add Media (audio/video) object
+     * Add media (audio/video) to Slide
      * @param {IMediaOpts} options - media options
-     * @return {Slide} this class
+     * @return {Slide} this Slide
      */
     Slide.prototype.addMedia = function (options) {
         addMediaDefinition(this, options);
         return this;
     };
     /**
-     * Add Speaker Notes to Slide
+     * Add speaker notes to Slide
      * @docs https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html
      * @param {string} notes - notes to add to slide
-     * @return {Slide} this class
+     * @return {Slide} this Slide
      */
     Slide.prototype.addNotes = function (notes) {
         addNotesDefinition(this, notes);
         return this;
     };
     /**
-     * Add shape object to Slide
+     * Add shape to Slide
      * @param {SHAPE_NAME} shapeName - shape name
      * @param {IShapeOptions} options - shape options
-     * @return {Slide} this class
+     * @return {Slide} this Slide
      */
     Slide.prototype.addShape = function (shapeName, options) {
         // NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
@@ -3708,11 +3698,10 @@ var Slide = /** @class */ (function () {
         return this;
     };
     /**
-     * Add shape object to Slide
-     * @note can be recursive
+     * Add table to Slide
      * @param {TableRow[]} tableRows - table rows
      * @param {ITableOptions} options - table options
-     * @return {Slide} this class
+     * @return {Slide} this Slide
      */
     Slide.prototype.addTable = function (tableRows, options) {
         // FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
@@ -3720,10 +3709,10 @@ var Slide = /** @class */ (function () {
         return this;
     };
     /**
-     * Add text object to Slide
+     * Add text to Slide
      * @param {string|IText[]} text - text string or complex object
      * @param {ITextOpts} options - text options
-     * @return {Slide} this class
+     * @return {Slide} this Slide
      */
     Slide.prototype.addText = function (text, options) {
         addTextDefinition(this, text, options, false);
@@ -5641,7 +5630,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta';
+var VERSION = '3.1.1-beta';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
