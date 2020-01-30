@@ -106,7 +106,7 @@ export default class Slide {
 	/**
 	 * Add chart to Slide
 	 * @param {CHART_NAME|IChartMulti[]} type - chart type
-	 * @param {object[]} data - a JSON object with follow the following format
+	 * @param {object[]} data - data object
 	 * @param {IChartOpts} options - chart options
 	 * @return {Slide} this Slide
 	 */
