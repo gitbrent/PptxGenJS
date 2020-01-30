@@ -104,31 +104,14 @@ export default class Slide {
 	}
 
 	/**
-	 * Generate the chart based on input data.
-	 * @see OOXML Chart Spec: ISO/IEC 29500-1:2016(E)
+	 * Add chart to Slide
 	 * @param {CHART_NAME|IChartMulti[]} type - chart type
 	 * @param {object[]} data - a JSON object with follow the following format
 	 * @param {IChartOpts} options - chart options
-	 * @example
-	 * {
-	 *   title: 'eSurvey chart',
-	 *   data: [
-	 *		{
-	 *			name: 'Income',
-	 *			labels: ['2005', '2006', '2007', '2008', '2009'],
-	 *			values: [23.5, 26.2, 30.1, 29.5, 24.6]
-	 *		},
-	 *		{
-	 *			name: 'Expense',
-	 *			labels: ['2005', '2006', '2007', '2008', '2009'],
-	 *			values: [18.1, 22.8, 23.9, 25.1, 25]
-	 *		}
-	 *	 ]
-	 * }
-	 * @return {Slide} this class
+	 * @return {Slide} this Slide
 	 */
-	// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 	addChart(type: CHART_NAME | IChartMulti[], data: [], options?: IChartOpts): Slide {
+		// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 		// Set `_type` on IChartOpts as its what is used as object is passed around
 		let optionsWithType: IChartOpts = options || {}
 		optionsWithType._type = type
@@ -137,11 +120,9 @@ export default class Slide {
 	}
 
 	/**
-	 * Add Image object
-	 * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
-	 * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
+	 * Add image to Slide
 	 * @param {IImageOpts} options - image options
-	 * @return {Slide} this class
+	 * @return {Slide} this Slide
 	 */
 	addImage(options: IImageOpts): Slide {
 		genObj.addImageDefinition(this, options)
@@ -149,9 +130,9 @@ export default class Slide {
 	}
 
 	/**
-	 * Add Media (audio/video) object
+	 * Add media (audio/video) to Slide
 	 * @param {IMediaOpts} options - media options
-	 * @return {Slide} this class
+	 * @return {Slide} this Slide
 	 */
 	addMedia(options: IMediaOpts): Slide {
 		genObj.addMediaDefinition(this, options)
@@ -159,10 +140,10 @@ export default class Slide {
 	}
 
 	/**
-	 * Add Speaker Notes to Slide
+	 * Add speaker notes to Slide
 	 * @docs https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html
 	 * @param {string} notes - notes to add to slide
-	 * @return {Slide} this class
+	 * @return {Slide} this Slide
 	 */
 	addNotes(notes: string): Slide {
 		genObj.addNotesDefinition(this, notes)
@@ -170,10 +151,10 @@ export default class Slide {
 	}
 
 	/**
-	 * Add shape object to Slide
+	 * Add shape to Slide
 	 * @param {SHAPE_NAME} shapeName - shape name
 	 * @param {IShapeOptions} options - shape options
-	 * @return {Slide} this class
+	 * @return {Slide} this Slide
 	 */
 	addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide {
 		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
@@ -186,11 +167,10 @@ export default class Slide {
 	}
 
 	/**
-	 * Add shape object to Slide
-	 * @note can be recursive
+	 * Add table to Slide
 	 * @param {TableRow[]} tableRows - table rows
 	 * @param {ITableOptions} options - table options
-	 * @return {Slide} this class
+	 * @return {Slide} this Slide
 	 */
 	addTable(tableRows: TableRow[], options?: ITableOptions): Slide {
 		// FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
@@ -199,10 +179,10 @@ export default class Slide {
 	}
 
 	/**
-	 * Add text object to Slide
+	 * Add text to Slide
 	 * @param {string|IText[]} text - text string or complex object
 	 * @param {ITextOpts} options - text options
-	 * @return {Slide} this class
+	 * @return {Slide} this Slide
 	 */
 	addText(text: string | IText[], options?: ITextOpts): Slide {
 		genObj.addTextDefinition(this, text, options, false)
