@@ -10,8 +10,10 @@
   - [React/TypeScript](#reacttypescript)
 - [Release New Version](#release-new-version)
   - [File Prep](#file-prep)
+  - [Checks](#checks)
   - [GitHub](#github)
   - [NPM](#npm)
+- [Post-Release](#post-release)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -58,19 +60,33 @@ TypeScript Defs
 ## Release New Version
 
 ### File Prep
+
 1. Consolidate `src/bld/*.ts` into `types/index.d.ts` (Note: `charts` and `shapes` are special and stay!)
 2. Update `package.json` version
 3. Update `src/pptxgen.ts` version
 4. Build using `$ gulp`
 5. Open `dist/*.js` and check headers
 6. Update `CHANGELOG.md` date, etc.
-7. Checks: Are ts-defs updated?
+7. Update CDN links on `demo.js` and `README.md`
+
+### Checks
+
+1. Is version updated in package.json and pptxgen.js?
+2. Are `index.d.ts` defs updated?
 
 ### GitHub
+
 1. Copy CHANGELOG entry and draft new release: [Releases](https://github.com/gitbrent/PptxGenJS/releases)
 2. Use "Version X.x.x" as title and "v3.1.1" as tag
 3. Go back to Releases page, double-check title/tag, release when ready
 
 ### NPM
+
 1. `cd ~/GitHub/PptxGenJS`
 2. `npm publish`
+
+## Post-Release
+
+1. Save output from all tests and html2ppt for this release
+2. Go test CDN links on README
+3. Update documentation (`gh-pages`)
