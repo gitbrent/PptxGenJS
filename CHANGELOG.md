@@ -17,10 +17,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.1.1] - 2020-01-31
 ### Added
 - TypeScript: Add shapes and font options types [\#650](https://github.com/gitbrent/PptxGenJS/pull/650) ([cronin4392](https://github.com/cronin4392))
+- TypeScript: Added correct export of "charts" and "shapes" in `index.d.ts`
 ### Changed
 - Fixed: Re-added "browser" property to `package.json` to avoid old "fs not found" Angular/webpack issue (Angular 8) [\#654](https://github.com/gitbrent/PptxGenJS/issue/654) ([cwilkens](https://github.com/cwilkens))
 - Fixed: Previous release introduced a regression bug and broke addTest placeholder's
-- TypeScript: Fixed export of "charts" and "shapes" in `index.d.ts`
+- Fixed: addChart and addImage in the same slide cause an error [fixed via `getNewRelId`] [\#655](https://github.com/gitbrent/PptxGenJS/issue/655) ([JuliaSheleva](https://github.com/JuliaSheleva))
 ### Removed
 - The `core-shapes.ts` file was removed, shape def collapsed to simple type array, rolled into `core-enums.ts` and `index.d.ts`
 
