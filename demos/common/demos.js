@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.1.0
-* BLD.: 20200121
+* VER.: 3.1.1
+* BLD.: 20200129
 */
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -100,8 +100,8 @@ function getTimestamp() {
 function runEveryTest() {
 	return execGenSlidesFuncs( ['Master', 'Chart', 'Image', 'Media', 'Shape', 'Text', 'Table'] );
 
-	// Dont run this automatically as Html2Pptx needs table to be visible as of 2.2.0
-	// if ( typeof table2slides1 !== 'undefined' ) table2slides1();
+	// NOTE: Html2Pptx needs table to be visible (otherwise col widths are even and look horrible)
+	// ....: Therefore, run it mnaually. // if ( typeof table2slides1 !== 'undefined' ) table2slides1();
 }
 
 function execGenSlidesFuncs(type) {
@@ -181,7 +181,7 @@ function execGenSlidesFuncs(type) {
 			slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 },
 			objects: [
 				{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
-				{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
+				//{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
 				{ 'text':
 					{
 						options: {x:0, y:6.9, w:'100%', h:0.6, align:'center', valign:'middle', color:'FFFFFF', fontSize:12},
@@ -2880,7 +2880,7 @@ function genSlides_Master(pptx) {
 	var slide4 = pptx.addSlide('MASTER_SLIDE');
 	slide4.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide4.addText('Image Placeholder', { placeholder:'title' });
-	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.ccLogo.path.replace(/http.+\/examples/, '../common') : gPaths.ccLogo.path) });
+	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, '../common') : gPaths.starlabsBkgd.path) });
 
 	var dataChartPieLocs = [
 		{
