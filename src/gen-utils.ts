@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR, ONEPT } from './core-enums'
-import { IChartOpts, ILayout, ShapeFill, IGlowOptions } from './core-interfaces'
+import { IChartOpts, ILayout, ShapeFill, IGlowOptions, ISlide } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -205,4 +205,13 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 	}
 
 	return outText
+}
+
+/**
+ * Get a new rel ID (rId) for charts, media, etc.
+ * @param {ISlide} target - the slide to use
+ * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
+ */
+export function getNewRelId(target: ISlide): number {
+	return target.rels.length + target.relsChart.length + target.relsMedia.length + 1
 }

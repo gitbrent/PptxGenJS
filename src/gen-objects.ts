@@ -41,7 +41,7 @@ import {
 	BkgdOpts,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { getSmartParseNumber, inch2Emu, encodeXmlEntities } from './gen-utils'
+import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -289,11 +289,11 @@ export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMult
 	// STEP 4: Set props
 	resultObject.type = 'chart'
 	resultObject.options = options
-	resultObject.chartRid = target.relsChart.length + 1
+	resultObject.chartRid = getNewRelId(target)
 
 	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
 	target.relsChart.push({
-		rId: target.relsChart.length + 1,
+		rId: getNewRelId(target),
 		data: tmpData,
 		opts: options,
 		type: options._type,
@@ -311,6 +311,8 @@ export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMult
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
  * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
  * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
+ * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
+ * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
 export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 	let newObject: any = {
@@ -330,7 +332,7 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 	let objHyperlink = opt.hyperlink || ''
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
-	let imageRelId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1
+	let imageRelId = getNewRelId(target)
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -949,7 +951,7 @@ function createHyperlinkRels(target: ISlide, text: number | string | IText | ITe
 			if (typeof text.options.hyperlink !== 'object') console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ")
 			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
 			else {
-				let relId = target.rels.length + target.relsChart.length + target.relsMedia.length + 1
+				let relId = getNewRelId(target)
 
 				target.rels.push({
 					type: SLIDE_OBJECT_TYPES.hyperlink,
