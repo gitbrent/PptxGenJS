@@ -1,5 +1,18 @@
 # PptxGenJS Release Checklist
 
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [PptxGenJS Release Checklist](#pptxgenjs-release-checklist)
+  - [Test Library](#test-library)
+    - [Browser](#browser)
+    - [Node](#node)
+    - [React/TypeScript](#reacttypescript)
+  - [Release New Version](#release-new-version)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 ## Test Library
 
 ### Browser
