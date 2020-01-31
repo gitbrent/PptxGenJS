@@ -1,6 +1,6 @@
 {
   "name": "pptxgenjs",
-  "version": "3.1.1-beta",
+  "version": "3.1.1",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -18,7 +18,8 @@
   "scripts": {
     "build": "rollup -c",
     "watch": "rollup -cw",
-	"doctoc": "./node_modules/doctoc/doctoc.js README.md"
+    "ship": "gulp ship",
+    "doctoc": "./node_modules/doctoc/doctoc.js README.md"
   },
   "browser": {
     "express": false,

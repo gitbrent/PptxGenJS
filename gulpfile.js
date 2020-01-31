@@ -83,9 +83,13 @@ gulp.task('es', () => {
 		.pipe(gulp.dest('./demos/react-demo/src/'))
 })
 
+// Build/Deploy (ad-hoc, no watch)
+gulp.task('ship', gulp.series('build', 'min', 'cjs', 'es', 'bundle'), () => {
+	console.log('... ./dist/*.js files created!')
+})
 // Build/Deploy
 gulp.task('default', gulp.series('build', 'min', 'cjs', 'es', 'bundle'), () => {
-	console.log('... dist/pptxgen.min.js done!')
+	console.log('... ./dist/*.js files created!')
 })
 
 // Watch
