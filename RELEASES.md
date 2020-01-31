@@ -4,20 +4,30 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
 
-- [Test Library](#test-library)
+- [Build Library, Update Files](#build-library-update-files)
+- [Test Newest Library Build](#test-newest-library-build)
   - [Browser](#browser)
   - [Node](#node)
   - [React/TypeScript](#reacttypescript)
 - [Release New Version](#release-new-version)
-  - [File Prep](#file-prep)
-  - [Checks](#checks)
+  - [Pre-Release Check](#pre-release-check)
   - [GitHub](#github)
   - [NPM](#npm)
-- [Post-Release](#post-release)
+- [Post-Release Tasks](#post-release-tasks)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-## Test Library
+## Build Library, Update Files
+
+1. Update `package.json` version
+2. Update `src/pptxgen.ts` version
+3. Build using `$ npm run ship`
+4. Consolidate `src/bld/*.ts` into `types/index.d.ts` (Note: `charts` and `shapes` are special and stay!)
+5. Open `dist/*.js` and check headers
+6. Update `CHANGELOG.md` date, etc.
+7. Update CDN links on `demo.js` and `README.md`
+
+## Test Newest Library Build
 
 ### Browser
 
@@ -59,17 +69,7 @@ TypeScript Defs
 
 ## Release New Version
 
-### File Prep
-
-1. Consolidate `src/bld/*.ts` into `types/index.d.ts` (Note: `charts` and `shapes` are special and stay!)
-2. Update `package.json` version
-3. Update `src/pptxgen.ts` version
-4. Build using `$ gulp`
-5. Open `dist/*.js` and check headers
-6. Update `CHANGELOG.md` date, etc.
-7. Update CDN links on `demo.js` and `README.md`
-
-### Checks
+### Pre-Release Check
 
 1. Is version updated in package.json and pptxgen.js?
 2. Are `index.d.ts` defs updated?
@@ -85,7 +85,7 @@ TypeScript Defs
 1. `cd ~/GitHub/PptxGenJS`
 2. `npm publish`
 
-## Post-Release
+## Post-Release Tasks
 
 1. Save output from all tests and html2ppt for this release
 2. Go test CDN links on README
