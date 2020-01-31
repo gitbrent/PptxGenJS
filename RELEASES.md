@@ -31,14 +31,9 @@
 
 ### Browser
 
-Enable watch/continuous build
+Run all tests in browser
 
-```bash
-$ cd ~/GitHub/PptxGenJS
-$ gulp
-```
-
-Run all tests in browser using: [Local Demo](file:///Users/brentely/GitHub/PptxGenJS/demos/browser/index.html)
+- [Local Demo](file:///Users/brentely/GitHub/PptxGenJS/demos/browser/index.html)
 
 ### Node
 
