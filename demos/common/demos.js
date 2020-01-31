@@ -7,7 +7,7 @@
 * BLD.: 20200130
 */
 
-var isIE11 = !!window['MSInputMethodContext'] && !!document['documentMode'];
+var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
 var NODEJS = false;
 {
