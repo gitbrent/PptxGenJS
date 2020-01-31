@@ -53,7 +53,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.1.1-beta'
+const VERSION = '3.1.1'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -454,7 +454,6 @@ export default class PptxGenJS {
 
 	/**
 	 * Export the current Presenation to stream
-	 * @since 3.0.0
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
 	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
@@ -471,7 +470,6 @@ export default class PptxGenJS {
 
 	/**
 	 * Export the current Presenation as JSZip content with the selected type
-	 * @since 3.0.0
 	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
@@ -489,7 +487,6 @@ export default class PptxGenJS {
 
 	/**
 	 * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @since 3.0.0
 	 * @param {string} exportName - file name
 	 * @returns {Promise<string>} the presentation name
 	 */
@@ -526,7 +523,7 @@ export default class PptxGenJS {
 	// PRESENTATION METHODS
 
 	/**
-	 * Add a Slide to Presenation
+	 * Add a new Slide to Presenation
 	 * @param {string} masterSlideName - Master Slide name
 	 * @returns {ISlide} the new Slide
 	 */
@@ -548,12 +545,12 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * Define a custom Slide Layout
-	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
-	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+	 * Create a custom Slide Layout in any size
 	 * @param {IUserLayout} layout - an object with user-defined w/h
+	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 	 */
 	defineLayout(layout: IUserLayout) {
+		// @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 		if (!layout) console.warn('defineLayout requires `{name, width, height}`')
 		else if (!layout.name) console.warn('defineLayout requires `name`')
 		else if (!layout.width) console.warn('defineLayout requires `width`')
@@ -565,7 +562,7 @@ export default class PptxGenJS {
 	}
 
 	/**
-	 * Adds a new slide master [layout] to the Presentation
+	 * Create a new slide master [layout] for the Presentation
 	 * @param {ISlideMasterOptions} slideMasterOpts - layout definition
 	 */
 	defineSlideMaster(slideMasterOpts: ISlideMasterOptions) {
@@ -598,11 +595,11 @@ export default class PptxGenJS {
 
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-	 * @note `verbose` option is undocumented; used for verbose output of layout process
 	 * @param {string} tabEleId - HTMLElementID of the table
 	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
 	 */
 	tableToSlides(tableElementId: string, opts: ITableToSlidesOpts = {}) {
+		// @note `verbose` option is undocumented; used for verbose output of layout process
 		genTable.genTableToSlides(
 			this,
 			tableElementId,
