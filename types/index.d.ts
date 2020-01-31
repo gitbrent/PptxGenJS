@@ -93,8 +93,8 @@ declare class PptxGenJS {
 }
 
 declare namespace PptxGenJS {
-	// Exported enums for module apps (React, TypeScript, etc.)
-	// Used as: pptxgen.shape.RECTANGLE
+	// Exported enums for module apps
+	// @example: pptxgen.ShapeType.rect
 	export enum OutputType {
 		'arraybuffer' = 'arraybuffer',
 		'base64' = 'base64',
