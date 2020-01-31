@@ -4,9 +4,10 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.1.1
-* BLD.: 20200129
+* BLD.: 20200130
 */
 
+var isIE11 = !!window['MSInputMethodContext'] && !!document['documentMode'];
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
 var NODEJS = false;
 {
@@ -2432,8 +2433,8 @@ function genSlides_Image(pptx) {
 
 		// BOTTOM-RIGHT:
 		slide.addText('Type: SVG', { x:9.5, y:3.3, w:4.0, h:0.4, color:'0088CC' });
-		slide.addImage({ path:gPaths.wikimedia_svg.path, x:9.5, y:3.8, w:2.0, h:2.0 }); // TEST: `path`
-		slide.addImage({ data:svgBase64, x:11.1, y:5.1, w:1.5, h:1.5 }); // TEST: `data`
+		if (!isIE11) slide.addImage({ path:gPaths.wikimedia_svg.path, x:9.5, y:3.8, w:2.0, h:2.0 }); // TEST: `path`
+		if (!isIE11) slide.addImage({ data:svgBase64, x:11.1, y:5.1, w:1.5, h:1.5 }); // TEST: `data`
 
 		// TEST: Ensure framework corrects for missing all header
 		// (Please **DO NOT** pass base64 data without the header! This is a JUNK TEST!)
