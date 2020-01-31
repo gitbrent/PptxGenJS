@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.1 @ 2020-01-30T04:55:23.640Z */
+/* PptxGenJS 3.1.1 @ 2020-01-31T04:45:55.507Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -82,6 +82,210 @@ var TEXT_VALIGN;
 })(TEXT_VALIGN || (TEXT_VALIGN = {}));
 var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 // ENUM
+// TODO: 3.5 or v4.0: rationalize ts-def exported enum names/case!
+// NOTE: First tsdef enum named correctly (shapes -> 'Shape', colors -> 'Color'), etc.
+var OutputType;
+(function (OutputType) {
+    OutputType["arraybuffer"] = "arraybuffer";
+    OutputType["base64"] = "base64";
+    OutputType["binarystring"] = "binarystring";
+    OutputType["blob"] = "blob";
+    OutputType["nodebuffer"] = "nodebuffer";
+    OutputType["uint8array"] = "uint8array";
+})(OutputType || (OutputType = {}));
+var ChartType;
+(function (ChartType) {
+    ChartType["area"] = "area";
+    ChartType["bar"] = "bar";
+    ChartType["bar3d"] = "bar3D";
+    ChartType["bubble"] = "bubble";
+    ChartType["doughnut"] = "doughnut";
+    ChartType["line"] = "line";
+    ChartType["pie"] = "pie";
+    ChartType["radar"] = "radar";
+    ChartType["scatter"] = "scatter";
+})(ChartType || (ChartType = {}));
+var ShapeType;
+(function (ShapeType) {
+    ShapeType["accentBorderCallout1"] = "accentBorderCallout1";
+    ShapeType["accentBorderCallout2"] = "accentBorderCallout2";
+    ShapeType["accentBorderCallout3"] = "accentBorderCallout3";
+    ShapeType["accentCallout1"] = "accentCallout1";
+    ShapeType["accentCallout2"] = "accentCallout2";
+    ShapeType["accentCallout3"] = "accentCallout3";
+    ShapeType["actionButtonBackPrevious"] = "actionButtonBackPrevious";
+    ShapeType["actionButtonBeginning"] = "actionButtonBeginning";
+    ShapeType["actionButtonBlank"] = "actionButtonBlank";
+    ShapeType["actionButtonDocument"] = "actionButtonDocument";
+    ShapeType["actionButtonEnd"] = "actionButtonEnd";
+    ShapeType["actionButtonForwardNext"] = "actionButtonForwardNext";
+    ShapeType["actionButtonHelp"] = "actionButtonHelp";
+    ShapeType["actionButtonHome"] = "actionButtonHome";
+    ShapeType["actionButtonInformation"] = "actionButtonInformation";
+    ShapeType["actionButtonMovie"] = "actionButtonMovie";
+    ShapeType["actionButtonReturn"] = "actionButtonReturn";
+    ShapeType["actionButtonSound"] = "actionButtonSound";
+    ShapeType["arc"] = "arc";
+    ShapeType["bentArrow"] = "bentArrow";
+    ShapeType["bentUpArrow"] = "bentUpArrow";
+    ShapeType["bevel"] = "bevel";
+    ShapeType["blockArc"] = "blockArc";
+    ShapeType["borderCallout1"] = "borderCallout1";
+    ShapeType["borderCallout2"] = "borderCallout2";
+    ShapeType["borderCallout3"] = "borderCallout3";
+    ShapeType["bracePair"] = "bracePair";
+    ShapeType["bracketPair"] = "bracketPair";
+    ShapeType["callout1"] = "callout1";
+    ShapeType["callout2"] = "callout2";
+    ShapeType["callout3"] = "callout3";
+    ShapeType["can"] = "can";
+    ShapeType["chartPlus"] = "chartPlus";
+    ShapeType["chartStar"] = "chartStar";
+    ShapeType["chartX"] = "chartX";
+    ShapeType["chevron"] = "chevron";
+    ShapeType["chord"] = "chord";
+    ShapeType["circularArrow"] = "circularArrow";
+    ShapeType["cloud"] = "cloud";
+    ShapeType["cloudCallout"] = "cloudCallout";
+    ShapeType["corner"] = "corner";
+    ShapeType["cornerTabs"] = "cornerTabs";
+    ShapeType["cube"] = "cube";
+    ShapeType["curvedDownArrow"] = "curvedDownArrow";
+    ShapeType["curvedLeftArrow"] = "curvedLeftArrow";
+    ShapeType["curvedRightArrow"] = "curvedRightArrow";
+    ShapeType["curvedUpArrow"] = "curvedUpArrow";
+    ShapeType["decagon"] = "decagon";
+    ShapeType["diagStripe"] = "diagStripe";
+    ShapeType["diamond"] = "diamond";
+    ShapeType["dodecagon"] = "dodecagon";
+    ShapeType["donut"] = "donut";
+    ShapeType["doubleWave"] = "doubleWave";
+    ShapeType["downArrow"] = "downArrow";
+    ShapeType["downArrowCallout"] = "downArrowCallout";
+    ShapeType["ellipse"] = "ellipse";
+    ShapeType["ellipseRibbon"] = "ellipseRibbon";
+    ShapeType["ellipseRibbon2"] = "ellipseRibbon2";
+    ShapeType["flowChartAlternateProcess"] = "flowChartAlternateProcess";
+    ShapeType["flowChartCollate"] = "flowChartCollate";
+    ShapeType["flowChartConnector"] = "flowChartConnector";
+    ShapeType["flowChartDecision"] = "flowChartDecision";
+    ShapeType["flowChartDelay"] = "flowChartDelay";
+    ShapeType["flowChartDisplay"] = "flowChartDisplay";
+    ShapeType["flowChartDocument"] = "flowChartDocument";
+    ShapeType["flowChartExtract"] = "flowChartExtract";
+    ShapeType["flowChartInputOutput"] = "flowChartInputOutput";
+    ShapeType["flowChartInternalStorage"] = "flowChartInternalStorage";
+    ShapeType["flowChartMagneticDisk"] = "flowChartMagneticDisk";
+    ShapeType["flowChartMagneticDrum"] = "flowChartMagneticDrum";
+    ShapeType["flowChartMagneticTape"] = "flowChartMagneticTape";
+    ShapeType["flowChartManualInput"] = "flowChartManualInput";
+    ShapeType["flowChartManualOperation"] = "flowChartManualOperation";
+    ShapeType["flowChartMerge"] = "flowChartMerge";
+    ShapeType["flowChartMultidocument"] = "flowChartMultidocument";
+    ShapeType["flowChartOfflineStorage"] = "flowChartOfflineStorage";
+    ShapeType["flowChartOffpageConnector"] = "flowChartOffpageConnector";
+    ShapeType["flowChartOnlineStorage"] = "flowChartOnlineStorage";
+    ShapeType["flowChartOr"] = "flowChartOr";
+    ShapeType["flowChartPredefinedProcess"] = "flowChartPredefinedProcess";
+    ShapeType["flowChartPreparation"] = "flowChartPreparation";
+    ShapeType["flowChartProcess"] = "flowChartProcess";
+    ShapeType["flowChartPunchedCard"] = "flowChartPunchedCard";
+    ShapeType["flowChartPunchedTape"] = "flowChartPunchedTape";
+    ShapeType["flowChartSort"] = "flowChartSort";
+    ShapeType["flowChartSummingJunction"] = "flowChartSummingJunction";
+    ShapeType["flowChartTerminator"] = "flowChartTerminator";
+    ShapeType["folderCorner"] = "folderCorner";
+    ShapeType["frame"] = "frame";
+    ShapeType["funnel"] = "funnel";
+    ShapeType["gear6"] = "gear6";
+    ShapeType["gear9"] = "gear9";
+    ShapeType["halfFrame"] = "halfFrame";
+    ShapeType["heart"] = "heart";
+    ShapeType["heptagon"] = "heptagon";
+    ShapeType["hexagon"] = "hexagon";
+    ShapeType["homePlate"] = "homePlate";
+    ShapeType["horizontalScroll"] = "horizontalScroll";
+    ShapeType["irregularSeal1"] = "irregularSeal1";
+    ShapeType["irregularSeal2"] = "irregularSeal2";
+    ShapeType["leftArrow"] = "leftArrow";
+    ShapeType["leftArrowCallout"] = "leftArrowCallout";
+    ShapeType["leftBrace"] = "leftBrace";
+    ShapeType["leftBracket"] = "leftBracket";
+    ShapeType["leftCircularArrow"] = "leftCircularArrow";
+    ShapeType["leftRightArrow"] = "leftRightArrow";
+    ShapeType["leftRightArrowCallout"] = "leftRightArrowCallout";
+    ShapeType["leftRightCircularArrow"] = "leftRightCircularArrow";
+    ShapeType["leftRightRibbon"] = "leftRightRibbon";
+    ShapeType["leftRightUpArrow"] = "leftRightUpArrow";
+    ShapeType["leftUpArrow"] = "leftUpArrow";
+    ShapeType["lightningBolt"] = "lightningBolt";
+    ShapeType["line"] = "line";
+    ShapeType["lineInv"] = "lineInv";
+    ShapeType["mathDivide"] = "mathDivide";
+    ShapeType["mathEqual"] = "mathEqual";
+    ShapeType["mathMinus"] = "mathMinus";
+    ShapeType["mathMultiply"] = "mathMultiply";
+    ShapeType["mathNotEqual"] = "mathNotEqual";
+    ShapeType["mathPlus"] = "mathPlus";
+    ShapeType["moon"] = "moon";
+    ShapeType["nonIsoscelesTrapezoid"] = "nonIsoscelesTrapezoid";
+    ShapeType["noSmoking"] = "noSmoking";
+    ShapeType["notchedRightArrow"] = "notchedRightArrow";
+    ShapeType["octagon"] = "octagon";
+    ShapeType["parallelogram"] = "parallelogram";
+    ShapeType["pentagon"] = "pentagon";
+    ShapeType["pie"] = "pie";
+    ShapeType["pieWedge"] = "pieWedge";
+    ShapeType["plaque"] = "plaque";
+    ShapeType["plaqueTabs"] = "plaqueTabs";
+    ShapeType["plus"] = "plus";
+    ShapeType["quadArrow"] = "quadArrow";
+    ShapeType["quadArrowCallout"] = "quadArrowCallout";
+    ShapeType["rect"] = "rect";
+    ShapeType["ribbon"] = "ribbon";
+    ShapeType["ribbon2"] = "ribbon2";
+    ShapeType["rightArrow"] = "rightArrow";
+    ShapeType["rightArrowCallout"] = "rightArrowCallout";
+    ShapeType["rightBrace"] = "rightBrace";
+    ShapeType["rightBracket"] = "rightBracket";
+    ShapeType["round1Rect"] = "round1Rect";
+    ShapeType["round2DiagRect"] = "round2DiagRect";
+    ShapeType["round2SameRect"] = "round2SameRect";
+    ShapeType["roundRect"] = "roundRect";
+    ShapeType["rtTriangle"] = "rtTriangle";
+    ShapeType["smileyFace"] = "smileyFace";
+    ShapeType["snip1Rect"] = "snip1Rect";
+    ShapeType["snip2DiagRect"] = "snip2DiagRect";
+    ShapeType["snip2SameRect"] = "snip2SameRect";
+    ShapeType["snipRoundRect"] = "snipRoundRect";
+    ShapeType["squareTabs"] = "squareTabs";
+    ShapeType["star10"] = "star10";
+    ShapeType["star12"] = "star12";
+    ShapeType["star16"] = "star16";
+    ShapeType["star24"] = "star24";
+    ShapeType["star32"] = "star32";
+    ShapeType["star4"] = "star4";
+    ShapeType["star5"] = "star5";
+    ShapeType["star6"] = "star6";
+    ShapeType["star7"] = "star7";
+    ShapeType["star8"] = "star8";
+    ShapeType["stripedRightArrow"] = "stripedRightArrow";
+    ShapeType["sun"] = "sun";
+    ShapeType["swooshArrow"] = "swooshArrow";
+    ShapeType["teardrop"] = "teardrop";
+    ShapeType["trapezoid"] = "trapezoid";
+    ShapeType["triangle"] = "triangle";
+    ShapeType["upArrow"] = "upArrow";
+    ShapeType["upArrowCallout"] = "upArrowCallout";
+    ShapeType["upDownArrow"] = "upDownArrow";
+    ShapeType["upDownArrowCallout"] = "upDownArrowCallout";
+    ShapeType["uturnArrow"] = "uturnArrow";
+    ShapeType["verticalScroll"] = "verticalScroll";
+    ShapeType["wave"] = "wave";
+    ShapeType["wedgeEllipseCallout"] = "wedgeEllipseCallout";
+    ShapeType["wedgeRectCallout"] = "wedgeRectCallout";
+    ShapeType["wedgeRoundRectCallout"] = "wedgeRoundRectCallout";
+})(ShapeType || (ShapeType = {}));
 var CHART_TYPE;
 (function (CHART_TYPE) {
     CHART_TYPE["AREA"] = "area";
@@ -5630,7 +5834,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.1.1-beta';
+var VERSION = '3.1.1';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6004,7 +6208,6 @@ var PptxGenJS = /** @class */ (function () {
     // EXPORT METHODS
     /**
      * Export the current Presenation to stream
-     * @since 3.0.0
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
      */
     PptxGenJS.prototype.stream = function () {
@@ -6021,7 +6224,6 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Export the current Presenation as JSZip content with the selected type
-     * @since 3.0.0
      * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
      */
@@ -6039,7 +6241,6 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-     * @since 3.0.0
      * @param {string} exportName - file name
      * @returns {Promise<string>} the presentation name
      */
@@ -6075,7 +6276,7 @@ var PptxGenJS = /** @class */ (function () {
     };
     // PRESENTATION METHODS
     /**
-     * Add a Slide to Presenation
+     * Add a new Slide to Presenation
      * @param {string} masterSlideName - Master Slide name
      * @returns {ISlide} the new Slide
      */
@@ -6094,12 +6295,12 @@ var PptxGenJS = /** @class */ (function () {
         return newSlide;
     };
     /**
-     * Define a custom Slide Layout
-     * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
-     * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
+     * Create a custom Slide Layout in any size
      * @param {IUserLayout} layout - an object with user-defined w/h
+     * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
      */
     PptxGenJS.prototype.defineLayout = function (layout) {
+        // @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
         if (!layout)
             console.warn('defineLayout requires `{name, width, height}`');
         else if (!layout.name)
@@ -6115,7 +6316,7 @@ var PptxGenJS = /** @class */ (function () {
         this.LAYOUTS[layout.name] = { name: layout.name, width: Math.round(Number(layout.width) * EMU), height: Math.round(Number(layout.height) * EMU) };
     };
     /**
-     * Adds a new slide master [layout] to the Presentation
+     * Create a new slide master [layout] for the Presentation
      * @param {ISlideMasterOptions} slideMasterOpts - layout definition
      */
     PptxGenJS.prototype.defineSlideMaster = function (slideMasterOpts) {
@@ -6144,12 +6345,12 @@ var PptxGenJS = /** @class */ (function () {
     // HTML-TO-SLIDES METHODS
     /**
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-     * @note `verbose` option is undocumented; used for verbose output of layout process
      * @param {string} tabEleId - HTMLElementID of the table
      * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
      */
     PptxGenJS.prototype.tableToSlides = function (tableElementId, opts) {
         if (opts === void 0) { opts = {}; }
+        // @note `verbose` option is undocumented; used for verbose output of layout process
         genTableToSlides(this, tableElementId, opts, opts && opts.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === opts.masterSlideName; })[0] : null);
     };
     return PptxGenJS;
