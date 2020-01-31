@@ -24,8 +24,8 @@
 3. Build using `$ npm run ship`
 4. Consolidate `src/bld/*.ts` into `types/index.d.ts` (Note: `charts` and `shapes` are special and stay!)
 5. Open `dist/*.js` and check headers
-6. Update `CHANGELOG.md` date, etc.
-7. Update CDN links on `demo.js` and `README.md`
+6. Update `CHANGELOG.md` with new date
+7. Update `README.md` with new CDN links
 
 ## Test Newest Library Build
 
@@ -71,8 +71,9 @@ TypeScript Defs
 
 ### Pre-Release Check
 
-1. Is version updated in package.json and pptxgen.js?
-2. Are `index.d.ts` defs updated?
+1. Revert scripts in `./demos/browser/index.html`
+2. Is version updated in package.json and pptxgen.js?
+3. Are `index.d.ts` defs updated?
 
 ### GitHub
 

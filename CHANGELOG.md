@@ -9,12 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Sections
 
 
-## [3.2.0] - 2020-?-?
-### Added
-### Changed
 
-
-## [3.1.1] - 2020-01-31
+## [3.1.1] - 2020-01-30
 ### Added
 - TypeScript: Add shapes and font options types [\#650](https://github.com/gitbrent/PptxGenJS/pull/650) ([cronin4392](https://github.com/cronin4392))
 - TypeScript: Added correct export of "charts" and "shapes" in `index.d.ts`
