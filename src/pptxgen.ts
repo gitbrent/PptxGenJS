@@ -45,7 +45,17 @@
 
 import * as JSZip from 'jszip'
 import Slide from './slide'
-import { CHART_TYPE, DEF_PRES_LAYOUT_NAME, DEF_PRES_LAYOUT, DEF_SLIDE_MARGIN_IN, JSZIP_OUTPUT_TYPE, SCHEME_COLOR_NAMES, WRITE_OUTPUT_TYPE, EMU, SHAPE_TYPE } from './core-enums'
+import {
+	CHART_TYPE,
+	DEF_PRES_LAYOUT_NAME,
+	DEF_PRES_LAYOUT,
+	DEF_SLIDE_MARGIN_IN,
+	JSZIP_OUTPUT_TYPE,
+	SCHEME_COLOR_NAMES,
+	WRITE_OUTPUT_TYPE,
+	EMU,
+	SHAPE_TYPE,
+} from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
