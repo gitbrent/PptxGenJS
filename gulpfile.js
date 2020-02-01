@@ -80,15 +80,26 @@ gulp.task('es', () => {
 		.src(['./src/bld/pptxgen.es.js'])
 		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
 		.pipe(gulp.dest('./dist/'))
-		.pipe(gulp.dest('./demos/react-demo/src/'))
+})
+
+gulp.task('reactTest1', () => {
+	return gulp
+		.src(['./dist/pptxgen.es.js'])
+		.pipe(gulp.dest('./demos/react-demo/node_modules/pptxgenjs/dist'))
+})
+
+gulp.task('reactTest2', () => {
+	return gulp
+		.src(['./types/index.d.ts'])
+		.pipe(gulp.dest('./demos/react-demo/node_modules/pptxgenjs/types'))
 })
 
 // Build/Deploy (ad-hoc, no watch)
-gulp.task('ship', gulp.series('build', 'min', 'cjs', 'es', 'bundle'), () => {
+gulp.task('ship', gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTest1', 'reactTest2'), () => {
 	console.log('... ./dist/*.js files created!')
 })
 // Build/Deploy
-gulp.task('default', gulp.series('build', 'min', 'cjs', 'es', 'bundle'), () => {
+gulp.task('default', gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTest1', 'reactTest2'), () => {
 	console.log('... ./dist/*.js files created!')
 })
 
