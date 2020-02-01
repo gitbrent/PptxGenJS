@@ -3,7 +3,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Build Library, Update Files](#build-library-update-files)
 - [Test Newest Library Build](#test-newest-library-build)
   - [Browser](#browser)
@@ -48,19 +47,18 @@ $ node demo.js All -local
 
 React Test
 
+1. Ensure newest `dist/pptxgen.es.js` and `types/index.d.ts` under local node_modules
+2. Open `demos/react/demo/src/latest/Test.tsx`
+3. Check existing code
+4. Test defs by using auto-complete, "pptxgen.ChartType." etc.
+
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/react-demo
 $ npm run start
 ```
 
-- Go to https://localhost:3000 and run the demo
-
-TypeScript Defs
-
-- Open `demos/react/demo/src/latest/Test.tsx`
-- Check existing code
-- Test defs by using auto-complete, "pptxgen.chart" etc.
-- Note: Copy newest `types/index.d.ts` to local node_modules if updated recently
+1. Go to https://localhost:3000
+2. Run the demo
 
 ## Release New Version
 
