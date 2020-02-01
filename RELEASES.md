@@ -60,6 +60,8 @@ $ npm run start
 1. Go to https://localhost:3000
 2. Run the demo
 
+**NOTE** Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
+
 ## Release New Version
 
 ### Pre-Release Check
