@@ -17,6 +17,12 @@ declare class PptxGenJS {
 	 */
 	readonly version: string
 
+	readonly ChartType: typeof PptxGenJS.ChartType
+	readonly ShapeType: typeof PptxGenJS.ShapeType
+	readonly OutputType: typeof PptxGenJS.OutputType
+	readonly colors: typeof PptxGenJS.SCHEME_COLOR_NAMES
+	readonly presLayout: PptxGenJS.ILayout
+
 	// Presentation Props
 
 	/**
@@ -51,59 +57,59 @@ declare class PptxGenJS {
 	// Methods
 
 	/**
-     * Export the current Presenation to stream
-     * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
-     */
-    stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>;
-    /**
-     * Export the current Presenation as JSZip content with the selected type
-     * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
-     * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
-     */
-    write(outputType: PptxGenJS.JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>;
-    /**
-     * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-     * @param {string} exportName - file name
-     * @returns {Promise<string>} the presentation name
-     */
-    writeFile(exportName?: string): Promise<string>;
-    /**
-     * Add a new Slide to Presenation
-     * @param {string} masterSlideName - Master Slide name
-     * @returns {ISlide} the new Slide
-     */
-    addSlide(masterSlideName?: string): PptxGenJS.ISlide;
-    /**
-     * Create a custom Slide Layout in any size
-     * @param {IUserLayout} layout - an object with user-defined w/h
-     * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
-     */
-    defineLayout(layout: PptxGenJS.IUserLayout): void;
-    /**
-     * Create a new slide master [layout] for the Presentation
-     * @param {ISlideMasterOptions} slideMasterOpts - layout definition
-     */
-    defineSlideMaster(slideMasterOpts: PptxGenJS.ISlideMasterOptions): void;
-    /**
-     * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-     * @param {string} tabEleId - HTMLElementID of the table
-     * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
-     */
-    tableToSlides(tableElementId: string, opts?: PptxGenJS.ITableToSlidesOpts): void;
+	 * Export the current Presenation to stream
+	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
+	 */
+	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>
+	/**
+	 * Export the current Presenation as JSZip content with the selected type
+	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
+	 */
+	write(outputType: PptxGenJS.JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>
+	/**
+	 * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
+	 * @param {string} exportName - file name
+	 * @returns {Promise<string>} the presentation name
+	 */
+	writeFile(exportName?: string): Promise<string>
+	/**
+	 * Add a new Slide to Presenation
+	 * @param {string} masterSlideName - Master Slide name
+	 * @returns {ISlide} the new Slide
+	 */
+	addSlide(masterSlideName?: string): PptxGenJS.ISlide
+	/**
+	 * Create a custom Slide Layout in any size
+	 * @param {IUserLayout} layout - an object with user-defined w/h
+	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
+	 */
+	defineLayout(layout: PptxGenJS.IUserLayout): void
+	/**
+	 * Create a new slide master [layout] for the Presentation
+	 * @param {ISlideMasterOptions} slideMasterOpts - layout definition
+	 */
+	defineSlideMaster(slideMasterOpts: PptxGenJS.ISlideMasterOptions): void
+	/**
+	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+	 * @param {string} tabEleId - HTMLElementID of the table
+	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+	 */
+	tableToSlides(tableElementId: string, opts?: PptxGenJS.ITableToSlidesOpts): void
 }
 
 declare namespace PptxGenJS {
 	// Exported enums for module apps
 	// @example: pptxgen.ShapeType.rect
-	export enum OutputType {
+	export const enum OutputType {
 		'arraybuffer' = 'arraybuffer',
 		'base64' = 'base64',
 		'binarystring' = 'binarystring',
 		'blob' = 'blob',
 		'nodebuffer' = 'nodebuffer',
-		'uint8array' = 'uint8array',
+		'uint8array' = 'uint8array'
 	}
-	export enum ChartType {
+	export const enum ChartType {
 		'area' = 'area',
 		'bar' = 'bar',
 		'bar3d' = 'bar3D',
@@ -112,9 +118,9 @@ declare namespace PptxGenJS {
 		'line' = 'line',
 		'pie' = 'pie',
 		'radar' = 'radar',
-		'scatter' = 'scatter',
+		'scatter' = 'scatter'
 	}
-	export enum ShapeType {
+	export const enum ShapeType {
 		accentBorderCallout1 = 'accentBorderCallout1',
 		accentBorderCallout2 = 'accentBorderCallout2',
 		accentBorderCallout3 = 'accentBorderCallout3',
@@ -292,7 +298,7 @@ declare namespace PptxGenJS {
 		wave = 'wave',
 		wedgeEllipseCallout = 'wedgeEllipseCallout',
 		wedgeRectCallout = 'wedgeRectCallout',
-		wedgeRoundRectCallout = 'wedgeRoundRectCallout',
+		wedgeRoundRectCallout = 'wedgeRoundRectCallout'
 	}
 	// These are used by browser/script clients and have been named like this since v0.1.
 	// Desc: charts and shapes for `pptxgen.charts.` `pptxgen.shapes.`
@@ -498,6 +504,29 @@ declare namespace PptxGenJS {
 	// import { CHART_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES, SHAPE_NAME } from './core-enums'
 	export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
+	export enum CHART_TYPE {
+		'AREA' = 'area',
+		'BAR' = 'bar',
+		'BAR3D' = 'bar3D',
+		'BUBBLE' = 'bubble',
+		'DOUGHNUT' = 'doughnut',
+		'LINE' = 'line',
+		'PIE' = 'pie',
+		'RADAR' = 'radar',
+		'SCATTER' = 'scatter'
+	}
+	export enum SCHEME_COLOR_NAMES {
+		'TEXT1' = 'tx1',
+		'TEXT2' = 'tx2',
+		'BACKGROUND1' = 'bg1',
+		'BACKGROUND2' = 'bg2',
+		'ACCENT1' = 'accent1',
+		'ACCENT2' = 'accent2',
+		'ACCENT3' = 'accent3',
+		'ACCENT4' = 'accent4',
+		'ACCENT5' = 'accent5',
+		'ACCENT6' = 'accent6'
+	}
 	export enum SLIDE_OBJECT_TYPES {
 		'chart' = 'chart',
 		'hyperlink' = 'hyperlink',
@@ -1320,52 +1349,52 @@ declare namespace PptxGenJS {
 		hidden: boolean
 		slideNumber: ISlideNumber
 		/**
-	     * Add chart to Slide
-	     * @param {CHART_NAME|IChartMulti[]} type - chart type
-	     * @param {object[]} data - data object
-	     * @param {IChartOpts} options - chart options
-	     * @return {Slide} this Slide
-	     */
-	    addChart(type: CHART_NAME | IChartMulti[], data: [], options?: IChartOpts): Slide;
-	    /**
-	     * Add image to Slide
-	     * @param {IImageOpts} options - image options
-	     * @return {Slide} this Slide
-	     */
-	    addImage(options: IImageOpts): Slide;
-	    /**
-	     * Add media (audio/video) to Slide
-	     * @param {IMediaOpts} options - media options
-	     * @return {Slide} this Slide
-	     */
-	    addMedia(options: IMediaOpts): Slide;
-	    /**
-	     * Add speaker notes to Slide
-	     * @docs https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html
-	     * @param {string} notes - notes to add to slide
-	     * @return {Slide} this Slide
-	     */
-	    addNotes(notes: string): Slide;
-	    /**
-	     * Add shape to Slide
-	     * @param {SHAPE_NAME} shapeName - shape name
-	     * @param {IShapeOptions} options - shape options
-	     * @return {Slide} this Slide
-	     */
-	    addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide;
-	    /**
-	     * Add table to Slide
-	     * @param {TableRow[]} tableRows - table rows
-	     * @param {ITableOptions} options - table options
-	     * @return {Slide} this Slide
-	     */
-	    addTable(tableRows: TableRow[], options?: ITableOptions): Slide;
-	    /**
-	     * Add text to Slide
-	     * @param {string|IText[]} text - text string or complex object
-	     * @param {ITextOpts} options - text options
-	     * @return {Slide} this Slide
-	     */
-	    addText(text: string | IText[], options?: ITextOpts): Slide;
+		 * Add chart to Slide
+		 * @param {CHART_NAME|IChartMulti[]} type - chart type
+		 * @param {object[]} data - data object
+		 * @param {IChartOpts} options - chart options
+		 * @return {Slide} this Slide
+		 */
+		addChart(type: CHART_NAME | IChartMulti[], data: [], options?: IChartOpts): Slide
+		/**
+		 * Add image to Slide
+		 * @param {IImageOpts} options - image options
+		 * @return {Slide} this Slide
+		 */
+		addImage(options: IImageOpts): Slide
+		/**
+		 * Add media (audio/video) to Slide
+		 * @param {IMediaOpts} options - media options
+		 * @return {Slide} this Slide
+		 */
+		addMedia(options: IMediaOpts): Slide
+		/**
+		 * Add speaker notes to Slide
+		 * @docs https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html
+		 * @param {string} notes - notes to add to slide
+		 * @return {Slide} this Slide
+		 */
+		addNotes(notes: string): Slide
+		/**
+		 * Add shape to Slide
+		 * @param {SHAPE_NAME} shapeName - shape name
+		 * @param {IShapeOptions} options - shape options
+		 * @return {Slide} this Slide
+		 */
+		addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide
+		/**
+		 * Add table to Slide
+		 * @param {TableRow[]} tableRows - table rows
+		 * @param {ITableOptions} options - table options
+		 * @return {Slide} this Slide
+		 */
+		addTable(tableRows: TableRow[], options?: ITableOptions): Slide
+		/**
+		 * Add text to Slide
+		 * @param {string|IText[]} text - text string or complex object
+		 * @param {ITextOpts} options - text options
+		 * @return {Slide} this Slide
+		 */
+		addText(text: string | IText[], options?: ITextOpts): Slide
 	}
 }

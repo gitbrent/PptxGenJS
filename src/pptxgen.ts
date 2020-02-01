@@ -47,14 +47,17 @@ import * as JSZip from 'jszip'
 import Slide from './slide'
 import {
 	CHART_TYPE,
+	CHARTTYPE_TYPE,
 	DEF_PRES_LAYOUT_NAME,
 	DEF_PRES_LAYOUT,
 	DEF_SLIDE_MARGIN_IN,
-	JSZIP_OUTPUT_TYPE,
-	SCHEME_COLOR_NAMES,
-	WRITE_OUTPUT_TYPE,
 	EMU,
+	JSZIP_OUTPUT_TYPE,
+	OUTPUTTYPE_TYPE,
+	SCHEME_COLOR_NAMES,
 	SHAPE_TYPE,
+	SHAPETYPE_TYPE,
+	WRITE_OUTPUT_TYPE,
 } from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
 import * as genCharts from './gen-charts'
@@ -63,7 +66,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.1.1'
+const VERSION = '3.1.1-beta'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -182,9 +185,17 @@ export default class PptxGenJS {
 	private LAYOUTS: object
 
 	// Global props
+	private _outputType = OUTPUTTYPE_TYPE
+	public get OutputType(): typeof OUTPUTTYPE_TYPE {
+		return this._outputType
+	}
 	private _charts = CHART_TYPE
 	public get charts(): typeof CHART_TYPE {
 		return this._charts
+	}
+	private _chartType = CHARTTYPE_TYPE
+	public get ChartType(): typeof CHARTTYPE_TYPE {
+		return this._chartType
 	}
 	private _colors = SCHEME_COLOR_NAMES
 	public get colors(): typeof SCHEME_COLOR_NAMES {
@@ -193,6 +204,10 @@ export default class PptxGenJS {
 	private _shapes = SHAPE_TYPE
 	public get shapes(): typeof SHAPE_TYPE {
 		return this._shapes
+	}
+	private _shapeType = SHAPETYPE_TYPE
+	public get ShapeType(): typeof SHAPETYPE_TYPE {
+		return this._shapeType
 	}
 	private _presLayout: ILayout
 	public get presLayout(): ILayout {
@@ -263,7 +278,7 @@ export default class PptxGenJS {
 	 * @param {string} masterName - slide master name
 	 * @return {ISlide} new Slide
 	 */
-	addNewSlide = (masterName: string): ISlide => this.addSlide(masterName)
+	private addNewSlide = (masterName: string): ISlide => this.addSlide(masterName)
 
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
@@ -271,13 +286,13 @@ export default class PptxGenJS {
 	 * @param {number} slideNum - slide number
 	 * @return {ISlide} Slide
 	 */
-	getSlide = (slideNum: number): ISlide => this.slides.filter(slide => slide.number === slideNum)[0]
+	private getSlide = (slideNum: number): ISlide => this.slides.filter(slide => slide.number === slideNum)[0]
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
 	 * @param {ISlideNumber} slideNum - slide number config
 	 */
-	setSlideNumber = (slideNum: ISlideNumber) => {
+	private setSlideNumber = (slideNum: ISlideNumber) => {
 		// 1: Add slideNumber to slideMaster1.xml
 		this.masterSlide.slideNumberObj = slideNum
 
@@ -291,7 +306,7 @@ export default class PptxGenJS {
 	 * @param {JSZIP} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
-	createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
+	private createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
@@ -315,7 +330,7 @@ export default class PptxGenJS {
 	 * @param {Blob} blobContent - Blob content
 	 * @return {Promise<string>} Promise with file name
 	 */
-	writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> =>
+	private writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> =>
 		new Promise((resolve, _reject) => {
 			// STEP 1: Create element
 			let eleLink = document.createElement('a')
@@ -359,7 +374,7 @@ export default class PptxGenJS {
 	 * @param {WRITE_OUTPUT_TYPE} outputType - output file type
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
-	exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> =>
+	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> =>
 		new Promise((resolve, reject) => {
 			let arrChartPromises: Promise<string>[] = []
 			let arrMediaPromises: Promise<string>[] = []
