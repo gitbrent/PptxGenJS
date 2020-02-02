@@ -47,17 +47,20 @@ import * as JSZip from 'jszip'
 import Slide from './slide'
 import {
 	CHART_TYPE,
-	CHARTTYPE_TYPE,
 	DEF_PRES_LAYOUT_NAME,
 	DEF_PRES_LAYOUT,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	JSZIP_OUTPUT_TYPE,
-	OUTPUTTYPE_TYPE,
 	SCHEME_COLOR_NAMES,
 	SHAPE_TYPE,
-	SHAPETYPE_TYPE,
 	WRITE_OUTPUT_TYPE,
+	AlignH,
+	AlignV,
+	ChartType,
+	OutputType,
+	SchemeColor,
+	ShapeType,
 } from './core-enums'
 import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
 import * as genCharts from './gen-charts'
@@ -66,7 +69,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.1.1-beta'
+const VERSION = '3.2.0-beta'
 
 export default class PptxGenJS {
 	// Property getters/setters
@@ -184,34 +187,56 @@ export default class PptxGenJS {
 	private slideLayouts: ISlideLayout[]
 	private LAYOUTS: object
 
-	// Global props
-	private _outputType = OUTPUTTYPE_TYPE
-	public get OutputType(): typeof OUTPUTTYPE_TYPE {
-		return this._outputType
+	// Exposed class props
+	private _alignH = AlignH
+	public get AlignH(): typeof AlignH {
+		return this._alignH
 	}
-	private _charts = CHART_TYPE
-	public get charts(): typeof CHART_TYPE {
-		return this._charts
+	private _alignV = AlignV
+	public get AlignV(): typeof AlignV {
+		return this._alignV
 	}
-	private _chartType = CHARTTYPE_TYPE
-	public get ChartType(): typeof CHARTTYPE_TYPE {
+	private _chartType = ChartType
+	public get ChartType(): typeof ChartType {
 		return this._chartType
 	}
-	private _colors = SCHEME_COLOR_NAMES
-	public get colors(): typeof SCHEME_COLOR_NAMES {
-		return this._colors
-	}
-	private _shapes = SHAPE_TYPE
-	public get shapes(): typeof SHAPE_TYPE {
-		return this._shapes
-	}
-	private _shapeType = SHAPETYPE_TYPE
-	public get ShapeType(): typeof SHAPETYPE_TYPE {
-		return this._shapeType
+	private _outputType = OutputType
+	public get OutputType(): typeof OutputType {
+		return this._outputType
 	}
 	private _presLayout: ILayout
 	public get presLayout(): ILayout {
 		return this._presLayout
+	}
+	private _schemeColor = SchemeColor
+	public get SchemeColor(): typeof SchemeColor {
+		return this._schemeColor
+	}
+	private _shapeType = ShapeType
+	public get ShapeType(): typeof ShapeType {
+		return this._shapeType
+	}
+
+	/**
+	 * @depricated use `ChartType`
+	 */
+	private _charts = CHART_TYPE
+	public get charts(): typeof CHART_TYPE {
+		return this._charts
+	}
+	/**
+	 * @depricated use `SchemeColor`
+	 */
+	private _colors = SCHEME_COLOR_NAMES
+	public get colors(): typeof SCHEME_COLOR_NAMES {
+		return this._colors
+	}
+	/**
+	 * @depricated use `ShapeType`
+	 */
+	private _shapes = SHAPE_TYPE
+	public get shapes(): typeof SHAPE_TYPE {
+		return this._shapes
 	}
 
 	constructor() {
