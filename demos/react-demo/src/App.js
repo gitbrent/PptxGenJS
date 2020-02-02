@@ -8,15 +8,18 @@ function App() {
 	const demoCode = `import pptxgen from "pptxgenjs";
 
 let pptx = new pptxgen();
-
 let slide = pptx.addSlide();
 
 slide.addText(
   "React Demo!",
-  { x:1, y:1, w:'80%', h:1, fontSize:36, fill:'eeeeee', align:pptxgen.TEXT_HALIGN.center }
+  { x:1, y:1, w:'80%', h:1, fontSize:36, fill:pptx.SchemeColor.background2, align:pptxgen.AlignH.center }
 );
 
-pptx.writeFile("react-demo.pptx");`;
+slide.addChart(
+  pptx.ChartType.radar, dataChartRadar, { x: 1, y: 2, w: 8, h: 3 }
+);
+
+pptx.writeFile("pptxgenjs-demo-react.pptx");`;
 
 	function runAllTests() {
 		testEveryMainMethod();
@@ -33,12 +36,20 @@ pptx.writeFile("react-demo.pptx");`;
 				values: [26, 53, 100, 75, 41]
 			}
 		];
-		console.log(pptx.ChartType.radar);
-		slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 0.36, y: 2.25, w: 4.0, h: 4.0 });
+		slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 1, y: 2, w: 8, h: 3 });
 		//slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 0.36, y: 2.25, w: 4.0, h: 4.0, radarStyle: "standard" });
-		//slide.addShape(pptx.ShapeType.rect, { x: 4.36, y: 2.36, w: 5, h: 2.5, fill: "FF6699" });
+		//slide.addShape(pptx.ShapeType.rect, { x: 4.36, y: 2.36, w: 5, h: 2.5, fill: pptx.SchemeColor.background2 });
 		//slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee", align: "center" });
-		slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee" });
+		slide.addText("React Demo!", {
+			x: 1,
+			y: 1,
+			w: "80%",
+			h: 1,
+			fontSize: 36,
+			align: pptx.AlignH.center,
+			fill: pptx.SchemeColor.background2,
+			color: pptx.SchemeColor.accent1
+		});
 		pptx.writeFile("pptxgenjs-demo-react.pptx");
 	}
 
@@ -113,14 +124,14 @@ pptx.writeFile("react-demo.pptx");`;
 						<code className="language-javascript">{demoCode}</code>
 					</pre>
 
-					<button type="button" className="btn btn-success w-25 mr-2" onClick={ev => runDemo()}>
+					<button type="button" className="btn btn-success w-25 mr-3" onClick={ev => runDemo()}>
 						Run Demo
 					</button>
 					<button type="button" className="btn btn-primary w-25" onClick={ev => runAllTests()}>
 						Run All Tests
 					</button>
 
-					<table id="html2ppt" className="table">
+					<table id="html2ppt" className="table" style={{ display: "none" }}>
 						<thead>
 							<tr>
 								<th>head</th>
