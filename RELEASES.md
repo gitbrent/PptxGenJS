@@ -21,7 +21,7 @@
 1. Update `package.json` version
 2. Update `src/pptxgen.ts` version
 3. Build using `$ npm run ship`
-4. Consolidate `src/bld/*.ts` into `types/index.d.ts` (Note: `charts` and `shapes` are special and stay!)
+4. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts`
 5. Open `dist/*.js` and check headers
 6. Update `CHANGELOG.md` with new date
 7. Update `README.md` with new CDN links
