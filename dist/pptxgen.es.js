@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.1-beta @ 2020-02-01T06:10:47.843Z */
+/* PptxGenJS 3.1.1-beta @ 2020-02-02T05:30:49.738Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -82,208 +82,236 @@ var TEXT_VALIGN;
 })(TEXT_VALIGN || (TEXT_VALIGN = {}));
 var SLDNUMFLDID = '{F7021451-1387-4CA6-816F-3879F97B5CBC}';
 // ENUM
-var OUTPUTTYPE_TYPE;
-(function (OUTPUTTYPE_TYPE) {
-    OUTPUTTYPE_TYPE["arraybuffer"] = "arraybuffer";
-    OUTPUTTYPE_TYPE["base64"] = "base64";
-    OUTPUTTYPE_TYPE["binarystring"] = "binarystring";
-    OUTPUTTYPE_TYPE["blob"] = "blob";
-    OUTPUTTYPE_TYPE["nodebuffer"] = "nodebuffer";
-    OUTPUTTYPE_TYPE["uint8array"] = "uint8array";
-})(OUTPUTTYPE_TYPE || (OUTPUTTYPE_TYPE = {}));
-var CHARTTYPE_TYPE;
-(function (CHARTTYPE_TYPE) {
-    CHARTTYPE_TYPE["area"] = "area";
-    CHARTTYPE_TYPE["bar"] = "bar";
-    CHARTTYPE_TYPE["bar3d"] = "bar3D";
-    CHARTTYPE_TYPE["bubble"] = "bubble";
-    CHARTTYPE_TYPE["doughnut"] = "doughnut";
-    CHARTTYPE_TYPE["line"] = "line";
-    CHARTTYPE_TYPE["pie"] = "pie";
-    CHARTTYPE_TYPE["radar"] = "radar";
-    CHARTTYPE_TYPE["scatter"] = "scatter";
-})(CHARTTYPE_TYPE || (CHARTTYPE_TYPE = {}));
-var SHAPETYPE_TYPE;
-(function (SHAPETYPE_TYPE) {
-    SHAPETYPE_TYPE["accentBorderCallout1"] = "accentBorderCallout1";
-    SHAPETYPE_TYPE["accentBorderCallout2"] = "accentBorderCallout2";
-    SHAPETYPE_TYPE["accentBorderCallout3"] = "accentBorderCallout3";
-    SHAPETYPE_TYPE["accentCallout1"] = "accentCallout1";
-    SHAPETYPE_TYPE["accentCallout2"] = "accentCallout2";
-    SHAPETYPE_TYPE["accentCallout3"] = "accentCallout3";
-    SHAPETYPE_TYPE["actionButtonBackPrevious"] = "actionButtonBackPrevious";
-    SHAPETYPE_TYPE["actionButtonBeginning"] = "actionButtonBeginning";
-    SHAPETYPE_TYPE["actionButtonBlank"] = "actionButtonBlank";
-    SHAPETYPE_TYPE["actionButtonDocument"] = "actionButtonDocument";
-    SHAPETYPE_TYPE["actionButtonEnd"] = "actionButtonEnd";
-    SHAPETYPE_TYPE["actionButtonForwardNext"] = "actionButtonForwardNext";
-    SHAPETYPE_TYPE["actionButtonHelp"] = "actionButtonHelp";
-    SHAPETYPE_TYPE["actionButtonHome"] = "actionButtonHome";
-    SHAPETYPE_TYPE["actionButtonInformation"] = "actionButtonInformation";
-    SHAPETYPE_TYPE["actionButtonMovie"] = "actionButtonMovie";
-    SHAPETYPE_TYPE["actionButtonReturn"] = "actionButtonReturn";
-    SHAPETYPE_TYPE["actionButtonSound"] = "actionButtonSound";
-    SHAPETYPE_TYPE["arc"] = "arc";
-    SHAPETYPE_TYPE["bentArrow"] = "bentArrow";
-    SHAPETYPE_TYPE["bentUpArrow"] = "bentUpArrow";
-    SHAPETYPE_TYPE["bevel"] = "bevel";
-    SHAPETYPE_TYPE["blockArc"] = "blockArc";
-    SHAPETYPE_TYPE["borderCallout1"] = "borderCallout1";
-    SHAPETYPE_TYPE["borderCallout2"] = "borderCallout2";
-    SHAPETYPE_TYPE["borderCallout3"] = "borderCallout3";
-    SHAPETYPE_TYPE["bracePair"] = "bracePair";
-    SHAPETYPE_TYPE["bracketPair"] = "bracketPair";
-    SHAPETYPE_TYPE["callout1"] = "callout1";
-    SHAPETYPE_TYPE["callout2"] = "callout2";
-    SHAPETYPE_TYPE["callout3"] = "callout3";
-    SHAPETYPE_TYPE["can"] = "can";
-    SHAPETYPE_TYPE["chartPlus"] = "chartPlus";
-    SHAPETYPE_TYPE["chartStar"] = "chartStar";
-    SHAPETYPE_TYPE["chartX"] = "chartX";
-    SHAPETYPE_TYPE["chevron"] = "chevron";
-    SHAPETYPE_TYPE["chord"] = "chord";
-    SHAPETYPE_TYPE["circularArrow"] = "circularArrow";
-    SHAPETYPE_TYPE["cloud"] = "cloud";
-    SHAPETYPE_TYPE["cloudCallout"] = "cloudCallout";
-    SHAPETYPE_TYPE["corner"] = "corner";
-    SHAPETYPE_TYPE["cornerTabs"] = "cornerTabs";
-    SHAPETYPE_TYPE["cube"] = "cube";
-    SHAPETYPE_TYPE["curvedDownArrow"] = "curvedDownArrow";
-    SHAPETYPE_TYPE["curvedLeftArrow"] = "curvedLeftArrow";
-    SHAPETYPE_TYPE["curvedRightArrow"] = "curvedRightArrow";
-    SHAPETYPE_TYPE["curvedUpArrow"] = "curvedUpArrow";
-    SHAPETYPE_TYPE["decagon"] = "decagon";
-    SHAPETYPE_TYPE["diagStripe"] = "diagStripe";
-    SHAPETYPE_TYPE["diamond"] = "diamond";
-    SHAPETYPE_TYPE["dodecagon"] = "dodecagon";
-    SHAPETYPE_TYPE["donut"] = "donut";
-    SHAPETYPE_TYPE["doubleWave"] = "doubleWave";
-    SHAPETYPE_TYPE["downArrow"] = "downArrow";
-    SHAPETYPE_TYPE["downArrowCallout"] = "downArrowCallout";
-    SHAPETYPE_TYPE["ellipse"] = "ellipse";
-    SHAPETYPE_TYPE["ellipseRibbon"] = "ellipseRibbon";
-    SHAPETYPE_TYPE["ellipseRibbon2"] = "ellipseRibbon2";
-    SHAPETYPE_TYPE["flowChartAlternateProcess"] = "flowChartAlternateProcess";
-    SHAPETYPE_TYPE["flowChartCollate"] = "flowChartCollate";
-    SHAPETYPE_TYPE["flowChartConnector"] = "flowChartConnector";
-    SHAPETYPE_TYPE["flowChartDecision"] = "flowChartDecision";
-    SHAPETYPE_TYPE["flowChartDelay"] = "flowChartDelay";
-    SHAPETYPE_TYPE["flowChartDisplay"] = "flowChartDisplay";
-    SHAPETYPE_TYPE["flowChartDocument"] = "flowChartDocument";
-    SHAPETYPE_TYPE["flowChartExtract"] = "flowChartExtract";
-    SHAPETYPE_TYPE["flowChartInputOutput"] = "flowChartInputOutput";
-    SHAPETYPE_TYPE["flowChartInternalStorage"] = "flowChartInternalStorage";
-    SHAPETYPE_TYPE["flowChartMagneticDisk"] = "flowChartMagneticDisk";
-    SHAPETYPE_TYPE["flowChartMagneticDrum"] = "flowChartMagneticDrum";
-    SHAPETYPE_TYPE["flowChartMagneticTape"] = "flowChartMagneticTape";
-    SHAPETYPE_TYPE["flowChartManualInput"] = "flowChartManualInput";
-    SHAPETYPE_TYPE["flowChartManualOperation"] = "flowChartManualOperation";
-    SHAPETYPE_TYPE["flowChartMerge"] = "flowChartMerge";
-    SHAPETYPE_TYPE["flowChartMultidocument"] = "flowChartMultidocument";
-    SHAPETYPE_TYPE["flowChartOfflineStorage"] = "flowChartOfflineStorage";
-    SHAPETYPE_TYPE["flowChartOffpageConnector"] = "flowChartOffpageConnector";
-    SHAPETYPE_TYPE["flowChartOnlineStorage"] = "flowChartOnlineStorage";
-    SHAPETYPE_TYPE["flowChartOr"] = "flowChartOr";
-    SHAPETYPE_TYPE["flowChartPredefinedProcess"] = "flowChartPredefinedProcess";
-    SHAPETYPE_TYPE["flowChartPreparation"] = "flowChartPreparation";
-    SHAPETYPE_TYPE["flowChartProcess"] = "flowChartProcess";
-    SHAPETYPE_TYPE["flowChartPunchedCard"] = "flowChartPunchedCard";
-    SHAPETYPE_TYPE["flowChartPunchedTape"] = "flowChartPunchedTape";
-    SHAPETYPE_TYPE["flowChartSort"] = "flowChartSort";
-    SHAPETYPE_TYPE["flowChartSummingJunction"] = "flowChartSummingJunction";
-    SHAPETYPE_TYPE["flowChartTerminator"] = "flowChartTerminator";
-    SHAPETYPE_TYPE["folderCorner"] = "folderCorner";
-    SHAPETYPE_TYPE["frame"] = "frame";
-    SHAPETYPE_TYPE["funnel"] = "funnel";
-    SHAPETYPE_TYPE["gear6"] = "gear6";
-    SHAPETYPE_TYPE["gear9"] = "gear9";
-    SHAPETYPE_TYPE["halfFrame"] = "halfFrame";
-    SHAPETYPE_TYPE["heart"] = "heart";
-    SHAPETYPE_TYPE["heptagon"] = "heptagon";
-    SHAPETYPE_TYPE["hexagon"] = "hexagon";
-    SHAPETYPE_TYPE["homePlate"] = "homePlate";
-    SHAPETYPE_TYPE["horizontalScroll"] = "horizontalScroll";
-    SHAPETYPE_TYPE["irregularSeal1"] = "irregularSeal1";
-    SHAPETYPE_TYPE["irregularSeal2"] = "irregularSeal2";
-    SHAPETYPE_TYPE["leftArrow"] = "leftArrow";
-    SHAPETYPE_TYPE["leftArrowCallout"] = "leftArrowCallout";
-    SHAPETYPE_TYPE["leftBrace"] = "leftBrace";
-    SHAPETYPE_TYPE["leftBracket"] = "leftBracket";
-    SHAPETYPE_TYPE["leftCircularArrow"] = "leftCircularArrow";
-    SHAPETYPE_TYPE["leftRightArrow"] = "leftRightArrow";
-    SHAPETYPE_TYPE["leftRightArrowCallout"] = "leftRightArrowCallout";
-    SHAPETYPE_TYPE["leftRightCircularArrow"] = "leftRightCircularArrow";
-    SHAPETYPE_TYPE["leftRightRibbon"] = "leftRightRibbon";
-    SHAPETYPE_TYPE["leftRightUpArrow"] = "leftRightUpArrow";
-    SHAPETYPE_TYPE["leftUpArrow"] = "leftUpArrow";
-    SHAPETYPE_TYPE["lightningBolt"] = "lightningBolt";
-    SHAPETYPE_TYPE["line"] = "line";
-    SHAPETYPE_TYPE["lineInv"] = "lineInv";
-    SHAPETYPE_TYPE["mathDivide"] = "mathDivide";
-    SHAPETYPE_TYPE["mathEqual"] = "mathEqual";
-    SHAPETYPE_TYPE["mathMinus"] = "mathMinus";
-    SHAPETYPE_TYPE["mathMultiply"] = "mathMultiply";
-    SHAPETYPE_TYPE["mathNotEqual"] = "mathNotEqual";
-    SHAPETYPE_TYPE["mathPlus"] = "mathPlus";
-    SHAPETYPE_TYPE["moon"] = "moon";
-    SHAPETYPE_TYPE["nonIsoscelesTrapezoid"] = "nonIsoscelesTrapezoid";
-    SHAPETYPE_TYPE["noSmoking"] = "noSmoking";
-    SHAPETYPE_TYPE["notchedRightArrow"] = "notchedRightArrow";
-    SHAPETYPE_TYPE["octagon"] = "octagon";
-    SHAPETYPE_TYPE["parallelogram"] = "parallelogram";
-    SHAPETYPE_TYPE["pentagon"] = "pentagon";
-    SHAPETYPE_TYPE["pie"] = "pie";
-    SHAPETYPE_TYPE["pieWedge"] = "pieWedge";
-    SHAPETYPE_TYPE["plaque"] = "plaque";
-    SHAPETYPE_TYPE["plaqueTabs"] = "plaqueTabs";
-    SHAPETYPE_TYPE["plus"] = "plus";
-    SHAPETYPE_TYPE["quadArrow"] = "quadArrow";
-    SHAPETYPE_TYPE["quadArrowCallout"] = "quadArrowCallout";
-    SHAPETYPE_TYPE["rect"] = "rect";
-    SHAPETYPE_TYPE["ribbon"] = "ribbon";
-    SHAPETYPE_TYPE["ribbon2"] = "ribbon2";
-    SHAPETYPE_TYPE["rightArrow"] = "rightArrow";
-    SHAPETYPE_TYPE["rightArrowCallout"] = "rightArrowCallout";
-    SHAPETYPE_TYPE["rightBrace"] = "rightBrace";
-    SHAPETYPE_TYPE["rightBracket"] = "rightBracket";
-    SHAPETYPE_TYPE["round1Rect"] = "round1Rect";
-    SHAPETYPE_TYPE["round2DiagRect"] = "round2DiagRect";
-    SHAPETYPE_TYPE["round2SameRect"] = "round2SameRect";
-    SHAPETYPE_TYPE["roundRect"] = "roundRect";
-    SHAPETYPE_TYPE["rtTriangle"] = "rtTriangle";
-    SHAPETYPE_TYPE["smileyFace"] = "smileyFace";
-    SHAPETYPE_TYPE["snip1Rect"] = "snip1Rect";
-    SHAPETYPE_TYPE["snip2DiagRect"] = "snip2DiagRect";
-    SHAPETYPE_TYPE["snip2SameRect"] = "snip2SameRect";
-    SHAPETYPE_TYPE["snipRoundRect"] = "snipRoundRect";
-    SHAPETYPE_TYPE["squareTabs"] = "squareTabs";
-    SHAPETYPE_TYPE["star10"] = "star10";
-    SHAPETYPE_TYPE["star12"] = "star12";
-    SHAPETYPE_TYPE["star16"] = "star16";
-    SHAPETYPE_TYPE["star24"] = "star24";
-    SHAPETYPE_TYPE["star32"] = "star32";
-    SHAPETYPE_TYPE["star4"] = "star4";
-    SHAPETYPE_TYPE["star5"] = "star5";
-    SHAPETYPE_TYPE["star6"] = "star6";
-    SHAPETYPE_TYPE["star7"] = "star7";
-    SHAPETYPE_TYPE["star8"] = "star8";
-    SHAPETYPE_TYPE["stripedRightArrow"] = "stripedRightArrow";
-    SHAPETYPE_TYPE["sun"] = "sun";
-    SHAPETYPE_TYPE["swooshArrow"] = "swooshArrow";
-    SHAPETYPE_TYPE["teardrop"] = "teardrop";
-    SHAPETYPE_TYPE["trapezoid"] = "trapezoid";
-    SHAPETYPE_TYPE["triangle"] = "triangle";
-    SHAPETYPE_TYPE["upArrow"] = "upArrow";
-    SHAPETYPE_TYPE["upArrowCallout"] = "upArrowCallout";
-    SHAPETYPE_TYPE["upDownArrow"] = "upDownArrow";
-    SHAPETYPE_TYPE["upDownArrowCallout"] = "upDownArrowCallout";
-    SHAPETYPE_TYPE["uturnArrow"] = "uturnArrow";
-    SHAPETYPE_TYPE["verticalScroll"] = "verticalScroll";
-    SHAPETYPE_TYPE["wave"] = "wave";
-    SHAPETYPE_TYPE["wedgeEllipseCallout"] = "wedgeEllipseCallout";
-    SHAPETYPE_TYPE["wedgeRectCallout"] = "wedgeRectCallout";
-    SHAPETYPE_TYPE["wedgeRoundRectCallout"] = "wedgeRoundRectCallout";
-})(SHAPETYPE_TYPE || (SHAPETYPE_TYPE = {}));
+// TODO: 3.5 or v4.0: rationalize ts-def exported enum names/case!
+// NOTE: First tsdef enum named correctly (shapes -> 'Shape', colors -> 'Color'), etc.
+var OutputType;
+(function (OutputType) {
+    OutputType["arraybuffer"] = "arraybuffer";
+    OutputType["base64"] = "base64";
+    OutputType["binarystring"] = "binarystring";
+    OutputType["blob"] = "blob";
+    OutputType["nodebuffer"] = "nodebuffer";
+    OutputType["uint8array"] = "uint8array";
+})(OutputType || (OutputType = {}));
+var ChartType;
+(function (ChartType) {
+    ChartType["area"] = "area";
+    ChartType["bar"] = "bar";
+    ChartType["bar3d"] = "bar3D";
+    ChartType["bubble"] = "bubble";
+    ChartType["doughnut"] = "doughnut";
+    ChartType["line"] = "line";
+    ChartType["pie"] = "pie";
+    ChartType["radar"] = "radar";
+    ChartType["scatter"] = "scatter";
+})(ChartType || (ChartType = {}));
+var ShapeType;
+(function (ShapeType) {
+    ShapeType["accentBorderCallout1"] = "accentBorderCallout1";
+    ShapeType["accentBorderCallout2"] = "accentBorderCallout2";
+    ShapeType["accentBorderCallout3"] = "accentBorderCallout3";
+    ShapeType["accentCallout1"] = "accentCallout1";
+    ShapeType["accentCallout2"] = "accentCallout2";
+    ShapeType["accentCallout3"] = "accentCallout3";
+    ShapeType["actionButtonBackPrevious"] = "actionButtonBackPrevious";
+    ShapeType["actionButtonBeginning"] = "actionButtonBeginning";
+    ShapeType["actionButtonBlank"] = "actionButtonBlank";
+    ShapeType["actionButtonDocument"] = "actionButtonDocument";
+    ShapeType["actionButtonEnd"] = "actionButtonEnd";
+    ShapeType["actionButtonForwardNext"] = "actionButtonForwardNext";
+    ShapeType["actionButtonHelp"] = "actionButtonHelp";
+    ShapeType["actionButtonHome"] = "actionButtonHome";
+    ShapeType["actionButtonInformation"] = "actionButtonInformation";
+    ShapeType["actionButtonMovie"] = "actionButtonMovie";
+    ShapeType["actionButtonReturn"] = "actionButtonReturn";
+    ShapeType["actionButtonSound"] = "actionButtonSound";
+    ShapeType["arc"] = "arc";
+    ShapeType["bentArrow"] = "bentArrow";
+    ShapeType["bentUpArrow"] = "bentUpArrow";
+    ShapeType["bevel"] = "bevel";
+    ShapeType["blockArc"] = "blockArc";
+    ShapeType["borderCallout1"] = "borderCallout1";
+    ShapeType["borderCallout2"] = "borderCallout2";
+    ShapeType["borderCallout3"] = "borderCallout3";
+    ShapeType["bracePair"] = "bracePair";
+    ShapeType["bracketPair"] = "bracketPair";
+    ShapeType["callout1"] = "callout1";
+    ShapeType["callout2"] = "callout2";
+    ShapeType["callout3"] = "callout3";
+    ShapeType["can"] = "can";
+    ShapeType["chartPlus"] = "chartPlus";
+    ShapeType["chartStar"] = "chartStar";
+    ShapeType["chartX"] = "chartX";
+    ShapeType["chevron"] = "chevron";
+    ShapeType["chord"] = "chord";
+    ShapeType["circularArrow"] = "circularArrow";
+    ShapeType["cloud"] = "cloud";
+    ShapeType["cloudCallout"] = "cloudCallout";
+    ShapeType["corner"] = "corner";
+    ShapeType["cornerTabs"] = "cornerTabs";
+    ShapeType["cube"] = "cube";
+    ShapeType["curvedDownArrow"] = "curvedDownArrow";
+    ShapeType["curvedLeftArrow"] = "curvedLeftArrow";
+    ShapeType["curvedRightArrow"] = "curvedRightArrow";
+    ShapeType["curvedUpArrow"] = "curvedUpArrow";
+    ShapeType["decagon"] = "decagon";
+    ShapeType["diagStripe"] = "diagStripe";
+    ShapeType["diamond"] = "diamond";
+    ShapeType["dodecagon"] = "dodecagon";
+    ShapeType["donut"] = "donut";
+    ShapeType["doubleWave"] = "doubleWave";
+    ShapeType["downArrow"] = "downArrow";
+    ShapeType["downArrowCallout"] = "downArrowCallout";
+    ShapeType["ellipse"] = "ellipse";
+    ShapeType["ellipseRibbon"] = "ellipseRibbon";
+    ShapeType["ellipseRibbon2"] = "ellipseRibbon2";
+    ShapeType["flowChartAlternateProcess"] = "flowChartAlternateProcess";
+    ShapeType["flowChartCollate"] = "flowChartCollate";
+    ShapeType["flowChartConnector"] = "flowChartConnector";
+    ShapeType["flowChartDecision"] = "flowChartDecision";
+    ShapeType["flowChartDelay"] = "flowChartDelay";
+    ShapeType["flowChartDisplay"] = "flowChartDisplay";
+    ShapeType["flowChartDocument"] = "flowChartDocument";
+    ShapeType["flowChartExtract"] = "flowChartExtract";
+    ShapeType["flowChartInputOutput"] = "flowChartInputOutput";
+    ShapeType["flowChartInternalStorage"] = "flowChartInternalStorage";
+    ShapeType["flowChartMagneticDisk"] = "flowChartMagneticDisk";
+    ShapeType["flowChartMagneticDrum"] = "flowChartMagneticDrum";
+    ShapeType["flowChartMagneticTape"] = "flowChartMagneticTape";
+    ShapeType["flowChartManualInput"] = "flowChartManualInput";
+    ShapeType["flowChartManualOperation"] = "flowChartManualOperation";
+    ShapeType["flowChartMerge"] = "flowChartMerge";
+    ShapeType["flowChartMultidocument"] = "flowChartMultidocument";
+    ShapeType["flowChartOfflineStorage"] = "flowChartOfflineStorage";
+    ShapeType["flowChartOffpageConnector"] = "flowChartOffpageConnector";
+    ShapeType["flowChartOnlineStorage"] = "flowChartOnlineStorage";
+    ShapeType["flowChartOr"] = "flowChartOr";
+    ShapeType["flowChartPredefinedProcess"] = "flowChartPredefinedProcess";
+    ShapeType["flowChartPreparation"] = "flowChartPreparation";
+    ShapeType["flowChartProcess"] = "flowChartProcess";
+    ShapeType["flowChartPunchedCard"] = "flowChartPunchedCard";
+    ShapeType["flowChartPunchedTape"] = "flowChartPunchedTape";
+    ShapeType["flowChartSort"] = "flowChartSort";
+    ShapeType["flowChartSummingJunction"] = "flowChartSummingJunction";
+    ShapeType["flowChartTerminator"] = "flowChartTerminator";
+    ShapeType["folderCorner"] = "folderCorner";
+    ShapeType["frame"] = "frame";
+    ShapeType["funnel"] = "funnel";
+    ShapeType["gear6"] = "gear6";
+    ShapeType["gear9"] = "gear9";
+    ShapeType["halfFrame"] = "halfFrame";
+    ShapeType["heart"] = "heart";
+    ShapeType["heptagon"] = "heptagon";
+    ShapeType["hexagon"] = "hexagon";
+    ShapeType["homePlate"] = "homePlate";
+    ShapeType["horizontalScroll"] = "horizontalScroll";
+    ShapeType["irregularSeal1"] = "irregularSeal1";
+    ShapeType["irregularSeal2"] = "irregularSeal2";
+    ShapeType["leftArrow"] = "leftArrow";
+    ShapeType["leftArrowCallout"] = "leftArrowCallout";
+    ShapeType["leftBrace"] = "leftBrace";
+    ShapeType["leftBracket"] = "leftBracket";
+    ShapeType["leftCircularArrow"] = "leftCircularArrow";
+    ShapeType["leftRightArrow"] = "leftRightArrow";
+    ShapeType["leftRightArrowCallout"] = "leftRightArrowCallout";
+    ShapeType["leftRightCircularArrow"] = "leftRightCircularArrow";
+    ShapeType["leftRightRibbon"] = "leftRightRibbon";
+    ShapeType["leftRightUpArrow"] = "leftRightUpArrow";
+    ShapeType["leftUpArrow"] = "leftUpArrow";
+    ShapeType["lightningBolt"] = "lightningBolt";
+    ShapeType["line"] = "line";
+    ShapeType["lineInv"] = "lineInv";
+    ShapeType["mathDivide"] = "mathDivide";
+    ShapeType["mathEqual"] = "mathEqual";
+    ShapeType["mathMinus"] = "mathMinus";
+    ShapeType["mathMultiply"] = "mathMultiply";
+    ShapeType["mathNotEqual"] = "mathNotEqual";
+    ShapeType["mathPlus"] = "mathPlus";
+    ShapeType["moon"] = "moon";
+    ShapeType["nonIsoscelesTrapezoid"] = "nonIsoscelesTrapezoid";
+    ShapeType["noSmoking"] = "noSmoking";
+    ShapeType["notchedRightArrow"] = "notchedRightArrow";
+    ShapeType["octagon"] = "octagon";
+    ShapeType["parallelogram"] = "parallelogram";
+    ShapeType["pentagon"] = "pentagon";
+    ShapeType["pie"] = "pie";
+    ShapeType["pieWedge"] = "pieWedge";
+    ShapeType["plaque"] = "plaque";
+    ShapeType["plaqueTabs"] = "plaqueTabs";
+    ShapeType["plus"] = "plus";
+    ShapeType["quadArrow"] = "quadArrow";
+    ShapeType["quadArrowCallout"] = "quadArrowCallout";
+    ShapeType["rect"] = "rect";
+    ShapeType["ribbon"] = "ribbon";
+    ShapeType["ribbon2"] = "ribbon2";
+    ShapeType["rightArrow"] = "rightArrow";
+    ShapeType["rightArrowCallout"] = "rightArrowCallout";
+    ShapeType["rightBrace"] = "rightBrace";
+    ShapeType["rightBracket"] = "rightBracket";
+    ShapeType["round1Rect"] = "round1Rect";
+    ShapeType["round2DiagRect"] = "round2DiagRect";
+    ShapeType["round2SameRect"] = "round2SameRect";
+    ShapeType["roundRect"] = "roundRect";
+    ShapeType["rtTriangle"] = "rtTriangle";
+    ShapeType["smileyFace"] = "smileyFace";
+    ShapeType["snip1Rect"] = "snip1Rect";
+    ShapeType["snip2DiagRect"] = "snip2DiagRect";
+    ShapeType["snip2SameRect"] = "snip2SameRect";
+    ShapeType["snipRoundRect"] = "snipRoundRect";
+    ShapeType["squareTabs"] = "squareTabs";
+    ShapeType["star10"] = "star10";
+    ShapeType["star12"] = "star12";
+    ShapeType["star16"] = "star16";
+    ShapeType["star24"] = "star24";
+    ShapeType["star32"] = "star32";
+    ShapeType["star4"] = "star4";
+    ShapeType["star5"] = "star5";
+    ShapeType["star6"] = "star6";
+    ShapeType["star7"] = "star7";
+    ShapeType["star8"] = "star8";
+    ShapeType["stripedRightArrow"] = "stripedRightArrow";
+    ShapeType["sun"] = "sun";
+    ShapeType["swooshArrow"] = "swooshArrow";
+    ShapeType["teardrop"] = "teardrop";
+    ShapeType["trapezoid"] = "trapezoid";
+    ShapeType["triangle"] = "triangle";
+    ShapeType["upArrow"] = "upArrow";
+    ShapeType["upArrowCallout"] = "upArrowCallout";
+    ShapeType["upDownArrow"] = "upDownArrow";
+    ShapeType["upDownArrowCallout"] = "upDownArrowCallout";
+    ShapeType["uturnArrow"] = "uturnArrow";
+    ShapeType["verticalScroll"] = "verticalScroll";
+    ShapeType["wave"] = "wave";
+    ShapeType["wedgeEllipseCallout"] = "wedgeEllipseCallout";
+    ShapeType["wedgeRectCallout"] = "wedgeRectCallout";
+    ShapeType["wedgeRoundRectCallout"] = "wedgeRoundRectCallout";
+})(ShapeType || (ShapeType = {}));
+var SchemeColor;
+(function (SchemeColor) {
+    SchemeColor["text1"] = "tx1";
+    SchemeColor["text2"] = "tx2";
+    SchemeColor["background1"] = "bg1";
+    SchemeColor["background2"] = "bg2";
+    SchemeColor["accent1"] = "accent1";
+    SchemeColor["accent2"] = "accent2";
+    SchemeColor["accent3"] = "accent3";
+    SchemeColor["accent4"] = "accent4";
+    SchemeColor["accent5"] = "accent5";
+    SchemeColor["accent6"] = "accent6";
+})(SchemeColor || (SchemeColor = {}));
+var AlignH;
+(function (AlignH) {
+    AlignH["left"] = "left";
+    AlignH["center"] = "center";
+    AlignH["right"] = "right";
+    AlignH["justify"] = "justify";
+})(AlignH || (AlignH = {}));
+var AlignV;
+(function (AlignV) {
+    AlignV["top"] = "top";
+    AlignV["middle"] = "middle";
+    AlignV["bottom"] = "bottom";
+})(AlignV || (AlignV = {}));
 var SHAPE_TYPE;
 (function (SHAPE_TYPE) {
     SHAPE_TYPE["ACTION_BUTTON_BACK_OR_PREVIOUS"] = "actionButtonBackPrevious";
@@ -5832,7 +5860,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.1.1-beta';
+var VERSION = '3.2.0-beta';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -5840,13 +5868,25 @@ var PptxGenJS = /** @class */ (function () {
          * PptxGenJS Library Version
          */
         this._version = VERSION;
-        // Global props
-        this._outputType = OUTPUTTYPE_TYPE;
+        // Exposed class props
+        this._alignH = AlignH;
+        this._alignV = AlignV;
+        this._chartType = ChartType;
+        this._outputType = OutputType;
+        this._schemeColor = SchemeColor;
+        this._shapeType = ShapeType;
+        /**
+         * @depricated use `ChartType`
+         */
         this._charts = CHART_TYPE;
-        this._chartType = CHARTTYPE_TYPE;
+        /**
+         * @depricated use `SchemeColor`
+         */
         this._colors = SCHEME_COLOR_NAMES;
+        /**
+         * @depricated use `ShapeType`
+         */
         this._shapes = SHAPE_TYPE;
-        this._shapeType = SHAPETYPE_TYPE;
         /**
          * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
          * @param {string} masterName - slide master name
@@ -6178,16 +6218,16 @@ var PptxGenJS = /** @class */ (function () {
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(PptxGenJS.prototype, "OutputType", {
+    Object.defineProperty(PptxGenJS.prototype, "AlignH", {
         get: function () {
-            return this._outputType;
+            return this._alignH;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(PptxGenJS.prototype, "charts", {
+    Object.defineProperty(PptxGenJS.prototype, "AlignV", {
         get: function () {
-            return this._charts;
+            return this._alignV;
         },
         enumerable: true,
         configurable: true
@@ -6195,6 +6235,41 @@ var PptxGenJS = /** @class */ (function () {
     Object.defineProperty(PptxGenJS.prototype, "ChartType", {
         get: function () {
             return this._chartType;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "OutputType", {
+        get: function () {
+            return this._outputType;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "presLayout", {
+        get: function () {
+            return this._presLayout;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "SchemeColor", {
+        get: function () {
+            return this._schemeColor;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "ShapeType", {
+        get: function () {
+            return this._shapeType;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "charts", {
+        get: function () {
+            return this._charts;
         },
         enumerable: true,
         configurable: true
@@ -6209,20 +6284,6 @@ var PptxGenJS = /** @class */ (function () {
     Object.defineProperty(PptxGenJS.prototype, "shapes", {
         get: function () {
             return this._shapes;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PptxGenJS.prototype, "ShapeType", {
-        get: function () {
-            return this._shapeType;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(PptxGenJS.prototype, "presLayout", {
-        get: function () {
-            return this._presLayout;
         },
         enumerable: true,
         configurable: true
