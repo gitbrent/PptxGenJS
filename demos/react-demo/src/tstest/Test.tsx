@@ -2,7 +2,7 @@
  * Test TypeScript Defs file
  */
 import pptxgen from "pptxgenjs";
-import { IMGBASE64 } from "../res"; // FIXME: HELP:
+import { IMGBASE64 } from "../res";
 
 export function testEveryMainMethod() {
 	let pptx = new pptxgen();
@@ -40,11 +40,11 @@ export function testEveryMainMethod() {
 	slide2.addText("React Demo!", { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: pptx.AlignH.center });
 
 	// 5:
-	//pptx.tableToSlides("html2ppt");
+	//pptx.tableToSlides("html2ppt"); // Works v3.1.1 (FIXME: formatting sucks)
 
 	// Last:
-	//pptx.stream().then(() => console.log("stream!"));
-	//pptx.write(pptx.OutputType.base64).then(() => console.log("base64!")); // TEST: outputType
+	//pptx.stream().then(() => console.log("stream!")); // Works v3.1.1
+	//pptx.write(pptx.OutputType.base64).then(() => console.log("base64!")); // TEST: outputType // Works v3.1.1
 	pptx.writeFile("testFile").then(() => console.log("writeFile done!"));
 }
 /*
