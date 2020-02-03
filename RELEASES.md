@@ -48,17 +48,21 @@ $ node demo.js All
 React Test
 
 1. Ensure newest `dist/pptxgen.es.js` and `types/index.d.ts` under local node_modules
-2. Open `demos/react/demo/src/latest/Test.tsx`
-3. Check existing code
-4. Test defs by using auto-complete, "pptxgen.ChartType." etc.
+2. Update `demos/react-demo/package.json` version
+3. Open `demos/react-demo/src/latest/Test.tsx`
+4. Check existing code
+5. Test defs by using auto-complete, "pptxgen.ChartType." etc.
 
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/react-demo
 $ npm run start
 ```
 
-1. Go to https://localhost:3000
-2. Run the demo
+1. Go to http://localhost:3000 on iMac
+2. Run both demo tests
+3. Go to http://192.168.x.x:3000 on iPhone
+4. Run both demo tests
+5. Ensure each is viewable upon download
 
 **NOTE** Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
 
@@ -72,9 +76,10 @@ $ npm run start
 
 ### GitHub
 
-1. Copy CHANGELOG entry and draft new release: [Releases](https://github.com/gitbrent/PptxGenJS/releases)
-2. Use "Version X.x.x" as title and "v3.1.1" as tag
-3. Go back to Releases page, double-check title/tag, release when ready
+1. Checkin all changes via GitHub Desktop
+2. Copy CHANGELOG entry and draft new release: [Releases](https://github.com/gitbrent/PptxGenJS/releases)
+3. Use "Version X.x.x" as title and "v3.1.1" as tag
+4. Go back to Releases page, double-check title/tag, release when ready
 
 ### NPM
 
