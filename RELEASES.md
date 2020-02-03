@@ -40,7 +40,7 @@ Run Node test
 
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/node
-$ node demo.js All -local
+$ node demo.js All
 ```
 
 ### React/TypeScript
