@@ -1,4 +1,4 @@
-/* PptxGenJS 3.1.1-beta @ 2020-02-02T05:30:49.738Z */
+/* PptxGenJS 3.1.1 @ 2020-02-03T05:19:57.092Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2806,17 +2806,18 @@ function makeXmlPresentation(slides, pptLayout, rtlMode) {
         'saveSubsetFonts="1" autoCompressPictures="0">';
     // STEP 1: Add slide master (SPEC: tag 1 under <presentation>)
     strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
-    // STEP 2: Add Notes Master (SPEC: tag 2 under <presentation>)
-    // (NOTE: length+2 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic))
-    // IMPORTANT: In this order (mtches PPT2019) PPT will give corruption message on open!
-    // (20200115): (Swap this and STEP 3 is okay - WTF) Seems to work fine without this, so leaving out for now
-    //strXml += `<p:notesMasterIdLst><p:notesMasterId r:id="rId${slides.length + 2}"/></p:notesMasterIdLst>`
-    // STEP 3: Add all Slides (SPEC: tag 3 under <presentation>)
+    // STEP 2: Add all Slides (SPEC: tag 3 under <presentation>)
     strXml += '<p:sldIdLst>';
     for (var idx = 0; idx < slides.length; idx++) {
         strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>';
     }
     strXml += '</p:sldIdLst>';
+    // STEP 3: Add Notes Master (SPEC: tag 2 under <presentation>)
+    // (NOTE: length+2 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic))
+    // IMPORTANT: In this order (matches PPT2019) PPT will give corruption message on open!
+    // IMPORTANT: Placing this before `<p:sldIdLst>` causes warning in modern powerpoint!
+    // IMPORTANT: Presentations open without warning Without this line, however, the pres isnt preview in Finder anymore or viewable in iOS!
+    strXml += "<p:notesMasterIdLst><p:notesMasterId r:id=\"rId" + (slides.length + 2) + "\"/></p:notesMasterIdLst>";
     // STEP 4: Build SLIDE text styles
     strXml +=
         '<p:sldSz cx="' +
@@ -5860,7 +5861,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta';
+var VERSION = '3.1.1';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
