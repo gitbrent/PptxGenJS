@@ -93,5 +93,6 @@ $ npm run start
 1. Save output from all tests and html2ppt for this release
 2. Go test CDN links on README
 3. Load **gh-pages** branch
-4. Update documentation if needed
-5. Update demo-react by copying in newest "build" contents
+4. Update `installation.md` with latest CDN version
+5. Update demo-react by copying contents of the newest "build" (from above) into `./demo-react` folder
+6. Update other documentation as needed
