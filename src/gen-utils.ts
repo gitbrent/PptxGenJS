@@ -33,10 +33,12 @@ export function getSmartParseNumber(
 
     // Number is already converted to something other than inches
     // Assume any number greater than 100 is not inches! Just return it (its EMU already i guess??)
-    if (typeof size === 'number' && size >= 100) return size
+    if (typeof size === 'number' && size >= 100) return Math.round(size)
 
     if (typeof size === 'string' && CALC_EXPR.test(size)) {
-        return calc(size, v => getSmartParseNumber(v, xyDir, layout))
+        return Math.round(
+            calc(size, v => getSmartParseNumber(v, xyDir, layout))
+        )
     }
 
     // Percentage (ex: '50%')
