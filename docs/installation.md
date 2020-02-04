@@ -22,7 +22,7 @@ Min files: Modern Browsers
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.1.1/dist/pptxgen.min.js"></script>
 ```
 
-### Download
+## Download
 
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
