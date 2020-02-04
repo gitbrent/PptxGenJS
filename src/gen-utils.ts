@@ -298,7 +298,12 @@ export const genericParseFloat = (n: number | string) => {
     return n
 }
 
-export const translateColor = color => {
-    if (!color || typeof color !== 'string') return color
-    return color.replace('#', '')
+export const translateColor = inputColor => {
+    if (!inputColor || typeof inputColor !== 'string') return inputColor
+    const color = inputColor.replace('#', '')
+    if (color.length === 3) {
+        const [r, g, b] = color.split('')
+        return [r, r, g, g, b, b].join('')
+    }
+    return color
 }
