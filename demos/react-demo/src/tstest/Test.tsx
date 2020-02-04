@@ -1,10 +1,10 @@
 /**
  * Test TypeScript Defs file
  */
-import pptxgen from "pptxgenjs";
 import { IMGBASE64 } from "../res";
+import pptxgen from "pptxgenjs";
 
-export function testEveryMainMethod() {
+export function testMainMethods() {
 	let pptx = new pptxgen();
 
 	// 1:

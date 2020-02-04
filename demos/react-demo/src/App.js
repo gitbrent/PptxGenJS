@@ -2,7 +2,7 @@ import React from "react";
 import logo from "./logo.svg";
 import "./App.css";
 import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
-import { testEveryMainMethod } from "./tstest/Test";
+import { testMainMethods } from "./tstest/Test";
 
 function App() {
 	const demoCode = `import pptxgen from "pptxgenjs";
@@ -22,7 +22,7 @@ slide.addChart(
 pptx.writeFile("pptxgenjs-demo-react.pptx");`;
 
 	function runAllTests() {
-		testEveryMainMethod();
+		testMainMethods();
 	}
 	function runDemo() {
 		let pptx = new pptxgen();
