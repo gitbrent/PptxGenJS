@@ -4,14 +4,14 @@ title: Adding Shapes
 ---
 ## Syntax
 
-### Plain/no text
+### Shape without text
 ```javascript
-slide.addShape({SHAPE}, {OPTIONS});
+slide.addShape( SHAPE, OPTIONS );
 ```
 
-### With text
+### Shape with text
 ```javascript
-slide.addText("some string", {SHAPE, OPTIONS});
+slide.addText( "some string", {SHAPE, OPTIONS} );
 ```
 
 
@@ -37,21 +37,19 @@ slide.addText("some string", {SHAPE, OPTIONS});
 
 ## Shape Examples
 ```javascript
-var pptx = new PptxGenJS();
-
 // Plain shapes:
-var slide1 = pptx.addSlide();
-slide1.addShape(pptx.shapes.RECTANGLE, { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
-slide1.addShape(pptx.shapes.OVAL,      { x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC' } });
-slide1.addShape(pptx.shapes.LINE,      { x:4.2, y:4.4, w:5.0, h:0.0, line:'FF0000', lineSize:1 });
-slide1.addShape(pptx.shapes.LINE,      { x:4.2, y:4.8, w:5.0, h:0.0, line:'FF0000', lineSize:2, lineHead:'triangle' });
+let slide1 = pres.addSlide();
+slide1.addShape(pres.ShapeType.rectangle, { x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000' });
+slide1.addShape(pres.ShapeType.oval,      { x:5.4, y:0.8, w:3.0, h:1.5, fill:{ type:'solid', color:'0088CC' } });
+slide1.addShape(pres.ShapeType.line,      { x:4.2, y:4.4, w:5.0, h:0.0, line:'FF0000', lineSize:1 });
+slide1.addShape(pres.ShapeType.line,      { x:4.2, y:4.8, w:5.0, h:0.0, line:'FF0000', lineSize:2, lineHead:'triangle' });
 
 // Shapes with Text:
-var slide2 = pptx.addSlide();
-slide2.addText('RECTANGLE',   { shape:pptx.shapes.RECTANGLE, x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'center', fontSize:14 });
-slide2.addText('OVAL',        { shape:pptx.shapes.OVAL,      x:5.4, y:0.8, w:3.0, h:1.5, fill:'F38E00', align:'center', fontSize:14 });
-slide2.addText('LINE size=1', { shape:pptx.shapes.LINE, align:'center', x:4.2, y:4.4, w:5, h:0, line:'FF0000', lineSize:1, lineDash:'lgDash' });
-slide2.addText('LINE size=2', { shape:pptx.shapes.LINE, align:'left',   x:4.2, y:4.8, w:5, h:0, line:'FF0000', lineSize:2, lineTail:'triangle' });
+let slide2 = pres.addSlide();
+slide2.addText('RECTANGLE',   { shape:pres.ShapeType.rectangle, x:0.5, y:0.8, w:1.5, h:3.0, fill:'FF0000', align:'center', fontSize:14 });
+slide2.addText('OVAL',        { shape:pres.ShapeType.oval,      x:5.4, y:0.8, w:3.0, h:1.5, fill:'F38E00', align:'center', fontSize:14 });
+slide2.addText('LINE size=1', { shape:pres.ShapeType.line, align:'center', x:4.2, y:4.4, w:5, h:0, line:'FF0000', lineSize:1, lineDash:'lgDash' });
+slide2.addText('LINE size=2', { shape:pres.ShapeType.line, align:'left',   x:4.2, y:4.8, w:5, h:0, line:'FF0000', lineSize:2, lineTail:'triangle' });
 
-pptx.writeFile('Demo-Shapes');
+pres.writeFile('Demo-Shapes');
 ```

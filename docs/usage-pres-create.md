@@ -9,11 +9,11 @@ on creating more than a one PPTX file at-a-time).
 
 ## Browser
 ```javascript
-var pptx = new PptxGenJS();
+let pres = new PptxGenJS();
 ```
 
 ## Angular, React, Node, TypeScript, Electron, etc.
 ```typescript
-let PptxGenJS = require("pptxgenjs");
-let pptx = new PptxGenJS();
+import pptxgen from "pptxgenjs";
+let pres = new pptxgen();
 ```

@@ -4,16 +4,17 @@ title: Adding Charts
 ---
 ## Syntax
 ```javascript
-slide.addChart({TYPE}, {DATA}, {OPTIONS});
+slide.addChart( TYPE, DATA, OPTIONS );
 ```
 
 ## Chart Features
+
 ### Core Chart Types
-* Chart type can be any one of `pptx.charts`
-* Currently: `pptx.charts.AREA`, `pptx.charts.BAR`, `pptx.charts.BAR3D`, `pptx.charts.BUBBLE`, `pptx.charts.DOUGHNUT`, `pptx.charts.LINE`, `pptx.charts.PIE`, `pptx.charts.RADAR`, `pptx.charts.SCATTER`
+* Chart type can be any one of `pptx.ChartType`
+* Currently: `pptx.ChartType.area`, `pptx.ChartType.bar`, `pptx.ChartType.bar3d`, `pptx.ChartType.bubble`, `pptx.ChartType.doughnut`, `pptx.ChartType.line`, `pptx.ChartType.pie`, `pptx.ChartType.radar`, `pptx.ChartType.scatter`
 
 ### Multi-Type Charts
-* Chart types can be any one of `pptx.charts`, although `pptx.charts.AREA`, `pptx.charts.BAR`, and `pptx.charts.LINE` will give the best results.
+* Chart types can be any one of `pptx.ChartType`, although `pptx.ChartType.area`, `pptx.ChartType.bar`, and `pptx.ChartType.line` will give the best results.
 * There should be at least two chart-types. There should always be two value axes and category axes.
 * Multi Charts have a different function signature than standard. There are two parameters:
  * `chartTypes`: Array of objects, each with `type`, `data`, and `options` objects.
@@ -207,11 +208,9 @@ There are lots of Slides filled with Charts you can copy:
 
 ### Line Chart Sample
 ```javascript
-var pptx = new PptxGenJS();
-var slide = pptx.addSlide();
+let slide = pres.addSlide();
 
-// Chart Type: LINE
-var dataChartAreaLine = [
+let dataChartAreaLine = [
   {
     name  : 'Actual Sales',
     labels: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
@@ -223,7 +222,12 @@ var dataChartAreaLine = [
     values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121]
   }
 ];
-slide.addChart( pptx.charts.LINE, dataChartAreaLine, { x:1, y:1, w:8, h:4 } );
 
-pptx.writeFile('Demo-Line-Chart');
+slide.addChart(
+  pres.ChartType.line,
+  dataChartAreaLine,
+  { x:1, y:1, w:8, h:4 }
+);
+
+pres.writeFile('Demo-Line-Chart');
 ```
