@@ -82,7 +82,7 @@ declare class PptxGenJS {
 	 * @param {string} masterSlideName - Master Slide name
 	 * @returns {ISlide} the new Slide
 	 */
-	addSlide(masterSlideName?: string): PptxGenJS.ISlide
+	addSlide(masterSlideName?: string): PptxGenJS.Slide
 	/**
 	 * Create a custom Slide Layout in any size
 	 * @param {IUserLayout} layout - an object with user-defined w/h
