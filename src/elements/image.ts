@@ -43,6 +43,8 @@ const findExtension = (data = '', path = '') => {
 }
 
 export type ObjectFitOptions = 'none' | 'fill' | 'cover' | 'contain' | 'crop'
+export type ObjectAlignOptions = 'center' | 'left' | 'right'
+export type ObjectVAlignOptions = 'middle' | 'top' | 'bottom'
 export type ColorBlend = { darkColor?: string; lightColor?: string }
 type ImageFormat = { height: string | number; width: string | number }
 
@@ -53,6 +55,8 @@ export type ImageOptions = PositionOptions & {
     placeholder?: string
     colorBlend?: ColorBlend
     objectFit?: ObjectFitOptions
+    objectAlign?: ObjectAlignOptions
+    objectVAlign?: ObjectVAlignOptions
     imageFormat?: ImageFormat
     data?: string
     path?: string
@@ -71,6 +75,8 @@ export default class ImageElement implements ElementInterface {
     image?: string
 
     objectFit: ObjectFitOptions
+    objectAlign?: ObjectAlignOptions
+    objectVAlign?: ObjectVAlignOptions
     imageFormat?: ImageFormat
 
     rounding?: boolean
@@ -122,6 +128,9 @@ export default class ImageElement implements ElementInterface {
             )
             this.objectFit = 'fill'
         }
+
+        this.objectAlign = options.objectAlign
+        this.objectVAlign = options.objectVAlign
 
         let newObject: any = {
             type: null,
@@ -184,7 +193,9 @@ export default class ImageElement implements ElementInterface {
         const objectFit = new ObjectFit(
             this.objectFit || (placeholder && placeholder.objectFit),
             correctedPosition,
-            this.imageFormat
+            this.imageFormat,
+            this.objectAlign,
+            this.objectVAlign
         )
         const opacity = this.opacity || (placeholder && placeholder.opacity)
         const colorBlend =
@@ -239,6 +250,9 @@ class ObjectFit {
     sourceW
     sourceH
 
+    align
+    valign
+
     x
     y
     w
@@ -247,13 +261,18 @@ class ObjectFit {
     constructor(
         fitType = 'fill',
         position: { x; y; w; h },
-        source: ImageFormat
+        source: ImageFormat,
+        align = 'center',
+        valign = 'middle'
     ) {
         this.fitType = fitType
         this.x = position.x
         this.y = position.y
         this.w = position.w
         this.h = position.h
+
+        this.align = align
+        this.valign = valign
 
         if (
             (this.fitType !== 'fill' || this.fitType !== 'none') &&
@@ -277,6 +296,29 @@ class ObjectFit {
         return parseFloat(this.sourceH) / parseFloat(this.sourceW)
     }
 
+    get hPos(): [number, number] {
+        if (this.align === 'left') return [0, 1]
+        if (this.align === 'right') return [1, 0]
+        return [0.5, 0.5]
+    }
+
+    get vPos(): [number, number] {
+        if (this.valign === 'top') return [0, 1]
+        if (this.valign === 'bottom') return [1, 0]
+        return [0.5, 0.5]
+    }
+
+    renderPerc(w, width, h, height) {
+        const [left, right] = this.hPos
+        const leftPerc = Math.round(1e5 * left * (1 - w / width))
+        const rightPerc = Math.round(1e5 * right * (1 - w / width))
+
+        const [top, bottom] = this.vPos
+        const topPerc = Math.round(1e5 * top * (1 - h / height))
+        const bottomPerc = Math.round(1e5 * bottom * (1 - h / height))
+        return `<a:srcRect l="${leftPerc}" r="${rightPerc}" t="${topPerc}" b="${bottomPerc}"/><a:stretch/>`
+    }
+
     renderCover(unit) {
         const h = unit.y(this.h)
         const w = unit.x(this.w)
@@ -286,9 +328,8 @@ class ObjectFit {
         const isBoxBased = boxRatio > this.imgRatio
         const width = isBoxBased ? h / this.imgRatio : w
         const height = isBoxBased ? h : w * this.imgRatio
-        const hzPerc = Math.round(1e5 * 0.5 * (1 - w / width))
-        const vzPerc = Math.round(1e5 * 0.5 * (1 - h / height))
-        return `<a:srcRect l="${hzPerc}" r="${hzPerc}" t="${vzPerc}" b="${vzPerc}"/><a:stretch/>`
+
+        return this.renderPerc(w, width, h, height)
     }
 
     renderContain(unit) {
@@ -300,9 +341,8 @@ class ObjectFit {
         const widthBased = boxRatio > this.imgRatio
         const width = widthBased ? w : h / this.imgRatio
         const height = widthBased ? w * this.imgRatio : h
-        const hzPerc = Math.round(1e5 * 0.5 * (1 - w / width))
-        const vzPerc = Math.round(1e5 * 0.5 * (1 - h / height))
-        return `<a:srcRect l="${hzPerc}" r="${hzPerc}" t="${vzPerc}" b="${vzPerc}"/><a:stretch/>`
+
+        return this.renderPerc(w, width, h, height)
     }
 
     renderCrop(unit) {
