@@ -831,7 +831,7 @@ declare namespace PptxGenJS {
 	export interface IBorderOptions {
 		color?: HexColor
 		pt?: number
-		type?: string
+		type?: 'none' | 'dash' | 'solid'
 	}
 	export interface IShadowOptions {
 		type: 'outer' | 'inner' | 'none'

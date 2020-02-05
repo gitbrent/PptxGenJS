@@ -64,7 +64,7 @@ export interface OptsDataLabelPosition {
 export interface IBorderOptions {
 	color?: HexColor
 	pt?: number
-	type?: string // TODO: specify values, eg: 'none'
+	type?: 'none' | 'dash' | 'solid'
 }
 export interface IShadowOptions {
 	type: 'outer' | 'inner' | 'none'
