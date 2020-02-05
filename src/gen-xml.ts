@@ -7,17 +7,18 @@ import {
 	CRLF,
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
+	DEF_PRES_LAYOUT_NAME,
+	DEF_TEXT_GLOW,
 	EMU,
 	LAYOUT_IDX_SERIES_BASE,
 	ONEPT,
 	PLACEHOLDER_TYPES,
 	SLDNUMFLDID,
 	SLIDE_OBJECT_TYPES,
-	DEF_PRES_LAYOUT_NAME,
-	DEF_TEXT_GLOW,
 } from './core-enums'
 import {
 	ILayout,
+	IObjectOptions,
 	IShadowOptions,
 	ISlide,
 	ISlideLayout,
@@ -27,7 +28,6 @@ import {
 	ISlideRelMedia,
 	ITableCell,
 	ITableCellOpts,
-	IObjectOptions,
 	IText,
 	ITextOpts,
 } from './core-interfaces'
