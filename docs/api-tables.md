@@ -10,7 +10,7 @@ slide.addTable( [rows] );
 slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 ```
 
-## Table Layout Options
+## Table Layout Options (`ITableOptions`)
 
 | Option | Type    | Unit   | Default | Description            | Possible Values                                                             |
 | :----- | :------ | :----- | :------ | :--------------------- | :-------------------------------------------------------------------------- |
@@ -23,12 +23,12 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `rowH` | integer | inches |         | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
 | `rowH` | array   | inches |         | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
 
-## Table Auto-Paging Options
+## Table Auto-Paging Options (`ITableOptions`)
 
 | Option          | Type          | Default | Description                                 | Possible Values                           |
 | :-------------- | :------------ | :------ | :------------------------------------------ | :---------------------------------------- |
 | `autoPage`      | boolean       | `true`  | auto-page table                             | `true` or `false`. Ex: `{autoPage:false}` |
-| `lineWeight`    | float         | 0       | line weight value                           | -1.0 to 1.0. Ex: `{lineWeight:0.5}`       |
+| `lineWeight`    | float         | `0`     | line weight value                           | -1.0 to 1.0. Ex: `{lineWeight:0.5}`       |
 | `newPageStartY` | number/string |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}`     |
 
 ### Option Details
@@ -48,7 +48,7 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 - Auto-paging is not an exact science! Try using different `lineWeight` and Slide margin values if your tables are overflowing the Slide.
 - There are many examples of auto-paging in the `examples` folder.
 
-## Table Formatting Options
+## Table Formatting Options (`ITableOptions`)
 
 | Option      | Type    | Unit   | Default | Description        | Possible Values                                                                   |
 | :---------- | :------ | :----- | :------ | :----------------- | :-------------------------------------------------------------------------------- |
@@ -68,7 +68,7 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `underline` | boolean |        | `false` | underline text     | `true` or `false`                                                                 |
 | `valign`    | string  |        |         | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`)                                    |
 
-### Border Option
+### Border Options (`IBorderOptions`)
 | Option      | Type    | Default | Description        | Possible Values                                                                   |
 | :---------- | :------ | :------ | :----------------- | :-------------------------------------------------------------------------------- |
 | `type`      | string  | `solid` | border type        | `none` or `solid` or `dash`                                                       |
