@@ -1489,7 +1489,7 @@ function genSlides_Chart(pptx) {
 	function slide11() {
 		var slide = pptx.addSlide();
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
-		slide.addTable( [ [{ text:'Chart Examples: Area Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		slide.addTable( [ [{ text:'Chart Examples: Area Chart, Stacked Area Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		var arrDataAreaSm = [
 			{
@@ -1523,14 +1523,15 @@ function genSlides_Chart(pptx) {
 		};
 		slide.addChart( pptx.charts.AREA, arrDataAreaSm, optsChartLine1 );
 
-		// TOP-RIGHT
+		// TOP-RIGHT (stacked area chart)
 		var optsChartLine2 = { x:7, y:0.6, w:'45%', h:3,
 			chartColors: ['0088CC', '99FFCC'],
 			chartColorsOpacity: 25,
 			valAxisLabelRotate: 5,
 			dataBorder: {pt:2, color:'FFFFFF'},
 			showValue: false,
-			fill: 'D1E1F1'
+			fill: 'D1E1F1',
+			barGrouping: 'stacked'
 		};
 		slide.addChart( pptx.charts.AREA, arrDataTimeline2ser, optsChartLine2 );
 

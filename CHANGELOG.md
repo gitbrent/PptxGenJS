@@ -12,16 +12,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update demo.js and docs
 
 
+## [3.2.0] - 2020-?-?
+### Added
+- Added Stacked Area Charts [\#333](https://github.com/gitbrent/PptxGenJS/issue/333) ([fordaaronj](https://github.com/fordaaronj))
+### Changed
+- Continued improvement of typescript definitions file ([gitbrent](https://github.com/gitbrent))
+
+
+
 ## [3.1.1] - 2020-02-02
 ### Added
 - TypeScript: Add shapes and font options types [\#650](https://github.com/gitbrent/PptxGenJS/pull/650) ([cronin4392](https://github.com/cronin4392))
-- TypeScript: Added correct export of types and ts-def file (`pptx.ShapeType.rect`, etc) in `index.d.ts`
+- TypeScript: Added correct export of types and ts-def file (`pptx.ShapeType.rect`, etc) in `index.d.ts` ([gitbrent](https://github.com/gitbrent))
 ### Changed
 - Fixed: Re-added "browser" property to `package.json` to avoid old "fs not found" Angular/webpack issue (Angular 8) [\#654](https://github.com/gitbrent/PptxGenJS/issue/654) ([cwilkens](https://github.com/cwilkens))
-- Fixed: Previous release introduced a regression bug and broke addTest placeholder's
+- Fixed: Previous release introduced a regression bug and broke addTest placeholder's ([gitbrent](https://github.com/gitbrent))
 - Fixed: addChart and addImage in the same slide cause an error [fixed via `getNewRelId`] [\#655](https://github.com/gitbrent/PptxGenJS/issue/655) ([JuliaSheleva](https://github.com/JuliaSheleva))
 ### Removed
-- The `core-shapes.ts` file was removed, shape def collapsed to simple type array, rolled into `core-enums.ts` and `index.d.ts`
+- The `core-shapes.ts` file was removed, shape def collapsed to simple type array, rolled into `core-enums.ts` and `index.d.ts` ([gitbrent](https://github.com/gitbrent))
 
 
 
