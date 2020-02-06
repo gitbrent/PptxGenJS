@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.1.1
+// Type definitions for pptxgenjs 3.2.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -800,7 +800,7 @@ declare namespace PptxGenJS {
 		path?: string
 		data?: string
 	}
-	type MediaType = 'audio' | 'online' | 'video'
+	export type MediaType = 'audio' | 'online' | 'video'
 
 	export interface FontOptions {
 		fontFace?: string
