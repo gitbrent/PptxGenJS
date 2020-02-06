@@ -1703,13 +1703,9 @@ export function makeXmlTheme(): string {
  */
 export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMode: boolean): string {
 	let strXml =
-		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-		CRLF +
-		'<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ' +
-		'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
-		'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ' +
-		(rtlMode ? 'rtl="1" ' : '') +
-		'saveSubsetFonts="1" autoCompressPictures="0">'
+		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
+		`<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ` +
+		`xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ${rtlMode ? 'rtl="1"' : ''} saveSubsetFonts="1" autoCompressPictures="0">`
 
 	// STEP 1: Add slide master (SPEC: tag 1 under <presentation>)
 	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
