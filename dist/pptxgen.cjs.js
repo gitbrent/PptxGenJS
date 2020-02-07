@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-02-05T04:25:18.091Z */
+/* PptxGenJS 3.2.0-beta @ 2020-02-07T05:44:45.460Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1288,7 +1288,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     opts.colW = arrColW;
     getSlidesForTableRows(arrObjTabHeadRows.concat(arrObjTabBodyRows, arrObjTabFootRows), opts, pptx.presLayout, masterSlide).forEach(function (slide, idxTr) {
         // A: Create new Slide
-        var newSlide = pptx.addSlide(opts.masterSlideName || null);
+        var newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null });
         // B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
         if (idxTr === 0)
             opts.y = opts.y || arrInchMargins[0];
@@ -2798,58 +2798,48 @@ function makeXmlTheme() {
  * @param {boolean} rtlMode - RTL mode
  * @return {string} XML
  */
-function makeXmlPresentation(slides, pptLayout, rtlMode) {
-    var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-        CRLF +
-        '<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" ' +
-        'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ' +
-        'xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ' +
-        (rtlMode ? 'rtl="1" ' : '') +
-        'saveSubsetFonts="1" autoCompressPictures="0">';
+function makeXmlPresentation(pres) {
+    var strXml = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + CRLF +
+        "<p:presentation xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" " +
+        ("xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\" " + (pres.rtlMode ? 'rtl="1"' : '') + " saveSubsetFonts=\"1\" autoCompressPictures=\"0\">");
     // STEP 1: Add slide master (SPEC: tag 1 under <presentation>)
     strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>';
     // STEP 2: Add all Slides (SPEC: tag 3 under <presentation>)
     strXml += '<p:sldIdLst>';
-    for (var idx = 0; idx < slides.length; idx++) {
-        strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>';
-    }
+    pres.slides.forEach(function (slide) { return (strXml += "<p:sldId id=\"" + slide.id + "\" r:id=\"rId" + slide.rId + "\"/>"); });
     strXml += '</p:sldIdLst>';
     // STEP 3: Add Notes Master (SPEC: tag 2 under <presentation>)
     // (NOTE: length+2 is from `presentation.xml.rels` func (since we have to match this rId, we just use same logic))
     // IMPORTANT: In this order (matches PPT2019) PPT will give corruption message on open!
     // IMPORTANT: Placing this before `<p:sldIdLst>` causes warning in modern powerpoint!
     // IMPORTANT: Presentations open without warning Without this line, however, the pres isnt preview in Finder anymore or viewable in iOS!
-    strXml += "<p:notesMasterIdLst><p:notesMasterId r:id=\"rId" + (slides.length + 2) + "\"/></p:notesMasterIdLst>";
-    // STEP 4: Build SLIDE text styles
-    strXml +=
-        '<p:sldSz cx="' +
-            pptLayout.width +
-            '" cy="' +
-            pptLayout.height +
-            '"/>' +
-            '<p:notesSz cx="' +
-            pptLayout.height +
-            '" cy="' +
-            pptLayout.width +
-            '"/>' +
-            '<p:defaultTextStyle>';
+    strXml += "<p:notesMasterIdLst><p:notesMasterId r:id=\"rId" + (pres.slides.length + 2) + "\"/></p:notesMasterIdLst>";
+    // STEP 4: Add sizes
+    strXml += "<p:sldSz cx=\"" + pres.presLayout.width + "\" cy=\"" + pres.presLayout.height + "\"/>";
+    strXml += "<p:notesSz cx=\"" + pres.presLayout.height + "\" cy=\"" + pres.presLayout.width + "\"/>";
+    // STEP 5: Add text styles
+    strXml += '<p:defaultTextStyle>';
     for (var idy = 1; idy < 10; idy++) {
         strXml +=
-            '<a:lvl' +
-                idy +
-                'pPr marL="' +
-                (idy - 1) * 457200 +
-                '" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">' +
-                '<a:defRPr sz="1800" kern="1200">' +
-                '<a:solidFill><a:schemeClr val="tx1"/></a:solidFill>' +
-                '<a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
-                '</a:defRPr>' +
-                '</a:lvl' +
-                idy +
-                'pPr>';
+            "<a:lvl" + idy + "pPr marL=\"" + (idy - 1) * 457200 + "\" algn=\"l\" defTabSz=\"914400\" rtl=\"0\" eaLnBrk=\"1\" latinLnBrk=\"0\" hangingPunct=\"1\">" +
+                "<a:defRPr sz=\"1800\" kern=\"1200\"><a:solidFill><a:schemeClr val=\"tx1\"/></a:solidFill><a:latin typeface=\"+mn-lt\"/><a:ea typeface=\"+mn-ea\"/><a:cs typeface=\"+mn-cs\"/>" +
+                ("</a:defRPr></a:lvl" + idy + "pPr>");
     }
     strXml += '</p:defaultTextStyle>';
-    //strXml += '<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>'
+    // STEP 6: Add Sections (if any)
+    if (pres.sections && pres.sections.length > 0) {
+        strXml += '<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">';
+        strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">';
+        pres.sections.forEach(function (sect) {
+            strXml += "<p14:section name=\"" + sect.title + "\" id=\"{" + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + "}\"><p14:sldIdLst>";
+            sect.slides.forEach(function (slide) { return (strXml += "<p14:sldId id=\"" + slide.id + "\"/>"); });
+            strXml += "</p14:sldIdLst></p14:section>";
+        });
+        strXml += '</p14:sectionLst></p:ext>';
+        strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>';
+        strXml += '</p:extLst>';
+    }
+    // Done
     strXml += '</p:presentation>';
     return strXml;
 }
@@ -3817,6 +3807,8 @@ var Slide = /** @class */ (function () {
         this.getSlide = params.getSlide;
         this.presLayout = params.presLayout;
         this._setSlideNum = params.setSlideNum;
+        this.id = params.slideId;
+        this.rId = params.slideRId;
         this.name = 'Slide ' + params.slideNumber;
         this.number = params.slideNumber;
         this.data = [];
@@ -4523,6 +4515,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
         case CHART_TYPE.RADAR:
             // 1: Start Chart
             strXml += '<c:' + chartType + 'Chart>';
+            if (chartType === CHART_TYPE.AREA && opts.barGrouping === 'stacked') {
+                strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
+            }
             if (chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) {
                 strXml += '<c:barDir val="' + opts.barDir + '"/>';
                 strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
@@ -5895,7 +5890,7 @@ var PptxGenJS = /** @class */ (function () {
          * @param {string} masterName - slide master name
          * @return {ISlide} new Slide
          */
-        this.addNewSlide = function (masterName) { return _this.addSlide(masterName); };
+        this.addNewSlide = function (masterName) { return _this.addSlide({ masterName: masterName }); };
         /**
          * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
          * @since 3.0.0
@@ -6023,13 +6018,13 @@ var PptxGenJS = /** @class */ (function () {
                     zip.folder('ppt/theme');
                     zip.folder('ppt/notesMasters').folder('_rels');
                     zip.folder('ppt/notesSlides').folder('_rels');
-                    zip.file('[Content_Types].xml', makeXmlContTypes(_this.slides, _this.slideLayouts, _this.masterSlide));
+                    zip.file('[Content_Types].xml', makeXmlContTypes(_this.slides, _this.slideLayouts, _this.masterSlide)); // TODO: pass only `this` like below! 20200206
                     zip.file('_rels/.rels', makeXmlRootRels());
-                    zip.file('docProps/app.xml', makeXmlApp(_this.slides, _this.company));
-                    zip.file('docProps/core.xml', makeXmlCore(_this.title, _this.subject, _this.author, _this.revision));
+                    zip.file('docProps/app.xml', makeXmlApp(_this.slides, _this.company)); // TODO: pass only `this` like below! 20200206
+                    zip.file('docProps/core.xml', makeXmlCore(_this.title, _this.subject, _this.author, _this.revision)); // TODO: pass only `this` like below! 20200206
                     zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(_this.slides));
                     zip.file('ppt/theme/theme1.xml', makeXmlTheme());
-                    zip.file('ppt/presentation.xml', makeXmlPresentation(_this.slides, _this.presLayout, _this.rtlMode));
+                    zip.file('ppt/presentation.xml', makeXmlPresentation(_this));
                     zip.file('ppt/presProps.xml', makeXmlPresProps());
                     zip.file('ppt/tableStyles.xml', makeXmlTableStyles());
                     zip.file('ppt/viewProps.xml', makeXmlViewProps());
@@ -6102,7 +6097,7 @@ var PptxGenJS = /** @class */ (function () {
         };
         this._rtlMode = false;
         //
-        this.slideLayouts = [
+        this._slideLayouts = [
             {
                 presLayout: this._presLayout,
                 name: DEF_PRES_LAYOUT_NAME,
@@ -6116,7 +6111,8 @@ var PptxGenJS = /** @class */ (function () {
                 slideNumberObj: null,
             },
         ];
-        this.slides = [];
+        this._slides = [];
+        this._sections = [];
         this.masterSlide = {
             addChart: null,
             addImage: null,
@@ -6127,6 +6123,8 @@ var PptxGenJS = /** @class */ (function () {
             addText: null,
             //
             presLayout: this._presLayout,
+            id: null,
+            rId: null,
             name: null,
             number: null,
             data: [],
@@ -6217,6 +6215,27 @@ var PptxGenJS = /** @class */ (function () {
         },
         set: function (value) {
             this._rtlMode = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "slides", {
+        get: function () {
+            return this._slides;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "sections", {
+        get: function () {
+            return this._sections;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "slideLayouts", {
+        get: function () {
+            return this._slideLayouts;
         },
         enumerable: true,
         configurable: true
@@ -6362,22 +6381,54 @@ var PptxGenJS = /** @class */ (function () {
     };
     // PRESENTATION METHODS
     /**
+     * Add a new Section to Presenation
+     * @param {ISection} section
+     */
+    PptxGenJS.prototype.addSection = function (section) {
+        if (!section)
+            console.warn('addSection requires an argument');
+        else if (!section.title)
+            console.warn('addSection requires a title');
+        var newSection = {
+            title: section.title,
+            slides: [],
+        };
+        if (section.order)
+            this.sections.splice(section.order, 0, newSection);
+        else
+            this._sections.push(newSection);
+    };
+    /**
      * Add a new Slide to Presenation
-     * @param {string} masterSlideName - Master Slide name
+     * @param {IAddSlideOptions} slideOpts - slide options
      * @returns {ISlide} the new Slide
      */
-    PptxGenJS.prototype.addSlide = function (masterSlideName) {
+    // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
+    PptxGenJS.prototype.addSlide = function (slideOpts) {
+        var masterSlideName = typeof slideOpts === 'string' ? slideOpts : slideOpts && slideOpts.masterName ? slideOpts.masterName : '';
         var newSlide = new Slide({
             addSlide: this.addNewSlide,
             getSlide: this.getSlide,
             presLayout: this.presLayout,
             setSlideNum: this.setSlideNumber,
+            slideId: this.slides.length + 256,
+            slideRId: this.slides.length + 2,
             slideNumber: this.slides.length + 1,
             slideLayout: masterSlideName
                 ? this.slideLayouts.filter(function (layout) { return layout.name === masterSlideName; })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
                 : this.LAYOUTS[DEF_PRES_LAYOUT],
         });
-        this.slides.push(newSlide);
+        // A: Add slide to pres
+        this._slides.push(newSlide);
+        // B: Add slide to section (if any provided)
+        if (slideOpts && slideOpts.sectionTitle) {
+            var sect = this.sections.filter(function (section) { return section.title === slideOpts.sectionTitle; })[0];
+            console.log(sect);
+            if (!sect)
+                console.warn("addSlide: unable to find section with title: \"" + slideOpts.sectionTitle + "\"");
+            else
+                sect.slides.push(newSlide);
+        }
         return newSlide;
     };
     /**
