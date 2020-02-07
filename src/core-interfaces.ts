@@ -141,7 +141,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	legendColor?: string
 	legendFontFace?: string
 	legendFontSize?: number
-	legendPos?: string
+	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 	lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
 	lineDataSymbolLineColor?: string
@@ -392,8 +392,8 @@ export interface IText {
 // Core
 // ====
 /**
-* Section options
-*/
+ * Section options
+ */
 export interface ISection {
 	title: string
 	order?: number // 1-n

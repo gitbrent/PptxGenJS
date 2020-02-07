@@ -905,7 +905,7 @@ declare namespace PptxGenJS {
 		legendColor?: string
 		legendFontFace?: string
 		legendFontSize?: number
-		legendPos?: string
+		legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 		lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
 		lineDataSymbolLineColor?: string
