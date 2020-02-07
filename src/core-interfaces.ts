@@ -392,6 +392,17 @@ export interface IText {
 // Core
 // ====
 /**
+* Section options
+*/
+export interface ISection {
+	title: string
+	order?: number // 1-n
+}
+export interface ISectionLib {
+	title: string
+	slides: ISlide[]
+}
+/**
  * The Presenation Layout (ex: 'LAYOUT_WIDE')
  */
 export interface ILayout {
@@ -525,6 +536,10 @@ export interface ISlideLayout {
 	margin?: Margin
 	slideNumberObj?: ISlideNumber
 }
+export interface IAddSlideOptions {
+	masterName?: string
+	sectionTitle?: string
+}
 export interface ISlide {
 	addChart: Function
 	addImage: Function
@@ -538,6 +553,7 @@ export interface ISlide {
 	color?: string
 	data?: ISlideObject[]
 	hidden?: boolean
+	id: number
 	margin?: Margin
 	name?: string
 	number: number
@@ -545,6 +561,7 @@ export interface ISlide {
 	rels: ISlideRel[]
 	relsChart: ISlideRelChart[]
 	relsMedia: ISlideRelMedia[]
+	rId: number
 	slideLayout: ISlideLayout
 	slideNumberObj?: ISlideNumber // FIXME rename
 }
