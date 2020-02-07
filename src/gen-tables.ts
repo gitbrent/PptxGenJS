@@ -559,7 +559,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	getSlidesForTableRows([...arrObjTabHeadRows, ...arrObjTabBodyRows, ...arrObjTabFootRows] as [ITableToSlidesCell[]], opts, pptx.presLayout, masterSlide).forEach(
 		(slide, idxTr) => {
 			// A: Create new Slide
-			let newSlide = pptx.addSlide(opts.masterSlideName || null)
+			let newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null })
 
 			// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
