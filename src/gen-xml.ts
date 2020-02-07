@@ -1722,36 +1722,24 @@ export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMod
 	// IMPORTANT: Presentations open without warning Without this line, however, the pres isnt preview in Finder anymore or viewable in iOS!
 	strXml += `<p:notesMasterIdLst><p:notesMasterId r:id="rId${slides.length + 2}"/></p:notesMasterIdLst>`
 
-	// STEP 4: Build SLIDE text styles
-	strXml +=
-		'<p:sldSz cx="' +
-		pptLayout.width +
-		'" cy="' +
-		pptLayout.height +
-		'"/>' +
-		'<p:notesSz cx="' +
-		pptLayout.height +
-		'" cy="' +
-		pptLayout.width +
-		'"/>' +
-		'<p:defaultTextStyle>'
+	// STEP 4: Add sizes
+	strXml += `<p:sldSz cx="${pptLayout.width}" cy="${pptLayout.height}"/>`
+	strXml += `<p:notesSz cx="${pptLayout.height}" cy="${pptLayout.width}"/>`
+
+	// STEP 5: Add text styles
+	strXml += '<p:defaultTextStyle>'
 	for (let idy = 1; idy < 10; idy++) {
 		strXml +=
-			'<a:lvl' +
-			idy +
-			'pPr marL="' +
-			(idy - 1) * 457200 +
-			'" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">' +
-			'<a:defRPr sz="1800" kern="1200">' +
-			'<a:solidFill><a:schemeClr val="tx1"/></a:solidFill>' +
-			'<a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>' +
-			'</a:defRPr>' +
-			'</a:lvl' +
-			idy +
-			'pPr>'
+			`<a:lvl${idy}pPr marL="${(idy - 1) * 457200}" algn="l" defTabSz="914400" rtl="0" eaLnBrk="1" latinLnBrk="0" hangingPunct="1">` +
+			`<a:defRPr sz="1800" kern="1200"><a:solidFill><a:schemeClr val="tx1"/></a:solidFill><a:latin typeface="+mn-lt"/><a:ea typeface="+mn-ea"/><a:cs typeface="+mn-cs"/>` +
+			`</a:defRPr></a:lvl${idy}pPr>`
 	}
 	strXml += '</p:defaultTextStyle>'
+
+	// STEP 6: Add Sections (if any)
+	
 	//strXml += '<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>'
+
 	strXml += '</p:presentation>'
 
 	return strXml
