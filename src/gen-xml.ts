@@ -1712,9 +1712,7 @@ export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMod
 
 	// STEP 2: Add all Slides (SPEC: tag 3 under <presentation>)
 	strXml += '<p:sldIdLst>'
-	for (let idx = 0; idx < slides.length; idx++) {
-		strXml += '<p:sldId id="' + (idx + 256) + '" r:id="rId' + (idx + 2) + '"/>'
-	}
+	slides.forEach(slide => (strXml += `<p:sldId id="${slide.id}" r:id="rId${slide.rId}"/>`))
 	strXml += '</p:sldIdLst>'
 
 	// STEP 3: Add Notes Master (SPEC: tag 2 under <presentation>)
