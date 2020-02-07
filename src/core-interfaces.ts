@@ -571,15 +571,22 @@ export interface IPresentation {
 	revision: string
 	subject: string
 	title: string
-	isBrowser: boolean
-	fileName: string
-	fileExtn: string
 	pptLayout: ILayout
 	rtlMode: boolean
-	saveCallback?: null
 	masterSlide?: ISlide
-	chartCounter: number
-	imageCounter: number
 	slides?: ISlide[]
 	slideLayouts?: ISlideLayout[]
+	sections?: ISectionLib[]
+}
+export interface IPresentationLib {
+	author: string
+	company: string
+	presLayout: ILayout
+	revision: string
+	rtlMode: boolean
+	sections: ISectionLib[]
+	slideLayouts: ISlideLayout[]
+	slides: ISlide[]
+	subject: string
+	title: string
 }

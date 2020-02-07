@@ -30,8 +30,9 @@ import {
 	ITableCellOpts,
 	IText,
 	ITextOpts,
+	IPresentationLib,
 } from './core-interfaces'
-import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement } from './gen-utils'
+import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid } from './gen-utils'
 
 let imageSizingXml = {
 	cover: function(imgSize, boxDim) {
@@ -1701,18 +1702,18 @@ export function makeXmlTheme(): string {
  * @param {boolean} rtlMode - RTL mode
  * @return {string} XML
  */
-export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMode: boolean): string {
+export function makeXmlPresentation(pres: IPresentationLib): string {
 	let strXml =
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
 		`<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ` +
-		`xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ${rtlMode ? 'rtl="1"' : ''} saveSubsetFonts="1" autoCompressPictures="0">`
+		`xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main" ${pres.rtlMode ? 'rtl="1"' : ''} saveSubsetFonts="1" autoCompressPictures="0">`
 
 	// STEP 1: Add slide master (SPEC: tag 1 under <presentation>)
 	strXml += '<p:sldMasterIdLst><p:sldMasterId id="2147483648" r:id="rId1"/></p:sldMasterIdLst>'
 
 	// STEP 2: Add all Slides (SPEC: tag 3 under <presentation>)
 	strXml += '<p:sldIdLst>'
-	slides.forEach(slide => (strXml += `<p:sldId id="${slide.id}" r:id="rId${slide.rId}"/>`))
+	pres.slides.forEach(slide => (strXml += `<p:sldId id="${slide.id}" r:id="rId${slide.rId}"/>`))
 	strXml += '</p:sldIdLst>'
 
 	// STEP 3: Add Notes Master (SPEC: tag 2 under <presentation>)
@@ -1720,11 +1721,11 @@ export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMod
 	// IMPORTANT: In this order (matches PPT2019) PPT will give corruption message on open!
 	// IMPORTANT: Placing this before `<p:sldIdLst>` causes warning in modern powerpoint!
 	// IMPORTANT: Presentations open without warning Without this line, however, the pres isnt preview in Finder anymore or viewable in iOS!
-	strXml += `<p:notesMasterIdLst><p:notesMasterId r:id="rId${slides.length + 2}"/></p:notesMasterIdLst>`
+	strXml += `<p:notesMasterIdLst><p:notesMasterId r:id="rId${pres.slides.length + 2}"/></p:notesMasterIdLst>`
 
 	// STEP 4: Add sizes
-	strXml += `<p:sldSz cx="${pptLayout.width}" cy="${pptLayout.height}"/>`
-	strXml += `<p:notesSz cx="${pptLayout.height}" cy="${pptLayout.width}"/>`
+	strXml += `<p:sldSz cx="${pres.presLayout.width}" cy="${pres.presLayout.height}"/>`
+	strXml += `<p:notesSz cx="${pres.presLayout.height}" cy="${pres.presLayout.width}"/>`
 
 	// STEP 5: Add text styles
 	strXml += '<p:defaultTextStyle>'
@@ -1737,11 +1738,21 @@ export function makeXmlPresentation(slides: ISlide[], pptLayout: ILayout, rtlMod
 	strXml += '</p:defaultTextStyle>'
 
 	// STEP 6: Add Sections (if any)
-	
-	//strXml += '<p:extLst><p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext></p:extLst>'
+	if (pres.sections && pres.sections.length > 0) {
+		strXml += '<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">'
+		strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
+		pres.sections.forEach(sect => {
+			strXml += `<p14:section name="${sect.title}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
+			sect.slides.forEach(slide => (strXml += `<p14:sldId id="${slide.id}"/>`))
+			strXml += `</p14:sldIdLst></p14:section>`
+		})
+		strXml += '</p14:sectionLst></p:ext>'
+		strXml += '<p:ext uri="{EFAFB233-063F-42B5-8137-9DF3F51BA10A}"><p15:sldGuideLst xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main"/></p:ext>'
+		strXml += '</p:extLst>'
+	}
 
+	// Done
 	strXml += '</p:presentation>'
-
 	return strXml
 }
 

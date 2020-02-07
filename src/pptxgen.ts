@@ -62,7 +62,19 @@ import {
 	SchemeColor,
 	ShapeType,
 } from './core-enums'
-import { ILayout, ISlide, ISlideLayout, ISlideMasterOptions, ISlideNumber, ITableToSlidesOpts, IUserLayout } from './core-interfaces'
+import {
+	ILayout,
+	ISlide,
+	ISlideLayout,
+	ISlideMasterOptions,
+	ISlideNumber,
+	ITableToSlidesOpts,
+	IUserLayout,
+	ISection,
+	ISectionLib,
+	IAddSlideOptions,
+	IPresentationLib,
+} from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
@@ -71,7 +83,7 @@ import * as genXml from './gen-xml'
 
 const VERSION = '3.2.0-beta'
 
-export default class PptxGenJS {
+export default class PptxGenJS implements IPresentationLib {
 	// Property getters/setters
 
 	/**
@@ -181,10 +193,23 @@ export default class PptxGenJS {
 	private masterSlide: ISlide
 
 	/** this Presentation's Slide objects */
-	private slides: ISlide[]
+	private _slides: ISlide[]
+	public get slides(): ISlide[] {
+		return this._slides
+	}
+
+	/** this Presentation's sections */
+	private _sections: ISectionLib[]
+	public get sections(): ISectionLib[] {
+		return this._sections
+	}
 
 	/** slide layout definition objects, used for generating slide layout files */
-	private slideLayouts: ISlideLayout[]
+	private _slideLayouts: ISlideLayout[]
+	public get slideLayouts(): ISlideLayout[] {
+		return this._slideLayouts
+	}
+
 	private LAYOUTS: object
 
 	// Exposed class props
@@ -262,7 +287,7 @@ export default class PptxGenJS {
 		}
 		this._rtlMode = false
 		//
-		this.slideLayouts = [
+		this._slideLayouts = [
 			{
 				presLayout: this._presLayout,
 				name: DEF_PRES_LAYOUT_NAME,
@@ -276,7 +301,8 @@ export default class PptxGenJS {
 				slideNumberObj: null,
 			},
 		]
-		this.slides = []
+		this._slides = []
+		this._sections = []
 		this.masterSlide = {
 			addChart: null,
 			addImage: null,
@@ -287,6 +313,8 @@ export default class PptxGenJS {
 			addText: null,
 			//
 			presLayout: this._presLayout,
+			id: null,
+			rId: null,
 			name: null,
 			number: null,
 			data: [],
@@ -303,7 +331,7 @@ export default class PptxGenJS {
 	 * @param {string} masterName - slide master name
 	 * @return {ISlide} new Slide
 	 */
-	private addNewSlide = (masterName: string): ISlide => this.addSlide(masterName)
+	private addNewSlide = (masterName: string): ISlide => this.addSlide({ masterName: masterName })
 
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
@@ -441,13 +469,13 @@ export default class PptxGenJS {
 					zip.folder('ppt/theme')
 					zip.folder('ppt/notesMasters').folder('_rels')
 					zip.folder('ppt/notesSlides').folder('_rels')
-					zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide))
+					zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide)) // TODO: pass only `this` like below! 20200206
 					zip.file('_rels/.rels', genXml.makeXmlRootRels())
-					zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company))
-					zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision))
+					zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company)) // TODO: pass only `this` like below! 20200206
+					zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision)) // TODO: pass only `this` like below! 20200206
 					zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
 					zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
-					zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this.slides, this.presLayout, this.rtlMode))
+					zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this))
 					zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
 					zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
 					zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
@@ -573,23 +601,54 @@ export default class PptxGenJS {
 	// PRESENTATION METHODS
 
 	/**
+	 * Add a new Section to Presenation
+	 * @param {ISection} section
+	 */
+	addSection(section: ISection) {
+		if (!section) console.warn('addSection requires an argument')
+		else if (!section.title) console.warn('addSection requires a title')
+
+		let newSection: ISectionLib = {
+			title: section.title,
+			slides: [],
+		}
+
+		if (section.order) this.sections.splice(section.order, 0, newSection)
+		else this._sections.push(newSection)
+	}
+
+	/**
 	 * Add a new Slide to Presenation
-	 * @param {string} masterSlideName - Master Slide name
+	 * @param {IAddSlideOptions} slideOpts - slide options
 	 * @returns {ISlide} the new Slide
 	 */
-	addSlide(masterSlideName?: string): ISlide {
+	// TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
+	addSlide(slideOpts?: IAddSlideOptions): ISlide {
+		let masterSlideName = typeof slideOpts === 'string' ? slideOpts : slideOpts && slideOpts.masterName ? slideOpts.masterName : ''
+
 		let newSlide = new Slide({
 			addSlide: this.addNewSlide,
 			getSlide: this.getSlide,
 			presLayout: this.presLayout,
 			setSlideNum: this.setSlideNumber,
+			slideId: this.slides.length + 256,
+			slideRId: this.slides.length + 2,
 			slideNumber: this.slides.length + 1,
 			slideLayout: masterSlideName
 				? this.slideLayouts.filter(layout => layout.name === masterSlideName)[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
 				: this.LAYOUTS[DEF_PRES_LAYOUT],
 		})
 
-		this.slides.push(newSlide)
+		// A: Add slide to pres
+		this._slides.push(newSlide)
+
+		// B: Add slide to section (if any provided)
+		if (slideOpts && slideOpts.sectionTitle) {
+			let sect = this.sections.filter(section => section.title === slideOpts.sectionTitle)[0]
+			console.log(sect)
+			if (!sect) console.warn(`addSlide: unable to find section with title: "${slideOpts.sectionTitle}"`)
+			else sect.slides.push(newSlide)
+		}
 
 		return newSlide
 	}

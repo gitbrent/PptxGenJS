@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.1.1
-* BLD.: 20200130
+* VER.: 3.2.0
+* BLD.: 20200205
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -698,9 +698,11 @@ function genSlides_Chart(pptx) {
 	// Create a gap for testing `displayBlanksAs` in line charts (2.3.0)
 	arrDataLineStat[2].values = [55, null, null, 55];
 
+	pptx.addSection({ title: 'Charts' });
+
 	// SLIDE 1: Bar Chart ------------------------------------------------------------------
 	function slide1() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -835,7 +837,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 2: Bar Chart Grid/Axis Options ------------------------------------------------
 	function slide2() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart Grid/Axis Options', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2624,9 +2626,11 @@ function genSlides_Shape(pptx) {
 }
 
 function genSlides_Text(pptx) {
+	pptx.addSection({ title: 'Text' });
+
 	// SLIDE 1: Text alignment, percent x/y, etc.
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Text'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
 		// Slide colors: bkgd/fore
 		slide.bkgd = '030303';
@@ -2684,7 +2688,7 @@ function genSlides_Text(pptx) {
 
 	// SLIDE 2: Multi-Line Formatting, Line Breaks, Line Spacing
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Text'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
 		slide.addTable( [ [{ text:'Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2734,7 +2738,7 @@ function genSlides_Text(pptx) {
 
 	// SLIDE 3: Bullets
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Text'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
 		slide.addTable( [ [{ text:'Text Examples: Bullets', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2803,7 +2807,7 @@ function genSlides_Text(pptx) {
 
 	// SLIDE 4: Hyperlinks, Text Shadow, Text Outline, Text Glow
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Text'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
 		slide.addTable( [ [{ text:'Text Examples: Hyperlinks, Text Shadow, Text Outline, Text Glow', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2838,7 +2842,7 @@ function genSlides_Text(pptx) {
 
 	// SLIDE 5: Scheme Colors
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Text'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
 		slide.addTable( [ [{ text:'Text Examples: Scheme Colors', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2860,14 +2864,17 @@ function genSlides_Text(pptx) {
 }
 
 function genSlides_Master(pptx) {
-	var slide1 = pptx.addSlide('TITLE_SLIDE');
+	pptx.addSection({ title: 'Masters' });
+
+	var slide1 = pptx.addSlide({masterName:'TITLE_SLIDE', sectionTitle:'Masters'});
+	//var slide1 = pptx.addSlide({masterName:'TITLE_SLIDE', sectionTitle:'FAILTEST'}); // TEST: Should show console warning ("title not found")
 	slide1.addNotes('Master name: `TITLE_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 
-	var slide2 = pptx.addSlide('MASTER_SLIDE');
+	var slide2 = pptx.addSlide({masterName:'MASTER_SLIDE', sectionTitle:'Masters'});
 	slide2.addNotes('Master name: `MASTER_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide2.addText('', { placeholder:'title' });
 
-	var slide3 = pptx.addSlide('MASTER_SLIDE');
+	var slide3 = pptx.addSlide({masterName:'MASTER_SLIDE', sectionTitle:'Masters'});
 	slide3.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide3.addText('Text Placeholder', { placeholder:'title' });
 	slide3.addText(
@@ -2894,7 +2901,7 @@ function genSlides_Master(pptx) {
 	var slide5 = pptx.addSlide('MASTER_SLIDE');
 	slide5.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide5.addText('Chart Placeholder', { placeholder:'title' });
-	slide5.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'r', placeholder:'body'} );
+	slide5.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'l', placeholder:'body'} );
 
 	var slide6 = pptx.addSlide('THANKS_SLIDE');
 	slide6.addNotes('Master name: `THANKS_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
