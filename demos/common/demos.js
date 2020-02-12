@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.2.0
-* BLD.: 20200205
+* BLD.: 20200211
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -274,9 +274,11 @@ function execGenSlidesFuncs(type) {
 // ==================================================================================================================
 
 function genSlides_Table(pptx) {
+	pptx.addSection({ title: 'Tables' });
+
 	// SLIDE 1: Table text alignment and cell styles
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables'});
 		slide.addNotes('API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -352,7 +354,7 @@ function genSlides_Table(pptx) {
 
 	// SLIDE 2: Table row/col-spans
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		// 2: Slide title
 		slide.addTable([ [{ text:'Table Examples 2', options:gOptsTextL },gOptsTextR] ], { x:'4%', y:'2%', w:'95%', h:'4%' }); // QA: this table's x,y,w,h all using %
@@ -410,7 +412,7 @@ function genSlides_Table(pptx) {
 
 	// SLIDE 3: Super rowspan/colspan demo
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addTable( [ [{ text:'Table Examples 3', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -467,7 +469,7 @@ function genSlides_Table(pptx) {
 
 	// SLIDE 4: Cell Formatting / Cell Margins
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		// 2: Slide title
 		slide.addTable( [ [{ text:'Table Examples 4', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -512,7 +514,7 @@ function genSlides_Table(pptx) {
 
 	// SLIDE 5: Cell Word-Level Formatting
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addTable( [ [{ text:'Table Examples 5', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 		slide.addText(
@@ -553,7 +555,7 @@ function genSlides_Table(pptx) {
 
 	// SLIDE 6: Cell Word-Level Formatting
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addTable( [ [{ text:'Table Examples 6', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -608,33 +610,35 @@ function genSlides_Table(pptx) {
 			arrText.push( [strText] );
 		}
 
-		var slide = pptx.addSlide();
+		pptx.addSection({ title: 'Tables: Auto-Paging' });
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Example', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:0.5, y:0.6, colW:[0.75,1.75,10], margin:2, border:{color:'CFCFCF'}, autoPage:true } );
 
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Smaller Table Area', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
 
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: Correct starting Y location upon paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, fontFace:'Arial', autoPage:true } );
 
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: `{ newSlideStartY: 1.5 }`', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:3.0, y:4.0, newSlideStartY:1.5, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
 
-		var slide = pptx.addSlide('MASTER_PLAIN', {bkgd:'CCFFCC'});
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging', masterName:'MASTER_PLAIN'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Master Page with Auto-Paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
 
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Disabled', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
 		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:false } );
 
 		// autoPageLineWeight option demos
-		var slide = pptx.addSlide();
+		pptx.addSection({ title: 'Tables: Auto-Paging LineWeight' });
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging LineWeight'});
 		slide.addText( [{text:'Table Examples: Line Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:0.23, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageLineWeight:0.0 } );
 
@@ -645,7 +649,8 @@ function genSlides_Table(pptx) {
 		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageLineWeight:-0.5 } );
 
 		// autoPageCharWeight option demos
-		var slide = pptx.addSlide();
+		pptx.addSection({ title: 'Tables: Auto-Paging CharWeight' });
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging CharWeight'});
 		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:0.23, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:0.0 } );
 
@@ -2886,7 +2891,7 @@ function genSlides_Master(pptx) {
 		{ placeholder:'body', valign:'top' }
 	);
 
-	var slide4 = pptx.addSlide('MASTER_SLIDE');
+	var slide4 = pptx.addSlide({masterName:'MASTER_SLIDE', sectionTitle:'Masters'});
 	slide4.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide4.addText('Image Placeholder', { placeholder:'title' });
 	slide4.addImage({ placeholder:'body', path:(NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, '../common') : gPaths.starlabsBkgd.path) });
@@ -2898,12 +2903,12 @@ function genSlides_Master(pptx) {
 			values: [  69,   35,   40,   85,   38,   99,  101]
 		}
 	];
-	var slide5 = pptx.addSlide('MASTER_SLIDE');
+	var slide5 = pptx.addSlide({masterName:'MASTER_SLIDE', sectionTitle:'Masters'});
 	slide5.addNotes('Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide5.addText('Chart Placeholder', { placeholder:'title' });
 	slide5.addChart( pptx.charts.PIE, dataChartPieLocs, {showLegend:true, legendPos:'l', placeholder:'body'} );
 
-	var slide6 = pptx.addSlide('THANKS_SLIDE');
+	var slide6 = pptx.addSlide({masterName:'THANKS_SLIDE', sectionTitle:'Masters'});
 	slide6.addNotes('Master name: `THANKS_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html');
 	slide6.addText('Thank You!', { placeholder:'thanksText' });
 	//slide6.addText('github.com/gitbrent', { placeholder:'body' });
