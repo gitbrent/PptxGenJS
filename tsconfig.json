@@ -2,7 +2,7 @@
   "compilerOptions": {
     "declaration": true,
     "declarationDir": "./out/defs",
-    "lib": ["dom", "es2015"],
+    "lib": ["dom", "es2015", "es2017.object"],
     "module": "es6",
     "noImplicitAny": false,
     "outDir": "./out",
