@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-02-07T05:44:45.460Z */
+/* PptxGenJS 3.2.0-beta @ 2020-02-12T05:12:00.799Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5858,7 +5858,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta';
+var VERSION = '3.2.0-beta-20200211';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -5891,11 +5891,14 @@ var PptxGenJS = /** @class */ (function () {
          * @return {ISlide} new Slide
          */
         this.addNewSlide = function (masterName) { return _this.addSlide({ masterName: masterName }); };
+        // TODO: ^^^ if the current slide (latest index) has section, re-use in create above!
+        // TODO: Support SECTIONS when auto-paging
+        // console.log(target.se)
         /**
-         * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
-         * @since 3.0.0
+         * Provides an API for `addTableDefinition` to get slide reference by number
          * @param {number} slideNum - slide number
          * @return {ISlide} Slide
+         * @since 3.0.0
          */
         this.getSlide = function (slideNum) { return _this.slides.filter(function (slide) { return slide.number === slideNum; })[0]; };
         /**
@@ -6382,7 +6385,7 @@ var PptxGenJS = /** @class */ (function () {
     // PRESENTATION METHODS
     /**
      * Add a new Section to Presenation
-     * @param {ISection} section
+     * @param {ISectionProps} section
      */
     PptxGenJS.prototype.addSection = function (section) {
         if (!section)
@@ -6390,6 +6393,7 @@ var PptxGenJS = /** @class */ (function () {
         else if (!section.title)
             console.warn('addSection requires a title');
         var newSection = {
+            type: 'user',
             title: section.title,
             slides: [],
         };
@@ -6403,8 +6407,8 @@ var PptxGenJS = /** @class */ (function () {
      * @param {IAddSlideOptions} slideOpts - slide options
      * @returns {ISlide} the new Slide
      */
-    // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
     PptxGenJS.prototype.addSlide = function (slideOpts) {
+        // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
         var masterSlideName = typeof slideOpts === 'string' ? slideOpts : slideOpts && slideOpts.masterName ? slideOpts.masterName : '';
         var newSlide = new Slide({
             addSlide: this.addNewSlide,
@@ -6420,14 +6424,28 @@ var PptxGenJS = /** @class */ (function () {
         });
         // A: Add slide to pres
         this._slides.push(newSlide);
-        // B: Add slide to section (if any provided)
+        // B: Sections
+        // B-1: Add slide to section (if any provided)
         if (slideOpts && slideOpts.sectionTitle) {
             var sect = this.sections.filter(function (section) { return section.title === slideOpts.sectionTitle; })[0];
-            console.log(sect);
             if (!sect)
                 console.warn("addSlide: unable to find section with title: \"" + slideOpts.sectionTitle + "\"");
             else
                 sect.slides.push(newSlide);
+        }
+        // B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
+        else if (this.sections && this.sections.length > 0 && (!slideOpts || !slideOpts.sectionTitle)) {
+            var lastSect = this._sections[this.sections.length - 1];
+            // CASE 1: The latest section is a default type - just add this one
+            if (lastSect.type === 'default')
+                lastSect.slides.push(newSlide);
+            // CASE 2: There latest section is NOT a default type - create the defualt, add this slide
+            else
+                this._sections.push({
+                    type: 'default',
+                    title: "Default-" + (this.sections.filter(function (sect) { return sect.type === 'default'; }).length + 1),
+                    slides: [newSlide],
+                });
         }
         return newSlide;
     };
