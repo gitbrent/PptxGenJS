@@ -1034,7 +1034,7 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartMulti {
 		type: CHART_NAME
-		data: []
+		data: any[]
 		options: {}
 	}
 	export interface ITableToSlidesOpts extends ITableOptions {
@@ -1057,7 +1057,7 @@ declare namespace PptxGenJS {
 			text: any[]
 			opts: {}
 		}
-		_arrObjTabHeadRows?: [ITableToSlidesCell[]?]
+		_arrObjTabHeadRows?: [ITableToSlidesCell[]?] // TODO: split off into internal library Iface and remove from here
 		addHeaderToEach?: boolean
 		autoPage?: boolean
 		autoPageCharWeight?: number
@@ -1296,7 +1296,7 @@ declare namespace PptxGenJS {
 		type: SLIDE_OBJECT_TYPES
 		options?: IObjectOptions
 		text?: string | IText[]
-		arrTabRows?: [ITableCell[]?]
+		arrTabRows?: [ITableCell[]?] // TODO: remove "?" it generates tslint/ts TS8020 (Issue #672)
 		chartRid?: number
 		image?: string
 		imageRid?: number
@@ -1382,7 +1382,7 @@ declare namespace PptxGenJS {
 		 * @param {IChartOpts} options - chart options
 		 * @return {Slide} this Slide
 		 */
-		addChart(type: CHART_NAME | IChartMulti[], data: [], options?: IChartOpts): Slide
+		addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide
 		/**
 		 * Add image to Slide
 		 * @param {IImageOpts} options - image options
