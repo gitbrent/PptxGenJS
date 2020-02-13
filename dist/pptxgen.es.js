@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-02-12T05:12:00.802Z */
+/* PptxGenJS 3.2.0-beta @ 2020-02-13T05:17:34.692Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -5856,7 +5856,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200211';
+var VERSION = '3.2.0-beta-20200212';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -5888,10 +5888,14 @@ var PptxGenJS = /** @class */ (function () {
          * @param {string} masterName - slide master name
          * @return {ISlide} new Slide
          */
-        this.addNewSlide = function (masterName) { return _this.addSlide({ masterName: masterName }); };
-        // TODO: ^^^ if the current slide (latest index) has section, re-use in create above!
-        // TODO: Support SECTIONS when auto-paging
-        // console.log(target.se)
+        this.addNewSlide = function (masterName) {
+            // Continue using sections if the first slide using auto-paging has a Section
+            var sectAlreadyInUse = _this.sections[_this.sections.length - 1].slides.filter(function (slide) { return slide.number === _this.slides[_this.slides.length - 1].number; }).length > 0;
+            return _this.addSlide({
+                masterName: masterName,
+                sectionTitle: sectAlreadyInUse ? _this.sections[_this.sections.length - 1].title : null,
+            });
+        };
         /**
          * Provides an API for `addTableDefinition` to get slide reference by number
          * @param {number} slideNum - slide number
