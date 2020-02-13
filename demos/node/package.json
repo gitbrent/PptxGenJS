@@ -9,6 +9,6 @@
 	"homepage": "https://gitbrent.github.io/PptxGenJS/",
 	"license": "MIT",
 	"dependencies": {
-		"pptxgenjs": "^3.0.1"
+		"pptxgenjs": "^3.1.1"
 	}
 }
