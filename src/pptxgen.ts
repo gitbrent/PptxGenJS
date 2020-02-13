@@ -71,7 +71,7 @@ import {
 	ITableToSlidesOpts,
 	IUserLayout,
 	ISection,
-	ISectionLib,
+	ISectionProps,
 	IAddSlideOptions,
 	IPresentationLib,
 } from './core-interfaces'
@@ -81,7 +81,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.2.0-beta'
+const VERSION = '3.2.0-beta-20200212'
 
 export default class PptxGenJS implements IPresentationLib {
 	// Property getters/setters
@@ -199,8 +199,8 @@ export default class PptxGenJS implements IPresentationLib {
 	}
 
 	/** this Presentation's sections */
-	private _sections: ISectionLib[]
-	public get sections(): ISectionLib[] {
+	private _sections: ISection[]
+	public get sections(): ISection[] {
 		return this._sections
 	}
 
@@ -331,13 +331,21 @@ export default class PptxGenJS implements IPresentationLib {
 	 * @param {string} masterName - slide master name
 	 * @return {ISlide} new Slide
 	 */
-	private addNewSlide = (masterName: string): ISlide => this.addSlide({ masterName: masterName })
+	private addNewSlide = (masterName: string): ISlide => {
+		// Continue using sections if the first slide using auto-paging has a Section
+		let sectAlreadyInUse = this.sections[this.sections.length - 1].slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
+
+		return this.addSlide({
+			masterName: masterName,
+			sectionTitle: sectAlreadyInUse ? this.sections[this.sections.length - 1].title : null,
+		})
+	}
 
 	/**
-	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
-	 * @since 3.0.0
+	 * Provides an API for `addTableDefinition` to get slide reference by number
 	 * @param {number} slideNum - slide number
 	 * @return {ISlide} Slide
+	 * @since 3.0.0
 	 */
 	private getSlide = (slideNum: number): ISlide => this.slides.filter(slide => slide.number === slideNum)[0]
 
@@ -602,13 +610,14 @@ export default class PptxGenJS implements IPresentationLib {
 
 	/**
 	 * Add a new Section to Presenation
-	 * @param {ISection} section
+	 * @param {ISectionProps} section
 	 */
-	addSection(section: ISection) {
+	addSection(section: ISectionProps) {
 		if (!section) console.warn('addSection requires an argument')
 		else if (!section.title) console.warn('addSection requires a title')
 
-		let newSection: ISectionLib = {
+		let newSection: ISection = {
+			type: 'user',
 			title: section.title,
 			slides: [],
 		}
@@ -622,8 +631,8 @@ export default class PptxGenJS implements IPresentationLib {
 	 * @param {IAddSlideOptions} slideOpts - slide options
 	 * @returns {ISlide} the new Slide
 	 */
-	// TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
 	addSlide(slideOpts?: IAddSlideOptions): ISlide {
+		// TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
 		let masterSlideName = typeof slideOpts === 'string' ? slideOpts : slideOpts && slideOpts.masterName ? slideOpts.masterName : ''
 
 		let newSlide = new Slide({
@@ -642,12 +651,26 @@ export default class PptxGenJS implements IPresentationLib {
 		// A: Add slide to pres
 		this._slides.push(newSlide)
 
-		// B: Add slide to section (if any provided)
+		// B: Sections
+		// B-1: Add slide to section (if any provided)
 		if (slideOpts && slideOpts.sectionTitle) {
 			let sect = this.sections.filter(section => section.title === slideOpts.sectionTitle)[0]
-			console.log(sect)
 			if (!sect) console.warn(`addSlide: unable to find section with title: "${slideOpts.sectionTitle}"`)
 			else sect.slides.push(newSlide)
+		}
+		// B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
+		else if (this.sections && this.sections.length > 0 && (!slideOpts || !slideOpts.sectionTitle)) {
+			let lastSect = this._sections[this.sections.length - 1]
+
+			// CASE 1: The latest section is a default type - just add this one
+			if (lastSect.type === 'default') lastSect.slides.push(newSlide)
+			// CASE 2: There latest section is NOT a default type - create the defualt, add this slide
+			else
+				this._sections.push({
+					type: 'default',
+					title: `Default-${this.sections.filter(sect => sect.type === 'default').length + 1}`,
+					slides: [newSlide],
+				})
 		}
 
 		return newSlide

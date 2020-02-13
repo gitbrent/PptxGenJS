@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.2.0
-* BLD.: 20200211
+* BLD.: 20200212
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -983,7 +983,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 3: Stacked Bar Chart ----------------------------------------------------------
 	function slide3() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1094,7 +1094,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 4: Bar Chart - Lots of Bars ---------------------------------------------------
 	function slide4() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Lots of Bars (>26 letters)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1133,7 +1133,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 5: Bar Chart: Data Series Colors, majorUnits, and valAxisLabelFormatCode ------
 	function slide5() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Multi-Color Bars, `catLabelFormatCode`, `valAxisDisplayUnit`, `valAxisMajorUnit`, `valAxisLabelFormatCode`', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1241,7 +1241,7 @@ function genSlides_Chart(pptx) {
 
     // SLIDE 6: 3D Bar Chart ---------------------------------------------------------------
     function slide6() {
-        var slide = pptx.addSlide();
+        var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
         slide.addTable( [ [{ text:'Chart Examples: 3D Bar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1353,7 +1353,7 @@ function genSlides_Chart(pptx) {
 
     // SLIDE 7: Tornado Chart --------------------------------------------------------------
 	function slide7() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Tornado Chart - Grid and Axis Formatting', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1394,7 +1394,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 8: Line Chart: Line Smoothing, Line Size, Symbol Size -------------------------
 	function slide8() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Line Smoothing, Line Size, Line Shadow, Symbol Size', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1439,7 +1439,7 @@ function genSlides_Chart(pptx) {
 	function slide9() {
 		var intWgap = 4.25;
 		var opts_lineDataSymbol = ['circle','dash','diamond','dot','none','square','triangle'];
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Line Chart: lineDataSymbol option test', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1459,7 +1459,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 10: Line Chart: Lots of Cats --------------------------------------------------
 	function slide10() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Line Chart: Lots of Lines', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1494,7 +1494,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 11: Area Chart: Misc ----------------------------------------------------------
 	function slide11() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Area Chart, Stacked Area Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1560,7 +1560,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 12: Pie Charts: All 4 Legend Options ------------------------------------------
 	function slide12() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Pie Charts: Legends', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1623,7 +1623,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 13: Doughnut Chart ------------------------------------------------------------
 	function slide13() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Doughnut Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1672,7 +1672,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 14: XY Scatter Chart ----------------------------------------------------------
 	function slide14() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: XY Scatter Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1752,7 +1752,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 15: Bubble Charts -------------------------------------------------------------
 	function slide15() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Bubble Charts', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1814,7 +1814,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 15: Radar Chart ---------------------------------------------------------------
 	function slide16() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Radar Chart', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -1899,7 +1899,7 @@ function genSlides_Chart(pptx) {
 		// powerpoint 2016 add secondary category axis labels
 		// https://peltiertech.com/chart-with-a-dual-category-axis/
 
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Examples: Multi-Type Charts', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2268,7 +2268,7 @@ function genSlides_Chart(pptx) {
 
 	// SLIDE 17: Charts Options: Shadow, Transparent Colors --------------------------------
 	function slide18() {
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Charts'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html');
 		slide.addTable( [ [{ text:'Chart Options: Shadow, Transparent Colors', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2403,9 +2403,11 @@ function genSlides_Image(pptx) {
 	// This also has the benefit of being able to be any type (path:images can only be exported as PNG)
 	// Image source: either `data` or `path` is required
 
+	pptx.addSection({ title: 'Images' });
+
 	// SLIDE 1: Image Types -----------------------------------------------------------------------------------
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Images'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
 		slide.slideNumber = { x:'50%', y:'95%', color:'0088CC' };
 		slide.addTable( [ [{ text:'Image Examples: Misc Image Types', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -2453,7 +2455,7 @@ function genSlides_Image(pptx) {
 
 	// SLIDE 2: Image Sizing -----------------------------------------------------------------------------------
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Images'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
 		slide.slideNumber = { x:'50%', y:'95%', w:1, h:1, color:'0088CC' };
 		slide.addTable( [ [{ text:'Image Examples: Image Sizing/Rounding', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -2488,7 +2490,7 @@ function genSlides_Image(pptx) {
 
 	// SLIDE 3: Image Rotation -----------------------------------------------------------------------------------
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Images'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
 		slide.slideNumber = { x:'50%', y:'95%', w:1, h:1, color:'0088CC' };
 		slide.addTable( [ [{ text:'Image Examples: Image Rotation', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -2502,7 +2504,7 @@ function genSlides_Image(pptx) {
 
 	// SLIDE 4: Image URLs -----------------------------------------------------------------------------------
 	{
-		var slide = pptx.addSlide();
+		var slide = pptx.addSlide({sectionTitle:'Images'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html');
 		slide.slideNumber = { x:'50%', y:'95%', color:'0088CC' };
 		slide.addTable( [ [{ text:'Image Examples: Image URLs', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
@@ -2535,8 +2537,10 @@ function genSlides_Image(pptx) {
 }
 
 function genSlides_Media(pptx) {
+	pptx.addSection({ title: 'Media' });
+
 	// SLIDE 1: Video and YouTube -----------------------------------------------------------------------------------
-	var slide1 = pptx.addSlide();
+	var slide1 = pptx.addSlide({sectionTitle:'Media'});
 	slide1.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html');
 	slide1.addTable( [ [{ text:'Media: Misc Video Formats; YouTube', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2568,7 +2572,7 @@ function genSlides_Media(pptx) {
 	}
 
 	// SLIDE 2: Audio -----------------------------------------------------------------------------------
-	var slide2 = pptx.addSlide();
+	var slide2 = pptx.addSlide({sectionTitle:'Media'});
 	slide2.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html');
 	slide2.addTable( [ [{ text:'Media: Misc Audio Formats', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2586,9 +2590,11 @@ function genSlides_Media(pptx) {
 }
 
 function genSlides_Shape(pptx) {
+	pptx.addSection({ title: 'Shapes' });
+
 	// SLIDE 1: Misc Shape Types (no text)
 	// ======== -----------------------------------------------------------------------------------
-	var slide = pptx.addSlide();
+	var slide = pptx.addSlide({sectionTitle:'Shapes'});
 	slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html');
 	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -2610,7 +2616,7 @@ function genSlides_Shape(pptx) {
 
 	// SLIDE 2: Misc Shape Types with Text
 	// ======== -----------------------------------------------------------------------------------
-	var slide = pptx.addSlide();
+	var slide = pptx.addSlide({sectionTitle:'Shapes'});
 	slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html');
 	slide.addTable( [ [{ text:'Shape Examples 2: Misc Shape Types (with text)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 

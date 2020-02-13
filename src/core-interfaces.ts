@@ -260,7 +260,7 @@ export interface IChartTitleOpts extends FontOptions {
 }
 export interface IChartMulti {
 	type: CHART_NAME
-	data: []
+	data: any[]
 	options: {}
 }
 
@@ -394,11 +394,12 @@ export interface IText {
 /**
  * Section options
  */
-export interface ISection {
+export interface ISectionProps {
 	title: string
 	order?: number // 1-n
 }
-export interface ISectionLib {
+export interface ISection {
+	type: 'user' | 'default'
 	title: string
 	slides: ISlide[]
 }
@@ -576,7 +577,7 @@ export interface IPresentation {
 	masterSlide?: ISlide
 	slides?: ISlide[]
 	slideLayouts?: ISlideLayout[]
-	sections?: ISectionLib[]
+	sections?: ISectionProps[]
 }
 export interface IPresentationLib {
 	author: string
@@ -584,7 +585,7 @@ export interface IPresentationLib {
 	presLayout: ILayout
 	revision: string
 	rtlMode: boolean
-	sections: ISectionLib[]
+	sections: ISection[]
 	slideLayouts: ISlideLayout[]
 	slides: ISlide[]
 	subject: string
