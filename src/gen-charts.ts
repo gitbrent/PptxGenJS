@@ -851,7 +851,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '    <c:numRef>'
 					strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
 					strXml += '      <c:numCache>'
-					strXml += '        <c:formatCode>General</c:formatCode>'
+					strXml += '        <c:formatCode>' + (opts.dataTableFormatCode || 'General') + '</c:formatCode>'
 					strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
 					obj.values.forEach((value, idx) => {
 						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>'
