@@ -108,15 +108,17 @@ const DEFAULT_SCHEME = colorSchemeXML({})
 
 export default function makeXmlTheme(
     fontFamily,
+    titleFontFamily = null,
     colorScheme = DEFAULT_SCHEME
 ): string {
+    let titleFF = titleFontFamily || fontFamily
     return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <a:theme xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" name="Sublime Theme">
   <a:themeElements>
     ${colorScheme}
     <a:fontScheme name="Sublime">
       <a:majorFont>
-        <a:latin typeface="${fontFamily ||
+        <a:latin typeface="${titleFF ||
             'Calibri Light'}" panose="020F0302020204030204"/>
         <a:ea typeface=""/>
         <a:cs typeface=""/>
