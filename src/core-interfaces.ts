@@ -142,7 +142,7 @@ export interface IChartOpts extends PositionOptions, OptsChartGridLine {
 	legendColor?: string
 	legendFontFace?: string
 	legendFontSize?: number
-	legendPos?: string
+	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 	lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
 	lineDataSymbolLineColor?: string
@@ -261,7 +261,7 @@ export interface IChartTitleOpts extends FontOptions {
 }
 export interface IChartMulti {
 	type: CHART_NAME
-	data: []
+	data: any[]
 	options: {}
 }
 
@@ -392,6 +392,18 @@ export interface IText {
 
 // Core
 // ====
+/**
+ * Section options
+ */
+export interface ISectionProps {
+	title: string
+	order?: number // 1-n
+}
+export interface ISection {
+	type: 'user' | 'default'
+	title: string
+	slides: ISlide[]
+}
 /**
  * The Presenation Layout (ex: 'LAYOUT_WIDE')
  */
@@ -526,6 +538,10 @@ export interface ISlideLayout {
 	margin?: Margin
 	slideNumberObj?: ISlideNumber
 }
+export interface IAddSlideOptions {
+	masterName?: string
+	sectionTitle?: string
+}
 export interface ISlide {
 	addChart: Function
 	addImage: Function
@@ -539,6 +555,7 @@ export interface ISlide {
 	color?: string
 	data?: ISlideObject[]
 	hidden?: boolean
+	id: number
 	margin?: Margin
 	name?: string
 	number: number
@@ -546,6 +563,7 @@ export interface ISlide {
 	rels: ISlideRel[]
 	relsChart: ISlideRelChart[]
 	relsMedia: ISlideRelMedia[]
+	rId: number
 	slideLayout: ISlideLayout
 	slideNumberObj?: ISlideNumber // FIXME rename
 }
@@ -555,15 +573,22 @@ export interface IPresentation {
 	revision: string
 	subject: string
 	title: string
-	isBrowser: boolean
-	fileName: string
-	fileExtn: string
 	pptLayout: ILayout
 	rtlMode: boolean
-	saveCallback?: null
 	masterSlide?: ISlide
-	chartCounter: number
-	imageCounter: number
 	slides?: ISlide[]
 	slideLayouts?: ISlideLayout[]
+	sections?: ISectionProps[]
+}
+export interface IPresentationLib {
+	author: string
+	company: string
+	presLayout: ILayout
+	revision: string
+	rtlMode: boolean
+	sections: ISection[]
+	slideLayouts: ISlideLayout[]
+	slides: ISlide[]
+	subject: string
+	title: string
 }

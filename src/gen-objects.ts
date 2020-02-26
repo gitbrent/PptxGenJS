@@ -125,7 +125,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
  *	 ]
  *	}
  */
-export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMulti[], data: [], opt: IChartOpts): object {
+export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMulti[], data: any[], opt: IChartOpts): object {
 	function correctGridLineOptions(glOpts: OptsChartGridLine) {
 		if (!glOpts || glOpts.style === 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {

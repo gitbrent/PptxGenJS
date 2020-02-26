@@ -27,22 +27,35 @@ export default class Slide {
 	private _setSlideNum: Function
 
 	public addSlide: Function
+	public data: ISlideObject[]
 	public getSlide: Function
-	public presLayout: ILayout
+	public id: number
 	public name: string
 	public number: number
-	public data: ISlideObject[]
+	public presLayout: ILayout
 	public rels: ISlideRel[]
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
+	public rId: number
 	public slideLayout: ISlideLayout
 	public slideNumberObj: ISlideNumber
 
-	constructor(params: { addSlide: Function; getSlide: Function; presLayout: ILayout; setSlideNum: Function; slideNumber: number; slideLayout?: ISlideLayout }) {
+	constructor(params: {
+		addSlide: Function
+		getSlide: Function
+		presLayout: ILayout
+		setSlideNum: Function
+		slideId: number
+		slideRId: number
+		slideNumber: number
+		slideLayout?: ISlideLayout
+	}) {
 		this.addSlide = params.addSlide
 		this.getSlide = params.getSlide
 		this.presLayout = params.presLayout
 		this._setSlideNum = params.setSlideNum
+		this.id = params.slideId
+		this.rId = params.slideRId
 		this.name = 'Slide ' + params.slideNumber
 		this.number = params.slideNumber
 		this.data = []
@@ -110,7 +123,7 @@ export default class Slide {
 	 * @param {IChartOpts} options - chart options
 	 * @return {Slide} this Slide
 	 */
-	addChart(type: CHART_NAME | IChartMulti[], data: [], options?: IChartOpts): Slide {
+	addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide {
 		// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 		// Set `_type` on IChartOpts as its what is used as object is passed around
 		let optionsWithType: IChartOpts = options || {}
