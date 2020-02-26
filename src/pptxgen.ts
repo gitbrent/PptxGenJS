@@ -125,8 +125,13 @@ export default class PptxGenJS {
     }
 
     private _theme: Theme
-    public configureTheme(fontFamily, colorScheme) {
+    public configureTheme?(
+        fontFamily?: string,
+        titleFontFamily?: string,
+        colorScheme?
+    ) {
         this._theme.fontFamily = fontFamily
+        this._theme.titleFontFamily = titleFontFamily
         this._theme.colorScheme = colorScheme
     }
 
