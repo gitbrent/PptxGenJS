@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-02-05T04:25:18.096Z */
+/* PptxGenJS 3.2.0-beta @ 2020-02-19T15:37:36.969Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -4249,11 +4249,23 @@ function createExcelWorksheet(chartObject, zip) {
                 strSheetXml_1 += '<row r="1" spans="1:' + (data.length + 1) + '">';
                 strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
                 for (var idx = 1; idx <= data.length; idx++) {
-                    // FIXME: Max cols is 52
-                    strSheetXml_1 += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    // FIXED: Max cols is over 52 now
+                    strSheetXml_1 += '<c r="' + getColumnLetter(idx) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    console.log(getColumnLetter(idx));
                     strSheetXml_1 += '<v>' + idx + '</v>';
                     strSheetXml_1 += '</c>';
                 }
+                /* for errorbar
+                for(let i = 0; i < data.length; i++){
+                    console.log(data[i].errorrate);
+                    let idx = data.length+i+1;
+                    if(!data[i].errorrate){
+                        continue;
+                    }
+                    strSheetXml += '<c r="' + getColumnLetter(idx) + '1" t="s">' // NOTE: use `t="s"` for label cols!
+                    strSheetXml += '<v>' + idx + '</v>'
+                    strSheetXml += '</c>'
+                }*/
                 strSheetXml_1 += '</row>';
                 // B: Add data row(s) for each category
                 data[0].labels.forEach(function (_cat, idx) {
@@ -4263,10 +4275,20 @@ function createExcelWorksheet(chartObject, zip) {
                     strSheetXml_1 += '<v>' + (data.length + idx + 1) + '</v>';
                     strSheetXml_1 += '</c>';
                     for (var idy = 0; idy < data.length; idy++) {
-                        strSheetXml_1 += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">'; //NOTE: idy+1 to start from column B
                         strSheetXml_1 += '<v>' + (data[idy].values[idx] || '') + '</v>';
                         strSheetXml_1 += '</c>';
                     }
+                    /* error bar
+                    for (let i = 0; i < data.length; i++) {
+                        if(!data[i].errorrate){
+                            continue;
+                        }
+                        let idy = data.length+i;
+                        strSheetXml += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">'
+                        strSheetXml += '<v>' + (data[i].errorrate[idx] || '') + '</v>'
+                        strSheetXml += '</c>'
+                    }*/
                     strSheetXml_1 += '</row>';
                 });
             }
@@ -4301,6 +4323,37 @@ function createExcelWorksheet(chartObject, zip) {
             reject(strErr);
         });
     });
+    /**
+     * Takes a index value and
+     * returns the corresponding "Excel letter"
+     * i.e. 0 -> A
+     * 26 -> AA
+     * 65 -> BN
+     * 676 -> AAA
+     * 1406 -> BCC
+     * and so on
+     * @param index
+     */
+    function getColumnLetter(index) {
+        var currentIndex = index;
+        var returnStr = "";
+        var a = false;
+        for (var i = Math.floor(logBase(index, 26)); i > 0; i--) {
+            var highestExpIndex = (Math.floor(currentIndex / Math.pow(26, i)));
+            if (!a) {
+                highestExpIndex -= 1;
+            }
+            console.log(highestExpIndex);
+            returnStr += (String.fromCharCode(65 + (highestExpIndex)));
+            currentIndex -= (highestExpIndex + (!a ? 1 : 0)) * (Math.pow(26, i));
+            a = true;
+        }
+        returnStr += (String.fromCharCode(65 + currentIndex));
+        return returnStr;
+    }
+    function logBase(x, base) {
+        return Math.log(x) / Math.log(base);
+    }
 }
 /**
  * Main entry point method for create charts
@@ -4521,6 +4574,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
         case CHART_TYPE.RADAR:
             // 1: Start Chart
             strXml += '<c:' + chartType + 'Chart>';
+            if (chartType === CHART_TYPE.AREA && opts.barGrouping === 'stacked') {
+                strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
+            }
             if (chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) {
                 strXml += '<c:barDir val="' + opts.barDir + '"/>';
                 strXml += '<c:grouping val="' + opts.barGrouping + '"/>';

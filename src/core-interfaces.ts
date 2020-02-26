@@ -43,6 +43,7 @@ export interface OptsChartData {
 	labels?: string[]
 	values?: number[]
 	sizes?: number[]
+	errorrate?: number[]
 }
 export interface OptsChartGridLine {
 	size?: number

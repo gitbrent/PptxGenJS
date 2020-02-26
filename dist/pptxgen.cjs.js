@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-02-05T04:25:18.091Z */
+/* PptxGenJS 3.2.0-beta @ 2020-02-26T10:05:10.208Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4038,6 +4038,13 @@ function createExcelWorksheet(chartObject, zip) {
                 '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>' +
                 '</Relationships>\n');
         }
+        //calculate length of values + error rates
+        //hardcoded method: loop over all data and check if errorrate exists, then increase the "errorratecount"
+        var ec = 0;
+        data.forEach(function (obj, idx) { if (obj.errorrate) {
+            ec++;
+        } });
+        var fulllength = data.length + ec;
         // sharedStrings.xml
         {
             // A: Start XML
@@ -4053,9 +4060,9 @@ function createExcelWorksheet(chartObject, zip) {
             else {
                 strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' +
-                        (data[0].labels.length + data.length + 1) +
+                        (data[0].labels.length + fulllength + 1) +
                         '" uniqueCount="' +
-                        (data[0].labels.length + data.length + 1) +
+                        (data[0].labels.length + fulllength + 1) +
                         '">';
                 // B: Add 'blank' for A1
                 strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
@@ -4074,6 +4081,11 @@ function createExcelWorksheet(chartObject, zip) {
             else {
                 data.forEach(function (objData) {
                     strSharedStrings_1 += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>';
+                });
+                data.forEach(function (objData) {
+                    if (objData.errorrate) {
+                        strSharedStrings_1 += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + "_errorrate" + '</t></si>';
+                    }
                 });
             }
             // D: Add `labels`/Categories
@@ -4103,13 +4115,18 @@ function createExcelWorksheet(chartObject, zip) {
             else {
                 strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
-                        LETTERS[data.length] +
-                        (data[0].labels.length + 1) +
+                        getColumnLetter(fulllength) +
+                        (data[0].labels.length + 1) + //cuz every data block has the same length
                         '" totalsRowShown="0">';
-                strTableXml_1 += '<tableColumns count="' + (data.length + 1) + '">';
+                strTableXml_1 += '<tableColumns count="' + (fulllength + 1) + '">';
                 strTableXml_1 += '<tableColumn id="1" name=" " />';
                 data.forEach(function (obj, idx) {
                     strTableXml_1 += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />';
+                });
+                data.forEach(function (obj, idx) {
+                    if (obj.errorrate) {
+                        strTableXml_1 += '<tableColumn id="' + (data.length + idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '_errorrate' + '" />';
+                    }
                 });
             }
             strTableXml_1 += '</tableColumns>';
@@ -4129,7 +4146,7 @@ function createExcelWorksheet(chartObject, zip) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />';
             }
             else {
-                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />';
+                strSheetXml_1 += '<dimension ref="A1:' + getColumnLetter(fulllength) + (data[0].labels.length + 1) + '" />';
             }
             strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
             strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
@@ -4248,11 +4265,20 @@ function createExcelWorksheet(chartObject, zip) {
                     -|-------|-----|-----|-----|
                 */
                 // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml_1 += '<row r="1" spans="1:' + (data.length + 1) + '">';
+                strSheetXml_1 += '<row r="1" spans="1:' + (fulllength + 1) + '">';
                 strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
                 for (var idx = 1; idx <= data.length; idx++) {
-                    // FIXME: Max cols is 52
-                    strSheetXml_1 += '<c r="' + (idx < 26 ? LETTERS[idx] : 'A' + LETTERS[idx % LETTERS.length]) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    // FIXED: Max cols is over 52 now
+                    strSheetXml_1 += '<c r="' + getColumnLetter(idx) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    strSheetXml_1 += '<v>' + idx + '</v>';
+                    strSheetXml_1 += '</c>';
+                }
+                for (var i = 0; i < data.length; i++) {
+                    var idx = data.length + i + 1;
+                    if (!data[i].errorrate) {
+                        continue;
+                    }
+                    strSheetXml_1 += '<c r="' + getColumnLetter(idx) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
                     strSheetXml_1 += '<v>' + idx + '</v>';
                     strSheetXml_1 += '</c>';
                 }
@@ -4260,13 +4286,22 @@ function createExcelWorksheet(chartObject, zip) {
                 // B: Add data row(s) for each category
                 data[0].labels.forEach(function (_cat, idx) {
                     // Leading col is reserved for the label, so hard-code it, then loop over col values
-                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + 1) + '">';
+                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + (fulllength + 1) + '">';
                     strSheetXml_1 += '<c r="A' + (idx + 2) + '" t="s">';
-                    strSheetXml_1 += '<v>' + (data.length + idx + 1) + '</v>';
+                    strSheetXml_1 += '<v>' + (fulllength + idx + 1) + '</v>';
                     strSheetXml_1 += '</c>';
                     for (var idy = 0; idy < data.length; idy++) {
-                        strSheetXml_1 += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">'; //NOTE: idy+1 to start from column B
                         strSheetXml_1 += '<v>' + (data[idy].values[idx] || '') + '</v>';
+                        strSheetXml_1 += '</c>';
+                    }
+                    for (var i = 0; i < data.length; i++) {
+                        if (!data[i].errorrate) {
+                            continue;
+                        }
+                        var idy = data.length + i;
+                        strSheetXml_1 += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<v>' + (data[i].errorrate[idx] || '') + '</v>';
                         strSheetXml_1 += '</c>';
                     }
                     strSheetXml_1 += '</row>';
@@ -4303,6 +4338,36 @@ function createExcelWorksheet(chartObject, zip) {
             reject(strErr);
         });
     });
+    /**
+     * Takes a index value and
+     * returns the corresponding "Excel letter"
+     * i.e. 0 -> A
+     * 26 -> AA
+     * 65 -> BN
+     * 676 -> AAA
+     * 1406 -> BCC
+     * and so on
+     * @param index
+     */
+    function getColumnLetter(index) {
+        var currentIndex = index;
+        var returnStr = "";
+        var a = false;
+        for (var i = Math.floor(logBase(index, 26)); i > 0; i--) {
+            var highestExpIndex = (Math.floor(currentIndex / Math.pow(26, i)));
+            if (!a) {
+                highestExpIndex -= 1;
+            }
+            returnStr += (String.fromCharCode(65 + (highestExpIndex)));
+            currentIndex -= (highestExpIndex + (!a ? 1 : 0)) * (Math.pow(26, i));
+            a = true;
+        }
+        returnStr += (String.fromCharCode(65 + currentIndex));
+        return returnStr;
+    }
+    function logBase(x, base) {
+        return Math.log(x) / Math.log(base);
+    }
 }
 /**
  * Main entry point method for create charts
@@ -4523,6 +4588,9 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
         case CHART_TYPE.RADAR:
             // 1: Start Chart
             strXml += '<c:' + chartType + 'Chart>';
+            if (chartType === CHART_TYPE.AREA && opts.barGrouping === 'stacked') {
+                strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
+            }
             if (chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) {
                 strXml += '<c:barDir val="' + opts.barDir + '"/>';
                 strXml += '<c:grouping val="' + opts.barGrouping + '"/>';
@@ -4547,6 +4615,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 ]
             */
             var colorIndex_1 = -1; // Maintain the color index by region
+            //errorrates are optional, thus we can have something like this:
+            //col1, col2, col3, col_err1, col_err3
+            //we loop over regular cols, in order to calculate the current columns error col
+            //we count the number of errorcols we used and do data.length + errorrateCount
+            var errorrateCount_1 = 0;
             data.forEach(function (obj) {
                 colorIndex_1++;
                 var idx = obj.index;
@@ -4722,6 +4795,25 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      </c:numCache>';
                     strXml += '    </c:numRef>';
                     strXml += '  </c:val>';
+                }
+                // 3.5: "Errorrates/Errorbars"
+                {
+                    if (obj.errorrate) {
+                        var erridx = data.length + errorrateCount_1;
+                        strXml += '  <c:errBars>';
+                        strXml += '<c:errDir val="y"/>';
+                        strXml += '<c:errBarType val="both"/>';
+                        strXml += '<c:errValType val="cust"/>';
+                        strXml += '<c:noEndCap val="0"/>';
+                        strXml += '		<c:plus>';
+                        strXml += errXml(erridx, obj);
+                        strXml += '		</c:plus>';
+                        strXml += '		<c:minus>';
+                        strXml += errXml(erridx, obj);
+                        strXml += '		</c:minus>';
+                        strXml += '  </c:errBars>';
+                        errorrateCount_1++;
+                    }
                 }
                 // Option: `smooth`
                 if (chartType === CHART_TYPE.LINE)
@@ -5696,6 +5788,20 @@ function createGridLineElement(glOpts) {
     strXml += ' </c:spPr>';
     strXml += '</c:majorGridlines>';
     return strXml;
+}
+function errXml(idx, obj) {
+    var resStr = '';
+    resStr += '    <c:numRef>';
+    resStr += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>';
+    resStr += '      <c:numCache>';
+    resStr += '        <c:formatCode>General</c:formatCode>';
+    resStr += '	       <c:ptCount val="' + obj.labels.length + '"/>';
+    obj.errorrate.forEach(function (value, idx) {
+        resStr += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
+    });
+    resStr += '      </c:numCache>';
+    resStr += '    </c:numRef>';
+    return resStr;
 }
 
 /**
