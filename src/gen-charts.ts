@@ -137,9 +137,14 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 		//calculate length of values + error rates
 		//hardcoded method: loop over all data and check if errorrate exists, then increase the "errorratecount"
 		let ec = 0;
-		data.forEach((obj, idx) => { if (obj.errorrate) { ec++; } });
+		data.forEach((obj) => {
+			if (obj.errorrate) {
+				if (obj.errorrate.length > 0) {
+					ec++;
+				}
+			}
+		});
 		let fulllength = data.length + ec;
-
 
 		// sharedStrings.xml
 		{
@@ -378,14 +383,20 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 					strSheetXml += '<v>' + idx + '</v>'
 					strSheetXml += '</c>'
 				}
+
+				let errorcount = 1;
 				for (let i = 0; i < data.length; i++) {
-					let idx = data.length + i + 1;
+					let idx = data.length + errorcount;
 					if (!data[i].errorrate) {
+						continue;
+					}
+					if(data[i].errorrate.length < 1){
 						continue;
 					}
 					strSheetXml += '<c r="' + getColumnLetter(idx) + '1" t="s">' // NOTE: use `t="s"` for label cols!
 					strSheetXml += '<v>' + idx + '</v>'
 					strSheetXml += '</c>'
+					errorcount++;
 				}
 
 				strSheetXml += '</row>'
@@ -402,14 +413,19 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 						strSheetXml += '<v>' + (data[idy].values[idx] || '') + '</v>'
 						strSheetXml += '</c>'
 					}
+					let errorcount = 0;
 					for (let i = 0; i < data.length; i++) {
 						if (!data[i].errorrate) {
 							continue;
 						}
-						let idy = data.length + i;
+						if(data[i].errorrate.length < 1){
+							continue;
+						}
+						let idy = data.length + errorcount;
 						strSheetXml += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">'
 						strSheetXml += '<v>' + (data[i].errorrate[idx] || '') + '</v>'
 						strSheetXml += '</c>'
+						errorcount++;
 					}
 					strSheetXml += '</row>'
 				})
@@ -558,10 +574,10 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			let valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
 			let catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
 			usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis']
-			strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId, true)
+			strXml += makeChartType(type.type, type.data, rel.data.length, options, valAxisId, catAxisId, true)
 		})
 	} else {
-		strXml += makeChartType(rel.opts._type, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, false)
+		strXml += makeChartType(rel.opts._type, rel.data, rel.data.length, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, false)
 	}
 
 	// B: Axes -----------------------------------------------------------
@@ -705,7 +721,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
  * @param {boolean} `isMultiTypeChart`
  * @return {string} XML
  */
-function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
+function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength: number, opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	let strXml: string = ''
@@ -938,7 +954,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				// 3.5: "Errorrates/Errorbars"
 				{
 					if (obj.errorrate) {
-						let erridx = data.length + errorrateCount;
+						let erridx = datalength + errorrateCount;
 						strXml += '  <c:errBars>';
 						strXml += '<c:errDir val="y"/>';
 						strXml += '<c:errBarType val="both"/>'
