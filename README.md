@@ -52,7 +52,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 **Major PowerPoint object types**
 
-- Slides can include Charts, Images, Media, Shapes, Tables, Text and more.
+- Slides can include Charts, Images, Media, Shapes, Tables, Text and more
 - SVG images and YouTube videos are supported when viewed in PowerPoint online/2019+ desktop application
 
 **Modern architecture**
