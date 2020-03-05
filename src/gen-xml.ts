@@ -1646,9 +1646,10 @@ export function makeXmlNotesSlideRel(slideNumber: number): string {
  * @return {string} XML
  */
 export function makeXmlMasterRel(masterSlide: ISlide, slideLayouts: ISlideLayout[]): string {
-	let defaultRels = slideLayouts.map((_layoutDef, idx) => {
-		return { target: `../slideLayouts/slideLayout${idx + 1}.xml`, type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' }
-	})
+	let defaultRels = slideLayouts.map((_layoutDef, idx) => ({
+		target: `../slideLayouts/slideLayout${idx + 1}.xml`,
+		type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout',
+	}))
 	defaultRels.push({ target: '../theme/theme1.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme' })
 
 	return slideObjectRelationsToXml(masterSlide, defaultRels)

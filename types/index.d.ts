@@ -18,14 +18,13 @@ declare class PptxGenJS {
 	readonly version: string
 
 	// Exposed prop types
-
+	readonly presLayout: PptxGenJS.ILayout
 	readonly AlignH: typeof PptxGenJS.AlignH
 	readonly AlignV: typeof PptxGenJS.AlignV
 	readonly ChartType: typeof PptxGenJS.ChartType
-	readonly ShapeType: typeof PptxGenJS.ShapeType
 	readonly OutputType: typeof PptxGenJS.OutputType
 	readonly SchemeColor: typeof PptxGenJS.SchemeColor
-	readonly presLayout: PptxGenJS.ILayout
+	readonly ShapeType: typeof PptxGenJS.ShapeType
 
 	// Presentation Props
 
@@ -1348,6 +1347,7 @@ declare namespace PptxGenJS {
 		slideLayout: ISlideLayout
 		slideNumberObj?: ISlideNumber
 	}
+	/* TODO: REMOVE UNUSED interfaces
 	export interface IPresentation {
 		author: string
 		company: string
@@ -1366,6 +1366,7 @@ declare namespace PptxGenJS {
 		slides?: ISlide[]
 		slideLayouts?: ISlideLayout[]
 	}
+	*/
 
 	/**
 	 * `slide.d.ts`
