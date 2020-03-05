@@ -436,7 +436,7 @@ export default class PptxGenJS implements IPresentationLib {
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
 	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> =>
-		new Promise((resolve, reject) => {
+		new Promise((resolve, _reject) => {
 			let arrChartPromises: Promise<string>[] = []
 			let arrMediaPromises: Promise<string>[] = []
 			let zip: JSZip = new JSZip()
