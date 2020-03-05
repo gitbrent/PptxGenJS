@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.2.0
-* BLD.: 20200212
+* BLD.: 20200304
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2714,7 +2714,7 @@ function genSlides_Text(pptx) {
 				{ text:'Arial ', options:{ fontSize:48, fontFace:'Arial', color:pptx.colors.ACCENT2 } },
 				{ text:'48', options:{ fontSize:48, fontFace:'Courier New', color:pptx.colors.ACCENT1, breakLine:true } },
 				{ text:'Verdana 48', options:{ fontSize:48, fontFace:'Verdana', color:pptx.colors.ACCENT3, align:'left', breakLine:true } },
-				{ text:'Strikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT4, align:'center', strike:true, breakLine:true } },
+				{ text:'Strikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT6, align:'center', strike:true, breakLine:true } },
 				{ text:'Underline', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT4, align:'center', underline:true, breakLine:true } },
 				{ text:'\nTimes 36', options:{ fontSize:36, fontFace:'Times', color:pptx.colors.ACCENT5, align:'right',  breakLine:true } }
 			],
