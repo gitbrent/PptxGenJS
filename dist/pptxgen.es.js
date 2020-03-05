@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-02-13T05:17:34.692Z */
+/* PptxGenJS 3.2.0-beta @ 2020-03-05T05:25:16.894Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2749,9 +2749,10 @@ function makeXmlNotesSlideRel(slideNumber) {
  * @return {string} XML
  */
 function makeXmlMasterRel(masterSlide, slideLayouts) {
-    var defaultRels = slideLayouts.map(function (_layoutDef, idx) {
-        return { target: "../slideLayouts/slideLayout" + (idx + 1) + ".xml", type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' };
-    });
+    var defaultRels = slideLayouts.map(function (_layoutDef, idx) { return ({
+        target: "../slideLayouts/slideLayout" + (idx + 1) + ".xml",
+        type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout',
+    }); });
     defaultRels.push({ target: '../theme/theme1.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme' });
     return slideObjectRelationsToXml(masterSlide, defaultRels);
 }
@@ -5856,7 +5857,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200212';
+var VERSION = '3.2.0-beta-20200304';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6387,7 +6388,8 @@ var PptxGenJS = /** @class */ (function () {
     // PRESENTATION METHODS
     /**
      * Add a new Section to Presenation
-     * @param {ISectionProps} section
+     * @param {ISectionProps} section - section properties
+     * @example pptx.addSection({ title:'Charts' });
      */
     PptxGenJS.prototype.addSection = function (section) {
         if (!section)
@@ -6406,12 +6408,12 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Add a new Slide to Presenation
-     * @param {IAddSlideOptions} slideOpts - slide options
+     * @param {IAddSlideOptions} options - slide options
      * @returns {ISlide} the new Slide
      */
-    PptxGenJS.prototype.addSlide = function (slideOpts) {
+    PptxGenJS.prototype.addSlide = function (options) {
         // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
-        var masterSlideName = typeof slideOpts === 'string' ? slideOpts : slideOpts && slideOpts.masterName ? slideOpts.masterName : '';
+        var masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : '';
         var newSlide = new Slide({
             addSlide: this.addNewSlide,
             getSlide: this.getSlide,
@@ -6428,15 +6430,15 @@ var PptxGenJS = /** @class */ (function () {
         this._slides.push(newSlide);
         // B: Sections
         // B-1: Add slide to section (if any provided)
-        if (slideOpts && slideOpts.sectionTitle) {
-            var sect = this.sections.filter(function (section) { return section.title === slideOpts.sectionTitle; })[0];
+        if (options && options.sectionTitle) {
+            var sect = this.sections.filter(function (section) { return section.title === options.sectionTitle; })[0];
             if (!sect)
-                console.warn("addSlide: unable to find section with title: \"" + slideOpts.sectionTitle + "\"");
+                console.warn("addSlide: unable to find section with title: \"" + options.sectionTitle + "\"");
             else
                 sect.slides.push(newSlide);
         }
         // B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
-        else if (this.sections && this.sections.length > 0 && (!slideOpts || !slideOpts.sectionTitle)) {
+        else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
             var lastSect = this._sections[this.sections.length - 1];
             // CASE 1: The latest section is a default type - just add this one
             if (lastSect.type === 'default')
@@ -6453,7 +6455,7 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Create a custom Slide Layout in any size
-     * @param {IUserLayout} layout - an object with user-defined w/h
+     * @param {ILayoutProps} layout - layout properties
      * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
      */
     PptxGenJS.prototype.defineLayout = function (layout) {
@@ -6474,25 +6476,25 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Create a new slide master [layout] for the Presentation
-     * @param {ISlideMasterOptions} slideMasterOpts - layout definition
+     * @param {ISlideMasterOptions} options - layout options
      */
-    PptxGenJS.prototype.defineSlideMaster = function (slideMasterOpts) {
-        if (!slideMasterOpts.title)
+    PptxGenJS.prototype.defineSlideMaster = function (options) {
+        if (!options.title)
             throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
         var newLayout = {
             presLayout: this.presLayout,
-            name: slideMasterOpts.title,
+            name: options.title,
             number: 1000 + this.slideLayouts.length + 1,
             slide: null,
             data: [],
             rels: [],
             relsChart: [],
             relsMedia: [],
-            margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
-            slideNumberObj: slideMasterOpts.slideNumber || null,
+            margin: options.margin || DEF_SLIDE_MARGIN_IN,
+            slideNumberObj: options.slideNumber || null,
         };
         // STEP 1: Create the Slide Master/Layout
-        createSlideObject(slideMasterOpts, newLayout);
+        createSlideObject(options, newLayout);
         // STEP 2: Add it to layout defs
         this.slideLayouts.push(newLayout);
         // STEP 3: Add slideNumber to master slide (if any)
@@ -6502,13 +6504,13 @@ var PptxGenJS = /** @class */ (function () {
     // HTML-TO-SLIDES METHODS
     /**
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-     * @param {string} tabEleId - HTMLElementID of the table
-     * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+     * @param {string} eleId - table HTML element ID
+     * @param {ITableToSlidesOpts} options - generation options
      */
-    PptxGenJS.prototype.tableToSlides = function (tableElementId, opts) {
-        if (opts === void 0) { opts = {}; }
+    PptxGenJS.prototype.tableToSlides = function (eleId, options) {
+        if (options === void 0) { options = {}; }
         // @note `verbose` option is undocumented; used for verbose output of layout process
-        genTableToSlides(this, tableElementId, opts, opts && opts.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === opts.masterSlideName; })[0] : null);
+        genTableToSlides(this, eleId, options, options && options.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === options.masterSlideName; })[0] : null);
     };
     return PptxGenJS;
 }());
