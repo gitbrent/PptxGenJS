@@ -411,7 +411,7 @@ export interface ILayout {
 	width?: number
 	height?: number
 }
-export interface IUserLayout {
+export interface ILayoutProps {
 	name: string
 	width: number
 	height: number
