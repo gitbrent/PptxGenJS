@@ -581,6 +581,7 @@ export interface IAddSlideOptions {
 	masterName?: string
 	sectionTitle?: string
 }
+// TODO: update ISlide to ISlideLib, replace below
 export interface ISlide {
 	addChart: Function
 	addImage: Function
