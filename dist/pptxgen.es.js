@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-03-05T05:25:16.894Z */
+/* PptxGenJS 3.2.0-beta @ 2020-03-06T04:44:34.914Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2966,7 +2966,7 @@ function createSlideObject(slideDef, target) {
  *
  * @param {CHART_NAME | IChartMulti[]} `type` should belong to: 'column', 'pie'
  * @param {[]} `data` a JSON object with follow the following format
- * @param {IChartOpts} `opt` chart options
+ * @param {IChartOptsLib} `opt` chart options
  * @param {ISlide} `target` slide object that the chart will be added to
  * @return {object} chart object
  * {
@@ -3872,7 +3872,7 @@ var Slide = /** @class */ (function () {
      */
     Slide.prototype.addChart = function (type, data, options) {
         // TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
-        // Set `_type` on IChartOpts as its what is used as object is passed around
+        // Set `_type` on IChartOptsLib as its what is used as object is passed around
         var optionsWithType = options || {};
         optionsWithType._type = type;
         addChartDefinition(this, type, data, options);
@@ -4361,7 +4361,7 @@ function makeXmlCharts(rel) {
         rel.opts._type.forEach(function (type) {
             // TODO: FIXME: theres `options` on chart rels??
             var options = getMix(rel.opts, type.options);
-            //let options: IChartOpts = { type: type.type, }
+            //let options: IChartOptsLib = { type: type.type, }
             var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
             var catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
             usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis'];
@@ -4496,7 +4496,7 @@ function makeXmlCharts(rel) {
  *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
- * @param {IChartOpts} `opts` chart options
+ * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
@@ -5350,7 +5350,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
 }
 /**
  * Create Category axis
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - value
  * @param {string} valAxisId - value
  * @return {string} XML
@@ -5462,7 +5462,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
 }
 /**
  * Create Value Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} valAxisId - value
  * @return {string} XML
  */
@@ -5543,7 +5543,7 @@ function makeValAxis(opts, valAxisId) {
 }
 /**
  * Create Series Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - axis ID
  * @param {string} valAxisId - value
  * @return {string} XML
@@ -5857,7 +5857,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200304';
+var VERSION = '3.2.0-beta-20200305';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -5985,7 +5985,7 @@ var PptxGenJS = /** @class */ (function () {
          * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
          */
         this.exportPresentation = function (outputType) {
-            return new Promise(function (resolve, reject) {
+            return new Promise(function (resolve, _reject) {
                 var arrChartPromises = [];
                 var arrMediaPromises = [];
                 var zip = new JSZip();
