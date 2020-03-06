@@ -63,17 +63,18 @@ import {
 	ShapeType,
 } from './core-enums'
 import {
+	IAddSlideOptions,
 	ILayout,
+	ILayoutProps,
+	IPresentation,
+	ISection,
+	ISectionProps,
 	ISlide,
 	ISlideLayout,
+	ISlideLib,
 	ISlideMasterOptions,
 	ISlideNumber,
 	ITableToSlidesOpts,
-	ILayoutProps,
-	ISection,
-	ISectionProps,
-	IAddSlideOptions,
-	IPresentationLib,
 } from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
@@ -81,9 +82,9 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.2.0-beta-20200305'
+const VERSION = '3.2.0-beta-20200306'
 
-export default class PptxGenJS implements IPresentationLib {
+export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
 
 	/**
@@ -190,11 +191,14 @@ export default class PptxGenJS implements IPresentationLib {
 	}
 
 	/** master slide layout object */
-	private masterSlide: ISlide
+	private _masterSlide: ISlideLib
+	public get masterSlide(): ISlideLib {
+		return this._masterSlide
+	}
 
 	/** this Presentation's Slide objects */
-	private _slides: ISlide[]
-	public get slides(): ISlide[] {
+	private _slides: ISlideLib[]
+	public get slides(): ISlideLib[] {
 		return this._slides
 	}
 
@@ -303,7 +307,7 @@ export default class PptxGenJS implements IPresentationLib {
 		]
 		this._slides = []
 		this._sections = []
-		this.masterSlide = {
+		this._masterSlide = {
 			addChart: null,
 			addImage: null,
 			addMedia: null,
@@ -344,10 +348,10 @@ export default class PptxGenJS implements IPresentationLib {
 	/**
 	 * Provides an API for `addTableDefinition` to get slide reference by number
 	 * @param {number} slideNum - slide number
-	 * @return {ISlide} Slide
+	 * @return {ISlideLib} Slide
 	 * @since 3.0.0
 	 */
-	private getSlide = (slideNum: number): ISlide => this.slides.filter(slide => slide.number === slideNum)[0]
+	private getSlide = (slideNum: number): ISlideLib => this.slides.filter(slide => slide.number === slideNum)[0]
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
@@ -363,11 +367,11 @@ export default class PptxGenJS implements IPresentationLib {
 
 	/**
 	 * Create all chart and media rels for this Presenation
-	 * @param {ISlide | ISlideLayout} slide - slide with rels
+	 * @param {ISlideLib | ISlideLayout} slide - slide with rels
 	 * @param {JSZIP} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
-	private createChartMediaRels = (slide: ISlide | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
+	private createChartMediaRels = (slide: ISlideLib | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {

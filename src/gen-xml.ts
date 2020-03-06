@@ -18,10 +18,10 @@ import {
 } from './core-enums'
 import {
 	IObjectOptions,
-	IPresentationLib,
+	IPresentation,
 	IShadowOptions,
-	ISlide,
 	ISlideLayout,
+	ISlideLib,
 	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
@@ -69,10 +69,10 @@ let imageSizingXml = {
 
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
- * @param {ISlide|ISlideLayout} slideObject - slide object created within createSlideObject
+ * @param {ISlideLib|ISlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
-function slideObjectToXml(slide: ISlide | ISlideLayout): string {
+function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 	let strSlideXml: string = slide.name ? '<p:cSld name="' + slide.name + '">' : '<p:cSld>'
 	let intTableNum: number = 1
 
@@ -113,7 +113,12 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
 		let placeholderObj: ISlideObject
 		let locationAttr = ''
 
-		if ((slide as ISlide).slideLayout !== undefined && (slide as ISlide).slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
+		if (
+			(slide as ISlideLib).slideLayout !== undefined &&
+			(slide as ISlideLib).slideLayout.data !== undefined &&
+			slideItemObj.options &&
+			slideItemObj.options.placeholder
+		) {
 			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => object.options.placeholder === slideItemObj.options.placeholder)[0]
 		}
 
@@ -726,11 +731,11 @@ function slideObjectToXml(slide: ISlide | ISlideLayout): string {
  * Transforms slide relations to XML string.
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
- * @param {ISlide | ISlideLayout} slide - slide object whose relations are being transformed
+ * @param {ISlideLib | ISlideLayout} slide - slide object whose relations are being transformed
  * @param {{ target: string; type: string }[]} defaultRels - array of default relations
  * @return {string} XML
  */
-function slideObjectRelationsToXml(slide: ISlide | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
+function slideObjectRelationsToXml(slide: ISlideLib | ISlideLayout, defaultRels: { target: string; type: string }[]): string {
 	let lastRid = 0 // stores maximum rId used for dynamic relations
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 
@@ -1248,12 +1253,12 @@ export function genXmlPlaceholder(placeholderObj: ISlideObject): string {
 
 /**
  * Generate XML ContentType
- * @param {ISlide[]} slides - slides
+ * @param {ISlideLib[]} slides - slides
  * @param {ISlideLayout[]} slideLayouts - slide layouts
- * @param {ISlide} masterSlide - master slide
+ * @param {ISlideLib} masterSlide - master slide
  * @returns XML
  */
-export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[], masterSlide?: ISlide): string {
+export function makeXmlContTypes(slides: ISlideLib[], slideLayouts: ISlideLayout[], masterSlide?: ISlideLib): string {
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">'
 	strXml += '<Default Extension="xml" ContentType="application/xml"/>'
@@ -1347,11 +1352,11 @@ export function makeXmlRootRels(): string {
 
 /**
  * Creates `docProps/app.xml`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlideLib[]} slides - Presenation Slides
  * @param {string} company - "Company" metadata
  * @returns XML
  */
-export function makeXmlApp(slides: ISlide[], company: string): string {
+export function makeXmlApp(slides: ISlideLib[], company: string): string {
 	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<Properties xmlns="http://schemas.openxmlformats.org/officeDocument/2006/extended-properties" xmlns:vt="http://schemas.openxmlformats.org/officeDocument/2006/docPropsVTypes">
 	<TotalTime>0</TotalTime>
 	<Words>0</Words>
@@ -1412,10 +1417,10 @@ export function makeXmlCore(title: string, subject: string, author: string, revi
 
 /**
  * Creates `ppt/_rels/presentation.xml.rels`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlideLib[]} slides - Presenation Slides
  * @returns XML
  */
-export function makeXmlPresentationRels(slides: Array<ISlide>): string {
+export function makeXmlPresentationRels(slides: Array<ISlideLib>): string {
 	let intRelNum = 1
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml += '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
@@ -1450,10 +1455,10 @@ export function makeXmlPresentationRels(slides: Array<ISlide>): string {
 
 /**
  * Generates XML for the slide file (`ppt/slides/slide1.xml`)
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} XML
  */
-export function makeXmlSlide(slide: ISlide): string {
+export function makeXmlSlide(slide: ISlideLib): string {
 	return (
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
 		`<p:sld xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ` +
@@ -1466,10 +1471,10 @@ export function makeXmlSlide(slide: ISlide): string {
 
 /**
  * Get text content of Notes from Slide
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} notes text
  */
-export function getNotesFromSlide(slide: ISlide): string {
+export function getNotesFromSlide(slide: ISlideLib): string {
 	let notesText = ''
 
 	slide.data.forEach(data => {
@@ -1489,10 +1494,10 @@ export function makeXmlNotesMaster(): string {
 
 /**
  * Creates Notes Slide (`ppt/notesSlides/notesSlide1.xml`)
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} XML
  */
-export function makeXmlNotesSlide(slide: ISlide): string {
+export function makeXmlNotesSlide(slide: ISlideLib): string {
 	return (
 		'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
 		CRLF +
@@ -1540,11 +1545,11 @@ export function makeXmlLayout(layout: ISlideLayout): string {
 
 /**
  * Creates Slide Master 1 (`ppt/slideMasters/slideMaster1.xml`)
- * @param {ISlide} slide - slide object that represents master slide layout
+ * @param {ISlideLib} slide - slide object that represents master slide layout
  * @param {ISlideLayout[]} layouts - slide layouts
  * @return {string} XML
  */
-export function makeXmlMaster(slide: ISlide, layouts: ISlideLayout[]): string {
+export function makeXmlMaster(slide: ISlideLib, layouts: ISlideLayout[]): string {
 	// NOTE: Pass layouts as static rels because they are not referenced any time
 	let layoutDefs = layouts.map((_layoutDef, idx) => '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slide.rels.length + idx + 1) + '"/>')
 
@@ -1607,12 +1612,12 @@ export function makeXmlSlideLayoutRel(layoutNumber: number, slideLayouts: ISlide
 
 /**
  * Creates `ppt/_rels/slide*.xml.rels`
- * @param {ISlide[]} slides
+ * @param {ISlideLib[]} slides
  * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
  * @param {number} `slideNumber` 1-indexed number of a layout that relations are generated for
  * @return {string} XML
  */
-export function makeXmlSlideRel(slides: ISlide[], slideLayouts: ISlideLayout[], slideNumber: number): string {
+export function makeXmlSlideRel(slides: ISlideLib[], slideLayouts: ISlideLayout[], slideNumber: number): string {
 	return slideObjectRelationsToXml(slides[slideNumber - 1], [
 		{
 			target: '../slideLayouts/slideLayout' + getLayoutIdxForSlide(slides, slideLayouts, slideNumber) + '.xml',
@@ -1640,11 +1645,11 @@ export function makeXmlNotesSlideRel(slideNumber: number): string {
 
 /**
  * Creates `ppt/slideMasters/_rels/slideMaster1.xml.rels`
- * @param {ISlide} masterSlide - Slide object
+ * @param {ISlideLib} masterSlide - Slide object
  * @param {ISlideLayout[]} slideLayouts - Slide Layouts
  * @return {string} XML
  */
-export function makeXmlMasterRel(masterSlide: ISlide, slideLayouts: ISlideLayout[]): string {
+export function makeXmlMasterRel(masterSlide: ISlideLib, slideLayouts: ISlideLayout[]): string {
 	let defaultRels = slideLayouts.map((_layoutDef, idx) => ({
 		target: `../slideLayouts/slideLayout${idx + 1}.xml`,
 		type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout',
@@ -1666,12 +1671,12 @@ export function makeXmlNotesMasterRel(): string {
 
 /**
  * For the passed slide number, resolves name of a layout that is used for.
- * @param {ISlide[]} slides - srray of slides
+ * @param {ISlideLib[]} slides - srray of slides
  * @param {ISlideLayout[]} slideLayouts - array of slideLayouts
  * @param {number} slideNumber
  * @return {number} slide number
  */
-function getLayoutIdxForSlide(slides: ISlide[], slideLayouts: ISlideLayout[], slideNumber: number): number {
+function getLayoutIdxForSlide(slides: ISlideLib[], slideLayouts: ISlideLayout[], slideNumber: number): number {
 	for (let i = 0; i < slideLayouts.length; i++) {
 		if (slideLayouts[i].name === slides[slideNumber - 1].slideLayout.name) {
 			return i + 1
@@ -1697,12 +1702,10 @@ export function makeXmlTheme(): string {
  * Create presentation file (`ppt/presentation.xml`)
  * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
  * @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
- * @param {ISlide[]} slides - array of slides
- * @param {ILayout} pptLayout - presentation layout
- * @param {boolean} rtlMode - RTL mode
+ * @param {IPresentation} pres - presentation
  * @return {string} XML
  */
-export function makeXmlPresentation(pres: IPresentationLib): string {
+export function makeXmlPresentation(pres: IPresentation): string {
 	let strXml =
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
 		`<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ` +
