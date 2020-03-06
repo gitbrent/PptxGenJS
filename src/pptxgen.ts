@@ -362,7 +362,7 @@ export default class PptxGenJS implements IPresentationLib {
 	}
 
 	/**
-	 * Create all chart and media rels for this Presenation
+	 * Create all chart and media rels for this Presentation
 	 * @param {ISlide | ISlideLayout} slide - slide with rels
 	 * @param {JSZIP} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
@@ -539,7 +539,7 @@ export default class PptxGenJS implements IPresentationLib {
 	// EXPORT METHODS
 
 	/**
-	 * Export the current Presenation to stream
+	 * Export the current Presentation to stream
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
 	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
@@ -555,7 +555,7 @@ export default class PptxGenJS implements IPresentationLib {
 	}
 
 	/**
-	 * Export the current Presenation as JSZip content with the selected type
+	 * Export the current Presentation as JSZip content with the selected type
 	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
@@ -572,7 +572,7 @@ export default class PptxGenJS implements IPresentationLib {
 	}
 
 	/**
-	 * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
+	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
 	 * @param {string} exportName - file name
 	 * @returns {Promise<string>} the presentation name
 	 */
@@ -586,7 +586,7 @@ export default class PptxGenJS implements IPresentationLib {
 						.endsWith('.pptx')
 					? exportName
 					: exportName + '.pptx'
-				: 'Presenation.pptx'
+				: 'Presentation.pptx'
 
 			this.exportPresentation(fs ? 'nodebuffer' : null)
 				.then(content => {
@@ -609,7 +609,7 @@ export default class PptxGenJS implements IPresentationLib {
 	// PRESENTATION METHODS
 
 	/**
-	 * Add a new Section to Presenation
+	 * Add a new Section to Presentation
 	 * @param {ISectionProps} section - section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
@@ -628,7 +628,7 @@ export default class PptxGenJS implements IPresentationLib {
 	}
 
 	/**
-	 * Add a new Slide to Presenation
+	 * Add a new Slide to Presentation
 	 * @param {IAddSlideOptions} options - slide options
 	 * @returns {ISlide} the new Slide
 	 */

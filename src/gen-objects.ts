@@ -607,7 +607,7 @@ export function addShapeDefinition(target: ISlide, shapeName: SHAPE_NAME, opt: I
  * @param {TableRow[]} arrTabRows - table data
  * @param {ITableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
- * @param {ILayout} presLayout - Presenation layout
+ * @param {ILayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
  * @param {Function} getSlide - method
  */

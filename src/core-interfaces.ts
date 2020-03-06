@@ -444,7 +444,7 @@ export interface ISection {
 	slides: ISlide[]
 }
 /**
- * The Presenation Layout (ex: 'LAYOUT_WIDE')
+ * The Presentation Layout (ex: 'LAYOUT_WIDE')
  */
 export interface ILayout {
 	name: string

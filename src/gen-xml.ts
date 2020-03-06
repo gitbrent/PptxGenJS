@@ -1261,7 +1261,7 @@ export function makeXmlContTypes(slides: ISlide[], slideLayouts: ISlideLayout[],
 	strXml += '<Default Extension="jpeg" ContentType="image/jpeg"/>'
 	strXml += '<Default Extension="jpg" ContentType="image/jpg"/>'
 
-	// STEP 1: Add standard/any media types used in Presenation
+	// STEP 1: Add standard/any media types used in Presentation
 	strXml += '<Default Extension="png" ContentType="image/png"/>'
 	strXml += '<Default Extension="gif" ContentType="image/gif"/>'
 	strXml += '<Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
@@ -1347,7 +1347,7 @@ export function makeXmlRootRels(): string {
 
 /**
  * Creates `docProps/app.xml`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlide[]} slides - Presentation Slides
  * @param {string} company - "Company" metadata
  * @returns XML
  */
@@ -1412,7 +1412,7 @@ export function makeXmlCore(title: string, subject: string, author: string, revi
 
 /**
  * Creates `ppt/_rels/presentation.xml.rels`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlide[]} slides - Presentation Slides
  * @returns XML
  */
 export function makeXmlPresentationRels(slides: Array<ISlide>): string {
