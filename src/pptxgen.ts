@@ -395,150 +395,137 @@ export default class PptxGenJS implements IPresentation {
 	 * @param {Blob} blobContent - Blob content
 	 * @return {Promise<string>} Promise with file name
 	 */
-	private writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> =>
-		new Promise((resolve, _reject) => {
-			// STEP 1: Create element
-			let eleLink = document.createElement('a')
-			eleLink.setAttribute('style', 'display:none;')
-			document.body.appendChild(eleLink)
+	private writeFileToBrowser = (exportName: string, blobContent: Blob): Promise<string> => {
+		// STEP 1: Create element
+		let eleLink = document.createElement('a')
+		eleLink.setAttribute('style', 'display:none;')
+		document.body.appendChild(eleLink)
 
-			// STEP 2: Download file to browser
-			// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
-			if (window.navigator.msSaveOrOpenBlob) {
-				// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
-				let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
-				eleLink.onclick = function() {
-					window.navigator.msSaveOrOpenBlob(blob, exportName)
-				}
-				eleLink.click()
-
-				// Clean-up
-				document.body.removeChild(eleLink)
-
-				// Done
-				resolve(exportName)
-			} else if (window.URL.createObjectURL) {
-				let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
-				eleLink.href = url
-				eleLink.download = exportName
-				eleLink.click()
-
-				// Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
-				setTimeout(() => {
-					window.URL.revokeObjectURL(url)
-					document.body.removeChild(eleLink)
-				}, 100)
-
-				// Done
-				resolve(exportName)
+		// STEP 2: Download file to browser
+		// DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
+		if (window.navigator.msSaveOrOpenBlob) {
+			// @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
+			let blob = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' })
+			eleLink.onclick = function() {
+				window.navigator.msSaveOrOpenBlob(blob, exportName)
 			}
-		})
+			eleLink.click()
+
+			// Clean-up
+			document.body.removeChild(eleLink)
+
+			// Done
+			return Promise.resolve(exportName)
+		} else if (window.URL.createObjectURL) {
+			let url = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }))
+			eleLink.href = url
+			eleLink.download = exportName
+			eleLink.click()
+
+			// Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
+			setTimeout(() => {
+				window.URL.revokeObjectURL(url)
+				document.body.removeChild(eleLink)
+			}, 100)
+
+			// Done
+			return Promise.resolve(exportName)
+		}
+	}
 
 	/**
 	 * Create and export the .pptx file
 	 * @param {WRITE_OUTPUT_TYPE} outputType - output file type
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
-	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> =>
-		new Promise((resolve, _reject) => {
-			let arrChartPromises: Promise<string>[] = []
-			let arrMediaPromises: Promise<string>[] = []
-			let zip: JSZip = new JSZip()
+	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
+		let arrChartPromises: Promise<string>[] = []
+		let arrMediaPromises: Promise<string>[] = []
+		let zip: JSZip = new JSZip()
 
-			// STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
-			this.slides.forEach(slide => {
-				arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(slide))
-			})
-			this.slideLayouts.forEach(layout => {
-				arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(layout))
-			})
-			arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(this.masterSlide))
-
-			// STEP 2: Wait for Promises (if any) then generate the PPTX file
-			Promise.all(arrMediaPromises)
-				.catch(err => {
-					console.error(`ERROR! pptxgenjs export media:`)
-					console.error(err)
-					return null
-					// FIXME: TODO: 20200107: if one image fails to load (eg 404), then *NONE* of the images load b/c of the `.all`...
-				})
-				.then(() => {
-					// A: Add empty placeholder objects to slides that don't already have them
-					this.slides.forEach(slide => {
-						if (slide.slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
-					})
-
-					// B: Add all required folders and files
-					zip.folder('_rels')
-					zip.folder('docProps')
-					zip.folder('ppt').folder('_rels')
-					zip.folder('ppt/charts').folder('_rels')
-					zip.folder('ppt/embeddings')
-					zip.folder('ppt/media')
-					zip.folder('ppt/slideLayouts').folder('_rels')
-					zip.folder('ppt/slideMasters').folder('_rels')
-					zip.folder('ppt/slides').folder('_rels')
-					zip.folder('ppt/theme')
-					zip.folder('ppt/notesMasters').folder('_rels')
-					zip.folder('ppt/notesSlides').folder('_rels')
-					zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide)) // TODO: pass only `this` like below! 20200206
-					zip.file('_rels/.rels', genXml.makeXmlRootRels())
-					zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company)) // TODO: pass only `this` like below! 20200206
-					zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision)) // TODO: pass only `this` like below! 20200206
-					zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
-					zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
-					zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this))
-					zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
-					zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
-					zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
-
-					// C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
-					this.slideLayouts.forEach((layout, idx) => {
-						zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', genXml.makeXmlLayout(layout))
-						zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx + 1, this.slideLayouts))
-					})
-					this.slides.forEach((slide, idx) => {
-						zip.file('ppt/slides/slide' + (idx + 1) + '.xml', genXml.makeXmlSlide(slide))
-						zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, idx + 1))
-						// Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
-						zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', genXml.makeXmlNotesSlide(slide))
-						zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', genXml.makeXmlNotesSlideRel(idx + 1))
-					})
-					zip.file('ppt/slideMasters/slideMaster1.xml', genXml.makeXmlMaster(this.masterSlide, this.slideLayouts))
-					zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts))
-					zip.file('ppt/notesMasters/notesMaster1.xml', genXml.makeXmlNotesMaster())
-					zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', genXml.makeXmlNotesMasterRel())
-
-					// D: Create all Rels (images, media, chart data)
-					this.slideLayouts.forEach(layout => {
-						this.createChartMediaRels(layout, zip, arrChartPromises)
-					})
-					this.slides.forEach(slide => {
-						this.createChartMediaRels(slide, zip, arrChartPromises)
-					})
-					this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
-
-					// E: Wait for Promises (if any) then generate the PPTX file
-					Promise.all(arrChartPromises)
-						.then(() => {
-							if (outputType === 'STREAM') {
-								// A: stream file
-								zip.generateAsync({ type: 'nodebuffer' }).then(content => {
-									resolve(content)
-								})
-							} else if (outputType) {
-								// B: Node [fs]: Output type user option or default
-								resolve(zip.generateAsync({ type: outputType }))
-							} else {
-								// C: Browser: Output blob as app/ms-pptx
-								resolve(zip.generateAsync({ type: 'blob' }))
-							}
-						})
-						.catch(err => {
-							throw new Error(err)
-						})
-				})
+		// STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
+		this.slides.forEach(slide => {
+			arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(slide))
 		})
+		this.slideLayouts.forEach(layout => {
+			arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(layout))
+		})
+		arrMediaPromises = arrMediaPromises.concat(genMedia.encodeSlideMediaRels(this.masterSlide))
+
+		// STEP 2: Wait for Promises (if any) then generate the PPTX file
+		return Promise.all(arrMediaPromises)
+			.then(() => {
+				// A: Add empty placeholder objects to slides that don't already have them
+				this.slides.forEach(slide => {
+					if (slide.slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
+				})
+
+				// B: Add all required folders and files
+				zip.folder('_rels')
+				zip.folder('docProps')
+				zip.folder('ppt').folder('_rels')
+				zip.folder('ppt/charts').folder('_rels')
+				zip.folder('ppt/embeddings')
+				zip.folder('ppt/media')
+				zip.folder('ppt/slideLayouts').folder('_rels')
+				zip.folder('ppt/slideMasters').folder('_rels')
+				zip.folder('ppt/slides').folder('_rels')
+				zip.folder('ppt/theme')
+				zip.folder('ppt/notesMasters').folder('_rels')
+				zip.folder('ppt/notesSlides').folder('_rels')
+				zip.file('[Content_Types].xml', genXml.makeXmlContTypes(this.slides, this.slideLayouts, this.masterSlide)) // TODO: pass only `this` like below! 20200206
+				zip.file('_rels/.rels', genXml.makeXmlRootRels())
+				zip.file('docProps/app.xml', genXml.makeXmlApp(this.slides, this.company)) // TODO: pass only `this` like below! 20200206
+				zip.file('docProps/core.xml', genXml.makeXmlCore(this.title, this.subject, this.author, this.revision)) // TODO: pass only `this` like below! 20200206
+				zip.file('ppt/_rels/presentation.xml.rels', genXml.makeXmlPresentationRels(this.slides))
+				zip.file('ppt/theme/theme1.xml', genXml.makeXmlTheme())
+				zip.file('ppt/presentation.xml', genXml.makeXmlPresentation(this))
+				zip.file('ppt/presProps.xml', genXml.makeXmlPresProps())
+				zip.file('ppt/tableStyles.xml', genXml.makeXmlTableStyles())
+				zip.file('ppt/viewProps.xml', genXml.makeXmlViewProps())
+
+				// C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
+				this.slideLayouts.forEach((layout, idx) => {
+					zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', genXml.makeXmlLayout(layout))
+					zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideLayoutRel(idx + 1, this.slideLayouts))
+				})
+				this.slides.forEach((slide, idx) => {
+					zip.file('ppt/slides/slide' + (idx + 1) + '.xml', genXml.makeXmlSlide(slide))
+					zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', genXml.makeXmlSlideRel(this.slides, this.slideLayouts, idx + 1))
+					// Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
+					zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', genXml.makeXmlNotesSlide(slide))
+					zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', genXml.makeXmlNotesSlideRel(idx + 1))
+				})
+				zip.file('ppt/slideMasters/slideMaster1.xml', genXml.makeXmlMaster(this.masterSlide, this.slideLayouts))
+				zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', genXml.makeXmlMasterRel(this.masterSlide, this.slideLayouts))
+				zip.file('ppt/notesMasters/notesMaster1.xml', genXml.makeXmlNotesMaster())
+				zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', genXml.makeXmlNotesMasterRel())
+
+				// D: Create all Rels (images, media, chart data)
+				this.slideLayouts.forEach(layout => {
+					this.createChartMediaRels(layout, zip, arrChartPromises)
+				})
+				this.slides.forEach(slide => {
+					this.createChartMediaRels(slide, zip, arrChartPromises)
+				})
+				this.createChartMediaRels(this.masterSlide, zip, arrChartPromises)
+
+				// E: Wait for Promises (if any) then generate the PPTX file
+				return Promise.all(arrChartPromises)
+					.then(() => {
+						if (outputType === 'STREAM') {
+							// A: stream file
+							return zip.generateAsync({ type: 'nodebuffer' })
+						} else if (outputType) {
+							// B: Node [fs]: Output type user option or default
+							return zip.generateAsync({ type: outputType })
+						} else {
+							// C: Browser: Output blob as app/ms-pptx
+							return zip.generateAsync({ type: 'blob' })
+						}
+					})
+			})
+	}
 
 	// EXPORT METHODS
 
@@ -547,15 +534,7 @@ export default class PptxGenJS implements IPresentation {
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
 	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return new Promise((resolve, reject) => {
-			this.exportPresentation('STREAM')
-				.then(content => {
-					resolve(content)
-				})
-				.catch(ex => {
-					reject(ex)
-				})
-		})
+		return this.exportPresentation('STREAM')
 	}
 
 	/**
@@ -564,15 +543,10 @@ export default class PptxGenJS implements IPresentation {
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
 	write(outputType: JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return new Promise((resolve, reject) => {
-			this.exportPresentation(outputType)
-				.then(content => {
-					resolve(content)
-				})
-				.catch(ex => {
-					reject(ex + '\nDid you mean to use writeFile() instead?')
-				})
-		})
+		return this.exportPresentation(outputType)
+			.catch(ex => {
+				throw new Error(ex.message + '\nDid you mean to use writeFile() instead?')
+			})
 	}
 
 	/**
@@ -581,33 +555,34 @@ export default class PptxGenJS implements IPresentation {
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(exportName?: string): Promise<string> {
-		return new Promise((resolve, reject) => {
-			const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
-			let fileName = exportName
+		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
+		let fileName = exportName
+			? exportName
+					.toString()
+					.toLowerCase()
+					.endsWith('.pptx')
 				? exportName
-						.toString()
-						.toLowerCase()
-						.endsWith('.pptx')
-					? exportName
-					: exportName + '.pptx'
-				: 'Presentation.pptx'
+				: exportName + '.pptx'
+			: 'Presentation.pptx'
 
-			this.exportPresentation(fs ? 'nodebuffer' : null)
-				.then(content => {
-					if (fs) {
-						// Node: Output
-						fs.writeFile(fileName, content, () => {
-							resolve(fileName)
+		return this.exportPresentation(fs ? 'nodebuffer' : null)
+			.then(content => {
+				if (fs) {
+					// Node: Output
+					return new Promise<string>((resolve, reject) => {
+						fs.writeFile(fileName, content, err => {
+							if (err) {
+								reject(err)
+							} else {
+								resolve(fileName)
+							}
 						})
-					} else {
-						// Browser: Output blob as app/ms-pptx
-						resolve(this.writeFileToBrowser(fileName, content as Blob))
-					}
-				})
-				.catch(ex => {
-					reject(ex)
-				})
-		})
+					})
+				} else {
+					// Browser: Output blob as app/ms-pptx
+					return this.writeFileToBrowser(fileName, content as Blob)
+				}
+			})
 	}
 
 	// PRESENTATION METHODS
