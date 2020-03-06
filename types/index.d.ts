@@ -84,10 +84,10 @@ declare class PptxGenJS {
 	addSlide(masterSlideName?: string): PptxGenJS.Slide
 	/**
 	 * Create a custom Slide Layout in any size
-	 * @param {IUserLayout} layout - an object with user-defined w/h
+	 * @param {ILayoutProps} layout - an object with user-defined w/h
 	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 	 */
-	defineLayout(layout: PptxGenJS.IUserLayout): void
+	defineLayout(layout: PptxGenJS.ILayoutProps): void
 	/**
 	 * Create a new slide master [layout] for the Presentation
 	 * @param {ISlideMasterOptions} slideMasterOpts - layout definition
@@ -115,6 +115,17 @@ declare namespace PptxGenJS {
 		'middle' = 'middle',
 		'bottom' = 'bottom'
 	}
+	export enum ChartType {
+		'area' = 'area',
+		'bar' = 'bar',
+		'bar3d' = 'bar3D',
+		'bubble' = 'bubble',
+		'doughnut' = 'doughnut',
+		'line' = 'line',
+		'pie' = 'pie',
+		'radar' = 'radar',
+		'scatter' = 'scatter'
+	}
 	export enum OutputType {
 		'arraybuffer' = 'arraybuffer',
 		'base64' = 'base64',
@@ -134,17 +145,6 @@ declare namespace PptxGenJS {
 		'accent4' = 'accent4',
 		'accent5' = 'accent5',
 		'accent6' = 'accent6'
-	}
-	export enum ChartType {
-		'area' = 'area',
-		'bar' = 'bar',
-		'bar3d' = 'bar3D',
-		'bubble' = 'bubble',
-		'doughnut' = 'doughnut',
-		'line' = 'line',
-		'pie' = 'pie',
-		'radar' = 'radar',
-		'scatter' = 'scatter'
 	}
 	export enum ShapeType {
 		'accentBorderCallout1' = 'accentBorderCallout1',
@@ -768,291 +768,69 @@ declare namespace PptxGenJS {
 		| 'uturnArrow'
 		| 'verticalScroll'
 		| 'wave'
-	// ======
 
-	/**
-	 * Coordinate (string is in the form of 'N%')
-	 */
-	export type HexColor = string
-	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
-	export type Color = HexColor | ThemeColor
-	export type Coord = number | string
-	export type Margin = number | [number, number, number, number]
-	export type HAlign = 'left' | 'center' | 'right' | 'justify'
-	export type VAlign = 'top' | 'middle' | 'bottom'
-	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-	export type HyperLink = {
-		rId: number
-		slide?: number
-		tooltip?: string
-		url?: string
+	export interface ILayoutProps {
+		name: string
+		width: number
+		height: number
 	}
-	export type ShapeFill =
-		| Color
-		| {
-				type: string
-				color: Color
-				alpha?: number
-		  }
-	export type BkgdOpts = {
-		src?: string
-		path?: string
-		data?: string
-	}
-	export type MediaType = 'audio' | 'online' | 'video'
-
-	export interface FontOptions {
-		fontFace?: string
-		fontSize?: number
-	}
-	export interface PositionOptions {
-		x?: Coord
-		y?: Coord
-		w?: Coord
-		h?: Coord
-	}
-	export interface OptsDataOrPath {
-		data?: string
-		path?: string
-	}
-	export interface OptsChartData {
-		index?: number
-		name?: string
-		labels?: string[]
-		values?: number[]
-		sizes?: number[]
-	}
-	export interface OptsChartGridLine {
-		size?: number
-		color?: string
-		style?: 'solid' | 'dash' | 'dot' | 'none'
-	}
-	export interface IBorderOptions {
-		color?: HexColor
-		pt?: number
-		type?: 'none' | 'dash' | 'solid'
-	}
-	export interface IShadowOptions {
-		type: 'outer' | 'inner' | 'none'
-		angle: number
-		opacity: number
-		blur?: number
-		offset?: number
-		color?: string
-	}
-	export interface IGlowOptions {
-		size: number
-		opacity: number
-		color?: string
-	}
-
-	export interface IImageOpts extends PositionOptions, OptsDataOrPath {
-		type?: 'audio' | 'online' | 'video'
-		sizing?: {
-			type: 'crop' | 'contain' | 'cover'
-			w: number
-			h: number
-			x?: number
-			y?: number
-		}
-		hyperlink?: HyperLink
-		rounding?: boolean
-		placeholder?: any
-		rotate?: number
-	}
-	export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
-		link: string
-		onlineVideoLink?: string
-		type?: MediaType
-	}
-	export interface IShapeOptions extends PositionOptions {
-		align?: HAlign
-		fill?: ShapeFill
-		flipH?: boolean
-		flipV?: boolean
-		lineSize?: number
-		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
-		lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
-		lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
-		line?: Color
-		rectRadius?: number
-		rotate?: number
-		shadow?: IShadowOptions
-	}
-	export interface IChartTitleOpts extends FontOptions {
-		title: string
-		color?: String
-		rotate?: number
-		titleAlign?: string
-		titlePos?: {
-			x: number
-			y: number
-		}
-	}
-	export interface IChartMulti {
-		type: CHART_NAME
-		data: any[]
-		options: {}
-	}
-	export interface ITableToSlidesOpts extends ITableOptions {
-		addImage?: {
-			url: string
-			x: number
-			y: number
-			w?: number
-			h?: number
-		}
-		addShape?: {
-			shape: any
-			opts: {}
-		}
-		addTable?: {
-			rows: any[]
-			opts: {}
-		}
-		addText?: {
-			text: any[]
-			opts: {}
-		}
-		_arrObjTabHeadRows?: [ITableToSlidesCell[]?] // TODO: split off into internal library Iface and remove from here
-		addHeaderToEach?: boolean
-		autoPage?: boolean
-		autoPageCharWeight?: number
-		autoPageLineWeight?: number
-		colW?: number | number[]
-		masterSlideName?: string
-		masterSlide?: ISlideLayout
-		newSlideStartY?: number
-		slideMargin?: Margin
-		verbose?: boolean
-	}
-	export interface ITableCellOpts extends FontOptions {
-		autoPageCharWeight?: number
-		autoPageLineWeight?: number
-		align?: HAlign
-		bold?: boolean
-		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-		color?: Color
-		colspan?: number
-		fill?: ShapeFill
-		margin?: Margin
-		rowspan?: number
-		valign?: VAlign
-	}
-	export interface ITableOptions extends PositionOptions, FontOptions {
-		align?: HAlign
-		autoPage?: boolean
-		autoPageCharWeight?: number
-		autoPageLineWeight?: number
-		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-		color?: Color
-		colspan?: number
-		colW?: number | number[]
-		fill?: Color
-		margin?: Margin
-		newSlideStartY?: number
-		rowW?: number | number[]
-		rowspan?: number
-		valign?: VAlign
-	}
-	export interface ITableToSlidesCell {
-		type: SLIDE_OBJECT_TYPES.tablecell
-		text?: string
-		options?: ITableCellOpts
-	}
-	export interface ITableCell {
-		type: SLIDE_OBJECT_TYPES.tablecell
-		text?: string
-		options?: ITableCellOpts
-		lines?: string[]
-		lineHeight?: number
-		hmerge?: boolean
-		vmerge?: boolean
-		optImp?: any
-	}
-	export type TableRow = number[] | string[] | ITableCell[]
-	export type ITableRow = ITableCell[]
-	export interface TableRowSlide {
-		rows: ITableRow[]
-	}
-	export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
-		align?: HAlign
-		autoFit?: boolean
-		bodyProp?: {
-			autoFit?: boolean
-			align?: TEXT_HALIGN
-			anchor?: TEXT_VALIGN
-			lIns?: number
-			rIns?: number
-			tIns?: number
-			bIns?: number
-			vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-			wrap?: boolean
-		}
-		bold?: boolean
-		breakLine?: boolean
-		bullet?:
-			| boolean
-			| {
-					type?: string
-					code?: string
-					style?: string
-					startAt?: number
-			  }
-		charSpacing?: number
-		color?: string
-		fill?: ShapeFill
-		glow?: IGlowOptions
-		hyperlink?: HyperLink
-		indentLevel?: number
-		inset?: number
-		isTextBox?: boolean
-		italic?: boolean
-		lang?: string
-		line?: Color
-		lineIdx?: number
-		lineSize?: number
-		lineSpacing?: number
-		margin?: Margin
-		outline?: {
-			color: Color
-			size: number
-		}
-		paraSpaceAfter?: number
-		paraSpaceBefore?: number
-		placeholder?: string
-		rotate?: number
-		rtlMode?: boolean
-		shadow?: IShadowOptions
-		shape?: SHAPE_NAME
-		shrinkText?: boolean
-		strike?: boolean
-		subscript?: boolean
-		superscript?: boolean
-		underline?: boolean
-		valign?: VAlign
-		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-		wrap?: boolean
-	}
-	export interface IText {
-		text: string
-		options?: ITextOpts
-	}
-	/**
-	 * The Presenation Layout (ex: 'LAYOUT_WIDE')
-	 */
 	export interface ILayout {
 		name: string
 		width?: number
 		height?: number
 	}
-	export interface IUserLayout {
+	export interface ISlideLayout {
+		presLayout: ILayout
 		name: string
-		width: number
-		height: number
+		number: number
+		bkgd?: string
+		bkgdImgRid?: number
+		slide?: {
+			back: string
+			bkgdImgRid?: number
+			color: string
+			hidden?: boolean
+		}
+		data: ISlideObject[]
+		rels: ISlideRel[]
+		relsChart: ISlideRelChart[]
+		relsMedia: ISlideRelMedia[]
+		margin?: Margin
+		slideNumberObj?: ISlideNumber
 	}
-	export interface ISlideNumber extends PositionOptions, FontOptions {
-		color?: string
+	export interface ISlideRelChart extends OptsChartData {
+		type: CHART_NAME | IChartMulti[]
+		opts: IChartOpts
+		data: OptsChartData[]
+		rId: number
+		Target: string
+		globalId: number
+		fileName: string
+	}
+	export interface ISlideRel {
+		type: SLIDE_OBJECT_TYPES
+		Target: string
+		fileName?: string
+		data: any[] | string
+		opts?: IChartOpts
+		path?: string
+		extn?: string
+		globalId?: number
+		rId: number
+	}
+	export interface ISlideRelMedia {
+		type: string
+		opts?: IMediaOpts
+		path?: string
+		extn?: string
+		data?: string | ArrayBuffer
+		isSvgPng?: boolean
+		svgSize?: {
+			w: number
+			h: number
+		}
+		rId: number
+		Target: string
 	}
 	export interface ISlideMasterOptions {
 		title: string
@@ -1094,40 +872,53 @@ declare namespace PptxGenJS {
 		w: Coord
 		h: Coord
 	}
-	export interface ISlideRelChart extends OptsChartData {
-		type: CHART_NAME | IChartMulti[]
-		opts: IChartOpts
-		data: OptsChartData[]
-		rId: number
-		Target: string
-		globalId: number
-		fileName: string
-	}
-	export interface ISlideRel {
-		type: SLIDE_OBJECT_TYPES
-		Target: string
-		fileName?: string
-		data: any[] | string
-		opts?: IChartOpts
-		path?: string
-		extn?: string
-		globalId?: number
-		rId: number
-	}
-	export interface ISlideRelMedia {
-		type: string
-		opts?: IMediaOpts
-		path?: string
-		extn?: string
-		data?: string | ArrayBuffer
-		isSvgPng?: boolean
-		svgSize?: {
-			w: number
-			h: number
+
+	export interface ITableToSlidesOpts extends ITableOptions {
+		addImage?: {
+			url: string
+			x: number
+			y: number
+			w?: number
+			h?: number
 		}
-		rId: number
-		Target: string
+		addShape?: {
+			shape: any
+			opts: {}
+		}
+		addTable?: {
+			rows: any[]
+			opts: {}
+		}
+		addText?: {
+			text: any[]
+			opts: {}
+		}
+		_arrObjTabHeadRows?: [ITableToSlidesCell[]?] // TODO: split off into internal library Iface and remove from here
+		addHeaderToEach?: boolean
+		autoPage?: boolean
+		autoPageCharWeight?: number
+		autoPageLineWeight?: number
+		colW?: number | number[]
+		masterSlideName?: string
+		masterSlide?: ISlideLayout
+		newSlideStartY?: number
+		slideMargin?: Margin
+		verbose?: boolean
 	}
+	export interface ITableToSlidesCell {
+		type: SLIDE_OBJECT_TYPES.tablecell
+		text?: string
+		options?: ITableCellOpts
+	}
+
+	export interface OptsChartData {
+		index?: number
+		name?: string
+		labels?: string[]
+		values?: number[]
+		sizes?: number[]
+	}
+
 	export interface IObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
 		x?: Coord
 		y?: Coord
@@ -1163,71 +954,93 @@ declare namespace PptxGenJS {
 		mediaRid?: number
 		shape?: SHAPE_NAME
 	}
-	export interface ISlideLayout {
-		presLayout: ILayout
-		name: string
-		number: number
-		bkgd?: string
-		bkgdImgRid?: number
-		slide?: {
-			back: string
-			bkgdImgRid?: number
-			color: string
-			hidden?: boolean
-		}
-		data: ISlideObject[]
-		rels: ISlideRel[]
-		relsChart: ISlideRelChart[]
-		relsMedia: ISlideRelMedia[]
-		margin?: Margin
-		slideNumberObj?: ISlideNumber
+
+	export type Coord = number | string
+	export interface FontOptions {
+		fontFace?: string
+		fontSize?: number
 	}
-	export interface ISlide {
-		addChart: Function
-		addImage: Function
-		addMedia: Function
-		addNotes: Function
-		addShape: Function
-		addTable: Function
-		addText: Function
-		bkgd?: string
-		bkgdImgRid?: number
+	export interface OptsDataOrPath {
+		data?: string
+		path?: string
+	}
+	export interface PositionOptions {
+		x?: Coord
+		y?: Coord
+		w?: Coord
+		h?: Coord
+	}
+	export interface IBorderOptions {
+		color?: HexColor
+		pt?: number
+		type?: 'none' | 'dash' | 'solid'
+	}
+	export interface IShadowOptions {
+		type: 'outer' | 'inner' | 'none'
+		angle: number
+		opacity: number
+		blur?: number
+		offset?: number
 		color?: string
-		data?: ISlideObject[]
-		hidden?: boolean
-		margin?: Margin
-		name?: string
-		number: number
-		presLayout: ILayout
-		rels: ISlideRel[]
-		relsChart: ISlideRelChart[]
-		relsMedia: ISlideRelMedia[]
-		slideLayout: ISlideLayout
-		slideNumberObj?: ISlideNumber
 	}
-	/* TODO: REMOVE UNUSED interfaces
-	export interface IPresentation {
-		author: string
-		company: string
-		revision: string
-		subject: string
+	export type HexColor = string
+	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
+	export type Color = HexColor | ThemeColor
+	export type Margin = number | [number, number, number, number]
+	export type HAlign = 'left' | 'center' | 'right' | 'justify'
+	export type VAlign = 'top' | 'middle' | 'bottom'
+	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
+	export type HyperLink = {
+		rId: number
+		slide?: number
+		tooltip?: string
+		url?: string
+	}
+	export type ShapeFill =
+		| Color
+		| {
+				type: string
+				color: Color
+				alpha?: number
+		  }
+	export type BkgdOpts = {
+		src?: string
+		path?: string
+		data?: string
+	}
+	export type MediaType = 'audio' | 'online' | 'video'
+	export interface IGlowOptions {
+		size: number
+		opacity: number
+		color?: string
+	}
+
+	// slideNumber
+	export interface ISlideNumber extends PositionOptions, FontOptions {
+		color?: string
+	}
+
+	// addChart
+	export interface OptsChartGridLine {
+		size?: number
+		color?: string
+		style?: 'solid' | 'dash' | 'dot' | 'none'
+	}
+	export interface IChartTitleOpts extends FontOptions {
 		title: string
-		isBrowser: boolean
-		fileName: string
-		fileExtn: string
-		pptLayout: ILayout
-		rtlMode: boolean
-		saveCallback?: null
-		masterSlide?: ISlide
-		chartCounter: number
-		imageCounter: number
-		slides?: ISlide[]
-		slideLayouts?: ISlideLayout[]
+		color?: String
+		rotate?: number
+		titleAlign?: string
+		titlePos?: {
+			x: number
+			y: number
+		}
 	}
-	*/
-
-	// vetted for v3.2 below vvvvvvvvvvvvvvvvvvvvvvv
-
+	export interface IChartMulti {
+		type: CHART_NAME
+		data: any[]
+		options: {}
+	}
 	export interface IChartPropsBase {
 		axisPos?: string
 		border?: IBorderOptions
@@ -1407,6 +1220,152 @@ declare namespace PptxGenJS {
 			IChartPropsTitle,
 			OptsChartGridLine,
 			PositionOptions {}
+
+	// addImage
+	export interface IImageOpts extends PositionOptions, OptsDataOrPath {
+		type?: 'audio' | 'online' | 'video'
+		sizing?: {
+			type: 'crop' | 'contain' | 'cover'
+			w: number
+			h: number
+			x?: number
+			y?: number
+		}
+		hyperlink?: HyperLink
+		rounding?: boolean
+		placeholder?: any
+		rotate?: number
+	}
+
+	// addMedia
+	export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
+		link: string
+		onlineVideoLink?: string
+		type?: MediaType
+	}
+
+	// addShape
+	export interface IShapeOptions extends PositionOptions {
+		align?: HAlign
+		fill?: ShapeFill
+		flipH?: boolean
+		flipV?: boolean
+		lineSize?: number
+		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+		lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+		lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+		line?: Color
+		rectRadius?: number
+		rotate?: number
+		shadow?: IShadowOptions
+	}
+
+	// addTable
+	export interface ITableCellOpts extends FontOptions {
+		autoPageCharWeight?: number
+		autoPageLineWeight?: number
+		align?: HAlign
+		bold?: boolean
+		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+		color?: Color
+		colspan?: number
+		fill?: ShapeFill
+		margin?: Margin
+		rowspan?: number
+		valign?: VAlign
+	}
+	export interface ITableCell {
+		type: SLIDE_OBJECT_TYPES.tablecell
+		text?: string
+		options?: ITableCellOpts
+		lines?: string[]
+		lineHeight?: number
+		hmerge?: boolean
+		vmerge?: boolean
+		optImp?: any
+	}
+	export type TableRow = number[] | string[] | ITableCell[]
+	export interface ITableOptions extends PositionOptions, FontOptions {
+		align?: HAlign
+		autoPage?: boolean
+		autoPageCharWeight?: number
+		autoPageLineWeight?: number
+		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+		color?: Color
+		colspan?: number
+		colW?: number | number[]
+		fill?: Color
+		margin?: Margin
+		newSlideStartY?: number
+		rowW?: number | number[]
+		rowspan?: number
+		valign?: VAlign
+	}
+
+	// addText
+	export interface IText {
+		text: string
+		options?: ITextOpts
+	}
+	export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
+		align?: HAlign
+		autoFit?: boolean
+		bodyProp?: {
+			autoFit?: boolean
+			align?: TEXT_HALIGN
+			anchor?: TEXT_VALIGN
+			lIns?: number
+			rIns?: number
+			tIns?: number
+			bIns?: number
+			vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+			wrap?: boolean
+		}
+		bold?: boolean
+		breakLine?: boolean
+		bullet?:
+			| boolean
+			| {
+					type?: string
+					code?: string
+					style?: string
+					startAt?: number
+			  }
+		charSpacing?: number
+		color?: string
+		fill?: ShapeFill
+		glow?: IGlowOptions
+		hyperlink?: HyperLink
+		indentLevel?: number
+		inset?: number
+		isTextBox?: boolean
+		italic?: boolean
+		lang?: string
+		line?: Color
+		lineIdx?: number
+		lineSize?: number
+		lineSpacing?: number
+		margin?: Margin
+		outline?: {
+			color: Color
+			size: number
+		}
+		paraSpaceAfter?: number
+		paraSpaceBefore?: number
+		placeholder?: string
+		rotate?: number
+		rtlMode?: boolean
+		shadow?: IShadowOptions
+		shape?: SHAPE_NAME
+		shrinkText?: boolean
+		strike?: boolean
+		subscript?: boolean
+		superscript?: boolean
+		underline?: boolean
+		valign?: VAlign
+		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+		wrap?: boolean
+	}
 
 	/**
 	 * `slide.d.ts`
