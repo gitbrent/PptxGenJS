@@ -19,7 +19,7 @@ import {
 	LETTERS,
 	ONEPT,
 } from './core-enums'
-import { IChartOpts, ISlideRelChart, IShadowOptions, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
+import { IChartOptsLib, ISlideRelChart, IShadowOptions, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './gen-utils'
 import * as JSZip from 'jszip'
 
@@ -484,8 +484,8 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 	if (Array.isArray(rel.opts._type)) {
 		rel.opts._type.forEach(type => {
 			// TODO: FIXME: theres `options` on chart rels??
-			let options = getMix(rel.opts, type.options) as IChartOpts
-			//let options: IChartOpts = { type: type.type, }
+			let options = getMix(rel.opts, type.options) as IChartOptsLib
+			//let options: IChartOptsLib = { type: type.type, }
 			let valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
 			let catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
 			usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis']
@@ -506,18 +506,18 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
 				throw new Error('There must be the same number of value and category axes.')
 			}
-			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOpts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
+			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOptsLib, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.catAxes[1]) {
-				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOpts, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY)
+				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY)
 			}
 		} else {
 			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		}
 
 		if (rel.opts.valAxes) {
-			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOpts, AXIS_ID_VALUE_PRIMARY)
+			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOptsLib, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.valAxes[1]) {
-				strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]) as IChartOpts, AXIS_ID_VALUE_SECONDARY)
+				strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]) as IChartOptsLib, AXIS_ID_VALUE_SECONDARY)
 			}
 		} else {
 			strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY)
@@ -630,13 +630,13 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
  *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
- * @param {IChartOpts} `opts` chart options
+ * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
  * @return {string} XML
  */
-function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
+function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	let strXml: string = ''
@@ -1533,12 +1533,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 /**
  * Create Category axis
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - value
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): string {
+function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): string {
 	let strXml = ''
 
 	// Build cat axis tag
@@ -1638,11 +1638,11 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 
 /**
  * Create Value Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeValAxis(opts: IChartOpts, valAxisId: string): string {
+function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir === 'col' ? 'r' : 't'
 	let strXml = ''
 	let isRight = axisPos === 'r' || axisPos === 't'
@@ -1716,12 +1716,12 @@ function makeValAxis(opts: IChartOpts, valAxisId: string): string {
 
 /**
  * Create Series Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - axis ID
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string): string {
+function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): string {
 	let strXml = ''
 
 	// Build ser axis tag

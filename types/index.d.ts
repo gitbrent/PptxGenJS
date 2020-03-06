@@ -845,149 +845,7 @@ declare namespace PptxGenJS {
 		opacity: number
 		color?: string
 	}
-	export interface IChartOpts extends PositionOptions, OptsChartGridLine {
-		_type?: CHART_NAME | IChartMulti[]
-		axisPos?: string
-		bar3DShape?: string
-		barDir?: string
-		barGapDepthPct?: number
-		barGapWidthPct?: number
-		barGrouping?: string
-		border?: IBorderOptions
-		catAxes?: number[]
-		catAxisBaseTimeUnit?: string
-		catAxisHidden?: boolean
-		catAxisLabelColor?: string
-		catAxisLabelFontBold?: boolean
-		catAxisLabelFontFace?: string
-		catAxisLabelFontSize?: number
-		catAxisLabelFrequency?: string
-		catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
-		catAxisLabelRotate?: number
-		catAxisLineShow?: boolean
-		catAxisMajorTickMark?: ChartAxisTickMark
-		catAxisMajorTimeUnit?: string
-		catAxisMajorUnit?: number
-		catAxisMaxVal?: number
-		catAxisMinorTickMark?: ChartAxisTickMark
-		catAxisMinorTimeUnit?: string
-		catAxisMinorUnit?: string
-		catAxisMinVal?: number
-		catAxisOrientation?: 'minMax' | 'minMax'
-		catAxisTitle?: string
-		catAxisTitleColor?: string
-		catAxisTitleFontFace?: string
-		catAxisTitleFontSize?: number
-		catAxisTitleRotate?: number
-		catGridLine?: OptsChartGridLine
-		catLabelFormatCode?: string
-		chartColors?: string[]
-		chartColorsOpacity?: number
-		dataBorder?: IBorderOptions
-		dataLabelBkgrdColors?: boolean
-		dataLabelColor?: string
-		dataLabelFontBold?: boolean
-		dataLabelFontFace?: string
-		dataLabelFontSize?: number
-		dataLabelFormatCode?: string
-		dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
-		dataNoEffects?: string
-		dataTableFontSize?: number
-		displayBlanksAs?: string
-		fill?: string
-		hasArea?: boolean
-		holeSize?: number
-		invertedColors?: string
-		lang?: string
-		layout?: PositionOptions
-		legendColor?: string
-		legendFontFace?: string
-		legendFontSize?: number
-		legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
-		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
-		lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
-		lineDataSymbolLineColor?: string
-		lineDataSymbolLineSize?: number
-		lineDataSymbolSize?: number
-		lineSize?: number
-		lineSmooth?: boolean
-		radarStyle?: 'standard' | 'marker' | 'filled'
-		serAxisBaseTimeUnit?: string
-		serAxisHidden?: boolean
-		serAxisLabelColor?: string
-		serAxisLabelFontFace?: string
-		serAxisLabelFontSize?: string
-		serAxisLabelFrequency?: string
-		serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
-		serAxisLineShow?: boolean
-		serAxisMajorTimeUnit?: string
-		serAxisMajorUnit?: number
-		serAxisMinorTimeUnit?: string
-		serAxisMinorUnit?: number
-		serAxisOrientation?: string
-		serAxisTitle?: string
-		serAxisTitleColor?: string
-		serAxisTitleFontFace?: string
-		serAxisTitleFontSize?: number
-		serAxisTitleRotate?: number
-		serGridLine?: OptsChartGridLine
-		serLabelFormatCode?: string
-		shadow?: IShadowOptions
-		showCatAxisTitle?: boolean
-		showDataTable?: boolean
-		showDataTableHorzBorder?: boolean
-		showDataTableKeys?: boolean
-		showDataTableOutline?: boolean
-		showDataTableVertBorder?: boolean
-		showLabel?: boolean
-		showLeaderLines?: boolean
-		showLegend?: boolean
-		showPercent?: boolean
-		showSerAxisTitle?: boolean
-		showTitle?: boolean
-		showValAxisTitle?: boolean
-		showValue?: boolean
-		title?: string
-		titleAlign?: string
-		titleColor?: string
-		titleFontFace?: string
-		titleFontSize?: number
-		titlePos?: {
-			x: number
-			y: number
-		}
-		titleRotate?: number
-		v3DPerspective?: number
-		v3DRAngAx?: boolean
-		v3DRotX?: number
-		v3DRotY?: number
-		valAxes?: number[]
-		valAxisCrossesAt?: string | number
-		valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
-		valAxisHidden?: boolean
-		valAxisLabelColor?: string
-		valAxisLabelFontBold?: boolean
-		valAxisLabelFontFace?: string
-		valAxisLabelFontSize?: number
-		valAxisLabelFormatCode?: string
-		valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
-		valAxisLabelRotate?: number
-		valAxisLineShow?: boolean
-		valAxisMajorTickMark?: ChartAxisTickMark
-		valAxisMajorUnit?: number
-		valAxisMaxVal?: number
-		valAxisMinorTickMark?: ChartAxisTickMark
-		valAxisMinVal?: number
-		valAxisOrientation?: 'minMax' | 'minMax'
-		valAxisTitle?: string
-		valAxisTitleColor?: string
-		valAxisTitleFontFace?: string
-		valAxisTitleFontSize?: number
-		valAxisTitleRotate?: number
-		valGridLine?: OptsChartGridLine
-		valueBarColors?: string[]
-	}
+
 	export interface IImageOpts extends PositionOptions, OptsDataOrPath {
 		type?: 'audio' | 'online' | 'video'
 		sizing?: {
@@ -1367,6 +1225,188 @@ declare namespace PptxGenJS {
 		slideLayouts?: ISlideLayout[]
 	}
 	*/
+
+	// vetted for v3.2 below vvvvvvvvvvvvvvvvvvvvvvv
+
+	export interface IChartPropsBase {
+		axisPos?: string
+		border?: IBorderOptions
+		chartColors?: string[]
+		chartColorsOpacity?: number
+		dataBorder?: IBorderOptions
+		displayBlanksAs?: string
+		fill?: string
+		invertedColors?: string
+		lang?: string
+		layout?: PositionOptions
+		shadow?: IShadowOptions
+		showLabel?: boolean
+		showLeaderLines?: boolean
+		showLegend?: boolean
+		showPercent?: boolean
+		showTitle?: boolean
+		showValue?: boolean
+		v3DPerspective?: number
+		v3DRAngAx?: boolean
+		v3DRotX?: number
+		v3DRotY?: number
+	}
+	export interface IChartPropsAxisCat {
+		catAxes?: number[]
+		catAxisBaseTimeUnit?: string
+		catAxisHidden?: boolean
+		catAxisLabelColor?: string
+		catAxisLabelFontBold?: boolean
+		catAxisLabelFontFace?: string
+		catAxisLabelFontSize?: number
+		catAxisLabelFrequency?: string
+		catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+		catAxisLabelRotate?: number
+		catAxisLineShow?: boolean
+		catAxisMajorTickMark?: ChartAxisTickMark
+		catAxisMajorTimeUnit?: string
+		catAxisMajorUnit?: number
+		catAxisMaxVal?: number
+		catAxisMinorTickMark?: ChartAxisTickMark
+		catAxisMinorTimeUnit?: string
+		catAxisMinorUnit?: string
+		catAxisMinVal?: number
+		catAxisOrientation?: 'minMax' | 'minMax'
+		catAxisTitle?: string
+		catAxisTitleColor?: string
+		catAxisTitleFontFace?: string
+		catAxisTitleFontSize?: number
+		catAxisTitleRotate?: number
+		catGridLine?: OptsChartGridLine
+		catLabelFormatCode?: string
+		showCatAxisTitle?: boolean
+	}
+	export interface IChartPropsAxisSer {
+		serAxisBaseTimeUnit?: string
+		serAxisHidden?: boolean
+		serAxisLabelColor?: string
+		serAxisLabelFontFace?: string
+		serAxisLabelFontSize?: string
+		serAxisLabelFrequency?: string
+		serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+		serAxisLineShow?: boolean
+		serAxisMajorTimeUnit?: string
+		serAxisMajorUnit?: number
+		serAxisMinorTimeUnit?: string
+		serAxisMinorUnit?: number
+		serAxisOrientation?: string
+		serAxisTitle?: string
+		serAxisTitleColor?: string
+		serAxisTitleFontFace?: string
+		serAxisTitleFontSize?: number
+		serAxisTitleRotate?: number
+		serGridLine?: OptsChartGridLine
+		serLabelFormatCode?: string
+		showSerAxisTitle?: boolean
+	}
+	export interface IChartPropsAxisVal {
+		showValAxisTitle?: boolean
+		valAxes?: number[]
+		valAxisCrossesAt?: string | number
+		valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
+		valAxisHidden?: boolean
+		valAxisLabelColor?: string
+		valAxisLabelFontBold?: boolean
+		valAxisLabelFontFace?: string
+		valAxisLabelFontSize?: number
+		valAxisLabelFormatCode?: string
+		valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+		valAxisLabelRotate?: number
+		valAxisLineShow?: boolean
+		valAxisMajorTickMark?: ChartAxisTickMark
+		valAxisMajorUnit?: number
+		valAxisMaxVal?: number
+		valAxisMinorTickMark?: ChartAxisTickMark
+		valAxisMinVal?: number
+		valAxisOrientation?: 'minMax' | 'minMax'
+		valAxisTitle?: string
+		valAxisTitleColor?: string
+		valAxisTitleFontFace?: string
+		valAxisTitleFontSize?: number
+		valAxisTitleRotate?: number
+		valGridLine?: OptsChartGridLine
+	}
+	export interface IChartPropsChartBar {
+		bar3DShape?: string
+		barDir?: string
+		barGapDepthPct?: number
+		barGapWidthPct?: number
+		barGrouping?: string
+		valueBarColors?: string[]
+	}
+	export interface IChartPropsChartDoughnut {
+		dataNoEffects?: boolean
+		holeSize?: number
+	}
+	export interface IChartPropsChartLine {
+		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+		lineDataSymbol?: 'circle' | 'dash' | 'diamond' | 'dot' | 'none' | 'square' | 'triangle'
+		lineDataSymbolLineColor?: string
+		lineDataSymbolLineSize?: number
+		lineDataSymbolSize?: number
+		lineSize?: number
+		lineSmooth?: boolean
+	}
+	export interface IChartPropsChartPie {
+		dataNoEffects?: boolean
+	}
+	export interface IChartPropsChartRadar {
+		radarStyle?: 'standard' | 'marker' | 'filled'
+	}
+	export interface IChartPropsDataLabel {
+		dataLabelBkgrdColors?: boolean
+		dataLabelColor?: string
+		dataLabelFontBold?: boolean
+		dataLabelFontFace?: string
+		dataLabelFontSize?: number
+		dataLabelFormatCode?: string
+		dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
+		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
+	}
+	export interface IChartPropsDataTable {
+		dataTableFontSize?: number
+		showDataTable?: boolean
+		showDataTableHorzBorder?: boolean
+		showDataTableKeys?: boolean
+		showDataTableOutline?: boolean
+		showDataTableVertBorder?: boolean
+	}
+	export interface IChartPropsLegend {
+		legendColor?: string
+		legendFontFace?: string
+		legendFontSize?: number
+		legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
+	}
+	export interface IChartPropsTitle {
+		title?: string
+		titleAlign?: string
+		titleColor?: string
+		titleFontFace?: string
+		titleFontSize?: number
+		titlePos?: { x: number; y: number }
+		titleRotate?: number
+	}
+	export interface IChartOpts
+		extends IChartPropsAxisCat,
+			IChartPropsAxisSer,
+			IChartPropsAxisVal,
+			IChartPropsBase,
+			IChartPropsChartBar,
+			IChartPropsChartDoughnut,
+			IChartPropsChartLine,
+			IChartPropsChartPie,
+			IChartPropsChartRadar,
+			IChartPropsDataLabel,
+			IChartPropsDataTable,
+			IChartPropsLegend,
+			IChartPropsTitle,
+			OptsChartGridLine,
+			PositionOptions {}
 
 	/**
 	 * `slide.d.ts`

@@ -17,8 +17,8 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
-	ILayout,
 	IObjectOptions,
+	IPresentationLib,
 	IShadowOptions,
 	ISlide,
 	ISlideLayout,
@@ -30,7 +30,6 @@ import {
 	ITableCellOpts,
 	IText,
 	ITextOpts,
-	IPresentationLib,
 } from './core-interfaces'
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid } from './gen-utils'
 

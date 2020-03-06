@@ -39,6 +39,7 @@ import {
 	TableRow,
 	ISlideMasterOptions,
 	BkgdOpts,
+    IChartOptsLib,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -106,7 +107,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
  *
  * @param {CHART_NAME | IChartMulti[]} `type` should belong to: 'column', 'pie'
  * @param {[]} `data` a JSON object with follow the following format
- * @param {IChartOpts} `opt` chart options
+ * @param {IChartOptsLib} `opt` chart options
  * @param {ISlide} `target` slide object that the chart will be added to
  * @return {object} chart object
  * {
@@ -125,7 +126,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
  *	 ]
  *	}
  */
-export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMulti[], data: any[], opt: IChartOpts): object {
+export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMulti[], data: any[], opt: IChartOptsLib): object {
 	function correctGridLineOptions(glOpts: OptsChartGridLine) {
 		if (!glOpts || glOpts.style === 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
@@ -150,7 +151,7 @@ export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMult
 	// Multi-Type Charts
 	let tmpOpt
 	let tmpData = [],
-		options: IChartOpts
+		options: IChartOptsLib
 	if (Array.isArray(type)) {
 		// For multi-type charts there needs to be data for each type,
 		// as well as a single data source for non-series operations.
