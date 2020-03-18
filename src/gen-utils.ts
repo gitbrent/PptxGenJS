@@ -2,7 +2,7 @@
  * PptxGenJS: Utility Methods
  */
 
-import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR, ONEPT } from './core-enums'
+import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
 import { IChartOpts, ILayout, ShapeFill, IGlowOptions, ISlideLib } from './core-interfaces'
 
 /**
@@ -131,15 +131,27 @@ export function rgbToHex(r: number, g: number, b: number): string {
 
 /**
  * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
- * @param {string} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string|SCHEME_COLORS} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.SchemeColor.ACCENT1)
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-export function createColorElement(colorStr: string, innerElements?: string): string {
+export function createColorElement(colorStr: string | SCHEME_COLORS, innerElements?: string): string {
 	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
 
-	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
-		console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values')
+	if (
+		!isHexaRgb &&
+		colorStr !== SchemeColor.text1 &&
+		colorStr !== SchemeColor.text2 &&
+		colorStr !== SchemeColor.background1 &&
+		colorStr !== SchemeColor.background2 &&
+		colorStr !== SchemeColor.accent1 &&
+		colorStr !== SchemeColor.accent2 &&
+		colorStr !== SchemeColor.accent3 &&
+		colorStr !== SchemeColor.accent4 &&
+		colorStr !== SchemeColor.accent5 &&
+		colorStr !== SchemeColor.accent6
+	) {
+		console.warn(`"${colorStr}" is not a valid scheme color or hexa RGB! "${DEF_FONT_COLOR}" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values`)
 		colorStr = DEF_FONT_COLOR
 	}
 
