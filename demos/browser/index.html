@@ -6,7 +6,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.2.0">
-	<meta name="updated" content="2020-02-04">
+	<meta name="updated" content="2020-03-17">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -568,12 +568,12 @@
 					+ "\n"
 					+ "slide.addText(\n"
 					+ "  [\n"
-					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.colors.ACCENT1 } },\n"
-					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.colors.ACCENT6 } },\n"
-					+ "    { text:'!', options:{ fontSize:24, color:pptx.colors.ACCENT6 } },\n"
-					+ "    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.colors.ACCENT3 } }\n"
+					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1 } },\n"
+					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
+					+ "    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
+					+ "    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n"
 					+ "  ],\n"
-					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:pptx.colors.BACKGROUND2 }\n"
+					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:pptx.SchemeColor.background2 }\n"
 					+ ");\n"
 					+ "\n"
 					+ "pptx.writeFile('PptxGenJS-Sandbox-'+getTimestamp())\n"
