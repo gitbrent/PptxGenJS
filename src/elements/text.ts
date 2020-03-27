@@ -113,7 +113,7 @@ export default class TextElement implements ElementInterface {
                 valign: opts.valign,
                 wrap: opts.wrap
             },
-            !opts.placeholder
+            !!opts.placeholder
         )
         this.paragraphProperties = new ParagraphProperties({
             bullet: opts.bullet,
