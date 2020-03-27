@@ -176,8 +176,6 @@ export default class SlideLayouts {
         this.layoutsOrder = []
         this.layouts = new Map()
         this.presLayout = presLayout
-
-        this.new(DEF_PRES_LAYOUT_NAME)
     }
 
     add(layoutId, newLayout) {
@@ -195,6 +193,10 @@ export default class SlideLayouts {
     provide(layoutId) {
         if (layoutId && this.layouts.has(layoutId))
             return this.layouts.get(layoutId)
+
+        if (!this.layouts.has(DEF_PRES_LAYOUT_NAME)) {
+            this.new(DEF_PRES_LAYOUT_NAME)
+        }
         return this.layouts.get(DEF_PRES_LAYOUT_NAME)
     }
 
