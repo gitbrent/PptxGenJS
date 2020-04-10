@@ -32,6 +32,7 @@
     - [Script/Web Browser](#scriptweb-browser)
   - [Library API](#library-api)
   - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
+- [Library Ports](#library-ports)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Contributors](#contributors)
@@ -82,11 +83,13 @@ Use the online demo to create a simple presentation to see how easy it is to use
 [jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
 
 Bundle: Modern Browsers and IE11
+
 ```html
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.1.1/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
+
 ```html
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.1.1/libs/jszip.min.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.1.1/dist/pptxgen.min.js"></script>
@@ -97,11 +100,13 @@ Min files: Modern Browsers
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
 Bundle: Modern Browsers and IE11
+
 ```html
 <script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
+
 ```html
 <script src="PptxGenJS/libs/jszip.min.js"></script>
 <script src="PptxGenJS/dist/pptxgen.min.js"></script>
@@ -135,6 +140,7 @@ yarn add pptxgenjs
 PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
 
 ### Angular/React, ES6, TypeScript
+
 ```typescript
 import pptxgen from "pptxgenjs";
 
@@ -154,6 +160,7 @@ pres.writeFile("Sample Presentation.pptx");
 ```
 
 ### Script/Web Browser
+
 ```javascript
 // 1. Create a new Presentation
 let pres = new PptxGenJS();
@@ -213,6 +220,12 @@ Learn more:
 
 ---
 
+# Library Ports
+
+React: [react-pptx](https://github.com/wyozi/react-pptx) - thanks to [Joonas](https://github.com/wyozi)!
+
+---
+
 # Issues / Suggestions
 
 Please file issues or suggestions on the [issues page on github](https://github.com/gitbrent/PptxGenJS/issues/new), or even better, [submit a pull request](https://github.com/gitbrent/PptxGenJS/pulls). Feedback is always welcome!
@@ -246,6 +259,7 @@ Special Thanks:
 - [Reima Frgos](https://github.com/ReimaFrgos) - Multiple chart and general functionality patches
 - [Matt King](https://github.com/kyrrigle) - Chart expertise
 - [Mike Wilcox](https://github.com/clubajax) - Chart expertise
+- [Joonas](https://github.com/wyozi) - React port
 
 PowerPoint shape definitions and some XML code via [Officegen Project](https://github.com/Ziv-Barber/officegen)
 
