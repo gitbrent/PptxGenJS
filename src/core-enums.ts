@@ -134,6 +134,8 @@ export enum MASTER_OBJECTS {
     'line' = 'line',
     'rect' = 'rect',
     'text' = 'text',
+    'slide-number' = 'slide-number',
+    'current-date' = 'current-date',
     'placeholder' = 'placeholder'
 }
 
