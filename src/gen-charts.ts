@@ -1613,7 +1613,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	if (opts.catLabelFormatCode) {
 		;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(opt => {
 			// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-			if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) === -1)) {
+			if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opts[opt].toLowerCase()) === -1)) {
 				console.warn('`' + opt + "` must be one of: 'days','months','years' !")
 				opts[opt] = null
 			}
