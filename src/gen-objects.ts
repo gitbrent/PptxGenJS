@@ -282,6 +282,8 @@ export function addChartDefinition(target: ISlideLib, type: CHART_NAME | IChartM
 	// Set default format for Scatter chart labels to custom string if not defined
 	if (!options.dataLabelFormatScatter && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatScatter = 'custom'
 	//
+	if ( !options.dataLabelFormatBar && options._type === CHART_TYPE.BAR) options.dataLabelFormatBar = 'custom';
+
 	options.lineSize = typeof options.lineSize === 'number' ? options.lineSize : 2
 	options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null
 	options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero'

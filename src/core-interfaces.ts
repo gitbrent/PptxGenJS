@@ -41,6 +41,7 @@ export interface OptsChartData {
 	index?: number
 	name?: string
 	labels?: string[]
+	valueLabels?: string[]
 	values?: number[]
 	sizes?: number[]
 }
@@ -218,6 +219,7 @@ export interface IChartPropsDataLabel {
 	dataLabelFontSize?: number
 	dataLabelFormatCode?: string
 	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
+	dataLabelFormatBar?: 'custom'
 	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
 }
 export interface IChartPropsDataTable {
@@ -622,4 +624,4 @@ export interface IPresentation {
 	slides: ISlideLib[]
 	subject: string
 	title: string
-} 
+}
