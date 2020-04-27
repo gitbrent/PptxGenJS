@@ -523,7 +523,7 @@ export default class PptxGenJS implements IPresentation {
 						.then(() => {
 							if (outputType === 'STREAM') {
 								// A: stream file
-								zip.generateAsync({ type: 'nodebuffer' }).then(content => {
+								return zip.generateAsync({ type: 'nodebuffer' }).then(content => {
 									resolve(content)
 								})
 							} else if (outputType) {
