@@ -60,24 +60,24 @@ declare class PptxGenJS {
 	// Methods
 
 	/**
-	 * Export the current Presenation to stream
+	 * Export the current Presentation to stream
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
 	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>
 	/**
-	 * Export the current Presenation as JSZip content with the selected type
+	 * Export the current Presentation as JSZip content with the selected type
 	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
 	write(outputType: PptxGenJS.JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>
 	/**
-	 * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
+	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
 	 * @param {string} exportName - file name
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(exportName?: string): Promise<string>
 	/**
-	 * Add a new Slide to Presenation
+	 * Add a new Slide to Presentation
 	 * @param {string} masterSlideName - Master Slide name
 	 * @returns {ISlide} the new Slide
 	 */
