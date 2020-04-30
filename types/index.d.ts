@@ -872,6 +872,19 @@ declare namespace PptxGenJS {
 		w: Coord
 		h: Coord
 	}
+	export interface ISlide {
+		addChart: Function
+		addImage: Function
+		addMedia: Function
+		addNotes: Function
+		addShape: Function
+		addTable: Function
+		addText: Function
+		bkgd?: string
+		color?: string
+		hidden?: boolean
+		slideNumber?: ISlideNumber
+	}
 
 	export interface ITableToSlidesOpts extends ITableOptions {
 		addImage?: {

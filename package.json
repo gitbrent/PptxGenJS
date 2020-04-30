@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "@types/jszip": "^3.1.7",
-    "@types/node": "^13.7.1",
+    "@types/node": "^13.9.1",
     "https": "^1.0.0",
     "image-size": "^0.8.3",
     "jszip": "^3.2.2"
@@ -48,7 +48,7 @@
     "gulp-uglify": "^3.0.2",
     "rollup": "^1.31.0",
     "rollup-plugin-typescript2": "^0.26.0",
-    "typescript": "3.3.1"
+    "typescript": "^3.8.3"
   },
   "repository": {
     "type": "git",

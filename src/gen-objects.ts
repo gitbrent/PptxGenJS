@@ -22,14 +22,15 @@ import {
 	SHAPE_TYPE,
 } from './core-enums'
 import {
+	BkgdOpts,
 	IChartMulti,
-	IChartOpts,
 	IImageOpts,
 	ILayout,
 	IMediaOpts,
 	IShapeOptions,
-	ISlide,
 	ISlideLayout,
+	ISlideLib,
+	ISlideMasterOptions,
 	ISlideObject,
 	ITableCell,
 	ITableOptions,
@@ -37,9 +38,7 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
-	ISlideMasterOptions,
-	BkgdOpts,
-    IChartOptsLib,
+	IChartOptsLib,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -51,7 +50,7 @@ let _chartCounter: number = 0
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
  * @param {ISlideMasterOptions} slideDef - slide definition
- * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
+ * @param {ISlideLib|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
 export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout) {
 	// STEP 1: Add background
@@ -63,7 +62,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
 		slideDef.objects.forEach((object, idx) => {
 			let key = Object.keys(object)[0]
-			let tgt = target as ISlide
+			let tgt = target as ISlideLib
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
@@ -108,7 +107,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
  * @param {CHART_NAME | IChartMulti[]} `type` should belong to: 'column', 'pie'
  * @param {[]} `data` a JSON object with follow the following format
  * @param {IChartOptsLib} `opt` chart options
- * @param {ISlide} `target` slide object that the chart will be added to
+ * @param {ISlideLib} `target` slide object that the chart will be added to
  * @return {object} chart object
  * {
  *   title: 'eSurvey chart',
@@ -126,7 +125,7 @@ export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideL
  *	 ]
  *	}
  */
-export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMulti[], data: any[], opt: IChartOptsLib): object {
+export function addChartDefinition(target: ISlideLib, type: CHART_NAME | IChartMulti[], data: any[], opt: IChartOptsLib): object {
 	function correctGridLineOptions(glOpts: OptsChartGridLine) {
 		if (!glOpts || glOpts.style === 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
@@ -311,11 +310,11 @@ export function addChartDefinition(target: ISlide, type: CHART_NAME | IChartMult
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
  * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
- * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
+ * @param {ISlideLib} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
-export function addImageDefinition(target: ISlide, opt: IImageOpts) {
+export function addImageDefinition(target: ISlideLib, opt: IImageOpts) {
 	let newObject: any = {
 		type: null,
 		text: null,
@@ -447,10 +446,10 @@ export function addImageDefinition(target: ISlide, opt: IImageOpts) {
 
 /**
  * Adds a media object to a slide definition.
- * @param {ISlide} `target` - slide object that the text will be added to
+ * @param {ISlideLib} `target` - slide object that the text will be added to
  * @param {IMediaOpts} `opt` - media options
  */
-export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
+export function addMediaDefinition(target: ISlideLib, opt: IMediaOpts) {
 	let intRels = target.relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
@@ -560,10 +559,10 @@ export function addMediaDefinition(target: ISlide, opt: IMediaOpts) {
  * Adds Notes to a slide.
  * @param {String} `notes`
  * @param {Object} opt (*unused*)
- * @param {ISlide} `target` slide object
+ * @param {ISlideLib} `target` slide object
  * @since 2.3.0
  */
-export function addNotesDefinition(target: ISlide, notes: string) {
+export function addNotesDefinition(target: ISlideLib, notes: string) {
 	target.data.push({
 		type: SLIDE_OBJECT_TYPES.notes,
 		text: notes,
@@ -574,9 +573,9 @@ export function addNotesDefinition(target: ISlide, notes: string) {
  * Adds a shape object to a slide definition.
  * @param {IShape} shape shape const object (pptx.shapes)
  * @param {IShapeOptions} opt
- * @param {ISlide} target slide object that the shape should be added to
+ * @param {ISlideLib} target slide object that the shape should be added to
  */
-export function addShapeDefinition(target: ISlide, shapeName: SHAPE_NAME, opt: IShapeOptions) {
+export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt: IShapeOptions) {
 	let options = typeof opt === 'object' ? opt : {}
 	let newObject: ISlideObject = {
 		type: SLIDE_OBJECT_TYPES.text,
@@ -603,7 +602,7 @@ export function addShapeDefinition(target: ISlide, shapeName: SHAPE_NAME, opt: I
 
 /**
  * Adds a table object to a slide definition.
- * @param {ISlide} target - slide object that the table should be added to
+ * @param {ISlideLib} target - slide object that the table should be added to
  * @param {TableRow[]} arrTabRows - table data
  * @param {ITableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
@@ -612,7 +611,7 @@ export function addShapeDefinition(target: ISlide, shapeName: SHAPE_NAME, opt: I
  * @param {Function} getSlide - method
  */
 export function addTableDefinition(
-	target: ISlide,
+	target: ISlideLib,
 	tableRows: TableRow[],
 	options: ITableOptions,
 	slideLayout: ISlideLayout,
@@ -621,7 +620,7 @@ export function addTableDefinition(
 	getSlide: Function
 ) {
 	let opt: ITableOptions = options && typeof options === 'object' ? options : {}
-	let slides: ISlide[] = [target] // Create array of Slides as more may be added by auto-paging
+	let slides: ISlideLib[] = [target] // Create array of Slides as more may be added by auto-paging
 
 	// STEP 1: REALITY-CHECK
 	{
@@ -800,7 +799,7 @@ export function addTableDefinition(
 
 			// C: Add this table to new Slide
 			{
-				let newSlide: ISlide = getSlide(target.number + idx)
+				let newSlide: ISlideLib = getSlide(target.number + idx)
 
 				opt.autoPage = false
 
@@ -818,11 +817,11 @@ export function addTableDefinition(
  * Adds a text object to a slide definition.
  * @param {string|IText[]} text
  * @param {ITextOpts} opt
- * @param {ISlide} target - slide object that the text should be added to
+ * @param {ISlideLib} target - slide object that the text should be added to
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(target: ISlide, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
+export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
 	let opt: ITextOpts = opts || {}
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
@@ -885,9 +884,9 @@ export function addTextDefinition(target: ISlide, text: string | IText[], opts: 
 
 /**
  * Adds placeholder objects to slide
- * @param {ISlide} slide - slide object containing layouts
+ * @param {ISlideLib} slide - slide object containing layouts
  */
-export function addPlaceholdersToSlideLayouts(slide: ISlide) {
+export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
 	// Add all placeholders on this Slide that dont already exist
 	;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
 		if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
@@ -906,9 +905,9 @@ export function addPlaceholdersToSlideLayouts(slide: ISlide) {
 /**
  * Adds a background image or color to a slide definition.
  * @param {String|BkgdOpts} bkg - color string or an object with image definition
- * @param {ISlide} target - slide object that the background is set to
+ * @param {ISlideLib} target - slide object that the background is set to
  */
-function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlide | ISlideLayout) {
+function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLib | ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
@@ -933,10 +932,10 @@ function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlide | ISlide
 
 /**
  * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
- * @param {ISlide} target - slide object that any hyperlinks will be be added to
+ * @param {ISlideLib} target - slide object that any hyperlinks will be be added to
  * @param {number | string | IText | IText[] | ITableCell[][]} text - text to parse
  */
-function createHyperlinkRels(target: ISlide, text: number | string | IText | IText[] | ITableCell[][]) {
+function createHyperlinkRels(target: ISlideLib, text: number | string | IText | IText[] | ITableCell[][]) {
 	let textObjs = []
 
 	// Only text objects can have hyperlinks, bail when text param is plain text

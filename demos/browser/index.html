@@ -6,7 +6,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.2.0">
-	<meta name="updated" content="2020-02-04">
+	<meta name="updated" content="2020-03-21">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -517,12 +517,11 @@
 					$('header').after('<div class="alert alert-danger">Promise is undefined! (IE11 requires promise.min.js)</div>');
 				}
 				else {
-					// NOTE: Tooltips (span title below) only works with quote (not single quote)
 					var pptx = new PptxGenJS();
 					$('#infoBar').append('<div class="col px-0 text-primary"><div class="iconSvg size24 info"></div>Version: <span>'+pptx.version+'</span></div>');
-					$('#infoBar').append("<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='"+ JSON.stringify(pptx.charts||'?') +"'><div class='iconSvg size24 circle check'></div>pptx.charts = "+ Object.keys(pptx.charts||'').length +"</span></div>");
-					$('#infoBar').append("<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='"+ JSON.stringify(pptx.colors||'?') +"'><div class='iconSvg size24 circle check'></div>pptx.colors = "+ Object.keys(pptx.colors||'').length +"</span></div>");
-					$('#infoBar').append('<div class="col-auto text-success text-nowrap"><span><div class="iconSvg size24 circle check"></div>pptx.shapes = '+ Object.keys(pptx.shapes||'').length +'</span></div>');
+					$('#infoBar').append("<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='"+ Object.keys(pptx.ChartType).join(' | ') +"'><div class='iconSvg size24 circle check'></div>pptx.ChartType = "+ Object.keys(pptx.ChartType).length +"</span></div>");
+					$('#infoBar').append("<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='"+ Object.keys(pptx.SchemeColor).join(' | ') +"'><div class='iconSvg size24 circle check'></div>pptx.SchemeColor = "+ Object.keys(pptx.SchemeColor).length +"</span></div>");
+					$('#infoBar').append('<div class="col-auto text-success text-nowrap"><span><div class="iconSvg size24 circle check"></div>pptx.ShapeType = '+ Object.keys(pptx.ShapeType).length +'</span></div>');
 				}
 			}
 
@@ -568,12 +567,12 @@
 					+ "\n"
 					+ "slide.addText(\n"
 					+ "  [\n"
-					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.colors.ACCENT1 } },\n"
-					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.colors.ACCENT6 } },\n"
-					+ "    { text:'!', options:{ fontSize:24, color:pptx.colors.ACCENT6 } },\n"
-					+ "    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.colors.ACCENT3 } }\n"
+					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1 } },\n"
+					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
+					+ "    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
+					+ "    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n"
 					+ "  ],\n"
-					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:pptx.colors.BACKGROUND2 }\n"
+					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:pptx.SchemeColor.background2 }\n"
 					+ ");\n"
 					+ "\n"
 					+ "pptx.writeFile('PptxGenJS-Sandbox-'+getTimestamp())\n"

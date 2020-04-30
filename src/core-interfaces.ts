@@ -441,7 +441,7 @@ export interface ISectionProps {
 export interface ISection {
 	type: 'user' | 'default'
 	title: string
-	slides: ISlide[]
+	slides: ISlideLib[]
 }
 /**
  * The Presentation Layout (ex: 'LAYOUT_WIDE')
@@ -590,10 +590,13 @@ export interface ISlide {
 	addTable: Function
 	addText: Function
 	bkgd?: string
-	bkgdImgRid?: number // FIXME rename
 	color?: string
-	data?: ISlideObject[]
 	hidden?: boolean
+	slideNumber?: ISlideNumber
+}
+export interface ISlideLib extends ISlide {
+	bkgdImgRid?: number // FIXME rename
+	data?: ISlideObject[]
 	id: number
 	margin?: Margin
 	name?: string
@@ -609,25 +612,14 @@ export interface ISlide {
 export interface IPresentation {
 	author: string
 	company: string
-	revision: string
-	subject: string
-	title: string
-	pptLayout: ILayout
-	rtlMode: boolean
-	masterSlide?: ISlide
-	slides?: ISlide[]
-	slideLayouts?: ISlideLayout[]
-	sections?: ISectionProps[]
-}
-export interface IPresentationLib {
-	author: string
-	company: string
+	layout: string
+	masterSlide: ISlide
 	presLayout: ILayout
 	revision: string
 	rtlMode: boolean
 	sections: ISection[]
 	slideLayouts: ISlideLayout[]
-	slides: ISlide[]
+	slides: ISlideLib[]
 	subject: string
 	title: string
-}
+} 
