@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added support for Sections [\#349](https://github.com/gitbrent/PptxGenJS/issue/349) ([atulsingh0913](https://github.com/atulsingh0913))
 ### Changed
 - Fixed: Type errors in `index.d.ts` [\#672](https://github.com/gitbrent/PptxGenJS/issue/672) ([Krishnakanth94](https://github.com/Krishnakanth94))
+- Fixed: Spelling consistent "Presenation" -> "Presentation" typo [\#694](https://github.com/gitbrent/PptxGenJS/pull/694) ([ankon](https://github.com/ankon))
 - Fixed: Update 'pptx' to 'pres' in README.md [\#700](https://github.com/gitbrent/PptxGenJS/pull/700) ([lucidlemon](https://github.com/lucidlemon))
 - Continued improvement of typescript definitions file ([gitbrent](https://github.com/gitbrent))
+
 
 
 
