@@ -922,7 +922,7 @@ function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLib | ISl
 			extn: strImgExtn,
 			data: bkg.data || null,
 			rId: intRels,
-			Target: '../media/image' + (target.relsMedia.length + 1) + '.' + strImgExtn,
+			Target: '../media/' + target.name + '-image-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		target.bkgdImgRid = intRels
 	} else if (bkg && typeof bkg === 'string') {
