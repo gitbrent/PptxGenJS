@@ -680,6 +680,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				]
 			*/
 			let colorIndex = -1 // Maintain the color index by region
+			let colorIndexPerValue = -1
 			data.forEach(obj => {
 				colorIndex++
 				let idx = obj.index
@@ -787,10 +788,15 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 				// Color chart bars various colors
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-				if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
+				if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) && (data.length === 1 || opts.valueBarColors)) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
 						let arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
+						let colorIndex = index % arrColors.length
+
+						if (opts.valueBarColors && data.length > 1 && opts.chartColors && opts.chartColors.length > obj.values.length) {
+							colorIndex = ++colorIndexPerValue
+						}
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
@@ -801,12 +807,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 							strXml += '<a:ln><a:noFill/></a:ln>'
 						} else if (chartType === CHART_TYPE.BAR) {
 							strXml += '<a:solidFill>'
-							strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
+							strXml += '  <a:srgbClr val="' + arrColors[colorIndex] + '"/>'
 							strXml += '</a:solidFill>'
 						} else {
 							strXml += '<a:ln>'
 							strXml += '  <a:solidFill>'
-							strXml += '   <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
+							strXml += '   <a:srgbClr val="' + arrColors[colorIndex] + '"/>'
 							strXml += '  </a:solidFill>'
 							strXml += '</a:ln>'
 						}
@@ -869,7 +875,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					if (obj.valueLabels && opts.dataLabelFormatBar == 'custom') {
 
 						strXml +='<c:dLbls>';
-							obj.values.forEach(function(value,index){
+							obj.values.forEach(function(value,index) {
 							const dataValueLabelIndex = data.length === 1 ? index : colorIndex
 
 							if (opts.dataLabelFormatBar == 'custom') {
