@@ -879,33 +879,32 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 							const dataValueLabelIndex = data.length === 1 ? index : colorIndex
 
 							if (opts.dataLabelFormatBar == 'custom') {
-								console.log('ldkadkaklks')
 								strXml +='  <c:dLbl>';
-								strXml += '    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
+								strXml +='    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 								strXml +='    <c:idx val="' + index + '"/>';
 								strXml +='    <c:tx>';
 								strXml +='      <c:rich>';
-								strXml +='			<a:bodyPr>';
-								strXml +='				<a:spAutoFit/>';
-								strXml +='			</a:bodyPr>';
-								strXml +='        	<a:lstStyle/>';
-								strXml +='        	<a:p>';
-								strXml +='				<a:pPr>'
+								strXml +='				<a:bodyPr>';
+								strXml +='					<a:spAutoFit/>';
+								strXml +='				</a:bodyPr>';
+								strXml +='      	<a:lstStyle/>';
+								strXml +='      	<a:p>';
+								strXml +='					<a:pPr>'
 								strXml +='					<a:defRPr/>'
-								strXml +='				</a:pPr>'
-								strXml +='          	<a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="YVALUE">';
-								strXml +='          		<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0"/>';
-								strXml +='          		<a:pPr>';
-								strXml +='          			<a:defRPr/>';
-								strXml +='          		</a:pPr>';
-								strXml +='          		<a:t>[' + encodeXmlEntities(obj.name) + ']</a:t>';
-								strXml +='          	</a:fld>';
-								strXml +='          	<a:r>';
-								strXml +='            		<a:rPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
-								strXml +='            		<a:t>'+ ' ' + encodeXmlEntities(obj.valueLabels[index]) +'</a:t>';
-								strXml +='          	</a:r>';
-								strXml +='          	<a:endParaRPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
-								strXml +='        	</a:p>';
+								strXml +='					</a:pPr>'
+								strXml +='      		<a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="YVALUE">';
+								strXml +='      			<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0"/>';
+								strXml +='          	<a:pPr>';
+								strXml +='          		<a:defRPr/>';
+								strXml +='          	</a:pPr>';
+								strXml +='          	<a:t>[' + encodeXmlEntities(obj.name) + ']</a:t>';
+								strXml +='        	</a:fld>';
+								strXml +='        	<a:r>';
+								strXml +='        		<a:rPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
+								strXml +='          	<a:t>'+ ' ' + encodeXmlEntities(obj.valueLabels[index]) +'</a:t>';
+								strXml +='        	</a:r>';
+								strXml +='        	<a:endParaRPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
+								strXml +='      	</a:p>';
 								strXml +='      </c:rich>';
 								strXml +='    </c:tx>';
 								strXml +='    <c:spPr>';
@@ -921,15 +920,15 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 								strXml +='    <c:showSerName val="0"/>';
 								strXml +='    <c:showPercent val="0"/>';
 								strXml +='    <c:showBubbleSize val="0"/>';
-								strXml += `   <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
+								strXml +=`    <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
 								strXml +='    <c:extLst>';
 								strXml +='      <c:ext uri="{CE6537A1-D6FC-4f65-9D91-7224C49458BB}" xmlns:c15="http://schemas.microsoft.com/office/drawing/2012/chart">';
-								strXml +='			<c15:dlblFieldTable/>';
-								strXml +='			<c15:showDataLabelsRange val="0"/>';
-								strXml +='		</c:ext>';
+								strXml +='				<c15:dlblFieldTable/>';
+								strXml +='				<c15:showDataLabelsRange val="0"/>';
+								strXml +='		  </c:ext>';
 								strXml +='      <c:ext uri="{C3380CC4-5D6E-409C-BE32-E72D297353CC}" xmlns:c16="http://schemas.microsoft.com/office/drawing/2014/chart">';
-								strXml +='			<c16:uniqueId val="{' + "00000000".substring(0,8-(index+1).toString().length).toString() + (index+1) + chartUuid + '}"/>';
-								strXml +='      </c:ext>';
+								strXml +='				<c16:uniqueId val="{' + "00000000".substring(0,8-(index+1).toString().length).toString() + (index+1) + chartUuid + '}"/>';
+								strXml +='    	</c:ext>';
 								strXml +='		</c:extLst>';
 								strXml +='</c:dLbl>';
 							}
