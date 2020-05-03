@@ -879,7 +879,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 							const dataValueLabelIndex = data.length === 1 ? index : colorIndex
 
 							if (opts.dataLabelFormatBar == 'custom') {
-								strXml +='  <c:dLbl>';
+								strXml +='<c:dLbl>';
 								strXml +='    <c:numFmt formatCode="'+ opts.dataLabelFormatCode +'" sourceLinked="0"/>';
 								strXml +='    <c:idx val="' + index + '"/>';
 								strXml +='    <c:tx>';
