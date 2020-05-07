@@ -680,7 +680,6 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				]
 			*/
 			let colorIndex = -1 // Maintain the color index by region
-			let colorIndexPerValue = -1
 			data.forEach(obj => {
 				colorIndex++
 				let idx = obj.index
@@ -792,11 +791,6 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
 						let arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
-						let colorIndex = index % arrColors.length
-
-						if (opts.valueBarColors && data.length > 1 && opts.chartColors && opts.chartColors.length > obj.values.length) {
-							colorIndex = ++colorIndexPerValue
-						}
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
@@ -807,12 +801,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 							strXml += '<a:ln><a:noFill/></a:ln>'
 						} else if (chartType === CHART_TYPE.BAR) {
 							strXml += '<a:solidFill>'
-							strXml += '  <a:srgbClr val="' + arrColors[colorIndex] + '"/>'
+							strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
 							strXml += '</a:solidFill>'
 						} else {
 							strXml += '<a:ln>'
 							strXml += '  <a:solidFill>'
-							strXml += '   <a:srgbClr val="' + arrColors[colorIndex] + '"/>'
+							strXml += '   <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
 							strXml += '  </a:solidFill>'
 							strXml += '</a:ln>'
 						}
