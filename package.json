@@ -31,10 +31,10 @@
   },
   "dependencies": {
     "@types/jszip": "^3.1.7",
-    "@types/node": "^13.9.1",
+    "@types/node": "^13.13.5",
     "https": "^1.0.0",
     "image-size": "^0.8.3",
-    "jszip": "^3.2.2"
+    "jszip": "^3.4.0"
   },
   "devDependencies": {
     "doctoc": "^1.4.0",
