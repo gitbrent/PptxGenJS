@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-05-10T21:55:17.557Z */
+/* PptxGenJS 3.2.0-beta @ 2020-05-10T22:35:53.059Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -5919,7 +5919,7 @@ var PptxGenJS = /** @class */ (function () {
             _this.slideLayouts.filter(function (layout) { return layout.name === DEF_PRES_LAYOUT_NAME; })[0].slideNumberObj = slideNum;
         };
         /**
-         * Create all chart and media rels for this Presenation
+         * Create all chart and media rels for this Presentation
          * @param {ISlideLib | ISlideLayout} slide - slide with rels
          * @param {JSZIP} zip - JSZip instance
          * @param {Promise<any>[]} chartPromises - promise array
@@ -5949,39 +5949,37 @@ var PptxGenJS = /** @class */ (function () {
          * @return {Promise<string>} Promise with file name
          */
         this.writeFileToBrowser = function (exportName, blobContent) {
-            return new Promise(function (resolve, _reject) {
-                // STEP 1: Create element
-                var eleLink = document.createElement('a');
-                eleLink.setAttribute('style', 'display:none;');
-                document.body.appendChild(eleLink);
-                // STEP 2: Download file to browser
-                // DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
-                if (window.navigator.msSaveOrOpenBlob) {
-                    // @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
-                    var blob_1 = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
-                    eleLink.onclick = function () {
-                        window.navigator.msSaveOrOpenBlob(blob_1, exportName);
-                    };
-                    eleLink.click();
-                    // Clean-up
+            // STEP 1: Create element
+            var eleLink = document.createElement('a');
+            eleLink.setAttribute('style', 'display:none;');
+            document.body.appendChild(eleLink);
+            // STEP 2: Download file to browser
+            // DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
+            if (window.navigator.msSaveOrOpenBlob) {
+                // @see https://docs.microsoft.com/en-us/microsoft-edge/dev-guide/html5/file-api/blob
+                var blob_1 = new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' });
+                eleLink.onclick = function () {
+                    window.navigator.msSaveOrOpenBlob(blob_1, exportName);
+                };
+                eleLink.click();
+                // Clean-up
+                document.body.removeChild(eleLink);
+                // Done
+                return Promise.resolve(exportName);
+            }
+            else if (window.URL.createObjectURL) {
+                var url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
+                eleLink.href = url_1;
+                eleLink.download = exportName;
+                eleLink.click();
+                // Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
+                setTimeout(function () {
+                    window.URL.revokeObjectURL(url_1);
                     document.body.removeChild(eleLink);
-                    // Done
-                    resolve(exportName);
-                }
-                else if (window.URL.createObjectURL) {
-                    var url_1 = window.URL.createObjectURL(new Blob([blobContent], { type: 'application/vnd.openxmlformats-officedocument.presentationml.presentation' }));
-                    eleLink.href = url_1;
-                    eleLink.download = exportName;
-                    eleLink.click();
-                    // Clean-up (NOTE: Add a slight delay before removing to avoid 'blob:null' error in Firefox Issue#81)
-                    setTimeout(function () {
-                        window.URL.revokeObjectURL(url_1);
-                        document.body.removeChild(eleLink);
-                    }, 100);
-                    // Done
-                    resolve(exportName);
-                }
-            });
+                }, 100);
+                // Done
+                return Promise.resolve(exportName);
+            }
         };
         /**
          * Create and export the .pptx file
@@ -5989,100 +5987,85 @@ var PptxGenJS = /** @class */ (function () {
          * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
          */
         this.exportPresentation = function (outputType) {
-            return new Promise(function (resolve, _reject) {
-                var arrChartPromises = [];
-                var arrMediaPromises = [];
-                var zip = new JSZip();
-                // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
+            var arrChartPromises = [];
+            var arrMediaPromises = [];
+            var zip = new JSZip();
+            // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
+            _this.slides.forEach(function (slide) {
+                arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
+            });
+            _this.slideLayouts.forEach(function (layout) {
+                arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(layout));
+            });
+            arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(_this.masterSlide));
+            // STEP 2: Wait for Promises (if any) then generate the PPTX file
+            return Promise.all(arrMediaPromises).then(function () {
+                // A: Add empty placeholder objects to slides that don't already have them
                 _this.slides.forEach(function (slide) {
-                    arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
+                    if (slide.slideLayout)
+                        addPlaceholdersToSlideLayouts(slide);
                 });
+                // B: Add all required folders and files
+                zip.folder('_rels');
+                zip.folder('docProps');
+                zip.folder('ppt').folder('_rels');
+                zip.folder('ppt/charts').folder('_rels');
+                zip.folder('ppt/embeddings');
+                zip.folder('ppt/media');
+                zip.folder('ppt/slideLayouts').folder('_rels');
+                zip.folder('ppt/slideMasters').folder('_rels');
+                zip.folder('ppt/slides').folder('_rels');
+                zip.folder('ppt/theme');
+                zip.folder('ppt/notesMasters').folder('_rels');
+                zip.folder('ppt/notesSlides').folder('_rels');
+                zip.file('[Content_Types].xml', makeXmlContTypes(_this.slides, _this.slideLayouts, _this.masterSlide)); // TODO: pass only `this` like below! 20200206
+                zip.file('_rels/.rels', makeXmlRootRels());
+                zip.file('docProps/app.xml', makeXmlApp(_this.slides, _this.company)); // TODO: pass only `this` like below! 20200206
+                zip.file('docProps/core.xml', makeXmlCore(_this.title, _this.subject, _this.author, _this.revision)); // TODO: pass only `this` like below! 20200206
+                zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(_this.slides));
+                zip.file('ppt/theme/theme1.xml', makeXmlTheme());
+                zip.file('ppt/presentation.xml', makeXmlPresentation(_this));
+                zip.file('ppt/presProps.xml', makeXmlPresProps());
+                zip.file('ppt/tableStyles.xml', makeXmlTableStyles());
+                zip.file('ppt/viewProps.xml', makeXmlViewProps());
+                // C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
+                _this.slideLayouts.forEach(function (layout, idx) {
+                    zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', makeXmlLayout(layout));
+                    zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', makeXmlSlideLayoutRel(idx + 1, _this.slideLayouts));
+                });
+                _this.slides.forEach(function (slide, idx) {
+                    zip.file('ppt/slides/slide' + (idx + 1) + '.xml', makeXmlSlide(slide));
+                    zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', makeXmlSlideRel(_this.slides, _this.slideLayouts, idx + 1));
+                    // Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
+                    zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', makeXmlNotesSlide(slide));
+                    zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', makeXmlNotesSlideRel(idx + 1));
+                });
+                zip.file('ppt/slideMasters/slideMaster1.xml', makeXmlMaster(_this.masterSlide, _this.slideLayouts));
+                zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', makeXmlMasterRel(_this.masterSlide, _this.slideLayouts));
+                zip.file('ppt/notesMasters/notesMaster1.xml', makeXmlNotesMaster());
+                zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', makeXmlNotesMasterRel());
+                // D: Create all Rels (images, media, chart data)
                 _this.slideLayouts.forEach(function (layout) {
-                    arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(layout));
+                    _this.createChartMediaRels(layout, zip, arrChartPromises);
                 });
-                arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(_this.masterSlide));
-                // STEP 2: Wait for Promises (if any) then generate the PPTX file
-                Promise.all(arrMediaPromises)
-                    .catch(function (err) {
-                    console.error("ERROR! pptxgenjs export media:");
-                    console.error(err);
-                    return null;
-                    // FIXME: TODO: 20200107: if one image fails to load (eg 404), then *NONE* of the images load b/c of the `.all`...
-                })
-                    .then(function () {
-                    // A: Add empty placeholder objects to slides that don't already have them
-                    _this.slides.forEach(function (slide) {
-                        if (slide.slideLayout)
-                            addPlaceholdersToSlideLayouts(slide);
-                    });
-                    // B: Add all required folders and files
-                    zip.folder('_rels');
-                    zip.folder('docProps');
-                    zip.folder('ppt').folder('_rels');
-                    zip.folder('ppt/charts').folder('_rels');
-                    zip.folder('ppt/embeddings');
-                    zip.folder('ppt/media');
-                    zip.folder('ppt/slideLayouts').folder('_rels');
-                    zip.folder('ppt/slideMasters').folder('_rels');
-                    zip.folder('ppt/slides').folder('_rels');
-                    zip.folder('ppt/theme');
-                    zip.folder('ppt/notesMasters').folder('_rels');
-                    zip.folder('ppt/notesSlides').folder('_rels');
-                    zip.file('[Content_Types].xml', makeXmlContTypes(_this.slides, _this.slideLayouts, _this.masterSlide)); // TODO: pass only `this` like below! 20200206
-                    zip.file('_rels/.rels', makeXmlRootRels());
-                    zip.file('docProps/app.xml', makeXmlApp(_this.slides, _this.company)); // TODO: pass only `this` like below! 20200206
-                    zip.file('docProps/core.xml', makeXmlCore(_this.title, _this.subject, _this.author, _this.revision)); // TODO: pass only `this` like below! 20200206
-                    zip.file('ppt/_rels/presentation.xml.rels', makeXmlPresentationRels(_this.slides));
-                    zip.file('ppt/theme/theme1.xml', makeXmlTheme());
-                    zip.file('ppt/presentation.xml', makeXmlPresentation(_this));
-                    zip.file('ppt/presProps.xml', makeXmlPresProps());
-                    zip.file('ppt/tableStyles.xml', makeXmlTableStyles());
-                    zip.file('ppt/viewProps.xml', makeXmlViewProps());
-                    // C: Create a Layout/Master/Rel/Slide file for each SlideLayout and Slide
-                    _this.slideLayouts.forEach(function (layout, idx) {
-                        zip.file('ppt/slideLayouts/slideLayout' + (idx + 1) + '.xml', makeXmlLayout(layout));
-                        zip.file('ppt/slideLayouts/_rels/slideLayout' + (idx + 1) + '.xml.rels', makeXmlSlideLayoutRel(idx + 1, _this.slideLayouts));
-                    });
-                    _this.slides.forEach(function (slide, idx) {
-                        zip.file('ppt/slides/slide' + (idx + 1) + '.xml', makeXmlSlide(slide));
-                        zip.file('ppt/slides/_rels/slide' + (idx + 1) + '.xml.rels', makeXmlSlideRel(_this.slides, _this.slideLayouts, idx + 1));
-                        // Create all slide notes related items. Notes of empty strings are created for slides which do not have notes specified, to keep track of _rels.
-                        zip.file('ppt/notesSlides/notesSlide' + (idx + 1) + '.xml', makeXmlNotesSlide(slide));
-                        zip.file('ppt/notesSlides/_rels/notesSlide' + (idx + 1) + '.xml.rels', makeXmlNotesSlideRel(idx + 1));
-                    });
-                    zip.file('ppt/slideMasters/slideMaster1.xml', makeXmlMaster(_this.masterSlide, _this.slideLayouts));
-                    zip.file('ppt/slideMasters/_rels/slideMaster1.xml.rels', makeXmlMasterRel(_this.masterSlide, _this.slideLayouts));
-                    zip.file('ppt/notesMasters/notesMaster1.xml', makeXmlNotesMaster());
-                    zip.file('ppt/notesMasters/_rels/notesMaster1.xml.rels', makeXmlNotesMasterRel());
-                    // D: Create all Rels (images, media, chart data)
-                    _this.slideLayouts.forEach(function (layout) {
-                        _this.createChartMediaRels(layout, zip, arrChartPromises);
-                    });
-                    _this.slides.forEach(function (slide) {
-                        _this.createChartMediaRels(slide, zip, arrChartPromises);
-                    });
-                    _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
-                    // E: Wait for Promises (if any) then generate the PPTX file
-                    Promise.all(arrChartPromises)
-                        .then(function () {
-                        if (outputType === 'STREAM') {
-                            // A: stream file
-                            zip.generateAsync({ type: 'nodebuffer' }).then(function (content) {
-                                resolve(content);
-                            });
-                        }
-                        else if (outputType) {
-                            // B: Node [fs]: Output type user option or default
-                            resolve(zip.generateAsync({ type: outputType }));
-                        }
-                        else {
-                            // C: Browser: Output blob as app/ms-pptx
-                            resolve(zip.generateAsync({ type: 'blob' }));
-                        }
-                    })
-                        .catch(function (err) {
-                        throw new Error(err);
-                    });
+                _this.slides.forEach(function (slide) {
+                    _this.createChartMediaRels(slide, zip, arrChartPromises);
+                });
+                _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
+                // E: Wait for Promises (if any) then generate the PPTX file
+                return Promise.all(arrChartPromises).then(function () {
+                    if (outputType === 'STREAM') {
+                        // A: stream file
+                        return zip.generateAsync({ type: 'nodebuffer' });
+                    }
+                    else if (outputType) {
+                        // B: Node [fs]: Output type user option or default
+                        return zip.generateAsync({ type: outputType });
+                    }
+                    else {
+                        // C: Browser: Output blob as app/ms-pptx
+                        return zip.generateAsync({ type: 'blob' });
+                    }
                 });
             });
         };
@@ -6333,16 +6316,7 @@ var PptxGenJS = /** @class */ (function () {
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
      */
     PptxGenJS.prototype.stream = function () {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.exportPresentation('STREAM')
-                .then(function (content) {
-                resolve(content);
-            })
-                .catch(function (ex) {
-                reject(ex);
-            });
-        });
+        return this.exportPresentation('STREAM');
     };
     /**
      * Export the current Presentation as JSZip content with the selected type
@@ -6350,16 +6324,7 @@ var PptxGenJS = /** @class */ (function () {
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
      */
     PptxGenJS.prototype.write = function (outputType) {
-        var _this = this;
-        return new Promise(function (resolve, reject) {
-            _this.exportPresentation(outputType)
-                .then(function (content) {
-                resolve(content);
-            })
-                .catch(function (ex) {
-                reject(ex + '\nDid you mean to use writeFile() instead?');
-            });
-        });
+        return this.exportPresentation(outputType);
     };
     /**
      * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
@@ -6368,32 +6333,26 @@ var PptxGenJS = /** @class */ (function () {
      */
     PptxGenJS.prototype.writeFile = function (exportName) {
         var _this = this;
-        return new Promise(function (resolve, reject) {
-            var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
-            var fileName = exportName
-                ? exportName
-                    .toString()
-                    .toLowerCase()
-                    .endsWith('.pptx')
-                    ? exportName
-                    : exportName + '.pptx'
-                : 'Presentation.pptx';
-            _this.exportPresentation(fs ? 'nodebuffer' : null)
-                .then(function (content) {
-                if (fs) {
-                    // Node: Output
-                    fs.writeFile(fileName, content, function () {
-                        resolve(fileName);
+        var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
+        var fileName = exportName ? (exportName.toString().toLowerCase().endsWith('.pptx') ? exportName : exportName + '.pptx') : 'Presentation.pptx';
+        return this.exportPresentation(fs ? 'nodebuffer' : null).then(function (content) {
+            if (fs) {
+                // Node: Output
+                return new Promise(function (resolve, reject) {
+                    fs.writeFile(fileName, content, function (err) {
+                        if (err) {
+                            reject(err);
+                        }
+                        else {
+                            resolve(fileName);
+                        }
                     });
-                }
-                else {
-                    // Browser: Output blob as app/ms-pptx
-                    resolve(_this.writeFileToBrowser(fileName, content));
-                }
-            })
-                .catch(function (ex) {
-                reject(ex);
-            });
+                });
+            }
+            else {
+                // Browser: Output blob as app/ms-pptx
+                return _this.writeFileToBrowser(fileName, content);
+            }
         });
     };
     // PRESENTATION METHODS
