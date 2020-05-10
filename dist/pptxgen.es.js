@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-05-10T22:35:53.059Z */
+/* PptxGenJS 3.2.0-beta @ 2020-05-10T22:48:51.725Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -5438,7 +5438,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     if (opts.catLabelFormatCode) {
         ['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(function (opt) {
             // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) === -1)) {
+            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opts[opt].toLowerCase()) === -1)) {
                 console.warn('`' + opt + "` must be one of: 'days','months','years' !");
                 opts[opt] = null;
             }
