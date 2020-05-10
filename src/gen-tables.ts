@@ -104,7 +104,8 @@ export function getSlidesForTableRows(
 	{
 		// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
 		// ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
-		tableRows[0].forEach(cell => {
+		let firstRow = tableRows[0] || []
+		firstRow.forEach(cell => {
 			if (!cell) cell = { type: SLIDE_OBJECT_TYPES.tablecell }
 			let cellOpts = cell.options || null
 			numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1)
@@ -138,7 +139,8 @@ export function getSlidesForTableRows(
 	if (!tabOpts.colW || !Array.isArray(tabOpts.colW)) {
 		if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
 			let arrColW = []
-			tableRows[0].forEach(() => {
+			let firstRow = tableRows[0] || []
+			firstRow.forEach(() => {
 				arrColW.push(tabOpts.colW)
 			})
 			tabOpts.colW = []
@@ -413,14 +415,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 			let arrObjTabCells: ITableCell[] = []
 			Array.from(row.cells).forEach(cell => {
 				// A: Get RGB text/bkgd colors
-				let arrRGB1 = window
-					.getComputedStyle(cell)
-					.getPropertyValue('color')
-					.replace(/\s+/gi, '')
-					.replace('rgba(', '')
-					.replace('rgb(', '')
-					.replace(')', '')
-					.split(',')
+				let arrRGB1 = window.getComputedStyle(cell).getPropertyValue('color').replace(/\s+/gi, '').replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',')
 				let arrRGB2 = window
 					.getComputedStyle(cell)
 					.getPropertyValue('background-color')
@@ -449,17 +444,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
 					fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
 					fontFace:
-						(window.getComputedStyle(cell).getPropertyValue('font-family') || '')
-							.split(',')[0]
-							.replace(/"/g, '')
-							.replace('inherit', '')
-							.replace('initial', '') || null,
-					fontSize: Number(
-						window
-							.getComputedStyle(cell)
-							.getPropertyValue('font-size')
-							.replace(/[a-z]/gi, '')
-					),
+						(window.getComputedStyle(cell).getPropertyValue('font-family') || '').split(',')[0].replace(/"/g, '').replace('inherit', '').replace('initial', '') ||
+						null,
+					fontSize: Number(window.getComputedStyle(cell).getPropertyValue('font-size').replace(/[a-z]/gi, '')),
 					margin: null,
 					colspan: Number(cell.getAttribute('colspan')) || null,
 					rowspan: Number(cell.getAttribute('rowspan')) || null,
@@ -467,11 +454,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				}
 
 				if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
-					let align = window
-						.getComputedStyle(cell)
-						.getPropertyValue('text-align')
-						.replace('start', 'left')
-						.replace('end', 'right')
+					let align = window.getComputedStyle(cell).getPropertyValue('text-align').replace('start', 'left').replace('end', 'right')
 					cellOpts.align = align === 'center' ? 'center' : align === 'left' ? 'left' : align === 'right' ? 'right' : null
 				}
 				if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
@@ -485,14 +468,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 					cellOpts.margin = [0, 0, 0, 0]
 					let sidesPad = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left']
 					sidesPad.forEach((val, idxs) => {
-						cellOpts.margin[idxs] = Math.round(
-							Number(
-								window
-									.getComputedStyle(cell)
-									.getPropertyValue(val)
-									.replace(/\D/gi, '')
-							)
-						)
+						cellOpts.margin[idxs] = Math.round(Number(window.getComputedStyle(cell).getPropertyValue(val).replace(/\D/gi, '')))
 					})
 				}
 
