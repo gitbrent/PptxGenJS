@@ -907,7 +907,7 @@ export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
  * @param {String|BkgdOpts} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
-function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLib | ISlideLayout) {
+function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
@@ -922,7 +922,7 @@ function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLib | ISl
 			extn: strImgExtn,
 			data: bkg.data || null,
 			rId: intRels,
-			Target: '../media/' + target.name + '-image-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
+			Target: `../media/${target.name}-image-${target.relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target.bkgdImgRid = intRels
 	} else if (bkg && typeof bkg === 'string') {
