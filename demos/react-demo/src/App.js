@@ -1,11 +1,10 @@
 import React from "react";
-import logo from "./logo.svg";
-import "./App.css";
 import pptxgen from "pptxgenjs"; // react-app webpack will use package.json `"module": "dist/pptxgen.es.js"` value
 import { testMainMethods } from "./tstest/Test";
+import logo from "./logo.svg";
+import "./App.css";
 
-function App() {
-	const demoCode = `import pptxgen from "pptxgenjs";
+const demoCode = `import pptxgen from "pptxgenjs";
 
 let pptx = new pptxgen();
 let slide = pptx.addSlide();
@@ -21,6 +20,7 @@ slide.addChart(
 
 pptx.writeFile("pptxgenjs-demo-react.pptx");`;
 
+function App() {
 	function runAllTests() {
 		testMainMethods();
 	}
