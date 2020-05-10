@@ -19,6 +19,7 @@
     "build": "rollup -c",
     "watch": "rollup -cw",
     "ship": "gulp ship",
+    "start": "gulp",
     "doctoc": "./node_modules/doctoc/doctoc.js README.md"
   },
   "browser": {
