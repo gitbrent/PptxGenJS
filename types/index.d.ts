@@ -108,12 +108,12 @@ declare namespace PptxGenJS {
 		'left' = 'left',
 		'center' = 'center',
 		'right' = 'right',
-		'justify' = 'justify'
+		'justify' = 'justify',
 	}
 	export enum AlignV {
 		'top' = 'top',
 		'middle' = 'middle',
-		'bottom' = 'bottom'
+		'bottom' = 'bottom',
 	}
 	export enum ChartType {
 		'area' = 'area',
@@ -124,7 +124,7 @@ declare namespace PptxGenJS {
 		'line' = 'line',
 		'pie' = 'pie',
 		'radar' = 'radar',
-		'scatter' = 'scatter'
+		'scatter' = 'scatter',
 	}
 	export enum OutputType {
 		'arraybuffer' = 'arraybuffer',
@@ -132,7 +132,7 @@ declare namespace PptxGenJS {
 		'binarystring' = 'binarystring',
 		'blob' = 'blob',
 		'nodebuffer' = 'nodebuffer',
-		'uint8array' = 'uint8array'
+		'uint8array' = 'uint8array',
 	}
 	export enum SchemeColor {
 		'text1' = 'tx1',
@@ -144,7 +144,7 @@ declare namespace PptxGenJS {
 		'accent3' = 'accent3',
 		'accent4' = 'accent4',
 		'accent5' = 'accent5',
-		'accent6' = 'accent6'
+		'accent6' = 'accent6',
 	}
 	export enum ShapeType {
 		'accentBorderCallout1' = 'accentBorderCallout1',
@@ -324,7 +324,7 @@ declare namespace PptxGenJS {
 		'wave' = 'wave',
 		'wedgeEllipseCallout' = 'wedgeEllipseCallout',
 		'wedgeRectCallout' = 'wedgeRectCallout',
-		'wedgeRoundRectCallout' = 'wedgeRoundRectCallout'
+		'wedgeRoundRectCallout' = 'wedgeRoundRectCallout',
 	}
 	// These are used by browser/script clients and have been named like this since v0.1.
 	// Desc: charts and shapes for `pptxgen.charts.` `pptxgen.shapes.`
@@ -338,7 +338,7 @@ declare namespace PptxGenJS {
 		'LINE' = 'line',
 		'PIE' = 'pie',
 		'RADAR' = 'radar',
-		'SCATTER' = 'scatter'
+		'SCATTER' = 'scatter',
 	}
 	export enum shapes {
 		ACTION_BUTTON_BACK_OR_PREVIOUS = 'actionButtonBackPrevious',
@@ -523,7 +523,7 @@ declare namespace PptxGenJS {
 		UP_RIBBON = 'ribbon2',
 		U_TURN_ARROW = 'uturnArrow',
 		VERTICAL_SCROLL = 'verticalScroll',
-		WAVE = 'wave'
+		WAVE = 'wave',
 	}
 
 	// `core-interfaces.d.ts`
@@ -539,7 +539,7 @@ declare namespace PptxGenJS {
 		'LINE' = 'line',
 		'PIE' = 'pie',
 		'RADAR' = 'radar',
-		'SCATTER' = 'scatter'
+		'SCATTER' = 'scatter',
 	}
 	export enum SCHEME_COLOR_NAMES {
 		'TEXT1' = 'tx1',
@@ -551,7 +551,7 @@ declare namespace PptxGenJS {
 		'ACCENT3' = 'accent3',
 		'ACCENT4' = 'accent4',
 		'ACCENT5' = 'accent5',
-		'ACCENT6' = 'accent6'
+		'ACCENT6' = 'accent6',
 	}
 	export enum SLIDE_OBJECT_TYPES {
 		'chart' = 'chart',
@@ -563,18 +563,18 @@ declare namespace PptxGenJS {
 		'table' = 'table',
 		'tablecell' = 'tablecell',
 		'text' = 'text',
-		'notes' = 'notes'
+		'notes' = 'notes',
 	}
 	export enum TEXT_HALIGN {
 		'left' = 'left',
 		'center' = 'center',
 		'right' = 'right',
-		'justify' = 'justify'
+		'justify' = 'justify',
 	}
 	export enum TEXT_VALIGN {
 		'b' = 'b',
 		'ctr' = 'ctr',
-		't' = 't'
+		't' = 't',
 	}
 	export enum PLACEHOLDER_TYPES {
 		'title' = 'title',
@@ -582,7 +582,7 @@ declare namespace PptxGenJS {
 		'image' = 'pic',
 		'chart' = 'chart',
 		'table' = 'tbl',
-		'media' = 'media'
+		'media' = 'media',
 	}
 	export type SHAPE_NAME =
 		| 'actionButtonBackPrevious'
@@ -861,7 +861,8 @@ declare namespace PptxGenJS {
 						options: ISlideMstrObjPlchldrOpts
 						text?: string
 					}
-			  })[]
+			  }
+		)[]
 		slideNumber?: ISlideNumber
 	}
 	export interface ISlideMstrObjPlchldrOpts {
@@ -1341,6 +1342,7 @@ declare namespace PptxGenJS {
 			| {
 					type?: string
 					code?: string
+					marginPt?: number
 					style?: string
 					startAt?: number
 			  }

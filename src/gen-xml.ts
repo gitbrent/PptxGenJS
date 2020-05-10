@@ -34,7 +34,7 @@ import {
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid } from './gen-utils'
 
 let imageSizingXml = {
-	cover: function(imgSize, boxDim) {
+	cover: function (imgSize, boxDim) {
 		let imgRatio = imgSize.h / imgSize.w,
 			boxRatio = boxDim.h / boxDim.w,
 			isBoxBased = boxRatio > imgRatio,
@@ -44,7 +44,7 @@ let imageSizingXml = {
 			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
 		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
-	contain: function(imgSize, boxDim) {
+	contain: function (imgSize, boxDim) {
 		let imgRatio = imgSize.h / imgSize.w,
 			boxRatio = boxDim.h / boxDim.w,
 			widthBased = boxRatio > imgRatio,
@@ -54,7 +54,7 @@ let imageSizingXml = {
 			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
 		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
-	crop: function(imageSize, boxDim) {
+	crop: function (imageSize, boxDim) {
 		let l = boxDim.x,
 			r = imageSize.w - (boxDim.x + boxDim.w),
 			t = boxDim.y,
@@ -371,7 +371,12 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 							strXml +=
 								'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
 						} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
-							;[{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(obj => {
+							;[
+								{ idx: 3, name: 'lnL' },
+								{ idx: 1, name: 'lnR' },
+								{ idx: 0, name: 'lnT' },
+								{ idx: 2, name: 'lnB' },
+							].forEach(obj => {
 								if (cellOpts.border[obj.idx]) {
 									let strC =
 										'<a:solidFill><a:srgbClr val="' +
@@ -619,11 +624,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						' <p:cNvPr id="' +
 						(slideItemObj.mediaRid + 2) +
 						'" name="' +
-						slideItemObj.media
-							.split('/')
-							.pop()
-							.split('.')
-							.shift() +
+						slideItemObj.media.split('/').pop().split('.').shift() +
 						'"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>'
 					strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 					strSlideXml += ' <p:nvPr>'
@@ -820,8 +821,8 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 	let strXmlBullet = '',
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
-	let bulletLvl0Margin = 342900
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
+	let bulletMarL = ONEPT * 27
 
 	let paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '')
 
@@ -848,42 +849,38 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 			}
 		}
 
-		if (textObj.options.lineSpacing) {
-			strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>'
-		}
+		if (textObj.options.lineSpacing) strXmlLnSpc = `<a:lnSpc><a:spcPts val="${textObj.options.lineSpacing}00"/></a:lnSpc>`
 
 		// OPTION: indent
 		if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
-			paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"'
+			paragraphPropXml += ` lvl="${textObj.options.indentLevel}"`
 		}
 
 		// OPTION: Paragraph Spacing: Before/After
 		if (textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0) {
-			strXmlParaSpc += '<a:spcBef><a:spcPts val="' + textObj.options.paraSpaceBefore * 100 + '"/></a:spcBef>'
+			strXmlParaSpc += `<a:spcBef><a:spcPts val="${textObj.options.paraSpaceBefore * 100}"/></a:spcBef>`
 		}
 		if (textObj.options.paraSpaceAfter && !isNaN(Number(textObj.options.paraSpaceAfter)) && textObj.options.paraSpaceAfter > 0) {
-			strXmlParaSpc += '<a:spcAft><a:spcPts val="' + textObj.options.paraSpaceAfter * 100 + '"/></a:spcAft>'
+			strXmlParaSpc += `<a:spcAft><a:spcPts val="${textObj.options.paraSpaceAfter * 100}"/></a:spcAft>`
 		}
 
 		// OPTION: bullet
 		// NOTE: OOXML uses the unicode character set for Bullets
 		// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
 		if (typeof textObj.options.bullet === 'object') {
+			if (textObj && textObj.options && textObj.options.bullet && textObj.options.bullet.marginPt) bulletMarL = ONEPT * textObj.options.bullet.marginPt
+
 			if (textObj.options.bullet.type) {
 				if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
-					paragraphPropXml +=
-						' marL="' +
-						(textObj.options.indentLevel && textObj.options.indentLevel > 0
-							? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel
-							: bulletLvl0Margin) +
-						'" indent="-' +
-						bulletLvl0Margin +
-						'"'
-					strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style ||
-						'arabicPeriod'}" startAt="${textObj.options.bullet.startAt || '1'}"/>`
+					paragraphPropXml += ` marL="${
+						textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+					}" indent="-${bulletMarL}"`
+					strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style || 'arabicPeriod'}" startAt="${
+						textObj.options.bullet.startAt || '1'
+					}"/>`
 				}
 			} else if (textObj.options.bullet.code) {
-				let bulletCode = '&#x' + textObj.options.bullet.code + ';'
+				let bulletCode = `&#x${textObj.options.bullet.code};`
 
 				// Check value for hex-ness (s/b 4 char hex)
 				if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) === false) {
@@ -891,22 +888,21 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 					bulletCode = BULLET_TYPES['DEFAULT']
 				}
 
-				paragraphPropXml +=
-					' marL="' +
-					(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
-					'" indent="-' +
-					bulletLvl0Margin +
-					'"'
+				paragraphPropXml += ` marL="${
+					textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+				}" indent="-${bulletMarL}"`
 				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
+			} else {
+				paragraphPropXml += ` marL="${
+					textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+				}" indent="-${bulletMarL}"`
+				strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
 			}
 		} else if (textObj.options.bullet === true) {
-			paragraphPropXml +=
-				' marL="' +
-				(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
-				'" indent="-' +
-				bulletLvl0Margin +
-				'"'
-			strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + BULLET_TYPES['DEFAULT'] + '"/>'
+			paragraphPropXml += ` marL="${
+				textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+			}" indent="-${bulletMarL}"`
+			strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
 		} else {
 			strXmlBullet = '<a:buNone/>'
 		}

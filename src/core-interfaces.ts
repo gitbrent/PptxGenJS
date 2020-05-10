@@ -391,7 +391,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions 
 	}
 	bold?: boolean
 	breakLine?: boolean
-	bullet?: boolean | { type?: string; code?: string; style?: string; startAt?: number }
+	bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
 	charSpacing?: number
 	color?: string
 	fill?: ShapeFill
@@ -471,7 +471,8 @@ export interface ISlideMasterOptions {
 		| { line: {} }
 		| { rect: {} }
 		| { text: { options: ITextOpts } }
-		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } })[]
+		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
+	)[]
 	slideNumber?: ISlideNumber
 }
 export interface ISlideMstrObjPlchldrOpts {
@@ -622,4 +623,4 @@ export interface IPresentation {
 	slides: ISlideLib[]
 	subject: string
 	title: string
-} 
+}
