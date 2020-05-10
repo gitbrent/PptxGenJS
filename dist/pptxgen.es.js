@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-05-10T21:31:39.655Z */
+/* PptxGenJS 3.2.0-beta @ 2020-05-10T21:55:17.557Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -3755,7 +3755,7 @@ function addBackgroundDefinition(bkg, target) {
             extn: strImgExtn,
             data: bkg.data || null,
             rId: intRels,
-            Target: '../media/image' + (target.relsMedia.length + 1) + '.' + strImgExtn,
+            Target: "../media/" + target.name + "-image-" + (target.relsMedia.length + 1) + "." + strImgExtn,
         });
         target.bkgdImgRid = intRels;
     }
