@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-05-10T04:11:49.967Z */
+/* PptxGenJS 3.2.0-beta @ 2020-05-10T21:31:39.650Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -895,7 +895,8 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
     {
         // NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
         // ....: sufficient to determine column count. Therefore, check each cell for a colspan and total cols as reqd
-        tableRows[0].forEach(function (cell) {
+        var firstRow = tableRows[0] || [];
+        firstRow.forEach(function (cell) {
             if (!cell)
                 cell = { type: SLIDE_OBJECT_TYPES.tablecell };
             var cellOpts = cell.options || null;
@@ -927,7 +928,8 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
     if (!tabOpts.colW || !Array.isArray(tabOpts.colW)) {
         if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
             var arrColW_1 = [];
-            tableRows[0].forEach(function () {
+            var firstRow = tableRows[0] || [];
+            firstRow.forEach(function () {
                 arrColW_1.push(tabOpts.colW);
             });
             tabOpts.colW = [];
@@ -1197,14 +1199,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
             var arrObjTabCells = [];
             Array.from(row.cells).forEach(function (cell) {
                 // A: Get RGB text/bkgd colors
-                var arrRGB1 = window
-                    .getComputedStyle(cell)
-                    .getPropertyValue('color')
-                    .replace(/\s+/gi, '')
-                    .replace('rgba(', '')
-                    .replace('rgb(', '')
-                    .replace(')', '')
-                    .split(',');
+                var arrRGB1 = window.getComputedStyle(cell).getPropertyValue('color').replace(/\s+/gi, '').replace('rgba(', '').replace('rgb(', '').replace(')', '').split(',');
                 var arrRGB2 = window
                     .getComputedStyle(cell)
                     .getPropertyValue('background-color')
@@ -1229,26 +1224,16 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     border: null,
                     color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
                     fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
-                    fontFace: (window.getComputedStyle(cell).getPropertyValue('font-family') || '')
-                        .split(',')[0]
-                        .replace(/"/g, '')
-                        .replace('inherit', '')
-                        .replace('initial', '') || null,
-                    fontSize: Number(window
-                        .getComputedStyle(cell)
-                        .getPropertyValue('font-size')
-                        .replace(/[a-z]/gi, '')),
+                    fontFace: (window.getComputedStyle(cell).getPropertyValue('font-family') || '').split(',')[0].replace(/"/g, '').replace('inherit', '').replace('initial', '') ||
+                        null,
+                    fontSize: Number(window.getComputedStyle(cell).getPropertyValue('font-size').replace(/[a-z]/gi, '')),
                     margin: null,
                     colspan: Number(cell.getAttribute('colspan')) || null,
                     rowspan: Number(cell.getAttribute('rowspan')) || null,
                     valign: null,
                 };
                 if (['left', 'center', 'right', 'start', 'end'].indexOf(window.getComputedStyle(cell).getPropertyValue('text-align')) > -1) {
-                    var align = window
-                        .getComputedStyle(cell)
-                        .getPropertyValue('text-align')
-                        .replace('start', 'left')
-                        .replace('end', 'right');
+                    var align = window.getComputedStyle(cell).getPropertyValue('text-align').replace('start', 'left').replace('end', 'right');
                     cellOpts.align = align === 'center' ? 'center' : align === 'left' ? 'left' : align === 'right' ? 'right' : null;
                 }
                 if (['top', 'middle', 'bottom'].indexOf(window.getComputedStyle(cell).getPropertyValue('vertical-align')) > -1) {
@@ -1261,10 +1246,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                     cellOpts.margin = [0, 0, 0, 0];
                     var sidesPad = ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'];
                     sidesPad.forEach(function (val, idxs) {
-                        cellOpts.margin[idxs] = Math.round(Number(window
-                            .getComputedStyle(cell)
-                            .getPropertyValue(val)
-                            .replace(/\D/gi, '')));
+                        cellOpts.margin[idxs] = Math.round(Number(window.getComputedStyle(cell).getPropertyValue(val).replace(/\D/gi, '')));
                     });
                 }
                 // D: Add border (if any)
@@ -2071,8 +2053,8 @@ function slideObjectRelationsToXml(slide, defaultRels) {
  */
 function genXmlParagraphProperties(textObj, isDefault) {
     var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
-    var bulletLvl0Margin = 150000; //342900
     var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
+    var bulletMarL = ONEPT * 27;
     var paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '');
     // A: Build paragraphProperties
     {
@@ -2096,61 +2078,49 @@ function genXmlParagraphProperties(textObj, isDefault) {
                     break;
             }
         }
-        if (textObj.options.lineSpacing) {
-            strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>';
-        }
+        if (textObj.options.lineSpacing)
+            strXmlLnSpc = "<a:lnSpc><a:spcPts val=\"" + textObj.options.lineSpacing + "00\"/></a:lnSpc>";
         // OPTION: indent
         if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
-            paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"';
+            paragraphPropXml += " lvl=\"" + textObj.options.indentLevel + "\"";
         }
         // OPTION: Paragraph Spacing: Before/After
         if (textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0) {
-            strXmlParaSpc += '<a:spcBef><a:spcPts val="' + textObj.options.paraSpaceBefore * 100 + '"/></a:spcBef>';
+            strXmlParaSpc += "<a:spcBef><a:spcPts val=\"" + textObj.options.paraSpaceBefore * 100 + "\"/></a:spcBef>";
         }
         if (textObj.options.paraSpaceAfter && !isNaN(Number(textObj.options.paraSpaceAfter)) && textObj.options.paraSpaceAfter > 0) {
-            strXmlParaSpc += '<a:spcAft><a:spcPts val="' + textObj.options.paraSpaceAfter * 100 + '"/></a:spcAft>';
+            strXmlParaSpc += "<a:spcAft><a:spcPts val=\"" + textObj.options.paraSpaceAfter * 100 + "\"/></a:spcAft>";
         }
         // OPTION: bullet
         // NOTE: OOXML uses the unicode character set for Bullets
         // EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
         if (typeof textObj.options.bullet === 'object') {
+            if (textObj && textObj.options && textObj.options.bullet && textObj.options.bullet.marginPt)
+                bulletMarL = ONEPT * textObj.options.bullet.marginPt;
             if (textObj.options.bullet.type) {
                 if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
-                    paragraphPropXml +=
-                        ' marL="' +
-                            (textObj.options.indentLevel && textObj.options.indentLevel > 0
-                                ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel
-                                : bulletLvl0Margin) +
-                            '" indent="-' +
-                            bulletLvl0Margin +
-                            '"';
+                    paragraphPropXml += " marL=\"" + (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL) + "\" indent=\"-" + bulletMarL + "\"";
                     strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buFont typeface=\"+mj-lt\"/><a:buAutoNum type=\"" + (textObj.options.bullet.style || 'arabicPeriod') + "\" startAt=\"" + (textObj.options.bullet.startAt || '1') + "\"/>";
                 }
             }
             else if (textObj.options.bullet.code) {
-                var bulletCode = '&#x' + textObj.options.bullet.code + ';';
+                var bulletCode = "&#x" + textObj.options.bullet.code + ";";
                 // Check value for hex-ness (s/b 4 char hex)
                 if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) === false) {
                     console.warn('Warning: `bullet.code should be a 4-digit hex code (ex: 22AB)`!');
                     bulletCode = BULLET_TYPES['DEFAULT'];
                 }
-                paragraphPropXml +=
-                    ' marL="' +
-                        (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
-                        '" indent="-' +
-                        bulletLvl0Margin +
-                        '"';
+                paragraphPropXml += " marL=\"" + (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL) + "\" indent=\"-" + bulletMarL + "\"";
                 strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>';
+            }
+            else {
+                paragraphPropXml += " marL=\"" + (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL) + "\" indent=\"-" + bulletMarL + "\"";
+                strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + BULLET_TYPES['DEFAULT'] + "\"/>";
             }
         }
         else if (textObj.options.bullet === true) {
-            paragraphPropXml +=
-                ' marL="' +
-                    (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
-                    '" indent="-' +
-                    bulletLvl0Margin +
-                    '"';
-            strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + BULLET_TYPES['DEFAULT'] + '"/>';
+            paragraphPropXml += " marL=\"" + (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL) + "\" indent=\"-" + bulletMarL + "\"";
+            strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + BULLET_TYPES['DEFAULT'] + "\"/>";
         }
         else {
             strXmlBullet = '<a:buNone/>';
@@ -5893,7 +5863,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200508';
+var VERSION = '3.2.0-beta-20200510';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
