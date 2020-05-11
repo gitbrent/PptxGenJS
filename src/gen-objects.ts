@@ -833,9 +833,14 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 
 	// STEP 1: Set some options
 	{
-		// A: Placeholders should inherit their colors or override them, so don't default them
+		// A.1: Placeholders should inherit their colors or override them, so don't default them
 		if (!opt.placeholder) {
 			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
+		}
+
+		// A.2: Placeholder should inherit their bullets or override them, so don't default them
+		if (!opt.placeholder || isPlaceholder) {
+			opt.bullet = opt.bullet || false
 		}
 
 		// B

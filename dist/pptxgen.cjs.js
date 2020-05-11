@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-05-10T22:48:51.721Z */
+/* PptxGenJS 3.2.0-beta @ 2020-05-11T01:50:45.001Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2122,7 +2122,8 @@ function genXmlParagraphProperties(textObj, isDefault) {
             paragraphPropXml += " marL=\"" + (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL) + "\" indent=\"-" + bulletMarL + "\"";
             strXmlBullet = "<a:buSzPct val=\"100000\"/><a:buChar char=\"" + BULLET_TYPES['DEFAULT'] + "\"/>";
         }
-        else {
+        else if (textObj.options.bullet === false) {
+            // We only add this when the user explicitely asks for no bullet, otherwise, it can override the master defaults!
             strXmlBullet = '<a:buNone/>';
         }
         // B: Close Paragraph-Properties
@@ -3673,9 +3674,13 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
     };
     // STEP 1: Set some options
     {
-        // A: Placeholders should inherit their colors or override them, so don't default them
+        // A.1: Placeholders should inherit their colors or override them, so don't default them
         if (!opt.placeholder) {
             opt.color = opt.color || target.color || DEF_FONT_COLOR; // Set color (options > inherit from Slide > default to black)
+        }
+        // A.2: Placeholder should inherit their bullets or override them, so don't default them
+        if (!opt.placeholder || isPlaceholder) {
+            opt.bullet = opt.bullet || false;
         }
         // B
         if (opt.shape === SHAPE_TYPE.LINE) {

@@ -903,7 +903,8 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 				textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
 			}" indent="-${bulletMarL}"`
 			strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
-		} else {
+		} else if (textObj.options.bullet === false) {
+			// We only add this when the user explicitely asks for no bullet, otherwise, it can override the master defaults!
 			strXmlBullet = '<a:buNone/>'
 		}
 
