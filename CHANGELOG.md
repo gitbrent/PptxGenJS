@@ -10,11 +10,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update demo.js and docs
 
 
-## [3.2.0] - 2020-?-?
+## [3.2.0] - 2020-05-?
 ### Added
-- Added Stacked Area Charts [\#333](https://github.com/gitbrent/PptxGenJS/issue/333) ([fordaaronj](https://github.com/fordaaronj))
-- Added support for Sections [\#349](https://github.com/gitbrent/PptxGenJS/issue/349) ([atulsingh0913](https://github.com/atulsingh0913))
-- Added new bullet option `marginPt` to control left indent margin [\#504](https://github.com/gitbrent/PptxGenJS/issue/504) ([Cyan005](https://github.com/Cyan005))
+- Added: New chart type: Stacked Area Charts [\#333](https://github.com/gitbrent/PptxGenJS/issue/333) ([fordaaronj](https://github.com/fordaaronj))
+- Added: Sections can now be created [\#349](https://github.com/gitbrent/PptxGenJS/issue/349) ([atulsingh0913](https://github.com/atulsingh0913))
+- Added: New bullet option `marginPt` to control left indent margin [\#504](https://github.com/gitbrent/PptxGenJS/issue/504) ([Cyan005](https://github.com/Cyan005))
 ### Changed
 - Fixed: Text in slides does not override the bullet master [\#620](https://github.com/gitbrent/PptxGenJS/pull/620) ([sgenoud](https://github.com/sgenoud))
 - Fixed: Type errors in `index.d.ts` [\#672](https://github.com/gitbrent/PptxGenJS/issue/672) ([Krishnakanth94](https://github.com/Krishnakanth94))

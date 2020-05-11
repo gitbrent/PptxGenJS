@@ -2818,7 +2818,7 @@ function genSlides_Text(pptx) {
 			[
 				{ text: 'bullet:{code:"25BA"}, color:"00CD00"', options: { bullet: { code: '25BA' }, color: '00CD00' } },
 				{ text: 'Next bullet text', options: { bullet: true, color: '696969' } },
-				{ text: 'LAst bullet text', options: { bullet: true, color: '0000AB' } }
+				{ text: 'Last bullet text', options: { bullet: true, color: '0000AB' } }
 			],
 			{ x: 7.0, y: 5.95, w: '40%', h: 1.05, color: 'ABABAB', margin: 1 }
 		);
