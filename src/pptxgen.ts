@@ -82,7 +82,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.2.0-beta-20200510'
+const VERSION = '3.2.0-beta-20200512'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
@@ -399,6 +399,7 @@ export default class PptxGenJS implements IPresentation {
 		// STEP 1: Create element
 		let eleLink = document.createElement('a')
 		eleLink.setAttribute('style', 'display:none;')
+		eleLink.dataset.interception = 'off' // @see https://docs.microsoft.com/en-us/sharepoint/dev/spfx/hyperlinking
 		document.body.appendChild(eleLink)
 
 		// STEP 2: Download file to browser

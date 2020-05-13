@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-05-11T01:50:45.005Z */
+/* PptxGenJS 3.2.0-beta @ 2020-05-13T04:49:58.229Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -5866,7 +5866,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200510';
+var VERSION = '3.2.0-beta-20200512';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -5957,6 +5957,7 @@ var PptxGenJS = /** @class */ (function () {
             // STEP 1: Create element
             var eleLink = document.createElement('a');
             eleLink.setAttribute('style', 'display:none;');
+            eleLink.dataset.interception = 'off'; // @see https://docs.microsoft.com/en-us/sharepoint/dev/spfx/hyperlinking
             document.body.appendChild(eleLink);
             // STEP 2: Download file to browser
             // DESIGN: Use `createObjectURL()` (or MS-specific func for IE11) to D/L files in client browsers (FYI: synchronously executed)
