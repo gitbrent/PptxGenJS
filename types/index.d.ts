@@ -958,7 +958,7 @@ declare namespace PptxGenJS {
 		type: SLIDE_OBJECT_TYPES
 		options?: IObjectOptions
 		text?: string | IText[]
-		arrTabRows?: [ITableCell[]?] // TODO: remove "?" it generates tslint/ts TS8020 (Issue #672)
+		arrTabRows?: [TableCell[]?] // TODO: remove "?" it generates tslint/ts TS8020 (Issue #672)
 		chartRid?: number
 		image?: string
 		imageRid?: number
@@ -1288,17 +1288,11 @@ declare namespace PptxGenJS {
 		rowspan?: number
 		valign?: VAlign
 	}
-	export interface ITableCell {
-		type: SLIDE_OBJECT_TYPES.tablecell
+	export interface TableCell {
 		text?: string
 		options?: ITableCellOpts
-		lines?: string[]
-		lineHeight?: number
-		hmerge?: boolean
-		vmerge?: boolean
-		optImp?: any
 	}
-	export type TableRow = number[] | string[] | ITableCell[]
+	export type TableRow = number[] | string[] | TableCell[]
 	export interface ITableOptions extends PositionOptions, FontOptions {
 		align?: HAlign
 		autoPage?: boolean

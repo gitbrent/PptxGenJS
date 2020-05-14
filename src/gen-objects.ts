@@ -24,6 +24,7 @@ import {
 import {
 	BkgdOpts,
 	IChartMulti,
+	IChartOptsLib,
 	IImageOpts,
 	ILayout,
 	IMediaOpts,
@@ -38,7 +39,6 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
-	IChartOptsLib,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -652,7 +652,7 @@ export function addTableDefinition(
 		let newRow: ITableCell[] = []
 
 		if (Array.isArray(row)) {
-			row.forEach((cell: number | string | ITableCell) => {
+			row.forEach(cell => {
 				let newCell: ITableCell = {
 					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: '',

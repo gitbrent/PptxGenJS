@@ -357,19 +357,20 @@ export interface ITableToSlidesCell {
 	text?: string
 	options?: ITableCellOpts
 }
-export interface ITableCell {
-	type: SLIDE_OBJECT_TYPES.tablecell
+export interface TableCell {
 	text?: string
 	options?: ITableCellOpts
-	// internal fields below
+}
+export interface ITableCell extends TableCell {
+	type: SLIDE_OBJECT_TYPES.tablecell
 	lines?: string[]
 	lineHeight?: number
 	hmerge?: boolean
 	vmerge?: boolean
 	optImp?: any
 }
-export type TableRow = number[] | string[] | ITableCell[]
 export type ITableRow = ITableCell[]
+export type TableRow = number[] | string[] | TableCell[]
 export interface TableRowSlide {
 	rows: ITableRow[]
 }

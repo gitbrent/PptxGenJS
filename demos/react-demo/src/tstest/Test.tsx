@@ -19,8 +19,8 @@ export function testMainMethods() {
 		slideNumber: { x: 0.6, y: "95%", color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
 		objects: [
 			{ rect: { x: 0.0, y: "90%", w: "100%", h: 0.75, fill: "003b75" } },
-			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: IMGBASE64 } }
-		]
+			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: IMGBASE64 } },
+		],
 	});
 
 	// 3:
@@ -29,17 +29,24 @@ export function testMainMethods() {
 		{
 			name: "Region 1",
 			labels: ["May", "June", "July", "August", "September"],
-			values: [26, 53, 100, 75, 41]
-		}
+			values: [26, 53, 100, 75, 41],
+		},
 	];
 	slide1.addChart(pptx.ChartType.bar, dataChart, { x: 1, y: 1, w: 3, h: 3 }); // TEST: charts
 	slide1.addShape(pptx.ShapeType.rect, { x: 6, y: 1, w: 3, h: 3, fill: "66ff99" }); // TEST: shapes
 
 	// 4:
+	let rows = [];
+	rows.push(["First", "Second", "Third", "Fourth"]);
+	rows.push([{ text: "TODO" }, { text: "optionsChk", options: { fontFace: "Arial" } }]);
+	slide1.addTable(rows, { x: 1, y: 1 });
+	slide1.addTable([[{ text: "cell 1" }]], { x: 1, y: 1 });
+
+	// 5:
 	let slide2 = pptx.addSlide("MASTER_SLIDE");
 	slide2.addText("React Demo!", { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: pptx.AlignH.center });
 
-	// 5:
+	// 6:
 	//pptx.tableToSlides("html2ppt"); // Works v3.1.1 (FIXME: formatting sucks)
 
 	// Last:
