@@ -33,12 +33,14 @@ function App() {
 			{
 				name: "Region 1",
 				labels: ["May", "June", "July", "August", "September"],
-				values: [26, 53, 100, 75, 41]
-			}
+				values: [26, 53, 100, 75, 41],
+			},
 		];
 		slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 1, y: 2, w: 8, h: 3 });
 		//slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 0.36, y: 2.25, w: 4.0, h: 4.0, radarStyle: "standard" });
+
 		//slide.addShape(pptx.ShapeType.rect, { x: 4.36, y: 2.36, w: 5, h: 2.5, fill: pptx.SchemeColor.background2 });
+
 		//slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee", align: "center" });
 		slide.addText("React Demo!", {
 			x: 1,
@@ -48,8 +50,9 @@ function App() {
 			fontSize: 36,
 			align: pptx.AlignH.center,
 			fill: pptx.SchemeColor.background2,
-			color: pptx.SchemeColor.accent1
+			color: pptx.SchemeColor.accent1,
 		});
+
 		pptx.writeFile("pptxgenjs-demo-react.pptx");
 	}
 
@@ -84,7 +87,7 @@ function App() {
 						<button
 							type="button"
 							className="btn btn-outline-info mx-3 my-2 my-sm-0"
-							onClick={ev => {
+							onClick={(ev) => {
 								window.open("https://gitbrent.github.io/PptxGenJS/demo/", true);
 							}}
 						>
@@ -93,7 +96,7 @@ function App() {
 						<button
 							type="button"
 							className="btn btn-outline-info mx-3 my-2 my-sm-0"
-							onClick={ev => {
+							onClick={(ev) => {
 								window.open("https://github.com/gitbrent/PptxGenJS", true);
 							}}
 						>
@@ -103,7 +106,7 @@ function App() {
 						<button
 							type="button"
 							className="btn btn-outline-info mx-3 my-2 my-sm-0"
-							onClick={ev => {
+							onClick={(ev) => {
 								window.open("https://gitbrent.github.io/PptxGenJS/docs/installation.html", true);
 							}}
 						>
@@ -124,10 +127,10 @@ function App() {
 						<code className="language-javascript">{demoCode}</code>
 					</pre>
 
-					<button type="button" className="btn btn-success w-25 mr-3" onClick={ev => runDemo()}>
+					<button type="button" className="btn btn-success w-25 mr-3" onClick={(ev) => runDemo()}>
 						Run Demo
 					</button>
-					<button type="button" className="btn btn-primary w-25" onClick={ev => runAllTests()}>
+					<button type="button" className="btn btn-primary w-25" onClick={(ev) => runAllTests()}>
 						Run All Tests
 					</button>
 
