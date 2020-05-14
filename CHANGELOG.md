@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Fixed: Text in slides does not override the bullet master [\#620](https://github.com/gitbrent/PptxGenJS/pull/620) ([sgenoud](https://github.com/sgenoud))
 - Fixed: Type errors in `index.d.ts` [\#672](https://github.com/gitbrent/PptxGenJS/issue/672) ([Krishnakanth94](https://github.com/Krishnakanth94))
+- Fixed: Typescript defs Slide and ISlide [\#673](https://github.com/gitbrent/PptxGenJS/issue/673) ([gytisgreitai](https://github.com/gytisgreitai))
 - Fixed: Spelling consistent "Presenation" -> "Presentation" typo [\#694](https://github.com/gitbrent/PptxGenJS/pull/694) ([ankon](https://github.com/ankon))
 - Fixed: Handle errors with promise rejections [\#695](https://github.com/gitbrent/PptxGenJS/pull/695) ([ankon](https://github.com/ankon))
 - Fixed: Update 'pptx' to 'pres' in README.md [\#700](https://github.com/gitbrent/PptxGenJS/pull/700) ([lucidlemon](https://github.com/lucidlemon))

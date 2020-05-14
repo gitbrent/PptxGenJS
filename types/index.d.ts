@@ -79,7 +79,7 @@ declare class PptxGenJS {
 	/**
 	 * Add a new Slide to Presentation
 	 * @param {string} masterSlideName - Master Slide name
-	 * @returns {ISlide} the new Slide
+	 * @returns {Slide} the new Slide
 	 */
 	addSlide(masterSlideName?: string): PptxGenJS.Slide
 	/**
