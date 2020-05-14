@@ -56,7 +56,7 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
  * @return {TableRowSlide[]} array of table rows
  */
 export function getSlidesForTableRows(
-	tableRows: [ITableToSlidesCell[]?] = [],
+	tableRows: ITableToSlidesCell[][] = [],
 	tabOpts: ITableToSlidesOpts = {},
 	presLayout: ILayout,
 	masterSlide: ISlideLayout

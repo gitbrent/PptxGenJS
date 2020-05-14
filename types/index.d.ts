@@ -907,7 +907,7 @@ declare namespace PptxGenJS {
 			text: any[]
 			opts: {}
 		}
-		_arrObjTabHeadRows?: [ITableToSlidesCell[]?] // TODO: split off into internal library Iface and remove from here
+		_arrObjTabHeadRows?: ITableToSlidesCell[][]
 		addHeaderToEach?: boolean
 		autoPage?: boolean
 		autoPageCharWeight?: number
@@ -958,7 +958,7 @@ declare namespace PptxGenJS {
 		type: SLIDE_OBJECT_TYPES
 		options?: IObjectOptions
 		text?: string | IText[]
-		arrTabRows?: [TableCell[]?] // TODO: remove "?" it generates tslint/ts TS8020 (Issue #672)
+		arrTabRows?: TableCell[][]
 		chartRid?: number
 		image?: string
 		imageRid?: number

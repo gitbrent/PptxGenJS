@@ -647,7 +647,7 @@ export function addTableDefinition(
 
 	// STEP 2: Transform `tableRows` into well-formatted ITableCell's
 	// tableRows can be object or plain text array: `[{text:'cell 1'}, {text:'cell 2', options:{color:'ff0000'}}]` | `["cell 1", "cell 2"]`
-	let arrRows: [ITableCell[]?] = []
+	let arrRows: ITableCell[][] = []
 	tableRows.forEach(row => {
 		let newRow: ITableCell[] = []
 

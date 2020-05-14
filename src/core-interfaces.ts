@@ -303,14 +303,14 @@ export interface IChartMulti {
 	data: any[]
 	options: {}
 }
-
+// TODO: create TableToSlidesOpts
 export interface ITableToSlidesOpts extends ITableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
 	addShape?: { shape: any; opts: {} }
 	addTable?: { rows: any[]; opts: {} }
 	addText?: { text: any[]; opts: {} }
 	//
-	_arrObjTabHeadRows?: [ITableToSlidesCell[]?]
+	_arrObjTabHeadRows?: ITableToSlidesCell[][]
 	addHeaderToEach?: boolean
 	autoPage?: boolean
 	autoPageCharWeight?: number // -1.0 to 1.0
@@ -546,7 +546,7 @@ export interface ISlideObject {
 	// text
 	text?: string | IText[]
 	// table
-	arrTabRows?: [ITableCell[]?]
+	arrTabRows?: ITableCell[][]
 	// chart
 	chartRid?: number
 	// image:
