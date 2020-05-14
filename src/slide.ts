@@ -6,6 +6,7 @@ import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
 	IChartMulti,
 	IChartOpts,
+	IChartOptsLib,
 	IImageOpts,
 	ILayout,
 	IMediaOpts,
@@ -20,7 +21,6 @@ import {
 	IText,
 	ITextOpts,
 	TableRow,
-    IChartOptsLib,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
