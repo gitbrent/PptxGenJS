@@ -905,15 +905,14 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 			strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
 		} else if (textObj.options.bullet === false) {
 			// We only add this when the user explicitely asks for no bullet, otherwise, it can override the master defaults!
+			paragraphPropXml += ` indent="0" marL="0"` // FIX: ISSUE#589 - specify zero indent and marL or default will be hanging paragraph
 			strXmlBullet = '<a:buNone/>'
 		}
 
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
 		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) {
-			paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
-		}
+		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
 		paragraphPropXml += '</' + tag + '>'
 	}
 
