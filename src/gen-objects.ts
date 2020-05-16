@@ -839,7 +839,7 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 		}
 
 		// A.2: Placeholder should inherit their bullets or override them, so don't default them
-		if (!opt.placeholder || isPlaceholder) {
+		if (opt.placeholder || isPlaceholder) {
 			opt.bullet = opt.bullet || false
 		}
 
