@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-05-14T04:57:27.751Z */
+/* PptxGenJS 3.2.0-beta @ 2020-05-16T05:23:54.568Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2122,14 +2122,14 @@ function genXmlParagraphProperties(textObj, isDefault) {
         }
         else if (textObj.options.bullet === false) {
             // We only add this when the user explicitely asks for no bullet, otherwise, it can override the master defaults!
+            paragraphPropXml += " indent=\"0\" marL=\"0\""; // FIX: ISSUE#589 - specify zero indent and marL or default will be hanging paragraph
             strXmlBullet = '<a:buNone/>';
         }
         // B: Close Paragraph-Properties
         // IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
         paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet;
-        if (isDefault) {
+        if (isDefault)
             paragraphPropXml += genXmlTextRunProperties(textObj.options, true);
-        }
         paragraphPropXml += '</' + tag + '>';
     }
     return paragraphPropXml;
@@ -3677,7 +3677,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
             opt.color = opt.color || target.color || DEF_FONT_COLOR; // Set color (options > inherit from Slide > default to black)
         }
         // A.2: Placeholder should inherit their bullets or override them, so don't default them
-        if (!opt.placeholder || isPlaceholder) {
+        if (opt.placeholder || isPlaceholder) {
             opt.bullet = opt.bullet || false;
         }
         // B
@@ -5866,7 +5866,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200513.2344';
+var VERSION = '3.2.0-beta-20200515.2340';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
