@@ -20,11 +20,12 @@
 
 1. Update `package.json` version
 2. Update `src/pptxgen.ts` version
-3. Build using `$ npm run ship`
-4. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts`
+3. Build library: npm scripts > `ship`
+4. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
 5. Open `dist/*.js` and check headers
 6. Update `CHANGELOG.md` with new date
 7. Update `README.md` with new CDN links
+8. Update `demos/node/package.json` version
 
 ## Test Newest Library Build
 
@@ -40,7 +41,10 @@ Run Node test
 
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/node
-$ node demo.js All
+$ npm run demo
+$ npm run demo-all
+$ npm run demo-text
+$ npm run demo-stream
 ```
 
 ### React/TypeScript
