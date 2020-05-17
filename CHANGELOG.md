@@ -10,7 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Update demo.js and docs
 
 
-## [3.2.0] - 2020-05-16
+## [3.2.0] - 2020-05-18
 ### Added
 - Added: New chart type: Stacked Area Charts [\#333](https://github.com/gitbrent/PptxGenJS/issue/333) ([fordaaronj](https://github.com/fordaaronj))
 - Added: Sections can now be created [\#349](https://github.com/gitbrent/PptxGenJS/issue/349) ([atulsingh0913](https://github.com/atulsingh0913))
