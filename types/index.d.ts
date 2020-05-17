@@ -14,6 +14,7 @@ export default PptxGenJS
 declare class PptxGenJS {
 	/**
 	 * PptxGenJS Library Version
+	 * @type {string}
 	 */
 	readonly version: string
 
@@ -29,14 +30,16 @@ declare class PptxGenJS {
 	// Presentation Props
 
 	/**
-	 * Presentation layout name
+	 * Presentation layout name.
 	 * Standard layouts:
 	 * - 'LAYOUT_4x3'   (10" x 7.5")
 	 * - 'LAYOUT_16x9'  (10" x 5.625")
 	 * - 'LAYOUT_16x10' (10" x 6.25")
 	 * - 'LAYOUT_WIDE'  (13.33" x 7.5")
+	 *
 	 * Custom layouts:
-	 * Use `pptx.defineLayout()` to create custom layouts (e.g.: 'A4')
+	 * - Use `pptx.defineLayout()` to create custom layouts (e.g.: 'A4')
+	 *
 	 * @type {string}
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 	 */
@@ -51,7 +54,7 @@ declare class PptxGenJS {
 	company: string
 	/**
 	 * @type {string}
-	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PPT will throw errors upon opening!)
+	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PowerPoint will throw errors upon opening!)
 	 */
 	revision: string
 	subject: string
