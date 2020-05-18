@@ -33,7 +33,7 @@ const siteConfig = {
 		defaultLang: 'javascript',
 	},
 	scripts: [
-		'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.0.0/dist/pptxgen.bundle.js',
+		'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js',
 		'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js',
 	],
 	repoUrl: 'https://github.com/gitbrent/PptxGenJS',

@@ -90,7 +90,6 @@ class Footer extends React.Component {
 					</div>
 					<div>
 						<h5>Social</h5>
-						<a href="https://plus.google.com/u/3/115743568393356344951">Google Plus</a>
 						<a href="https://twitter.com/pptxgenjs">Twitter</a>
 						<a href="https://www.pinterest.com/pptxgenjs">Pinterest</a>
 					</div>
