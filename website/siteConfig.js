@@ -11,6 +11,7 @@ const siteConfig = {
 	url: 'https://gitbrent.github.io',
 	baseUrl: '/PptxGenJS/',
 	projectName: 'PptxGenJS',
+	organizationName: 'PptxGenJS',
 	gaTrackingId: 'UA-75147115-1',
 	headerLinks: [
 		{href: 'https://github.com/gitbrent/PptxGenJS/releases', label: 'Download'},
