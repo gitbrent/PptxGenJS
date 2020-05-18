@@ -15,6 +15,6 @@
 	},
 	"license": "MIT",
 	"dependencies": {
-		"pptxgenjs": "^3.1.1"
+		"pptxgenjs": "^3.2.0"
 	}
 }
