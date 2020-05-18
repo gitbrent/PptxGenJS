@@ -80,19 +80,19 @@ Use the online demo to create a simple presentation to see how easy it is to use
 
 ## CDN
 
-[jsDelivr Home](https://www.jsdelivr.com/package/npm/pptxgenjs)
+[jsDelivr Home](https://www.jsdelivr.com/package/gh/gitbrent/pptxgenjs)
 
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.2.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.2.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.2.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.0/dist/pptxgen.min.js"></script>
 ```
 
 ## Download
