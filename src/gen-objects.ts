@@ -815,17 +815,17 @@ export function addTableDefinition(
 
 /**
  * Adds a text object to a slide definition.
- * @param {string|IText[]} text
+ * @param {string|number|IText[]} text
  * @param {ITextOpts} opt
  * @param {ISlideLib} target - slide object that the text should be added to
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
+export function addTextDefinition(target: ISlideLib, text: string | number | IText[], opts: ITextOpts, isPlaceholder: boolean) {
 	let opt: ITextOpts = opts || {}
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
-		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
+		text: text === 0 ? '0' : (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
 		type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
 		options: opt,
 		shape: opt.shape || SHAPE_TYPE.RECTANGLE,
