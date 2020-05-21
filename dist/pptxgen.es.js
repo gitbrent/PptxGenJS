@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0 @ 2020-05-17T23:12:33.109Z */
+/* PptxGenJS 3.3.0-beta @ 2020-05-21T04:40:47.410Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -4458,7 +4458,7 @@ function makeXmlCharts(rel) {
         if (rel.opts.showLegend) {
             strXml += '<c:legend>';
             strXml += '<c:legendPos val="' + rel.opts.legendPos + '"/>';
-            strXml += '<c:layout/>';
+            //strXml += '<c:layout/>'
             strXml += '<c:overlay val="0"/>';
             if (rel.opts.legendFontFace || rel.opts.legendFontSize || rel.opts.legendColor) {
                 strXml += '<c:txPr>';
@@ -5248,24 +5248,16 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
             }
             strXml += '  </c:spPr>';
-            strXml += '<c:explosion val="0"/>';
+            //strXml += '<c:explosion val="0"/>'
             // 2: "Data Point" block for every data row
             obj.labels.forEach(function (_label, idx) {
                 strXml += '<c:dPt>';
-                strXml += '  <c:idx val="' + idx + '"/>';
-                strXml += '  <c:explosion val="0"/>';
-                strXml += '  <c:spPr>';
-                strXml +=
-                    '    <a:solidFill>' +
-                        createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) +
-                        '</a:solidFill>';
+                strXml += " <c:idx val=\"" + idx + "\"/>";
+                strXml += ' <c:bubble3D val="0"/>';
+                strXml += ' <c:spPr>';
+                strXml += "<a:solidFill>" + createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) + "</a:solidFill>";
                 if (opts.dataBorder) {
-                    strXml +=
-                        '<a:ln w="' +
-                            opts.dataBorder.pt * ONEPT +
-                            '" cap="flat"><a:solidFill>' +
-                            createColorElement(opts.dataBorder.color) +
-                            '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
+                    strXml += "<a:ln w=\"" + opts.dataBorder.pt * ONEPT + "\" cap=\"flat\"><a:solidFill>" + createColorElement(opts.dataBorder.color) + "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>";
                 }
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
                 strXml += '  </c:spPr>';
@@ -5275,21 +5267,19 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '<c:dLbls>';
             obj.labels.forEach(function (_label, idx) {
                 strXml += '<c:dLbl>';
-                strXml += '  <c:idx val="' + idx + '"/>';
-                strXml += "    <c:numFmt formatCode=\"" + (opts.dataLabelFormatCode || 'General') + "\" sourceLinked=\"0\"/>";
-                strXml += '    <c:txPr>';
-                strXml += '      <a:bodyPr/><a:lstStyle/>';
-                strXml += '      <a:p><a:pPr>';
-                strXml +=
-                    '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
-                strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
-                strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
-                strXml += '        </a:defRPr>';
+                strXml += " <c:idx val=\"" + idx + "\"/>";
+                strXml += "  <c:numFmt formatCode=\"" + (opts.dataLabelFormatCode || 'General') + "\" sourceLinked=\"0\"/>";
+                strXml += '  <c:spPr/><c:txPr>';
+                strXml += '   <a:bodyPr/><a:lstStyle/>';
+                strXml += '   <a:p><a:pPr>';
+                strXml += "   <a:defRPr sz=\"" + (opts.dataLabelFontSize || DEF_FONT_SIZE) + "00\" b=\"" + (opts.dataLabelFontBold ? 1 : 0) + "\" i=\"0\" u=\"none\" strike=\"noStrike\">";
+                strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
+                strXml += "    <a:latin typeface=\"" + (opts.dataLabelFontFace || 'Arial') + "\"/>";
+                strXml += '   </a:defRPr>';
                 strXml += '      </a:pPr></a:p>';
                 strXml += '    </c:txPr>';
-                if (chartType === CHART_TYPE.PIE) {
-                    strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'inEnd') + '"/>';
-                }
+                if (chartType === CHART_TYPE.PIE)
+                    "<c:dLblPos val=\"" + (opts.dataLabelPosition || 'inEnd') + "\"/>";
                 strXml += '    <c:showLegendKey val="0"/>';
                 strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
                 strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>';
@@ -5304,7 +5294,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '	  <a:lstStyle/>';
             strXml += '	  <a:p>';
             strXml += '		<a:pPr>';
-            strXml += '		  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">';
+            strXml += '		  <a:defRPr sz="1800" b="0" i="0" u="none" strike="noStrike">';
             strXml += '			<a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>';
             strXml += '		  </a:defRPr>';
             strXml += '		</a:pPr>';
@@ -5866,7 +5856,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0';
+var VERSION = '3.3.0-beta-20200520:2328';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
