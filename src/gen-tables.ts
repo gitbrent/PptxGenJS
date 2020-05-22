@@ -532,24 +532,22 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	// Pass head-rows as there is an option to add to each table and the parse func needs this data to fulfill that option
 	opts._arrObjTabHeadRows = arrObjTabHeadRows || null
 	opts.colW = arrColW
-	getSlidesForTableRows([...arrObjTabHeadRows, ...arrObjTabBodyRows, ...arrObjTabFootRows] as [ITableToSlidesCell[]], opts, pptx.presLayout, masterSlide).forEach(
-		(slide, idxTr) => {
-			// A: Create new Slide
-			let newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null })
+	getSlidesForTableRows([...arrObjTabHeadRows, ...arrObjTabBodyRows, ...arrObjTabFootRows], opts, pptx.presLayout, masterSlide).forEach((slide, idxTr) => {
+		// A: Create new Slide
+		let newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null })
 
-			// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
-			if (idxTr > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
-			if (opts.verbose) console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+		// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+		if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
+		if (idxTr > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
+		if (opts.verbose) console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
-			// C: Add table to Slide
-			newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })
+		// C: Add table to Slide
+		newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })
 
-			// D: Add any additional objects
-			if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })
-			if (opts.addShape) newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {})
-			if (opts.addTable) newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {})
-			if (opts.addText) newSlide.addText(opts.addText.text, opts.addText.opts || {})
-		}
-	)
+		// D: Add any additional objects
+		if (opts.addImage) newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h })
+		if (opts.addShape) newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {})
+		if (opts.addTable) newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {})
+		if (opts.addText) newSlide.addText(opts.addText.text, opts.addText.opts || {})
+	})
 }
