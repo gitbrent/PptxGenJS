@@ -2,7 +2,8 @@
   "scripts": {
     "start": "docusaurus-start",
     "build": "docusaurus-build",
-    "deploy": "./node_modules/gulp/bin/gulp.js"
+    "deploy": "./node_modules/gulp/bin/gulp.js",
+    "ship": "docusaurus-build && ./node_modules/gulp/bin/gulp.js"
   },
   "devDependencies": {
     "docusaurus": "^1.14.4",
