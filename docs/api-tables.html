@@ -89,23 +89,26 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 </thead>
 <tbody>
 <tr><td style="text-align:left"><code>autoPage</code></td><td style="text-align:left">boolean</td><td style="text-align:left"><code>true</code></td><td style="text-align:left">auto-page table</td><td style="text-align:left"><code>true</code> or <code>false</code>. Ex: <code>{autoPage:false}</code></td></tr>
-<tr><td style="text-align:left"><code>lineWeight</code></td><td style="text-align:left">float</td><td style="text-align:left"><code>0</code></td><td style="text-align:left">line weight value</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{lineWeight:0.5}</code></td></tr>
-<tr><td style="text-align:left"><code>newPageStartY</code></td><td style="text-align:left">number/string</td><td style="text-align:left"></td><td style="text-align:left">starting <code>y</code> value for tables on new Slides</td><td style="text-align:left">0-n OR 'n%'. Ex:<code>{newPageStartY:0.5}</code></td></tr>
+<tr><td style="text-align:left"><code>autoPageCharWeight</code></td><td style="text-align:left">float</td><td style="text-align:left"><code>0</code></td><td style="text-align:left">char weight value (adjusts letter spacing)</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{autoPageCharWeight:0.5}</code></td></tr>
+<tr><td style="text-align:left"><code>autoPageLineWeight</code></td><td style="text-align:left">float</td><td style="text-align:left"><code>0</code></td><td style="text-align:left">line weight value (adjusts line height)</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{autoPageLineWeight:0.5}</code></td></tr>
+<tr><td style="text-align:left"><code>newSlideStartY</code></td><td style="text-align:left">number/string</td><td style="text-align:left"></td><td style="text-align:left">starting <code>y</code> value for tables on new Slides</td><td style="text-align:left">0-n OR 'n%'. Ex:<code>{newSlideStartY:0.5}</code></td></tr>
 </tbody>
 </table>
 <h3><a class="anchor" aria-hidden="true" id="option-details"></a><a href="#option-details" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Option Details</h3>
 <ul>
 <li><code>autoPage</code>: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.</li>
-<li><code>lineWeight</code>: adjusts the calculated height of lines. If too much empty space is left under each table,
-then increase lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides, then
-reduce the lineWeight value. Also helpful when using some fonts that do not have the usual golden ratio.</li>
-<li><code>newPageStartY</code>: provides the ability to specify where new tables will be placed on new Slides. For example,
+<li><code>autoPageCharWeight</code>: adjusts the calculated width of characters. If too much empty space is left on each line,
+then increase char weight value. Conversely, if the table rows are overflowing, then reduce the char weight value.</li>
+<li><code>autoPageLineWeight</code>: adjusts the calculated height of lines. If too much empty space is left under each table,
+then increase line weight value. Conversely, if the tables are overflowing the bottom of the Slides, then
+reduce the line weight value. Also helpful when using some fonts that do not have the usual golden ratio.</li>
+<li><code>newSlideStartY</code>: provides the ability to specify where new tables will be placed on new Slides. For example,
 you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
 tables. Use this option to ensure there is no wasted space and to guarantee a professional look.</li>
 </ul>
 <h2><a class="anchor" aria-hidden="true" id="table-auto-paging-notes"></a><a href="#table-auto-paging-notes" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Auto-Paging Notes</h2>
 <ul>
-<li>New slides will be created as tables overflow. The table will start at either <code>newPageStartY</code> (if present) or the Slide's top <code>margin</code>.</li>
+<li>New slides will be created as tables overflow. The table will start at either <code>newSlideStartY</code> (if present) or the Slide's top <code>margin</code>.</li>
 <li>Tables will retain their existing <code>x</code>, <code>w</code>, and <code>colW</code> values as they are rendered onto subsequent Slides.</li>
 <li>Auto-paging is not an exact science! Try using different <code>lineWeight</code> and Slide margin values if your tables are overflowing the Slide.</li>
 <li>There are many examples of auto-paging in the <code>examples</code> folder.</li>
@@ -168,36 +171,36 @@ as the <code>text</code> value allows fine-grained control over the text inside 
 rows.push([<span class="hljs-string">"First"</span>, <span class="hljs-string">"Second"</span>, <span class="hljs-string">"Third"</span>]);
 <span class="hljs-comment">// Row Two: set/override formatting for each cell</span>
 rows.push([
-  { <span class="hljs-attr">text</span>: <span class="hljs-string">"1st"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"ff0000"</span> } },
-  { <span class="hljs-attr">text</span>: <span class="hljs-string">"2nd"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"00ff00"</span> } },
-  { <span class="hljs-attr">text</span>: <span class="hljs-string">"3rd"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"0000ff"</span> } }
+    { <span class="hljs-attr">text</span>: <span class="hljs-string">"1st"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"ff0000"</span> } },
+    { <span class="hljs-attr">text</span>: <span class="hljs-string">"2nd"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"00ff00"</span> } },
+    { <span class="hljs-attr">text</span>: <span class="hljs-string">"3rd"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"0000ff"</span> } },
 ]);
 slide.addTable(rows, { <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>, <span class="hljs-attr">color</span>: <span class="hljs-string">"363636"</span> });
 
 <span class="hljs-comment">// TABLE 2: Using word-level formatting inside cells</span>
 <span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> An array of text/options objects provides fine-grained control over formatting</span>
 <span class="hljs-keyword">var</span> arrObjText = [
-  { <span class="hljs-attr">text</span>: <span class="hljs-string">"Red "</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"FF0000"</span> } },
-  { <span class="hljs-attr">text</span>: <span class="hljs-string">"Green "</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"00FF00"</span> } },
-  { <span class="hljs-attr">text</span>: <span class="hljs-string">"Blue"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"0000FF"</span> } }
+    { <span class="hljs-attr">text</span>: <span class="hljs-string">"Red "</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"FF0000"</span> } },
+    { <span class="hljs-attr">text</span>: <span class="hljs-string">"Green "</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"00FF00"</span> } },
+    { <span class="hljs-attr">text</span>: <span class="hljs-string">"Blue"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"0000FF"</span> } },
 ];
 <span class="hljs-comment">// EX A: Pass an array of text objects to `addText()`</span>
 slide.addText(arrObjText, {
-  <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
-  <span class="hljs-attr">y</span>: <span class="hljs-number">2.0</span>,
-  <span class="hljs-attr">w</span>: <span class="hljs-number">9</span>,
-  <span class="hljs-attr">h</span>: <span class="hljs-number">1</span>,
-  <span class="hljs-attr">margin</span>: <span class="hljs-number">0.1</span>,
-  <span class="hljs-attr">fill</span>: <span class="hljs-string">"232323"</span>
+    <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
+    <span class="hljs-attr">y</span>: <span class="hljs-number">2.0</span>,
+    <span class="hljs-attr">w</span>: <span class="hljs-number">9</span>,
+    <span class="hljs-attr">h</span>: <span class="hljs-number">1</span>,
+    <span class="hljs-attr">margin</span>: <span class="hljs-number">0.1</span>,
+    <span class="hljs-attr">fill</span>: <span class="hljs-string">"232323"</span>,
 });
 
 <span class="hljs-comment">// EX B: Pass the same objects as a cell's `text` value</span>
 <span class="hljs-keyword">var</span> arrTabRows = [
-  [
-    { <span class="hljs-attr">text</span>: <span class="hljs-string">"Cell 1 A"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span> } },
-    { <span class="hljs-attr">text</span>: <span class="hljs-string">"Cell 1 B"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Courier"</span> } },
-    { <span class="hljs-attr">text</span>: arrObjText, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fill</span>: <span class="hljs-string">"232323"</span> } }
-  ]
+    [
+        { <span class="hljs-attr">text</span>: <span class="hljs-string">"Cell 1 A"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span> } },
+        { <span class="hljs-attr">text</span>: <span class="hljs-string">"Cell 1 B"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Courier"</span> } },
+        { <span class="hljs-attr">text</span>: arrObjText, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fill</span>: <span class="hljs-string">"232323"</span> } },
+    ],
 ];
 slide.addTable(arrTabRows, { <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">3.5</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">9</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">colW</span>: [<span class="hljs-number">1.5</span>, <span class="hljs-number">1.5</span>, <span class="hljs-number">6</span>] });
 </code></pre>
@@ -205,66 +208,69 @@ slide.addTable(arrTabRows, { <span class="hljs-attr">x</span>: <span class="hljs
 <pre><code class="hljs css language-javascript"><span class="hljs-keyword">var</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
 <span class="hljs-keyword">var</span> slide = pptx.addSlide();
 slide.addText(<span class="hljs-string">"Demo-03: Table"</span>, {
-  <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
-  <span class="hljs-attr">y</span>: <span class="hljs-number">0.25</span>,
-  <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,
-  <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span>,
-  <span class="hljs-attr">color</span>: <span class="hljs-string">"0088CC"</span>
+    <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
+    <span class="hljs-attr">y</span>: <span class="hljs-number">0.25</span>,
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,
+    <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">"0088CC"</span>,
 });
 
 <span class="hljs-comment">// TABLE 1: Single-row table</span>
 <span class="hljs-comment">// --------</span>
 <span class="hljs-keyword">var</span> rows = [[<span class="hljs-string">"Cell 1"</span>, <span class="hljs-string">"Cell 2"</span>, <span class="hljs-string">"Cell 3"</span>]];
 <span class="hljs-keyword">var</span> tabOpts = {
-  <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
-  <span class="hljs-attr">y</span>: <span class="hljs-number">1.0</span>,
-  <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
-  <span class="hljs-attr">fill</span>: <span class="hljs-string">"F7F7F7"</span>,
-  <span class="hljs-attr">fontSize</span>: <span class="hljs-number">14</span>,
-  <span class="hljs-attr">color</span>: <span class="hljs-string">"363636"</span>
+    <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
+    <span class="hljs-attr">y</span>: <span class="hljs-number">1.0</span>,
+    <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
+    <span class="hljs-attr">fill</span>: <span class="hljs-string">"F7F7F7"</span>,
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">14</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">"363636"</span>,
 };
 slide.addTable(rows, tabOpts);
 
 <span class="hljs-comment">// TABLE 2: Multi-row table (each rows array element is an array of cells)</span>
 <span class="hljs-comment">// --------</span>
-<span class="hljs-keyword">var</span> rows = [[<span class="hljs-string">"A1"</span>, <span class="hljs-string">"B1"</span>, <span class="hljs-string">"C1"</span>], [<span class="hljs-string">"A2"</span>, <span class="hljs-string">"B2"</span>, <span class="hljs-string">"C2"</span>]];
+<span class="hljs-keyword">var</span> rows = [
+    [<span class="hljs-string">"A1"</span>, <span class="hljs-string">"B1"</span>, <span class="hljs-string">"C1"</span>],
+    [<span class="hljs-string">"A2"</span>, <span class="hljs-string">"B2"</span>, <span class="hljs-string">"C2"</span>],
+];
 <span class="hljs-keyword">var</span> tabOpts = {
-  <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
-  <span class="hljs-attr">y</span>: <span class="hljs-number">2.0</span>,
-  <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
-  <span class="hljs-attr">fill</span>: <span class="hljs-string">"F7F7F7"</span>,
-  <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,
-  <span class="hljs-attr">color</span>: <span class="hljs-string">"6f9fc9"</span>
+    <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
+    <span class="hljs-attr">y</span>: <span class="hljs-number">2.0</span>,
+    <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
+    <span class="hljs-attr">fill</span>: <span class="hljs-string">"F7F7F7"</span>,
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">"6f9fc9"</span>,
 };
 slide.addTable(rows, tabOpts);
 
 <span class="hljs-comment">// TABLE 3: Formatting at a cell level - use this to selectively override table's cell options</span>
 <span class="hljs-comment">// --------</span>
 <span class="hljs-keyword">var</span> rows = [
-  [
-    {
-      <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Lft"</span>,
-      <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"left"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span> }
-    },
-    {
-      <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Ctr"</span>,
-      <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"center"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Verdana"</span> }
-    },
-    {
-      <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Rgt"</span>,
-      <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"right"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Courier"</span> }
-    }
-  ]
+    [
+        {
+            <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Lft"</span>,
+            <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"left"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span> },
+        },
+        {
+            <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Ctr"</span>,
+            <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"center"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Verdana"</span> },
+        },
+        {
+            <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Rgt"</span>,
+            <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"right"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Courier"</span> },
+        },
+    ],
 ];
 <span class="hljs-keyword">var</span> tabOpts = {
-  <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
-  <span class="hljs-attr">y</span>: <span class="hljs-number">4.5</span>,
-  <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
-  <span class="hljs-attr">rowH</span>: <span class="hljs-number">0.6</span>,
-  <span class="hljs-attr">fill</span>: <span class="hljs-string">"F7F7F7"</span>,
-  <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,
-  <span class="hljs-attr">color</span>: <span class="hljs-string">"6f9fc9"</span>,
-  <span class="hljs-attr">valign</span>: <span class="hljs-string">"center"</span>
+    <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
+    <span class="hljs-attr">y</span>: <span class="hljs-number">4.5</span>,
+    <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
+    <span class="hljs-attr">rowH</span>: <span class="hljs-number">0.6</span>,
+    <span class="hljs-attr">fill</span>: <span class="hljs-string">"F7F7F7"</span>,
+    <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span>,
+    <span class="hljs-attr">color</span>: <span class="hljs-string">"6f9fc9"</span>,
+    <span class="hljs-attr">valign</span>: <span class="hljs-string">"center"</span>,
 };
 slide.addTable(rows, tabOpts);
 
