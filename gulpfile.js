@@ -24,8 +24,7 @@ gulp.task('build', () => {
 				globals: {
 					jszip: 'JSZip'
 				},
-				sourcemap: true,
-				definitions: true
+				sourcemap: true
 			})
 			return bundle
 		})
