@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200520
+* BLD.: 20200521
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -651,13 +651,13 @@ function genSlides_Table(pptx) {
 		// autoPageCharWeight option demos
 		pptx.addSection({ title: 'Tables: Auto-Paging CharWeight' });
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging CharWeight'});
-		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
+		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageCharWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:0.23, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:0.0 } );
 
-		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:0.25', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4, h:0.4} );
+		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageCharWeight:0.25', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:0.25 } );
 
-		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:-0.25', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4, h:0.4} );
+		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageCharWeight:-0.25', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:-0.25 } );
 	}
 }
