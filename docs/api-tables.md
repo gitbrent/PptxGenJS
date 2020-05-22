@@ -25,28 +25,31 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 
 ## Table Auto-Paging Options (`ITableOptions`)
 
-| Option          | Type          | Default | Description                                 | Possible Values                           |
-| :-------------- | :------------ | :------ | :------------------------------------------ | :---------------------------------------- |
-| `autoPage`      | boolean       | `true`  | auto-page table                             | `true` or `false`. Ex: `{autoPage:false}` |
-| `lineWeight`    | float         | `0`     | line weight value                           | -1.0 to 1.0. Ex: `{lineWeight:0.5}`       |
-| `newPageStartY` | number/string |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newPageStartY:0.5}`     |
+| Option               | Type          | Default | Description                                 | Possible Values                             |
+| :------------------- | :------------ | :------ | :------------------------------------------ | :------------------------------------------ |
+| `autoPage`           | boolean       | `true`  | auto-page table                             | `true` or `false`. Ex: `{autoPage:false}`   |
+| `autoPageCharWeight` | float         | `0`     | char weight value (adjusts letter spacing)  | -1.0 to 1.0. Ex: `{autoPageCharWeight:0.5}` |
+| `autoPageLineWeight` | float         | `0`     | line weight value (adjusts line height)     | -1.0 to 1.0. Ex: `{autoPageLineWeight:0.5}` |
+| `newSlideStartY`     | number/string |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newSlideStartY:0.5}`      |
 
 ### Option Details
 
-- `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
-- `lineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
-  then increase lineWeight value. Conversely, if the tables are overflowing the bottom of the Slides, then
-  reduce the lineWeight value. Also helpful when using some fonts that do not have the usual golden ratio.
-- `newPageStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
-  you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
-  tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
+-   `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
+-   `autoPageCharWeight`: adjusts the calculated width of characters. If too much empty space is left on each line,
+    then increase char weight value. Conversely, if the table rows are overflowing, then reduce the char weight value.
+-   `autoPageLineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
+    then increase line weight value. Conversely, if the tables are overflowing the bottom of the Slides, then
+    reduce the line weight value. Also helpful when using some fonts that do not have the usual golden ratio.
+-   `newSlideStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
+    you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
+    tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
 
 ## Table Auto-Paging Notes
 
-- New slides will be created as tables overflow. The table will start at either `newPageStartY` (if present) or the Slide's top `margin`.
-- Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides.
-- Auto-paging is not an exact science! Try using different `lineWeight` and Slide margin values if your tables are overflowing the Slide.
-- There are many examples of auto-paging in the `examples` folder.
+-   New slides will be created as tables overflow. The table will start at either `newSlideStartY` (if present) or the Slide's top `margin`.
+-   Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides.
+-   Auto-paging is not an exact science! Try using different `lineWeight` and Slide margin values if your tables are overflowing the Slide.
+-   There are many examples of auto-paging in the `examples` folder.
 
 ## Table Formatting Options (`ITableOptions`)
 
@@ -69,28 +72,29 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `valign`    | string  |        |         | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`)                                    |
 
 ### Border Options (`IBorderOptions`)
-| Option      | Type    | Default | Description        | Possible Values                                                                   |
-| :---------- | :------ | :------ | :----------------- | :-------------------------------------------------------------------------------- |
-| `type`      | string  | `solid` | border type        | `none` or `solid` or `dash`                                                       |
-| `pt`        | string  | `1`     | border thickness   | any positive number                                                               |
-| `color`     | string  | `black` | cell border        | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
+
+| Option  | Type   | Default | Description      | Possible Values                                                                   |
+| :------ | :----- | :------ | :--------------- | :-------------------------------------------------------------------------------- |
+| `type`  | string | `solid` | border type      | `none` or `solid` or `dash`                                                       |
+| `pt`    | string | `1`     | border thickness | any positive number                                                               |
+| `color` | string | `black` | cell border      | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 
 ## Table Formatting Notes
 
-- **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
-- You can selectively override formatting at a cell-level providing any **Formatting Option** in the cell `options`
+-   **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
+-   You can selectively override formatting at a cell-level providing any **Formatting Option** in the cell `options`
 
 ## Table Cell Formatting
 
-- Table cells can be either a plain text string or an object with text and options properties
-- When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
-- Cell borders can be removed (aka: borderless table) by using the 'none' type (Ex: `border: {type:'none'}`)
+-   Table cells can be either a plain text string or an object with text and options properties
+-   When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
+-   Cell borders can be removed (aka: borderless table) by using the 'none' type (Ex: `border: {type:'none'}`)
 
 Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
 as the `text` value allows fine-grained control over the text inside cells.
 
-- Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
-- See below for examples or view the `demos/browser/index.html` page for lots more
+-   Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
+-   See below for examples or view the `demos/browser/index.html` page for lots more
 
 ## Table Cell Formatting Examples
 
@@ -101,36 +105,36 @@ var rows = [];
 rows.push(["First", "Second", "Third"]);
 // Row Two: set/override formatting for each cell
 rows.push([
-  { text: "1st", options: { color: "ff0000" } },
-  { text: "2nd", options: { color: "00ff00" } },
-  { text: "3rd", options: { color: "0000ff" } }
+    { text: "1st", options: { color: "ff0000" } },
+    { text: "2nd", options: { color: "00ff00" } },
+    { text: "3rd", options: { color: "0000ff" } },
 ]);
 slide.addTable(rows, { x: 0.5, y: 1.0, w: 9.0, color: "363636" });
 
 // TABLE 2: Using word-level formatting inside cells
 // NOTE: An array of text/options objects provides fine-grained control over formatting
 var arrObjText = [
-  { text: "Red ", options: { color: "FF0000" } },
-  { text: "Green ", options: { color: "00FF00" } },
-  { text: "Blue", options: { color: "0000FF" } }
+    { text: "Red ", options: { color: "FF0000" } },
+    { text: "Green ", options: { color: "00FF00" } },
+    { text: "Blue", options: { color: "0000FF" } },
 ];
 // EX A: Pass an array of text objects to `addText()`
 slide.addText(arrObjText, {
-  x: 0.5,
-  y: 2.0,
-  w: 9,
-  h: 1,
-  margin: 0.1,
-  fill: "232323"
+    x: 0.5,
+    y: 2.0,
+    w: 9,
+    h: 1,
+    margin: 0.1,
+    fill: "232323",
 });
 
 // EX B: Pass the same objects as a cell's `text` value
 var arrTabRows = [
-  [
-    { text: "Cell 1 A", options: { fontFace: "Arial" } },
-    { text: "Cell 1 B", options: { fontFace: "Courier" } },
-    { text: arrObjText, options: { fill: "232323" } }
-  ]
+    [
+        { text: "Cell 1 A", options: { fontFace: "Arial" } },
+        { text: "Cell 1 B", options: { fontFace: "Courier" } },
+        { text: arrObjText, options: { fill: "232323" } },
+    ],
 ];
 slide.addTable(arrTabRows, { x: 0.5, y: 3.5, w: 9, h: 1, colW: [1.5, 1.5, 6] });
 ```
@@ -141,66 +145,69 @@ slide.addTable(arrTabRows, { x: 0.5, y: 3.5, w: 9, h: 1, colW: [1.5, 1.5, 6] });
 var pptx = new PptxGenJS();
 var slide = pptx.addSlide();
 slide.addText("Demo-03: Table", {
-  x: 0.5,
-  y: 0.25,
-  fontSize: 18,
-  fontFace: "Arial",
-  color: "0088CC"
+    x: 0.5,
+    y: 0.25,
+    fontSize: 18,
+    fontFace: "Arial",
+    color: "0088CC",
 });
 
 // TABLE 1: Single-row table
 // --------
 var rows = [["Cell 1", "Cell 2", "Cell 3"]];
 var tabOpts = {
-  x: 0.5,
-  y: 1.0,
-  w: 9.0,
-  fill: "F7F7F7",
-  fontSize: 14,
-  color: "363636"
+    x: 0.5,
+    y: 1.0,
+    w: 9.0,
+    fill: "F7F7F7",
+    fontSize: 14,
+    color: "363636",
 };
 slide.addTable(rows, tabOpts);
 
 // TABLE 2: Multi-row table (each rows array element is an array of cells)
 // --------
-var rows = [["A1", "B1", "C1"], ["A2", "B2", "C2"]];
+var rows = [
+    ["A1", "B1", "C1"],
+    ["A2", "B2", "C2"],
+];
 var tabOpts = {
-  x: 0.5,
-  y: 2.0,
-  w: 9.0,
-  fill: "F7F7F7",
-  fontSize: 18,
-  color: "6f9fc9"
+    x: 0.5,
+    y: 2.0,
+    w: 9.0,
+    fill: "F7F7F7",
+    fontSize: 18,
+    color: "6f9fc9",
 };
 slide.addTable(rows, tabOpts);
 
 // TABLE 3: Formatting at a cell level - use this to selectively override table's cell options
 // --------
 var rows = [
-  [
-    {
-      text: "Top Lft",
-      options: { valign: "top", align: "left", fontFace: "Arial" }
-    },
-    {
-      text: "Top Ctr",
-      options: { valign: "top", align: "center", fontFace: "Verdana" }
-    },
-    {
-      text: "Top Rgt",
-      options: { valign: "top", align: "right", fontFace: "Courier" }
-    }
-  ]
+    [
+        {
+            text: "Top Lft",
+            options: { valign: "top", align: "left", fontFace: "Arial" },
+        },
+        {
+            text: "Top Ctr",
+            options: { valign: "top", align: "center", fontFace: "Verdana" },
+        },
+        {
+            text: "Top Rgt",
+            options: { valign: "top", align: "right", fontFace: "Courier" },
+        },
+    ],
 ];
 var tabOpts = {
-  x: 0.5,
-  y: 4.5,
-  w: 9.0,
-  rowH: 0.6,
-  fill: "F7F7F7",
-  fontSize: 18,
-  color: "6f9fc9",
-  valign: "center"
+    x: 0.5,
+    y: 4.5,
+    w: 9.0,
+    rowH: 0.6,
+    fill: "F7F7F7",
+    fontSize: 18,
+    color: "6f9fc9",
+    valign: "center",
 };
 slide.addTable(rows, tabOpts);
 
