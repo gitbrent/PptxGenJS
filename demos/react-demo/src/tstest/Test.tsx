@@ -16,10 +16,16 @@ export function testMainMethods() {
 		title: "MASTER_SLIDE",
 		bkgd: "FFFFFF",
 		margin: [0.5, 0.25, 1.0, 0.25],
-		slideNumber: { x: 0.6, y: "95%", color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
+		slideNumber: { x: 0.6, y: "95%", color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: pptx.AlignH.center },
 		objects: [
 			{ rect: { x: 0.0, y: "90%", w: "100%", h: 0.75, fill: "003b75" } },
 			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: IMGBASE64 } },
+			{
+				text: {
+					text: "S.T.A.R. Laboratories - Confidential",
+					options: { x: 0, y: 6.9, w: "100%", align: "center", color: "FFFFFF", fontSize: 12 },
+				},
+			},
 		],
 	});
 
@@ -32,7 +38,7 @@ export function testMainMethods() {
 			values: [26, 53, 100, 75, 41],
 		},
 	];
-	slide1.addChart(pptx.ChartType.bar, dataChart, { x:0.5, y: 2.5, w: 5.25, h: 4 }); // TEST: charts
+	slide1.addChart(pptx.ChartType.bar, dataChart, { x: 0.5, y: 2.5, w: 5.25, h: 4 }); // TEST: charts
 
 	slide1.addShape(pptx.ShapeType.rect, { x: 7.6, y: 2.8, w: 3, h: 3, fill: "66ff99" }); // TEST: shapes
 
