@@ -458,6 +458,7 @@ export interface ILayoutProps {
 	height: number
 }
 export interface ISlideNumber extends PositionOptions, FontOptions {
+	align?: HAlign
 	color?: string
 }
 export interface ISlideMasterOptions {
@@ -471,7 +472,7 @@ export interface ISlideMasterOptions {
 		| { image: {} }
 		| { line: {} }
 		| { rect: {} }
-		| { text: { options: ITextOpts } }
+		| { text: { options: ITextOpts; text?: string } }
 		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 	)[]
 	slideNumber?: ISlideNumber

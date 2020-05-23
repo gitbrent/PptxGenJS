@@ -857,6 +857,7 @@ declare namespace PptxGenJS {
 			| {
 					text: {
 						options: ITextOpts
+						text?: string
 					}
 			  }
 			| {
@@ -1034,6 +1035,7 @@ declare namespace PptxGenJS {
 
 	// slideNumber
 	export interface ISlideNumber extends PositionOptions, FontOptions {
+		align?: HAlign
 		color?: string
 	}
 
