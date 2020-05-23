@@ -1130,7 +1130,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 			}
 
 			// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
-			if (obj.options.breakLine || obj.text.indexOf(CRLF) > -1) {
+			if (obj.options.breakLine || (obj.text || '').indexOf(CRLF) > -1) {
 				obj.text.split(CRLF).forEach((line, lineIdx) => {
 					// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 3)
 					// NOTE: Use "idx>0" so lines wont start with linebreak (eg:empty first line)
