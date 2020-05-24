@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.1-beta @ 2020-05-24T03:36:23.001Z */
+/* PptxGenJS 3.2.1-beta @ 2020-05-24T05:12:38.143Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -1315,11 +1315,11 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         if (opts.addImage)
             newSlide.addImage({ path: opts.addImage.url, x: opts.addImage.x, y: opts.addImage.y, w: opts.addImage.w, h: opts.addImage.h });
         if (opts.addShape)
-            newSlide.addShape(opts.addShape.shape, opts.addShape.opts || {});
+            newSlide.addShape(opts.addShape.shape, opts.addShape.options || {});
         if (opts.addTable)
-            newSlide.addTable(opts.addTable.rows, opts.addTable.opts || {});
+            newSlide.addTable(opts.addTable.rows, opts.addTable.options || {});
         if (opts.addText)
-            newSlide.addText(opts.addText.text, opts.addText.opts || {});
+            newSlide.addText(opts.addText.text, opts.addText.options || {});
     });
 }
 
