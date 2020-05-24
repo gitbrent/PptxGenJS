@@ -1108,6 +1108,8 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	// STEP 2: Grab options, format line-breaks, etc.
 	if (Array.isArray(slideObj.text)) {
 		slideObj.text.forEach((obj, idx) => {
+			if (!obj.text) obj.text = ''
+
 			// A: Set options
 			obj.options = obj.options || opts || {}
 			if (idx === 0 && obj.options && !obj.options.bullet && opts.bullet) obj.options.bullet = opts.bullet
@@ -1130,7 +1132,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 			}
 
 			// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
-			if (obj.options.breakLine || (obj.text || '').indexOf(CRLF) > -1) {
+			if (obj.options.breakLine || obj.text.indexOf(CRLF) > -1) {
 				obj.text.split(CRLF).forEach((line, lineIdx) => {
 					// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 3)
 					// NOTE: Use "idx>0" so lines wont start with linebreak (eg:empty first line)
