@@ -5,8 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.3.0-beta">
-	<meta name="updated" content="2020-05-17">
+	<meta name="version" content="3.2.1-beta">
+	<meta name="updated" content="2020-05-23">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -468,7 +468,7 @@
 			// EXAMPLE: Add any dynamic content to each generated Slide
 			// DESC: Add something you cant predefine in a master - like a username/timestamp for each slide, etc.
 			// NOTE: You can do this for all other types as well: .addShape(), .addTable() and .addImage()
-			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:1.1, y:0.6, color:'0088CC', fontFace:'Arial', fontSize:12 } };
+			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:0.1, y:0.07, color:'0088CC', fontFace:'Arial', fontSize:12 } };
 
 			// STEP 4: Pass table to tableToSlides function to produce 1-N slides
 			pptx.tableToSlides('tabAutoPaging', objOpts);

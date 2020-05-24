@@ -306,9 +306,9 @@ export interface IChartMulti {
 // TODO: create TableToSlidesOpts
 export interface ITableToSlidesOpts extends ITableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
-	addShape?: { shape: any; opts: {} }
-	addTable?: { rows: any[]; opts: {} }
-	addText?: { text: any[]; opts: {} }
+	addShape?: { shape: any; options: {} }
+	addTable?: { rows: any[]; options: {} }
+	addText?: { text: any[]; options: {} }
 	//
 	_arrObjTabHeadRows?: ITableToSlidesCell[][]
 	addHeaderToEach?: boolean

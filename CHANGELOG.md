@@ -6,9 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.3.0] - 2020-??-??
+## [3.2.1] - 2020-05-25
 ### Added
 ### Changed
+- Fixed: `addTable`, `addText`, etc. not working properly inside tableToSlides [\#715](https://github.com/gitbrent/PptxGenJS/issue/715) ([Smithvinayakiya](https://github.com/Smithvinayakiya))
+- Fixed: Correct missing type: ISlideMasterOptions `text` prop and `slideNumber` align ([gitbrent](https://github.com/gitbrent))
+- Fixed: Documentation: Corrected max value for `barGapWidthPct` ([gitbrent](https://github.com/gitbrent))
 
 
 
