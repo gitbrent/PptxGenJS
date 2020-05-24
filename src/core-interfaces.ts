@@ -370,6 +370,7 @@ export interface ITableCell extends TableCell {
 	optImp?: any
 }
 export type ITableRow = ITableCell[]
+// TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
 export type TableRow = number[] | string[] | TableCell[]
 export interface TableRowSlide {
 	rows: ITableRow[]
