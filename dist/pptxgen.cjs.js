@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.1-beta @ 2020-05-23T18:18:47.267Z */
+/* PptxGenJS 3.2.1-beta @ 2020-05-24T03:36:22.994Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2318,6 +2318,8 @@ function genXmlTextBody(slideObj) {
     // STEP 2: Grab options, format line-breaks, etc.
     if (Array.isArray(slideObj.text)) {
         slideObj.text.forEach(function (obj, idx) {
+            if (!obj.text)
+                obj.text = '';
             // A: Set options
             obj.options = obj.options || opts || {};
             if (idx === 0 && obj.options && !obj.options.bullet && opts.bullet)
@@ -5858,7 +5860,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.1-beta-20200523:1314';
+var VERSION = '3.2.1-beta-20200523:2231';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
