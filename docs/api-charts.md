@@ -124,7 +124,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | Option                 | Type    | Unit    | Default   | Description                | Possible Values                            |
 | :--------------------- | :------ | :------ | :-------- | :------------------------- | :----------------------------------------- |
 | `barDir`               | string  |         | `col`     | bar direction        | (*Bar Chart*) `bar` (horizontal) or `col` (vertical). Ex: `{barDir:'bar'}` |
-| `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-999. Ex: `{ barGapWidthPct:50 }` |
+| `barGapWidthPct`       | number  | percent | `150`     | width % between bar groups | (*Bar Chart*) 0-500. Ex: `{ barGapWidthPct:50 }` |
 | `barGrouping`          | string  |         |`clustered`| bar grouping               | (*Bar Chart*) `clustered` or `stacked` or `percentStacked`. |
 | `catLabelFormatCode`   | string  |         |           | format to show data value  | format string. Ex: `{ catLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68)  |
 | `dataBorder`           | object  |         |           | data border          | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}` |
@@ -152,7 +152,7 @@ slide.addChart({MULTI_TYPES_AND_DATA}, {OPTIONS_AND_AXES});
 | Option                 | Type    | Unit    | Default      | Description                   | Possible Values                            |
 | :--------------------- | :------ | :------ | :----------- | :---------------------------- | :----------------------------------------- |
 | `bar3DShape`           | string  |         | `box`        | bar 3d shape                  | `box`, `cylinder`, `coneToMax`, `pyramid`, `pyramidToMax` |
-| `barGapDepthPct`       | number  | percent | `150`        | width % between bar groups    | 0-999. Ex: `{ barGapWidthPct:50 }` |
+| `barGapDepthPct`       | number  | percent | `150`        | width % between bar groups    | 0-500. Ex: `{ barGapWidthPct:50 }` |
 | `dataLabelBkgrdColors` | boolean |         | `false`      | bkgd color is series color    | `true` or `false`   |
 | `serAxisBaseTimeUnit`  | string  |         |              | series-axis base time unit    | `days` `months` or `years` |
 | `serAxisHidden`        | boolean |         | `false`      | hide series-axis              | `true` or `false`   |
