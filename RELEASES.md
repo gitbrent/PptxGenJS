@@ -36,7 +36,7 @@ Run all tests in browser
 
 ### Node
 
-Run Node test
+Node Test
 
 1. Update `demos/node/package.json` version
 
@@ -63,13 +63,16 @@ $ cd ~/GitHub/PptxGenJS/demos/react-demo
 $ npm run start
 ```
 
-1. Go to http://localhost:3000 on iMac
-2. Run both demo tests
-3. Go to http://192.168.x.x:3000 on iPhone
-4. Run both demo tests
-5. Ensure each is viewable upon download
-6. `npm run build`
-7. copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build (DO NOT use the deploy script offered onscreen!)
+1. Go to http://localhost:3000 on iMac, run demo tests
+2. Go to http://192.168.x.x:3000 on iPhone, run both demo tests
+3. Open exports to ensure viewable
+
+```bash
+$ cd ~/GitHub/PptxGenJS/demos/react-demo
+$ npm run build
+```
+
+1. copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build (DO NOT use the deploy script offered onscreen!)
 
 **NOTE** Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
 
