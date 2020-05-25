@@ -64,15 +64,16 @@ $ npm run start
 ```
 
 1. Go to http://localhost:3000 on iMac, run demo tests
-2. Go to http://192.168.x.x:3000 on iPhone, run both demo tests
-3. Open exports to ensure viewable
+2. Go to http://192.168.1.x:3000 on iPhone, run demo tests
+3. Go to http://192.168.1.x:3000 on Android, run demo tests
+4. Open exports on each device to ensure MIME type is correct, looks right, etc.
 
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/react-demo
 $ npm run build
 ```
 
-1. copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build (DO NOT use the deploy script offered onscreen!)
+1. Copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build (DO NOT use the deploy script offered onscreen!)
 
 **NOTE** Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
 
