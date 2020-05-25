@@ -1310,7 +1310,7 @@ declare namespace PptxGenJS {
 		fill?: Color
 		margin?: Margin
 		newSlideStartY?: number
-		rowW?: number | number[]
+		rowH?: number | number[]
 		rowspan?: number
 		valign?: VAlign
 	}
