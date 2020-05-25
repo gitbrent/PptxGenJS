@@ -25,7 +25,8 @@
 5. Open `dist/*.js` and check headers
 6. Update `CHANGELOG.md` with new date
 7. Update `README.md` with new CDN links
-8. Update `demos/node/package.json` version
+8. Update `demos/browser/index.html` version and CDN links
+9. Update `demos/node/package.json` version
 
 ## Test Newest Library Build
 
