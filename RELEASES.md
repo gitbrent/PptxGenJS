@@ -20,12 +20,11 @@
 
 1. Update `package.json` version
 2. Update `src/pptxgen.ts` version
-3. Build library: npm scripts > `ship`
-4. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
-5. Open `dist/*.js` and check headers
-6. Update `CHANGELOG.md` with new date
-7. Update `README.md` with new CDN links
-8. Update `demos/node/package.json` version
+3. Update `CHANGELOG.md` with new date
+4. Update `README.md` with new CDN links
+5. Build library: npm scripts > `ship`
+6. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
+7. Open `dist/*.js` and check headers
 
 ## Test Newest Library Build
 
@@ -38,6 +37,8 @@ Run all tests in browser
 ### Node
 
 Run Node test
+
+1. Update `demos/node/package.json` version
 
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/node
