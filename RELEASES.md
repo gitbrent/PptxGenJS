@@ -25,8 +25,7 @@
 5. Open `dist/*.js` and check headers
 6. Update `CHANGELOG.md` with new date
 7. Update `README.md` with new CDN links
-8. Update `demos/browser/index.html` version and CDN links
-9. Update `demos/node/package.json` version
+8. Update `demos/node/package.json` version
 
 ## Test Newest Library Build
 
@@ -77,7 +76,7 @@ $ npm run start
 
 ### Pre-Release Check
 
-1. Revert scripts in `./demos/browser/index.html`
+1. Update `demos/browser/index.html` version and CDN links
 2. Is version updated in package.json and pptxgen.js?
 3. Are `index.d.ts` defs updated?
 
