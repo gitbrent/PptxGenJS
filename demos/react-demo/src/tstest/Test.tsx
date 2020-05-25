@@ -46,8 +46,8 @@ export function testMainMethods() {
 	slide1.addTable([[{ text: "cell 1" }]], { x: 0.5, y: 0.5 });
 	let rows = [];
 	rows.push(["First", "Second", "Third", "Fourth"]);
-	rows.push([{ text: "TODO" }, { text: "optionsChk", options: { fontFace: "Arial" } }]);
-	slide1.addTable(rows, { x: 0.5, y: 1.25 });
+	rows.push([{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }]);
+	slide1.addTable(rows, { x: 0.5, y: 1.25, w: "90%", h: 3, colW: [4, 4, 4, 4], rowH: 1, border: { type: "solid", pt: 1, color: "a9a9a9" } });
 
 	// 5:
 	let slide2 = pptx.addSlide("MASTER_SLIDE");
