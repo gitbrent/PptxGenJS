@@ -46,21 +46,21 @@
 import * as JSZip from 'jszip'
 import Slide from './slide'
 import {
+	AlignH,
+	AlignV,
 	CHART_TYPE,
-	DEF_PRES_LAYOUT_NAME,
+	ChartType,
 	DEF_PRES_LAYOUT,
+	DEF_PRES_LAYOUT_NAME,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	JSZIP_OUTPUT_TYPE,
+	OutputType,
 	SCHEME_COLOR_NAMES,
 	SHAPE_TYPE,
-	WRITE_OUTPUT_TYPE,
-	AlignH,
-	AlignV,
-	ChartType,
-	OutputType,
 	SchemeColor,
 	ShapeType,
+	WRITE_OUTPUT_TYPE,
 } from './core-enums'
 import {
 	IAddSlideOptions,
@@ -82,7 +82,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta'
+const VERSION = '3.3.0-beta-20200525:1522'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
