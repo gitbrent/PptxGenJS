@@ -714,7 +714,14 @@ export function addTableDefinition(
 
 	// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
 	if (opt.colW) {
-		let firstRowColCnt = arrRows[0].length
+		let firstRowColCnt = arrRows[0].reduce((totalLen, c)=>{
+			if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number'){
+				totalLen += c.options.colspan
+			} else {
+				totalLen += 1
+			}
+			return totalLen
+		}, 0)
 
 		// Ex: `colW = 3` or `colW = '3'`
 		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
