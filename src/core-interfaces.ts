@@ -351,14 +351,14 @@ export interface ITableOptions extends PositionOptions, FontOptions {
 	rowspan?: number
 	valign?: VAlign
 }
+export interface TableCell {
+	text?: string | TableCell[]
+	options?: ITableCellOpts
+}
 // TODO: replace this with `ITableCell`
 export interface ITableToSlidesCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
-	text?: string
-	options?: ITableCellOpts
-}
-export interface TableCell {
-	text?: string
+	text?: string | TableCell[]
 	options?: ITableCellOpts
 }
 export interface ITableCell extends TableCell {

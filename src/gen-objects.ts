@@ -603,8 +603,8 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 /**
  * Adds a table object to a slide definition.
  * @param {ISlideLib} target - slide object that the table should be added to
- * @param {TableRow[]} arrTabRows - table data
- * @param {ITableOptions} inOpt - table options
+ * @param {TableRow[]} tableRows - table data
+ * @param {ITableOptions} options - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presentation layout
  * @param {Function} addSlide - method

@@ -304,11 +304,9 @@ export function getSlidesForTableRows(
 				if (cell.lines.length > 0) {
 					// 1
 					let currSlide = tableRowSlides[tableRowSlides.length - 1]
+					let currText = currSlide.rows[currSlide.rows.length - 1][idxR].text.toString() // TableCell.text type c/b string|IText (for conversion in method that calls this one), but we can guarantee it always stirn gb/c we craft it, hence this TS workaround
 					currSlide.rows[currSlide.rows.length - 1][idxR].text +=
-						(currSlide.rows[currSlide.rows.length - 1][idxR].text.length > 0 && !RegExp(/\n$/g).test(currSlide.rows[currSlide.rows.length - 1][idxR].text)
-							? CRLF
-							: ''
-						).replace(/[\r\n]+$/g, CRLF) + cell.lines.shift()
+						(currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell.lines.shift()
 
 					// 2
 					if (cell.lineHeight > maxLineHeight) maxLineHeight = cell.lineHeight

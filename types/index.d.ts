@@ -925,7 +925,7 @@ declare namespace PptxGenJS {
 	}
 	export interface ITableToSlidesCell {
 		type: SLIDE_OBJECT_TYPES.tablecell
-		text?: string
+		text?: string | TableCell[]
 		options?: ITableCellOpts
 	}
 
@@ -1294,7 +1294,7 @@ declare namespace PptxGenJS {
 		valign?: VAlign
 	}
 	export interface TableCell {
-		text?: string
+		text?: string | TableCell[]
 		options?: ITableCellOpts
 	}
 	export type TableRow = number[] | string[] | TableCell[]
