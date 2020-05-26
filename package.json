@@ -17,9 +17,9 @@
   "types": "types",
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -cw",
-    "ship": "gulp ship",
     "start": "gulp",
+    "ship": "gulp ship",
+    "watch": "rollup -cw",
     "doctoc": "./node_modules/doctoc/doctoc.js README.md"
   },
   "browser": {

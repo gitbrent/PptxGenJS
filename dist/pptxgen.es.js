@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-05-26T02:16:42.346Z */
+/* PptxGenJS 3.3.0-beta @ 2020-05-26T04:15:02.038Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -3558,14 +3558,10 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     */
     /**
      * Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
-     * The table must have a `w` value (the API does not require a value, but generating a tablein XML does)
-     * Hence, we use `colW` to calc a width value below
+     * The API does not require a `w` value, but XML generation does, hence, code to calc a width below using colW value(s)
      */
     if (opt.colW) {
-        //let firstRowColCnt = arrRows[0].length
-        // TODO: FIXME:
-        // HELP: cols with colspan not being counted, and a mix is even worse
-        // https://github.com/gitbrent/PptxGenJS/pull/679/files
+        // FIXME: Col count for first row only
         var firstRowColCnt = arrRows[0].reduce(function (totalLen, c) {
             if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
                 totalLen += c.options.colspan;
@@ -3761,7 +3757,7 @@ function addPlaceholdersToSlideLayouts(slide) {
 /* -------------------------------------------------------------------------------- */
 /**
  * Adds a background image or color to a slide definition.
- * @param {String|BkgdOpts} bkg - color string or an object with image definition
+ * @param {HexColor|BkgdImgOpts} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg, target) {
@@ -3773,14 +3769,16 @@ function addBackgroundDefinition(bkg, target) {
         var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
         if (strImgExtn === 'jpg')
             strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
+        target.relsMedia = target.relsMedia || [];
         var intRels = target.relsMedia.length + 1;
+        // NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
         target.relsMedia.push({
             path: bkg.src,
             type: SLIDE_OBJECT_TYPES.image,
             extn: strImgExtn,
             data: bkg.data || null,
             rId: intRels,
-            Target: "../media/" + target.name + "-image-" + (target.relsMedia.length + 1) + "." + strImgExtn,
+            Target: "../media/" + (target.name || '').replace(/\s+/gi, '-') + "-image-" + (target.relsMedia.length + 1) + "." + strImgExtn,
         });
         target.bkgdImgRid = intRels;
     }
@@ -3859,6 +3857,21 @@ var Slide = /** @class */ (function () {
         enumerable: false,
         configurable: true
     });
+    Object.defineProperty(Slide.prototype, "background", {
+        get: function () {
+            return this._background;
+        },
+        set: function (value) {
+            if (typeof value === 'string') {
+                this._background = value;
+            }
+            else {
+                addBackgroundDefinition(value, this);
+            }
+        },
+        enumerable: false,
+        configurable: true
+    });
     Object.defineProperty(Slide.prototype, "color", {
         get: function () {
             return this._color;
@@ -3900,7 +3913,7 @@ var Slide = /** @class */ (function () {
      * @return {Slide} this Slide
      */
     Slide.prototype.addChart = function (type, data, options) {
-        // TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
+        // FUTURE: TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
         // Set `_type` on IChartOptsLib as its what is used as object is passed around
         var optionsWithType = options || {};
         optionsWithType._type = type;
