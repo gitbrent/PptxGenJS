@@ -353,7 +353,10 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						}
 
 						// 4: Set CELL content and properties ==================================
-						strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>'
+						strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
+						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
+						// TODO: FIXME: 20200525: ^^^
+						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
 
 						// 5: Borders: Add any borders
 						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
