@@ -840,7 +840,7 @@ declare namespace PptxGenJS {
 		height?: number
 		width?: number
 		margin?: Margin
-		bkgd?: string | BkgdOpts
+		bkgd?: string | BkgdImgOpts
 		objects?: (
 			| {
 					chart: {}
@@ -1021,7 +1021,7 @@ declare namespace PptxGenJS {
 				color: Color
 				alpha?: number
 		  }
-	export type BkgdOpts = {
+	export type BkgdImgOpts = {
 		src?: string
 		path?: string
 		data?: string

@@ -21,6 +21,8 @@ import {
 	IText,
 	ITextOpts,
 	TableRow,
+	HexColor,
+	BkgdImgOpts,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -72,6 +74,7 @@ export default class Slide {
 
 	/**
 	 * @type {string}
+	 * @deprecated in v3.3.0 - use `background` instead
 	 */
 	private _bkgd: string
 	public set bkgd(value: string) {
@@ -79,6 +82,26 @@ export default class Slide {
 	}
 	public get bkgd(): string {
 		return this._bkgd
+	}
+
+	// TODO: NEW: v3.3.0 (https://github.com/gitbrent/PptxGenJS/pull/610)
+	// TODO: Add to index.d.ts
+	// TODO: Change core demo.js to use `background`
+	// TODO: Change gh-pages to use `background`
+	/**
+	 * Add background color or image
+	 * @type {HexColor | BkgdImgOpts}
+	 */
+	private _background: HexColor | BkgdImgOpts
+	public set background(value: HexColor | BkgdImgOpts) {
+		if (typeof value === 'string') {
+			this._background = value
+		} else {
+			genObj.addBackgroundDefinition(value, this)
+		}
+	}
+	public get background(): HexColor | BkgdImgOpts {
+		return this._background
 	}
 
 	/**
@@ -125,7 +148,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide {
-		// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
+		// FUTURE: TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 		// Set `_type` on IChartOptsLib as its what is used as object is passed around
 		let optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type

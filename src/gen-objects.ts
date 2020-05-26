@@ -22,7 +22,7 @@ import {
 	SHAPE_TYPE,
 } from './core-enums'
 import {
-	BkgdOpts,
+	BkgdImgOpts,
 	IChartMulti,
 	IChartOptsLib,
 	IImageOpts,
@@ -39,6 +39,7 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
+	HexColor,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -715,7 +716,7 @@ export function addTableDefinition(
 	/**
 	 * Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
 	 * The API does not require a `w` value, but XML generation does, hence, code to calc a width below using colW value(s)
-	*/
+	 */
 	if (opt.colW) {
 		// FIXME: Col count for first row only
 		let firstRowColCnt = arrRows[0].reduce((totalLen, c) => {
@@ -920,10 +921,10 @@ export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {String|BkgdOpts} bkg - color string or an object with image definition
+ * @param {HexColor|BkgdImgOpts} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
-function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLayout) {
+export function addBackgroundDefinition(bkg: HexColor | BkgdImgOpts, target: ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.src = bkg.src || bkg.path || null
@@ -931,14 +932,16 @@ function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLayout) {
 		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
+		target.relsMedia = target.relsMedia || []
 		let intRels = target.relsMedia.length + 1
+		// NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
 		target.relsMedia.push({
 			path: bkg.src,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
 			data: bkg.data || null,
 			rId: intRels,
-			Target: `../media/${target.name}-image-${target.relsMedia.length + 1}.${strImgExtn}`,
+			Target: `../media/${(target.name || '').replace(/\s+/gi, '-')}-image-${target.relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target.bkgdImgRid = intRels
 	} else if (bkg && typeof bkg === 'string') {
