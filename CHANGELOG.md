@@ -6,6 +6,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2020-??-??
+### Added
+### Changed
+- Fixed `colW` length mismatch with colspans (Issue #651) [\#679](https://github.com/gitbrent/PptxGenJS/issues/679) ([Joshua-rose](https://github.com/Joshua-rose))
+- Fixed: Type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
+
+
+
 ## [3.2.1] - 2020-05-25
 ### Added
 ### Changed

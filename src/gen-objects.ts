@@ -712,10 +712,14 @@ export function addTableDefinition(
 		}
 	*/
 
-	// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+	/**
+	 * Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+	 * The API does not require a `w` value, but XML generation does, hence, code to calc a width below using colW value(s)
+	*/
 	if (opt.colW) {
-		let firstRowColCnt = arrRows[0].reduce((totalLen, c)=>{
-			if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number'){
+		// FIXME: Col count for first row only
+		let firstRowColCnt = arrRows[0].reduce((totalLen, c) => {
+			if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
 				totalLen += c.options.colspan
 			} else {
 				totalLen += 1
