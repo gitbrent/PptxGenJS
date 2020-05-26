@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.1 @ 2020-05-25T19:45:07.798Z */
+/* PptxGenJS 3.3.0-beta @ 2020-05-26T02:16:42.340Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1082,10 +1082,9 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 if (cell.lines.length > 0) {
                     // 1
                     var currSlide_2 = tableRowSlides[tableRowSlides.length - 1];
+                    var currText = currSlide_2.rows[currSlide_2.rows.length - 1][idxR].text.toString(); // TableCell.text type c/b string|IText (for conversion in method that calls this one), but we can guarantee it always stirn gb/c we craft it, hence this TS workaround
                     currSlide_2.rows[currSlide_2.rows.length - 1][idxR].text +=
-                        (currSlide_2.rows[currSlide_2.rows.length - 1][idxR].text.length > 0 && !RegExp(/\n$/g).test(currSlide_2.rows[currSlide_2.rows.length - 1][idxR].text)
-                            ? CRLF
-                            : '').replace(/[\r\n]+$/g, CRLF) + cell.lines.shift();
+                        (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell.lines.shift();
                     // 2
                     if (cell.lineHeight > maxLineHeight)
                         maxLineHeight = cell.lineHeight;
@@ -1612,7 +1611,10 @@ function slideObjectToXml(slide) {
                             return;
                         }
                         // 4: Set CELL content and properties ==================================
-                        strXml_1 += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>';
+                        strXml_1 += "<a:tc" + cellColspan + cellRowspan + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + ">";
+                        //strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
+                        // TODO: FIXME: 20200525: ^^^
+                        // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
                         // 5: Borders: Add any borders
                         if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
                             strXml_1 += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>';
@@ -3456,8 +3458,8 @@ function addShapeDefinition(target, shapeName, opt) {
 /**
  * Adds a table object to a slide definition.
  * @param {ISlideLib} target - slide object that the table should be added to
- * @param {TableRow[]} arrTabRows - table data
- * @param {ITableOptions} inOpt - table options
+ * @param {TableRow[]} tableRows - table data
+ * @param {ITableOptions} options - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
@@ -3556,9 +3558,25 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
             else if ( !isNaN(Number(addNewSlide.margin)) ) arrTableMargin = [Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin)];
         }
     */
-    // Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+    /**
+     * Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+     * The table must have a `w` value (the API does not require a value, but generating a tablein XML does)
+     * Hence, we use `colW` to calc a width value below
+     */
     if (opt.colW) {
-        var firstRowColCnt = arrRows[0].length;
+        //let firstRowColCnt = arrRows[0].length
+        // TODO: FIXME:
+        // HELP: cols with colspan not being counted, and a mix is even worse
+        // https://github.com/gitbrent/PptxGenJS/pull/679/files
+        var firstRowColCnt = arrRows[0].reduce(function (totalLen, c) {
+            if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
+                totalLen += c.options.colspan;
+            }
+            else {
+                totalLen += 1;
+            }
+            return totalLen;
+        }, 0);
         // Ex: `colW = 3` or `colW = '3'`
         if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
             opt.w = Math.floor(Number(opt.colW) * firstRowColCnt);
@@ -5860,7 +5878,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.1';
+var VERSION = '3.3.0-beta-20200525:2112';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
