@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200525
+* BLD.: 20200526
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -111,6 +111,7 @@ function execGenSlidesFuncs(type) {
 	if ( NODEJS ) {
 		var PptxGenJsLib;
 		var fs = require('fs');
+		// TODO: we dont use local anymore as of 3.1
 		if (fs.existsSync('../../dist/pptxgen.cjs.js')) {
 			PptxGenJsLib = require('../../dist/pptxgen.cjs.js'); // for LOCAL TESTING
 		}
