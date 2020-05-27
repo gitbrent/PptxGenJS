@@ -22,7 +22,7 @@ import {
 	ITextOpts,
 	TableRow,
 	HexColor,
-	BkgdImgOpts,
+	BkgdOpts,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -89,29 +89,30 @@ export default class Slide {
 	// TODO: Change core demo.js to use `background`
 	// TODO: Change gh-pages to use `background`
 	/**
-	 * Add background color or image
-	 * @type {HexColor | BkgdImgOpts}
+	 * Background color or image
+	 * @type {BkgdOpts}
+	 * @example solid color `background: {fill:'FF0000'}
+	 * @example base64 `background: {data:'image/png;base64,ABC[...]123'}`
+	 * @example url  `background: {path:'https://some.url/image.jpg'}`
+	 * @since v3.3.0
 	 */
-	private _background: HexColor | BkgdImgOpts
-	public set background(value: HexColor | BkgdImgOpts) {
-		if (typeof value === 'string') {
-			this._background = value
-		} else {
-			genObj.addBackgroundDefinition(value, this)
-		}
+	private _background: BkgdOpts
+	public set background(value: BkgdOpts) {
+		genObj.addBackgroundDefinition(value, this)
 	}
-	public get background(): HexColor | BkgdImgOpts {
+	public get background(): BkgdOpts {
 		return this._background
 	}
 
 	/**
-	 * @type {string}
+	 * Default font color
+	 * @type {HexColor}
 	 */
-	private _color: string
-	public set color(value: string) {
+	private _color: HexColor
+	public set color(value: HexColor) {
 		this._color = value
 	}
-	public get color(): string {
+	public get color(): HexColor {
 		return this._color
 	}
 

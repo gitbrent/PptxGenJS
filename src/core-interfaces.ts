@@ -8,19 +8,27 @@ import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HAL
 // ======
 
 /**
- * Coordinate (string is in the form of 'N%')
+ * Coordinate - number in inches (ex: 10.25) or percent string (ex: '75%')
  */
-export type HexColor = string // should match /^[0-9a-fA-F]{6}$/
+export type Coord = number | string
+/**
+ * Hex Color (e.g.: 'FF3399')
+ */
+export type HexColor = string // (should match /^[0-9a-fA-F]{6}$/)
 export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 export type Color = HexColor | ThemeColor
-export type Coord = number | string // string is in form 'n%'
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
-export type BkgdImgOpts = { src?: string; path?: string; data?: string }
+export type BkgdOpts = {
+	fill?: HexColor
+	path?: string
+	data?: string
+	src?: string // @depracated v3.3.0
+}
 type MediaType = 'audio' | 'online' | 'video'
 
 export interface FontOptions {
@@ -50,7 +58,7 @@ export interface OptsChartGridLine {
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
 
-// TODO: FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
+// FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
 /*
 export interface OptsDataLabelPosition {
 	pie: 'ctr' | 'inEnd' | 'outEnd' | 'bestFit'
@@ -328,6 +336,8 @@ export interface ITableCellOpts extends FontOptions {
 	align?: HAlign
 	bold?: boolean
 	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+	breakLine?: boolean
+	bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
 	color?: Color
 	colspan?: number
 	fill?: ShapeFill
@@ -467,8 +477,8 @@ export interface ISlideMasterOptions {
 	height?: number
 	width?: number
 	margin?: Margin
-	bkgd?: string | BkgdImgOpts
-	background?: HexColor | BkgdImgOpts // TODO: NEW:
+	background?: BkgdOpts
+	bkgd?: string | BkgdOpts // @deprecated v3.3.0
 	objects?: (
 		| { chart: {} }
 		| { image: {} }
@@ -567,8 +577,8 @@ export interface ISlideLayout {
 	presLayout: ILayout
 	name: string
 	number: number
-	bkgd?: string
-	background?: HexColor | BkgdImgOpts // TODO: NEW:
+	background?: BkgdOpts
+	bkgd?: string // @deprecated v3.3.0
 	bkgdImgRid?: number
 	slide?: {
 		back: string
@@ -595,9 +605,9 @@ export interface ISlide {
 	addShape: Function
 	addTable: Function
 	addText: Function
-	bkgd?: string
-	background?: HexColor | BkgdImgOpts // TODO: NEW:
-	color?: string
+	background?: BkgdOpts
+	bkgd?: string // @deprecated v3.3.0
+	color?: HexColor
 	hidden?: boolean
 	slideNumber?: ISlideNumber
 }

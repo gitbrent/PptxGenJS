@@ -82,7 +82,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200525:2112'
+const VERSION = '3.3.0-beta-20200526:2304'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
@@ -679,6 +679,18 @@ export default class PptxGenJS implements IPresentation {
 			relsMedia: [],
 			margin: options.margin || DEF_SLIDE_MARGIN_IN,
 			slideNumberObj: options.slideNumber || null,
+		}
+
+		// DEPRECATED:
+		if (options.bkgd && !options.background) {
+			options.background = {}
+			if (typeof options.bkgd === 'string') options.background.fill = options.bkgd
+			else {
+				if (options.bkgd.data) options.background.data = options.bkgd.data
+				if (options.bkgd.path) options.background.path = options.bkgd.path
+				if (options.bkgd.src) options.background.src = options.bkgd.src
+			}
+			delete options.bkgd
 		}
 
 		// STEP 1: Create the Slide Master/Layout

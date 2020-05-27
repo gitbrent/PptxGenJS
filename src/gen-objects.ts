@@ -22,7 +22,7 @@ import {
 	SHAPE_TYPE,
 } from './core-enums'
 import {
-	BkgdImgOpts,
+	BkgdOpts,
 	IChartMulti,
 	IChartOptsLib,
 	IImageOpts,
@@ -55,9 +55,7 @@ let _chartCounter: number = 0
  */
 export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout) {
 	// STEP 1: Add background
-	if (slideDef.bkgd) {
-		addBackgroundDefinition(slideDef.bkgd, target)
-	}
+	if (slideDef.background) addBackgroundDefinition(slideDef.background, target)
 
 	// STEP 2: Add all Slide Master objects in the order they were given
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
@@ -921,22 +919,21 @@ export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {HexColor|BkgdImgOpts} bkg - color string or an object with image definition
+ * @param {BkgdOpts} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
-export function addBackgroundDefinition(bkg: HexColor | BkgdImgOpts, target: ISlideLayout) {
+export function addBackgroundDefinition(bkg: BkgdOpts, target: ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
-		bkg.src = bkg.src || bkg.path || null
-		if (!bkg.src) bkg.src = 'preencoded.png'
-		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
+		bkg.path = bkg.src || bkg.path || 'preencoded.png'
+		let strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
 		target.relsMedia = target.relsMedia || []
 		let intRels = target.relsMedia.length + 1
 		// NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
 		target.relsMedia.push({
-			path: bkg.src,
+			path: bkg.path,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
 			data: bkg.data || null,
@@ -944,8 +941,8 @@ export function addBackgroundDefinition(bkg: HexColor | BkgdImgOpts, target: ISl
 			Target: `../media/${(target.name || '').replace(/\s+/gi, '-')}-image-${target.relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target.bkgdImgRid = intRels
-	} else if (bkg && typeof bkg === 'string') {
-		target.bkgd = bkg
+	} else if (bkg && bkg.fill && typeof bkg.fill === 'string') {
+		target.bkgd = bkg.fill
 	}
 }
 

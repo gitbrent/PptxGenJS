@@ -840,7 +840,8 @@ declare namespace PptxGenJS {
 		height?: number
 		width?: number
 		margin?: Margin
-		bkgd?: string | BkgdImgOpts
+		background?: BkgdOpts
+		bkgd?: string | BkgdOpts // @deprecated
 		objects?: (
 			| {
 					chart: {}
@@ -973,7 +974,14 @@ declare namespace PptxGenJS {
 		shape?: SHAPE_NAME
 	}
 
+	/**
+	 * Coordinate - number in inches (ex: 10.25) or percent string (ex: '75%')
+	 */
 	export type Coord = number | string
+	/**
+	 * Hex Color (e.g.: 'FF3399')
+	 */
+	export type HexColor = string
 	export interface FontOptions {
 		fontFace?: string
 		fontSize?: number
@@ -1001,7 +1009,6 @@ declare namespace PptxGenJS {
 		offset?: number
 		color?: string
 	}
-	export type HexColor = string
 	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 	export type Color = HexColor | ThemeColor
 	export type Margin = number | [number, number, number, number]
@@ -1021,10 +1028,11 @@ declare namespace PptxGenJS {
 				color: Color
 				alpha?: number
 		  }
-	export type BkgdImgOpts = {
-		src?: string
+	export type BkgdOpts = {
+		fill?: HexColor
 		path?: string
 		data?: string
+		src?: string // @depracated
 	}
 	export type MediaType = 'audio' | 'online' | 'video'
 	export interface IGlowOptions {
@@ -1286,6 +1294,8 @@ declare namespace PptxGenJS {
 		align?: HAlign
 		bold?: boolean
 		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+		breakLine?: boolean
+		bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
 		color?: Color
 		colspan?: number
 		fill?: ShapeFill
@@ -1385,8 +1395,22 @@ declare namespace PptxGenJS {
 	 * `slide.d.ts`
 	 */
 	export class Slide {
+		/**
+		 * @deprecated in v3.3.0 - use `Background` instead
+		 */
 		bkgd: string
-		color: string
+		/**
+		 * Background color or image
+		 * @type {BkgdOpts}
+		 * @example `background: 'FF0000'
+		 * @example `background: {data:'image/png;base64,ABC[...]123'}`
+		 * @example `background: {path:'https://some.url/image.jpg'}`
+		 */
+		background: BkgdOpts
+		/**
+		 * Default font color
+		 */
+		color: HexColor
 		hidden: boolean
 		slideNumber: ISlideNumber
 		/**
