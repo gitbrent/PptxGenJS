@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-05-26T04:15:01.985Z */
+/* PptxGenJS 3.3.0-beta @ 2020-05-27T05:19:52.032Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2923,9 +2923,8 @@ var _chartCounter = 0;
  */
 function createSlideObject(slideDef, target) {
     // STEP 1: Add background
-    if (slideDef.bkgd) {
-        addBackgroundDefinition(slideDef.bkgd, target);
-    }
+    if (slideDef.background)
+        addBackgroundDefinition(slideDef.background, target);
     // STEP 2: Add all Slide Master objects in the order they were given
     if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
         slideDef.objects.forEach(function (object, idx) {
@@ -3759,23 +3758,21 @@ function addPlaceholdersToSlideLayouts(slide) {
 /* -------------------------------------------------------------------------------- */
 /**
  * Adds a background image or color to a slide definition.
- * @param {HexColor|BkgdImgOpts} bkg - color string or an object with image definition
+ * @param {BkgdOpts} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg, target) {
     if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
         // Allow the use of only the data key (`path` isnt reqd)
-        bkg.src = bkg.src || bkg.path || null;
-        if (!bkg.src)
-            bkg.src = 'preencoded.png';
-        var strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
+        bkg.path = bkg.src || bkg.path || 'preencoded.png';
+        var strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
         if (strImgExtn === 'jpg')
             strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
         target.relsMedia = target.relsMedia || [];
         var intRels = target.relsMedia.length + 1;
         // NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
         target.relsMedia.push({
-            path: bkg.src,
+            path: bkg.path,
             type: SLIDE_OBJECT_TYPES.image,
             extn: strImgExtn,
             data: bkg.data || null,
@@ -3784,8 +3781,8 @@ function addBackgroundDefinition(bkg, target) {
         });
         target.bkgdImgRid = intRels;
     }
-    else if (bkg && typeof bkg === 'string') {
-        target.bkgd = bkg;
+    else if (bkg && bkg.fill && typeof bkg.fill === 'string') {
+        target.bkgd = bkg.fill;
     }
 }
 /**
@@ -3864,12 +3861,7 @@ var Slide = /** @class */ (function () {
             return this._background;
         },
         set: function (value) {
-            if (typeof value === 'string') {
-                this._background = value;
-            }
-            else {
-                addBackgroundDefinition(value, this);
-            }
+            addBackgroundDefinition(value, this);
         },
         enumerable: false,
         configurable: true
@@ -5740,7 +5732,7 @@ function encodeSlideMediaRels(layout) {
     var imageProms = [];
     // A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
     layout.relsMedia
-        .filter(function (rel) { return rel.type !== 'online' && !rel.data; })
+        .filter(function (rel) { return rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)); })
         .forEach(function (rel) {
         imageProms.push(new Promise(function (resolve, reject) {
             if (fs && rel.path.indexOf('http') !== 0) {
@@ -5766,7 +5758,7 @@ function encodeSlideMediaRels(layout) {
                     });
                     res.on('error', function (ex) {
                         rel.data = IMG_BROKEN;
-                        reject("ERROR! Unable to load image: " + rel.path);
+                        reject("ERROR! Unable to load image (https.get): " + rel.path);
                     });
                 });
             }
@@ -5795,7 +5787,7 @@ function encodeSlideMediaRels(layout) {
                 };
                 xhr_1.onerror = function (ex) {
                     rel.data = IMG_BROKEN;
-                    reject("ERROR! Unable to load image: " + rel.path);
+                    reject("ERROR! Unable to load image (xhr.onerror): " + rel.path);
                 };
                 // B: Execute request
                 xhr_1.open('GET', rel.path);
@@ -5853,7 +5845,7 @@ function createSvgPngPreview(rel) {
         };
         image.onerror = function (ex) {
             rel.data = IMG_BROKEN;
-            reject("ERROR! Unable to load image: " + rel.path);
+            reject("ERROR! Unable to load image (image.onerror): " + rel.path);
         };
         // C: Load image
         image.src = typeof rel.data === 'string' ? rel.data : IMG_BROKEN;
@@ -5891,7 +5883,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200525:2112';
+var VERSION = '3.3.0-beta-20200526:2304';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6494,6 +6486,21 @@ var PptxGenJS = /** @class */ (function () {
             margin: options.margin || DEF_SLIDE_MARGIN_IN,
             slideNumberObj: options.slideNumber || null,
         };
+        // DEPRECATED:
+        if (options.bkgd && !options.background) {
+            options.background = {};
+            if (typeof options.bkgd === 'string')
+                options.background.fill = options.bkgd;
+            else {
+                if (options.bkgd.data)
+                    options.background.data = options.bkgd.data;
+                if (options.bkgd.path)
+                    options.background.path = options.bkgd.path;
+                if (options.bkgd.src)
+                    options.background.src = options.bkgd.src;
+            }
+            delete options.bkgd;
+        }
         // STEP 1: Create the Slide Master/Layout
         createSlideObject(options, newLayout);
         // STEP 2: Add it to layout defs
