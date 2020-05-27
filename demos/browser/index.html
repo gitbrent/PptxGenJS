@@ -391,7 +391,7 @@
 			// 1:
 			pptx.defineSlideMaster({
 				title: 'TITLE_SLIDE',
-				bkgd: { data:BKGD_STARLABS },
+				background: { data:BKGD_STARLABS },
 				objects: [
 					{ 'line':  { x:3.5, y:1.00, w:6.00, line:'0088CC', lineSize:5 } },
 					{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
@@ -405,7 +405,7 @@
 			// 2:
 			pptx.defineSlideMaster({
 				title: 'MASTER_SLIDE',
-				bkgd: 'F1F1F1',
+				background: { fill: 'F1F1F1' },
 				slideNumber: { x:1.0, y:7.0, color:'FFFFFF' },
 				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
 				objects: [
@@ -417,7 +417,7 @@
 			// 3:
 			pptx.defineSlideMaster({
 				title: 'THANKS_SLIDE',
-				bkgd: '36ABFF',
+				background: { fill: '36ABFF' },
 				objects: [
 					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
 					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
@@ -582,7 +582,7 @@
 				$('#demo-master').html("pptx.defineSlideMaster({\n"
 					+ "  title : 'MASTER_SLIDE',\n"
 					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
-					+ "  bkgd  : 'FFFFFF',\n"
+					+ "  background: { fill: 'FFFFFF' },\n"
 					+ "  objects: [\n"
 					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
 					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"

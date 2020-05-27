@@ -1032,7 +1032,6 @@ declare namespace PptxGenJS {
 		fill?: HexColor
 		path?: string
 		data?: string
-		src?: string // @depracated
 	}
 	export type MediaType = 'audio' | 'online' | 'video'
 	export interface IGlowOptions {
@@ -1402,7 +1401,7 @@ declare namespace PptxGenJS {
 		/**
 		 * Background color or image
 		 * @type {BkgdOpts}
-		 * @example `background: 'FF0000'
+		 * @example `background: {fill:'FF0000'}
 		 * @example `background: {data:'image/png;base64,ABC[...]123'}`
 		 * @example `background: {path:'https://some.url/image.jpg'}`
 		 */

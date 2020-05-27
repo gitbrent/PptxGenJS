@@ -923,9 +923,9 @@ export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
  * @param {ISlideLib} target - slide object that the background is set to
  */
 export function addBackgroundDefinition(bkg: BkgdOpts, target: ISlideLayout) {
-	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
+	if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
-		bkg.path = bkg.src || bkg.path || 'preencoded.png'
+		bkg.path = bkg.path || 'preencoded.png'
 		let strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 

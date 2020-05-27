@@ -688,7 +688,7 @@ export default class PptxGenJS implements IPresentation {
 			else {
 				if (options.bkgd.data) options.background.data = options.bkgd.data
 				if (options.bkgd.path) options.background.path = options.bkgd.path
-				if (options.bkgd.src) options.background.src = options.bkgd.src
+				if (options.bkgd['src']) options.background.path = options.bkgd['src'] // @deprecated (drop in 4.x)
 			}
 			delete options.bkgd
 		}

@@ -25,9 +25,8 @@ export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: s
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 export type BkgdOpts = {
 	fill?: HexColor
-	path?: string
 	data?: string
-	src?: string // @depracated v3.3.0
+	path?: string
 }
 type MediaType = 'audio' | 'online' | 'video'
 

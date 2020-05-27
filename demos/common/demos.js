@@ -160,7 +160,7 @@ function execGenSlidesFuncs(type) {
 		// MASTER_PLAIN
 		pptx.defineSlideMaster({
 			title: 'MASTER_PLAIN',
-			bkgd: 'FFFFFF',
+			background: { fill: 'FFFFFF' },
 			margin:  [ 0.5, 0.25, 1.0, 0.25 ],
 			objects: [
 				{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
@@ -178,7 +178,7 @@ function execGenSlidesFuncs(type) {
 		// MASTER_SLIDE (MASTER_PLACEHOLDER)
 		pptx.defineSlideMaster({
 			title: 'MASTER_SLIDE',
-			bkgd: 'FFFFFF',
+			background: { fill: 'F1F1F1' },
 			margin:  [ 0.5, 0.25, 1.0, 0.25 ],
 			slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 },
 			objects: [
@@ -208,7 +208,7 @@ function execGenSlidesFuncs(type) {
 		// THANKS_SLIDE (THANKS_PLACEHOLDER)
 		pptx.defineSlideMaster({
 			title: 'THANKS_SLIDE',
-			bkgd: '36ABFF',
+			bkgd: '36ABFF', // BACKWARDS-COMPAT/DEPRECATED CHECK (`bkgd` will be removed in v4.x)
 			objects: [
 				{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
 				{ 'placeholder': { options:{ name:'thanksText', type:'title', x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
