@@ -34,10 +34,17 @@ export type BkgdOpts = {
 	data?: string
 	path?: string
 }
-
-export interface FontOptions {
+export interface TextOptions {
+	align?: HAlign
+	bold?: boolean
+	breakLine?: boolean
+	bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
+	color?: Color
 	fontFace?: string
 	fontSize?: number
+	italic?: boolean
+	lang?: string
+	valign?: VAlign
 }
 export interface PositionOptions {
 	x?: Coord
@@ -303,10 +310,10 @@ export interface IShapeOptions extends PositionOptions {
 	shadow?: IShadowOptions
 }
 
-export interface IChartTitleOpts extends FontOptions {
-	title: string
-	color?: String
+export interface IChartTitleOpts extends TextOptions {
+	color?: Color
 	rotate?: number
+	title: string
 	titleAlign?: string
 	titlePos?: { x: number; y: number }
 }
@@ -334,28 +341,21 @@ export interface ITableToSlidesOpts extends ITableOptions {
 	slideMargin?: Margin
 	verbose?: boolean // Undocumented; shows verbose output
 }
-export interface ITableCellOpts extends FontOptions {
+export interface ITableCellOpts extends TextOptions {
 	autoPageCharWeight?: number
 	autoPageLineWeight?: number
-	align?: HAlign
-	bold?: boolean
 	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-	breakLine?: boolean
-	bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
-	color?: Color
 	colspan?: number
 	fill?: ShapeFill
 	margin?: Margin
 	rowspan?: number
 	valign?: VAlign
 }
-export interface ITableOptions extends PositionOptions, FontOptions {
-	align?: HAlign
+export interface ITableOptions extends PositionOptions, TextOptions {
 	autoPage?: boolean
 	autoPageCharWeight?: number
 	autoPageLineWeight?: number
 	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-	color?: Color
 	colspan?: number
 	colW?: number | number[]
 	fill?: Color
@@ -363,7 +363,6 @@ export interface ITableOptions extends PositionOptions, FontOptions {
 	newSlideStartY?: number
 	rowH?: number | number[]
 	rowspan?: number
-	valign?: VAlign
 }
 export interface TableCell {
 	text?: string | TableCell[]
@@ -390,8 +389,7 @@ export interface TableRowSlide {
 	rows: ITableRow[]
 }
 
-export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
-	align?: HAlign
+export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
 	autoFit?: boolean
 	bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
@@ -405,19 +403,13 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions 
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: boolean
 	}
-	bold?: boolean
-	breakLine?: boolean
-	bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
 	charSpacing?: number
-	color?: string
 	fill?: ShapeFill
 	glow?: IGlowOptions
 	hyperlink?: HyperLink
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
-	italic?: boolean
-	lang?: string
 	line?: Color
 	lineIdx?: number
 	lineSize?: number
@@ -472,7 +464,7 @@ export interface ILayoutProps {
 	width: number
 	height: number
 }
-export interface ISlideNumber extends PositionOptions, FontOptions {
+export interface ISlideNumber extends PositionOptions, TextOptions {
 	align?: HAlign
 	color?: string
 }
