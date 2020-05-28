@@ -1080,8 +1080,8 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
  * @note PPT text lines [lines followed by line-breaks] are created using <p>-aragraph's
- * @note Bullets are a paragprah-level formatting device
- * @param {ISlideObject|ITableCell} slideObj - slideObj -OR- table `cell` object
+ * @note Bullets are a paragragh-level formatting device
+ * @param {ISlideObject|ITableCell} slideObj - slideObj or tableCell
  * @returns XML containing the param object's text and formatting
  */
 export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
