@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-05-27T05:19:52.037Z */
+/* PptxGenJS 3.3.0-beta @ 2020-05-28T04:22:20.421Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -3760,9 +3760,9 @@ function addPlaceholdersToSlideLayouts(slide) {
  * @param {ISlideLib} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg, target) {
-    if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
+    if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
         // Allow the use of only the data key (`path` isnt reqd)
-        bkg.path = bkg.src || bkg.path || 'preencoded.png';
+        bkg.path = bkg.path || 'preencoded.png';
         var strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0]; // Handle "blah.jpg?width=540" etc.
         if (strImgExtn === 'jpg')
             strImgExtn = 'jpeg'; // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
@@ -5881,7 +5881,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200526:2304';
+var VERSION = '3.3.0-beta-20200527:2204';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6494,8 +6494,8 @@ var PptxGenJS = /** @class */ (function () {
                     options.background.data = options.bkgd.data;
                 if (options.bkgd.path)
                     options.background.path = options.bkgd.path;
-                if (options.bkgd.src)
-                    options.background.src = options.bkgd.src;
+                if (options.bkgd['src'])
+                    options.background.path = options.bkgd['src']; // @deprecated (drop in 4.x)
             }
             delete options.bkgd;
         }
