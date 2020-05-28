@@ -2,8 +2,8 @@
  * PptxGenJS: Utility Methods
  */
 
-import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, ILayout, ShapeFill, IGlowOptions, ISlideLib } from './core-interfaces'
+import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
+import { IChartOpts, ILayout, IGlowOptions, ISlideLib, ShapeFill } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -44,7 +44,7 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
  * @returns {string} UUID
  */
 export function getUuid(uuidFormat: string): string {
-	return uuidFormat.replace(/[xy]/g, function(c) {
+	return uuidFormat.replace(/[xy]/g, function (c) {
 		let r = (Math.random() * 16) | 0,
 			v = c === 'x' ? r : (r & 0x3) | 0x8
 		return v.toString(16)
@@ -75,13 +75,7 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 export function encodeXmlEntities(xml: string): string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 	if (typeof xml === 'undefined' || xml == null) return ''
-	return xml
-		.toString()
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&apos;')
+	return xml.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 }
 
 /**
