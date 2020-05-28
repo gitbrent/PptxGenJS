@@ -1395,7 +1395,9 @@ declare namespace PptxGenJS {
 	 */
 	export class Slide {
 		/**
-		 * @deprecated in v3.3.0 - use `Background` instead
+		 * Background color
+		 * @type {string}
+		 * @deprecated in v3.3.0 - use `background` instead
 		 */
 		bkgd: string
 		/**

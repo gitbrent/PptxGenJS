@@ -73,6 +73,7 @@ export default class Slide {
 	}
 
 	/**
+	 * Background color
 	 * @type {string}
 	 * @deprecated in v3.3.0 - use `background` instead
 	 */
@@ -84,10 +85,6 @@ export default class Slide {
 		return this._bkgd
 	}
 
-	// TODO: NEW: v3.3.0 (https://github.com/gitbrent/PptxGenJS/pull/610)
-	// TODO: Add to index.d.ts
-	// TODO: Change core demo.js to use `background`
-	// TODO: Change gh-pages to use `background`
 	/**
 	 * Background color or image
 	 * @type {BkgdOpts}

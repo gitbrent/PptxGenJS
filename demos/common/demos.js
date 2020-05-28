@@ -144,15 +144,18 @@ function execGenSlidesFuncs(type) {
 		// TITLE_SLIDE
 		pptx.defineSlideMaster({
 			title: 'TITLE_SLIDE',
-			bkgd: objBkg,
+			background: objBkg,
+			//bkgd: objBkg, // TEST: @deprecated
 			objects: [
 				//{ 'line':  { x:3.5, y:1.0, w:6.0, h:0.0, line:'0088CC', lineSize:5 } },
 				//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], options:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
 				//{ 'image': { x:11.3, y:6.4, w:1.67, h:0.75, data:starlabsLogoSml } },
 				{ 'rect':  { x: 0.0, y:5.7, w:'100%', h:0.75, fill:'F1F1F1' } },
 				{ 'text':
-					{ text:'Global IT & Services :: Status Report',
-					options:{ x:0.0, y:5.7, w:'100%', h:0.75, fontFace:'Arial', color:'363636', fontSize:20, align:'center', valign:'middle', margin:0 } }
+					{
+						text: 'Global IT & Services :: Status Report',
+						options: { x: 0.0, y: 5.7, w: '100%', h: 0.75, fontFace: 'Arial', color: '363636', fontSize: 20, align: 'center', valign: 'middle', margin: 0 }
+					}
 				}
 			]
 		});

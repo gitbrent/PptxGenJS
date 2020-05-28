@@ -20,15 +20,20 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+export type MediaType = 'audio' | 'online' | 'video'
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
+export type HyperLink = {
+	rId: number
+	slide?: number
+	tooltip?: string
+	url?: string
+}
 export type BkgdOpts = {
 	fill?: HexColor
 	data?: string
 	path?: string
 }
-type MediaType = 'audio' | 'online' | 'video'
 
 export interface FontOptions {
 	fontFace?: string
