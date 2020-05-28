@@ -34,7 +34,7 @@ export type BkgdOpts = {
 	data?: string
 	path?: string
 }
-export interface TextOptions {
+export type TextOptions = {
 	align?: HAlign
 	bold?: boolean
 	breakLine?: boolean
@@ -46,26 +46,26 @@ export interface TextOptions {
 	lang?: string
 	valign?: VAlign
 }
-export interface PositionOptions {
+export type PositionOptions = {
 	x?: Coord
 	y?: Coord
-	w?: Coord
 	h?: Coord
+	w?: Coord
 }
-export interface OptsDataOrPath {
+export type OptsDataOrPath = {
 	data?: string // one option is required
 	path?: string // one option is required
 }
-export interface OptsChartData {
+export type OptsChartData = {
 	index?: number
-	name?: string
 	labels?: string[]
-	values?: number[]
+	name?: string
 	sizes?: number[]
+	values?: number[]
 }
-export interface OptsChartGridLine {
-	size?: number
+export type OptsChartGridLine = {
 	color?: string
+	size?: number
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
 
