@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.2.0
-* BLD.: 20200304
+* VER.: 3.3.0
+* BLD.: 20200528
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -111,6 +111,7 @@ function execGenSlidesFuncs(type) {
 	if ( NODEJS ) {
 		var PptxGenJsLib;
 		var fs = require('fs');
+		// TODO: we dont use local anymore as of 3.1
 		if (fs.existsSync('../../dist/pptxgen.cjs.js')) {
 			PptxGenJsLib = require('../../dist/pptxgen.cjs.js'); // for LOCAL TESTING
 		}
@@ -143,15 +144,18 @@ function execGenSlidesFuncs(type) {
 		// TITLE_SLIDE
 		pptx.defineSlideMaster({
 			title: 'TITLE_SLIDE',
-			bkgd: objBkg,
+			background: objBkg,
+			//bkgd: objBkg, // TEST: @deprecated
 			objects: [
 				//{ 'line':  { x:3.5, y:1.0, w:6.0, h:0.0, line:'0088CC', lineSize:5 } },
 				//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], options:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
 				//{ 'image': { x:11.3, y:6.4, w:1.67, h:0.75, data:starlabsLogoSml } },
 				{ 'rect':  { x: 0.0, y:5.7, w:'100%', h:0.75, fill:'F1F1F1' } },
 				{ 'text':
-					{ text:'Global IT & Services :: Status Report',
-					options:{ x:0.0, y:5.7, w:'100%', h:0.75, fontFace:'Arial', color:'363636', fontSize:20, align:'center', valign:'middle', margin:0 } }
+					{
+						text: 'Global IT & Services :: Status Report',
+						options: { x: 0.0, y: 5.7, w: '100%', h: 0.75, fontFace: 'Arial', color: '363636', fontSize: 20, align: 'center', valign: 'middle', margin: 0 }
+					}
 				}
 			]
 		});
@@ -159,7 +163,7 @@ function execGenSlidesFuncs(type) {
 		// MASTER_PLAIN
 		pptx.defineSlideMaster({
 			title: 'MASTER_PLAIN',
-			bkgd: 'FFFFFF',
+			background: { fill: 'FFFFFF' },
 			margin:  [ 0.5, 0.25, 1.0, 0.25 ],
 			objects: [
 				{ 'rect':  { x: 0.00, y:6.90, w:'100%', h:0.6, fill:'003b75' } },
@@ -177,7 +181,7 @@ function execGenSlidesFuncs(type) {
 		// MASTER_SLIDE (MASTER_PLACEHOLDER)
 		pptx.defineSlideMaster({
 			title: 'MASTER_SLIDE',
-			bkgd: 'FFFFFF',
+			background: { fill: 'F1F1F1' },
 			margin:  [ 0.5, 0.25, 1.0, 0.25 ],
 			slideNumber: { x:0.6, y:7.1, color:'FFFFFF', fontFace:'Arial', fontSize:10 },
 			objects: [
@@ -207,7 +211,7 @@ function execGenSlidesFuncs(type) {
 		// THANKS_SLIDE (THANKS_PLACEHOLDER)
 		pptx.defineSlideMaster({
 			title: 'THANKS_SLIDE',
-			bkgd: '36ABFF',
+			bkgd: '36ABFF', // BACKWARDS-COMPAT/DEPRECATED CHECK (`bkgd` will be removed in v4.x)
 			objects: [
 				{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
 				{ 'placeholder': { options:{ name:'thanksText', type:'title', x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
@@ -634,7 +638,7 @@ function genSlides_Table(pptx) {
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Disabled', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:false } );
+		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'} } ); // Negative-Test: no `autoPage:false`
 
 		// autoPageLineWeight option demos
 		pptx.addSection({ title: 'Tables: Auto-Paging LineWeight' });
@@ -651,13 +655,13 @@ function genSlides_Table(pptx) {
 		// autoPageCharWeight option demos
 		pptx.addSection({ title: 'Tables: Auto-Paging CharWeight' });
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging CharWeight'});
-		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
+		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageCharWeight:0.0', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:0.23, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:0.0 } );
 
-		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:0.25', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4, h:0.4} );
+		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageCharWeight:0.25', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:4.75, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:0.25 } );
 
-		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageLineWeight:-0.25', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4, h:0.4} );
+		slide.addText( [{text:'Table Examples: Char Weight Options', options:gDemoTitleTextBk},{text:'autoPageCharWeight:-0.25', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4, h:0.4} );
 		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:-0.25 } );
 	}
 }
@@ -2767,7 +2771,7 @@ function genSlides_Text(pptx) {
 			{ x:0.5, y:1.0, w:5.75, h:3.0, fill:'373737' }
 		);
 
-		slide.addText("Bullet Styles:", { x:0.5, y:4.5, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText("Bullet Styles:", { x:0.5, y:4.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
 				{ text:'style: arabicPeriod' , options:{ color:pptx.colors.ACCENT2, bullet:{type:'number', style:'arabicPeriod'} } },
@@ -2777,7 +2781,7 @@ function genSlides_Text(pptx) {
 				{ text:'style: romanLcPeriod', options:{ color:pptx.colors.ACCENT6, bullet:{type:'number', style:'romanLcPeriod'}, indentLevel:2 } },
 				{ text:'style: romanLcPeriod', options:{ color:pptx.colors.ACCENT6, bullet:{type:'number', style:'romanLcPeriod'}, indentLevel:2 } }
 			],
-			{ x:0.5, y:4.9, w:5.75, h:2.0, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT1 }
+			{ x:0.5, y:5.0, w:5.75, h:2.0, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT1 }
 		);
 
 		// RIGHT COLUMN ------------------------------------------------------------
@@ -2786,33 +2790,41 @@ function genSlides_Text(pptx) {
 		slide.addText("Bullet startAt number option:", { x:7.0, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			"type:'number'\nstartAt:'5'",
-			{ x:7.0, y:1.05, w:'40%', h:0.75, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', startAt:'5'} }
+			{ x:7.0, y:1.0, w:'40%', h:0.75, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', startAt:'5'} }
 		);
 
 		// 2: Bullets: Text With Line-Breaks
-		slide.addText("Bullets made with Line Breaks:", { x:7.0, y:2.1, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
-		slide.addText('Line 1\nLine 2\nLine 3', { x:7.0, y:2.6, w:'40%', h:1.0, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} });
+		slide.addText("Bullets made with Line Breaks:", { x:7.0, y:2.0, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText('Line 1\nLine 2\nLine 3', { x:7.0, y:2.4, w:'40%', h:1.0, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} });
 
 		// 3: Bullets: With group of {text}
-		slide.addText("Bullets made with text objects:", { x:7.0, y:4.0, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText("Bullets with marginPt:", { x:7.0, y:3.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text: 'big red words... ', options:{fontSize:24, color:'FF0000'} },
-				{ text: 'some green words.', options:{fontSize:16, color:'00FF00'} }
+				{ text: 'bullet marginPt:10', options: { bullet: { marginPt: 10 } } },
+				{ text: 'bullet marginPt:30', options: { bullet: { marginPt: 30 } } }
 			],
-			{ x:7.0, y:4.4, w:5.75, h:0.5, margin:0.1, fontFace:'Arial', bullet:{code:'25BA'} }
+			{ x:7.0, y:3.95, w:5.75, h:0.5, margin:0.1, fontFace:'Arial', fontSize:12 }
+		);
+
+		slide.addText("Bullets with text objects:", { x:7.0, y:4.7, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText(
+			[
+				{ text: 'big red words... ', options: { fontSize: 24, color: 'FF0000' } },
+				{ text: 'some green words.', options: { fontSize: 16, color: '00FF00' } }
+			],
+			{ x: 7.0, y: 5.0, w: 5.75, h: 0.4, margin: 0.1, fontFace: 'Arial', bullet: { code: '25BA' } }
 		);
 
 		// 5: Bullets: Within a {text} object
-		slide.addText("Bullets using text object options:", { x:7.0, y:5.3, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText("Bullets using text object options:", { x:7.0, y:5.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text:'I am a text object with bullets..', options:{bullet:{code:'25BA'}, color:'CC0000'} },
-				{ text:'and I am the next text object.'   , options:{bullet:{code:'25BA'}, color:'00CD00'} },
-				{ text:'Default bullet text.. '           , options:{bullet:true, color:'696969'} },
-				{ text:'Final text object w/ bullet:true.', options:{bullet:true, color:'0000AB'} }
+				{ text: 'bullet:{code:"25BA"}, color:"00CD00"', options: { bullet: { code: '25BA' }, color: '00CD00' } },
+				{ text: 'Next bullet text', options: { bullet: true, color: '696969' } },
+				{ text: 'Last bullet text', options: { bullet: true, color: '0000AB' } }
 			],
-			{ x:7.0, y:5.65, w:'40%', h:1.4, color:'ABABAB', margin:1 }
+			{ x: 7.0, y: 5.95, w: '40%', h: 1.05, color: 'ABABAB', margin: 1 }
 		);
 	}
 

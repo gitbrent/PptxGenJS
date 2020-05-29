@@ -8,50 +8,69 @@ import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HAL
 // ======
 
 /**
- * Coordinate (string is in the form of 'N%')
+ * Coordinate - number in inches (ex: 10.25) or percent string (ex: '75%')
  */
-export type HexColor = string // should match /^[0-9a-fA-F]{6}$/
+export type Coord = number | string
+/**
+ * Hex Color (e.g.: 'FF3399')
+ */
+export type HexColor = string // (should match /^[0-9a-fA-F]{6}$/)
 export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 export type Color = HexColor | ThemeColor
-export type Coord = number | string // string is in form 'n%'
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+export type MediaType = 'audio' | 'online' | 'video'
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-export type HyperLink = { rId: number; slide?: number; tooltip?: string; url?: string }
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
-export type BkgdOpts = { src?: string; path?: string; data?: string }
-type MediaType = 'audio' | 'online' | 'video'
-
-export interface FontOptions {
+export type HyperLink = {
+	rId: number
+	slide?: number
+	tooltip?: string
+	url?: string
+}
+export type BkgdOpts = {
+	fill?: HexColor
+	data?: string
+	path?: string
+}
+export type TextOptions = {
+	align?: HAlign
+	bold?: boolean
+	breakLine?: boolean
+	bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
+	color?: Color
 	fontFace?: string
 	fontSize?: number
+	italic?: boolean
+	lang?: string
+	valign?: VAlign
 }
-export interface PositionOptions {
+export type PositionOptions = {
 	x?: Coord
 	y?: Coord
-	w?: Coord
 	h?: Coord
+	w?: Coord
 }
-export interface OptsDataOrPath {
+export type OptsDataOrPath = {
 	data?: string // one option is required
 	path?: string // one option is required
 }
-export interface OptsChartData {
+export type OptsChartData = {
 	index?: number
-	name?: string
 	labels?: string[]
 	valueLabels?: string[]
-	values?: number[]
+	name?: string
 	sizes?: number[]
+	values?: number[]
 }
-export interface OptsChartGridLine {
-	size?: number
+export type OptsChartGridLine = {
 	color?: string
+	size?: number
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
 
-// TODO: FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
+// FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
 /*
 export interface OptsDataLabelPosition {
 	pie: 'ctr' | 'inEnd' | 'outEnd' | 'bestFit'
@@ -293,10 +312,10 @@ export interface IShapeOptions extends PositionOptions {
 	shadow?: IShadowOptions
 }
 
-export interface IChartTitleOpts extends FontOptions {
-	title: string
-	color?: String
+export interface IChartTitleOpts extends TextOptions {
+	color?: Color
 	rotate?: number
+	title: string
 	titleAlign?: string
 	titlePos?: { x: number; y: number }
 }
@@ -305,14 +324,14 @@ export interface IChartMulti {
 	data: any[]
 	options: {}
 }
-
+// TODO: create TableToSlidesOpts
 export interface ITableToSlidesOpts extends ITableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
-	addShape?: { shape: any; opts: {} }
-	addTable?: { rows: any[]; opts: {} }
-	addText?: { text: any[]; opts: {} }
+	addShape?: { shape: any; options: {} }
+	addTable?: { rows: any[]; options: {} }
+	addText?: { text: any[]; options: {} }
 	//
-	_arrObjTabHeadRows?: [ITableToSlidesCell[]?]
+	_arrObjTabHeadRows?: ITableToSlidesCell[][]
 	addHeaderToEach?: boolean
 	autoPage?: boolean
 	autoPageCharWeight?: number // -1.0 to 1.0
@@ -324,60 +343,94 @@ export interface ITableToSlidesOpts extends ITableOptions {
 	slideMargin?: Margin
 	verbose?: boolean // Undocumented; shows verbose output
 }
-export interface ITableCellOpts extends FontOptions {
+export interface ITableCellOpts extends TextOptions {
 	autoPageCharWeight?: number
 	autoPageLineWeight?: number
-	align?: HAlign
-	bold?: boolean
 	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-	color?: Color
 	colspan?: number
 	fill?: ShapeFill
 	margin?: Margin
 	rowspan?: number
 	valign?: VAlign
 }
-export interface ITableOptions extends PositionOptions, FontOptions {
-	align?: HAlign
+export interface ITableOptions extends PositionOptions, TextOptions {
+	/**
+	 * @default false
+	 */
 	autoPage?: boolean
+	/**
+	 * Character weight - affects line length before wrapping begins
+	 * @type float (-1.0 to 1.0)
+	 * @default 0
+	 */
 	autoPageCharWeight?: number
+	/**
+	 * Line weight - affects line height before paging begins
+	 * @type float (-1.0 to 1.0)
+	 * @default 0
+	 */
 	autoPageLineWeight?: number
+	/**
+	 * Table border
+	 * - single value is applied to all 4 sides
+	 * - array of values in TRBL order for individual sides
+	 */
 	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-	color?: Color
-	colspan?: number
+	/**
+	 * Width of table columns
+	 * - single value is applied to every column equally based upon `w`
+	 * - array of values in applied to each column in order
+	 * @default columns of equal width based upon `w`
+	 */
 	colW?: number | number[]
+	/**
+	 * Cell background color
+	 */
 	fill?: Color
+	/**
+	 * Cell margin
+	 * - affects all table cells, is superceded by cell options
+	 */
 	margin?: Margin
+	/**
+	 * Starting `y` location on additional slides created by autoPage=true
+	 * @default `y` value from table options
+	 */
 	newSlideStartY?: number
-	rowW?: number | number[]
-	rowspan?: number
-	valign?: VAlign
+	/**
+	 * Height of table rows
+	 * - single value is applied to every row equally based upon `h`
+	 * - array of values in applied to each row in order
+	 * @default rows of equal height based upon `h`
+	 */
+	rowH?: number | number[]
+}
+export interface TableCell {
+	text?: string | TableCell[]
+	options?: ITableCellOpts
 }
 // TODO: replace this with `ITableCell`
 export interface ITableToSlidesCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
-	text?: string
+	text?: string | TableCell[]
 	options?: ITableCellOpts
 }
-export interface ITableCell {
+export interface ITableCell extends TableCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
-	text?: string
-	options?: ITableCellOpts
-	// internal fields below
 	lines?: string[]
 	lineHeight?: number
 	hmerge?: boolean
 	vmerge?: boolean
 	optImp?: any
 }
-export type TableRow = number[] | string[] | ITableCell[]
 export type ITableRow = ITableCell[]
+// TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
+export type TableRow = number[] | string[] | TableCell[]
 export interface TableRowSlide {
 	rows: ITableRow[]
 }
 
-export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
-	align?: HAlign
+export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
 	autoFit?: boolean
 	bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
@@ -391,19 +444,13 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions 
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: boolean
 	}
-	bold?: boolean
-	breakLine?: boolean
-	bullet?: boolean | { type?: string; code?: string; style?: string; startAt?: number }
 	charSpacing?: number
-	color?: string
 	fill?: ShapeFill
 	glow?: IGlowOptions
 	hyperlink?: HyperLink
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
-	italic?: boolean
-	lang?: string
 	line?: Color
 	lineIdx?: number
 	lineSize?: number
@@ -446,7 +493,7 @@ export interface ISection {
 	slides: ISlideLib[]
 }
 /**
- * The Presenation Layout (ex: 'LAYOUT_WIDE')
+ * The Presentation Layout (ex: 'LAYOUT_WIDE')
  */
 export interface ILayout {
 	name: string
@@ -458,7 +505,8 @@ export interface ILayoutProps {
 	width: number
 	height: number
 }
-export interface ISlideNumber extends PositionOptions, FontOptions {
+export interface ISlideNumber extends PositionOptions, TextOptions {
+	align?: HAlign
 	color?: string
 }
 export interface ISlideMasterOptions {
@@ -466,14 +514,16 @@ export interface ISlideMasterOptions {
 	height?: number
 	width?: number
 	margin?: Margin
-	bkgd?: string | BkgdOpts
+	background?: BkgdOpts
+	bkgd?: string | BkgdOpts // @deprecated v3.3.0
 	objects?: (
 		| { chart: {} }
 		| { image: {} }
 		| { line: {} }
 		| { rect: {} }
-		| { text: { options: ITextOpts } }
-		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } })[]
+		| { text: { options: ITextOpts; text?: string } }
+		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
+	)[]
 	slideNumber?: ISlideNumber
 }
 export interface ISlideMstrObjPlchldrOpts {
@@ -546,7 +596,7 @@ export interface ISlideObject {
 	// text
 	text?: string | IText[]
 	// table
-	arrTabRows?: [ITableCell[]?]
+	arrTabRows?: ITableCell[][]
 	// chart
 	chartRid?: number
 	// image:
@@ -564,7 +614,8 @@ export interface ISlideLayout {
 	presLayout: ILayout
 	name: string
 	number: number
-	bkgd?: string
+	background?: BkgdOpts
+	bkgd?: string // @deprecated v3.3.0
 	bkgdImgRid?: number
 	slide?: {
 		back: string
@@ -591,8 +642,9 @@ export interface ISlide {
 	addShape: Function
 	addTable: Function
 	addText: Function
-	bkgd?: string
-	color?: string
+	background?: BkgdOpts
+	bkgd?: string // @deprecated v3.3.0
+	color?: HexColor
 	hidden?: boolean
 	slideNumber?: ISlideNumber
 }

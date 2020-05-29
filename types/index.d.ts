@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.2.0
+// Type definitions for pptxgenjs 3.3.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -14,6 +14,7 @@ export default PptxGenJS
 declare class PptxGenJS {
 	/**
 	 * PptxGenJS Library Version
+	 * @type {string}
 	 */
 	readonly version: string
 
@@ -29,14 +30,16 @@ declare class PptxGenJS {
 	// Presentation Props
 
 	/**
-	 * Presentation layout name
+	 * Presentation layout name.
 	 * Standard layouts:
 	 * - 'LAYOUT_4x3'   (10" x 7.5")
 	 * - 'LAYOUT_16x9'  (10" x 5.625")
 	 * - 'LAYOUT_16x10' (10" x 6.25")
 	 * - 'LAYOUT_WIDE'  (13.33" x 7.5")
+	 *
 	 * Custom layouts:
-	 * Use `pptx.defineLayout()` to create custom layouts (e.g.: 'A4')
+	 * - Use `pptx.defineLayout()` to create custom layouts (e.g.: 'A4')
+	 *
 	 * @type {string}
 	 * @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 	 */
@@ -51,7 +54,7 @@ declare class PptxGenJS {
 	company: string
 	/**
 	 * @type {string}
-	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PPT will throw errors upon opening!)
+	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PowerPoint will throw errors upon opening!)
 	 */
 	revision: string
 	subject: string
@@ -60,28 +63,34 @@ declare class PptxGenJS {
 	// Methods
 
 	/**
-	 * Export the current Presenation to stream
+	 * Export the current Presentation to stream
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
 	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>
 	/**
-	 * Export the current Presenation as JSZip content with the selected type
+	 * Export the current Presentation as JSZip content with the selected type
 	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
 	write(outputType: PptxGenJS.JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>
 	/**
-	 * Export the current Presenation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
+	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
 	 * @param {string} exportName - file name
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(exportName?: string): Promise<string>
 	/**
-	 * Add a new Slide to Presenation
-	 * @param {string} masterSlideName - Master Slide name
-	 * @returns {ISlide} the new Slide
+	 * Add a new Section to Presentation
+	 * @param {ISectionProps} section - section properties
+	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSlide(masterSlideName?: string): PptxGenJS.Slide
+	addSection(section: PptxGenJS.ISectionProps)
+	/**
+	 * Add a new Slide to Presentation
+	 * @param {IAddSlideOptions} options - slide options
+	 * @returns {Slide} the new Slide
+	 */
+	addSlide(options?: PptxGenJS.IAddSlideOptions): PptxGenJS.Slide
 	/**
 	 * Create a custom Slide Layout in any size
 	 * @param {ILayoutProps} layout - an object with user-defined w/h
@@ -108,12 +117,12 @@ declare namespace PptxGenJS {
 		'left' = 'left',
 		'center' = 'center',
 		'right' = 'right',
-		'justify' = 'justify'
+		'justify' = 'justify',
 	}
 	export enum AlignV {
 		'top' = 'top',
 		'middle' = 'middle',
-		'bottom' = 'bottom'
+		'bottom' = 'bottom',
 	}
 	export enum ChartType {
 		'area' = 'area',
@@ -124,7 +133,7 @@ declare namespace PptxGenJS {
 		'line' = 'line',
 		'pie' = 'pie',
 		'radar' = 'radar',
-		'scatter' = 'scatter'
+		'scatter' = 'scatter',
 	}
 	export enum OutputType {
 		'arraybuffer' = 'arraybuffer',
@@ -132,7 +141,7 @@ declare namespace PptxGenJS {
 		'binarystring' = 'binarystring',
 		'blob' = 'blob',
 		'nodebuffer' = 'nodebuffer',
-		'uint8array' = 'uint8array'
+		'uint8array' = 'uint8array',
 	}
 	export enum SchemeColor {
 		'text1' = 'tx1',
@@ -144,7 +153,7 @@ declare namespace PptxGenJS {
 		'accent3' = 'accent3',
 		'accent4' = 'accent4',
 		'accent5' = 'accent5',
-		'accent6' = 'accent6'
+		'accent6' = 'accent6',
 	}
 	export enum ShapeType {
 		'accentBorderCallout1' = 'accentBorderCallout1',
@@ -324,7 +333,7 @@ declare namespace PptxGenJS {
 		'wave' = 'wave',
 		'wedgeEllipseCallout' = 'wedgeEllipseCallout',
 		'wedgeRectCallout' = 'wedgeRectCallout',
-		'wedgeRoundRectCallout' = 'wedgeRoundRectCallout'
+		'wedgeRoundRectCallout' = 'wedgeRoundRectCallout',
 	}
 	// These are used by browser/script clients and have been named like this since v0.1.
 	// Desc: charts and shapes for `pptxgen.charts.` `pptxgen.shapes.`
@@ -338,7 +347,7 @@ declare namespace PptxGenJS {
 		'LINE' = 'line',
 		'PIE' = 'pie',
 		'RADAR' = 'radar',
-		'SCATTER' = 'scatter'
+		'SCATTER' = 'scatter',
 	}
 	export enum shapes {
 		ACTION_BUTTON_BACK_OR_PREVIOUS = 'actionButtonBackPrevious',
@@ -523,7 +532,7 @@ declare namespace PptxGenJS {
 		UP_RIBBON = 'ribbon2',
 		U_TURN_ARROW = 'uturnArrow',
 		VERTICAL_SCROLL = 'verticalScroll',
-		WAVE = 'wave'
+		WAVE = 'wave',
 	}
 
 	// `core-interfaces.d.ts`
@@ -539,7 +548,7 @@ declare namespace PptxGenJS {
 		'LINE' = 'line',
 		'PIE' = 'pie',
 		'RADAR' = 'radar',
-		'SCATTER' = 'scatter'
+		'SCATTER' = 'scatter',
 	}
 	export enum SCHEME_COLOR_NAMES {
 		'TEXT1' = 'tx1',
@@ -551,7 +560,7 @@ declare namespace PptxGenJS {
 		'ACCENT3' = 'accent3',
 		'ACCENT4' = 'accent4',
 		'ACCENT5' = 'accent5',
-		'ACCENT6' = 'accent6'
+		'ACCENT6' = 'accent6',
 	}
 	export enum SLIDE_OBJECT_TYPES {
 		'chart' = 'chart',
@@ -563,18 +572,18 @@ declare namespace PptxGenJS {
 		'table' = 'table',
 		'tablecell' = 'tablecell',
 		'text' = 'text',
-		'notes' = 'notes'
+		'notes' = 'notes',
 	}
 	export enum TEXT_HALIGN {
 		'left' = 'left',
 		'center' = 'center',
 		'right' = 'right',
-		'justify' = 'justify'
+		'justify' = 'justify',
 	}
 	export enum TEXT_VALIGN {
 		'b' = 'b',
 		'ctr' = 'ctr',
-		't' = 't'
+		't' = 't',
 	}
 	export enum PLACEHOLDER_TYPES {
 		'title' = 'title',
@@ -582,7 +591,7 @@ declare namespace PptxGenJS {
 		'image' = 'pic',
 		'chart' = 'chart',
 		'table' = 'tbl',
-		'media' = 'media'
+		'media' = 'media',
 	}
 	export type SHAPE_NAME =
 		| 'actionButtonBackPrevious'
@@ -769,6 +778,13 @@ declare namespace PptxGenJS {
 		| 'verticalScroll'
 		| 'wave'
 
+	export interface ISectionProps {
+		title: string
+		/**
+		 * Section order [index] (1-n)
+		 */
+		order?: number
+	}
 	export interface ILayoutProps {
 		name: string
 		width: number
@@ -837,31 +853,34 @@ declare namespace PptxGenJS {
 		height?: number
 		width?: number
 		margin?: Margin
-		bkgd?: string | BkgdOpts
+		background?: BkgdOpts
+		bkgd?: string | BkgdOpts // @deprecated
 		objects?: (
 			| {
-					chart: {}
+					chart: {} // TODO: IChartOptions (?)
 			  }
 			| {
-					image: {}
+					image: {} // TODO: IImageOptions (?)
 			  }
 			| {
-					line: {}
+					line: {} // TODO: IShapeOptions (?)
 			  }
 			| {
-					rect: {}
+					rect: {} // TODO: IShapeOptions (?)
 			  }
 			| {
 					text: {
-						options: ITextOpts
+						text: string
+						options?: ITextOpts
 					}
 			  }
 			| {
 					placeholder: {
-						options: ISlideMstrObjPlchldrOpts
-						text?: string
+						text: string
+						options?: ISlideMstrObjPlchldrOpts
 					}
-			  })[]
+			  }
+		)[]
 		slideNumber?: ISlideNumber
 	}
 	export interface ISlideMstrObjPlchldrOpts {
@@ -871,6 +890,10 @@ declare namespace PptxGenJS {
 		y: Coord
 		w: Coord
 		h: Coord
+	}
+	export interface IAddSlideOptions {
+		masterName?: string
+		sectionTitle?: string
 	}
 	export interface ISlide {
 		addChart: Function
@@ -906,7 +929,7 @@ declare namespace PptxGenJS {
 			text: any[]
 			opts: {}
 		}
-		_arrObjTabHeadRows?: [ITableToSlidesCell[]?] // TODO: split off into internal library Iface and remove from here
+		_arrObjTabHeadRows?: ITableToSlidesCell[][]
 		addHeaderToEach?: boolean
 		autoPage?: boolean
 		autoPageCharWeight?: number
@@ -920,7 +943,7 @@ declare namespace PptxGenJS {
 	}
 	export interface ITableToSlidesCell {
 		type: SLIDE_OBJECT_TYPES.tablecell
-		text?: string
+		text?: string | TableCell[]
 		options?: ITableCellOpts
 	}
 
@@ -957,7 +980,7 @@ declare namespace PptxGenJS {
 		type: SLIDE_OBJECT_TYPES
 		options?: IObjectOptions
 		text?: string | IText[]
-		arrTabRows?: [ITableCell[]?] // TODO: remove "?" it generates tslint/ts TS8020 (Issue #672)
+		arrTabRows?: TableCell[][]
 		chartRid?: number
 		image?: string
 		imageRid?: number
@@ -968,11 +991,14 @@ declare namespace PptxGenJS {
 		shape?: SHAPE_NAME
 	}
 
+	/**
+	 * Coordinate - number in inches (ex: 10.25) or percent string (ex: '75%')
+	 */
 	export type Coord = number | string
-	export interface FontOptions {
-		fontFace?: string
-		fontSize?: number
-	}
+	/**
+	 * Hex Color (e.g.: 'FF3399')
+	 */
+	export type HexColor = string
 	export interface OptsDataOrPath {
 		data?: string
 		path?: string
@@ -996,32 +1022,37 @@ declare namespace PptxGenJS {
 		offset?: number
 		color?: string
 	}
-	export type HexColor = string
 	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 	export type Color = HexColor | ThemeColor
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
+	export type MediaType = 'audio' | 'online' | 'video'
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
+	export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 	export type HyperLink = {
 		rId: number
 		slide?: number
 		tooltip?: string
 		url?: string
 	}
-	export type ShapeFill =
-		| Color
-		| {
-				type: string
-				color: Color
-				alpha?: number
-		  }
 	export type BkgdOpts = {
-		src?: string
-		path?: string
+		fill?: HexColor
 		data?: string
+		path?: string
 	}
-	export type MediaType = 'audio' | 'online' | 'video'
+	export type TextOptions = {
+		align?: HAlign
+		bold?: boolean
+		breakLine?: boolean
+		bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
+		color?: Color
+		fontFace?: string
+		fontSize?: number
+		italic?: boolean
+		lang?: string
+		valign?: VAlign
+	}
 	export interface IGlowOptions {
 		size: number
 		opacity: number
@@ -1029,7 +1060,8 @@ declare namespace PptxGenJS {
 	}
 
 	// slideNumber
-	export interface ISlideNumber extends PositionOptions, FontOptions {
+	export interface ISlideNumber extends PositionOptions, TextOptions {
+		align?: HAlign
 		color?: string
 	}
 
@@ -1039,15 +1071,12 @@ declare namespace PptxGenJS {
 		color?: string
 		style?: 'solid' | 'dash' | 'dot' | 'none'
 	}
-	export interface IChartTitleOpts extends FontOptions {
-		title: string
-		color?: String
+	export interface IChartTitleOpts extends TextOptions {
+		color?: Color
 		rotate?: number
+		title: string
 		titleAlign?: string
-		titlePos?: {
-			x: number
-			y: number
-		}
+		titlePos?: { x: number; y: number }
 	}
 	export interface IChartMulti {
 		type: CHART_NAME
@@ -1274,56 +1303,79 @@ declare namespace PptxGenJS {
 	}
 
 	// addTable
-	export interface ITableCellOpts extends FontOptions {
+	export interface ITableCellOpts extends TextOptions {
 		autoPageCharWeight?: number
 		autoPageLineWeight?: number
-		align?: HAlign
-		bold?: boolean
 		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-		color?: Color
 		colspan?: number
 		fill?: ShapeFill
 		margin?: Margin
 		rowspan?: number
 		valign?: VAlign
 	}
-	export interface ITableCell {
-		type: SLIDE_OBJECT_TYPES.tablecell
-		text?: string
+	export interface TableCell {
+		text?: string | TableCell[]
 		options?: ITableCellOpts
-		lines?: string[]
-		lineHeight?: number
-		hmerge?: boolean
-		vmerge?: boolean
-		optImp?: any
 	}
-	export type TableRow = number[] | string[] | ITableCell[]
-	export interface ITableOptions extends PositionOptions, FontOptions {
-		align?: HAlign
+	export type TableRow = number[] | string[] | TableCell[]
+	export interface ITableOptions extends PositionOptions, TextOptions {
+		/**
+		 * @default false
+		 */
 		autoPage?: boolean
+		/**
+		 * Character weight - affects line length before wrapping begins
+		 * @type float (-1.0 to 1.0)
+		 * @default 0
+		 */
 		autoPageCharWeight?: number
+		/**
+		 * Line weight - affects line height before paging begins
+		 * @type float (-1.0 to 1.0)
+		 * @default 0
+		 */
 		autoPageLineWeight?: number
+		/**
+		 * Table border
+		 * - single value is applied to all 4 sides
+		 * - array of values in TRBL order for individual sides
+		 */
 		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-		color?: Color
-		colspan?: number
+		/**
+		 * Width of table columns
+		 * - single value is applied to every column equally based upon `w`
+		 * - array of values in applied to each column in order
+		 * @default columns of equal width based upon `w`
+		 */
 		colW?: number | number[]
+		/**
+		 * Cell background color
+		 */
 		fill?: Color
+		/**
+		 * Cell margin
+		 * - affects all table cells, is superceded by cell options
+		 */
 		margin?: Margin
+		/**
+		 * Starting `y` location on additional slides created by autoPage=true
+		 * @default `y` value from table options
+		 */
 		newSlideStartY?: number
-		rowW?: number | number[]
-		rowspan?: number
-		valign?: VAlign
+		/**
+		 * Height of table rows
+		 * - single value is applied to every row equally based upon `h`
+		 * - array of values in applied to each row in order
+		 * @default rows of equal height based upon `h`
+		 */
+		rowH?: number | number[]
 	}
 
 	// addText
-	export interface IText {
-		text: string
-		options?: ITextOpts
-	}
-	export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
-		align?: HAlign
+	export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
 		autoFit?: boolean
 		bodyProp?: {
+			// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
 			autoFit?: boolean
 			align?: TEXT_HALIGN
 			anchor?: TEXT_VALIGN
@@ -1334,39 +1386,23 @@ declare namespace PptxGenJS {
 			vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 			wrap?: boolean
 		}
-		bold?: boolean
-		breakLine?: boolean
-		bullet?:
-			| boolean
-			| {
-					type?: string
-					code?: string
-					style?: string
-					startAt?: number
-			  }
 		charSpacing?: number
-		color?: string
 		fill?: ShapeFill
 		glow?: IGlowOptions
 		hyperlink?: HyperLink
 		indentLevel?: number
 		inset?: number
 		isTextBox?: boolean
-		italic?: boolean
-		lang?: string
 		line?: Color
 		lineIdx?: number
 		lineSize?: number
 		lineSpacing?: number
 		margin?: Margin
-		outline?: {
-			color: Color
-			size: number
-		}
+		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number
 		paraSpaceBefore?: number
 		placeholder?: string
-		rotate?: number
+		rotate?: number // (degree * 60,000)
 		rtlMode?: boolean
 		shadow?: IShadowOptions
 		shape?: SHAPE_NAME
@@ -1379,13 +1415,33 @@ declare namespace PptxGenJS {
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: boolean
 	}
+	export interface IText {
+		text: string
+		options?: ITextOpts
+	}
 
 	/**
 	 * `slide.d.ts`
 	 */
 	export class Slide {
+		/**
+		 * Background color
+		 * @type {string}
+		 * @deprecated in v3.3.0 - use `background` instead
+		 */
 		bkgd: string
-		color: string
+		/**
+		 * Background color or image
+		 * @type {BkgdOpts}
+		 * @example `background: {fill:'FF0000'}
+		 * @example `background: {data:'image/png;base64,ABC[...]123'}`
+		 * @example `background: {path:'https://some.url/image.jpg'}`
+		 */
+		background: BkgdOpts
+		/**
+		 * Default font color
+		 */
+		color: HexColor
 		hidden: boolean
 		slideNumber: ISlideNumber
 		/**

@@ -1,6 +1,6 @@
 {
   "name": "pptxgenjs",
-  "version": "3.2.0-beta",
+  "version": "3.3.0-beta",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -17,8 +17,9 @@
   "types": "types",
   "scripts": {
     "build": "rollup -c",
-    "watch": "rollup -cw",
+    "start": "gulp",
     "ship": "gulp ship",
+    "watch": "rollup -cw",
     "doctoc": "./node_modules/doctoc/doctoc.js README.md"
   },
   "browser": {
@@ -30,11 +31,10 @@
     "path": false
   },
   "dependencies": {
-    "@types/jszip": "^3.1.7",
-    "@types/node": "^13.9.1",
+    "@types/node": "^14.0.5",
     "https": "^1.0.0",
     "image-size": "^0.8.3",
-    "jszip": "^3.2.2"
+    "jszip": "^3.4.0"
   },
   "devDependencies": {
     "doctoc": "^1.4.0",
@@ -46,9 +46,9 @@
     "gulp-insert": "^0.5.0",
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
-    "rollup": "^1.31.0",
-    "rollup-plugin-typescript2": "^0.26.0",
-    "typescript": "^3.8.3"
+    "rollup": "^2.10.5",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "typescript": "^3.9.3"
   },
   "repository": {
     "type": "git",

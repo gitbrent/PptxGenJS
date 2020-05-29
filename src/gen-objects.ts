@@ -24,6 +24,7 @@ import {
 import {
 	BkgdOpts,
 	IChartMulti,
+	IChartOptsLib,
 	IImageOpts,
 	ILayout,
 	IMediaOpts,
@@ -38,7 +39,7 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
-	IChartOptsLib,
+	HexColor,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -54,9 +55,7 @@ let _chartCounter: number = 0
  */
 export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout) {
 	// STEP 1: Add background
-	if (slideDef.bkgd) {
-		addBackgroundDefinition(slideDef.bkgd, target)
-	}
+	if (slideDef.background) addBackgroundDefinition(slideDef.background, target)
 
 	// STEP 2: Add all Slide Master objects in the order they were given
 	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
@@ -605,10 +604,10 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 /**
  * Adds a table object to a slide definition.
  * @param {ISlideLib} target - slide object that the table should be added to
- * @param {TableRow[]} arrTabRows - table data
- * @param {ITableOptions} inOpt - table options
+ * @param {TableRow[]} tableRows - table data
+ * @param {ITableOptions} options - table options
  * @param {ISlideLayout} slideLayout - Slide layout
- * @param {ILayout} presLayout - Presenation layout
+ * @param {ILayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
  * @param {Function} getSlide - method
  */
@@ -649,12 +648,12 @@ export function addTableDefinition(
 
 	// STEP 2: Transform `tableRows` into well-formatted ITableCell's
 	// tableRows can be object or plain text array: `[{text:'cell 1'}, {text:'cell 2', options:{color:'ff0000'}}]` | `["cell 1", "cell 2"]`
-	let arrRows: [ITableCell[]?] = []
+	let arrRows: ITableCell[][] = []
 	tableRows.forEach(row => {
 		let newRow: ITableCell[] = []
 
 		if (Array.isArray(row)) {
-			row.forEach((cell: number | string | ITableCell) => {
+			row.forEach(cell => {
 				let newCell: ITableCell = {
 					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: '',
@@ -714,9 +713,20 @@ export function addTableDefinition(
 		}
 	*/
 
-	// Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+	/**
+	 * Calc table width depending upon what data we have - several scenarios exist (including bad data, eg: colW doesnt match col count)
+	 * The API does not require a `w` value, but XML generation does, hence, code to calc a width below using colW value(s)
+	 */
 	if (opt.colW) {
-		let firstRowColCnt = arrRows[0].length
+		// FIXME: Col count for first row only
+		let firstRowColCnt = arrRows[0].reduce((totalLen, c) => {
+			if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
+				totalLen += c.options.colspan
+			} else {
+				totalLen += 1
+			}
+			return totalLen
+		}, 0)
 
 		// Ex: `colW = 3` or `colW = '3'`
 		if (typeof opt.colW === 'string' || typeof opt.colW === 'number') {
@@ -835,9 +845,14 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 
 	// STEP 1: Set some options
 	{
-		// A: Placeholders should inherit their colors or override them, so don't default them
+		// A.1: Placeholders should inherit their colors or override them, so don't default them
 		if (!opt.placeholder) {
 			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
+		}
+
+		// A.2: Placeholder should inherit their bullets or override them, so don't default them
+		if (opt.placeholder || isPlaceholder) {
+			opt.bullet = opt.bullet || false
 		}
 
 		// B
@@ -906,29 +921,30 @@ export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {String|BkgdOpts} bkg - color string or an object with image definition
+ * @param {BkgdOpts} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
-function addBackgroundDefinition(bkg: string | BkgdOpts, target: ISlideLib | ISlideLayout) {
-	if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
+export function addBackgroundDefinition(bkg: BkgdOpts, target: ISlideLayout) {
+	if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
-		bkg.src = bkg.src || bkg.path || null
-		if (!bkg.src) bkg.src = 'preencoded.png'
-		let strImgExtn = (bkg.src.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
+		bkg.path = bkg.path || 'preencoded.png'
+		let strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
+		target.relsMedia = target.relsMedia || []
 		let intRels = target.relsMedia.length + 1
+		// NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
 		target.relsMedia.push({
-			path: bkg.src,
+			path: bkg.path,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
 			data: bkg.data || null,
 			rId: intRels,
-			Target: '../media/image' + (target.relsMedia.length + 1) + '.' + strImgExtn,
+			Target: `../media/${(target.name || '').replace(/\s+/gi, '-')}-image-${target.relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target.bkgdImgRid = intRels
-	} else if (bkg && typeof bkg === 'string') {
-		target.bkgd = bkg
+	} else if (bkg && bkg.fill && typeof bkg.fill === 'string') {
+		target.bkgd = bkg.fill
 	}
 }
 

@@ -7,94 +7,84 @@ import pptxgen from "pptxgenjs";
 export function testMainMethods() {
 	let pptx = new pptxgen();
 
-	// 1:
+	pptx.addSection({ title: "TypeScript" });
+
+	// PPTX Method 1:
 	pptx.defineLayout({ name: "TST", width: 12, height: 7 });
 	pptx.layout = "TST";
 
-	// 2:
+	// PPTX Method 2:
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
 		bkgd: "FFFFFF",
 		margin: [0.5, 0.25, 1.0, 0.25],
-		slideNumber: { x: 0.6, y: "95%", color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
+		slideNumber: { x: 0.6, y: "95%", color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: pptx.AlignH.center },
 		objects: [
 			{ rect: { x: 0.0, y: "90%", w: "100%", h: 0.75, fill: "003b75" } },
-			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: IMGBASE64 } }
-		]
+			{ image: { x: "90%", y: "90%", w: 0.75, h: 0.75, data: IMGBASE64 } },
+			{
+				text: {
+					text: "S.T.A.R. Laboratories - Confidential",
+					options: { x: 0, y: 6.9, w: "100%", align: "center", color: "FFFFFF", fontSize: 12 },
+				},
+			},
+		],
 	});
 
-	// 3:
+	// PPTX Method 3:
 	let slide1 = pptx.addSlide();
+	//let slide1 = pptx.addSlide({ sectionTitle: "TypeScript" });
 	let dataChart = [
 		{
 			name: "Region 1",
 			labels: ["May", "June", "July", "August", "September"],
-			values: [26, 53, 100, 75, 41]
-		}
+			values: [26, 53, 100, 75, 41],
+		},
 	];
-	slide1.addChart(pptx.ChartType.bar, dataChart, { x: 1, y: 1, w: 3, h: 3 }); // TEST: charts
-	slide1.addShape(pptx.ShapeType.rect, { x: 6, y: 1, w: 3, h: 3, fill: "66ff99" }); // TEST: shapes
+	slide1.addChart(pptx.ChartType.bar, dataChart, { x: 0.5, y: 2.5, w: 5.25, h: 4 }); // TEST: charts
+
+	slide1.addShape(pptx.ShapeType.rect, { x: 7.6, y: 2.8, w: 3, h: 3, fill: "66ff99" }); // TEST: shapes
 
 	// 4:
-	let slide2 = pptx.addSlide("MASTER_SLIDE");
-	slide2.addText("React Demo!", { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: pptx.AlignH.center });
+	slide1.addTable([[{ text: "cell 1" }]], { x: 0.5, y: 0.5 });
+	let rows = [];
+	rows.push(["First", "Second", "Third", "Fourth"]); // simple text array
+	rows.push([{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }]); // complex object cells
+	rows.push([
+		{
+			text: [{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }],
+		},
+	]);
+
+	// text as compound object (multi-format per cell)
+	slide1.addTable(rows, {
+		x: 0.5,
+		y: 1.25,
+		w: "90%",
+		//h: 1.25,
+		colW: [4, 4, 4, 4],
+		rowH: 0.5,
+		border: { type: "solid", pt: 1, color: "a9a9a9" },
+	});
 
 	// 5:
-	//pptx.tableToSlides("html2ppt"); // Works v3.1.1 (FIXME: formatting sucks)
+	let slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
+	slide2.addText("React Demo!", { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: pptx.AlignH.center });
 
-	// Last:
+	// PPTX Export Method 1:
+	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
+	// PPTX Export Method 2:
+	//pptx.write(pptx.OutputType.base64).then((base64) => console.log("base64!")); // TEST-Type: outputType // Works v3.1.1
+	// PPTX Export Method 3:
 	//pptx.stream().then(() => console.log("stream!")); // Works v3.1.1
-	//pptx.write(pptx.OutputType.base64).then(() => console.log("base64!")); // TEST: outputType // Works v3.1.1
-	pptx.writeFile("testFile").then(() => console.log("writeFile done!"));
 }
-/*
-function testTypeScriptDefs() {
+
+export function testTableMethod() {
 	let pptx = new pptxgen();
-	let slide = pptx.addSlide();
 
-	slide.addShape(pptx.ShapeType.rect, {}); // TEST: shapes
-	slide.addChart(pptx.ChartType.bar, [], {}); // TEST: charts
+	// PPTX Method 4:
+	pptx.tableToSlides("html2ppt"); // Works v3.1.1 (FIXME: formatting sucks)
 
-	// TEST: defineSlideMaster
-	pptx.defineSlideMaster({
-		title: "MASTER_SLIDE",
-		bkgd: "FFFFFF",
-		margin: [0.5, 0.25, 1.0, 0.25],
-		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
-		objects: [{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: "003b75" } }, { image: { x: 11.45, y: 5.95, w: 1.67, h: 0.75, data: "logo" } }]
-	});
-
-	slide.addText("React Demo!", { x: 1, y: 1, w: "80%", h: 1, fontSize: 36, fill: "eeeeee", align: pptxgen.TEXT_HALIGN.center });
-
-	// DONE: Export
-	pptx.writeFile("pptxgenjs-demo-react.pptx");
+	// PPTX Export Method 1:
+	pptx.writeFile("html2ppt").then((fileName) => console.log(`writeFile: ${fileName}`));
 }
-*/
-/*
-function sandbox() {
-	interface ISlideMasterOptions {
-		title: string;
-		objects: (
-			| {
-					chart: { x: number };
-			  }
-			| {
-					image: { x: number };
-			  })[];
-	}
-
-	let opts: ISlideMasterOptions["objects"] = [{ chart: { x: 1 } }, { image: { x: 1 } }];
-	//let opts = [{ chart: { x: 1 } }, { image: { x: 1 } }];
-
-	let pptx = new pptxgen();
-	pptx.defineSlideMaster({
-		title: "MASTER_SLIDE",
-		//objects: [{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: "003b75" } }, { image: { x: 11.45, y: 5.95, w: 1.67, h: 0.75, data: "logo" } }]
-		objects: opts
-	});
-}
-*/
-/**
- * demos/common/demo.js
- */
-//function demos() {}
