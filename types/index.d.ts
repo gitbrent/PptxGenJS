@@ -80,11 +80,17 @@ declare class PptxGenJS {
 	 */
 	writeFile(exportName?: string): Promise<string>
 	/**
+	 * Add a new Section to Presentation
+	 * @param {ISectionProps} section - section properties
+	 * @example pptx.addSection({ title:'Charts' });
+	 */
+	addSection(section: PptxGenJS.ISectionProps)
+	/**
 	 * Add a new Slide to Presentation
-	 * @param {string} masterSlideName - Master Slide name
+	 * @param {IAddSlideOptions} options - slide options
 	 * @returns {Slide} the new Slide
 	 */
-	addSlide(masterSlideName?: string): PptxGenJS.Slide
+	addSlide(options?: PptxGenJS.IAddSlideOptions): PptxGenJS.Slide
 	/**
 	 * Create a custom Slide Layout in any size
 	 * @param {ILayoutProps} layout - an object with user-defined w/h
@@ -772,6 +778,13 @@ declare namespace PptxGenJS {
 		| 'verticalScroll'
 		| 'wave'
 
+	export interface ISectionProps {
+		title: string
+		/**
+		 * Section order [index] (1-n)
+		 */
+		order?: number
+	}
 	export interface ILayoutProps {
 		name: string
 		width: number
@@ -877,6 +890,10 @@ declare namespace PptxGenJS {
 		y: Coord
 		w: Coord
 		h: Coord
+	}
+	export interface IAddSlideOptions {
+		masterName?: string
+		sectionTitle?: string
 	}
 	export interface ISlide {
 		addChart: Function
