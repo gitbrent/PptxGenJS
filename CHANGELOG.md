@@ -40,7 +40,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed: Spelling consistent "Presenation" -> "Presentation" typo [\#694](https://github.com/gitbrent/PptxGenJS/pull/694) ([ankon](https://github.com/ankon))
 - Fixed: Handle errors with promise rejections [\#695](https://github.com/gitbrent/PptxGenJS/pull/695) ([ankon](https://github.com/ankon))
 - Fixed: Update 'pptx' to 'pres' in README.md [\#700](https://github.com/gitbrent/PptxGenJS/pull/700) ([lucidlemon](https://github.com/lucidlemon))
-- Fixed: Time units validation #706 [\#706](https://github.com/gitbrent/PptxGenJS/pull/706) ([lucasflomuller](https://github.com/lucasflomuller))
+- Fixed: Time units validation [\#706](https://github.com/gitbrent/PptxGenJS/pull/706) ([lucasflomuller](https://github.com/lucasflomuller))
 - Fixed: Add the slide layout name to the generated background image name [\#726](https://github.com/gitbrent/PptxGenJS/pull/726) ([jrohland](https://github.com/jrohland))
 - Fixed: Type issue addTable rows, updated TableCell/TableRow [\#735](https://github.com/gitbrent/PptxGenJS/issues/735) ([robertsoaa](https://github.com/robertsoaa))
 - Continued improvement of typescript definitions file ([gitbrent](https://github.com/gitbrent))
