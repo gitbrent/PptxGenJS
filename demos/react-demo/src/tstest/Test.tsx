@@ -7,6 +7,8 @@ import pptxgen from "pptxgenjs";
 export function testMainMethods() {
 	let pptx = new pptxgen();
 
+	pptx.addSection({ title: "TypeScript" });
+
 	// PPTX Method 1:
 	pptx.defineLayout({ name: "TST", width: 12, height: 7 });
 	pptx.layout = "TST";
@@ -31,6 +33,7 @@ export function testMainMethods() {
 
 	// PPTX Method 3:
 	let slide1 = pptx.addSlide();
+	//let slide1 = pptx.addSlide({ sectionTitle: "TypeScript" });
 	let dataChart = [
 		{
 			name: "Region 1",
@@ -51,7 +54,9 @@ export function testMainMethods() {
 		{
 			text: [{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }],
 		},
-	]); // text as compound object (multi-format per cell)
+	]);
+
+	// text as compound object (multi-format per cell)
 	slide1.addTable(rows, {
 		x: 0.5,
 		y: 1.25,
@@ -63,7 +68,7 @@ export function testMainMethods() {
 	});
 
 	// 5:
-	let slide2 = pptx.addSlide("MASTER_SLIDE");
+	let slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 	slide2.addText("React Demo!", { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: pptx.AlignH.center });
 
 	// PPTX Export Method 1:
