@@ -67,47 +67,47 @@
 but the reality is most of us will be required to produce presentations that have a certain design or
 corporate branding.</p>
 <p>PptxGenJS allows you to define Slide Master Layouts via objects that can then be used to provide branding
-functionality.  This enables you to easily create a Master Slide using code.</p>
+functionality. This enables you to easily create a Master Slide using code.</p>
 <p>Slide Masters are created by calling the <code>defineSlideMaster()</code> method along with an options object
-(same style used in Slides).  Once defined, you can pass the Master title to <code>addSlide()</code> and that Slide will
-use the Layout previously defined.  See the demo under /examples for several working examples.</p>
+(same style used in Slides). Once defined, you can pass the Master title to <code>addSlide()</code> and that Slide will
+use the Layout previously defined. See the demo under /examples for several working examples.</p>
 <p>The defined Masters become first-class Layouts in the exported PowerPoint presentation and can be changed
 via View &gt; Slide Master and will affect the Slides created using that layout.</p>
 <h3><a class="anchor" aria-hidden="true" id="slide-master-options"></a><a href="#slide-master-options" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Slide Master Options</h3>
 <table>
 <thead>
-<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Unit</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code>bkgd</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"><code>ffffff</code></td><td style="text-align:left">color</td><td style="text-align:left">hex color code or <a href="#scheme-colors">scheme color constant</a>. Ex: <code>{ bkgd:'0088CC' }</code></td></tr>
-<tr><td style="text-align:left"><code>bkgd</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">image</td><td style="text-align:left">object with path OR data. Ex: <code>{path:'img/bkgd.png'}</code> OR <code>{data:'image/png;base64,iVBORwTwB[...]='}</code></td></tr>
-<tr><td style="text-align:left"><code>margin</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left"><code>1.0</code></td><td style="text-align:left">Slide margins</td><td style="text-align:left">0.0 through Slide.width</td></tr>
-<tr><td style="text-align:left"><code>margin</code></td><td style="text-align:left">array</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">Slide margins</td><td style="text-align:left">array of numbers in TRBL order. Ex: <code>[0.5, 0.75, 0.5, 0.75]</code></td></tr>
-<tr><td style="text-align:left"><code>objects</code></td><td style="text-align:left">array</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">Objects for Slide</td><td style="text-align:left">object with type and options. Type:<code>chart</code>,<code>image</code>,<code>line</code>,<code>rect</code> or <code>text</code>. <a href="https://github.com/gitbrent/PptxGenJS#slide-master-examples">Example</a></td></tr>
-<tr><td style="text-align:left"><code>slideNumber</code></td><td style="text-align:left">object</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">Show slide numbers</td><td style="text-align:left">ex: <code>{ x:1.0, y:'50%' }</code> <code>x</code> and <code>y</code> can be either inches or percent</td></tr>
-<tr><td style="text-align:left"><code>title</code></td><td style="text-align:left">string</td><td style="text-align:left"></td><td style="text-align:left"></td><td style="text-align:left">Layout title/name</td><td style="text-align:left">some title</td></tr>
+<tr><td style="text-align:left"><code>bkgd</code></td><td style="text-align:left">string</td><td style="text-align:left">color</td><td style="text-align:left">hex color code or <a href="#scheme-colors">scheme color constant</a>. Ex: <code>{ bkgd:'0088CC' }</code></td></tr>
+<tr><td style="text-align:left"><code>bkgd</code></td><td style="text-align:left">object</td><td style="text-align:left">image</td><td style="text-align:left">object with <code>path</code> OR <code>data</code>. Ex: <code>{path:'img/bkgd.png'}</code> OR <code>{data:'image/png;base64,iVBORwTwB[...]='}</code></td></tr>
+<tr><td style="text-align:left"><code>margin</code></td><td style="text-align:left">number</td><td style="text-align:left">Slide margins</td><td style="text-align:left">(inches) 0.0 through Slide.width</td></tr>
+<tr><td style="text-align:left"><code>margin</code></td><td style="text-align:left">array</td><td style="text-align:left">Slide margins</td><td style="text-align:left">(inches) array of numbers in TRBL order. Ex: <code>[0.5, 0.75, 0.5, 0.75]</code></td></tr>
+<tr><td style="text-align:left"><code>objects</code></td><td style="text-align:left">array</td><td style="text-align:left">Objects for Slide</td><td style="text-align:left">object with type and options. Type:<code>chart</code>,<code>image</code>,<code>line</code>,<code>rect</code> or <code>text</code>. <a href="https://github.com/gitbrent/PptxGenJS#slide-master-examples">Example</a></td></tr>
+<tr><td style="text-align:left"><code>slideNumber</code></td><td style="text-align:left">object</td><td style="text-align:left">Show slide numbers</td><td style="text-align:left">ex: <code>{ x:1.0, y:'50%' }</code> <code>x</code> and <code>y</code> can be either inches or percent</td></tr>
+<tr><td style="text-align:left"><code>title</code></td><td style="text-align:left">string</td><td style="text-align:left">Layout title/name</td><td style="text-align:left">some title</td></tr>
 </tbody>
 </table>
 <p><strong>TIP:</strong>
 Pre-encode your images (base64) and add the string as the optional data key/val (see <code>bkgd</code> above)</p>
 <h3><a class="anchor" aria-hidden="true" id="slide-master-example"></a><a href="#slide-master-example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Slide Master Example</h3>
-<pre><code class="hljs css language-javascript"><span class="hljs-keyword">var</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
-pptx.layout = <span class="hljs-string">'LAYOUT_WIDE'</span>;
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">let</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
+pptx.layout = <span class="hljs-string">"LAYOUT_WIDE"</span>;
 
 pptx.defineSlideMaster({
-  <span class="hljs-attr">title</span>: <span class="hljs-string">'MASTER_SLIDE'</span>,
-  <span class="hljs-attr">bkgd</span>:  <span class="hljs-string">'FFFFFF'</span>,
-  <span class="hljs-attr">objects</span>: [
-    { <span class="hljs-string">'line'</span>:  { <span class="hljs-attr">x</span>: <span class="hljs-number">3.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.00</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6.00</span>, <span class="hljs-attr">line</span>:<span class="hljs-string">'0088CC'</span>, <span class="hljs-attr">lineSize</span>:<span class="hljs-number">5</span> } },
-    { <span class="hljs-string">'rect'</span>:  { <span class="hljs-attr">x</span>: <span class="hljs-number">0.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">5.30</span>, <span class="hljs-attr">w</span>:<span class="hljs-string">'100%'</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">0.75</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F1F1F1'</span> } },
-    { <span class="hljs-string">'text'</span>:  { <span class="hljs-attr">text</span>:<span class="hljs-string">'Status Report'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">x</span>:<span class="hljs-number">3.0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">5.30</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">5.5</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">0.75</span> } } },
-    { <span class="hljs-string">'image'</span>: { <span class="hljs-attr">x</span>:<span class="hljs-number">11.3</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">6.40</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">1.67</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">0.75</span>, <span class="hljs-attr">path</span>:<span class="hljs-string">'images/logo.png'</span> } }
-  ],
-  <span class="hljs-attr">slideNumber</span>: { <span class="hljs-attr">x</span>:<span class="hljs-number">0.3</span>, <span class="hljs-attr">y</span>:<span class="hljs-string">'90%'</span> }
+    <span class="hljs-attr">title</span>: <span class="hljs-string">"MASTER_SLIDE"</span>,
+    <span class="hljs-attr">bkgd</span>: <span class="hljs-string">"FFFFFF"</span>,
+    <span class="hljs-attr">objects</span>: [
+        { <span class="hljs-attr">line</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">3.5</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">1.0</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">6.0</span>, <span class="hljs-attr">line</span>: <span class="hljs-string">"0088CC"</span>, <span class="hljs-attr">lineSize</span>: <span class="hljs-number">5</span> } },
+        { <span class="hljs-attr">rect</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">0.0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">5.3</span>, <span class="hljs-attr">w</span>: <span class="hljs-string">"100%"</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">0.75</span>, <span class="hljs-attr">fill</span>: <span class="hljs-string">"F1F1F1"</span> } },
+        { <span class="hljs-attr">text</span>: { <span class="hljs-attr">text</span>: <span class="hljs-string">"Status Report"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">3.0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">5.3</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">5.5</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">0.75</span> } } },
+        { <span class="hljs-attr">image</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">11.3</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">6.4</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">1.67</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">0.75</span>, <span class="hljs-attr">path</span>: <span class="hljs-string">"images/logo.png"</span> } },
+    ],
+    <span class="hljs-attr">slideNumber</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">0.3</span>, <span class="hljs-attr">y</span>: <span class="hljs-string">"90%"</span> },
 });
 
-<span class="hljs-keyword">var</span> slide = pptx.addSlide(<span class="hljs-string">'MASTER_SLIDE'</span>);
-slide.addText(<span class="hljs-string">'How To Create PowerPoint Presentations with JavaScript'</span>, { <span class="hljs-attr">x</span>:<span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">0.7</span>, <span class="hljs-attr">fontSize</span>:<span class="hljs-number">18</span> });
+<span class="hljs-keyword">let</span> slide = pptx.addSlide({ <span class="hljs-attr">masterName</span>: <span class="hljs-string">"MASTER_SLIDE"</span> });
+slide.addText(<span class="hljs-string">"How To Create PowerPoint Presentations with JavaScript"</span>, { <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0.7</span>, <span class="hljs-attr">fontSize</span>: <span class="hljs-number">18</span> });
 
 pptx.writeFile();
 </code></pre>
@@ -133,27 +133,29 @@ name when adding text or other objects.</p>
 </tbody>
 </table>
 <h3><a class="anchor" aria-hidden="true" id="placeholder-example"></a><a href="#placeholder-example" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Placeholder Example</h3>
-<pre><code class="hljs css language-javascript"><span class="hljs-keyword">var</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
-pptx.layout = <span class="hljs-string">'LAYOUT_WIDE'</span>;
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">let</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
+pptx.layout = <span class="hljs-string">"LAYOUT_WIDE"</span>;
 
 pptx.defineSlideMaster({
-  <span class="hljs-attr">title</span>: <span class="hljs-string">'PLACEHOLDER_SLIDE'</span>,
-  <span class="hljs-attr">bkgd</span>:  <span class="hljs-string">'FFFFFF'</span>,
-  <span class="hljs-attr">objects</span>: [
-    { <span class="hljs-string">'rect'</span>:  { <span class="hljs-attr">x</span>:<span class="hljs-number">0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">0</span>, <span class="hljs-attr">w</span>:<span class="hljs-string">'100%'</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">0.75</span>, <span class="hljs-attr">fill</span>:<span class="hljs-string">'F1F1F1'</span> } },
-    { <span class="hljs-string">'text'</span>:  { <span class="hljs-attr">text</span>:<span class="hljs-string">'Status Report'</span>, <span class="hljs-attr">options</span>:{ <span class="hljs-attr">x</span>:<span class="hljs-number">0</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">0</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">6</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">0.75</span> } } },
-    { <span class="hljs-string">'placeholder'</span>: {
-        <span class="hljs-attr">options</span>: { <span class="hljs-attr">name</span>:<span class="hljs-string">'body'</span>, <span class="hljs-attr">type</span>:<span class="hljs-string">'body'</span>, <span class="hljs-attr">x</span>:<span class="hljs-number">0.6</span>, <span class="hljs-attr">y</span>:<span class="hljs-number">1.5</span>, <span class="hljs-attr">w</span>:<span class="hljs-number">12</span>, <span class="hljs-attr">h</span>:<span class="hljs-number">5.25</span> },
-        <span class="hljs-attr">text</span>: <span class="hljs-string">'(custom placeholder text!)'</span>
-    } }
-  ],
-  <span class="hljs-attr">slideNumber</span>: { <span class="hljs-attr">x</span>:<span class="hljs-number">0.3</span>, <span class="hljs-attr">y</span>:<span class="hljs-string">'95%'</span> }
+    <span class="hljs-attr">title</span>: <span class="hljs-string">"PLACEHOLDER_SLIDE"</span>,
+    <span class="hljs-attr">bkgd</span>: <span class="hljs-string">"FFFFFF"</span>,
+    <span class="hljs-attr">objects</span>: [
+        { <span class="hljs-attr">rect</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">w</span>: <span class="hljs-string">"100%"</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">0.75</span>, <span class="hljs-attr">fill</span>: <span class="hljs-string">"F1F1F1"</span> } },
+        { <span class="hljs-attr">text</span>: { <span class="hljs-attr">text</span>: <span class="hljs-string">"Status Report"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">0</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">6</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">0.75</span> } } },
+        {
+            <span class="hljs-attr">placeholder</span>: {
+                <span class="hljs-attr">options</span>: { <span class="hljs-attr">name</span>: <span class="hljs-string">"body"</span>, <span class="hljs-attr">type</span>: <span class="hljs-string">"body"</span>, <span class="hljs-attr">x</span>: <span class="hljs-number">0.6</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">1.5</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">12</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">5.25</span> },
+                <span class="hljs-attr">text</span>: <span class="hljs-string">"(custom placeholder text!)"</span>,
+            },
+        },
+    ],
+    <span class="hljs-attr">slideNumber</span>: { <span class="hljs-attr">x</span>: <span class="hljs-number">0.3</span>, <span class="hljs-attr">y</span>: <span class="hljs-string">"95%"</span> },
 });
 
-<span class="hljs-keyword">var</span> slide = pptx.addSlide(<span class="hljs-string">'PLACEHOLDER_SLIDE'</span>);
+<span class="hljs-keyword">let</span> slide = pptx.addSlide({ <span class="hljs-attr">masterName</span>: <span class="hljs-string">"PLACEHOLDER_SLIDE"</span> });
 
 <span class="hljs-comment">// Add text, charts, etc. to any placeholder using its `name`</span>
-slide.addText(<span class="hljs-string">'Body Placeholder here!'</span>, { <span class="hljs-attr">placeholder</span>:<span class="hljs-string">'body'</span> });
+slide.addText(<span class="hljs-string">"Body Placeholder here!"</span>, { <span class="hljs-attr">placeholder</span>: <span class="hljs-string">"body"</span> });
 
 pptx.writeFile();
 </code></pre>
