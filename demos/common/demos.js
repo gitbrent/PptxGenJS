@@ -618,7 +618,7 @@ function genSlides_Table(pptx) {
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Example', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:0.5, y:0.6, colW:[0.75,1.75,10], margin:2, border:{color:'CFCFCF'} } ); // Negative-Test: no `autoPage`
+		slide.addTable( arrRows, { x:0.5, y:0.6, colW:[0.75,1.75,10], margin:2, border:{color:'CFCFCF'}, autoPage:true } );
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Smaller Table Area', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
@@ -638,7 +638,7 @@ function genSlides_Table(pptx) {
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Disabled', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:false } );
+		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'} } ); // Negative-Test: no `autoPage:false`
 
 		// autoPageLineWeight option demos
 		pptx.addSection({ title: 'Tables: Auto-Paging LineWeight' });
