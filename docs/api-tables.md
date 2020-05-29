@@ -12,22 +12,22 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 
 ## Table Layout Options (`ITableOptions`)
 
-| Option | Type    | Unit   | Default | Description            | Possible Values                                                             |
-| :----- | :------ | :----- | :------ | :--------------------- | :-------------------------------------------------------------------------- |
-| `x`    | number  | inches | `1.0`   | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`    | number  | inches | `1.0`   | vertical location      | 0-n OR 'n%'.                                                                |
-| `w`    | number  | inches |         | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)      |
-| `h`    | number  | inches |         | height                 | 0-n OR 'n%'.                                                                |
-| `colW` | integer | inches |         | width for every column | Ex: Width for every column in table (uniform) `2.0`                         |
-| `colW` | array   | inches |         | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]`                 |
-| `rowH` | integer | inches |         | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
-| `rowH` | array   | inches |         | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
+| Option | Type    | Unit   | Description            | Possible Values                                                             |
+| :----- | :------ | :----- | :--------------------- | :-------------------------------------------------------------------------- |
+| `x`    | number  | inches | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`    | number  | inches | vertical location      | 0-n OR 'n%'.                                                                |
+| `w`    | number  | inches | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)      |
+| `h`    | number  | inches | height                 | 0-n OR 'n%'.                                                                |
+| `colW` | integer | inches | width for every column | Ex: Width for every column in table (uniform) `2.0`                         |
+| `colW` | array   | inches | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]`                 |
+| `rowH` | integer | inches | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
+| `rowH` | array   | inches | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
 
 ## Table Auto-Paging Options (`ITableOptions`)
 
 | Option               | Type          | Default | Description                                 | Possible Values                             |
 | :------------------- | :------------ | :------ | :------------------------------------------ | :------------------------------------------ |
-| `autoPage`           | boolean       | `true`  | auto-page table                             | `true` or `false`. Ex: `{autoPage:false}`   |
+| `autoPage`           | boolean       | `false` | auto-page table                             | `true` or `false`. Ex: `{autoPage:true}`    |
 | `autoPageCharWeight` | float         | `0`     | char weight value (adjusts letter spacing)  | -1.0 to 1.0. Ex: `{autoPageCharWeight:0.5}` |
 | `autoPageLineWeight` | float         | `0`     | line weight value (adjusts line height)     | -1.0 to 1.0. Ex: `{autoPageLineWeight:0.5}` |
 | `newSlideStartY`     | number/string |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newSlideStartY:0.5}`      |
