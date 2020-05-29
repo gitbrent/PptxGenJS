@@ -857,27 +857,27 @@ declare namespace PptxGenJS {
 		bkgd?: string | BkgdOpts // @deprecated
 		objects?: (
 			| {
-					chart: {}
+					chart: {} // TODO: IChartOptions (?)
 			  }
 			| {
-					image: {}
+					image: {} // TODO: IImageOptions (?)
 			  }
 			| {
-					line: {}
+					line: {} // TODO: IShapeOptions (?)
 			  }
 			| {
-					rect: {}
+					rect: {} // TODO: IShapeOptions (?)
 			  }
 			| {
 					text: {
-						options: ITextOpts
-						text?: string
+						text: string
+						options?: ITextOpts
 					}
 			  }
 			| {
 					placeholder: {
-						options: ISlideMstrObjPlchldrOpts
-						text?: string
+						text: string
+						options?: ISlideMstrObjPlchldrOpts
 					}
 			  }
 		)[]
