@@ -46,10 +46,11 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 
 ## Table Auto-Paging Notes
 
--   New slides will be created as tables overflow. The table will start at either `newSlideStartY` (if present) or the Slide's top `margin`.
--   Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides.
--   Auto-paging is not an exact science! Try using different `lineWeight` and Slide margin values if your tables are overflowing the Slide.
--   There are many examples of auto-paging in the `examples` folder.
+-   New slides will be created as tables overflow. The table will start at either `newSlideStartY` (if present) or the Slide's top `margin`
+-   Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides
+-   Auto-paging is not an exact science! Try using different values for `autoPageCharWeight`/`autoPageLineWeight` and slide margin
+-   Very small and very large font sizes cause tables to over/under-flow, be sure to adjust the char and line properties
+-   There are many examples of auto-paging in the `examples` folder
 
 ## Table Formatting Options (`ITableOptions`)
 
