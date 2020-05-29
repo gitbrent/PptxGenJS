@@ -1031,26 +1031,32 @@ declare namespace PptxGenJS {
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
+	export type MediaType = 'audio' | 'online' | 'video'
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
+	export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 	export type HyperLink = {
 		rId: number
 		slide?: number
 		tooltip?: string
 		url?: string
 	}
-	export type ShapeFill =
-		| Color
-		| {
-				type: string
-				color: Color
-				alpha?: number
-		  }
 	export type BkgdOpts = {
 		fill?: HexColor
-		path?: string
 		data?: string
+		path?: string
 	}
-	export type MediaType = 'audio' | 'online' | 'video'
+	export type TextOptions = {
+		align?: HAlign
+		bold?: boolean
+		breakLine?: boolean
+		bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
+		color?: Color
+		fontFace?: string
+		fontSize?: number
+		italic?: boolean
+		lang?: string
+		valign?: VAlign
+	}
 	export interface IGlowOptions {
 		size: number
 		opacity: number
@@ -1342,14 +1348,10 @@ declare namespace PptxGenJS {
 	}
 
 	// addText
-	export interface IText {
-		text: string
-		options?: ITextOpts
-	}
-	export interface ITextOpts extends PositionOptions, OptsDataOrPath, FontOptions {
-		align?: HAlign
+	export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
 		autoFit?: boolean
 		bodyProp?: {
+			// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
 			autoFit?: boolean
 			align?: TEXT_HALIGN
 			anchor?: TEXT_VALIGN
@@ -1360,40 +1362,23 @@ declare namespace PptxGenJS {
 			vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 			wrap?: boolean
 		}
-		bold?: boolean
-		breakLine?: boolean
-		bullet?:
-			| boolean
-			| {
-					type?: string
-					code?: string
-					marginPt?: number
-					style?: string
-					startAt?: number
-			  }
 		charSpacing?: number
-		color?: string
 		fill?: ShapeFill
 		glow?: IGlowOptions
 		hyperlink?: HyperLink
 		indentLevel?: number
 		inset?: number
 		isTextBox?: boolean
-		italic?: boolean
-		lang?: string
 		line?: Color
 		lineIdx?: number
 		lineSize?: number
 		lineSpacing?: number
 		margin?: Margin
-		outline?: {
-			color: Color
-			size: number
-		}
+		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number
 		paraSpaceBefore?: number
 		placeholder?: string
-		rotate?: number
+		rotate?: number // (degree * 60,000)
 		rtlMode?: boolean
 		shadow?: IShadowOptions
 		shape?: SHAPE_NAME
@@ -1405,6 +1390,10 @@ declare namespace PptxGenJS {
 		valign?: VAlign
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: boolean
+	}
+	export interface IText {
+		text: string
+		options?: ITextOpts
 	}
 
 	/**
