@@ -999,10 +999,6 @@ declare namespace PptxGenJS {
 	 * Hex Color (e.g.: 'FF3399')
 	 */
 	export type HexColor = string
-	export interface FontOptions {
-		fontFace?: string
-		fontSize?: number
-	}
 	export interface OptsDataOrPath {
 		data?: string
 		path?: string
@@ -1064,7 +1060,7 @@ declare namespace PptxGenJS {
 	}
 
 	// slideNumber
-	export interface ISlideNumber extends PositionOptions, FontOptions {
+	export interface ISlideNumber extends PositionOptions, TextOptions {
 		align?: HAlign
 		color?: string
 	}
@@ -1075,15 +1071,12 @@ declare namespace PptxGenJS {
 		color?: string
 		style?: 'solid' | 'dash' | 'dot' | 'none'
 	}
-	export interface IChartTitleOpts extends FontOptions {
-		title: string
-		color?: String
+	export interface IChartTitleOpts extends TextOptions {
+		color?: Color
 		rotate?: number
+		title: string
 		titleAlign?: string
-		titlePos?: {
-			x: number
-			y: number
-		}
+		titlePos?: { x: number; y: number }
 	}
 	export interface IChartMulti {
 		type: CHART_NAME
@@ -1310,15 +1303,10 @@ declare namespace PptxGenJS {
 	}
 
 	// addTable
-	export interface ITableCellOpts extends FontOptions {
+	export interface ITableCellOpts extends TextOptions {
 		autoPageCharWeight?: number
 		autoPageLineWeight?: number
-		align?: HAlign
-		bold?: boolean
 		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-		breakLine?: boolean
-		bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
-		color?: Color
 		colspan?: number
 		fill?: ShapeFill
 		margin?: Margin
@@ -1330,21 +1318,57 @@ declare namespace PptxGenJS {
 		options?: ITableCellOpts
 	}
 	export type TableRow = number[] | string[] | TableCell[]
-	export interface ITableOptions extends PositionOptions, FontOptions {
-		align?: HAlign
+	export interface ITableOptions extends PositionOptions, TextOptions {
+		/**
+		 * @default false
+		 */
 		autoPage?: boolean
+		/**
+		 * Character weight - affects line length before wrapping begins
+		 * @type float (-1.0 to 1.0)
+		 * @default 0
+		 */
 		autoPageCharWeight?: number
+		/**
+		 * Line weight - affects line height before paging begins
+		 * @type float (-1.0 to 1.0)
+		 * @default 0
+		 */
 		autoPageLineWeight?: number
+		/**
+		 * Table border
+		 * - single value is applied to all 4 sides
+		 * - array of values in TRBL order for individual sides
+		 */
 		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-		color?: Color
-		colspan?: number
+		/**
+		 * Width of table columns
+		 * - single value is applied to every column equally based upon `w`
+		 * - array of values in applied to each column in order
+		 * @default columns of equal width based upon `w`
+		 */
 		colW?: number | number[]
+		/**
+		 * Cell background color
+		 */
 		fill?: Color
+		/**
+		 * Cell margin
+		 * - affects all table cells, is superceded by cell options
+		 */
 		margin?: Margin
+		/**
+		 * Starting `y` location on additional slides created by autoPage=true
+		 * @default `y` value from table options
+		 */
 		newSlideStartY?: number
+		/**
+		 * Height of table rows
+		 * - single value is applied to every row equally based upon `h`
+		 * - array of values in applied to each row in order
+		 * @default rows of equal height based upon `h`
+		 */
 		rowH?: number | number[]
-		rowspan?: number
-		valign?: VAlign
 	}
 
 	// addText
