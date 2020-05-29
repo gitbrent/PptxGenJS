@@ -1110,7 +1110,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 
 	// STEP 2: Grab options, format line-breaks, etc.
 	if (Array.isArray(slideObj.text)) {
-		slideObj.text.forEach((obj, idx) => {
+		slideObj.text.forEach((obj: IText, idx: number) => {
 			if (!obj.text) obj.text = ''
 
 			// A: Set options
@@ -1126,7 +1126,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 				if (obj.text.indexOf(CRLF) > -1) {
 					// Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
 					obj.text = obj.text.replace(/\r\n$/g, '')
-					// Plain strings like "hello \n world" or "first line\n" need to have lineBreaks set to become 2 separate lines as intended
+					// Plain strings like "hello \n world" or "first line\n" need to have line-breaks set to become 2 separate lines as intended
 					obj.options.breakLine = true
 				}
 
@@ -1159,21 +1159,15 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		// B: 'lstStyle'
 		// NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
 		// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
-		if (opts.h === 0 && opts.line && opts.align) {
-			strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
-		} else if (slideObj.type === 'placeholder') {
-			strSlideXml += '<a:lstStyle>'
-			strSlideXml += genXmlParagraphProperties(slideObj, true)
-			strSlideXml += '</a:lstStyle>'
-		} else {
-			strSlideXml += '<a:lstStyle/>'
-		}
+		if (opts.h === 0 && opts.line && opts.align) strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
+		else if (slideObj.type === 'placeholder') strSlideXml += `<a:lstStyle>${genXmlParagraphProperties(slideObj, true)}</a:lstStyle>`
+		else strSlideXml += '<a:lstStyle/>'
 	}
 
 	// STEP 4: Loop over each text object and create paragraph props, text run, etc.
 	arrTextObjects.forEach((textObj, idx) => {
 		// Clear/Increment loop vars
-		let paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
+		let paragraphPropXml = `<a:pPr ${textObj.options.rtlMode ? ' rtl="1" ' : ''}`
 		textObj.options.lineIdx = idx
 
 		// A: Inherit pPr-type options from parent shape's `options`
@@ -1210,18 +1204,16 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 	if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 		if (opts.fontFace) {
-			strSlideXml +=
-				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
-			strSlideXml += '<a:latin typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '<a:ea typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '<a:cs typeface="' + opts.fontFace + '" charset="0"/>'
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0">'
+			strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
+			strSlideXml += `<a:ea typeface="${opts.fontFace}" charset="0"/>`
+			strSlideXml += `<a:cs typeface="${opts.fontFace}" charset="0"/>`
 			strSlideXml += '</a:endParaRPr>'
 		} else {
-			strSlideXml +=
-				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0"/>'
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
 		}
 	} else {
-		strSlideXml += '<a:endParaRPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>' // NOTE: Added 20180101 to address PPT-2007 issues
+		strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}" dirty="0"/>` // NOTE: Added 20180101 to address PPT-2007 issues
 	}
 	strSlideXml += '</a:p>'
 
