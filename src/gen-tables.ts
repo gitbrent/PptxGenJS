@@ -59,7 +59,7 @@ export function getSlidesForTableRows(
 	tableRows: ITableToSlidesCell[][] = [],
 	tabOpts: ITableToSlidesOpts = {},
 	presLayout: ILayout,
-	masterSlide: ISlideLayout
+	masterSlide?: ISlideLayout
 ): TableRowSlide[] {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN,
 		emuTabCurrH = 0,
@@ -338,10 +338,12 @@ export function getSlidesForTableRows(
 
 /**
  * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+ * @param {PptxGenJS} pptx - pptxgenjs instance
  * @param {string} tabEleId - HTMLElementID of the table
- * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+ * @param {ITableToSlidesOpts} options - array of options (e.g.: tabsize)
+ * @param {ISlideLayout} masterSlide - masterSlide
  */
-export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide?: ISlideLayout) {
 	let opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout.width
