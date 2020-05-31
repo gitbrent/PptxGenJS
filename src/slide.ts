@@ -146,7 +146,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide {
-		// FUTURE: TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
+		// FUTURE: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 		// Set `_type` on IChartOptsLib as its what is used as object is passed around
 		let optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type
@@ -208,7 +208,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addTable(tableRows: TableRow[], options?: ITableOptions): Slide {
-		// FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
+		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}
