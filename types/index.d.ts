@@ -1318,8 +1318,9 @@ declare namespace PptxGenJS {
 		options?: ITableCellOpts
 	}
 	export type TableRow = number[] | string[] | TableCell[]
-	export interface ITableOptions extends PositionOptions, TextOptions {
+	export interface TableOptions extends PositionOptions, TextOptions {
 		/**
+		 * Whether to create new slides as table rows overflow each slide
 		 * @default false
 		 */
 		autoPage?: boolean
@@ -1335,6 +1336,19 @@ declare namespace PptxGenJS {
 		 * @default 0
 		 */
 		autoPageLineWeight?: number
+		/**
+		 * Whether table header rows should be repeated on each new slide creating by autoPage
+		 * @default false
+		 * @since v3.3.0
+		 */
+		autoPageRepeatHeader?: boolean
+		/**
+		 * Number of rows that comprise table headers.
+		 * Required when `autoPageRepeatHeader` is set to true.
+		 * @example 2 - repeats the first two table rows on each new slide created
+		 * @since v3.3.0
+		 */
+		autoPageHeaderRows?: number
 		/**
 		 * Table border
 		 * - single value is applied to all 4 sides

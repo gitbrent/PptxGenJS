@@ -322,15 +322,15 @@ export interface IChartMulti {
 	data: any[]
 	options: {}
 }
-// TODO: create TableToSlidesOpts
-export interface ITableToSlidesOpts extends ITableOptions {
+// TODO: create TableToSlidesOpts (incl. verbose)
+export interface ITableToSlidesOpts extends TableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
 	addShape?: { shape: any; options: {} }
 	addTable?: { rows: any[]; options: {} }
 	addText?: { text: any[]; options: {} }
 	//
-	_arrObjTabHeadRows?: ITableToSlidesCell[][]
-	addHeaderToEach?: boolean
+	_arrObjTabHeadRows?: TableRow[]
+	addHeaderToEach?: boolean // TODO: 20200528: rename to "autoPageRepeatHeader"
 	autoPage?: boolean
 	autoPageCharWeight?: number // -1.0 to 1.0
 	autoPageLineWeight?: number // -1.0 to 1.0
@@ -351,8 +351,9 @@ export interface ITableCellOpts extends TextOptions {
 	rowspan?: number
 	valign?: VAlign
 }
-export interface ITableOptions extends PositionOptions, TextOptions {
+export interface TableOptions extends PositionOptions, TextOptions {
 	/**
+	 * Whether to create new slides as table rows overflow each slide
 	 * @default false
 	 */
 	autoPage?: boolean
@@ -368,6 +369,19 @@ export interface ITableOptions extends PositionOptions, TextOptions {
 	 * @default 0
 	 */
 	autoPageLineWeight?: number
+	/**
+	 * Whether table header rows should be repeated on each new slide creating by autoPage
+	 * @default false
+	 * @since v3.3.0
+	 */
+	autoPageRepeatHeader?: boolean
+	/**
+	 * Number of rows that comprise table headers.
+	 * Required when `autoPageRepeatHeader` is set to true.
+	 * @example 2 - repeats the first two table rows on each new slide created
+	 * @since v3.3.0
+	 */
+	autoPageHeaderRows?: number
 	/**
 	 * Table border
 	 * - single value is applied to all 4 sides
@@ -403,6 +417,10 @@ export interface ITableOptions extends PositionOptions, TextOptions {
 	 */
 	rowH?: number | number[]
 }
+export interface ITableOptions extends TableOptions {
+	_arrObjTabHeadRows?: TableRow[]
+}
+
 export interface TableCell {
 	text?: string | TableCell[]
 	options?: ITableCellOpts
@@ -629,7 +647,7 @@ export interface ISlideLayout {
 	slideNumberObj?: ISlideNumber
 }
 export interface IAddSlideOptions {
-	masterName?: string
+	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
 	sectionTitle?: string
 }
 export interface ISlide {
