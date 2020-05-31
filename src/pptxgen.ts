@@ -337,7 +337,8 @@ export default class PptxGenJS implements IPresentation {
 	 */
 	private addNewSlide = (masterName: string): ISlide => {
 		// Continue using sections if the first slide using auto-paging has a Section
-		let sectAlreadyInUse = this.sections[this.sections.length - 1].slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
+		let sectAlreadyInUse =
+			this.sections.length > 0 && this.sections[this.sections.length - 1].slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
 
 		return this.addSlide({
 			masterName: masterName,
