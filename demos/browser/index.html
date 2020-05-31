@@ -6,7 +6,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.3.0">
-	<meta name="updated" content="2020-05-26">
+	<meta name="updated" content="2020-05-31">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -461,7 +461,7 @@
 			var objOpts = {};
 			//objOpts.verbose = true;
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 
 			// STEP 3: Add a custom shape (text in this case) to each Slide
