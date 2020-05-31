@@ -263,7 +263,7 @@ export function getSlidesForTableRows(
 				emuTabCurrH = 0 // This row's emuRowH w/b added below
 
 				// 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
-				if (tabOpts.addHeaderToEach && tabOpts._arrObjTabHeadRows) {
+				if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
 					// A: Add remaining cell lines
 					let newRowSlide = []
 					linesRow.forEach(cell => {
