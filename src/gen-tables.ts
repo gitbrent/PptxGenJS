@@ -140,9 +140,7 @@ export function getSlidesForTableRows(
 		if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
 			let arrColW = []
 			let firstRow = tableRows[0] || []
-			firstRow.forEach(() => {
-				arrColW.push(tabOpts.colW)
-			})
+			firstRow.forEach(() => arrColW.push(tabOpts.colW))
 			tabOpts.colW = []
 			arrColW.forEach(val => {
 				if (Array.isArray(tabOpts.colW)) tabOpts.colW.push(val)
@@ -225,7 +223,11 @@ export function getSlidesForTableRows(
 			newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null
 
 			// 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
-			newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT)
+			let totalColW = tabOpts.colW[iCell]
+			if (cell.options.colspan && Array.isArray(tabOpts.colW)) {
+				totalColW = tabOpts.colW.filter((_cell, idx) => idx >= iCell && idx < idx + cell.options.colspan).reduce((prev, curr) => prev + curr)
+			}
+			newCell.lines = parseTextToLines(cell, totalColW / ONEPT)
 
 			// 4: Add to array
 			linesRow.push(newCell)
