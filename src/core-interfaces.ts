@@ -364,24 +364,26 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	 */
 	autoPageCharWeight?: number
 	/**
+	 * Number of rows that comprise table headers.
+	 * Required when `autoPageRepeatHeader` is set to true.
+	 * @example 2 - repeats the first two table rows on each new slide created
+	 * @default 1
+	 * @since v3.3.0
+	 */
+	autoPageHeaderRows?: number
+	/**
 	 * Line weight - affects line height before paging begins
 	 * @type float (-1.0 to 1.0)
 	 * @default 0
 	 */
 	autoPageLineWeight?: number
 	/**
-	 * Whether table header rows should be repeated on each new slide creating by autoPage
+	 * Whether table header row(s) should be repeated on each new slide creating by autoPage.
+	 * Use `autoPageHeaderRows` to designate how many rows comprise the table header (1+).
 	 * @default false
 	 * @since v3.3.0
 	 */
 	autoPageRepeatHeader?: boolean
-	/**
-	 * Number of rows that comprise table headers.
-	 * Required when `autoPageRepeatHeader` is set to true.
-	 * @example 2 - repeats the first two table rows on each new slide created
-	 * @since v3.3.0
-	 */
-	autoPageHeaderRows?: number
 	/**
 	 * Table border
 	 * - single value is applied to all 4 sides
