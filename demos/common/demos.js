@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200528
+* BLD.: 20200531
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -608,37 +608,59 @@ function genSlides_Table(pptx) {
 	{
 		var arrRows = [];
 		var arrText = [];
-		for (var idx=0; idx<gArrNamesF.length; idx++) {
+		arrRows.push([
+			{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: 'middle' } },
+			{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: 'middle' } },
+			{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: 'middle' } },
+		]);
+		gArrNamesF.forEach(function(name,idx) {
 			var strText = ( idx == 0 ? gStrLoremIpsum.substring(0,100) : gStrLoremIpsum.substring(idx*100,idx*200) );
-			arrRows.push( [idx, gArrNamesF[idx], strText] );
+			arrRows.push( [idx, name, strText] );
 			arrText.push( [strText] );
-		}
+		});
+
+		var arrRowsHead1 = []
+		arrRows.forEach(function(row, idx) { if (idx < 6) arrRowsHead1.push(row) });
+		var arrRowsHead2 = [[{ text: "Title Header", options: { fill: "0088cc", color: "ffffff", align: 'center', bold:true, colspan: 3, colW: 4 } }]]
+		arrRows.forEach(function(row, idx) { if (idx < 6) arrRowsHead2.push(row) });
 
 		pptx.addSection({ title: 'Tables: Auto-Paging' });
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html');
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Example', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:0.5, y:0.6, colW:[0.75,1.75,10], margin:2, border:{color:'CFCFCF'}, autoPage:true } );
+		slide.addTable( arrRows, { x:0.5, y:0.6, colW:[0.75, 1.75,10], margin:2, border:{color:'CFCFCF'}, autoPage:true } );
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Smaller Table Area', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:3.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
+		slide.addTable( arrRows, { x:3.0, y:0.6, colW:[0.75, 1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: Correct starting Y location upon paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:3.0, y:4.0, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, fontFace:'Arial', autoPage:true } );
+		slide.addTable( arrRows, { x:3.0, y:4.0, colW:[0.75, 1.75, 7], margin:5, border:{color:'CFCFCF'}, fontFace:'Arial', autoPage:true } );
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: `{ newSlideStartY: 1.5 }`', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:3.0, y:4.0, newSlideStartY:1.5, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
+		slide.addTable( arrRows, { x:3.0, y:4.0, newSlideStartY:1.5, colW:[0.75, 1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging', masterName:'MASTER_PLAIN'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Master Page with Auto-Paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
+		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75, 1.75, 7], margin:5, border:{color:'CFCFCF'}, autoPage:true } );
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Auto-Paging Disabled', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75,1.75, 7], margin:5, border:{color:'CFCFCF'} } ); // Negative-Test: no `autoPage:false`
+		slide.addTable( arrRows, { x:1.0, y:0.6, colW:[0.75, 1.75, 7], margin:5, border:{color:'CFCFCF'} } ); // Negative-Test: no `autoPage:false`
+
+		// `autoPageRepeatHeader` option demos
+		pptx.addSection({ title: 'Tables: Auto-Paging Repeat Header' });
+		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging Repeat Header'});
+		slide.addText( [{text:'Table Examples: autoPageHeaderRows', options:gDemoTitleTextBk},{text:'no autoPageHeaderRows', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
+		slide.addTable( arrRowsHead1, { x:0.23, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true } );
+
+		slide.addText( [{text:'Table Examples: autoPageHeaderRows', options:gDemoTitleTextBk},{text:'autoPageHeaderRows:1', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4, h:0.4} );
+		slide.addTable( arrRowsHead1, { x:4.75, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true, autoPageHeaderRows:1 } );
+
+		slide.addText( [{text:'Table Examples: autoPageHeaderRows', options:gDemoTitleTextBk},{text:'autoPageHeaderRows:2', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4, h:0.4} );
+		slide.addTable( arrRowsHead2, { x:9.10, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true, autoPageHeaderRows:2 } );
 
 		// autoPageLineWeight option demos
 		pptx.addSection({ title: 'Tables: Auto-Paging LineWeight' });
