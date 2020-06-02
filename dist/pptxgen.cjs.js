@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-05-29T04:41:39.948Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-02T04:28:30.504Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -923,9 +923,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
             var arrColW_1 = [];
             var firstRow = tableRows[0] || [];
-            firstRow.forEach(function () {
-                arrColW_1.push(tabOpts.colW);
-            });
+            firstRow.forEach(function () { return arrColW_1.push(tabOpts.colW); });
             tabOpts.colW = [];
             arrColW_1.forEach(function (val) {
                 if (Array.isArray(tabOpts.colW))
@@ -1006,7 +1004,11 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             // 2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
             newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null;
             // 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
-            newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT);
+            var totalColW = tabOpts.colW[iCell];
+            if (cell.options.colspan && Array.isArray(tabOpts.colW)) {
+                totalColW = tabOpts.colW.filter(function (_cell, idx) { return idx >= iCell && idx < idx + cell.options.colspan; }).reduce(function (prev, curr) { return prev + curr; });
+            }
+            newCell.lines = parseTextToLines(cell, totalColW / ONEPT);
             // 4: Add to array
             linesRow.push(newCell);
         });
@@ -1038,7 +1040,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 // 2: Reset current table height for new Slide
                 emuTabCurrH = 0; // This row's emuRowH w/b added below
                 // 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
-                if (tabOpts.addHeaderToEach && tabOpts._arrObjTabHeadRows) {
+                if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
                     // A: Add remaining cell lines
                     var newRowSlide_1 = [];
                     linesRow.forEach(function (cell) {
@@ -1050,11 +1052,13 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     });
                     tableRows.unshift(newRowSlide_1);
                     // B: Add header row(s)
-                    newRowSlide_1 = [];
-                    tabOpts._arrObjTabHeadRows[0].forEach(function (cell) {
-                        newRowSlide_1.push(cell);
+                    var tableHeadRows_1 = [];
+                    tabOpts._arrObjTabHeadRows.forEach(function (row) {
+                        var newHeadRow = [];
+                        row.forEach(function (cell) { return newHeadRow.push(cell); });
+                        tableHeadRows_1.push(newHeadRow);
                     });
-                    tableRows.unshift(newRowSlide_1);
+                    tableRows = __spreadArrays(tableHeadRows_1, tableRows);
                     return "break";
                 }
                 else {
@@ -1110,8 +1114,10 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
 }
 /**
  * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+ * @param {PptxGenJS} pptx - pptxgenjs instance
  * @param {string} tabEleId - HTMLElementID of the table
- * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+ * @param {ITableToSlidesOpts} options - array of options (e.g.: tabsize)
+ * @param {ISlideLayout} masterSlide - masterSlide
  */
 function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     if (options === void 0) { options = {}; }
@@ -3510,23 +3516,27 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     opt.y = getSmartParseNumber(opt.y || (opt.y === 0 ? 0 : EMU / 2), 'Y', presLayout);
     if (opt.h)
         opt.h = getSmartParseNumber(opt.h, 'Y', presLayout); // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-    opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false;
     opt.fontSize = opt.fontSize || DEF_FONT_SIZE;
-    opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0;
     opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT;
     if (typeof opt.margin === 'number')
         opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)];
-    if (opt.autoPageLineWeight > 1)
-        opt.autoPageLineWeight = 1;
-    else if (opt.autoPageLineWeight < -1)
-        opt.autoPageLineWeight = -1;
-    // Set default color if needed (table option > inherit from Slide > default to black)
     if (!opt.color)
-        opt.color = opt.color || DEF_FONT_COLOR;
+        opt.color = opt.color || DEF_FONT_COLOR; // Set default color if needed (table option > inherit from Slide > default to black)
     if (typeof opt.border === 'string') {
         console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`");
         opt.border = null;
     }
+    opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false;
+    opt.autoPageRepeatHeader = typeof opt.autoPageRepeatHeader === 'boolean' ? opt.autoPageRepeatHeader : false;
+    opt.autoPageHeaderRows = typeof opt.autoPageHeaderRows !== 'undefined' && !isNaN(Number(opt.autoPageHeaderRows)) ? Number(opt.autoPageHeaderRows) : 1;
+    opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0;
+    if (opt.autoPageLineWeight) {
+        if (opt.autoPageLineWeight > 1)
+            opt.autoPageLineWeight = 1;
+        else if (opt.autoPageLineWeight < -1)
+            opt.autoPageLineWeight = -1;
+    }
+    // autoPage ^^^
     // Set/Calc table width
     // Get slide margins - start with default values, then adjust if master or slide margins exist
     var arrTableMargin = DEF_SLIDE_MARGIN_IN;
@@ -3549,7 +3559,6 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
      * The API does not require a `w` value, but XML generation does, hence, code to calc a width below using colW value(s)
      */
     if (opt.colW) {
-        // FIXME: Col count for first row only
         var firstRowColCnt = arrRows[0].reduce(function (totalLen, c) {
             if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
                 totalLen += c.options.colspan;
@@ -3636,6 +3645,8 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         });
     }
     else {
+        if (opt.autoPageRepeatHeader)
+            opt._arrObjTabHeadRows = arrRows.filter(function (_row, idx) { return idx < opt.autoPageHeaderRows; });
         // Loop over rows and create 1-N tables as needed (ISSUE#21)
         getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach(function (slide, idx) {
             // A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
@@ -3894,7 +3905,7 @@ var Slide = /** @class */ (function () {
      * @return {Slide} this Slide
      */
     Slide.prototype.addChart = function (type, data, options) {
-        // FUTURE: TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
+        // FUTURE: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
         // Set `_type` on IChartOptsLib as its what is used as object is passed around
         var optionsWithType = options || {};
         optionsWithType._type = type;
@@ -3951,7 +3962,7 @@ var Slide = /** @class */ (function () {
      * @return {Slide} this Slide
      */
     Slide.prototype.addTable = function (tableRows, options) {
-        // FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
+        // FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
         addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide);
         return this;
     };
@@ -5870,7 +5881,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200528:2104';
+var VERSION = '3.3.0-beta-20200601:2323';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -5904,7 +5915,7 @@ var PptxGenJS = /** @class */ (function () {
          */
         this.addNewSlide = function (masterName) {
             // Continue using sections if the first slide using auto-paging has a Section
-            var sectAlreadyInUse = _this.sections[_this.sections.length - 1].slides.filter(function (slide) { return slide.number === _this.slides[_this.slides.length - 1].number; }).length > 0;
+            var sectAlreadyInUse = _this.sections.length > 0 && _this.sections[_this.sections.length - 1].slides.filter(function (slide) { return slide.number === _this.slides[_this.slides.length - 1].number; }).length > 0;
             return _this.addSlide({
                 masterName: masterName,
                 sectionTitle: sectAlreadyInUse ? _this.sections[_this.sections.length - 1].title : null,
