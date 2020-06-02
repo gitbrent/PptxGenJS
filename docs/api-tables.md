@@ -12,25 +12,27 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 
 ## Table Layout Options (`ITableOptions`)
 
-| Option | Type    | Unit   | Description            | Possible Values                                                             |
-| :----- | :------ | :----- | :--------------------- | :-------------------------------------------------------------------------- |
-| `x`    | number  | inches | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`    | number  | inches | vertical location      | 0-n OR 'n%'.                                                                |
-| `w`    | number  | inches | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)      |
-| `h`    | number  | inches | height                 | 0-n OR 'n%'.                                                                |
-| `colW` | integer | inches | width for every column | Ex: Width for every column in table (uniform) `2.0`                         |
-| `colW` | array   | inches | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]`                 |
-| `rowH` | integer | inches | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
-| `rowH` | array   | inches | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
+| Option | Type    | Description            | Possible Values (inches or percent)                                         |
+| :----- | :------ | :--------------------- | :-------------------------------------------------------------------------- |
+| `x`    | number  | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
+| `y`    | number  | vertical location      | 0-n OR 'n%'.                                                                |
+| `w`    | number  | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)      |
+| `h`    | number  | height                 | 0-n OR 'n%'.                                                                |
+| `colW` | integer | width for every column | Ex: Width for every column in table (uniform) `2.0`                         |
+| `colW` | array   | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]`                 |
+| `rowH` | integer | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
+| `rowH` | array   | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
 
 ## Table Auto-Paging Options (`ITableOptions`)
 
-| Option               | Type          | Default | Description                                 | Possible Values                             |
-| :------------------- | :------------ | :------ | :------------------------------------------ | :------------------------------------------ |
-| `autoPage`           | boolean       | `false` | auto-page table                             | `true` or `false`. Ex: `{autoPage:true}`    |
-| `autoPageCharWeight` | float         | `0`     | char weight value (adjusts letter spacing)  | -1.0 to 1.0. Ex: `{autoPageCharWeight:0.5}` |
-| `autoPageLineWeight` | float         | `0`     | line weight value (adjusts line height)     | -1.0 to 1.0. Ex: `{autoPageLineWeight:0.5}` |
-| `newSlideStartY`     | number/string |         | starting `y` value for tables on new Slides | 0-n OR 'n%'. Ex:`{newSlideStartY:0.5}`      |
+| Option                 | Default | Description                                    | Possible Values                                        |
+| :--------------------- | :------ | :--------------------------------------------- | :----------------------------------------------------- |
+| `autoPage`             | `false` | auto-page table                                | `true` or `false`. Ex: `{autoPage:true}`               |
+| `autoPageCharWeight`   | `0`     | char weight value (adjusts letter spacing)     | -1.0 to 1.0. Ex: `{autoPageCharWeight:0.5}`            |
+| `autoPageLineWeight`   | `0`     | line weight value (adjusts line height)        | -1.0 to 1.0. Ex: `{autoPageLineWeight:0.5}`            |
+| `autoPageRepeatHeader` | `false` | repeat header row(s) on each auto-page slide   | `true` or `false`. Ex: `{autoPageRepeatHeader:true}`   |
+| `autoPageHeaderRows`   | `1`     | number of table rows that comprise the headers | 1-n. Ex: `2` repeats the first two rows on every slide |
+| `newSlideStartY`       |         | starting `y` value for tables on new Slides    | 0-n OR 'n%'. Ex:`{newSlideStartY:0.5}`                 |
 
 ### Option Details
 
@@ -101,7 +103,7 @@ as the `text` value allows fine-grained control over the text inside cells.
 
 ```javascript
 // TABLE 1: Cell-level Formatting
-var rows = [];
+let rows = [];
 // Row One: cells will be formatted according to any options provided to `addTable()`
 rows.push(["First", "Second", "Third"]);
 // Row Two: set/override formatting for each cell
@@ -114,7 +116,7 @@ slide.addTable(rows, { x: 0.5, y: 1.0, w: 9.0, color: "363636" });
 
 // TABLE 2: Using word-level formatting inside cells
 // NOTE: An array of text/options objects provides fine-grained control over formatting
-var arrObjText = [
+let arrObjText = [
     { text: "Red ", options: { color: "FF0000" } },
     { text: "Green ", options: { color: "00FF00" } },
     { text: "Blue", options: { color: "0000FF" } },
@@ -130,7 +132,7 @@ slide.addText(arrObjText, {
 });
 
 // EX B: Pass the same objects as a cell's `text` value
-var arrTabRows = [
+let arrTabRows = [
     [
         { text: "Cell 1 A", options: { fontFace: "Arial" } },
         { text: "Cell 1 B", options: { fontFace: "Courier" } },
@@ -143,8 +145,8 @@ slide.addTable(arrTabRows, { x: 0.5, y: 3.5, w: 9, h: 1, colW: [1.5, 1.5, 6] });
 ## Table Examples
 
 ```javascript
-var pptx = new PptxGenJS();
-var slide = pptx.addSlide();
+let pptx = new PptxGenJS();
+let slide = pptx.addSlide();
 slide.addText("Demo-03: Table", {
     x: 0.5,
     y: 0.25,
@@ -155,8 +157,8 @@ slide.addText("Demo-03: Table", {
 
 // TABLE 1: Single-row table
 // --------
-var rows = [["Cell 1", "Cell 2", "Cell 3"]];
-var tabOpts = {
+let rows = [["Cell 1", "Cell 2", "Cell 3"]];
+let tabOpts = {
     x: 0.5,
     y: 1.0,
     w: 9.0,
@@ -168,11 +170,11 @@ slide.addTable(rows, tabOpts);
 
 // TABLE 2: Multi-row table (each rows array element is an array of cells)
 // --------
-var rows = [
+let rows = [
     ["A1", "B1", "C1"],
     ["A2", "B2", "C2"],
 ];
-var tabOpts = {
+let tabOpts = {
     x: 0.5,
     y: 2.0,
     w: 9.0,
@@ -184,23 +186,14 @@ slide.addTable(rows, tabOpts);
 
 // TABLE 3: Formatting at a cell level - use this to selectively override table's cell options
 // --------
-var rows = [
+let rows = [
     [
-        {
-            text: "Top Lft",
-            options: { valign: "top", align: "left", fontFace: "Arial" },
-        },
-        {
-            text: "Top Ctr",
-            options: { valign: "top", align: "center", fontFace: "Verdana" },
-        },
-        {
-            text: "Top Rgt",
-            options: { valign: "top", align: "right", fontFace: "Courier" },
-        },
+        { text: "Top Lft", options: { valign: "top", align: "left", fontFace: "Arial" } },
+        { text: "Top Ctr", options: { valign: "top", align: "center", fontFace: "Verdana" } },
+        { text: "Top Rgt", options: { valign: "top", align: "right", fontFace: "Courier" } },
     ],
 ];
-var tabOpts = {
+let tabOpts = {
     x: 0.5,
     y: 4.5,
     w: 9.0,
