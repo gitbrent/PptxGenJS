@@ -7,6 +7,9 @@ import pptxgen from "pptxgenjs";
 export function testMainMethods() {
 	let pptx = new pptxgen();
 
+	// LEGACY-TEST: @deprecated in v3.3.0
+	let slide0 = pptx.addSlide('masterName');
+
 	pptx.addSection({ title: "TypeScript" });
 
 	// PPTX Method 1:
