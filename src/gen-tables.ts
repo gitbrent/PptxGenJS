@@ -278,9 +278,13 @@ export function getSlidesForTableRows(
 					tableRows.unshift(newRowSlide)
 
 					// B: Add header row(s)
-					newRowSlide = []
-					tabOpts._arrObjTabHeadRows[0].forEach(cell => newRowSlide.push(cell))
-					tableRows.unshift(newRowSlide)
+					let tableHeadRows: ITableToSlidesCell[][] = []
+					tabOpts._arrObjTabHeadRows.forEach(row => {
+						let newHeadRow = []
+						row.forEach(cell => newHeadRow.push(cell))
+						tableHeadRows.push(newHeadRow)
+					})
+					tableRows = [...tableHeadRows, ...tableRows]
 
 					// C:
 					break

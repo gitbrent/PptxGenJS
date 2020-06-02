@@ -39,7 +39,6 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
-	HexColor,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -679,20 +678,23 @@ export function addTableDefinition(
 	opt.x = getSmartParseNumber(opt.x || (opt.x === 0 ? 0 : EMU / 2), 'X', presLayout)
 	opt.y = getSmartParseNumber(opt.y || (opt.y === 0 ? 0 : EMU / 2), 'Y', presLayout)
 	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
-	opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0
 	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
-	if (opt.autoPageLineWeight > 1) opt.autoPageLineWeight = 1
-	else if (opt.autoPageLineWeight < -1) opt.autoPageLineWeight = -1
-	// Set default color if needed (table option > inherit from Slide > default to black)
-	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR
-
+	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
 	if (typeof opt.border === 'string') {
 		console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`")
 		opt.border = null
 	}
+	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
+	opt.autoPageRepeatHeader = typeof opt.autoPageRepeatHeader === 'boolean' ? opt.autoPageRepeatHeader : false
+	opt.autoPageHeaderRows = typeof opt.autoPageHeaderRows !== 'undefined' && !isNaN(Number(opt.autoPageHeaderRows)) ? Number(opt.autoPageHeaderRows) : 1
+	opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0
+	if (opt.autoPageLineWeight) {
+		if (opt.autoPageLineWeight > 1) opt.autoPageLineWeight = 1
+		else if (opt.autoPageLineWeight < -1) opt.autoPageLineWeight = -1
+	}
+	// autoPage ^^^
 
 	// Set/Calc table width
 	// Get slide margins - start with default values, then adjust if master or slide margins exist
@@ -716,7 +718,6 @@ export function addTableDefinition(
 	 * The API does not require a `w` value, but XML generation does, hence, code to calc a width below using colW value(s)
 	 */
 	if (opt.colW) {
-		// FIXME: Col count for first row only
 		let firstRowColCnt = arrRows[0].reduce((totalLen, c) => {
 			if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
 				totalLen += c.options.colspan
@@ -799,6 +800,8 @@ export function addTableDefinition(
 			options: Object.assign({}, opt),
 		})
 	} else {
+		if (opt.autoPageRepeatHeader) opt._arrObjTabHeadRows = arrRows.filter((_row, idx) => idx < opt.autoPageHeaderRows)
+
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
 		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((slide, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
