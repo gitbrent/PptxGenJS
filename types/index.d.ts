@@ -92,6 +92,13 @@ declare class PptxGenJS {
 	 */
 	addSlide(options?: PptxGenJS.IAddSlideOptions): PptxGenJS.Slide
 	/**
+	 * Add a new Slide to Presentation
+	 * @param {string} masterName - master slide name
+	 * @returns {Slide} the new Slide
+	 * @deprecated use `addSlide(IAddSlideOptions)`
+	 */
+	addSlide(masterName?: string): PptxGenJS.Slide
+	/**
 	 * Create a custom Slide Layout in any size
 	 * @param {ILayoutProps} layout - an object with user-defined w/h
 	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
