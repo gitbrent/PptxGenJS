@@ -1038,7 +1038,6 @@ declare namespace PptxGenJS {
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 	export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 	export type HyperLink = {
-		rId: number
 		slide?: number
 		tooltip?: string
 		url?: string

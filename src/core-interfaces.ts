@@ -24,10 +24,12 @@ export type MediaType = 'audio' | 'online' | 'video'
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
 export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
 export type HyperLink = {
-	rId: number
 	slide?: number
-	tooltip?: string
 	url?: string
+	tooltip?: string
+}
+export interface IHyperLink extends HyperLink {
+	rId: number
 }
 export type BkgdOpts = {
 	fill?: HexColor
@@ -284,7 +286,7 @@ export interface IChartOptsLib extends IChartOpts {
 export interface IImageOpts extends PositionOptions, OptsDataOrPath {
 	type?: 'audio' | 'online' | 'video'
 	sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
-	hyperlink?: HyperLink
+	hyperlink?: IHyperLink
 	rounding?: boolean
 	placeholder?: any
 	rotate?: number
@@ -465,7 +467,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	charSpacing?: number
 	fill?: ShapeFill
 	glow?: IGlowOptions
-	hyperlink?: HyperLink
+	hyperlink?: IHyperLink
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
@@ -620,7 +622,7 @@ export interface ISlideObject {
 	// image:
 	image?: string
 	imageRid?: number
-	hyperlink?: HyperLink
+	hyperlink?: IHyperLink
 	// media
 	media?: string
 	mtype?: MediaType
