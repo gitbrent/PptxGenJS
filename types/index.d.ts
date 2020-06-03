@@ -916,7 +916,7 @@ declare namespace PptxGenJS {
 		slideNumber?: ISlideNumber
 	}
 
-	export interface ITableToSlidesOpts extends ITableOptions {
+	export interface ITableToSlidesOpts extends TableOptions {
 		addImage?: {
 			url: string
 			x: number
@@ -1502,10 +1502,10 @@ declare namespace PptxGenJS {
 		/**
 		 * Add table to Slide
 		 * @param {TableRow[]} tableRows - table rows
-		 * @param {ITableOptions} options - table options
+		 * @param {TableOptions} options - table options
 		 * @return {Slide} this Slide
 		 */
-		addTable(tableRows: TableRow[], options?: ITableOptions): Slide
+		addTable(tableRows: TableRow[], options?: TableOptions): Slide
 		/**
 		 * Add text to Slide
 		 * @param {string|IText[]} text - text string or complex object
