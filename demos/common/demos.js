@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200531
+* BLD.: 20200602
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2872,15 +2872,15 @@ function genSlides_Text(pptx) {
 		// Hyperlinks
 		slide.addText("Hyperlinks:", { x:0.5, y:6.0, w:'90%', h:0.3, margin:0.123, color:'0088CC' });
 		slide.addText(
-			[{ text:'Link with Tooltip', options:{ hyperlink:{ url:'https://github.com/gitbrent/pptxgenjs', tooltip:'Visit Homepage' } } }],
+			[{ text: 'Link with Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent/pptxgenjs', tooltip: 'Visit Homepage' } } }],
 			{ x:0.5, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
 		slide.addText(
-			[{ text:'Link without Tooltip', options:{hyperlink:{url:'https://github.com/gitbrent'}} }],
+			[{ text: 'Link without Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent' } } }],
 			{ x:5.0, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
 		slide.addText(
-			[{ text:'Link to Slide #4', options:{hyperlink:{slide:'4'}} }],
+			[{ text: 'Link to Slide #4', options: { hyperlink: { slide: '4' } } }],
 			{ x:9.5, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
 	}
