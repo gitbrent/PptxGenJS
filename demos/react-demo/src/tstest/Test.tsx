@@ -8,7 +8,7 @@ export function testMainMethods() {
 	let pptx = new pptxgen();
 
 	// LEGACY-TEST: @deprecated in v3.3.0
-	let slide0 = pptx.addSlide('masterName');
+	let slide0 = pptx.addSlide("masterName");
 
 	pptx.addSection({ title: "TypeScript" });
 
@@ -73,6 +73,12 @@ export function testMainMethods() {
 	// 5:
 	let slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 	slide2.addText("React Demo!", { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: pptx.AlignH.center });
+
+	// 6: Text
+	slide2.addText(
+		[{ text: "Link without Tooltip", options: { hyperlink: { slide: 1, tooltip: "hi world", url: "https://github.com/gitbrent" } } }],
+		{ x: 2, y: 2 }
+	);
 
 	// PPTX Export Method 1:
 	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
