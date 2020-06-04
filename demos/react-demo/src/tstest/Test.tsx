@@ -46,6 +46,7 @@ export function testMainMethods() {
 	];
 	slide1.addChart(pptx.ChartType.bar, dataChart, { x: 0.5, y: 2.5, w: 5.25, h: 4 }); // TEST: charts
 
+	// 3: shape
 	slide1.addShape(pptx.ShapeType.rect, { x: 7.6, y: 2.8, w: 3, h: 3, fill: "66ff99" }); // TEST: shapes
 
 	// 4:
@@ -72,13 +73,17 @@ export function testMainMethods() {
 
 	// 5:
 	let slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-	slide2.addText("React Demo!", { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: pptx.AlignH.center });
+	let opts: pptxgen.ITextOpts = { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: "center" };
+	slide2.addText("React Demo!", opts);
 
 	// 6: Text
 	slide2.addText(
 		[{ text: "Link without Tooltip", options: { hyperlink: { slide: 1, tooltip: "hi world", url: "https://github.com/gitbrent" } } }],
 		{ x: 2, y: 2 }
 	);
+
+	// 7: Image
+	slide2.addImage({ path: "test.com/someimg.png", data: "base64code", x: 1, y: 1, w: 3, h: 1 });
 
 	// PPTX Export Method 1:
 	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
