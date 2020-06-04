@@ -999,26 +999,91 @@ declare namespace PptxGenJS {
 	}
 
 	/**
-	 * Coordinate - number in inches (ex: 10.25) or percent string (ex: '75%')
+	 * Coordinate number - either:
+	 * - Inches
+	 * - Percentage
+	 *
+	 * @example 10.25
+	 * coordinate in inches
+	 * @example '75%'
+	 * coordinate in percentage of slide size
 	 */
 	export type Coord = number | string
 	/**
-	 * Hex Color (e.g.: 'FF3399')
+	 * Color in Hex format
+	 * @example 'FF3399'
 	 */
 	export type HexColor = string
 	export interface OptsDataOrPath {
-		data?: string
+		/**
+		 * URL or relative path
+		 *
+		 * @example 'https://onedrives.com/myimg.png`
+		 * retrieve image via URL
+		 * @example '/home/gitbrent/images/myimg.png`
+		 * retrieve image via local path
+		 */
 		path?: string
+		/**
+		 * base64-encoded string
+		 * - Useful for avoiding potential path/server issues
+		 *
+		 * @example 'image/png;base64,iVtDafDrBF[...]='
+		 * adds a pre-encoded image
+		 */
+		data?: string
 	}
 	export interface PositionOptions {
+		/**
+		 * Horizontal position
+		 * - inches or percentage
+		 * @example 10.25
+		 * position in inches
+		 * @example '75%'
+		 * position as percentage of slide size
+		 */
 		x?: Coord
+		/**
+		 * Vertical position
+		 * - inches or percentage
+		 * @example 10.25
+		 * position in inches
+		 * @example '75%'
+		 * position as percentage of slide size
+		 */
 		y?: Coord
-		w?: Coord
+		/**
+		 * Height
+		 * - inches or percentage
+		 * @example 10.25
+		 * height in inches
+		 * @example '75%'
+		 * height as percentage of slide size
+		 */
 		h?: Coord
+		/**
+		 * Width
+		 * - inches or percentage
+		 * @example 10.25
+		 * width in inches
+		 * @example '75%'
+		 * width as percentage of slide size
+		 */
+		w?: Coord
 	}
 	export interface IBorderOptions {
+		/**
+		 * Border color (hex format)
+		 * @example 'FF3399'
+		 */
 		color?: HexColor
+		/**
+		 * Border size (points)
+		 */
 		pt?: number
+		/**
+		 * Border type
+		 */
 		type?: 'none' | 'dash' | 'solid'
 	}
 	export interface IShadowOptions {
@@ -1042,10 +1107,12 @@ declare namespace PptxGenJS {
 		tooltip?: string
 		url?: string
 	}
-	export type BkgdOpts = {
+	export interface BkgdOpts extends OptsDataOrPath {
+		/**
+		 * Color in Hex format
+		 * @example 'FF3399'
+		 */
 		fill?: HexColor
-		data?: string
-		path?: string
 	}
 	export type TextOptions = {
 		align?: HAlign
@@ -1270,19 +1337,11 @@ declare namespace PptxGenJS {
 			PositionOptions {}
 
 	// addImage
-	export interface IImageOpts extends PositionOptions, OptsDataOrPath {
-		type?: 'audio' | 'online' | 'video'
-		sizing?: {
-			type: 'crop' | 'contain' | 'cover'
-			w: number
-			h: number
-			x?: number
-			y?: number
-		}
+	export interface ImageOpts extends PositionOptions, OptsDataOrPath {
 		hyperlink?: HyperLink
-		rounding?: boolean
-		placeholder?: any
 		rotate?: number
+		rounding?: boolean
+		sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
 	}
 
 	// addMedia
@@ -1474,10 +1533,10 @@ declare namespace PptxGenJS {
 		addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide
 		/**
 		 * Add image to Slide
-		 * @param {IImageOpts} options - image options
+		 * @param {ImageOpts} options - image options
 		 * @return {Slide} this Slide
 		 */
-		addImage(options: IImageOpts): Slide
+		addImage(options: ImageOpts): Slide
 		/**
 		 * Add media (audio/video) to Slide
 		 * @param {IMediaOpts} options - media options

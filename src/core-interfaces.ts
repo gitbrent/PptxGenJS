@@ -8,13 +8,21 @@ import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HAL
 // ======
 
 /**
- * Coordinate - number in inches (ex: 10.25) or percent string (ex: '75%')
+ * Coordinate number - either:
+ * - Inches
+ * - Percentage
+ *
+ * @example 10.25
+ * coordinate in inches
+ * @example '75%'
+ * coordinate as percentage of slide size
  */
 export type Coord = number | string
 /**
- * Hex Color (e.g.: 'FF3399')
+ * Color in Hex format
+ * @example 'FF3399'
  */
-export type HexColor = string // (should match /^[0-9a-fA-F]{6}$/)
+export type HexColor = string
 export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
@@ -28,13 +36,37 @@ export type HyperLink = {
 	url?: string
 	tooltip?: string
 }
+/**
+ * Either `data` or `path` is required
+ */
+export type OptsDataOrPath = {
+	/**
+	 * URL or relative path
+	 *
+	 * @example 'https://onedrives.com/myimg.png`
+	 * retrieve image via URL
+	 * @example '/home/gitbrent/images/myimg.png`
+	 * retrieve image via local path
+	 */
+	path?: string
+	/**
+	 * base64-encoded string
+	 * - Useful for avoiding potential path/server issues
+	 *
+	 * @example 'image/png;base64,iVtDafDrBF[...]='
+	 * adds a pre-encoded image
+	 */
+	data?: string
+}
 export interface IHyperLink extends HyperLink {
 	rId: number
 }
-export type BkgdOpts = {
+export interface BkgdOpts extends OptsDataOrPath {
+	/**
+	 * Color in Hex format
+	 * @example 'FF3399'
+	 */
 	fill?: HexColor
-	data?: string
-	path?: string
 }
 export type TextOptions = {
 	align?: HAlign
@@ -49,14 +81,42 @@ export type TextOptions = {
 	valign?: VAlign
 }
 export type PositionOptions = {
+	/**
+	 * Horizontal position
+	 * - inches or percentage
+	 * @example 10.25
+	 * position in inches
+	 * @example '75%'
+	 * position as percentage of slide size
+	 */
 	x?: Coord
+	/**
+	 * Vertical position
+	 * - inches or percentage
+	 * @example 10.25
+	 * position in inches
+	 * @example '75%'
+	 * position as percentage of slide size
+	 */
 	y?: Coord
+	/**
+	 * Height
+	 * - inches or percentage
+	 * @example 10.25
+	 * height in inches
+	 * @example '75%'
+	 * height as percentage of slide size
+	 */
 	h?: Coord
+	/**
+	 * Width
+	 * - inches or percentage
+	 * @example 10.25
+	 * width in inches
+	 * @example '75%'
+	 * width as percentage of slide size
+	 */
 	w?: Coord
-}
-export type OptsDataOrPath = {
-	data?: string // one option is required
-	path?: string // one option is required
 }
 export type OptsChartData = {
 	index?: number
@@ -83,8 +143,18 @@ export interface OptsDataLabelPosition {
 // Opts
 // ====
 export interface IBorderOptions {
+	/**
+	 * Border color (hex format)
+	 * @example 'FF3399'
+	 */
 	color?: HexColor
+	/**
+	 * Border size (points)
+	 */
 	pt?: number
+	/**
+	 * Border type
+	 */
 	type?: 'none' | 'dash' | 'solid'
 }
 export interface IShadowOptions {
@@ -101,6 +171,20 @@ export interface IGlowOptions {
 	color?: string
 }
 
+// charts =========================================================================================
+
+export interface IChartTitleOpts extends TextOptions {
+	color?: Color
+	rotate?: number
+	title: string
+	titleAlign?: string
+	titlePos?: { x: number; y: number }
+}
+export interface IChartMulti {
+	type: CHART_NAME
+	data: any[]
+	options: {}
+}
 export interface IChartPropsBase {
 	axisPos?: string
 	border?: IBorderOptions
@@ -283,19 +367,26 @@ export interface IChartOpts
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[]
 }
-export interface IImageOpts extends PositionOptions, OptsDataOrPath {
-	type?: 'audio' | 'online' | 'video'
-	sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
+
+// image / media ==================================================================================
+
+export interface ImageOpts extends PositionOptions, OptsDataOrPath {
 	hyperlink?: IHyperLink
-	rounding?: boolean
-	placeholder?: any
 	rotate?: number
+	rounding?: boolean
+	sizing?: { type: 'contain' | 'cover' | 'crop'; w: number; h: number; x?: number; y?: number }
+}
+export interface IImageOpts extends ImageOpts {
+	type?: 'audio' | 'online' | 'video'
+	placeholder?: any
 }
 export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
 	link: string
 	onlineVideoLink?: string
 	type?: MediaType
 }
+
+// shapes =========================================================================================
 
 export interface IShapeOptions extends PositionOptions {
 	align?: HAlign
@@ -312,18 +403,8 @@ export interface IShapeOptions extends PositionOptions {
 	shadow?: IShadowOptions
 }
 
-export interface IChartTitleOpts extends TextOptions {
-	color?: Color
-	rotate?: number
-	title: string
-	titleAlign?: string
-	titlePos?: { x: number; y: number }
-}
-export interface IChartMulti {
-	type: CHART_NAME
-	data: any[]
-	options: {}
-}
+// tables =========================================================================================
+
 // TODO: create TableToSlidesOpts (incl. verbose)
 export interface ITableToSlidesOpts extends TableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
@@ -424,7 +505,6 @@ export interface TableOptions extends PositionOptions, TextOptions {
 export interface ITableOptions extends TableOptions {
 	_arrObjTabHeadRows?: TableRow[]
 }
-
 export interface TableCell {
 	text?: string | TableCell[]
 	options?: ITableCellOpts
@@ -449,6 +529,8 @@ export type TableRow = number[] | string[] | TableCell[]
 export interface TableRowSlide {
 	rows: ITableRow[]
 }
+
+// text ===========================================================================================
 
 export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
 	autoFit?: boolean
@@ -664,6 +746,10 @@ export interface ISlide {
 	addText: Function
 	background?: BkgdOpts
 	bkgd?: string // @deprecated v3.3.0
+	/**
+	 * Default text color (hex format)
+	 * @example 'FF3399'
+	 */
 	color?: HexColor
 	hidden?: boolean
 	slideNumber?: ISlideNumber
