@@ -85,6 +85,17 @@ export function testMainMethods() {
 	// 7: Image
 	slide2.addImage({ path: "test.com/someimg.png", data: "base64code", x: 1, y: 1, w: 3, h: 1 });
 
+	// 8. Media
+	slide2.addMedia({
+		x: 5.5,
+		y: 4.0,
+		w: 3.0,
+		h: 2.25,
+		type: "video",
+		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi",
+	});
+	slide2.addMedia({ x: 9.4, y: 4.0, w: 3.0, h: 2.25, type: "online", link: "https://www.youtube.com/embed/Dph6ynRVyUc" });
+
 	// PPTX Export Method 1:
 	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
 	// PPTX Export Method 2:
