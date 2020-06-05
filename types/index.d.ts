@@ -1175,9 +1175,19 @@ declare namespace PptxGenJS {
 	}
 
 	// addChart
-	export interface OptsChartGridLine {
+	export type OptsChartGridLine = {
+		/**
+		 * line color (hex format)
+		 * @example 'FF3399'
+		 */
+		color?: HexColor
+		/**
+		 * line size (points)
+		 */
 		size?: number
-		color?: string
+		/**
+		 * line style
+		 */
 		style?: 'solid' | 'dash' | 'dot' | 'none'
 	}
 	export interface IChartTitleOpts extends TextOptions {
@@ -1375,16 +1385,40 @@ declare namespace PptxGenJS {
 	// addImage
 	export interface ImageOpts extends PositionOptions, OptsDataOrPath {
 		hyperlink?: HyperLink
+		/**
+		 * image rotation (degrees)
+		 * - range: -360 to 360
+		 * @example 180 // rotate image 180 degrees
+		 */
 		rotate?: number
 		rounding?: boolean
 		sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
 	}
 
 	// addMedia
+	/**
+	 * Add media (audio/video) to slide
+	 * @requires either `link` or `path`
+	 */
 	export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
-		link: string
-		onlineVideoLink?: string
-		type?: MediaType
+		/**
+		 * Media type
+		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
+		 */
+		type: MediaType
+		/**
+		 * video embed link
+		 * - works with YouTube
+		 * - other sites may not show correctly in PowerPoint
+		 * @example 'https://www.youtube.com/embed/Dph6ynRVyUc' // embed a youtube video
+		 */
+		link?: string
+		/**
+		 * full or local path
+		 * @example 'https://freesounds/simpsons/bart.mp3' // embed mp3 audio clip from server
+		 * @example '/sounds/simpsons_haha.mp3' // embed mp3 audio clip from local directory
+		 */
+		path?: string
 	}
 
 	// addShape
