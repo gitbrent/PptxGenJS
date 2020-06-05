@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-04T05:28:11.888Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-05T04:42:11.526Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -742,8 +742,8 @@ function createColorElement(colorStr, innerElements) {
 }
 /**
  * Creates `a:glow` element
- * @param {Object} opts glow properties
- * @param {Object} defaults defaults for unspecified properties in `opts`
+ * @param {IGlowOptions} options glow properties
+ * @param {IGlowOptions} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
@@ -2160,28 +2160,15 @@ function genXmlTextRunProperties(opts, isDefault) {
     // Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
     if (opts.color || opts.fontFace || opts.outline) {
         if (opts.outline && typeof opts.outline === 'object') {
-            runProps += '<a:ln w="' + Math.round((opts.outline.size || 0.75) * ONEPT) + '">' + genXmlColorSelection(opts.outline.color || 'FFFFFF') + '</a:ln>';
+            runProps += "<a:ln w=\"" + Math.round((opts.outline.size || 0.75) * ONEPT) + "\">" + genXmlColorSelection(opts.outline.color || 'FFFFFF') + "</a:ln>";
         }
         if (opts.color)
             runProps += genXmlColorSelection(opts.color);
-        if (opts.glow) {
-            runProps += '<a:effectLst>';
-            runProps += createGlowElement(opts.glow, DEF_TEXT_GLOW);
-            // FUTURE: shadow and other effects
-            runProps += '</a:effectLst>';
-        }
+        if (opts.glow)
+            runProps += "<a:effectLst>" + createGlowElement(opts.glow, DEF_TEXT_GLOW) + "</a:effectLst>";
         if (opts.fontFace) {
             // NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
-            runProps +=
-                '<a:latin typeface="' +
-                    opts.fontFace +
-                    '" pitchFamily="34" charset="0"/>' +
-                    '<a:ea typeface="' +
-                    opts.fontFace +
-                    '" pitchFamily="34" charset="-122"/>' +
-                    '<a:cs typeface="' +
-                    opts.fontFace +
-                    '" pitchFamily="34" charset="-120"/>';
+            runProps += "<a:latin typeface=\"" + opts.fontFace + "\" pitchFamily=\"34\" charset=\"0\"/><a:ea typeface=\"" + opts.fontFace + "\" pitchFamily=\"34\" charset=\"-122\"/><a:cs typeface=\"" + opts.fontFace + "\" pitchFamily=\"34\" charset=\"-120\"/>";
         }
     }
     // Hyperlink support
@@ -2193,24 +2180,14 @@ function genXmlTextRunProperties(opts, isDefault) {
         else if (opts.hyperlink.url) {
             // TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
             //runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-            runProps +=
-                '<a:hlinkClick r:id="rId' +
-                    opts.hyperlink.rId +
-                    '" invalidUrl="" action="" tgtFrame="" tooltip="' +
-                    (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +
-                    '" history="1" highlightClick="0" endSnd="0"/>';
+            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink.rId + "\" invalidUrl=\"\" action=\"\" tgtFrame=\"\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\" history=\"1\" highlightClick=\"0\" endSnd=\"0\"/>";
         }
         else if (opts.hyperlink.slide) {
-            runProps +=
-                '<a:hlinkClick r:id="rId' +
-                    opts.hyperlink.rId +
-                    '" action="ppaction://hlinksldjump" tooltip="' +
-                    (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +
-                    '"/>';
+            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink.rId + "\" action=\"ppaction://hlinksldjump\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\"/>";
         }
     }
     // END runProperties
-    runProps += '</' + runPropsTag + '>';
+    runProps += "</" + runPropsTag + ">";
     return runProps;
 }
 /**
@@ -5881,7 +5858,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200602:2302';
+var VERSION = '3.3.0-beta-20200604:2158';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
