@@ -1087,12 +1087,53 @@ declare namespace PptxGenJS {
 		type?: 'none' | 'dash' | 'solid'
 	}
 	export interface IShadowOptions {
+		/**
+		 * shadow type
+		 */
 		type: 'outer' | 'inner' | 'none'
-		angle: number
+		/**
+		 * opacity (0.0 - 1.0)
+		 * @example 0.5
+		 * 50% opaque
+		 */
 		opacity: number
+		/**
+		 * blue (points)
+		 * - range: 0-100
+		 */
 		blur?: number
+		/**
+		 * angle (degrees)
+		 * - range: 0-359
+		 */
+		angle: number
+		/**
+		 * shadow offset (points)
+		 * - range: 0-200
+		 */
 		offset?: number
-		color?: string
+		/**
+		 * shadow color (hex format)
+		 * @example 'FF3399'
+		 */
+		color?: HexColor
+	}
+	export interface IGlowOptions {
+		/**
+		 * Border color (hex format)
+		 * @example 'FF3399'
+		 */
+		color?: HexColor
+		/**
+		 * opacity (0.0 - 1.0)
+		 * @example 0.5
+		 * 50% opaque
+		 */
+		opacity: number
+		/**
+		 * size (points)
+		 */
+		size: number
 	}
 	export type ThemeColor = 'tx1' | 'tx2' | 'bg1' | 'bg2' | 'accent1' | 'accent2' | 'accent3' | 'accent4' | 'accent5' | 'accent6'
 	export type Color = HexColor | ThemeColor
@@ -1125,11 +1166,6 @@ declare namespace PptxGenJS {
 		italic?: boolean
 		lang?: string
 		valign?: VAlign
-	}
-	export interface IGlowOptions {
-		size: number
-		opacity: number
-		color?: string
 	}
 
 	// slideNumber

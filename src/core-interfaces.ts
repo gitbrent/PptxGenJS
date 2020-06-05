@@ -158,17 +158,53 @@ export interface IBorderOptions {
 	type?: 'none' | 'dash' | 'solid'
 }
 export interface IShadowOptions {
+	/**
+	 * shadow type
+	 */
 	type: 'outer' | 'inner' | 'none'
-	angle: number
-	opacity: number
+	/**
+	 * opacity (0.0 - 1.0)
+	 * @example 0.5
+	 * 50% opaque
+	 */
+	opacity: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
+	/**
+	 * blue (points)
+	 * - range: 0-100
+	 */
 	blur?: number
-	offset?: number
-	color?: string
+	/**
+	 * angle (degrees)
+	 * - range: 0-359
+	 */
+	angle: number
+	/**
+	 * shadow offset (points)
+	 * - range: 0-200
+	 */
+	offset?: number // TODO: "Distance" in PPT
+	/**
+	 * shadow color (hex format)
+	 * @example 'FF3399'
+	 */
+	color?: HexColor
 }
 export interface IGlowOptions {
-	size: number
+	/**
+	 * Border color (hex format)
+	 * @example 'FF3399'
+	 */
+	color?: HexColor
+	/**
+	 * opacity (0.0 - 1.0)
+	 * @example 0.5
+	 * 50% opaque
+	 */
 	opacity: number
-	color?: string
+	/**
+	 * size (points)
+	 */
+	size: number
 }
 
 // charts =========================================================================================
