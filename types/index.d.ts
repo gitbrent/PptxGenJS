@@ -1142,7 +1142,25 @@ declare namespace PptxGenJS {
 	export type VAlign = 'top' | 'middle' | 'bottom'
 	export type MediaType = 'audio' | 'online' | 'video'
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-	export type ShapeFill = Color | { type: string; color: Color; alpha?: number }
+	export type ShapeFill =
+		| Color
+		| {
+				/**
+				 * Fill type
+				 */
+				type: 'solid'
+				/**
+				 * Fill color
+				 * - `HexColor` or `ThemeColor`
+				 * @example 'FF0000' // red
+				 */
+				color: Color
+				/**
+				 * Transparency (percent)
+				 * - range: 0-100
+				 */
+				alpha?: number
+		  }
 	export type HyperLink = {
 		slide?: number
 		tooltip?: string

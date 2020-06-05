@@ -82,8 +82,21 @@ export function testMainMethods() {
 		{ x: 2, y: 2 }
 	);
 
+	// 7: Shapes
+	slide2.addText("OVAL (alpha:50)", {
+		shape: pptxgen.shapes.OVAL,
+		x: 5.4,
+		y: 0.8,
+		w: 3.0,
+		h: 1.5,
+		fill: { type: "solid", color: "0088CC", alpha: 50 },
+		align: "center",
+		fontSize: 14,
+	});
+
 	// 7: Image
-	slide2.addImage({ path: "test.com/someimg.png", data: "base64code", x: 1, y: 1, w: 3, h: 1 });
+	slide2.addImage({ path: "test.com/someimg.png", x: 1, y: 1, w: 3, h: 1 });
+	slide2.addImage({ data: "base64code", x: 1, y: 1, w: 3, h: 1 });
 
 	// 8. Media
 	slide2.addMedia({
