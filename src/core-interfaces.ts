@@ -89,16 +89,81 @@ export interface BkgdOpts extends OptsDataOrPath {
 }
 export type TextOptions = {
 	/**
-	 * text alignment
+	 * Horizontal alignment
 	 * @default 'left'
 	 */
 	align?: HAlign
+	/**
+	 * Bold style
+	 * @default false
+	 */
 	bold?: boolean
+	/**
+	 * Add a line-break
+	 * @default false
+	 */
 	breakLine?: boolean
-	bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
+	// TODO: WIP: CURRENT: keep going with bullet:
+	/**
+	 * Add standard or custom bullet
+	 * - use `true` for standard bullet
+	 * - pass object options for custom bullet
+	 * @default false
+	 */
+	bullet?:
+		| boolean
+		| {
+				/**
+				 * Bullet type
+				 */
+				type?: 'bullet' | 'number'
+				/**
+				 * Bullet code (unicode)
+				 * - bullet character code
+				 * @example { code: '25BA' } // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
+				 */
+				code?: string
+				marginPt?: number // TODO: rename, this sucks
+				/**
+				 * TODO: this is `type` "alphaLcPeriod", etc.
+				 */
+				style?: string // TODO: NAME IS TRASH!!
+				numberType?:
+					| 'alphaLcParenBoth'
+					| 'alphaLcParenR'
+					| 'alphaLcPeriod'
+					| 'alphaUcParenBoth'
+					| 'alphaUcParenR'
+					| 'alphaUcPeriod'
+					| 'arabicParenBoth'
+					| 'arabicParenR'
+					| 'arabicPeriod'
+					| 'arabicPlain'
+					| 'romanLcParenBoth'
+					| 'romanLcParenR'
+					| 'romanLcPeriod'
+					| 'romanUcParenBoth'
+					| 'romanUcParenR'
+					| 'romanUcPeriod'
+				/**
+				 * Number to start with (only applies to type:number)
+				 * @example { startAt: 10 } // numbered bullets start with 10.
+				 * @deprecated v3.3.0 - use `numberStartAt` instead
+				 */
+				startAt?: number
+				/**
+				 * Number bullets start at
+				 * @example { numberStartAt: 10 } // numbered bullets start with 10.
+				 */
+				numberStartAt?: number // TODO: new!!
+		  }
 	color?: Color
 	fontFace?: string
 	fontSize?: number
+	/**
+	 * italic style
+	 * @default false
+	 */
 	italic?: boolean
 	/**
 	 * language
@@ -107,6 +172,10 @@ export type TextOptions = {
 	 * @example 'fr-CA' // french Canadian
 	 */
 	lang?: string
+	/**
+	 * vertical alignment
+	 * @default 'top'
+	 */
 	valign?: VAlign
 }
 export type PositionOptions = {
