@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed: tableToSlides `addHeaderToEach` finally duplicates all header rows, not just the first one [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
 - Fixed `colW` length mismatch with colspans (Issue #651) [\#679](https://github.com/gitbrent/PptxGenJS/issues/679) ([Joshua-rose](https://github.com/Joshua-rose))
 - Fixed: hyperlink and tooltip property `rId` is not working? [\#758](https://github.com/gitbrent/PptxGenJS/issues/758) ([kuldeept70](https://github.com/kuldeept70))
+- Fixed: Removed `Buffer` type from `index.ts.d` [\#761](https://github.com/gitbrent/PptxGenJS/pull/761) ([lustigerlurch551](https://github.com/lustigerlurch551))
+-
 - Fixed: type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
 - Fixed: type defs for `ITableOptions` s/b `TableOptions` ([gitbrent](https://github.com/gitbrent))
 ### WIP
