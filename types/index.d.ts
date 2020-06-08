@@ -1153,6 +1153,7 @@ declare namespace PptxGenJS {
 				 * Fill color
 				 * - `HexColor` or `ThemeColor`
 				 * @example 'FF0000' // red
+				 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
 				 */
 				color: Color
 				/**
@@ -1265,11 +1266,39 @@ declare namespace PptxGenJS {
 					 */
 					style?: string
 			  }
+		/**
+		 * Text color
+		 * - `HexColor` or `ThemeColor`
+		 * @example 'FF0000' // red
+		 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
+		 */
 		color?: Color
+		/**
+		 * Font face name
+		 * @example 'Arial' // Arial font
+		 */
 		fontFace?: string
+		/**
+		 * Font size
+		 * @example 12 // Font size 12
+		 */
 		fontSize?: number
+		/**
+		 * italic style
+		 * @default false
+		 */
 		italic?: boolean
+		/**
+		 * language
+		 * - ISO 639-1 standard language code
+		 * @default 'en-US' // english US
+		 * @example 'fr-CA' // french Canadian
+		 */
 		lang?: string
+		/**
+		 * vertical alignment
+		 * @default 'top'
+		 */
 		valign?: VAlign
 	}
 
@@ -1282,16 +1311,16 @@ declare namespace PptxGenJS {
 	// addChart
 	export type OptsChartGridLine = {
 		/**
-		 * line color (hex format)
+		 * Gridline color (hex)
 		 * @example 'FF3399'
 		 */
 		color?: HexColor
 		/**
-		 * line size (points)
+		 * Gridline size (points)
 		 */
 		size?: number
 		/**
-		 * line style
+		 * Gridline style
 		 */
 		style?: 'solid' | 'dash' | 'dot' | 'none'
 	}
@@ -1489,15 +1518,38 @@ declare namespace PptxGenJS {
 
 	// addImage
 	export interface ImageOpts extends PositionOptions, OptsDataOrPath {
-		hyperlink?: HyperLink
+		hyperlink?: IHyperLink
 		/**
-		 * image rotation (degrees)
+		 * Image rotation (degrees)
 		 * - range: -360 to 360
+		 * @default 0
 		 * @example 180 // rotate image 180 degrees
 		 */
 		rotate?: number
+		/**
+		 * Enable image rounding
+		 * @default false
+		 */
 		rounding?: boolean
-		sizing?: { type: 'crop' | 'contain' | 'cover'; w: number; h: number; x?: number; y?: number }
+		/**
+		 * Image sizing options
+		 */
+		sizing?: {
+			/**
+			 * Sizing type
+			 */
+			type: 'contain' | 'cover' | 'crop'
+			/**
+			 * Image width
+			 */
+			w: number
+			/**
+			 * Image height
+			 */
+			h: number
+			x?: number
+			y?: number
+		}
 	}
 
 	// addMedia

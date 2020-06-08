@@ -41,6 +41,7 @@ export type ShapeFill =
 			 * Fill color
 			 * - `HexColor` or `ThemeColor`
 			 * @example 'FF0000' // red
+			 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
 			 */
 			color: Color
 			/**
@@ -103,7 +104,6 @@ export type TextOptions = {
 	 * @default false
 	 */
 	breakLine?: boolean
-	// TODO: WIP: CURRENT: keep going with bullet:
 	/**
 	 * Add standard or custom bullet
 	 * - use `true` for standard bullet
@@ -144,7 +144,7 @@ export type TextOptions = {
 				/**
 				 * Number type
 				 * @since 3.3.0
-				 * @example romanLcParenR // roman numerals lower-case with paranthesis right
+				 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
 				 */
 				numberType?:
 					| 'alphaLcParenBoth'
@@ -180,8 +180,22 @@ export type TextOptions = {
 				 */
 				style?: string
 		  }
+	/**
+	 * Text color
+	 * - `HexColor` or `ThemeColor`
+	 * @example 'FF0000' // red
+	 * @example 'pptxgen.SchemeColor.text1' // Text1 Theme Color
+	 */
 	color?: Color
+	/**
+	 * Font face name
+	 * @example 'Arial' // Arial font
+	 */
 	fontFace?: string
+	/**
+	 * Font size
+	 * @example 12 // Font size 12
+	 */
 	fontSize?: number
 	/**
 	 * italic style
@@ -248,16 +262,16 @@ export type OptsChartData = {
 }
 export type OptsChartGridLine = {
 	/**
-	 * line color (hex format)
+	 * Gridline color (hex)
 	 * @example 'FF3399'
 	 */
 	color?: HexColor
 	/**
-	 * line size (points)
+	 * Gridline size (points)
 	 */
 	size?: number
 	/**
-	 * line style
+	 * Gridline style
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
@@ -275,7 +289,7 @@ export interface OptsDataLabelPosition {
 // ====
 export interface IBorderOptions {
 	/**
-	 * Border color (hex format)
+	 * Border color (hex)
 	 * @example 'FF3399'
 	 */
 	color?: HexColor
@@ -540,22 +554,38 @@ export interface IChartOptsLib extends IChartOpts {
 export interface ImageOpts extends PositionOptions, OptsDataOrPath {
 	hyperlink?: IHyperLink
 	/**
-	 * image rotation (degrees)
+	 * Image rotation (degrees)
 	 * - range: -360 to 360
+	 * @default 0
 	 * @example 180 // rotate image 180 degrees
 	 */
 	rotate?: number
+	/**
+	 * Enable image rounding
+	 * @default false
+	 */
 	rounding?: boolean
+	/**
+	 * Image sizing options
+	 */
 	sizing?: {
+		/**
+		 * Sizing type
+		 */
 		type: 'contain' | 'cover' | 'crop'
+		/**
+		 * Image width
+		 */
 		w: number
+		/**
+		 * Image height
+		 */
 		h: number
 		x?: number
 		y?: number
 	}
 }
 export interface IImageOpts extends ImageOpts {
-	type?: 'audio' | 'online' | 'video'
 	placeholder?: any
 }
 /**
@@ -586,7 +616,16 @@ export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
 // shapes =========================================================================================
 
 export interface IShapeOptions extends PositionOptions {
+	/**
+	 * Horizontal alignment
+	 * @default 'left'
+	 */
 	align?: HAlign
+	/**
+	 * Shape fill color
+	 * @example 'FF0000' // fill red
+	 * @example ''
+	 */
 	fill?: ShapeFill
 	flipH?: boolean
 	flipV?: boolean
