@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200602
+* BLD.: 20200607
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2809,10 +2809,10 @@ function genSlides_Text(pptx) {
 		// RIGHT COLUMN ------------------------------------------------------------
 
 		// 1: Regular bullets
-		slide.addText("Bullet startAt number option:", { x:7.0, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText('Bullet "Start At" number option:', { x:7.0, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
-			"type:'number'\nstartAt:'5'",
-			{ x:7.0, y:1.0, w:'40%', h:0.75, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', startAt:'5'} }
+			"type:'number'\nnumberStartAt:'5'",
+			{ x:7.0, y:1.0, w:'40%', h:0.75, fill:pptx.colors.BACKGROUND2, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', numberStartAt:'5'} }
 		);
 
 		// 2: Bullets: Text With Line-Breaks
@@ -2820,11 +2820,11 @@ function genSlides_Text(pptx) {
 		slide.addText('Line 1\nLine 2\nLine 3', { x:7.0, y:2.4, w:'40%', h:1.0, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} });
 
 		// 3: Bullets: With group of {text}
-		slide.addText("Bullets with marginPt:", { x:7.0, y:3.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText("Bullets indentation option:", { x:7.0, y:3.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text: 'bullet marginPt:10', options: { bullet: { marginPt: 10 } } },
-				{ text: 'bullet marginPt:30', options: { bullet: { marginPt: 30 } } }
+				{ text: 'bullet indent:10', options: { bullet: { indent: 10 } } },
+				{ text: 'bullet indent:30', options: { bullet: { indent: 30 } } }
 			],
 			{ x:7.0, y:3.95, w:5.75, h:0.5, margin:0.1, fontFace:'Arial', fontSize:12 }
 		);
@@ -2842,7 +2842,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Bullets using text object options:", { x:7.0, y:5.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text: 'bullet:{code:"25BA"}, color:"00CD00"', options: { bullet: { code: '25BA' }, color: '00CD00' } },
+				{ text: 'bullet:{characterCode:"25BA"}, color:"00CD00"', options: { bullet: { characterCode: '25BA' }, color: '00CD00' } },
 				{ text: 'Next bullet text', options: { bullet: true, color: '696969' } },
 				{ text: 'Last bullet text', options: { bullet: true, color: '0000AB' } }
 			],

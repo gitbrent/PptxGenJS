@@ -115,19 +115,37 @@ export type TextOptions = {
 		| {
 				/**
 				 * Bullet type
+				 * @default bullet
 				 */
 				type?: 'bullet' | 'number'
 				/**
 				 * Bullet code (unicode)
-				 * - bullet character code
-				 * @example { code: '25BA' } // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
+				 * @deprecated 3.3.0
 				 */
 				code?: string
-				marginPt?: number // TODO: rename, this sucks
 				/**
-				 * TODO: this is `type` "alphaLcPeriod", etc.
+				 * Bullet character code (unicode)
+				 * @since 3.3.0
+				 * @example { code: '25BA' } // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
 				 */
-				style?: string // TODO: NAME IS TRASH!!
+				characterCode?: string
+				/**
+				 * Indentation (space between bullet and text) (points)
+				 * @since 3.3.0
+				 * @example { margin: 10 } // 10 points between bullet and text
+				 */
+				indent?: number
+				/**
+				 * Margin between bullet and text
+				 * @since 3.2.1
+				 * @deplrecated 3.3.0
+				 */
+				marginPt?: number
+				/**
+				 * Number type
+				 * @since 3.3.0
+				 * @example romanLcParenR // roman numerals lower-case with paranthesis right
+				 */
 				numberType?:
 					| 'alphaLcParenBoth'
 					| 'alphaLcParenR'
@@ -146,16 +164,21 @@ export type TextOptions = {
 					| 'romanUcParenR'
 					| 'romanUcPeriod'
 				/**
+				 * Number bullets start at
+				 * @since 3.3.0
+				 * @example { numberStartAt: 10 } // numbered bullets start with 10.
+				 */
+				numberStartAt?: number
+				/**
 				 * Number to start with (only applies to type:number)
-				 * @example { startAt: 10 } // numbered bullets start with 10.
-				 * @deprecated v3.3.0 - use `numberStartAt` instead
+				 * @deprecated 3.3.0 - use `numberStartAt` instead
 				 */
 				startAt?: number
 				/**
-				 * Number bullets start at
-				 * @example { numberStartAt: 10 } // numbered bullets start with 10.
+				 * Number type
+				 * @deprecated 3.3.0 use `numberType` instead
 				 */
-				numberStartAt?: number // TODO: new!!
+				style?: string
 		  }
 	color?: Color
 	fontFace?: string

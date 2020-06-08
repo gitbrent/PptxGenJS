@@ -1174,10 +1174,97 @@ declare namespace PptxGenJS {
 		fill?: HexColor
 	}
 	export type TextOptions = {
+		/**
+		 * Horizontal alignment
+		 * @default 'left'
+		 */
 		align?: HAlign
+		/**
+		 * Bold style
+		 * @default false
+		 */
 		bold?: boolean
+		/**
+		 * Add a line-break
+		 * @default false
+		 */
 		breakLine?: boolean
-		bullet?: boolean | { type?: string; code?: string; marginPt: number; style?: string; startAt?: number }
+		/**
+		 * Add standard or custom bullet
+		 * - use `true` for standard bullet
+		 * - pass object options for custom bullet
+		 * @default false
+		 */
+		bullet?:
+			| boolean
+			| {
+					/**
+					 * Bullet type
+					 * @default bullet
+					 */
+					type?: 'bullet' | 'number'
+					/**
+					 * Bullet code (unicode)
+					 * @deprecated 3.3.0
+					 */
+					code?: string
+					/**
+					 * Bullet character code (unicode)
+					 * @since 3.3.0
+					 * @example { code: '25BA' } // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
+					 */
+					characterCode?: string
+					/**
+					 * Indentation (space between bullet and text) (points)
+					 * @since 3.3.0
+					 * @example { margin: 10 } // 10 points between bullet and text
+					 */
+					indent?: number // TODO: new!
+					/**
+					 * Margin between bullet and text
+					 * @since 3.2.1
+					 * @deplrecated 3.3.0
+					 */
+					marginPt?: number
+					/**
+					 * Number type
+					 * @since 3.3.0
+					 * @example romanLcParenR // roman numerals lower-case with paranthesis right
+					 */
+					numberType?:
+						| 'alphaLcParenBoth'
+						| 'alphaLcParenR'
+						| 'alphaLcPeriod'
+						| 'alphaUcParenBoth'
+						| 'alphaUcParenR'
+						| 'alphaUcPeriod'
+						| 'arabicParenBoth'
+						| 'arabicParenR'
+						| 'arabicPeriod'
+						| 'arabicPlain'
+						| 'romanLcParenBoth'
+						| 'romanLcParenR'
+						| 'romanLcPeriod'
+						| 'romanUcParenBoth'
+						| 'romanUcParenR'
+						| 'romanUcPeriod'
+					/**
+					 * Number bullets start at
+					 * @since 3.3.0
+					 * @example { numberStartAt: 10 } // numbered bullets start with 10.
+					 */
+					numberStartAt?: number
+					/**
+					 * Number to start with (only applies to type:number)
+					 * @deprecated 3.3.0 - use `numberStartAt` instead
+					 */
+					startAt?: number
+					/**
+					 * Number type
+					 * @deprecated 3.3.0 use `numberType` instead
+					 */
+					style?: string
+			  }
 		color?: Color
 		fontFace?: string
 		fontSize?: number
