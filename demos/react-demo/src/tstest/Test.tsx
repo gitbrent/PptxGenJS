@@ -81,6 +81,23 @@ export function testMainMethods() {
 		[{ text: "Link without Tooltip", options: { hyperlink: { slide: 1, tooltip: "hi world", url: "https://github.com/gitbrent" } } }],
 		{ x: 2, y: 2 }
 	);
+	slide2.addText(
+		[
+			{ text: "bullet indent:10", options: { bullet: { indent: 10 } } },
+			{ text: "bullet indent:30", options: { bullet: { indent: 30 } } },
+		],
+		{ x: 7.0, y: 3.95, w: 5.75, h: 0.5, margin: 0.1, fontFace: "Arial", fontSize: 12 }
+	);
+	slide2.addText("type:'number'\nnumberStartAt:'5'", {
+		x: 7.0,
+		y: 1.0,
+		w: "40%",
+		h: 0.75,
+		fill: pptxgen.SchemeColor.background2,
+		color: pptxgen.SchemeColor.accent6,
+		fontFace: "Courier New",
+		bullet: { type: "number", numberStartAt: 5 },
+	});
 
 	// 7: Shapes
 	slide2.addText("OVAL (alpha:50)", {
