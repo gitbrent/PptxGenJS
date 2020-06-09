@@ -21,9 +21,10 @@ export const DEF_FONT_SIZE: number = 12
 export const DEF_FONT_TITLE_SIZE: number = 18
 export const DEF_PRES_LAYOUT = 'LAYOUT_16x9'
 export const DEF_PRES_LAYOUT_NAME = 'DEFAULT'
+export const DEF_SHAPE_LINE_COLOR = '333333'
+export const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true }
 export const DEF_SLIDE_BKGD = 'FFFFFF'
 export const DEF_SLIDE_MARGIN_IN: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5] // TRBL-style
-export const DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true }
 export const DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 }
 export const DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 }
 
