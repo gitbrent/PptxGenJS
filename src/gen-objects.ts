@@ -20,6 +20,7 @@ import {
 	TEXT_VALIGN,
 	SHAPE_NAME,
 	SHAPE_TYPE,
+	DEF_SHAPE_LINE_COLOR,
 } from './core-enums'
 import {
 	BkgdOpts,
@@ -39,6 +40,7 @@ import {
 	ITextOpts,
 	OptsChartGridLine,
 	TableRow,
+	ShapeLine,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -581,6 +583,14 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		options: options,
 		text: null,
 	}
+	let defLineOpts: ShapeLine = {
+		type: 'solid',
+		color: DEF_SHAPE_LINE_COLOR,
+		transparency: 0,
+		size: 1,
+		dashType: 'solid',
+	}
+	// TODO: Tue 06/09 - implement above in genXml as we only pass line:ShapeLine now!
 
 	// 1: Reality check
 	if (!shapeName) throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`')
@@ -590,11 +600,25 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 	options.y = options.y || (options.y === 0 ? 0 : 1)
 	options.w = options.w || (options.w === 0 ? 0 : 1)
 	options.h = options.h || (options.h === 0 ? 0 : 1)
-	options.line = options.line || (shapeName === SHAPE_TYPE.LINE ? '333333' : null)
-	options.lineSize = options.lineSize || (shapeName === SHAPE_TYPE.LINE ? 1 : null)
-	if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
 
-	// 3: Add object to slide
+	// 3: Handle line (lots of deprecated opts)
+	// @deprecated `options.line` string (was line color)
+	if (typeof options.line === 'string') {
+		let tmpOpts = defLineOpts
+		tmpOpts.color = options.line.toString()
+		options.line = tmpOpts
+	}
+	//options.line = options.line || (shapeName === SHAPE_TYPE.LINE ? DEF_SHAPE_LINE_COLOR : null)
+	// @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineSize === 'number') options.line.size = options.lineSize
+	//options.lineSize = options.lineSize || (shapeName === SHAPE_TYPE.LINE ? 1 : null)
+	// @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineDash === 'string' && ['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash) > -1) {
+		options.line.dashType = options.lineDash
+		//if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
+	}
+
+	// LAST: Add object to slide
 	target.data.push(newObject)
 }
 
@@ -858,7 +882,7 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 
 		// B
 		if (opt.shape === SHAPE_TYPE.LINE) {
-			opt.line = opt.line || '333333'
+			opt.line = opt.line || DEF_SHAPE_LINE_COLOR
 			opt.lineSize = opt.lineSize || 1
 		}
 

@@ -1142,26 +1142,61 @@ declare namespace PptxGenJS {
 	export type VAlign = 'top' | 'middle' | 'bottom'
 	export type MediaType = 'audio' | 'online' | 'video'
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-	export type ShapeFill =
-		| Color
-		| {
-				/**
-				 * Fill type
-				 */
-				type: 'solid'
-				/**
-				 * Fill color
-				 * - `HexColor` or `ThemeColor`
-				 * @example 'FF0000' // red
-				 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
-				 */
-				color: Color
-				/**
-				 * Transparency (percent)
-				 * - range: 0-100
-				 */
-				alpha?: number
-		  }
+	export type PptFillOpts = {
+		/**
+		 * Fill type
+		 * @deprecated 'solid'
+		 */
+		type?: 'none' | 'solid'
+		/**
+		 * Fill color
+		 * - `HexColor` or `ThemeColor`
+		 * @example 'FF0000' // red
+		 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
+		 */
+		color: Color
+		/**
+		 * Transparency (percent)
+		 * - range: 0-100
+		 * @default 0
+		 */
+		transparency?: number
+	}
+	export interface ShapeFill extends PptFillOpts {
+		/**
+		 * Transparency (percent)
+		 * @deprecated v3.3.0 - use `transparency`
+		 */
+		alpha?: number
+	}
+	export interface ShapeLine extends PptFillOpts {
+		/**
+		 * Line size (pt)
+		 * @default 1
+		 */
+		size?: number
+		/**
+		 * Dash type
+		 * @default 'solid'
+		 */
+		dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+		/**
+		 * Transparency (percent)
+		 * @deprecated v3.3.0 - use `transparency`
+		 */
+		alpha?: number
+	}
+	// TODO: update below
+	export type LineOpts = {
+		/**
+		 * Begin arrow type
+		 */
+		arrowTypeBegin?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+		/**
+		 * End arrow type
+		 */
+		arrowTypeEnd?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	}
 	export type HyperLink = {
 		slide?: number
 		tooltip?: string

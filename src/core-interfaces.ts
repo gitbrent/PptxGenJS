@@ -30,27 +30,63 @@ export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 export type MediaType = 'audio' | 'online' | 'video'
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-export type ShapeFill =
-	| Color
-	| {
-			/**
-			 * Fill type
-			 */
-			type: 'solid'
-			/**
-			 * Fill color
-			 * - `HexColor` or `ThemeColor`
-			 * @example 'FF0000' // red
-			 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
-			 */
-			color: Color
-			/**
-			 * Transparency (percent)
-			 * - range: 0-100
-			 * // TODO: 'alpha' s/b transparency
-			 */
-			alpha?: number
-	  }
+export type PptFillOpts = {
+	/**
+	 * Fill type
+	 * @deprecated 'solid'
+	 */
+	type?: 'none' | 'solid'
+	/**
+	 * Fill color
+	 * - `HexColor` or `ThemeColor`
+	 * @example 'FF0000' // red
+	 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
+	 */
+	color: Color
+	/**
+	 * Transparency (percent)
+	 * - range: 0-100
+	 * @default 0
+	 */
+	transparency?: number
+}
+export interface ShapeFill extends PptFillOpts {
+	/**
+	 * Transparency (percent)
+	 * @deprecated v3.3.0 - use `transparency`
+	 */
+	alpha?: number
+}
+export interface ShapeLine extends PptFillOpts {
+	/**
+	 * Line size (pt)
+	 * @default 1
+	 */
+	size?: number
+	/**
+	 * Dash type
+	 * @default 'solid'
+	 */
+	dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+	/**
+	 * Transparency (percent)
+	 * @deprecated v3.3.0 - use `transparency`
+	 */
+	alpha?: number
+}
+export type LineOpts = {
+	lineHead: string
+	lineTail: string
+	/**
+	 * Begin arrow type
+	 */
+	arrowTypeBegin?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	// TODO: rename lineHead lineTail in code!
+	/**
+	 * End arrow type
+	 */
+	arrowTypeEnd?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+}
 export type HyperLink = {
 	slide?: number
 	url?: string
@@ -289,6 +325,10 @@ export interface OptsDataLabelPosition {
 // ====
 export interface IBorderOptions {
 	/**
+	 * Border type
+	 */
+	type?: 'none' | 'dash' | 'solid'
+	/**
 	 * Border color (hex)
 	 * @example 'FF3399'
 	 */
@@ -297,35 +337,34 @@ export interface IBorderOptions {
 	 * Border size (points)
 	 */
 	pt?: number
-	/**
-	 * Border type
-	 */
-	type?: 'none' | 'dash' | 'solid'
 }
 export interface IShadowOptions {
 	/**
 	 * shadow type
+	 * @default 'none'
 	 */
 	type: 'outer' | 'inner' | 'none'
 	/**
 	 * opacity (0.0 - 1.0)
-	 * @example 0.5
-	 * 50% opaque
+	 * @example 0.5 // 50% opaque
 	 */
-	opacity: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
+	opacity?: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
 	/**
-	 * blue (points)
+	 * blur (points)
 	 * - range: 0-100
+	 * @default 0
 	 */
 	blur?: number
 	/**
 	 * angle (degrees)
 	 * - range: 0-359
+	 * @default 0
 	 */
-	angle: number
+	angle?: number
 	/**
 	 * shadow offset (points)
 	 * - range: 0-200
+	 * @default 0
 	 */
 	offset?: number // TODO: "Distance" in PPT
 	/**
@@ -623,19 +662,58 @@ export interface IShapeOptions extends PositionOptions {
 	align?: HAlign
 	/**
 	 * Shape fill color
-	 * @example 'FF0000' // fill red
-	 * @example ''
+	 * @example 'FF0000' // hex string (red)
+	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFill object with 50% transparent
 	 */
-	fill?: ShapeFill
+	fill?: Color | ShapeFill
+	/**
+	 * Flip shape horizontally?
+	 * @default false
+	 */
 	flipH?: boolean
+	/**
+	 * Flip shape vertical?
+	 * @default false
+	 */
 	flipV?: boolean
+
+	//line?: Color @deprecated
+	line?: Color | ShapeLine // NEW: TODO:
+
+	/**
+	 * @depreacted v3.3.0
+	 */
 	lineSize?: number
+	/**
+	 * @depreacted v3.3.0
+	 */
 	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+	/**
+	 * @depreacted v3.3.0
+	 */
 	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * @depreacted v3.3.0
+	 */
 	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
-	line?: Color
+	/**
+	 * Radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+	 * - values: 0-180(TODO:values?)
+	 * @default 0
+	 */
 	rectRadius?: number
+	/**
+	 * Image rotation (degrees)
+	 * - range: -360 to 360
+	 * @default 0
+	 * @example 180 // rotate image 180 degrees
+	 */
 	rotate?: number
+	/**
+	 * Shadow options
+	 * TODO: need new demo.js entry for shape shadow
+	 */
 	shadow?: IShadowOptions
 }
 
@@ -665,7 +743,7 @@ export interface ITableCellOpts extends TextOptions {
 	autoPageLineWeight?: number
 	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
 	colspan?: number
-	fill?: ShapeFill
+	fill?: Color | ShapeFill
 	margin?: Margin
 	rowspan?: number
 	valign?: VAlign
@@ -783,13 +861,13 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 		wrap?: boolean
 	}
 	charSpacing?: number
-	fill?: ShapeFill
+	fill?: Color | ShapeFill
 	glow?: IGlowOptions
 	hyperlink?: IHyperLink
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
-	line?: Color
+	line?: Color | ShapeLine // TODO: covert to sometihng like ShapeLine
 	lineIdx?: number
 	lineSize?: number
 	lineSpacing?: number
@@ -903,7 +981,7 @@ export interface ISlideRelMedia {
 	rId: number
 	Target: string
 }
-
+// TODO: create `ObjectOptions` (placeholder props are internal)
 export interface IObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
 	x?: Coord
 	y?: Coord
