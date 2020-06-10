@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-08T04:50:15.187Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-10T04:57:47.672Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -22,8 +22,9 @@ var DEF_FONT_SIZE = 12;
 var DEF_FONT_TITLE_SIZE = 18;
 var DEF_PRES_LAYOUT = 'LAYOUT_16x9';
 var DEF_PRES_LAYOUT_NAME = 'DEFAULT';
-var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+var DEF_SHAPE_LINE_COLOR = '333333';
 var DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
+var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
 var DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 };
 var AXIS_ID_VALUE_PRIMARY = '2094734552';
 var AXIS_ID_VALUE_SECONDARY = '2094734553';
@@ -756,7 +757,7 @@ function createGlowElement(options, defaults) {
 }
 /**
  * Create color selection
- * @param {ShapeFill} shapeFill - options
+ * @param {shapeFill} ShapeFill - options
  * @param {string} backColor - color string
  * @returns {string} XML string
  */
@@ -777,7 +778,9 @@ function genXmlColorSelection(shapeFill, backColor) {
             if (shapeFill.color)
                 colorVal = shapeFill.color;
             if (shapeFill.alpha)
-                internalElements += "<a:alpha val=\"" + (100 - shapeFill.alpha) + "000\"/>";
+                internalElements += "<a:alpha val=\"" + (100 - shapeFill.alpha) + "000\"/>"; // @deprecated v3.3.0
+            if (shapeFill.transparency)
+                internalElements += "<a:alpha val=\"" + (100 - shapeFill.transparency) + "000\"/>";
         }
         switch (fillType) {
             case 'solid':
@@ -1733,14 +1736,14 @@ function slideObjectToXml(slide) {
                 strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>';
                 // shape Type: LINE: line color
                 if (slideItemObj.options.line) {
-                    strSlideXml += '<a:ln' + (slideItemObj.options.lineSize ? ' w="' + slideItemObj.options.lineSize * ONEPT + '"' : '') + '>';
-                    strSlideXml += genXmlColorSelection(slideItemObj.options.line);
-                    if (slideItemObj.options.lineDash)
-                        strSlideXml += '<a:prstDash val="' + slideItemObj.options.lineDash + '"/>';
-                    if (slideItemObj.options.lineHead)
-                        strSlideXml += '<a:headEnd type="' + slideItemObj.options.lineHead + '"/>';
-                    if (slideItemObj.options.lineTail)
-                        strSlideXml += '<a:tailEnd type="' + slideItemObj.options.lineTail + '"/>';
+                    strSlideXml += slideItemObj.options.line.size ? "<a:ln w=\"" + slideItemObj.options.line.size * ONEPT + "\">" : '<a:ln>';
+                    strSlideXml += genXmlColorSelection(slideItemObj.options.line.color);
+                    if (slideItemObj.options.line.dashType)
+                        strSlideXml += "<a:prstDash val=\"" + slideItemObj.options.line.dashType + "\"/>";
+                    if (slideItemObj.options.line.arrowTypeBegin)
+                        strSlideXml += '<a:headEnd type="' + slideItemObj.options.line.arrowTypeBegin + '"/>';
+                    if (slideItemObj.options.line.arrowTypeEnd)
+                        strSlideXml += '<a:tailEnd type="' + slideItemObj.options.line.arrowTypeEnd + '"/>';
                     strSlideXml += '</a:ln>';
                 }
                 // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
@@ -3408,31 +3411,52 @@ function addNotesDefinition(target, notes) {
 }
 /**
  * Adds a shape object to a slide definition.
- * @param {IShape} shape shape const object (pptx.shapes)
- * @param {IShapeOptions} opt
  * @param {ISlideLib} target slide object that the shape should be added to
+ * @param {SHAPE_NAME} shapeName shape name
+ * @param {IShapeOptions} opts shape options
  */
-function addShapeDefinition(target, shapeName, opt) {
-    var options = typeof opt === 'object' ? opt : {};
+function addShapeDefinition(target, shapeName, opts) {
+    var options = typeof opts === 'object' ? opts : {};
+    options.line = options.line || { type: 'none' };
     var newObject = {
         type: SLIDE_OBJECT_TYPES.text,
         shape: shapeName || SHAPE_TYPE.RECTANGLE,
         options: options,
         text: null,
     };
-    // 1: Reality check
+    // Reality check
     if (!shapeName)
-        throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`');
+        throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptxgen.shapes.LINE, {x:1, y:1, w:1, h:1});`');
+    // 1: ShapeLine defaults
+    var newLineOpts = {
+        type: options.line.type || 'solid',
+        color: options.line.color || DEF_SHAPE_LINE_COLOR,
+        transparency: options.line.transparency || 0,
+        size: options.line.size || 1,
+        dashType: options.line.dashType || 'solid',
+    };
+    if (typeof options.line === 'object' && options.line.type !== 'none')
+        options.line = newLineOpts;
     // 2: Set options defaults
     options.x = options.x || (options.x === 0 ? 0 : 1);
     options.y = options.y || (options.y === 0 ? 0 : 1);
     options.w = options.w || (options.w === 0 ? 0 : 1);
     options.h = options.h || (options.h === 0 ? 0 : 1);
-    options.line = options.line || (shapeName === SHAPE_TYPE.LINE ? '333333' : null);
-    options.lineSize = options.lineSize || (shapeName === SHAPE_TYPE.LINE ? 1 : null);
-    if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0)
-        options.lineDash = 'solid';
-    // 3: Add object to slide
+    // 3: Handle line (lots of deprecated opts)
+    if (typeof options.line === 'string') {
+        var tmpOpts = newLineOpts;
+        tmpOpts.color = options.line.toString(); // @deprecated `options.line` string (was line color)
+        options.line = tmpOpts;
+    }
+    if (typeof options.lineSize === 'number')
+        options.line.size = options.lineSize; // @deprecated (part of `ShapeLine` now)
+    if (typeof options.lineDash === 'string')
+        options.line.dashType = options.lineDash; // @deprecated (part of `ShapeLine` now)
+    if (typeof options.lineHead === 'string')
+        options.line.arrowTypeBegin = options.lineHead; // @deprecated (part of `ShapeLine` now)
+    if (typeof options.lineTail === 'string')
+        options.line.arrowTypeEnd = options.lineTail; // @deprecated (part of `ShapeLine` now)
+    // LAST: Add object to slide
     target.data.push(newObject);
 }
 /**
@@ -3657,14 +3681,15 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
 }
 /**
  * Adds a text object to a slide definition.
- * @param {string|IText[]} text
- * @param {ITextOpts} opt
  * @param {ISlideLib} target - slide object that the text should be added to
+ * @param {string|IText[]} text text string or object
+ * @param {ITextOpts} opts text options
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
 function addTextDefinition(target, text, opts, isPlaceholder) {
     var opt = opts || {};
+    opt.line = opt.line || {};
     if (!opt.bodyProp)
         opt.bodyProp = {};
     var newObject = {
@@ -3673,6 +3698,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         options: opt,
         shape: opt.shape || SHAPE_TYPE.RECTANGLE,
     };
+    // TODO: copy "newLineOpts" from addShape above! 20200609
     // STEP 1: Set some options
     {
         // A.1: Placeholders should inherit their colors or override them, so don't default them
@@ -3685,8 +3711,30 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         }
         // B
         if (opt.shape === SHAPE_TYPE.LINE) {
-            opt.line = opt.line || '333333';
-            opt.lineSize = opt.lineSize || 1;
+            // ShapeLine defaults
+            var newLineOpts = {
+                type: opt.line.type || 'solid',
+                color: opt.line.color || DEF_SHAPE_LINE_COLOR,
+                transparency: opt.line.transparency || 0,
+                size: opt.line.size || 1,
+                dashType: opt.line.dashType || 'solid',
+            };
+            if (typeof opt.line === 'object')
+                opt.line = newLineOpts;
+            // 3: Handle line (lots of deprecated opts)
+            if (typeof opt.line === 'string') {
+                var tmpOpts = newLineOpts;
+                tmpOpts.color = opt.line.toString(); // @deprecated `opt.line` string (was line color)
+                opt.line = tmpOpts;
+            }
+            if (typeof opt.lineSize === 'number')
+                opt.line.size = opt.lineSize; // @deprecated (part of `ShapeLine` now)
+            if (typeof opt.lineDash === 'string')
+                opt.line.dashType = opt.lineDash; // @deprecated (part of `ShapeLine` now)
+            if (typeof opt.lineHead === 'string')
+                opt.line.arrowTypeBegin = opt.lineHead; // @deprecated (part of `ShapeLine` now)
+            if (typeof opt.lineTail === 'string')
+                opt.line.arrowTypeEnd = opt.lineTail; // @deprecated (part of `ShapeLine` now)
         }
         // C
         newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null;
@@ -5869,7 +5917,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200607:2247';
+var VERSION = '3.3.0-beta-20200609:2101';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
