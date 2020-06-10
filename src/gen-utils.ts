@@ -178,7 +178,7 @@ export function createGlowElement(options: IGlowOptions, defaults: IGlowOptions)
 
 /**
  * Create color selection
- * @param {ShapeFill} shapeFill - options
+ * @param {shapeFill} ShapeFill - options
  * @param {string} backColor - color string
  * @returns {string} XML string
  */
@@ -197,7 +197,8 @@ export function genXmlColorSelection(shapeFill: Color | ShapeFill | ShapeLine, b
 		else {
 			if (shapeFill.type) fillType = shapeFill.type
 			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>`
+			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>` // @deprecated v3.3.0
+			if (shapeFill.transparency) internalElements += `<a:alpha val="${100 - shapeFill.transparency}000"/>`
 		}
 
 		switch (fillType) {

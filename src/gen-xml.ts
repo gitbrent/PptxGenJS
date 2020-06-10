@@ -484,11 +484,11 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 
 				// shape Type: LINE: line color
 				if (slideItemObj.options.line) {
-					strSlideXml += '<a:ln' + (slideItemObj.options.lineSize ? ' w="' + slideItemObj.options.lineSize * ONEPT + '"' : '') + '>'
-					strSlideXml += genXmlColorSelection(slideItemObj.options.line)
-					if (slideItemObj.options.lineDash) strSlideXml += '<a:prstDash val="' + slideItemObj.options.lineDash + '"/>'
-					if (slideItemObj.options.lineHead) strSlideXml += '<a:headEnd type="' + slideItemObj.options.lineHead + '"/>'
-					if (slideItemObj.options.lineTail) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.lineTail + '"/>'
+					strSlideXml += slideItemObj.options.line.size ? `<a:ln w="${slideItemObj.options.line.size * ONEPT}">` : '<a:ln>'
+					strSlideXml += genXmlColorSelection(slideItemObj.options.line.color)
+					if (slideItemObj.options.line.dashType) strSlideXml += `<a:prstDash val="${slideItemObj.options.line.dashType}"/>`
+					if (slideItemObj.options.line.arrowTypeBegin) strSlideXml += '<a:headEnd type="' + slideItemObj.options.line.arrowTypeBegin + '"/>'
+					if (slideItemObj.options.line.arrowTypeEnd) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.line.arrowTypeEnd + '"/>'
 					strSlideXml += '</a:ln>'
 				}
 

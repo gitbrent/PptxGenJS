@@ -1142,7 +1142,7 @@ declare namespace PptxGenJS {
 	export type VAlign = 'top' | 'middle' | 'bottom'
 	export type MediaType = 'audio' | 'online' | 'video'
 	export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-	export type PptFillOpts = {
+	export type ShapeFill = {
 		/**
 		 * Fill type
 		 * @deprecated 'solid'
@@ -1154,22 +1154,20 @@ declare namespace PptxGenJS {
 		 * @example 'FF0000' // red
 		 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
 		 */
-		color: Color
+		color?: Color
 		/**
 		 * Transparency (percent)
 		 * - range: 0-100
 		 * @default 0
 		 */
 		transparency?: number
-	}
-	export interface ShapeFill extends PptFillOpts {
 		/**
 		 * Transparency (percent)
 		 * @deprecated v3.3.0 - use `transparency`
 		 */
 		alpha?: number
 	}
-	export interface ShapeLine extends PptFillOpts {
+	export interface ShapeLine extends ShapeFill {
 		/**
 		 * Line size (pt)
 		 * @default 1
@@ -1181,14 +1179,6 @@ declare namespace PptxGenJS {
 		 */
 		dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 		/**
-		 * Transparency (percent)
-		 * @deprecated v3.3.0 - use `transparency`
-		 */
-		alpha?: number
-	}
-	// TODO: update below
-	export type LineOpts = {
-		/**
 		 * Begin arrow type
 		 */
 		arrowTypeBegin?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
@@ -1196,6 +1186,20 @@ declare namespace PptxGenJS {
 		 * End arrow type
 		 */
 		arrowTypeEnd?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+
+		/**
+		 * Dash type
+		 * @deprecated v3.3.0 - use `dashType`
+		 */
+		lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+		/**
+		 * @deprecated v3.3.0 - use `arrowTypeBegin`
+		 */
+		lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+		/**
+		 * @deprecated v3.3.0 - use `arrowTypeEnd`
+		 */
+		lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	}
 	export type HyperLink = {
 		slide?: number
@@ -1623,7 +1627,7 @@ declare namespace PptxGenJS {
 		lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
 		lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 		lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
-		line?: Color
+		line?: ShapeLine
 		rectRadius?: number
 		rotate?: number
 		shadow?: IShadowOptions
@@ -1734,7 +1738,7 @@ declare namespace PptxGenJS {
 		indentLevel?: number
 		inset?: number
 		isTextBox?: boolean
-		line?: Color
+		line?: ShapeLine
 		lineIdx?: number
 		lineSize?: number
 		lineSpacing?: number

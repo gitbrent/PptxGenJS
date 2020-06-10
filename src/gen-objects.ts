@@ -571,29 +571,32 @@ export function addNotesDefinition(target: ISlideLib, notes: string) {
 
 /**
  * Adds a shape object to a slide definition.
- * @param {IShape} shape shape const object (pptx.shapes)
- * @param {IShapeOptions} opt
  * @param {ISlideLib} target slide object that the shape should be added to
+ * @param {SHAPE_NAME} shapeName shape name
+ * @param {IShapeOptions} opts shape options
  */
-export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt: IShapeOptions) {
-	let options = typeof opt === 'object' ? opt : {}
+export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: IShapeOptions) {
+	let options = typeof opts === 'object' ? opts : {}
+	options.line = options.line || ({ type: 'none' } as ShapeLine)
 	let newObject: ISlideObject = {
 		type: SLIDE_OBJECT_TYPES.text,
 		shape: shapeName || SHAPE_TYPE.RECTANGLE,
 		options: options,
 		text: null,
 	}
-	let defLineOpts: ShapeLine = {
-		type: 'solid',
-		color: DEF_SHAPE_LINE_COLOR,
-		transparency: 0,
-		size: 1,
-		dashType: 'solid',
-	}
-	// TODO: Tue 06/09 - implement above in genXml as we only pass line:ShapeLine now!
 
-	// 1: Reality check
-	if (!shapeName) throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`')
+	// Reality check
+	if (!shapeName) throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptxgen.shapes.LINE, {x:1, y:1, w:1, h:1});`')
+
+	// 1: ShapeLine defaults
+	let newLineOpts: ShapeLine = {
+		type: options.line.type || 'solid',
+		color: options.line.color || DEF_SHAPE_LINE_COLOR,
+		transparency: options.line.transparency || 0,
+		size: options.line.size || 1,
+		dashType: options.line.dashType || 'solid',
+	}
+	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 
 	// 2: Set options defaults
 	options.x = options.x || (options.x === 0 ? 0 : 1)
@@ -602,21 +605,15 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 	options.h = options.h || (options.h === 0 ? 0 : 1)
 
 	// 3: Handle line (lots of deprecated opts)
-	// @deprecated `options.line` string (was line color)
 	if (typeof options.line === 'string') {
-		let tmpOpts = defLineOpts
-		tmpOpts.color = options.line.toString()
+		let tmpOpts = newLineOpts
+		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
 		options.line = tmpOpts
 	}
-	//options.line = options.line || (shapeName === SHAPE_TYPE.LINE ? DEF_SHAPE_LINE_COLOR : null)
-	// @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineSize === 'number') options.line.size = options.lineSize
-	//options.lineSize = options.lineSize || (shapeName === SHAPE_TYPE.LINE ? 1 : null)
-	// @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineDash === 'string' && ['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash) > -1) {
-		options.line.dashType = options.lineDash
-		//if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
-	}
+	if (typeof options.lineSize === 'number') options.line.size = options.lineSize // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineHead === 'string') options.line.arrowTypeBegin = options.lineHead // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineTail === 'string') options.line.arrowTypeEnd = options.lineTail // @deprecated (part of `ShapeLine` now)
 
 	// LAST: Add object to slide
 	target.data.push(newObject)
@@ -852,14 +849,15 @@ export function addTableDefinition(
 
 /**
  * Adds a text object to a slide definition.
- * @param {string|IText[]} text
- * @param {ITextOpts} opt
  * @param {ISlideLib} target - slide object that the text should be added to
+ * @param {string|IText[]} text text string or object
+ * @param {ITextOpts} opts text options
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
 export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
 	let opt: ITextOpts = opts || {}
+	opt.line = opt.line || ({} as ShapeLine)
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
 		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
@@ -867,6 +865,7 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 		options: opt,
 		shape: opt.shape || SHAPE_TYPE.RECTANGLE,
 	}
+	// TODO: copy "newLineOpts" from addShape above! 20200609
 
 	// STEP 1: Set some options
 	{
@@ -882,8 +881,26 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 
 		// B
 		if (opt.shape === SHAPE_TYPE.LINE) {
-			opt.line = opt.line || DEF_SHAPE_LINE_COLOR
-			opt.lineSize = opt.lineSize || 1
+			// ShapeLine defaults
+			let newLineOpts: ShapeLine = {
+				type: opt.line.type || 'solid',
+				color: opt.line.color || DEF_SHAPE_LINE_COLOR,
+				transparency: opt.line.transparency || 0,
+				size: opt.line.size || 1,
+				dashType: opt.line.dashType || 'solid',
+			}
+			if (typeof opt.line === 'object') opt.line = newLineOpts
+
+			// 3: Handle line (lots of deprecated opts)
+			if (typeof opt.line === 'string') {
+				let tmpOpts = newLineOpts
+				tmpOpts.color = opt.line!.toString() // @deprecated `opt.line` string (was line color)
+				opt.line = tmpOpts
+			}
+			if (typeof opt.lineSize === 'number') opt.line.size = opt.lineSize // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineHead === 'string') opt.line.arrowTypeBegin = opt.lineHead // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineTail === 'string') opt.line.arrowTypeEnd = opt.lineTail // @deprecated (part of `ShapeLine` now)
 		}
 
 		// C

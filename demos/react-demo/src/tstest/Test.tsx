@@ -110,6 +110,10 @@ export function testMainMethods() {
 		align: "center",
 		fontSize: 14,
 	});
+	slide2.addText('LINE size=4', { shape: pptxgen.shapes.LINE, x: 4.15, y: 5.60, w: 5, h: 0, line: { color: 'FF0000', size: 4, arrowTypeBegin: 'triangle', arrowTypeEnd: 'triangle' } });
+	slide2.addText('DIAGONAL', { shape: pptxgen.shapes.LINE, valign: 'bottom', x: 5.7, y: 3.3, w: 2.5, h: 0, line: { size: 2 }, rotate:(360-45) }); // TEST: (missing `line`)
+	slide2.addText('RIGHT-TRIANGLE', { shape: pptxgen.shapes.RIGHT_TRIANGLE, align: 'center', x: 0.4, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000', size: 3 } });
+	slide2.addText('RIGHT-TRIANGLE', { shape: pptxgen.shapes.RIGHT_TRIANGLE, align: 'center', x: 7.0, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000' }, flipH:true });
 
 	// 7: Image
 	slide2.addImage({ path: "test.com/someimg.png", x: 1, y: 1, w: 3, h: 1 });

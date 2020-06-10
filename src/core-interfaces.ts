@@ -30,7 +30,7 @@ export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
 export type MediaType = 'audio' | 'online' | 'video'
 export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-export type PptFillOpts = {
+export type ShapeFill = {
 	/**
 	 * Fill type
 	 * @deprecated 'solid'
@@ -42,22 +42,20 @@ export type PptFillOpts = {
 	 * @example 'FF0000' // red
 	 * @example 'pptx.SchemeColor.text1' // Text1 Theme Color
 	 */
-	color: Color
+	color?: Color
 	/**
 	 * Transparency (percent)
 	 * - range: 0-100
 	 * @default 0
 	 */
 	transparency?: number
-}
-export interface ShapeFill extends PptFillOpts {
 	/**
 	 * Transparency (percent)
 	 * @deprecated v3.3.0 - use `transparency`
 	 */
 	alpha?: number
 }
-export interface ShapeLine extends PptFillOpts {
+export interface ShapeLine extends ShapeFill {
 	/**
 	 * Line size (pt)
 	 * @default 1
@@ -69,23 +67,27 @@ export interface ShapeLine extends PptFillOpts {
 	 */
 	dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
-	 * Transparency (percent)
-	 * @deprecated v3.3.0 - use `transparency`
-	 */
-	alpha?: number
-}
-export type LineOpts = {
-	lineHead: string
-	lineTail: string
-	/**
 	 * Begin arrow type
 	 */
 	arrowTypeBegin?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
-	// TODO: rename lineHead lineTail in code!
 	/**
 	 * End arrow type
 	 */
 	arrowTypeEnd?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+
+	/**
+	 * Dash type
+	 * @deprecated v3.3.0 - use `dashType`
+	 */
+	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 */
+	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 */
+	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
 export type HyperLink = {
 	slide?: number
@@ -677,26 +679,10 @@ export interface IShapeOptions extends PositionOptions {
 	 * @default false
 	 */
 	flipV?: boolean
-
-	//line?: Color @deprecated
-	line?: Color | ShapeLine // NEW: TODO:
-
 	/**
-	 * @depreacted v3.3.0
+	 * Line options
 	 */
-	lineSize?: number
-	/**
-	 * @depreacted v3.3.0
-	 */
-	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
-	/**
-	 * @depreacted v3.3.0
-	 */
-	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
-	/**
-	 * @depreacted v3.3.0
-	 */
-	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	line?: ShapeLine
 	/**
 	 * Radius (only for pptx.shapes.ROUNDED_RECTANGLE)
 	 * - values: 0-180(TODO:values?)
@@ -715,6 +701,23 @@ export interface IShapeOptions extends PositionOptions {
 	 * TODO: need new demo.js entry for shape shadow
 	 */
 	shadow?: IShadowOptions
+
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineSize?: number
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 }
 
 // tables =========================================================================================
@@ -867,10 +870,26 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
-	line?: Color | ShapeLine // TODO: covert to sometihng like ShapeLine
+	line?: ShapeLine
 	lineIdx?: number
+	/**
+	 * @deprecated v3.3.0 - use `line.size`
+	 */
 	lineSize?: number
 	lineSpacing?: number
+	/**
+	 * Dash type
+	 * @deprecated v3.3.0 - use `dashType`
+	 */
+	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 */
+	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 */
+	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	margin?: Margin
 	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
