@@ -1703,7 +1703,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	if (opts.valAxisMajorUnit) strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>'
 	if (opts.valAxisDisplayUnit) {
 		strXml += `<c:dispUnits><c:builtInUnit val="${opts.valAxisDisplayUnit}"/>`
-		if (opts.valAxisDisplayUnitLabel) strXml += `< c: dispUnitsLbl />`
+		if (opts.valAxisDisplayUnitLabel) strXml += `<c:dispUnitsLbl/>`
 		strXml += `</c:dispUnits>`
 	}
 	strXml += '</c:valAx>'
