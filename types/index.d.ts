@@ -1456,6 +1456,7 @@ declare namespace PptxGenJS {
 		valAxes?: number[]
 		valAxisCrossesAt?: string | number
 		valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
+		valAxisDisplayUnitLabel?:boolean
 		valAxisHidden?: boolean
 		valAxisLabelColor?: string
 		valAxisLabelFontBold?: boolean
