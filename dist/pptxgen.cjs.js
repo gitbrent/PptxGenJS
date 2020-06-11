@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-10T04:57:47.672Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-11T04:13:39.290Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1715,15 +1715,13 @@ function slideObjectToXml(slide) {
                 // A: Start SHAPE =======================================================
                 strSlideXml += '<p:sp>';
                 // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-                strSlideXml += '<p:nvSpPr><p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '"/>';
+                strSlideXml += "<p:nvSpPr><p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object" + (idx + 1) + "\"/>";
                 strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>');
-                strSlideXml += '<p:nvPr>';
-                strSlideXml += slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj);
-                strSlideXml += '</p:nvPr>';
+                strSlideXml += "<p:nvPr>" + (slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)) + "</p:nvPr>";
                 strSlideXml += '</p:nvSpPr><p:spPr>';
-                strSlideXml += '<a:xfrm' + locationAttr + '>';
-                strSlideXml += '<a:off x="' + x + '" y="' + y + '"/>';
-                strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>';
+                strSlideXml += "<a:xfrm" + locationAttr + ">";
+                strSlideXml += "<a:off x=\"" + x + "\" y=\"" + y + "\"/>";
+                strSlideXml += "<a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></a:xfrm>";
                 strSlideXml +=
                     '<a:prstGeom prst="' +
                         slideItemObj.shape +
@@ -1740,10 +1738,11 @@ function slideObjectToXml(slide) {
                     strSlideXml += genXmlColorSelection(slideItemObj.options.line.color);
                     if (slideItemObj.options.line.dashType)
                         strSlideXml += "<a:prstDash val=\"" + slideItemObj.options.line.dashType + "\"/>";
-                    if (slideItemObj.options.line.arrowTypeBegin)
-                        strSlideXml += '<a:headEnd type="' + slideItemObj.options.line.arrowTypeBegin + '"/>';
-                    if (slideItemObj.options.line.arrowTypeEnd)
-                        strSlideXml += '<a:tailEnd type="' + slideItemObj.options.line.arrowTypeEnd + '"/>';
+                    if (slideItemObj.options.line.beginArrowType)
+                        strSlideXml += "<a:headEnd type=\"" + slideItemObj.options.line.beginArrowType + "\"/>";
+                    if (slideItemObj.options.line.endArrowType)
+                        strSlideXml += "<a:tailEnd type=\"" + slideItemObj.options.line.endArrowType + "\"/>";
+                    // FUTURE: `endArrowSize` < a: headEnd type = "arrow" w = "lg" len = "lg" /> 'sm' | 'med' | 'lg'(values are 1 - 9, making a 3x3 grid of w / len possibilities)
                     strSlideXml += '</a:ln>';
                 }
                 // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
@@ -3434,6 +3433,8 @@ function addShapeDefinition(target, shapeName, opts) {
         transparency: options.line.transparency || 0,
         size: options.line.size || 1,
         dashType: options.line.dashType || 'solid',
+        beginArrowType: options.line.beginArrowType || null,
+        endArrowType: options.line.endArrowType || null,
     };
     if (typeof options.line === 'object' && options.line.type !== 'none')
         options.line = newLineOpts;
@@ -3453,9 +3454,9 @@ function addShapeDefinition(target, shapeName, opts) {
     if (typeof options.lineDash === 'string')
         options.line.dashType = options.lineDash; // @deprecated (part of `ShapeLine` now)
     if (typeof options.lineHead === 'string')
-        options.line.arrowTypeBegin = options.lineHead; // @deprecated (part of `ShapeLine` now)
+        options.line.beginArrowType = options.lineHead; // @deprecated (part of `ShapeLine` now)
     if (typeof options.lineTail === 'string')
-        options.line.arrowTypeEnd = options.lineTail; // @deprecated (part of `ShapeLine` now)
+        options.line.endArrowType = options.lineTail; // @deprecated (part of `ShapeLine` now)
     // LAST: Add object to slide
     target.data.push(newObject);
 }
@@ -3718,6 +3719,8 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
                 transparency: opt.line.transparency || 0,
                 size: opt.line.size || 1,
                 dashType: opt.line.dashType || 'solid',
+                beginArrowType: opt.line.beginArrowType || null,
+                endArrowType: opt.line.endArrowType || null,
             };
             if (typeof opt.line === 'object')
                 opt.line = newLineOpts;
@@ -3732,9 +3735,9 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
             if (typeof opt.lineDash === 'string')
                 opt.line.dashType = opt.lineDash; // @deprecated (part of `ShapeLine` now)
             if (typeof opt.lineHead === 'string')
-                opt.line.arrowTypeBegin = opt.lineHead; // @deprecated (part of `ShapeLine` now)
+                opt.line.beginArrowType = opt.lineHead; // @deprecated (part of `ShapeLine` now)
             if (typeof opt.lineTail === 'string')
-                opt.line.arrowTypeEnd = opt.lineTail; // @deprecated (part of `ShapeLine` now)
+                opt.line.endArrowType = opt.lineTail; // @deprecated (part of `ShapeLine` now)
         }
         // C
         newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null;
@@ -5917,7 +5920,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200609:2101';
+var VERSION = '3.3.0-beta-20200610:2255';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
