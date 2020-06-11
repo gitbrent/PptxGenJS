@@ -36,7 +36,33 @@ export function testMainMethods() {
 
 	// PPTX Method 3:
 	let slide1 = pptx.addSlide();
-	//let slide1 = pptx.addSlide({ sectionTitle: "TypeScript" });
+	let slide2 = pptx.addSlide({ sectionTitle: "TypeScript" });
+	let slide3 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
+	let opts: pptxgen.ITextOpts = { x: 0.5, y: 1, w: "90%", h: 0.5, fill: { color: pptx.SchemeColor.background1 }, align: "center" };
+	slide3.addText("React Demo!", opts);
+
+	// Table:
+	testMethod_Table(pptx);
+	// Chart:
+	testMethod_Chart(pptx);
+	// Text:
+	testMethod_Text(pptx);
+	// Shape:
+	testMethod_Shape(pptx);
+	// Image/Media:
+	testMethod_Media(pptx);
+
+	// PPTX Export Method 1:
+	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
+	// PPTX Export Method 2:
+	//pptx.write(pptx.OutputType.base64).then((base64) => console.log("base64!")); // TEST-Type: outputType // Works v3.1.1
+	// PPTX Export Method 3:
+	//pptx.stream().then(() => console.log("stream!")); // Works v3.1.1
+}
+
+function testMethod_Chart(pptx: pptxgen) {
+	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
+
 	let dataChart = [
 		{
 			name: "Region 1",
@@ -44,13 +70,12 @@ export function testMainMethods() {
 			values: [26, 53, 100, 75, 41],
 		},
 	];
-	slide1.addChart(pptx.ChartType.bar, dataChart, { x: 0.5, y: 2.5, w: 5.25, h: 4 }); // TEST: charts
+	slide.addChart(pptx.ChartType.bar, dataChart, { x: 0.5, y: 2.5, w: 5.25, h: 4 }); // TEST: charts
+}
+function testMethod_Table(pptx: pptxgen) {
+	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 
-	// 3: shape
-	slide1.addShape(pptx.ShapeType.rect, { x: 7.6, y: 2.8, w: 3, h: 3, fill: "66ff99" }); // TEST: shapes
-
-	// 4:
-	slide1.addTable([[{ text: "cell 1" }]], { x: 0.5, y: 0.5 });
+	slide.addTable([[{ text: "cell 1" }]], { x: 0.5, y: 0.5 });
 	let rows = [];
 	rows.push(["First", "Second", "Third", "Fourth"]); // simple text array
 	rows.push([{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }]); // complex object cells
@@ -61,7 +86,7 @@ export function testMainMethods() {
 	]);
 
 	// text as compound object (multi-format per cell)
-	slide1.addTable(rows, {
+	slide.addTable(rows, {
 		x: 0.5,
 		y: 1.25,
 		w: "90%",
@@ -70,37 +95,31 @@ export function testMainMethods() {
 		rowH: 0.5,
 		border: { type: "solid", pt: 1, color: "a9a9a9" },
 	});
+}
+function testMethod_Media(pptx: pptxgen) {
+	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 
-	// 5:
-	let slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-	let opts: pptxgen.ITextOpts = { x: 0.5, y: 1, w: "90%", h: 0.5, fill: pptx.SchemeColor.background1, align: "center" };
-	slide2.addText("React Demo!", opts);
+	// 7: Image
+	slide.addImage({ path: "test.com/someimg.png", x: 1, y: 1, w: 3, h: 1 });
+	slide.addImage({ data: "base64code", x: 1, y: 1, w: 3, h: 1 });
 
-	// 6: Text
-	slide2.addText(
-		[{ text: "Link without Tooltip", options: { hyperlink: { slide: 1, tooltip: "hi world", url: "https://github.com/gitbrent" } } }],
-		{ x: 2, y: 2 }
-	);
-	slide2.addText(
-		[
-			{ text: "bullet indent:10", options: { bullet: { indent: 10 } } },
-			{ text: "bullet indent:30", options: { bullet: { indent: 30 } } },
-		],
-		{ x: 7.0, y: 3.95, w: 5.75, h: 0.5, margin: 0.1, fontFace: "Arial", fontSize: 12 }
-	);
-	slide2.addText("type:'number'\nnumberStartAt:'5'", {
-		x: 7.0,
-		y: 1.0,
-		w: "40%",
-		h: 0.75,
-		fill: pptxgen.SchemeColor.background2,
-		color: pptxgen.SchemeColor.accent6,
-		fontFace: "Courier New",
-		bullet: { type: "number", numberStartAt: 5 },
+	// 8. Media
+	slide.addMedia({
+		x: 5.5,
+		y: 4.0,
+		w: 3.0,
+		h: 2.25,
+		type: "video",
+		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi",
 	});
+	slide.addMedia({ x: 9.4, y: 4.0, w: 3.0, h: 2.25, type: "online", link: "https://www.youtube.com/embed/Dph6ynRVyUc" });
+}
+function testMethod_Shape(pptx: pptxgen) {
+	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 
-	// 7: Shapes
-	slide2.addText("OVAL (alpha:50)", {
+	slide.addShape(pptxgen.shapes.RECTANGLE, { x: 7.6, y: 2.8, w: 3, h: 3, fill: { color: "66ff99" } });
+
+	slide.addText("OVAL (alpha:50)", {
 		shape: pptxgen.shapes.OVAL,
 		x: 5.4,
 		y: 0.8,
@@ -110,32 +129,70 @@ export function testMainMethods() {
 		align: "center",
 		fontSize: 14,
 	});
-	slide2.addText('LINE size=4', { shape: pptxgen.shapes.LINE, x: 4.15, y: 5.60, w: 5, h: 0, line: { color: 'FF0000', size: 4, arrowTypeBegin: 'triangle', arrowTypeEnd: 'triangle' } });
-	slide2.addText('DIAGONAL', { shape: pptxgen.shapes.LINE, valign: 'bottom', x: 5.7, y: 3.3, w: 2.5, h: 0, line: { size: 2 }, rotate:(360-45) }); // TEST: (missing `line`)
-	slide2.addText('RIGHT-TRIANGLE', { shape: pptxgen.shapes.RIGHT_TRIANGLE, align: 'center', x: 0.4, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000', size: 3 } });
-	slide2.addText('RIGHT-TRIANGLE', { shape: pptxgen.shapes.RIGHT_TRIANGLE, align: 'center', x: 7.0, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000' }, flipH:true });
-
-	// 7: Image
-	slide2.addImage({ path: "test.com/someimg.png", x: 1, y: 1, w: 3, h: 1 });
-	slide2.addImage({ data: "base64code", x: 1, y: 1, w: 3, h: 1 });
-
-	// 8. Media
-	slide2.addMedia({
-		x: 5.5,
-		y: 4.0,
-		w: 3.0,
-		h: 2.25,
-		type: "video",
-		path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi",
+	slide.addText("LINE size=4", {
+		shape: pptxgen.shapes.LINE,
+		x: 4.15,
+		y: 5.6,
+		w: 5,
+		h: 0,
+		line: { color: "FF0000", size: 4, beginArrowType: "triangle", endArrowType: "triangle" },
 	});
-	slide2.addMedia({ x: 9.4, y: 4.0, w: 3.0, h: 2.25, type: "online", link: "https://www.youtube.com/embed/Dph6ynRVyUc" });
+	slide.addText("DIAGONAL", {
+		shape: pptxgen.shapes.LINE,
+		valign: "bottom",
+		x: 5.7,
+		y: 3.3,
+		w: 2.5,
+		h: 0,
+		line: { color: "FF0000", size: 2, transparency: 50 },
+		rotate: 360 - 45,
+	});
+	slide.addText("RIGHT-TRIANGLE", {
+		shape: pptxgen.shapes.RIGHT_TRIANGLE,
+		align: "center",
+		x: 0.4,
+		y: 4.3,
+		w: 6,
+		h: 3,
+		fill: { color: "0088CC" },
+		line: { color: "000000", size: 3 },
+	});
+	slide.addText("RIGHT-TRIANGLE", {
+		shape: pptxgen.shapes.RIGHT_TRIANGLE,
+		align: "center",
+		x: 7.0,
+		y: 4.3,
+		w: 6,
+		h: 3,
+		fill: { color: "0088CC" },
+		line: { color: "000000" },
+		flipH: true,
+	});
+}
+function testMethod_Text(pptx: pptxgen) {
+	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 
-	// PPTX Export Method 1:
-	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
-	// PPTX Export Method 2:
-	//pptx.write(pptx.OutputType.base64).then((base64) => console.log("base64!")); // TEST-Type: outputType // Works v3.1.1
-	// PPTX Export Method 3:
-	//pptx.stream().then(() => console.log("stream!")); // Works v3.1.1
+	slide.addText([{ text: "Link without Tooltip", options: { hyperlink: { slide: 1, tooltip: "hi world", url: "https://github.com/gitbrent" } } }], {
+		x: 2,
+		y: 2,
+	});
+	slide.addText(
+		[
+			{ text: "bullet indent:10", options: { bullet: { indent: 10 } } },
+			{ text: "bullet indent:30", options: { bullet: { indent: 30 } } },
+		],
+		{ x: 7.0, y: 3.95, w: 5.75, h: 0.5, margin: 0.1, fontFace: "Arial", fontSize: 12 }
+	);
+	slide.addText("type:'number'\nnumberStartAt:'5'", {
+		x: 7.0,
+		y: 1.0,
+		w: "40%",
+		h: 0.75,
+		fill: { color: pptxgen.SchemeColor.background2 },
+		color: pptxgen.SchemeColor.accent6,
+		fontFace: "Courier New",
+		bullet: { type: "number", numberStartAt: 5 },
+	});
 }
 
 export function testTableMethod() {
