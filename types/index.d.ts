@@ -1181,11 +1181,11 @@ declare namespace PptxGenJS {
 		/**
 		 * Begin arrow type
 		 */
-		arrowTypeBegin?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+		beginArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
 		 * End arrow type
 		 */
-		arrowTypeEnd?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+		endArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 
 		/**
 		 * Dash type

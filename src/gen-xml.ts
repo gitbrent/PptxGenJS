@@ -461,15 +461,13 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				strSlideXml += '<p:sp>'
 
 				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += '<p:nvSpPr><p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '"/>'
+				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="Object${idx + 1}"/>`
 				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
-				strSlideXml += '<p:nvPr>'
-				strSlideXml += slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)
-				strSlideXml += '</p:nvPr>'
+				strSlideXml += `<p:nvPr>${slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += '</p:nvSpPr><p:spPr>'
-				strSlideXml += '<a:xfrm' + locationAttr + '>'
-				strSlideXml += '<a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>'
+				strSlideXml += `<a:xfrm${locationAttr}>`
+				strSlideXml += `<a:off x="${x}" y="${y}"/>`
+				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
 				strSlideXml +=
 					'<a:prstGeom prst="' +
 					slideItemObj.shape +
@@ -487,8 +485,9 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 					strSlideXml += slideItemObj.options.line.size ? `<a:ln w="${slideItemObj.options.line.size * ONEPT}">` : '<a:ln>'
 					strSlideXml += genXmlColorSelection(slideItemObj.options.line.color)
 					if (slideItemObj.options.line.dashType) strSlideXml += `<a:prstDash val="${slideItemObj.options.line.dashType}"/>`
-					if (slideItemObj.options.line.arrowTypeBegin) strSlideXml += '<a:headEnd type="' + slideItemObj.options.line.arrowTypeBegin + '"/>'
-					if (slideItemObj.options.line.arrowTypeEnd) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.line.arrowTypeEnd + '"/>'
+					if (slideItemObj.options.line.beginArrowType) strSlideXml += `<a:headEnd type="${slideItemObj.options.line.beginArrowType}"/>`
+					if (slideItemObj.options.line.endArrowType) strSlideXml += `<a:tailEnd type="${slideItemObj.options.line.endArrowType}"/>`
+					// FUTURE: `endArrowSize` < a: headEnd type = "arrow" w = "lg" len = "lg" /> 'sm' | 'med' | 'lg'(values are 1 - 9, making a 3x3 grid of w / len possibilities)
 					strSlideXml += '</a:ln>'
 				}
 

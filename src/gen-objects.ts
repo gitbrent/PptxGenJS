@@ -595,6 +595,8 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		transparency: options.line.transparency || 0,
 		size: options.line.size || 1,
 		dashType: options.line.dashType || 'solid',
+		beginArrowType: options.line.beginArrowType || null,
+		endArrowType: options.line.endArrowType || null,
 	}
 	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 
@@ -612,8 +614,8 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 	}
 	if (typeof options.lineSize === 'number') options.line.size = options.lineSize // @deprecated (part of `ShapeLine` now)
 	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineHead === 'string') options.line.arrowTypeBegin = options.lineHead // @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineTail === 'string') options.line.arrowTypeEnd = options.lineTail // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLine` now)
 
 	// LAST: Add object to slide
 	target.data.push(newObject)
@@ -888,6 +890,8 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 				transparency: opt.line.transparency || 0,
 				size: opt.line.size || 1,
 				dashType: opt.line.dashType || 'solid',
+				beginArrowType: opt.line.beginArrowType || null,
+				endArrowType: opt.line.endArrowType || null,
 			}
 			if (typeof opt.line === 'object') opt.line = newLineOpts
 
@@ -899,8 +903,8 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 			}
 			if (typeof opt.lineSize === 'number') opt.line.size = opt.lineSize // @deprecated (part of `ShapeLine` now)
 			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLine` now)
-			if (typeof opt.lineHead === 'string') opt.line.arrowTypeBegin = opt.lineHead // @deprecated (part of `ShapeLine` now)
-			if (typeof opt.lineTail === 'string') opt.line.arrowTypeEnd = opt.lineTail // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLine` now)
 		}
 
 		// C
