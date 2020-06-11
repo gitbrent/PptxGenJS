@@ -13,6 +13,7 @@ export const LAYOUT_IDX_SERIES_BASE: number = 2147483649
 export const REGEX_HEX_COLOR: RegExp = /^[0-9a-fA-F]{6}$/
 export const LINEH_MODIFIER = 1.67 // AKA: Golden Ratio Typography
 
+export const DEF_BULLET_MARGIN = 27
 export const DEF_CELL_BORDER: IBorderOptions = { color: '666666' }
 export const DEF_CELL_MARGIN_PT: [number, number, number, number] = [3, 3, 3, 3] // TRBL-style
 export const DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 }

@@ -5,6 +5,7 @@
 import {
 	BULLET_TYPES,
 	CRLF,
+	DEF_BULLET_MARGIN,
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
 	DEF_PRES_LAYOUT_NAME,
@@ -824,7 +825,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
-	let bulletMarL = ONEPT * 27
+	let bulletMarL = ONEPT * DEF_BULLET_MARGIN
 
 	let paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '')
 
