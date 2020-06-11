@@ -1557,7 +1557,7 @@ declare namespace PptxGenJS {
 
 	// addImage
 	export interface ImageOpts extends PositionOptions, OptsDataOrPath {
-		hyperlink?: IHyperLink
+		hyperlink?: HyperLink
 		/**
 		 * Image rotation (degrees)
 		 * - range: -360 to 360
@@ -1733,6 +1733,16 @@ declare namespace PptxGenJS {
 		}
 		charSpacing?: number
 		fill?: ShapeFill
+		/**
+		 * Flip shape horizontally?
+		 * @default false
+		 */
+		flipH?: boolean
+		/**
+		 * Flip shape vertical?
+		 * @default false
+		 */
+		flipV?: boolean
 		glow?: IGlowOptions
 		hyperlink?: HyperLink
 		indentLevel?: number

@@ -852,6 +852,10 @@ export interface TableRowSlide {
 // text ===========================================================================================
 
 export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
+	/**
+	 * Whather "Fit to Shape" is enabled
+	 * @defaultvalue false
+	 */
 	autoFit?: boolean
 	bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
@@ -865,8 +869,21 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: boolean
 	}
+	/**
+	 * Character spacing
+	 */
 	charSpacing?: number
 	fill?: Color | ShapeFill
+	/**
+	 * Flip shape horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip shape vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 	glow?: IGlowOptions
 	hyperlink?: IHyperLink
 	indentLevel?: number
