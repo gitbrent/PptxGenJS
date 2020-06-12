@@ -4,8 +4,8 @@
 
 import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN } from './core-enums'
 
-// Common
-// ======
+// Core Types
+// ==========
 
 /**
  * Coordinate number - either:
@@ -18,6 +18,73 @@ import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HAL
  * coordinate as percentage of slide size
  */
 export type Coord = number | string
+export type PositionOptions = {
+	/**
+	 * Horizontal position
+	 * - inches or percentage
+	 * @example 10.25
+	 * position in inches
+	 * @example '75%'
+	 * position as percentage of slide size
+	 */
+	x?: Coord
+	/**
+	 * Vertical position
+	 * - inches or percentage
+	 * @example 10.25
+	 * position in inches
+	 * @example '75%'
+	 * position as percentage of slide size
+	 */
+	y?: Coord
+	/**
+	 * Height
+	 * - inches or percentage
+	 * @example 10.25
+	 * height in inches
+	 * @example '75%'
+	 * height as percentage of slide size
+	 */
+	h?: Coord
+	/**
+	 * Width
+	 * - inches or percentage
+	 * @example 10.25
+	 * width in inches
+	 * @example '75%'
+	 * width as percentage of slide size
+	 */
+	w?: Coord
+}
+/**
+ * Either `data` or `path` is required
+ */
+export type OptsDataOrPath = {
+	/**
+	 * URL or relative path
+	 *
+	 * @example 'https://onedrives.com/myimg.png`
+	 * retrieve image via URL
+	 * @example '/home/gitbrent/images/myimg.png`
+	 * retrieve image via local path
+	 */
+	path?: string
+	/**
+	 * base64-encoded string
+	 * - Useful for avoiding potential path/server issues
+	 *
+	 * @example 'image/png;base64,iVtDafDrBF[...]='
+	 * adds a pre-encoded image
+	 */
+	data?: string
+}
+export interface BkgdOpts extends OptsDataOrPath {
+	/**
+	 * Color (hex format)
+	 * @example 'FF3399'
+	 */
+	fill?: HexColor
+}
 /**
  * Color in Hex format
  * @example 'FF3399'
@@ -28,9 +95,69 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
-export type MediaType = 'audio' | 'online' | 'video'
-export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
-export type ShapeFill = {
+// used by charts, shape, text
+export interface BorderOptions {
+	/**
+	 * Border type
+	 */
+	type?: 'none' | 'dash' | 'solid'
+	/**
+	 * Border color (hex)
+	 * @example 'FF3399'
+	 */
+	color?: HexColor
+	/**
+	 * Border size (points)
+	 */
+	pt?: number
+}
+// used by: image, object, text,
+export interface HyperLink {
+	slide?: number
+	url?: string
+	tooltip?: string
+}
+export interface IHyperLink extends HyperLink {
+	rId: number
+}
+// used by: chart, text
+export interface ShadowOptions {
+	/**
+	 * shadow type
+	 * @default 'none'
+	 */
+	type: 'outer' | 'inner' | 'none'
+	/**
+	 * opacity (0.0 - 1.0)
+	 * @example 0.5 // 50% opaque
+	 */
+	opacity?: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
+	/**
+	 * blur (points)
+	 * - range: 0-100
+	 * @default 0
+	 */
+	blur?: number
+	/**
+	 * angle (degrees)
+	 * - range: 0-359
+	 * @default 0
+	 */
+	angle?: number
+	/**
+	 * shadow offset (points)
+	 * - range: 0-200
+	 * @default 0
+	 */
+	offset?: number // TODO: "Distance" in PPT
+	/**
+	 * shadow color (hex format)
+	 * @example 'FF3399'
+	 */
+	color?: HexColor
+}
+// used by: shape, table, text
+export interface ShapeFill {
 	/**
 	 * Fill type
 	 * @deprecated 'solid'
@@ -91,44 +218,8 @@ export interface ShapeLine extends ShapeFill {
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
-export type HyperLink = {
-	slide?: number
-	url?: string
-	tooltip?: string
-}
-/**
- * Either `data` or `path` is required
- */
-export type OptsDataOrPath = {
-	/**
-	 * URL or relative path
-	 *
-	 * @example 'https://onedrives.com/myimg.png`
-	 * retrieve image via URL
-	 * @example '/home/gitbrent/images/myimg.png`
-	 * retrieve image via local path
-	 */
-	path?: string
-	/**
-	 * base64-encoded string
-	 * - Useful for avoiding potential path/server issues
-	 *
-	 * @example 'image/png;base64,iVtDafDrBF[...]='
-	 * adds a pre-encoded image
-	 */
-	data?: string
-}
-export interface IHyperLink extends HyperLink {
-	rId: number
-}
-export interface BkgdOpts extends OptsDataOrPath {
-	/**
-	 * Color (hex format)
-	 * @example 'FF3399'
-	 */
-	fill?: HexColor
-}
-export type TextOptions = {
+// used by: chart, slide, table, text
+export interface TextOptions {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -159,28 +250,18 @@ export type TextOptions = {
 				 */
 				type?: 'bullet' | 'number'
 				/**
-				 * Bullet code (unicode)
-				 * @deprecated 3.3.0
-				 */
-				code?: string
-				/**
 				 * Bullet character code (unicode)
 				 * @since 3.3.0
-				 * @example { code: '25BA' } // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
+				 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
 				 */
 				characterCode?: string
 				/**
 				 * Indentation (space between bullet and text) (points)
 				 * @since 3.3.0
-				 * @example { margin: 10 } // 10 points between bullet and text
+				 * @default 27 // DEF_BULLET_MARGIN
+				 * @example 10 // Indents text 10 points from bullet
 				 */
 				indent?: number
-				/**
-				 * Margin between bullet and text
-				 * @since 3.2.1
-				 * @deplrecated 3.3.0
-				 */
-				marginPt?: number
 				/**
 				 * Number type
 				 * @since 3.3.0
@@ -206,17 +287,32 @@ export type TextOptions = {
 				/**
 				 * Number bullets start at
 				 * @since 3.3.0
-				 * @example { numberStartAt: 10 } // numbered bullets start with 10.
+				 * @default 1
+				 * @example 10 // numbered bullets start with 10
 				 */
 				numberStartAt?: number
+
+				// DEPRECATED
+
+				/**
+				 * Bullet code (unicode)
+				 * @deprecated 3.3.0 - use `characterCode`
+				 */
+				code?: string
+				/**
+				 * Margin between bullet and text
+				 * @since 3.2.1
+				 * @deplrecated 3.3.0 - use `indent`
+				 */
+				marginPt?: number
 				/**
 				 * Number to start with (only applies to type:number)
-				 * @deprecated 3.3.0 - use `numberStartAt` instead
+				 * @deprecated 3.3.0 - use `numberStartAt`
 				 */
 				startAt?: number
 				/**
 				 * Number type
-				 * @deprecated 3.3.0 use `numberType` instead
+				 * @deprecated 3.3.0 - use `numberType`
 				 */
 				style?: string
 		  }
@@ -255,129 +351,267 @@ export type TextOptions = {
 	 */
 	valign?: VAlign
 }
-export type PositionOptions = {
+
+// image / media ==================================================================================
+export type MediaType = 'audio' | 'online' | 'video'
+
+export interface ImageOpts extends PositionOptions, OptsDataOrPath {
+	hyperlink?: IHyperLink
 	/**
-	 * Horizontal position
-	 * - inches or percentage
-	 * @example 10.25
-	 * position in inches
-	 * @example '75%'
-	 * position as percentage of slide size
+	 * Image rotation (degrees)
+	 * - range: -360 to 360
+	 * @default 0
+	 * @example 180 // rotate image 180 degrees
 	 */
-	x?: Coord
+	rotate?: number
 	/**
-	 * Vertical position
-	 * - inches or percentage
-	 * @example 10.25
-	 * position in inches
-	 * @example '75%'
-	 * position as percentage of slide size
+	 * Enable image rounding
+	 * @default false
 	 */
-	y?: Coord
+	rounding?: boolean
 	/**
-	 * Height
-	 * - inches or percentage
-	 * @example 10.25
-	 * height in inches
-	 * @example '75%'
-	 * height as percentage of slide size
+	 * Image sizing options
 	 */
-	h?: Coord
-	/**
-	 * Width
-	 * - inches or percentage
-	 * @example 10.25
-	 * width in inches
-	 * @example '75%'
-	 * width as percentage of slide size
-	 */
-	w?: Coord
+	sizing?: {
+		/**
+		 * Sizing type
+		 */
+		type: 'contain' | 'cover' | 'crop'
+		/**
+		 * Image width
+		 */
+		w: number
+		/**
+		 * Image height
+		 */
+		h: number
+		x?: number
+		y?: number
+	}
 }
-export type OptsChartData = {
-	index?: number
-	labels?: string[]
-	name?: string
-	sizes?: number[]
-	values?: number[]
+export interface IImageOpts extends ImageOpts {
+	placeholder?: any
 }
-export type OptsChartGridLine = {
+/**
+ * Add media (audio/video) to slide
+ * @requires either `link` or `path`
+ */
+export interface MediaOpts extends PositionOptions, OptsDataOrPath {
 	/**
-	 * Gridline color (hex)
-	 * @example 'FF3399'
+	 * Media type
+	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
 	 */
-	color?: HexColor
+	type: MediaType
 	/**
-	 * Gridline size (points)
+	 * video embed link
+	 * - works with YouTube
+	 * - other sites may not show correctly in PowerPoint
+	 * @example 'https://www.youtube.com/embed/Dph6ynRVyUc' // embed a youtube video
 	 */
-	size?: number
+	link?: string
 	/**
-	 * Gridline style
+	 * full or local path
+	 * @example 'https://freesounds/simpsons/bart.mp3' // embed mp3 audio clip from server
+	 * @example '/sounds/simpsons_haha.mp3' // embed mp3 audio clip from local directory
 	 */
-	style?: 'solid' | 'dash' | 'dot' | 'none'
+	path?: string
 }
 
-// FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
-/*
-export interface OptsDataLabelPosition {
-	pie: 'ctr' | 'inEnd' | 'outEnd' | 'bestFit'
-	scatter: 'b' | 'ctr' | 'l' | 'r' | 't'
-	// TODO: add all othere chart types
-}
-*/
+// shapes =========================================================================================
 
-// Opts
-// ====
-export interface IBorderOptions {
+export interface IShapeOptions extends PositionOptions {
 	/**
-	 * Border type
+	 * Horizontal alignment
+	 * @default 'left'
 	 */
-	type?: 'none' | 'dash' | 'solid'
+	align?: HAlign
 	/**
-	 * Border color (hex)
-	 * @example 'FF3399'
+	 * Shape fill color
+	 * @example 'FF0000' // hex string (red)
+	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFill object with 50% transparent
 	 */
-	color?: HexColor
+	fill?: Color | ShapeFill
 	/**
-	 * Border size (points)
+	 * Flip shape horizontally?
+	 * @default false
 	 */
-	pt?: number
+	flipH?: boolean
+	/**
+	 * Flip shape vertical?
+	 * @default false
+	 */
+	flipV?: boolean
+	/**
+	 * Line options
+	 */
+	line?: ShapeLine
+	/**
+	 * Radius (only for pptx.shapes.ROUNDED_RECTANGLE)
+	 * - values: 0-180(TODO:values?)
+	 * @default 0
+	 */
+	rectRadius?: number
+	/**
+	 * Image rotation (degrees)
+	 * - range: -360 to 360
+	 * @default 0
+	 * @example 180 // rotate image 180 degrees
+	 */
+	rotate?: number
+	/**
+	 * Shadow options
+	 * TODO: need new demo.js entry for shape shadow
+	 */
+	shadow?: ShadowOptions
+
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineSize?: number
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * @depreacted v3.3.0
+	 */
+	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 }
-export interface IShadowOptions {
-	/**
-	 * shadow type
-	 * @default 'none'
-	 */
-	type: 'outer' | 'inner' | 'none'
-	/**
-	 * opacity (0.0 - 1.0)
-	 * @example 0.5 // 50% opaque
-	 */
-	opacity?: number // TODO: "Transparency (0-100%)" in PPT // TODO: deprecate and add `transparency`
-	/**
-	 * blur (points)
-	 * - range: 0-100
-	 * @default 0
-	 */
-	blur?: number
-	/**
-	 * angle (degrees)
-	 * - range: 0-359
-	 * @default 0
-	 */
-	angle?: number
-	/**
-	 * shadow offset (points)
-	 * - range: 0-200
-	 * @default 0
-	 */
-	offset?: number // TODO: "Distance" in PPT
-	/**
-	 * shadow color (hex format)
-	 * @example 'FF3399'
-	 */
-	color?: HexColor
+
+// tables =========================================================================================
+
+// TODO: create TableToSlidesOpts (incl. verbose)
+export interface ITableToSlidesOpts extends TableOptions {
+	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+	addShape?: { shape: any; options: {} }
+	addTable?: { rows: any[]; options: {} }
+	addText?: { text: any[]; options: {} }
+	//
+	_arrObjTabHeadRows?: TableRow[]
+	addHeaderToEach?: boolean // TODO: 20200528: rename to "autoPageRepeatHeader"
+	autoPage?: boolean
+	autoPageCharWeight?: number // -1.0 to 1.0
+	autoPageLineWeight?: number // -1.0 to 1.0
+	colW?: number | number[]
+	masterSlideName?: string
+	masterSlide?: ISlideLayout
+	newSlideStartY?: number
+	slideMargin?: Margin
+	verbose?: boolean // Undocumented; shows verbose output
 }
-export interface IGlowOptions {
+export interface ITableCellOpts extends TextOptions {
+	autoPageCharWeight?: number
+	autoPageLineWeight?: number
+	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+	colspan?: number
+	fill?: Color | ShapeFill
+	margin?: Margin
+	rowspan?: number
+	valign?: VAlign
+}
+export interface TableOptions extends PositionOptions, TextOptions {
+	/**
+	 * Whether to create new slides as table rows overflow each slide
+	 * @default false
+	 */
+	autoPage?: boolean
+	/**
+	 * Character weight - affects line length before wrapping begins
+	 * @type float (-1.0 to 1.0)
+	 * @default 0
+	 */
+	autoPageCharWeight?: number
+	/**
+	 * Number of rows that comprise table headers.
+	 * Required when `autoPageRepeatHeader` is set to true.
+	 * @example 2 - repeats the first two table rows on each new slide created
+	 * @default 1
+	 * @since v3.3.0
+	 */
+	autoPageHeaderRows?: number
+	/**
+	 * Line weight - affects line height before paging begins
+	 * @type float (-1.0 to 1.0)
+	 * @default 0
+	 */
+	autoPageLineWeight?: number
+	/**
+	 * Whether table header row(s) should be repeated on each new slide creating by autoPage.
+	 * Use `autoPageHeaderRows` to designate how many rows comprise the table header (1+).
+	 * @default false
+	 * @since v3.3.0
+	 */
+	autoPageRepeatHeader?: boolean
+	/**
+	 * Table border
+	 * - single value is applied to all 4 sides
+	 * - array of values in TRBL order for individual sides
+	 */
+	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+	/**
+	 * Width of table columns
+	 * - single value is applied to every column equally based upon `w`
+	 * - array of values in applied to each column in order
+	 * @default columns of equal width based upon `w`
+	 */
+	colW?: number | number[]
+	/**
+	 * Cell background color
+	 */
+	fill?: Color
+	/**
+	 * Cell margin
+	 * - affects all table cells, is superceded by cell options
+	 */
+	margin?: Margin
+	/**
+	 * Starting `y` location on additional slides created by autoPage=true
+	 * @default `y` value from table options
+	 */
+	newSlideStartY?: number
+	/**
+	 * Height of table rows
+	 * - single value is applied to every row equally based upon `h`
+	 * - array of values in applied to each row in order
+	 * @default rows of equal height based upon `h`
+	 */
+	rowH?: number | number[]
+}
+export interface ITableOptions extends TableOptions {
+	_arrObjTabHeadRows?: TableRow[]
+}
+export interface TableCell {
+	text?: string | TableCell[]
+	options?: ITableCellOpts
+}
+// TODO: replace this with `ITableCell`
+export interface ITableToSlidesCell {
+	type: SLIDE_OBJECT_TYPES.tablecell
+	text?: string | TableCell[]
+	options?: ITableCellOpts
+}
+export interface ITableCell extends TableCell {
+	type: SLIDE_OBJECT_TYPES.tablecell
+	lines?: string[]
+	lineHeight?: number
+	hmerge?: boolean
+	vmerge?: boolean
+	optImp?: any
+}
+export type ITableRow = ITableCell[]
+// TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
+export type TableRow = number[] | string[] | TableCell[]
+export interface TableRowSlide {
+	rows: ITableRow[]
+}
+
+// text ===========================================================================================
+export interface GlowOptions {
 	/**
 	 * Border color (hex format)
 	 * @example 'FF3399'
@@ -395,7 +629,120 @@ export interface IGlowOptions {
 	size: number
 }
 
+export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
+	/**
+	 * Whather "Fit to Shape" is enabled
+	 * @defaultvalue false
+	 */
+	autoFit?: boolean
+	bodyProp?: {
+		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
+		autoFit?: boolean
+		align?: TEXT_HALIGN
+		anchor?: TEXT_VALIGN
+		lIns?: number
+		rIns?: number
+		tIns?: number
+		bIns?: number
+		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+		wrap?: boolean
+	}
+	/**
+	 * Character spacing
+	 */
+	charSpacing?: number
+	fill?: Color | ShapeFill
+	/**
+	 * Flip shape horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip shape vertical?
+	 * @default false
+	 */
+	flipV?: boolean
+	glow?: GlowOptions
+	hyperlink?: IHyperLink
+	indentLevel?: number
+	inset?: number
+	isTextBox?: boolean
+	line?: ShapeLine
+	lineIdx?: number
+	/**
+	 * @deprecated v3.3.0 - use `line.size`
+	 */
+	lineSize?: number
+	lineSpacing?: number
+	/**
+	 * Dash type
+	 * @deprecated v3.3.0 - use `dashType`
+	 */
+	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 */
+	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 */
+	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	margin?: Margin
+	outline?: { color: Color; size: number }
+	paraSpaceAfter?: number
+	paraSpaceBefore?: number
+	placeholder?: string
+	rotate?: number // (degree * 60,000)
+	rtlMode?: boolean
+	shadow?: ShadowOptions
+	shape?: SHAPE_NAME
+	shrinkText?: boolean
+	strike?: boolean
+	subscript?: boolean
+	superscript?: boolean
+	underline?: boolean
+	valign?: VAlign
+	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+	wrap?: boolean
+}
+export interface IText {
+	text: string
+	options?: ITextOpts
+}
+
 // charts =========================================================================================
+// FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
+/*
+export interface OptsDataLabelPosition {
+	pie: 'ctr' | 'inEnd' | 'outEnd' | 'bestFit'
+	scatter: 'b' | 'ctr' | 'l' | 'r' | 't'
+	// TODO: add all othere chart types
+}
+*/
+
+export type ChartAxisTickMark = 'none' | 'inside' | 'outside' | 'cross'
+export interface OptsChartData {
+	index?: number
+	labels?: string[]
+	name?: string
+	sizes?: number[]
+	values?: number[]
+}
+export interface OptsChartGridLine {
+	/**
+	 * Gridline color (hex)
+	 * @example 'FF3399'
+	 */
+	color?: HexColor
+	/**
+	 * Gridline size (points)
+	 */
+	size?: number
+	/**
+	 * Gridline style
+	 */
+	style?: 'solid' | 'dash' | 'dot' | 'none'
+}
 
 export interface IChartTitleOpts extends TextOptions {
 	color?: Color
@@ -411,16 +758,16 @@ export interface IChartMulti {
 }
 export interface IChartPropsBase {
 	axisPos?: string
-	border?: IBorderOptions
+	border?: BorderOptions
 	chartColors?: string[]
 	chartColorsOpacity?: number
-	dataBorder?: IBorderOptions
+	dataBorder?: BorderOptions
 	displayBlanksAs?: string
 	fill?: string
 	invertedColors?: string
 	lang?: string
 	layout?: PositionOptions
-	shadow?: IShadowOptions
+	shadow?: ShadowOptions
 	showLabel?: boolean
 	showLeaderLines?: boolean
 	showLegend?: boolean
@@ -592,346 +939,6 @@ export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[]
 }
 
-// image / media ==================================================================================
-
-export interface ImageOpts extends PositionOptions, OptsDataOrPath {
-	hyperlink?: IHyperLink
-	/**
-	 * Image rotation (degrees)
-	 * - range: -360 to 360
-	 * @default 0
-	 * @example 180 // rotate image 180 degrees
-	 */
-	rotate?: number
-	/**
-	 * Enable image rounding
-	 * @default false
-	 */
-	rounding?: boolean
-	/**
-	 * Image sizing options
-	 */
-	sizing?: {
-		/**
-		 * Sizing type
-		 */
-		type: 'contain' | 'cover' | 'crop'
-		/**
-		 * Image width
-		 */
-		w: number
-		/**
-		 * Image height
-		 */
-		h: number
-		x?: number
-		y?: number
-	}
-}
-export interface IImageOpts extends ImageOpts {
-	placeholder?: any
-}
-/**
- * Add media (audio/video) to slide
- * @requires either `link` or `path`
- */
-export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
-	/**
-	 * Media type
-	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
-	 */
-	type: MediaType
-	/**
-	 * video embed link
-	 * - works with YouTube
-	 * - other sites may not show correctly in PowerPoint
-	 * @example 'https://www.youtube.com/embed/Dph6ynRVyUc' // embed a youtube video
-	 */
-	link?: string
-	/**
-	 * full or local path
-	 * @example 'https://freesounds/simpsons/bart.mp3' // embed mp3 audio clip from server
-	 * @example '/sounds/simpsons_haha.mp3' // embed mp3 audio clip from local directory
-	 */
-	path?: string
-}
-
-// shapes =========================================================================================
-
-export interface IShapeOptions extends PositionOptions {
-	/**
-	 * Horizontal alignment
-	 * @default 'left'
-	 */
-	align?: HAlign
-	/**
-	 * Shape fill color
-	 * @example 'FF0000' // hex string (red)
-	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
-	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFill object with 50% transparent
-	 */
-	fill?: Color | ShapeFill
-	/**
-	 * Flip shape horizontally?
-	 * @default false
-	 */
-	flipH?: boolean
-	/**
-	 * Flip shape vertical?
-	 * @default false
-	 */
-	flipV?: boolean
-	/**
-	 * Line options
-	 */
-	line?: ShapeLine
-	/**
-	 * Radius (only for pptx.shapes.ROUNDED_RECTANGLE)
-	 * - values: 0-180(TODO:values?)
-	 * @default 0
-	 */
-	rectRadius?: number
-	/**
-	 * Image rotation (degrees)
-	 * - range: -360 to 360
-	 * @default 0
-	 * @example 180 // rotate image 180 degrees
-	 */
-	rotate?: number
-	/**
-	 * Shadow options
-	 * TODO: need new demo.js entry for shape shadow
-	 */
-	shadow?: IShadowOptions
-
-	/**
-	 * @depreacted v3.3.0
-	 */
-	lineSize?: number
-	/**
-	 * @depreacted v3.3.0
-	 */
-	lineDash?: 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'solid' | 'sysDash' | 'sysDot'
-	/**
-	 * @depreacted v3.3.0
-	 */
-	lineHead?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
-	/**
-	 * @depreacted v3.3.0
-	 */
-	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
-}
-
-// tables =========================================================================================
-
-// TODO: create TableToSlidesOpts (incl. verbose)
-export interface ITableToSlidesOpts extends TableOptions {
-	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
-	addShape?: { shape: any; options: {} }
-	addTable?: { rows: any[]; options: {} }
-	addText?: { text: any[]; options: {} }
-	//
-	_arrObjTabHeadRows?: TableRow[]
-	addHeaderToEach?: boolean // TODO: 20200528: rename to "autoPageRepeatHeader"
-	autoPage?: boolean
-	autoPageCharWeight?: number // -1.0 to 1.0
-	autoPageLineWeight?: number // -1.0 to 1.0
-	colW?: number | number[]
-	masterSlideName?: string
-	masterSlide?: ISlideLayout
-	newSlideStartY?: number
-	slideMargin?: Margin
-	verbose?: boolean // Undocumented; shows verbose output
-}
-export interface ITableCellOpts extends TextOptions {
-	autoPageCharWeight?: number
-	autoPageLineWeight?: number
-	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-	colspan?: number
-	fill?: Color | ShapeFill
-	margin?: Margin
-	rowspan?: number
-	valign?: VAlign
-}
-export interface TableOptions extends PositionOptions, TextOptions {
-	/**
-	 * Whether to create new slides as table rows overflow each slide
-	 * @default false
-	 */
-	autoPage?: boolean
-	/**
-	 * Character weight - affects line length before wrapping begins
-	 * @type float (-1.0 to 1.0)
-	 * @default 0
-	 */
-	autoPageCharWeight?: number
-	/**
-	 * Number of rows that comprise table headers.
-	 * Required when `autoPageRepeatHeader` is set to true.
-	 * @example 2 - repeats the first two table rows on each new slide created
-	 * @default 1
-	 * @since v3.3.0
-	 */
-	autoPageHeaderRows?: number
-	/**
-	 * Line weight - affects line height before paging begins
-	 * @type float (-1.0 to 1.0)
-	 * @default 0
-	 */
-	autoPageLineWeight?: number
-	/**
-	 * Whether table header row(s) should be repeated on each new slide creating by autoPage.
-	 * Use `autoPageHeaderRows` to designate how many rows comprise the table header (1+).
-	 * @default false
-	 * @since v3.3.0
-	 */
-	autoPageRepeatHeader?: boolean
-	/**
-	 * Table border
-	 * - single value is applied to all 4 sides
-	 * - array of values in TRBL order for individual sides
-	 */
-	border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
-	/**
-	 * Width of table columns
-	 * - single value is applied to every column equally based upon `w`
-	 * - array of values in applied to each column in order
-	 * @default columns of equal width based upon `w`
-	 */
-	colW?: number | number[]
-	/**
-	 * Cell background color
-	 */
-	fill?: Color
-	/**
-	 * Cell margin
-	 * - affects all table cells, is superceded by cell options
-	 */
-	margin?: Margin
-	/**
-	 * Starting `y` location on additional slides created by autoPage=true
-	 * @default `y` value from table options
-	 */
-	newSlideStartY?: number
-	/**
-	 * Height of table rows
-	 * - single value is applied to every row equally based upon `h`
-	 * - array of values in applied to each row in order
-	 * @default rows of equal height based upon `h`
-	 */
-	rowH?: number | number[]
-}
-export interface ITableOptions extends TableOptions {
-	_arrObjTabHeadRows?: TableRow[]
-}
-export interface TableCell {
-	text?: string | TableCell[]
-	options?: ITableCellOpts
-}
-// TODO: replace this with `ITableCell`
-export interface ITableToSlidesCell {
-	type: SLIDE_OBJECT_TYPES.tablecell
-	text?: string | TableCell[]
-	options?: ITableCellOpts
-}
-export interface ITableCell extends TableCell {
-	type: SLIDE_OBJECT_TYPES.tablecell
-	lines?: string[]
-	lineHeight?: number
-	hmerge?: boolean
-	vmerge?: boolean
-	optImp?: any
-}
-export type ITableRow = ITableCell[]
-// TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
-export type TableRow = number[] | string[] | TableCell[]
-export interface TableRowSlide {
-	rows: ITableRow[]
-}
-
-// text ===========================================================================================
-
-export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
-	/**
-	 * Whather "Fit to Shape" is enabled
-	 * @defaultvalue false
-	 */
-	autoFit?: boolean
-	bodyProp?: {
-		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
-		autoFit?: boolean
-		align?: TEXT_HALIGN
-		anchor?: TEXT_VALIGN
-		lIns?: number
-		rIns?: number
-		tIns?: number
-		bIns?: number
-		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-		wrap?: boolean
-	}
-	/**
-	 * Character spacing
-	 */
-	charSpacing?: number
-	fill?: Color | ShapeFill
-	/**
-	 * Flip shape horizontally?
-	 * @default false
-	 */
-	flipH?: boolean
-	/**
-	 * Flip shape vertical?
-	 * @default false
-	 */
-	flipV?: boolean
-	glow?: IGlowOptions
-	hyperlink?: IHyperLink
-	indentLevel?: number
-	inset?: number
-	isTextBox?: boolean
-	line?: ShapeLine
-	lineIdx?: number
-	/**
-	 * @deprecated v3.3.0 - use `line.size`
-	 */
-	lineSize?: number
-	lineSpacing?: number
-	/**
-	 * Dash type
-	 * @deprecated v3.3.0 - use `dashType`
-	 */
-	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
-	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
-	 */
-	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
-	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
-	 */
-	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
-	margin?: Margin
-	outline?: { color: Color; size: number }
-	paraSpaceAfter?: number
-	paraSpaceBefore?: number
-	placeholder?: string
-	rotate?: number // (degree * 60,000)
-	rtlMode?: boolean
-	shadow?: IShadowOptions
-	shape?: SHAPE_NAME
-	shrinkText?: boolean
-	strike?: boolean
-	subscript?: boolean
-	superscript?: boolean
-	underline?: boolean
-	valign?: VAlign
-	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-	wrap?: boolean
-}
-export interface IText {
-	text: string
-	options?: ITextOpts
-}
-
 // Core
 // ====
 /**
@@ -1010,7 +1017,7 @@ export interface ISlideRel {
 }
 export interface ISlideRelMedia {
 	type: string
-	opts?: IMediaOpts
+	opts?: MediaOpts
 	path?: string
 	extn?: string
 	data?: string | ArrayBuffer

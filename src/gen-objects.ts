@@ -9,18 +9,18 @@ import {
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
+	DEF_SHAPE_LINE_COLOR,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
 	MASTER_OBJECTS,
 	ONEPT,
 	PIECHART_COLORS,
+	SHAPE_NAME,
+	SHAPE_TYPE,
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
-	SHAPE_NAME,
-	SHAPE_TYPE,
-	DEF_SHAPE_LINE_COLOR,
 } from './core-enums'
 import {
 	BkgdOpts,
@@ -28,7 +28,6 @@ import {
 	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IMediaOpts,
 	IShapeOptions,
 	ISlideLayout,
 	ISlideLib,
@@ -38,9 +37,10 @@ import {
 	ITableOptions,
 	IText,
 	ITextOpts,
+	MediaOpts,
 	OptsChartGridLine,
-	TableRow,
 	ShapeLine,
+	TableRow,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -447,9 +447,9 @@ export function addImageDefinition(target: ISlideLib, opt: IImageOpts) {
 /**
  * Adds a media object to a slide definition.
  * @param {ISlideLib} `target` - slide object that the text will be added to
- * @param {IMediaOpts} `opt` - media options
+ * @param {MediaOpts} `opt` - media options
  */
-export function addMediaDefinition(target: ISlideLib, opt: IMediaOpts) {
+export function addMediaDefinition(target: ISlideLib, opt: MediaOpts) {
 	let intRels = target.relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0

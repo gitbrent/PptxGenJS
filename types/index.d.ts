@@ -843,7 +843,7 @@ declare namespace PptxGenJS {
 	}
 	export interface ISlideRelMedia {
 		type: string
-		opts?: IMediaOpts
+		opts?: MediaOpts
 		path?: string
 		extn?: string
 		data?: string | ArrayBuffer
@@ -1596,7 +1596,7 @@ declare namespace PptxGenJS {
 	 * Add media (audio/video) to slide
 	 * @requires either `link` or `path`
 	 */
-	export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
+	export interface MediaOpts extends PositionOptions, OptsDataOrPath {
 		/**
 		 * Media type
 		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -1815,10 +1815,10 @@ declare namespace PptxGenJS {
 		addImage(options: ImageOpts): Slide
 		/**
 		 * Add media (audio/video) to Slide
-		 * @param {IMediaOpts} options - media options
+		 * @param {MediaOpts} options - media options
 		 * @return {Slide} this Slide
 		 */
-		addMedia(options: IMediaOpts): Slide
+		addMedia(options: MediaOpts): Slide
 		/**
 		 * Add speaker notes to Slide
 		 * @docs https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html

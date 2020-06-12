@@ -9,7 +9,7 @@ import {
 	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IMediaOpts,
+	MediaOpts,
 	ISlideLayout,
 	ISlideNumber,
 	ISlideRel,
@@ -166,10 +166,10 @@ export default class Slide {
 
 	/**
 	 * Add media (audio/video) to Slide
-	 * @param {IMediaOpts} options - media options
+	 * @param {MediaOpts} options - media options
 	 * @return {Slide} this Slide
 	 */
-	addMedia(options: IMediaOpts): Slide {
+	addMedia(options: MediaOpts): Slide {
 		genObj.addMediaDefinition(this, options)
 		return this
 	}

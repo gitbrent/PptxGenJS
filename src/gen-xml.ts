@@ -20,7 +20,7 @@ import {
 import {
 	IObjectOptions,
 	IPresentation,
-	IShadowOptions,
+	ShadowOptions,
 	ISlideLayout,
 	ISlideLib,
 	ISlideObject,
@@ -1773,9 +1773,9 @@ export function makeXmlViewProps(): string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowOptions} IShadowOptions - shadow options
+ * @param {ShadowOptions} ShadowOptions - shadow options
  */
-export function correctShadowOptions(ShadowOptions: IShadowOptions) {
+export function correctShadowOptions(ShadowOptions: ShadowOptions) {
 	if (!ShadowOptions || typeof ShadowOptions !== 'object') {
 		//console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
 		return
