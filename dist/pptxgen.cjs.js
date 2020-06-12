@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-11T04:13:39.290Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-12T04:38:49.911Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -14,6 +14,7 @@ var CRLF = '\r\n'; // AKA: Chr(13) & Chr(10)
 var LAYOUT_IDX_SERIES_BASE = 2147483649;
 var REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 var LINEH_MODIFIER = 1.67; // AKA: Golden Ratio Typography
+var DEF_BULLET_MARGIN = 27;
 var DEF_CELL_BORDER = { color: '666666' };
 var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 };
@@ -743,8 +744,8 @@ function createColorElement(colorStr, innerElements) {
 }
 /**
  * Creates `a:glow` element
- * @param {IGlowOptions} options glow properties
- * @param {IGlowOptions} defaults defaults for unspecified properties in `opts`
+ * @param {GlowOptions} options glow properties
+ * @param {GlowOptions} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
@@ -2058,7 +2059,7 @@ function slideObjectRelationsToXml(slide, defaultRels) {
 function genXmlParagraphProperties(textObj, isDefault) {
     var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
     var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
-    var bulletMarL = ONEPT * 27;
+    var bulletMarL = ONEPT * DEF_BULLET_MARGIN;
     var paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '');
     // A: Build paragraphProperties
     {
@@ -2860,7 +2861,7 @@ function makeXmlViewProps() {
 }
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowOptions} IShadowOptions - shadow options
+ * @param {ShadowOptions} ShadowOptions - shadow options
  */
 function correctShadowOptions(ShadowOptions) {
     if (!ShadowOptions || typeof ShadowOptions !== 'object') {
@@ -3296,7 +3297,7 @@ function addImageDefinition(target, opt) {
 /**
  * Adds a media object to a slide definition.
  * @param {ISlideLib} `target` - slide object that the text will be added to
- * @param {IMediaOpts} `opt` - media options
+ * @param {MediaOpts} `opt` - media options
  */
 function addMediaDefinition(target, opt) {
     var intRels = target.relsMedia.length + 1;
@@ -3962,7 +3963,7 @@ var Slide = /** @class */ (function () {
     };
     /**
      * Add media (audio/video) to Slide
-     * @param {IMediaOpts} options - media options
+     * @param {MediaOpts} options - media options
      * @return {Slide} this Slide
      */
     Slide.prototype.addMedia = function (options) {
@@ -5920,7 +5921,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200610:2255';
+var VERSION = '3.3.0-beta-20200611:2323';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
