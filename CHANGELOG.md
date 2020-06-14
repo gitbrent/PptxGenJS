@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.3.0] - 2020-??-??
 ### Added
 - Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
+- Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489)[phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684)[hanzi](https://github.com/hanzi))
 - Added: Background image for slides (deprecated `bkgd:string` with `background:BkgdOpts`) [\#610](https://github.com/gitbrent/PptxGenJS/pull/610) ([thomasowow](https://github.com/thomasowow))
 ### Changed
 - Fixed: tableToSlides `addHeaderToEach` finally duplicates all header rows, not just the first one [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
