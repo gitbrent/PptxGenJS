@@ -1113,7 +1113,9 @@ function genSlides_Chart(pptx) {
 			legendPos :  't',
 			showDataTable:     true,
 			showDataTableKeys: false,
-			dataTableFormatCode: '0.00%' // @since v3.3.0
+			dataTableFormatCode: '$#'
+			//dataTableFormatCode: '0.00%' // @since v3.3.0
+			//dataTableFormatCode: '$0.00' // @since v3.3.0
 		};
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
@@ -1181,6 +1183,7 @@ function genSlides_Chart(pptx) {
 				valAxisMajorUnit: 15,
 				valAxisDisplayUnit: 'hundreds',
 				valAxisMaxVal: 45,
+				valLabelFormatCode: '$0', // @since v3.3.0
 				showTitle: true,
 				titleFontSize: 14,
 				titleColor: '0088CC',

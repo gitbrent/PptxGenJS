@@ -824,7 +824,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 						strXml += '  <c:numRef>'
 						strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 						strXml += '    <c:numCache>'
-						strXml += '      <c:formatCode>' + opts.catLabelFormatCode + '</c:formatCode>'
+						strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>'
 						strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
 						obj.labels.forEach((label, idx) => {
 							strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
@@ -847,18 +847,18 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 				// 3: "Values"
 				{
-					strXml += '  <c:val>'
-					strXml += '    <c:numRef>'
-					strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
-					strXml += '      <c:numCache>'
-					strXml += '        <c:formatCode>' + (opts.dataTableFormatCode || 'General') + '</c:formatCode>'
-					strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
+					strXml += '<c:val>'
+					strXml += '  <c:numRef>'
+					strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
+					strXml += '    <c:numCache>'
+					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
+					strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
 					obj.values.forEach((value, idx) => {
 						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>'
 					})
-					strXml += '      </c:numCache>'
-					strXml += '    </c:numRef>'
-					strXml += '  </c:val>'
+					strXml += '    </c:numCache>'
+					strXml += '  </c:numRef>'
+					strXml += '</c:val>'
 				}
 
 				// Option: `smooth`

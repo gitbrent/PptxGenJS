@@ -858,6 +858,15 @@ export interface IChartPropsAxisVal {
 	valAxisTitleFontSize?: number
 	valAxisTitleRotate?: number
 	valGridLine?: OptsChartGridLine
+	/**
+	 * Value label format code
+	 * - this also directs Data Table formatting
+	 * @since 3.3.0
+	 * @example '#%' // round percent
+	 * @example '0.00%' // shows values as '0.00%'
+	 * @example '$0.00' // shows values as '$0.00'
+	 */
+	valLabelFormatCode?: string
 }
 export interface IChartPropsChartBar {
 	bar3DShape?: string
@@ -900,7 +909,10 @@ export interface IChartPropsDataTable {
 	dataTableFontSize?: number
 	/**
 	 * Data table format code
+	 * @since 3.3.0
+	 * @example '#%' // round percent
 	 * @example '0.00%' // shows values as '0.00%'
+	 * @example '$0.00' // shows values as '$0.00'
 	 */
 	dataTableFormatCode?: string
 	showDataTable?: boolean
