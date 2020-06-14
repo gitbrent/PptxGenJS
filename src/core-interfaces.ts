@@ -222,6 +222,11 @@ export interface IChartPropsDataLabel {
 }
 export interface IChartPropsDataTable {
 	dataTableFontSize?: number
+	/**
+	 * Data table format code
+	 * @example '0.00%' // shows values as '0.00%'
+	 */
+	dataTableFormatCode?: string
 	showDataTable?: boolean
 	showDataTableHorzBorder?: boolean
 	showDataTableKeys?: boolean
@@ -622,4 +627,4 @@ export interface IPresentation {
 	slides: ISlideLib[]
 	subject: string
 	title: string
-} 
+}

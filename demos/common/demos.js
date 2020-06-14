@@ -1085,9 +1085,9 @@ function genSlides_Chart(pptx) {
 			chartColors: ['5DA5DA','FAA43A'],
 			showLegend: true,
 			legendPos :  't',
-
 			showDataTable:     true,
-			showDataTableKeys: false
+			showDataTableKeys: false,
+			dataTableFormatCode: '0.00%' // @since v3.3.0
 		};
 		slide.addChart( pptx.charts.BAR, arrDataHighVals, optsChartBar4 );
 	}
