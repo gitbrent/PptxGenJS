@@ -5,8 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.2.0">
-	<meta name="updated" content="2020-03-21">
+	<meta name="version" content="3.3.0">
+	<meta name="updated" content="2020-05-31">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -146,8 +146,8 @@
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/images/base64Images.js" async></script>
 
 	<!-- RELEASE (CDN)
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
-	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
+		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js"></script>
 	-->
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
@@ -194,12 +194,12 @@
 
 			execGenSlidesFuncs(type)
 			.catch(function(err) {
-				console.error(err.toString());
 				$('#modalBusy').modal('hide');
+				console.error(err);
 			})
 			.then(function() {
-				if (console.timeEnd) console.timeEnd('execGenSlidesFunc: '+type);
 				$('#modalBusy').modal('hide');
+				if (console.timeEnd) console.timeEnd('execGenSlidesFunc: '+type);
 			});
 		}
 
@@ -391,7 +391,7 @@
 			// 1:
 			pptx.defineSlideMaster({
 				title: 'TITLE_SLIDE',
-				bkgd: { data:BKGD_STARLABS },
+				background: { data:BKGD_STARLABS },
 				objects: [
 					{ 'line':  { x:3.5, y:1.00, w:6.00, line:'0088CC', lineSize:5 } },
 					{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
@@ -405,7 +405,7 @@
 			// 2:
 			pptx.defineSlideMaster({
 				title: 'MASTER_SLIDE',
-				bkgd: 'EEEEEE',
+				background: { fill: 'F1F1F1' },
 				slideNumber: { x:1.0, y:7.0, color:'FFFFFF' },
 				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
 				objects: [
@@ -417,7 +417,7 @@
 			// 3:
 			pptx.defineSlideMaster({
 				title: 'THANKS_SLIDE',
-				bkgd: '36ABFF',
+				background: { fill: '36ABFF' },
 				objects: [
 					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
 					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
@@ -461,14 +461,14 @@
 			var objOpts = {};
 			//objOpts.verbose = true;
 			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 
 			// STEP 3: Add a custom shape (text in this case) to each Slide
 			// EXAMPLE: Add any dynamic content to each generated Slide
 			// DESC: Add something you cant predefine in a master - like a username/timestamp for each slide, etc.
 			// NOTE: You can do this for all other types as well: .addShape(), .addTable() and .addImage()
-			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:1.1, y:0.6, color:'0088CC', fontFace:'Arial', fontSize:12 } };
+			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:0.1, y:0.07, color:'0088CC', fontFace:'Arial', fontSize:12 } };
 
 			// STEP 4: Pass table to tableToSlides function to produce 1-N slides
 			pptx.tableToSlides('tabAutoPaging', objOpts);
@@ -582,7 +582,7 @@
 				$('#demo-master').html("pptx.defineSlideMaster({\n"
 					+ "  title : 'MASTER_SLIDE',\n"
 					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
-					+ "  bkgd  : 'FFFFFF',\n"
+					+ "  background: { fill: 'FFFFFF' },\n"
 					+ "  objects: [\n"
 					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
 					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
@@ -765,7 +765,7 @@
 					</ul>
 					Tips:
 					<ul>
-						<li>If you need to modify your table before creating the Presenation, use jQuery to clone() it and do the modifications on that table</li>
+						<li>If you need to modify your table before creating the Presentation, use jQuery to clone() it and do the modifications on that table</li>
 						<li>CSS styles are only supported down to the cell level (word-level formatting is not supported)</li>
 						<li>Nested tables are not supported in PowerPoint, therefore they cannot be reproduced (only the text will be included)</li>
 					</ul>
@@ -1429,6 +1429,7 @@
 							<div>- Test with correct starting <code>{y:4.0}</code></div>
 							<div>- Test with <code>{ newSlideStartY:0.5 }</code></div>
 							<div>- Test with <code>{ autoPage:false }</code></div>
+							<div>- Test with <code>{ autoPageRepeatHeader:true }</code></div>
 							<div>- Tables with various <code>autoPageLineWeight</code> values</div>
 							<div>- Tables with various <code>autoPageCharWeight</code> values</div>
 						</div>

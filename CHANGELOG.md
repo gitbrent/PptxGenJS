@@ -5,18 +5,52 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Coming In [3.2.0]:
-- Update exposed props: "pptx.color"->"pptx.SchemeColor", AlignH, etc.
-- Update demo.js and docs
 
-
-## [3.2.0] - 2020-?-?
+## [3.3.0] - 2020-??-??
 ### Added
-- Added Stacked Area Charts [\#333](https://github.com/gitbrent/PptxGenJS/issue/333) ([fordaaronj](https://github.com/fordaaronj))
-- Added support for Sections [\#349](https://github.com/gitbrent/PptxGenJS/issue/349) ([atulsingh0913](https://github.com/atulsingh0913))
+- Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
+- Added: Background image for slides (deprecated `bkgd:string` with `background:BkgdOpts`) [\#610](https://github.com/gitbrent/PptxGenJS/pull/610) ([thomasowow](https://github.com/thomasowow))
 ### Changed
-- Fixed: Type errors in `index.d.ts` [\#672](https://github.com/gitbrent/PptxGenJS/issue/672) ([Krishnakanth94](https://github.com/Krishnakanth94))
+- Fixed: tableToSlides `addHeaderToEach` finally duplicates all header rows, not just the first one [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
+- Fixed `colW` length mismatch with colspans (Issue #651) [\#679](https://github.com/gitbrent/PptxGenJS/issues/679) ([Joshua-rose](https://github.com/Joshua-rose))
+- Fixed: hyperlink and tooltip property `rId` is not working? [\#758](https://github.com/gitbrent/PptxGenJS/issues/758) ([kuldeept70](https://github.com/kuldeept70))
+- Fixed: Removed old/unused options from demo [\#759](https://github.com/gitbrent/PptxGenJS/pull/759) ([sijmenvos](https://github.com/sijmenvos))
+- Fixed: Removed `Buffer` type from `index.ts.d` [\#761](https://github.com/gitbrent/PptxGenJS/pull/761) ([lustigerlurch551](https://github.com/lustigerlurch551))
+-
+- Fixed: type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
+- Fixed: type defs for `ITableOptions` s/b `TableOptions` ([gitbrent](https://github.com/gitbrent))
+### WIP
+- [Text with align adds linebreaks](https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aissue+is%3Aopen+label%3Atext)
+
+
+
+## [3.2.1] - 2020-05-25
+### Added
+### Changed
+- Fixed: `addTable`, `addText`, etc. not working properly inside tableToSlides [\#715](https://github.com/gitbrent/PptxGenJS/issues/715) ([Smithvinayakiya](https://github.com/Smithvinayakiya))
+- Fixed: Issue links in release notes are broken [\#749](https://github.com/gitbrent/PptxGenJS/issues/749) ([pimlottc-gov](https://github.com/pimlottc-gov))
+- Fixed: Type defs were missing ISlideMasterOptions `text` prop and `slideNumber` align ([gitbrent](https://github.com/gitbrent))
+- Fixed: Type defs misspelled `rowW` s/b `rowH` ([gitbrent](https://github.com/gitbrent))
+- Fixed: Documentation: Corrected max value for `barGapWidthPct` ([gitbrent](https://github.com/gitbrent))
+
+
+
+## [3.2.0] - 2020-05-17
+### Added
+- Added: New chart type: Stacked Area Charts [\#333](https://github.com/gitbrent/PptxGenJS/issues/333) ([fordaaronj](https://github.com/fordaaronj))
+- Added: Sections can now be created [\#349](https://github.com/gitbrent/PptxGenJS/issues/349) ([atulsingh0913](https://github.com/atulsingh0913))
+- Added: New bullet option `marginPt` to control left indent margin [\#504](https://github.com/gitbrent/PptxGenJS/issues/504) ([Cyan005](https://github.com/Cyan005))
+### Changed
+- Fixed: Placeholder type Body is defaulting in a hanging indent [\#589](https://github.com/gitbrent/PptxGenJS/issues/589) ([colmben](https://github.com/colmben))
+- Fixed: Text in slides does not override the bullet master [\#620](https://github.com/gitbrent/PptxGenJS/pull/620) ([sgenoud](https://github.com/sgenoud))
+- Fixed: Type errors in `index.d.ts` [\#672](https://github.com/gitbrent/PptxGenJS/issues/672) ([Krishnakanth94](https://github.com/Krishnakanth94))
+- Fixed: Typescript defs Slide and ISlide [\#673](https://github.com/gitbrent/PptxGenJS/issues/673) ([gytisgreitai](https://github.com/gytisgreitai))
+- Fixed: Spelling consistent "Presenation" -> "Presentation" typo [\#694](https://github.com/gitbrent/PptxGenJS/pull/694) ([ankon](https://github.com/ankon))
+- Fixed: Handle errors with promise rejections [\#695](https://github.com/gitbrent/PptxGenJS/pull/695) ([ankon](https://github.com/ankon))
 - Fixed: Update 'pptx' to 'pres' in README.md [\#700](https://github.com/gitbrent/PptxGenJS/pull/700) ([lucidlemon](https://github.com/lucidlemon))
+- Fixed: Time units validation [\#706](https://github.com/gitbrent/PptxGenJS/pull/706) ([lucasflomuller](https://github.com/lucasflomuller))
+- Fixed: Add the slide layout name to the generated background image name [\#726](https://github.com/gitbrent/PptxGenJS/pull/726) ([jrohland](https://github.com/jrohland))
+- Fixed: Type issue addTable rows, updated TableCell/TableRow [\#735](https://github.com/gitbrent/PptxGenJS/issues/735) ([robertsoaa](https://github.com/robertsoaa))
 - Continued improvement of typescript definitions file ([gitbrent](https://github.com/gitbrent))
 
 
@@ -26,9 +60,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - TypeScript: Add shapes and font options types [\#650](https://github.com/gitbrent/PptxGenJS/pull/650) ([cronin4392](https://github.com/cronin4392))
 - TypeScript: Added correct export of types and ts-def file (`pptx.ShapeType.rect`, etc) in `index.d.ts` ([gitbrent](https://github.com/gitbrent))
 ### Changed
-- Fixed: Re-added "browser" property to `package.json` to avoid old "fs not found" Angular/webpack issue (Angular 8) [\#654](https://github.com/gitbrent/PptxGenJS/issue/654) ([cwilkens](https://github.com/cwilkens))
+- Fixed: Re-added "browser" property to `package.json` to avoid old "fs not found" Angular/webpack issue (Angular 8) [\#654](https://github.com/gitbrent/PptxGenJS/issues/654) ([cwilkens](https://github.com/cwilkens))
 - Fixed: Previous release introduced a regression bug and broke addTest placeholder's ([gitbrent](https://github.com/gitbrent))
-- Fixed: addChart and addImage in the same slide cause an error [fixed via `getNewRelId`] [\#655](https://github.com/gitbrent/PptxGenJS/issue/655) ([JuliaSheleva](https://github.com/JuliaSheleva))
+- Fixed: addChart and addImage in the same slide cause an error [fixed via `getNewRelId`] [\#655](https://github.com/gitbrent/PptxGenJS/issues/655) ([JuliaSheleva](https://github.com/JuliaSheleva))
 ### Removed
 - The `core-shapes.ts` file was removed, shape def collapsed to simple type array, rolled into `core-enums.ts` and `index.d.ts` ([gitbrent](https://github.com/gitbrent))
 
@@ -43,10 +77,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Include types in package.json files [\#641](https://github.com/gitbrent/PptxGenJS/pull/641) ([cronin4392](https://github.com/cronin4392))
 - Added `showLeaderLines` chart option [\#642](https://github.com/gitbrent/PptxGenJS/pull/642) ([cronin4392](https://github.com/cronin4392))
 ### Changed
-- Fixed: Empty color negative values on barchart [\#285](https://github.com/gitbrent/PptxGenJS/issue/285) ([andrei-cs](https://github.com/andrei-cs)) ([Slidemagic](https://github.com/Slidemagic))
+- Fixed: Empty color negative values on barchart [\#285](https://github.com/gitbrent/PptxGenJS/issues/285) ([andrei-cs](https://github.com/andrei-cs)) ([Slidemagic](https://github.com/Slidemagic))
 - Fixed: Add missing margin type from ITextOpts [\#643](https://github.com/gitbrent/PptxGenJS/pull/643) ([cronin4392](https://github.com/cronin4392))
-- Fixed: Scatter plot `dataLabelPosition` [\#644](https://github.com/gitbrent/PptxGenJS/issue/644) ([afarghaly10](https://github.com/afarghaly10))
-- Fixed: Added new babel polyfill for IE11; other IE11 fixes in demo, etc. [\#648](https://github.com/gitbrent/PptxGenJS/issue/648) ([YakQin](https://github.com/YakQin))
+- Fixed: Scatter plot `dataLabelPosition` [\#644](https://github.com/gitbrent/PptxGenJS/issues/644) ([afarghaly10](https://github.com/afarghaly10))
+- Fixed: Added new babel polyfill for IE11; other IE11 fixes in demo, etc. [\#648](https://github.com/gitbrent/PptxGenJS/issues/648) ([YakQin](https://github.com/YakQin))
 - Updated Demo: added support for light/dark mode; new Image slide for rotation; new busy progress modal ([gitbrent](https://github.com/gitbrent))
 ### Removed
 - Removed: jsdom pkg is no longer a dependency in `package.json` ([gitbrent](https://github.com/gitbrent))
@@ -55,7 +89,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.1] - 2020-01-07
 ### Changed
-- Fixed: JSZip not found under Node.js [\#638](https://github.com/gitbrent/PptxGenJS/issue/638) ([rse](https://github.com/rse))
+- Fixed: JSZip not found under Node.js [\#638](https://github.com/gitbrent/PptxGenJS/issues/638) ([rse](https://github.com/rse))
 - Fixed: react demo fixes and new build for [demo-react online](https://gitbrent.github.io/PptxGenJS/demo-react/index.html) ([gitbrent](https://github.com/gitbrent))
 - Fixed: added missing catch on media promise.all to handle 404 media links ([gitbrent](https://github.com/gitbrent))
 - Fixed: replaced wikimedia links in common/demos.js with github raw content links ([gitbrent](https://github.com/gitbrent))
@@ -64,19 +98,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [3.0.0] - 2020-01-01
 ### Added
-- Ability to specify numbered list format [\#452](https://github.com/gitbrent/PptxGenJS/issue/452) ([mayvazyan](https://github.com/mayvazyan))
+- Ability to specify numbered list format [\#452](https://github.com/gitbrent/PptxGenJS/issues/452) ([mayvazyan](https://github.com/mayvazyan))
 - New cat/val axis options: majorTickMark/minorTickMark [\#473](https://github.com/gitbrent/PptxGenJS/pull/473) ([RokasDie](https://github.com/RokasDie))
-- Ability to set start number "startAt" for a bullet list of type numbered [\#554](https://github.com/gitbrent/PptxGenJS/issue/554) [\#555](https://github.com/gitbrent/PptxGenJS/pull/555) ([bj-mitchell](https://github.com/bj-mitchell))
+- Ability to set start number "startAt" for a bullet list of type numbered [\#554](https://github.com/gitbrent/PptxGenJS/issues/554) [\#555](https://github.com/gitbrent/PptxGenJS/pull/555) ([bj-mitchell](https://github.com/bj-mitchell))
 ### Changed
-- Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
-- Fixed: SVG images used to be generated by Node [\#515](https://github.com/gitbrent/PptxGenJS/issue/515) ([michaelcbrook](https://github.com/michaelcbrook))
+- Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issues/471) ([StefanBrand](https://github.com/StefanBrand))
+- Fixed: SVG images used to be generated by Node [\#515](https://github.com/gitbrent/PptxGenJS/issues/515) ([michaelcbrook](https://github.com/michaelcbrook))
 - Fixed: SVG support has several issues [\#528](https://github.com/gitbrent/PptxGenJS/pull/528) ([RicardoNiepel](https://github.com/RicardoNiepel))
-- Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
-- Fixed: Tables not being displayed after update [\#559](https://github.com/gitbrent/PptxGenJS/issue/559) ([emartz404](https://github.com/emartz404))
-- Fixed: Hyperlink creates malformed slide if it includes "&" [\#562](https://github.com/gitbrent/PptxGenJS/issue/562) ([Tehnix](https://github.com/Tehnix))
-- Fixed: Exporting images corrupting file. [\#578](https://github.com/gitbrent/PptxGenJS/issue/578) ([joeberth](https://github.com/joeberth))
-- Fixed: Multiple files getting downloaded if multiple base64 images are added. [\#581](https://github.com/gitbrent/PptxGenJS/issue/581) ([akshaymagapu](https://github.com/akshaymagapu))
-- Fixed: Links in tables won't work on tables generated with autoPage [\#583](https://github.com/gitbrent/PptxGenJS/issue/583) ([githuis](https://github.com/githuis))
+- Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issues/540) ([mustafagentrit](https://github.com/mustafagentrit))
+- Fixed: Tables not being displayed after update [\#559](https://github.com/gitbrent/PptxGenJS/issues/559) ([emartz404](https://github.com/emartz404))
+- Fixed: Hyperlink creates malformed slide if it includes "&" [\#562](https://github.com/gitbrent/PptxGenJS/issues/562) ([Tehnix](https://github.com/Tehnix))
+- Fixed: Exporting images corrupting file. [\#578](https://github.com/gitbrent/PptxGenJS/issues/578) ([joeberth](https://github.com/joeberth))
+- Fixed: Multiple files getting downloaded if multiple base64 images are added. [\#581](https://github.com/gitbrent/PptxGenJS/issues/581) ([akshaymagapu](https://github.com/akshaymagapu))
+- Fixed: Links in tables won't work on tables generated with autoPage [\#583](https://github.com/gitbrent/PptxGenJS/issues/583) ([githuis](https://github.com/githuis))
 - Fixed: Added rounding of margin values to avoid invalid XML [\#633](https://github.com/gitbrent/PptxGenJS/pull/633) ([kevinresol](https://github.com/kevinresol))
 ### Removed
 - Removed: jQuery is no longer required (!)
@@ -90,31 +124,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Add support for font family css when export HTML table to slide. [\#571](https://github.com/gitbrent/PptxGenJS/pull/571) ([Jank1310](https://github.com/twatson83))
 ### Changed
 - Fixed: MIME type is ppt now instead of "application/zip"
-- Fixed: Not Able to add background image from the www source [\#497](https://github.com/gitbrent/PptxGenJS/issue/497) ([nish25sp](https://github.com/nish25sp))
-- Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issue/471) ([StefanBrand](https://github.com/StefanBrand))
-- Fixed: lineDash Option is not in documentation [\#526](https://github.com/gitbrent/PptxGenJS/issue/526) ([Jank1310](https://github.com/Jank1310))
-- Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issue/540) ([mustafagentrit](https://github.com/mustafagentrit))
-- Fixed: ReferenceError: strXmlBullet is not defined [\#587](https://github.com/gitbrent/PptxGenJS/issue/587) ([Saurabh-Chandil](https://github.com/Saurabh-Chandil))
-- Fixed: Getting paraPropXmlCore not defined error - line 4200 in pptxgen.bundle.js missing "var" declaration [\#596](https://github.com/gitbrent/PptxGenJS/issue/596) ([rajeearyal](https://github.com/rajeearyal))
+- Fixed: Not Able to add background image from the www source [\#497](https://github.com/gitbrent/PptxGenJS/issues/497) ([nish25sp](https://github.com/nish25sp))
+- Fixed: Set proper MIME type for PPTX presentation [\#471](https://github.com/gitbrent/PptxGenJS/issues/471) ([StefanBrand](https://github.com/StefanBrand))
+- Fixed: lineDash Option is not in documentation [\#526](https://github.com/gitbrent/PptxGenJS/issues/526) ([Jank1310](https://github.com/Jank1310))
+- Fixed: Downloading PPT in iOS using Safari does not work. File named as UNKNOWN. [\#540](https://github.com/gitbrent/PptxGenJS/issues/540) ([mustafagentrit](https://github.com/mustafagentrit))
+- Fixed: ReferenceError: strXmlBullet is not defined [\#587](https://github.com/gitbrent/PptxGenJS/issues/587) ([Saurabh-Chandil](https://github.com/Saurabh-Chandil))
+- Fixed: Getting paraPropXmlCore not defined error - line 4200 in pptxgen.bundle.js missing "var" declaration [\#596](https://github.com/gitbrent/PptxGenJS/issues/596) ([rajeearyal](https://github.com/rajeearyal))
 ### Removed
 
 
 
 ## [2.5.0] - 2019-02-08
 ### Added
-- Make Shapes available for a front-end usage [\#137](https://github.com/gitbrent/PptxGenJS/issue/137) ([spamforhope](https://github.com/spamforhope))
-- Ability to rotate chart axis labels (`catAxisLabelRotate`/`valAxisLabelRotate`) [\#378](https://github.com/gitbrent/PptxGenJS/issue/378) ([teejayvanslyke](https://github.com/teejayvanslyke))
+- Make Shapes available for a front-end usage [\#137](https://github.com/gitbrent/PptxGenJS/issues/137) ([spamforhope](https://github.com/spamforhope))
+- Ability to rotate chart axis labels (`catAxisLabelRotate`/`valAxisLabelRotate`) [\#378](https://github.com/gitbrent/PptxGenJS/issues/378) ([teejayvanslyke](https://github.com/teejayvanslyke))
 - New Chart Type: 3D bar charts [\#384](https://github.com/gitbrent/PptxGenJS/pull/384) ([loictro](https://github.com/loictro))
 - New Chart Feature: Add Data Labels to Scatter Charts [\#420](https://github.com/gitbrent/PptxGenJS/pull/420) ([ReimaFrgos](https://github.com/ReimaFrgos))
-- Add new chart options: `catAxisLabelFontBold`,`dataLabelFontBold`,`legendFontFace`,`valAxisLabelFontBold` [\#426](https://github.com/gitbrent/PptxGenJS/issue/426) ([BandaSatish07](https://github.com/BandaSatish07))
+- Add new chart options: `catAxisLabelFontBold`,`dataLabelFontBold`,`legendFontFace`,`valAxisLabelFontBold` [\#426](https://github.com/gitbrent/PptxGenJS/issues/426) ([BandaSatish07](https://github.com/BandaSatish07))
 - Add missing jpg content type to fix corrupt presentation for Office365 [\#435](https://github.com/gitbrent/PptxGenJS/pull/435) ([antonandreyev](https://github.com/antonandreyev))
 - Add `catAxisMinVal` and `catAxisMaxVal` [\#462](https://github.com/gitbrent/PptxGenJS/pull/462) ([vrimar](https://github.com/vrimar))
 - New Chart Option: `valAxisCrossesAt` [\#474](https://github.com/gitbrent/PptxGenJS/pull/474) ([ReimaFrgos](https://github.com/ReimaFrgos))
-- Docs: Show how to save as Blob using client browser [\#478](https://github.com/gitbrent/PptxGenJS/issue/478) ([crazyx13th](https://github.com/crazyx13th))
+- Docs: Show how to save as Blob using client browser [\#478](https://github.com/gitbrent/PptxGenJS/issues/478) ([crazyx13th](https://github.com/crazyx13th))
 ### Changed
-- Fixed: Dynamic Text Options do not apply [\#427](https://github.com/gitbrent/PptxGenJS/issue/427) ([sunnyar](https://github.com/sunnyar))
+- Fixed: Dynamic Text Options do not apply [\#427](https://github.com/gitbrent/PptxGenJS/issues/427) ([sunnyar](https://github.com/sunnyar))
 - Removed: legacy/deprecated attributes from README javascript script tags [\#431](https://github.com/gitbrent/PptxGenJS/pull/431) ([efx](https://github.com/efx))
-- Fixed: issue with SlideNumber `fontSize` float values [\#432](https://github.com/gitbrent/PptxGenJS/issue/432) ([efx](https://github.com/efx))
+- Fixed: issue with SlideNumber `fontSize` float values [\#432](https://github.com/gitbrent/PptxGenJS/issues/432) ([efx](https://github.com/efx))
 - Fixed: query and fragment from image URL extension [\#433](https://github.com/gitbrent/PptxGenJS/pull/433) ([katsuya-horiuchi](https://github.com/katsuya-horiuchi))
 - Changed: Replace "$" with "jQuery" to fix integration issues with some applications [\#436](https://github.com/gitbrent/PptxGenJS/pull/436) ([antonandreyev](https://github.com/antonandreyev))
 - Changed: Export more types to enhance TypeScript support [\#443](https://github.com/gitbrent/PptxGenJS/pull/443) ([ntietz](https://github.com/ntietz))
@@ -132,7 +166,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Demo page converted to Bootstrap 4 [gitbrent](https://github.com/gitbrent)
 - Fixed issue with float font-sizes in `addSlidesForTable()` [gitbrent](https://github.com/gitbrent)
-- No Color on negative bars when barGrouping is stacked [\#343](https://github.com/gitbrent/PptxGenJS/issue/343)
+- No Color on negative bars when barGrouping is stacked [\#343](https://github.com/gitbrent/PptxGenJS/issues/343)
 ([vanarebane](https://github.com/vanarebane)) [\#419](https://github.com/gitbrent/PptxGenJS/pull/419)
 ([octy40](https://github.com/octy40))
 - Improve typescript declaration files [\#409](https://github.com/gitbrent/PptxGenJS/pull/409) ([michaelbeaumont](https://github.com/michaelbeaumont))

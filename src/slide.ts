@@ -6,9 +6,10 @@ import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
 	IChartMulti,
 	IChartOpts,
+	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IMediaOpts,
+	MediaOpts,
 	ISlideLayout,
 	ISlideNumber,
 	ISlideRel,
@@ -20,7 +21,8 @@ import {
 	IText,
 	ITextOpts,
 	TableRow,
-    IChartOptsLib,
+	HexColor,
+	BkgdOpts,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -71,7 +73,9 @@ export default class Slide {
 	}
 
 	/**
+	 * Background color
 	 * @type {string}
+	 * @deprecated in v3.3.0 - use `background` instead
 	 */
 	private _bkgd: string
 	public set bkgd(value: string) {
@@ -82,13 +86,30 @@ export default class Slide {
 	}
 
 	/**
-	 * @type {string}
+	 * Background color or image
+	 * @type {BkgdOpts}
+	 * @example solid color `background: {fill:'FF0000'}
+	 * @example base64 `background: {data:'image/png;base64,ABC[...]123'}`
+	 * @example url  `background: {path:'https://some.url/image.jpg'}`
+	 * @since v3.3.0
 	 */
-	private _color: string
-	public set color(value: string) {
+	private _background: BkgdOpts
+	public set background(value: BkgdOpts) {
+		genObj.addBackgroundDefinition(value, this)
+	}
+	public get background(): BkgdOpts {
+		return this._background
+	}
+
+	/**
+	 * Default font color
+	 * @type {HexColor}
+	 */
+	private _color: HexColor
+	public set color(value: HexColor) {
 		this._color = value
 	}
-	public get color(): string {
+	public get color(): HexColor {
 		return this._color
 	}
 
@@ -125,7 +146,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide {
-		// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
+		// FUTURE: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 		// Set `_type` on IChartOptsLib as its what is used as object is passed around
 		let optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type
@@ -145,10 +166,10 @@ export default class Slide {
 
 	/**
 	 * Add media (audio/video) to Slide
-	 * @param {IMediaOpts} options - media options
+	 * @param {MediaOpts} options - media options
 	 * @return {Slide} this Slide
 	 */
-	addMedia(options: IMediaOpts): Slide {
+	addMedia(options: MediaOpts): Slide {
 		genObj.addMediaDefinition(this, options)
 		return this
 	}
@@ -187,7 +208,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addTable(tableRows: TableRow[], options?: ITableOptions): Slide {
-		// FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
+		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}

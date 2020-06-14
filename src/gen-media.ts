@@ -17,7 +17,7 @@ export function encodeSlideMediaRels(layout: ISlideLib | ISlideLayout): Promise<
 
 	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
 	layout.relsMedia
-		.filter(rel => rel.type !== 'online' && !rel.data)
+		.filter(rel => rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)))
 		.forEach(rel => {
 			imageProms.push(
 				new Promise((resolve, reject) => {
@@ -42,7 +42,7 @@ export function encodeSlideMediaRels(layout: ISlideLib | ISlideLayout): Promise<
 							})
 							res.on('error', ex => {
 								rel.data = IMG_BROKEN
-								reject(`ERROR! Unable to load image: ${rel.path}`)
+								reject(`ERROR! Unable to load image (https.get): ${rel.path}`)
 							})
 						})
 					} else {
@@ -69,7 +69,7 @@ export function encodeSlideMediaRels(layout: ISlideLib | ISlideLayout): Promise<
 						}
 						xhr.onerror = ex => {
 							rel.data = IMG_BROKEN
-							reject(`ERROR! Unable to load image: ${rel.path}`)
+							reject(`ERROR! Unable to load image (xhr.onerror): ${rel.path}`)
 						}
 
 						// B: Execute request
@@ -131,7 +131,7 @@ function createSvgPngPreview(rel: ISlideRelMedia): Promise<string> {
 		}
 		image.onerror = ex => {
 			rel.data = IMG_BROKEN
-			reject(`ERROR! Unable to load image: ${rel.path}`)
+			reject(`ERROR! Unable to load image (image.onerror): ${rel.path}`)
 		}
 
 		// C: Load image

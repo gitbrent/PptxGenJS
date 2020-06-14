@@ -20,11 +20,11 @@
 
 1. Update `package.json` version
 2. Update `src/pptxgen.ts` version
-3. Build using `$ npm run ship`
-4. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts`
-5. Open `dist/*.js` and check headers
-6. Update `CHANGELOG.md` with new date
-7. Update `README.md` with new CDN links
+3. Update `CHANGELOG.md` with new date
+4. Update `README.md` with new CDN links
+5. Build library: npm scripts > `ship`
+6. Consolidate new changes from `src/bld/*.ts` into `types/index.d.ts` and update version in head comment
+7. Open `dist/*.js` and check headers
 
 ## Test Newest Library Build
 
@@ -36,11 +36,16 @@ Run all tests in browser
 
 ### Node
 
-Run Node test
+Node Test
+
+1. Update `demos/node/package.json` version
 
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/node
-$ node demo.js All
+$ npm run demo
+$ npm run demo-all
+$ npm run demo-text
+$ npm run demo-stream
 ```
 
 ### React/TypeScript
@@ -58,13 +63,17 @@ $ cd ~/GitHub/PptxGenJS/demos/react-demo
 $ npm run start
 ```
 
-1. Go to http://localhost:3000 on iMac
-2. Run both demo tests
-3. Go to http://192.168.x.x:3000 on iPhone
-4. Run both demo tests
-5. Ensure each is viewable upon download
-6. `npm run build`
-7. copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build (DO NOT use the deploy script offered onscreen!)
+1. Go to http://localhost:3000 on iMac, run demo tests
+2. Go to http://192.168.1.x:3000 on iPhone, run demo tests
+3. Go to http://192.168.1.x:3000 on Android, run demo tests
+4. Open exports on each device to ensure MIME type is correct, looks right, etc.
+
+```bash
+$ cd ~/GitHub/PptxGenJS/demos/react-demo
+$ npm run build
+```
+
+1. Copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build (DO NOT use the deploy script offered onscreen!)
 
 **NOTE** Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
 
@@ -72,7 +81,7 @@ $ npm run start
 
 ### Pre-Release Check
 
-1. Revert scripts in `./demos/browser/index.html`
+1. Update `demos/browser/index.html` version and CDN links
 2. Is version updated in package.json and pptxgen.js?
 3. Are `index.d.ts` defs updated?
 
@@ -90,9 +99,8 @@ $ npm run start
 
 ## Post-Release Tasks
 
-1. Save output from all tests and html2ppt for this release
-2. Go test CDN links on README
-3. Load **gh-pages** branch
-4. Update `installation.md` with latest CDN version
-5. Update demo-react by copying contents of the newest "build" (from above) into `./demo-react` folder
-6. Update other documentation as needed
+1. Go test CDN links on README
+2. Load **gh-pages** branch
+3. Update `installation.md` with latest CDN version
+4. Update demo-react by copying contents of the newest "build" (from above) into `./demo-react` folder
+5. Update other documentation as needed

@@ -2,8 +2,8 @@
  * PptxGenJS: Utility Methods
  */
 
-import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, ILayout, ShapeFill, IGlowOptions, ISlideLib } from './core-interfaces'
+import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
+import { IChartOpts, ILayout, GlowOptions, ISlideLib, ShapeFill, Color, ShapeLine } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -44,7 +44,7 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
  * @returns {string} UUID
  */
 export function getUuid(uuidFormat: string): string {
-	return uuidFormat.replace(/[xy]/g, function(c) {
+	return uuidFormat.replace(/[xy]/g, function (c) {
 		let r = (Math.random() * 16) | 0,
 			v = c === 'x' ? r : (r & 0x3) | 0x8
 		return v.toString(16)
@@ -75,13 +75,7 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 export function encodeXmlEntities(xml: string): string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 	if (typeof xml === 'undefined' || xml == null) return ''
-	return xml
-		.toString()
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&apos;')
+	return xml.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 }
 
 /**
@@ -163,12 +157,12 @@ export function createColorElement(colorStr: string | SCHEME_COLORS, innerElemen
 
 /**
  * Creates `a:glow` element
- * @param {Object} opts glow properties
- * @param {Object} defaults defaults for unspecified properties in `opts`
+ * @param {GlowOptions} options glow properties
+ * @param {GlowOptions} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
-export function createGlowElement(options: IGlowOptions, defaults: IGlowOptions): string {
+export function createGlowElement(options: GlowOptions, defaults: GlowOptions): string {
 	let strXml = '',
 		opts = getMix(defaults, options),
 		size = opts['size'] * ONEPT,
@@ -184,11 +178,11 @@ export function createGlowElement(options: IGlowOptions, defaults: IGlowOptions)
 
 /**
  * Create color selection
- * @param {ShapeFill} shapeFill - options
+ * @param {shapeFill} ShapeFill - options
  * @param {string} backColor - color string
  * @returns {string} XML string
  */
-export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): string {
+export function genXmlColorSelection(shapeFill: Color | ShapeFill | ShapeLine, backColor?: string): string {
 	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''
@@ -203,7 +197,8 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 		else {
 			if (shapeFill.type) fillType = shapeFill.type
 			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>`
+			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>` // @deprecated v3.3.0
+			if (shapeFill.transparency) internalElements += `<a:alpha val="${100 - shapeFill.transparency}000"/>`
 		}
 
 		switch (fillType) {

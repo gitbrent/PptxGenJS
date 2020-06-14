@@ -5,6 +5,7 @@
 import {
 	BULLET_TYPES,
 	CRLF,
+	DEF_BULLET_MARGIN,
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
 	DEF_PRES_LAYOUT_NAME,
@@ -19,7 +20,7 @@ import {
 import {
 	IObjectOptions,
 	IPresentation,
-	IShadowOptions,
+	ShadowOptions,
 	ISlideLayout,
 	ISlideLib,
 	ISlideObject,
@@ -34,7 +35,7 @@ import {
 import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid } from './gen-utils'
 
 let imageSizingXml = {
-	cover: function(imgSize, boxDim) {
+	cover: function (imgSize, boxDim) {
 		let imgRatio = imgSize.h / imgSize.w,
 			boxRatio = boxDim.h / boxDim.w,
 			isBoxBased = boxRatio > imgRatio,
@@ -44,7 +45,7 @@ let imageSizingXml = {
 			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
 		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
-	contain: function(imgSize, boxDim) {
+	contain: function (imgSize, boxDim) {
 		let imgRatio = imgSize.h / imgSize.w,
 			boxRatio = boxDim.h / boxDim.w,
 			widthBased = boxRatio > imgRatio,
@@ -54,7 +55,7 @@ let imageSizingXml = {
 			vzPerc = Math.round(1e5 * 0.5 * (1 - boxDim.h / height))
 		return '<a:srcRect l="' + hzPerc + '" r="' + hzPerc + '" t="' + vzPerc + '" b="' + vzPerc + '"/><a:stretch/>'
 	},
-	crop: function(imageSize, boxDim) {
+	crop: function (imageSize, boxDim) {
 		let l = boxDim.x,
 			r = imageSize.w - (boxDim.x + boxDim.w),
 			t = boxDim.y,
@@ -353,7 +354,10 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						}
 
 						// 4: Set CELL content and properties ==================================
-						strXml += '<a:tc' + cellColspan + cellRowspan + '>' + genXmlTextBody(cell) + '<a:tcPr' + cellMarginXml + cellValign + '>'
+						strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
+						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
+						// TODO: FIXME: 20200525: ^^^
+						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
 
 						// 5: Borders: Add any borders
 						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
@@ -371,7 +375,12 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 							strXml +=
 								'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
 						} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
-							;[{ idx: 3, name: 'lnL' }, { idx: 1, name: 'lnR' }, { idx: 0, name: 'lnT' }, { idx: 2, name: 'lnB' }].forEach(obj => {
+							;[
+								{ idx: 3, name: 'lnL' },
+								{ idx: 1, name: 'lnR' },
+								{ idx: 0, name: 'lnT' },
+								{ idx: 2, name: 'lnB' },
+							].forEach(obj => {
 								if (cellOpts.border[obj.idx]) {
 									let strC =
 										'<a:solidFill><a:srgbClr val="' +
@@ -453,15 +462,13 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				strSlideXml += '<p:sp>'
 
 				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += '<p:nvSpPr><p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '"/>'
+				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="Object${idx + 1}"/>`
 				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
-				strSlideXml += '<p:nvPr>'
-				strSlideXml += slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)
-				strSlideXml += '</p:nvPr>'
+				strSlideXml += `<p:nvPr>${slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += '</p:nvSpPr><p:spPr>'
-				strSlideXml += '<a:xfrm' + locationAttr + '>'
-				strSlideXml += '<a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>'
+				strSlideXml += `<a:xfrm${locationAttr}>`
+				strSlideXml += `<a:off x="${x}" y="${y}"/>`
+				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
 				strSlideXml +=
 					'<a:prstGeom prst="' +
 					slideItemObj.shape +
@@ -476,11 +483,12 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 
 				// shape Type: LINE: line color
 				if (slideItemObj.options.line) {
-					strSlideXml += '<a:ln' + (slideItemObj.options.lineSize ? ' w="' + slideItemObj.options.lineSize * ONEPT + '"' : '') + '>'
-					strSlideXml += genXmlColorSelection(slideItemObj.options.line)
-					if (slideItemObj.options.lineDash) strSlideXml += '<a:prstDash val="' + slideItemObj.options.lineDash + '"/>'
-					if (slideItemObj.options.lineHead) strSlideXml += '<a:headEnd type="' + slideItemObj.options.lineHead + '"/>'
-					if (slideItemObj.options.lineTail) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.lineTail + '"/>'
+					strSlideXml += slideItemObj.options.line.size ? `<a:ln w="${slideItemObj.options.line.size * ONEPT}">` : '<a:ln>'
+					strSlideXml += genXmlColorSelection(slideItemObj.options.line.color)
+					if (slideItemObj.options.line.dashType) strSlideXml += `<a:prstDash val="${slideItemObj.options.line.dashType}"/>`
+					if (slideItemObj.options.line.beginArrowType) strSlideXml += `<a:headEnd type="${slideItemObj.options.line.beginArrowType}"/>`
+					if (slideItemObj.options.line.endArrowType) strSlideXml += `<a:tailEnd type="${slideItemObj.options.line.endArrowType}"/>`
+					// FUTURE: `endArrowSize` < a: headEnd type = "arrow" w = "lg" len = "lg" /> 'sm' | 'med' | 'lg'(values are 1 - 9, making a 3x3 grid of w / len possibilities)
 					strSlideXml += '</a:ln>'
 				}
 
@@ -619,11 +627,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						' <p:cNvPr id="' +
 						(slideItemObj.mediaRid + 2) +
 						'" name="' +
-						slideItemObj.media
-							.split('/')
-							.pop()
-							.split('.')
-							.shift() +
+						slideItemObj.media.split('/').pop().split('.').shift() +
 						'"><a:hlinkClick r:id="" action="ppaction://media"/></p:cNvPr>'
 					strSlideXml += ' <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 					strSlideXml += ' <p:nvPr>'
@@ -820,8 +824,8 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 	let strXmlBullet = '',
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
-	let bulletLvl0Margin = 342900
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
+	let bulletMarL = ONEPT * DEF_BULLET_MARGIN
 
 	let paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '')
 
@@ -848,42 +852,52 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 			}
 		}
 
-		if (textObj.options.lineSpacing) {
-			strXmlLnSpc = '<a:lnSpc><a:spcPts val="' + textObj.options.lineSpacing + '00"/></a:lnSpc>'
-		}
+		if (textObj.options.lineSpacing) strXmlLnSpc = `<a:lnSpc><a:spcPts val="${textObj.options.lineSpacing}00"/></a:lnSpc>`
 
 		// OPTION: indent
 		if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
-			paragraphPropXml += ' lvl="' + textObj.options.indentLevel + '"'
+			paragraphPropXml += ` lvl="${textObj.options.indentLevel}"`
 		}
 
 		// OPTION: Paragraph Spacing: Before/After
 		if (textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0) {
-			strXmlParaSpc += '<a:spcBef><a:spcPts val="' + textObj.options.paraSpaceBefore * 100 + '"/></a:spcBef>'
+			strXmlParaSpc += `<a:spcBef><a:spcPts val="${textObj.options.paraSpaceBefore * 100}"/></a:spcBef>`
 		}
 		if (textObj.options.paraSpaceAfter && !isNaN(Number(textObj.options.paraSpaceAfter)) && textObj.options.paraSpaceAfter > 0) {
-			strXmlParaSpc += '<a:spcAft><a:spcPts val="' + textObj.options.paraSpaceAfter * 100 + '"/></a:spcAft>'
+			strXmlParaSpc += `<a:spcAft><a:spcPts val="${textObj.options.paraSpaceAfter * 100}"/></a:spcAft>`
 		}
 
 		// OPTION: bullet
 		// NOTE: OOXML uses the unicode character set for Bullets
 		// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
 		if (typeof textObj.options.bullet === 'object') {
+			if (textObj && textObj.options && textObj.options.bullet && textObj.options.bullet.indent) bulletMarL = ONEPT * textObj.options.bullet.indent
+
 			if (textObj.options.bullet.type) {
 				if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
-					paragraphPropXml +=
-						' marL="' +
-						(textObj.options.indentLevel && textObj.options.indentLevel > 0
-							? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel
-							: bulletLvl0Margin) +
-						'" indent="-' +
-						bulletLvl0Margin +
-						'"'
-					strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style ||
-						'arabicPeriod'}" startAt="${textObj.options.bullet.startAt || '1'}"/>`
+					paragraphPropXml += ` marL="${
+						textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+					}" indent="-${bulletMarL}"`
+					strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style || 'arabicPeriod'}" startAt="${
+						textObj.options.bullet.numberStartAt || textObj.options.bullet.startAt || '1'
+					}"/>`
 				}
+			} else if (textObj.options.bullet.characterCode) {
+				let bulletCode = `&#x${textObj.options.bullet.characterCode};`
+
+				// Check value for hex-ness (s/b 4 char hex)
+				if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.characterCode) === false) {
+					console.warn('Warning: `bullet.characterCode should be a 4-digit unicode charatcer (ex: 22AB)`!')
+					bulletCode = BULLET_TYPES['DEFAULT']
+				}
+
+				paragraphPropXml += ` marL="${
+					textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+				}" indent="-${bulletMarL}"`
+				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
 			} else if (textObj.options.bullet.code) {
-				let bulletCode = '&#x' + textObj.options.bullet.code + ';'
+				// @deprecated `bullet.code` v3.3.0
+				let bulletCode = `&#x${textObj.options.bullet.code};`
 
 				// Check value for hex-ness (s/b 4 char hex)
 				if (/^[0-9A-Fa-f]{4}$/.test(textObj.options.bullet.code) === false) {
@@ -891,32 +905,31 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 					bulletCode = BULLET_TYPES['DEFAULT']
 				}
 
-				paragraphPropXml +=
-					' marL="' +
-					(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
-					'" indent="-' +
-					bulletLvl0Margin +
-					'"'
+				paragraphPropXml += ` marL="${
+					textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+				}" indent="-${bulletMarL}"`
 				strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + bulletCode + '"/>'
+			} else {
+				paragraphPropXml += ` marL="${
+					textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+				}" indent="-${bulletMarL}"`
+				strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
 			}
 		} else if (textObj.options.bullet === true) {
-			paragraphPropXml +=
-				' marL="' +
-				(textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletLvl0Margin + bulletLvl0Margin * textObj.options.indentLevel : bulletLvl0Margin) +
-				'" indent="-' +
-				bulletLvl0Margin +
-				'"'
-			strXmlBullet = '<a:buSzPct val="100000"/><a:buChar char="' + BULLET_TYPES['DEFAULT'] + '"/>'
-		} else {
+			paragraphPropXml += ` marL="${
+				textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
+			}" indent="-${bulletMarL}"`
+			strXmlBullet = `<a:buSzPct val="100000"/><a:buChar char="${BULLET_TYPES['DEFAULT']}"/>`
+		} else if (textObj.options.bullet === false) {
+			// We only add this when the user explicitely asks for no bullet, otherwise, it can override the master defaults!
+			paragraphPropXml += ` indent="0" marL="0"` // FIX: ISSUE#589 - specify zero indent and marL or default will be hanging paragraph
 			strXmlBullet = '<a:buNone/>'
 		}
 
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
 		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) {
-			paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
-		}
+		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
 		paragraphPropXml += '</' + tag + '>'
 	}
 
@@ -946,27 +959,13 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
 	if (opts.color || opts.fontFace || opts.outline) {
 		if (opts.outline && typeof opts.outline === 'object') {
-			runProps += '<a:ln w="' + Math.round((opts.outline.size || 0.75) * ONEPT) + '">' + genXmlColorSelection(opts.outline.color || 'FFFFFF') + '</a:ln>'
+			runProps += `<a:ln w="${Math.round((opts.outline.size || 0.75) * ONEPT)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
-		if (opts.glow) {
-			runProps += '<a:effectLst>'
-			runProps += createGlowElement(opts.glow, DEF_TEXT_GLOW)
-			// FUTURE: shadow and other effects
-			runProps += '</a:effectLst>'
-		}
+		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
 		if (opts.fontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
-			runProps +=
-				'<a:latin typeface="' +
-				opts.fontFace +
-				'" pitchFamily="34" charset="0"/>' +
-				'<a:ea typeface="' +
-				opts.fontFace +
-				'" pitchFamily="34" charset="-122"/>' +
-				'<a:cs typeface="' +
-				opts.fontFace +
-				'" pitchFamily="34" charset="-120"/>'
+			runProps += `<a:latin typeface="${opts.fontFace}" pitchFamily="34" charset="0"/><a:ea typeface="${opts.fontFace}" pitchFamily="34" charset="-122"/><a:cs typeface="${opts.fontFace}" pitchFamily="34" charset="-120"/>`
 		}
 	}
 
@@ -977,24 +976,18 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 		else if (opts.hyperlink.url) {
 			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-			runProps +=
-				'<a:hlinkClick r:id="rId' +
-				opts.hyperlink.rId +
-				'" invalidUrl="" action="" tgtFrame="" tooltip="' +
-				(opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +
-				'" history="1" highlightClick="0" endSnd="0"/>'
+			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink.rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
+				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
+			}" history="1" highlightClick="0" endSnd="0"/>`
 		} else if (opts.hyperlink.slide) {
-			runProps +=
-				'<a:hlinkClick r:id="rId' +
-				opts.hyperlink.rId +
-				'" action="ppaction://hlinksldjump" tooltip="' +
-				(opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') +
-				'"/>'
+			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink.rId}" action="ppaction://hlinksldjump" tooltip="${
+				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
+			}"/>`
 		}
 	}
 
 	// END runProperties
-	runProps += '</' + runPropsTag + '>'
+	runProps += `</${runPropsTag}>`
 
 	return runProps
 }
@@ -1081,8 +1074,8 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
  * @note PPT text lines [lines followed by line-breaks] are created using <p>-aragraph's
- * @note Bullets are a paragprah-level formatting device
- * @param {ISlideObject|ITableCell} slideObj - slideObj -OR- table `cell` object
+ * @note Bullets are a paragragh-level formatting device
+ * @param {ISlideObject|ITableCell} slideObj - slideObj or tableCell
  * @returns XML containing the param object's text and formatting
  */
 export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
@@ -1111,7 +1104,9 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 
 	// STEP 2: Grab options, format line-breaks, etc.
 	if (Array.isArray(slideObj.text)) {
-		slideObj.text.forEach((obj, idx) => {
+		slideObj.text.forEach((obj: IText, idx: number) => {
+			if (!obj.text) obj.text = ''
+
 			// A: Set options
 			obj.options = obj.options || opts || {}
 			if (idx === 0 && obj.options && !obj.options.bullet && opts.bullet) obj.options.bullet = opts.bullet
@@ -1125,7 +1120,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 				if (obj.text.indexOf(CRLF) > -1) {
 					// Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
 					obj.text = obj.text.replace(/\r\n$/g, '')
-					// Plain strings like "hello \n world" or "first line\n" need to have lineBreaks set to become 2 separate lines as intended
+					// Plain strings like "hello \n world" or "first line\n" need to have line-breaks set to become 2 separate lines as intended
 					obj.options.breakLine = true
 				}
 
@@ -1158,21 +1153,15 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		// B: 'lstStyle'
 		// NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
 		// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
-		if (opts.h === 0 && opts.line && opts.align) {
-			strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
-		} else if (slideObj.type === 'placeholder') {
-			strSlideXml += '<a:lstStyle>'
-			strSlideXml += genXmlParagraphProperties(slideObj, true)
-			strSlideXml += '</a:lstStyle>'
-		} else {
-			strSlideXml += '<a:lstStyle/>'
-		}
+		if (opts.h === 0 && opts.line && opts.align) strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
+		else if (slideObj.type === 'placeholder') strSlideXml += `<a:lstStyle>${genXmlParagraphProperties(slideObj, true)}</a:lstStyle>`
+		else strSlideXml += '<a:lstStyle/>'
 	}
 
 	// STEP 4: Loop over each text object and create paragraph props, text run, etc.
 	arrTextObjects.forEach((textObj, idx) => {
 		// Clear/Increment loop vars
-		let paragraphPropXml = '<a:pPr ' + (textObj.options.rtlMode ? ' rtl="1" ' : '')
+		let paragraphPropXml = `<a:pPr ${textObj.options.rtlMode ? ' rtl="1" ' : ''}`
 		textObj.options.lineIdx = idx
 
 		// A: Inherit pPr-type options from parent shape's `options`
@@ -1209,18 +1198,16 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 	if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 		if (opts.fontFace) {
-			strSlideXml +=
-				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0">'
-			strSlideXml += '<a:latin typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '<a:ea typeface="' + opts.fontFace + '" charset="0"/>'
-			strSlideXml += '<a:cs typeface="' + opts.fontFace + '" charset="0"/>'
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0">'
+			strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
+			strSlideXml += `<a:ea typeface="${opts.fontFace}" charset="0"/>`
+			strSlideXml += `<a:cs typeface="${opts.fontFace}" charset="0"/>`
 			strSlideXml += '</a:endParaRPr>'
 		} else {
-			strSlideXml +=
-				'<a:endParaRPr lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '') + ' dirty="0"/>'
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
 		}
 	} else {
-		strSlideXml += '<a:endParaRPr lang="' + (opts.lang || 'en-US') + '" dirty="0"/>' // NOTE: Added 20180101 to address PPT-2007 issues
+		strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}" dirty="0"/>` // NOTE: Added 20180101 to address PPT-2007 issues
 	}
 	strSlideXml += '</a:p>'
 
@@ -1266,7 +1253,7 @@ export function makeXmlContTypes(slides: ISlideLib[], slideLayouts: ISlideLayout
 	strXml += '<Default Extension="jpeg" ContentType="image/jpeg"/>'
 	strXml += '<Default Extension="jpg" ContentType="image/jpg"/>'
 
-	// STEP 1: Add standard/any media types used in Presenation
+	// STEP 1: Add standard/any media types used in Presentation
 	strXml += '<Default Extension="png" ContentType="image/png"/>'
 	strXml += '<Default Extension="gif" ContentType="image/gif"/>'
 	strXml += '<Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
@@ -1786,9 +1773,9 @@ export function makeXmlViewProps(): string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowOptions} IShadowOptions - shadow options
+ * @param {ShadowOptions} ShadowOptions - shadow options
  */
-export function correctShadowOptions(ShadowOptions: IShadowOptions) {
+export function correctShadowOptions(ShadowOptions: ShadowOptions) {
 	if (!ShadowOptions || typeof ShadowOptions !== 'object') {
 		//console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
 		return
