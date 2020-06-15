@@ -431,7 +431,7 @@ export interface IShapeOptions extends PositionOptions {
 	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
 	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFill object with 50% transparent
 	 */
-	fill?: Color | ShapeFill
+	fill?: ShapeFill
 	/**
 	 * Flip shape horizontally?
 	 * @default false
@@ -509,7 +509,7 @@ export interface ITableCellOpts extends TextOptions {
 	autoPageLineWeight?: number
 	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
 	colspan?: number
-	fill?: Color | ShapeFill
+	fill?: ShapeFill
 	margin?: Margin
 	rowspan?: number
 	valign?: VAlign
@@ -563,7 +563,7 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	/**
 	 * Cell background color
 	 */
-	fill?: Color
+	fill?: Color // TODO: ShapeFill
 	/**
 	 * Cell margin
 	 * - affects all table cells, is superceded by cell options
@@ -651,7 +651,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	 * Character spacing
 	 */
 	charSpacing?: number
-	fill?: Color | ShapeFill
+	fill?: ShapeFill
 	/**
 	 * Flip shape horizontally?
 	 * @default false

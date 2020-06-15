@@ -1639,7 +1639,7 @@ declare namespace PptxGenJS {
 		autoPageLineWeight?: number
 		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
 		colspan?: number
-		fill?: ShapeFill
+		fill?: Color | ShapeFill
 		margin?: Margin
 		rowspan?: number
 		valign?: VAlign

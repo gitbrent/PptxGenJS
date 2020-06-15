@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200607
+* BLD.: 20200615
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -308,7 +308,7 @@ function genSlides_Table(pptx) {
 			]
 		];
 		slide.addTable(
-			arrTabRows, { x:0.5, y:1.1, w:5.0, rowH:0.75, fill:'F7F7F7', fontSize:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
+			arrTabRows, { x: 0.5, y: 1.1, w: 5.0, rowH: 0.75, fill: { color: 'F7F7F7' }, fontSize:14, color:'363636', border:{pt:'1', color:'BBCCDD'} }
 		);
 		// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
