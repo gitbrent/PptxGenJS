@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-12T04:38:49.915Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-15T18:13:07.194Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -843,7 +843,7 @@ function parseTextToLines(cell, colWidth) {
 }
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {[ITableToSlidesCell[]?]} tableRows - HTMLElementID of the table
+ * @param {ITableToSlidesCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
  * @param {ILayout} presLayout - Presentation layout
  * @param {ISlideLayout} masterSlide - master slide (if any)
@@ -1589,11 +1589,11 @@ function slideObjectToXml(slide) {
                             : '';
                         var cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : '';
                         var cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : '';
-                        var cellFill = (cell.optImp && cell.optImp.fill) || cellOpts.fill
-                            ? ' <a:solidFill><a:srgbClr val="' +
-                                ((cell.optImp && cell.optImp.fill) || (typeof cellOpts.fill === 'string' ? cellOpts.fill.replace('#', '') : '')).toUpperCase() +
-                                '"/></a:solidFill>'
-                            : '';
+                        // TODO: WIP: support ShapeFill
+                        var fillColor = (cell.optImp && cell.optImp.fill && cell.optImp.fill.color ? cell.optImp.fill.color : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string' ? cell.optImp.fill : '');
+                        fillColor = fillColor || cellOpts.fill && cellOpts.fill.color ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
+                        fillColor = fillColor.replace('#', '').toUpperCase();
+                        var cellFill = fillColor ? "<a:solidFill><a:srgbClr val=\"" + fillColor + "\"/></a:solidFill>" : '';
                         var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
@@ -4564,14 +4564,14 @@ function makeXmlCharts(rel) {
 }
 /**
  * Create XML string for any given chart type
- * @example: <c:bubbleChart> or <c:lineChart>
- *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
  * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
+ * @example '<c:bubbleChart>'
+ * @example '<c:lineChart>'
  * @return {string} XML
  */
 function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeChart) {
@@ -4753,7 +4753,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '  <c:numRef>';
                         strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>';
                         strXml += '    <c:numCache>';
-                        strXml += '      <c:formatCode>' + opts.catLabelFormatCode + '</c:formatCode>';
+                        strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>';
                         strXml += '      <c:ptCount val="' + obj.labels.length + '"/>';
                         obj.labels.forEach(function (label, idx) {
                             strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>';
@@ -4776,18 +4776,18 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // 3: "Values"
                 {
-                    strXml += '  <c:val>';
-                    strXml += '    <c:numRef>';
-                    strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>';
-                    strXml += '      <c:numCache>';
-                    strXml += '        <c:formatCode>General</c:formatCode>';
-                    strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>';
+                    strXml += '<c:val>';
+                    strXml += '  <c:numRef>';
+                    strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>';
+                    strXml += '    <c:numCache>';
+                    strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>';
+                    strXml += '      <c:ptCount val="' + obj.labels.length + '"/>';
                     obj.values.forEach(function (value, idx) {
                         strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
                     });
-                    strXml += '      </c:numCache>';
-                    strXml += '    </c:numRef>';
-                    strXml += '  </c:val>';
+                    strXml += '    </c:numCache>';
+                    strXml += '  </c:numRef>';
+                    strXml += '</c:val>';
                 }
                 // Option: `smooth`
                 if (chartType === CHART_TYPE.LINE)
@@ -5919,7 +5919,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200611:2323';
+var VERSION = '3.3.0-beta-20200615:1231';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
