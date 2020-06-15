@@ -49,7 +49,7 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {[ITableToSlidesCell[]?]} tableRows - HTMLElementID of the table
+ * @param {ITableToSlidesCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
  * @param {ILayout} presLayout - Presentation layout
  * @param {ISlideLayout} masterSlide - master slide (if any)

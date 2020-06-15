@@ -626,14 +626,14 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 /**
  * Create XML string for any given chart type
- * @example: <c:bubbleChart> or <c:lineChart>
- *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
  * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
+ * @example '<c:bubbleChart>'
+ * @example '<c:lineChart>'
  * @return {string} XML
  */
 function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
