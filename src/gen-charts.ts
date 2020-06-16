@@ -451,7 +451,9 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			// NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
 			strXml += '<c:autoTitleDeleted val="1"/>'
 		}
-		// Add 3D view tag
+		/** Add 3D view tag
+		 * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
+		 */
 		if (rel.opts._type === CHART_TYPE.BAR3D) {
 			strXml += '<c:view3D>'
 			strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>'
@@ -1636,7 +1638,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
  * @return {string} XML
  */
 function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
-	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir === 'col' ? 'r' : 't'
+	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't'
 	let strXml = ''
 	let isRight = axisPos === 'r' || axisPos === 't'
 	let crosses = isRight ? 'max' : 'autoZero'
