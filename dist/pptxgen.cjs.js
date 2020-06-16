@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-15T18:13:07.189Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-16T03:20:59.311Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -978,7 +978,11 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         if (tabOpts.verbose)
             console.log('emuSlideTabH (in) ...... = ' + (emuSlideTabH / EMU).toFixed(1));
         // D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
-        if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+        if (tableRowSlides.length > 1 && typeof tabOpts.autoPageSlideStartY === 'number') {
+            emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.autoPageSlideStartY + arrInchMargins[2]);
+        }
+        else if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+            // @deprecated v3.3.0
             emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2]);
         }
         else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
@@ -1043,7 +1047,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 });
                 // 2: Reset current table height for new Slide
                 emuTabCurrH = 0; // This row's emuRowH w/b added below
-                // 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
+                // 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
                 if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
                     // A: Add remaining cell lines
                     var newRowSlide_1 = [];
@@ -1226,7 +1230,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                         : false,
                     border: null,
                     color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
-                    fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+                    fill: { color: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])) },
                     fontFace: (window.getComputedStyle(cell).getPropertyValue('font-family') || '').split(',')[0].replace(/"/g, '').replace('inherit', '').replace('initial', '') ||
                         null,
                     fontSize: Number(window.getComputedStyle(cell).getPropertyValue('font-size').replace(/[a-z]/gi, '')),
@@ -1307,13 +1311,13 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     getSlidesForTableRows(__spreadArrays(arrObjTabHeadRows, arrObjTabBodyRows, arrObjTabFootRows), opts, pptx.presLayout, masterSlide).forEach(function (slide, idxTr) {
         // A: Create new Slide
         var newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null });
-        // B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+        // B: DESIGN: Reset `y` to startY or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
         if (idxTr === 0)
             opts.y = opts.y || arrInchMargins[0];
         if (idxTr > 0)
-            opts.y = opts.newSlideStartY || arrInchMargins[0];
+            opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0];
         if (opts.verbose)
-            console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y);
+            console.log('opts.autoPageSlideStartY:' + opts.autoPageSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y);
         // C: Add table to Slide
         newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false });
         // D: Add any additional objects
@@ -4402,7 +4406,9 @@ function makeXmlCharts(rel) {
             // NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
             strXml += '<c:autoTitleDeleted val="1"/>';
         }
-        // Add 3D view tag
+        /** Add 3D view tag
+         * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
+         */
         if (rel.opts._type === CHART_TYPE.BAR3D) {
             strXml += '<c:view3D>';
             strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>';
@@ -5531,7 +5537,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
  * @return {string} XML
  */
 function makeValAxis(opts, valAxisId) {
-    var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir === 'col' ? 'r' : 't';
+    var axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't';
     var strXml = '';
     var isRight = axisPos === 'r' || axisPos === 't';
     var crosses = isRight ? 'max' : 'autoZero';
@@ -5921,7 +5927,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200615:1231';
+var VERSION = '3.3.0-beta-20200615:2131';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
