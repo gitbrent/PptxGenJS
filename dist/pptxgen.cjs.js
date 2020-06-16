@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-16T03:20:59.311Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-16T03:40:27.186Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -845,7 +845,7 @@ function parseTextToLines(cell, colWidth) {
 }
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {ITableToSlidesCell[][]} tableRows - HTMLElementID of the table
+ * @param {ITableCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
  * @param {ILayout} presLayout - Presentation layout
  * @param {ISlideLayout} masterSlide - master slide (if any)
@@ -1596,8 +1596,13 @@ function slideObjectToXml(slide) {
                         var cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : '';
                         var cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : '';
                         // TODO: WIP: support ShapeFill
-                        var fillColor = (cell.optImp && cell.optImp.fill && cell.optImp.fill.color ? cell.optImp.fill.color : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string' ? cell.optImp.fill : '');
-                        fillColor = fillColor || cellOpts.fill && cellOpts.fill.color ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
+                        var fillColor = cell.optImp && cell.optImp.fill && cell.optImp.fill.color
+                            ? cell.optImp.fill.color
+                            : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
+                                ? cell.optImp.fill
+                                : '';
+                        fillColor =
+                            fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
                         fillColor = fillColor.replace('#', '').toUpperCase();
                         var cellFill = fillColor ? "<a:solidFill><a:srgbClr val=\"" + fillColor + "\"/></a:solidFill>" : '';
                         var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
