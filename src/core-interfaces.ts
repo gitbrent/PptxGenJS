@@ -419,7 +419,7 @@ export interface MediaOpts extends PositionOptions, OptsDataOrPath {
 
 // shapes =========================================================================================
 
-export interface IShapeOptions extends PositionOptions {
+export interface ShapeOptions extends PositionOptions {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -1067,7 +1067,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 // TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends IShapeOptions, TableCellOpts, ITextOpts {
+export interface IObjectOptions extends ShapeOptions, TableCellOpts, ITextOpts {
 	x?: Coord
 	y?: Coord
 	cx?: Coord

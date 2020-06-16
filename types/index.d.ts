@@ -886,10 +886,10 @@ declare namespace PptxGenJS {
 					image: {} // TODO: IImageOptions (?)
 			  }
 			| {
-					line: {} // TODO: IShapeOptions (?)
+					line: {} // TODO: ShapeOptions (?)
 			  }
 			| {
-					rect: {} // TODO: IShapeOptions (?)
+					rect: {} // TODO: ShapeOptions (?)
 			  }
 			| {
 					text: {
@@ -940,7 +940,7 @@ declare namespace PptxGenJS {
 		sizes?: number[]
 	}
 
-	export interface IObjectOptions extends IShapeOptions, TableCellOpts, ITextOpts {
+	export interface IObjectOptions extends ShapeOptions, TableCellOpts, ITextOpts {
 		x?: Coord
 		y?: Coord
 		cx?: Coord
@@ -1596,7 +1596,7 @@ declare namespace PptxGenJS {
 	}
 
 	// addShape
-	export interface IShapeOptions extends PositionOptions {
+	export interface ShapeOptions extends PositionOptions {
 		align?: HAlign
 		fill?: ShapeFill
 		flipH?: boolean
@@ -1845,10 +1845,10 @@ declare namespace PptxGenJS {
 		/**
 		 * Add shape to Slide
 		 * @param {SHAPE_NAME} shapeName - shape name
-		 * @param {IShapeOptions} options - shape options
+		 * @param {ShapeOptions} options - shape options
 		 * @return {Slide} this Slide
 		 */
-		addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide
+		addShape(shapeName: SHAPE_NAME, options?: ShapeOptions): Slide
 		/**
 		 * Add table to Slide
 		 * @param {TableRow[]} tableRows - table rows

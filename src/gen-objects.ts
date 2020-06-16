@@ -28,7 +28,6 @@ import {
 	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IShapeOptions,
 	ISlideLayout,
 	ISlideLib,
 	ISlideMasterOptions,
@@ -40,6 +39,7 @@ import {
 	MediaOpts,
 	OptsChartGridLine,
 	ShapeLine,
+	ShapeOptions,
 	TableRow,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
@@ -573,9 +573,9 @@ export function addNotesDefinition(target: ISlideLib, notes: string) {
  * Adds a shape object to a slide definition.
  * @param {ISlideLib} target slide object that the shape should be added to
  * @param {SHAPE_NAME} shapeName shape name
- * @param {IShapeOptions} opts shape options
+ * @param {ShapeOptions} opts shape options
  */
-export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: IShapeOptions) {
+export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: ShapeOptions) {
 	let options = typeof opts === 'object' ? opts : {}
 	options.line = options.line || ({ type: 'none' } as ShapeLine)
 	let newObject: ISlideObject = {
