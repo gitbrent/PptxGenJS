@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-16T03:40:27.190Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-16T03:52:36.304Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -3420,7 +3420,7 @@ function addNotesDefinition(target, notes) {
  * Adds a shape object to a slide definition.
  * @param {ISlideLib} target slide object that the shape should be added to
  * @param {SHAPE_NAME} shapeName shape name
- * @param {IShapeOptions} opts shape options
+ * @param {ShapeOptions} opts shape options
  */
 function addShapeDefinition(target, shapeName, opts) {
     var options = typeof opts === 'object' ? opts : {};
@@ -3990,7 +3990,7 @@ var Slide = /** @class */ (function () {
     /**
      * Add shape to Slide
      * @param {SHAPE_NAME} shapeName - shape name
-     * @param {IShapeOptions} options - shape options
+     * @param {ShapeOptions} options - shape options
      * @return {Slide} this Slide
      */
     Slide.prototype.addShape = function (shapeName, options) {
