@@ -518,10 +518,7 @@ export interface TableToSlidesOpts extends TableOptions {
 	slideMargin?: Margin
 	verbose?: boolean // Undocumented; shows verbose output
 }
-export interface ITableToSlidesOpts extends TableToSlidesOpts {
-	_arrObjTabHeadRows?: TableRow[]
-}
-export interface ITableCellOpts extends TextOptions {
+export interface TableCellOpts extends TextOptions {
 	autoPageCharWeight?: number
 	autoPageLineWeight?: number
 	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
@@ -599,18 +596,17 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	 */
 	rowH?: number | number[]
 }
-export interface ITableOptions extends TableOptions {
-	_arrObjTabHeadRows?: TableRow[]
-}
 export interface TableCell {
 	text?: string | TableCell[]
-	options?: ITableCellOpts
+	options?: TableCellOpts
 }
-// TODO: replace this with `ITableCell`
-export interface ITableToSlidesCell {
-	type: SLIDE_OBJECT_TYPES.tablecell
-	text?: string | TableCell[]
-	options?: ITableCellOpts
+export interface TableRowSlide {
+	rows: ITableRow[]
+}
+export type TableRow = number[] | string[] | TableCell[] // TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
+// [internal below]
+export interface ITableToSlidesOpts extends TableToSlidesOpts {
+	_arrObjTabHeadRows?: TableRow[]
 }
 export interface ITableCell extends TableCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
@@ -620,12 +616,10 @@ export interface ITableCell extends TableCell {
 	vmerge?: boolean
 	optImp?: any
 }
-export type ITableRow = ITableCell[]
-// TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
-export type TableRow = number[] | string[] | TableCell[]
-export interface TableRowSlide {
-	rows: ITableRow[]
+export interface ITableOptions extends TableOptions {
+	_arrObjTabHeadRows?: TableRow[]
 }
+export type ITableRow = ITableCell[]
 
 // text ===========================================================================================
 export interface GlowOptions {
@@ -1073,7 +1067,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 // TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
+export interface IObjectOptions extends IShapeOptions, TableCellOpts, ITextOpts {
 	x?: Coord
 	y?: Coord
 	cx?: Coord

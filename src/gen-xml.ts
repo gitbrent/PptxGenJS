@@ -28,7 +28,7 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	ITableCell,
-	ITableCellOpts,
+	TableCellOpts,
 	IText,
 	ITextOpts,
 } from './core-interfaces'
@@ -151,7 +151,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				let objTabOpts = slideItemObj.options
 				let intColCnt = 0,
 					intColW = 0
-				let cellOpts: ITableCellOpts
+				let cellOpts: TableCellOpts
 
 				// Calc number of columns
 				// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
@@ -327,8 +327,14 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						let cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : ''
 						let cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : ''
 						// TODO: WIP: support ShapeFill
-						let fillColor = (cell.optImp && cell.optImp.fill && cell.optImp.fill.color ? cell.optImp.fill.color : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string' ? cell.optImp.fill : '')
-						fillColor = fillColor || cellOpts.fill && cellOpts.fill.color ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
+						let fillColor =
+							cell.optImp && cell.optImp.fill && cell.optImp.fill.color
+								? cell.optImp.fill.color
+								: cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
+								? cell.optImp.fill
+								: ''
+						fillColor =
+							fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
 						fillColor = fillColor.replace('#', '').toUpperCase()
 						let cellFill = fillColor ? `<a:solidFill><a:srgbClr val="${fillColor}"/></a:solidFill>` : ''
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT

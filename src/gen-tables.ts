@@ -4,7 +4,7 @@
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { ILayout, ISlideLayout, ITableCell, ITableToSlidesCell, ITableToSlidesOpts, ITableRow, TableRowSlide, ITableCellOpts } from './core-interfaces'
+import { ILayout, ISlideLayout, ITableCell, ITableToSlidesOpts, ITableRow, TableRowSlide, TableCellOpts } from './core-interfaces'
 import { inch2Emu, rgbToHex } from './gen-utils'
 
 /**
@@ -49,18 +49,13 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {ITableToSlidesCell[][]} tableRows - HTMLElementID of the table
+ * @param {ITableCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
  * @param {ILayout} presLayout - Presentation layout
  * @param {ISlideLayout} masterSlide - master slide (if any)
  * @return {TableRowSlide[]} array of table rows
  */
-export function getSlidesForTableRows(
-	tableRows: ITableToSlidesCell[][] = [],
-	tabOpts: ITableToSlidesOpts = {},
-	presLayout: ILayout,
-	masterSlide?: ISlideLayout
-): TableRowSlide[] {
+export function getSlidesForTableRows(tableRows: ITableCell[][] = [], tabOpts: ITableToSlidesOpts = {}, presLayout: ILayout, masterSlide?: ISlideLayout): TableRowSlide[] {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN,
 		emuTabCurrH = 0,
 		emuSlideTabW = EMU * 1,
@@ -281,7 +276,7 @@ export function getSlidesForTableRows(
 					tableRows.unshift(newRowSlide)
 
 					// B: Add header row(s)
-					let tableHeadRows: ITableToSlidesCell[][] = []
+					let tableHeadRows: ITableCell[][] = []
 					tabOpts._arrObjTabHeadRows.forEach(row => {
 						let newHeadRow = []
 						row.forEach(cell => newHeadRow.push(cell))
@@ -354,9 +349,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	let opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout.width
-	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = []
-	let arrObjTabBodyRows: [ITableToSlidesCell[]?] = []
-	let arrObjTabFootRows: [ITableToSlidesCell[]?] = []
+	let arrObjTabHeadRows: [ITableCell[]?] = []
+	let arrObjTabBodyRows: [ITableCell[]?] = []
+	let arrObjTabFootRows: [ITableCell[]?] = []
 	let arrColW: number[] = []
 	let arrTabColW: number[] = []
 	let arrInchMargins: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5] // TRBL-style
@@ -440,7 +435,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				}
 
 				// B: Create option object
-				let cellOpts: ITableCellOpts = {
+				let cellOpts: TableCellOpts = {
 					align: null,
 					bold:
 						window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
