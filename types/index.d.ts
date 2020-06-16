@@ -112,9 +112,9 @@ declare class PptxGenJS {
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * @param {string} tabEleId - HTMLElementID of the table
-	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+	 * @param {TableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
 	 */
-	tableToSlides(tableElementId: string, opts?: PptxGenJS.ITableToSlidesOpts): void
+	tableToSlides(tableElementId: string, opts?: PptxGenJS.TableToSlidesOpts): void
 }
 
 declare namespace PptxGenJS {
@@ -916,37 +916,38 @@ declare namespace PptxGenJS {
 		slideNumber?: ISlideNumber
 	}
 
-	export interface ITableToSlidesOpts extends TableOptions {
-		addImage?: {
-			url: string
-			x: number
-			y: number
-			w?: number
-			h?: number
-		}
-		addShape?: {
-			shape: any
-			opts: {}
-		}
-		addTable?: {
-			rows: any[]
-			opts: {}
-		}
-		addText?: {
-			text: any[]
-			opts: {}
-		}
-		_arrObjTabHeadRows?: ITableToSlidesCell[][]
+	export interface TableToSlidesOpts extends TableOptions {
+		addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+		addShape?: { shape: any; options: {} }
+		addTable?: { rows: any[]; options: {} }
+		addText?: { text: any[]; options: {} }
+		/**
+		 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+		 */
 		addHeaderToEach?: boolean
 		autoPage?: boolean
-		autoPageCharWeight?: number
-		autoPageLineWeight?: number
+		autoPageCharWeight?: number // -1.0 to 1.0
+		autoPageLineWeight?: number // -1.0 to 1.0
+		/**
+		 * Whether to repeat head row(s) on new tables created by autopaging
+		 * @since 3.3.0
+		 * @default false
+		 */
+		autoPageRepeatHeader?: boolean
+		/**
+		 * The `y` location to use on subsequent slides created by autopaging
+		 * @default (top margin of Slide)
+		 */
+		autoPageSlideStartY?: number
 		colW?: number | number[]
 		masterSlideName?: string
 		masterSlide?: ISlideLayout
+		/**
+		 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+		 */
 		newSlideStartY?: number
 		slideMargin?: Margin
-		verbose?: boolean
+		verbose?: boolean // Undocumented; shows verbose output
 	}
 	export interface ITableToSlidesCell {
 		type: SLIDE_OBJECT_TYPES.tablecell
@@ -1639,7 +1640,7 @@ declare namespace PptxGenJS {
 		autoPageLineWeight?: number
 		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
 		colspan?: number
-		fill?: Color | ShapeFill
+		fill?: ShapeFill
 		margin?: Margin
 		rowspan?: number
 		valign?: VAlign
@@ -1696,7 +1697,7 @@ declare namespace PptxGenJS {
 		/**
 		 * Cell background color
 		 */
-		fill?: Color
+		fill?: ShapeFill
 		/**
 		 * Cell margin
 		 * - affects all table cells, is superceded by cell options

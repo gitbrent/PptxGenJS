@@ -191,7 +191,10 @@ export function getSlidesForTableRows(
 		if (tabOpts.verbose) console.log('emuSlideTabH (in) ...... = ' + (emuSlideTabH / EMU).toFixed(1))
 
 		// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
-		if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+		if (tableRowSlides.length > 1 && typeof tabOpts.autoPageSlideStartY === 'number') {
+			emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.autoPageSlideStartY + arrInchMargins[2])
+		} else if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+			// @deprecated v3.3.0
 			emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2])
 		} else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
 			emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
@@ -264,7 +267,7 @@ export function getSlidesForTableRows(
 				// 2: Reset current table height for new Slide
 				emuTabCurrH = 0 // This row's emuRowH w/b added below
 
-				// 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
+				// 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
 				if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
 					// A: Add remaining cell lines
 					let newRowSlide = []
@@ -446,7 +449,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 							: false,
 					border: null,
 					color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
-					fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+					fill: { color: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])) },
 					fontFace:
 						(window.getComputedStyle(cell).getPropertyValue('font-family') || '').split(',')[0].replace(/"/g, '').replace('inherit', '').replace('initial', '') ||
 						null,
@@ -540,10 +543,10 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 		// A: Create new Slide
 		let newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null })
 
-		// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+		// B: DESIGN: Reset `y` to startY or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
-		if (idxTr > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
-		if (opts.verbose) console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+		if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
+		if (opts.verbose) console.log('opts.autoPageSlideStartY:' + opts.autoPageSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
 		// C: Add table to Slide
 		newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })

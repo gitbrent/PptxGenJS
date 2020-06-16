@@ -6,7 +6,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.3.0">
-	<meta name="updated" content="2020-05-31">
+	<meta name="updated" content="2020-06-15">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -306,7 +306,7 @@
 
 			// TEST
 			//pptx.tableToSlides('tabAutoPaging');
-			pptx.tableToSlides('tabAutoPaging', {verbose:true, addHeaderToEach:true /*, newSlideStartY:2*/});
+			pptx.tableToSlides('tabAutoPaging', {verbose:true, autoPageRepeatHeader:true /*, autoPageSlideStartY:2*/});
 
 			pptx.writeFile('PptxGenJs_TTSTest_'+getTimestamp());
 		}
@@ -437,8 +437,8 @@
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.verbose = true;
-			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.autoPageRepeatHeader = true;
+			if ( $('#checkStartY').prop('checked') ) objOpts.autoPageSlideStartY = Number($('#numTab2SlideStartY').val());
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			//console.log(JSON.stringify(objOpts));
 
@@ -460,8 +460,8 @@
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.verbose = true;
-			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true; // TEST: DEPRECATED: addHeaderToEach
+			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val()); // TEST: DEPRECATED: `newSlideStartY`
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 
 			// STEP 3: Add a custom shape (text in this case) to each Slide
@@ -811,7 +811,7 @@
 													<label class="form-check-label" for="radioHeadN">No</label>
 												</div>
 											</div>
-											<code>addHeaderToEach</code>
+											<code>autoPageRepeatHeader</code>
 										</div>
 										<div class="col">
 											<label>Starting top location (<code>y</code>) after first slide</label>
@@ -826,7 +826,7 @@
 													<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
 												</div>
 											</div>
-											<code>newSlideStartY</code>
+											<code>autoPageSlideStartY</code>
 										</div>
 									</div>
 								</div>
@@ -1427,7 +1427,7 @@
 							<div>- Test basic functionality</div>
 							<div>- Test with small table dimensions</div>
 							<div>- Test with correct starting <code>{y:4.0}</code></div>
-							<div>- Test with <code>{ newSlideStartY:0.5 }</code></div>
+							<div>- Test with <code>{ autoPageSlideStartY:0.5 }</code></div>
 							<div>- Test with <code>{ autoPage:false }</code></div>
 							<div>- Test with <code>{ autoPageRepeatHeader:true }</code></div>
 							<div>- Tables with various <code>autoPageLineWeight</code> values</div>

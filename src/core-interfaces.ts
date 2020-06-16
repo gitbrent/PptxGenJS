@@ -485,24 +485,41 @@ export interface IShapeOptions extends PositionOptions {
 
 // tables =========================================================================================
 
-// TODO: create TableToSlidesOpts (incl. verbose)
-export interface ITableToSlidesOpts extends TableOptions {
+export interface TableToSlidesOpts extends TableOptions {
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
 	addShape?: { shape: any; options: {} }
 	addTable?: { rows: any[]; options: {} }
 	addText?: { text: any[]; options: {} }
-	//
-	_arrObjTabHeadRows?: TableRow[]
-	addHeaderToEach?: boolean // TODO: 20200528: rename to "autoPageRepeatHeader"
+	/**
+	 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+	 */
+	addHeaderToEach?: boolean
 	autoPage?: boolean
 	autoPageCharWeight?: number // -1.0 to 1.0
 	autoPageLineWeight?: number // -1.0 to 1.0
+	/**
+	 * Whether to repeat head row(s) on new tables created by autopaging
+	 * @since 3.3.0
+	 * @default false
+	 */
+	autoPageRepeatHeader?: boolean
+	/**
+	 * The `y` location to use on subsequent slides created by autopaging
+	 * @default (top margin of Slide)
+	 */
+	autoPageSlideStartY?: number
 	colW?: number | number[]
 	masterSlideName?: string
 	masterSlide?: ISlideLayout
+	/**
+	 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+	 */
 	newSlideStartY?: number
 	slideMargin?: Margin
 	verbose?: boolean // Undocumented; shows verbose output
+}
+export interface ITableToSlidesOpts extends TableToSlidesOpts {
+	_arrObjTabHeadRows?: TableRow[]
 }
 export interface ITableCellOpts extends TextOptions {
 	autoPageCharWeight?: number
@@ -563,7 +580,7 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	/**
 	 * Cell background color
 	 */
-	fill?: Color // TODO: ShapeFill
+	fill?: ShapeFill
 	/**
 	 * Cell margin
 	 * - affects all table cells, is superceded by cell options
@@ -757,13 +774,20 @@ export interface IChartMulti {
 	options: {}
 }
 export interface IChartPropsBase {
-	axisPos?: string
+	/**
+	 * Axis position
+	 */
+	axisPos?: 'b' | 'l' | 'r' | 't'
 	border?: BorderOptions
-	chartColors?: string[]
+	chartColors?: HexColor[]
+	/**
+	 * opacity (0.0 - 1.0)
+	 * @example 0.5 // 50% opaque
+	 */
 	chartColorsOpacity?: number
 	dataBorder?: BorderOptions
 	displayBlanksAs?: string
-	fill?: string
+	fill?: HexColor
 	invertedColors?: string
 	lang?: string
 	layout?: PositionOptions
@@ -774,6 +798,11 @@ export interface IChartPropsBase {
 	showPercent?: boolean
 	showTitle?: boolean
 	showValue?: boolean
+	/**
+	 * 3D perspecitve
+	 * - range: 0-100
+	 * @default 30
+	 */
 	v3DPerspective?: number
 	v3DRAngAx?: boolean
 	v3DRotX?: number
