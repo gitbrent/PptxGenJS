@@ -342,6 +342,22 @@ declare namespace PptxGenJS {
 		'wedgeRectCallout' = 'wedgeRectCallout',
 		'wedgeRoundRectCallout' = 'wedgeRoundRectCallout',
 	}
+	// used by charts, shape, text
+	export interface BorderOptions {
+		/**
+		 * Border type
+		 */
+		type?: 'none' | 'dash' | 'solid'
+		/**
+		 * Border color (hex)
+		 * @example 'FF3399'
+		 */
+		color?: HexColor
+		/**
+		 * Border size (points)
+		 */
+		pt?: number
+	}
 	// These are used by browser/script clients and have been named like this since v0.1.
 	// Desc: charts and shapes for `pptxgen.charts.` `pptxgen.shapes.`
 	// Note: "charts" and "shapes" are manually created by cloning
@@ -916,45 +932,6 @@ declare namespace PptxGenJS {
 		slideNumber?: ISlideNumber
 	}
 
-	export interface TableToSlidesOpts extends TableOptions {
-		addImage?: { url: string; x: number; y: number; w?: number; h?: number }
-		addShape?: { shape: any; options: {} }
-		addTable?: { rows: any[]; options: {} }
-		addText?: { text: any[]; options: {} }
-		/**
-		 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
-		 */
-		addHeaderToEach?: boolean
-		autoPage?: boolean
-		autoPageCharWeight?: number // -1.0 to 1.0
-		autoPageLineWeight?: number // -1.0 to 1.0
-		/**
-		 * Whether to repeat head row(s) on new tables created by autopaging
-		 * @since 3.3.0
-		 * @default false
-		 */
-		autoPageRepeatHeader?: boolean
-		/**
-		 * The `y` location to use on subsequent slides created by autopaging
-		 * @default (top margin of Slide)
-		 */
-		autoPageSlideStartY?: number
-		colW?: number | number[]
-		masterSlideName?: string
-		masterSlide?: ISlideLayout
-		/**
-		 * @deprecated 3.3.0 - use `autoPageSlideStartY`
-		 */
-		newSlideStartY?: number
-		slideMargin?: Margin
-		verbose?: boolean // Undocumented; shows verbose output
-	}
-	export interface ITableToSlidesCell {
-		type: SLIDE_OBJECT_TYPES.tablecell
-		text?: string | TableCell[]
-		options?: ITableCellOpts
-	}
-
 	export interface OptsChartData {
 		index?: number
 		name?: string
@@ -963,7 +940,7 @@ declare namespace PptxGenJS {
 		sizes?: number[]
 	}
 
-	export interface IObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
+	export interface IObjectOptions extends IShapeOptions, TableCellOpts, ITextOpts {
 		x?: Coord
 		y?: Coord
 		cx?: Coord
@@ -1634,22 +1611,50 @@ declare namespace PptxGenJS {
 		shadow?: IShadowOptions
 	}
 
-	// addTable
-	export interface ITableCellOpts extends TextOptions {
+	// addTable & tableToSlides
+	export interface TableToSlidesOpts extends TableOptions {
+		addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+		addShape?: { shape: any; options: {} }
+		addTable?: { rows: any[]; options: {} }
+		addText?: { text: any[]; options: {} }
+		/**
+		 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+		 */
+		addHeaderToEach?: boolean
+		autoPage?: boolean
+		autoPageCharWeight?: number // -1.0 to 1.0
+		autoPageLineWeight?: number // -1.0 to 1.0
+		/**
+		 * Whether to repeat head row(s) on new tables created by autopaging
+		 * @since 3.3.0
+		 * @default false
+		 */
+		autoPageRepeatHeader?: boolean
+		/**
+		 * The `y` location to use on subsequent slides created by autopaging
+		 * @default (top margin of Slide)
+		 */
+		autoPageSlideStartY?: number
+		colW?: number | number[]
+		masterSlideName?: string
+		masterSlide?: ISlideLayout
+		/**
+		 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+		 */
+		newSlideStartY?: number
+		slideMargin?: Margin
+		verbose?: boolean // Undocumented; shows verbose output
+	}
+	export interface TableCellOpts extends TextOptions {
 		autoPageCharWeight?: number
 		autoPageLineWeight?: number
-		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+		border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
 		colspan?: number
 		fill?: ShapeFill
 		margin?: Margin
 		rowspan?: number
 		valign?: VAlign
 	}
-	export interface TableCell {
-		text?: string | TableCell[]
-		options?: ITableCellOpts
-	}
-	export type TableRow = number[] | string[] | TableCell[]
 	export interface TableOptions extends PositionOptions, TextOptions {
 		/**
 		 * Whether to create new slides as table rows overflow each slide
@@ -1663,30 +1668,32 @@ declare namespace PptxGenJS {
 		 */
 		autoPageCharWeight?: number
 		/**
+		 * Number of rows that comprise table headers.
+		 * Required when `autoPageRepeatHeader` is set to true.
+		 * @example 2 - repeats the first two table rows on each new slide created
+		 * @default 1
+		 * @since v3.3.0
+		 */
+		autoPageHeaderRows?: number
+		/**
 		 * Line weight - affects line height before paging begins
 		 * @type float (-1.0 to 1.0)
 		 * @default 0
 		 */
 		autoPageLineWeight?: number
 		/**
-		 * Whether table header rows should be repeated on each new slide creating by autoPage
+		 * Whether table header row(s) should be repeated on each new slide creating by autoPage.
+		 * Use `autoPageHeaderRows` to designate how many rows comprise the table header (1+).
 		 * @default false
 		 * @since v3.3.0
 		 */
 		autoPageRepeatHeader?: boolean
 		/**
-		 * Number of rows that comprise table headers.
-		 * Required when `autoPageRepeatHeader` is set to true.
-		 * @example 2 - repeats the first two table rows on each new slide created
-		 * @since v3.3.0
-		 */
-		autoPageHeaderRows?: number
-		/**
 		 * Table border
 		 * - single value is applied to all 4 sides
 		 * - array of values in TRBL order for individual sides
 		 */
-		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+		border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
 		/**
 		 * Width of table columns
 		 * - single value is applied to every column equally based upon `w`
@@ -1716,6 +1723,14 @@ declare namespace PptxGenJS {
 		 */
 		rowH?: number | number[]
 	}
+	export interface TableCell {
+		text?: string | TableCell[]
+		options?: TableCellOpts
+	}
+	export interface TableRowSlide {
+		rows: TableRow[]
+	}
+	export type TableRow = number[] | string[] | TableCell[]
 
 	// addText
 	export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
