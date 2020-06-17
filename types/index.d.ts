@@ -1824,7 +1824,7 @@ declare namespace PptxGenJS {
 		options?: TableCellOpts
 	}
 	export interface TableRowSlide {
-		rows: ITableRow[]
+		rows: TableRow[]
 	}
 	export type TableRow = number[] | string[] | TableCell[]
 
