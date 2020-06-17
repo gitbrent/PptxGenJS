@@ -16,7 +16,6 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
-
 - [Introduction](#introduction)
 - [Features](#features)
 - [Live Demo](#live-demo)
@@ -46,17 +45,17 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 # Features
 
-**Extensive browser support**
+**Extensive Support**
 
-- Create/download presentations on all current desktop & mobile web browsers
+- Generate presentations on every modern desktop & mobile web browser
 - IE11 is supported via bundle polyfill
 
-**Major PowerPoint object types**
+**Comprehensive Objects**
 
-- Slides can include Charts, Images, Media, Shapes, Tables, Text and more
+- Create any object type: Charts, Images, Links, Media, Shapes, Tables, Text
 - SVG images and YouTube videos are supported when viewed in PowerPoint online/2019+ desktop application
 
-**Modern architecture**
+**Modern Architecture**
 
 - Supports client web browsers, NodeJS, and React/Angular/Electron
 - Export methods return promises
@@ -152,7 +151,7 @@ let slide = pres.addSlide();
 
 // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 let textboxText = "Hello World from PptxGenJS!";
-let textboxOpts = { x: 1, y: 1, color: "363636", fill: "f1f1f1", align: pres.AlignH.center };
+let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
@@ -170,7 +169,7 @@ let slide = pres.addSlide();
 
 // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 let textboxText = "Hello World from PptxGenJS!";
-let textboxOpts = { x: 1, y: 1, color: "363636", fill: "f1f1f1", align: "center" };
+let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
