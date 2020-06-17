@@ -4,11 +4,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Notes]
+- OMG, the typescript definitions were a big old mess; you guys are too nice to not have 100 issues open
+- The `core-interfaces.ts` file is now grouped and ordered, corrects a whole heap of bad/missing options and finally includes
+jsdoc details for everything other than charts (maybe next time...)
+- Lots of poorly named options have been deprecated and new, much better names created
+- Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
 ## [3.3.0] - 2020-??-??
 ### BREAKING CHANGES
-- TypeScript Users: `fill` property is no longer `string|ShapeFill`, it's now only `ShapeFill` (sorry!)
+- **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
 ### Added
 - Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
 - Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489)[phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684)[hanzi](https://github.com/hanzi))
