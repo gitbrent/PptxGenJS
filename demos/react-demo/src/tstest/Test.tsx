@@ -76,7 +76,7 @@ function testMethod_Table(pptx: pptxgen) {
 	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE" });
 
 	slide.addTable([[{ text: "cell 1" }]], { x: 0.5, y: 0.5 });
-	let rows = [];
+	let rows: pptxgen.TableRow[] = [];
 	rows.push(["First", "Second", "Third", "Fourth"]); // simple text array
 	rows.push([{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }]); // complex object cells
 	rows.push([
