@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-16T03:52:36.304Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-17T04:51:44.086Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -3675,7 +3675,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                 slides.push(addSlide(slideLayout ? slideLayout.name : null));
             // B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
             if (idx > 0)
-                opt.y = inch2Emu(opt.newSlideStartY || arrTableMargin[0]);
+                opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0]);
             // C: Add this table to new Slide
             {
                 var newSlide = getSlide(target.number + idx);
@@ -5930,7 +5930,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200615:2131';
+var VERSION = '3.3.0-beta-20200616:2221';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
