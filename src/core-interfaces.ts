@@ -486,17 +486,45 @@ export interface ShapeOptions extends PositionOptions {
 // tables =========================================================================================
 
 export interface TableToSlidesOpts extends TableOptions {
+	/**
+	 * Add an image to slide(s) created during autopaging
+	 */
 	addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+	/**
+	 * Add a shape to slide(s) created during autopaging
+	 */
 	addShape?: { shape: any; options: {} }
+	/**
+	 * Add a table to slide(s) created during autopaging
+	 */
 	addTable?: { rows: any[]; options: {} }
+	/**
+	 * Add a text object to slide(s) created during autopaging
+	 */
 	addText?: { text: any[]; options: {} }
 	/**
-	 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+	 * Whether to enable auto-paging
+	 * - auto-paging creates new slides as content overflows a slide
 	 */
-	addHeaderToEach?: boolean
 	autoPage?: boolean
-	autoPageCharWeight?: number // -1.0 to 1.0
-	autoPageLineWeight?: number // -1.0 to 1.0
+	/**
+	 * Auto-paging character weight
+	 * - adjusts how many characters are used before lines wrap
+	 * - range: -1.0 to 1.0
+	 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+	 * @default 0.0
+	 * @example 0.5 // lines are longer (increases the number of characters that can fit on a given line)
+	 */
+	autoPageCharWeight?: number
+	/**
+	 * Auto-paging line weight
+	 * - adjusts how many lines are used before slides wrap
+	 * - range: -1.0 to 1.0
+	 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+	 * @default 0.0
+	 * @example 0.5 // tables are taller (increases the number of lines that can fit on a given slide)
+	 */
+	autoPageLineWeight?: number
 	/**
 	 * Whether to repeat head row(s) on new tables created by autopaging
 	 * @since 3.3.0
@@ -508,15 +536,36 @@ export interface TableToSlidesOpts extends TableOptions {
 	 * @default (top margin of Slide)
 	 */
 	autoPageSlideStartY?: number
+	/**
+	 * Column widths (inches)
+	 */
 	colW?: number | number[]
+	/**
+	 * Master slide name
+	 * - define a master slide to have your auto-paged slides have corporate design, etc.
+	 * @see https://gitbrent.github.io/PptxGenJS/docs/masters.html
+	 */
 	masterSlideName?: string
-	masterSlide?: ISlideLayout
+	/**
+	 * Slide margin
+	 * - this margin will be across all slides created by auto-paging
+	 */
+	slideMargin?: Margin
+	/**
+	 * DEV TOOL: Verbose Mode (to console)
+	 * - tell the library to provide an almost ridiculous amount of detail during auto-paging calculations
+	 * @default false // obviously
+	 */
+	verbose?: boolean // Undocumented; shows verbose output
+
+	/**
+	 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+	 */
+	addHeaderToEach?: boolean
 	/**
 	 * @deprecated 3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
-	slideMargin?: Margin
-	verbose?: boolean // Undocumented; shows verbose output
 }
 export interface TableCellOpts extends TextOptions {
 	autoPageCharWeight?: number
@@ -607,6 +656,7 @@ export type TableRow = number[] | string[] | TableCell[] // TODO: 20200523: Cons
 // [internal below]
 export interface ITableToSlidesOpts extends TableToSlidesOpts {
 	_arrObjTabHeadRows?: TableRow[]
+	masterSlide?: ISlideLayout
 }
 export interface ITableCell extends TableCell {
 	type: SLIDE_OBJECT_TYPES.tablecell
