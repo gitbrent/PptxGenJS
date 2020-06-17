@@ -505,6 +505,7 @@ export interface TableToSlidesOpts extends TableOptions {
 	/**
 	 * Whether to enable auto-paging
 	 * - auto-paging creates new slides as content overflows a slide
+	 * @default true
 	 */
 	autoPage?: boolean
 	/**
@@ -568,39 +569,72 @@ export interface TableToSlidesOpts extends TableOptions {
 	newSlideStartY?: number
 }
 export interface TableCellOpts extends TextOptions {
+	/**
+	 * Auto-paging character weight
+	 * - adjusts how many characters are used before lines wrap
+	 * - range: -1.0 to 1.0
+	 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+	 * @default 0.0
+	 * @example 0.5 // lines are longer (increases the number of characters that can fit on a given line)
+	 */
 	autoPageCharWeight?: number
+	/**
+	 * Auto-paging line weight
+	 * - adjusts how many lines are used before slides wrap
+	 * - range: -1.0 to 1.0
+	 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+	 * @default 0.0
+	 * @example 0.5 // tables are taller (increases the number of lines that can fit on a given slide)
+	 */
 	autoPageLineWeight?: number
+	/**
+	 * Cell border
+	 */
 	border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+	/**
+	 * Cell colspan
+	 */
 	colspan?: number
+	/**
+	 * Fill color
+	 * @example 'FF0000' // hex string (red)
+	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFill object with 50% transparent
+	 */
 	fill?: ShapeFill
+	/**
+	 * Cell margin
+	 * @default 0
+	 */
 	margin?: Margin
+	/**
+	 * Cell rowspan
+	 */
 	rowspan?: number
-	valign?: VAlign
 }
 export interface TableOptions extends PositionOptions, TextOptions {
 	/**
-	 * Whether to create new slides as table rows overflow each slide
+	 * Whether to enable auto-paging
+	 * - auto-paging creates new slides as content overflows a slide
 	 * @default false
 	 */
 	autoPage?: boolean
 	/**
-	 * Character weight - affects line length before wrapping begins
-	 * @type float (-1.0 to 1.0)
-	 * @default 0
+	 * Auto-paging character weight
+	 * - adjusts how many characters are used before lines wrap
+	 * - range: -1.0 to 1.0
+	 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+	 * @default 0.0
+	 * @example 0.5 // lines are longer (increases the number of characters that can fit on a given line)
 	 */
 	autoPageCharWeight?: number
 	/**
-	 * Number of rows that comprise table headers.
-	 * Required when `autoPageRepeatHeader` is set to true.
-	 * @example 2 - repeats the first two table rows on each new slide created
-	 * @default 1
-	 * @since v3.3.0
-	 */
-	autoPageHeaderRows?: number
-	/**
-	 * Line weight - affects line height before paging begins
-	 * @type float (-1.0 to 1.0)
-	 * @default 0
+	 * Auto-paging line weight
+	 * - adjusts how many lines are used before slides wrap
+	 * - range: -1.0 to 1.0
+	 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+	 * @default 0.0
+	 * @example 0.5 // tables are taller (increases the number of lines that can fit on a given slide)
 	 */
 	autoPageLineWeight?: number
 	/**
@@ -610,6 +644,19 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	 * @since v3.3.0
 	 */
 	autoPageRepeatHeader?: boolean
+	/**
+	 * Number of rows that comprise table headers
+	 * - required when `autoPageRepeatHeader` is set to true.
+	 * @example 2 - repeats the first two table rows on each new slide created
+	 * @default 1
+	 * @since v3.3.0
+	 */
+	autoPageHeaderRows?: number
+	/**
+	 * The `y` location to use on subsequent slides created by autopaging
+	 * @default (top margin of Slide)
+	 */
+	autoPageSlideStartY?: number
 	/**
 	 * Table border
 	 * - single value is applied to all 4 sides
@@ -633,17 +680,17 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	 */
 	margin?: Margin
 	/**
-	 * Starting `y` location on additional slides created by autoPage=true
-	 * @default `y` value from table options
-	 */
-	newSlideStartY?: number
-	/**
 	 * Height of table rows
 	 * - single value is applied to every row equally based upon `h`
 	 * - array of values in applied to each row in order
 	 * @default rows of equal height based upon `h`
 	 */
 	rowH?: number | number[]
+
+	/**
+	 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+	 */
+	newSlideStartY?: number
 }
 export interface TableCell {
 	text?: string | TableCell[]
