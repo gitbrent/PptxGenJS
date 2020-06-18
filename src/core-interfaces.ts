@@ -778,7 +778,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLine
-	lineIdx?: number
+	lineIdx?: number // TODO: Internal field for `ITextOpts`
 	lineSpacing?: number
 	margin?: Margin
 	outline?: { color: Color; size: number }
