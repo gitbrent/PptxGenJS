@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200616
+* BLD.: 20200617
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -640,7 +640,7 @@ function genSlides_Table(pptx) {
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Test: `{ autoPageSlideStartY: 1.5 }`', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
-		slide.addTable(arrRows, { x: 3.0, y: 4.0, colW: [0.75, 1.75, 7], margin: 5, border: { color: 'CFCFCF' }, autoPage: true, autoPageSlideStartY: 1.5, verbose:true });
+		slide.addTable(arrRows, { x: 3.0, y: 4.0, colW: [0.75, 1.75, 7], margin: 5, border: { color: 'CFCFCF' }, autoPage: true, autoPageSlideStartY: 1.5 });
 
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging', masterName:'MASTER_PLAIN'});
 		slide.addText( [{text:'Table Examples: ', options:gDemoTitleText},{text:'Master Page with Auto-Paging', options:gDemoTitleOpts}], {x:0.5, y:0.13, w:'90%'} );
