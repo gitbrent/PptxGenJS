@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-17T04:51:44.080Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-18T03:38:20.100Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2219,26 +2219,13 @@ function genXmlTextRunProperties(opts, isDefault) {
  * @return {string} XML string
  */
 function genXmlTextRun(textObj) {
-    var arrLines = [];
-    var paraProp = '';
     var xmlTextRun = '';
     // 1: ADD runProperties
     var startInfo = genXmlTextRunProperties(textObj.options, false);
     // 2: LINE-BREAKS/MULTI-LINE: Split text into multi-p:
-    arrLines = textObj.text.split(CRLF);
-    if (arrLines.length > 1) {
-        arrLines.forEach(function (line, idx) {
-            xmlTextRun += '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(line);
-            // Stop/Start <p>aragraph as long as there is more lines ahead (otherwise its closed at the end of this function)
-            if (idx + 1 < arrLines.length)
-                xmlTextRun += (textObj.options.breakLine ? CRLF : '') + '</a:t></a:r>';
-        });
-    }
-    else {
-        // Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
-        // The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
-        xmlTextRun = (textObj.options.align && textObj.options.lineIdx > 0 ? paraProp : '') + '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(textObj.text);
-    }
+    // Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
+    // The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
+    xmlTextRun = '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(textObj.text);
     // Return paragraph with text run
     return xmlTextRun + '</a:t></a:r>';
 }
@@ -2332,22 +2319,19 @@ function genXmlTextBody(slideObj) {
                 obj.text = obj.text.toString().replace(/\r*\n/g, CRLF);
                 // 2: Handle strings that contain "\n"
                 if (obj.text.indexOf(CRLF) > -1) {
-                    // Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
-                    obj.text = obj.text.replace(/\r\n$/g, '');
                     // Plain strings like "hello \n world" or "first line\n" need to have line-breaks set to become 2 separate lines as intended
                     obj.options.breakLine = true;
                 }
-                // 3: Add CRLF line ending if `breakLine`
-                if (obj.options.breakLine && !obj.options.bullet && !obj.options.align && idx + 1 < slideObj.text.length)
-                    obj.text += CRLF;
             }
             // C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
             if (obj.options.breakLine || obj.text.indexOf(CRLF) > -1) {
-                obj.text.split(CRLF).forEach(function (line, lineIdx) {
+                var parts_1 = obj.text.split(CRLF);
+                parts_1.forEach(function (line, lineIdx) {
                     // Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 3)
                     // NOTE: Use "idx>0" so lines wont start with linebreak (eg:empty first line)
+                    var post = lineIdx === parts_1.length - 1 ? '' : CRLF;
                     arrTextObjects.push({
-                        text: (lineIdx > 0 && obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '') + line,
+                        text: line + post,
                         options: obj.options,
                     });
                 });
@@ -5932,7 +5916,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200616:2221';
+var VERSION = '3.3.0-beta-20200617:2237';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
