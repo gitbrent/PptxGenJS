@@ -426,10 +426,10 @@ export interface ShapeOptions extends PositionOptions {
 	 */
 	align?: HAlign
 	/**
-	 * Shape fill color
-	 * @example 'FF0000' // hex string (red)
-	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
-	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFill object with 50% transparent
+	 * Shape fill color properties
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 */
 	fill?: ShapeFill
 	/**
@@ -612,6 +612,7 @@ export interface TableCellOpts extends TextOptions {
 	 */
 	rowspan?: number
 }
+// TODO: WIP: rename to...? `AddTableOptions` ?
 export interface TableOptions extends PositionOptions, TextOptions {
 	/**
 	 * Whether to enable auto-paging
@@ -737,10 +738,11 @@ export interface GlowOptions {
 	size: number
 }
 
+// TODO: WIP: rename to...? `AddTextOptions` ?
 export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
 	/**
-	 * Whather "Fit to Shape" is enabled
-	 * @defaultvalue false
+	 * Whather "Fit to Shape?" is enabled
+	 * @default false
 	 */
 	autoFit?: boolean
 	bodyProp?: {
@@ -777,30 +779,17 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	isTextBox?: boolean
 	line?: ShapeLine
 	lineIdx?: number
-	/**
-	 * @deprecated v3.3.0 - use `line.size`
-	 */
-	lineSize?: number
 	lineSpacing?: number
-	/**
-	 * Dash type
-	 * @deprecated v3.3.0 - use `dashType`
-	 */
-	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
-	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
-	 */
-	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
-	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
-	 */
-	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	margin?: Margin
 	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
 	paraSpaceBefore?: number
 	placeholder?: string
 	rotate?: number // (degree * 60,000)
+	/**
+	 * Whether to enable right-to-left mode
+	 * @default false
+	 */
 	rtlMode?: boolean
 	shadow?: ShadowOptions
 	shape?: SHAPE_NAME
@@ -812,6 +801,24 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	wrap?: boolean
+
+	/**
+	 * Dash type
+	 * @deprecated v3.3.0 - use `dashType`
+	 */
+	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 */
+	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * @deprecated v3.3.0 - use `line.size`
+	 */
+	lineSize?: number
+	/**
+	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 */
+	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
 export interface IText {
 	text: string
