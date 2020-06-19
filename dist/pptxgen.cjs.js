@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-18T03:29:28.078Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-19T05:34:53.671Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2372,6 +2372,65 @@ function genXmlTextBody(slideObj) {
         else
             strSlideXml += '<a:lstStyle/>';
     }
+    // TODO: WIP: What if we build a datacube of lines FIRST, then stick them all together ??
+    // NEW: Transform IText object array into Paragraphs
+    //type Paragraph = IText[]
+    var arrLines = [];
+    var arrTexts = [];
+    arrTextObjects.forEach(function (textObj, idx) {
+        // A: Align and Bullet trigger new paragraph
+        if (arrTexts.length > 0 && (textObj.options.align || opts.align)) {
+            // Only start a new paragraph when align *changes*
+            //console.log(`${textObj.options.align} != ${arrTextObjects[idx - 1].options.align}`); // DEBUG:
+            if (textObj.options.align != arrTextObjects[idx - 1].options.align) {
+                arrLines.push(arrTexts);
+                arrTexts = [];
+                //console.log('new align line!'); // DEBUG:
+            }
+        }
+        else if (arrLines.length > 0 && textObj.options.bullet) {
+            arrLines.push(arrTexts);
+            arrTexts = [];
+            //console.log('new bullet line!'); // DEBUG:
+        }
+        // B: Add this text to current line
+        arrTexts.push(textObj);
+        // C: BreakLine begins new paragraph **after** adding current text
+        if (arrLines.length > 0 && textObj.options.breakLine) {
+            // Avoid starting a para right as loop is exhausted
+            if (idx + 1 < arrTextObjects.length) {
+                arrLines.push(arrTexts);
+                arrTexts = [];
+                //console.log('new breakLine line!'); // DEBUG:
+            }
+        }
+        // D: Flush buffer
+        if (idx + 1 === arrTextObjects.length)
+            arrLines.push(arrTexts);
+    });
+    //console.log(arrLines) // DEBUG:
+    // WIP: ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    /*
+    // STEP 4: Loop over each line and create paragraph props, text run, etc.
+    arrLines.forEach(line => {
+        // NOTE: `rtlMode` is like other opts, its propagated up to each text:options, so just check the 1st one
+        let paragraphPropXml = `<a:pPr ${line[0].options.rtlMode ? ' rtl="1" ' : ''}`
+
+        line.forEach((textObj, idx) => {
+            // A: Set line index
+            textObj.options.lineIdx = idx
+
+            // B: Inherit pPr-type options from parent shape's `options`
+            textObj.options.align = textObj.options.align || opts.align
+            textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing
+            textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel
+            textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore
+            textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
+            paragraphPropXml = genXmlParagraphProperties(textObj, false)
+
+            // TODO: WIP: keep going - copy code from below to create <p>
+    })
+    */
     // STEP 4: Loop over each text object and create paragraph props, text run, etc.
     arrTextObjects.forEach(function (textObj, idx) {
         // Clear/Increment loop vars
@@ -2383,16 +2442,19 @@ function genXmlTextBody(slideObj) {
         textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel;
         textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore;
         textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter;
-        textObj.options.lineIdx = idx;
         paragraphPropXml = genXmlParagraphProperties(textObj, false);
         // B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
         if (idx === 0) {
-            // Add paragraphProperties right after <p> before textrun(s) begin
-            strSlideXml += '<a:p>' + paragraphPropXml;
+            strSlideXml += '<a:p>';
         }
-        else if (idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined')) {
-            strSlideXml += '</a:p><a:p>' + paragraphPropXml;
+        else if (idx > 0 && typeof textObj.options.bullet !== 'undefined') {
+            strSlideXml += '</a:p><a:p>';
         }
+        else if (idx > 0 && typeof textObj.options.align !== 'undefined') {
+            strSlideXml += '</a:p><a:p>';
+        }
+        // B-2: Add paragraphProperties right after <p> before textrun(s) begin
+        strSlideXml += paragraphPropXml;
         // C: Inherit any main options (color, fontSize, etc.)
         // We only pass the text.options to genXmlTextRun (not the Slide.options),
         // so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
@@ -5932,7 +5994,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200617:2229';
+var VERSION = '3.3.0-beta-20200618:2323';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
