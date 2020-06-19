@@ -1239,6 +1239,7 @@ export interface IAddSlideOptions {
 	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
 	sectionTitle?: string
 }
+// TODO: rename `ISlide` to `Slide`, `ISlideLib` to `ISlide`
 export interface ISlide {
 	addChart: Function
 	addImage: Function
@@ -1248,7 +1249,6 @@ export interface ISlide {
 	addTable: Function
 	addText: Function
 	background?: BkgdOpts
-	bkgd?: string // @deprecated v3.3.0
 	/**
 	 * Default text color (hex format)
 	 * @example 'FF3399'
@@ -1256,9 +1256,14 @@ export interface ISlide {
 	color?: HexColor
 	hidden?: boolean
 	slideNumber?: ISlideNumber
+
+	/**
+	 * @deprecated 3.3.0
+	 */
+	bkgd?: string
 }
 export interface ISlideLib extends ISlide {
-	bkgdImgRid?: number // FIXME rename
+	bkgdImgRid?: number // FUTURE: rename
 	data?: ISlideObject[]
 	id: number
 	margin?: Margin
@@ -1270,7 +1275,7 @@ export interface ISlideLib extends ISlide {
 	relsMedia: ISlideRelMedia[]
 	rId: number
 	slideLayout: ISlideLayout
-	slideNumberObj?: ISlideNumber // FIXME rename
+	slideNumberObj?: ISlideNumber // FUTURE: rename
 }
 export interface IPresentation {
 	author: string
