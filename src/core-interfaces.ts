@@ -701,7 +701,7 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	newSlideStartY?: number
 }
 export interface TableCell {
-	text?: string | TableCell[]
+	text?: string | IText[]
 	options?: TableCellOpts
 }
 export interface TableRowSlide {
