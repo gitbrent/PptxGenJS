@@ -184,10 +184,10 @@ export interface ShapeFill {
 }
 export interface ShapeLine extends ShapeFill {
 	/**
-	 * Line size (pt)
+	 * Line width (pt)
 	 * @default 1
 	 */
-	size?: number
+	width?: number
 	/**
 	 * Dash type
 	 * @default 'solid'
@@ -195,10 +195,12 @@ export interface ShapeLine extends ShapeFill {
 	dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
 	 * Begin arrow type
+	 * @since 3.3.0
 	 */
 	beginArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
 	 * End arrow type
+	 * @since 3.3.0
 	 */
 	endArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	// FUTURE: beginArrowSize (1-9)
@@ -217,6 +219,11 @@ export interface ShapeLine extends ShapeFill {
 	 * @deprecated v3.3.0 - use `arrowTypeEnd`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+	/**
+	 * Line width (pt)
+	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 */
+	pt?: number
 }
 // used by: chart, slide, table, text
 export interface TextOptions {

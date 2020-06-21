@@ -593,7 +593,7 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		type: options.line.type || 'solid',
 		color: options.line.color || DEF_SHAPE_LINE_COLOR,
 		transparency: options.line.transparency || 0,
-		size: options.line.size || 1,
+		width: options.line.width || 1,
 		dashType: options.line.dashType || 'solid',
 		beginArrowType: options.line.beginArrowType || null,
 		endArrowType: options.line.endArrowType || null,
@@ -612,7 +612,7 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
 		options.line = tmpOpts
 	}
-	if (typeof options.lineSize === 'number') options.line.size = options.lineSize // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLine` now)
 	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLine` now)
 	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLine` now)
 	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLine` now)
@@ -888,7 +888,7 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 				type: opt.line.type || 'solid',
 				color: opt.line.color || DEF_SHAPE_LINE_COLOR,
 				transparency: opt.line.transparency || 0,
-				size: opt.line.size || 1,
+				width: opt.line.width || 1,
 				dashType: opt.line.dashType || 'solid',
 				beginArrowType: opt.line.beginArrowType || null,
 				endArrowType: opt.line.endArrowType || null,
@@ -901,7 +901,7 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 				tmpOpts.color = opt.line!.toString() // @deprecated `opt.line` string (was line color)
 				opt.line = tmpOpts
 			}
-			if (typeof opt.lineSize === 'number') opt.line.size = opt.lineSize // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineSize === 'number') opt.line.width = opt.lineSize // @deprecated (part of `ShapeLine` now)
 			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLine` now)
 			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLine` now)
 			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLine` now)
