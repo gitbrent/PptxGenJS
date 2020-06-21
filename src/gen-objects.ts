@@ -577,7 +577,8 @@ export function addNotesDefinition(target: ISlideLib, notes: string) {
  */
 export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: ShapeOptions) {
 	let options = typeof opts === 'object' ? opts : {}
-	options.line = options.line || ({ type: 'none' } as ShapeLine)
+  options.line = options.line || ({ type: 'none' } as ShapeLine)
+  options.sId = options.sId || (options.sId === 0 ? 0 : null)
 	let newObject: ISlideObject = {
 		type: SLIDE_OBJECT_TYPES.text,
 		shape: shapeName || SHAPE_TYPE.RECTANGLE,
@@ -596,7 +597,13 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		size: options.line.size || 1,
 		dashType: options.line.dashType || 'solid',
 		beginArrowType: options.line.beginArrowType || null,
-		endArrowType: options.line.endArrowType || null,
+    endArrowType: options.line.endArrowType || null,
+    // Handle connectors related options
+    sourceId: options.line.sourceId || null,
+    targetId: options.line.targetId || null,
+    sourceAnchorPos: options.line.sourceAnchorPos || (options.line.sourceAnchorPos === 0 ? 0 : null),
+    targetAnchorPos: options.line.targetAnchorPos || (options.line.targetAnchorPos === 0 ? 0 : null),
+    isConnector: options.line && (options.line.sourceId != null || options.line.targetId != null),
 	}
 	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 
@@ -609,8 +616,8 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 	// 3: Handle line (lots of deprecated opts)
 	if (typeof options.line === 'string') {
 		let tmpOpts = newLineOpts
-		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
-		options.line = tmpOpts
+    tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
+    options.line = tmpOpts
 	}
 	if (typeof options.lineSize === 'number') options.line.size = options.lineSize // @deprecated (part of `ShapeLine` now)
 	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLine` now)
@@ -891,7 +898,8 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 				size: opt.line.size || 1,
 				dashType: opt.line.dashType || 'solid',
 				beginArrowType: opt.line.beginArrowType || null,
-				endArrowType: opt.line.endArrowType || null,
+        endArrowType: opt.line.endArrowType || null,
+        // NOTE: Ignoring connector options since you cannot add text to connectors - Tom Choi - June 2020
 			}
 			if (typeof opt.line === 'object') opt.line = newLineOpts
 

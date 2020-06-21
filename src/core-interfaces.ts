@@ -216,7 +216,29 @@ export interface ShapeLine extends ShapeFill {
 	/**
 	 * @deprecated v3.3.0 - use `arrowTypeEnd`
 	 */
-	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+  lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+
+  /**
+	 * Set line shape to be connector
+	 * @default false
+	 */
+  isConnector?: boolean
+	/**
+	 * connected source shape id
+	 */
+  sourceId?: number
+	/**
+	 * connected target shape id
+	 */
+  targetId?: number
+	/**
+	 * source shape connection position (dependent on available connection points on a shape)
+	 */
+  sourceAnchorPos?: number
+	/**
+	 * target shape connection position (dependent on available connection points on a shape)
+	 */
+  targetAnchorPos?: number
 }
 // used by: chart, slide, table, text
 export interface TextOptions {
@@ -420,6 +442,10 @@ export interface MediaOpts extends PositionOptions, OptsDataOrPath {
 // shapes =========================================================================================
 
 export interface ShapeOptions extends PositionOptions {
+  /**
+   * id of shape
+   */
+  sId?: Number
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -480,7 +506,7 @@ export interface ShapeOptions extends PositionOptions {
 	/**
 	 * @depreacted v3.3.0
 	 */
-	lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
+  lineTail?: 'arrow' | 'diamond' | 'none' | 'oval' | 'stealth' | 'triangle'
 }
 
 // tables =========================================================================================
