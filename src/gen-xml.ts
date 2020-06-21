@@ -199,7 +199,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 					'    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table">' +
 					'      <a:tbl>' +
 					'        <a:tblPr/>'
-				// + '        <a:tblPr bandRow="1"/>';
+				// + '         <a:tblPr bandRow="1"/>';
 				// TODO: Support banded rows, first/last row, etc.
 				// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
 				// <a:tblPr firstCol="0" firstRow="0" lastCol="0" lastRow="0" bandCol="0" bandRow="1">
@@ -430,37 +430,51 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 					slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin[2] || 0)
 					slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin[3] || 0)
 				} else if (typeof slideItemObj.options.margin === 'number') {
-					slideItemObj.options.bodyProp.lIns = valToPts(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.rIns = valToPts(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options.bodyProp.lIns = Math.round(slideItemObj.options.margin * ONEPT)
+					slideItemObj.options.bodyProp.rIns = Math.round(slideItemObj.options.margin * ONEPT)
+					slideItemObj.options.bodyProp.bIns = Math.round(slideItemObj.options.margin * ONEPT)
+					slideItemObj.options.bodyProp.tIns = Math.round(slideItemObj.options.margin * ONEPT)
 				}
 
-				// A: Start SHAPE =======================================================
-				strSlideXml += '<p:sp>'
+				if (slideItemObj.options.line.isConnector) {
+					// convert user defined sId of sourceId and targetId to 'id' of shape
+					// 3.1: Handle connector line
+					let sourceId = null
+					let targetId = null
+					if (slideItemObj.options.line.sourceId != null) {
+						sourceId = slide.data.findIndex(d => d.options.sId === slideItemObj.options.line.sourceId)
+						sourceId = sourceId + 2
+					}
+					if (slideItemObj.options.line.targetId != null) {
+						targetId = slide.data.findIndex((d) => d.options.sId === slideItemObj.options.line.targetId)
+						targetId = targetId + 2
+					}
+					// A: Start Connector =======================================================
+					strSlideXml += '<p:cxnSp>';
+					strSlideXml += '<p:nvCxnSpPr><p:cNvPr id="'+ (idx + 2) +'" name="Connector '+ (idx + 1) +'"/>';
+					strSlideXml += '<p:cNvCxnSpPr>';
 
-				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="${shapeName}">`
-				// <Hyperlink>
-				if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.url)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.options.hyperlink.rId +
-						'" tooltip="' +
-						(slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
-						'"/>'
-				if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.slide)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.options.hyperlink.rId +
-						'" tooltip="' +
-						(slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
-						'" action="ppaction://hlinksldjump"/>'
-				// </Hyperlink>
-				strSlideXml += '</p:cNvPr>'
-				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
-				strSlideXml += `<p:nvPr>${slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
-				strSlideXml += '</p:nvSpPr><p:spPr>'
+
+					// B: Assign Starting and Ending shape for connections ======================
+					if (sourceId !== null) {
+						strSlideXml += '<a:stCxn id="' + sourceId + '" idx="' + slideItemObj.options.line.sourceAnchorPos + '"/>';
+					}
+					if (targetId !== null) {
+						strSlideXml += '<a:endCxn id="' + targetId + '" idx="' + slideItemObj.options.line.targetAnchorPos + '"/>';
+					}
+					strSlideXml += '</p:cNvCxnSpPr><p:nvPr/>';
+					strSlideXml += '</p:nvCxnSpPr>';
+				} else {
+					// A: Start SHAPE =======================================================
+					strSlideXml += '<p:sp>'
+
+					// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
+					strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="Object${idx + 1}"/>`
+					strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
+					strSlideXml += `<p:nvPr>${slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
+					strSlideXml += '</p:nvSpPr>'
+				}
+				strSlideXml += '<p:spPr>'
 				strSlideXml += `<a:xfrm${locationAttr}>`
 				strSlideXml += `<a:off x="${x}" y="${y}"/>`
 				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
@@ -524,7 +538,11 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				strSlideXml += genXmlTextBody(slideItemObj)
 
 				// LAST: Close SHAPE =======================================================
-				strSlideXml += '</p:sp>'
+				if (slideItemObj.options.line.isConnector) {
+				  strSlideXml += '</p:cxnSp>'
+				} else {
+				  strSlideXml += '</p:sp>'
+				}
 				break
 
 			case SLIDE_OBJECT_TYPES.image:
