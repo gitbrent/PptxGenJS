@@ -14,6 +14,7 @@ jsdoc details for everything other than charts (maybe next time...)
 ## [3.3.0] - 2020-??-??
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
+- **All Users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/line-breaks, etc.
 ### Added
 - Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
 - Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489)[phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684)[hanzi](https://github.com/hanzi))
