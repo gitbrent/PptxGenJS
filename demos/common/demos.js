@@ -654,13 +654,13 @@ function genSlides_Table(pptx) {
 		pptx.addSection({ title: 'Tables: Auto-Paging Repeat Header' });
 		var slide = pptx.addSlide({sectionTitle:'Tables: Auto-Paging Repeat Header'});
 		slide.addText( [{text:'Table Examples: autoPageHeaderRows', options:gDemoTitleTextBk},{text:'no autoPageHeaderRows', options:gDemoTitleOpts}], {x:0.23, y:0.13, w:4, h:0.4} );
-		slide.addTable( arrRowsHead1, { x:0.23, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true } );
+		slide.addTable( arrRowsHead1, { x:0.23, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true, autoPageSlideStartY:0.6 } );
 
 		slide.addText( [{text:'Table Examples: autoPageHeaderRows', options:gDemoTitleTextBk},{text:'autoPageHeaderRows:1', options:gDemoTitleOpts}], {x:4.75, y:0.13, w:4, h:0.4} );
-		slide.addTable( arrRowsHead1, { x:4.75, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true, autoPageHeaderRows:1 } );
+		slide.addTable( arrRowsHead1, { x:4.75, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true, autoPageHeaderRows:1, autoPageSlideStartY:0.6 } );
 
 		slide.addText( [{text:'Table Examples: autoPageHeaderRows', options:gDemoTitleTextBk},{text:'autoPageHeaderRows:2', options:gDemoTitleOpts}], {x:9.10, y:0.13, w:4, h:0.4} );
-		slide.addTable( arrRowsHead2, { x:9.10, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true, autoPageHeaderRows:2 } );
+		slide.addTable( arrRowsHead2, { x:9.10, y:0.6, colW:[0.5, 1.0, 2.5], margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageRepeatHeader:true, autoPageHeaderRows:2, autoPageSlideStartY:0.6 } );
 
 		// autoPageLineWeight option demos
 		pptx.addSection({ title: 'Tables: Auto-Paging LineWeight' });
@@ -2680,17 +2680,21 @@ function genSlides_Text(pptx) {
 
 		// Actual Textbox shape (can have any Height, can wrap text, etc.)
 		slide.addText([
-				{ text:'Textbox align (center/middle)', options:{ fontSize:32 } },
+				{ text:'Textbox align (center/middle)', options:{ fontSize:32, breakLine:true } },
 				{ text:'Character Spacing 16', options:{ fontSize:16, charSpacing:16 } }
 			],
 			{ x:0.5, y:0.75, w:8.5, h:2.5, color:'FFFFFF', fill:'0000FF', valign:'middle', align:'center', isTextBox:true }
 		);
-		slide.addText(
-			[{ text:'(left/top)', options:{ fontSize:12 } }, { text:'Textbox', options:{ bold:true } }],
+		slide.addText([
+			{ text: '(left/top)', options: { fontSize: 12, breakLine:true } },
+			{ text: 'Textbox', options: { bold: true } }
+		],
 			{ x:10, y:0.75, w:3.0, h:1.0, color:'FFFFFF', fill:'00CC00', valign:'top', align:'left', margin:15 }
 		);
-		slide.addText(
-			[{ text:'Textbox' }, { text:'(right/bottom)', options:{ fontSize:12 } }],
+		slide.addText([
+			{ text: 'Textbox', breakLine: true },
+			{ text: '(right/bottom)', options: { fontSize: 12 } }
+		],
 			{ x:10, y:2.25, w:3.0, h:1.0, color:'FFFFFF', fill:'FF0000', valign:'bottom', align:'right', margin:0 }
 		);
 
@@ -2745,7 +2749,7 @@ function genSlides_Text(pptx) {
 				{ text:'Verdana 48', options:{ fontSize:48, fontFace:'Verdana', color:pptx.colors.ACCENT3, align:'left', breakLine:true } },
 				{ text:'Strikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT6, align:'center', strike:true, breakLine:true } },
 				{ text:'Underline', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT4, align:'center', underline:true, breakLine:true } },
-				{ text:'\nTimes 36', options:{ fontSize:36, fontFace:'Times', color:pptx.colors.ACCENT5, align:'right',  breakLine:true } }
+				{ text:'\nTimes 36', options:{ fontSize:36, fontFace:'Times', color:pptx.colors.ACCENT5, align:'right' } }
 			],
 			{ x:0.5, y:1.0, w:5.75, h:6.0, margin:5, fill:pptx.colors.TEXT1 }
 		);
