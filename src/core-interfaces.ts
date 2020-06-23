@@ -99,15 +99,19 @@ export type VAlign = 'top' | 'middle' | 'bottom'
 export interface BorderOptions {
 	/**
 	 * Border type
+	 * @default solid
 	 */
 	type?: 'none' | 'dash' | 'solid'
 	/**
 	 * Border color (hex)
 	 * @example 'FF3399'
+	 * @default '666666'
 	 */
 	color?: HexColor
+	// TODO: add `width` - deprecate `pt`
 	/**
 	 * Border size (points)
+	 * @default 1
 	 */
 	pt?: number
 }
