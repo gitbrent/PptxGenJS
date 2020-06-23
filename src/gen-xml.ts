@@ -1794,7 +1794,7 @@ export function makeXmlPresentation(pres: IPresentation): string {
 		strXml += '<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">'
 		strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
 		pres.sections.forEach(sect => {
-			strXml += `<p14:section name="${sect.title}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
+			strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
 			sect.slides.forEach(slide => (strXml += `<p14:sldId id="${slide.id}"/>`))
 			strXml += `</p14:sldIdLst></p14:section>`
 		})
