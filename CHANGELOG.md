@@ -11,7 +11,7 @@ jsdoc details for everything other than charts (maybe next time...)
 - Lots of poorly named options have been deprecated and new, much better names created
 - Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
-## [3.3.0] - 2020-??-??
+## [3.3.0] - 2020-06-??
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
 - **All Users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/breakLine, etc.
@@ -27,7 +27,8 @@ jsdoc details for everything other than charts (maybe next time...)
 - Fixed: hyperlink and tooltip property `rId` is not working? [\#758](https://github.com/gitbrent/PptxGenJS/issues/758) ([kuldeept70](https://github.com/kuldeept70))
 - Fixed: Removed old/unused options from demo [\#759](https://github.com/gitbrent/PptxGenJS/pull/759) ([sijmenvos](https://github.com/sijmenvos))
 - Fixed: Removed `Buffer` type from `index.ts.d` [\#761](https://github.com/gitbrent/PptxGenJS/pull/761) ([lustigerlurch551](https://github.com/lustigerlurch551))
--
+- Fixed: [BUG] addSection does not escape XML unsafe characters [\#774](https://github.com/gitbrent/PptxGenJS/issues/774) ([pimlottc-gov](https://github.com/pimlottc-gov))
+- ...
 - Fixed: type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
 - Fixed: type defs for `ITableOptions` s/b `TableOptions` ([gitbrent](https://github.com/gitbrent))
 ### WIP
