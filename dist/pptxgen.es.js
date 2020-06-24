@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-24T04:08:20.534Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-24T04:24:13.972Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -1598,10 +1598,12 @@ function slideObjectToXml(slide) {
                             : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
                                 ? cell.optImp.fill
                                 : '';
-                        fillColor =
-                            fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
-                        fillColor = fillColor.replace('#', '').toUpperCase();
-                        var cellFill = fillColor ? "<a:solidFill><a:srgbClr val=\"" + fillColor + "\"/></a:solidFill>" : '';
+                        fillColor = (fillColor || (cellOpts.fill && cellOpts.fill.color)
+                            ? cellOpts.fill.color
+                            : cellOpts.fill && typeof cellOpts.fill === 'string'
+                                ? cellOpts.fill
+                                : '').replace('#', '');
+                        var cellFill = fillColor ? "<a:solidFill>" + createColorElement(fillColor) + "</a:solidFill>" : '';
                         var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
