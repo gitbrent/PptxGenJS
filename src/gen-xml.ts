@@ -336,7 +336,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						fillColor =
 							fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
 						fillColor = fillColor.replace('#', '').toUpperCase()
-						let cellFill = fillColor ? `<a:solidFill><a:srgbClr val="${fillColor}"/></a:solidFill>` : ''
+						let cellFill = fillColor ? `<a:solidFill>${createColorElement(fillColor)}</a:solidFill>` : ''
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
 						let cellMarginXml =
