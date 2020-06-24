@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-22T01:35:55.752Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-24T04:08:20.534Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -13,7 +13,7 @@ var LAYOUT_IDX_SERIES_BASE = 2147483649;
 var REGEX_HEX_COLOR = /^[0-9a-fA-F]{6}$/;
 var LINEH_MODIFIER = 1.67; // AKA: Golden Ratio Typography
 var DEF_BULLET_MARGIN = 27;
-var DEF_CELL_BORDER = { color: '666666' };
+var DEF_CELL_BORDER = { type: 'solid', color: '666666', pt: 1 };
 var DEF_CELL_MARGIN_PT = [3, 3, 3, 3]; // TRBL-style
 var DEF_CHART_GRIDLINE = { color: '888888', style: 'solid', size: 1 };
 var DEF_FONT_COLOR = '000000';
@@ -1626,56 +1626,23 @@ function slideObjectToXml(slide) {
                         // TODO: FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
                         // 5: Borders: Add any borders
-                        if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
-                            strXml_1 += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>';
-                            strXml_1 += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>';
-                            strXml_1 += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>';
-                            strXml_1 += '  <a:lnB w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnB>';
-                        }
-                        else if (cellOpts.border && typeof cellOpts.border === 'string') {
-                            strXml_1 +=
-                                '  <a:lnL w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnL>';
-                            strXml_1 +=
-                                '  <a:lnR w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnR>';
-                            strXml_1 +=
-                                '  <a:lnT w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnT>';
-                            strXml_1 +=
-                                '  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>';
-                        }
-                        else if (cellOpts.border && Array.isArray(cellOpts.border)) {
+                        if (cellOpts.border && Array.isArray(cellOpts.border)) {
                             [
                                 { idx: 3, name: 'lnL' },
                                 { idx: 1, name: 'lnR' },
                                 { idx: 0, name: 'lnT' },
                                 { idx: 2, name: 'lnB' },
                             ].forEach(function (obj) {
-                                if (cellOpts.border[obj.idx]) {
-                                    var strC = '<a:solidFill><a:srgbClr val="' +
-                                        (cellOpts.border[obj.idx].color ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +
-                                        '"/></a:solidFill>';
-                                    var intW = cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt === 0)
-                                        ? ONEPT * Number(cellOpts.border[obj.idx].pt)
-                                        : ONEPT;
-                                    strXml_1 += '<a:' + obj.name + ' w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strC + '</a:' + obj.name + '>';
+                                if (cellOpts.border[obj.idx].type !== 'none') {
+                                    strXml_1 += "<a:" + obj.name + " w=\"" + cellOpts.border[obj.idx].pt * ONEPT + "\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">";
+                                    strXml_1 += "<a:solidFill>" + createColorElement(cellOpts.border[obj.idx].color) + "</a:solidFill>";
+                                    strXml_1 += "<a:prstDash val=\"" + (cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid') + "\"/><a:round/><a:headEnd type=\"none\" w=\"med\" len=\"med\"/><a:tailEnd type=\"none\" w=\"med\" len=\"med\"/>";
+                                    strXml_1 += "</a:" + obj.name + ">";
                                 }
-                                else
-                                    strXml_1 += '<a:' + obj.name + ' w="0"><a:miter lim="400000"/></a:' + obj.name + '>';
+                                else {
+                                    strXml_1 += "<a:" + obj.name + " w=\"0\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\"><a:noFill/></a:" + obj.name + ">";
+                                }
                             });
-                        }
-                        else if (cellOpts.border && !Array.isArray(cellOpts.border)) {
-                            var intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt === 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT;
-                            var strClr = '<a:solidFill><a:srgbClr val="' +
-                                (cellOpts.border.color ? cellOpts.border.color.replace('#', '') : DEF_CELL_BORDER.color) +
-                                '"/></a:solidFill>';
-                            var strAttr = '<a:prstDash val="';
-                            strAttr += cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1 ? 'sysDash' : 'solid';
-                            strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>';
-                            // *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
-                            strXml_1 += '<a:lnL w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnL>';
-                            strXml_1 += '<a:lnR w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnR>';
-                            strXml_1 += '<a:lnT w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnT>';
-                            strXml_1 += '<a:lnB w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnB>';
-                            // *** IMPORTANT! *** LRTB order matters!
                         }
                         // 6: Close cell Properties & Cell
                         strXml_1 += cellFill;
@@ -2886,7 +2853,7 @@ function makeXmlPresentation(pres) {
         strXml += '<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">';
         strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">';
         pres.sections.forEach(function (sect) {
-            strXml += "<p14:section name=\"" + sect.title + "\" id=\"{" + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + "}\"><p14:sldIdLst>";
+            strXml += "<p14:section name=\"" + encodeXmlEntities(sect.title) + "\" id=\"{" + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + "}\"><p14:sldIdLst>";
             sect.slides.forEach(function (slide) { return (strXml += "<p14:sldId id=\"" + slide.id + "\"/>"); });
             strXml += "</p14:sldIdLst></p14:section>";
         });
@@ -3560,11 +3527,13 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         var newRow = [];
         if (Array.isArray(row)) {
             row.forEach(function (cell) {
+                // A:
                 var newCell = {
                     type: SLIDE_OBJECT_TYPES.tablecell,
                     text: '',
-                    options: typeof cell === 'object' ? cell.options : null,
+                    options: typeof cell === 'object' && cell.options ? cell.options : {},
                 };
+                // B:
                 if (typeof cell === 'string' || typeof cell === 'number')
                     newCell.text = cell.toString();
                 else if (cell.text) {
@@ -3574,9 +3543,34 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                     else if (cell.text)
                         newCell.text = cell.text;
                     // Capture options
-                    if (cell.options)
+                    if (cell.options && typeof cell.options === 'object')
                         newCell.options = cell.options;
                 }
+                // C: Set cell borders
+                newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }];
+                var cellBorder = newCell.options.border;
+                // CASE 1: border interface is: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+                if (!Array.isArray(cellBorder) && typeof cellBorder === 'object')
+                    newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder];
+                // Handle: [null, null, {type:'solid'}, null]
+                if (!newCell.options.border[0])
+                    newCell.options.border[0] = { type: 'none' };
+                if (!newCell.options.border[1])
+                    newCell.options.border[1] = { type: 'none' };
+                if (!newCell.options.border[2])
+                    newCell.options.border[2] = { type: 'none' };
+                if (!newCell.options.border[3])
+                    newCell.options.border[3] = { type: 'none' };
+                // set complete BorderOptions for all sides
+                var arrSides = [0, 1, 2, 3];
+                arrSides.forEach(function (idx) {
+                    newCell.options.border[idx] = {
+                        type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
+                        color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
+                        pt: newCell.options.border[idx].pt || DEF_CELL_BORDER.pt,
+                    };
+                });
+                // LAST:
                 newRow.push(newCell);
             });
         }
@@ -3600,6 +3594,13 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     if (typeof opt.border === 'string') {
         console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`");
         opt.border = null;
+    }
+    else if (Array.isArray(opt.border)) {
+        [0, 1, 2, 3].forEach(function (idx) {
+            opt.border[idx] = opt.border[idx]
+                ? { type: opt.border[idx].type || DEF_CELL_BORDER.type, color: opt.border[idx].color || DEF_CELL_BORDER.color, pt: opt.border[idx].pt || DEF_CELL_BORDER.pt }
+                : { type: 'none' };
+        });
     }
     opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false;
     opt.autoPageRepeatHeader = typeof opt.autoPageRepeatHeader === 'boolean' ? opt.autoPageRepeatHeader : false;
@@ -5984,7 +5985,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200621:2030';
+var VERSION = '3.3.0-beta-20200623:2308';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
