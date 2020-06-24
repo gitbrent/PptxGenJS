@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200621
+* BLD.: 20200623
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -504,9 +504,11 @@ function genSlides_Table(pptx) {
 
 		// Complex/Compound border
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 3.9;
-		slide.addText('Complex Cell Border:', optsSub);
-		var arrBorder = [ {color:'FF0000',pt:1}, {color:'00ff00',pt:3}, {color:'0000ff',pt:5}, {color:'9e9e9e',pt:7} ];
-		slide.addTable( [['Borders!']], { x:0.5, y:4.3, w:12.3, rowH:1.5, fill:'F5F5F5', color:'3D3D3D', fontSize:18, border:arrBorder, align:'center', valign:'middle' } );
+		slide.addText('Complex Cell Borders:', optsSub);
+		var arrBorder1 = [{ color: 'FF0000', pt: 1 }, { color: '00ff00', pt: 3 }, { color: '0000ff', pt: 5 }, { color: '9e9e9e', pt: 7 }];
+		slide.addTable([['Borders 4!']], { x: 0.50, y: 4.3, w: 6, rowH: 1.5, fill: pptx.SchemeColor.background2, color: '3D3D3D', fontSize: 18, border: arrBorder1, align: 'center', valign: 'middle' });
+		var arrBorder2 = [{ type: 'dash', color: 'ff0000', pt: 2 }, null, { type: 'dash', color: '0000ff', pt: 5 }, null];
+		slide.addTable([['Borders 2!']], { x: 6.75, y: 4.3, w: 6, rowH: 1.5, fill: pptx.SchemeColor.background2, color: '3D3D3D', fontSize: 18, border: arrBorder2, align: 'center', valign: 'middle' });
 
 		// Invalid char check
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle)); optsSub.y = 6.1;
