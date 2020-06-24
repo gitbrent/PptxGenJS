@@ -33,7 +33,7 @@ import {
 	ITextOpts,
 	TextOptions,
 } from './core-interfaces'
-import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid } from './gen-utils'
+import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid, createColorElement } from './gen-utils'
 
 let imageSizingXml = {
 	cover: function (imgSize, boxDim) {
@@ -365,54 +365,25 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
 
 						// 5: Borders: Add any borders
-						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
-							strXml += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>'
-							strXml += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>'
-							strXml += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>'
-							strXml += '  <a:lnB w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnB>'
-						} else if (cellOpts.border && typeof cellOpts.border === 'string') {
-							strXml +=
-								'  <a:lnL w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnL>'
-							strXml +=
-								'  <a:lnR w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnR>'
-							strXml +=
-								'  <a:lnT w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnT>'
-							strXml +=
-								'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
-						} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
+						if (cellOpts.border && Array.isArray(cellOpts.border)) {
+							// NOTE: *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
 							;[
 								{ idx: 3, name: 'lnL' },
 								{ idx: 1, name: 'lnR' },
 								{ idx: 0, name: 'lnT' },
 								{ idx: 2, name: 'lnB' },
 							].forEach(obj => {
-								if (cellOpts.border[obj.idx]) {
-									let strC =
-										'<a:solidFill><a:srgbClr val="' +
-										(cellOpts.border[obj.idx].color ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +
-										'"/></a:solidFill>'
-									let intW =
-										cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt === 0)
-											? ONEPT * Number(cellOpts.border[obj.idx].pt)
-											: ONEPT
-									strXml += '<a:' + obj.name + ' w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strC + '</a:' + obj.name + '>'
-								} else strXml += '<a:' + obj.name + ' w="0"><a:miter lim="400000"/></a:' + obj.name + '>'
+								if (cellOpts.border[obj.idx].type !== 'none') {
+									strXml += `<a:${obj.name} w="${cellOpts.border[obj.idx].pt * ONEPT}" cap="flat" cmpd="sng" algn="ctr">`
+									strXml += `<a:solidFill>${createColorElement(cellOpts.border[obj.idx].color)}</a:solidFill>`
+									strXml += `<a:prstDash val="${
+										cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid'
+									}"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>`
+									strXml += `</a:${obj.name}>`
+								} else {
+									strXml += `<a:${obj.name} w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:${obj.name}>`
+								}
 							})
-						} else if (cellOpts.border && !Array.isArray(cellOpts.border)) {
-							let intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt === 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT
-							let strClr =
-								'<a:solidFill><a:srgbClr val="' +
-								(cellOpts.border.color ? cellOpts.border.color.replace('#', '') : DEF_CELL_BORDER.color) +
-								'"/></a:solidFill>'
-							let strAttr = '<a:prstDash val="'
-							strAttr += cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1 ? 'sysDash' : 'solid'
-							strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>'
-							// *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
-							strXml += '<a:lnL w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnL>'
-							strXml += '<a:lnR w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnR>'
-							strXml += '<a:lnT w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnT>'
-							strXml += '<a:lnB w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnB>'
-							// *** IMPORTANT! *** LRTB order matters!
 						}
 
 						// 6: Close cell Properties & Cell

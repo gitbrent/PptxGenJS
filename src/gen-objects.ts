@@ -21,6 +21,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
+	DEF_CELL_BORDER,
 } from './core-enums'
 import {
 	BkgdOpts,
@@ -41,6 +42,7 @@ import {
 	ShapeLine,
 	ShapeOptions,
 	TableRow,
+	TableCell,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -673,20 +675,47 @@ export function addTableDefinition(
 		let newRow: ITableCell[] = []
 
 		if (Array.isArray(row)) {
-			row.forEach(cell => {
+			row.forEach((cell: number | string | TableCell) => {
+				// A:
 				let newCell: ITableCell = {
 					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: '',
-					options: typeof cell === 'object' ? cell.options : null,
+					options: typeof cell === 'object' && cell.options ? cell.options : {},
 				}
+
+				// B:
 				if (typeof cell === 'string' || typeof cell === 'number') newCell.text = cell.toString()
 				else if (cell.text) {
 					// Cell can contain complex text type, or string, or number
 					if (typeof cell.text === 'string' || typeof cell.text === 'number') newCell.text = cell.text.toString()
 					else if (cell.text) newCell.text = cell.text
 					// Capture options
-					if (cell.options) newCell.options = cell.options
+					if (cell.options && typeof cell.options === 'object') newCell.options = cell.options
 				}
+
+				// C: Set cell borders
+				newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }]
+				let cellBorder = newCell.options.border
+
+				// CASE 1: border interface is: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+				if (!Array.isArray(cellBorder) && typeof cellBorder === 'object') newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder]
+				// Handle: [null, null, {type:'solid'}, null]
+				if (!newCell.options.border[0]) newCell.options.border[0] = { type: 'none' }
+				if (!newCell.options.border[1]) newCell.options.border[1] = { type: 'none' }
+				if (!newCell.options.border[2]) newCell.options.border[2] = { type: 'none' }
+				if (!newCell.options.border[3]) newCell.options.border[3] = { type: 'none' }
+
+				// set complete BorderOptions for all sides
+				let arrSides = [0, 1, 2, 3]
+				arrSides.forEach(idx => {
+					newCell.options.border[idx] = {
+						type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
+						color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
+						pt: newCell.options.border[idx].pt || DEF_CELL_BORDER.pt,
+					}
+				})
+
+				// LAST:
 				newRow.push(newCell)
 			})
 		} else {
@@ -708,7 +737,14 @@ export function addTableDefinition(
 	if (typeof opt.border === 'string') {
 		console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`")
 		opt.border = null
+	} else if (Array.isArray(opt.border)) {
+		;[0, 1, 2, 3].forEach(idx => {
+			opt.border[idx] = opt.border[idx]
+				? { type: opt.border[idx].type || DEF_CELL_BORDER.type, color: opt.border[idx].color || DEF_CELL_BORDER.color, pt: opt.border[idx].pt || DEF_CELL_BORDER.pt }
+				: { type: 'none' }
+		})
 	}
+
 	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
 	opt.autoPageRepeatHeader = typeof opt.autoPageRepeatHeader === 'boolean' ? opt.autoPageRepeatHeader : false
 	opt.autoPageHeaderRows = typeof opt.autoPageHeaderRows !== 'undefined' && !isNaN(Number(opt.autoPageHeaderRows)) ? Number(opt.autoPageHeaderRows) : 1
