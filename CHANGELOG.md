@@ -4,19 +4,32 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [Notes]
+- OMG, the typescript definitions were a big old mess; you guys are too nice to not have 100 issues open
+- The `core-interfaces.ts` file is now grouped and ordered, corrects a whole heap of bad/missing options and finally includes
+jsdoc details for everything other than charts (maybe next time...)
+- Lots of poorly named options have been deprecated and new, much better names created
+- Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
-## [3.3.0] - 2020-??-??
+## [3.3.0] - 2020-06-??
+### BREAKING CHANGES
+- **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
+- **All Users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/breakLine, etc.
 ### Added
 - Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
+- Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489)[phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684)[hanzi](https://github.com/hanzi))
 - Added: Background image for slides (deprecated `bkgd:string` with `background:BkgdOpts`) [\#610](https://github.com/gitbrent/PptxGenJS/pull/610) ([thomasowow](https://github.com/thomasowow))
 ### Changed
+- Fixed: complete rewrite of genXmlTextBody for new text run/paragraph generation. Fixes: [\#369](https://github.com/gitbrent/PptxGenJS/issues/369)
+[\#448](https://github.com/gitbrent/PptxGenJS/issues/448), [\#460](https://github.com/gitbrent/PptxGenJS/issues/460), [\#751](https://github.com/gitbrent/PptxGenJS/issues/751), [\#772](https://github.com/gitbrent/PptxGenJS/pull/772)
 - Fixed: tableToSlides `addHeaderToEach` finally duplicates all header rows, not just the first one [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
 - Fixed `colW` length mismatch with colspans (Issue #651) [\#679](https://github.com/gitbrent/PptxGenJS/issues/679) ([Joshua-rose](https://github.com/Joshua-rose))
 - Fixed: hyperlink and tooltip property `rId` is not working? [\#758](https://github.com/gitbrent/PptxGenJS/issues/758) ([kuldeept70](https://github.com/kuldeept70))
-- Fixed: Removed old/unused options from demo [\#759](https://github.com/gitbrent/PptxGenJS/pull/759) ([sijmenvos](https://github.com/sijmenvos))
-- Fixed: Removed `Buffer` type from `index.ts.d` [\#761](https://github.com/gitbrent/PptxGenJS/pull/761) ([lustigerlurch551](https://github.com/lustigerlurch551))
--
+- Fixed: removed old/unused options from demo [\#759](https://github.com/gitbrent/PptxGenJS/pull/759) ([sijmenvos](https://github.com/sijmenvos))
+- Fixed: removed `Buffer` type from `index.ts.d` [\#761](https://github.com/gitbrent/PptxGenJS/pull/761) ([lustigerlurch551](https://github.com/lustigerlurch551))
+- Fixed: addSection does not escape XML unsafe characters [\#774](https://github.com/gitbrent/PptxGenJS/issues/774) ([pimlottc-gov](https://github.com/pimlottc-gov))
+- Fixed: Multiple Border Types not supported in Table Cell [\#775](https://github.com/gitbrent/PptxGenJS/issues/775) ([jsvishal](https://github.com/jsvishal))
+- ...
 - Fixed: type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
 - Fixed: type defs for `ITableOptions` s/b `TableOptions` ([gitbrent](https://github.com/gitbrent))
 ### WIP

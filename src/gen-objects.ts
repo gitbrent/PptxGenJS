@@ -9,18 +9,19 @@ import {
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
+	DEF_SHAPE_LINE_COLOR,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
 	MASTER_OBJECTS,
 	ONEPT,
 	PIECHART_COLORS,
+	SHAPE_NAME,
+	SHAPE_TYPE,
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
-	SHAPE_NAME,
-	SHAPE_TYPE,
-	DEF_SHAPE_LINE_COLOR,
+	DEF_CELL_BORDER,
 } from './core-enums'
 import {
 	BkgdOpts,
@@ -28,8 +29,6 @@ import {
 	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IMediaOpts,
-	IShapeOptions,
 	ISlideLayout,
 	ISlideLib,
 	ISlideMasterOptions,
@@ -38,9 +37,12 @@ import {
 	ITableOptions,
 	IText,
 	ITextOpts,
+	MediaOpts,
 	OptsChartGridLine,
-	TableRow,
 	ShapeLine,
+	ShapeOptions,
+	TableRow,
+	TableCell,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -447,9 +449,9 @@ export function addImageDefinition(target: ISlideLib, opt: IImageOpts) {
 /**
  * Adds a media object to a slide definition.
  * @param {ISlideLib} `target` - slide object that the text will be added to
- * @param {IMediaOpts} `opt` - media options
+ * @param {MediaOpts} `opt` - media options
  */
-export function addMediaDefinition(target: ISlideLib, opt: IMediaOpts) {
+export function addMediaDefinition(target: ISlideLib, opt: MediaOpts) {
 	let intRels = target.relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
@@ -573,9 +575,9 @@ export function addNotesDefinition(target: ISlideLib, notes: string) {
  * Adds a shape object to a slide definition.
  * @param {ISlideLib} target slide object that the shape should be added to
  * @param {SHAPE_NAME} shapeName shape name
- * @param {IShapeOptions} opts shape options
+ * @param {ShapeOptions} opts shape options
  */
-export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: IShapeOptions) {
+export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: ShapeOptions) {
 	let options = typeof opts === 'object' ? opts : {}
 	options.line = options.line || ({ type: 'none' } as ShapeLine)
 	let newObject: ISlideObject = {
@@ -593,8 +595,10 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		type: options.line.type || 'solid',
 		color: options.line.color || DEF_SHAPE_LINE_COLOR,
 		transparency: options.line.transparency || 0,
-		size: options.line.size || 1,
+		width: options.line.width || 1,
 		dashType: options.line.dashType || 'solid',
+		beginArrowType: options.line.beginArrowType || null,
+		endArrowType: options.line.endArrowType || null,
 	}
 	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 
@@ -610,10 +614,10 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
 		options.line = tmpOpts
 	}
-	if (typeof options.lineSize === 'number') options.line.size = options.lineSize // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLine` now)
 	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineHead === 'string') options.line.arrowTypeBegin = options.lineHead // @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineTail === 'string') options.line.arrowTypeEnd = options.lineTail // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLine` now)
 
 	// LAST: Add object to slide
 	target.data.push(newObject)
@@ -671,20 +675,47 @@ export function addTableDefinition(
 		let newRow: ITableCell[] = []
 
 		if (Array.isArray(row)) {
-			row.forEach(cell => {
+			row.forEach((cell: number | string | TableCell) => {
+				// A:
 				let newCell: ITableCell = {
 					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: '',
-					options: typeof cell === 'object' ? cell.options : null,
+					options: typeof cell === 'object' && cell.options ? cell.options : {},
 				}
+
+				// B:
 				if (typeof cell === 'string' || typeof cell === 'number') newCell.text = cell.toString()
 				else if (cell.text) {
 					// Cell can contain complex text type, or string, or number
 					if (typeof cell.text === 'string' || typeof cell.text === 'number') newCell.text = cell.text.toString()
 					else if (cell.text) newCell.text = cell.text
 					// Capture options
-					if (cell.options) newCell.options = cell.options
+					if (cell.options && typeof cell.options === 'object') newCell.options = cell.options
 				}
+
+				// C: Set cell borders
+				newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }]
+				let cellBorder = newCell.options.border
+
+				// CASE 1: border interface is: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+				if (!Array.isArray(cellBorder) && typeof cellBorder === 'object') newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder]
+				// Handle: [null, null, {type:'solid'}, null]
+				if (!newCell.options.border[0]) newCell.options.border[0] = { type: 'none' }
+				if (!newCell.options.border[1]) newCell.options.border[1] = { type: 'none' }
+				if (!newCell.options.border[2]) newCell.options.border[2] = { type: 'none' }
+				if (!newCell.options.border[3]) newCell.options.border[3] = { type: 'none' }
+
+				// set complete BorderOptions for all sides
+				let arrSides = [0, 1, 2, 3]
+				arrSides.forEach(idx => {
+					newCell.options.border[idx] = {
+						type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
+						color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
+						pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
+					}
+				})
+
+				// LAST:
 				newRow.push(newCell)
 			})
 		} else {
@@ -706,7 +737,14 @@ export function addTableDefinition(
 	if (typeof opt.border === 'string') {
 		console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`")
 		opt.border = null
+	} else if (Array.isArray(opt.border)) {
+		;[0, 1, 2, 3].forEach(idx => {
+			opt.border[idx] = opt.border[idx]
+				? { type: opt.border[idx].type || DEF_CELL_BORDER.type, color: opt.border[idx].color || DEF_CELL_BORDER.color, pt: opt.border[idx].pt || DEF_CELL_BORDER.pt }
+				: { type: 'none' }
+		})
 	}
+
 	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
 	opt.autoPageRepeatHeader = typeof opt.autoPageRepeatHeader === 'boolean' ? opt.autoPageRepeatHeader : false
 	opt.autoPageHeaderRows = typeof opt.autoPageHeaderRows !== 'undefined' && !isNaN(Number(opt.autoPageHeaderRows)) ? Number(opt.autoPageHeaderRows) : 1
@@ -829,7 +867,7 @@ export function addTableDefinition(
 			if (!getSlide(target.number + idx)) slides.push(addSlide(slideLayout ? slideLayout.name : null))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idx > 0) opt.y = inch2Emu(opt.newSlideStartY || arrTableMargin[0])
+			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			{
@@ -886,8 +924,10 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 				type: opt.line.type || 'solid',
 				color: opt.line.color || DEF_SHAPE_LINE_COLOR,
 				transparency: opt.line.transparency || 0,
-				size: opt.line.size || 1,
+				width: opt.line.width || 1,
 				dashType: opt.line.dashType || 'solid',
+				beginArrowType: opt.line.beginArrowType || null,
+				endArrowType: opt.line.endArrowType || null,
 			}
 			if (typeof opt.line === 'object') opt.line = newLineOpts
 
@@ -897,10 +937,10 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 				tmpOpts.color = opt.line!.toString() // @deprecated `opt.line` string (was line color)
 				opt.line = tmpOpts
 			}
-			if (typeof opt.lineSize === 'number') opt.line.size = opt.lineSize // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineSize === 'number') opt.line.width = opt.lineSize // @deprecated (part of `ShapeLine` now)
 			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLine` now)
-			if (typeof opt.lineHead === 'string') opt.line.arrowTypeBegin = opt.lineHead // @deprecated (part of `ShapeLine` now)
-			if (typeof opt.lineTail === 'string') opt.line.arrowTypeEnd = opt.lineTail // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLine` now)
 		}
 
 		// C

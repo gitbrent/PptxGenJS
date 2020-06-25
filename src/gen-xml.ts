@@ -5,6 +5,7 @@
 import {
 	BULLET_TYPES,
 	CRLF,
+	DEF_BULLET_MARGIN,
 	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
 	DEF_PRES_LAYOUT_NAME,
@@ -19,7 +20,7 @@ import {
 import {
 	IObjectOptions,
 	IPresentation,
-	IShadowOptions,
+	ShadowOptions,
 	ISlideLayout,
 	ISlideLib,
 	ISlideObject,
@@ -27,11 +28,12 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	ITableCell,
-	ITableCellOpts,
+	TableCellOpts,
 	IText,
 	ITextOpts,
+	TextOptions,
 } from './core-interfaces'
-import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid } from './gen-utils'
+import { encodeXmlEntities, inch2Emu, genXmlColorSelection, getSmartParseNumber, convertRotationDegrees, createGlowElement, getUuid, createColorElement } from './gen-utils'
 
 let imageSizingXml = {
 	cover: function (imgSize, boxDim) {
@@ -150,7 +152,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				let objTabOpts = slideItemObj.options
 				let intColCnt = 0,
 					intColW = 0
-				let cellOpts: ITableCellOpts
+				let cellOpts: TableCellOpts
 
 				// Calc number of columns
 				// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
@@ -325,26 +327,20 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 							: ''
 						let cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : ''
 						let cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : ''
-						let cellFill =
-							(cell.optImp && cell.optImp.fill) || cellOpts.fill
-								? ' <a:solidFill><a:srgbClr val="' +
-								  ((cell.optImp && cell.optImp.fill) || (typeof cellOpts.fill === 'string' ? cellOpts.fill.replace('#', '') : '')).toUpperCase() +
-								  '"/></a:solidFill>'
+						let fillColor =
+							cell.optImp && cell.optImp.fill && cell.optImp.fill.color
+								? cell.optImp.fill.color
+								: cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
+								? cell.optImp.fill
 								: ''
+						fillColor =
+							fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
+						let cellFill = fillColor ? `<a:solidFill>${createColorElement(fillColor)}</a:solidFill>` : ''
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
-						let cellMarginXml =
-							' marL="' +
-							cellMargin[3] * ONEPT +
-							'" marR="' +
-							cellMargin[1] * ONEPT +
-							'" marT="' +
-							cellMargin[0] * ONEPT +
-							'" marB="' +
-							cellMargin[2] * ONEPT +
-							'"'
+						let cellMarginXml = ` marL="${cellMargin[3] * ONEPT}" marR="${cellMargin[1] * ONEPT}" marT="${cellMargin[0] * ONEPT}" marB="${cellMargin[2] * ONEPT}"`
 
-						// TODO: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+						// FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 3: ROWSPAN: Add dummy cells for any active rowspan
 						if (cell.vmerge) {
@@ -355,58 +351,29 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						// 4: Set CELL content and properties ==================================
 						strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
 						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
-						// TODO: FIXME: 20200525: ^^^
+						// FIXME: 20200525: ^^^
 						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
 
 						// 5: Borders: Add any borders
-						if (cellOpts.border && !Array.isArray(cellOpts.border) && cellOpts.border.type === 'none') {
-							strXml += '  <a:lnL w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnL>'
-							strXml += '  <a:lnR w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnR>'
-							strXml += '  <a:lnT w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnT>'
-							strXml += '  <a:lnB w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:lnB>'
-						} else if (cellOpts.border && typeof cellOpts.border === 'string') {
-							strXml +=
-								'  <a:lnL w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnL>'
-							strXml +=
-								'  <a:lnR w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnR>'
-							strXml +=
-								'  <a:lnT w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnT>'
-							strXml +=
-								'  <a:lnB w="' + ONEPT + '" cap="flat" cmpd="sng" algn="ctr"><a:solidFill><a:srgbClr val="' + cellOpts.border + '"/></a:solidFill></a:lnB>'
-						} else if (cellOpts.border && Array.isArray(cellOpts.border)) {
+						if (cellOpts.border && Array.isArray(cellOpts.border)) {
+							// NOTE: *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
 							;[
 								{ idx: 3, name: 'lnL' },
 								{ idx: 1, name: 'lnR' },
 								{ idx: 0, name: 'lnT' },
 								{ idx: 2, name: 'lnB' },
 							].forEach(obj => {
-								if (cellOpts.border[obj.idx]) {
-									let strC =
-										'<a:solidFill><a:srgbClr val="' +
-										(cellOpts.border[obj.idx].color ? cellOpts.border[obj.idx].color : DEF_CELL_BORDER.color) +
-										'"/></a:solidFill>'
-									let intW =
-										cellOpts.border[obj.idx] && (cellOpts.border[obj.idx].pt || cellOpts.border[obj.idx].pt === 0)
-											? ONEPT * Number(cellOpts.border[obj.idx].pt)
-											: ONEPT
-									strXml += '<a:' + obj.name + ' w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strC + '</a:' + obj.name + '>'
-								} else strXml += '<a:' + obj.name + ' w="0"><a:miter lim="400000"/></a:' + obj.name + '>'
+								if (cellOpts.border[obj.idx].type !== 'none') {
+									strXml += `<a:${obj.name} w="${cellOpts.border[obj.idx].pt * ONEPT}" cap="flat" cmpd="sng" algn="ctr">`
+									strXml += `<a:solidFill>${createColorElement(cellOpts.border[obj.idx].color)}</a:solidFill>`
+									strXml += `<a:prstDash val="${
+										cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid'
+									}"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>`
+									strXml += `</a:${obj.name}>`
+								} else {
+									strXml += `<a:${obj.name} w="0" cap="flat" cmpd="sng" algn="ctr"><a:noFill/></a:${obj.name}>`
+								}
 							})
-						} else if (cellOpts.border && !Array.isArray(cellOpts.border)) {
-							let intW = cellOpts.border && (cellOpts.border.pt || cellOpts.border.pt === 0) ? ONEPT * Number(cellOpts.border.pt) : ONEPT
-							let strClr =
-								'<a:solidFill><a:srgbClr val="' +
-								(cellOpts.border.color ? cellOpts.border.color.replace('#', '') : DEF_CELL_BORDER.color) +
-								'"/></a:solidFill>'
-							let strAttr = '<a:prstDash val="'
-							strAttr += cellOpts.border.type && cellOpts.border.type.toLowerCase().indexOf('dash') > -1 ? 'sysDash' : 'solid'
-							strAttr += '"/><a:round/><a:headEnd type="none" w="med" len="med"/><a:tailEnd type="none" w="med" len="med"/>'
-							// *** IMPORTANT! *** LRTB order matters! (Reorder a line below to watch the borders go wonky in MS-PPT-2013!!)
-							strXml += '<a:lnL w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnL>'
-							strXml += '<a:lnR w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnR>'
-							strXml += '<a:lnT w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnT>'
-							strXml += '<a:lnB w="' + intW + '" cap="flat" cmpd="sng" algn="ctr">' + strClr + strAttr + '</a:lnB>'
-							// *** IMPORTANT! *** LRTB order matters!
 						}
 
 						// 6: Close cell Properties & Cell
@@ -461,15 +428,13 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				strSlideXml += '<p:sp>'
 
 				// B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-				strSlideXml += '<p:nvSpPr><p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '"/>'
+				strSlideXml += `<p:nvSpPr><p:cNvPr id="${idx + 2}" name="Object${idx + 1}"/>`
 				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
-				strSlideXml += '<p:nvPr>'
-				strSlideXml += slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)
-				strSlideXml += '</p:nvPr>'
+				strSlideXml += `<p:nvPr>${slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += '</p:nvSpPr><p:spPr>'
-				strSlideXml += '<a:xfrm' + locationAttr + '>'
-				strSlideXml += '<a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '<a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm>'
+				strSlideXml += `<a:xfrm${locationAttr}>`
+				strSlideXml += `<a:off x="${x}" y="${y}"/>`
+				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
 				strSlideXml +=
 					'<a:prstGeom prst="' +
 					slideItemObj.shape +
@@ -484,11 +449,12 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 
 				// shape Type: LINE: line color
 				if (slideItemObj.options.line) {
-					strSlideXml += slideItemObj.options.line.size ? `<a:ln w="${slideItemObj.options.line.size * ONEPT}">` : '<a:ln>'
+					strSlideXml += slideItemObj.options.line.width ? `<a:ln w="${slideItemObj.options.line.width * ONEPT}">` : '<a:ln>'
 					strSlideXml += genXmlColorSelection(slideItemObj.options.line.color)
 					if (slideItemObj.options.line.dashType) strSlideXml += `<a:prstDash val="${slideItemObj.options.line.dashType}"/>`
-					if (slideItemObj.options.line.arrowTypeBegin) strSlideXml += '<a:headEnd type="' + slideItemObj.options.line.arrowTypeBegin + '"/>'
-					if (slideItemObj.options.line.arrowTypeEnd) strSlideXml += '<a:tailEnd type="' + slideItemObj.options.line.arrowTypeEnd + '"/>'
+					if (slideItemObj.options.line.beginArrowType) strSlideXml += `<a:headEnd type="${slideItemObj.options.line.beginArrowType}"/>`
+					if (slideItemObj.options.line.endArrowType) strSlideXml += `<a:tailEnd type="${slideItemObj.options.line.endArrowType}"/>`
+					// FUTURE: `endArrowSize` < a: headEnd type = "arrow" w = "lg" len = "lg" /> 'sm' | 'med' | 'lg'(values are 1 - 9, making a 3x3 grid of w / len possibilities)
 					strSlideXml += '</a:ln>'
 				}
 
@@ -825,9 +791,9 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
-	let bulletMarL = ONEPT * 27
+	let bulletMarL = ONEPT * DEF_BULLET_MARGIN
 
-	let paragraphPropXml = '<' + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '')
+	let paragraphPropXml = `<${tag}${textObj.options.rtlMode ? ' rtl="1" ' : ''}`
 
 	// A: Build paragraphProperties
 	{
@@ -993,34 +959,41 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 }
 
 /**
- * Builds `<a:r></a:r>` text runs for `<a:p>` paragraphs in textBody
+ * Build textBody text runs [`<a:r></a:r>`] for paragraphs [`<a:p>`]
  * @param {IText} textObj - Text object
  * @return {string} XML string
  */
 function genXmlTextRun(textObj: IText): string {
-	let arrLines = []
-	let paraProp = ''
-	let xmlTextRun = ''
-
-	// 1: ADD runProperties
-	let startInfo = genXmlTextRunProperties(textObj.options, false)
-
-	// 2: LINE-BREAKS/MULTI-LINE: Split text into multi-p:
-	arrLines = textObj.text.split(CRLF)
-	if (arrLines.length > 1) {
-		arrLines.forEach((line, idx) => {
-			xmlTextRun += '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(line)
-			// Stop/Start <p>aragraph as long as there is more lines ahead (otherwise its closed at the end of this function)
-			if (idx + 1 < arrLines.length) xmlTextRun += (textObj.options.breakLine ? CRLF : '') + '</a:t></a:r>'
-		})
-	} else {
-		// Handle cases where addText `text` was an array of objects - if a text object doesnt contain a '\n' it still need alignment!
-		// The first pPr-align is done in makeXml - use line countr to ensure we only add subsequently as needed
-		xmlTextRun = (textObj.options.align && textObj.options.lineIdx > 0 ? paraProp : '') + '<a:r>' + startInfo + '<a:t>' + encodeXmlEntities(textObj.text)
-	}
+	// NOTE: Dont create full rPr runProps for empty [lineBreak] runs
+	// Why? The size of the lineBreak wont match (eg: below it will be 18px instead of the correct 36px)
+	// Do this:
+	/*
+		<a:p>
+			<a:pPr algn="r"/>
+			<a:endParaRPr lang="en-US" sz="3600" dirty="0"/>
+		</a:p>
+	*/
+	// NOT this:
+	/*
+		<a:p>
+			<a:pPr algn="r"/>
+			<a:r>
+				<a:rPr lang="en-US" sz="3600" dirty="0">
+					<a:solidFill>
+						<a:schemeClr val="accent5"/>
+					</a:solidFill>
+					<a:latin typeface="Times" pitchFamily="34" charset="0"/>
+					<a:ea typeface="Times" pitchFamily="34" charset="-122"/>
+					<a:cs typeface="Times" pitchFamily="34" charset="-120"/>
+				</a:rPr>
+				<a:t></a:t>
+			</a:r>
+			<a:endParaRPr lang="en-US" dirty="0"/>
+		</a:p>
+	*/
 
 	// Return paragraph with text run
-	return xmlTextRun + '</a:t></a:r>'
+	return textObj.text ? `<a:r>${genXmlTextRunProperties(textObj.options, false)}<a:t>${encodeXmlEntities(textObj.text)}</a:t></a:r>` : ''
 }
 
 /**
@@ -1073,79 +1046,38 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
+ * @param {ISlideObject|ITableCell} slideObj - slideObj or tableCell
  * @note PPT text lines [lines followed by line-breaks] are created using <p>-aragraph's
  * @note Bullets are a paragragh-level formatting device
- * @param {ISlideObject|ITableCell} slideObj - slideObj or tableCell
+ * @template
+ *	<p:txBody>
+ *		<a:bodyPr wrap="square" rtlCol="0">
+ *			<a:spAutoFit/>
+ *		</a:bodyPr>
+ *		<a:lstStyle/>
+ *		<a:p>
+ *			<a:pPr algn="ctr"/>
+ *			<a:r>
+ *				<a:rPr lang="en-US" dirty="0" err="1"/>
+ *				<a:t>textbox text</a:t>
+ *			</a:r>
+ *			<a:endParaRPr lang="en-US" dirty="0"/>
+ *		</a:p>
+ *	</p:txBody>
  * @returns XML containing the param object's text and formatting
  */
 export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	let opts: IObjectOptions = slideObj.options || {}
+	let tmpTextObjects: IText[] = []
+	let arrTextObjects: IText[] = []
+
 	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
 	if (opts && slideObj.type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null)) return ''
 
-	// Vars
-	let arrTextObjects: IText[] = []
-	let tagStart = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
-	let tagClose = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
-	let strSlideXml = tagStart
+	// STEP 1: Start textBody
+	let strSlideXml = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
 
-	// STEP 1: Modify slideObj to be consistent array of `{ text:'', options:{} }`
-	/* CASES:
-		addText( 'string' )
-		addText( 'line1\n line2' )
-		addText( ['barry','allen'] )
-		addText( [{text'word1'}, {text:'word2'}] )
-		addText( [{text'line1\n line2'}, {text:'end word'}] )
-	*/
-	// A: Transform string/number into complex object
-	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
-		slideObj.text = [{ text: slideObj.text.toString(), options: opts || {} }]
-	}
-
-	// STEP 2: Grab options, format line-breaks, etc.
-	if (Array.isArray(slideObj.text)) {
-		slideObj.text.forEach((obj: IText, idx: number) => {
-			if (!obj.text) obj.text = ''
-
-			// A: Set options
-			obj.options = obj.options || opts || {}
-			if (idx === 0 && obj.options && !obj.options.bullet && opts.bullet) obj.options.bullet = opts.bullet
-
-			// B: Cast to text-object and fix line-breaks (if needed)
-			if (typeof obj.text === 'string' || typeof obj.text === 'number') {
-				// 1: Convert "\n" or any variation into CRLF
-				obj.text = obj.text.toString().replace(/\r*\n/g, CRLF)
-
-				// 2: Handle strings that contain "\n"
-				if (obj.text.indexOf(CRLF) > -1) {
-					// Remove trailing linebreak (if any) so the "if" below doesnt create a double CRLF+CRLF line ending!
-					obj.text = obj.text.replace(/\r\n$/g, '')
-					// Plain strings like "hello \n world" or "first line\n" need to have line-breaks set to become 2 separate lines as intended
-					obj.options.breakLine = true
-				}
-
-				// 3: Add CRLF line ending if `breakLine`
-				if (obj.options.breakLine && !obj.options.bullet && !obj.options.align && idx + 1 < slideObj.text.length) obj.text += CRLF
-			}
-
-			// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
-			if (obj.options.breakLine || obj.text.indexOf(CRLF) > -1) {
-				obj.text.split(CRLF).forEach((line, lineIdx) => {
-					// Add line-breaks if not bullets/aligned (we add CRLF for those below in STEP 3)
-					// NOTE: Use "idx>0" so lines wont start with linebreak (eg:empty first line)
-					arrTextObjects.push({
-						text: (lineIdx > 0 && obj.options.breakLine && !obj.options.bullet && !obj.options.align ? CRLF : '') + line,
-						options: obj.options,
-					})
-				})
-			} else {
-				// NOTE: The replace used here is for non-textObjects (plain strings) eg:'hello\nworld'
-				arrTextObjects.push(obj)
-			}
-		})
-	}
-
-	// STEP 3: Add bodyProperties
+	// STEP 2: Add bodyProperties
 	{
 		// A: 'bodyPr'
 		strSlideXml += genXmlBodyProperties(slideObj)
@@ -1158,61 +1090,152 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		else strSlideXml += '<a:lstStyle/>'
 	}
 
-	// STEP 4: Loop over each text object and create paragraph props, text run, etc.
-	arrTextObjects.forEach((textObj, idx) => {
-		// Clear/Increment loop vars
-		let paragraphPropXml = `<a:pPr ${textObj.options.rtlMode ? ' rtl="1" ' : ''}`
-		textObj.options.lineIdx = idx
+	/* STEP 3: Modify slideObj.text to array
+		CASES:
+		addText( 'string' ) // string
+		addText( 'line1\n line2' ) // string with lineBreak
+		addText( {text:'word1'} ) // IText object
+		addText( ['barry','allen'] ) // array of strings
+		addText( [{text:'word1'}, {text:'word2'}] ) // IText object array
+		addText( [{text:'line1\n line2'}, {text:'end word'}] ) // IText object array with lineBreak
+	*/
+	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
+		// Handle cases 1,2
+		tmpTextObjects.push({ text: slideObj.text.toString(), options: opts || {} })
+	} else if (!Array.isArray(slideObj.text) && slideObj.text!.hasOwnProperty('text')) {
+		// Handle case 3
+		tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} })
+	} else if (Array.isArray(slideObj.text)) {
+		// Handle cases 4,5,6
+		tmpTextObjects = slideObj.text.map((item: IText) => ({ text: item.text, options: item.options }))
+	}
 
-		// A: Inherit pPr-type options from parent shape's `options`
-		textObj.options.align = textObj.options.align || opts.align
-		textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing
-		textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel
-		textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore
-		textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
+	// STEP 4: Iterate over text objects, set text/options, break into pieces if '\n'/breakLine found
+	tmpTextObjects.forEach((itext, idx) => {
+		if (!itext.text) itext.text = ''
 
-		textObj.options.lineIdx = idx
-		paragraphPropXml = genXmlParagraphProperties(textObj, false)
+		// A: Set options
+		itext.options = itext.options || opts || {}
+		if (idx === 0 && itext.options && !itext.options.bullet && opts.bullet) itext.options.bullet = opts.bullet
 
-		// B: Start paragraph if this is the first text obj, or if current textObj is about to be bulleted or aligned
-		if (idx === 0) {
-			// Add paragraphProperties right after <p> before textrun(s) begin
-			strSlideXml += '<a:p>' + paragraphPropXml
-		} else if (idx > 0 && (typeof textObj.options.bullet !== 'undefined' || typeof textObj.options.align !== 'undefined')) {
-			strSlideXml += '</a:p><a:p>' + paragraphPropXml
+		// B: Cast to text-object and fix line-breaks (if needed)
+		if (typeof itext.text === 'string' || typeof itext.text === 'number') {
+			// 1: Convert "\n" or any variation into CRLF
+			itext.text = itext.text.toString().replace(/\r*\n/g, CRLF)
 		}
 
-		// C: Inherit any main options (color, fontSize, etc.)
-		// We only pass the text.options to genXmlTextRun (not the Slide.options),
-		// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
-		Object.entries(opts).forEach(([key, val]) => {
-			// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-			if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
-		})
-
-		// D: Add formatted textrun
-		strSlideXml += genXmlTextRun(textObj)
+		// C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
+		// NOTE: Filter for trailing lineBreak prevents the creation of an empty textObj as the last item
+		if (itext.text.indexOf(CRLF) > -1 && itext.text.match(/\n$/g) === null) {
+			itext.text.split(CRLF).forEach(line => {
+				itext.options.breakLine = true
+				arrTextObjects.push({ text: line, options: itext.options })
+			})
+		} else {
+			arrTextObjects.push(itext)
+		}
 	})
 
-	// STEP 5: Append 'endParaRPr' (when needed) and close current open paragraph
-	// NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
-	if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
-		if (opts.fontFace) {
-			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0">'
-			strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
-			strSlideXml += `<a:ea typeface="${opts.fontFace}" charset="0"/>`
-			strSlideXml += `<a:cs typeface="${opts.fontFace}" charset="0"/>`
-			strSlideXml += '</a:endParaRPr>'
-		} else {
-			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
+	// STEP 5: Group textObj into lines by checking for lineBreak, bullets, alignment change, etc.
+	let arrLines: IText[][] = []
+	let arrTexts: IText[] = []
+	arrTextObjects.forEach((textObj, idx) => {
+		// A: Align or Bullet trigger new line
+		if (arrTexts.length > 0 && (textObj.options.align || opts.align)) {
+			// Only start a new paragraph when align *changes*
+			if (textObj.options.align != arrTextObjects[idx - 1].options.align) {
+				arrLines.push(arrTexts)
+				arrTexts = []
+			}
+		} else if (arrTexts.length > 0 && textObj.options.bullet && arrTexts.length > 0) {
+			arrLines.push(arrTexts)
+			arrTexts = []
+			textObj.options.breakLine = false // For cases with both `bullet` and `brekaLine` - prevent double lineBreak
 		}
-	} else {
-		strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}" dirty="0"/>` // NOTE: Added 20180101 to address PPT-2007 issues
-	}
-	strSlideXml += '</a:p>'
 
-	// STEP 6: Close the textBody
-	strSlideXml += tagClose
+		// B: Add this text to current line
+		arrTexts.push(textObj)
+
+		// C: BreakLine begins new line **after** adding current text
+		if (arrTexts.length > 0 && textObj.options.breakLine) {
+			// Avoid starting a para right as loop is exhausted
+			if (idx + 1 < arrTextObjects.length) {
+				arrLines.push(arrTexts)
+				arrTexts = []
+			}
+		}
+
+		// D: Flush buffer
+		if (idx + 1 === arrTextObjects.length) arrLines.push(arrTexts)
+	})
+
+	// STEP 6: Loop over each line and create paragraph props, text run, etc.
+	arrLines.forEach(line => {
+		let reqsClosingFontSize = false
+
+		// A: Start paragraph, add paraProps
+		strSlideXml += '<a:p>'
+		// NOTE: `rtlMode` is like other opts, its propagated up to each text:options, so just check the 1st one
+		let paragraphPropXml = `<a:pPr ${line[0].options && line[0].options.rtlMode ? ' rtl="1" ' : ''}`
+
+		// B: Start paragraph, loop over lines and add text runs
+		line.forEach((textObj, idx) => {
+			// A: Set line index
+			textObj.options.lineIdx = idx
+
+			// B: Inherit pPr-type options from parent shape's `options`
+			textObj.options.align = textObj.options.align || opts.align
+			textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing
+			textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel
+			textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore
+			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
+			paragraphPropXml = genXmlParagraphProperties(textObj, false)
+
+			strSlideXml += paragraphPropXml
+			// C: Inherit any main options (color, fontSize, etc.)
+			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
+			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
+			Object.entries(opts).forEach(([key, val]) => {
+				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
+				if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
+			})
+
+			// D: Add formatted textrun
+			strSlideXml += genXmlTextRun(textObj)
+
+			// E: Flag close fontSize for empty [lineBreak] elements
+			if ((!textObj.text && opts.fontSize) || textObj.options.fontSize) {
+				reqsClosingFontSize = true
+				opts.fontSize = opts.fontSize || textObj.options.fontSize
+			}
+		})
+
+		/* C: Append 'endParaRPr' (when needed) and close current open paragraph
+		 * NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
+		 */
+		if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
+			if (opts.fontFace) {
+				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0">'
+				strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
+				strSlideXml += `<a:ea typeface="${opts.fontFace}" charset="0"/>`
+				strSlideXml += `<a:cs typeface="${opts.fontFace}" charset="0"/>`
+				strSlideXml += '</a:endParaRPr>'
+			} else {
+				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
+			}
+		} else if (reqsClosingFontSize) {
+			// Empty [lineBreak] lines should not contain runProp, however, they need to specify fontSize in `endParaRPr`
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
+		} else {
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}" dirty="0"/>` // Added 20180101 to address PPT-2007 issues
+		}
+
+		// D: End paragraph
+		strSlideXml += '</a:p>'
+	})
+
+	// STEP 7: Close the textBody
+	strSlideXml += slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
 
 	// LAST: Return XML
 	return strSlideXml
@@ -1732,7 +1755,7 @@ export function makeXmlPresentation(pres: IPresentation): string {
 		strXml += '<p:extLst><p:ext uri="{521415D9-36F7-43E2-AB2F-B90AF26B5E84}">'
 		strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
 		pres.sections.forEach(sect => {
-			strXml += `<p14:section name="${sect.title}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
+			strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
 			sect.slides.forEach(slide => (strXml += `<p14:sldId id="${slide.id}"/>`))
 			strXml += `</p14:sldIdLst></p14:section>`
 		})
@@ -1773,9 +1796,9 @@ export function makeXmlViewProps(): string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowOptions} IShadowOptions - shadow options
+ * @param {ShadowOptions} ShadowOptions - shadow options
  */
-export function correctShadowOptions(ShadowOptions: IShadowOptions) {
+export function correctShadowOptions(ShadowOptions: ShadowOptions) {
 	if (!ShadowOptions || typeof ShadowOptions !== 'object') {
 		//console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
 		return

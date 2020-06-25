@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, ILayout, IGlowOptions, ISlideLib, ShapeFill, Color, ShapeLine } from './core-interfaces'
+import { IChartOpts, ILayout, GlowOptions, ISlideLib, ShapeFill, Color, ShapeLine } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -130,39 +130,40 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @returns {string} XML string
  */
 export function createColorElement(colorStr: string | SCHEME_COLORS, innerElements?: string): string {
-	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
+	let colorVal = (colorStr || '').replace('#', '')
+	let isHexaRgb = REGEX_HEX_COLOR.test(colorVal)
 
 	if (
 		!isHexaRgb &&
-		colorStr !== SchemeColor.text1 &&
-		colorStr !== SchemeColor.text2 &&
-		colorStr !== SchemeColor.background1 &&
-		colorStr !== SchemeColor.background2 &&
-		colorStr !== SchemeColor.accent1 &&
-		colorStr !== SchemeColor.accent2 &&
-		colorStr !== SchemeColor.accent3 &&
-		colorStr !== SchemeColor.accent4 &&
-		colorStr !== SchemeColor.accent5 &&
-		colorStr !== SchemeColor.accent6
+		colorVal !== SchemeColor.background1 &&
+		colorVal !== SchemeColor.background2 &&
+		colorVal !== SchemeColor.text1 &&
+		colorVal !== SchemeColor.text2 &&
+		colorVal !== SchemeColor.accent1 &&
+		colorVal !== SchemeColor.accent2 &&
+		colorVal !== SchemeColor.accent3 &&
+		colorVal !== SchemeColor.accent4 &&
+		colorVal !== SchemeColor.accent5 &&
+		colorVal !== SchemeColor.accent6
 	) {
-		console.warn(`"${colorStr}" is not a valid scheme color or hexa RGB! "${DEF_FONT_COLOR}" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values`)
-		colorStr = DEF_FONT_COLOR
+		console.warn(`"${colorVal}" is not a valid scheme color or hexa RGB! "${DEF_FONT_COLOR}" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values`)
+		colorVal = DEF_FONT_COLOR
 	}
 
 	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"'
+	let colorAttr = 'val="' + (isHexaRgb ? colorVal.toUpperCase() : colorVal) + '"'
 
-	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
+	return innerElements ? `<a:${tagName} ${colorAttr}>${innerElements}</a:${tagName}>` : `<a:${tagName} ${colorAttr}/>`
 }
 
 /**
  * Creates `a:glow` element
- * @param {IGlowOptions} options glow properties
- * @param {IGlowOptions} defaults defaults for unspecified properties in `opts`
+ * @param {GlowOptions} options glow properties
+ * @param {GlowOptions} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
-export function createGlowElement(options: IGlowOptions, defaults: IGlowOptions): string {
+export function createGlowElement(options: GlowOptions, defaults: GlowOptions): string {
 	let strXml = '',
 		opts = getMix(defaults, options),
 		size = opts['size'] * ONEPT,

@@ -4,25 +4,25 @@
 
 import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
+	BkgdOpts,
+	HexColor,
 	IChartMulti,
 	IChartOpts,
 	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IMediaOpts,
 	ISlideLayout,
 	ISlideNumber,
+	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	ISlideObject,
-	IShapeOptions,
 	ITableOptions,
 	IText,
 	ITextOpts,
+	MediaOpts,
+	ShapeOptions,
 	TableRow,
-	HexColor,
-	BkgdOpts,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -166,10 +166,10 @@ export default class Slide {
 
 	/**
 	 * Add media (audio/video) to Slide
-	 * @param {IMediaOpts} options - media options
+	 * @param {MediaOpts} options - media options
 	 * @return {Slide} this Slide
 	 */
-	addMedia(options: IMediaOpts): Slide {
+	addMedia(options: MediaOpts): Slide {
 		genObj.addMediaDefinition(this, options)
 		return this
 	}
@@ -188,10 +188,10 @@ export default class Slide {
 	/**
 	 * Add shape to Slide
 	 * @param {SHAPE_NAME} shapeName - shape name
-	 * @param {IShapeOptions} options - shape options
+	 * @param {ShapeOptions} options - shape options
 	 * @return {Slide} this Slide
 	 */
-	addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide {
+	addShape(shapeName: SHAPE_NAME, options?: ShapeOptions): Slide {
 		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
 		// But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
 		// <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'

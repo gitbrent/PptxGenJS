@@ -19,7 +19,7 @@ import {
 	LETTERS,
 	ONEPT,
 } from './core-enums'
-import { IChartOptsLib, ISlideRelChart, IShadowOptions, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
+import { IChartOptsLib, ISlideRelChart, ShadowOptions, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './gen-utils'
 import * as JSZip from 'jszip'
 
@@ -451,7 +451,9 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			// NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
 			strXml += '<c:autoTitleDeleted val="1"/>'
 		}
-		// Add 3D view tag
+		/** Add 3D view tag
+		 * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
+		 */
 		if (rel.opts._type === CHART_TYPE.BAR3D) {
 			strXml += '<c:view3D>'
 			strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>'
@@ -626,14 +628,14 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 /**
  * Create XML string for any given chart type
- * @example: <c:bubbleChart> or <c:lineChart>
- *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
  * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
+ * @example '<c:bubbleChart>'
+ * @example '<c:lineChart>'
  * @return {string} XML
  */
 function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
@@ -824,7 +826,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 						strXml += '  <c:numRef>'
 						strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 						strXml += '    <c:numCache>'
-						strXml += '      <c:formatCode>' + opts.catLabelFormatCode + '</c:formatCode>'
+						strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>'
 						strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
 						obj.labels.forEach((label, idx) => {
 							strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
@@ -847,18 +849,18 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 				// 3: "Values"
 				{
-					strXml += '  <c:val>'
-					strXml += '    <c:numRef>'
-					strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
-					strXml += '      <c:numCache>'
-					strXml += '        <c:formatCode>General</c:formatCode>'
-					strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
+					strXml += '<c:val>'
+					strXml += '  <c:numRef>'
+					strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
+					strXml += '    <c:numCache>'
+					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
+					strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
 					obj.values.forEach((value, idx) => {
 						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>'
 					})
-					strXml += '      </c:numCache>'
-					strXml += '    </c:numRef>'
-					strXml += '  </c:val>'
+					strXml += '    </c:numCache>'
+					strXml += '  </c:numRef>'
+					strXml += '</c:val>'
 				}
 
 				// Option: `smooth`
@@ -1636,7 +1638,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
  * @return {string} XML
  */
 function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
-	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir === 'col' ? 'r' : 't'
+	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't'
 	let strXml = ''
 	let isRight = axisPos === 'r' || axisPos === 't'
 	let crosses = isRight ? 'max' : 'autoZero'
@@ -1855,7 +1857,7 @@ function getExcelColName(length: number): string {
  * @example { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
  * @return {string} XML
  */
-function createShadowElement(options: IShadowOptions, defaults: object): string {
+function createShadowElement(options: ShadowOptions, defaults: object): string {
 	if (!options) {
 		return '<a:effectLst/>'
 	} else if (typeof options !== 'object') {

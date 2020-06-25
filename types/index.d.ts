@@ -112,9 +112,9 @@ declare class PptxGenJS {
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * @param {string} tabEleId - HTMLElementID of the table
-	 * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+	 * @param {TableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
 	 */
-	tableToSlides(tableElementId: string, opts?: PptxGenJS.ITableToSlidesOpts): void
+	tableToSlides(tableElementId: string, opts?: PptxGenJS.TableToSlidesOpts): void
 }
 
 declare namespace PptxGenJS {
@@ -341,6 +341,22 @@ declare namespace PptxGenJS {
 		'wedgeEllipseCallout' = 'wedgeEllipseCallout',
 		'wedgeRectCallout' = 'wedgeRectCallout',
 		'wedgeRoundRectCallout' = 'wedgeRoundRectCallout',
+	}
+	// used by charts, shape, text
+	export interface BorderOptions {
+		/**
+		 * Border type
+		 */
+		type?: 'none' | 'dash' | 'solid'
+		/**
+		 * Border color (hex)
+		 * @example 'FF3399'
+		 */
+		color?: HexColor
+		/**
+		 * Border size (points)
+		 */
+		pt?: number
 	}
 	// These are used by browser/script clients and have been named like this since v0.1.
 	// Desc: charts and shapes for `pptxgen.charts.` `pptxgen.shapes.`
@@ -843,7 +859,7 @@ declare namespace PptxGenJS {
 	}
 	export interface ISlideRelMedia {
 		type: string
-		opts?: IMediaOpts
+		opts?: MediaOpts
 		path?: string
 		extn?: string
 		data?: string | ArrayBuffer
@@ -870,10 +886,10 @@ declare namespace PptxGenJS {
 					image: {} // TODO: IImageOptions (?)
 			  }
 			| {
-					line: {} // TODO: IShapeOptions (?)
+					line: {} // TODO: ShapeOptions (?)
 			  }
 			| {
-					rect: {} // TODO: IShapeOptions (?)
+					rect: {} // TODO: ShapeOptions (?)
 			  }
 			| {
 					text: {
@@ -916,44 +932,6 @@ declare namespace PptxGenJS {
 		slideNumber?: ISlideNumber
 	}
 
-	export interface ITableToSlidesOpts extends TableOptions {
-		addImage?: {
-			url: string
-			x: number
-			y: number
-			w?: number
-			h?: number
-		}
-		addShape?: {
-			shape: any
-			opts: {}
-		}
-		addTable?: {
-			rows: any[]
-			opts: {}
-		}
-		addText?: {
-			text: any[]
-			opts: {}
-		}
-		_arrObjTabHeadRows?: ITableToSlidesCell[][]
-		addHeaderToEach?: boolean
-		autoPage?: boolean
-		autoPageCharWeight?: number
-		autoPageLineWeight?: number
-		colW?: number | number[]
-		masterSlideName?: string
-		masterSlide?: ISlideLayout
-		newSlideStartY?: number
-		slideMargin?: Margin
-		verbose?: boolean
-	}
-	export interface ITableToSlidesCell {
-		type: SLIDE_OBJECT_TYPES.tablecell
-		text?: string | TableCell[]
-		options?: ITableCellOpts
-	}
-
 	export interface OptsChartData {
 		index?: number
 		name?: string
@@ -962,7 +940,7 @@ declare namespace PptxGenJS {
 		sizes?: number[]
 	}
 
-	export interface IObjectOptions extends IShapeOptions, ITableCellOpts, ITextOpts {
+	export interface IObjectOptions extends ShapeOptions, TableCellOpts, ITextOpts {
 		x?: Coord
 		y?: Coord
 		cx?: Coord
@@ -1181,11 +1159,11 @@ declare namespace PptxGenJS {
 		/**
 		 * Begin arrow type
 		 */
-		arrowTypeBegin?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+		beginArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
 		 * End arrow type
 		 */
-		arrowTypeEnd?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
+		endArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 
 		/**
 		 * Dash type
@@ -1558,7 +1536,7 @@ declare namespace PptxGenJS {
 
 	// addImage
 	export interface ImageOpts extends PositionOptions, OptsDataOrPath {
-		hyperlink?: IHyperLink
+		hyperlink?: HyperLink
 		/**
 		 * Image rotation (degrees)
 		 * - range: -360 to 360
@@ -1597,7 +1575,7 @@ declare namespace PptxGenJS {
 	 * Add media (audio/video) to slide
 	 * @requires either `link` or `path`
 	 */
-	export interface IMediaOpts extends PositionOptions, OptsDataOrPath {
+	export interface MediaOpts extends PositionOptions, OptsDataOrPath {
 		/**
 		 * Media type
 		 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -1619,7 +1597,7 @@ declare namespace PptxGenJS {
 	}
 
 	// addShape
-	export interface IShapeOptions extends PositionOptions {
+	export interface ShapeOptions extends PositionOptions {
 		align?: HAlign
 		fill?: ShapeFill
 		flipH?: boolean
@@ -1634,59 +1612,185 @@ declare namespace PptxGenJS {
 		shadow?: IShadowOptions
 	}
 
-	// addTable
-	export interface ITableCellOpts extends TextOptions {
+	// addTable & tableToSlides
+	export interface TableToSlidesOpts extends TableOptions {
+		/**
+		 * Add an image to slide(s) created during autopaging
+		 */
+		addImage?: { url: string; x: number; y: number; w?: number; h?: number }
+		/**
+		 * Add a shape to slide(s) created during autopaging
+		 */
+		addShape?: { shape: any; options: {} }
+		/**
+		 * Add a table to slide(s) created during autopaging
+		 */
+		addTable?: { rows: any[]; options: {} }
+		/**
+		 * Add a text object to slide(s) created during autopaging
+		 */
+		addText?: { text: any[]; options: {} }
+		/**
+		 * Whether to enable auto-paging
+		 * - auto-paging creates new slides as content overflows a slide
+		 * @default true
+		 */
+		autoPage?: boolean
+		/**
+		 * Auto-paging character weight
+		 * - adjusts how many characters are used before lines wrap
+		 * - range: -1.0 to 1.0
+		 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+		 * @default 0.0
+		 * @example 0.5 // lines are longer (increases the number of characters that can fit on a given line)
+		 */
 		autoPageCharWeight?: number
+		/**
+		 * Auto-paging line weight
+		 * - adjusts how many lines are used before slides wrap
+		 * - range: -1.0 to 1.0
+		 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+		 * @default 0.0
+		 * @example 0.5 // tables are taller (increases the number of lines that can fit on a given slide)
+		 */
 		autoPageLineWeight?: number
-		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+		/**
+		 * Whether to repeat head row(s) on new tables created by autopaging
+		 * @since 3.3.0
+		 * @default false
+		 */
+		autoPageRepeatHeader?: boolean
+		/**
+		 * The `y` location to use on subsequent slides created by autopaging
+		 * @default (top margin of Slide)
+		 */
+		autoPageSlideStartY?: number
+		/**
+		 * Column widths (inches)
+		 */
+		colW?: number | number[]
+		/**
+		 * Master slide name
+		 * - define a master slide to have your auto-paged slides have corporate design, etc.
+		 * @see https://gitbrent.github.io/PptxGenJS/docs/masters.html
+		 */
+		masterSlideName?: string
+		/**
+		 * Slide margin
+		 * - this margin will be across all slides created by auto-paging
+		 */
+		slideMargin?: Margin
+		/**
+		 * DEV TOOL: Verbose Mode (to console)
+		 * - tell the library to provide an almost ridiculous amount of detail during auto-paging calculations
+		 * @default false // obviously
+		 */
+		verbose?: boolean // Undocumented; shows verbose output
+
+		/**
+		 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+		 */
+		addHeaderToEach?: boolean
+		/**
+		 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+		 */
+		newSlideStartY?: number
+	}
+	export interface TableCellOpts extends TextOptions {
+		/**
+		 * Auto-paging character weight
+		 * - adjusts how many characters are used before lines wrap
+		 * - range: -1.0 to 1.0
+		 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+		 * @default 0.0
+		 * @example 0.5 // lines are longer (increases the number of characters that can fit on a given line)
+		 */
+		autoPageCharWeight?: number
+		/**
+		 * Auto-paging line weight
+		 * - adjusts how many lines are used before slides wrap
+		 * - range: -1.0 to 1.0
+		 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+		 * @default 0.0
+		 * @example 0.5 // tables are taller (increases the number of lines that can fit on a given slide)
+		 */
+		autoPageLineWeight?: number
+		/**
+		 * Cell border
+		 */
+		border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+		/**
+		 * Cell colspan
+		 */
 		colspan?: number
+		/**
+		 * Fill color
+		 * @example 'FF0000' // hex string (red)
+		 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFill object with 50% transparent
+		 */
 		fill?: ShapeFill
+		/**
+		 * Cell margin
+		 * @default 0
+		 */
 		margin?: Margin
+		/**
+		 * Cell rowspan
+		 */
 		rowspan?: number
-		valign?: VAlign
 	}
-	export interface TableCell {
-		text?: string | TableCell[]
-		options?: ITableCellOpts
-	}
-	export type TableRow = number[] | string[] | TableCell[]
 	export interface TableOptions extends PositionOptions, TextOptions {
 		/**
-		 * Whether to create new slides as table rows overflow each slide
+		 * Whether to enable auto-paging
+		 * - auto-paging creates new slides as content overflows a slide
 		 * @default false
 		 */
 		autoPage?: boolean
 		/**
-		 * Character weight - affects line length before wrapping begins
-		 * @type float (-1.0 to 1.0)
-		 * @default 0
+		 * Auto-paging character weight
+		 * - adjusts how many characters are used before lines wrap
+		 * - range: -1.0 to 1.0
+		 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+		 * @default 0.0
+		 * @example 0.5 // lines are longer (increases the number of characters that can fit on a given line)
 		 */
 		autoPageCharWeight?: number
 		/**
-		 * Line weight - affects line height before paging begins
-		 * @type float (-1.0 to 1.0)
-		 * @default 0
+		 * Auto-paging line weight
+		 * - adjusts how many lines are used before slides wrap
+		 * - range: -1.0 to 1.0
+		 * @see https://gitbrent.github.io/PptxGenJS/docs/api-tables.html
+		 * @default 0.0
+		 * @example 0.5 // tables are taller (increases the number of lines that can fit on a given slide)
 		 */
 		autoPageLineWeight?: number
 		/**
-		 * Whether table header rows should be repeated on each new slide creating by autoPage
+		 * Whether table header row(s) should be repeated on each new slide creating by autoPage.
+		 * Use `autoPageHeaderRows` to designate how many rows comprise the table header (1+).
 		 * @default false
 		 * @since v3.3.0
 		 */
 		autoPageRepeatHeader?: boolean
 		/**
-		 * Number of rows that comprise table headers.
-		 * Required when `autoPageRepeatHeader` is set to true.
+		 * Number of rows that comprise table headers
+		 * - required when `autoPageRepeatHeader` is set to true.
 		 * @example 2 - repeats the first two table rows on each new slide created
+		 * @default 1
 		 * @since v3.3.0
 		 */
 		autoPageHeaderRows?: number
+		/**
+		 * The `y` location to use on subsequent slides created by autopaging
+		 * @default (top margin of Slide)
+		 */
+		autoPageSlideStartY?: number
 		/**
 		 * Table border
 		 * - single value is applied to all 4 sides
 		 * - array of values in TRBL order for individual sides
 		 */
-		border?: IBorderOptions | [IBorderOptions, IBorderOptions, IBorderOptions, IBorderOptions]
+		border?: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
 		/**
 		 * Width of table columns
 		 * - single value is applied to every column equally based upon `w`
@@ -1697,17 +1801,12 @@ declare namespace PptxGenJS {
 		/**
 		 * Cell background color
 		 */
-		fill?: Color
+		fill?: ShapeFill
 		/**
 		 * Cell margin
 		 * - affects all table cells, is superceded by cell options
 		 */
 		margin?: Margin
-		/**
-		 * Starting `y` location on additional slides created by autoPage=true
-		 * @default `y` value from table options
-		 */
-		newSlideStartY?: number
 		/**
 		 * Height of table rows
 		 * - single value is applied to every row equally based upon `h`
@@ -1715,7 +1814,20 @@ declare namespace PptxGenJS {
 		 * @default rows of equal height based upon `h`
 		 */
 		rowH?: number | number[]
+
+		/**
+		 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+		 */
+		newSlideStartY?: number
 	}
+	export interface TableCell {
+		text?: string | TableCell[]
+		options?: TableCellOpts
+	}
+	export interface TableRowSlide {
+		rows: TableRow[]
+	}
+	export type TableRow = number[] | string[] | TableCell[]
 
 	// addText
 	export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
@@ -1734,6 +1846,16 @@ declare namespace PptxGenJS {
 		}
 		charSpacing?: number
 		fill?: ShapeFill
+		/**
+		 * Flip shape horizontally?
+		 * @default false
+		 */
+		flipH?: boolean
+		/**
+		 * Flip shape vertical?
+		 * @default false
+		 */
+		flipV?: boolean
 		glow?: IGlowOptions
 		hyperlink?: HyperLink
 		indentLevel?: number
@@ -1806,10 +1928,10 @@ declare namespace PptxGenJS {
 		addImage(options: ImageOpts): Slide
 		/**
 		 * Add media (audio/video) to Slide
-		 * @param {IMediaOpts} options - media options
+		 * @param {MediaOpts} options - media options
 		 * @return {Slide} this Slide
 		 */
-		addMedia(options: IMediaOpts): Slide
+		addMedia(options: MediaOpts): Slide
 		/**
 		 * Add speaker notes to Slide
 		 * @docs https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html
@@ -1820,10 +1942,10 @@ declare namespace PptxGenJS {
 		/**
 		 * Add shape to Slide
 		 * @param {SHAPE_NAME} shapeName - shape name
-		 * @param {IShapeOptions} options - shape options
+		 * @param {ShapeOptions} options - shape options
 		 * @return {Slide} this Slide
 		 */
-		addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide
+		addShape(shapeName: SHAPE_NAME, options?: ShapeOptions): Slide
 		/**
 		 * Add table to Slide
 		 * @param {TableRow[]} tableRows - table rows
