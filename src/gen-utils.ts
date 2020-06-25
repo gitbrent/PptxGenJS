@@ -130,29 +130,30 @@ export function rgbToHex(r: number, g: number, b: number): string {
  * @returns {string} XML string
  */
 export function createColorElement(colorStr: string | SCHEME_COLORS, innerElements?: string): string {
-	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
+	let colorVal = (colorStr || '').replace('#', '')
+	let isHexaRgb = REGEX_HEX_COLOR.test(colorVal)
 
 	if (
 		!isHexaRgb &&
-		colorStr !== SchemeColor.text1 &&
-		colorStr !== SchemeColor.text2 &&
-		colorStr !== SchemeColor.background1 &&
-		colorStr !== SchemeColor.background2 &&
-		colorStr !== SchemeColor.accent1 &&
-		colorStr !== SchemeColor.accent2 &&
-		colorStr !== SchemeColor.accent3 &&
-		colorStr !== SchemeColor.accent4 &&
-		colorStr !== SchemeColor.accent5 &&
-		colorStr !== SchemeColor.accent6
+		colorVal !== SchemeColor.background1 &&
+		colorVal !== SchemeColor.background2 &&
+		colorVal !== SchemeColor.text1 &&
+		colorVal !== SchemeColor.text2 &&
+		colorVal !== SchemeColor.accent1 &&
+		colorVal !== SchemeColor.accent2 &&
+		colorVal !== SchemeColor.accent3 &&
+		colorVal !== SchemeColor.accent4 &&
+		colorVal !== SchemeColor.accent5 &&
+		colorVal !== SchemeColor.accent6
 	) {
-		console.warn(`"${colorStr}" is not a valid scheme color or hexa RGB! "${DEF_FONT_COLOR}" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values`)
-		colorStr = DEF_FONT_COLOR
+		console.warn(`"${colorVal}" is not a valid scheme color or hexa RGB! "${DEF_FONT_COLOR}" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values`)
+		colorVal = DEF_FONT_COLOR
 	}
 
 	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"'
+	let colorAttr = 'val="' + (isHexaRgb ? colorVal.toUpperCase() : colorVal) + '"'
 
-	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
+	return innerElements ? `<a:${tagName} ${colorAttr}>${innerElements}</a:${tagName}>` : `<a:${tagName} ${colorAttr}/>`
 }
 
 /**
