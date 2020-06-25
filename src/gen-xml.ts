@@ -338,18 +338,9 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						let cellFill = fillColor ? `<a:solidFill>${createColorElement(fillColor)}</a:solidFill>` : ''
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
-						let cellMarginXml =
-							' marL="' +
-							cellMargin[3] * ONEPT +
-							'" marR="' +
-							cellMargin[1] * ONEPT +
-							'" marT="' +
-							cellMargin[0] * ONEPT +
-							'" marB="' +
-							cellMargin[2] * ONEPT +
-							'"'
+						let cellMarginXml = ` marL="${cellMargin[3] * ONEPT}" marR="${cellMargin[1] * ONEPT}" marT="${cellMargin[0] * ONEPT}" marB="${cellMargin[2] * ONEPT}"`
 
-						// TODO: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+						// FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 3: ROWSPAN: Add dummy cells for any active rowspan
 						if (cell.vmerge) {
@@ -360,7 +351,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						// 4: Set CELL content and properties ==================================
 						strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
 						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
-						// TODO: FIXME: 20200525: ^^^
+						// FIXME: 20200525: ^^^
 						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
 
 						// 5: Borders: Add any borders
