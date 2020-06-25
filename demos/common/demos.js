@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200623
+* BLD.: 20200624
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -482,11 +482,11 @@ function genSlides_Table(pptx) {
 		var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 		slide.addText('Cell Margins:', optsSub);
 
-		slide.addTable( [['margin:0']],           { x:0.5, y:1.1, margin:0,           w:1.2, fill:'FFFCCC' } );
-		slide.addTable( [['margin:[0,0,0,20]']],  { x:2.5, y:1.1, margin:[0,0,0,20],  w:2.0, fill:'FFFCCC', align:'right' } );
-		slide.addTable( [['margin:5']],           { x:5.5, y:1.1, margin:5,           w:1.0, fill:'F1F1F1' } );
-		slide.addTable( [['margin:[40,5,5,20]']], { x:7.5, y:1.1, margin:[40,5,5,20], w:2.2, fill:'F1F1F1' } );
-		slide.addTable( [['margin:[30,5,5,30]']], { x:10.5,y:1.1, margin:[30,5,5,30], w:2.2, fill:'F1F1F1' } );
+		slide.addTable([['margin:0']], { x: 0.5, y: 1.1, margin: 0, w: 1.2, fill: 'FFFCCC', border: { pt: 0 } });
+		slide.addTable([['margin:[0,0,0,20]']], { x: 2.5, y: 1.1, margin: [0, 0, 0, 20], w: 2.0, fill: 'FFFCCC', align: 'right' });
+		slide.addTable([['margin:5']], { x: 5.5, y: 1.1, margin: 5, w: 1.0, fill: pptx.SchemeColor.background2 });
+		slide.addTable([['margin:[40,5,5,20]']], { x: 7.5, y: 1.1, margin: [40, 5, 5, 20], w: 2.2, fill: 'F1F1F1' });
+		slide.addTable([['margin:[30,5,5,30]']], { x: 10.5, y: 1.1, margin: [30, 5, 5, 30], w: 2.2, fill: 'F1F1F1' });
 
 		slide.addTable( [[{text:'no border and number zero', options:{margin:5}}, {text:0, options:{margin:5}}]], { x:0.5, y:1.9, fill:'f2f9fc', border:{type:'none'}, colW:[2.5,0.5] } );
 		slide.addTable( [[{text:'text-obj margin:0', options:{margin:0}}]], { x:4.0, y:1.9, w:2, fill:'f2f9fc' } );
