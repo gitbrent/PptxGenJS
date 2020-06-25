@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-24T04:24:13.972Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-25T05:15:55.613Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -721,24 +721,25 @@ function rgbToHex(r, g, b) {
  * @returns {string} XML string
  */
 function createColorElement(colorStr, innerElements) {
-    var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
+    var colorVal = (colorStr || '').replace('#', '');
+    var isHexaRgb = REGEX_HEX_COLOR.test(colorVal);
     if (!isHexaRgb &&
-        colorStr !== SchemeColor.text1 &&
-        colorStr !== SchemeColor.text2 &&
-        colorStr !== SchemeColor.background1 &&
-        colorStr !== SchemeColor.background2 &&
-        colorStr !== SchemeColor.accent1 &&
-        colorStr !== SchemeColor.accent2 &&
-        colorStr !== SchemeColor.accent3 &&
-        colorStr !== SchemeColor.accent4 &&
-        colorStr !== SchemeColor.accent5 &&
-        colorStr !== SchemeColor.accent6) {
-        console.warn("\"" + colorStr + "\" is not a valid scheme color or hexa RGB! \"" + DEF_FONT_COLOR + "\" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values");
-        colorStr = DEF_FONT_COLOR;
+        colorVal !== SchemeColor.background1 &&
+        colorVal !== SchemeColor.background2 &&
+        colorVal !== SchemeColor.text1 &&
+        colorVal !== SchemeColor.text2 &&
+        colorVal !== SchemeColor.accent1 &&
+        colorVal !== SchemeColor.accent2 &&
+        colorVal !== SchemeColor.accent3 &&
+        colorVal !== SchemeColor.accent4 &&
+        colorVal !== SchemeColor.accent5 &&
+        colorVal !== SchemeColor.accent6) {
+        console.warn("\"" + colorVal + "\" is not a valid scheme color or hexa RGB! \"" + DEF_FONT_COLOR + "\" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values");
+        colorVal = DEF_FONT_COLOR;
     }
     var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
-    var colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"';
-    return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>';
+    var colorAttr = 'val="' + (isHexaRgb ? colorVal.toUpperCase() : colorVal) + '"';
+    return innerElements ? "<a:" + tagName + " " + colorAttr + ">" + innerElements + "</a:" + tagName + ">" : "<a:" + tagName + " " + colorAttr + "/>";
 }
 /**
  * Creates `a:glow` element
@@ -1598,25 +1599,14 @@ function slideObjectToXml(slide) {
                             : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
                                 ? cell.optImp.fill
                                 : '';
-                        fillColor = (fillColor || (cellOpts.fill && cellOpts.fill.color)
-                            ? cellOpts.fill.color
-                            : cellOpts.fill && typeof cellOpts.fill === 'string'
-                                ? cellOpts.fill
-                                : '').replace('#', '');
+                        fillColor =
+                            fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
                         var cellFill = fillColor ? "<a:solidFill>" + createColorElement(fillColor) + "</a:solidFill>" : '';
                         var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
-                        var cellMarginXml = ' marL="' +
-                            cellMargin[3] * ONEPT +
-                            '" marR="' +
-                            cellMargin[1] * ONEPT +
-                            '" marT="' +
-                            cellMargin[0] * ONEPT +
-                            '" marB="' +
-                            cellMargin[2] * ONEPT +
-                            '"';
-                        // TODO: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+                        var cellMarginXml = " marL=\"" + cellMargin[3] * ONEPT + "\" marR=\"" + cellMargin[1] * ONEPT + "\" marT=\"" + cellMargin[0] * ONEPT + "\" marB=\"" + cellMargin[2] * ONEPT + "\"";
+                        // FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 3: ROWSPAN: Add dummy cells for any active rowspan
                         if (cell.vmerge) {
                             strXml_1 += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
@@ -1625,7 +1615,7 @@ function slideObjectToXml(slide) {
                         // 4: Set CELL content and properties ==================================
                         strXml_1 += "<a:tc" + cellColspan + cellRowspan + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + ">";
                         //strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
-                        // TODO: FIXME: 20200525: ^^^
+                        // FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
                         // 5: Borders: Add any borders
                         if (cellOpts.border && Array.isArray(cellOpts.border)) {
@@ -3569,7 +3559,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                     newCell.options.border[idx] = {
                         type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
                         color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
-                        pt: newCell.options.border[idx].pt || DEF_CELL_BORDER.pt,
+                        pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
                     };
                 });
                 // LAST:
@@ -3837,6 +3827,8 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
     // STEP 3: ROBUST: Set rational values for some shadow props if needed
     correctShadowOptions(opt.shadow);
     // STEP 4: Create hyperlinks
+    if (typeof text === 'string' || typeof text === 'number')
+        newObject.text = [{ text: text, options: newObject.options }];
     createHyperlinkRels(target, newObject.text || '');
     // LAST: Add object to Slide
     target.data.push(newObject);
@@ -5667,7 +5659,7 @@ function makeValAxis(opts, valAxisId) {
     if (opts.valAxisMajorUnit)
         strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>';
     if (opts.valAxisDisplayUnit)
-        strXml += "<c:dispUnits><c:builtInUnit val=\"" + opts.valAxisDisplayUnit + "\"/><c:dispUnitsLbl/></c:dispUnits>";
+        strXml += "<c:dispUnits><c:builtInUnit val=\"" + opts.valAxisDisplayUnit + "\"/>" + (opts.valAxisDisplayUnitLabel ? '<c:dispUnitsLbl/>' : '') + "</c:dispUnits>";
     strXml += '</c:valAx>';
     return strXml;
 }
@@ -5987,7 +5979,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200623:2308';
+var VERSION = '3.3.0-beta-20200624:2150';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
