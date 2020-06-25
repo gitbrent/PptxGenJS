@@ -937,6 +937,7 @@ function genSlides_Chart(pptx) {
 			catAxisHidden: true,
 			catGridLine  : { style: 'none' },
 			valAxisHidden: true,
+			valAxisDisplayUnitLabel: true,
 			valGridLine  : { style: 'none' },
 
 			showLegend: true,
@@ -965,6 +966,7 @@ function genSlides_Chart(pptx) {
 			valAxisOrientation: 'maxMin',
 			valGridLine: { style: 'none' },
 			valAxisHidden: true,
+			valAxisDisplayUnitLabel: true,
 			catGridLine: { color: 'cc6699', style: 'dash', size: 1 },
 
 			titleColor   : '33CF22',
