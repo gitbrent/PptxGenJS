@@ -711,7 +711,7 @@ export function addTableDefinition(
 					newCell.options.border[idx] = {
 						type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
 						color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
-						pt: newCell.options.border[idx].pt || DEF_CELL_BORDER.pt,
+						pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
 					}
 				})
 
