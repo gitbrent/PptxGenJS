@@ -9,17 +9,19 @@ import {
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
+	DEF_SHAPE_LINE_COLOR,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
 	MASTER_OBJECTS,
 	ONEPT,
 	PIECHART_COLORS,
+	SHAPE_NAME,
+	SHAPE_TYPE,
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
-	SHAPE_NAME,
-	SHAPE_TYPE,
+	DEF_CELL_BORDER,
 } from './core-enums'
 import {
 	BkgdOpts,
@@ -27,8 +29,6 @@ import {
 	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IMediaOpts,
-	IShapeOptions,
 	ISlideLayout,
 	ISlideLib,
 	ISlideMasterOptions,
@@ -37,9 +37,12 @@ import {
 	ITableOptions,
 	IText,
 	ITextOpts,
+	MediaOpts,
 	OptsChartGridLine,
+	ShapeLine,
+	ShapeOptions,
 	TableRow,
-	HexColor,
+	TableCell,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
@@ -448,9 +451,9 @@ export function addImageDefinition(target: ISlideLib, opt: IImageOpts) {
 /**
  * Adds a media object to a slide definition.
  * @param {ISlideLib} `target` - slide object that the text will be added to
- * @param {IMediaOpts} `opt` - media options
+ * @param {MediaOpts} `opt` - media options
  */
-export function addMediaDefinition(target: ISlideLib, opt: IMediaOpts) {
+export function addMediaDefinition(target: ISlideLib, opt: MediaOpts) {
 	let intRels = target.relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
@@ -572,12 +575,13 @@ export function addNotesDefinition(target: ISlideLib, notes: string) {
 
 /**
  * Adds a shape object to a slide definition.
- * @param {IShape} shape shape const object (pptx.shapes)
- * @param {IShapeOptions} opt
  * @param {ISlideLib} target slide object that the shape should be added to
+ * @param {SHAPE_NAME} shapeName shape name
+ * @param {ShapeOptions} opts shape options
  */
-export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt: IShapeOptions) {
-	let options = typeof opt === 'object' ? opt : {}
+export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: ShapeOptions) {
+	let options = typeof opts === 'object' ? opts : {}
+	options.line = options.line || ({ type: 'none' } as ShapeLine)
 	let newObject: ISlideObject = {
 		type: SLIDE_OBJECT_TYPES.text,
 		shape: shapeName || SHAPE_TYPE.RECTANGLE,
@@ -585,19 +589,39 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		text: null,
 	}
 
-	// 1: Reality check
-	if (!shapeName) throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptx.shapes.LINE, {x:1, y:1, w:1, h:1});`')
+	// Reality check
+	if (!shapeName) throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptxgen.shapes.LINE, {x:1, y:1, w:1, h:1});`')
+
+	// 1: ShapeLine defaults
+	let newLineOpts: ShapeLine = {
+		type: options.line.type || 'solid',
+		color: options.line.color || DEF_SHAPE_LINE_COLOR,
+		transparency: options.line.transparency || 0,
+		width: options.line.width || 1,
+		dashType: options.line.dashType || 'solid',
+		beginArrowType: options.line.beginArrowType || null,
+		endArrowType: options.line.endArrowType || null,
+	}
+	if (typeof options.line === 'object' && options.line.type !== 'none') options.line = newLineOpts
 
 	// 2: Set options defaults
 	options.x = options.x || (options.x === 0 ? 0 : 1)
 	options.y = options.y || (options.y === 0 ? 0 : 1)
 	options.w = options.w || (options.w === 0 ? 0 : 1)
 	options.h = options.h || (options.h === 0 ? 0 : 1)
-	options.line = options.line || (shapeName === SHAPE_TYPE.LINE ? '333333' : null)
-	options.lineSize = options.lineSize || (shapeName === SHAPE_TYPE.LINE ? 1 : null)
-	if (['dash', 'dashDot', 'lgDash', 'lgDashDot', 'lgDashDotDot', 'solid', 'sysDash', 'sysDot'].indexOf(options.lineDash || '') < 0) options.lineDash = 'solid'
 
-	// 3: Add object to slide
+	// 3: Handle line (lots of deprecated opts)
+	if (typeof options.line === 'string') {
+		let tmpOpts = newLineOpts
+		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
+		options.line = tmpOpts
+	}
+	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLine` now)
+
+	// LAST: Add object to slide
 	target.data.push(newObject)
 }
 
@@ -653,20 +677,47 @@ export function addTableDefinition(
 		let newRow: ITableCell[] = []
 
 		if (Array.isArray(row)) {
-			row.forEach(cell => {
+			row.forEach((cell: number | string | TableCell) => {
+				// A:
 				let newCell: ITableCell = {
 					type: SLIDE_OBJECT_TYPES.tablecell,
 					text: '',
-					options: typeof cell === 'object' ? cell.options : null,
+					options: typeof cell === 'object' && cell.options ? cell.options : {},
 				}
+
+				// B:
 				if (typeof cell === 'string' || typeof cell === 'number') newCell.text = cell.toString()
 				else if (cell.text) {
 					// Cell can contain complex text type, or string, or number
 					if (typeof cell.text === 'string' || typeof cell.text === 'number') newCell.text = cell.text.toString()
 					else if (cell.text) newCell.text = cell.text
 					// Capture options
-					if (cell.options) newCell.options = cell.options
+					if (cell.options && typeof cell.options === 'object') newCell.options = cell.options
 				}
+
+				// C: Set cell borders
+				newCell.options.border = newCell.options.border || opt.border || [{ type: 'none' }, { type: 'none' }, { type: 'none' }, { type: 'none' }]
+				let cellBorder = newCell.options.border
+
+				// CASE 1: border interface is: BorderOptions | [BorderOptions, BorderOptions, BorderOptions, BorderOptions]
+				if (!Array.isArray(cellBorder) && typeof cellBorder === 'object') newCell.options.border = [cellBorder, cellBorder, cellBorder, cellBorder]
+				// Handle: [null, null, {type:'solid'}, null]
+				if (!newCell.options.border[0]) newCell.options.border[0] = { type: 'none' }
+				if (!newCell.options.border[1]) newCell.options.border[1] = { type: 'none' }
+				if (!newCell.options.border[2]) newCell.options.border[2] = { type: 'none' }
+				if (!newCell.options.border[3]) newCell.options.border[3] = { type: 'none' }
+
+				// set complete BorderOptions for all sides
+				let arrSides = [0, 1, 2, 3]
+				arrSides.forEach(idx => {
+					newCell.options.border[idx] = {
+						type: newCell.options.border[idx].type || DEF_CELL_BORDER.type,
+						color: newCell.options.border[idx].color || DEF_CELL_BORDER.color,
+						pt: typeof newCell.options.border[idx].pt === 'number' ? newCell.options.border[idx].pt : DEF_CELL_BORDER.pt,
+					}
+				})
+
+				// LAST:
 				newRow.push(newCell)
 			})
 		} else {
@@ -681,20 +732,30 @@ export function addTableDefinition(
 	opt.x = getSmartParseNumber(opt.x || (opt.x === 0 ? 0 : EMU / 2), 'X', presLayout)
 	opt.y = getSmartParseNumber(opt.y || (opt.y === 0 ? 0 : EMU / 2), 'Y', presLayout)
 	if (opt.h) opt.h = getSmartParseNumber(opt.h, 'Y', presLayout) // NOTE: Dont set default `h` - leaving it null triggers auto-rowH in `makeXMLSlide()`
-	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
 	opt.fontSize = opt.fontSize || DEF_FONT_SIZE
-	opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0
 	opt.margin = opt.margin === 0 || opt.margin ? opt.margin : DEF_CELL_MARGIN_PT
 	if (typeof opt.margin === 'number') opt.margin = [Number(opt.margin), Number(opt.margin), Number(opt.margin), Number(opt.margin)]
-	if (opt.autoPageLineWeight > 1) opt.autoPageLineWeight = 1
-	else if (opt.autoPageLineWeight < -1) opt.autoPageLineWeight = -1
-	// Set default color if needed (table option > inherit from Slide > default to black)
-	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR
-
+	if (!opt.color) opt.color = opt.color || DEF_FONT_COLOR // Set default color if needed (table option > inherit from Slide > default to black)
 	if (typeof opt.border === 'string') {
 		console.warn("addTable `border` option must be an object. Ex: `{border: {type:'none'}}`")
 		opt.border = null
+	} else if (Array.isArray(opt.border)) {
+		;[0, 1, 2, 3].forEach(idx => {
+			opt.border[idx] = opt.border[idx]
+				? { type: opt.border[idx].type || DEF_CELL_BORDER.type, color: opt.border[idx].color || DEF_CELL_BORDER.color, pt: opt.border[idx].pt || DEF_CELL_BORDER.pt }
+				: { type: 'none' }
+		})
 	}
+
+	opt.autoPage = typeof opt.autoPage === 'boolean' ? opt.autoPage : false
+	opt.autoPageRepeatHeader = typeof opt.autoPageRepeatHeader === 'boolean' ? opt.autoPageRepeatHeader : false
+	opt.autoPageHeaderRows = typeof opt.autoPageHeaderRows !== 'undefined' && !isNaN(Number(opt.autoPageHeaderRows)) ? Number(opt.autoPageHeaderRows) : 1
+	opt.autoPageLineWeight = typeof opt.autoPageLineWeight !== 'undefined' && !isNaN(Number(opt.autoPageLineWeight)) ? Number(opt.autoPageLineWeight) : 0
+	if (opt.autoPageLineWeight) {
+		if (opt.autoPageLineWeight > 1) opt.autoPageLineWeight = 1
+		else if (opt.autoPageLineWeight < -1) opt.autoPageLineWeight = -1
+	}
+	// autoPage ^^^
 
 	// Set/Calc table width
 	// Get slide margins - start with default values, then adjust if master or slide margins exist
@@ -718,7 +779,6 @@ export function addTableDefinition(
 	 * The API does not require a `w` value, but XML generation does, hence, code to calc a width below using colW value(s)
 	 */
 	if (opt.colW) {
-		// FIXME: Col count for first row only
 		let firstRowColCnt = arrRows[0].reduce((totalLen, c) => {
 			if (c && c.options && c.options.colspan && typeof c.options.colspan === 'number') {
 				totalLen += c.options.colspan
@@ -801,13 +861,15 @@ export function addTableDefinition(
 			options: Object.assign({}, opt),
 		})
 	} else {
+		if (opt.autoPageRepeatHeader) opt._arrObjTabHeadRows = arrRows.filter((_row, idx) => idx < opt.autoPageHeaderRows)
+
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
 		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((slide, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
 			if (!getSlide(target.number + idx)) slides.push(addSlide(slideLayout ? slideLayout.name : null))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
-			if (idx > 0) opt.y = inch2Emu(opt.newSlideStartY || arrTableMargin[0])
+			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			{
@@ -827,14 +889,15 @@ export function addTableDefinition(
 
 /**
  * Adds a text object to a slide definition.
- * @param {string|IText[]} text
- * @param {ITextOpts} opt
  * @param {ISlideLib} target - slide object that the text should be added to
+ * @param {string|IText[]} text text string or object
+ * @param {ITextOpts} opts text options
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
 export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
 	let opt: ITextOpts = opts || {}
+	opt.line = opt.line || ({} as ShapeLine)
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
 		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
@@ -842,6 +905,7 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 		options: opt,
 		shape: opt.shape || SHAPE_TYPE.RECTANGLE,
 	}
+	// TODO: copy "newLineOpts" from addShape above! 20200609
 
 	// STEP 1: Set some options
 	{
@@ -857,8 +921,28 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 
 		// B
 		if (opt.shape === SHAPE_TYPE.LINE) {
-			opt.line = opt.line || '333333'
-			opt.lineSize = opt.lineSize || 1
+			// ShapeLine defaults
+			let newLineOpts: ShapeLine = {
+				type: opt.line.type || 'solid',
+				color: opt.line.color || DEF_SHAPE_LINE_COLOR,
+				transparency: opt.line.transparency || 0,
+				width: opt.line.width || 1,
+				dashType: opt.line.dashType || 'solid',
+				beginArrowType: opt.line.beginArrowType || null,
+				endArrowType: opt.line.endArrowType || null,
+			}
+			if (typeof opt.line === 'object') opt.line = newLineOpts
+
+			// 3: Handle line (lots of deprecated opts)
+			if (typeof opt.line === 'string') {
+				let tmpOpts = newLineOpts
+				tmpOpts.color = opt.line!.toString() // @deprecated `opt.line` string (was line color)
+				opt.line = tmpOpts
+			}
+			if (typeof opt.lineSize === 'number') opt.line.width = opt.lineSize // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLine` now)
 		}
 
 		// C

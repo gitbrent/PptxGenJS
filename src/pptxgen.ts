@@ -82,7 +82,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200528:2104'
+const VERSION = '3.3.0-beta-20200623:2308'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
@@ -337,7 +337,8 @@ export default class PptxGenJS implements IPresentation {
 	 */
 	private addNewSlide = (masterName: string): ISlide => {
 		// Continue using sections if the first slide using auto-paging has a Section
-		let sectAlreadyInUse = this.sections[this.sections.length - 1].slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
+		let sectAlreadyInUse =
+			this.sections.length > 0 && this.sections[this.sections.length - 1].slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
 
 		return this.addSlide({
 			masterName: masterName,

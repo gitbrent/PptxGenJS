@@ -4,25 +4,25 @@
 
 import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
+	BkgdOpts,
+	HexColor,
 	IChartMulti,
 	IChartOpts,
 	IChartOptsLib,
 	IImageOpts,
 	ILayout,
-	IMediaOpts,
 	ISlideLayout,
 	ISlideNumber,
+	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	ISlideObject,
-	IShapeOptions,
 	ITableOptions,
 	IText,
 	ITextOpts,
+	MediaOpts,
+	ShapeOptions,
 	TableRow,
-	HexColor,
-	BkgdOpts,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
 
@@ -146,7 +146,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide {
-		// FUTURE: TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
+		// FUTURE: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
 		// Set `_type` on IChartOptsLib as its what is used as object is passed around
 		let optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type
@@ -166,10 +166,10 @@ export default class Slide {
 
 	/**
 	 * Add media (audio/video) to Slide
-	 * @param {IMediaOpts} options - media options
+	 * @param {MediaOpts} options - media options
 	 * @return {Slide} this Slide
 	 */
-	addMedia(options: IMediaOpts): Slide {
+	addMedia(options: MediaOpts): Slide {
 		genObj.addMediaDefinition(this, options)
 		return this
 	}
@@ -188,10 +188,10 @@ export default class Slide {
 	/**
 	 * Add shape to Slide
 	 * @param {SHAPE_NAME} shapeName - shape name
-	 * @param {IShapeOptions} options - shape options
+	 * @param {ShapeOptions} options - shape options
 	 * @return {Slide} this Slide
 	 */
-	addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide {
+	addShape(shapeName: SHAPE_NAME, options?: ShapeOptions): Slide {
 		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
 		// But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
 		// <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'
@@ -208,7 +208,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addTable(tableRows: TableRow[], options?: ITableOptions): Slide {
-		// FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
+		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}

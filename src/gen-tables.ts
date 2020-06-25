@@ -4,7 +4,7 @@
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { ILayout, ISlideLayout, ITableCell, ITableToSlidesCell, ITableToSlidesOpts, ITableRow, TableRowSlide, ITableCellOpts } from './core-interfaces'
+import { ILayout, ISlideLayout, ITableCell, ITableToSlidesOpts, ITableRow, TableRowSlide, TableCellOpts } from './core-interfaces'
 import { inch2Emu, rgbToHex } from './gen-utils'
 
 /**
@@ -49,18 +49,13 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
 
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {[ITableToSlidesCell[]?]} tableRows - HTMLElementID of the table
+ * @param {ITableCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
  * @param {ILayout} presLayout - Presentation layout
  * @param {ISlideLayout} masterSlide - master slide (if any)
  * @return {TableRowSlide[]} array of table rows
  */
-export function getSlidesForTableRows(
-	tableRows: ITableToSlidesCell[][] = [],
-	tabOpts: ITableToSlidesOpts = {},
-	presLayout: ILayout,
-	masterSlide: ISlideLayout
-): TableRowSlide[] {
+export function getSlidesForTableRows(tableRows: ITableCell[][] = [], tabOpts: ITableToSlidesOpts = {}, presLayout: ILayout, masterSlide?: ISlideLayout): TableRowSlide[] {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN,
 		emuTabCurrH = 0,
 		emuSlideTabW = EMU * 1,
@@ -140,9 +135,7 @@ export function getSlidesForTableRows(
 		if (tabOpts.colW && !isNaN(Number(tabOpts.colW))) {
 			let arrColW = []
 			let firstRow = tableRows[0] || []
-			firstRow.forEach(() => {
-				arrColW.push(tabOpts.colW)
-			})
+			firstRow.forEach(() => arrColW.push(tabOpts.colW))
 			tabOpts.colW = []
 			arrColW.forEach(val => {
 				if (Array.isArray(tabOpts.colW)) tabOpts.colW.push(val)
@@ -193,7 +186,10 @@ export function getSlidesForTableRows(
 		if (tabOpts.verbose) console.log('emuSlideTabH (in) ...... = ' + (emuSlideTabH / EMU).toFixed(1))
 
 		// D: RULE: Use margins for starting point after the initial Slide, not `opt.y` (ISSUE#43, ISSUE#47, ISSUE#48)
-		if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+		if (tableRowSlides.length > 1 && typeof tabOpts.autoPageSlideStartY === 'number') {
+			emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.autoPageSlideStartY + arrInchMargins[2])
+		} else if (tableRowSlides.length > 1 && typeof tabOpts.newSlideStartY === 'number') {
+			// @deprecated v3.3.0
 			emuSlideTabH = tabOpts.h && typeof tabOpts.h === 'number' ? tabOpts.h : presLayout.height - inch2Emu(tabOpts.newSlideStartY + arrInchMargins[2])
 		} else if (tableRowSlides.length > 1 && typeof tabOpts.y === 'number') {
 			emuSlideTabH = presLayout.height - inch2Emu((tabOpts.y / EMU < arrInchMargins[0] ? tabOpts.y / EMU : arrInchMargins[0]) + arrInchMargins[2])
@@ -225,7 +221,11 @@ export function getSlidesForTableRows(
 			newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null
 
 			// 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
-			newCell.lines = parseTextToLines(cell, tabOpts.colW[iCell] / ONEPT)
+			let totalColW = tabOpts.colW[iCell]
+			if (cell.options.colspan && Array.isArray(tabOpts.colW)) {
+				totalColW = tabOpts.colW.filter((_cell, idx) => idx >= iCell && idx < idx + cell.options.colspan).reduce((prev, curr) => prev + curr)
+			}
+			newCell.lines = parseTextToLines(cell, totalColW / ONEPT)
 
 			// 4: Add to array
 			linesRow.push(newCell)
@@ -262,8 +262,8 @@ export function getSlidesForTableRows(
 				// 2: Reset current table height for new Slide
 				emuTabCurrH = 0 // This row's emuRowH w/b added below
 
-				// 3: Handle "addHeaderToEach" option /or/ Add new empty row to continue current lines into
-				if (tabOpts.addHeaderToEach && tabOpts._arrObjTabHeadRows) {
+				// 3: Handle repeat headers option /or/ Add new empty row to continue current lines into
+				if ((tabOpts.addHeaderToEach || tabOpts.autoPageRepeatHeader) && tabOpts._arrObjTabHeadRows) {
 					// A: Add remaining cell lines
 					let newRowSlide = []
 					linesRow.forEach(cell => {
@@ -276,11 +276,13 @@ export function getSlidesForTableRows(
 					tableRows.unshift(newRowSlide)
 
 					// B: Add header row(s)
-					newRowSlide = []
-					tabOpts._arrObjTabHeadRows[0].forEach(cell => {
-						newRowSlide.push(cell)
+					let tableHeadRows: ITableCell[][] = []
+					tabOpts._arrObjTabHeadRows.forEach(row => {
+						let newHeadRow = []
+						row.forEach(cell => newHeadRow.push(cell))
+						tableHeadRows.push(newHeadRow)
 					})
-					tableRows.unshift(newRowSlide)
+					tableRows = [...tableHeadRows, ...tableRows]
 
 					// C:
 					break
@@ -338,16 +340,18 @@ export function getSlidesForTableRows(
 
 /**
  * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
+ * @param {PptxGenJS} pptx - pptxgenjs instance
  * @param {string} tabEleId - HTMLElementID of the table
- * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+ * @param {ITableToSlidesOpts} options - array of options (e.g.: tabsize)
+ * @param {ISlideLayout} masterSlide - masterSlide
  */
-export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide: ISlideLayout) {
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITableToSlidesOpts = {}, masterSlide?: ISlideLayout) {
 	let opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout.width
-	let arrObjTabHeadRows: [ITableToSlidesCell[]?] = []
-	let arrObjTabBodyRows: [ITableToSlidesCell[]?] = []
-	let arrObjTabFootRows: [ITableToSlidesCell[]?] = []
+	let arrObjTabHeadRows: [ITableCell[]?] = []
+	let arrObjTabBodyRows: [ITableCell[]?] = []
+	let arrObjTabFootRows: [ITableCell[]?] = []
 	let arrColW: number[] = []
 	let arrTabColW: number[] = []
 	let arrInchMargins: [number, number, number, number] = [0.5, 0.5, 0.5, 0.5] // TRBL-style
@@ -431,7 +435,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 				}
 
 				// B: Create option object
-				let cellOpts: ITableCellOpts = {
+				let cellOpts: TableCellOpts = {
 					align: null,
 					bold:
 						window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||
@@ -440,7 +444,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 							: false,
 					border: null,
 					color: rgbToHex(Number(arrRGB1[0]), Number(arrRGB1[1]), Number(arrRGB1[2])),
-					fill: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])),
+					fill: { color: rgbToHex(Number(arrRGB2[0]), Number(arrRGB2[1]), Number(arrRGB2[2])) },
 					fontFace:
 						(window.getComputedStyle(cell).getPropertyValue('font-family') || '').split(',')[0].replace(/"/g, '').replace('inherit', '').replace('initial', '') ||
 						null,
@@ -534,10 +538,10 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 		// A: Create new Slide
 		let newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null })
 
-		// B: DESIGN: Reset `y` to `newSlideStartY` or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
+		// B: DESIGN: Reset `y` to startY or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 		if (idxTr === 0) opts.y = opts.y || arrInchMargins[0]
-		if (idxTr > 0) opts.y = opts.newSlideStartY || arrInchMargins[0]
-		if (opts.verbose) console.log('opts.newSlideStartY:' + opts.newSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
+		if (idxTr > 0) opts.y = opts.autoPageSlideStartY || opts.newSlideStartY || arrInchMargins[0]
+		if (opts.verbose) console.log('opts.autoPageSlideStartY:' + opts.autoPageSlideStartY + ' / arrInchMargins[0]:' + arrInchMargins[0] + ' => opts.y = ' + opts.y)
 
 		// C: Add table to Slide
 		newSlide.addTable(slide.rows, { x: opts.x || arrInchMargins[3], y: opts.y, w: Number(emuSlideTabW) / EMU, colW: arrColW, autoPage: false })
