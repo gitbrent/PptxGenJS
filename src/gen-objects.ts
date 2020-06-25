@@ -975,6 +975,7 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 	correctShadowOptions(opt.shadow)
 
 	// STEP 4: Create hyperlinks
+	if (typeof text === 'string' || typeof text === 'number') newObject.text = [{ text: text, options: newObject.options }]
 	createHyperlinkRels(target, newObject.text || '')
 
 	// LAST: Add object to Slide
