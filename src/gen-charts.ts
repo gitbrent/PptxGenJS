@@ -698,6 +698,8 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Fill and Border
+				// TODO: CURRENT: Pull#727
+				// WIP: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 				let seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 
 				strXml += '  <c:spPr>'
