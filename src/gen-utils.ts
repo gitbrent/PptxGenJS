@@ -94,10 +94,10 @@ export function inch2Emu(inches: number | string): number {
 /**
  * Convert `pt` into points (using `ONEPT`)
  *
- * @param {number|string} points
- * @returns {number} POINT value
+ * @param {number|string} pt
+ * @returns {number} value in points (`ONEPT`)
  */
-export function calcPointValue(pt: number | string): number {
+export function valToPts(pt: number | string): number {
 	let points = Number(pt) || 0
 	return isNaN(points) ? 0 : Math.round(points * ONEPT)
 }

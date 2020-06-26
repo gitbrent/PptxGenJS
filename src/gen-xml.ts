@@ -32,7 +32,6 @@ import {
 	TableCellOpts,
 } from './core-interfaces'
 import {
-	calcPointValue,
 	convertRotationDegrees,
 	createColorElement,
 	createGlowElement,
@@ -41,6 +40,7 @@ import {
 	getSmartParseNumber,
 	getUuid,
 	inch2Emu,
+	valToPts,
 } from './gen-utils'
 
 let imageSizingXml = {
@@ -346,9 +346,9 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						let cellFill = fillColor ? `<a:solidFill>${createColorElement(fillColor)}</a:solidFill>` : ''
 						let cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT
 						if (!Array.isArray(cellMargin) && typeof cellMargin === 'number') cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin]
-						let cellMarginXml = ` marL="${calcPointValue(cellMargin[3])}" marR="${calcPointValue(cellMargin[1])}" marT="${calcPointValue(
-							cellMargin[0]
-						)}" marB="${calcPointValue(cellMargin[2])}"`
+						let cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(
+							cellMargin[2]
+						)}"`
 
 						// FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
@@ -374,7 +374,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 								{ idx: 2, name: 'lnB' },
 							].forEach(obj => {
 								if (cellOpts.border[obj.idx].type !== 'none') {
-									strXml += `<a:${obj.name} w="${calcPointValue(cellOpts.border[obj.idx].pt)}" cap="flat" cmpd="sng" algn="ctr">`
+									strXml += `<a:${obj.name} w="${valToPts(cellOpts.border[obj.idx].pt)}" cap="flat" cmpd="sng" algn="ctr">`
 									strXml += `<a:solidFill>${createColorElement(cellOpts.border[obj.idx].color)}</a:solidFill>`
 									strXml += `<a:prstDash val="${
 										cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid'
@@ -423,15 +423,15 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 
 				// Margin/Padding/Inset for textboxes
 				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-					slideItemObj.options.bodyProp.lIns = calcPointValue(slideItemObj.options.margin[0] || 0)
-					slideItemObj.options.bodyProp.rIns = calcPointValue(slideItemObj.options.margin[1] || 0)
-					slideItemObj.options.bodyProp.bIns = calcPointValue(slideItemObj.options.margin[2] || 0)
-					slideItemObj.options.bodyProp.tIns = calcPointValue(slideItemObj.options.margin[3] || 0)
+					slideItemObj.options.bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0)
+					slideItemObj.options.bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0)
+					slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin[2] || 0)
+					slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin[3] || 0)
 				} else if (typeof slideItemObj.options.margin === 'number') {
-					slideItemObj.options.bodyProp.lIns = calcPointValue(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.rIns = calcPointValue(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.bIns = calcPointValue(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.tIns = calcPointValue(slideItemObj.options.margin)
+					slideItemObj.options.bodyProp.lIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options.bodyProp.rIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin)
 				}
 
 				// A: Start SHAPE =======================================================
@@ -459,7 +459,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 
 				// shape Type: LINE: line color
 				if (slideItemObj.options.line) {
-					strSlideXml += slideItemObj.options.line.width ? `<a:ln w="${calcPointValue(slideItemObj.options.line.width)}">` : '<a:ln>'
+					strSlideXml += slideItemObj.options.line.width ? `<a:ln w="${valToPts(slideItemObj.options.line.width)}">` : '<a:ln>'
 					strSlideXml += genXmlColorSelection(slideItemObj.options.line.color)
 					if (slideItemObj.options.line.dashType) strSlideXml += `<a:prstDash val="${slideItemObj.options.line.dashType}"/>`
 					if (slideItemObj.options.line.beginArrowType) strSlideXml += `<a:headEnd type="${slideItemObj.options.line.beginArrowType}"/>`
@@ -471,8 +471,8 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				// EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
 				if (slideItemObj.options.shadow) {
 					slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer'
-					slideItemObj.options.shadow.blur = calcPointValue(slideItemObj.options.shadow.blur || 8)
-					slideItemObj.options.shadow.offset = calcPointValue(slideItemObj.options.shadow.offset || 4)
+					slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8)
+					slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4)
 					slideItemObj.options.shadow.angle = Math.round((slideItemObj.options.shadow.angle || 270) * 60000)
 					slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000)
 					slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color
@@ -801,7 +801,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
-	let bulletMarL = calcPointValue(DEF_BULLET_MARGIN)
+	let bulletMarL = valToPts(DEF_BULLET_MARGIN)
 
 	let paragraphPropXml = `<${tag}${textObj.options.rtlMode ? ' rtl="1" ' : ''}`
 
@@ -847,7 +847,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 		// NOTE: OOXML uses the unicode character set for Bullets
 		// EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
 		if (typeof textObj.options.bullet === 'object') {
-			if (textObj && textObj.options && textObj.options.bullet && textObj.options.bullet.indent) bulletMarL = calcPointValue(textObj.options.bullet.indent)
+			if (textObj && textObj.options && textObj.options.bullet && textObj.options.bullet.indent) bulletMarL = valToPts(textObj.options.bullet.indent)
 
 			if (textObj.options.bullet.type) {
 				if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
@@ -935,7 +935,7 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
 	if (opts.color || opts.fontFace || opts.outline) {
 		if (opts.outline && typeof opts.outline === 'object') {
-			runProps += `<a:ln w="${calcPointValue(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
+			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
 		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`

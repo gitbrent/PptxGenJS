@@ -19,7 +19,7 @@ import {
 	LETTERS,
 } from './core-enums'
 import { IChartOptsLib, ISlideRelChart, ShadowOptions, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
-import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, calcPointValue } from './gen-utils'
+import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
 import * as JSZip from 'jszip'
 
 /**
@@ -570,7 +570,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 		// OPTION: Border
 		strXml += rel.opts.border
-			? `<a:ln w="${calcPointValue(rel.opts.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>`
+			? `<a:ln w="${valToPts(rel.opts.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>`
 			: '<a:ln><a:noFill/></a:ln>'
 
 		// Close shapeProp/plotArea before Legend
@@ -713,13 +713,13 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + calcPointValue(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 				} else if (opts.dataBorder) {
 					strXml +=
 						'<a:ln w="' +
-						calcPointValue(opts.dataBorder.pt) +
+						valToPts(opts.dataBorder.pt) +
 						'" cap="flat"><a:solidFill>' +
 						createColorElement(opts.dataBorder.color) +
 						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
@@ -967,7 +967,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + calcPointValue(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 
@@ -1269,12 +1269,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					} else if (opts.dataBorder) {
 						strXml +=
 							'<a:ln w="' +
-							calcPointValue(opts.dataBorder.pt) +
+							valToPts(opts.dataBorder.pt) +
 							'" cap="flat"><a:solidFill>' +
 							createColorElement(opts.dataBorder.color) +
 							'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + calcPointValue(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 
@@ -1430,7 +1430,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]
 				)}</a:solidFill>`
 				if (opts.dataBorder) {
-					strXml += `<a:ln w="${calcPointValue(opts.dataBorder.pt)}" cap="flat"><a:solidFill>${createColorElement(
+					strXml += `<a:ln w="${valToPts(opts.dataBorder.pt)}" cap="flat"><a:solidFill>${createColorElement(
 						opts.dataBorder.color
 					)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
 				}
@@ -1867,8 +1867,8 @@ function createShadowElement(options: ShadowOptions, defaults: object): string {
 	let strXml = '<a:effectLst>',
 		opts = getMix(defaults, options),
 		type = opts['type'] || 'outer',
-		blur = calcPointValue(opts['blur']),
-		offset = calcPointValue(opts['offset']),
+		blur = valToPts(opts['blur']),
+		offset = valToPts(opts['offset']),
 		angle = opts['angle'] * 60000,
 		color = opts['color'],
 		opacity = opts['opacity'] * 100000,
@@ -1893,7 +1893,7 @@ function createShadowElement(options: ShadowOptions, defaults: object): string {
 function createGridLineElement(glOpts: OptsChartGridLine): string {
 	let strXml: string = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
-	strXml += '  <a:ln w="' + calcPointValue(glOpts.size || DEF_CHART_GRIDLINE.size) + '" cap="flat">'
+	strXml += '  <a:ln w="' + valToPts(glOpts.size || DEF_CHART_GRIDLINE.size) + '" cap="flat">'
 	strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>' // should accept scheme colors as implemented in [Pull #135]
 	strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>'
 	strXml += '  </a:ln>'
