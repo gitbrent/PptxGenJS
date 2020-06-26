@@ -5,7 +5,7 @@
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
 import { ILayout, ISlideLayout, ITableCell, ITableToSlidesOpts, ITableRow, TableRowSlide, TableCellOpts } from './core-interfaces'
-import { inch2Emu, rgbToHex } from './gen-utils'
+import { inch2Emu, rgbToHex, valToPts } from './gen-utils'
 
 /**
  * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
@@ -172,10 +172,10 @@ export function getSlidesForTableRows(tableRows: ITableCell[][] = [], tabOpts: I
 				options: cell.options,
 			})
 
-			if (cell.options.margin && cell.options.margin[0] && cell.options.margin[0] * ONEPT > maxCellMarTopEmu) maxCellMarTopEmu = cell.options.margin[0] * ONEPT
-			else if (tabOpts.margin && tabOpts.margin[0] && tabOpts.margin[0] * ONEPT > maxCellMarTopEmu) maxCellMarTopEmu = tabOpts.margin[0] * ONEPT
-			if (cell.options.margin && cell.options.margin[2] && cell.options.margin[2] * ONEPT > maxCellMarBtmEmu) maxCellMarBtmEmu = cell.options.margin[2] * ONEPT
-			else if (tabOpts.margin && tabOpts.margin[2] && tabOpts.margin[2] * ONEPT > maxCellMarBtmEmu) maxCellMarBtmEmu = tabOpts.margin[2] * ONEPT
+			if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = valToPts(cell.options.margin[0])
+			else if (tabOpts.margin && tabOpts.margin[0] && valToPts(tabOpts.margin[0]) > maxCellMarTopEmu) maxCellMarTopEmu = valToPts(tabOpts.margin[0])
+			if (cell.options.margin && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = valToPts(cell.options.margin[2])
+			else if (tabOpts.margin && tabOpts.margin[2] && valToPts(tabOpts.margin[2]) > maxCellMarBtmEmu) maxCellMarBtmEmu = valToPts(tabOpts.margin[2])
 		})
 
 		// C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
