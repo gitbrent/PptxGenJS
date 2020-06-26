@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-25T05:15:55.613Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-26T05:24:40.962Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -24,6 +24,7 @@ var DEF_PRES_LAYOUT_NAME = 'DEFAULT';
 var DEF_SHAPE_LINE_COLOR = '333333';
 var DEF_SHAPE_SHADOW = { type: 'outer', blur: 3, offset: 23000 / 12700, angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
 var DEF_SLIDE_MARGIN_IN = [0.5, 0.5, 0.5, 0.5]; // TRBL-style
+var DEF_TEXT_SHADOW = { type: 'outer', blur: 8, offset: 4, angle: 270, color: '000000', opacity: 0.75 };
 var DEF_TEXT_GLOW = { size: 8, color: 'FFFFFF', opacity: 0.75 };
 var AXIS_ID_VALUE_PRIMARY = '2094734552';
 var AXIS_ID_VALUE_SECONDARY = '2094734553';
@@ -686,6 +687,16 @@ function inch2Emu(inches) {
     return Math.round(EMU * inches);
 }
 /**
+ * Convert `pt` into points (using `ONEPT`)
+ *
+ * @param {number|string} pt
+ * @returns {number} value in points (`ONEPT`)
+ */
+function valToPts(pt) {
+    var points = Number(pt) || 0;
+    return isNaN(points) ? 0 : Math.round(points * ONEPT);
+}
+/**
  * Convert degrees (0..360) to PowerPoint `rot` value
  *
  * @param {number} d - degrees
@@ -960,14 +971,14 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                 text: '',
                 options: cell.options,
             });
-            if (cell.options.margin && cell.options.margin[0] && cell.options.margin[0] * ONEPT > maxCellMarTopEmu)
-                maxCellMarTopEmu = cell.options.margin[0] * ONEPT;
-            else if (tabOpts.margin && tabOpts.margin[0] && tabOpts.margin[0] * ONEPT > maxCellMarTopEmu)
-                maxCellMarTopEmu = tabOpts.margin[0] * ONEPT;
-            if (cell.options.margin && cell.options.margin[2] && cell.options.margin[2] * ONEPT > maxCellMarBtmEmu)
-                maxCellMarBtmEmu = cell.options.margin[2] * ONEPT;
-            else if (tabOpts.margin && tabOpts.margin[2] && tabOpts.margin[2] * ONEPT > maxCellMarBtmEmu)
-                maxCellMarBtmEmu = tabOpts.margin[2] * ONEPT;
+            if (cell.options.margin && cell.options.margin[0] && valToPts(cell.options.margin[0]) > maxCellMarTopEmu)
+                maxCellMarTopEmu = valToPts(cell.options.margin[0]);
+            else if (tabOpts.margin && tabOpts.margin[0] && valToPts(tabOpts.margin[0]) > maxCellMarTopEmu)
+                maxCellMarTopEmu = valToPts(tabOpts.margin[0]);
+            if (cell.options.margin && cell.options.margin[2] && valToPts(cell.options.margin[2]) > maxCellMarBtmEmu)
+                maxCellMarBtmEmu = valToPts(cell.options.margin[2]);
+            else if (tabOpts.margin && tabOpts.margin[2] && valToPts(tabOpts.margin[2]) > maxCellMarBtmEmu)
+                maxCellMarBtmEmu = valToPts(tabOpts.margin[2]);
         });
         // C: Calc usable vertical space/table height. Set default value first, adjust below when necessary.
         emuSlideTabH =
@@ -1605,7 +1616,7 @@ function slideObjectToXml(slide) {
                         var cellMargin = cellOpts.margin === 0 || cellOpts.margin ? cellOpts.margin : DEF_CELL_MARGIN_PT;
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
-                        var cellMarginXml = " marL=\"" + cellMargin[3] * ONEPT + "\" marR=\"" + cellMargin[1] * ONEPT + "\" marT=\"" + cellMargin[0] * ONEPT + "\" marB=\"" + cellMargin[2] * ONEPT + "\"";
+                        var cellMarginXml = " marL=\"" + valToPts(cellMargin[3]) + "\" marR=\"" + valToPts(cellMargin[1]) + "\" marT=\"" + valToPts(cellMargin[0]) + "\" marB=\"" + valToPts(cellMargin[2]) + "\"";
                         // FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 3: ROWSPAN: Add dummy cells for any active rowspan
                         if (cell.vmerge) {
@@ -1626,7 +1637,7 @@ function slideObjectToXml(slide) {
                                 { idx: 2, name: 'lnB' },
                             ].forEach(function (obj) {
                                 if (cellOpts.border[obj.idx].type !== 'none') {
-                                    strXml_1 += "<a:" + obj.name + " w=\"" + cellOpts.border[obj.idx].pt * ONEPT + "\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">";
+                                    strXml_1 += "<a:" + obj.name + " w=\"" + valToPts(cellOpts.border[obj.idx].pt) + "\" cap=\"flat\" cmpd=\"sng\" algn=\"ctr\">";
                                     strXml_1 += "<a:solidFill>" + createColorElement(cellOpts.border[obj.idx].color) + "</a:solidFill>";
                                     strXml_1 += "<a:prstDash val=\"" + (cellOpts.border[obj.idx].type === 'dash' ? 'sysDash' : 'solid') + "\"/><a:round/><a:headEnd type=\"none\" w=\"med\" len=\"med\"/><a:tailEnd type=\"none\" w=\"med\" len=\"med\"/>";
                                     strXml_1 += "</a:" + obj.name + ">";
@@ -1667,16 +1678,16 @@ function slideObjectToXml(slide) {
                     cy = EMU * 0.3;
                 // Margin/Padding/Inset for textboxes
                 if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-                    slideItemObj.options.bodyProp.lIns = Math.round(slideItemObj.options.margin[0] * ONEPT || 0);
-                    slideItemObj.options.bodyProp.rIns = Math.round(slideItemObj.options.margin[1] * ONEPT || 0);
-                    slideItemObj.options.bodyProp.bIns = Math.round(slideItemObj.options.margin[2] * ONEPT || 0);
-                    slideItemObj.options.bodyProp.tIns = Math.round(slideItemObj.options.margin[3] * ONEPT || 0);
+                    slideItemObj.options.bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0);
+                    slideItemObj.options.bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0);
+                    slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin[2] || 0);
+                    slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin[3] || 0);
                 }
                 else if (typeof slideItemObj.options.margin === 'number') {
-                    slideItemObj.options.bodyProp.lIns = Math.round(slideItemObj.options.margin * ONEPT);
-                    slideItemObj.options.bodyProp.rIns = Math.round(slideItemObj.options.margin * ONEPT);
-                    slideItemObj.options.bodyProp.bIns = Math.round(slideItemObj.options.margin * ONEPT);
-                    slideItemObj.options.bodyProp.tIns = Math.round(slideItemObj.options.margin * ONEPT);
+                    slideItemObj.options.bodyProp.lIns = valToPts(slideItemObj.options.margin);
+                    slideItemObj.options.bodyProp.rIns = valToPts(slideItemObj.options.margin);
+                    slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin);
+                    slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin);
                 }
                 // A: Start SHAPE =======================================================
                 strSlideXml += '<p:sp>';
@@ -1700,7 +1711,7 @@ function slideObjectToXml(slide) {
                 strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>';
                 // shape Type: LINE: line color
                 if (slideItemObj.options.line) {
-                    strSlideXml += slideItemObj.options.line.width ? "<a:ln w=\"" + slideItemObj.options.line.width * ONEPT + "\">" : '<a:ln>';
+                    strSlideXml += slideItemObj.options.line.width ? "<a:ln w=\"" + valToPts(slideItemObj.options.line.width) + "\">" : '<a:ln>';
                     strSlideXml += genXmlColorSelection(slideItemObj.options.line.color);
                     if (slideItemObj.options.line.dashType)
                         strSlideXml += "<a:prstDash val=\"" + slideItemObj.options.line.dashType + "\"/>";
@@ -1714,11 +1725,11 @@ function slideObjectToXml(slide) {
                 // EFFECTS > SHADOW: REF: @see http://officeopenxml.com/drwSp-effects.php
                 if (slideItemObj.options.shadow) {
                     slideItemObj.options.shadow.type = slideItemObj.options.shadow.type || 'outer';
-                    slideItemObj.options.shadow.blur = (slideItemObj.options.shadow.blur || 8) * ONEPT;
-                    slideItemObj.options.shadow.offset = (slideItemObj.options.shadow.offset || 4) * ONEPT;
-                    slideItemObj.options.shadow.angle = (slideItemObj.options.shadow.angle || 270) * 60000;
-                    slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || '000000';
-                    slideItemObj.options.shadow.opacity = (slideItemObj.options.shadow.opacity || 0.75) * 100000;
+                    slideItemObj.options.shadow.blur = valToPts(slideItemObj.options.shadow.blur || 8);
+                    slideItemObj.options.shadow.offset = valToPts(slideItemObj.options.shadow.offset || 4);
+                    slideItemObj.options.shadow.angle = Math.round((slideItemObj.options.shadow.angle || 270) * 60000);
+                    slideItemObj.options.shadow.opacity = Math.round((slideItemObj.options.shadow.opacity || 0.75) * 100000);
+                    slideItemObj.options.shadow.color = slideItemObj.options.shadow.color || DEF_TEXT_SHADOW.color;
                     strSlideXml += '<a:effectLst>';
                     strSlideXml += '<a:' + slideItemObj.options.shadow.type + 'Shdw sx="100000" sy="100000" kx="0" ky="0" ';
                     strSlideXml += ' algn="bl" rotWithShape="0" blurRad="' + slideItemObj.options.shadow.blur + '" ';
@@ -2024,7 +2035,7 @@ function slideObjectRelationsToXml(slide, defaultRels) {
 function genXmlParagraphProperties(textObj, isDefault) {
     var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
     var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
-    var bulletMarL = ONEPT * DEF_BULLET_MARGIN;
+    var bulletMarL = valToPts(DEF_BULLET_MARGIN);
     var paragraphPropXml = "<" + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '');
     // A: Build paragraphProperties
     {
@@ -2066,7 +2077,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
         // EX: Unicode Character 'BULLET' (U+2022) ==> '<a:buChar char="&#x2022;"/>'
         if (typeof textObj.options.bullet === 'object') {
             if (textObj && textObj.options && textObj.options.bullet && textObj.options.bullet.indent)
-                bulletMarL = ONEPT * textObj.options.bullet.indent;
+                bulletMarL = valToPts(textObj.options.bullet.indent);
             if (textObj.options.bullet.type) {
                 if (textObj.options.bullet.type.toString().toLowerCase() === 'number') {
                     paragraphPropXml += " marL=\"" + (textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL) + "\" indent=\"-" + bulletMarL + "\"";
@@ -2139,7 +2150,7 @@ function genXmlTextRunProperties(opts, isDefault) {
     // Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
     if (opts.color || opts.fontFace || opts.outline) {
         if (opts.outline && typeof opts.outline === 'object') {
-            runProps += "<a:ln w=\"" + Math.round((opts.outline.size || 0.75) * ONEPT) + "\">" + genXmlColorSelection(opts.outline.color || 'FFFFFF') + "</a:ln>";
+            runProps += "<a:ln w=\"" + valToPts(opts.outline.size || 0.75) + "\">" + genXmlColorSelection(opts.outline.color || 'FFFFFF') + "</a:ln>";
         }
         if (opts.color)
             runProps += genXmlColorSelection(opts.color);
@@ -3092,7 +3103,7 @@ function addChartDefinition(target, type, data, opt) {
     if (['standard', 'marker', 'filled'].indexOf(options.radarStyle || '') < 0)
         options.radarStyle = 'standard';
     options.lineDataSymbolSize = options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize) ? options.lineDataSymbolSize : 6;
-    options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT;
+    options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? valToPts(options.lineDataSymbolLineSize) : valToPts(0.75);
     // `layout` allows the override of PPT defaults to maximize space
     if (options.layout) {
         ['x', 'y', 'w', 'h'].forEach(function (key) {
@@ -4571,7 +4582,9 @@ function makeXmlCharts(rel) {
         // OPTION: Fill
         strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>';
         // OPTION: Border
-        strXml += rel.opts.border ? "<a:ln w=\"" + rel.opts.border.pt * ONEPT + "\" cap=\"flat\">" + genXmlColorSelection(rel.opts.border.color) + "</a:ln>" : '<a:ln><a:noFill/></a:ln>';
+        strXml += rel.opts.border
+            ? "<a:ln w=\"" + valToPts(rel.opts.border.pt) + "\" cap=\"flat\">" + genXmlColorSelection(rel.opts.border.color) + "</a:ln>"
+            : '<a:ln><a:noFill/></a:ln>';
         // Close shapeProp/plotArea before Legend
         strXml += '    <a:effectLst/>';
         strXml += '  </c:spPr>';
@@ -4687,6 +4700,8 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  </c:tx>';
                 strXml += '  <c:invertIfNegative val="0"/>';
                 // Fill and Border
+                // TODO: CURRENT: Pull#727
+                // WIP: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
                 var seriesColor = opts.chartColors ? opts.chartColors[colorIndex_1 % opts.chartColors.length] : null;
                 strXml += '  <c:spPr>';
                 if (seriesColor === 'transparent') {
@@ -4703,14 +4718,14 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
-                        strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
+                        strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
                         strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
                     }
                 }
                 else if (opts.dataBorder) {
                     strXml +=
                         '<a:ln w="' +
-                            opts.dataBorder.pt * ONEPT +
+                            valToPts(opts.dataBorder.pt) +
                             '" cap="flat"><a:solidFill>' +
                             createColorElement(opts.dataBorder.color) +
                             '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
@@ -4947,7 +4962,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:ln><a:noFill/></a:ln>';
                     }
                     else {
-                        strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
+                        strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
                         strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
                     }
                     // Shadow
@@ -5234,13 +5249,13 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     else if (opts.dataBorder) {
                         strXml +=
                             '<a:ln w="' +
-                                opts.dataBorder.pt * ONEPT +
+                                valToPts(opts.dataBorder.pt) +
                                 '" cap="flat"><a:solidFill>' +
                                 createColorElement(opts.dataBorder.color) +
                                 '</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>';
                     }
                     else {
-                        strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
+                        strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
                         strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>';
                     }
                     // Shadow
@@ -5380,7 +5395,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += ' <c:spPr>';
                 strXml += "<a:solidFill>" + createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) + "</a:solidFill>";
                 if (opts.dataBorder) {
-                    strXml += "<a:ln w=\"" + opts.dataBorder.pt * ONEPT + "\" cap=\"flat\"><a:solidFill>" + createColorElement(opts.dataBorder.color) + "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>";
+                    strXml += "<a:ln w=\"" + valToPts(opts.dataBorder.pt) + "\" cap=\"flat\"><a:solidFill>" + createColorElement(opts.dataBorder.color) + "</a:solidFill><a:prstDash val=\"solid\"/><a:round/></a:ln>";
                 }
                 strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW);
                 strXml += '  </c:spPr>';
@@ -5787,7 +5802,7 @@ function createShadowElement(options, defaults) {
         console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`");
         return '<a:effectLst/>';
     }
-    var strXml = '<a:effectLst>', opts = getMix(defaults, options), type = opts['type'] || 'outer', blur = opts['blur'] * ONEPT, offset = opts['offset'] * ONEPT, angle = opts['angle'] * 60000, color = opts['color'], opacity = opts['opacity'] * 100000, rotateWithShape = opts['rotateWithShape'] ? 1 : 0;
+    var strXml = '<a:effectLst>', opts = getMix(defaults, options), type = opts['type'] || 'outer', blur = valToPts(opts['blur']), offset = valToPts(opts['offset']), angle = opts['angle'] * 60000, color = opts['color'], opacity = opts['opacity'] * 100000, rotateWithShape = opts['rotateWithShape'] ? 1 : 0;
     strXml += '<a:' + type + 'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="' + blur + '" ';
     strXml += 'rotWithShape="' + +rotateWithShape + '"';
     strXml += ' dist="' + offset + '" dir="' + angle + '">';
@@ -5805,7 +5820,7 @@ function createShadowElement(options, defaults) {
 function createGridLineElement(glOpts) {
     var strXml = '<c:majorGridlines>';
     strXml += ' <c:spPr>';
-    strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">';
+    strXml += '  <a:ln w="' + valToPts(glOpts.size || DEF_CHART_GRIDLINE.size) + '" cap="flat">';
     strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'; // should accept scheme colors as implemented in [Pull #135]
     strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>';
     strXml += '  </a:ln>';
@@ -5979,7 +5994,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200624:2150';
+var VERSION = '3.3.0-beta-20200625:2225';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
