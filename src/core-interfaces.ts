@@ -853,6 +853,10 @@ export interface OptsChartData {
 	name?: string
 	sizes?: number[]
 	values?: number[]
+	/**
+	 * Override `chartColors`
+	 */
+	//color?: string // TODO: WIP: (Pull #727)
 }
 export interface OptsChartGridLine {
 	/**
@@ -1132,7 +1136,6 @@ export interface ISlideMasterOptions {
 	width?: number
 	margin?: Margin
 	background?: BkgdOpts
-	bkgd?: string | BkgdOpts // @deprecated v3.3.0
 	objects?: (
 		| { chart: {} }
 		| { image: {} }
@@ -1142,6 +1145,11 @@ export interface ISlideMasterOptions {
 		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 	)[]
 	slideNumber?: ISlideNumber
+
+	/**
+	 * @deprecated v3.3.0 - use `background`
+	 */
+	bkgd?: string | BkgdOpts
 }
 export interface ISlideMstrObjPlchldrOpts {
 	name: string
