@@ -6,6 +6,7 @@ import {
 	BARCHART_COLORS,
 	CHART_NAME,
 	CHART_TYPE,
+	DEF_CELL_BORDER,
 	DEF_CELL_MARGIN_PT,
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
@@ -14,14 +15,12 @@ import {
 	EMU,
 	IMG_PLAYBTN,
 	MASTER_OBJECTS,
-	ONEPT,
 	PIECHART_COLORS,
 	SHAPE_NAME,
 	SHAPE_TYPE,
 	SLIDE_OBJECT_TYPES,
 	TEXT_HALIGN,
 	TEXT_VALIGN,
-	DEF_CELL_BORDER,
 } from './core-enums'
 import {
 	BkgdOpts,
@@ -45,7 +44,7 @@ import {
 	TableCell,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
-import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId } from './gen-utils'
+import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId, calcPointValue } from './gen-utils'
 import { correctShadowOptions } from './gen-xml'
 
 /** counter for included charts (used for index in their filenames) */
@@ -215,7 +214,8 @@ export function addChartDefinition(target: ISlideLib, type: CHART_NAME | IChartM
 	if (['gap', 'span'].indexOf(options.displayBlanksAs || '') < 0) options.displayBlanksAs = 'span'
 	if (['standard', 'marker', 'filled'].indexOf(options.radarStyle || '') < 0) options.radarStyle = 'standard'
 	options.lineDataSymbolSize = options.lineDataSymbolSize && !isNaN(options.lineDataSymbolSize) ? options.lineDataSymbolSize : 6
-	options.lineDataSymbolLineSize = options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? options.lineDataSymbolLineSize * ONEPT : 0.75 * ONEPT
+	options.lineDataSymbolLineSize =
+		options.lineDataSymbolLineSize && !isNaN(options.lineDataSymbolLineSize) ? calcPointValue(options.lineDataSymbolLineSize) : calcPointValue(0.75)
 	// `layout` allows the override of PPT defaults to maximize space
 	if (options.layout) {
 		;['x', 'y', 'w', 'h'].forEach(key => {
