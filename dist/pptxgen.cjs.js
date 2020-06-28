@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-26T05:24:40.958Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-28T16:55:52.031Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1694,7 +1694,24 @@ function slideObjectToXml(slide) {
                 // A: Start SHAPE =======================================================
                 strSlideXml += '<p:sp>';
                 // B: The addition of the "txBox" attribute is the sole determiner of if an object is a shape or textbox
-                strSlideXml += "<p:nvSpPr><p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object" + (idx + 1) + "\"/>";
+                strSlideXml += "<p:nvSpPr><p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object" + (idx + 1) + "\">";
+                // <Hyperlink>
+                if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.url)
+                    strSlideXml +=
+                        '<a:hlinkClick r:id="rId' +
+                            slideItemObj.options.hyperlink.rId +
+                            '" tooltip="' +
+                            (slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
+                            '"/>';
+                if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.slide)
+                    strSlideXml +=
+                        '<a:hlinkClick r:id="rId' +
+                            slideItemObj.options.hyperlink.rId +
+                            '" tooltip="' +
+                            (slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
+                            '" action="ppaction://hlinksldjump"/>';
+                // </Hyperlink>
+                strSlideXml += '</p:cNvPr>';
                 strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>');
                 strSlideXml += "<p:nvPr>" + (slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)) + "</p:nvPr>";
                 strSlideXml += '</p:nvSpPr><p:spPr>';
@@ -3491,6 +3508,8 @@ function addShapeDefinition(target, shapeName, opts) {
         options.line.beginArrowType = options.lineHead; // @deprecated (part of `ShapeLine` now)
     if (typeof options.lineTail === 'string')
         options.line.endArrowType = options.lineTail; // @deprecated (part of `ShapeLine` now)
+    // 4: Create hyperlink rels
+    createHyperlinkRels(target, newObject);
     // LAST: Add object to slide
     target.data.push(newObject);
 }
@@ -5996,7 +6015,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200625:2225';
+var VERSION = '3.3.0-beta-20200628:1155';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
