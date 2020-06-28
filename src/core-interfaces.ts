@@ -1049,6 +1049,12 @@ export interface IChartPropsDataLabel {
 	dataLabelFontBold?: boolean
 	dataLabelFontFace?: string
 	dataLabelFontSize?: number
+	/**
+	 * Data label format code
+	 * @example '#%' // round percent
+	 * @example '0.00%' // shows values as '0.00%'
+	 * @example '$0.00' // shows values as '$0.00'
+	 */
 	dataLabelFormatCode?: string
 	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
 	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
