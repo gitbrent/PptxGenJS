@@ -2644,7 +2644,7 @@ function genSlides_Shape(pptx) {
 	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 5.6, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 4, beginArrowType: 'diamond', endArrowType: 'oval' } });
 	slide.addShape(pptx.shapes.LINE, { x: 5.7, y: 3.3, w: 2.5, h: 0.0, line: { width: 1 }, rotate: (360 - 45) }); // DIAGONAL Line // TEST:no line.color
 	//
-	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 0.4, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', width: 3 } });
+	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 0.4, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', width: 3 }, shapeName:'First Right Triangle' });
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 7.0, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', width: 2 }, flipH: true });
 
 	// SLIDE 2: Misc Shape Types with Text

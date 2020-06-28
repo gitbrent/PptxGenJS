@@ -11,7 +11,7 @@ jsdoc details for everything other than charts (maybe next time...)
 - Lots of poorly named options have been deprecated and new, much better names created
 - Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
-## [3.3.0] - 2020-06-??
+## [3.3.0] - 2020-07-??
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
 - **All Users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/breakLine, etc.
@@ -19,6 +19,7 @@ jsdoc details for everything other than charts (maybe next time...)
 - Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
 - Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489)[phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684)[hanzi](https://github.com/hanzi))
 - Added: Background image for slides (deprecated `bkgd:string` with `background:BkgdOpts`) [\#610](https://github.com/gitbrent/PptxGenJS/pull/610) ([thomasowow](https://github.com/thomasowow))
+- Added: `shapeName` to objects instead of default [\#724](https://github.com/gitbrent/PptxGenJS/issues/724)[Offbeatmammal](https://github.com/Offbeatmammal))
 - Added: valAxisDisplayUnitLabel Option [\#765](https://github.com/gitbrent/PptxGenJS/pull/765)[hysh](https://github.com/hysh))
 ### Changed
 - Aded: Set a hyperlink on a shape [\#767](https://github.com/gitbrent/PptxGenJS/issues/767)[CroniD](https://github.com/CroniD))

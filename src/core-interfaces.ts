@@ -480,6 +480,13 @@ export interface ShapeOptions extends PositionOptions {
 	 * TODO: need new demo.js entry for shape shadow
 	 */
 	shadow?: ShadowOptions
+	/**
+	 * Shape name
+	 * - used instead of default "Shape N" name
+	 * @since v3.3.0
+	 * @example 'Antenna Design 9'
+	 */
+	shapeName?: string
 
 	/**
 	 * @depreacted v3.3.0
