@@ -21,6 +21,7 @@ jsdoc details for everything other than charts (maybe next time...)
 - Added: Background image for slides (deprecated `bkgd:string` with `background:BkgdOpts`) [\#610](https://github.com/gitbrent/PptxGenJS/pull/610) ([thomasowow](https://github.com/thomasowow))
 - Added: valAxisDisplayUnitLabel Option [\#765](https://github.com/gitbrent/PptxGenJS/pull/765)[hysh](https://github.com/hysh))
 ### Changed
+- Aded: Set a hyperlink on a shape [\#767](https://github.com/gitbrent/PptxGenJS/issues/767)[CroniD](https://github.com/CroniD))
 - Fixed: complete rewrite of genXmlTextBody for new text run/paragraph generation. Fixes: [\#369](https://github.com/gitbrent/PptxGenJS/issues/369)
 [\#448](https://github.com/gitbrent/PptxGenJS/issues/448), [\#460](https://github.com/gitbrent/PptxGenJS/issues/460), [\#751](https://github.com/gitbrent/PptxGenJS/issues/751), [\#772](https://github.com/gitbrent/PptxGenJS/pull/772)
 - Fixed: tableToSlides `addHeaderToEach` finally duplicates all header rows, not just the first one [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))

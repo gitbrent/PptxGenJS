@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200624
+* BLD.: 20200628
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2666,7 +2666,7 @@ function genSlides_Shape(pptx) {
 	slide.addText('DIAGONAL', { shape: pptx.shapes.LINE, valign: 'bottom', x: 5.7, y: 3.3, w: 2.5, h: 0, line: { width: 2 }, rotate:(360-45) }); // TEST: (missing `line.color`)
 	//
 	slide.addText('RIGHT-TRIANGLE', { shape: pptx.shapes.RIGHT_TRIANGLE, align: 'center', x: 0.4, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000', width: 3 } });
-	slide.addText('RIGHT-TRIANGLE', { shape: pptx.shapes.RIGHT_TRIANGLE, align: 'center', x: 7.0, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000', width: 2 }, flipH: true });
+	slide.addText('HYPERLINK-SHAPE', { shape: pptx.shapes.RIGHT_TRIANGLE, align: 'center', x: 7.0, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000', width: 2 }, flipH: true, hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" }, });
 }
 
 function genSlides_Text(pptx) {

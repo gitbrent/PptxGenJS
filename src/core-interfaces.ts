@@ -454,6 +454,11 @@ export interface ShapeOptions extends PositionOptions {
 	 */
 	flipV?: boolean
 	/**
+	 * Add hyperlink to shape
+	 * @example hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" },
+	 */
+	hyperlink?: IHyperLink
+	/**
 	 * Line options
 	 */
 	line?: ShapeLine

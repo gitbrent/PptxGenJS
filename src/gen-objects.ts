@@ -618,6 +618,9 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLine` now)
 	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLine` now)
 
+	// 4: Create hyperlink rels
+	createHyperlinkRels(target, newObject)
+
 	// LAST: Add object to slide
 	target.data.push(newObject)
 }
@@ -1035,7 +1038,7 @@ export function addBackgroundDefinition(bkg: BkgdOpts, target: ISlideLayout) {
  * @param {ISlideLib} target - slide object that any hyperlinks will be be added to
  * @param {number | string | IText | IText[] | ITableCell[][]} text - text to parse
  */
-function createHyperlinkRels(target: ISlideLib, text: number | string | IText | IText[] | ITableCell[][]) {
+function createHyperlinkRels(target: ISlideLib, text: number | string | ISlideObject | IText | IText[] | ITableCell[][]) {
 	let textObjs = []
 
 	// Only text objects can have hyperlinks, bail when text param is plain text
