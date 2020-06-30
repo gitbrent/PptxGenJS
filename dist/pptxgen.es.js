@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-28T17:47:02.513Z */
+/* PptxGenJS 3.3.0-beta @ 2020-06-30T01:53:27.349Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -1603,8 +1603,8 @@ function slideObjectToXml(slide) {
                                     .replace('bottom', 'b') +
                                 '"'
                             : '';
-                        var cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : '';
-                        var cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : '';
+                        var cellColspan = cellOpts.colspan ? " gridSpan=\"" + cellOpts.colspan + "\"" : '';
+                        var cellRowspan = cellOpts.rowspan ? " rowSpan=\"" + cellOpts.rowspan + "\"" : '';
                         var fillColor = cell.optImp && cell.optImp.fill && cell.optImp.fill.color
                             ? cell.optImp.fill.color
                             : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
@@ -6014,7 +6014,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200628:1155';
+var VERSION = '3.3.0-beta-20200629:2025';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
