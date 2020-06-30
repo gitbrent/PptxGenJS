@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200628
+* BLD.: 20200629
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -287,7 +287,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
-		var objOpts1 = { x:0.5, y:0.7, w:4, fontSize:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts1 = { x:0.5, y:0.7, w:4, h:0.3, margin:0, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Cell Text Alignment:', objOpts1);
 
 		var arrTabRows = [
@@ -313,7 +313,7 @@ function genSlides_Table(pptx) {
 		// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
 		// DEMO: cell styles --------------------------------------------------------------------------
-		var objOpts2 = { x:6.0, y:0.7, w:4, fontSize:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts2 = { x:6.0, y:0.7, w:4, h:0.3, margin:0, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Cell Styles:', objOpts2);
 
 		var arrTabRows = [
@@ -338,7 +338,7 @@ function genSlides_Table(pptx) {
 		);
 
 		// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
-		var objOpts3 = { x:0.5, y:3.6, fontSize:18, fontFace:'Arial', color:'0088CC' };
+		var objOpts3 = { x:0.5, y:3.6, h:0.3, margin:0, fontSize:18, fontFace:'Arial', color:'0088CC' };
 		slide.addText('Row/Col Heights/Widths:', objOpts3);
 
 		var arrTabRows = [
@@ -528,27 +528,27 @@ function genSlides_Table(pptx) {
 			{ x:0.5, y:0.5, w:'95%', h:0.5, margin:0.1, fontSize:14 }
 		);
 		slide.addText("[\n"
-			+ "  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right', breakLine:true } },\n"
+			+ "  { text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right',  breakLine:true } },\n"
 			+ "  { text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },\n"
-			+ "  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left' } }\n"
+			+ "  { text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left'    } }\n"
 			+ "]",
-			{ x:1, y:1.1, w:11, h:1.5, margin:0.1, fontFace:'Courier', fontSize:13, fill:'F1F1F1', color:'333333' }
+			{ x:1, y:1.1, w:11, h:1.25, margin:0.1, fontFace:'Courier', fontSize:13, fill:'F1F1F1', color:'333333' }
 		);
 
 		// Textbox: Text word-level formatting
-		slide.addText('Textbox:', { x:1, y:2.8, w:3, fontSize:18, fontFace:'Arial', color:'0088CC' });
+		slide.addText('Textbox:', { x:1, y:2.8, w:3, h:2, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
 		var arrTextObjects = [
 			{ text:'1st line', options:{ fontSize:24, color:'99ABCC', align:'right', breakLine:true } },
 			{ text:'2nd line', options:{ fontSize:36, color:'FFFF00', align:'center', breakLine:true } },
 			{ text:'3rd line', options:{ fontSize:48, color:'0088CC', align:'left' } }
 		];
-		slide.addText( arrTextObjects, { x:2.5, y:2.8, w:9, h:2, margin:0.1, fill:'232323' } );
+		slide.addText( arrTextObjects, { x:2.5, y:2.8, w:9.5, h:2, margin:0.1, fill:'232323' } );
 
 		// Table cell: Use the exact same code from addText to do the same word-level formatting within a cell
-		slide.addText('Table:', { x:1, y:5, w:3, fontSize:18, fontFace:'Arial', color:'0088CC' });
+		slide.addText('Table:', { x:1, y:5, w:3, h:2, fontSize:18, fontFace:'Arial', color:'0088CC' });
 
-		var opts2 = { x:2.5, y:5, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6], border:{pt:'1'}, fill:'F1F1F1' }
+		var opts2 = { x:2.5, y:5, h:2, align:'center', valign:'middle', colW:[1.5,1.5,6.5], border:{pt:'1'}, fill:'F1F1F1' }
 		var arrTabRows = [
 			[
 				{ text:'Cell 1A',       options:{fontFace:'Arial'  } },
