@@ -333,8 +333,8 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 									.replace('bottom', 'b') +
 							  '"'
 							: ''
-						let cellColspan = cellOpts.colspan ? ' gridSpan="' + cellOpts.colspan + '"' : ''
-						let cellRowspan = cellOpts.rowspan ? ' rowSpan="' + cellOpts.rowspan + '"' : ''
+						let cellColspan = cellOpts.colspan ? ` gridSpan="${cellOpts.colspan}"` : ''
+						let cellRowspan = cellOpts.rowspan ? ` rowSpan="${cellOpts.rowspan}"` : ''
 						let fillColor =
 							cell.optImp && cell.optImp.fill && cell.optImp.fill.color
 								? cell.optImp.fill.color
