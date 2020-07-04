@@ -823,7 +823,6 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	underline?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-	wrap?: boolean
 
 	/**
 	 * Dash type
