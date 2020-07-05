@@ -198,7 +198,7 @@ export function addChartDefinition(target: ISlideLib, type: CHART_NAME | IChartM
 	// barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
 	// barGrouping must be handled before data label validation as it can affect valid label positioning
 	if (options._type === CHART_TYPE.AREA) {
-		if (['stacked','standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+		if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
 			options.barGrouping = 'standard';
 	}
 	if (options._type === CHART_TYPE.BAR) {
