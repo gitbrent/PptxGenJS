@@ -751,10 +751,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '        </a:defRPr>'
 					strXml += '      </a:pPr></a:p>'
 					strXml += '    </c:txPr>'
-					// Setting dLblPos tag for bar3D seems to break the generated chart
-					if (chartType !== CHART_TYPE.AREA && chartType !== CHART_TYPE.BAR3D) {
-						if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
-					}
+					if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 					strXml += '    <c:showLegendKey val="0"/>'
 					strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 					strXml += '    <c:showCatName val="0"/>'
@@ -888,10 +885,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '        </a:defRPr>'
 				strXml += '      </a:pPr></a:p>'
 				strXml += '    </c:txPr>'
-				// NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
-				// Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
-				if (opts._type !== CHART_TYPE.AREA && opts._type !== CHART_TYPE.RADAR && !isMultiTypeChart)
-					if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
+				if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="0"/>'
@@ -1456,7 +1450,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '   </a:defRPr>'
 				strXml += '      </a:pPr></a:p>'
 				strXml += '    </c:txPr>'
-				if (chartType === CHART_TYPE.PIE) `<c:dLblPos val="${opts.dataLabelPosition || 'inEnd'}"/>`
+				if (chartType === CHART_TYPE.PIE && opts.dataLabelPosition) strXml += `    <c:dLblPos val="${opts.dataLabelPosition}"/>`
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>'
