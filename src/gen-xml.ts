@@ -973,11 +973,19 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink.rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}" history="1" highlightClick="0" endSnd="0"/>`
+			}" history="1" highlightClick="0" endSnd="0"${opts.color?'>':'/>'}`
 		} else if (opts.hyperlink.slide) {
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink.rId}" action="ppaction://hlinksldjump" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}"/>`
+			}"${opts.color?'>':'/>'}`
+		}
+		if (opts.color) {
+			runProps += '	<a:extLst>'
+			runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">'
+			runProps += '			<ahyp:hlinkClr xmlns:ahyp="http://schemas.microsoft.com/office/drawing/2018/hyperlinkcolor" val="tx"/>'
+			runProps += '		</a:ext>'
+			runProps += '	</a:extLst>'
+			runProps += '</a:hlinkClick>'
 		}
 	}
 
