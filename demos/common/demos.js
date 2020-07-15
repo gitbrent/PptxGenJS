@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200629
+* BLD.: 20200704
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2896,7 +2896,33 @@ function genSlides_Text(pptx) {
 		);
 	}
 
-	// SLIDE 5: Scheme Colors
+	// SLIDE 5: Text Fit: Shrink/Resize
+	{
+		var slide = pptx.addSlide({ sectionTitle: 'Text' });
+		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');
+		slide.addTable([[{ text: 'Text Examples: Text Fit', options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+
+		slide.addText(gStrLoremEnglish.substring(0,1200), { x: 0.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: 'none' });
+		slide.addText(gStrLoremEnglish.substring(0,1200), { x: 4.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: 'shrink' });
+		slide.addText(gStrLoremEnglish.substring(0,1200), { x: 8.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: 'resize' });
+
+		// titles last so they overlay the overflowing text from above
+		slide.addText("fit:'none'  ", { x: 0.5, y: 0.6, w: 4, h: 0.3, color: '0088CC', fill: { color: 'ffffff' } });
+		slide.addText("fit:'shrink'", { x: 4.5, y: 0.6, w: 4, h: 0.3, color: '0088CC', fill: { color: 'ffffff' } });
+		slide.addText("fit:'resize'", { x: 8.5, y: 0.6, w: 4, h: 0.3, color: '0088CC', fill: { color: 'ffffff' } });
+
+		slide.addText(
+			[
+				{ text: "NOTE", options: { fontSize:16, bold:true, breakLine: true } },
+				{ text: "* 'Shrink' and 'Resize' are only applied once text is editted or the shape is resized PowerPoint.", options: { breakLine: true } },
+				{ text: "* The app calculates a scaling factor and applies it dynamically, so there's no way for this library to trigger this event.", options: { breakLine: true } },
+				{ text: "(add a space in the above textboxes to trigger shrink and resize)" }
+			],
+			{ x: 0.5, y: 6.0, w: 12, h: 1, margin: 10, fontSize: 12, color: '393939', fill: { color: 'fffccc' } }
+		);
+	}
+
+	// SLIDE 6: Scheme Colors
 	{
 		var slide = pptx.addSlide({sectionTitle:'Text'});
 		slide.addNotes('API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html');

@@ -1055,10 +1055,26 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 		// E: Close <a:bodyPr element
 		bodyProperties += '>'
 
-		// F: NEW: Add autofit type tags
-		if (slideObject.options.shrinkText) bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
-		// MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
-		// NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
+		/**
+		 * F: Text Fit/AutoFit/Shrink option
+		 * @see: http://officeopenxml.com/drwSp-text-bodyPr-fit.php
+		 * @see: http://www.datypic.com/sc/ooxml/g-a_EG_TextAutofit.html
+		 */
+		if (slideObject.options.fit) {
+			// NOTE: Use of '<a:noAutofit/>' instead of '' causes issues in PPT-2013!
+			if (slideObject.options.fit === 'none') bodyProperties += ''
+			// NOTE: Shrink does not work automatically - PowerPoint calculates the `fontScale` value dynamically upon resize
+			//else if (slideObject.options.fit === 'shrink') bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
+			else if (slideObject.options.fit === 'shrink') bodyProperties += '<a:normAutofit/>'
+			else if (slideObject.options.fit === 'resize') bodyProperties += '<a:spAutoFit/>'
+		}
+		//
+		// DEPRECATED: below (@deprecated v3.3.0)
+		if (slideObject.options.shrinkText) bodyProperties += '<a:normAutofit/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
+		/* DEPRECATED: below (@deprecated v3.3.0)
+		 * MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
+		 * NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
+		 */
 		bodyProperties += slideObject.options.bodyProp.autoFit !== false ? '<a:spAutoFit/>' : ''
 
 		// LAST: Close bodyProp

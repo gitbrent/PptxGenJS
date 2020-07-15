@@ -763,11 +763,6 @@ export interface GlowOptions {
 
 // TODO: WIP: rename to...? `AddTextOptions` ?
 export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions {
-	/**
-	 * Whather "Fit to Shape?" is enabled
-	 * @default false
-	 */
-	autoFit?: boolean
 	bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
 		autoFit?: boolean
@@ -778,12 +773,28 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 		tIns?: number
 		bIns?: number
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-		wrap?: boolean
+		wrap?: 'none' | 'square'
 	}
 	/**
 	 * Character spacing
 	 */
 	charSpacing?: number
+	/**
+	 * Text fit options
+	 *
+	 * MS-PPT > Format Shape > Shape Options > Text Box > "[unlabeled group]": [3 options below]
+	 * - 'none' = Do not Autofit
+	 * - 'shrink' = Shrink text on overflow
+	 * - 'resize' = Resize shape to fit text
+	 *
+	 * **Note** 'shrink' and 'resize' only take effect after editting text/resize shape.
+	 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
+	 *
+	 * There is no way for this library to trigger that behavior, sorry.
+	 * @since 3.3.0
+	 * @default "none"
+	 */
+	fit?: 'none' | 'shrink' | 'resize'
 	fill?: ShapeFill
 	/**
 	 * Flip shape horizontally?
@@ -816,14 +827,29 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	rtlMode?: boolean
 	shadow?: ShadowOptions
 	shape?: SHAPE_NAME
-	shrinkText?: boolean
 	strike?: boolean
 	subscript?: boolean
 	superscript?: boolean
 	underline?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+	/**
+	 * Text wrap
+	 * @since 3.3.0
+	 * @default true
+	 */
+	wrap?: boolean
 
+	/**
+	 * Whather "Fit to Shape?" is enabled
+	 * @deprecated 3.3.0 - use `textFit`
+	 */
+	autoFit?: boolean
+	/**
+	 * Whather "Shrink Text on Overflow?" is enabled
+	 * @deprecated 3.3.0 - use `textFit`
+	 */
+	shrinkText?: boolean
 	/**
 	 * Dash type
 	 * @deprecated v3.3.0 - use `dashType`
