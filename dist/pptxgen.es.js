@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-06-30T01:53:27.349Z */
+/* PptxGenJS 3.3.0-beta @ 2020-07-15T04:33:20.697Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2263,11 +2263,30 @@ function genXmlBodyProperties(slideObject) {
             bodyProperties += ' vert="' + slideObject.options.bodyProp.vert + '"'; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
         // E: Close <a:bodyPr element
         bodyProperties += '>';
-        // F: NEW: Add autofit type tags
+        /**
+         * F: Text Fit/AutoFit/Shrink option
+         * @see: http://officeopenxml.com/drwSp-text-bodyPr-fit.php
+         * @see: http://www.datypic.com/sc/ooxml/g-a_EG_TextAutofit.html
+         */
+        if (slideObject.options.fit) {
+            // NOTE: Use of '<a:noAutofit/>' instead of '' causes issues in PPT-2013!
+            if (slideObject.options.fit === 'none')
+                bodyProperties += '';
+            // NOTE: Shrink does not work automatically - PowerPoint calculates the `fontScale` value dynamically upon resize
+            //else if (slideObject.options.fit === 'shrink') bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>' // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
+            else if (slideObject.options.fit === 'shrink')
+                bodyProperties += '<a:normAutofit/>';
+            else if (slideObject.options.fit === 'resize')
+                bodyProperties += '<a:spAutoFit/>';
+        }
+        //
+        // DEPRECATED: below (@deprecated v3.3.0)
         if (slideObject.options.shrinkText)
-            bodyProperties += '<a:normAutofit fontScale="85000" lnSpcReduction="20000"/>'; // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
-        // MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
-        // NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
+            bodyProperties += '<a:normAutofit/>'; // MS-PPT > Format shape > Text Options: "Shrink text on overflow"
+        /* DEPRECATED: below (@deprecated v3.3.0)
+         * MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
+         * NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
+         */
         bodyProperties += slideObject.options.bodyProp.autoFit !== false ? '<a:spAutoFit/>' : '';
         // LAST: Close bodyProp
         bodyProperties += '</a:bodyPr>';
@@ -3828,7 +3847,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         // C
         newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null;
         // D: Transform text options to bodyProperties as thats how we build XML
-        newObject.options.bodyProp.autoFit = opt.autoFit || false; // If true, shape will collapse to text size (Fit To shape)
+        newObject.options.bodyProp.autoFit = opt.autoFit || false; // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
         newObject.options.bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null; // VALS: [t,ctr,b]
         newObject.options.bodyProp.vert = opt.vert || null; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
         if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
@@ -6014,7 +6033,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200629:2025';
+var VERSION = '3.3.0-beta-20200714:2323';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
