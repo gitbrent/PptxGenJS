@@ -188,6 +188,7 @@ function testMethod_Text(pptx: pptxgen) {
 		y: 1.0,
 		w: "40%",
 		h: 0.75,
+		align: "center",
 		fill: { color: pptxgen.SchemeColor.background2 },
 		color: pptxgen.SchemeColor.accent6,
 		fontFace: "Courier New",
