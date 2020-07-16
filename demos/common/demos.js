@@ -2632,20 +2632,23 @@ function genSlides_Shape(pptx) {
 	slide.addTable( [ [{ text:'Shape Examples 1: Misc Shape Types (no text)', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
 	//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:'F9F9F9' });
-	slide.addShape(pptx.shapes.RECTANGLE, { x: 0.5, y: 0.8, w: 1.5, h: 3.0, fill: { color: 'FF0000' }, line: { type: 'none' } });
-	slide.addShape(pptx.shapes.RECTANGLE, { x: 3.0, y: 0.7, w: 1.5, h: 3.0, fill: { color: 'F38E00' }, rotate: 45 });
+	slide.addShape(pptx.shapes.RECTANGLE, { x: 0.5, y: 0.8, w: 1.5, h: 1.0, fill: { color: 'FF0000' }, line: { type: 'none' } });
+	slide.addShape(pptx.shapes.RECTANGLE, { x: 3.0, y: 0.7, w: 1.5, h: 1.0, fill: { color: 'F38E00' }, rotate: 45 });
 	slide.addShape(pptx.shapes.OVAL, { x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: 'solid', color: '0088CC' } });
 	slide.addShape(pptx.shapes.OVAL, { x: 7.7, y: 1.4, w: 3.0, h: 1.5, fill: { color: 'FF00CC' }, rotate: 90 }); // TEST: no type
 	slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:10 , y:2.5, w:3.0, h:1.5, r:0.2, fill:'00FF00', line:'000000', lineSize:1 }); // TEST: DEPRECATED: `fill`,`line`,`lineSize`
+	slide.addShape(pptx.shapes.RECTANGLE, { sId: 1, x: 0.5, y: 2, w: 1.5, h: 1.5, fill: { color: 'F0F8FF' }}); // for connector demo
+	slide.addShape(pptx.shapes.RECTANGLE, { sId: 2, x: 3.0, y: 2, w: 1.5, h: 1.5, fill: { color: 'F38E00' }}); // for connector demo
 	//
-	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.4, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 1, dashType: 'lgDash' } });
-	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.8, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 2, dashType: 'dashDot' }, lineHead: 'arrow' }); // TEST: DEPRECATED: lineHead
-	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 5.2, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 3, endArrowType: 'triangle' } });
-	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 5.6, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 4, beginArrowType: 'diamond', endArrowType: 'oval' } });
-	slide.addShape(pptx.shapes.LINE, { x: 5.7, y: 3.3, w: 2.5, h: 0.0, line: { width: 1 }, rotate: (360 - 45) }); // DIAGONAL Line // TEST:no line.color
-	//
-	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 0.4, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', width: 3 }, shapeName:'First Right Triangle' });
-	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 7.0, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', width: 2 }, flipH: true });
+	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.4, w: 5.0, h: 0.0, line: { color: 'FF0000', size: 1, dashType: 'lgDash' } });
+	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.8, w: 5.0, h: 0.0, line: { color: 'FF0000', size: 2, dashType: 'dashDot' }, lineHead: 'arrow' }); // TEST: DEPRECATED: lineHead
+	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 5.2, w: 5.0, h: 0.0, line: { color: 'FF0000', size: 3, endArrowType: 'triangle' } });
+	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 5.6, w: 5.0, h: 0.0, line: { color: 'FF0000', size: 4, beginArrowType: 'diamond', endArrowType: 'oval' } });
+	slide.addShape(pptx.shapes.LINE, { x: 5.7, y: 3.3, w: 2.5, h: 0.0, line: { size: 1 }, rotate: (360 - 45) }); // DIAGONAL Line // TEST:no line.color
+	slide.addShape(pptx.shapes.LINE, { sId: 3, x: 2, y: 1, w: 1, h: 0.0, line: { size: 1, sourceId: 1, targetId: 2, sourceAnchorPos: 0, targetAnchorPos: 1 } }); // connector test start pos 0 / end pos 1
+	 //
+	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 0.4, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', size: 3 } });
+	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 7.0, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', size: 2 }, flipH: true });
 
 	// SLIDE 2: Misc Shape Types with Text
 	// ======== -----------------------------------------------------------------------------------
