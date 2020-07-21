@@ -4,7 +4,7 @@
 
 import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
-	BkgdOpts,
+	BackgroundProps,
 	HexColor,
 	IChartMulti,
 	IChartOpts,
@@ -87,17 +87,17 @@ export default class Slide {
 
 	/**
 	 * Background color or image
-	 * @type {BkgdOpts}
+	 * @type {BackgroundProps}
 	 * @example solid color `background: {fill:'FF0000'}
 	 * @example base64 `background: {data:'image/png;base64,ABC[...]123'}`
 	 * @example url  `background: {path:'https://some.url/image.jpg'}`
 	 * @since v3.3.0
 	 */
-	private _background: BkgdOpts
-	public set background(value: BkgdOpts) {
+	private _background: BackgroundProps
+	public set background(value: BackgroundProps) {
 		genObj.addBackgroundDefinition(value, this)
 	}
-	public get background(): BkgdOpts {
+	public get background(): BackgroundProps {
 		return this._background
 	}
 

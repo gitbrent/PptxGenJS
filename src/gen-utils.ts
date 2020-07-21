@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, ILayout, GlowOptions, ISlideLib, ShapeFill, Color, ShapeLine } from './core-interfaces'
+import { IChartOpts, ILayout, GlowOptions, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -190,11 +190,11 @@ export function createGlowElement(options: GlowOptions, defaults: GlowOptions): 
 
 /**
  * Create color selection
- * @param {shapeFill} ShapeFill - options
+ * @param {shapeFill} ShapeFillProps - options
  * @param {string} backColor - color string
  * @returns {string} XML string
  */
-export function genXmlColorSelection(shapeFill: Color | ShapeFill | ShapeLine, backColor?: string): string {
+export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLineProps, backColor?: string): string {
 	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''

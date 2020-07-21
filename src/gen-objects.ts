@@ -23,7 +23,7 @@ import {
 	TEXT_VALIGN,
 } from './core-enums'
 import {
-	BkgdOpts,
+	BackgroundProps,
 	IChartMulti,
 	IChartOptsLib,
 	ILayout,
@@ -36,7 +36,7 @@ import {
 	ImageOpts,
 	MediaOpts,
 	OptsChartGridLine,
-	ShapeLine,
+	ShapeLineProps,
 	ShapeOptions,
 	TableCell,
 	TableOptions,
@@ -577,7 +577,7 @@ export function addNotesDefinition(target: ISlideLib, notes: string) {
  */
 export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: ShapeOptions) {
 	let options = typeof opts === 'object' ? opts : {}
-	options.line = options.line || ({ type: 'none' } as ShapeLine)
+	options.line = options.line || ({ type: 'none' } as ShapeLineProps)
 	let newObject: ISlideObject = {
 		_type: SLIDE_OBJECT_TYPES.text,
 		shape: shapeName || SHAPE_TYPE.RECTANGLE,
@@ -588,8 +588,8 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 	// Reality check
 	if (!shapeName) throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptxgen.shapes.LINE, {x:1, y:1, w:1, h:1});`')
 
-	// 1: ShapeLine defaults
-	let newLineOpts: ShapeLine = {
+	// 1: ShapeLineProps defaults
+	let newLineOpts: ShapeLineProps = {
 		type: options.line.type || 'solid',
 		color: options.line.color || DEF_SHAPE_LINE_COLOR,
 		transparency: options.line.transparency || 0,
@@ -612,10 +612,10 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 		tmpOpts.color = options.line!.toString() // @deprecated `options.line` string (was line color)
 		options.line = tmpOpts
 	}
-	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLine` now)
-	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLine` now)
+	if (typeof options.lineSize === 'number') options.line.width = options.lineSize // @deprecated (part of `ShapeLineProps` now)
+	if (typeof options.lineDash === 'string') options.line.dashType = options.lineDash // @deprecated (part of `ShapeLineProps` now)
+	if (typeof options.lineHead === 'string') options.line.beginArrowType = options.lineHead // @deprecated (part of `ShapeLineProps` now)
+	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLineProps` now)
 
 	// 4: Create hyperlink rels
 	createHyperlinkRels(target, newObject)
@@ -896,7 +896,7 @@ export function addTableDefinition(
  */
 export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
 	let opt: ITextOpts = opts || {}
-	opt.line = opt.line || ({} as ShapeLine)
+	opt.line = opt.line || ({} as ShapeLineProps)
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
 		_type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
@@ -920,8 +920,8 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 
 		// B
 		if (opt.shape === SHAPE_TYPE.LINE) {
-			// ShapeLine defaults
-			let newLineOpts: ShapeLine = {
+			// ShapeLineProps defaults
+			let newLineOpts: ShapeLineProps = {
 				type: opt.line.type || 'solid',
 				color: opt.line.color || DEF_SHAPE_LINE_COLOR,
 				transparency: opt.line.transparency || 0,
@@ -938,10 +938,10 @@ export function addTextDefinition(target: ISlideLib, text: string | IText[], opt
 				tmpOpts.color = opt.line!.toString() // @deprecated `opt.line` string (was line color)
 				opt.line = tmpOpts
 			}
-			if (typeof opt.lineSize === 'number') opt.line.width = opt.lineSize // @deprecated (part of `ShapeLine` now)
-			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLine` now)
-			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLine` now)
-			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLine` now)
+			if (typeof opt.lineSize === 'number') opt.line.width = opt.lineSize // @deprecated (part of `ShapeLineProps` now)
+			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLineProps` now)
+			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLineProps` now)
+			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLineProps` now)
 		}
 
 		// C
@@ -1005,10 +1005,10 @@ export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {BkgdOpts} bkg - color string or an object with image definition
+ * @param {BackgroundProps} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
-export function addBackgroundDefinition(bkg: BkgdOpts, target: ISlideLayout) {
+export function addBackgroundDefinition(bkg: BackgroundProps, target: ISlideLayout) {
 	if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.path = bkg.path || 'preencoded.png'

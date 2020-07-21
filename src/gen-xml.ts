@@ -27,7 +27,7 @@ import {
 	ISlideRelMedia,
 	IText,
 	ITextOpts,
-	ShadowOptions,
+	ShadowProps,
 	TableCell,
 	TableCellOpts,
 } from './core-interfaces'
@@ -1841,41 +1841,41 @@ export function makeXmlViewProps(): string {
 
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowOptions} ShadowOptions - shadow options
+ * @param {ShadowProps} ShadowProps - shadow options
  */
-export function correctShadowOptions(ShadowOptions: ShadowOptions) {
-	if (!ShadowOptions || typeof ShadowOptions !== 'object') {
+export function correctShadowOptions(ShadowProps: ShadowProps) {
+	if (!ShadowProps || typeof ShadowProps !== 'object') {
 		//console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
 		return
 	}
 
 	// OPT: `type`
-	if (ShadowOptions.type !== 'outer' && ShadowOptions.type !== 'inner' && ShadowOptions.type !== 'none') {
+	if (ShadowProps.type !== 'outer' && ShadowProps.type !== 'inner' && ShadowProps.type !== 'none') {
 		console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.')
-		ShadowOptions.type = 'outer'
+		ShadowProps.type = 'outer'
 	}
 
 	// OPT: `angle`
-	if (ShadowOptions.angle) {
+	if (ShadowProps.angle) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(ShadowOptions.angle)) || ShadowOptions.angle < 0 || ShadowOptions.angle > 359) {
+		if (isNaN(Number(ShadowProps.angle)) || ShadowProps.angle < 0 || ShadowProps.angle > 359) {
 			console.warn('Warning: shadow.angle can only be 0-359')
-			ShadowOptions.angle = 270
+			ShadowProps.angle = 270
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		ShadowOptions.angle = Math.round(Number(ShadowOptions.angle))
+		ShadowProps.angle = Math.round(Number(ShadowProps.angle))
 	}
 
 	// OPT: `opacity`
-	if (ShadowOptions.opacity) {
+	if (ShadowProps.opacity) {
 		// A: REALITY-CHECK
-		if (isNaN(Number(ShadowOptions.opacity)) || ShadowOptions.opacity < 0 || ShadowOptions.opacity > 1) {
+		if (isNaN(Number(ShadowProps.opacity)) || ShadowProps.opacity < 0 || ShadowProps.opacity > 1) {
 			console.warn('Warning: shadow.opacity can only be 0-1')
-			ShadowOptions.opacity = 0.75
+			ShadowProps.opacity = 0.75
 		}
 
 		// B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-		ShadowOptions.opacity = Number(ShadowOptions.opacity)
+		ShadowProps.opacity = Number(ShadowProps.opacity)
 	}
 }

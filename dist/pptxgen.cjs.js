@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-07-21T04:37:05.456Z */
+/* PptxGenJS 3.3.0-beta @ 2020-07-21T04:56:47.141Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -770,7 +770,7 @@ function createGlowElement(options, defaults) {
 }
 /**
  * Create color selection
- * @param {shapeFill} ShapeFill - options
+ * @param {shapeFill} ShapeFillProps - options
  * @param {string} backColor - color string
  * @returns {string} XML string
  */
@@ -2932,37 +2932,37 @@ function makeXmlViewProps() {
 }
 /**
  * Checks shadow options passed by user and performs corrections if needed.
- * @param {ShadowOptions} ShadowOptions - shadow options
+ * @param {ShadowProps} ShadowProps - shadow options
  */
-function correctShadowOptions(ShadowOptions) {
-    if (!ShadowOptions || typeof ShadowOptions !== 'object') {
+function correctShadowOptions(ShadowProps) {
+    if (!ShadowProps || typeof ShadowProps !== 'object') {
         //console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`")
         return;
     }
     // OPT: `type`
-    if (ShadowOptions.type !== 'outer' && ShadowOptions.type !== 'inner' && ShadowOptions.type !== 'none') {
+    if (ShadowProps.type !== 'outer' && ShadowProps.type !== 'inner' && ShadowProps.type !== 'none') {
         console.warn('Warning: shadow.type options are `outer`, `inner` or `none`.');
-        ShadowOptions.type = 'outer';
+        ShadowProps.type = 'outer';
     }
     // OPT: `angle`
-    if (ShadowOptions.angle) {
+    if (ShadowProps.angle) {
         // A: REALITY-CHECK
-        if (isNaN(Number(ShadowOptions.angle)) || ShadowOptions.angle < 0 || ShadowOptions.angle > 359) {
+        if (isNaN(Number(ShadowProps.angle)) || ShadowProps.angle < 0 || ShadowProps.angle > 359) {
             console.warn('Warning: shadow.angle can only be 0-359');
-            ShadowOptions.angle = 270;
+            ShadowProps.angle = 270;
         }
         // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-        ShadowOptions.angle = Math.round(Number(ShadowOptions.angle));
+        ShadowProps.angle = Math.round(Number(ShadowProps.angle));
     }
     // OPT: `opacity`
-    if (ShadowOptions.opacity) {
+    if (ShadowProps.opacity) {
         // A: REALITY-CHECK
-        if (isNaN(Number(ShadowOptions.opacity)) || ShadowOptions.opacity < 0 || ShadowOptions.opacity > 1) {
+        if (isNaN(Number(ShadowProps.opacity)) || ShadowProps.opacity < 0 || ShadowProps.opacity > 1) {
             console.warn('Warning: shadow.opacity can only be 0-1');
-            ShadowOptions.opacity = 0.75;
+            ShadowProps.opacity = 0.75;
         }
         // B: ROBUST: Cast any type of valid arg to int: '12', 12.3, etc. -> 12
-        ShadowOptions.opacity = Number(ShadowOptions.opacity);
+        ShadowProps.opacity = Number(ShadowProps.opacity);
     }
 }
 
@@ -3498,7 +3498,7 @@ function addShapeDefinition(target, shapeName, opts) {
     // Reality check
     if (!shapeName)
         throw new Error('Missing/Invalid shape parameter! Example: `addShape(pptxgen.shapes.LINE, {x:1, y:1, w:1, h:1});`');
-    // 1: ShapeLine defaults
+    // 1: ShapeLineProps defaults
     var newLineOpts = {
         type: options.line.type || 'solid',
         color: options.line.color || DEF_SHAPE_LINE_COLOR,
@@ -3522,13 +3522,13 @@ function addShapeDefinition(target, shapeName, opts) {
         options.line = tmpOpts;
     }
     if (typeof options.lineSize === 'number')
-        options.line.width = options.lineSize; // @deprecated (part of `ShapeLine` now)
+        options.line.width = options.lineSize; // @deprecated (part of `ShapeLineProps` now)
     if (typeof options.lineDash === 'string')
-        options.line.dashType = options.lineDash; // @deprecated (part of `ShapeLine` now)
+        options.line.dashType = options.lineDash; // @deprecated (part of `ShapeLineProps` now)
     if (typeof options.lineHead === 'string')
-        options.line.beginArrowType = options.lineHead; // @deprecated (part of `ShapeLine` now)
+        options.line.beginArrowType = options.lineHead; // @deprecated (part of `ShapeLineProps` now)
     if (typeof options.lineTail === 'string')
-        options.line.endArrowType = options.lineTail; // @deprecated (part of `ShapeLine` now)
+        options.line.endArrowType = options.lineTail; // @deprecated (part of `ShapeLineProps` now)
     // 4: Create hyperlink rels
     createHyperlinkRels(target, newObject);
     // LAST: Add object to slide
@@ -3820,7 +3820,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         }
         // B
         if (opt.shape === SHAPE_TYPE.LINE) {
-            // ShapeLine defaults
+            // ShapeLineProps defaults
             var newLineOpts = {
                 type: opt.line.type || 'solid',
                 color: opt.line.color || DEF_SHAPE_LINE_COLOR,
@@ -3839,13 +3839,13 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
                 opt.line = tmpOpts;
             }
             if (typeof opt.lineSize === 'number')
-                opt.line.width = opt.lineSize; // @deprecated (part of `ShapeLine` now)
+                opt.line.width = opt.lineSize; // @deprecated (part of `ShapeLineProps` now)
             if (typeof opt.lineDash === 'string')
-                opt.line.dashType = opt.lineDash; // @deprecated (part of `ShapeLine` now)
+                opt.line.dashType = opt.lineDash; // @deprecated (part of `ShapeLineProps` now)
             if (typeof opt.lineHead === 'string')
-                opt.line.beginArrowType = opt.lineHead; // @deprecated (part of `ShapeLine` now)
+                opt.line.beginArrowType = opt.lineHead; // @deprecated (part of `ShapeLineProps` now)
             if (typeof opt.lineTail === 'string')
-                opt.line.endArrowType = opt.lineTail; // @deprecated (part of `ShapeLine` now)
+                opt.line.endArrowType = opt.lineTail; // @deprecated (part of `ShapeLineProps` now)
         }
         // C
         newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null;
@@ -3905,7 +3905,7 @@ function addPlaceholdersToSlideLayouts(slide) {
 /* -------------------------------------------------------------------------------- */
 /**
  * Adds a background image or color to a slide definition.
- * @param {BkgdOpts} bkg - color string or an object with image definition
+ * @param {BackgroundProps} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg, target) {
