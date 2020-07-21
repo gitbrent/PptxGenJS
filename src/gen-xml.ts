@@ -25,10 +25,10 @@ import {
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	TableCell,
 	IText,
 	ITextOpts,
 	ShadowOptions,
+	TableCell,
 	TableCellOpts,
 } from './core-interfaces'
 import {
@@ -445,14 +445,14 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.url)
 					strSlideXml +=
 						'<a:hlinkClick r:id="rId' +
-						slideItemObj.options.hyperlink.rId +
+						slideItemObj.options.hyperlink._rId +
 						'" tooltip="' +
 						(slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
 						'"/>'
 				if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.slide)
 					strSlideXml +=
 						'<a:hlinkClick r:id="rId' +
-						slideItemObj.options.hyperlink.rId +
+						slideItemObj.options.hyperlink._rId +
 						'" tooltip="' +
 						(slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
 						'" action="ppaction://hlinksldjump"/>'
@@ -539,14 +539,14 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
 					strSlideXml +=
 						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink.rId +
+						slideItemObj.hyperlink._rId +
 						'" tooltip="' +
 						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
 						'"/>'
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
 					strSlideXml +=
 						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink.rId +
+						slideItemObj.hyperlink._rId +
 						'" tooltip="' +
 						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
 						'" action="ppaction://hlinksldjump"/>'
@@ -971,11 +971,11 @@ function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: bo
 		else if (opts.hyperlink.url) {
 			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink.rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
+			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
 			}" history="1" highlightClick="0" endSnd="0"/>`
 		} else if (opts.hyperlink.slide) {
-			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink.rId}" action="ppaction://hlinksldjump" tooltip="${
+			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" action="ppaction://hlinksldjump" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
 			}"/>`
 		}

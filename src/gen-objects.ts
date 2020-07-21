@@ -435,7 +435,7 @@ export function addImageDefinition(target: ISlideLib, opt: ImageOpts) {
 				Target: objHyperlink.url || objHyperlink.slide.toString(),
 			})
 
-			objHyperlink.rId = imageRelId
+			objHyperlink._rId = imageRelId
 			newObject.hyperlink = objHyperlink
 		}
 	}
@@ -1049,7 +1049,7 @@ function createHyperlinkRels(target: ISlideLib, text: number | string | ISlideOb
 	textObjs.forEach((text: IText) => {
 		// `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
 		if (Array.isArray(text)) createHyperlinkRels(target, text)
-		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId) {
+		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
 			if (typeof text.options.hyperlink !== 'object') console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ")
 			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
 			else {
@@ -1062,7 +1062,7 @@ function createHyperlinkRels(target: ISlideLib, text: number | string | ISlideOb
 					Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
 				})
 
-				text.options.hyperlink.rId = relId
+				text.options.hyperlink._rId = relId
 			}
 		}
 	})

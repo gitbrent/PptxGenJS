@@ -117,12 +117,19 @@ export interface BorderOptions {
 }
 // used by: image, object, text,
 export interface HyperLink {
+	_rId: number
+	/**
+	 * Slide number to link to
+	 */
 	slide?: number
+	/**
+	 * Url to link to
+	 */
 	url?: string
+	/**
+	 * Hyperlink Tooltip
+	 */
 	tooltip?: string
-}
-export interface IHyperLink extends HyperLink {
-	rId: number
 }
 // used by: chart, text
 export interface ShadowOptions {
@@ -368,7 +375,7 @@ export interface TextOptions {
 export type MediaType = 'audio' | 'online' | 'video'
 
 export interface ImageOpts extends PositionOptions, OptsDataOrPath {
-	hyperlink?: IHyperLink
+	hyperlink?: HyperLink
 	placeholder?: string // 'body' | 'title' | etc.
 	/**
 	 * Image rotation (degrees)
@@ -456,7 +463,7 @@ export interface ShapeOptions extends PositionOptions {
 	 * Add hyperlink to shape
 	 * @example hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" },
 	 */
-	hyperlink?: IHyperLink
+	hyperlink?: HyperLink
 	/**
 	 * Line options
 	 */
@@ -802,7 +809,7 @@ export interface ITextOpts extends PositionOptions, OptsDataOrPath, TextOptions 
 	 */
 	flipV?: boolean
 	glow?: GlowOptions
-	hyperlink?: IHyperLink
+	hyperlink?: HyperLink
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
@@ -1256,7 +1263,7 @@ export interface ISlideObject {
 	// image:
 	image?: string
 	imageRid?: number
-	hyperlink?: IHyperLink
+	hyperlink?: HyperLink
 	// media
 	media?: string
 	mtype?: MediaType

@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-07-21T04:16:36.428Z */
+/* PptxGenJS 3.3.0-beta @ 2020-07-21T04:37:05.462Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -1699,14 +1699,14 @@ function slideObjectToXml(slide) {
                 if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.url)
                     strSlideXml +=
                         '<a:hlinkClick r:id="rId' +
-                            slideItemObj.options.hyperlink.rId +
+                            slideItemObj.options.hyperlink._rId +
                             '" tooltip="' +
                             (slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
                             '"/>';
                 if (slideItemObj.options.hyperlink && slideItemObj.options.hyperlink.slide)
                     strSlideXml +=
                         '<a:hlinkClick r:id="rId' +
-                            slideItemObj.options.hyperlink.rId +
+                            slideItemObj.options.hyperlink._rId +
                             '" tooltip="' +
                             (slideItemObj.options.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.options.hyperlink.tooltip) : '') +
                             '" action="ppaction://hlinksldjump"/>';
@@ -1783,14 +1783,14 @@ function slideObjectToXml(slide) {
                 if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
                     strSlideXml +=
                         '<a:hlinkClick r:id="rId' +
-                            slideItemObj.hyperlink.rId +
+                            slideItemObj.hyperlink._rId +
                             '" tooltip="' +
                             (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
                             '"/>';
                 if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
                     strSlideXml +=
                         '<a:hlinkClick r:id="rId' +
-                            slideItemObj.hyperlink.rId +
+                            slideItemObj.hyperlink._rId +
                             '" tooltip="' +
                             (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
                             '" action="ppaction://hlinksldjump"/>';
@@ -2189,10 +2189,10 @@ function genXmlTextRunProperties(opts, isDefault) {
         else if (opts.hyperlink.url) {
             // TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
             //runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink.rId + "\" invalidUrl=\"\" action=\"\" tgtFrame=\"\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\" history=\"1\" highlightClick=\"0\" endSnd=\"0\"/>";
+            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink._rId + "\" invalidUrl=\"\" action=\"\" tgtFrame=\"\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\" history=\"1\" highlightClick=\"0\" endSnd=\"0\"/>";
         }
         else if (opts.hyperlink.slide) {
-            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink.rId + "\" action=\"ppaction://hlinksldjump\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\"/>";
+            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink._rId + "\" action=\"ppaction://hlinksldjump\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\"/>";
         }
     }
     // END runProperties
@@ -3356,7 +3356,7 @@ function addImageDefinition(target, opt) {
                 rId: imageRelId,
                 Target: objHyperlink.url || objHyperlink.slide.toString(),
             });
-            objHyperlink.rId = imageRelId;
+            objHyperlink._rId = imageRelId;
             newObject.hyperlink = objHyperlink;
         }
     }
@@ -3949,7 +3949,7 @@ function createHyperlinkRels(target, text) {
         // `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
         if (Array.isArray(text))
             createHyperlinkRels(target, text);
-        else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink.rId) {
+        else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
             if (typeof text.options.hyperlink !== 'object')
                 console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
             else if (!text.options.hyperlink.url && !text.options.hyperlink.slide)
@@ -3962,7 +3962,7 @@ function createHyperlinkRels(target, text) {
                     rId: relId,
                     Target: encodeXmlEntities(text.options.hyperlink.url) || text.options.hyperlink.slide.toString(),
                 });
-                text.options.hyperlink.rId = relId;
+                text.options.hyperlink._rId = relId;
             }
         }
     });
