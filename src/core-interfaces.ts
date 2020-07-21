@@ -164,7 +164,7 @@ export interface ShadowOptions {
 export interface ShapeFill {
 	/**
 	 * Fill type
-	 * @deprecated 'solid'
+	 * - 'solid' @deprecated 3.3.0
 	 */
 	type?: 'none' | 'solid'
 	/**
@@ -180,6 +180,7 @@ export interface ShapeFill {
 	 * @default 0
 	 */
 	transparency?: number
+
 	/**
 	 * Transparency (percent)
 	 * @deprecated v3.3.0 - use `transparency`
@@ -368,6 +369,7 @@ export type MediaType = 'audio' | 'online' | 'video'
 
 export interface ImageOpts extends PositionOptions, OptsDataOrPath {
 	hyperlink?: IHyperLink
+	placeholder?: string // 'body' | 'title' | etc.
 	/**
 	 * Image rotation (degrees)
 	 * - range: -360 to 360
@@ -399,9 +401,6 @@ export interface ImageOpts extends PositionOptions, OptsDataOrPath {
 		x?: number
 		y?: number
 	}
-}
-export interface IImageOpts extends ImageOpts {
-	placeholder?: any
 }
 /**
  * Add media (audio/video) to slide
@@ -509,6 +508,9 @@ export interface ShapeOptions extends PositionOptions {
 // tables =========================================================================================
 
 export interface TableToSlidesOpts extends TableOptions {
+	_arrObjTabHeadRows?: TableRow[]
+	//_masterSlide?: ISlideLayout
+
 	/**
 	 * Add an image to slide(s) created during autopaging
 	 */
@@ -637,6 +639,8 @@ export interface TableCellOpts extends TextOptions {
 }
 // TODO: WIP: rename to...? `AddTableOptions` ?
 export interface TableOptions extends PositionOptions, TextOptions {
+	_arrObjTabHeadRows?: TableRow[]
+
 	/**
 	 * Whether to enable auto-paging
 	 * - auto-paging creates new slides as content overflows a slide
@@ -717,30 +721,21 @@ export interface TableOptions extends PositionOptions, TextOptions {
 	newSlideStartY?: number
 }
 export interface TableCell {
+	_type: SLIDE_OBJECT_TYPES.tablecell
+	_lines?: string[]
+	_lineHeight?: number
+	_hmerge?: boolean
+	_vmerge?: boolean
+	_optImp?: any
+
 	text?: string | IText[]
 	options?: TableCellOpts
 }
 export interface TableRowSlide {
-	rows: ITableRow[]
+	rows: TableRow[]
 }
-export type TableRow = number[] | string[] | TableCell[] // TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
-// [internal below]
-export interface ITableToSlidesOpts extends TableToSlidesOpts {
-	_arrObjTabHeadRows?: TableRow[]
-	masterSlide?: ISlideLayout
-}
-export interface ITableCell extends TableCell {
-	type: SLIDE_OBJECT_TYPES.tablecell
-	lines?: string[]
-	lineHeight?: number
-	hmerge?: boolean
-	vmerge?: boolean
-	optImp?: any
-}
-export interface ITableOptions extends TableOptions {
-	_arrObjTabHeadRows?: TableRow[]
-}
-export type ITableRow = ITableCell[]
+//export type TableRow = number[] | string[] | TableCell[] // TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
+export type TableRow = TableCell[]
 
 // text ===========================================================================================
 export interface GlowOptions {
@@ -1234,7 +1229,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 // TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends ShapeOptions, TableCellOpts, ITextOpts {
+export interface IObjectOptions extends ShapeOptions, TableCellOpts, ITextOpts, ImageOpts {
 	x?: Coord
 	y?: Coord
 	cx?: Coord
@@ -1245,26 +1240,17 @@ export interface IObjectOptions extends ShapeOptions, TableCellOpts, ITextOpts {
 	// table
 	colW?: number | number[]
 	rowH?: number | number[]
-	// image:
-	sizing?: {
-		type?: string
-		x?: number
-		y?: number
-		w?: number
-		h?: number
-	}
-	rounding?: string
 	// placeholder
 	placeholderIdx?: number
 	placeholderType?: PLACEHOLDER_TYPES
 }
 export interface ISlideObject {
-	type: SLIDE_OBJECT_TYPES
+	_type: SLIDE_OBJECT_TYPES
 	options?: IObjectOptions
 	// text
 	text?: string | IText[]
 	// table
-	arrTabRows?: ITableCell[][]
+	arrTabRows?: TableCell[][]
 	// chart
 	chartRid?: number
 	// image:

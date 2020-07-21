@@ -74,7 +74,7 @@ import {
 	ISlideLib,
 	ISlideMasterOptions,
 	ISlideNumber,
-	ITableToSlidesOpts,
+	TableToSlidesOpts,
 } from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
@@ -82,7 +82,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200715:2347'
+const VERSION = '3.3.0-beta-20200720:2307'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
@@ -709,9 +709,9 @@ export default class PptxGenJS implements IPresentation {
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
 	 * @param {string} eleId - table HTML element ID
-	 * @param {ITableToSlidesOpts} options - generation options
+	 * @param {TableToSlidesOpts} options - generation options
 	 */
-	tableToSlides(eleId: string, options: ITableToSlidesOpts = {}) {
+	tableToSlides(eleId: string, options: TableToSlidesOpts = {}) {
 		// @note `verbose` option is undocumented; used for verbose output of layout process
 		genTable.genTableToSlides(
 			this,

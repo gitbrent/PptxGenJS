@@ -25,7 +25,7 @@ import {
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	ITableCell,
+	TableCell,
 	IText,
 	ITextOpts,
 	ShadowOptions,
@@ -153,7 +153,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 		if (slideItemObj.options.rotate) locationAttr += ' rot="' + convertRotationDegrees(slideItemObj.options.rotate) + '"'
 
 		// B: Add OBJECT to the current Slide
-		switch (slideItemObj.type) {
+		switch (slideItemObj._type) {
 			case SLIDE_OBJECT_TYPES.table:
 				let objTableGrid = {}
 				let arrTabRows = slideItemObj.arrTabRows
@@ -265,12 +265,12 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 								// B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
 								if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
 									for (let idy = 1; idy < Number(cell.options.colspan); idy++) {
-										objTableGrid[rIdx][currColIdx + idy] = { hmerge: true, text: 'hmerge' }
+										objTableGrid[rIdx][currColIdx + idy] = { _hmerge: true, text: 'hmerge' }
 									}
 								} else if (cell && cell.options && cell.options.rowspan && !isNaN(Number(cell.options.rowspan))) {
 									for (let idz = 1; idz < Number(cell.options.rowspan); idz++) {
 										if (!objTableGrid[rIdx + idz]) objTableGrid[rIdx + idz] = {}
-										objTableGrid[rIdx + idz][currColIdx] = { vmerge: true, text: 'vmerge' }
+										objTableGrid[rIdx + idz][currColIdx] = { _vmerge: true, text: 'vmerge' }
 									}
 								}
 
@@ -306,13 +306,13 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 
 					// C: Loop over each CELL
 					Object.entries(rowObj).forEach(([_cIdx, cellObj]) => {
-						let cell: ITableCell = cellObj
+						let cell: TableCell = cellObj
 
-						// 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
-						if (cell.hmerge) return
+						// 1: "_hmerge" cells are just place-holders in the table grid - skip those and go to next cell
+						if (cell._hmerge) return
 
 						// 2: OPTIONS: Build/set cell options
-						let cellOpts = cell.options || ({} as ITableCell['options'])
+						let cellOpts = cell.options || ({} as TableCell['options'])
 						cell.options = cellOpts
 
 						// B: Inherit some options from table when cell options dont exist
@@ -336,10 +336,10 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						let cellColspan = cellOpts.colspan ? ` gridSpan="${cellOpts.colspan}"` : ''
 						let cellRowspan = cellOpts.rowspan ? ` rowSpan="${cellOpts.rowspan}"` : ''
 						let fillColor =
-							cell.optImp && cell.optImp.fill && cell.optImp.fill.color
-								? cell.optImp.fill.color
-								: cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
-								? cell.optImp.fill
+							cell._optImp && cell._optImp.fill && cell._optImp.fill.color
+								? cell._optImp.fill.color
+								: cell._optImp && cell._optImp.fill && typeof cell._optImp.fill === 'string'
+								? cell._optImp.fill
 								: ''
 						fillColor =
 							fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : ''
@@ -353,7 +353,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 						// FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 3: ROWSPAN: Add dummy cells for any active rowspan
-						if (cell.vmerge) {
+						if (cell._vmerge) {
 							strXml += '<a:tc vMerge="1"><a:tcPr/></a:tc>'
 							return
 						}
@@ -459,7 +459,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				// </Hyperlink>
 				strSlideXml += '</p:cNvPr>'
 				strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>')
-				strSlideXml += `<p:nvPr>${slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
+				strSlideXml += `<p:nvPr>${slideItemObj._type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += '</p:nvSpPr><p:spPr>'
 				strSlideXml += `<a:xfrm${locationAttr}>`
 				strSlideXml += `<a:off x="${x}" y="${y}"/>`
@@ -1027,13 +1027,13 @@ function genXmlTextRun(textObj: IText): string {
 
 /**
  * Builds `<a:bodyPr></a:bodyPr>` tag for "genXmlTextBody()"
- * @param {ISlideObject | ITableCell} slideObject - various options
+ * @param {ISlideObject | TableCell} slideObject - various options
  * @return {string} XML string
  */
-function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
+function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 	let bodyProperties = '<a:bodyPr'
 
-	if (slideObject && slideObject.type === SLIDE_OBJECT_TYPES.text && slideObject.options.bodyProp) {
+	if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options.bodyProp) {
 		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
 		// A: Enable or disable textwrapping none or square
@@ -1086,12 +1086,12 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
 	}
 
 	// LAST: Return Close bodyProp
-	return slideObject.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties
+	return slideObject._type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties
 }
 
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
- * @param {ISlideObject|ITableCell} slideObj - slideObj or tableCell
+ * @param {ISlideObject|TableCell} slideObj - slideObj or tableCell
  * @note PPT text lines [lines followed by line-breaks] are created using <p>-aragraph's
  * @note Bullets are a paragragh-level formatting device
  * @template
@@ -1111,16 +1111,16 @@ function genXmlBodyProperties(slideObject: ISlideObject | ITableCell): string {
  *	</p:txBody>
  * @returns XML containing the param object's text and formatting
  */
-export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
+export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	let opts: IObjectOptions = slideObj.options || {}
 	let tmpTextObjects: IText[] = []
 	let arrTextObjects: IText[] = []
 
 	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
-	if (opts && slideObj.type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null)) return ''
+	if (opts && slideObj._type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null)) return ''
 
 	// STEP 1: Start textBody
-	let strSlideXml = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
+	let strSlideXml = slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>'
 
 	// STEP 2: Add bodyProperties
 	{
@@ -1131,7 +1131,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		// NOTE: shape type 'LINE' has different text align needs (a lstStyle.lvl1pPr between bodyPr and p)
 		// FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
 		if (opts.h === 0 && opts.line && opts.align) strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>'
-		else if (slideObj.type === 'placeholder') strSlideXml += `<a:lstStyle>${genXmlParagraphProperties(slideObj, true)}</a:lstStyle>`
+		else if (slideObj._type === 'placeholder') strSlideXml += `<a:lstStyle>${genXmlParagraphProperties(slideObj, true)}</a:lstStyle>`
 		else strSlideXml += '<a:lstStyle/>'
 	}
 
@@ -1258,7 +1258,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 		/* C: Append 'endParaRPr' (when needed) and close current open paragraph
 		 * NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
 		 */
-		if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
+		if (slideObj._type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 			if (opts.fontFace) {
 				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0">'
 				strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
@@ -1280,7 +1280,7 @@ export function genXmlTextBody(slideObj: ISlideObject | ITableCell): string {
 	})
 
 	// STEP 7: Close the textBody
-	strSlideXml += slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
+	strSlideXml += slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>'
 
 	// LAST: Return XML
 	return strSlideXml
@@ -1533,7 +1533,7 @@ export function getNotesFromSlide(slide: ISlideLib): string {
 	let notesText = ''
 
 	slide.data.forEach(data => {
-		if (data.type === 'notes') notesText += data.text
+		if (data._type === 'notes') notesText += data.text
 	})
 
 	return notesText.replace(/\r*\n/g, CRLF)

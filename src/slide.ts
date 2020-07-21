@@ -9,7 +9,7 @@ import {
 	IChartMulti,
 	IChartOpts,
 	IChartOptsLib,
-	IImageOpts,
+	ImageOpts,
 	ILayout,
 	ISlideLayout,
 	ISlideNumber,
@@ -17,7 +17,7 @@ import {
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	ITableOptions,
+	TableOptions,
 	IText,
 	ITextOpts,
 	MediaOpts,
@@ -156,10 +156,10 @@ export default class Slide {
 
 	/**
 	 * Add image to Slide
-	 * @param {IImageOpts} options - image options
+	 * @param {ImageOpts} options - image options
 	 * @return {Slide} this Slide
 	 */
-	addImage(options: IImageOpts): Slide {
+	addImage(options: ImageOpts): Slide {
 		genObj.addImageDefinition(this, options)
 		return this
 	}
@@ -204,10 +204,10 @@ export default class Slide {
 	/**
 	 * Add table to Slide
 	 * @param {TableRow[]} tableRows - table rows
-	 * @param {ITableOptions} options - table options
+	 * @param {TableOptions} options - table options
 	 * @return {Slide} this Slide
 	 */
-	addTable(tableRows: TableRow[], options?: ITableOptions): Slide {
+	addTable(tableRows: TableRow[], options?: TableOptions): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
