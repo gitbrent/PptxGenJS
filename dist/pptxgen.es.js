@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-07-16T04:50:27.462Z */
+/* PptxGenJS 3.3.0-beta @ 2020-07-21T04:16:36.428Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -818,7 +818,7 @@ function getNewRelId(target) {
  */
 /**
  * Break text paragraphs into lines based upon table column width (e.g.: Magic Happens Here(tm))
- * @param {ITableCell} cell - table cell
+ * @param {TableCell} cell - table cell
  * @param {number} colWidth - table column width
  * @return {string[]} XML
  */
@@ -855,7 +855,7 @@ function parseTextToLines(cell, colWidth) {
 }
 /**
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
- * @param {ITableCell[][]} tableRows - HTMLElementID of the table
+ * @param {TableCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
  * @param {ILayout} presLayout - Presentation layout
  * @param {ISlideLayout} masterSlide - master slide (if any)
@@ -906,7 +906,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         var firstRow = tableRows[0] || [];
         firstRow.forEach(function (cell) {
             if (!cell)
-                cell = { type: SLIDE_OBJECT_TYPES.tablecell };
+                cell = { _type: SLIDE_OBJECT_TYPES.tablecell };
             var cellOpts = cell.options || null;
             numCols += Number(cellOpts && cellOpts.colspan ? cellOpts.colspan : 1);
         });
@@ -1007,18 +1007,18 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         // E: **BUILD DATA SET** | Iterate over cells: split text into lines[], set `lineHeight`
         row.forEach(function (cell, iCell) {
             var newCell = {
-                type: SLIDE_OBJECT_TYPES.tablecell,
-                text: '',
-                options: cell.options,
-                lines: [],
-                lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
+                _type: SLIDE_OBJECT_TYPES.tablecell,
+                _lines: [],
+                _lineHeight: inch2Emu(((cell.options && cell.options.fontSize ? cell.options.fontSize : tabOpts.fontSize ? tabOpts.fontSize : DEF_FONT_SIZE) *
                     (LINEH_MODIFIER + (tabOpts.autoPageLineWeight ? tabOpts.autoPageLineWeight : 0))) /
                     100),
+                text: '',
+                options: cell.options,
             };
             //if (tabOpts.verbose) console.log(`- CELL [${iCell}]: newCell.lineHeight ..... = ${(newCell.lineHeight / EMU).toFixed(2)}`)
             // 1: Exempt cells with `rowspan` from increasing lineHeight (or we could create a new slide when unecessary!)
             if (newCell.options.rowspan)
-                newCell.lineHeight = 0;
+                newCell._lineHeight = 0;
             // 2: The parseTextToLines method uses `autoPageCharWeight`, so inherit from table options
             newCell.options.autoPageCharWeight = tabOpts.autoPageCharWeight ? tabOpts.autoPageCharWeight : null;
             // 3: **MAIN** Parse cell contents into lines based upon col width, font, etc
@@ -1026,7 +1026,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             if (cell.options.colspan && Array.isArray(tabOpts.colW)) {
                 totalColW = tabOpts.colW.filter(function (_cell, idx) { return idx >= iCell && idx < idx + cell.options.colspan; }).reduce(function (prev, curr) { return prev + curr; });
             }
-            newCell.lines = parseTextToLines(cell, totalColW / ONEPT);
+            newCell._lines = parseTextToLines(cell, totalColW / ONEPT);
             // 4: Add to array
             linesRow.push(newCell);
         });
@@ -1064,7 +1064,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                     linesRow.forEach(function (cell) {
                         newRowSlide_1.push({
                             type: SLIDE_OBJECT_TYPES.tablecell,
-                            text: cell.lines.join(''),
+                            text: cell._lines.join(''),
                             options: cell.options,
                         });
                     });
@@ -1095,15 +1095,16 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             }
             // B: Add a line of text to 1-N cells that still have `lines`
             linesRow.forEach(function (cell, idxR) {
-                if (cell.lines.length > 0) {
+                if (cell._lines.length > 0) {
                     // 1
                     var currSlide_2 = tableRowSlides[tableRowSlides.length - 1];
-                    var currText = currSlide_2.rows[currSlide_2.rows.length - 1][idxR].text.toString(); // TableCell.text type c/b string|IText (for conversion in method that calls this one), but we can guarantee it always stirn gb/c we craft it, hence this TS workaround
-                    currSlide_2.rows[currSlide_2.rows.length - 1][idxR].text +=
-                        (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell.lines.shift();
+                    // NOTE: TableCell.text type c/b string|IText (for conversion in method that calls this one), but we can guarantee it always string b/c we craft it, hence this TS workaround
+                    var rowCell = currSlide_2.rows[currSlide_2.rows.length - 1][idxR];
+                    var currText = rowCell.text.toString();
+                    rowCell.text += (currText.length > 0 && !RegExp(/\n$/g).test(currText) ? CRLF : '').replace(/[\r\n]+$/g, CRLF) + cell._lines.shift();
                     // 2
-                    if (cell.lineHeight > maxLineHeight)
-                        maxLineHeight = cell.lineHeight;
+                    if (cell._lineHeight > maxLineHeight)
+                        maxLineHeight = cell._lineHeight;
                 }
             });
             // C: Increase table height by one line height as 1-N cells below are
@@ -1111,7 +1112,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
             if (tabOpts.verbose)
                 console.log("- SLIDE [" + tableRowSlides.length + "]: ROW [" + iRow + "]: one line added ... emuTabCurrH = " + (emuTabCurrH / EMU).toFixed(2));
         };
-        while (linesRow.filter(function (cell) { return cell.lines.length > 0; }).length > 0) {
+        while (linesRow.filter(function (cell) { return cell._lines.length > 0; }).length > 0) {
             var state_1 = _loop_2();
             if (state_1 === "break")
                 break;
@@ -1293,7 +1294,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
                 }
                 // LAST: Add cell
                 arrObjTabCells.push({
-                    type: SLIDE_OBJECT_TYPES.tablecell,
+                    _type: SLIDE_OBJECT_TYPES.tablecell,
                     text: cell.innerText,
                     options: cellOpts,
                 });
@@ -1433,7 +1434,7 @@ function slideObjectToXml(slide) {
         if (slideItemObj.options.rotate)
             locationAttr += ' rot="' + convertRotationDegrees(slideItemObj.options.rotate) + '"';
         // B: Add OBJECT to the current Slide
-        switch (slideItemObj.type) {
+        switch (slideItemObj._type) {
             case SLIDE_OBJECT_TYPES.table:
                 var objTableGrid_1 = {};
                 var arrTabRows_1 = slideItemObj.arrTabRows;
@@ -1538,14 +1539,14 @@ function slideObjectToXml(slide) {
                                 // B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
                                 if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
                                     for (var idy = 1; idy < Number(cell.options.colspan); idy++) {
-                                        objTableGrid_1[rIdx][currColIdx + idy] = { hmerge: true, text: 'hmerge' };
+                                        objTableGrid_1[rIdx][currColIdx + idy] = { _hmerge: true, text: 'hmerge' };
                                     }
                                 }
                                 else if (cell && cell.options && cell.options.rowspan && !isNaN(Number(cell.options.rowspan))) {
                                     for (var idz = 1; idz < Number(cell.options.rowspan); idz++) {
                                         if (!objTableGrid_1[rIdx + idz])
                                             objTableGrid_1[rIdx + idz] = {};
-                                        objTableGrid_1[rIdx + idz][currColIdx] = { vmerge: true, text: 'vmerge' };
+                                        objTableGrid_1[rIdx + idz][currColIdx] = { _vmerge: true, text: 'vmerge' };
                                     }
                                 }
                                 // C: Break out of colCnt loop now that slot has been filled
@@ -1581,8 +1582,8 @@ function slideObjectToXml(slide) {
                     Object.entries(rowObj).forEach(function (_a) {
                         var _cIdx = _a[0], cellObj = _a[1];
                         var cell = cellObj;
-                        // 1: "hmerge" cells are just place-holders in the table grid - skip those and go to next cell
-                        if (cell.hmerge)
+                        // 1: "_hmerge" cells are just place-holders in the table grid - skip those and go to next cell
+                        if (cell._hmerge)
                             return;
                         // 2: OPTIONS: Build/set cell options
                         var cellOpts = cell.options || {};
@@ -1605,10 +1606,10 @@ function slideObjectToXml(slide) {
                             : '';
                         var cellColspan = cellOpts.colspan ? " gridSpan=\"" + cellOpts.colspan + "\"" : '';
                         var cellRowspan = cellOpts.rowspan ? " rowSpan=\"" + cellOpts.rowspan + "\"" : '';
-                        var fillColor = cell.optImp && cell.optImp.fill && cell.optImp.fill.color
-                            ? cell.optImp.fill.color
-                            : cell.optImp && cell.optImp.fill && typeof cell.optImp.fill === 'string'
-                                ? cell.optImp.fill
+                        var fillColor = cell._optImp && cell._optImp.fill && cell._optImp.fill.color
+                            ? cell._optImp.fill.color
+                            : cell._optImp && cell._optImp.fill && typeof cell._optImp.fill === 'string'
+                                ? cell._optImp.fill
                                 : '';
                         fillColor =
                             fillColor || (cellOpts.fill && cellOpts.fill.color) ? cellOpts.fill.color : cellOpts.fill && typeof cellOpts.fill === 'string' ? cellOpts.fill : '';
@@ -1619,7 +1620,7 @@ function slideObjectToXml(slide) {
                         var cellMarginXml = " marL=\"" + valToPts(cellMargin[3]) + "\" marR=\"" + valToPts(cellMargin[1]) + "\" marT=\"" + valToPts(cellMargin[0]) + "\" marB=\"" + valToPts(cellMargin[2]) + "\"";
                         // FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 3: ROWSPAN: Add dummy cells for any active rowspan
-                        if (cell.vmerge) {
+                        if (cell._vmerge) {
                             strXml_1 += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
                             return;
                         }
@@ -1712,7 +1713,7 @@ function slideObjectToXml(slide) {
                 // </Hyperlink>
                 strSlideXml += '</p:cNvPr>';
                 strSlideXml += '<p:cNvSpPr' + (slideItemObj.options && slideItemObj.options.isTextBox ? ' txBox="1"/>' : '/>');
-                strSlideXml += "<p:nvPr>" + (slideItemObj.type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)) + "</p:nvPr>";
+                strSlideXml += "<p:nvPr>" + (slideItemObj._type === 'placeholder' ? genXmlPlaceholder(slideItemObj) : genXmlPlaceholder(placeholderObj)) + "</p:nvPr>";
                 strSlideXml += '</p:nvSpPr><p:spPr>';
                 strSlideXml += "<a:xfrm" + locationAttr + ">";
                 strSlideXml += "<a:off x=\"" + x + "\" y=\"" + y + "\"/>";
@@ -2236,12 +2237,12 @@ function genXmlTextRun(textObj) {
 }
 /**
  * Builds `<a:bodyPr></a:bodyPr>` tag for "genXmlTextBody()"
- * @param {ISlideObject | ITableCell} slideObject - various options
+ * @param {ISlideObject | TableCell} slideObject - various options
  * @return {string} XML string
  */
 function genXmlBodyProperties(slideObject) {
     var bodyProperties = '<a:bodyPr';
-    if (slideObject && slideObject.type === SLIDE_OBJECT_TYPES.text && slideObject.options.bodyProp) {
+    if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options.bodyProp) {
         // PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
         // A: Enable or disable textwrapping none or square
         bodyProperties += slideObject.options.bodyProp.wrap ? ' wrap="' + slideObject.options.bodyProp.wrap + '"' : ' wrap="square"';
@@ -2297,11 +2298,11 @@ function genXmlBodyProperties(slideObject) {
         bodyProperties += '</a:bodyPr>';
     }
     // LAST: Return Close bodyProp
-    return slideObject.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties;
+    return slideObject._type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties;
 }
 /**
  * Generate the XML for text and its options (bold, bullet, etc) including text runs (word-level formatting)
- * @param {ISlideObject|ITableCell} slideObj - slideObj or tableCell
+ * @param {ISlideObject|TableCell} slideObj - slideObj or tableCell
  * @note PPT text lines [lines followed by line-breaks] are created using <p>-aragraph's
  * @note Bullets are a paragragh-level formatting device
  * @template
@@ -2326,10 +2327,10 @@ function genXmlTextBody(slideObj) {
     var tmpTextObjects = [];
     var arrTextObjects = [];
     // FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
-    if (opts && slideObj.type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null))
+    if (opts && slideObj._type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null))
         return '';
     // STEP 1: Start textBody
-    var strSlideXml = slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>';
+    var strSlideXml = slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '<a:txBody>' : '<p:txBody>';
     // STEP 2: Add bodyProperties
     {
         // A: 'bodyPr'
@@ -2339,7 +2340,7 @@ function genXmlTextBody(slideObj) {
         // FIXME: LINE horiz-align doesnt work (text is always to the left inside line) (FYI: the PPT code diff is substantial!)
         if (opts.h === 0 && opts.line && opts.align)
             strSlideXml += '<a:lstStyle><a:lvl1pPr algn="l"/></a:lstStyle>';
-        else if (slideObj.type === 'placeholder')
+        else if (slideObj._type === 'placeholder')
             strSlideXml += "<a:lstStyle>" + genXmlParagraphProperties(slideObj, true) + "</a:lstStyle>";
         else
             strSlideXml += '<a:lstStyle/>';
@@ -2460,7 +2461,7 @@ function genXmlTextBody(slideObj) {
         /* C: Append 'endParaRPr' (when needed) and close current open paragraph
          * NOTE: (ISSUE#20, ISSUE#193): Add 'endParaRPr' with font/size props or PPT default (Arial/18pt en-us) is used making row "too tall"/not honoring options
          */
-        if (slideObj.type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
+        if (slideObj._type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
             if (opts.fontFace) {
                 strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize) + "00\"" : '') + ' dirty="0">';
                 strSlideXml += "<a:latin typeface=\"" + opts.fontFace + "\" charset=\"0\"/>";
@@ -2483,7 +2484,7 @@ function genXmlTextBody(slideObj) {
         strSlideXml += '</a:p>';
     });
     // STEP 7: Close the textBody
-    strSlideXml += slideObj.type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>';
+    strSlideXml += slideObj._type === SLIDE_OBJECT_TYPES.tablecell ? '</a:txBody>' : '</p:txBody>';
     // LAST: Return XML
     return strSlideXml;
 }
@@ -2661,7 +2662,7 @@ function makeXmlSlide(slide) {
 function getNotesFromSlide(slide) {
     var notesText = '';
     slide.data.forEach(function (data) {
-        if (data.type === 'notes')
+        if (data._type === 'notes')
             notesText += data.text;
     });
     return notesText.replace(/\r*\n/g, CRLF);
@@ -3062,7 +3063,7 @@ function addChartDefinition(target, type, data, opt) {
     }
     var chartId = ++_chartCounter;
     var resultObject = {
-        type: null,
+        _type: null,
         text: null,
         options: null,
         chartRid: null,
@@ -3214,7 +3215,7 @@ function addChartDefinition(target, type, data, opt) {
     options.valAxisMajorUnit = typeof options.valAxisMajorUnit === 'number' ? options.valAxisMajorUnit : null;
     options.valAxisCrossesAt = options.valAxisCrossesAt || 'autoZero';
     // STEP 4: Set props
-    resultObject.type = 'chart';
+    resultObject._type = 'chart';
     resultObject.options = options;
     resultObject.chartRid = getNewRelId(target);
     // STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -3233,14 +3234,14 @@ function addChartDefinition(target, type, data, opt) {
 /**
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
- * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
+ * @param {ImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
  * @param {ISlideLib} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
 function addImageDefinition(target, opt) {
     var newObject = {
-        type: null,
+        _type: null,
         text: null,
         options: null,
         image: null,
@@ -3290,7 +3291,7 @@ function addImageDefinition(target, opt) {
         strImgExtn = 'svg';
     }
     // STEP 2: Set type/path
-    newObject.type = 'image';
+    newObject._type = SLIDE_OBJECT_TYPES.image;
     newObject.image = strImagePath || 'preencoded.png';
     // STEP 3: Set image properties & options
     // FIXME: Measure actual image when no intWidth/intHeight params passed
@@ -3319,7 +3320,7 @@ function addImageDefinition(target, opt) {
             rId: imageRelId,
             Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
             isSvgPng: true,
-            svgSize: { w: newObject.options.w, h: newObject.options.h },
+            svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target.presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target.presLayout) },
         });
         newObject.imageRid = imageRelId;
         target.relsMedia.push({
@@ -3379,7 +3380,7 @@ function addMediaDefinition(target, opt) {
     var strType = opt.type || 'audio';
     var strExtn = 'mp3';
     var slideData = {
-        type: SLIDE_OBJECT_TYPES.media,
+        _type: SLIDE_OBJECT_TYPES.media,
     };
     // STEP 1: REALITY-CHECK
     if (!strPath && !strData && strType !== 'online') {
@@ -3473,7 +3474,7 @@ function addMediaDefinition(target, opt) {
  */
 function addNotesDefinition(target, notes) {
     target.data.push({
-        type: SLIDE_OBJECT_TYPES.notes,
+        _type: SLIDE_OBJECT_TYPES.notes,
         text: notes,
     });
 }
@@ -3487,7 +3488,7 @@ function addShapeDefinition(target, shapeName, opts) {
     var options = typeof opts === 'object' ? opts : {};
     options.line = options.line || { type: 'none' };
     var newObject = {
-        type: SLIDE_OBJECT_TYPES.text,
+        _type: SLIDE_OBJECT_TYPES.text,
         shape: shapeName || SHAPE_TYPE.RECTANGLE,
         options: options,
         text: null,
@@ -3535,7 +3536,7 @@ function addShapeDefinition(target, shapeName, opts) {
  * Adds a table object to a slide definition.
  * @param {ISlideLib} target - slide object that the table should be added to
  * @param {TableRow[]} tableRows - table data
- * @param {ITableOptions} options - table options
+ * @param {TableOptions} options - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
@@ -3562,7 +3563,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         }
         */
     }
-    // STEP 2: Transform `tableRows` into well-formatted ITableCell's
+    // STEP 2: Transform `tableRows` into well-formatted TableCell's
     // tableRows can be object or plain text array: `[{text:'cell 1'}, {text:'cell 2', options:{color:'ff0000'}}]` | `["cell 1", "cell 2"]`
     var arrRows = [];
     tableRows.forEach(function (row) {
@@ -3571,7 +3572,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
             row.forEach(function (cell) {
                 // A:
                 var newCell = {
-                    type: SLIDE_OBJECT_TYPES.tablecell,
+                    _type: SLIDE_OBJECT_TYPES.tablecell,
                     text: '',
                     options: typeof cell === 'object' && cell.options ? cell.options : {},
                 };
@@ -3730,7 +3731,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
             */
             if (typeof cell === 'number' || typeof cell === 'string') {
                 // Grab table formatting `opts` to use here so text style/format inherits as it should
-                row[idy] = { type: SLIDE_OBJECT_TYPES.tablecell, text: row[idy].toString(), options: opt };
+                row[idy] = { _type: SLIDE_OBJECT_TYPES.tablecell, text: row[idy].toString(), options: opt };
             }
             else if (typeof cell === 'object') {
                 // ARG0: `text`
@@ -3741,7 +3742,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
                 // ARG1: `options`: ensure options exists
                 row[idy].options = cell.options || {};
                 // Set type to tabelcell
-                row[idy].type = SLIDE_OBJECT_TYPES.tablecell;
+                row[idy]._type = SLIDE_OBJECT_TYPES.tablecell;
             }
             // B: Check for fine-grained formatting, disable auto-page when found
             // Since genXmlTextBody already checks for text array ( text:[{},..{}] ) we're done!
@@ -3757,7 +3758,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         createHyperlinkRels(target, arrRows);
         // Add data (NOTE: Use `extend` to avoid mutation)
         target.data.push({
-            type: SLIDE_OBJECT_TYPES.table,
+            _type: SLIDE_OBJECT_TYPES.table,
             arrTabRows: arrRows,
             options: Object.assign({}, opt),
         });
@@ -3799,10 +3800,10 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
     if (!opt.bodyProp)
         opt.bodyProp = {};
     var newObject = {
-        text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
-        type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
-        options: opt,
+        _type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
         shape: opt.shape || SHAPE_TYPE.RECTANGLE,
+        text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
+        options: opt,
     };
     // TODO: copy "newLineOpts" from addShape above! 20200609
     // STEP 1: Set some options
@@ -3889,7 +3890,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
  */
 function addPlaceholdersToSlideLayouts(slide) {
     (slide.slideLayout.data || []).forEach(function (slideLayoutObj) {
-        if (slideLayoutObj.type === SLIDE_OBJECT_TYPES.placeholder) {
+        if (slideLayoutObj._type === SLIDE_OBJECT_TYPES.placeholder) {
             // A: Search for this placeholder on Slide before we add
             // NOTE: Check to ensure a placeholder does not already exist on the Slide
             // They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
@@ -4060,7 +4061,7 @@ var Slide = /** @class */ (function () {
     };
     /**
      * Add image to Slide
-     * @param {IImageOpts} options - image options
+     * @param {ImageOpts} options - image options
      * @return {Slide} this Slide
      */
     Slide.prototype.addImage = function (options) {
@@ -4104,7 +4105,7 @@ var Slide = /** @class */ (function () {
     /**
      * Add table to Slide
      * @param {TableRow[]} tableRows - table rows
-     * @param {ITableOptions} options - table options
+     * @param {TableOptions} options - table options
      * @return {Slide} this Slide
      */
     Slide.prototype.addTable = function (tableRows, options) {
@@ -6033,7 +6034,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200715:2347';
+var VERSION = '3.3.0-beta-20200720:2307';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6663,7 +6664,7 @@ var PptxGenJS = /** @class */ (function () {
     /**
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
      * @param {string} eleId - table HTML element ID
-     * @param {ITableToSlidesOpts} options - generation options
+     * @param {TableToSlidesOpts} options - generation options
      */
     PptxGenJS.prototype.tableToSlides = function (eleId, options) {
         if (options === void 0) { options = {}; }
