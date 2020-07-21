@@ -870,9 +870,28 @@ export interface ITextOpts extends PositionProps, DataOrPathProps, TextProps {
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
-export interface IText {
-	text: string
-	options?: ITextOpts
+export type PositionOptions = {
+	x?: Coord
+	y?: Coord
+	h?: Coord
+	w?: Coord
+}
+export type OptsDataOrPath = {
+	data?: string // one option is required
+	path?: string // one option is required
+}
+export type OptsChartData = {
+	index?: number
+	labels?: string[]
+	valueLabels?: string[]
+	name?: string
+	sizes?: number[]
+	values?: number[]
+}
+export type OptsChartGridLine = {
+	color?: string
+	size?: number
+	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
 
 // charts =========================================================================================
@@ -1091,6 +1110,7 @@ export interface IChartPropsDataLabel {
 	 */
 	dataLabelFormatCode?: string
 	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
+	dataLabelFormatBar?: 'custom'
 	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
 }
 export interface IChartPropsDataTable {

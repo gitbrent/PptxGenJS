@@ -683,6 +683,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				]
 			*/
 			let colorIndex = -1 // Maintain the color index by region
+			let colorIndexPerValue = -1
 			data.forEach(obj => {
 				colorIndex++
 				let idx = obj.index
@@ -796,6 +797,11 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
 						let arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
+						let colorIndex = index % arrColors.length
+
+						if (opts.valueBarColors && data.length > 1 && opts.chartColors && opts.chartColors.length > obj.values.length) {
+							colorIndex = ++colorIndexPerValue
+						}
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
@@ -806,12 +812,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 							strXml += '<a:ln><a:noFill/></a:ln>'
 						} else if (chartType === CHART_TYPE.BAR) {
 							strXml += '<a:solidFill>'
-							strXml += '  <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
+							strXml += '  <a:srgbClr val="' + arrColors[colorIndex] + '"/>'
 							strXml += '</a:solidFill>'
 						} else {
 							strXml += '<a:ln>'
 							strXml += '  <a:solidFill>'
-							strXml += '   <a:srgbClr val="' + arrColors[index % arrColors.length] + '"/>'
+							strXml += '   <a:srgbClr val="' + arrColors[colorIndex] + '"/>'
 							strXml += '  </a:solidFill>'
 							strXml += '</a:ln>'
 						}
@@ -868,6 +874,55 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 				// Option: `smooth`
 				if (chartType === CHART_TYPE.LINE) strXml += '<c:smooth val="' + (opts.lineSmooth ? '1' : '0') + '"/>'
+
+				{
+					if (obj.valueLabels && obj.valueLabels.length && opts.dataLabelFormatBar == 'custom') {
+
+						strXml +='<c:dLbls>';
+							obj.values.forEach(function(value,index) {
+								if (opts.dataLabelFormatBar == 'custom') {
+									strXml +='<c:dLbl>';
+									strXml += ` <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
+									strXml +='    <c:idx val="' + index + '"/>';
+									strXml +='    <c:tx>';
+									strXml +='      <c:rich>';
+									strXml +='				<a:bodyPr>';
+									strXml +='					<a:spAutoFit/>';
+									strXml +='				</a:bodyPr>';
+									strXml +='      	<a:lstStyle/>';
+									strXml +='      	<a:p>';
+									strXml += '      <a:pPr>'
+									strXml +=
+										'        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">'
+									strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
+									strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
+									strXml += '        </a:defRPr>'
+									strXml += '      </a:pPr>'
+									strXml +='      		<a:fld id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}" type="YVALUE">';
+									strXml +='      			<a:rPr lang="'+ (opts.lang || 'en-US') +'" baseline="0"/>';
+									strXml +='          	<a:t>[' + encodeXmlEntities(obj.name) + ']</a:t>';
+									strXml +='        	</a:fld>';
+									strXml +='        	<a:r>';
+									strXml +='        		<a:rPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
+									strXml +='          	<a:t>'+ ' ' + encodeXmlEntities(obj.valueLabels[index]) +'</a:t>';
+									strXml +='        	</a:r>';
+									strXml +='        	<a:endParaRPr lang="'+ (opts.lang || 'en-US') +'" dirty="0"/>';
+									strXml +='      	</a:p>';
+									strXml +='      </c:rich>';
+									strXml +='    </c:tx>';
+									if (opts.dataLabelPosition) strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>'
+									strXml +='    <c:showLegendKey val="0"/>';
+									strXml +='    <c:showCatName val="0"/>';
+									strXml +='    <c:showSerName val="0"/>';
+									strXml +='    <c:showPercent val="0"/>';
+									strXml +='    <c:showBubbleSize val="0"/>';
+									strXml +=`    <c:showLeaderLines val="${opts.showLeaderLines ? '1' : '0'}"/>`
+									strXml +='</c:dLbl>';
+								}
+						});
+						strXml +='</c:dLbls>';
+					}
+				}
 
 				// 4: Close "SERIES"
 				strXml += '</c:ser>'
