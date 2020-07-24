@@ -26,10 +26,10 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	IText,
-	ITextOpts,
+	AddTextProps,
 	ShadowProps,
 	TableCell,
-	TableCellOpts,
+	TableCellProps,
 } from './core-interfaces'
 import {
 	convertRotationDegrees,
@@ -160,7 +160,7 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 				let objTabOpts = slideItemObj.options
 				let intColCnt = 0,
 					intColW = 0
-				let cellOpts: TableCellOpts
+				let cellOpts: TableCellProps
 
 				// Calc number of columns
 				// NOTE: Cells may have a colspan, so merely taking the length of the [0] (or any other) row is not
@@ -933,11 +933,11 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 
 /**
  * Generate XML Text Run Properties (`a:rPr`)
- * @param {IObjectOptions|ITextOpts} opts - text options
+ * @param {IObjectOptions|AddTextProps} opts - text options
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
-function genXmlTextRunProperties(opts: IObjectOptions | ITextOpts, isDefault: boolean): string {
+function genXmlTextRunProperties(opts: IObjectOptions | AddTextProps, isDefault: boolean): string {
 	let runProps = ''
 	let runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
 

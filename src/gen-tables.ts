@@ -4,7 +4,7 @@
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { ILayout, ISlideLayout, TableCell, TableToSlidesOpts, TableRow, TableRowSlide, TableCellOpts } from './core-interfaces'
+import { ILayout, ISlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps } from './core-interfaces'
 import { inch2Emu, rgbToHex, valToPts } from './gen-utils'
 
 /**
@@ -55,7 +55,7 @@ function parseTextToLines(cell: TableCell, colWidth: number): string[] {
  * @param {ISlideLayout} masterSlide - master slide (if any)
  * @return {TableRowSlide[]} array of table rows
  */
-export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: TableToSlidesOpts = {}, presLayout: ILayout, masterSlide?: ISlideLayout): TableRowSlide[] {
+export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: TableToSlidesProps = {}, presLayout: ILayout, masterSlide?: ISlideLayout): TableRowSlide[] {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN,
 		emuTabCurrH = 0,
 		emuSlideTabW = EMU * 1,
@@ -346,7 +346,7 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
  * @param {ITableToSlidesOpts} options - array of options (e.g.: tabsize)
  * @param {ISlideLayout} masterSlide - masterSlide
  */
-export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: TableToSlidesOpts = {}, masterSlide?: ISlideLayout) {
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: TableToSlidesProps = {}, masterSlide?: ISlideLayout) {
 	let opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout.width
@@ -436,7 +436,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 				}
 
 				// B: Create option object
-				let cellOpts: TableCellOpts = {
+				let cellOpts: TableCellProps = {
 					align: null,
 					bold:
 						window.getComputedStyle(cell).getPropertyValue('font-weight') === 'bold' ||

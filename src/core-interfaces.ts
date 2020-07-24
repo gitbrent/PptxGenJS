@@ -238,7 +238,7 @@ export interface ShapeLineProps extends ShapeFillProps {
 	pt?: number
 }
 // used by: chart, slide, table, text
-export interface TextProps {
+export interface TextBaseProps {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -514,7 +514,7 @@ export interface ShapeProps extends PositionProps {
 
 // tables =========================================================================================
 
-export interface TableToSlidesOpts extends TableOptions {
+export interface TableToSlidesProps extends TableProps {
 	_arrObjTabHeadRows?: TableRow[]
 	//_masterSlide?: ISlideLayout
 
@@ -600,7 +600,7 @@ export interface TableToSlidesOpts extends TableOptions {
 	 */
 	newSlideStartY?: number
 }
-export interface TableCellOpts extends TextProps {
+export interface TableCellProps extends TextBaseProps {
 	/**
 	 * Auto-paging character weight
 	 * - adjusts how many characters are used before lines wrap
@@ -645,7 +645,7 @@ export interface TableCellOpts extends TextProps {
 	rowspan?: number
 }
 // TODO: WIP: rename to...? `AddTableOptions` ?
-export interface TableOptions extends PositionProps, TextProps {
+export interface TableProps extends PositionProps, TextBaseProps {
 	_arrObjTabHeadRows?: TableRow[]
 
 	/**
@@ -736,7 +736,7 @@ export interface TableCell {
 	_optImp?: any
 
 	text?: string | IText[]
-	options?: TableCellOpts
+	options?: TableCellProps
 }
 export interface TableRowSlide {
 	rows: TableRow[]
@@ -745,7 +745,7 @@ export interface TableRowSlide {
 export type TableRow = TableCell[]
 
 // text ===========================================================================================
-export interface GlowOptions {
+export interface TextGlowProps {
 	/**
 	 * Border color (hex format)
 	 * @example 'FF3399'
@@ -764,7 +764,7 @@ export interface GlowOptions {
 }
 
 // TODO: WIP: rename to...? `AddTextOptions` ?
-export interface ITextOpts extends PositionProps, DataOrPathProps, TextProps {
+export interface AddTextProps extends PositionProps, DataOrPathProps, TextBaseProps {
 	bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
 		autoFit?: boolean
@@ -808,13 +808,13 @@ export interface ITextOpts extends PositionProps, DataOrPathProps, TextProps {
 	 * @default false
 	 */
 	flipV?: boolean
-	glow?: GlowOptions
+	glow?: TextGlowProps
 	hyperlink?: HyperlinkProps
 	indentLevel?: number
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
-	lineIdx?: number // TODO: Internal field for `ITextOpts`
+	lineIdx?: number // TODO: Internal field for `AddTextProps`
 	lineSpacing?: number
 	margin?: Margin
 	outline?: { color: Color; size: number }
@@ -872,7 +872,7 @@ export interface ITextOpts extends PositionProps, DataOrPathProps, TextProps {
 }
 export interface IText {
 	text: string
-	options?: ITextOpts
+	options?: AddTextProps
 }
 
 // charts =========================================================================================
@@ -913,7 +913,7 @@ export interface OptsChartGridLine {
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
 
-export interface IChartTitleOpts extends TextProps {
+export interface IChartTitleOpts extends TextBaseProps {
 	color?: Color
 	rotate?: number
 	title: string
@@ -1171,7 +1171,7 @@ export interface ILayoutProps {
 	width: number
 	height: number
 }
-export interface ISlideNumber extends PositionProps, TextProps {
+export interface ISlideNumber extends PositionProps, TextBaseProps {
 	align?: HAlign
 	color?: string
 }
@@ -1186,7 +1186,7 @@ export interface ISlideMasterOptions {
 		| { image: {} }
 		| { line: {} }
 		| { rect: {} }
-		| { text: { options: ITextOpts; text?: string } }
+		| { text: { options: AddTextProps; text?: string } }
 		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 	)[]
 	slideNumber?: ISlideNumber
@@ -1236,7 +1236,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 // TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends ShapeProps, TableCellOpts, ITextOpts, ImageProps {
+export interface IObjectOptions extends ShapeProps, TableCellProps, AddTextProps, ImageProps {
 	x?: Coord
 	y?: Coord
 	cx?: Coord

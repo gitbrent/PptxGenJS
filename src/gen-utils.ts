@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, ILayout, GlowOptions, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { IChartOpts, ILayout, TextGlowProps, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -169,12 +169,12 @@ export function createColorElement(colorStr: string | SCHEME_COLORS, innerElemen
 
 /**
  * Creates `a:glow` element
- * @param {GlowOptions} options glow properties
- * @param {GlowOptions} defaults defaults for unspecified properties in `opts`
+ * @param {TextGlowProps} options glow properties
+ * @param {TextGlowProps} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
-export function createGlowElement(options: GlowOptions, defaults: GlowOptions): string {
+export function createGlowElement(options: TextGlowProps, defaults: TextGlowProps): string {
 	let strXml = '',
 		opts = getMix(defaults, options),
 		size = opts['size'] * ONEPT,

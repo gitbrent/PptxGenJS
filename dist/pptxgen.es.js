@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-07-24T03:43:13.422Z */
+/* PptxGenJS 3.3.0-beta @ 2020-07-24T04:15:38.298Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -754,8 +754,8 @@ function createColorElement(colorStr, innerElements) {
 }
 /**
  * Creates `a:glow` element
- * @param {GlowOptions} options glow properties
- * @param {GlowOptions} defaults defaults for unspecified properties in `opts`
+ * @param {TextGlowProps} options glow properties
+ * @param {TextGlowProps} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
@@ -2149,7 +2149,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
 }
 /**
  * Generate XML Text Run Properties (`a:rPr`)
- * @param {IObjectOptions|ITextOpts} opts - text options
+ * @param {IObjectOptions|AddTextProps} opts - text options
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
@@ -3536,7 +3536,7 @@ function addShapeDefinition(target, shapeName, opts) {
  * Adds a table object to a slide definition.
  * @param {ISlideLib} target - slide object that the table should be added to
  * @param {TableRow[]} tableRows - table data
- * @param {TableOptions} options - table options
+ * @param {TableProps} options - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
@@ -3790,7 +3790,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
  * Adds a text object to a slide definition.
  * @param {ISlideLib} target - slide object that the text should be added to
  * @param {string|IText[]} text text string or object
- * @param {ITextOpts} opts text options
+ * @param {AddTextProps} opts text options
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
@@ -4105,7 +4105,7 @@ var Slide = /** @class */ (function () {
     /**
      * Add table to Slide
      * @param {TableRow[]} tableRows - table rows
-     * @param {TableOptions} options - table options
+     * @param {TableProps} options - table options
      * @return {Slide} this Slide
      */
     Slide.prototype.addTable = function (tableRows, options) {
@@ -4116,7 +4116,7 @@ var Slide = /** @class */ (function () {
     /**
      * Add text to Slide
      * @param {string|IText[]} text - text string or complex object
-     * @param {ITextOpts} options - text options
+     * @param {AddTextProps} options - text options
      * @return {Slide} this Slide
      */
     Slide.prototype.addText = function (text, options) {
@@ -6034,7 +6034,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200723:2240';
+var VERSION = '3.3.0-beta-20200723:2310';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6664,7 +6664,7 @@ var PptxGenJS = /** @class */ (function () {
     /**
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
      * @param {string} eleId - table HTML element ID
-     * @param {TableToSlidesOpts} options - generation options
+     * @param {TableToSlidesProps} options - generation options
      */
     PptxGenJS.prototype.tableToSlides = function (eleId, options) {
         if (options === void 0) { options = {}; }

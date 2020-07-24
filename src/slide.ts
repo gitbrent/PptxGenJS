@@ -17,9 +17,9 @@ import {
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	TableOptions,
+	TableProps,
 	IText,
-	ITextOpts,
+	AddTextProps,
 	MediaProps,
 	ShapeProps,
 	TableRow,
@@ -204,10 +204,10 @@ export default class Slide {
 	/**
 	 * Add table to Slide
 	 * @param {TableRow[]} tableRows - table rows
-	 * @param {TableOptions} options - table options
+	 * @param {TableProps} options - table options
 	 * @return {Slide} this Slide
 	 */
-	addTable(tableRows: TableRow[], options?: TableOptions): Slide {
+	addTable(tableRows: TableRow[], options?: TableProps): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
@@ -216,10 +216,10 @@ export default class Slide {
 	/**
 	 * Add text to Slide
 	 * @param {string|IText[]} text - text string or complex object
-	 * @param {ITextOpts} options - text options
+	 * @param {AddTextProps} options - text options
 	 * @return {Slide} this Slide
 	 */
-	addText(text: string | IText[], options?: ITextOpts): Slide {
+	addText(text: string | IText[], options?: AddTextProps): Slide {
 		genObj.addTextDefinition(this, text, options, false)
 		return this
 	}

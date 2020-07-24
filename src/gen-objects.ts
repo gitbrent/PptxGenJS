@@ -32,14 +32,14 @@ import {
 	ISlideMasterOptions,
 	ISlideObject,
 	IText,
-	ITextOpts,
+	AddTextProps,
 	ImageProps,
 	MediaProps,
 	OptsChartGridLine,
 	ShapeLineProps,
 	ShapeProps,
 	TableCell,
-	TableOptions,
+	TableProps,
 	TableRow,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
@@ -628,7 +628,7 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
  * Adds a table object to a slide definition.
  * @param {ISlideLib} target - slide object that the table should be added to
  * @param {TableRow[]} tableRows - table data
- * @param {TableOptions} options - table options
+ * @param {TableProps} options - table options
  * @param {ISlideLayout} slideLayout - Slide layout
  * @param {ILayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
@@ -637,13 +637,13 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
 export function addTableDefinition(
 	target: ISlideLib,
 	tableRows: TableRow[],
-	options: TableOptions,
+	options: TableProps,
 	slideLayout: ISlideLayout,
 	presLayout: ILayout,
 	addSlide: Function,
 	getSlide: Function
 ) {
-	let opt: TableOptions = options && typeof options === 'object' ? options : {}
+	let opt: TableProps = options && typeof options === 'object' ? options : {}
 	let slides: ISlideLib[] = [target] // Create array of Slides as more may be added by auto-paging
 
 	// STEP 1: REALITY-CHECK
@@ -890,12 +890,12 @@ export function addTableDefinition(
  * Adds a text object to a slide definition.
  * @param {ISlideLib} target - slide object that the text should be added to
  * @param {string|IText[]} text text string or object
- * @param {ITextOpts} opts text options
+ * @param {AddTextProps} opts text options
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: ITextOpts, isPlaceholder: boolean) {
-	let opt: ITextOpts = opts || {}
+export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: AddTextProps, isPlaceholder: boolean) {
+	let opt: AddTextProps = opts || {}
 	opt.line = opt.line || ({} as ShapeLineProps)
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
