@@ -1226,7 +1226,12 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		// B: Start paragraph, loop over lines and add text runs
 		line.forEach((textObj, idx) => {
 			// A: Set line index
-			textObj.options.lineIdx = idx
+            textObj.options.lineIdx = idx
+            
+            // A.1: Add soft break if not the first run of the line.
+            if (idx > 0 && textObj.options.softBreakBefore) {
+                strSlideXml += `<a:br/>`
+            }
 
 			// B: Inherit pPr-type options from parent shape's `options`
 			textObj.options.align = textObj.options.align || opts.align

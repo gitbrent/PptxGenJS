@@ -255,6 +255,11 @@ export interface TextBaseProps {
 	 */
 	breakLine?: boolean
 	/**
+	 * Add a line-break
+	 * @default false
+	 */
+	softBreakBefore?: boolean
+	/**
 	 * Add standard or custom bullet
 	 * - use `true` for standard bullet
 	 * - pass object options for custom bullet
