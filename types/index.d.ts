@@ -1480,6 +1480,7 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartPropsChartPie {
 		dataNoEffects?: boolean
+		firstSliceAng?: number
 	}
 	export interface IChartPropsChartRadar {
 		radarStyle?: 'standard' | 'marker' | 'filled'
