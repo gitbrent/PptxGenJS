@@ -9,7 +9,7 @@ import {
 	IChartMulti,
 	IChartOpts,
 	IChartOptsLib,
-	ImageOpts,
+	ImageProps,
 	ILayout,
 	ISlideLayout,
 	ISlideNumber,
@@ -20,8 +20,8 @@ import {
 	TableOptions,
 	IText,
 	ITextOpts,
-	MediaOpts,
-	ShapeOptions,
+	MediaProps,
+	ShapeProps,
 	TableRow,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
@@ -156,20 +156,20 @@ export default class Slide {
 
 	/**
 	 * Add image to Slide
-	 * @param {ImageOpts} options - image options
+	 * @param {ImageProps} options - image options
 	 * @return {Slide} this Slide
 	 */
-	addImage(options: ImageOpts): Slide {
+	addImage(options: ImageProps): Slide {
 		genObj.addImageDefinition(this, options)
 		return this
 	}
 
 	/**
 	 * Add media (audio/video) to Slide
-	 * @param {MediaOpts} options - media options
+	 * @param {MediaProps} options - media options
 	 * @return {Slide} this Slide
 	 */
-	addMedia(options: MediaOpts): Slide {
+	addMedia(options: MediaProps): Slide {
 		genObj.addMediaDefinition(this, options)
 		return this
 	}
@@ -188,10 +188,10 @@ export default class Slide {
 	/**
 	 * Add shape to Slide
 	 * @param {SHAPE_NAME} shapeName - shape name
-	 * @param {ShapeOptions} options - shape options
+	 * @param {ShapeProps} options - shape options
 	 * @return {Slide} this Slide
 	 */
-	addShape(shapeName: SHAPE_NAME, options?: ShapeOptions): Slide {
+	addShape(shapeName: SHAPE_NAME, options?: ShapeProps): Slide {
 		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
 		// But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
 		// <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'

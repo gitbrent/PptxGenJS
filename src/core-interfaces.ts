@@ -374,7 +374,7 @@ export interface TextProps {
 // image / media ==================================================================================
 export type MediaType = 'audio' | 'online' | 'video'
 
-export interface ImageOpts extends PositionProps, DataOrPathProps {
+export interface ImageProps extends PositionProps, DataOrPathProps {
 	hyperlink?: HyperlinkProps
 	placeholder?: string // 'body' | 'title' | etc.
 	/**
@@ -413,7 +413,7 @@ export interface ImageOpts extends PositionProps, DataOrPathProps {
  * Add media (audio/video) to slide
  * @requires either `link` or `path`
  */
-export interface MediaOpts extends PositionProps, DataOrPathProps {
+export interface MediaProps extends PositionProps, DataOrPathProps {
 	/**
 	 * Media type
 	 * - Use 'online' to embed a YouTube video (only supported in recent versions of PowerPoint)
@@ -436,7 +436,7 @@ export interface MediaOpts extends PositionProps, DataOrPathProps {
 
 // shapes =========================================================================================
 
-export interface ShapeOptions extends PositionProps {
+export interface ShapeProps extends PositionProps {
 	/**
 	 * Horizontal alignment
 	 * @default 'left'
@@ -1226,7 +1226,7 @@ export interface ISlideRel {
 }
 export interface ISlideRelMedia {
 	type: string
-	opts?: MediaOpts
+	opts?: MediaProps
 	path?: string
 	extn?: string
 	data?: string | ArrayBuffer
@@ -1236,7 +1236,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 // TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends ShapeOptions, TableCellOpts, ITextOpts, ImageOpts {
+export interface IObjectOptions extends ShapeProps, TableCellOpts, ITextOpts, ImageProps {
 	x?: Coord
 	y?: Coord
 	cx?: Coord

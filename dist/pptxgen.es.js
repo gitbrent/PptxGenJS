@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-07-21T04:56:47.147Z */
+/* PptxGenJS 3.3.0-beta @ 2020-07-24T03:43:13.422Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -3234,7 +3234,7 @@ function addChartDefinition(target, type, data, opt) {
 /**
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
- * @param {ImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
+ * @param {ImageProps} `opt` - object containing `path`/`data`, `x`, `y`, etc.
  * @param {ISlideLib} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
@@ -3366,7 +3366,7 @@ function addImageDefinition(target, opt) {
 /**
  * Adds a media object to a slide definition.
  * @param {ISlideLib} `target` - slide object that the text will be added to
- * @param {MediaOpts} `opt` - media options
+ * @param {MediaProps} `opt` - media options
  */
 function addMediaDefinition(target, opt) {
     var intRels = target.relsMedia.length + 1;
@@ -3482,7 +3482,7 @@ function addNotesDefinition(target, notes) {
  * Adds a shape object to a slide definition.
  * @param {ISlideLib} target slide object that the shape should be added to
  * @param {SHAPE_NAME} shapeName shape name
- * @param {ShapeOptions} opts shape options
+ * @param {ShapeProps} opts shape options
  */
 function addShapeDefinition(target, shapeName, opts) {
     var options = typeof opts === 'object' ? opts : {};
@@ -4061,7 +4061,7 @@ var Slide = /** @class */ (function () {
     };
     /**
      * Add image to Slide
-     * @param {ImageOpts} options - image options
+     * @param {ImageProps} options - image options
      * @return {Slide} this Slide
      */
     Slide.prototype.addImage = function (options) {
@@ -4070,7 +4070,7 @@ var Slide = /** @class */ (function () {
     };
     /**
      * Add media (audio/video) to Slide
-     * @param {MediaOpts} options - media options
+     * @param {MediaProps} options - media options
      * @return {Slide} this Slide
      */
     Slide.prototype.addMedia = function (options) {
@@ -4090,7 +4090,7 @@ var Slide = /** @class */ (function () {
     /**
      * Add shape to Slide
      * @param {SHAPE_NAME} shapeName - shape name
-     * @param {ShapeOptions} options - shape options
+     * @param {ShapeProps} options - shape options
      * @return {Slide} this Slide
      */
     Slide.prototype.addShape = function (shapeName, options) {
@@ -6034,7 +6034,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200720:2307';
+var VERSION = '3.3.0-beta-20200723:2240';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;

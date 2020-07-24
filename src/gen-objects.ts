@@ -33,11 +33,11 @@ import {
 	ISlideObject,
 	IText,
 	ITextOpts,
-	ImageOpts,
-	MediaOpts,
+	ImageProps,
+	MediaProps,
 	OptsChartGridLine,
 	ShapeLineProps,
-	ShapeOptions,
+	ShapeProps,
 	TableCell,
 	TableOptions,
 	TableRow,
@@ -309,12 +309,12 @@ export function addChartDefinition(target: ISlideLib, type: CHART_NAME | IChartM
 /**
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
- * @param {ImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
+ * @param {ImageProps} `opt` - object containing `path`/`data`, `x`, `y`, etc.
  * @param {ISlideLib} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
-export function addImageDefinition(target: ISlideLib, opt: ImageOpts) {
+export function addImageDefinition(target: ISlideLib, opt: ImageProps) {
 	let newObject: ISlideObject = {
 		_type: null,
 		text: null,
@@ -447,9 +447,9 @@ export function addImageDefinition(target: ISlideLib, opt: ImageOpts) {
 /**
  * Adds a media object to a slide definition.
  * @param {ISlideLib} `target` - slide object that the text will be added to
- * @param {MediaOpts} `opt` - media options
+ * @param {MediaProps} `opt` - media options
  */
-export function addMediaDefinition(target: ISlideLib, opt: MediaOpts) {
+export function addMediaDefinition(target: ISlideLib, opt: MediaProps) {
 	let intRels = target.relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
@@ -573,9 +573,9 @@ export function addNotesDefinition(target: ISlideLib, notes: string) {
  * Adds a shape object to a slide definition.
  * @param {ISlideLib} target slide object that the shape should be added to
  * @param {SHAPE_NAME} shapeName shape name
- * @param {ShapeOptions} opts shape options
+ * @param {ShapeProps} opts shape options
  */
-export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: ShapeOptions) {
+export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opts: ShapeProps) {
 	let options = typeof opts === 'object' ? opts : {}
 	options.line = options.line || ({ type: 'none' } as ShapeLineProps)
 	let newObject: ISlideObject = {
