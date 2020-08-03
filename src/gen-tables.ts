@@ -56,7 +56,7 @@ function parseTextToLines(cell: ITableCell, colWidth: number): string[] {
  * @return {TableRowSlide[]} array of table rows
  */
 export function getSlidesForTableRows(
-	tableRows: [ITableToSlidesCell[]?] = [],
+	tableRows: ITableToSlidesCell[][] | null | undefined = [],
 	tabOpts: ITableToSlidesOpts = {},
 	presLayout: ILayout,
 	masterSlide: ISlideLayout
@@ -556,7 +556,7 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: ITa
 	// Pass head-rows as there is an option to add to each table and the parse func needs this data to fulfill that option
 	opts._arrObjTabHeadRows = arrObjTabHeadRows || null
 	opts.colW = arrColW
-	getSlidesForTableRows([...arrObjTabHeadRows, ...arrObjTabBodyRows, ...arrObjTabFootRows] as [ITableToSlidesCell[]], opts, pptx.presLayout, masterSlide).forEach(
+	getSlidesForTableRows([...arrObjTabHeadRows, ...arrObjTabBodyRows, ...arrObjTabFootRows] as ITableToSlidesCell[][], opts, pptx.presLayout, masterSlide).forEach(
 		(slide, idxTr) => {
 			// A: Create new Slide
 			let newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null })
