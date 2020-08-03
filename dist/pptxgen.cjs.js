@@ -1,4 +1,4 @@
-/* PptxGenJS 3.2.0-beta @ 2020-02-26T10:14:30.144Z */
+/* PptxGenJS 3.3.0-beta @ 2020-08-03T09:43:41.244Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -699,14 +699,24 @@ function rgbToHex(r, g, b) {
 }
 /**
  * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
- * @param {string} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string|SCHEME_COLORS} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.SchemeColor.ACCENT1)
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
 function createColorElement(colorStr, innerElements) {
     var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
-    if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
-        console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values');
+    if (!isHexaRgb &&
+        colorStr !== SchemeColor.text1 &&
+        colorStr !== SchemeColor.text2 &&
+        colorStr !== SchemeColor.background1 &&
+        colorStr !== SchemeColor.background2 &&
+        colorStr !== SchemeColor.accent1 &&
+        colorStr !== SchemeColor.accent2 &&
+        colorStr !== SchemeColor.accent3 &&
+        colorStr !== SchemeColor.accent4 &&
+        colorStr !== SchemeColor.accent5 &&
+        colorStr !== SchemeColor.accent6) {
+        console.warn("\"" + colorStr + "\" is not a valid scheme color or hexa RGB! \"" + DEF_FONT_COLOR + "\" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values");
         colorStr = DEF_FONT_COLOR;
     }
     var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
@@ -765,7 +775,7 @@ function genXmlColorSelection(shapeFill, backColor) {
 }
 /**
  * Get a new rel ID (rId) for charts, media, etc.
- * @param {ISlide} target - the slide to use
+ * @param {ISlideLib} target - the slide to use
  * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
  */
 function getNewRelId(target) {
@@ -1329,7 +1339,7 @@ var imageSizingXml = {
 };
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
- * @param {ISlide|ISlideLayout} slideObject - slide object created within createSlideObject
+ * @param {ISlideLib|ISlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide) {
@@ -1366,7 +1376,10 @@ function slideObjectToXml(slide) {
         var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide.presLayout), cy = 0;
         var placeholderObj;
         var locationAttr = '';
-        if (slide.slideLayout !== undefined && slide.slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
+        if (slide.slideLayout !== undefined &&
+            slide.slideLayout.data !== undefined &&
+            slideItemObj.options &&
+            slideItemObj.options.placeholder) {
             placeholderObj = slide['slideLayout']['data'].filter(function (object) { return object.options.placeholder === slideItemObj.options.placeholder; })[0];
         }
         // A: Set option vars
@@ -1946,7 +1959,7 @@ function slideObjectToXml(slide) {
  * Transforms slide relations to XML string.
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
- * @param {ISlide | ISlideLayout} slide - slide object whose relations are being transformed
+ * @param {ISlideLib | ISlideLayout} slide - slide object whose relations are being transformed
  * @param {{ target: string; type: string }[]} defaultRels - array of default relations
  * @return {string} XML
  */
@@ -2439,9 +2452,9 @@ function genXmlPlaceholder(placeholderObj) {
 // XML-GEN: First 6 functions create the base /ppt files
 /**
  * Generate XML ContentType
- * @param {ISlide[]} slides - slides
+ * @param {ISlideLib[]} slides - slides
  * @param {ISlideLayout[]} slideLayouts - slide layouts
- * @param {ISlide} masterSlide - master slide
+ * @param {ISlideLib} masterSlide - master slide
  * @returns XML
  */
 function makeXmlContTypes(slides, slideLayouts, masterSlide) {
@@ -2524,7 +2537,7 @@ function makeXmlRootRels() {
 }
 /**
  * Creates `docProps/app.xml`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlideLib[]} slides - Presenation Slides
  * @param {string} company - "Company" metadata
  * @returns XML
  */
@@ -2544,7 +2557,7 @@ function makeXmlCore(title, subject, author, revision) {
 }
 /**
  * Creates `ppt/_rels/presentation.xml.rels`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlideLib[]} slides - Presenation Slides
  * @returns XML
  */
 function makeXmlPresentationRels(slides) {
@@ -2579,7 +2592,7 @@ function makeXmlPresentationRels(slides) {
 // XML-GEN: Functions that run 1-N times (once for each Slide)
 /**
  * Generates XML for the slide file (`ppt/slides/slide1.xml`)
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} XML
  */
 function makeXmlSlide(slide) {
@@ -2592,7 +2605,7 @@ function makeXmlSlide(slide) {
 }
 /**
  * Get text content of Notes from Slide
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} notes text
  */
 function getNotesFromSlide(slide) {
@@ -2612,7 +2625,7 @@ function makeXmlNotesMaster() {
 }
 /**
  * Creates Notes Slide (`ppt/notesSlides/notesSlide1.xml`)
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} XML
  */
 function makeXmlNotesSlide(slide) {
@@ -2656,7 +2669,7 @@ function makeXmlLayout(layout) {
 }
 /**
  * Creates Slide Master 1 (`ppt/slideMasters/slideMaster1.xml`)
- * @param {ISlide} slide - slide object that represents master slide layout
+ * @param {ISlideLib} slide - slide object that represents master slide layout
  * @param {ISlideLayout[]} layouts - slide layouts
  * @return {string} XML
  */
@@ -2719,7 +2732,7 @@ function makeXmlSlideLayoutRel(layoutNumber, slideLayouts) {
 }
 /**
  * Creates `ppt/_rels/slide*.xml.rels`
- * @param {ISlide[]} slides
+ * @param {ISlideLib[]} slides
  * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
  * @param {number} `slideNumber` 1-indexed number of a layout that relations are generated for
  * @return {string} XML
@@ -2746,14 +2759,15 @@ function makeXmlNotesSlideRel(slideNumber) {
 }
 /**
  * Creates `ppt/slideMasters/_rels/slideMaster1.xml.rels`
- * @param {ISlide} masterSlide - Slide object
+ * @param {ISlideLib} masterSlide - Slide object
  * @param {ISlideLayout[]} slideLayouts - Slide Layouts
  * @return {string} XML
  */
 function makeXmlMasterRel(masterSlide, slideLayouts) {
-    var defaultRels = slideLayouts.map(function (_layoutDef, idx) {
-        return { target: "../slideLayouts/slideLayout" + (idx + 1) + ".xml", type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' };
-    });
+    var defaultRels = slideLayouts.map(function (_layoutDef, idx) { return ({
+        target: "../slideLayouts/slideLayout" + (idx + 1) + ".xml",
+        type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout',
+    }); });
     defaultRels.push({ target: '../theme/theme1.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme' });
     return slideObjectRelationsToXml(masterSlide, defaultRels);
 }
@@ -2766,7 +2780,7 @@ function makeXmlNotesMasterRel() {
 }
 /**
  * For the passed slide number, resolves name of a layout that is used for.
- * @param {ISlide[]} slides - srray of slides
+ * @param {ISlideLib[]} slides - srray of slides
  * @param {ISlideLayout[]} slideLayouts - array of slideLayouts
  * @param {number} slideNumber
  * @return {number} slide number
@@ -2793,9 +2807,7 @@ function makeXmlTheme() {
  * Create presentation file (`ppt/presentation.xml`)
  * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
  * @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
- * @param {ISlide[]} slides - array of slides
- * @param {ILayout} pptLayout - presentation layout
- * @param {boolean} rtlMode - RTL mode
+ * @param {IPresentation} pres - presentation
  * @return {string} XML
  */
 function makeXmlPresentation(pres) {
@@ -2909,7 +2921,7 @@ var _chartCounter = 0;
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
  * @param {ISlideMasterOptions} slideDef - slide definition
- * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
+ * @param {ISlideLib|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
 function createSlideObject(slideDef, target) {
     // STEP 1: Add background
@@ -2967,8 +2979,8 @@ function createSlideObject(slideDef, target) {
  *
  * @param {CHART_NAME | IChartMulti[]} `type` should belong to: 'column', 'pie'
  * @param {[]} `data` a JSON object with follow the following format
- * @param {IChartOpts} `opt` chart options
- * @param {ISlide} `target` slide object that the chart will be added to
+ * @param {IChartOptsLib} `opt` chart options
+ * @param {ISlideLib} `target` slide object that the chart will be added to
  * @return {object} chart object
  * {
  *   title: 'eSurvey chart',
@@ -3173,7 +3185,7 @@ function addChartDefinition(target, type, data, opt) {
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
  * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
- * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
+ * @param {ISlideLib} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
@@ -3303,7 +3315,7 @@ function addImageDefinition(target, opt) {
 }
 /**
  * Adds a media object to a slide definition.
- * @param {ISlide} `target` - slide object that the text will be added to
+ * @param {ISlideLib} `target` - slide object that the text will be added to
  * @param {IMediaOpts} `opt` - media options
  */
 function addMediaDefinition(target, opt) {
@@ -3407,7 +3419,7 @@ function addMediaDefinition(target, opt) {
  * Adds Notes to a slide.
  * @param {String} `notes`
  * @param {Object} opt (*unused*)
- * @param {ISlide} `target` slide object
+ * @param {ISlideLib} `target` slide object
  * @since 2.3.0
  */
 function addNotesDefinition(target, notes) {
@@ -3420,7 +3432,7 @@ function addNotesDefinition(target, notes) {
  * Adds a shape object to a slide definition.
  * @param {IShape} shape shape const object (pptx.shapes)
  * @param {IShapeOptions} opt
- * @param {ISlide} target slide object that the shape should be added to
+ * @param {ISlideLib} target slide object that the shape should be added to
  */
 function addShapeDefinition(target, shapeName, opt) {
     var options = typeof opt === 'object' ? opt : {};
@@ -3447,7 +3459,7 @@ function addShapeDefinition(target, shapeName, opt) {
 }
 /**
  * Adds a table object to a slide definition.
- * @param {ISlide} target - slide object that the table should be added to
+ * @param {ISlideLib} target - slide object that the table should be added to
  * @param {TableRow[]} arrTabRows - table data
  * @param {ITableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
@@ -3652,7 +3664,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
  * Adds a text object to a slide definition.
  * @param {string|IText[]} text
  * @param {ITextOpts} opt
- * @param {ISlide} target - slide object that the text should be added to
+ * @param {ISlideLib} target - slide object that the text should be added to
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
@@ -3716,7 +3728,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
 }
 /**
  * Adds placeholder objects to slide
- * @param {ISlide} slide - slide object containing layouts
+ * @param {ISlideLib} slide - slide object containing layouts
  */
 function addPlaceholdersToSlideLayouts(slide) {
     (slide.slideLayout.data || []).forEach(function (slideLayoutObj) {
@@ -3734,7 +3746,7 @@ function addPlaceholdersToSlideLayouts(slide) {
 /**
  * Adds a background image or color to a slide definition.
  * @param {String|BkgdOpts} bkg - color string or an object with image definition
- * @param {ISlide} target - slide object that the background is set to
+ * @param {ISlideLib} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg, target) {
     if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
@@ -3762,7 +3774,7 @@ function addBackgroundDefinition(bkg, target) {
 }
 /**
  * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
- * @param {ISlide} target - slide object that any hyperlinks will be be added to
+ * @param {ISlideLib} target - slide object that any hyperlinks will be be added to
  * @param {number | string | IText | IText[] | ITableCell[][]} text - text to parse
  */
 function createHyperlinkRels(target, text) {
@@ -3873,7 +3885,7 @@ var Slide = /** @class */ (function () {
      */
     Slide.prototype.addChart = function (type, data, options) {
         // TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
-        // Set `_type` on IChartOpts as its what is used as object is passed around
+        // Set `_type` on IChartOptsLib as its what is used as object is passed around
         var optionsWithType = options || {};
         optionsWithType._type = type;
         addChartDefinition(this, type, data, options);
@@ -4427,7 +4439,7 @@ function makeXmlCharts(rel) {
         rel.opts._type.forEach(function (type) {
             // TODO: FIXME: theres `options` on chart rels??
             var options = getMix(rel.opts, type.options);
-            //let options: IChartOpts = { type: type.type, }
+            //let options: IChartOptsLib = { type: type.type, }
             var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
             var catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
             usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis'];
@@ -4562,7 +4574,7 @@ function makeXmlCharts(rel) {
  *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
- * @param {IChartOpts} `opts` chart options
+ * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
@@ -5440,7 +5452,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
 }
 /**
  * Create Category axis
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - value
  * @param {string} valAxisId - value
  * @return {string} XML
@@ -5552,7 +5564,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
 }
 /**
  * Create Value Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} valAxisId - value
  * @return {string} XML
  */
@@ -5633,7 +5645,7 @@ function makeValAxis(opts, valAxisId) {
 }
 /**
  * Create Series Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - axis ID
  * @param {string} valAxisId - value
  * @return {string} XML
@@ -5801,7 +5813,7 @@ function errXml(idx, obj) {
  */
 /**
  * Encode Image/Audio/Video into base64
- * @param {ISlide | ISlideLayout} layout - slide layout
+ * @param {ISlideLib | ISlideLayout} layout - slide layout
  * @return {Promise} promise of generating the rels
  */
 function encodeSlideMediaRels(layout) {
@@ -5961,7 +5973,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200212';
+var VERSION = '3.2.0-beta-20200317';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6004,7 +6016,7 @@ var PptxGenJS = /** @class */ (function () {
         /**
          * Provides an API for `addTableDefinition` to get slide reference by number
          * @param {number} slideNum - slide number
-         * @return {ISlide} Slide
+         * @return {ISlideLib} Slide
          * @since 3.0.0
          */
         this.getSlide = function (slideNum) { return _this.slides.filter(function (slide) { return slide.number === slideNum; })[0]; };
@@ -6020,7 +6032,7 @@ var PptxGenJS = /** @class */ (function () {
         };
         /**
          * Create all chart and media rels for this Presenation
-         * @param {ISlide | ISlideLayout} slide - slide with rels
+         * @param {ISlideLib | ISlideLayout} slide - slide with rels
          * @param {JSZIP} zip - JSZip instance
          * @param {Promise<any>[]} chartPromises - promise array
          */
@@ -6089,7 +6101,7 @@ var PptxGenJS = /** @class */ (function () {
          * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
          */
         this.exportPresentation = function (outputType) {
-            return new Promise(function (resolve, reject) {
+            return new Promise(function (resolve, _reject) {
                 var arrChartPromises = [];
                 var arrMediaPromises = [];
                 var zip = new JSZip();
@@ -6223,7 +6235,7 @@ var PptxGenJS = /** @class */ (function () {
         ];
         this._slides = [];
         this._sections = [];
-        this.masterSlide = {
+        this._masterSlide = {
             addChart: null,
             addImage: null,
             addMedia: null,
@@ -6325,6 +6337,13 @@ var PptxGenJS = /** @class */ (function () {
         },
         set: function (value) {
             this._rtlMode = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "masterSlide", {
+        get: function () {
+            return this._masterSlide;
         },
         enumerable: true,
         configurable: true
@@ -6492,7 +6511,8 @@ var PptxGenJS = /** @class */ (function () {
     // PRESENTATION METHODS
     /**
      * Add a new Section to Presenation
-     * @param {ISectionProps} section
+     * @param {ISectionProps} section - section properties
+     * @example pptx.addSection({ title:'Charts' });
      */
     PptxGenJS.prototype.addSection = function (section) {
         if (!section)
@@ -6511,12 +6531,12 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Add a new Slide to Presenation
-     * @param {IAddSlideOptions} slideOpts - slide options
+     * @param {IAddSlideOptions} options - slide options
      * @returns {ISlide} the new Slide
      */
-    PptxGenJS.prototype.addSlide = function (slideOpts) {
+    PptxGenJS.prototype.addSlide = function (options) {
         // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
-        var masterSlideName = typeof slideOpts === 'string' ? slideOpts : slideOpts && slideOpts.masterName ? slideOpts.masterName : '';
+        var masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : '';
         var newSlide = new Slide({
             addSlide: this.addNewSlide,
             getSlide: this.getSlide,
@@ -6533,15 +6553,15 @@ var PptxGenJS = /** @class */ (function () {
         this._slides.push(newSlide);
         // B: Sections
         // B-1: Add slide to section (if any provided)
-        if (slideOpts && slideOpts.sectionTitle) {
-            var sect = this.sections.filter(function (section) { return section.title === slideOpts.sectionTitle; })[0];
+        if (options && options.sectionTitle) {
+            var sect = this.sections.filter(function (section) { return section.title === options.sectionTitle; })[0];
             if (!sect)
-                console.warn("addSlide: unable to find section with title: \"" + slideOpts.sectionTitle + "\"");
+                console.warn("addSlide: unable to find section with title: \"" + options.sectionTitle + "\"");
             else
                 sect.slides.push(newSlide);
         }
         // B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
-        else if (this.sections && this.sections.length > 0 && (!slideOpts || !slideOpts.sectionTitle)) {
+        else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
             var lastSect = this._sections[this.sections.length - 1];
             // CASE 1: The latest section is a default type - just add this one
             if (lastSect.type === 'default')
@@ -6558,7 +6578,7 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Create a custom Slide Layout in any size
-     * @param {IUserLayout} layout - an object with user-defined w/h
+     * @param {ILayoutProps} layout - layout properties
      * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
      */
     PptxGenJS.prototype.defineLayout = function (layout) {
@@ -6579,25 +6599,25 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Create a new slide master [layout] for the Presentation
-     * @param {ISlideMasterOptions} slideMasterOpts - layout definition
+     * @param {ISlideMasterOptions} options - layout options
      */
-    PptxGenJS.prototype.defineSlideMaster = function (slideMasterOpts) {
-        if (!slideMasterOpts.title)
+    PptxGenJS.prototype.defineSlideMaster = function (options) {
+        if (!options.title)
             throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
         var newLayout = {
             presLayout: this.presLayout,
-            name: slideMasterOpts.title,
+            name: options.title,
             number: 1000 + this.slideLayouts.length + 1,
             slide: null,
             data: [],
             rels: [],
             relsChart: [],
             relsMedia: [],
-            margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
-            slideNumberObj: slideMasterOpts.slideNumber || null,
+            margin: options.margin || DEF_SLIDE_MARGIN_IN,
+            slideNumberObj: options.slideNumber || null,
         };
         // STEP 1: Create the Slide Master/Layout
-        createSlideObject(slideMasterOpts, newLayout);
+        createSlideObject(options, newLayout);
         // STEP 2: Add it to layout defs
         this.slideLayouts.push(newLayout);
         // STEP 3: Add slideNumber to master slide (if any)
@@ -6607,13 +6627,13 @@ var PptxGenJS = /** @class */ (function () {
     // HTML-TO-SLIDES METHODS
     /**
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-     * @param {string} tabEleId - HTMLElementID of the table
-     * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+     * @param {string} eleId - table HTML element ID
+     * @param {ITableToSlidesOpts} options - generation options
      */
-    PptxGenJS.prototype.tableToSlides = function (tableElementId, opts) {
-        if (opts === void 0) { opts = {}; }
+    PptxGenJS.prototype.tableToSlides = function (eleId, options) {
+        if (options === void 0) { options = {}; }
         // @note `verbose` option is undocumented; used for verbose output of layout process
-        genTableToSlides(this, tableElementId, opts, opts && opts.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === opts.masterSlideName; })[0] : null);
+        genTableToSlides(this, eleId, options, options && options.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === options.masterSlideName; })[0] : null);
     };
     return PptxGenJS;
 }());

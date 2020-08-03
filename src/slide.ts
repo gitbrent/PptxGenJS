@@ -4,21 +4,24 @@
 
 import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
+	BackgroundProps,
+	HexColor,
 	IChartMulti,
 	IChartOpts,
-	IImageOpts,
+	IChartOptsLib,
+	ImageProps,
 	ILayout,
-	IMediaOpts,
 	ISlideLayout,
 	ISlideNumber,
+	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	ISlideObject,
-	IShapeOptions,
-	ITableOptions,
+	TableProps,
 	IText,
-	ITextOpts,
+	AddTextProps,
+	MediaProps,
+	ShapeProps,
 	TableRow,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
@@ -70,7 +73,9 @@ export default class Slide {
 	}
 
 	/**
+	 * Background color
 	 * @type {string}
+	 * @deprecated in v3.3.0 - use `background` instead
 	 */
 	private _bkgd: string
 	public set bkgd(value: string) {
@@ -81,13 +86,30 @@ export default class Slide {
 	}
 
 	/**
-	 * @type {string}
+	 * Background color or image
+	 * @type {BackgroundProps}
+	 * @example solid color `background: {fill:'FF0000'}
+	 * @example base64 `background: {data:'image/png;base64,ABC[...]123'}`
+	 * @example url  `background: {path:'https://some.url/image.jpg'}`
+	 * @since v3.3.0
 	 */
-	private _color: string
-	public set color(value: string) {
+	private _background: BackgroundProps
+	public set background(value: BackgroundProps) {
+		genObj.addBackgroundDefinition(value, this)
+	}
+	public get background(): BackgroundProps {
+		return this._background
+	}
+
+	/**
+	 * Default font color
+	 * @type {HexColor}
+	 */
+	private _color: HexColor
+	public set color(value: HexColor) {
 		this._color = value
 	}
-	public get color(): string {
+	public get color(): HexColor {
 		return this._color
 	}
 
@@ -124,9 +146,9 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide {
-		// TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
-		// Set `_type` on IChartOpts as its what is used as object is passed around
-		let optionsWithType: IChartOpts = options || {}
+		// FUTURE: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
+		// Set `_type` on IChartOptsLib as its what is used as object is passed around
+		let optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type
 		genObj.addChartDefinition(this, type, data, options)
 		return this
@@ -134,20 +156,20 @@ export default class Slide {
 
 	/**
 	 * Add image to Slide
-	 * @param {IImageOpts} options - image options
+	 * @param {ImageProps} options - image options
 	 * @return {Slide} this Slide
 	 */
-	addImage(options: IImageOpts): Slide {
+	addImage(options: ImageProps): Slide {
 		genObj.addImageDefinition(this, options)
 		return this
 	}
 
 	/**
 	 * Add media (audio/video) to Slide
-	 * @param {IMediaOpts} options - media options
+	 * @param {MediaProps} options - media options
 	 * @return {Slide} this Slide
 	 */
-	addMedia(options: IMediaOpts): Slide {
+	addMedia(options: MediaProps): Slide {
 		genObj.addMediaDefinition(this, options)
 		return this
 	}
@@ -166,10 +188,10 @@ export default class Slide {
 	/**
 	 * Add shape to Slide
 	 * @param {SHAPE_NAME} shapeName - shape name
-	 * @param {IShapeOptions} options - shape options
+	 * @param {ShapeProps} options - shape options
 	 * @return {Slide} this Slide
 	 */
-	addShape(shapeName: SHAPE_NAME, options?: IShapeOptions): Slide {
+	addShape(shapeName: SHAPE_NAME, options?: ShapeProps): Slide {
 		// NOTE: As of v3.1.0, <script> users are passing the old shape object from the shapes file (orig to the project)
 		// But React/TypeScript users are passing the shapeName from an enum, which is a simple string, so lets cast
 		// <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'
@@ -182,11 +204,11 @@ export default class Slide {
 	/**
 	 * Add table to Slide
 	 * @param {TableRow[]} tableRows - table rows
-	 * @param {ITableOptions} options - table options
+	 * @param {TableProps} options - table options
 	 * @return {Slide} this Slide
 	 */
-	addTable(tableRows: TableRow[], options?: ITableOptions): Slide {
-		// FIXME: TODO: we pass `this` - we dont need to pass layouts - they can be read from this!
+	addTable(tableRows: TableRow[], options?: TableProps): Slide {
+		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
 		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}
@@ -194,10 +216,10 @@ export default class Slide {
 	/**
 	 * Add text to Slide
 	 * @param {string|IText[]} text - text string or complex object
-	 * @param {ITextOpts} options - text options
+	 * @param {AddTextProps} options - text options
 	 * @return {Slide} this Slide
 	 */
-	addText(text: string | IText[], options?: ITextOpts): Slide {
+	addText(text: string | IText[], options?: AddTextProps): Slide {
 		genObj.addTextDefinition(this, text, options, false)
 		return this
 	}

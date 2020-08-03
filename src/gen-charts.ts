@@ -17,10 +17,9 @@ import {
 	DEF_FONT_TITLE_SIZE,
 	DEF_SHAPE_SHADOW,
 	LETTERS,
-	ONEPT,
 } from './core-enums'
-import { IChartOpts, ISlideRelChart, IShadowOptions, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
-import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid } from './gen-utils'
+import { IChartOptsLib, ISlideRelChart, ShadowProps, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
+import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
 import * as JSZip from 'jszip'
 
 /**
@@ -536,7 +535,9 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			// NOTE: Add autoTitleDeleted tag in else to prevent default creation of chart title even when showTitle is set to false
 			strXml += '<c:autoTitleDeleted val="1"/>'
 		}
-		// Add 3D view tag
+		/** Add 3D view tag
+		 * @see: https://c-rex.net/projects/samples/ooxml/e1/Part4/OOXML_P4_DOCX_perspective_topic_ID0E6BUQB.html
+		 */
 		if (rel.opts._type === CHART_TYPE.BAR3D) {
 			strXml += '<c:view3D>'
 			strXml += ' <c:rotX val="' + rel.opts.v3DRotX + '"/>'
@@ -569,8 +570,8 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 	if (Array.isArray(rel.opts._type)) {
 		rel.opts._type.forEach(type => {
 			// TODO: FIXME: theres `options` on chart rels??
-			let options = getMix(rel.opts, type.options) as IChartOpts
-			//let options: IChartOpts = { type: type.type, }
+			let options = getMix(rel.opts, type.options) as IChartOptsLib
+			//let options: IChartOptsLib = { type: type.type, }
 			let valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
 			let catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
 			usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis']
@@ -591,18 +592,18 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			if (!rel.opts.valAxes || rel.opts.valAxes.length !== rel.opts.catAxes.length) {
 				throw new Error('There must be the same number of value and category axes.')
 			}
-			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOpts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
+			strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[0]) as IChartOptsLib, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.catAxes[1]) {
-				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOpts, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY)
+				strXml += makeCatAxis(getMix(rel.opts, rel.opts.catAxes[1]) as IChartOptsLib, AXIS_ID_CATEGORY_SECONDARY, AXIS_ID_VALUE_PRIMARY)
 			}
 		} else {
 			strXml += makeCatAxis(rel.opts, AXIS_ID_CATEGORY_PRIMARY, AXIS_ID_VALUE_PRIMARY)
 		}
 
 		if (rel.opts.valAxes) {
-			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOpts, AXIS_ID_VALUE_PRIMARY)
+			strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[0]) as IChartOptsLib, AXIS_ID_VALUE_PRIMARY)
 			if (rel.opts.valAxes[1]) {
-				strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]) as IChartOpts, AXIS_ID_VALUE_SECONDARY)
+				strXml += makeValAxis(getMix(rel.opts, rel.opts.valAxes[1]) as IChartOptsLib, AXIS_ID_VALUE_SECONDARY)
 			}
 		} else {
 			strXml += makeValAxis(rel.opts, AXIS_ID_VALUE_PRIMARY)
@@ -653,7 +654,9 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>'
 
 		// OPTION: Border
-		strXml += rel.opts.border ? `<a:ln w="${rel.opts.border.pt * ONEPT}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
+		strXml += rel.opts.border
+			? `<a:ln w="${valToPts(rel.opts.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>`
+			: '<a:ln><a:noFill/></a:ln>'
 
 		// Close shapeProp/plotArea before Legend
 		strXml += '    <a:effectLst/>'
@@ -665,7 +668,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		if (rel.opts.showLegend) {
 			strXml += '<c:legend>'
 			strXml += '<c:legendPos val="' + rel.opts.legendPos + '"/>'
-			strXml += '<c:layout/>'
+			//strXml += '<c:layout/>'
 			strXml += '<c:overlay val="0"/>'
 			if (rel.opts.legendFontFace || rel.opts.legendFontSize || rel.opts.legendColor) {
 				strXml += '<c:txPr>'
@@ -711,17 +714,17 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 
 /**
  * Create XML string for any given chart type
- * @example: <c:bubbleChart> or <c:lineChart>
- *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
- * @param {IChartOpts} `opts` chart options
+ * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
+ * @example '<c:bubbleChart>'
+ * @example '<c:lineChart>'
  * @return {string} XML
  */
-function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength: number, opts: IChartOpts, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
+function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength: number, opts: IChartOptsLib, valAxisId: string, catAxisId: string, isMultiTypeChart: boolean): string {
 	// NOTE: "Chart Range" (as shown in "select Chart Area dialog") is calculated.
 	// ....: Ensure each X/Y Axis/Col has same row height (esp. applicable to XY Scatter where X can often be larger than Y's)
 	let strXml: string = ''
@@ -785,6 +788,8 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 				strXml += '  <c:invertIfNegative val="0"/>'
 
 				// Fill and Border
+				// TODO: CURRENT: Pull#727
+				// WIP: let seriesColor = obj.color ? obj.color : opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 				let seriesColor = opts.chartColors ? opts.chartColors[colorIndex % opts.chartColors.length] : null
 
 				strXml += '  <c:spPr>'
@@ -800,13 +805,13 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 				} else if (opts.dataBorder) {
 					strXml +=
 						'<a:ln w="' +
-						opts.dataBorder.pt * ONEPT +
+						valToPts(opts.dataBorder.pt) +
 						'" cap="flat"><a:solidFill>' +
 						createColorElement(opts.dataBorder.color) +
 						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
@@ -914,7 +919,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 						strXml += '  <c:numRef>'
 						strXml += '    <c:f>Sheet1!$A$2:$A$' + (obj.labels.length + 1) + '</c:f>'
 						strXml += '    <c:numCache>'
-						strXml += '      <c:formatCode>' + opts.catLabelFormatCode + '</c:formatCode>'
+						strXml += '      <c:formatCode>' + (opts.catLabelFormatCode || 'General') + '</c:formatCode>'
 						strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
 						obj.labels.forEach((label, idx) => {
 							strXml += '<c:pt idx="' + idx + '"><c:v>' + encodeXmlEntities(label) + '</c:v></c:pt>'
@@ -937,18 +942,18 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 
 				// 3: "Values"
 				{
-					strXml += '  <c:val>'
-					strXml += '    <c:numRef>'
-					strXml += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
-					strXml += '      <c:numCache>'
-					strXml += '        <c:formatCode>General</c:formatCode>'
-					strXml += '	       <c:ptCount val="' + obj.labels.length + '"/>'
+					strXml += '<c:val>'
+					strXml += '  <c:numRef>'
+					strXml += '    <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>'
+					strXml += '    <c:numCache>'
+					strXml += '      <c:formatCode>' + (opts.valLabelFormatCode || opts.dataTableFormatCode || 'General') + '</c:formatCode>'
+					strXml += '      <c:ptCount val="' + obj.labels.length + '"/>'
 					obj.values.forEach((value, idx) => {
 						strXml += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>'
 					})
-					strXml += '      </c:numCache>'
-					strXml += '    </c:numRef>'
-					strXml += '  </c:val>'
+					strXml += '    </c:numCache>'
+					strXml += '  </c:numRef>'
+					strXml += '</c:val>'
 				}
 
 				// 3.5: "Errorrates/Errorbars"
@@ -1074,7 +1079,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 					if (opts.lineSize === 0) {
 						strXml += '<a:ln><a:noFill/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 
@@ -1376,12 +1381,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 					} else if (opts.dataBorder) {
 						strXml +=
 							'<a:ln w="' +
-							opts.dataBorder.pt * ONEPT +
+							valToPts(opts.dataBorder.pt) +
 							'" cap="flat"><a:solidFill>' +
 							createColorElement(opts.dataBorder.color) +
 							'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
 					} else {
-						strXml += '<a:ln w="' + opts.lineSize * ONEPT + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
+						strXml += '<a:ln w="' + valToPts(opts.lineSize) + '" cap="flat"><a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 						strXml += '<a:prstDash val="' + (opts.lineDash || 'solid') + '"/><a:round/></a:ln>'
 					}
 
@@ -1525,25 +1530,21 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
 			}
 			strXml += '  </c:spPr>'
-			strXml += '<c:explosion val="0"/>'
+			//strXml += '<c:explosion val="0"/>'
 
 			// 2: "Data Point" block for every data row
 			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dPt>'
-				strXml += '  <c:idx val="' + idx + '"/>'
-				strXml += '  <c:explosion val="0"/>'
-				strXml += '  <c:spPr>'
-				strXml +=
-					'    <a:solidFill>' +
-					createColorElement(opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]) +
-					'</a:solidFill>'
+				strXml += ` <c:idx val="${idx}"/>`
+				strXml += ' <c:bubble3D val="0"/>'
+				strXml += ' <c:spPr>'
+				strXml += `<a:solidFill>${createColorElement(
+					opts.chartColors[idx + 1 > opts.chartColors.length ? Math.floor(Math.random() * opts.chartColors.length) : idx]
+				)}</a:solidFill>`
 				if (opts.dataBorder) {
-					strXml +=
-						'<a:ln w="' +
-						opts.dataBorder.pt * ONEPT +
-						'" cap="flat"><a:solidFill>' +
-						createColorElement(opts.dataBorder.color) +
-						'</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>'
+					strXml += `<a:ln w="${valToPts(opts.dataBorder.pt)}" cap="flat"><a:solidFill>${createColorElement(
+						opts.dataBorder.color
+					)}</a:solidFill><a:prstDash val="solid"/><a:round/></a:ln>`
 				}
 				strXml += createShadowElement(opts.shadow, DEF_SHAPE_SHADOW)
 				strXml += '  </c:spPr>'
@@ -1554,21 +1555,18 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 			strXml += '<c:dLbls>'
 			obj.labels.forEach((_label, idx) => {
 				strXml += '<c:dLbl>'
-				strXml += '  <c:idx val="' + idx + '"/>'
-				strXml += `    <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
-				strXml += '    <c:txPr>'
-				strXml += '      <a:bodyPr/><a:lstStyle/>'
-				strXml += '      <a:p><a:pPr>'
-				strXml +=
-					'        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">'
-				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
-				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
-				strXml += '        </a:defRPr>'
+				strXml += ` <c:idx val="${idx}"/>`
+				strXml += `  <c:numFmt formatCode="${opts.dataLabelFormatCode || 'General'}" sourceLinked="0"/>`
+				strXml += '  <c:spPr/><c:txPr>'
+				strXml += '   <a:bodyPr/><a:lstStyle/>'
+				strXml += '   <a:p><a:pPr>'
+				strXml += `   <a:defRPr sz="${opts.dataLabelFontSize || DEF_FONT_SIZE}00" b="${opts.dataLabelFontBold ? 1 : 0}" i="0" u="none" strike="noStrike">`
+				strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
+				strXml += `    <a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
+				strXml += '   </a:defRPr>'
 				strXml += '      </a:pPr></a:p>'
 				strXml += '    </c:txPr>'
-				if (chartType === CHART_TYPE.PIE) {
-					strXml += '    <c:dLblPos val="' + (opts.dataLabelPosition || 'inEnd') + '"/>'
-				}
+				if (chartType === CHART_TYPE.PIE) `<c:dLblPos val="${opts.dataLabelPosition || 'inEnd'}"/>`
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>'
@@ -1583,7 +1581,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 			strXml += '	  <a:lstStyle/>'
 			strXml += '	  <a:p>'
 			strXml += '		<a:pPr>'
-			strXml += '		  <a:defRPr b="0" i="0" strike="noStrike" sz="1800" u="none">'
+			strXml += '		  <a:defRPr sz="1800" b="0" i="0" u="none" strike="noStrike">'
 			strXml += '			<a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>'
 			strXml += '		  </a:defRPr>'
 			strXml += '		</a:pPr>'
@@ -1643,12 +1641,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], datalength:
 
 /**
  * Create Category axis
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - value
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): string {
+function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): string {
 	let strXml = ''
 
 	// Build cat axis tag
@@ -1723,7 +1721,7 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 	if (opts.catLabelFormatCode) {
 		;['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(opt => {
 			// Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-			if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opt.toLowerCase()) === -1)) {
+			if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opts[opt].toLowerCase()) === -1)) {
 				console.warn('`' + opt + "` must be one of: 'days','months','years' !")
 				opts[opt] = null
 			}
@@ -1748,12 +1746,12 @@ function makeCatAxis(opts: IChartOpts, axisId: string, valAxisId: string): strin
 
 /**
  * Create Value Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeValAxis(opts: IChartOpts, valAxisId: string): string {
-	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir === 'col' ? 'r' : 't'
+function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
+	let axisPos = valAxisId === AXIS_ID_VALUE_PRIMARY ? (opts.barDir === 'col' ? 'l' : 'b') : opts.barDir !== 'col' ? 'r' : 't'
 	let strXml = ''
 	let isRight = axisPos === 'r' || axisPos === 't'
 	let crosses = isRight ? 'max' : 'autoZero'
@@ -1818,7 +1816,9 @@ function makeValAxis(opts: IChartOpts, valAxisId: string): string {
 			: 'between') +
 		'"/>'
 	if (opts.valAxisMajorUnit) strXml += ' <c:majorUnit val="' + opts.valAxisMajorUnit + '"/>'
-	if (opts.valAxisDisplayUnit) strXml += `<c:dispUnits><c:builtInUnit val="${opts.valAxisDisplayUnit}"/><c:dispUnitsLbl/></c:dispUnits>`
+	if (opts.valAxisDisplayUnit)
+		strXml += `<c:dispUnits><c:builtInUnit val="${opts.valAxisDisplayUnit}"/>${opts.valAxisDisplayUnitLabel ? '<c:dispUnitsLbl/>' : ''}</c:dispUnits>`
+
 	strXml += '</c:valAx>'
 
 	return strXml
@@ -1826,12 +1826,12 @@ function makeValAxis(opts: IChartOpts, valAxisId: string): string {
 
 /**
  * Create Series Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - axis ID
  * @param {string} valAxisId - value
  * @return {string} XML
  */
-function makeSerAxis(opts: IChartOpts, axisId: string, valAxisId: string): string {
+function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): string {
 	let strXml = ''
 
 	// Build ser axis tag
@@ -1968,7 +1968,7 @@ function getExcelColName(length: number): string {
  * @example { type: 'outer', blur: 3, offset: (23000 / 12700), angle: 90, color: '000000', opacity: 0.35, rotateWithShape: true };
  * @return {string} XML
  */
-function createShadowElement(options: IShadowOptions, defaults: object): string {
+function createShadowElement(options: ShadowProps, defaults: object): string {
 	if (!options) {
 		return '<a:effectLst/>'
 	} else if (typeof options !== 'object') {
@@ -1979,8 +1979,8 @@ function createShadowElement(options: IShadowOptions, defaults: object): string 
 	let strXml = '<a:effectLst>',
 		opts = getMix(defaults, options),
 		type = opts['type'] || 'outer',
-		blur = opts['blur'] * ONEPT,
-		offset = opts['offset'] * ONEPT,
+		blur = valToPts(opts['blur']),
+		offset = valToPts(opts['offset']),
 		angle = opts['angle'] * 60000,
 		color = opts['color'],
 		opacity = opts['opacity'] * 100000,
@@ -2005,7 +2005,7 @@ function createShadowElement(options: IShadowOptions, defaults: object): string 
 function createGridLineElement(glOpts: OptsChartGridLine): string {
 	let strXml: string = '<c:majorGridlines>'
 	strXml += ' <c:spPr>'
-	strXml += '  <a:ln w="' + Math.round((glOpts.size || DEF_CHART_GRIDLINE.size) * ONEPT) + '" cap="flat">'
+	strXml += '  <a:ln w="' + valToPts(glOpts.size || DEF_CHART_GRIDLINE.size) + '" cap="flat">'
 	strXml += '  <a:solidFill><a:srgbClr val="' + (glOpts.color || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>' // should accept scheme colors as implemented in [Pull #135]
 	strXml += '   <a:prstDash val="' + (glOpts.style || DEF_CHART_GRIDLINE.style) + '"/><a:round/>'
 	strXml += '  </a:ln>'

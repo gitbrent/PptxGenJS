@@ -1,8 +1,4 @@
-<<<<<<< HEAD
-/* PptxGenJS 3.2.0-beta @ 2020-02-19T15:37:36.969Z */
-=======
-/* PptxGenJS 3.2.0-beta @ 2020-02-13T05:17:34.692Z */
->>>>>>> a1a5d200a2d2b82485943c15fc9a57c15f7a4ff8
+/* PptxGenJS 3.3.0-beta @ 2020-08-03T09:44:09.900Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -701,14 +697,24 @@ function rgbToHex(r, g, b) {
 }
 /**
  * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
- * @param {string} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string|SCHEME_COLORS} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.SchemeColor.ACCENT1)
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
 function createColorElement(colorStr, innerElements) {
     var isHexaRgb = REGEX_HEX_COLOR.test(colorStr);
-    if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
-        console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values');
+    if (!isHexaRgb &&
+        colorStr !== SchemeColor.text1 &&
+        colorStr !== SchemeColor.text2 &&
+        colorStr !== SchemeColor.background1 &&
+        colorStr !== SchemeColor.background2 &&
+        colorStr !== SchemeColor.accent1 &&
+        colorStr !== SchemeColor.accent2 &&
+        colorStr !== SchemeColor.accent3 &&
+        colorStr !== SchemeColor.accent4 &&
+        colorStr !== SchemeColor.accent5 &&
+        colorStr !== SchemeColor.accent6) {
+        console.warn("\"" + colorStr + "\" is not a valid scheme color or hexa RGB! \"" + DEF_FONT_COLOR + "\" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values");
         colorStr = DEF_FONT_COLOR;
     }
     var tagName = isHexaRgb ? 'srgbClr' : 'schemeClr';
@@ -767,7 +773,7 @@ function genXmlColorSelection(shapeFill, backColor) {
 }
 /**
  * Get a new rel ID (rId) for charts, media, etc.
- * @param {ISlide} target - the slide to use
+ * @param {ISlideLib} target - the slide to use
  * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
  */
 function getNewRelId(target) {
@@ -1331,7 +1337,7 @@ var imageSizingXml = {
 };
 /**
  * Transforms a slide or slideLayout to resulting XML string - Creates `ppt/slide*.xml`
- * @param {ISlide|ISlideLayout} slideObject - slide object created within createSlideObject
+ * @param {ISlideLib|ISlideLayout} slideObject - slide object created within createSlideObject
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide) {
@@ -1368,7 +1374,10 @@ function slideObjectToXml(slide) {
         var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide.presLayout), cy = 0;
         var placeholderObj;
         var locationAttr = '';
-        if (slide.slideLayout !== undefined && slide.slideLayout.data !== undefined && slideItemObj.options && slideItemObj.options.placeholder) {
+        if (slide.slideLayout !== undefined &&
+            slide.slideLayout.data !== undefined &&
+            slideItemObj.options &&
+            slideItemObj.options.placeholder) {
             placeholderObj = slide['slideLayout']['data'].filter(function (object) { return object.options.placeholder === slideItemObj.options.placeholder; })[0];
         }
         // A: Set option vars
@@ -1948,7 +1957,7 @@ function slideObjectToXml(slide) {
  * Transforms slide relations to XML string.
  * Extra relations that are not dynamic can be passed using the 2nd arg (e.g. theme relation in master file).
  * These relations use rId series that starts with 1-increased maximum of rIds used for dynamic relations.
- * @param {ISlide | ISlideLayout} slide - slide object whose relations are being transformed
+ * @param {ISlideLib | ISlideLayout} slide - slide object whose relations are being transformed
  * @param {{ target: string; type: string }[]} defaultRels - array of default relations
  * @return {string} XML
  */
@@ -2441,9 +2450,9 @@ function genXmlPlaceholder(placeholderObj) {
 // XML-GEN: First 6 functions create the base /ppt files
 /**
  * Generate XML ContentType
- * @param {ISlide[]} slides - slides
+ * @param {ISlideLib[]} slides - slides
  * @param {ISlideLayout[]} slideLayouts - slide layouts
- * @param {ISlide} masterSlide - master slide
+ * @param {ISlideLib} masterSlide - master slide
  * @returns XML
  */
 function makeXmlContTypes(slides, slideLayouts, masterSlide) {
@@ -2526,7 +2535,7 @@ function makeXmlRootRels() {
 }
 /**
  * Creates `docProps/app.xml`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlideLib[]} slides - Presenation Slides
  * @param {string} company - "Company" metadata
  * @returns XML
  */
@@ -2546,7 +2555,7 @@ function makeXmlCore(title, subject, author, revision) {
 }
 /**
  * Creates `ppt/_rels/presentation.xml.rels`
- * @param {ISlide[]} slides - Presenation Slides
+ * @param {ISlideLib[]} slides - Presenation Slides
  * @returns XML
  */
 function makeXmlPresentationRels(slides) {
@@ -2581,7 +2590,7 @@ function makeXmlPresentationRels(slides) {
 // XML-GEN: Functions that run 1-N times (once for each Slide)
 /**
  * Generates XML for the slide file (`ppt/slides/slide1.xml`)
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} XML
  */
 function makeXmlSlide(slide) {
@@ -2594,7 +2603,7 @@ function makeXmlSlide(slide) {
 }
 /**
  * Get text content of Notes from Slide
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} notes text
  */
 function getNotesFromSlide(slide) {
@@ -2614,7 +2623,7 @@ function makeXmlNotesMaster() {
 }
 /**
  * Creates Notes Slide (`ppt/notesSlides/notesSlide1.xml`)
- * @param {ISlide} slide - the slide object to transform into XML
+ * @param {ISlideLib} slide - the slide object to transform into XML
  * @return {string} XML
  */
 function makeXmlNotesSlide(slide) {
@@ -2658,7 +2667,7 @@ function makeXmlLayout(layout) {
 }
 /**
  * Creates Slide Master 1 (`ppt/slideMasters/slideMaster1.xml`)
- * @param {ISlide} slide - slide object that represents master slide layout
+ * @param {ISlideLib} slide - slide object that represents master slide layout
  * @param {ISlideLayout[]} layouts - slide layouts
  * @return {string} XML
  */
@@ -2721,7 +2730,7 @@ function makeXmlSlideLayoutRel(layoutNumber, slideLayouts) {
 }
 /**
  * Creates `ppt/_rels/slide*.xml.rels`
- * @param {ISlide[]} slides
+ * @param {ISlideLib[]} slides
  * @param {ISlideLayout[]} slideLayouts - Slide Layout(s)
  * @param {number} `slideNumber` 1-indexed number of a layout that relations are generated for
  * @return {string} XML
@@ -2748,14 +2757,15 @@ function makeXmlNotesSlideRel(slideNumber) {
 }
 /**
  * Creates `ppt/slideMasters/_rels/slideMaster1.xml.rels`
- * @param {ISlide} masterSlide - Slide object
+ * @param {ISlideLib} masterSlide - Slide object
  * @param {ISlideLayout[]} slideLayouts - Slide Layouts
  * @return {string} XML
  */
 function makeXmlMasterRel(masterSlide, slideLayouts) {
-    var defaultRels = slideLayouts.map(function (_layoutDef, idx) {
-        return { target: "../slideLayouts/slideLayout" + (idx + 1) + ".xml", type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout' };
-    });
+    var defaultRels = slideLayouts.map(function (_layoutDef, idx) { return ({
+        target: "../slideLayouts/slideLayout" + (idx + 1) + ".xml",
+        type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/slideLayout',
+    }); });
     defaultRels.push({ target: '../theme/theme1.xml', type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/theme' });
     return slideObjectRelationsToXml(masterSlide, defaultRels);
 }
@@ -2768,7 +2778,7 @@ function makeXmlNotesMasterRel() {
 }
 /**
  * For the passed slide number, resolves name of a layout that is used for.
- * @param {ISlide[]} slides - srray of slides
+ * @param {ISlideLib[]} slides - srray of slides
  * @param {ISlideLayout[]} slideLayouts - array of slideLayouts
  * @param {number} slideNumber
  * @return {number} slide number
@@ -2795,9 +2805,7 @@ function makeXmlTheme() {
  * Create presentation file (`ppt/presentation.xml`)
  * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
  * @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
- * @param {ISlide[]} slides - array of slides
- * @param {ILayout} pptLayout - presentation layout
- * @param {boolean} rtlMode - RTL mode
+ * @param {IPresentation} pres - presentation
  * @return {string} XML
  */
 function makeXmlPresentation(pres) {
@@ -2911,7 +2919,7 @@ var _chartCounter = 0;
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
  * @param {ISlideMasterOptions} slideDef - slide definition
- * @param {ISlide|ISlideLayout} target - empty slide object that should be updated by the passed definition
+ * @param {ISlideLib|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
 function createSlideObject(slideDef, target) {
     // STEP 1: Add background
@@ -2969,8 +2977,8 @@ function createSlideObject(slideDef, target) {
  *
  * @param {CHART_NAME | IChartMulti[]} `type` should belong to: 'column', 'pie'
  * @param {[]} `data` a JSON object with follow the following format
- * @param {IChartOpts} `opt` chart options
- * @param {ISlide} `target` slide object that the chart will be added to
+ * @param {IChartOptsLib} `opt` chart options
+ * @param {ISlideLib} `target` slide object that the chart will be added to
  * @return {object} chart object
  * {
  *   title: 'eSurvey chart',
@@ -3175,7 +3183,7 @@ function addChartDefinition(target, type, data, opt) {
  * Adds an image object to a slide definition.
  * This method can be called with only two args (opt, target) - this is supposed to be the only way in future.
  * @param {IImageOpts} `opt` - object containing `path`/`data`, `x`, `y`, etc.
- * @param {ISlide} `target` - slide that the image should be added to (if not specified as the 2nd arg)
+ * @param {ISlideLib} `target` - slide that the image should be added to (if not specified as the 2nd arg)
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
@@ -3305,7 +3313,7 @@ function addImageDefinition(target, opt) {
 }
 /**
  * Adds a media object to a slide definition.
- * @param {ISlide} `target` - slide object that the text will be added to
+ * @param {ISlideLib} `target` - slide object that the text will be added to
  * @param {IMediaOpts} `opt` - media options
  */
 function addMediaDefinition(target, opt) {
@@ -3409,7 +3417,7 @@ function addMediaDefinition(target, opt) {
  * Adds Notes to a slide.
  * @param {String} `notes`
  * @param {Object} opt (*unused*)
- * @param {ISlide} `target` slide object
+ * @param {ISlideLib} `target` slide object
  * @since 2.3.0
  */
 function addNotesDefinition(target, notes) {
@@ -3422,7 +3430,7 @@ function addNotesDefinition(target, notes) {
  * Adds a shape object to a slide definition.
  * @param {IShape} shape shape const object (pptx.shapes)
  * @param {IShapeOptions} opt
- * @param {ISlide} target slide object that the shape should be added to
+ * @param {ISlideLib} target slide object that the shape should be added to
  */
 function addShapeDefinition(target, shapeName, opt) {
     var options = typeof opt === 'object' ? opt : {};
@@ -3449,7 +3457,7 @@ function addShapeDefinition(target, shapeName, opt) {
 }
 /**
  * Adds a table object to a slide definition.
- * @param {ISlide} target - slide object that the table should be added to
+ * @param {ISlideLib} target - slide object that the table should be added to
  * @param {TableRow[]} arrTabRows - table data
  * @param {ITableOptions} inOpt - table options
  * @param {ISlideLayout} slideLayout - Slide layout
@@ -3654,7 +3662,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
  * Adds a text object to a slide definition.
  * @param {string|IText[]} text
  * @param {ITextOpts} opt
- * @param {ISlide} target - slide object that the text should be added to
+ * @param {ISlideLib} target - slide object that the text should be added to
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
@@ -3718,7 +3726,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
 }
 /**
  * Adds placeholder objects to slide
- * @param {ISlide} slide - slide object containing layouts
+ * @param {ISlideLib} slide - slide object containing layouts
  */
 function addPlaceholdersToSlideLayouts(slide) {
     (slide.slideLayout.data || []).forEach(function (slideLayoutObj) {
@@ -3736,7 +3744,7 @@ function addPlaceholdersToSlideLayouts(slide) {
 /**
  * Adds a background image or color to a slide definition.
  * @param {String|BkgdOpts} bkg - color string or an object with image definition
- * @param {ISlide} target - slide object that the background is set to
+ * @param {ISlideLib} target - slide object that the background is set to
  */
 function addBackgroundDefinition(bkg, target) {
     if (typeof bkg === 'object' && (bkg.src || bkg.path || bkg.data)) {
@@ -3764,7 +3772,7 @@ function addBackgroundDefinition(bkg, target) {
 }
 /**
  * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
- * @param {ISlide} target - slide object that any hyperlinks will be be added to
+ * @param {ISlideLib} target - slide object that any hyperlinks will be be added to
  * @param {number | string | IText | IText[] | ITableCell[][]} text - text to parse
  */
 function createHyperlinkRels(target, text) {
@@ -3875,7 +3883,7 @@ var Slide = /** @class */ (function () {
      */
     Slide.prototype.addChart = function (type, data, options) {
         // TODO: TODO-VERSION-4: Remove first arg - only take data and opts, with "type" required on opts
-        // Set `_type` on IChartOpts as its what is used as object is passed around
+        // Set `_type` on IChartOptsLib as its what is used as object is passed around
         var optionsWithType = options || {};
         optionsWithType._type = type;
         addChartDefinition(this, type, data, options);
@@ -4032,6 +4040,13 @@ function createExcelWorksheet(chartObject, zip) {
                 '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/table" Target="../tables/table1.xml"/>' +
                 '</Relationships>\n');
         }
+        //calculate length of values + error rates
+        //hardcoded method: loop over all data and check if errorrate exists, then increase the "errorratecount"
+        var ec = 0;
+        data.forEach(function (obj, idx) { if (obj.errorrate) {
+            ec++;
+        } });
+        var fulllength = data.length + ec;
         // sharedStrings.xml
         {
             // A: Start XML
@@ -4047,9 +4062,9 @@ function createExcelWorksheet(chartObject, zip) {
             else {
                 strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' +
-                        (data[0].labels.length + data.length + 1) +
+                        (data[0].labels.length + fulllength + 1) +
                         '" uniqueCount="' +
-                        (data[0].labels.length + data.length + 1) +
+                        (data[0].labels.length + fulllength + 1) +
                         '">';
                 // B: Add 'blank' for A1
                 strSharedStrings_1 += '<si><t xml:space="preserve"></t></si>';
@@ -4068,6 +4083,11 @@ function createExcelWorksheet(chartObject, zip) {
             else {
                 data.forEach(function (objData) {
                     strSharedStrings_1 += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>';
+                });
+                data.forEach(function (objData) {
+                    if (objData.errorrate) {
+                        strSharedStrings_1 += '<si><t>' + encodeXmlEntities((objData.name || ' ').replace('X-Axis', 'X-Values')) + "_errorrate" + '</t></si>';
+                    }
                 });
             }
             // D: Add `labels`/Categories
@@ -4097,13 +4117,18 @@ function createExcelWorksheet(chartObject, zip) {
             else {
                 strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
-                        LETTERS[data.length] +
-                        (data[0].labels.length + 1) +
+                        getColumnLetter(fulllength) +
+                        (data[0].labels.length + 1) + //cuz every data block has the same length
                         '" totalsRowShown="0">';
-                strTableXml_1 += '<tableColumns count="' + (data.length + 1) + '">';
+                strTableXml_1 += '<tableColumns count="' + (fulllength + 1) + '">';
                 strTableXml_1 += '<tableColumn id="1" name=" " />';
                 data.forEach(function (obj, idx) {
                     strTableXml_1 += '<tableColumn id="' + (idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '" />';
+                });
+                data.forEach(function (obj, idx) {
+                    if (obj.errorrate) {
+                        strTableXml_1 += '<tableColumn id="' + (data.length + idx + 2) + '" name="' + encodeXmlEntities(obj.name) + '_errorrate' + '" />';
+                    }
                 });
             }
             strTableXml_1 += '</tableColumns>';
@@ -4123,7 +4148,7 @@ function createExcelWorksheet(chartObject, zip) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />';
             }
             else {
-                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />';
+                strSheetXml_1 += '<dimension ref="A1:' + getColumnLetter(fulllength) + (data[0].labels.length + 1) + '" />';
             }
             strSheetXml_1 += '<sheetViews><sheetView tabSelected="1" workbookViewId="0"><selection activeCell="B1" sqref="B1" /></sheetView></sheetViews>';
             strSheetXml_1 += '<sheetFormatPr baseColWidth="10" defaultColWidth="11.5" defaultRowHeight="12" />';
@@ -4242,49 +4267,45 @@ function createExcelWorksheet(chartObject, zip) {
                     -|-------|-----|-----|-----|
                 */
                 // A: Create header row first (NOTE: Start at index=1 as headers cols start with 'B')
-                strSheetXml_1 += '<row r="1" spans="1:' + (data.length + 1) + '">';
+                strSheetXml_1 += '<row r="1" spans="1:' + (fulllength + 1) + '">';
                 strSheetXml_1 += '<c r="A1" t="s"><v>0</v></c>';
                 for (var idx = 1; idx <= data.length; idx++) {
                     // FIXED: Max cols is over 52 now
                     strSheetXml_1 += '<c r="' + getColumnLetter(idx) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
-                    console.log(getColumnLetter(idx));
                     strSheetXml_1 += '<v>' + idx + '</v>';
                     strSheetXml_1 += '</c>';
                 }
-                /* for errorbar
-                for(let i = 0; i < data.length; i++){
-                    console.log(data[i].errorrate);
-                    let idx = data.length+i+1;
-                    if(!data[i].errorrate){
+                for (var i = 0; i < data.length; i++) {
+                    var idx = data.length + i + 1;
+                    if (!data[i].errorrate) {
                         continue;
                     }
-                    strSheetXml += '<c r="' + getColumnLetter(idx) + '1" t="s">' // NOTE: use `t="s"` for label cols!
-                    strSheetXml += '<v>' + idx + '</v>'
-                    strSheetXml += '</c>'
-                }*/
+                    strSheetXml_1 += '<c r="' + getColumnLetter(idx) + '1" t="s">'; // NOTE: use `t="s"` for label cols!
+                    strSheetXml_1 += '<v>' + idx + '</v>';
+                    strSheetXml_1 += '</c>';
+                }
                 strSheetXml_1 += '</row>';
                 // B: Add data row(s) for each category
                 data[0].labels.forEach(function (_cat, idx) {
                     // Leading col is reserved for the label, so hard-code it, then loop over col values
-                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + (data.length + 1) + '">';
+                    strSheetXml_1 += '<row r="' + (idx + 2) + '" spans="1:' + (fulllength + 1) + '">';
                     strSheetXml_1 += '<c r="A' + (idx + 2) + '" t="s">';
-                    strSheetXml_1 += '<v>' + (data.length + idx + 1) + '</v>';
+                    strSheetXml_1 += '<v>' + (fulllength + idx + 1) + '</v>';
                     strSheetXml_1 += '</c>';
                     for (var idy = 0; idy < data.length; idy++) {
                         strSheetXml_1 += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">'; //NOTE: idy+1 to start from column B
                         strSheetXml_1 += '<v>' + (data[idy].values[idx] || '') + '</v>';
                         strSheetXml_1 += '</c>';
                     }
-                    /* error bar
-                    for (let i = 0; i < data.length; i++) {
-                        if(!data[i].errorrate){
+                    for (var i = 0; i < data.length; i++) {
+                        if (!data[i].errorrate) {
                             continue;
                         }
-                        let idy = data.length+i;
-                        strSheetXml += '<c r="' + (idy + 1 < 26 ? LETTERS[idy + 1] : 'A' + LETTERS[(idy + 1) % LETTERS.length]) + '' + (idx + 2) + '">'
-                        strSheetXml += '<v>' + (data[i].errorrate[idx] || '') + '</v>'
-                        strSheetXml += '</c>'
-                    }*/
+                        var idy = data.length + i;
+                        strSheetXml_1 += '<c r="' + getColumnLetter(idy + 1) + '' + (idx + 2) + '">';
+                        strSheetXml_1 += '<v>' + (data[i].errorrate[idx] || '') + '</v>';
+                        strSheetXml_1 += '</c>';
+                    }
                     strSheetXml_1 += '</row>';
                 });
             }
@@ -4339,7 +4360,6 @@ function createExcelWorksheet(chartObject, zip) {
             if (!a) {
                 highestExpIndex -= 1;
             }
-            console.log(highestExpIndex);
             returnStr += (String.fromCharCode(65 + (highestExpIndex)));
             currentIndex -= (highestExpIndex + (!a ? 1 : 0)) * (Math.pow(26, i));
             a = true;
@@ -4417,7 +4437,7 @@ function makeXmlCharts(rel) {
         rel.opts._type.forEach(function (type) {
             // TODO: FIXME: theres `options` on chart rels??
             var options = getMix(rel.opts, type.options);
-            //let options: IChartOpts = { type: type.type, }
+            //let options: IChartOptsLib = { type: type.type, }
             var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
             var catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
             usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis'];
@@ -4552,7 +4572,7 @@ function makeXmlCharts(rel) {
  *
  * @param {CHART_NAME} `chartType` chart type name
  * @param {OptsChartData[]} `data` chart data
- * @param {IChartOpts} `opts` chart options
+ * @param {IChartOptsLib} `opts` chart options
  * @param {string} `valAxisId`
  * @param {string} `catAxisId`
  * @param {boolean} `isMultiTypeChart`
@@ -4597,6 +4617,11 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 ]
             */
             var colorIndex_1 = -1; // Maintain the color index by region
+            //errorrates are optional, thus we can have something like this:
+            //col1, col2, col3, col_err1, col_err3
+            //we loop over regular cols, in order to calculate the current columns error col
+            //we count the number of errorcols we used and do data.length + errorrateCount
+            var errorrateCount_1 = 0;
             data.forEach(function (obj) {
                 colorIndex_1++;
                 var idx = obj.index;
@@ -4772,6 +4797,25 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      </c:numCache>';
                     strXml += '    </c:numRef>';
                     strXml += '  </c:val>';
+                }
+                // 3.5: "Errorrates/Errorbars"
+                {
+                    if (obj.errorrate) {
+                        var erridx = data.length + errorrateCount_1;
+                        strXml += '  <c:errBars>';
+                        strXml += '<c:errDir val="y"/>';
+                        strXml += '<c:errBarType val="both"/>';
+                        strXml += '<c:errValType val="cust"/>';
+                        strXml += '<c:noEndCap val="0"/>';
+                        strXml += '		<c:plus>';
+                        strXml += errXml(erridx, obj);
+                        strXml += '		</c:plus>';
+                        strXml += '		<c:minus>';
+                        strXml += errXml(erridx, obj);
+                        strXml += '		</c:minus>';
+                        strXml += '  </c:errBars>';
+                        errorrateCount_1++;
+                    }
                 }
                 // Option: `smooth`
                 if (chartType === CHART_TYPE.LINE)
@@ -5406,7 +5450,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
 }
 /**
  * Create Category axis
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - value
  * @param {string} valAxisId - value
  * @return {string} XML
@@ -5518,7 +5562,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
 }
 /**
  * Create Value Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} valAxisId - value
  * @return {string} XML
  */
@@ -5599,7 +5643,7 @@ function makeValAxis(opts, valAxisId) {
 }
 /**
  * Create Series Axis (Used by `bar3D`)
- * @param {IChartOpts} opts - chart options
+ * @param {IChartOptsLib} opts - chart options
  * @param {string} axisId - axis ID
  * @param {string} valAxisId - value
  * @return {string} XML
@@ -5747,13 +5791,27 @@ function createGridLineElement(glOpts) {
     strXml += '</c:majorGridlines>';
     return strXml;
 }
+function errXml(idx, obj) {
+    var resStr = '';
+    resStr += '    <c:numRef>';
+    resStr += '      <c:f>Sheet1!$' + getExcelColName(idx + 1) + '$2:$' + getExcelColName(idx + 1) + '$' + (obj.labels.length + 1) + '</c:f>';
+    resStr += '      <c:numCache>';
+    resStr += '        <c:formatCode>General</c:formatCode>';
+    resStr += '	       <c:ptCount val="' + obj.labels.length + '"/>';
+    obj.errorrate.forEach(function (value, idx) {
+        resStr += '<c:pt idx="' + idx + '"><c:v>' + (value || value === 0 ? value : '') + '</c:v></c:pt>';
+    });
+    resStr += '      </c:numCache>';
+    resStr += '    </c:numRef>';
+    return resStr;
+}
 
 /**
  * PptxGenJS: Media Methods
  */
 /**
  * Encode Image/Audio/Video into base64
- * @param {ISlide | ISlideLayout} layout - slide layout
+ * @param {ISlideLib | ISlideLayout} layout - slide layout
  * @return {Promise} promise of generating the rels
  */
 function encodeSlideMediaRels(layout) {
@@ -5913,7 +5971,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.2.0-beta-20200212';
+var VERSION = '3.2.0-beta-20200317';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -5956,7 +6014,7 @@ var PptxGenJS = /** @class */ (function () {
         /**
          * Provides an API for `addTableDefinition` to get slide reference by number
          * @param {number} slideNum - slide number
-         * @return {ISlide} Slide
+         * @return {ISlideLib} Slide
          * @since 3.0.0
          */
         this.getSlide = function (slideNum) { return _this.slides.filter(function (slide) { return slide.number === slideNum; })[0]; };
@@ -5972,7 +6030,7 @@ var PptxGenJS = /** @class */ (function () {
         };
         /**
          * Create all chart and media rels for this Presenation
-         * @param {ISlide | ISlideLayout} slide - slide with rels
+         * @param {ISlideLib | ISlideLayout} slide - slide with rels
          * @param {JSZIP} zip - JSZip instance
          * @param {Promise<any>[]} chartPromises - promise array
          */
@@ -6041,7 +6099,7 @@ var PptxGenJS = /** @class */ (function () {
          * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
          */
         this.exportPresentation = function (outputType) {
-            return new Promise(function (resolve, reject) {
+            return new Promise(function (resolve, _reject) {
                 var arrChartPromises = [];
                 var arrMediaPromises = [];
                 var zip = new JSZip();
@@ -6175,7 +6233,7 @@ var PptxGenJS = /** @class */ (function () {
         ];
         this._slides = [];
         this._sections = [];
-        this.masterSlide = {
+        this._masterSlide = {
             addChart: null,
             addImage: null,
             addMedia: null,
@@ -6277,6 +6335,13 @@ var PptxGenJS = /** @class */ (function () {
         },
         set: function (value) {
             this._rtlMode = value;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(PptxGenJS.prototype, "masterSlide", {
+        get: function () {
+            return this._masterSlide;
         },
         enumerable: true,
         configurable: true
@@ -6444,7 +6509,8 @@ var PptxGenJS = /** @class */ (function () {
     // PRESENTATION METHODS
     /**
      * Add a new Section to Presenation
-     * @param {ISectionProps} section
+     * @param {ISectionProps} section - section properties
+     * @example pptx.addSection({ title:'Charts' });
      */
     PptxGenJS.prototype.addSection = function (section) {
         if (!section)
@@ -6463,12 +6529,12 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Add a new Slide to Presenation
-     * @param {IAddSlideOptions} slideOpts - slide options
+     * @param {IAddSlideOptions} options - slide options
      * @returns {ISlide} the new Slide
      */
-    PptxGenJS.prototype.addSlide = function (slideOpts) {
+    PptxGenJS.prototype.addSlide = function (options) {
         // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
-        var masterSlideName = typeof slideOpts === 'string' ? slideOpts : slideOpts && slideOpts.masterName ? slideOpts.masterName : '';
+        var masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : '';
         var newSlide = new Slide({
             addSlide: this.addNewSlide,
             getSlide: this.getSlide,
@@ -6485,15 +6551,15 @@ var PptxGenJS = /** @class */ (function () {
         this._slides.push(newSlide);
         // B: Sections
         // B-1: Add slide to section (if any provided)
-        if (slideOpts && slideOpts.sectionTitle) {
-            var sect = this.sections.filter(function (section) { return section.title === slideOpts.sectionTitle; })[0];
+        if (options && options.sectionTitle) {
+            var sect = this.sections.filter(function (section) { return section.title === options.sectionTitle; })[0];
             if (!sect)
-                console.warn("addSlide: unable to find section with title: \"" + slideOpts.sectionTitle + "\"");
+                console.warn("addSlide: unable to find section with title: \"" + options.sectionTitle + "\"");
             else
                 sect.slides.push(newSlide);
         }
         // B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
-        else if (this.sections && this.sections.length > 0 && (!slideOpts || !slideOpts.sectionTitle)) {
+        else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
             var lastSect = this._sections[this.sections.length - 1];
             // CASE 1: The latest section is a default type - just add this one
             if (lastSect.type === 'default')
@@ -6510,7 +6576,7 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Create a custom Slide Layout in any size
-     * @param {IUserLayout} layout - an object with user-defined w/h
+     * @param {ILayoutProps} layout - layout properties
      * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
      */
     PptxGenJS.prototype.defineLayout = function (layout) {
@@ -6531,25 +6597,25 @@ var PptxGenJS = /** @class */ (function () {
     };
     /**
      * Create a new slide master [layout] for the Presentation
-     * @param {ISlideMasterOptions} slideMasterOpts - layout definition
+     * @param {ISlideMasterOptions} options - layout options
      */
-    PptxGenJS.prototype.defineSlideMaster = function (slideMasterOpts) {
-        if (!slideMasterOpts.title)
+    PptxGenJS.prototype.defineSlideMaster = function (options) {
+        if (!options.title)
             throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
         var newLayout = {
             presLayout: this.presLayout,
-            name: slideMasterOpts.title,
+            name: options.title,
             number: 1000 + this.slideLayouts.length + 1,
             slide: null,
             data: [],
             rels: [],
             relsChart: [],
             relsMedia: [],
-            margin: slideMasterOpts.margin || DEF_SLIDE_MARGIN_IN,
-            slideNumberObj: slideMasterOpts.slideNumber || null,
+            margin: options.margin || DEF_SLIDE_MARGIN_IN,
+            slideNumberObj: options.slideNumber || null,
         };
         // STEP 1: Create the Slide Master/Layout
-        createSlideObject(slideMasterOpts, newLayout);
+        createSlideObject(options, newLayout);
         // STEP 2: Add it to layout defs
         this.slideLayouts.push(newLayout);
         // STEP 3: Add slideNumber to master slide (if any)
@@ -6559,13 +6625,13 @@ var PptxGenJS = /** @class */ (function () {
     // HTML-TO-SLIDES METHODS
     /**
      * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-     * @param {string} tabEleId - HTMLElementID of the table
-     * @param {ITableToSlidesOpts} inOpts - array of options (e.g.: tabsize)
+     * @param {string} eleId - table HTML element ID
+     * @param {ITableToSlidesOpts} options - generation options
      */
-    PptxGenJS.prototype.tableToSlides = function (tableElementId, opts) {
-        if (opts === void 0) { opts = {}; }
+    PptxGenJS.prototype.tableToSlides = function (eleId, options) {
+        if (options === void 0) { options = {}; }
         // @note `verbose` option is undocumented; used for verbose output of layout process
-        genTableToSlides(this, tableElementId, opts, opts && opts.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === opts.masterSlideName; })[0] : null);
+        genTableToSlides(this, eleId, options, options && options.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === options.masterSlideName; })[0] : null);
     };
     return PptxGenJS;
 }());

@@ -2,8 +2,8 @@
  * PptxGenJS: Utility Methods
  */
 
-import { EMU, REGEX_HEX_COLOR, SCHEME_COLOR_NAMES, DEF_FONT_COLOR, ONEPT } from './core-enums'
-import { IChartOpts, ILayout, ShapeFill, IGlowOptions, ISlide } from './core-interfaces'
+import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
+import { IChartOpts, ILayout, TextGlowProps, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -44,7 +44,7 @@ export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', lay
  * @returns {string} UUID
  */
 export function getUuid(uuidFormat: string): string {
-	return uuidFormat.replace(/[xy]/g, function(c) {
+	return uuidFormat.replace(/[xy]/g, function (c) {
 		let r = (Math.random() * 16) | 0,
 			v = c === 'x' ? r : (r & 0x3) | 0x8
 		return v.toString(16)
@@ -75,13 +75,7 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 export function encodeXmlEntities(xml: string): string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 	if (typeof xml === 'undefined' || xml == null) return ''
-	return xml
-		.toString()
-		.replace(/&/g, '&amp;')
-		.replace(/</g, '&lt;')
-		.replace(/>/g, '&gt;')
-		.replace(/"/g, '&quot;')
-		.replace(/'/g, '&apos;')
+	return xml.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
 }
 
 /**
@@ -95,6 +89,17 @@ export function inch2Emu(inches: number | string): number {
 	if (typeof inches === 'number' && inches > 100) return inches
 	if (typeof inches === 'string') inches = Number(inches.replace(/in*/gi, ''))
 	return Math.round(EMU * inches)
+}
+
+/**
+ * Convert `pt` into points (using `ONEPT`)
+ *
+ * @param {number|string} pt
+ * @returns {number} value in points (`ONEPT`)
+ */
+export function valToPts(pt: number | string): number {
+	let points = Number(pt) || 0
+	return isNaN(points) ? 0 : Math.round(points * ONEPT)
 }
 
 /**
@@ -131,32 +136,45 @@ export function rgbToHex(r: number, g: number, b: number): string {
 
 /**
  * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
- * @param {string} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.colors.ACCENT1)
+ * @param {string|SCHEME_COLORS} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.SchemeColor.ACCENT1)
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-export function createColorElement(colorStr: string, innerElements?: string): string {
-	let isHexaRgb = REGEX_HEX_COLOR.test(colorStr)
+export function createColorElement(colorStr: string | SCHEME_COLORS, innerElements?: string): string {
+	let colorVal = (colorStr || '').replace('#', '')
+	let isHexaRgb = REGEX_HEX_COLOR.test(colorVal)
 
-	if (!isHexaRgb && Object.values(SCHEME_COLOR_NAMES).indexOf(colorStr) === -1) {
-		console.warn('"' + colorStr + '" is not a valid scheme color or hexa RGB! "' + DEF_FONT_COLOR + '" is used as a fallback. Pass 6-digit RGB or `pptx.colors` values')
-		colorStr = DEF_FONT_COLOR
+	if (
+		!isHexaRgb &&
+		colorVal !== SchemeColor.background1 &&
+		colorVal !== SchemeColor.background2 &&
+		colorVal !== SchemeColor.text1 &&
+		colorVal !== SchemeColor.text2 &&
+		colorVal !== SchemeColor.accent1 &&
+		colorVal !== SchemeColor.accent2 &&
+		colorVal !== SchemeColor.accent3 &&
+		colorVal !== SchemeColor.accent4 &&
+		colorVal !== SchemeColor.accent5 &&
+		colorVal !== SchemeColor.accent6
+	) {
+		console.warn(`"${colorVal}" is not a valid scheme color or hexa RGB! "${DEF_FONT_COLOR}" is used as a fallback. Pass 6-digit RGB or 'pptx.SchemeColor' values`)
+		colorVal = DEF_FONT_COLOR
 	}
 
 	let tagName = isHexaRgb ? 'srgbClr' : 'schemeClr'
-	let colorAttr = ' val="' + (isHexaRgb ? (colorStr || '').toUpperCase() : colorStr) + '"'
+	let colorAttr = 'val="' + (isHexaRgb ? colorVal.toUpperCase() : colorVal) + '"'
 
-	return innerElements ? '<a:' + tagName + colorAttr + '>' + innerElements + '</a:' + tagName + '>' : '<a:' + tagName + colorAttr + '/>'
+	return innerElements ? `<a:${tagName} ${colorAttr}>${innerElements}</a:${tagName}>` : `<a:${tagName} ${colorAttr}/>`
 }
 
 /**
  * Creates `a:glow` element
- * @param {Object} opts glow properties
- * @param {Object} defaults defaults for unspecified properties in `opts`
+ * @param {TextGlowProps} options glow properties
+ * @param {TextGlowProps} defaults defaults for unspecified properties in `opts`
  * @see http://officeopenxml.com/drwSp-effects.php
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
-export function createGlowElement(options: IGlowOptions, defaults: IGlowOptions): string {
+export function createGlowElement(options: TextGlowProps, defaults: TextGlowProps): string {
 	let strXml = '',
 		opts = getMix(defaults, options),
 		size = opts['size'] * ONEPT,
@@ -172,11 +190,11 @@ export function createGlowElement(options: IGlowOptions, defaults: IGlowOptions)
 
 /**
  * Create color selection
- * @param {ShapeFill} shapeFill - options
+ * @param {shapeFill} ShapeFillProps - options
  * @param {string} backColor - color string
  * @returns {string} XML string
  */
-export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): string {
+export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLineProps, backColor?: string): string {
 	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''
@@ -191,7 +209,8 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 		else {
 			if (shapeFill.type) fillType = shapeFill.type
 			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>`
+			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>` // @deprecated v3.3.0
+			if (shapeFill.transparency) internalElements += `<a:alpha val="${100 - shapeFill.transparency}000"/>`
 		}
 
 		switch (fillType) {
@@ -209,9 +228,9 @@ export function genXmlColorSelection(shapeFill: ShapeFill, backColor?: string): 
 
 /**
  * Get a new rel ID (rId) for charts, media, etc.
- * @param {ISlide} target - the slide to use
+ * @param {ISlideLib} target - the slide to use
  * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
  */
-export function getNewRelId(target: ISlide): number {
+export function getNewRelId(target: ISlideLib): number {
 	return target.rels.length + target.relsChart.length + target.relsMedia.length + 1
 }
