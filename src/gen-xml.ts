@@ -297,12 +297,13 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 					if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx]) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]))
 					else if (objTabOpts.rowH && !isNaN(Number(objTabOpts.rowH))) intRowH = inch2Emu(Number(objTabOpts.rowH))
 					else if (slideItemObj.options.cy || slideItemObj.options.h)
-						intRowH =
+						intRowH = Math.round(
 							(slideItemObj.options.h ? inch2Emu(slideItemObj.options.h) : typeof slideItemObj.options.cy === 'number' ? slideItemObj.options.cy : 1) /
-							arrTabRows.length
+								arrTabRows.length
+						)
 
 					// B: Start row
-					strXml += '<a:tr h="' + intRowH + '">'
+					strXml += `<a:tr h="${intRowH}">`
 
 					// C: Loop over each CELL
 					Object.entries(rowObj).forEach(([_cIdx, cellObj]) => {
