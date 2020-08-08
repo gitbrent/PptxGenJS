@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-07-24T04:15:38.294Z */
+/* PptxGenJS 3.3.0-beta @ 2020-08-08T21:15:13.615Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1575,11 +1575,10 @@ function slideObjectToXml(slide) {
                     else if (objTabOpts_1.rowH && !isNaN(Number(objTabOpts_1.rowH)))
                         intRowH = inch2Emu(Number(objTabOpts_1.rowH));
                     else if (slideItemObj.options.cy || slideItemObj.options.h)
-                        intRowH =
-                            (slideItemObj.options.h ? inch2Emu(slideItemObj.options.h) : typeof slideItemObj.options.cy === 'number' ? slideItemObj.options.cy : 1) /
-                                arrTabRows_1.length;
+                        intRowH = Math.round((slideItemObj.options.h ? inch2Emu(slideItemObj.options.h) : typeof slideItemObj.options.cy === 'number' ? slideItemObj.options.cy : 1) /
+                            arrTabRows_1.length);
                     // B: Start row
-                    strXml_1 += '<a:tr h="' + intRowH + '">';
+                    strXml_1 += "<a:tr h=\"" + intRowH + "\">";
                     // C: Loop over each CELL
                     Object.entries(rowObj).forEach(function (_a) {
                         var _cIdx = _a[0], cellObj = _a[1];
@@ -6036,7 +6035,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200723:2310';
+var VERSION = '3.3.0-beta-20200808:1614';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
