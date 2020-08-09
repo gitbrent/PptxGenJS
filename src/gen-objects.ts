@@ -31,8 +31,8 @@ import {
 	ISlideLib,
 	ISlideMasterOptions,
 	ISlideObject,
-	IText,
-	AddTextProps,
+	TextProps,
+	TextPropsOptions,
 	ImageProps,
 	MediaProps,
 	OptsChartGridLine,
@@ -889,13 +889,13 @@ export function addTableDefinition(
 /**
  * Adds a text object to a slide definition.
  * @param {ISlideLib} target - slide object that the text should be added to
- * @param {string|IText[]} text text string or object
- * @param {AddTextProps} opts text options
+ * @param {string|TextProps[]} text text string or object
+ * @param {TextPropsOptions} opts text options
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(target: ISlideLib, text: string | IText[], opts: AddTextProps, isPlaceholder: boolean) {
-	let opt: AddTextProps = opts || {}
+export function addTextDefinition(target: ISlideLib, text: string | TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
+	let opt: TextPropsOptions = opts || {}
 	opt.line = opt.line || ({} as ShapeLineProps)
 	if (!opt.bodyProp) opt.bodyProp = {}
 	let newObject = {
@@ -1035,9 +1035,9 @@ export function addBackgroundDefinition(bkg: BackgroundProps, target: ISlideLayo
 /**
  * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
  * @param {ISlideLib} target - slide object that any hyperlinks will be be added to
- * @param {number | string | IText | IText[] | ITableCell[][]} text - text to parse
+ * @param {number | string | TextProps | TextProps[] | ITableCell[][]} text - text to parse
  */
-function createHyperlinkRels(target: ISlideLib, text: number | string | ISlideObject | IText | IText[] | TableCell[][]) {
+function createHyperlinkRels(target: ISlideLib, text: number | string | ISlideObject | TextProps | TextProps[] | TableCell[][]) {
 	let textObjs = []
 
 	// Only text objects can have hyperlinks, bail when text param is plain text
@@ -1046,7 +1046,7 @@ function createHyperlinkRels(target: ISlideLib, text: number | string | ISlideOb
 	else if (Array.isArray(text)) textObjs = text
 	else if (typeof text === 'object') textObjs = [text]
 
-	textObjs.forEach((text: IText) => {
+	textObjs.forEach((text: TextProps) => {
 		// `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
 		if (Array.isArray(text)) createHyperlinkRels(target, text)
 		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {

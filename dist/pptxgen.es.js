@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-08-08T21:15:13.756Z */
+/* PptxGenJS 3.3.0-beta @ 2020-08-09T19:32:19.385Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2046,7 +2046,7 @@ function slideObjectRelationsToXml(slide, defaultRels) {
 }
 /**
  * Generate XML Paragraph Properties
- * @param {ISlideObject|IText} textObj - text object
+ * @param {ISlideObject|TextProps} textObj - text object
  * @param {boolean} isDefault - array of default relations
  * @return {string} XML
  */
@@ -2148,7 +2148,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
 }
 /**
  * Generate XML Text Run Properties (`a:rPr`)
- * @param {IObjectOptions|AddTextProps} opts - text options
+ * @param {IObjectOptions|TextPropsOptions} opts - text options
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
@@ -2200,7 +2200,7 @@ function genXmlTextRunProperties(opts, isDefault) {
 }
 /**
  * Build textBody text runs [`<a:r></a:r>`] for paragraphs [`<a:p>`]
- * @param {IText} textObj - Text object
+ * @param {TextProps} textObj - Text object
  * @return {string} XML string
  */
 function genXmlTextRun(textObj) {
@@ -2348,10 +2348,10 @@ function genXmlTextBody(slideObj) {
         CASES:
         addText( 'string' ) // string
         addText( 'line1\n line2' ) // string with lineBreak
-        addText( {text:'word1'} ) // IText object
+        addText( {text:'word1'} ) // TextProps object
         addText( ['barry','allen'] ) // array of strings
-        addText( [{text:'word1'}, {text:'word2'}] ) // IText object array
-        addText( [{text:'line1\n line2'}, {text:'end word'}] ) // IText object array with lineBreak
+        addText( [{text:'word1'}, {text:'word2'}] ) // TextProps object array
+        addText( [{text:'line1\n line2'}, {text:'end word'}] ) // TextProps object array with lineBreak
     */
     if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
         // Handle cases 1,2
@@ -3788,8 +3788,8 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
 /**
  * Adds a text object to a slide definition.
  * @param {ISlideLib} target - slide object that the text should be added to
- * @param {string|IText[]} text text string or object
- * @param {AddTextProps} opts text options
+ * @param {string|TextProps[]} text text string or object
+ * @param {TextPropsOptions} opts text options
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
@@ -3932,7 +3932,7 @@ function addBackgroundDefinition(bkg, target) {
 /**
  * Parses text/text-objects from `addText()` and `addTable()` methods; creates 'hyperlink'-type Slide Rels for each hyperlink found
  * @param {ISlideLib} target - slide object that any hyperlinks will be be added to
- * @param {number | string | IText | IText[] | ITableCell[][]} text - text to parse
+ * @param {number | string | TextProps | TextProps[] | ITableCell[][]} text - text to parse
  */
 function createHyperlinkRels(target, text) {
     var textObjs = [];
@@ -4114,8 +4114,8 @@ var Slide = /** @class */ (function () {
     };
     /**
      * Add text to Slide
-     * @param {string|IText[]} text - text string or complex object
-     * @param {AddTextProps} options - text options
+     * @param {string|TextProps[]} text - text string or complex object
+     * @param {TextPropsOptions} options - text options
      * @return {Slide} this Slide
      */
     Slide.prototype.addText = function (text, options) {
@@ -6033,7 +6033,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200808:1614';
+var VERSION = '3.3.0-beta-20200809:1431';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;

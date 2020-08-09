@@ -644,7 +644,6 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	rowspan?: number
 }
-// TODO: WIP: rename to...? `AddTableOptions` ?
 export interface TableProps extends PositionProps, TextBaseProps {
 	_arrObjTabHeadRows?: TableRow[]
 
@@ -735,7 +734,7 @@ export interface TableCell {
 	_vmerge?: boolean
 	_optImp?: any
 
-	text?: string | IText[]
+	text?: string | TextProps[]
 	options?: TableCellProps
 }
 export interface TableRowSlide {
@@ -763,8 +762,8 @@ export interface TextGlowProps {
 	size: number
 }
 
-// TODO: WIP: rename to...? `AddTextOptions` ?
-export interface AddTextProps extends PositionProps, DataOrPathProps, TextBaseProps {
+// TODO: WIP:
+export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
 	bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
 		autoFit?: boolean
@@ -870,9 +869,9 @@ export interface AddTextProps extends PositionProps, DataOrPathProps, TextBasePr
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
-export interface IText {
-	text: string
-	options?: AddTextProps
+export interface TextProps {
+	text?: string
+	options?: TextPropsOptions
 }
 
 // charts =========================================================================================
@@ -1186,7 +1185,7 @@ export interface ISlideMasterOptions {
 		| { image: {} }
 		| { line: {} }
 		| { rect: {} }
-		| { text: { options: AddTextProps; text?: string } }
+		| { text: TextProps }
 		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 	)[]
 	slideNumber?: ISlideNumber
@@ -1236,7 +1235,7 @@ export interface ISlideRelMedia {
 	Target: string
 }
 // TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends ShapeProps, TableCellProps, AddTextProps, ImageProps {
+export interface IObjectOptions extends ShapeProps, TableCellProps, TextPropsOptions, ImageProps {
 	x?: Coord
 	y?: Coord
 	cx?: Coord
@@ -1255,7 +1254,7 @@ export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
 	options?: IObjectOptions
 	// text
-	text?: string | IText[]
+	text?: string | TextProps[]
 	// table
 	arrTabRows?: TableCell[][]
 	// chart

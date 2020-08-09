@@ -18,8 +18,8 @@ import {
 	ISlideRelChart,
 	ISlideRelMedia,
 	TableProps,
-	IText,
-	AddTextProps,
+	TextProps,
+	TextPropsOptions,
 	MediaProps,
 	ShapeProps,
 	TableRow,
@@ -215,11 +215,11 @@ export default class Slide {
 
 	/**
 	 * Add text to Slide
-	 * @param {string|IText[]} text - text string or complex object
-	 * @param {AddTextProps} options - text options
+	 * @param {string|TextProps[]} text - text string or complex object
+	 * @param {TextPropsOptions} options - text options
 	 * @return {Slide} this Slide
 	 */
-	addText(text: string | IText[], options?: AddTextProps): Slide {
+	addText(text: string | TextProps[], options?: TextPropsOptions): Slide {
 		genObj.addTextDefinition(this, text, options, false)
 		return this
 	}

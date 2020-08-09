@@ -25,11 +25,11 @@ import {
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
-	IText,
-	AddTextProps,
 	ShadowProps,
 	TableCell,
 	TableCellProps,
+	TextProps,
+	TextPropsOptions,
 } from './core-interfaces'
 import {
 	convertRotationDegrees,
@@ -812,11 +812,11 @@ function slideObjectRelationsToXml(slide: ISlideLib | ISlideLayout, defaultRels:
 
 /**
  * Generate XML Paragraph Properties
- * @param {ISlideObject|IText} textObj - text object
+ * @param {ISlideObject|TextProps} textObj - text object
  * @param {boolean} isDefault - array of default relations
  * @return {string} XML
  */
-function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boolean): string {
+function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault: boolean): string {
 	let strXmlBullet = '',
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
@@ -934,11 +934,11 @@ function genXmlParagraphProperties(textObj: ISlideObject | IText, isDefault: boo
 
 /**
  * Generate XML Text Run Properties (`a:rPr`)
- * @param {IObjectOptions|AddTextProps} opts - text options
+ * @param {IObjectOptions|TextPropsOptions} opts - text options
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
-function genXmlTextRunProperties(opts: IObjectOptions | AddTextProps, isDefault: boolean): string {
+function genXmlTextRunProperties(opts: IObjectOptions | TextPropsOptions, isDefault: boolean): string {
 	let runProps = ''
 	let runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
 
@@ -990,10 +990,10 @@ function genXmlTextRunProperties(opts: IObjectOptions | AddTextProps, isDefault:
 
 /**
  * Build textBody text runs [`<a:r></a:r>`] for paragraphs [`<a:p>`]
- * @param {IText} textObj - Text object
+ * @param {TextProps} textObj - Text object
  * @return {string} XML string
  */
-function genXmlTextRun(textObj: IText): string {
+function genXmlTextRun(textObj: TextProps): string {
 	// NOTE: Dont create full rPr runProps for empty [lineBreak] runs
 	// Why? The size of the lineBreak wont match (eg: below it will be 18px instead of the correct 36px)
 	// Do this:
@@ -1114,8 +1114,8 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
  */
 export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	let opts: IObjectOptions = slideObj.options || {}
-	let tmpTextObjects: IText[] = []
-	let arrTextObjects: IText[] = []
+	let tmpTextObjects: TextProps[] = []
+	let arrTextObjects: TextProps[] = []
 
 	// FIRST: Shapes without text, etc. may be sent here during build, but have no text to render so return an empty string
 	if (opts && slideObj._type !== SLIDE_OBJECT_TYPES.tablecell && (typeof slideObj.text === 'undefined' || slideObj.text === null)) return ''
@@ -1140,10 +1140,10 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		CASES:
 		addText( 'string' ) // string
 		addText( 'line1\n line2' ) // string with lineBreak
-		addText( {text:'word1'} ) // IText object
+		addText( {text:'word1'} ) // TextProps object
 		addText( ['barry','allen'] ) // array of strings
-		addText( [{text:'word1'}, {text:'word2'}] ) // IText object array
-		addText( [{text:'line1\n line2'}, {text:'end word'}] ) // IText object array with lineBreak
+		addText( [{text:'word1'}, {text:'word2'}] ) // TextProps object array
+		addText( [{text:'line1\n line2'}, {text:'end word'}] ) // TextProps object array with lineBreak
 	*/
 	if (typeof slideObj.text === 'string' || typeof slideObj.text === 'number') {
 		// Handle cases 1,2
@@ -1153,7 +1153,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} })
 	} else if (Array.isArray(slideObj.text)) {
 		// Handle cases 4,5,6
-		tmpTextObjects = slideObj.text.map((item: IText) => ({ text: item.text, options: item.options }))
+		tmpTextObjects = slideObj.text.map((item: TextProps) => ({ text: item.text, options: item.options }))
 	}
 
 	// STEP 4: Iterate over text objects, set text/options, break into pieces if '\n'/breakLine found
@@ -1183,8 +1183,8 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 	})
 
 	// STEP 5: Group textObj into lines by checking for lineBreak, bullets, alignment change, etc.
-	let arrLines: IText[][] = []
-	let arrTexts: IText[] = []
+	let arrLines: TextProps[][] = []
+	let arrTexts: TextProps[] = []
 	arrTextObjects.forEach((textObj, idx) => {
 		// A: Align or Bullet trigger new line
 		if (arrTexts.length > 0 && (textObj.options.align || opts.align)) {
