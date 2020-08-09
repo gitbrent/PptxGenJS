@@ -13,7 +13,11 @@ jsdoc details for everything other than charts (maybe next time...)
 
 ## [3.3.0] - 2020-08-??
 ### Major Change Summary
-- "Table auto-paging; Tons of TypeScript documentation; AddText is solid now; Angular buffer fix;"
+- The `addTable()` method finally supports auto-paging!
+- The `addText()` method's underlying text layout engine has been rewritten from scratch and handles every type of layout case now
+- New `addText()` `fit` option ('none' | 'shrink' | 'resize') addresses long-standing issues with shirnk/resize objects (new demo page as well)
+- Tons of TypeScript documentation has been added
+- Fix for Angular "Buffer is unknown" issue
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
 - **All users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/breakLine, etc.
