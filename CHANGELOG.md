@@ -11,7 +11,9 @@ jsdoc details for everything other than charts (maybe next time...)
 - Lots of poorly named options have been deprecated and new, much better names created
 - Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
-## [3.3.0] - 2020-07-?? "Table auto-paging; Tons of TypeScript documentation; AddText is solid now"
+## [3.3.0] - 2020-08-??
+### Major Change Summary
+- "Table auto-paging; Tons of TypeScript documentation; AddText is solid now; Angular buffer fix;"
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
 - **All users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/breakLine, etc.
