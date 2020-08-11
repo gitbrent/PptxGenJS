@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200720
+* BLD.: 20200810
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2914,11 +2914,11 @@ function genSlides_Text(pptx) {
 		slide.addText(
 			[
 				{ text: "NOTE", options: { fontSize:16, bold:true, breakLine: true } },
-				{ text: "* 'Shrink' and 'Resize' are only applied once text is editted or the shape is resized PowerPoint.", options: { breakLine: true } },
-				{ text: "* The app calculates a scaling factor and applies it dynamically, so there's no way for this library to trigger this event.", options: { breakLine: true } },
-				{ text: "(add a space in the above textboxes to trigger shrink and resize)" }
+				{ text: "- both 'Shrink' and 'Resize' are only applied once text is editted or the shape is resized after creation using PowerPoint/Keynote/et al.", options: { breakLine: true } },
+				{ text: "- PowerPoint calculates a scaling factor and applies it dynamically when a shape is updated - something that cannot be triggered by PptxGenJS", options: { breakLine: true } },
+				{ text: "- the textboxes above have their shrink & resize props set already, just add a space or resize them to trigger shrink and resize behavior" }
 			],
-			{ x: 0.5, y: 6.0, w: 12, h: 1, margin: 10, fontSize: 12, color: '393939', fill: { color: 'fffccc' } }
+			{ x: 0.5, y: 6.0, w: 12, h: 1.1, margin: 10, fontSize: 12, color: '393939', fill: { color: 'fffccc' } }
 		);
 	}
 
