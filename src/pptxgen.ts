@@ -80,12 +80,11 @@ import {
 } from './core-enums'
 import {
 	AddSlideProps,
-	PresLayout,
 	IPresentation,
+	PresLayout,
+	PresSlide,
 	SectionProps,
-	ISlide,
 	SlideLayout,
-	ISlideLib,
 	SlideMasterProps,
 	SlideNumberProps,
 	TableToSlidesProps,
@@ -96,7 +95,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200810:2321'
+const VERSION = '3.3.0-beta-20200810:2331'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
@@ -205,14 +204,14 @@ export default class PptxGenJS implements IPresentation {
 	}
 
 	/** master slide layout object */
-	private _masterSlide: ISlideLib
-	public get masterSlide(): ISlideLib {
+	private _masterSlide: PresSlide
+	public get masterSlide(): PresSlide {
 		return this._masterSlide
 	}
 
 	/** this Presentation's Slide objects */
-	private _slides: ISlideLib[]
-	public get slides(): ISlideLib[] {
+	private _slides: PresSlide[]
+	public get slides(): PresSlide[] {
 		return this._slides
 	}
 
@@ -349,9 +348,9 @@ export default class PptxGenJS implements IPresentation {
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
 	 * @param {string} masterName - slide master name
-	 * @return {ISlide} new Slide
+	 * @return {PresSlide} new Slide
 	 */
-	private addNewSlide = (masterName: string): ISlide => {
+	private addNewSlide = (masterName: string): PresSlide => {
 		// Continue using sections if the first slide using auto-paging has a Section
 		let sectAlreadyInUse =
 			this.sections.length > 0 && this.sections[this.sections.length - 1]._slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
@@ -365,10 +364,10 @@ export default class PptxGenJS implements IPresentation {
 	/**
 	 * Provides an API for `addTableDefinition` to get slide reference by number
 	 * @param {number} slideNum - slide number
-	 * @return {ISlideLib} Slide
+	 * @return {PresSlide} Slide
 	 * @since 3.0.0
 	 */
-	private getSlide = (slideNum: number): ISlideLib => this.slides.filter(slide => slide.number === slideNum)[0]
+	private getSlide = (slideNum: number): PresSlide => this.slides.filter(slide => slide.number === slideNum)[0]
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
@@ -384,11 +383,11 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Create all chart and media rels for this Presentation
-	 * @param {ISlideLib | SlideLayout} slide - slide with rels
+	 * @param {PresSlide | SlideLayout} slide - slide with rels
 	 * @param {JSZIP} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
-	private createChartMediaRels = (slide: ISlideLib | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
+	private createChartMediaRels = (slide: PresSlide | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
@@ -614,9 +613,9 @@ export default class PptxGenJS implements IPresentation {
 	/**
 	 * Add a new Slide to Presentation
 	 * @param {AddSlideProps} options - slide options
-	 * @returns {ISlide} the new Slide
+	 * @returns {PresSlide} the new Slide
 	 */
-	addSlide(options?: AddSlideProps): ISlide {
+	addSlide(options?: AddSlideProps): PresSlide {
 		// TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
 		let masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : ''
 

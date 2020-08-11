@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, PresLayout, TextGlowProps, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -228,9 +228,9 @@ export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLi
 
 /**
  * Get a new rel ID (rId) for charts, media, etc.
- * @param {ISlideLib} target - the slide to use
+ * @param {PresSlide} target - the slide to use
  * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
  */
-export function getNewRelId(target: ISlideLib): number {
+export function getNewRelId(target: PresSlide): number {
 	return target.rels.length + target.relsChart.length + target.relsMedia.length + 1
 }

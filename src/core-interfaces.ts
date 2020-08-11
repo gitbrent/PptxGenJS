@@ -1160,7 +1160,7 @@ export interface ISlideRelChart extends OptsChartData {
  */
 export interface SectionProps {
 	_type: 'user' | 'default'
-	_slides: ISlideLib[]
+	_slides: PresSlide[]
 
 	/**
 	 * Section title
@@ -1289,8 +1289,8 @@ export interface SlideLayout {
 	}
 	data: ISlideObject[]
 	rels: ISlideRel[]
-	relsChart: ISlideRelChart[] // needed as we use args:"ISlide|SlideLayout" often
-	relsMedia: ISlideRelMedia[] // needed as we use args:"ISlide|SlideLayout" often
+	relsChart: ISlideRelChart[] // needed as we use args:"PresSlide|SlideLayout" often
+	relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
 	margin?: Margin
 	slideNumberObj?: SlideNumberProps
 }
@@ -1298,8 +1298,21 @@ export interface AddSlideProps {
 	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
 	sectionTitle?: string
 }
-// TODO: rename `ISlide` to `Slide`, `ISlideLib` to `ISlide`
-export interface ISlide {
+export interface PresSlide {
+	bkgdImgRid?: number // FUTURE: rename
+	data?: ISlideObject[]
+	id: number
+	margin?: Margin
+	name?: string
+	number: number
+	presLayout: PresLayout
+	rels: ISlideRel[]
+	relsChart: ISlideRelChart[]
+	relsMedia: ISlideRelMedia[]
+	rId: number
+	slideLayout: SlideLayout
+	slideNumberObj?: SlideNumberProps // FUTURE: rename
+
 	addChart: Function
 	addImage: Function
 	addMedia: Function
@@ -1321,32 +1334,17 @@ export interface ISlide {
 	 */
 	bkgd?: string
 }
-export interface ISlideLib extends ISlide {
-	bkgdImgRid?: number // FUTURE: rename
-	data?: ISlideObject[]
-	id: number
-	margin?: Margin
-	name?: string
-	number: number
-	presLayout: PresLayout
-	rels: ISlideRel[]
-	relsChart: ISlideRelChart[]
-	relsMedia: ISlideRelMedia[]
-	rId: number
-	slideLayout: SlideLayout
-	slideNumberObj?: SlideNumberProps // FUTURE: rename
-}
 export interface IPresentation {
 	author: string
 	company: string
 	layout: string
-	masterSlide: ISlide
+	masterSlide: PresSlide
 	presLayout: PresLayout
 	revision: string
 	rtlMode: boolean
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
-	slides: ISlideLib[]
+	slides: PresSlide[]
 	subject: string
 	title: string
 }
