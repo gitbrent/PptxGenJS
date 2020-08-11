@@ -426,15 +426,15 @@ function slideObjectToXml(slide: ISlideLib | ISlideLayout): string {
 
 				// Margin/Padding/Inset for textboxes
 				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
-					slideItemObj.options.bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0)
-					slideItemObj.options.bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0)
-					slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin[2] || 0)
-					slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin[3] || 0)
+					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0)
+					slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0)
+					slideItemObj.options._bodyProp.bIns = valToPts(slideItemObj.options.margin[2] || 0)
+					slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin[3] || 0)
 				} else if (typeof slideItemObj.options.margin === 'number') {
-					slideItemObj.options.bodyProp.lIns = valToPts(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.rIns = valToPts(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.bIns = valToPts(slideItemObj.options.margin)
-					slideItemObj.options.bodyProp.tIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options._bodyProp.bIns = valToPts(slideItemObj.options.margin)
+					slideItemObj.options._bodyProp.tIns = valToPts(slideItemObj.options.margin)
 				}
 
 				// A: Start SHAPE =======================================================
@@ -1034,24 +1034,24 @@ function genXmlTextRun(textObj: TextProps): string {
 function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 	let bodyProperties = '<a:bodyPr'
 
-	if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options.bodyProp) {
+	if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options._bodyProp) {
 		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
 		// A: Enable or disable textwrapping none or square
-		bodyProperties += slideObject.options.bodyProp.wrap ? ' wrap="' + slideObject.options.bodyProp.wrap + '"' : ' wrap="square"'
+		bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="' + slideObject.options._bodyProp.wrap + '"' : ' wrap="square"'
 
 		// B: Textbox margins [padding]
-		if (slideObject.options.bodyProp.lIns || slideObject.options.bodyProp.lIns === 0) bodyProperties += ' lIns="' + slideObject.options.bodyProp.lIns + '"'
-		if (slideObject.options.bodyProp.tIns || slideObject.options.bodyProp.tIns === 0) bodyProperties += ' tIns="' + slideObject.options.bodyProp.tIns + '"'
-		if (slideObject.options.bodyProp.rIns || slideObject.options.bodyProp.rIns === 0) bodyProperties += ' rIns="' + slideObject.options.bodyProp.rIns + '"'
-		if (slideObject.options.bodyProp.bIns || slideObject.options.bodyProp.bIns === 0) bodyProperties += ' bIns="' + slideObject.options.bodyProp.bIns + '"'
+		if (slideObject.options._bodyProp.lIns || slideObject.options._bodyProp.lIns === 0) bodyProperties += ' lIns="' + slideObject.options._bodyProp.lIns + '"'
+		if (slideObject.options._bodyProp.tIns || slideObject.options._bodyProp.tIns === 0) bodyProperties += ' tIns="' + slideObject.options._bodyProp.tIns + '"'
+		if (slideObject.options._bodyProp.rIns || slideObject.options._bodyProp.rIns === 0) bodyProperties += ' rIns="' + slideObject.options._bodyProp.rIns + '"'
+		if (slideObject.options._bodyProp.bIns || slideObject.options._bodyProp.bIns === 0) bodyProperties += ' bIns="' + slideObject.options._bodyProp.bIns + '"'
 
 		// C: Add rtl after margins
 		bodyProperties += ' rtlCol="0"'
 
 		// D: Add anchorPoints
-		if (slideObject.options.bodyProp.anchor) bodyProperties += ' anchor="' + slideObject.options.bodyProp.anchor + '"' // VALS: [t,ctr,b]
-		if (slideObject.options.bodyProp.vert) bodyProperties += ' vert="' + slideObject.options.bodyProp.vert + '"' // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+		if (slideObject.options._bodyProp.anchor) bodyProperties += ' anchor="' + slideObject.options._bodyProp.anchor + '"' // VALS: [t,ctr,b]
+		if (slideObject.options._bodyProp.vert) bodyProperties += ' vert="' + slideObject.options._bodyProp.vert + '"' // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 
 		// E: Close <a:bodyPr element
 		bodyProperties += '>'
@@ -1076,9 +1076,9 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 		 * MS-PPT > Format shape > Text Options: "Resize shape to fit text" [spAutoFit]
 		 * NOTE: Use of '<a:noAutofit/>' in lieu of '' below causes issues in PPT-2013
 		 */
-		bodyProperties += slideObject.options.bodyProp.autoFit !== false ? '<a:spAutoFit/>' : ''
+		bodyProperties += slideObject.options._bodyProp.autoFit !== false ? '<a:spAutoFit/>' : ''
 
-		// LAST: Close bodyProp
+		// LAST: Close _bodyProp
 		bodyProperties += '</a:bodyPr>'
 	} else {
 		// DEFAULT:
@@ -1086,7 +1086,7 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 		bodyProperties += '</a:bodyPr>'
 	}
 
-	// LAST: Return Close bodyProp
+	// LAST: Return Close _bodyProp
 	return slideObject._type === SLIDE_OBJECT_TYPES.tablecell ? '<a:bodyPr/>' : bodyProperties
 }
 
@@ -1227,7 +1227,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		// B: Start paragraph, loop over lines and add text runs
 		line.forEach((textObj, idx) => {
 			// A: Set line index
-			textObj.options.lineIdx = idx
+			textObj.options._lineIdx = idx
 
 			// B: Inherit pPr-type options from parent shape's `options`
 			textObj.options.align = textObj.options.align || opts.align
@@ -1802,7 +1802,7 @@ export function makeXmlPresentation(pres: IPresentation): string {
 		strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
 		pres.sections.forEach(sect => {
 			strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
-			sect.slides.forEach(slide => (strXml += `<p14:sldId id="${slide.id}"/>`))
+			sect._slides.forEach(slide => (strXml += `<p14:sldId id="${slide.id}"/>`))
 			strXml += `</p14:sldIdLst></p14:section>`
 		})
 		strXml += '</p14:sectionLst></p:ext>'

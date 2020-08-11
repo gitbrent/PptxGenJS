@@ -31,16 +31,32 @@
 \*/
 
 /**
- * PPTX Units are "DXA" (except for font sizing)
- * ....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
- * ....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
- * SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
+ * Units of Measure used in PowerPoint documents
  *
- * OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
+ * PowerPoint units are in `DXA` (except for font sizing)
+ * - 1 inch is 1440 DXA
+ * - 1 inch is 72 points
+ * - 1 DXA is 1/20th's of a point
+ * - 20 DXA is 1 point
  *
- * REFERENCES:
- * @see [Structure of a PresentationML document (Open XML SDK)](https://msdn.microsoft.com/en-us/library/office/gg278335.aspx)
- * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
+ * Another form of measurement using is an `EMU`
+ * - 914400 EMUs is 1 inch
+ * 12700 EMUs is 1 point
+ *
+ * @see https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
+ */
+
+ /**
+ * Object Layouts
+ *
+ * - 16x9 (10" x 5.625")
+ * - 16x10 (10" x 6.25")
+ * - 4x3 (10" x 7.5")
+ * - Wide (13.33" x 7.5")
+ * - [custom] (any size)
+ *
+ * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
+ * @see https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2010/hh273476(v=office.14)
  */
 
 import * as JSZip from 'jszip'
@@ -67,8 +83,7 @@ import {
 	ILayout,
 	ILayoutProps,
 	IPresentation,
-	ISection,
-	ISectionProps,
+	SectionProps,
 	ISlide,
 	ISlideLayout,
 	ISlideLib,
@@ -82,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200809:1431'
+const VERSION = '3.3.0-beta-20200810:2151'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
@@ -203,8 +218,8 @@ export default class PptxGenJS implements IPresentation {
 	}
 
 	/** this Presentation's sections */
-	private _sections: ISection[]
-	public get sections(): ISection[] {
+	private _sections: SectionProps[]
+	public get sections(): SectionProps[] {
 		return this._sections
 	}
 
@@ -338,7 +353,7 @@ export default class PptxGenJS implements IPresentation {
 	private addNewSlide = (masterName: string): ISlide => {
 		// Continue using sections if the first slide using auto-paging has a Section
 		let sectAlreadyInUse =
-			this.sections.length > 0 && this.sections[this.sections.length - 1].slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
+			this.sections.length > 0 && this.sections[this.sections.length - 1]._slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
 
 		return this.addSlide({
 			masterName: masterName,
@@ -581,14 +596,14 @@ export default class PptxGenJS implements IPresentation {
 	 * @param {ISectionProps} section - section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSection(section: ISectionProps) {
+	addSection(section: SectionProps) {
 		if (!section) console.warn('addSection requires an argument')
 		else if (!section.title) console.warn('addSection requires a title')
 
-		let newSection: ISection = {
-			type: 'user',
+		let newSection: SectionProps = {
+			_type: 'user',
+			_slides: [],
 			title: section.title,
-			slides: [],
 		}
 
 		if (section.order) this.sections.splice(section.order, 0, newSection)
@@ -625,20 +640,20 @@ export default class PptxGenJS implements IPresentation {
 		if (options && options.sectionTitle) {
 			let sect = this.sections.filter(section => section.title === options.sectionTitle)[0]
 			if (!sect) console.warn(`addSlide: unable to find section with title: "${options.sectionTitle}"`)
-			else sect.slides.push(newSlide)
+			else sect._slides.push(newSlide)
 		}
 		// B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
 		else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
 			let lastSect = this._sections[this.sections.length - 1]
 
 			// CASE 1: The latest section is a default type - just add this one
-			if (lastSect.type === 'default') lastSect.slides.push(newSlide)
+			if (lastSect._type === 'default') lastSect._slides.push(newSlide)
 			// CASE 2: There latest section is NOT a default type - create the defualt, add this slide
 			else
 				this._sections.push({
-					type: 'default',
-					title: `Default-${this.sections.filter(sect => sect.type === 'default').length + 1}`,
-					slides: [newSlide],
+					title: `Default-${this.sections.filter(sect => sect._type === 'default').length + 1}`,
+					_type: 'default',
+					_slides: [newSlide],
 				})
 		}
 

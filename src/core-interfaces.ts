@@ -762,10 +762,10 @@ export interface TextGlowProps {
 	size: number
 }
 
-// TODO: WIP:
+// TODO: WIP: after _bodyProp, were done with TextPropsOptions (20200809)
 export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
-	bodyProp?: {
-		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
+	_bodyProp?: {
+		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
 		autoFit?: boolean
 		align?: TEXT_HALIGN
 		anchor?: TEXT_VALIGN
@@ -776,6 +776,8 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: 'none' | 'square'
 	}
+	_lineIdx?: number
+
 	/**
 	 * Character spacing
 	 */
@@ -813,7 +815,6 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
-	lineIdx?: number // TODO: Internal field for `AddTextProps`
 	lineSpacing?: number
 	margin?: Margin
 	outline?: { color: Color; size: number }
@@ -911,7 +912,7 @@ export interface OptsChartGridLine {
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
-
+// TODO: 202008: chart types remain with predicated wiht "I" in v3.3.0 (ran out of time!)
 export interface IChartTitleOpts extends TextBaseProps {
 	color?: Color
 	rotate?: number
@@ -1148,14 +1149,19 @@ export interface IChartOptsLib extends IChartOpts {
 /**
  * Section options
  */
-export interface ISectionProps {
+export interface SectionProps {
+	_type: 'user' | 'default'
+	_slides: ISlideLib[]
+
+	/**
+	 * Section title
+	 */
 	title: string
-	order?: number // 1-n
-}
-export interface ISection {
-	type: 'user' | 'default'
-	title: string
-	slides: ISlideLib[]
+	/**
+	 * Section order - uses to add section at any index
+	 * - values: 1-n
+	 */
+	order?: number
 }
 /**
  * The Presentation Layout (ex: 'LAYOUT_WIDE')
@@ -1340,7 +1346,7 @@ export interface IPresentation {
 	presLayout: ILayout
 	revision: string
 	rtlMode: boolean
-	sections: ISection[]
+	sections: SectionProps[]
 	slideLayouts: ISlideLayout[]
 	slides: ISlideLib[]
 	subject: string

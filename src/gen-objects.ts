@@ -897,7 +897,7 @@ export function addTableDefinition(
 export function addTextDefinition(target: ISlideLib, text: string | TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
 	let opt: TextPropsOptions = opts || {}
 	opt.line = opt.line || ({} as ShapeLineProps)
-	if (!opt.bodyProp) opt.bodyProp = {}
+	if (!opt._bodyProp) opt._bodyProp = {}
 	let newObject = {
 		_type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
 		shape: opt.shape || SHAPE_TYPE.RECTANGLE,
@@ -948,28 +948,28 @@ export function addTextDefinition(target: ISlideLib, text: string | TextProps[],
 		newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
 
 		// D: Transform text options to bodyProperties as thats how we build XML
-		newObject.options.bodyProp.autoFit = opt.autoFit || false // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
-		newObject.options.bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
-		newObject.options.bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+		newObject.options._bodyProp.autoFit = opt.autoFit || false // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
+		newObject.options._bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
+		newObject.options._bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 
 		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
-			newObject.options.bodyProp.lIns = inch2Emu(opt.inset)
-			newObject.options.bodyProp.rIns = inch2Emu(opt.inset)
-			newObject.options.bodyProp.tIns = inch2Emu(opt.inset)
-			newObject.options.bodyProp.bIns = inch2Emu(opt.inset)
+			newObject.options._bodyProp.lIns = inch2Emu(opt.inset)
+			newObject.options._bodyProp.rIns = inch2Emu(opt.inset)
+			newObject.options._bodyProp.tIns = inch2Emu(opt.inset)
+			newObject.options._bodyProp.bIns = inch2Emu(opt.inset)
 		}
 	}
 
-	// STEP 2: Transform `align`/`valign` to XML values, store in bodyProp for XML gen
+	// STEP 2: Transform `align`/`valign` to XML values, store in _bodyProp for XML gen
 	{
-		if ((newObject.options.align || '').toLowerCase().indexOf('c') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.center
-		else if ((newObject.options.align || '').toLowerCase().indexOf('l') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.left
-		else if ((newObject.options.align || '').toLowerCase().indexOf('r') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.right
-		else if ((newObject.options.align || '').toLowerCase().indexOf('j') === 0) newObject.options.bodyProp.align = TEXT_HALIGN.justify
+		if ((newObject.options.align || '').toLowerCase().indexOf('c') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.center
+		else if ((newObject.options.align || '').toLowerCase().indexOf('l') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.left
+		else if ((newObject.options.align || '').toLowerCase().indexOf('r') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.right
+		else if ((newObject.options.align || '').toLowerCase().indexOf('j') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.justify
 
-		if ((newObject.options.valign || '').toLowerCase().indexOf('b') === 0) newObject.options.bodyProp.anchor = TEXT_VALIGN.b
-		else if ((newObject.options.valign || '').toLowerCase().indexOf('m') === 0) newObject.options.bodyProp.anchor = TEXT_VALIGN.ctr
-		else if ((newObject.options.valign || '').toLowerCase().indexOf('t') === 0) newObject.options.bodyProp.anchor = TEXT_VALIGN.t
+		if ((newObject.options.valign || '').toLowerCase().indexOf('b') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.b
+		else if ((newObject.options.valign || '').toLowerCase().indexOf('m') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.ctr
+		else if ((newObject.options.valign || '').toLowerCase().indexOf('t') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.t
 	}
 
 	// STEP 3: ROBUST: Set rational values for some shadow props if needed
