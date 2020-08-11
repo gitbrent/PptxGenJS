@@ -11,7 +11,7 @@ import {
 	IChartOptsLib,
 	ImageProps,
 	PresLayout,
-	ISlideLayout,
+	SlideLayout,
 	SlideNumberProps,
 	ISlideObject,
 	ISlideRel,
@@ -40,7 +40,7 @@ export default class Slide {
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
 	public rId: number
-	public slideLayout: ISlideLayout
+	public slideLayout: SlideLayout
 	public slideNumberObj: SlideNumberProps
 
 	constructor(params: {
@@ -51,7 +51,7 @@ export default class Slide {
 		slideId: number
 		slideRId: number
 		slideNumber: number
-		slideLayout?: ISlideLayout
+		slideLayout?: SlideLayout
 	}) {
 		this.addSlide = params.addSlide
 		this.getSlide = params.getSlide

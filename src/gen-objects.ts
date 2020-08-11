@@ -27,7 +27,7 @@ import {
 	IChartMulti,
 	IChartOptsLib,
 	PresLayout,
-	ISlideLayout,
+	SlideLayout,
 	ISlideLib,
 	SlideMasterProps,
 	ISlideObject,
@@ -52,9 +52,9 @@ let _chartCounter: number = 0
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
  * @param {SlideMasterProps} slideDef - slide definition
- * @param {ISlideLib|ISlideLayout} target - empty slide object that should be updated by the passed definition
+ * @param {ISlideLib|SlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: SlideMasterProps, target: ISlideLayout) {
+export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayout) {
 	// STEP 1: Add background
 	if (slideDef.background) addBackgroundDefinition(slideDef.background, target)
 
@@ -629,7 +629,7 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
  * @param {ISlideLib} target - slide object that the table should be added to
  * @param {TableRow[]} tableRows - table data
  * @param {TableProps} options - table options
- * @param {ISlideLayout} slideLayout - Slide layout
+ * @param {SlideLayout} slideLayout - Slide layout
  * @param {PresLayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
  * @param {Function} getSlide - method
@@ -638,7 +638,7 @@ export function addTableDefinition(
 	target: ISlideLib,
 	tableRows: TableRow[],
 	options: TableProps,
-	slideLayout: ISlideLayout,
+	slideLayout: SlideLayout,
 	presLayout: PresLayout,
 	addSlide: Function,
 	getSlide: Function
@@ -1008,7 +1008,7 @@ export function addPlaceholdersToSlideLayouts(slide: ISlideLib) {
  * @param {BackgroundProps} bkg - color string or an object with image definition
  * @param {ISlideLib} target - slide object that the background is set to
  */
-export function addBackgroundDefinition(bkg: BackgroundProps, target: ISlideLayout) {
+export function addBackgroundDefinition(bkg: BackgroundProps, target: SlideLayout) {
 	if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		bkg.path = bkg.path || 'preencoded.png'

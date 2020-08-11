@@ -516,7 +516,7 @@ export interface ShapeProps extends PositionProps {
 
 export interface TableToSlidesProps extends TableProps {
 	_arrObjTabHeadRows?: TableRow[]
-	//_masterSlide?: ISlideLayout
+	//_masterSlide?: SlideLayout
 
 	/**
 	 * Add an image to slide(s) created during autopaging
@@ -1274,7 +1274,7 @@ export interface ISlideObject {
 	shape?: SHAPE_NAME
 }
 
-export interface ISlideLayout {
+export interface SlideLayout {
 	presLayout: PresLayout
 	name: string
 	number: number
@@ -1289,8 +1289,8 @@ export interface ISlideLayout {
 	}
 	data: ISlideObject[]
 	rels: ISlideRel[]
-	relsChart: ISlideRelChart[] // needed as we use args:"ISlide|ISlideLayout" often
-	relsMedia: ISlideRelMedia[] // needed as we use args:"ISlide|ISlideLayout" often
+	relsChart: ISlideRelChart[] // needed as we use args:"ISlide|SlideLayout" often
+	relsMedia: ISlideRelMedia[] // needed as we use args:"ISlide|SlideLayout" often
 	margin?: Margin
 	slideNumberObj?: SlideNumberProps
 }
@@ -1333,7 +1333,7 @@ export interface ISlideLib extends ISlide {
 	relsChart: ISlideRelChart[]
 	relsMedia: ISlideRelMedia[]
 	rId: number
-	slideLayout: ISlideLayout
+	slideLayout: SlideLayout
 	slideNumberObj?: SlideNumberProps // FUTURE: rename
 }
 export interface IPresentation {
@@ -1345,7 +1345,7 @@ export interface IPresentation {
 	revision: string
 	rtlMode: boolean
 	sections: SectionProps[]
-	slideLayouts: ISlideLayout[]
+	slideLayouts: SlideLayout[]
 	slides: ISlideLib[]
 	subject: string
 	title: string

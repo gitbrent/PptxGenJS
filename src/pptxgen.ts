@@ -84,7 +84,7 @@ import {
 	IPresentation,
 	SectionProps,
 	ISlide,
-	ISlideLayout,
+	SlideLayout,
 	ISlideLib,
 	SlideMasterProps,
 	SlideNumberProps,
@@ -96,7 +96,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200810:2151'
+const VERSION = '3.3.0-beta-20200810:2321'
 
 export default class PptxGenJS implements IPresentation {
 	// Property getters/setters
@@ -223,8 +223,8 @@ export default class PptxGenJS implements IPresentation {
 	}
 
 	/** slide layout definition objects, used for generating slide layout files */
-	private _slideLayouts: ISlideLayout[]
-	public get slideLayouts(): ISlideLayout[] {
+	private _slideLayouts: SlideLayout[]
+	public get slideLayouts(): SlideLayout[] {
 		return this._slideLayouts
 	}
 
@@ -384,11 +384,11 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Create all chart and media rels for this Presentation
-	 * @param {ISlideLib | ISlideLayout} slide - slide with rels
+	 * @param {ISlideLib | SlideLayout} slide - slide with rels
 	 * @param {JSZIP} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
-	private createChartMediaRels = (slide: ISlideLib | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
+	private createChartMediaRels = (slide: ISlideLib | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
 		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
 		slide.relsMedia.forEach(rel => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
@@ -685,7 +685,7 @@ export default class PptxGenJS implements IPresentation {
 	defineSlideMaster(props: SlideMasterProps) {
 		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
-		let newLayout: ISlideLayout = {
+		let newLayout: SlideLayout = {
 			presLayout: this.presLayout,
 			name: props.title,
 			number: 1000 + this.slideLayouts.length + 1,
