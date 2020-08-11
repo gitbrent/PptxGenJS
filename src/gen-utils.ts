@@ -3,16 +3,16 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, ILayout, TextGlowProps, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { IChartOpts, PresLayout, TextGlowProps, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
  * @param {number|string} size - numeric ("5.5") or percentage ("90%")
  * @param {'X' | 'Y'} xyDir - direction
- * @param {ILayout} layout - presentation layout
+ * @param {PresLayout} layout - presentation layout
  * @returns {number} calculated size
  */
-export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ILayout): number {
+export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: PresLayout): number {
 	// FIRST: Convert string numeric value if reqd
 	if (typeof size === 'string' && !isNaN(Number(size))) size = Number(size)
 

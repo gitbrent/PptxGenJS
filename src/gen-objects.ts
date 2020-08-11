@@ -26,7 +26,7 @@ import {
 	BackgroundProps,
 	IChartMulti,
 	IChartOptsLib,
-	ILayout,
+	PresLayout,
 	ISlideLayout,
 	ISlideLib,
 	ISlideMasterOptions,
@@ -630,7 +630,7 @@ export function addShapeDefinition(target: ISlideLib, shapeName: SHAPE_NAME, opt
  * @param {TableRow[]} tableRows - table data
  * @param {TableProps} options - table options
  * @param {ISlideLayout} slideLayout - Slide layout
- * @param {ILayout} presLayout - Presentation layout
+ * @param {PresLayout} presLayout - Presentation layout
  * @param {Function} addSlide - method
  * @param {Function} getSlide - method
  */
@@ -639,7 +639,7 @@ export function addTableDefinition(
 	tableRows: TableRow[],
 	options: TableProps,
 	slideLayout: ISlideLayout,
-	presLayout: ILayout,
+	presLayout: PresLayout,
 	addSlide: Function,
 	getSlide: Function
 ) {
@@ -805,7 +805,7 @@ export function addTableDefinition(
 	} else if (opt.w) {
 		opt.w = getSmartParseNumber(opt.w, 'X', presLayout)
 	} else {
-		opt.w = Math.floor(presLayout.width / EMU - arrTableMargin[1] - arrTableMargin[3])
+		opt.w = Math.floor(presLayout._sizeW / EMU - arrTableMargin[1] - arrTableMargin[3])
 	}
 
 	// STEP 4: Convert units to EMU now (we use different logic in makeSlide->table - smartCalc is not used)

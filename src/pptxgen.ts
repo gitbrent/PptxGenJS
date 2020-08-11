@@ -80,15 +80,14 @@ import {
 } from './core-enums'
 import {
 	IAddSlideOptions,
-	ILayout,
-	ILayoutProps,
+	PresLayout,
 	IPresentation,
 	SectionProps,
 	ISlide,
 	ISlideLayout,
 	ISlideLib,
 	ISlideMasterOptions,
-	ISlideNumber,
+	SlideNumberProps,
 	TableToSlidesProps,
 } from './core-interfaces'
 import * as genCharts from './gen-charts'
@@ -116,7 +115,7 @@ export default class PptxGenJS implements IPresentation {
 	 */
 	private _layout: string
 	public set layout(value: string) {
-		let newLayout: ILayout = this.LAYOUTS[value]
+		let newLayout: PresLayout = this.LAYOUTS[value]
 
 		if (newLayout) {
 			this._layout = value
@@ -248,8 +247,8 @@ export default class PptxGenJS implements IPresentation {
 	public get OutputType(): typeof OutputType {
 		return this._outputType
 	}
-	private _presLayout: ILayout
-	public get presLayout(): ILayout {
+	private _presLayout: PresLayout
+	public get presLayout(): PresLayout {
 		return this._presLayout
 	}
 	private _schemeColor = SchemeColor
@@ -286,10 +285,10 @@ export default class PptxGenJS implements IPresentation {
 	constructor() {
 		// Set available layouts
 		this.LAYOUTS = {
-			LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 } as ILayout,
-			LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as ILayout,
-			LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 } as ILayout,
-			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
+			LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 } as PresLayout,
+			LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as PresLayout,
+			LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 } as PresLayout,
+			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as PresLayout,
 		}
 
 		// Core
@@ -301,6 +300,8 @@ export default class PptxGenJS implements IPresentation {
 		// PptxGenJS props
 		this._presLayout = {
 			name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
+			_sizeW: this.LAYOUTS[DEF_PRES_LAYOUT].width,
+			_sizeH: this.LAYOUTS[DEF_PRES_LAYOUT].height,
 			width: this.LAYOUTS[DEF_PRES_LAYOUT].width,
 			height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
 		}
@@ -371,9 +372,9 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
-	 * @param {ISlideNumber} slideNum - slide number config
+	 * @param {SlideNumberProps} slideNum - slide number config
 	 */
-	private setSlideNumber = (slideNum: ISlideNumber) => {
+	private setSlideNumber = (slideNum: SlideNumberProps) => {
 		// 1: Add slideNumber to slideMaster1.xml
 		this.masterSlide.slideNumberObj = slideNum
 
@@ -662,10 +663,10 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Create a custom Slide Layout in any size
-	 * @param {ILayoutProps} layout - layout properties
+	 * @param {PresLayout} layout - layout properties
 	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 	 */
-	defineLayout(layout: ILayoutProps) {
+	defineLayout(layout: PresLayout) {
 		// @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 		if (!layout) console.warn('defineLayout requires `{name, width, height}`')
 		else if (!layout.name) console.warn('defineLayout requires `name`')
@@ -674,7 +675,7 @@ export default class PptxGenJS implements IPresentation {
 		else if (typeof layout.height !== 'number') console.warn('defineLayout `height` should be a number (inches)')
 		else if (typeof layout.width !== 'number') console.warn('defineLayout `width` should be a number (inches)')
 
-		this.LAYOUTS[layout.name] = { name: layout.name, width: Math.round(Number(layout.width) * EMU), height: Math.round(Number(layout.height) * EMU) }
+		this.LAYOUTS[layout.name] = { name: layout.name, _sizeW: Math.round(Number(layout.width) * EMU), _sizeH: Math.round(Number(layout.height) * EMU) }
 	}
 
 	/**

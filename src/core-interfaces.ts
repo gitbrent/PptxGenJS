@@ -1164,19 +1164,21 @@ export interface SectionProps {
 	order?: number
 }
 /**
- * The Presentation Layout (ex: 'LAYOUT_WIDE')
+ * The Presentation Layout
  */
-export interface ILayout {
-	name: string
-	width?: number
-	height?: number
-}
-export interface ILayoutProps {
+export interface PresLayout {
+	_sizeW?: number
+	_sizeH?: number
+
+	/**
+	 * Layout Name
+	 * @example 'LAYOUT_WIDE'
+	 */
 	name: string
 	width: number
 	height: number
 }
-export interface ISlideNumber extends PositionProps, TextBaseProps {
+export interface SlideNumberProps extends PositionProps, TextBaseProps {
 	align?: HAlign
 	color?: string
 }
@@ -1194,7 +1196,7 @@ export interface ISlideMasterOptions {
 		| { text: TextProps }
 		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
 	)[]
-	slideNumber?: ISlideNumber
+	slideNumber?: SlideNumberProps
 
 	/**
 	 * @deprecated v3.3.0 - use `background`
@@ -1277,7 +1279,7 @@ export interface ISlideObject {
 }
 
 export interface ISlideLayout {
-	presLayout: ILayout
+	presLayout: PresLayout
 	name: string
 	number: number
 	background?: BackgroundProps
@@ -1294,7 +1296,7 @@ export interface ISlideLayout {
 	relsChart: ISlideRelChart[] // needed as we use args:"ISlide|ISlideLayout" often
 	relsMedia: ISlideRelMedia[] // needed as we use args:"ISlide|ISlideLayout" often
 	margin?: Margin
-	slideNumberObj?: ISlideNumber
+	slideNumberObj?: SlideNumberProps
 }
 export interface IAddSlideOptions {
 	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
@@ -1316,7 +1318,7 @@ export interface ISlide {
 	 */
 	color?: HexColor
 	hidden?: boolean
-	slideNumber?: ISlideNumber
+	slideNumber?: SlideNumberProps
 
 	/**
 	 * @deprecated 3.3.0
@@ -1330,20 +1332,20 @@ export interface ISlideLib extends ISlide {
 	margin?: Margin
 	name?: string
 	number: number
-	presLayout: ILayout
+	presLayout: PresLayout
 	rels: ISlideRel[]
 	relsChart: ISlideRelChart[]
 	relsMedia: ISlideRelMedia[]
 	rId: number
 	slideLayout: ISlideLayout
-	slideNumberObj?: ISlideNumber // FUTURE: rename
+	slideNumberObj?: SlideNumberProps // FUTURE: rename
 }
 export interface IPresentation {
 	author: string
 	company: string
 	layout: string
 	masterSlide: ISlide
-	presLayout: ILayout
+	presLayout: PresLayout
 	revision: string
 	rtlMode: boolean
 	sections: SectionProps[]

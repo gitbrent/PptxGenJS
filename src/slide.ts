@@ -10,9 +10,9 @@ import {
 	IChartOpts,
 	IChartOptsLib,
 	ImageProps,
-	ILayout,
+	PresLayout,
 	ISlideLayout,
-	ISlideNumber,
+	SlideNumberProps,
 	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
@@ -35,18 +35,18 @@ export default class Slide {
 	public id: number
 	public name: string
 	public number: number
-	public presLayout: ILayout
+	public presLayout: PresLayout
 	public rels: ISlideRel[]
 	public relsChart: ISlideRelChart[]
 	public relsMedia: ISlideRelMedia[]
 	public rId: number
 	public slideLayout: ISlideLayout
-	public slideNumberObj: ISlideNumber
+	public slideNumberObj: SlideNumberProps
 
 	constructor(params: {
 		addSlide: Function
 		getSlide: Function
-		presLayout: ILayout
+		presLayout: PresLayout
 		setSlideNum: Function
 		slideId: number
 		slideRId: number
@@ -125,16 +125,16 @@ export default class Slide {
 	}
 
 	/**
-	 * @type {ISlideNumber}
+	 * @type {SlideNumberProps}
 	 */
-	private _slideNumber: ISlideNumber
-	public set slideNumber(value: ISlideNumber) {
+	private _slideNumber: SlideNumberProps
+	public set slideNumber(value: SlideNumberProps) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		this.slideNumberObj = value
 		this._slideNumber = value
 		this._setSlideNum(value)
 	}
-	public get slideNumber(): ISlideNumber {
+	public get slideNumber(): SlideNumberProps {
 		return this._slideNumber
 	}
 

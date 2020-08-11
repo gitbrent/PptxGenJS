@@ -4,7 +4,7 @@
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { ILayout, ISlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps } from './core-interfaces'
+import { PresLayout, ISlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps } from './core-interfaces'
 import { inch2Emu, rgbToHex, valToPts } from './gen-utils'
 
 /**
@@ -51,11 +51,11 @@ function parseTextToLines(cell: TableCell, colWidth: number): string[] {
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
  * @param {TableCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
- * @param {ILayout} presLayout - Presentation layout
+ * @param {PresLayout} presLayout - Presentation layout
  * @param {ISlideLayout} masterSlide - master slide (if any)
  * @return {TableRowSlide[]} array of table rows
  */
-export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: TableToSlidesProps = {}, presLayout: ILayout, masterSlide?: ISlideLayout): TableRowSlide[] {
+export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: TableToSlidesProps = {}, presLayout: PresLayout, masterSlide?: ISlideLayout): TableRowSlide[] {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN,
 		emuTabCurrH = 0,
 		emuSlideTabW = EMU * 1,
