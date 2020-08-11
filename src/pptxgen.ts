@@ -79,7 +79,7 @@ import {
 	WRITE_OUTPUT_TYPE,
 } from './core-enums'
 import {
-	IAddSlideOptions,
+	AddSlideProps,
 	PresLayout,
 	IPresentation,
 	SectionProps,
@@ -613,10 +613,10 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {IAddSlideOptions} options - slide options
+	 * @param {AddSlideProps} options - slide options
 	 * @returns {ISlide} the new Slide
 	 */
-	addSlide(options?: IAddSlideOptions): ISlide {
+	addSlide(options?: AddSlideProps): ISlide {
 		// TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
 		let masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : ''
 

@@ -1205,6 +1205,9 @@ export interface SlideMasterProps {
 	 */
 	bkgd?: string | BackgroundProps
 }
+
+// WIP: renamed all Interfaces above (sans charts)
+
 export interface ISlideMstrObjPlchldrOpts {
 	name: string
 	type: PLACEHOLDER_TYPES
@@ -1291,7 +1294,7 @@ export interface ISlideLayout {
 	margin?: Margin
 	slideNumberObj?: SlideNumberProps
 }
-export interface IAddSlideOptions {
+export interface AddSlideProps {
 	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
 	sectionTitle?: string
 }
