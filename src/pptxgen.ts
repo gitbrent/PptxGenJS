@@ -86,7 +86,7 @@ import {
 	ISlide,
 	ISlideLayout,
 	ISlideLib,
-	ISlideMasterOptions,
+	SlideMasterProps,
 	SlideNumberProps,
 	TableToSlidesProps,
 } from './core-interfaces'
@@ -680,38 +680,38 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Create a new slide master [layout] for the Presentation
-	 * @param {ISlideMasterOptions} options - layout options
+	 * @param {SlideMasterProps} props - layout properties
 	 */
-	defineSlideMaster(options: ISlideMasterOptions) {
-		if (!options.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+	defineSlideMaster(props: SlideMasterProps) {
+		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: ISlideLayout = {
 			presLayout: this.presLayout,
-			name: options.title,
+			name: props.title,
 			number: 1000 + this.slideLayouts.length + 1,
 			slide: null,
 			data: [],
 			rels: [],
 			relsChart: [],
 			relsMedia: [],
-			margin: options.margin || DEF_SLIDE_MARGIN_IN,
-			slideNumberObj: options.slideNumber || null,
+			margin: props.margin || DEF_SLIDE_MARGIN_IN,
+			slideNumberObj: props.slideNumber || null,
 		}
 
 		// DEPRECATED:
-		if (options.bkgd && !options.background) {
-			options.background = {}
-			if (typeof options.bkgd === 'string') options.background.fill = options.bkgd
+		if (props.bkgd && !props.background) {
+			props.background = {}
+			if (typeof props.bkgd === 'string') props.background.fill = props.bkgd
 			else {
-				if (options.bkgd.data) options.background.data = options.bkgd.data
-				if (options.bkgd.path) options.background.path = options.bkgd.path
-				if (options.bkgd['src']) options.background.path = options.bkgd['src'] // @deprecated (drop in 4.x)
+				if (props.bkgd.data) props.background.data = props.bkgd.data
+				if (props.bkgd.path) props.background.path = props.bkgd.path
+				if (props.bkgd['src']) props.background.path = props.bkgd['src'] // @deprecated (drop in 4.x)
 			}
-			delete options.bkgd
+			delete props.bkgd
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(options, newLayout)
+		genObj.createSlideObject(props, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)

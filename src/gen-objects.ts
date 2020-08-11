@@ -29,7 +29,7 @@ import {
 	PresLayout,
 	ISlideLayout,
 	ISlideLib,
-	ISlideMasterOptions,
+	SlideMasterProps,
 	ISlideObject,
 	TextProps,
 	TextPropsOptions,
@@ -51,10 +51,10 @@ let _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * @param {ISlideMasterOptions} slideDef - slide definition
+ * @param {SlideMasterProps} slideDef - slide definition
  * @param {ISlideLib|ISlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: ISlideMasterOptions, target: ISlideLayout) {
+export function createSlideObject(slideDef: SlideMasterProps, target: ISlideLayout) {
 	// STEP 1: Add background
 	if (slideDef.background) addBackgroundDefinition(slideDef.background, target)
 

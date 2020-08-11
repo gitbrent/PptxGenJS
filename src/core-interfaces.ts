@@ -1143,6 +1143,15 @@ export interface IChartOpts
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[]
 }
+export interface ISlideRelChart extends OptsChartData {
+	type: CHART_NAME | IChartMulti[]
+	opts: IChartOptsLib
+	data: OptsChartData[]
+	rId: number // TODO: internal prop
+	Target: string
+	globalId: number
+	fileName: string
+}
 
 // Core
 // ====
@@ -1182,20 +1191,13 @@ export interface SlideNumberProps extends PositionProps, TextBaseProps {
 	align?: HAlign
 	color?: string
 }
-export interface ISlideMasterOptions {
+export interface SlideMasterProps {
 	title: string
 	height?: number
 	width?: number
 	margin?: Margin
 	background?: BackgroundProps
-	objects?: (
-		| { chart: {} }
-		| { image: {} }
-		| { line: {} }
-		| { rect: {} }
-		| { text: TextProps }
-		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
-	)[]
+	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } })[]
 	slideNumber?: SlideNumberProps
 
 	/**
@@ -1210,15 +1212,6 @@ export interface ISlideMstrObjPlchldrOpts {
 	y: Coord
 	w: Coord
 	h: Coord
-}
-export interface ISlideRelChart extends OptsChartData {
-	type: CHART_NAME | IChartMulti[]
-	opts: IChartOptsLib
-	data: OptsChartData[]
-	rId: number
-	Target: string
-	globalId: number
-	fileName: string
 }
 export interface ISlideRel {
 	type: SLIDE_OBJECT_TYPES
