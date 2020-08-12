@@ -95,13 +95,13 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	}
 
 	// STEP 2: Add background image (using Strech) (if any)
-	if (slide.bkgdImgRid) {
+	if (slide._bkgdImgRid) {
 		// FIXME: We should be doing this in the slideLayout...
 		strSlideXml +=
 			'<p:bg>' +
 			'<p:bgPr><a:blipFill dpi="0" rotWithShape="1">' +
 			'<a:blip r:embed="rId' +
-			slide.bkgdImgRid +
+			slide._bkgdImgRid +
 			'"><a:lum/></a:blip>' +
 			'<a:srcRect/><a:stretch><a:fillRect/></a:stretch></a:blipFill>' +
 			'<a:effectLst/></p:bgPr>' +
@@ -115,7 +115,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
 	// STEP 4: Loop over all Slide.data objects and add them to this slide
-	slide.data.forEach((slideItemObj: ISlideObject, idx: number) => {
+	slide._slideObjects.forEach((slideItemObj: ISlideObject, idx: number) => {
 		let x = 0,
 			y = 0,
 			cx = getSmartParseNumber('75%', 'X', slide.presLayout),
@@ -124,12 +124,14 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		let locationAttr = ''
 
 		if (
-			(slide as PresSlide).slideLayout !== undefined &&
-			(slide as PresSlide).slideLayout.data !== undefined &&
+			(slide as PresSlide)._slideLayout !== undefined &&
+			(slide as PresSlide)._slideLayout._slideObjects !== undefined &&
 			slideItemObj.options &&
 			slideItemObj.options.placeholder
 		) {
-			placeholderObj = slide['slideLayout']['data'].filter((object: ISlideObject) => object.options.placeholder === slideItemObj.options.placeholder)[0]
+			placeholderObj = (slide as PresSlide)._slideLayout._slideObjects.filter(
+				(object: ISlideObject) => object.options.placeholder === slideItemObj.options.placeholder
+			)[0]
 		}
 
 		// A: Set option vars
@@ -176,9 +178,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					'<p:graphicFrame>' +
 					'  <p:nvGraphicFramePr>' +
 					'    <p:cNvPr id="' +
-					(intTableNum * slide.number + 1) +
+					(intTableNum * slide._slideNum + 1) +
 					'" name="Table ' +
-					intTableNum * slide.number +
+					intTableNum * slide._slideNum +
 					'"/>' +
 					'    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
 					'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
@@ -558,8 +560,8 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				strSlideXml += '<p:blipFill>'
 				// NOTE: This works for both cases: either `path` or `data` contains the SVG
 				if (
-					(slide['relsMedia'] || []).filter(rel => rel.rId === slideItemObj.imageRid)[0] &&
-					(slide['relsMedia'] || []).filter(rel => rel.rId === slideItemObj.imageRid)[0]['extn'] === 'svg'
+					(slide._relsMedia || []).filter(rel => rel.rId === slideItemObj.imageRid)[0] &&
+					(slide._relsMedia || []).filter(rel => rel.rId === slideItemObj.imageRid)[0]['extn'] === 'svg'
 				) {
 					strSlideXml += '<a:blip r:embed="rId' + (slideItemObj.imageRid - 1) + '">'
 					strSlideXml += ' <a:extLst>'
@@ -673,7 +675,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	})
 
 	// STEP 5: Add slide numbers (if any) last
-	if (slide.slideNumberObj) {
+	if (slide._slideNumberProps) {
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
@@ -684,14 +686,14 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			'  <p:spPr>' +
 			'    <a:xfrm>' +
 			'      <a:off x="' +
-			getSmartParseNumber(slide.slideNumberObj.x, 'X', slide.presLayout) +
+			getSmartParseNumber(slide._slideNumberProps.x, 'X', slide.presLayout) +
 			'" y="' +
-			getSmartParseNumber(slide.slideNumberObj.y, 'Y', slide.presLayout) +
+			getSmartParseNumber(slide._slideNumberProps.y, 'Y', slide.presLayout) +
 			'"/>' +
 			'      <a:ext cx="' +
-			(slide.slideNumberObj.w ? getSmartParseNumber(slide.slideNumberObj.w, 'X', slide.presLayout) : 800000) +
+			(slide._slideNumberProps.w ? getSmartParseNumber(slide._slideNumberProps.w, 'X', slide.presLayout) : 800000) +
 			'" cy="' +
-			(slide.slideNumberObj.h ? getSmartParseNumber(slide.slideNumberObj.h, 'Y', slide.presLayout) : 300000) +
+			(slide._slideNumberProps.h ? getSmartParseNumber(slide._slideNumberProps.h, 'Y', slide.presLayout) : 300000) +
 			'"/>' +
 			'    </a:xfrm>' +
 			'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
@@ -700,17 +702,17 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		strSlideXml += '<p:txBody>'
 		strSlideXml += '  <a:bodyPr/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
-		if (slide.slideNumberObj.fontFace || slide.slideNumberObj.fontSize || slide.slideNumberObj.color) {
-			strSlideXml += '<a:defRPr sz="' + (slide.slideNumberObj.fontSize ? Math.round(slide.slideNumberObj.fontSize) : '12') + '00">'
-			if (slide.slideNumberObj.color) strSlideXml += genXmlColorSelection(slide.slideNumberObj.color)
-			if (slide.slideNumberObj.fontFace)
+		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
+			strSlideXml += '<a:defRPr sz="' + (slide._slideNumberProps.fontSize ? Math.round(slide._slideNumberProps.fontSize) : '12') + '00">'
+			if (slide._slideNumberProps.color) strSlideXml += genXmlColorSelection(slide._slideNumberProps.color)
+			if (slide._slideNumberProps.fontFace)
 				strSlideXml +=
 					'<a:latin typeface="' +
-					slide.slideNumberObj.fontFace +
+					slide._slideNumberProps.fontFace +
 					'"/><a:ea typeface="' +
-					slide.slideNumberObj.fontFace +
+					slide._slideNumberProps.fontFace +
 					'"/><a:cs typeface="' +
-					slide.slideNumberObj.fontFace +
+					slide._slideNumberProps.fontFace +
 					'"/>'
 			strSlideXml += '</a:defRPr>'
 		}
@@ -740,7 +742,7 @@ function slideObjectRelationsToXml(slide: PresSlide | SlideLayout, defaultRels: 
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF + '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">'
 
 	// STEP 1: Add all rels for this Slide
-	slide.rels.forEach((rel: ISlideRel) => {
+	slide._rels.forEach((rel: ISlideRel) => {
 		lastRid = Math.max(lastRid, rel.rId)
 		if (rel.type.toLowerCase().indexOf('hyperlink') > -1) {
 			if (rel.data === 'slide') {
@@ -765,11 +767,11 @@ function slideObjectRelationsToXml(slide: PresSlide | SlideLayout, defaultRels: 
 				'<Relationship Id="rId' + rel.rId + '" Target="' + rel.Target + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide"/>'
 		}
 	})
-	;(slide.relsChart || []).forEach((rel: ISlideRelChart) => {
+	;(slide._relsChart || []).forEach((rel: ISlideRelChart) => {
 		lastRid = Math.max(lastRid, rel.rId)
 		strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>'
 	})
-	;(slide.relsMedia || []).forEach((rel: ISlideRelMedia) => {
+	;(slide._relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		lastRid = Math.max(lastRid, rel.rId)
 		if (rel.type.toLowerCase().indexOf('image') > -1) {
 			strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="' + rel.Target + '"/>'
@@ -1328,7 +1330,7 @@ export function makeXmlContTypes(slides: PresSlide[], slideLayouts: SlideLayout[
 	strXml += '<Default Extension="m4v" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
 	strXml += '<Default Extension="mp4" ContentType="video/mp4"/>' // NOTE: Hard-Code this extension as it wont be created in loop below (as extn !== type)
 	slides.forEach(slide => {
-		;(slide.relsMedia || []).forEach(rel => {
+		;(slide._relsMedia || []).forEach(rel => {
 			if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1) {
 				strXml += '<Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>'
 			}
@@ -1347,7 +1349,7 @@ export function makeXmlContTypes(slides: PresSlide[], slideLayouts: SlideLayout[
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideMaster+xml"/>'
 		strXml += '<Override PartName="/ppt/slides/slide' + (idx + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
 		// Add charts if any
-		slide.relsChart.forEach(rel => {
+		slide._relsChart.forEach(rel => {
 			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 		})
 	})
@@ -1364,7 +1366,7 @@ export function makeXmlContTypes(slides: PresSlide[], slideLayouts: SlideLayout[
 			'<Override PartName="/ppt/slideLayouts/slideLayout' +
 			(idx + 1) +
 			'.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slideLayout+xml"/>'
-		;(layout.relsChart || []).forEach(rel => {
+		;(layout._relsChart || []).forEach(rel => {
 			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 		})
 	})
@@ -1378,10 +1380,10 @@ export function makeXmlContTypes(slides: PresSlide[], slideLayouts: SlideLayout[
 	})
 
 	// STEP 6: Add rels
-	masterSlide.relsChart.forEach(rel => {
+	masterSlide._relsChart.forEach(rel => {
 		strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
 	})
-	masterSlide.relsMedia.forEach(rel => {
+	masterSlide._relsMedia.forEach(rel => {
 		if (rel.type !== 'image' && rel.type !== 'online' && rel.type !== 'chart' && rel.extn !== 'm4v' && strXml.indexOf(rel.type) === -1)
 			strXml += ' <Default Extension="' + rel.extn + '" ContentType="' + rel.type + '"/>'
 	})
@@ -1533,7 +1535,7 @@ export function makeXmlSlide(slide: PresSlide): string {
 export function getNotesFromSlide(slide: PresSlide): string {
 	let notesText = ''
 
-	slide.data.forEach(data => {
+	slide._slideObjects.forEach(data => {
 		if (data._type === 'notes') notesText += data.text
 	})
 
@@ -1579,7 +1581,7 @@ export function makeXmlNotesSlide(slide: PresSlide): string {
 		SLDNUMFLDID +
 		'" type="slidenum">' +
 		'<a:rPr lang="en-US"/><a:t>' +
-		slide.number +
+		slide._slideNum +
 		'</a:t></a:fld><a:endParaRPr lang="en-US"/></a:p></p:txBody></p:sp>' +
 		'</p:spTree><p:extLst><p:ext uri="{BB962C8B-B14F-4D97-AF65-F5344CB8AC3E}">' +
 		'<p14:creationId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1024086991"/>' +
@@ -1607,7 +1609,7 @@ export function makeXmlLayout(layout: SlideLayout): string {
  */
 export function makeXmlMaster(slide: PresSlide, layouts: SlideLayout[]): string {
 	// NOTE: Pass layouts as static rels because they are not referenced any time
-	let layoutDefs = layouts.map((_layoutDef, idx) => '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slide.rels.length + idx + 1) + '"/>')
+	let layoutDefs = layouts.map((_layoutDef, idx) => '<p:sldLayoutId id="' + (LAYOUT_IDX_SERIES_BASE + idx) + '" r:id="rId' + (slide._rels.length + idx + 1) + '"/>')
 
 	let strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' + CRLF
 	strXml +=
@@ -1734,7 +1736,7 @@ export function makeXmlNotesMasterRel(): string {
  */
 function getLayoutIdxForSlide(slides: PresSlide[], slideLayouts: SlideLayout[], slideNumber: number): number {
 	for (let i = 0; i < slideLayouts.length; i++) {
-		if (slideLayouts[i].name === slides[slideNumber - 1].slideLayout.name) {
+		if (slideLayouts[i].name === slides[slideNumber - 1]._slideLayout.name) {
 			return i + 1
 		}
 	}
@@ -1772,7 +1774,7 @@ export function makeXmlPresentation(pres: IPresentation): string {
 
 	// STEP 2: Add all Slides (SPEC: tag 3 under <presentation>)
 	strXml += '<p:sldIdLst>'
-	pres.slides.forEach(slide => (strXml += `<p:sldId id="${slide.id}" r:id="rId${slide.rId}"/>`))
+	pres.slides.forEach(slide => (strXml += `<p:sldId id="${slide._slideId}" r:id="rId${slide._rId}"/>`))
 	strXml += '</p:sldIdLst>'
 
 	// STEP 3: Add Notes Master (SPEC: tag 2 under <presentation>)
@@ -1802,7 +1804,7 @@ export function makeXmlPresentation(pres: IPresentation): string {
 		strXml += '<p14:sectionLst xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">'
 		pres.sections.forEach(sect => {
 			strXml += `<p14:section name="${encodeXmlEntities(sect.title)}" id="{${getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx')}}"><p14:sldIdLst>`
-			sect._slides.forEach(slide => (strXml += `<p14:sldId id="${slide.id}"/>`))
+			sect._slides.forEach(slide => (strXml += `<p14:sldId id="${slide._slideId}"/>`))
 			strXml += `</p14:sldIdLst></p14:section>`
 		})
 		strXml += '</p14:sectionLst></p:ext>'

@@ -8,7 +8,7 @@ import { PresSlide, SlideLayout, ISlideRelMedia } from './core-interfaces'
 /**
  * Encode Image/Audio/Video into base64
  * @param {PresSlide | SlideLayout} layout - slide layout
- * @return {Promise} promise of generating the rels
+ * @return {Promise} promise
  */
 export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<string>[] {
 	const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
@@ -16,7 +16,7 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 	let imageProms: Promise<string>[] = []
 
 	// A: Read/Encode each audio/image/video thats not already encoded (eg: base64 provided by user)
-	layout.relsMedia
+	layout._relsMedia
 		.filter(rel => rel.type !== 'online' && !rel.data && (!rel.path || (rel.path && rel.path.indexOf('preencoded') === -1)))
 		.forEach(rel => {
 			imageProms.push(
@@ -82,7 +82,7 @@ export function encodeSlideMediaRels(layout: PresSlide | SlideLayout): Promise<s
 		})
 
 	// B: SVG: base64 data still requires a png to be generated (`isSvgPng` flag this as the preview image, not the SVG itself)
-	layout.relsMedia
+	layout._relsMedia
 		.filter(rel => rel.isSvgPng && rel.data)
 		.forEach(rel => {
 			if (fs) {

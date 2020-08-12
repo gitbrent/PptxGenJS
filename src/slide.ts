@@ -30,18 +30,18 @@ export default class Slide {
 	private _setSlideNum: Function
 
 	public addSlide: Function
-	public data: ISlideObject[]
 	public getSlide: Function
-	public id: number
 	public name: string
-	public number: number
 	public presLayout: PresLayout
-	public rels: ISlideRel[]
-	public relsChart: ISlideRelChart[]
-	public relsMedia: ISlideRelMedia[]
-	public rId: number
-	public slideLayout: SlideLayout
-	public slideNumberObj: SlideNumberProps
+	public _rels: ISlideRel[]
+	public _relsChart: ISlideRelChart[]
+	public _relsMedia: ISlideRelMedia[]
+	public _rId: number
+	public _slideId: number
+	public _slideLayout: SlideLayout
+	public _slideNum: number
+	public _slideNumberProps: SlideNumberProps
+	public _slideObjects: ISlideObject[]
 
 	constructor(params: {
 		addSlide: Function
@@ -56,20 +56,21 @@ export default class Slide {
 		this.addSlide = params.addSlide
 		this.getSlide = params.getSlide
 		this.presLayout = params.presLayout
-		this._setSlideNum = params.setSlideNum
-		this.id = params.slideId
-		this.rId = params.slideRId
 		this.name = 'Slide ' + params.slideNumber
-		this.number = params.slideNumber
-		this.data = []
-		this.rels = []
-		this.relsChart = []
-		this.relsMedia = []
-		this.slideLayout = params.slideLayout || null
-		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
-		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
-		// so, lastly, add to the Slide now.
-		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null
+		this._setSlideNum = params.setSlideNum
+		this._slideId = params.slideId
+		this._rId = params.slideRId
+		this._slideNum = params.slideNumber
+		this._slideObjects = []
+		this._rels = []
+		this._relsChart = []
+		this._relsMedia = []
+		this._slideLayout = params.slideLayout || null
+		/** NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
+		 * `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
+		 * so, lastly, add to the Slide now.
+		 */
+		this._slideNumberProps = this._slideLayout && this._slideLayout._slideNumberProps ? this._slideLayout._slideNumberProps : null
 	}
 
 	/**
@@ -127,15 +128,13 @@ export default class Slide {
 	/**
 	 * @type {SlideNumberProps}
 	 */
-	private _slideNumber: SlideNumberProps
 	public set slideNumber(value: SlideNumberProps) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
-		this.slideNumberObj = value
-		this._slideNumber = value
+		this._slideNumberProps = value
 		this._setSlideNum(value)
 	}
 	public get slideNumber(): SlideNumberProps {
-		return this._slideNumber
+		return this._slideNumberProps
 	}
 
 	/**
@@ -209,7 +208,7 @@ export default class Slide {
 	 */
 	addTable(tableRows: TableRow[], options?: TableProps): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
+		genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this.presLayout, this.addSlide, this.getSlide)
 		return this
 	}
 

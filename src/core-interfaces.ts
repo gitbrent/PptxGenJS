@@ -1274,44 +1274,41 @@ export interface ISlideObject {
 	shape?: SHAPE_NAME
 }
 
-export interface SlideLayout {
+export interface SlideBaseProps {
+	_bkgdImgRid?: number // FUTURE: rename
+	_slideNum: number
+	_slideNumberProps?: SlideNumberProps
+	_slideObjects?: ISlideObject[]
+	_rels: ISlideRel[]
+	_relsChart: ISlideRelChart[] // needed as we use args:"PresSlide|SlideLayout" often
+	_relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
+
+	// TODO: WIP vvv 20200810
+	margin?: Margin
 	presLayout: PresLayout
-	name: string
-	number: number
+	// TODO: WIP: underscore above?
+
 	background?: BackgroundProps
-	bkgd?: string // @deprecated v3.3.0
-	bkgdImgRid?: number
+	name?: string
+
+	/**
+	 * @deprecated 3.3.0 - use `background`
+	 */
+	bkgd?: string
+}
+
+export interface SlideLayout extends SlideBaseProps {
 	slide?: {
+		_bkgdImgRid?: number
 		back: string
-		bkgdImgRid?: number
 		color: string
 		hidden?: boolean
 	}
-	data: ISlideObject[]
-	rels: ISlideRel[]
-	relsChart: ISlideRelChart[] // needed as we use args:"PresSlide|SlideLayout" often
-	relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
-	margin?: Margin
-	slideNumberObj?: SlideNumberProps
 }
-export interface AddSlideProps {
-	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
-	sectionTitle?: string
-}
-export interface PresSlide {
-	bkgdImgRid?: number // FUTURE: rename
-	data?: ISlideObject[]
-	id: number
-	margin?: Margin
-	name?: string
-	number: number
-	presLayout: PresLayout
-	rels: ISlideRel[]
-	relsChart: ISlideRelChart[]
-	relsMedia: ISlideRelMedia[]
-	rId: number
-	slideLayout: SlideLayout
-	slideNumberObj?: SlideNumberProps // FUTURE: rename
+export interface PresSlide extends SlideBaseProps {
+	_rId: number
+	_slideLayout: SlideLayout
+	_slideId: number
 
 	addChart: Function
 	addImage: Function
@@ -1320,6 +1317,15 @@ export interface PresSlide {
 	addShape: Function
 	addTable: Function
 	addText: Function
+
+	/**
+	 * Slide background - `fill` | `path` | `data`
+	 * @example {fill: 'FF3399'} - hex fill color
+	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
+	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
+	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
+	 * @since 3.3.0
+	 */
 	background?: BackgroundProps
 	/**
 	 * Default text color (hex format)
@@ -1328,11 +1334,10 @@ export interface PresSlide {
 	color?: HexColor
 	hidden?: boolean
 	slideNumber?: SlideNumberProps
-
-	/**
-	 * @deprecated 3.3.0
-	 */
-	bkgd?: string
+}
+export interface AddSlideProps {
+	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
+	sectionTitle?: string
 }
 export interface IPresentation {
 	author: string

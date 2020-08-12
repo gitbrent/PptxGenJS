@@ -96,7 +96,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 
 	// STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
 	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-		target.slideNumberObj = slideDef.slideNumber
+		target._slideNumberProps = slideDef.slideNumber
 	}
 }
 
@@ -292,7 +292,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	resultObject.chartRid = getNewRelId(target)
 
 	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-	target.relsChart.push({
+	target._relsChart.push({
 		rId: getNewRelId(target),
 		data: tmpData,
 		opts: options,
@@ -302,7 +302,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		Target: '/ppt/charts/chart' + chartId + '.xml',
 	})
 
-	target.data.push(resultObject)
+	target._slideObjects.push(resultObject)
 	return resultObject
 }
 
@@ -390,34 +390,34 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		// SVG files consume *TWO* rId's: (a png version and the svg image)
 		// <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
 		// <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: strImagePath || strImageData + 'png',
 			type: 'image/png',
 			extn: 'png',
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
+			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 			isSvgPng: true,
 			svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target.presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target.presLayout) },
 		})
 		newObject.imageRid = imageRelId
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: strImagePath || strImageData,
 			type: 'image/svg+xml',
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId + 1,
-			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
+			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		newObject.imageRid = imageRelId + 1
 	} else {
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: strImagePath || 'preencoded.' + strImgExtn,
 			type: 'image/' + strImgExtn,
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strImgExtn,
+			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		newObject.imageRid = imageRelId
 	}
@@ -428,7 +428,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		else {
 			imageRelId++
 
-			target.rels.push({
+			target._rels.push({
 				type: SLIDE_OBJECT_TYPES.hyperlink,
 				data: objHyperlink.slide ? 'slide' : 'dummy',
 				rId: imageRelId,
@@ -441,7 +441,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	}
 
 	// STEP 6: Add object to slide
-	target.data.push(newObject)
+	target._slideObjects.push(newObject)
 }
 
 /**
@@ -450,7 +450,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
  * @param {MediaProps} `opt` - media options
  */
 export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
-	let intRels = target.relsMedia.length + 1
+	let intRels = target._relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
 	let intSizeX = opt.w || 2
@@ -494,7 +494,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 	if (strType === 'online') {
 		// A: Add video
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			data: 'dummy',
 			type: 'online',
@@ -502,16 +502,16 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			rId: intRels + 1,
 			Target: strLink,
 		})
-		slideData.mediaRid = target.relsMedia[target.relsMedia.length - 1].rId
+		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
 
 		// B: Add preview/overlay image
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: 'preencoded.png',
 			data: IMG_PLAYBTN,
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
-			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
+			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 		})
 	} else {
 		/* NOTE: Audio/Video files consume *TWO* rId's:
@@ -520,39 +520,39 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 		 */
 
 		// A: "relationships/video"
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 0,
-			Target: '../media/media-' + target.number + '-' + (target.relsMedia.length + 1) + '.' + strExtn,
+			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
 		})
-		slideData.mediaRid = target.relsMedia[target.relsMedia.length - 1].rId
+		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
 
 		// B: "relationships/media"
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 1,
-			Target: '../media/media-' + target.number + '-' + (target.relsMedia.length + 0) + '.' + strExtn,
+			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
 		})
 
 		// C: Add preview/overlay image
-		target.relsMedia.push({
+		target._relsMedia.push({
 			data: IMG_PLAYBTN,
 			path: 'preencoded.png',
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
-			Target: '../media/image-' + target.number + '-' + (target.relsMedia.length + 1) + '.png',
+			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 		})
 	}
 
 	// LAST
-	target.data.push(slideData)
+	target._slideObjects.push(slideData)
 }
 
 /**
@@ -563,7 +563,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
  * @since 2.3.0
  */
 export function addNotesDefinition(target: PresSlide, notes: string) {
-	target.data.push({
+	target._slideObjects.push({
 		_type: SLIDE_OBJECT_TYPES.notes,
 		text: notes,
 	})
@@ -621,7 +621,7 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	createHyperlinkRels(target, newObject)
 
 	// LAST: Add object to slide
-	target.data.push(newObject)
+	target._slideObjects.push(newObject)
 }
 
 /**
@@ -853,8 +853,8 @@ export function addTableDefinition(
 		// Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
 		createHyperlinkRels(target, arrRows)
 
-		// Add data (NOTE: Use `extend` to avoid mutation)
-		target.data.push({
+		// Add slideObjects (NOTE: Use `extend` to avoid mutation)
+		target._slideObjects.push({
 			_type: SLIDE_OBJECT_TYPES.table,
 			arrTabRows: arrRows,
 			options: Object.assign({}, opt),
@@ -865,14 +865,14 @@ export function addTableDefinition(
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
 		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((slide, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-			if (!getSlide(target.number + idx)) slides.push(addSlide(slideLayout ? slideLayout.name : null))
+			if (!getSlide(target._slideNum + idx)) slides.push(addSlide(slideLayout ? slideLayout.name : null))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			{
-				let newSlide: PresSlide = getSlide(target.number + idx)
+				let newSlide: PresSlide = getSlide(target._slideNum + idx)
 
 				opt.autoPage = false
 
@@ -980,7 +980,7 @@ export function addTextDefinition(target: PresSlide, text: string | TextProps[],
 	createHyperlinkRels(target, newObject.text || '')
 
 	// LAST: Add object to Slide
-	target.data.push(newObject)
+	target._slideObjects.push(newObject)
 }
 
 /**
@@ -989,12 +989,12 @@ export function addTextDefinition(target: PresSlide, text: string | TextProps[],
  */
 export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 	// Add all placeholders on this Slide that dont already exist
-	;(slide.slideLayout.data || []).forEach(slideLayoutObj => {
+	;(slide._slideLayout._slideObjects || []).forEach(slideLayoutObj => {
 		if (slideLayoutObj._type === SLIDE_OBJECT_TYPES.placeholder) {
 			// A: Search for this placeholder on Slide before we add
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
-			if (slide.data.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
+			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
 				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
 			}
 		}
@@ -1015,18 +1015,18 @@ export function addBackgroundDefinition(bkg: BackgroundProps, target: SlideLayou
 		let strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
-		target.relsMedia = target.relsMedia || []
-		let intRels = target.relsMedia.length + 1
+		target._relsMedia = target._relsMedia || []
+		let intRels = target._relsMedia.length + 1
 		// NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
-		target.relsMedia.push({
+		target._relsMedia.push({
 			path: bkg.path,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
 			data: bkg.data || null,
 			rId: intRels,
-			Target: `../media/${(target.name || '').replace(/\s+/gi, '-')}-image-${target.relsMedia.length + 1}.${strImgExtn}`,
+			Target: `../media/${(target.name || '').replace(/\s+/gi, '-')}-image-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
-		target.bkgdImgRid = intRels
+		target._bkgdImgRid = intRels
 	} else if (bkg && bkg.fill && typeof bkg.fill === 'string') {
 		target.bkgd = bkg.fill
 	}
@@ -1055,7 +1055,7 @@ function createHyperlinkRels(target: PresSlide, text: number | string | ISlideOb
 			else {
 				let relId = getNewRelId(target)
 
-				target.rels.push({
+				target._rels.push({
 					type: SLIDE_OBJECT_TYPES.hyperlink,
 					data: text.options.hyperlink.slide ? 'slide' : 'dummy',
 					rId: relId,

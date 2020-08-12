@@ -395,7 +395,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				// 1: Create the embedded Excel worksheet with labels and data
 				zip.file('ppt/embeddings/Microsoft_Excel_Worksheet' + chartObject.globalId + '.xlsx', content, { base64: true })
 
-				// 2: Create the chart.xml and rels files
+				// 2: Create the chart.xml and rel files
 				zip.file(
 					'ppt/charts/_rels/' + chartObject.fileName + '.rels',
 					'<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
