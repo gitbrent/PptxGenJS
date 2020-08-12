@@ -17,12 +17,12 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
-	IObjectOptions,
-	IPresentation,
+	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
+	ObjectOptions,
 	PresSlide,
 	ShadowProps,
 	SlideLayout,
@@ -83,13 +83,13 @@ let imageSizingXml = {
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide: PresSlide | SlideLayout): string {
-	let strSlideXml: string = slide.name ? '<p:cSld name="' + slide.name + '">' : '<p:cSld>'
+	let strSlideXml: string = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>'
 	let intTableNum: number = 1
 
 	// STEP 1: Add background
 	if (slide.bkgd) {
 		strSlideXml += genXmlColorSelection(null, slide.bkgd)
-	} else if (!slide.bkgd && slide.name && slide.name === DEF_PRES_LAYOUT_NAME) {
+	} else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
 		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
 		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
 	}
@@ -118,7 +118,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	slide._slideObjects.forEach((slideItemObj: ISlideObject, idx: number) => {
 		let x = 0,
 			y = 0,
-			cx = getSmartParseNumber('75%', 'X', slide.presLayout),
+			cx = getSmartParseNumber('75%', 'X', slide._presLayout),
 			cy = 0
 		let placeholderObj: ISlideObject
 		let locationAttr = ''
@@ -137,17 +137,17 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		// A: Set option vars
 		slideItemObj.options = slideItemObj.options || {}
 
-		if (typeof slideItemObj.options.x !== 'undefined') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide.presLayout)
-		if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide.presLayout)
-		if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide.presLayout)
-		if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide.presLayout)
+		if (typeof slideItemObj.options.x !== 'undefined') x = getSmartParseNumber(slideItemObj.options.x, 'X', slide._presLayout)
+		if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide._presLayout)
+		if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout)
+		if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout)
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
-			if (placeholderObj.options.x || placeholderObj.options.x === 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide.presLayout)
-			if (placeholderObj.options.y || placeholderObj.options.y === 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide.presLayout)
-			if (placeholderObj.options.w || placeholderObj.options.w === 0) cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide.presLayout)
-			if (placeholderObj.options.h || placeholderObj.options.h === 0) cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout)
+			if (placeholderObj.options.x || placeholderObj.options.x === 0) x = getSmartParseNumber(placeholderObj.options.x, 'X', slide._presLayout)
+			if (placeholderObj.options.y || placeholderObj.options.y === 0) y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide._presLayout)
+			if (placeholderObj.options.w || placeholderObj.options.w === 0) cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide._presLayout)
+			if (placeholderObj.options.h || placeholderObj.options.h === 0) cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide._presLayout)
 		}
 		//
 		if (slideItemObj.options.flipH) locationAttr += ' flipH="1"'
@@ -574,10 +574,10 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>'
 				}
 				if (sizing && sizing.type) {
-					let boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide.presLayout) : cx,
-						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide.presLayout) : cy,
-						boxX = getSmartParseNumber(sizing.x || 0, 'X', slide.presLayout),
-						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide.presLayout)
+					let boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide._presLayout) : cx,
+						boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide._presLayout) : cy,
+						boxX = getSmartParseNumber(sizing.x || 0, 'X', slide._presLayout),
+						boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide._presLayout)
 
 					strSlideXml += imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY })
 					width = boxW
@@ -686,14 +686,14 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			'  <p:spPr>' +
 			'    <a:xfrm>' +
 			'      <a:off x="' +
-			getSmartParseNumber(slide._slideNumberProps.x, 'X', slide.presLayout) +
+			getSmartParseNumber(slide._slideNumberProps.x, 'X', slide._presLayout) +
 			'" y="' +
-			getSmartParseNumber(slide._slideNumberProps.y, 'Y', slide.presLayout) +
+			getSmartParseNumber(slide._slideNumberProps.y, 'Y', slide._presLayout) +
 			'"/>' +
 			'      <a:ext cx="' +
-			(slide._slideNumberProps.w ? getSmartParseNumber(slide._slideNumberProps.w, 'X', slide.presLayout) : 800000) +
+			(slide._slideNumberProps.w ? getSmartParseNumber(slide._slideNumberProps.w, 'X', slide._presLayout) : 800000) +
 			'" cy="' +
-			(slide._slideNumberProps.h ? getSmartParseNumber(slide._slideNumberProps.h, 'Y', slide.presLayout) : 300000) +
+			(slide._slideNumberProps.h ? getSmartParseNumber(slide._slideNumberProps.h, 'Y', slide._presLayout) : 300000) +
 			'"/>' +
 			'    </a:xfrm>' +
 			'    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
@@ -936,11 +936,11 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 
 /**
  * Generate XML Text Run Properties (`a:rPr`)
- * @param {IObjectOptions|TextPropsOptions} opts - text options
+ * @param {ObjectOptions|TextPropsOptions} opts - text options
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
-function genXmlTextRunProperties(opts: IObjectOptions | TextPropsOptions, isDefault: boolean): string {
+function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefault: boolean): string {
 	let runProps = ''
 	let runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr'
 
@@ -1115,7 +1115,7 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
  * @returns XML containing the param object's text and formatting
  */
 export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
-	let opts: IObjectOptions = slideObj.options || {}
+	let opts: ObjectOptions = slideObj.options || {}
 	let tmpTextObjects: TextProps[] = []
 	let arrTextObjects: TextProps[] = []
 
@@ -1297,8 +1297,8 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 export function genXmlPlaceholder(placeholderObj: ISlideObject): string {
 	if (!placeholderObj) return ''
 
-	let placeholderIdx = placeholderObj.options && placeholderObj.options.placeholderIdx ? placeholderObj.options.placeholderIdx : ''
-	let placeholderType = placeholderObj.options && placeholderObj.options.placeholderType ? placeholderObj.options.placeholderType : ''
+	let placeholderIdx = placeholderObj.options && placeholderObj.options._placeholderIdx ? placeholderObj.options._placeholderIdx : ''
+	let placeholderType = placeholderObj.options && placeholderObj.options._placeholderType ? placeholderObj.options._placeholderType : ''
 
 	return `<p:ph
 		${placeholderIdx ? ' idx="' + placeholderIdx + '"' : ''}
@@ -1736,7 +1736,7 @@ export function makeXmlNotesMasterRel(): string {
  */
 function getLayoutIdxForSlide(slides: PresSlide[], slideLayouts: SlideLayout[], slideNumber: number): number {
 	for (let i = 0; i < slideLayouts.length; i++) {
-		if (slideLayouts[i].name === slides[slideNumber - 1]._slideLayout.name) {
+		if (slideLayouts[i]._name === slides[slideNumber - 1]._slideLayout._name) {
 			return i + 1
 		}
 	}
@@ -1760,10 +1760,10 @@ export function makeXmlTheme(): string {
  * Create presentation file (`ppt/presentation.xml`)
  * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
  * @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
- * @param {IPresentation} pres - presentation
+ * @param {IPresentationProps} pres - presentation
  * @return {string} XML
  */
-export function makeXmlPresentation(pres: IPresentation): string {
+export function makeXmlPresentation(pres: IPresentationProps): string {
 	let strXml =
 		`<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}` +
 		`<p:presentation xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" ` +

@@ -46,7 +46,7 @@
  * @see https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
  */
 
- /**
+/**
  * Object Layouts
  *
  * - 16x9 (10" x 5.625")
@@ -78,26 +78,16 @@ import {
 	ShapeType,
 	WRITE_OUTPUT_TYPE,
 } from './core-enums'
-import {
-	AddSlideProps,
-	IPresentation,
-	PresLayout,
-	PresSlide,
-	SectionProps,
-	SlideLayout,
-	SlideMasterProps,
-	SlideNumberProps,
-	TableToSlidesProps,
-} from './core-interfaces'
+import { AddSlideProps, IPresentationProps, PresLayout, PresSlide, SectionProps, SlideLayout, SlideMasterProps, SlideNumberProps, TableToSlidesProps } from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200811:2055'
+const VERSION = '3.3.0-beta-20200811:2344'
 
-export default class PptxGenJS implements IPresentation {
+export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
 
 	/**
@@ -308,16 +298,16 @@ export default class PptxGenJS implements IPresentation {
 		//
 		this._slideLayouts = [
 			{
+				_margin: DEF_SLIDE_MARGIN_IN,
+				_name: DEF_PRES_LAYOUT_NAME,
+				_presLayout: this._presLayout,
 				_rels: [],
 				_relsChart: [],
 				_relsMedia: [],
+				_slide: null,
 				_slideNum: 1000,
 				_slideNumberProps: null,
 				_slideObjects: [],
-				margin: DEF_SLIDE_MARGIN_IN,
-				name: DEF_PRES_LAYOUT_NAME,
-				presLayout: this._presLayout,
-				slide: null,
 			},
 		]
 		this._slides = []
@@ -331,6 +321,8 @@ export default class PptxGenJS implements IPresentation {
 			addTable: null,
 			addText: null,
 			//
+			_name: null,
+			_presLayout: this._presLayout,
 			_rId: null,
 			_rels: [],
 			_relsChart: [],
@@ -340,8 +332,6 @@ export default class PptxGenJS implements IPresentation {
 			_slideNum: null,
 			_slideNumberProps: null,
 			_slideObjects: [],
-			name: null,
-			presLayout: this._presLayout,
 		}
 	}
 
@@ -353,7 +343,8 @@ export default class PptxGenJS implements IPresentation {
 	private addNewSlide = (masterName: string): PresSlide => {
 		// Continue using sections if the first slide using auto-paging has a Section
 		let sectAlreadyInUse =
-			this.sections.length > 0 && this.sections[this.sections.length - 1]._slides.filter(slide => slide._slideNum === this.slides[this.slides.length - 1]._slideNum).length > 0
+			this.sections.length > 0 &&
+			this.sections[this.sections.length - 1]._slides.filter(slide => slide._slideNum === this.slides[this.slides.length - 1]._slideNum).length > 0
 
 		return this.addSlide({
 			masterName: masterName,
@@ -378,7 +369,7 @@ export default class PptxGenJS implements IPresentation {
 		this.masterSlide._slideNumberProps = slideNum
 
 		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-		this.slideLayouts.filter(layout => layout.name === DEF_PRES_LAYOUT_NAME)[0]._slideNumberProps = slideNum
+		this.slideLayouts.filter(layout => layout._name === DEF_PRES_LAYOUT_NAME)[0]._slideNumberProps = slideNum
 	}
 
 	/**
@@ -628,7 +619,7 @@ export default class PptxGenJS implements IPresentation {
 			slideRId: this.slides.length + 2,
 			slideNumber: this.slides.length + 1,
 			slideLayout: masterSlideName
-				? this.slideLayouts.filter(layout => layout.name === masterSlideName)[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
+				? this.slideLayouts.filter(layout => layout._name === masterSlideName)[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
 				: this.LAYOUTS[DEF_PRES_LAYOUT],
 		})
 
@@ -685,16 +676,16 @@ export default class PptxGenJS implements IPresentation {
 		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: SlideLayout = {
-			presLayout: this.presLayout,
-			name: props.title,
-			slide: null,
-			margin: props.margin || DEF_SLIDE_MARGIN_IN,
-			_slideNum: 1000 + this.slideLayouts.length + 1,
-			_slideNumberProps: props.slideNumber || null,
-			_slideObjects: [],
+			_margin: props.margin || DEF_SLIDE_MARGIN_IN,
+			_name: props.title,
+			_presLayout: this.presLayout,
 			_rels: [],
 			_relsChart: [],
 			_relsMedia: [],
+			_slide: null,
+			_slideNum: 1000 + this.slideLayouts.length + 1,
+			_slideNumberProps: props.slideNumber || null,
+			_slideObjects: [],
 		}
 
 		// DEPRECATED:
@@ -732,7 +723,7 @@ export default class PptxGenJS implements IPresentation {
 			this,
 			eleId,
 			options,
-			options && options.masterSlideName ? this.slideLayouts.filter(layout => layout.name === options.masterSlideName)[0] : null
+			options && options.masterSlideName ? this.slideLayouts.filter(layout => layout._name === options.masterSlideName)[0] : null
 		)
 	}
 }

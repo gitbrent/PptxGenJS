@@ -83,10 +83,10 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		// Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
 		if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0) tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
 
-		if (masterSlide && typeof masterSlide.margin !== 'undefined') {
-			if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
-			else if (!isNaN(Number(masterSlide.margin)))
-				arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)]
+		if (masterSlide && typeof masterSlide._margin !== 'undefined') {
+			if (Array.isArray(masterSlide._margin)) arrInchMargins = masterSlide._margin
+			else if (!isNaN(Number(masterSlide._margin)))
+				arrInchMargins = [Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin)]
 		} else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
 			if (Array.isArray(tabOpts.slideMargin)) arrInchMargins = tabOpts.slideMargin
 			else if (!isNaN(tabOpts.slideMargin)) arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin]
@@ -362,9 +362,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 	if (!document.getElementById(tabEleId)) throw new Error('tableToSlides: Table ID "' + tabEleId + '" does not exist!')
 
 	// STEP 1: Set margins
-	if (masterSlide && masterSlide.margin) {
-		if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
-		else if (!isNaN(masterSlide.margin)) arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin]
+	if (masterSlide && masterSlide._margin) {
+		if (Array.isArray(masterSlide._margin)) arrInchMargins = masterSlide._margin
+		else if (!isNaN(masterSlide._margin)) arrInchMargins = [masterSlide._margin, masterSlide._margin, masterSlide._margin, masterSlide._margin]
 		opts.slideMargin = arrInchMargins
 	} else if (opts && opts.slideMargin) {
 		if (Array.isArray(opts.slideMargin)) arrInchMargins = opts.slideMargin

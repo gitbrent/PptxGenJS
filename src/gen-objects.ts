@@ -398,7 +398,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 			rId: imageRelId,
 			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
 			isSvgPng: true,
-			svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target.presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target.presLayout) },
+			svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
 		})
 		newObject.imageRid = imageRelId
 		target._relsMedia.push({
@@ -760,16 +760,16 @@ export function addTableDefinition(
 	// Get slide margins - start with default values, then adjust if master or slide margins exist
 	let arrTableMargin = DEF_SLIDE_MARGIN_IN
 	// Case 1: Master margins
-	if (slideLayout && typeof slideLayout.margin !== 'undefined') {
-		if (Array.isArray(slideLayout.margin)) arrTableMargin = slideLayout.margin
-		else if (!isNaN(Number(slideLayout.margin)))
-			arrTableMargin = [Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin)]
+	if (slideLayout && typeof slideLayout._margin !== 'undefined') {
+		if (Array.isArray(slideLayout._margin)) arrTableMargin = slideLayout._margin
+		else if (!isNaN(Number(slideLayout._margin)))
+			arrTableMargin = [Number(slideLayout._margin), Number(slideLayout._margin), Number(slideLayout._margin), Number(slideLayout._margin)]
 	}
 	// Case 2: Table margins
-	/* FIXME: add `margin` option to slide options
-		else if ( addNewSlide.margin ) {
-			if ( Array.isArray(addNewSlide.margin) ) arrTableMargin = addNewSlide.margin;
-			else if ( !isNaN(Number(addNewSlide.margin)) ) arrTableMargin = [Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin)];
+	/* FIXME: add `_margin` option to slide options
+		else if ( addNewSlide._margin ) {
+			if ( Array.isArray(addNewSlide._margin) ) arrTableMargin = addNewSlide._margin;
+			else if ( !isNaN(Number(addNewSlide._margin)) ) arrTableMargin = [Number(addNewSlide._margin), Number(addNewSlide._margin), Number(addNewSlide._margin), Number(addNewSlide._margin)];
 		}
 	*/
 
@@ -865,7 +865,7 @@ export function addTableDefinition(
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
 		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((slide, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-			if (!getSlide(target._slideNum + idx)) slides.push(addSlide(slideLayout ? slideLayout.name : null))
+			if (!getSlide(target._slideNum + idx)) slides.push(addSlide(slideLayout ? slideLayout._name : null))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0])
@@ -1024,7 +1024,7 @@ export function addBackgroundDefinition(bkg: BackgroundProps, target: SlideLayou
 			extn: strImgExtn,
 			data: bkg.data || null,
 			rId: intRels,
-			Target: `../media/${(target.name || '').replace(/\s+/gi, '-')}-image-${target._relsMedia.length + 1}.${strImgExtn}`,
+			Target: `../media/${(target._name || '').replace(/\s+/gi, '-')}-image-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target._bkgdImgRid = intRels
 	} else if (bkg && bkg.fill && typeof bkg.fill === 'string') {

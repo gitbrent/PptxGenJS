@@ -31,8 +31,8 @@ export default class Slide {
 
 	public addSlide: Function
 	public getSlide: Function
-	public name: string
-	public presLayout: PresLayout
+	public _name: string
+	public _presLayout: PresLayout
 	public _rels: ISlideRel[]
 	public _relsChart: ISlideRelChart[]
 	public _relsMedia: ISlideRelMedia[]
@@ -55,17 +55,17 @@ export default class Slide {
 	}) {
 		this.addSlide = params.addSlide
 		this.getSlide = params.getSlide
-		this.presLayout = params.presLayout
-		this.name = 'Slide ' + params.slideNumber
-		this._setSlideNum = params.setSlideNum
-		this._slideId = params.slideId
+		this._name = 'Slide ' + params.slideNumber
+		this._presLayout = params.presLayout
 		this._rId = params.slideRId
-		this._slideNum = params.slideNumber
-		this._slideObjects = []
 		this._rels = []
 		this._relsChart = []
 		this._relsMedia = []
+		this._setSlideNum = params.setSlideNum
+		this._slideId = params.slideId
 		this._slideLayout = params.slideLayout || null
+		this._slideNum = params.slideNumber
+		this._slideObjects = []
 		/** NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
 		 * `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
 		 * so, lastly, add to the Slide now.
@@ -208,7 +208,7 @@ export default class Slide {
 	 */
 	addTable(tableRows: TableRow[], options?: TableProps): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this.presLayout, this.addSlide, this.getSlide)
+		genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide)
 		return this
 	}
 

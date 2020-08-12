@@ -131,6 +131,14 @@ export interface HyperlinkProps {
 	 */
 	tooltip?: string
 }
+export interface PlaceholderProps {
+	name: string
+	type: PLACEHOLDER_TYPES
+	x: Coord
+	y: Coord
+	w: Coord
+	h: Coord
+}
 // used by: chart, text
 export interface ShadowProps {
 	/**
@@ -1141,13 +1149,13 @@ export interface IChartOpts
 		OptsChartGridLine,
 		PositionProps {}
 export interface IChartOptsLib extends IChartOpts {
-	_type?: CHART_NAME | IChartMulti[]
+	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
 }
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_NAME | IChartMulti[]
 	opts: IChartOptsLib
 	data: OptsChartData[]
-	rId: number // TODO: internal prop
+	rId: number
 	Target: string
 	globalId: number
 	fileName: string
@@ -1197,7 +1205,7 @@ export interface SlideMasterProps {
 	width?: number
 	margin?: Margin
 	background?: BackgroundProps
-	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } })[]
+	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
 	slideNumber?: SlideNumberProps
 
 	/**
@@ -1206,16 +1214,7 @@ export interface SlideMasterProps {
 	bkgd?: string | BackgroundProps
 }
 
-// WIP: renamed all Interfaces above (sans charts)
-
-export interface ISlideMstrObjPlchldrOpts {
-	name: string
-	type: PLACEHOLDER_TYPES
-	x: Coord
-	y: Coord
-	w: Coord
-	h: Coord
-}
+// PRIVATE
 export interface ISlideRel {
 	type: SLIDE_OBJECT_TYPES
 	Target: string
@@ -1227,6 +1226,7 @@ export interface ISlideRel {
 	globalId?: number
 	rId: number
 }
+// PRIVATE
 export interface ISlideRelMedia {
 	type: string
 	opts?: MediaProps
@@ -1238,25 +1238,20 @@ export interface ISlideRelMedia {
 	rId: number
 	Target: string
 }
-// TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends ShapeProps, TableCellProps, TextPropsOptions, ImageProps {
-	x?: Coord
-	y?: Coord
+export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
+	_placeholderIdx?: number
+	_placeholderType?: PLACEHOLDER_TYPES
+
 	cx?: Coord
 	cy?: Coord
-	w?: Coord
-	h?: Coord
 	margin?: Margin
-	// table
-	colW?: number | number[]
-	rowH?: number | number[]
-	// placeholder
-	placeholderIdx?: number
-	placeholderType?: PLACEHOLDER_TYPES
+	colW?: number | number[] // table
+	rowH?: number | number[] // table
 }
+// PRIVATE
 export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
-	options?: IObjectOptions
+	options?: ObjectOptions
 	// text
 	text?: string | TextProps[]
 	// table
@@ -1275,22 +1270,18 @@ export interface ISlideObject {
 }
 
 export interface SlideBaseProps {
-	_bkgdImgRid?: number // FUTURE: rename
-	_slideNum: number
-	_slideNumberProps?: SlideNumberProps
-	_slideObjects?: ISlideObject[]
+	_bkgdImgRid?: number
+	_margin?: Margin
+	_name?: string
+	_presLayout: PresLayout
 	_rels: ISlideRel[]
 	_relsChart: ISlideRelChart[] // needed as we use args:"PresSlide|SlideLayout" often
 	_relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
-
-	// TODO: WIP vvv 20200810
-	margin?: Margin
-	presLayout: PresLayout
-	// TODO: WIP: underscore above?
+	_slideNum: number
+	_slideNumberProps?: SlideNumberProps
+	_slideObjects?: ISlideObject[]
 
 	background?: BackgroundProps
-	name?: string
-
 	/**
 	 * @deprecated 3.3.0 - use `background`
 	 */
@@ -1298,7 +1289,7 @@ export interface SlideBaseProps {
 }
 
 export interface SlideLayout extends SlideBaseProps {
-	slide?: {
+	_slide?: {
 		_bkgdImgRid?: number
 		back: string
 		color: string
@@ -1339,17 +1330,28 @@ export interface AddSlideProps {
 	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
 	sectionTitle?: string
 }
-export interface IPresentation {
+export interface PresentationProps {
 	author: string
 	company: string
 	layout: string
 	masterSlide: PresSlide
+	/**
+	 * Presentation's layout
+	 * read-only
+	 */
 	presLayout: PresLayout
 	revision: string
+	/**
+	 * Whether to enable right-to-left mode
+	 * @default false
+	 */
 	rtlMode: boolean
+	subject: string
+	title: string
+}
+// PRIVATE interface
+export interface IPresentationProps extends PresentationProps {
 	sections: SectionProps[]
 	slideLayouts: SlideLayout[]
 	slides: PresSlide[]
-	subject: string
-	title: string
 }
