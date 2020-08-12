@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-08-12T02:59:17.475Z */
+/* PptxGenJS 3.3.0-beta @ 2020-08-12T04:59:44.210Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -886,11 +886,11 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
         // Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
         if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0)
             tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0];
-        if (masterSlide && typeof masterSlide.margin !== 'undefined') {
-            if (Array.isArray(masterSlide.margin))
-                arrInchMargins = masterSlide.margin;
-            else if (!isNaN(Number(masterSlide.margin)))
-                arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)];
+        if (masterSlide && typeof masterSlide._margin !== 'undefined') {
+            if (Array.isArray(masterSlide._margin))
+                arrInchMargins = masterSlide._margin;
+            else if (!isNaN(Number(masterSlide._margin)))
+                arrInchMargins = [Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin)];
         }
         else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
             if (Array.isArray(tabOpts.slideMargin))
@@ -1156,11 +1156,11 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     if (!document.getElementById(tabEleId))
         throw new Error('tableToSlides: Table ID "' + tabEleId + '" does not exist!');
     // STEP 1: Set margins
-    if (masterSlide && masterSlide.margin) {
-        if (Array.isArray(masterSlide.margin))
-            arrInchMargins = masterSlide.margin;
-        else if (!isNaN(masterSlide.margin))
-            arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin];
+    if (masterSlide && masterSlide._margin) {
+        if (Array.isArray(masterSlide._margin))
+            arrInchMargins = masterSlide._margin;
+        else if (!isNaN(masterSlide._margin))
+            arrInchMargins = [masterSlide._margin, masterSlide._margin, masterSlide._margin, masterSlide._margin];
         opts.slideMargin = arrInchMargins;
     }
     else if (opts && opts.slideMargin) {
@@ -1368,13 +1368,13 @@ var imageSizingXml = {
  * @return {string} XML string with <p:cSld> as the root
  */
 function slideObjectToXml(slide) {
-    var strSlideXml = slide.name ? '<p:cSld name="' + slide.name + '">' : '<p:cSld>';
+    var strSlideXml = slide._name ? '<p:cSld name="' + slide._name + '">' : '<p:cSld>';
     var intTableNum = 1;
     // STEP 1: Add background
     if (slide.bkgd) {
         strSlideXml += genXmlColorSelection(null, slide.bkgd);
     }
-    else if (!slide.bkgd && slide.name && slide.name === DEF_PRES_LAYOUT_NAME) {
+    else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
         // NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
         strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>';
     }
@@ -1398,7 +1398,7 @@ function slideObjectToXml(slide) {
     strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>';
     // STEP 4: Loop over all Slide.data objects and add them to this slide
     slide._slideObjects.forEach(function (slideItemObj, idx) {
-        var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide.presLayout), cy = 0;
+        var x = 0, y = 0, cx = getSmartParseNumber('75%', 'X', slide._presLayout), cy = 0;
         var placeholderObj;
         var locationAttr = '';
         if (slide._slideLayout !== undefined &&
@@ -1410,23 +1410,23 @@ function slideObjectToXml(slide) {
         // A: Set option vars
         slideItemObj.options = slideItemObj.options || {};
         if (typeof slideItemObj.options.x !== 'undefined')
-            x = getSmartParseNumber(slideItemObj.options.x, 'X', slide.presLayout);
+            x = getSmartParseNumber(slideItemObj.options.x, 'X', slide._presLayout);
         if (typeof slideItemObj.options.y !== 'undefined')
-            y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide.presLayout);
+            y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide._presLayout);
         if (typeof slideItemObj.options.w !== 'undefined')
-            cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide.presLayout);
+            cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout);
         if (typeof slideItemObj.options.h !== 'undefined')
-            cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide.presLayout);
+            cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout);
         // If using a placeholder then inherit it's position
         if (placeholderObj) {
             if (placeholderObj.options.x || placeholderObj.options.x === 0)
-                x = getSmartParseNumber(placeholderObj.options.x, 'X', slide.presLayout);
+                x = getSmartParseNumber(placeholderObj.options.x, 'X', slide._presLayout);
             if (placeholderObj.options.y || placeholderObj.options.y === 0)
-                y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide.presLayout);
+                y = getSmartParseNumber(placeholderObj.options.y, 'Y', slide._presLayout);
             if (placeholderObj.options.w || placeholderObj.options.w === 0)
-                cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide.presLayout);
+                cx = getSmartParseNumber(placeholderObj.options.w, 'X', slide._presLayout);
             if (placeholderObj.options.h || placeholderObj.options.h === 0)
-                cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide.presLayout);
+                cy = getSmartParseNumber(placeholderObj.options.h, 'Y', slide._presLayout);
         }
         //
         if (slideItemObj.options.flipH)
@@ -1815,7 +1815,7 @@ function slideObjectToXml(slide) {
                     strSlideXml += '<a:blip r:embed="rId' + slideItemObj.imageRid + '"/>';
                 }
                 if (sizing && sizing.type) {
-                    var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide.presLayout) : cx, boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide.presLayout) : cy, boxX = getSmartParseNumber(sizing.x || 0, 'X', slide.presLayout), boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide.presLayout);
+                    var boxW = sizing.w ? getSmartParseNumber(sizing.w, 'X', slide._presLayout) : cx, boxH = sizing.h ? getSmartParseNumber(sizing.h, 'Y', slide._presLayout) : cy, boxX = getSmartParseNumber(sizing.x || 0, 'X', slide._presLayout), boxY = getSmartParseNumber(sizing.y || 0, 'Y', slide._presLayout);
                     strSlideXml += imageSizingXml[sizing.type]({ w: width, h: height }, { w: boxW, h: boxH, x: boxX, y: boxY });
                     width = boxW;
                     height = boxH;
@@ -1921,14 +1921,14 @@ function slideObjectToXml(slide) {
                 '  <p:spPr>' +
                 '    <a:xfrm>' +
                 '      <a:off x="' +
-                getSmartParseNumber(slide._slideNumberProps.x, 'X', slide.presLayout) +
+                getSmartParseNumber(slide._slideNumberProps.x, 'X', slide._presLayout) +
                 '" y="' +
-                getSmartParseNumber(slide._slideNumberProps.y, 'Y', slide.presLayout) +
+                getSmartParseNumber(slide._slideNumberProps.y, 'Y', slide._presLayout) +
                 '"/>' +
                 '      <a:ext cx="' +
-                (slide._slideNumberProps.w ? getSmartParseNumber(slide._slideNumberProps.w, 'X', slide.presLayout) : 800000) +
+                (slide._slideNumberProps.w ? getSmartParseNumber(slide._slideNumberProps.w, 'X', slide._presLayout) : 800000) +
                 '" cy="' +
-                (slide._slideNumberProps.h ? getSmartParseNumber(slide._slideNumberProps.h, 'Y', slide.presLayout) : 300000) +
+                (slide._slideNumberProps.h ? getSmartParseNumber(slide._slideNumberProps.h, 'Y', slide._presLayout) : 300000) +
                 '"/>' +
                 '    </a:xfrm>' +
                 '    <a:prstGeom prst="rect"><a:avLst/></a:prstGeom>' +
@@ -2150,7 +2150,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
 }
 /**
  * Generate XML Text Run Properties (`a:rPr`)
- * @param {IObjectOptions|TextPropsOptions} opts - text options
+ * @param {ObjectOptions|TextPropsOptions} opts - text options
  * @param {boolean} isDefault - whether these are the default text run properties
  * @return {string} XML
  */
@@ -2497,8 +2497,8 @@ function genXmlTextBody(slideObj) {
 function genXmlPlaceholder(placeholderObj) {
     if (!placeholderObj)
         return '';
-    var placeholderIdx = placeholderObj.options && placeholderObj.options.placeholderIdx ? placeholderObj.options.placeholderIdx : '';
-    var placeholderType = placeholderObj.options && placeholderObj.options.placeholderType ? placeholderObj.options.placeholderType : '';
+    var placeholderIdx = placeholderObj.options && placeholderObj.options._placeholderIdx ? placeholderObj.options._placeholderIdx : '';
+    var placeholderType = placeholderObj.options && placeholderObj.options._placeholderType ? placeholderObj.options._placeholderType : '';
     return "<p:ph\n\t\t" + (placeholderIdx ? ' idx="' + placeholderIdx + '"' : '') + "\n\t\t" + (placeholderType && PLACEHOLDER_TYPES[placeholderType] ? ' type="' + PLACEHOLDER_TYPES[placeholderType] + '"' : '') + "\n\t\t" + (placeholderObj.text && placeholderObj.text.length > 0 ? ' hasCustomPrompt="1"' : '') + "\n\t\t/>";
 }
 // XML-GEN: First 6 functions create the base /ppt files
@@ -2839,7 +2839,7 @@ function makeXmlNotesMasterRel() {
  */
 function getLayoutIdxForSlide(slides, slideLayouts, slideNumber) {
     for (var i = 0; i < slideLayouts.length; i++) {
-        if (slideLayouts[i].name === slides[slideNumber - 1]._slideLayout.name) {
+        if (slideLayouts[i]._name === slides[slideNumber - 1]._slideLayout._name) {
             return i + 1;
         }
     }
@@ -2859,7 +2859,7 @@ function makeXmlTheme() {
  * Create presentation file (`ppt/presentation.xml`)
  * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
  * @see http://www.datypic.com/sc/ooxml/t-p_CT_Presentation.html
- * @param {IPresentation} pres - presentation
+ * @param {IPresentationProps} pres - presentation
  * @return {string} XML
  */
 function makeXmlPresentation(pres) {
@@ -3321,7 +3321,7 @@ function addImageDefinition(target, opt) {
             rId: imageRelId,
             Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
             isSvgPng: true,
-            svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target.presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target.presLayout) },
+            svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
         });
         newObject.imageRid = imageRelId;
         target._relsMedia.push({
@@ -3661,17 +3661,17 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
     // Get slide margins - start with default values, then adjust if master or slide margins exist
     var arrTableMargin = DEF_SLIDE_MARGIN_IN;
     // Case 1: Master margins
-    if (slideLayout && typeof slideLayout.margin !== 'undefined') {
-        if (Array.isArray(slideLayout.margin))
-            arrTableMargin = slideLayout.margin;
-        else if (!isNaN(Number(slideLayout.margin)))
-            arrTableMargin = [Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin), Number(slideLayout.margin)];
+    if (slideLayout && typeof slideLayout._margin !== 'undefined') {
+        if (Array.isArray(slideLayout._margin))
+            arrTableMargin = slideLayout._margin;
+        else if (!isNaN(Number(slideLayout._margin)))
+            arrTableMargin = [Number(slideLayout._margin), Number(slideLayout._margin), Number(slideLayout._margin), Number(slideLayout._margin)];
     }
     // Case 2: Table margins
-    /* FIXME: add `margin` option to slide options
-        else if ( addNewSlide.margin ) {
-            if ( Array.isArray(addNewSlide.margin) ) arrTableMargin = addNewSlide.margin;
-            else if ( !isNaN(Number(addNewSlide.margin)) ) arrTableMargin = [Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin), Number(addNewSlide.margin)];
+    /* FIXME: add `_margin` option to slide options
+        else if ( addNewSlide._margin ) {
+            if ( Array.isArray(addNewSlide._margin) ) arrTableMargin = addNewSlide._margin;
+            else if ( !isNaN(Number(addNewSlide._margin)) ) arrTableMargin = [Number(addNewSlide._margin), Number(addNewSlide._margin), Number(addNewSlide._margin), Number(addNewSlide._margin)];
         }
     */
     /**
@@ -3771,7 +3771,7 @@ function addTableDefinition(target, tableRows, options, slideLayout, presLayout,
         getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach(function (slide, idx) {
             // A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
             if (!getSlide(target._slideNum + idx))
-                slides.push(addSlide(slideLayout ? slideLayout.name : null));
+                slides.push(addSlide(slideLayout ? slideLayout._name : null));
             // B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
             if (idx > 0)
                 opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0]);
@@ -3923,7 +3923,7 @@ function addBackgroundDefinition(bkg, target) {
             extn: strImgExtn,
             data: bkg.data || null,
             rId: intRels,
-            Target: "../media/" + (target.name || '').replace(/\s+/gi, '-') + "-image-" + (target._relsMedia.length + 1) + "." + strImgExtn,
+            Target: "../media/" + (target._name || '').replace(/\s+/gi, '-') + "-image-" + (target._relsMedia.length + 1) + "." + strImgExtn,
         });
         target._bkgdImgRid = intRels;
     }
@@ -3976,17 +3976,17 @@ var Slide = /** @class */ (function () {
     function Slide(params) {
         this.addSlide = params.addSlide;
         this.getSlide = params.getSlide;
-        this.presLayout = params.presLayout;
-        this.name = 'Slide ' + params.slideNumber;
-        this._setSlideNum = params.setSlideNum;
-        this._slideId = params.slideId;
+        this._name = 'Slide ' + params.slideNumber;
+        this._presLayout = params.presLayout;
         this._rId = params.slideRId;
-        this._slideNum = params.slideNumber;
-        this._slideObjects = [];
         this._rels = [];
         this._relsChart = [];
         this._relsMedia = [];
+        this._setSlideNum = params.setSlideNum;
+        this._slideId = params.slideId;
         this._slideLayout = params.slideLayout || null;
+        this._slideNum = params.slideNumber;
+        this._slideObjects = [];
         /** NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
          * `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
          * so, lastly, add to the Slide now.
@@ -4114,7 +4114,7 @@ var Slide = /** @class */ (function () {
      */
     Slide.prototype.addTable = function (tableRows, options) {
         // FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
-        addTableDefinition(this, tableRows, options, this._slideLayout, this.presLayout, this.addSlide, this.getSlide);
+        addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide);
         return this;
     };
     /**
@@ -6038,7 +6038,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200811:2055';
+var VERSION = '3.3.0-beta-20200811:2344';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6072,7 +6072,8 @@ var PptxGenJS = /** @class */ (function () {
          */
         this.addNewSlide = function (masterName) {
             // Continue using sections if the first slide using auto-paging has a Section
-            var sectAlreadyInUse = _this.sections.length > 0 && _this.sections[_this.sections.length - 1]._slides.filter(function (slide) { return slide._slideNum === _this.slides[_this.slides.length - 1]._slideNum; }).length > 0;
+            var sectAlreadyInUse = _this.sections.length > 0 &&
+                _this.sections[_this.sections.length - 1]._slides.filter(function (slide) { return slide._slideNum === _this.slides[_this.slides.length - 1]._slideNum; }).length > 0;
             return _this.addSlide({
                 masterName: masterName,
                 sectionTitle: sectAlreadyInUse ? _this.sections[_this.sections.length - 1].title : null,
@@ -6093,7 +6094,7 @@ var PptxGenJS = /** @class */ (function () {
             // 1: Add slideNumber to slideMaster1.xml
             _this.masterSlide._slideNumberProps = slideNum;
             // 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-            _this.slideLayouts.filter(function (layout) { return layout.name === DEF_PRES_LAYOUT_NAME; })[0]._slideNumberProps = slideNum;
+            _this.slideLayouts.filter(function (layout) { return layout._name === DEF_PRES_LAYOUT_NAME; })[0]._slideNumberProps = slideNum;
         };
         /**
          * Create all chart and media rels for this Presentation
@@ -6272,16 +6273,16 @@ var PptxGenJS = /** @class */ (function () {
         //
         this._slideLayouts = [
             {
+                _margin: DEF_SLIDE_MARGIN_IN,
+                _name: DEF_PRES_LAYOUT_NAME,
+                _presLayout: this._presLayout,
                 _rels: [],
                 _relsChart: [],
                 _relsMedia: [],
+                _slide: null,
                 _slideNum: 1000,
                 _slideNumberProps: null,
                 _slideObjects: [],
-                margin: DEF_SLIDE_MARGIN_IN,
-                name: DEF_PRES_LAYOUT_NAME,
-                presLayout: this._presLayout,
-                slide: null,
             },
         ];
         this._slides = [];
@@ -6295,6 +6296,8 @@ var PptxGenJS = /** @class */ (function () {
             addTable: null,
             addText: null,
             //
+            _name: null,
+            _presLayout: this._presLayout,
             _rId: null,
             _rels: [],
             _relsChart: [],
@@ -6304,8 +6307,6 @@ var PptxGenJS = /** @class */ (function () {
             _slideNum: null,
             _slideNumberProps: null,
             _slideObjects: [],
-            name: null,
-            presLayout: this._presLayout,
         };
     }
     Object.defineProperty(PptxGenJS.prototype, "layout", {
@@ -6573,7 +6574,7 @@ var PptxGenJS = /** @class */ (function () {
             slideRId: this.slides.length + 2,
             slideNumber: this.slides.length + 1,
             slideLayout: masterSlideName
-                ? this.slideLayouts.filter(function (layout) { return layout.name === masterSlideName; })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
+                ? this.slideLayouts.filter(function (layout) { return layout._name === masterSlideName; })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
                 : this.LAYOUTS[DEF_PRES_LAYOUT],
         });
         // A: Add slide to pres
@@ -6632,16 +6633,16 @@ var PptxGenJS = /** @class */ (function () {
         if (!props.title)
             throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)');
         var newLayout = {
-            presLayout: this.presLayout,
-            name: props.title,
-            slide: null,
-            margin: props.margin || DEF_SLIDE_MARGIN_IN,
-            _slideNum: 1000 + this.slideLayouts.length + 1,
-            _slideNumberProps: props.slideNumber || null,
-            _slideObjects: [],
+            _margin: props.margin || DEF_SLIDE_MARGIN_IN,
+            _name: props.title,
+            _presLayout: this.presLayout,
             _rels: [],
             _relsChart: [],
             _relsMedia: [],
+            _slide: null,
+            _slideNum: 1000 + this.slideLayouts.length + 1,
+            _slideNumberProps: props.slideNumber || null,
+            _slideObjects: [],
         };
         // DEPRECATED:
         if (props.bkgd && !props.background) {
@@ -6675,7 +6676,7 @@ var PptxGenJS = /** @class */ (function () {
     PptxGenJS.prototype.tableToSlides = function (eleId, options) {
         if (options === void 0) { options = {}; }
         // @note `verbose` option is undocumented; used for verbose output of layout process
-        genTableToSlides(this, eleId, options, options && options.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout.name === options.masterSlideName; })[0] : null);
+        genTableToSlides(this, eleId, options, options && options.masterSlideName ? this.slideLayouts.filter(function (layout) { return layout._name === options.masterSlideName; })[0] : null);
     };
     return PptxGenJS;
 }());
