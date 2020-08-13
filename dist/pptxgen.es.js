@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-08-12T04:59:44.216Z */
+/* PptxGenJS 3.3.0-beta @ 2020-08-13T04:21:43.012Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2996,9 +2996,9 @@ function createSlideObject(slideDef, target) {
                 // TODO: 20180820: Check for existing `name`?
                 object[key].options.placeholder = object[key].options.name;
                 delete object[key].options.name; // remap name for earier handling internally
-                object[key].options.placeholderType = object[key].options.type;
+                object[key].options._placeholderType = object[key].options.type;
                 delete object[key].options.type; // remap name for earier handling internally
-                object[key].options.placeholderIdx = 100 + idx;
+                object[key].options._placeholderIdx = 100 + idx;
                 addTextDefinition(tgt, object[key].text, object[key].options, true);
                 // TODO: ISSUE#599 - only text is suported now (add more below)
                 //else if (object[key].image) addImageDefinition(tgt, object[key].image)
@@ -6036,7 +6036,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200811:2344';
+var VERSION = '3.3.0-beta-20200812:2320';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
