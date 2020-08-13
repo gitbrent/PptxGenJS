@@ -179,7 +179,7 @@ export interface ShadowProps {
 export interface ShapeFillProps {
 	/**
 	 * Fill type
-	 * - 'solid' @deprecated 3.3.0
+	 * - 'solid' @deprecated v3.3.0
 	 */
 	type?: 'none' | 'solid'
 	/**
@@ -215,12 +215,12 @@ export interface ShapeLineProps extends ShapeFillProps {
 	dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
 	 * Begin arrow type
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 */
 	beginArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
 	 * End arrow type
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 */
 	endArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	// FUTURE: beginArrowSize (1-9)
@@ -278,20 +278,20 @@ export interface TextBaseProps {
 				type?: 'bullet' | 'number'
 				/**
 				 * Bullet character code (unicode)
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
 				 */
 				characterCode?: string
 				/**
 				 * Indentation (space between bullet and text) (points)
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @default 27 // DEF_BULLET_MARGIN
 				 * @example 10 // Indents text 10 points from bullet
 				 */
 				indent?: number
 				/**
 				 * Number type
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
 				 */
 				numberType?:
@@ -313,7 +313,7 @@ export interface TextBaseProps {
 					| 'romanUcPeriod'
 				/**
 				 * Number bullets start at
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @default 1
 				 * @example 10 // numbered bullets start with 10
 				 */
@@ -323,23 +323,23 @@ export interface TextBaseProps {
 
 				/**
 				 * Bullet code (unicode)
-				 * @deprecated 3.3.0 - use `characterCode`
+				 * @deprecated v3.3.0 - use `characterCode`
 				 */
 				code?: string
 				/**
 				 * Margin between bullet and text
-				 * @since 3.2.1
-				 * @deplrecated 3.3.0 - use `indent`
+				 * @since v3.2.1
+				 * @deplrecated v3.3.0 - use `indent`
 				 */
 				marginPt?: number
 				/**
 				 * Number to start with (only applies to type:number)
-				 * @deprecated 3.3.0 - use `numberStartAt`
+				 * @deprecated v3.3.0 - use `numberStartAt`
 				 */
 				startAt?: number
 				/**
 				 * Number type
-				 * @deprecated 3.3.0 - use `numberType`
+				 * @deprecated v3.3.0 - use `numberType`
 				 */
 				style?: string
 		  }
@@ -568,7 +568,7 @@ export interface TableToSlidesProps extends TableProps {
 	autoPageLineWeight?: number
 	/**
 	 * Whether to repeat head row(s) on new tables created by autopaging
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @default false
 	 */
 	autoPageRepeatHeader?: boolean
@@ -600,11 +600,11 @@ export interface TableToSlidesProps extends TableProps {
 	verbose?: boolean // Undocumented; shows verbose output
 
 	/**
-	 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+	 * @deprecated v3.3.0 - use `autoPageRepeatHeader`
 	 */
 	addHeaderToEach?: boolean
 	/**
-	 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
 }
@@ -730,7 +730,7 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	rowH?: number | number[]
 
 	/**
-	 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
 }
@@ -802,7 +802,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 	 *
 	 * There is no way for this library to trigger that behavior, sorry.
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @default "none"
 	 */
 	fit?: 'none' | 'shrink' | 'resize'
@@ -845,19 +845,19 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
 	 * Text wrap
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @default true
 	 */
 	wrap?: boolean
 
 	/**
 	 * Whather "Fit to Shape?" is enabled
-	 * @deprecated 3.3.0 - use `textFit`
+	 * @deprecated v3.3.0 - use `textFit`
 	 */
 	autoFit?: boolean
 	/**
 	 * Whather "Shrink Text on Overflow?" is enabled
-	 * @deprecated 3.3.0 - use `textFit`
+	 * @deprecated v3.3.0 - use `textFit`
 	 */
 	shrinkText?: boolean
 	/**
@@ -1051,7 +1051,7 @@ export interface IChartPropsAxisVal {
 	/**
 	 * Value label format code
 	 * - this also directs Data Table formatting
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @example '#%' // round percent
 	 * @example '0.00%' // shows values as '0.00%'
 	 * @example '$0.00' // shows values as '$0.00'
@@ -1105,7 +1105,7 @@ export interface IChartPropsDataTable {
 	dataTableFontSize?: number
 	/**
 	 * Data table format code
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @example '#%' // round percent
 	 * @example '0.00%' // shows values as '0.00%'
 	 * @example '$0.00' // shows values as '$0.00'
@@ -1283,7 +1283,7 @@ export interface SlideBaseProps {
 
 	background?: BackgroundProps
 	/**
-	 * @deprecated 3.3.0 - use `background`
+	 * @deprecated v3.3.0 - use `background`
 	 */
 	bkgd?: string
 }
@@ -1310,20 +1310,28 @@ export interface PresSlide extends SlideBaseProps {
 	addText: Function
 
 	/**
-	 * Slide background - `fill` | `path` | `data`
+	 * Background color or image (`fill` | `path` | `data`)
 	 * @example {fill: 'FF3399'} - hex fill color
 	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 */
 	background?: BackgroundProps
 	/**
 	 * Default text color (hex format)
 	 * @example 'FF3399'
+	 * @default '000000' (DEF_FONT_COLOR)
 	 */
 	color?: HexColor
+	/**
+	 * Whether slide is hidden
+	 * @default false
+	 */
 	hidden?: boolean
+	/**
+	 * Slide number options
+	 */
 	slideNumber?: SlideNumberProps
 }
 export interface AddSlideProps {
