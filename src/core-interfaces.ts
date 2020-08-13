@@ -241,9 +241,14 @@ export interface ShapeLineProps extends ShapeFillProps {
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
 	 * Line width (pt)
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `width`
 	 */
 	pt?: number
+	/**
+	 * Line size (pt)
+	 * @deprecated v3.3.0 - use `width`
+	 */
+	size?: number
 }
 // used by: chart, slide, table, text
 export interface TextBaseProps {
