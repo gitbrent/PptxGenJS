@@ -770,7 +770,6 @@ export interface TextGlowProps {
 	size: number
 }
 
-// TODO: WIP: after _bodyProp, were done with TextPropsOptions (20200809)
 export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
 	_bodyProp?: {
 		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
@@ -1163,9 +1162,50 @@ export interface ISlideRelChart extends OptsChartData {
 
 // Core
 // ====
-/**
- * Section options
- */
+// PRIVATE vvv
+export interface ISlideRel {
+	type: SLIDE_OBJECT_TYPES
+	Target: string
+	fileName?: string
+	data: any[] | string
+	opts?: IChartOpts
+	path?: string
+	extn?: string
+	globalId?: number
+	rId: number
+}
+export interface ISlideRelMedia {
+	type: string
+	opts?: MediaProps
+	path?: string
+	extn?: string
+	data?: string | ArrayBuffer
+	isSvgPng?: boolean
+	svgSize?: { w: number; h: number }
+	rId: number
+	Target: string
+}
+export interface ISlideObject {
+	_type: SLIDE_OBJECT_TYPES
+	options?: ObjectOptions
+	// text
+	text?: string | TextProps[]
+	// table
+	arrTabRows?: TableCell[][]
+	// chart
+	chartRid?: number
+	// image:
+	image?: string
+	imageRid?: number
+	hyperlink?: HyperlinkProps
+	// media
+	media?: string
+	mtype?: MediaType
+	mediaRid?: number
+	shape?: SHAPE_NAME
+}
+// PRIVATE ^^^
+
 export interface SectionProps {
 	_type: 'user' | 'default'
 	_slides: PresSlide[]
@@ -1180,9 +1220,6 @@ export interface SectionProps {
 	 */
 	order?: number
 }
-/**
- * The Presentation Layout
- */
 export interface PresLayout {
 	_sizeW?: number
 	_sizeH?: number
@@ -1213,31 +1250,6 @@ export interface SlideMasterProps {
 	 */
 	bkgd?: string | BackgroundProps
 }
-
-// PRIVATE
-export interface ISlideRel {
-	type: SLIDE_OBJECT_TYPES
-	Target: string
-	fileName?: string
-	data: any[] | string
-	opts?: IChartOpts
-	path?: string
-	extn?: string
-	globalId?: number
-	rId: number
-}
-// PRIVATE
-export interface ISlideRelMedia {
-	type: string
-	opts?: MediaProps
-	path?: string
-	extn?: string
-	data?: string | ArrayBuffer
-	isSvgPng?: boolean
-	svgSize?: { w: number; h: number }
-	rId: number
-	Target: string
-}
 export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
 	_placeholderIdx?: number
 	_placeholderType?: PLACEHOLDER_TYPES
@@ -1248,27 +1260,6 @@ export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, Ta
 	colW?: number | number[] // table
 	rowH?: number | number[] // table
 }
-// PRIVATE
-export interface ISlideObject {
-	_type: SLIDE_OBJECT_TYPES
-	options?: ObjectOptions
-	// text
-	text?: string | TextProps[]
-	// table
-	arrTabRows?: TableCell[][]
-	// chart
-	chartRid?: number
-	// image:
-	image?: string
-	imageRid?: number
-	hyperlink?: HyperlinkProps
-	// media
-	media?: string
-	mtype?: MediaType
-	mediaRid?: number
-	shape?: SHAPE_NAME
-}
-
 export interface SlideBaseProps {
 	_bkgdImgRid?: number
 	_margin?: Margin
@@ -1287,7 +1278,6 @@ export interface SlideBaseProps {
 	 */
 	bkgd?: string
 }
-
 export interface SlideLayout extends SlideBaseProps {
 	_slide?: {
 		_bkgdImgRid?: number
