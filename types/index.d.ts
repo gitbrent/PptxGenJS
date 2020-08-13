@@ -558,10 +558,8 @@ declare namespace PptxGenJS {
 		WAVE = 'wave',
 	}
 
-	// `core-interfaces.d.ts`
-	// import { CHART_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, PLACEHOLDER_TYPES, SHAPE_NAME } from './core-enums'
+	// @source `core-enums.ts`
 	export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
-	export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
 	export enum CHART_TYPE {
 		'AREA' = 'area',
 		'BAR' = 'bar',
@@ -585,29 +583,10 @@ declare namespace PptxGenJS {
 		'ACCENT5' = 'accent5',
 		'ACCENT6' = 'accent6',
 	}
-	export enum SLIDE_OBJECT_TYPES {
-		'chart' = 'chart',
-		'hyperlink' = 'hyperlink',
-		'image' = 'image',
-		'media' = 'media',
-		'online' = 'online',
-		'placeholder' = 'placeholder',
-		'table' = 'table',
-		'tablecell' = 'tablecell',
-		'text' = 'text',
-		'notes' = 'notes',
-	}
-	export enum TEXT_HALIGN {
-		'left' = 'left',
-		'center' = 'center',
-		'right' = 'right',
-		'justify' = 'justify',
-	}
-	export enum TEXT_VALIGN {
-		'b' = 'b',
-		'ctr' = 'ctr',
-		't' = 't',
-	}
+
+	// @source `core-interfaces.d.ts` (via import)
+	// @code `import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN } from './core-enums'`
+	export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
 	export enum PLACEHOLDER_TYPES {
 		'title' = 'title',
 		'body' = 'body',
@@ -801,6 +780,31 @@ declare namespace PptxGenJS {
 		| 'verticalScroll'
 		| 'wave'
 
+	export enum SLIDE_OBJECT_TYPES {
+		'chart' = 'chart',
+		'hyperlink' = 'hyperlink',
+		'image' = 'image',
+		'media' = 'media',
+		'online' = 'online',
+		'placeholder' = 'placeholder',
+		'table' = 'table',
+		'tablecell' = 'tablecell',
+		'text' = 'text',
+		'notes' = 'notes',
+	}
+	export enum TEXT_HALIGN {
+		'left' = 'left',
+		'center' = 'center',
+		'right' = 'right',
+		'justify' = 'justify',
+	}
+	export enum TEXT_VALIGN {
+		'b' = 'b',
+		'ctr' = 'ctr',
+		't' = 't',
+	}
+
+	// @source `core-interfaces.d.ts` (direct)
 	export interface ISectionProps {
 		title: string
 		/**
