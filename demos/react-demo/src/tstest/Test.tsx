@@ -38,7 +38,7 @@ export function testMainMethods() {
 	let slide1 = pptx.addSlide();
 	let slide2 = pptx.addSlide({ sectionTitle: "TypeScript" });
 	let slide3 = pptx.addSlide({ masterName: "MASTER_SLIDE" });
-	let opts: pptxgen.ITextOpts = { x: 0.5, y: 1, w: "90%", h: 0.5, fill: { color: pptx.SchemeColor.background1 }, align: "center" };
+	let opts: pptxgen.TextPropsOptions = { x: 0.5, y: 1, w: "90%", h: 0.5, fill: { color: pptx.SchemeColor.background1 }, align: "center" };
 	slide3.addText("React Demo!", opts);
 
 	// Table:
@@ -125,7 +125,7 @@ function testMethod_Shape(pptx: pptxgen) {
 		y: 0.8,
 		w: 3.0,
 		h: 1.5,
-		fill: { type: "solid", color: "0088CC", alpha: 50 },
+		fill: { type: "solid", color: "0088CC", alpha: 50 }, // DEPRECATED: TEST: `alpha`
 		align: "center",
 		fontSize: 14,
 	});
@@ -135,7 +135,7 @@ function testMethod_Shape(pptx: pptxgen) {
 		y: 5.6,
 		w: 5,
 		h: 0,
-		line: { color: "FF0000", size: 4, beginArrowType: "triangle", endArrowType: "triangle" },
+		line: { color: "FF0000", width: 4, beginArrowType: "triangle", endArrowType: "triangle" },
 	});
 	slide.addText("DIAGONAL", {
 		shape: pptxgen.shapes.LINE,
@@ -144,7 +144,7 @@ function testMethod_Shape(pptx: pptxgen) {
 		y: 3.3,
 		w: 2.5,
 		h: 0,
-		line: { color: "FF0000", size: 2, transparency: 50 },
+		line: { color: "FF0000", size: 2, transparency: 50 }, // DEPRECATED: TEST: `size`
 		rotate: 360 - 45,
 	});
 	slide.addText("RIGHT-TRIANGLE", {
@@ -155,7 +155,7 @@ function testMethod_Shape(pptx: pptxgen) {
 		w: 6,
 		h: 3,
 		fill: { color: "0088CC" },
-		line: { color: "000000", size: 3 },
+		line: { color: "000000", width: 3 },
 	});
 	slide.addText("RIGHT-TRIANGLE", {
 		shape: pptxgen.shapes.RIGHT_TRIANGLE,

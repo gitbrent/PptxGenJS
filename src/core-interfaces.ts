@@ -753,7 +753,6 @@ export interface TableCell {
 export interface TableRowSlide {
 	rows: TableRow[]
 }
-//export type TableRow = number[] | string[] | TableCell[] // TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
 export type TableRow = TableCell[]
 
 // text ===========================================================================================
