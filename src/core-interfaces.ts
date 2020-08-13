@@ -417,12 +417,12 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		y?: number
 	}
 	/**
-	 * Flip shape horizontally?
+	 * Flip horizontally?
 	 * @default false
 	 */
 	flipH?: boolean
 	/**
-	 * Flip shape vertical?
+	 * Flip vertical?
 	 * @default false
 	 */
 	flipV?: boolean
