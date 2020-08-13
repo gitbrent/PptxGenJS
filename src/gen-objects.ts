@@ -72,9 +72,9 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
 				delete object[key].options.name // remap name for earier handling internally
-				object[key].options.placeholderType = object[key].options.type
+				object[key].options._placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
-				object[key].options.placeholderIdx = 100 + idx
+				object[key].options._placeholderIdx = 100 + idx
 				addTextDefinition(tgt, object[key].text, object[key].options, true)
 				// TODO: ISSUE#599 - only text is suported now (add more below)
 				//else if (object[key].image) addImageDefinition(tgt, object[key].image)
