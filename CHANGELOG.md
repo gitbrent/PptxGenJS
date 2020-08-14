@@ -40,7 +40,6 @@ jsdoc details for everything other than charts (maybe next time...)
 - Fixed: Multiple Border Types not supported in Table Cell [\#775](https://github.com/gitbrent/PptxGenJS/issues/775) ([jsvishal](https://github.com/jsvishal))
 - Fixed: New ITextOpts `fit` prop, removed `autoFit`/`shrinkText`, new demo slide [\#779](https://github.com/gitbrent/PptxGenJS/issues/779) ([DonnaZukowskiPfizer](https://github.com/DonnaZukowskiPfizer)) ([ReimaFrgos](https://github.com/ReimaFrgos))
 - Fixed: EMU calculations are not safe (calcPointValue in gen-xml) [\#781](https://github.com/gitbrent/PptxGenJS/issues/781) ([CroniD](https://github.com/CroniD))
-- ...
 - Fixed: type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
 - Fixed: type defs for `ITableOptions` s/b `TableOptions` ([gitbrent](https://github.com/gitbrent))
 
