@@ -11,16 +11,16 @@ jsdoc details for everything other than charts (maybe next time...)
 - Lots of poorly named options have been deprecated and new, much better names created
 - Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
-## [3.3.0] - 2020-08-??
+## [3.3.0] - 2020-08-15
 ### Major Change Summary
-- The `addTable()` method finally supports auto-paging!
-- The `addText()` method's underlying text layout engine has been rewritten from scratch and handles every type of layout case now
-- New `addText()` `fit` option ('none' | 'shrink' | 'resize') addresses long-standing issues with shirnk/resize objects (new demo page as well)
-- Tons of TypeScript documentation has been added
-- Fix for Angular "Buffer is unknown" issue
+- The `addTable()` method finally supports auto-paging, including support for repeating table headers!
+- The `addText()` method text layout engine has been rewritten from scratch and handles every type of layout case now
+- New `addText()` `fit` option ('none' | 'shrink' | 'resize') addresses long-standing issues with shrink/resize objects (new demo page as well)
+- Fix for Angular "`Buffer` is unknown" issue
+- Major update of typescript defs, including tons of documentation that has been added
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
-- **All users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/breakLine, etc.
+- **All users**: table and textbox text linebreaks may act differently! (a major rewrite to correct long-standing issues with alignment/breakLine finally landed)
 ### Added
 - Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
 - Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489)[phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684)[hanzi](https://github.com/hanzi))
@@ -43,8 +43,6 @@ jsdoc details for everything other than charts (maybe next time...)
 - ...
 - Fixed: type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
 - Fixed: type defs for `ITableOptions` s/b `TableOptions` ([gitbrent](https://github.com/gitbrent))
-### WIP
-- [Text with align adds linebreaks](https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aissue+is%3Aopen+label%3Atext)
 
 
 
