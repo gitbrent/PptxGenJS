@@ -77,11 +77,15 @@ function testMethod_Table(pptx: pptxgen) {
 
 	slide.addTable([[{ text: "cell 1" }]], { x: 0.5, y: 0.5 });
 	let rows: pptxgen.TableRow[] = [];
-	rows.push(["First", "Second", "Third", "Fourth"]); // simple text array
+	//rows.push(["First", "Second", "Third", "Fourth"]); // simple text array // NOTE: 20200812: removed `string[]` from types (considered DEPRECATED, even tho its still in demo code as of v3.3.0)
 	rows.push([{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }]); // complex object cells
+	// prettier-ignore
 	rows.push([
 		{
-			text: [{ text: "TODO" }, { text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }],
+			text: [
+				{ text: "TODO" },
+				{ text: "optionsChk", options: { colspan: 4, fontFace: "Arial" } }
+			],
 		},
 	]);
 

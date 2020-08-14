@@ -1155,7 +1155,8 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		tmpTextObjects.push({ text: slideObj.text || '', options: slideObj.options || {} })
 	} else if (Array.isArray(slideObj.text)) {
 		// Handle cases 4,5,6
-		tmpTextObjects = slideObj.text.map((item: TextProps) => ({ text: item.text, options: item.options }))
+		// NOTE: use cast as text is TextProps[]|TableCell[] and their `options` dont overlap (they share the same TextBaseProps though)
+		tmpTextObjects = (slideObj.text as TextProps[]).map(item => ({ text: item.text, options: item.options }))
 	}
 
 	// STEP 4: Iterate over text objects, set text/options, break into pieces if '\n'/breakLine found

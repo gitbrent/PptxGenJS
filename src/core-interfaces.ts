@@ -747,7 +747,7 @@ export interface TableCell {
 	_vmerge?: boolean
 	_optImp?: any
 
-	text?: string | TextProps[]
+	text?: string | TableCell[]
 	options?: TableCellProps
 }
 export interface TableRowSlide {
