@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0-beta @ 2020-08-13T04:21:43.012Z */
+/* PptxGenJS 3.3.0-beta @ 2020-08-14T04:23:10.475Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -2363,6 +2363,7 @@ function genXmlTextBody(slideObj) {
     }
     else if (Array.isArray(slideObj.text)) {
         // Handle cases 4,5,6
+        // NOTE: use cast as text is TextProps[]|TableCell[] and their `options` dont overlap (they share the same TextBaseProps though)
         tmpTextObjects = slideObj.text.map(function (item) { return ({ text: item.text, options: item.options }); });
     }
     // STEP 4: Iterate over text objects, set text/options, break into pieces if '\n'/breakLine found
@@ -6036,7 +6037,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0-beta-20200812:2320';
+var VERSION = '3.3.0-rc1-20200813:2322';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
