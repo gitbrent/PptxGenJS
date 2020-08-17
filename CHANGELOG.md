@@ -11,7 +11,7 @@ jsdoc details for everything other than charts (maybe next time...)
 - Lots of poorly named options have been deprecated and new, much better names created
 - Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
-## [3.3.0] - 2020-08-15
+## [3.3.0] - 2020-08-16
 ### Major Change Summary
 - The `addTable()` method finally supports auto-paging, including support for repeating table headers!
 - The `addText()` method text layout engine has been rewritten from scratch and handles every type of layout case now
