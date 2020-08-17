@@ -95,6 +95,7 @@ export interface BorderProps {
 	 * @default '666666'
 	 */
 	color?: HexColor
+
 	// TODO: add `width` - deprecate `pt`
 	/**
 	 * Border size (points)
@@ -364,6 +365,11 @@ export interface TextBaseProps {
 	 * @example 'fr-CA' // french Canadian
 	 */
 	lang?: string
+	/**
+	 * underline style
+	 * @default false
+	 */
+	underline?: boolean
 	/**
 	 * vertical alignment
 	 * @default 'top'

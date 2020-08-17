@@ -1165,6 +1165,11 @@ declare namespace PptxGenJS {
 		 */
 		lang?: string
 		/**
+		 * underline style
+		 * @default false
+		 */
+		underline?: boolean
+		/**
 		 * vertical alignment
 		 * @default 'top'
 		 */
