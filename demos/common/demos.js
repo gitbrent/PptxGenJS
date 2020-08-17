@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.3.0
-* BLD.: 20200810
+* BLD.: 20200816
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2891,7 +2891,7 @@ function genSlides_Text(pptx) {
 			{ x:5.0, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
 		slide.addText(
-			[{ text: 'Link to Slide #5', options: { hyperlink: { slide: '5' } } }],
+			[{ text: 'Link to Slide #5', options: { hyperlink: { slide: 5 } } }],
 			{ x:9.5, y:6.4, w:3, h:0.6, margin:10, fill:'F1F1F1', fontSize:14, align:'center' }
 		);
 	}
