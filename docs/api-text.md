@@ -6,8 +6,6 @@ title: Adding Text
 ## Syntax
 
 ```javascript
-slide.addText("TEXT", { OPTIONS });
-slide.addText("Line 1\nLine 2", { OPTIONS });
 slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 ```
 
@@ -105,13 +103,13 @@ slide.addText(
         { text: "word-level", options: { fontSize: 36, color: "99ABCC", align: "right", breakLine: true } },
         { text: "formatting", options: { fontSize: 48, color: "FFFF00", align: "center" } },
     ],
-    { x: 0.5, y: 4.1, w: 8.5, h: 2.0, fill: "F1F1F1" }
+    { x: 0.5, y: 4.1, w: 8.5, h: 2.0, fill: { color: "F1F1F1" } }
 );
 
 // EX: Bullets
 slide.addText("Regular, black circle bullet", { x: 8.0, y: 1.4, w: "30%", h: 0.5, bullet: true });
 // Use line-break character to bullet multiple lines
-slide.addText("Line 1\nLine 2\nLine 3", { x: 8.0, y: 2.4, w: "30%", h: 1, fill: "F2F2F2", bullet: { type: "number" } });
+slide.addText("Line 1\nLine 2\nLine 3", { x: 8.0, y: 2.4, w: "30%", h: 1, fill: { color: "F2F2F2" }, bullet: { type: "number" } });
 // Bullets can also be applied on a per-line level
 slide.addText(
     [
@@ -124,7 +122,15 @@ slide.addText(
 );
 
 // EX: Paragraph Spacing
-slide.addText("Paragraph spacing - before:12pt / after:24pt", { x: 1.5, y: 1.5, w: 6, h: 2, fill: "F1F1F1", paraSpaceBefore: 12, paraSpaceAfter: 24 });
+slide.addText("Paragraph spacing - before:12pt / after:24pt", {
+    x: 1.5,
+    y: 1.5,
+    w: 6,
+    h: 2,
+    fill: { color: "F1F1F1" },
+    paraSpaceBefore: 12,
+    paraSpaceAfter: 24,
+});
 
 // EX: Hyperlink: Web
 slide.addText(
@@ -173,7 +179,7 @@ slide.addText(
         { text: "word-level\nformatting", options: { fontSize: 36, fontFace: "Courier New", color: "99ABCC", align: "right", breakLine: true } },
         { text: "...in the same textbox", options: { fontSize: 48, fontFace: "Arial", color: "FFFF00", align: "center" } },
     ],
-    { x: 0.5, y: 4.1, w: 8.5, h: 2.0, margin: 0.1, fill: "232323" }
+    { x: 0.5, y: 4.1, w: 8.5, h: 2.0, margin: 0.1, fill: { color: "232323" } }
 );
 
 pptx.writeFile("Demo-Text");
@@ -189,14 +195,14 @@ let arrTextObjs1 = [
     { text: "2nd line", options: { fontSize: 36, color: "FFFF00", breakLine: true } },
     { text: "3rd line", options: { fontSize: 48, color: "0088CC" } },
 ];
-slide.addText(arrTextObjs1, { x: 0.5, y: 1, w: 8, h: 2, fill: "232323" });
+slide.addText(arrTextObjs1, { x: 0.5, y: 1, w: 8, h: 2, fill: { color: "232323" } });
 
 let arrTextObjs2 = [
     { text: "1st line", options: { fontSize: 24, color: "99ABCC", breakLine: false } },
     { text: "2nd line", options: { fontSize: 36, color: "FFFF00", breakLine: false } },
     { text: "3rd line", options: { fontSize: 48, color: "0088CC" } },
 ];
-slide.addText(arrTextObjs2, { x: 0.5, y: 4, w: 8, h: 2, fill: "232323" });
+slide.addText(arrTextObjs2, { x: 0.5, y: 4, w: 8, h: 2, fill: { color: "232323" } });
 ```
 
 ![breakLine option](/PptxGenJS/docs/assets/ex-text-breakLine.png)

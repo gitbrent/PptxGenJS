@@ -69,29 +69,31 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 <h2><a class="anchor" aria-hidden="true" id="table-layout-options-itableoptions"></a><a href="#table-layout-options-itableoptions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Layout Options (<code>ITableOptions</code>)</h2>
 <table>
 <thead>
-<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Unit</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values (inches or percent)</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code>x</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left">horizontal location</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{x:'50%'}</code> will place object in the middle of the Slide)</td></tr>
-<tr><td style="text-align:left"><code>y</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left">vertical location</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
-<tr><td style="text-align:left"><code>w</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left">width</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{w:'50%'}</code> will make object 50% width of the Slide)</td></tr>
-<tr><td style="text-align:left"><code>h</code></td><td style="text-align:left">number</td><td style="text-align:left">inches</td><td style="text-align:left">height</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
-<tr><td style="text-align:left"><code>colW</code></td><td style="text-align:left">integer</td><td style="text-align:left">inches</td><td style="text-align:left">width for every column</td><td style="text-align:left">Ex: Width for every column in table (uniform) <code>2.0</code></td></tr>
-<tr><td style="text-align:left"><code>colW</code></td><td style="text-align:left">array</td><td style="text-align:left">inches</td><td style="text-align:left">column widths in order</td><td style="text-align:left">Ex: Width for each of 5 columns <code>[1.0, 2.0, 2.5, 1.5, 1.0]</code></td></tr>
-<tr><td style="text-align:left"><code>rowH</code></td><td style="text-align:left">integer</td><td style="text-align:left">inches</td><td style="text-align:left">height for every row</td><td style="text-align:left">Ex: Height for every row in table (uniform) <code>2.0</code></td></tr>
-<tr><td style="text-align:left"><code>rowH</code></td><td style="text-align:left">array</td><td style="text-align:left">inches</td><td style="text-align:left">row heights in order</td><td style="text-align:left">Ex: Height for each of 5 rows <code>[1.0, 2.0, 2.5, 1.5, 1.0]</code></td></tr>
+<tr><td style="text-align:left"><code>x</code></td><td style="text-align:left">number</td><td style="text-align:left">horizontal location</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{x:'50%'}</code> will place object in the middle of the Slide)</td></tr>
+<tr><td style="text-align:left"><code>y</code></td><td style="text-align:left">number</td><td style="text-align:left">vertical location</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
+<tr><td style="text-align:left"><code>w</code></td><td style="text-align:left">number</td><td style="text-align:left">width</td><td style="text-align:left">0-n OR 'n%'. (Ex: <code>{w:'50%'}</code> will make object 50% width of the Slide)</td></tr>
+<tr><td style="text-align:left"><code>h</code></td><td style="text-align:left">number</td><td style="text-align:left">height</td><td style="text-align:left">0-n OR 'n%'.</td></tr>
+<tr><td style="text-align:left"><code>colW</code></td><td style="text-align:left">integer</td><td style="text-align:left">width for every column</td><td style="text-align:left">Ex: Width for every column in table (uniform) <code>2.0</code></td></tr>
+<tr><td style="text-align:left"><code>colW</code></td><td style="text-align:left">array</td><td style="text-align:left">column widths in order</td><td style="text-align:left">Ex: Width for each of 5 columns <code>[1.0, 2.0, 2.5, 1.5, 1.0]</code></td></tr>
+<tr><td style="text-align:left"><code>rowH</code></td><td style="text-align:left">integer</td><td style="text-align:left">height for every row</td><td style="text-align:left">Ex: Height for every row in table (uniform) <code>2.0</code></td></tr>
+<tr><td style="text-align:left"><code>rowH</code></td><td style="text-align:left">array</td><td style="text-align:left">row heights in order</td><td style="text-align:left">Ex: Height for each of 5 rows <code>[1.0, 2.0, 2.5, 1.5, 1.0]</code></td></tr>
 </tbody>
 </table>
 <h2><a class="anchor" aria-hidden="true" id="table-auto-paging-options-itableoptions"></a><a href="#table-auto-paging-options-itableoptions" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Auto-Paging Options (<code>ITableOptions</code>)</h2>
 <table>
 <thead>
-<tr><th style="text-align:left">Option</th><th style="text-align:left">Type</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
+<tr><th style="text-align:left">Option</th><th style="text-align:left">Default</th><th style="text-align:left">Description</th><th style="text-align:left">Possible Values</th></tr>
 </thead>
 <tbody>
-<tr><td style="text-align:left"><code>autoPage</code></td><td style="text-align:left">boolean</td><td style="text-align:left"><code>false</code></td><td style="text-align:left">auto-page table</td><td style="text-align:left"><code>true</code> or <code>false</code>. Ex: <code>{autoPage:true}</code></td></tr>
-<tr><td style="text-align:left"><code>autoPageCharWeight</code></td><td style="text-align:left">float</td><td style="text-align:left"><code>0</code></td><td style="text-align:left">char weight value (adjusts letter spacing)</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{autoPageCharWeight:0.5}</code></td></tr>
-<tr><td style="text-align:left"><code>autoPageLineWeight</code></td><td style="text-align:left">float</td><td style="text-align:left"><code>0</code></td><td style="text-align:left">line weight value (adjusts line height)</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{autoPageLineWeight:0.5}</code></td></tr>
-<tr><td style="text-align:left"><code>newSlideStartY</code></td><td style="text-align:left">number/string</td><td style="text-align:left"></td><td style="text-align:left">starting <code>y</code> value for tables on new Slides</td><td style="text-align:left">0-n OR 'n%'. Ex:<code>{newSlideStartY:0.5}</code></td></tr>
+<tr><td style="text-align:left"><code>autoPage</code></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">auto-page table</td><td style="text-align:left"><code>true</code> or <code>false</code>. Ex: <code>{autoPage:true}</code></td></tr>
+<tr><td style="text-align:left"><code>autoPageCharWeight</code></td><td style="text-align:left"><code>0</code></td><td style="text-align:left">char weight value (adjusts letter spacing)</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{autoPageCharWeight:0.5}</code></td></tr>
+<tr><td style="text-align:left"><code>autoPageLineWeight</code></td><td style="text-align:left"><code>0</code></td><td style="text-align:left">line weight value (adjusts line height)</td><td style="text-align:left">-1.0 to 1.0. Ex: <code>{autoPageLineWeight:0.5}</code></td></tr>
+<tr><td style="text-align:left"><code>autoPageRepeatHeader</code></td><td style="text-align:left"><code>false</code></td><td style="text-align:left">repeat header row(s) on each auto-page slide</td><td style="text-align:left"><code>true</code> or <code>false</code>. Ex: <code>{autoPageRepeatHeader:true}</code></td></tr>
+<tr><td style="text-align:left"><code>autoPageHeaderRows</code></td><td style="text-align:left"><code>1</code></td><td style="text-align:left">number of table rows that comprise the headers</td><td style="text-align:left">1-n. Ex: <code>2</code> repeats the first two rows on every slide</td></tr>
+<tr><td style="text-align:left"><code>newSlideStartY</code></td><td style="text-align:left"></td><td style="text-align:left">starting <code>y</code> value for tables on new Slides</td><td style="text-align:left">0-n OR 'n%'. Ex:<code>{newSlideStartY:0.5}</code></td></tr>
 </tbody>
 </table>
 <h3><a class="anchor" aria-hidden="true" id="option-details"></a><a href="#option-details" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Option Details</h3>
@@ -167,7 +169,7 @@ as the <code>text</code> value allows fine-grained control over the text inside 
 </ul>
 <h2><a class="anchor" aria-hidden="true" id="table-cell-formatting-examples"></a><a href="#table-cell-formatting-examples" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Cell Formatting Examples</h2>
 <pre><code class="hljs css language-javascript"><span class="hljs-comment">// TABLE 1: Cell-level Formatting</span>
-<span class="hljs-keyword">var</span> rows = [];
+<span class="hljs-keyword">let</span> rows = [];
 <span class="hljs-comment">// Row One: cells will be formatted according to any options provided to `addTable()`</span>
 rows.push([<span class="hljs-string">"First"</span>, <span class="hljs-string">"Second"</span>, <span class="hljs-string">"Third"</span>]);
 <span class="hljs-comment">// Row Two: set/override formatting for each cell</span>
@@ -180,7 +182,7 @@ slide.addTable(rows, { <span class="hljs-attr">x</span>: <span class="hljs-numbe
 
 <span class="hljs-comment">// TABLE 2: Using word-level formatting inside cells</span>
 <span class="hljs-comment">// <span class="hljs-doctag">NOTE:</span> An array of text/options objects provides fine-grained control over formatting</span>
-<span class="hljs-keyword">var</span> arrObjText = [
+<span class="hljs-keyword">let</span> arrObjText = [
     { <span class="hljs-attr">text</span>: <span class="hljs-string">"Red "</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"FF0000"</span> } },
     { <span class="hljs-attr">text</span>: <span class="hljs-string">"Green "</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"00FF00"</span> } },
     { <span class="hljs-attr">text</span>: <span class="hljs-string">"Blue"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">color</span>: <span class="hljs-string">"0000FF"</span> } },
@@ -196,7 +198,7 @@ slide.addText(arrObjText, {
 });
 
 <span class="hljs-comment">// EX B: Pass the same objects as a cell's `text` value</span>
-<span class="hljs-keyword">var</span> arrTabRows = [
+<span class="hljs-keyword">let</span> arrTabRows = [
     [
         { <span class="hljs-attr">text</span>: <span class="hljs-string">"Cell 1 A"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span> } },
         { <span class="hljs-attr">text</span>: <span class="hljs-string">"Cell 1 B"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Courier"</span> } },
@@ -206,8 +208,8 @@ slide.addText(arrObjText, {
 slide.addTable(arrTabRows, { <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">3.5</span>, <span class="hljs-attr">w</span>: <span class="hljs-number">9</span>, <span class="hljs-attr">h</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">colW</span>: [<span class="hljs-number">1.5</span>, <span class="hljs-number">1.5</span>, <span class="hljs-number">6</span>] });
 </code></pre>
 <h2><a class="anchor" aria-hidden="true" id="table-examples"></a><a href="#table-examples" aria-hidden="true" class="hash-link"><svg class="hash-link-icon" aria-hidden="true" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M4 9h1v1H4c-1.5 0-3-1.69-3-3.5S2.55 3 4 3h4c1.45 0 3 1.69 3 3.5 0 1.41-.91 2.72-2 3.25V8.59c.58-.45 1-1.27 1-2.09C10 5.22 8.98 4 8 4H4c-.98 0-2 1.22-2 2.5S3 9 4 9zm9-3h-1v1h1c1 0 2 1.22 2 2.5S13.98 12 13 12H9c-.98 0-2-1.22-2-2.5 0-.83.42-1.64 1-2.09V6.25c-1.09.53-2 1.84-2 3.25C6 11.31 7.55 13 9 13h4c1.45 0 3-1.69 3-3.5S14.5 6 13 6z"></path></svg></a>Table Examples</h2>
-<pre><code class="hljs css language-javascript"><span class="hljs-keyword">var</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
-<span class="hljs-keyword">var</span> slide = pptx.addSlide();
+<pre><code class="hljs css language-javascript"><span class="hljs-keyword">let</span> pptx = <span class="hljs-keyword">new</span> PptxGenJS();
+<span class="hljs-keyword">let</span> slide = pptx.addSlide();
 slide.addText(<span class="hljs-string">"Demo-03: Table"</span>, {
     <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
     <span class="hljs-attr">y</span>: <span class="hljs-number">0.25</span>,
@@ -218,8 +220,8 @@ slide.addText(<span class="hljs-string">"Demo-03: Table"</span>, {
 
 <span class="hljs-comment">// TABLE 1: Single-row table</span>
 <span class="hljs-comment">// --------</span>
-<span class="hljs-keyword">var</span> rows = [[<span class="hljs-string">"Cell 1"</span>, <span class="hljs-string">"Cell 2"</span>, <span class="hljs-string">"Cell 3"</span>]];
-<span class="hljs-keyword">var</span> tabOpts = {
+<span class="hljs-keyword">let</span> rows = [[<span class="hljs-string">"Cell 1"</span>, <span class="hljs-string">"Cell 2"</span>, <span class="hljs-string">"Cell 3"</span>]];
+<span class="hljs-keyword">let</span> tabOpts = {
     <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
     <span class="hljs-attr">y</span>: <span class="hljs-number">1.0</span>,
     <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
@@ -231,11 +233,11 @@ slide.addTable(rows, tabOpts);
 
 <span class="hljs-comment">// TABLE 2: Multi-row table (each rows array element is an array of cells)</span>
 <span class="hljs-comment">// --------</span>
-<span class="hljs-keyword">var</span> rows = [
+<span class="hljs-keyword">let</span> rows = [
     [<span class="hljs-string">"A1"</span>, <span class="hljs-string">"B1"</span>, <span class="hljs-string">"C1"</span>],
     [<span class="hljs-string">"A2"</span>, <span class="hljs-string">"B2"</span>, <span class="hljs-string">"C2"</span>],
 ];
-<span class="hljs-keyword">var</span> tabOpts = {
+<span class="hljs-keyword">let</span> tabOpts = {
     <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
     <span class="hljs-attr">y</span>: <span class="hljs-number">2.0</span>,
     <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
@@ -247,23 +249,14 @@ slide.addTable(rows, tabOpts);
 
 <span class="hljs-comment">// TABLE 3: Formatting at a cell level - use this to selectively override table's cell options</span>
 <span class="hljs-comment">// --------</span>
-<span class="hljs-keyword">var</span> rows = [
+<span class="hljs-keyword">let</span> rows = [
     [
-        {
-            <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Lft"</span>,
-            <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"left"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span> },
-        },
-        {
-            <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Ctr"</span>,
-            <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"center"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Verdana"</span> },
-        },
-        {
-            <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Rgt"</span>,
-            <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"right"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Courier"</span> },
-        },
+        { <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Lft"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"left"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Arial"</span> } },
+        { <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Ctr"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"center"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Verdana"</span> } },
+        { <span class="hljs-attr">text</span>: <span class="hljs-string">"Top Rgt"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">valign</span>: <span class="hljs-string">"top"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"right"</span>, <span class="hljs-attr">fontFace</span>: <span class="hljs-string">"Courier"</span> } },
     ],
 ];
-<span class="hljs-keyword">var</span> tabOpts = {
+<span class="hljs-keyword">let</span> tabOpts = {
     <span class="hljs-attr">x</span>: <span class="hljs-number">0.5</span>,
     <span class="hljs-attr">y</span>: <span class="hljs-number">4.5</span>,
     <span class="hljs-attr">w</span>: <span class="hljs-number">9.0</span>,
