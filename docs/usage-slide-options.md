@@ -5,11 +5,11 @@ title: Slide Methods
 
 ### Slide Options
 
-| Option       | Type     | Default  | Description             | Possible Values                                            |
-| :----------- | :------- | :------- | :---------------------- | :--------------------------------------------------------- |
-| `background` | BkgdOpts | `FFFFFF` | background color/images | add background color or image                              |
-| `color`      | string   | `000000` | default text color      | hex color code or [scheme color constant](#scheme-colors). |
-| `hidden`     | boolean  | `false`  | whether slide is hidden | Ex: `slide.hidden = true`                                  |
+| Option       | Type            | Default  | Description             | Possible Values                                            |
+| :----------- | :-------------- | :------- | :---------------------- | :--------------------------------------------------------- |
+| `background` | BackgroundProps | `FFFFFF` | background color/images | add background color or image                              |
+| `color`      | string          | `000000` | default text color      | hex color code or [scheme color constant](#scheme-colors). |
+| `hidden`     | boolean         | `false`  | whether slide is hidden | Ex: `slide.hidden = true`                                  |
 
 ### Background Examples
 

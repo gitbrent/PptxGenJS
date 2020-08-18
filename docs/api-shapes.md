@@ -14,6 +14,10 @@ slide.addShape( SHAPE, OPTIONS );
 slide.addText( "some string", {SHAPE, OPTIONS} );
 ```
 
+// TODO: line options changed!!
+// ShapeLineProps
+width, etc.
+
 
 ## Shape Options
 | Option       | Type    | Unit   | Default | Description         | Possible Values                                                             |
