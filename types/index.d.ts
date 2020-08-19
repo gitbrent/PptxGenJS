@@ -965,11 +965,6 @@ declare namespace PptxGenJS {
 	// used by: shape, table, text
 	export interface ShapeFillProps {
 		/**
-		 * Fill type
-		 * - 'solid' @deprecated v3.3.0
-		 */
-		type?: 'none' | 'solid'
-		/**
 		 * Fill color
 		 * - `HexColor` or `ThemeColor`
 		 * @example 'FF0000' // red
@@ -988,6 +983,11 @@ declare namespace PptxGenJS {
 		 * @deprecated v3.3.0 - use `transparency`
 		 */
 		alpha?: number
+		/**
+		 * Fill type
+		 * - 'solid' @deprecated v3.3.0
+		 */
+		type?: 'none' | 'solid'
 	}
 	export interface ShapeLineProps extends ShapeFillProps {
 		/**
