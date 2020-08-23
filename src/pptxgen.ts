@@ -85,7 +85,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.4.0-beta-20200816:2334'
+const VERSION = '3.3.1-beta-20200823:1122'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -217,7 +217,7 @@ export default class PptxGenJS implements IPresentationProps {
 		return this._slideLayouts
 	}
 
-	private LAYOUTS: object
+	private LAYOUTS: { [key: string]: PresLayout }
 
 	// Exposed class props
 	private _alignH = AlignH
@@ -609,6 +609,19 @@ export default class PptxGenJS implements IPresentationProps {
 	addSlide(options?: AddSlideProps): PresSlide {
 		// TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
 		let masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : ''
+		let slideLayout: SlideLayout = {
+			_name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
+			_presLayout : this.presLayout,
+			_rels: [],
+			_relsChart: [],
+			_relsMedia: [],
+			_slideNum: this.slides.length + 1,
+		}
+
+		if (masterSlideName) {
+			let tmpLayout = this.slideLayouts.filter(layout => layout._name === masterSlideName)[0]
+			if (tmpLayout) slideLayout = tmpLayout
+		}
 
 		let newSlide = new Slide({
 			addSlide: this.addNewSlide,
@@ -618,9 +631,7 @@ export default class PptxGenJS implements IPresentationProps {
 			slideId: this.slides.length + 256,
 			slideRId: this.slides.length + 2,
 			slideNumber: this.slides.length + 1,
-			slideLayout: masterSlideName
-				? this.slideLayouts.filter(layout => layout._name === masterSlideName)[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
-				: this.LAYOUTS[DEF_PRES_LAYOUT],
+			slideLayout: slideLayout
 		})
 
 		// A: Add slide to pres
@@ -665,7 +676,13 @@ export default class PptxGenJS implements IPresentationProps {
 		else if (typeof layout.height !== 'number') console.warn('defineLayout `height` should be a number (inches)')
 		else if (typeof layout.width !== 'number') console.warn('defineLayout `width` should be a number (inches)')
 
-		this.LAYOUTS[layout.name] = { name: layout.name, _sizeW: Math.round(Number(layout.width) * EMU), _sizeH: Math.round(Number(layout.height) * EMU) }
+		this.LAYOUTS[layout.name] = {
+			name: layout.name,
+			_sizeW: Math.round(Number(layout.width) * EMU),
+			_sizeH: Math.round(Number(layout.height) * EMU),
+			width: Math.round(Number(layout.width) * EMU),
+			height: Math.round(Number(layout.height) * EMU),
+		}
 	}
 
 	/**
