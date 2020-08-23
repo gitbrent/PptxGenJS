@@ -19,22 +19,41 @@ use the Layout previously defined. See the demo under /examples for several work
 The defined Masters become first-class Layouts in the exported PowerPoint presentation and can be changed
 via View > Slide Master and will affect the Slides created using that layout.
 
-### Slide Master Options
+### Slide Master Props (`SlideMasterProps`)
 
-| Option        | Type   | Description        | Possible Values                                                                                                                                    |
-| :------------ | :----- | :----------------- | :------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `bkgd`        | string | color              | hex color code or [scheme color constant](#scheme-colors). Ex: `{ bkgd:'0088CC' }`                                                                 |
-| `bkgd`        | object | image              | object with `path` OR `data`. Ex: `{path:'img/bkgd.png'}` OR `{data:'image/png;base64,iVBORwTwB[...]='}`                                               |
-| `margin`      | number | Slide margins      | (inches) 0.0 through Slide.width                                                                                                                   |
-| `margin`      | array  | Slide margins      | (inches) array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]`                                                                              |
-| `objects`     | array  | Objects for Slide  | object with type and options. Type:`chart`,`image`,`line`,`rect` or `text`. [Example](https://github.com/gitbrent/PptxGenJS#slide-master-examples) |
-| `slideNumber` | object | Show slide numbers | ex: `{ x:1.0, y:'50%' }` `x` and `y` can be either inches or percent                                                                               |
-| `title`       | string | Layout title/name  | some title                                                                                                                                         |
+| Option        | Type             | Reqd? | Description       | Possible Values                                                       |
+| :------------ | :--------------- | :---- | :---------------- | --------------------------------------------------------------------- |
+| `title`       | string           | Y     | Layout title/name | unique name for this Master                                           |
+| `background`  | BackgroundProps  |       | background props  | (see [Background Props](#background-props-backgroundprops))           |
+| `margin`      | number           |       | Slide margins     | (inches) 0.0 through Slide.width                                      |
+| `margin`      | array            |       | Slide margins     | (inches) array of numbers in TRBL order. Ex: `[0.5, 0.75, 0.5, 0.75]` |
+| `objects`     | array            |       | Objects for Slide | object with type and options. [Example](/PptxGenJS/demo/#templates)   |
+| `slideNumber` | SlideNumberProps |       | Slide numbers     | (see [SlideNumber Props](#slidenumber-props-slidenumberprops))        |
 
-**TIP:**
-Pre-encode your images (base64) and add the string as the optional data key/val (see `bkgd` above)
+### Background Props (`BackgroundProps`)
 
-### Slide Master Example
+| Option         | Type   | Default  | Description  | Possible Values                                                                                           |
+| :------------- | :----- | :------- | :----------- | :-------------------------------------------------------------------------------------------------------- |
+| `color`        | string | `000000` | color        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
+| `transparency` | number | `0`      | transparency | Percentage: 0-100                                                                                         |
+
+### SlideNumber Props (`SlideNumberProps`)
+
+| Option  | Type   | Default  | Description                  | Possible Values                                                                                           |
+| :------ | :----- | :------- | :--------------------------- | :-------------------------------------------------------------------------------------------------------- |
+| `x`     | number | `1.0`    | horizontal location (inches) | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide)                               |
+| `y`     | number | `1.0`    | vertical location (inches)   | 0-n OR 'n%'.                                                                                              |
+| `w`     | number |          | width (inches)               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)                                    |
+| `h`     | number |          | height (inches)              | 0-n OR 'n%'.                                                                                              |
+| `align` | string | `left`   | alignment                    | `left` or `center` or `right`                                                                             |
+| `color` | string | `000000` | color                        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
+
+**NOTES**
+
+-   Slide Number: more props are available that shown above - `SlideNumberProps` inherits from [TextProps](/PptxGenJS/docs/api-text.html)
+-   Pre-encode your images (base64) and add the string as the optional data key/val (see `bkgd` above)
+
+## Slide Master Example
 
 ```javascript
 let pptx = new PptxGenJS();
@@ -42,10 +61,10 @@ pptx.layout = "LAYOUT_WIDE";
 
 pptx.defineSlideMaster({
     title: "MASTER_SLIDE",
-    bkgd: "FFFFFF",
+    background: { color: "FFFFFF" },
     objects: [
-        { line: { x: 3.5, y: 1.0, w: 6.0, line: "0088CC", lineSize: 5 } },
-        { rect: { x: 0.0, y: 5.3, w: "100%", h: 0.75, fill: "F1F1F1" } },
+        { line: { x: 3.5, y: 1.0, w: 6.0, line: { color: "0088CC", width: 5 } } },
+        { rect: { x: 0.0, y: 5.3, w: "100%", h: 0.75, fill: { color: "F1F1F1" } } },
         { text: { text: "Status Report", options: { x: 3.0, y: 5.3, w: 5.5, h: 0.75 } } },
         { image: { x: 11.3, y: 6.4, w: 1.67, h: 0.75, path: "images/logo.png" } },
     ],
@@ -89,9 +108,9 @@ pptx.layout = "LAYOUT_WIDE";
 
 pptx.defineSlideMaster({
     title: "PLACEHOLDER_SLIDE",
-    bkgd: "FFFFFF",
+    background: { color: "FFFFFF" },
     objects: [
-        { rect: { x: 0, y: 0, w: "100%", h: 0.75, fill: "F1F1F1" } },
+        { rect: { x: 0, y: 0, w: "100%", h: 0.75, fill: { color: "F1F1F1" } } },
         { text: { text: "Status Report", options: { x: 0, y: 0, w: 6, h: 0.75 } } },
         {
             placeholder: {
