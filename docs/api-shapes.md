@@ -17,7 +17,9 @@ slide.addShape(SHAPE_NAME, SHAPE_PROPS);
 slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 ```
 
-## Shape Props
+## Properties
+
+### Shape Props (`ShapeProps`)
 
 | Option       | Type           | Unit    | Default | Description         | Possible Values                                                              |
 | :----------- | :------------- | :------ | :------ | :------------------ | :--------------------------------------------------------------------------- |
@@ -36,14 +38,14 @@ slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 | `shadow`     | ShadowProps    |         |         | shadow props        | (see [Shadow Props](#shadow-props-shadowprops))                              |
 | `shapeName`  | string         |         |         | name of shape       | optional name for shape, Ex: "Customer Network Diagram 99"                   |
 
-## Fill Props (`ShapeFillProps`)
+### Fill Props (`ShapeFillProps`)
 
 | Option         | Type   | Default  | Description  | Possible Values                                                                                           |
 | :------------- | :----- | :------- | :----------- | :-------------------------------------------------------------------------------------------------------- |
 | `color`        | string | `000000` | color        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
 | `transparency` | number | `0`      | transparency | Percentage: 0-100                                                                                         |
 
-## Hyperlink Props (`HyperlinkProps`)
+### Hyperlink Props (`HyperlinkProps`)
 
 | Option    | Type   | Description           | Possible Values                      |
 | :-------- | :----- | :-------------------- | :----------------------------------- |
@@ -51,7 +53,7 @@ slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 | `tooltip` | string | link tooltip text     | Ex: `Click to visit home page`       |
 | `url`     | string | target URL            | Ex: `https://wikipedia.org`          |
 
-## Line Props (`ShapeLineProps`)
+### Line Props (`ShapeLineProps`)
 
 | Option           | Type   | Default | Description         | Possible Values                                                                                           |
 | :--------------- | :----- | :------ | :------------------ | :-------------------------------------------------------------------------------------------------------- |
@@ -62,7 +64,7 @@ slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 | `transparency`   | number | `0`     | line transparency   | Percentage: 0-100                                                                                         |
 | `width`          | number | `1`     | line width (points) | 1-256. Ex: `{ width:4 }`                                                                                  |
 
-## Shadow Props (`ShadowProps`)
+### Shadow Props (`ShadowProps`)
 
 | Option    | Type   | Default  | Description            | Possible Values          |
 | :-------- | :----- | :------- | :--------------------- | :----------------------- |
@@ -73,22 +75,28 @@ slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 | `offset`  | number | `0`      | shadow offset (points) | `0`-`200`                |
 | `opacity` | number | `0`      | opacity percentage     | `0.0`-`1.0`              |
 
-## Shape Examples
+## Examples
+
+### Shapes without text
 
 ```javascript
-// Plain shapes:
 let slide1 = pres.addSlide();
 slide1.addShape(pres.ShapeType.rect, { x: 0.5, y: 0.8, w: 1.5, h: 3.0, fill: { color: "FF0000" } });
 slide1.addShape(pres.ShapeType.ellipse, { x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: "solid", color: "0088CC" } });
 slide1.addShape(pres.ShapeType.line, { x: 4.2, y: 4.4, w: 5.0, h: 0.0, line: { color: "FF0000", width: 1 } });
 slide1.addShape(pres.ShapeType.line, { x: 4.2, y: 4.8, w: 5.0, h: 0.0, line: { color: "FF0000", width: 2, beginArrowType: "triangle" } });
 
-// Shapes with Text:
+pres.writeFile("Demo-Shapes-1");
+```
+
+### Shapes with text
+
+```javascript
 let slide2 = pres.addSlide();
 slide2.addText("RECTANGLE", { shape: pres.ShapeType.rect, x: 0.5, y: 0.8, w: 1.5, h: 3.0, fill: { color: "FF0000" }, align: "center", fontSize: 14 });
 slide2.addText("ELLIPSE", { shape: pres.ShapeType.ellipse, x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { color: "FF0000" }, align: "center", fontSize: 14 });
 slide2.addText("LINE size=1", { shape: pres.ShapeType.line, align: "center", x: 4.2, y: 4.4, w: 5, h: 0, line: { color: "FF0000", width: 1, dashType: "lgDash" } });
 slide2.addText("LINE size=2", { shape: pres.ShapeType.line, align: "left", x: 4.2, y: 4.8, w: 5, h: 0, line: { color: "FF0000", width: 2, endArrowType: "triangle" } });
 
-pres.writeFile("Demo-Shapes");
+pres.writeFile("Demo-Shapes-2");
 ```

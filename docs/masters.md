@@ -19,6 +19,8 @@ use the Layout previously defined. See the demo under /examples for several work
 The defined Masters become first-class Layouts in the exported PowerPoint presentation and can be changed
 via View > Slide Master and will affect the Slides created using that layout.
 
+## Properties
+
 ### Slide Master Props (`SlideMasterProps`)
 
 | Option        | Type             | Reqd? | Description       | Possible Values                                                       |
@@ -53,7 +55,9 @@ via View > Slide Master and will affect the Slides created using that layout.
 -   Slide Number: more props are available that shown above - `SlideNumberProps` inherits from [TextProps](/PptxGenJS/docs/api-text.html)
 -   Pre-encode your images (base64) and add the string as the optional data key/val (see `bkgd` above)
 
-## Slide Master Example
+## Examples
+
+### Slide Master Example
 
 ```javascript
 let pptx = new PptxGenJS();
