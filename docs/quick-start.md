@@ -25,7 +25,7 @@ let slide = pres.addSlide();
 
 // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 let textboxText = "Hello World from PptxGenJS!";
-let textboxOpts = { x: 1, y: 1, color: "363636", fill: "f1f1f1", align: pres.AlignH.center };
+let textboxOpts = { x: 1, y: 1, color: '363636', fill: { color:'F1F1F1' }, align: pres.AlignH.center };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
@@ -43,7 +43,7 @@ let slide = pres.addSlide();
 
 // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
 let textboxText = "Hello World from PptxGenJS!";
-let textboxOpts = { x: 1, y: 1, color: "363636", fill: "f1f1f1", align: "center" };
+let textboxOpts = { x: 1, y: 1, color: '363636', fill: { color:'F1F1F1' }, align: "center" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation

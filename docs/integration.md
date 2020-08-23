@@ -12,7 +12,7 @@ title: Library Integration
 
 * Working React demo under [demos/react-demo](https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo)
 
-### React Example  
+### React Example
 ```
 import pptxgen from "pptxgenjs";
 
@@ -21,7 +21,7 @@ let slide = pptx.addSlide();
 
 slide.addText(
   "React Demo!",
-  { x:1, y:1, w:10, fontSize:36, fill:'F1F1F1', align:'center' }
+  { x:1, y:1, w:10, fontSize:36, fill:{ color:'F1F1F1' }, align:'center' }
 );
 pptx.writeFile("react-demo.pptx");
 ```
@@ -30,7 +30,7 @@ pptx.writeFile("react-demo.pptx");
 ## Webpack Troubleshooting
 
 Some users have modified their webpack config to avoid a module resolution error using:
-* `node: { fs: "empty" }`  
+* `node: { fs: "empty" }`
 
 ### Related Issues
 - [See Issue #72 for more information](https://github.com/gitbrent/PptxGenJS/issues/72)
