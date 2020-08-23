@@ -11,6 +11,11 @@ jsdoc details for everything other than charts (maybe next time...)
 - Lots of poorly named options have been deprecated and new, much better names created
 - Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
+## [3.3.1] - 2020-08-23
+- Fixed: Broken pptx has generated if used custom slide layout in v3.3.0 [\#826](https://github.com/gitbrent/PptxGenJS/issues/826) ([yhatt](https://github.com/yhatt))
+
+
+
 ## [3.3.0] - 2020-08-16
 ### Major Change Summary
 - The `addTable()` method finally supports auto-paging, including support for repeating table headers!
