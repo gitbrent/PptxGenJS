@@ -8,9 +8,10 @@ export function testMainMethods() {
 	let pptx = new pptxgen();
 
 	// PPTX Method 1:
-	pptx.defineLayout({ name: "TST", width: 12, height: 7 });
-	//pptx.layout = "TST";
-	pptx.layout = "LAYOUT_WIDE";
+	//pptx.layout = "LAYOUT_WIDE";
+	//pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
+	pptx.defineLayout({ name: 'TST', width: 13, height: 7 });
+	pptx.layout = 'TST';
 
 	// PPTX Method 2:
 	pptx.defineSlideMaster({
