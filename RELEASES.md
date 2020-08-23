@@ -19,7 +19,7 @@
 ## Build Library, Update Files
 
 1. Update `package.json` version
-2. Update `src/pptxgen.ts` version
+2. Update `src/pptxgen.ts` version (eg: `const VERSION = '3.3.1'`)
 3. Update `CHANGELOG.md` with new date
 4. Update `README.md` with new CDN links
 5. Build library: npm scripts > `ship`
