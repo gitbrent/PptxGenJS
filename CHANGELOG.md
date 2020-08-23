@@ -7,8 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Notes]
 
 ## [3.3.1] - 2020-08-23
+### Changed
 - Fixed: Broken pptx has generated if used custom slide layout in v3.3.0 [\#826](https://github.com/gitbrent/PptxGenJS/issues/826) ([yhatt](https://github.com/yhatt))
 - Fixed: lineSpacing option set to decimal triggers repair alert  [\#827](https://github.com/gitbrent/PptxGenJS/issues/827) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Updated `demos.js` to replace all fill:string with fill:ShapeFillProps ([gitbrent](https://github.com/gitbrent))
 
 
 

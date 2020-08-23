@@ -54,7 +54,7 @@ React Test
 
 1. Ensure newest `dist/pptxgen.es.js` and `types/index.d.ts` under local node_modules
 2. Update `demos/react-demo/package.json` version
-3. Open `demos/react-demo/src/latest/Test.tsx`
+3. Open `demos/react-demo/src/tstest/Test.tsx`
 4. Check existing code
 5. Test defs by using auto-complete, "pptxgen.ChartType." etc.
 

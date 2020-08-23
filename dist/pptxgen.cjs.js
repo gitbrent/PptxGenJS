@@ -1,4 +1,4 @@
-/* PptxGenJS 3.3.0 @ 2020-08-17T04:25:01.746Z */
+/* PptxGenJS 3.3.1 @ 2020-08-23T19:00:27.029Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2080,7 +2080,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
             }
         }
         if (textObj.options.lineSpacing)
-            strXmlLnSpc = "<a:lnSpc><a:spcPts val=\"" + textObj.options.lineSpacing + "00\"/></a:lnSpc>";
+            strXmlLnSpc = "<a:lnSpc><a:spcPts val=\"" + textObj.options.lineSpacing * 100 + "\"/></a:lnSpc>";
         // OPTION: indent
         if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
             paragraphPropXml += " lvl=\"" + textObj.options.indentLevel + "\"";
@@ -6039,7 +6039,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.3.0';
+var VERSION = '3.3.1';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6566,6 +6566,19 @@ var PptxGenJS = /** @class */ (function () {
     PptxGenJS.prototype.addSlide = function (options) {
         // TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
         var masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : '';
+        var slideLayout = {
+            _name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
+            _presLayout: this.presLayout,
+            _rels: [],
+            _relsChart: [],
+            _relsMedia: [],
+            _slideNum: this.slides.length + 1,
+        };
+        if (masterSlideName) {
+            var tmpLayout = this.slideLayouts.filter(function (layout) { return layout._name === masterSlideName; })[0];
+            if (tmpLayout)
+                slideLayout = tmpLayout;
+        }
         var newSlide = new Slide({
             addSlide: this.addNewSlide,
             getSlide: this.getSlide,
@@ -6574,9 +6587,7 @@ var PptxGenJS = /** @class */ (function () {
             slideId: this.slides.length + 256,
             slideRId: this.slides.length + 2,
             slideNumber: this.slides.length + 1,
-            slideLayout: masterSlideName
-                ? this.slideLayouts.filter(function (layout) { return layout._name === masterSlideName; })[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
-                : this.LAYOUTS[DEF_PRES_LAYOUT],
+            slideLayout: slideLayout
         });
         // A: Add slide to pres
         this._slides.push(newSlide);
@@ -6624,7 +6635,13 @@ var PptxGenJS = /** @class */ (function () {
             console.warn('defineLayout `height` should be a number (inches)');
         else if (typeof layout.width !== 'number')
             console.warn('defineLayout `width` should be a number (inches)');
-        this.LAYOUTS[layout.name] = { name: layout.name, _sizeW: Math.round(Number(layout.width) * EMU), _sizeH: Math.round(Number(layout.height) * EMU) };
+        this.LAYOUTS[layout.name] = {
+            name: layout.name,
+            _sizeW: Math.round(Number(layout.width) * EMU),
+            _sizeH: Math.round(Number(layout.height) * EMU),
+            width: Math.round(Number(layout.width) * EMU),
+            height: Math.round(Number(layout.height) * EMU),
+        };
     };
     /**
      * Create a new slide master [layout] for the Presentation

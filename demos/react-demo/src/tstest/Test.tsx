@@ -10,7 +10,7 @@ export function testMainMethods() {
 	// PPTX Method 1:
 	//pptx.layout = "LAYOUT_WIDE";
 	//pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
-	pptx.defineLayout({ name: 'TST', width: 13, height: 7 });
+	pptx.defineLayout({ name: 'TST', width: 13.4, height: 7.5 });
 	pptx.layout = 'TST';
 
 	// PPTX Method 2:
@@ -380,7 +380,7 @@ function testMethod_Shape(pptx: pptxgen) {
 		line: { color: "000000", width: 3 },
 	});
 	slide.addText("RIGHT-TRIANGLE", {
-		shape: pptx.ShapeType.triangle,
+		shape: pptx.ShapeType.rtTriangle,
 		align: "center",
 		x: 7.0,
 		y: 4.3,
