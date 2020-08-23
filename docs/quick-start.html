@@ -80,7 +80,7 @@
 
 <span class="hljs-comment">// 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide</span>
 <span class="hljs-keyword">let</span> textboxText = <span class="hljs-string">"Hello World from PptxGenJS!"</span>;
-<span class="hljs-keyword">let</span> textboxOpts = { x: <span class="hljs-number">1</span>, y: <span class="hljs-number">1</span>, color: <span class="hljs-string">"363636"</span>, fill: <span class="hljs-string">"f1f1f1"</span>, align: pres.AlignH.center };
+<span class="hljs-keyword">let</span> textboxOpts = { x: <span class="hljs-number">1</span>, y: <span class="hljs-number">1</span>, color: <span class="hljs-string">'363636'</span>, fill: { color:<span class="hljs-string">'F1F1F1'</span> }, align: pres.AlignH.center };
 slide.addText(textboxText, textboxOpts);
 
 <span class="hljs-comment">// 4. Save the Presentation</span>
@@ -95,7 +95,7 @@ pres.writeFile(<span class="hljs-string">"Sample Presentation.pptx"</span>);
 
 <span class="hljs-comment">// 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide</span>
 <span class="hljs-keyword">let</span> textboxText = <span class="hljs-string">"Hello World from PptxGenJS!"</span>;
-<span class="hljs-keyword">let</span> textboxOpts = { <span class="hljs-attr">x</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">color</span>: <span class="hljs-string">"363636"</span>, <span class="hljs-attr">fill</span>: <span class="hljs-string">"f1f1f1"</span>, <span class="hljs-attr">align</span>: <span class="hljs-string">"center"</span> };
+<span class="hljs-keyword">let</span> textboxOpts = { <span class="hljs-attr">x</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">y</span>: <span class="hljs-number">1</span>, <span class="hljs-attr">color</span>: <span class="hljs-string">'363636'</span>, <span class="hljs-attr">fill</span>: { <span class="hljs-attr">color</span>:<span class="hljs-string">'F1F1F1'</span> }, <span class="hljs-attr">align</span>: <span class="hljs-string">"center"</span> };
 slide.addText(textboxText, textboxOpts);
 
 <span class="hljs-comment">// 4. Save the Presentation</span>
