@@ -5,14 +5,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Notes]
-- OMG, the typescript definitions were a big old mess; you guys are too nice to not have 100 issues open
-- The `core-interfaces.ts` file is now grouped and ordered, corrects a whole heap of bad/missing options and finally includes
-jsdoc details for everything other than charts (maybe next time...)
-- Lots of poorly named options have been deprecated and new, much better names created
-- Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
 ## [3.3.1] - 2020-08-23
 - Fixed: Broken pptx has generated if used custom slide layout in v3.3.0 [\#826](https://github.com/gitbrent/PptxGenJS/issues/826) ([yhatt](https://github.com/yhatt))
+- Fixed: lineSpacing option set to decimal triggers repair alert  [\#827](https://github.com/gitbrent/PptxGenJS/issues/827) ([ReimaFrgos](https://github.com/ReimaFrgos))
 
 
 
@@ -23,6 +19,7 @@ jsdoc details for everything other than charts (maybe next time...)
 - New `addText()` `fit` option ('none' | 'shrink' | 'resize') addresses long-standing issues with shrink/resize objects (new demo page as well)
 - Fix for Angular "`Buffer` is unknown" issue
 - Major update of typescript defs, including tons of documentation that has been added
+- Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
 - **All users**: table and textbox text linebreaks may act differently! (a major rewrite to correct long-standing issues with alignment/breakLine finally landed)
