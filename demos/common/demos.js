@@ -2771,7 +2771,7 @@ function genSlides_Text(pptx) {
 		slide.addText("Line-Spacing (text):", { x:7.0, y:3.3, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
 			'lineSpacing\n40pt',
-			{ x:7.0, y:3.72, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacing:40 }
+			{ x:7.0, y:3.72, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacing:39.9 } // TEST-CASE: `lineSpacing` decimal value
 		);
 
 		// 3: Line-Spacing
