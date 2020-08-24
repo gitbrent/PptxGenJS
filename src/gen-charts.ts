@@ -444,6 +444,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 				rotate: rel.opts.titleRotate,
 				titleAlign: rel.opts.titleAlign,
 				titlePos: rel.opts.titlePos,
+				bold: rel.opts.titleBold
 			})
 			strXml += '<c:autoTitleDeleted val="0"/>'
 		} else {
@@ -1800,6 +1801,7 @@ function genXmlTitle(opts: IChartTitleOpts): string {
 	let align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : `<a:pPr>`
 	let rotate = opts.rotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.rotate)}"/>` : `<a:bodyPr/>` // don't specify rotation to get default (ex. vertical for cat axis)
 	let sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize) + '00"' : '' // only set the font size if specified.  Powerpoint will handle the default size
+	let bold = opts.bold === true ? 1 : 0;
 	let layout =
 		opts.titlePos && opts.titlePos.x && opts.titlePos.y
 			? `<c:layout><c:manualLayout><c:xMode val="edge"/><c:yMode val="edge"/><c:x val="${opts.titlePos.x}"/><c:y val="${opts.titlePos.y}"/></c:manualLayout></c:layout>`
@@ -1812,13 +1814,13 @@ function genXmlTitle(opts: IChartTitleOpts): string {
 	      <a:lstStyle/>
 	      <a:p>
 	        ${align}
-	        <a:defRPr ${sizeAttr} b="0" i="0" u="none" strike="noStrike">
+	        <a:defRPr ${sizeAttr} b="${bold}" i="0" u="none" strike="noStrike">
 	          <a:solidFill><a:srgbClr val="${opts.color || DEF_FONT_COLOR}"/></a:solidFill>
 	          <a:latin typeface="${opts.fontFace || 'Arial'}"/>
 	        </a:defRPr>
 	      </a:pPr>
 	      <a:r>
-	        <a:rPr ${sizeAttr} b="0" i="0" u="none" strike="noStrike">
+	        <a:rPr ${sizeAttr} b="${bold}" i="0" u="none" strike="noStrike">
 	          <a:solidFill><a:srgbClr val="${opts.color || DEF_FONT_COLOR}"/></a:solidFill>
 	          <a:latin typeface="${opts.fontFace || 'Arial'}"/>
 	        </a:rPr>
