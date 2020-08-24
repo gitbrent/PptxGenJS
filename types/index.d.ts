@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.3.0
+// Type definitions for pptxgenjs 3.4.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -1728,7 +1728,10 @@ declare namespace PptxGenJS {
 		v3DRotY?: number
 	}
 	export interface IChartPropsAxisCat {
-		catAxes?: number[]
+		/**
+		 * Multi-Chart prop: array of cat axes
+		 */
+		catAxes?: IChartPropsAxisCat[]
 		catAxisBaseTimeUnit?: string
 		catAxisHidden?: boolean
 		catAxisLabelColor?: string
@@ -1755,6 +1758,7 @@ declare namespace PptxGenJS {
 		catAxisTitleRotate?: number
 		catGridLine?: OptsChartGridLine
 		catLabelFormatCode?: string
+		secondaryCatAxis?: boolean
 		showCatAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisSer {
@@ -1781,8 +1785,12 @@ declare namespace PptxGenJS {
 		showSerAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisVal {
+		secondaryValAxis?: boolean
 		showValAxisTitle?: boolean
-		valAxes?: number[]
+		/**
+		 * Multi-Chart prop: array of val axes
+		 */
+		valAxes?: IChartPropsAxisVal[]
 		valAxisCrossesAt?: string | number
 		valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 		valAxisDisplayUnitLabel?: boolean
@@ -1944,9 +1952,10 @@ declare namespace PptxGenJS {
 		color?: string
 	}
 	export interface SlideMasterProps {
+		/**
+		 * Unique name for this master
+		 */
 		title: string
-		height?: number
-		width?: number
 		margin?: Margin
 		background?: BackgroundProps
 		objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]

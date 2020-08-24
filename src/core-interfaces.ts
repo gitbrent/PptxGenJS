@@ -965,7 +965,10 @@ export interface IChartPropsBase {
 	v3DRotY?: number
 }
 export interface IChartPropsAxisCat {
-	catAxes?: number[]
+	/**
+	 * Multi-Chart prop: array of cat axes
+	 */
+	catAxes?: IChartPropsAxisCat[]
 	catAxisBaseTimeUnit?: string
 	catAxisHidden?: boolean
 	catAxisLabelColor?: string
@@ -992,6 +995,7 @@ export interface IChartPropsAxisCat {
 	catAxisTitleRotate?: number
 	catGridLine?: OptsChartGridLine
 	catLabelFormatCode?: string
+	secondaryCatAxis?: boolean
 	showCatAxisTitle?: boolean
 }
 export interface IChartPropsAxisSer {
@@ -1018,8 +1022,12 @@ export interface IChartPropsAxisSer {
 	showSerAxisTitle?: boolean
 }
 export interface IChartPropsAxisVal {
+	secondaryValAxis?: boolean
 	showValAxisTitle?: boolean
-	valAxes?: number[]
+	/**
+	 * Multi-Chart prop: array of val axes
+	 */
+	valAxes?: IChartPropsAxisVal[]
 	valAxisCrossesAt?: string | number
 	valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 	valAxisDisplayUnitLabel?: boolean
@@ -1234,9 +1242,10 @@ export interface SlideNumberProps extends PositionProps, TextBaseProps {
 	color?: string
 }
 export interface SlideMasterProps {
+	/**
+	 * Unique name for this master
+	 */
 	title: string
-	height?: number
-	width?: number
 	margin?: Margin
 	background?: BackgroundProps
 	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
