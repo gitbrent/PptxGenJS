@@ -995,6 +995,10 @@ export interface IChartPropsAxisCat {
 	catAxisTitleRotate?: number
 	catGridLine?: OptsChartGridLine
 	catLabelFormatCode?: string
+	/**
+	 * Whether data should use secondary category axis (instead of primary)
+	 * @default false
+	 */
 	secondaryCatAxis?: boolean
 	showCatAxisTitle?: boolean
 }
@@ -1022,6 +1026,10 @@ export interface IChartPropsAxisSer {
 	showSerAxisTitle?: boolean
 }
 export interface IChartPropsAxisVal {
+	/**
+	 * Whether data should use secondary value axis (instead of primary)
+	 * @default false
+	 */
 	secondaryValAxis?: boolean
 	showValAxisTitle?: boolean
 	/**
