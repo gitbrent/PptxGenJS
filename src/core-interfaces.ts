@@ -979,6 +979,9 @@ export interface IChartPropsAxisCat {
 	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	catAxisLabelRotate?: number
 	catAxisLineShow?: boolean
+	catAxisLineSize?: number
+	catAxisLineColor?: string
+	catAxisLineStyle?: 'solid' | 'dash' | 'dot' | 'none'
 	catAxisMajorTickMark?: ChartAxisTickMark
 	catAxisMajorTimeUnit?: string
 	catAxisMajorUnit?: number
@@ -1048,6 +1051,9 @@ export interface IChartPropsAxisVal {
 	valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	valAxisLabelRotate?: number
 	valAxisLineShow?: boolean
+	valAxisLineSize?: number
+	valAxisLineColor?: string
+	valAxisLineStyle?: 'solid' | 'dash' | 'dot' | 'none'
 	valAxisMajorTickMark?: ChartAxisTickMark
 	valAxisMajorUnit?: number
 	valAxisMaxVal?: number
