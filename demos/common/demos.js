@@ -3,7 +3,7 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.3.1
+* VER.: 3.4.0
 * BLD.: 20200823
 */
 
@@ -213,9 +213,14 @@ function execGenSlidesFuncs(type) {
 			title: 'THANKS_SLIDE',
 			bkgd: '36ABFF', // BACKWARDS-COMPAT/DEPRECATED CHECK (`bkgd` will be removed in v4.x)
 			objects: [
-				{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:{color:'FFFFFF'} } },
-				{ 'placeholder': { options:{ name:'thanksText', type:'title', x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
 				{ 'image': objImg },
+				{ 'rect': { x: 0.0, y: 3.4, w: '100%', h: 2.0, fill: { color: 'FFFFFF' } } },
+				{
+					'placeholder':
+					{
+						options: { name: 'thanksText', type: 'title', x: 0.0, y: 0.9, w: '100%', h: 1, fontFace: 'Arial', color: 'FFFFFF', fontSize: 60, align: 'center' }
+					}
+				},
 				{ 'placeholder':
 					{
 						options: { name:'body', type:'body', x:0.0, y:6.45, w:'100%', h:1, fontFace:'Courier', color:'FFFFFF', fontSize:32, align:'center' },
