@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.3.1">
+	<meta name="version" content="3.4.0">
 	<meta name="updated" content="2020-08-23">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
@@ -146,9 +146,9 @@
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/images/base64Images.js" async></script>
 
 	<!-- RELEASE (CDN)
-	-->
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js"></script>
+	-->
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/dist/pptxgen.bundle.js"></script>
@@ -162,9 +162,9 @@
 	<!-- LOCAL TESTING:
 	<script src="../../libs/jszip.min.js"></script>
 	<script src="../../dist/pptxgen.min.js"></script>
+	-->
 	<script src="../../dist/pptxgen.bundle.js"></script>
 	<script src="../common/demos.js"></script>
-	-->
 
 	<script>
 		// ==================================================================================================================
@@ -391,14 +391,17 @@
 			// 1:
 			pptx.defineSlideMaster({
 				title: 'TITLE_SLIDE',
-				background: { data:BKGD_STARLABS },
+				background: { data: BKGD_STARLABS },
 				objects: [
-					{ 'line':  { x:3.5, y:1.00, w:6.00, line:'0088CC', lineSize:5 } },
-					{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:{color:'F1F1F1'} } },
-					{ 'text':  { text:'Global IT & Services :: Status Report',
-						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', fontSize:20, color:'363636', valign:'middle', margin:0 } }
+					{ 'line': { x: 3.5, y: 1.00, w: 6.00, line: { color: '0088CC', width: 5 } } },
+					{ 'rect': { x: 0.0, y: 5.30, w: '100%', h: 0.75, fill: { color: 'F1F1F1' } } },
+					{
+						'text': {
+							text: 'Global IT & Services :: Status Report',
+							options: { x: 3.0, y: 5.30, w: 5.5, h: 0.75, fontFace: 'Arial', fontSize: 20, color: '363636', valign: 'middle', margin: 0 }
+						}
 					},
-					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
+					{ 'image': { x: 11.3, y: 6.40, w: 1.67, h: 0.75, data: starlabsLogoSml } }
 				]
 			});
 
@@ -406,11 +409,11 @@
 			pptx.defineSlideMaster({
 				title: 'MASTER_SLIDE',
 				background: { fill: 'F1F1F1' },
-				slideNumber: { x:1.0, y:7.0, color:'FFFFFF' },
-				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
+				slideNumber: { x: 1.0, y: 7.0, color: 'FFFFFF' },
+				margin: [0.5, 0.25, 1.25, 0.25],
 				objects: [
-					{ 'rect': { x:0.0, y:6.9, w:'100%', h:0.6, fill:{color:'003b75'} } },
-					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'center', valign:'middle', color:'FFFFFF', fontSize:12} } }
+					{ 'rect': { x: 0.0, y: 6.9, w: '100%', h: 0.6, fill: { color: '003b75' } } },
+					{ 'text': { text: 'S.T.A.R. Laboratories', options: { x: 0, y: 6.9, w: '100%', h: 0.6, align: 'center', valign: 'middle', color: 'FFFFFF', fontSize: 12 } } }
 				]
 			});
 
@@ -419,9 +422,9 @@
 				title: 'THANKS_SLIDE',
 				background: { fill: '36ABFF' },
 				objects: [
-					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:{color:'ffffff'} } },
-					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
-					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS } }
+					{ 'rect': { x: 0.0, y: 3.4, w: '100%', h: 2.0, fill: { color: 'ffffff' } } },
+					{ 'text': { text: 'Thank You!', options: { x: 0.0, y: 0.9, w: '100%', h: 1, fontFace: 'Arial', color: 'FFFFFF', fontSize: 60, align: 'center' } } },
+					{ 'image': { x: 4.6, y: 3.5, w: 4, h: 1.8, data: LOGO_STARLABS } }
 				]
 			});
 		}
@@ -586,11 +589,11 @@
 					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
 					+ "  background: { fill: 'FFFFFF' },\n"
 					+ "  objects: [\n"
-					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
-					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:{ color:'003b75' } }},\n"
-					+ "    {text:  {\n"
-					+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
-					+ "        options:{x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12}\n"
+					+ "    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },\n"
+					+ "    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n"
+					+ "    { text:  {\n"
+					+ "        text: 'S.T.A.R. Laboratories - Confidential',\n"
+					+ "        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n"
 					+ "    }}\n"
 					//+ "    }},\n"
 					//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
