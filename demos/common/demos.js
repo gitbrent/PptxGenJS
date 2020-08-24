@@ -213,8 +213,8 @@ function execGenSlidesFuncs(type) {
 			title: 'THANKS_SLIDE',
 			bkgd: '36ABFF', // BACKWARDS-COMPAT/DEPRECATED CHECK (`bkgd` will be removed in v4.x)
 			objects: [
-				{ 'image': objImg },
 				{ 'rect': { x: 0.0, y: 3.4, w: '100%', h: 2.0, fill: { color: 'FFFFFF' } } },
+				{ 'image': objImg },
 				{
 					'placeholder':
 					{
