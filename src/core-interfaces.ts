@@ -1149,6 +1149,7 @@ export interface IChartPropsTitle {
 	titleFontSize?: number
 	titlePos?: { x: number; y: number }
 	titleRotate?: number
+	titleBold?: boolean
 }
 export interface IChartOpts
 	extends IChartPropsAxisCat,
