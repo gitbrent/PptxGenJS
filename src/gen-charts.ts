@@ -499,7 +499,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 	// B: Axes -----------------------------------------------------------
 	if (rel.opts._type !== CHART_TYPE.PIE && rel.opts._type !== CHART_TYPE.DOUGHNUT) {
 		// Param check
-		if (rel.opts.valAxes && !usesSecondaryValAxis) {
+		if (rel.opts.valAxes && rel.opts.valAxes.length > 1 && !usesSecondaryValAxis) {
 			throw new Error('Secondary axis must be used by one of the multiple charts')
 		}
 
