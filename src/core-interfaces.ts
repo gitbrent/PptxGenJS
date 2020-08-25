@@ -981,7 +981,7 @@ export interface IChartPropsAxisCat {
 	catAxisLineShow?: boolean
 	catAxisLineSize?: number
 	catAxisLineColor?: string
-	catAxisLineStyle?: 'solid' | 'dash' | 'dot' | 'none'
+	catAxisLineStyle?: 'solid' | 'dash' | 'dot' 
 	catAxisMajorTickMark?: ChartAxisTickMark
 	catAxisMajorTimeUnit?: string
 	catAxisMajorUnit?: number
@@ -1053,7 +1053,7 @@ export interface IChartPropsAxisVal {
 	valAxisLineShow?: boolean
 	valAxisLineSize?: number
 	valAxisLineColor?: string
-	valAxisLineStyle?: 'solid' | 'dash' | 'dot' | 'none'
+	valAxisLineStyle?: 'solid' | 'dash' | 'dot'
 	valAxisMajorTickMark?: ChartAxisTickMark
 	valAxisMajorUnit?: number
 	valAxisMaxVal?: number
