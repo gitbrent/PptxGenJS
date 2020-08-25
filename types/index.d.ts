@@ -84,7 +84,7 @@ declare class PptxGenJS {
 	 * @param {SectionProps} section - section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSection(section: PptxGenJS.SectionProps) : any
+	addSection(section: PptxGenJS.SectionProps)
 	/**
 	 * Add a new Slide to Presentation
 	 * @param {AddSlideProps} options - slide options
