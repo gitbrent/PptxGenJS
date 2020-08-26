@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-08-24T05:03:38.770Z */
+/* PptxGenJS 3.4.0-beta @ 2020-08-26T02:55:58.285Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -5581,7 +5581,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     else {
         strXml += '  <c:majorTickMark val="' + (opts.catAxisMajorTickMark || 'out') + '"/>';
         strXml += '  <c:minorTickMark val="' + (opts.catAxisMajorTickMark || 'none') + '"/>';
-        strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>';
+        strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || (opts.barDir === 'col' ? 'low' : 'nextTo')) + '"/>';
     }
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="12700" cap="flat">';
@@ -5684,7 +5684,7 @@ function makeValAxis(opts, valAxisId) {
     else {
         strXml += ' <c:majorTickMark val="' + (opts.valAxisMajorTickMark || 'out') + '"/>';
         strXml += ' <c:minorTickMark val="' + (opts.valAxisMinorTickMark || 'none') + '"/>';
-        strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || opts.barDir === 'col' ? 'nextTo' : 'low') + '"/>';
+        strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || (opts.barDir === 'col' ? 'nextTo' : 'low')) + '"/>';
     }
     strXml += ' <c:spPr>';
     strXml += '   <a:ln w="12700" cap="flat">';
@@ -6037,7 +6037,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20200823-2343';
+var VERSION = '3.4.0-beta-20200825-2145';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
