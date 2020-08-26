@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-08-26T02:55:58.278Z */
+/* PptxGenJS 3.4.0-beta @ 2020-08-26T03:04:12.621Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -4552,7 +4552,7 @@ function makeXmlCharts(rel) {
             //let options: IChartOptsLib = { type: type.type, }
             var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
             var catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
-            usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis'];
+            usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
             strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId, true);
         });
     }
@@ -4562,7 +4562,7 @@ function makeXmlCharts(rel) {
     // B: Axes -----------------------------------------------------------
     if (rel.opts._type !== CHART_TYPE.PIE && rel.opts._type !== CHART_TYPE.DOUGHNUT) {
         // Param check
-        if (rel.opts.valAxes && !usesSecondaryValAxis) {
+        if (rel.opts.valAxes && rel.opts.valAxes.length > 1 && !usesSecondaryValAxis) {
             throw new Error('Secondary axis must be used by one of the multiple charts');
         }
         if (rel.opts.catAxes) {
@@ -4627,9 +4627,7 @@ function makeXmlCharts(rel) {
         // OPTION: Fill
         strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>';
         // OPTION: Border
-        strXml += rel.opts.border
-            ? "<a:ln w=\"" + valToPts(rel.opts.border.pt) + "\" cap=\"flat\">" + genXmlColorSelection(rel.opts.border.color) + "</a:ln>"
-            : '<a:ln><a:noFill/></a:ln>';
+        strXml += rel.opts.border ? "<a:ln w=\"" + valToPts(rel.opts.border.pt) + "\" cap=\"flat\">" + genXmlColorSelection(rel.opts.border.color) + "</a:ln>" : '<a:ln><a:noFill/></a:ln>';
         // Close shapeProp/plotArea before Legend
         strXml += '    <a:effectLst/>';
         strXml += '  </c:spPr>';
