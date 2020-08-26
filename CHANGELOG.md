@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.4.0] - 2020-?-?
 ### Changed
 - Fixed: bug when evaluating `catAxisLabelPos`,`valAxisLabelPos` props [\#829](https://github.com/gitbrent/PptxGenJS/pull/829) ([twatson83](https://github.com/twatson83))
+- Fixed: secondary axis param (`secondaryValAxis`) check [\#832](https://github.com/gitbrent/PptxGenJS/pull/832) ([twatson83](https://github.com/twatson83))
 
 
 
