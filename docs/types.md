@@ -1,5 +1,5 @@
 ---
-id: types-ifaces
+id: types
 title: Type Interfaces
 ---
 
