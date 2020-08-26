@@ -19,61 +19,33 @@ slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 
 ## Properties
 
+### Position Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+
+| Name | Type   | Default | Description            | Possible Values                              |
+| :--- | :----- | :------ | :--------------------- | :------------------------------------------- |
+| `x`  | number | `1.0`   | hor location (inches)  | 0-n                                          |
+| `x`  | string |         | hor location (percent) | 'n%'. (Ex: `{x:'50%'}` middle of the Slide)  |
+| `y`  | number | `1.0`   | ver location (inches)  | 0-n                                          |
+| `y`  | string |         | ver location (percent) | 'n%'. (Ex: `{y:'50%'}` middle of the Slide)  |
+| `w`  | number | `1.0`   | width (inches)         | 0-n                                          |
+| `w`  | string |         | width (percent)        | 'n%'. (Ex: `{w:'50%'}` 50% the Slide width)  |
+| `h`  | number | `1.0`   | height (inches)        | 0-n                                          |
+| `h`  | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
+
 ### Shape Props (`ShapeProps`)
 
-| Option       | Type           | Unit    | Default | Description         | Possible Values                                                              |
-| :----------- | :------------- | :------ | :------ | :------------------ | :--------------------------------------------------------------------------- |
-| `x`          | number         | inches  | `1.0`   | horizontal location | 0-n OR 'n%'. (Ex: `{x:'50%'}` places object in the middle of the Slide)      |
-| `y`          | number         | inches  | `1.0`   | vertical location   | 0-n OR 'n%'.                                                                 |
-| `w`          | number         | inches  |         | width               | 0-n OR 'n%'. (Ex: `{w:'50%'}` makes object 50% width of the Slide)           |
-| `h`          | number         | inches  |         | height              | 0-n OR 'n%'.                                                                 |
-| `align`      | string         |         | `left`  | alignment           | `left` or `center` or `right`                                                |
-| `fill`       | ShapeFillProps |         |         | fill props          | Fill color/transparency props (see [Fill Props](#fill-props-shapefillprops)) |
-| `flipH`      | boolean        |         |         | flip Horizontal     | `true` or `false`                                                            |
-| `flipV`      | boolean        |         |         | flip Vertical       | `true` or `false`                                                            |
-| `hyperlink`  | HyperlinkProps |         |         | hyperlink props     | (see [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html))       |
-| `line`       | ShapeLineProps |         |         | border line props   | (see [Line Props](#line-props-shapelineprops))                               |
-| `rectRadius` | number         | inches  |         | rounding radius     | 0-180. (only for pptx.shapes.ROUNDED_RECTANGLE)                              |
-| `rotate`     | integer        | degrees | `0`     | rotation degrees    | -360 to 360. Ex: `{rotate:180}`                                              |
-| `shadow`     | ShadowProps    |         |         | shadow props        | (see [Shadow Props](#shadow-props-shadowprops))                              |
-| `shapeName`  | string         |         |         | name of shape       | optional name for shape, Ex: "Customer Network Diagram 99"                   |
-
-### Fill Props (`ShapeFillProps`)
-
-| Option         | Type   | Default  | Description  | Possible Values                                                                                           |
-| :------------- | :----- | :------- | :----------- | :-------------------------------------------------------------------------------------------------------- |
-| `color`        | string | `000000` | color        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
-| `transparency` | number | `0`      | transparency | Percentage: 0-100                                                                                         |
-
-### Hyperlink Props (`HyperlinkProps`)
-
-| Option    | Type   | Description           | Possible Values                      |
-| :-------- | :----- | :-------------------- | :----------------------------------- |
-| `slide`   | number | link to a given slide | Target Slide Number. Ex: `{slide:2}` |
-| `tooltip` | string | link tooltip text     | Ex: `Click to visit home page`       |
-| `url`     | string | target URL            | Ex: `https://wikipedia.org`          |
-
-### Line Props (`ShapeLineProps`)
-
-| Option           | Type   | Default | Description         | Possible Values                                                                                           |
-| :--------------- | :----- | :------ | :------------------ | :-------------------------------------------------------------------------------------------------------- |
-| `beginArrowType` | string |         | line ending         | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                                               |
-| `color`          | string |         | line color          | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
-| `dashType`       | string | `solid` | line dash style     | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot`                  |
-| `endArrowType`   | string |         | line heading        | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                                               |
-| `transparency`   | number | `0`     | line transparency   | Percentage: 0-100                                                                                         |
-| `width`          | number | `1`     | line width (points) | 1-256. Ex: `{ width:4 }`                                                                                  |
-
-### Shadow Props (`ShadowProps`)
-
-| Option    | Type   | Default  | Description            | Possible Values          |
-| :-------- | :----- | :------- | :--------------------- | :----------------------- |
-| `type`    | string | `none`   | shadow type            | `outer`, `inner`, `none` |
-| `angle`   | number | `0`      | blue degrees           | `0`-`359`                |
-| `blur`    | number | `0`      | blur range (points)    | `0`-`100`                |
-| `color`   | string | `000000` | color                  | hex color code           |
-| `offset`  | number | `0`      | shadow offset (points) | `0`-`200`                |
-| `opacity` | number | `0`      | opacity percentage     | `0.0`-`1.0`              |
+| Name         | Type                                                                         | Description         | Possible Values                                   |
+| :----------- | :--------------------------------------------------------------------------- | :------------------ | :------------------------------------------------ |
+| `align`      | string                                                                       | alignment           | `left` or `center` or `right`. Default: `left`    |
+| `fill`       | [ShapeFillProps](/PptxGenJS/docs/types.html#fill-props-shapefillprops)       | fill props          | Fill color/transparency props                     |
+| `flipH`      | boolean                                                                      | flip Horizontal     | `true` or `false`                                 |
+| `flipV`      | boolean                                                                      | flip Vertical       | `true` or `false`                                 |
+| `hyperlink`  | [HyperlinkProps](/PptxGenJS/docs/types.html#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
+| `line`       | [ShapeLineProps](/PptxGenJS/docs/types.html#shape-line-props-shapelineprops) | border line props   | (see type link)                                   |
+| `rectRadius` | number                                                                       | rounding radius     | 0-180. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
+| `rotate`     | number                                                                       | rotation (degrees)  | -360 to 360. Default: `0`                         |
+| `shadow`     | [ShadowProps](/PptxGenJS/docs/types.html#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
+| `shapeName`  | string                                                                       | optional shape name | Ex: "Customer Network Diagram 99"                 |
 
 ## Examples
 
