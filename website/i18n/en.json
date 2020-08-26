@@ -3,7 +3,7 @@
   "localized-strings": {
     "next": "Next",
     "previous": "Previous",
-    "tagline": "JavaScript library that creates PowerPoint presentations",
+    "tagline": "Create JavaScript PowerPoint Presentations",
     "docs": {
       "api-charts": {
         "title": "Adding Charts"
@@ -48,6 +48,9 @@
       "speaker-notes": {
         "title": "Speaker Notes"
       },
+      "types-ifaces": {
+        "title": "Type Interfaces"
+      },
       "usage-add-slide": {
         "title": "Adding a Slide"
       },
@@ -61,7 +64,7 @@
         "title": "Saving Presentations"
       },
       "usage-slide-options": {
-        "title": "Slide Methods"
+        "title": "Slide Properties"
       }
     },
     "links": {
