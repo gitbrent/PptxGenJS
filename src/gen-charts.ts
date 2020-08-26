@@ -489,7 +489,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			//let options: IChartOptsLib = { type: type.type, }
 			let valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY
 			let catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY
-			usesSecondaryValAxis = usesSecondaryValAxis || options['secondaryValAxis']
+			usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis
 			strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId, true)
 		})
 	} else {
@@ -569,9 +569,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		strXml += rel.opts.fill ? genXmlColorSelection(rel.opts.fill) : '<a:noFill/>'
 
 		// OPTION: Border
-		strXml += rel.opts.border
-			? `<a:ln w="${valToPts(rel.opts.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>`
-			: '<a:ln><a:noFill/></a:ln>'
+		strXml += rel.opts.border ? `<a:ln w="${valToPts(rel.opts.border.pt)}" cap="flat">${genXmlColorSelection(rel.opts.border.color)}</a:ln>` : '<a:ln><a:noFill/></a:ln>'
 
 		// Close shapeProp/plotArea before Legend
 		strXml += '    <a:effectLst/>'
