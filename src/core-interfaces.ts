@@ -1245,10 +1245,7 @@ export interface PresLayout {
 	width: number
 	height: number
 }
-export interface SlideNumberProps extends PositionProps, TextBaseProps {
-	align?: HAlign
-	color?: string
-}
+export interface SlideNumberProps extends PositionProps, TextBaseProps {}
 export interface SlideMasterProps {
 	/**
 	 * Unique name for this master
