@@ -7,7 +7,7 @@
 
 const siteConfig = {
 	title: 'PptxGenJS',
-	tagline: 'JavaScript library that creates PowerPoint presentations',
+	tagline: 'Create JavaScript PowerPoint Presentations',
 	url: 'https://gitbrent.github.io',
 	baseUrl: '/PptxGenJS/',
 	projectName: 'PptxGenJS',
