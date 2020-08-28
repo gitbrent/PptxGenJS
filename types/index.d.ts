@@ -46,18 +46,35 @@ declare class PptxGenJS {
 	layout: string
 	/**
 	 * Whether Right-to-Left (RTL) mode is enabled
+	 * @type {boolean}
 	 */
 	rtlMode: boolean
 
 	// Presentation Metadata
+	/**
+	 * Author name
+	 * @type {string}
+	 */
 	author: string
+	/**
+	 * Comapny name
+	 * @type {string}
+	 */
 	company: string
 	/**
 	 * @type {string}
 	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PowerPoint will throw errors upon opening!)
 	 */
 	revision: string
+	/**
+	 * Presentation subject
+	 * @type {string}
+	 */
 	subject: string
+	/**
+	 * Presentation name
+	 * @type {string}
+	 */
 	title: string
 
 	// Methods
@@ -2063,6 +2080,7 @@ declare namespace PptxGenJS {
 		 * @param {object[]} data - data object
 		 * @param {IChartOpts} options - chart options
 		 * @return {Slide} this Slide
+		 * @type {Function}
 		 */
 		addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide
 		/**
