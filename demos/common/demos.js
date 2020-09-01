@@ -112,6 +112,16 @@ function getTimestamp() {
 
 // ==================================================================================================================
 
+const testTable = {
+	Master: genSlides_Master,
+	Chart: genSlides_Chart,
+	Image: genSlides_Image,
+	Media: genSlides_Media,
+	Shape: genSlides_Shape,
+	Text: genSlides_Text,
+	Table: genSlides_Table,
+};
+
 function runEveryTest() {
 	return execGenSlidesFuncs(["Master", "Chart", "Image", "Media", "Shape", "Text", "Table"]);
 
@@ -124,11 +134,9 @@ function execGenSlidesFuncs(type) {
 	var pptx;
 	if (NODEJS) {
 		var PptxGenJsLib;
-		var fs = require("fs");
-		// TODO: we dont use local anymore as of 3.1
-		if (fs.existsSync("../../dist/pptxgen.cjs.js")) {
+		try {
 			PptxGenJsLib = require("../../dist/pptxgen.cjs.js"); // for LOCAL TESTING
-		} else {
+		} catch (e) {
 			PptxGenJsLib = require("pptxgenjs");
 		}
 		pptx = new PptxGenJsLib();
@@ -320,9 +328,9 @@ function execGenSlidesFuncs(type) {
 
 	// STEP 5: Run requested test
 	var arrTypes = typeof type === "string" ? [type] : type;
-	arrTypes.forEach(function (type, idx) {
+	arrTypes.forEach(function (type) {
 		//if (console.time) console.time(type);
-		eval("genSlides_" + type + "(pptx)");
+		testTable[type](pptx);
 		//if (console.timeEnd) console.timeEnd(type);
 	});
 
@@ -3642,8 +3650,7 @@ function genSlides_Text(pptx) {
 			fontFace: "Sylfaen",
 			fontSize: 32,
 			valign: "top",
-			// Disabled due to issue #751 bug
-			// align: pres.AlignH.left,
+			align: "left",
 			breakLine: false,
 		};
 
