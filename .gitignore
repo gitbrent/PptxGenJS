@@ -13,3 +13,4 @@ bower_components/
 /docs
 /.rpt2_cache
 src/bld
+*.pptx
