@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-08-26T04:19:46.709Z */
+/* PptxGenJS 3.4.0-beta @ 2020-09-01T21:14:35.574Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -587,6 +587,17 @@ LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
 OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
+
+var __assign = function() {
+    __assign = Object.assign || function __assign(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p)) t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 
 function __spreadArrays() {
     for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
@@ -2370,8 +2381,8 @@ function genXmlTextBody(slideObj) {
     tmpTextObjects.forEach(function (itext, idx) {
         if (!itext.text)
             itext.text = '';
-        // A: Set options
-        itext.options = itext.options || opts || {};
+        // A: Set options -- must merge for breakLine logic
+        itext.options = __assign(__assign({}, opts), itext.options);
         if (idx === 0 && itext.options && !itext.options.bullet && opts.bullet)
             itext.options.bullet = opts.bullet;
         // B: Cast to text-object and fix line-breaks (if needed)
@@ -2382,9 +2393,14 @@ function genXmlTextBody(slideObj) {
         // C: If text string has line-breaks, then create a separate text-object for each (much easier than dealing with split inside a loop below)
         // NOTE: Filter for trailing lineBreak prevents the creation of an empty textObj as the last item
         if (itext.text.indexOf(CRLF) > -1 && itext.text.match(/\n$/g) === null) {
-            itext.text.split(CRLF).forEach(function (line) {
-                itext.options.breakLine = true;
-                arrTextObjects.push({ text: line, options: itext.options });
+            var parts_1 = itext.text.split(CRLF);
+            parts_1.forEach(function (line, lineIdx) {
+                var isLast = lineIdx === parts_1.length - 1;
+                var lineOpts = __assign({}, itext.options);
+                if (!isLast || (isLast && line === '')) {
+                    lineOpts.breakLine = true;
+                }
+                arrTextObjects.push({ text: line, options: lineOpts });
             });
         }
         else {
@@ -2406,7 +2422,7 @@ function genXmlTextBody(slideObj) {
         else if (arrTexts.length > 0 && textObj.options.bullet && arrTexts.length > 0) {
             arrLines.push(arrTexts);
             arrTexts = [];
-            textObj.options.breakLine = false; // For cases with both `bullet` and `brekaLine` - prevent double lineBreak
+            textObj.options.breakLine = false; // For cases with both `bullet` and `breakLine` - prevent double lineBreak
         }
         // B: Add this text to current line
         arrTexts.push(textObj);
