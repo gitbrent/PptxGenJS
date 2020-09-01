@@ -3625,6 +3625,84 @@ function genSlides_Text(pptx) {
 		});
 	}
 
+	// SLIDE 2B: Multi-Line Formatting, Line Breaks, Line Spacing
+	{
+		var slide = pptx.addSlide({ sectionTitle: "Text" });
+		slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
+		slide.addTable(
+			[[{ text: "Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing", options: gOptsTextL }, gOptsTextR]],
+			gOptsTabOpts
+		);
+
+		const opts = {
+			x: 1.33,
+			y: 0.75,
+			h: 6,
+			w: 10.64,
+			fontFace: "Sylfaen",
+			fontSize: 32,
+			valign: "top",
+			// Disabled due to issue #751 bug
+			// align: pres.AlignH.left,
+			breakLine: false,
+		};
+
+		let slideContent = {
+			text: [
+				{ text: "R. " },
+				{ text: "Bold (shares line with unbolded R).", options: { bold: true } },
+				{
+					text: "\n\nVerse Line 1\nVerse Line 2\nVerse Line 3\n\nR. ",
+				},
+				{ text: "Bold (shares line with unbolded R).", options: { bold: true } },
+			],
+			center: true,
+		};
+
+		slide.addText(slideContent.text, {
+			...opts,
+			valign: slideContent.center ? "middle" : "top",
+			align: slideContent.center ? "center" : "left",
+		});
+	}
+
+	// SLIDE 2C: Multi-Line Formatting, Line Breaks, Line Spacing
+	{
+		var slide = pptx.addSlide({ sectionTitle: "Text" });
+		slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
+		slide.addTable(
+			[[{ text: "Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing", options: gOptsTextL }, gOptsTextR]],
+			gOptsTabOpts
+		);
+
+		const opts = {
+			x: 1.33,
+			y: 0.75,
+			h: 6,
+			w: 10.64,
+			fontFace: "Sylfaen",
+			fontSize: 32,
+			valign: "top",
+			breakLine: false,
+		};
+
+		let slideContent = {
+			text: [
+				{
+					text: "Line 1\nLine 2\nLine 3\n\nLine 5 (one blank line above).\n",
+				},
+				{ text: "Bolded Line 6 (no blank above).", options: { bold: true } },
+			],
+			center: false,
+		};
+
+		slide.addText(slideContent.text, {
+			...opts,
+			valign: slideContent.center ? "middle" : "top",
+			align: slideContent.center ? "center" : "left",
+		});
+	}
+
 	// SLIDE 3: Bullets
 	{
 		var slide = pptx.addSlide({ sectionTitle: "Text" });
