@@ -5,8 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.2.0">
-	<meta name="updated" content="2020-05-17">
+	<meta name="version" content="3.3.1">
+	<meta name="updated" content="2020-08-23">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -194,12 +194,12 @@
 
 			execGenSlidesFuncs(type)
 			.catch(function(err) {
-				console.error(err.toString());
 				$('#modalBusy').modal('hide');
+				console.error(err);
 			})
 			.then(function() {
-				if (console.timeEnd) console.timeEnd('execGenSlidesFunc: '+type);
 				$('#modalBusy').modal('hide');
+				if (console.timeEnd) console.timeEnd('execGenSlidesFunc: '+type);
 			});
 		}
 
@@ -226,7 +226,7 @@
 			slide.addText('Line 1\nLine 2\nLine 3', { x:0.5, y:3.5, w:'50%', h:1, color:'AACD00', bullet:true });
 
 			// Table cell margin:0
-			slide.addTable( [['margin:0']], { x:0.5, y:1.1, margin:0, w:0.75, fill:'FFFCCC' } );
+			slide.addTable([['margin:0']], { x: 0.5, y: 1.1, margin: 0, w: 0.75, fill: { color: 'FFFCCC' } });
 
 			// Fine-grained Formatting/word-level/line-level Formatting
 			slide.addText(
@@ -235,7 +235,7 @@
 					{ text:'ctr line',   options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'center', breakLine:true } },
 					{ text:'left line',  options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'left' } }
 				],
-				{ x:0.5, y:3.0, w:8.5, h:4, margin:0.1, fill:'232323' }
+				{ x: 0.5, y: 3.0, w: 8.5, h: 4, margin: 0.1, fill: { color: '232323' } }
 			);
 
 			// Export:
@@ -250,7 +250,7 @@
 
 			slide.addText(
 				'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
-				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'center', fontSize:18, color:'0088CC', fill:'F1F1F1' }
+				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'center', fontSize:18, color:'0088CC', fill:{color:'F1F1F1'} }
 			);
 
 			slide.addText("Line-Level Formatting:", { x:0.5, y:1.5, w:'40%', h:0.38, color:'0088CC' });
@@ -260,19 +260,19 @@
 					{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'center', breakLine:true } },
 					{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'left' } }
 				],
-				{ x:0.5, y:2.0, w:6, h:2.25, margin:0.1, fill:'232323' }
+				{ x:0.5, y:2.0, w:6, h:2.25, margin:0.1, fill:{color:'232323'} }
 			);
 
 			slide.addText("Bullets: Normal", { x:8.0, y:1.5, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				'Line 1\nLine 2\nLine 3',
-				{ x:8.0, y:2.0, w:'30%', h:1, color:'393939', fontSize:16, fill:'F2F2F2', bullet:true }
+				{ x:8.0, y:2.0, w:'30%', h:1, color:'393939', fontSize:16, fill:{color:'F2F2F2'}, bullet:true }
 			);
 
 			slide.addText("Bullets: Numbered", { x:8.0, y:3.4, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				'Line 1\nLine 2\nLine 3',
-				{ x:8.0, y:3.9, w:'30%', h:1, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} }
+				{ x:8.0, y:3.9, w:'30%', h:1, color:'393939', fontSize:16, fill:{color:'F2F2F2'}, bullet:{type:'number'} }
 			);
 
 			slide.addText("Bullets: Custom", { x:8.0, y:5.3, w:'40%', h:0.38, color:'0088CC' });
@@ -295,10 +295,10 @@
 			pptx.layout = 'LAYOUT_WIDE';
 			/*
 			var slide = pptx.addSlide();
-			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'center', fontSize:18, color:'0088CC', fill:'F2F9FC' });
+			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'center', fontSize:18, color:'0088CC', fill:{color:'F2F9FC'} });
 			var numMargin = 1.25;
-			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:'FFFCCC' });
-			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:'F1F1F1'} );
+			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:{color:'FFFCCC'} });
+			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:{color:'F1F1F1'}} );
 			*/
 
 			// Mimic "table2slides1()"
@@ -306,7 +306,7 @@
 
 			// TEST
 			//pptx.tableToSlides('tabAutoPaging');
-			pptx.tableToSlides('tabAutoPaging', {verbose:true, addHeaderToEach:true /*, newSlideStartY:2*/});
+			pptx.tableToSlides('tabAutoPaging', {verbose:true, autoPageRepeatHeader:true /*, autoPageSlideStartY:2*/});
 
 			pptx.writeFile('PptxGenJs_TTSTest_'+getTimestamp());
 		}
@@ -391,10 +391,10 @@
 			// 1:
 			pptx.defineSlideMaster({
 				title: 'TITLE_SLIDE',
-				bkgd: { data:BKGD_STARLABS },
+				background: { data:BKGD_STARLABS },
 				objects: [
 					{ 'line':  { x:3.5, y:1.00, w:6.00, line:'0088CC', lineSize:5 } },
-					{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
+					{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:{color:'F1F1F1'} } },
 					{ 'text':  { text:'Global IT & Services :: Status Report',
 						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', fontSize:20, color:'363636', valign:'middle', margin:0 } }
 					},
@@ -405,11 +405,11 @@
 			// 2:
 			pptx.defineSlideMaster({
 				title: 'MASTER_SLIDE',
-				bkgd: 'EEEEEE',
+				background: { fill: 'F1F1F1' },
 				slideNumber: { x:1.0, y:7.0, color:'FFFFFF' },
 				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
 				objects: [
-					{ 'rect': { x:0.0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
+					{ 'rect': { x:0.0, y:6.9, w:'100%', h:0.6, fill:{color:'003b75'} } },
 					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'center', valign:'middle', color:'FFFFFF', fontSize:12} } }
 				]
 			});
@@ -417,9 +417,9 @@
 			// 3:
 			pptx.defineSlideMaster({
 				title: 'THANKS_SLIDE',
-				bkgd: '36ABFF',
+				background: { fill: '36ABFF' },
 				objects: [
-					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
+					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:{color:'ffffff'} } },
 					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
 					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS } }
 				]
@@ -437,8 +437,8 @@
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.verbose = true;
-			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.autoPageRepeatHeader = true;
+			if ( $('#checkStartY').prop('checked') ) objOpts.autoPageSlideStartY = Number($('#numTab2SlideStartY').val());
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 			//console.log(JSON.stringify(objOpts));
 
@@ -460,15 +460,15 @@
 			// STEP 2: Set generated Slide options
 			var objOpts = {};
 			//objOpts.verbose = true;
-			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true;
-			if ( $('#checkStartY') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val());
+			if ( $('input[name=radioHead]:checked').val() == "Y" ) objOpts.addHeaderToEach = true; // TEST: DEPRECATED: addHeaderToEach
+			if ( $('#checkStartY').prop('checked') ) objOpts.newSlideStartY = Number($('#numTab2SlideStartY').val()); // TEST: DEPRECATED: `newSlideStartY`
 			if ( $('#selSlideMaster').val() ) objOpts.masterSlideName = $('#selSlideMaster').val();
 
 			// STEP 3: Add a custom shape (text in this case) to each Slide
 			// EXAMPLE: Add any dynamic content to each generated Slide
 			// DESC: Add something you cant predefine in a master - like a username/timestamp for each slide, etc.
 			// NOTE: You can do this for all other types as well: .addShape(), .addTable() and .addImage()
-			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:1.1, y:0.6, color:'0088CC', fontFace:'Arial', fontSize:12 } };
+			objOpts.addText = { text:"(dynamic content - ex:user/datestamp)", options:{ x:0.1, y:0.07, color:'0088CC', fontFace:'Arial', fontSize:12 } };
 
 			// STEP 4: Pass table to tableToSlides function to produce 1-N slides
 			pptx.tableToSlides('tabAutoPaging', objOpts);
@@ -543,7 +543,7 @@
 					+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
 					+ "slide.addText(\n"
 					+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
-					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
+					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'F1F1F1' } }\n"
 					+ ");\n"
 					+ '\n'
 					+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
@@ -564,15 +564,17 @@
 
 				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
 					+ "var slide = pptx.addSlide();\n"
+					//+ "pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });\n"
+					//+ "pptx.layout = 'A3';\n"
 					+ "\n"
 					+ "slide.addText(\n"
 					+ "  [\n"
-					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1 } },\n"
-					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
-					+ "    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
+					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1, breakLine:true } },\n"
+					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n"
+					+ "    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n"
 					+ "    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n"
 					+ "  ],\n"
-					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:pptx.SchemeColor.background2 }\n"
+					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:{ color:pptx.SchemeColor.background2, transparency:50 } }\n"
 					+ ");\n"
 					+ "\n"
 					+ "pptx.writeFile('PptxGenJS-Sandbox-'+getTimestamp())\n"
@@ -582,10 +584,10 @@
 				$('#demo-master').html("pptx.defineSlideMaster({\n"
 					+ "  title : 'MASTER_SLIDE',\n"
 					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
-					+ "  bkgd  : 'FFFFFF',\n"
+					+ "  background: { fill: 'FFFFFF' },\n"
 					+ "  objects: [\n"
 					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
-					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
+					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:{ color:'003b75' } }},\n"
 					+ "    {text:  {\n"
 					+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
 					+ "        options:{x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12}\n"
@@ -743,7 +745,7 @@
 						<div class="h5">Editable Code</div>
 						<div>Use the area below to easily try out various library features.</div>
 					</div>
-					<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true"></code></pre>
+					<pre class="mb-3"><code id="demo-sandbox" class="language-javascript" contenteditable="true" spellcheck="false"></code></pre>
 					<button type="button" class="btn btn-success w-25" onclick="eval( $('#demo-sandbox').text() )">Execute Sandbox Code</button>
 				</div>
 			</div>
@@ -811,7 +813,7 @@
 													<label class="form-check-label" for="radioHeadN">No</label>
 												</div>
 											</div>
-											<code>addHeaderToEach</code>
+											<code>autoPageRepeatHeader</code>
 										</div>
 										<div class="col">
 											<label>Starting top location (<code>y</code>) after first slide</label>
@@ -826,7 +828,7 @@
 													<input id="numTab2SlideStartY" type="number" class="form-control" min="0" max="10" step="0.5" value="1.5" disabled>
 												</div>
 											</div>
-											<code>newSlideStartY</code>
+											<code>autoPageSlideStartY</code>
 										</div>
 									</div>
 								</div>
@@ -1377,9 +1379,18 @@
 						</div>
 					</div>
 					<div class="card">
-						<h6 class="card-header">Text Schemes</h6>
+						<h6 class="card-header">Text Fit</h6>
 						<div class="card-body">
 							<div>Slide 5</div>
+							<div>- None</div>
+							<div>- Resize</div>
+							<div>- Shrink</div>
+						</div>
+					</div>
+					<div class="card">
+						<h6 class="card-header">Text Schemes</h6>
+						<div class="card-body">
+							<div>Slide 6</div>
 							<div>- Scheme Colors</div>
 						</div>
 					</div>
@@ -1426,9 +1437,10 @@
 							<div>Slide 7+</div>
 							<div>- Test basic functionality</div>
 							<div>- Test with small table dimensions</div>
-							<div>- Test with correct starting <code>{y:4.0}</code></div>
-							<div>- Test with <code>{ newSlideStartY:0.5 }</code></div>
+							<div>- Test with correct starting <code>{ y:4.0 }</code></div>
+							<div>- Test with <code>{ autoPageSlideStartY:1.5 }</code></div>
 							<div>- Test with <code>{ autoPage:false }</code></div>
+							<div>- Test with <code>{ autoPageRepeatHeader:true }</code></div>
 							<div>- Tables with various <code>autoPageLineWeight</code> values</div>
 							<div>- Tables with various <code>autoPageCharWeight</code> values</div>
 						</div>
