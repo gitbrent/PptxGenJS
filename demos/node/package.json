@@ -1,0 +1,20 @@
+{
+	"name": "pptxgenjs-demos-node",
+	"version": "3.3.1",
+	"author": {
+		"name": "Brent Ely",
+		"url": "https://github.com/gitbrent/"
+	},
+	"description": "Create PowerPoint Presentations with JavaScript",
+	"homepage": "https://gitbrent.github.io/PptxGenJS/",
+	"scripts": {
+		"demo": "node demo.js",
+		"demo-all": "node demo.js All",
+		"demo-text": "node demo.js Text",
+		"demo-stream": "node demo_stream.js"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"pptxgenjs": "^3.3.1"
+	}
+}

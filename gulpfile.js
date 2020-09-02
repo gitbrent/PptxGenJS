@@ -1,31 +1,114 @@
-var gulp       = require('gulp'),
-    concat     = require('gulp-concat'),
-    sourcemaps = require('gulp-sourcemaps'),
-    ignore     = require('gulp-ignore'),
-	insert     = require('gulp-insert'),
-    uglify     = require('gulp-uglify'),
-	fs         = require('fs');
+const pkg = require('./package.json')
+const rollup = require('rollup')
+const rollupTypescript = require('rollup-plugin-typescript2')
+const { watch, series } = require('gulp')
+const gulp = require('gulp'),
+	concat = require('gulp-concat'),
+	ignore = require('gulp-ignore'),
+	insert = require('gulp-insert'),
+	source = require('gulp-sourcemaps'),
+	uglify = require('gulp-uglify')
 
-gulp.task('default', function(){
-	var APP_VER = "", APP_BLD = "";
-	fs.readFileSync("dist/pptxgen.js", "utf8").split('\n')
-	.forEach((line)=>{
-		if ( line.indexOf('var APP_VER') > -1 ) APP_VER = line.split('=')[1].trim().replace(/\"+|\;+/gi,'');
-		if ( line.indexOf('var APP_BLD') > -1 ) APP_BLD = line.split('=')[1].trim().replace(/\"+|\;+/gi,'');
-	});
+gulp.task('build', () => {
+	return rollup
+		.rollup({
+			input: './src/pptxgen.ts',
+			external: [...Object.keys(pkg.dependencies || {}), ...Object.keys(pkg.peerDependencies || {})],
+			plugins: [rollupTypescript()]
+		})
+		.then(bundle => {
+			bundle.write({
+				file: './src/bld/pptxgen.gulp.js',
+				format: 'iife',
+				name: 'PptxGenJS',
+				globals: {
+					jszip: 'JSZip'
+				},
+				sourcemap: true
+			})
+			return bundle
+		})
+		.then(bundle => {
+			bundle.write({
+				file: './src/bld/pptxgen.cjs.js',
+				format: 'cjs'
+			})
+			return bundle
+		})
+		.then(bundle => {
+			return bundle.write({
+				file: './src/bld/pptxgen.es.js',
+				format: 'es'
+			})
+		})
+})
 
-	gulp.src(['libs/*', 'dist/pptxgen.js'])
-        .pipe(concat('pptxgen.bundle.js'))
+gulp.task('min', () => {
+	return gulp
+		.src(['./src/bld/pptxgen.gulp.js'])
+		.pipe(concat('pptxgen.min.js'))
 		.pipe(uglify())
-		.pipe(insert.prepend('/* PptxGenJS '+APP_VER+'-'+APP_BLD+' */\n'))
-        .pipe(sourcemaps.init())
-        .pipe(ignore.exclude(["**/*.map"]))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('dist/'));
+		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
+		.pipe(source.init())
+		.pipe(ignore.exclude(['**/*.map']))
+		.pipe(source.write('./'))
+		.pipe(gulp.dest('./dist/'))
+})
 
-    gulp.src(['dist/pptxgen.js'])
-        .pipe(concat('pptxgen.min.js'))
-        .pipe(uglify())
-		.pipe(insert.prepend('/* PptxGenJS '+APP_VER+'-'+APP_BLD+' */\n'))
-        .pipe(gulp.dest('dist/'));
-});
+gulp.task('bundle', () => {
+	return gulp
+		.src(['./libs/*', './src/bld/pptxgen.gulp.js'])
+		.pipe(concat('pptxgen.bundle.js'))
+		.pipe(uglify())
+		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
+		.pipe(source.init())
+		.pipe(ignore.exclude(['**/*.map']))
+		.pipe(source.write('./'))
+		.pipe(gulp.dest('./dist/'))
+})
+
+gulp.task('cjs', () => {
+	return gulp
+		.src(['./src/bld/pptxgen.cjs.js'])
+		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
+		.pipe(gulp.dest('./dist/'))
+})
+
+gulp.task('es', () => {
+	return gulp
+		.src(['./src/bld/pptxgen.es.js'])
+		.pipe(insert.prepend('/* PptxGenJS ' + pkg.version + ' @ ' + new Date().toISOString() + ' */\n'))
+		.pipe(gulp.dest('./dist/'))
+})
+
+gulp.task('reactTestCode', () => {
+	return gulp
+		.src(['./dist/pptxgen.es.js'])
+		.pipe(gulp.dest('./demos/react-demo/node_modules/pptxgenjs/dist'))
+})
+
+gulp.task('reactTestDefs', () => {
+	return gulp
+		.src(['./types/index.d.ts'])
+		.pipe(gulp.dest('./demos/react-demo/node_modules/pptxgenjs/types'))
+})
+
+gulp.task('nodeTest', () => {
+	return gulp
+		.src(['./dist/pptxgen.cjs.js'])
+		.pipe(gulp.dest('./demos/node/node_modules/pptxgenjs/dist'))
+})
+
+// Build/Deploy (ad-hoc, no watch)
+gulp.task('ship', gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTestCode', 'reactTestDefs', 'nodeTest'), () => {
+	console.log('... ./dist/*.js files created!')
+})
+// Build/Deploy
+gulp.task('default', gulp.series('build', 'min', 'cjs', 'es', 'bundle', 'reactTestCode', 'reactTestDefs', 'nodeTest'), () => {
+	console.log('... ./dist/*.js files created!')
+})
+
+// Watch
+exports.default = function() {
+	watch('src/*.ts', series('build', 'min', 'cjs', 'es', 'bundle'))
+}
