@@ -411,7 +411,17 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 * Image height
 		 */
 		h: number
+		/**
+		 * Area horizontal position related to the image
+		 * - Values: 0-n
+		 * - `crop` only
+		 */
 		x?: number
+		/**
+		 * Area vertical position related to the image
+		 * - Values: 0-n
+		 * - `crop` only
+		 */
 		y?: number
 	}
 }
