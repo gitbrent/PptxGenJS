@@ -706,7 +706,7 @@ function valToPts(pt) {
  */
 function convertRotationDegrees(d) {
     d = d || 0;
-    return (d > 360 ? d - 360 : d) * 60000;
+    return Math.round((d > 360 ? d - 360 : d) * 60000);
 }
 /**
  * Converts component value to hex value
@@ -791,9 +791,9 @@ function genXmlColorSelection(shapeFill, backColor) {
             if (shapeFill.color)
                 colorVal = shapeFill.color;
             if (shapeFill.alpha)
-                internalElements += "<a:alpha val=\"" + (100 - shapeFill.alpha) + "000\"/>"; // @deprecated v3.3.0
+                internalElements += "<a:alpha val=\"" + Math.round((100 - shapeFill.alpha) * 1000) + "\"/>"; // @deprecated v3.3.0
             if (shapeFill.transparency)
-                internalElements += "<a:alpha val=\"" + (100 - shapeFill.transparency) + "000\"/>";
+                internalElements += "<a:alpha val=\"" + Math.round((100 - shapeFill.transparency) * 1000) + "\"/>";
         }
         switch (fillType) {
             case 'solid':
@@ -1938,7 +1938,7 @@ function slideObjectToXml(slide) {
         strSlideXml += '  <a:bodyPr/>';
         strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
         if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
-            strSlideXml += '<a:defRPr sz="' + (slide._slideNumberProps.fontSize ? Math.round(slide._slideNumberProps.fontSize) : '12') + '00">';
+            strSlideXml += '<a:defRPr sz="' + Math.round((slide._slideNumberProps.fontSize || 12) * 100) + '">';
             if (slide._slideNumberProps.color)
                 strSlideXml += genXmlColorSelection(slide._slideNumberProps.color);
             if (slide._slideNumberProps.fontFace)
@@ -2159,7 +2159,7 @@ function genXmlTextRunProperties(opts, isDefault) {
     var runPropsTag = isDefault ? 'a:defRPr' : 'a:rPr';
     // BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
     runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '');
-    runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : ''; // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+    runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
     runProps += opts.bold ? ' b="1"' : '';
     runProps += opts.italic ? ' i="1"' : '';
     runProps += opts.strike ? ' strike="sngStrike"' : '';
@@ -2465,19 +2465,19 @@ function genXmlTextBody(slideObj) {
          */
         if (slideObj._type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
             if (opts.fontFace) {
-                strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize) + "00\"" : '') + ' dirty="0">';
+                strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize * 100) + "\"" : '') + ' dirty="0">';
                 strSlideXml += "<a:latin typeface=\"" + opts.fontFace + "\" charset=\"0\"/>";
                 strSlideXml += "<a:ea typeface=\"" + opts.fontFace + "\" charset=\"0\"/>";
                 strSlideXml += "<a:cs typeface=\"" + opts.fontFace + "\" charset=\"0\"/>";
                 strSlideXml += '</a:endParaRPr>';
             }
             else {
-                strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize) + "00\"" : '') + ' dirty="0"/>';
+                strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize * 100) + "\"" : '') + ' dirty="0"/>';
             }
         }
         else if (reqsClosingFontSize) {
             // Empty [lineBreak] lines should not contain runProp, however, they need to specify fontSize in `endParaRPr`
-            strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize) + "00\"" : '') + ' dirty="0"/>';
+            strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\"" + (opts.fontSize ? " sz=\"" + Math.round(opts.fontSize * 100) + "\"" : '') + ' dirty="0"/>';
         }
         else {
             strSlideXml += "<a:endParaRPr lang=\"" + (opts.lang || 'en-US') + "\" dirty=\"0\"/>"; // Added 20180101 to address PPT-2007 issues
@@ -4611,7 +4611,7 @@ function makeXmlCharts(rel) {
             strXml += '	  <a:lstStyle/>';
             strXml += '	  <a:p>';
             strXml += '		<a:pPr rtl="0">';
-            strXml += "       <a:defRPr sz=\"" + (rel.opts.dataTableFontSize || DEF_FONT_SIZE) + "00\" b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\" kern=\"1200\" baseline=\"0\">";
+            strXml += "       <a:defRPr sz=\"" + Math.round((rel.opts.dataTableFontSize || DEF_FONT_SIZE) * 100) + "\" b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\" kern=\"1200\" baseline=\"0\">";
             strXml += '			<a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>';
             strXml += '			<a:latin typeface="+mn-lt"/>';
             strXml += '			<a:ea typeface="+mn-ea"/>';
@@ -4645,7 +4645,7 @@ function makeXmlCharts(rel) {
                 strXml += '  <a:lstStyle/>';
                 strXml += '  <a:p>';
                 strXml += '    <a:pPr>';
-                strXml += rel.opts.legendFontSize ? '<a:defRPr sz="' + Number(rel.opts.legendFontSize) * 100 + '">' : '<a:defRPr>';
+                strXml += rel.opts.legendFontSize ? '<a:defRPr sz="' + Math.round(Number(rel.opts.legendFontSize) * 100) + '">' : '<a:defRPr>';
                 if (rel.opts.legendColor)
                     strXml += genXmlColorSelection(rel.opts.legendColor);
                 if (rel.opts.legendFontFace)
@@ -4751,7 +4751,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '<a:noFill/>';
                 }
                 else if (opts.chartColorsOpacity) {
-                    strXml += '<a:solidFill>' + createColorElement(seriesColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>';
+                    strXml += '<a:solidFill>' + createColorElement(seriesColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000) + '"/>') + '</a:solidFill>';
                 }
                 else {
                     strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>';
@@ -4789,7 +4789,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      <a:bodyPr/>';
                     strXml += '      <a:lstStyle/>';
                     strXml += '      <a:p><a:pPr>';
-                    strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+                    strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                     strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                     strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                     strXml += '        </a:defRPr>';
@@ -4922,7 +4922,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
                 strXml +=
-                    '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+                    '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -4996,7 +4996,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:noFill/>';
                     }
                     else if (opts.chartColorsOpacity) {
-                        strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>';
+                        strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000) + '"/>') + '</a:solidFill>';
                     }
                     else {
                         strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
@@ -5224,7 +5224,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+                strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5281,7 +5281,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                         strXml += '<a:noFill/>';
                     }
                     else if (opts.chartColorsOpacity) {
-                        strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>';
+                        strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000) + '"/>') + '</a:solidFill>';
                     }
                     else {
                         strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>';
@@ -5364,7 +5364,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">';
+                strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5453,7 +5453,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  <c:spPr/><c:txPr>';
                 strXml += '   <a:bodyPr/><a:lstStyle/>';
                 strXml += '   <a:p><a:pPr>';
-                strXml += "   <a:defRPr sz=\"" + (opts.dataLabelFontSize || DEF_FONT_SIZE) + "00\" b=\"" + (opts.dataLabelFontBold ? 1 : 0) + "\" i=\"0\" u=\"none\" strike=\"noStrike\">";
+                strXml += "   <a:defRPr sz=\"" + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + "\" b=\"" + (opts.dataLabelFontBold ? 1 : 0) + "\" i=\"0\" u=\"none\" strike=\"noStrike\">";
                 strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += "    <a:latin typeface=\"" + (opts.dataLabelFontFace || 'Arial') + "\"/>";
                 strXml += '   </a:defRPr>';
@@ -5595,7 +5595,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml += '    <a:lstStyle/>';
     strXml += '    <a:p>';
     strXml += '    <a:pPr>';
-    strXml += '    <a:defRPr sz="' + (opts.catAxisLabelFontSize || DEF_FONT_SIZE) + '00" b="' + (opts.catAxisLabelFontBold ? 1 : 0) + '" i="0" u="none" strike="noStrike">';
+    strXml += '    <a:defRPr sz="' + Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) + '" b="' + (opts.catAxisLabelFontBold ? 1 : 0) + '" i="0" u="none" strike="noStrike">';
     strXml += '      <a:solidFill><a:srgbClr val="' + (opts.catAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>';
     strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '   </a:defRPr>';
@@ -5698,7 +5698,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += '  <a:lstStyle/>';
     strXml += '  <a:p>';
     strXml += '    <a:pPr>';
-    strXml += '      <a:defRPr sz="' + (opts.valAxisLabelFontSize || DEF_FONT_SIZE) + '00" b="' + (opts.valAxisLabelFontBold ? 1 : 0) + '" i="0" u="none" strike="noStrike">';
+    strXml += '      <a:defRPr sz="' + Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) + '" b="' + (opts.valAxisLabelFontBold ? 1 : 0) + '" i="0" u="none" strike="noStrike">';
     strXml += '        <a:solidFill><a:srgbClr val="' + (opts.valAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>';
     strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '      </a:defRPr>';
@@ -5763,7 +5763,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += '    <a:lstStyle/>';
     strXml += '    <a:p>';
     strXml += '    <a:pPr>';
-    strXml += '    <a:defRPr sz="' + (opts.serAxisLabelFontSize || DEF_FONT_SIZE) + '00" b="0" i="0" u="none" strike="noStrike">';
+    strXml += '    <a:defRPr sz="' + Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100) + '" b="0" i="0" u="none" strike="noStrike">';
     strXml += '      <a:solidFill><a:srgbClr val="' + (opts.serAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>';
     strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '   </a:defRPr>';
@@ -5807,7 +5807,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
 function genXmlTitle(opts) {
     var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"" + opts.titleAlign.substring(0, 1) + "\">" : "<a:pPr>";
     var rotate = opts.rotate ? "<a:bodyPr rot=\"" + convertRotationDegrees(opts.rotate) + "\"/>" : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
-    var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize) + '00"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
+    var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
     var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
         ? "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"" + opts.titlePos.x + "\"/><c:y val=\"" + opts.titlePos.y + "\"/></c:manualLayout></c:layout>"
         : "<c:layout/>";
