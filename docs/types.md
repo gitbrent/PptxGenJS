@@ -18,6 +18,13 @@ PptxGenJS Type Interfaces.
 | `h`  | number | `1.0`   | height (inches)        | 0-n                                          |
 | `h`  | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
+## Data/Path Props (`DataOrPathProps`)
+
+| Name   | Type   | Description         | Possible Values                                                            |
+| :----- | :----- | :------------------ | :------------------------------------------------------------------------- |
+| `data` | string | image data (base64) | base64-encoded image string. (either `data` or `path` is required)         |
+| `path` | string | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
+
 ## Hyperlink Props (`HyperlinkProps`)
 
 | Name      | Type   | Description           | Possible Values                |
