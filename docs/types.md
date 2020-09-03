@@ -33,6 +33,23 @@ PptxGenJS Type Interfaces.
 | `tooltip` | string | link tooltip text     | Ex: `Click to visit home page` |
 | `url`     | string | target URL            | Ex: `https://wikipedia.org`    |
 
+## Image Props (`ImageProps`)
+
+| Option        | Type             | Default | Description        | Possible Values                        |
+| :------------ | :--------------- | :------ | :----------------- | :------------------------------------- |
+| `hyperlink`   | `HyperlinkProps` |         | add hyperlink      | object with `url` or `slide`           |
+| `placeholder` | string           |         | image placeholder  | Placeholder location: `title`, `body`  |
+| `rotate`      | integer          | `0`     | rotation (degrees) | Rotation degress: `0`-`359`            |
+| `rounding`    | boolean          | `false` | image rounding     | Shapes an image into a circle          |
+| `sizing`      | object           |         | transforms image   | See [Image Sizing](#sizing-properties) |
+
+## Media Props (`MediaProps`)
+
+| Option | Type   | Description | Possible Values                                                                   |
+| :----- | :----- | :---------- | :-------------------------------------------------------------------------------- |
+| `type` | string | media type  | media type: `audio` or `video` (reqs: `data` or `path`) or `online` (reqs:`link`) |
+| `link` | string | video URL   | (YouTube only): link to online video                                              |
+
 ## Shadow Props (`ShadowProps`)
 
 | Name      | Type   | Default  | Description            | Possible Values          |
@@ -43,6 +60,21 @@ PptxGenJS Type Interfaces.
 | `color`   | string | `000000` | color                  | hex color code           |
 | `offset`  | number | `0`      | shadow offset (points) | `0`-`200`                |
 | `opacity` | number | `0`      | opacity percentage     | `0.0`-`1.0`              |
+
+## Shape Props (`ShapeProps`)
+
+| Name         | Type                                                                         | Description         | Possible Values                                   |
+| :----------- | :--------------------------------------------------------------------------- | :------------------ | :------------------------------------------------ |
+| `align`      | string                                                                       | alignment           | `left` or `center` or `right`. Default: `left`    |
+| `fill`       | [ShapeFillProps](/PptxGenJS/docs/types.html#fill-props-shapefillprops)       | fill props          | Fill color/transparency props                     |
+| `flipH`      | boolean                                                                      | flip Horizontal     | `true` or `false`                                 |
+| `flipV`      | boolean                                                                      | flip Vertical       | `true` or `false`                                 |
+| `hyperlink`  | [HyperlinkProps](/PptxGenJS/docs/types.html#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
+| `line`       | [ShapeLineProps](/PptxGenJS/docs/types.html#shape-line-props-shapelineprops) | border line props   | (see type link)                                   |
+| `rectRadius` | number                                                                       | rounding radius     | 0-180. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
+| `rotate`     | number                                                                       | rotation (degrees)  | -360 to 360. Default: `0`                         |
+| `shadow`     | [ShadowProps](/PptxGenJS/docs/types.html#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
+| `shapeName`  | string                                                                       | optional shape name | Ex: "Customer Network Diagram 99"                 |
 
 ## Shape Fill Props (`ShapeFillProps`)
 

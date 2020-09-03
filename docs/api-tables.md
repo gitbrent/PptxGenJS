@@ -1,60 +1,76 @@
 ---
 id: api-tables
-title: Adding Tables
+title: Tables
 ---
 
-## Syntax
+Tables and content can be added to Slides.
+
+## Usage Example
 
 ```javascript
-slide.addTable( [rows] );
-slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
+// TABLE 1: Single-row table
+let rows = [["Cell 1", "Cell 2", "Cell 3"]];
+slide.addTable(rows, { w: 9 });
+
+// TABLE 2: Multi-row table
+// - each row's array element is an array of cells
+let rows = [
+    ["A1", "B1", "C1"],
+    ["A2", "B2", "C2"],
+];
+slide.addTable(rows, { w: "100%" });
+
+// TABLE 3: Formatting at a cell level
+// - use this to selectively override the table's cell options
+let rows = [
+    [
+        { text: "Top Lft", options: { align: "left", fontFace: "Arial" } },
+        { text: "Top Ctr", options: { align: "center", fontFace: "Verdana" } },
+        { text: "Top Rgt", options: { align: "right", fontFace: "Courier" } },
+    ],
+];
+slide.addTable(rows, { w: 9, rowH: 1, align: "left", fontFace: "Arial" });
 ```
 
-## Table Layout Options (`ITableOptions`)
+## Usage Notes
 
-| Option | Type    | Description            | Possible Values (inches or percent)                                         |
-| :----- | :------ | :--------------------- | :-------------------------------------------------------------------------- |
-| `x`    | number  | horizontal location    | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide) |
-| `y`    | number  | vertical location      | 0-n OR 'n%'.                                                                |
-| `w`    | number  | width                  | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)      |
-| `h`    | number  | height                 | 0-n OR 'n%'.                                                                |
-| `colW` | integer | width for every column | Ex: Width for every column in table (uniform) `2.0`                         |
-| `colW` | array   | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]`                 |
-| `rowH` | integer | height for every row   | Ex: Height for every row in table (uniform) `2.0`                           |
-| `rowH` | array   | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`                   |
+-   Properties passed to `addTable()` apply to every cell in the table
+-   Selectively override formatting at a cell-level by providing properties to the cell object
 
-## Table Auto-Paging Options (`ITableOptions`)
+## Table Cell Formatting
 
-| Option                 | Default | Description                                    | Possible Values                                        |
-| :--------------------- | :------ | :--------------------------------------------- | :----------------------------------------------------- |
-| `autoPage`             | `false` | auto-page table                                | `true` or `false`. Ex: `{autoPage:true}`               |
-| `autoPageCharWeight`   | `0`     | char weight value (adjusts letter spacing)     | -1.0 to 1.0. Ex: `{autoPageCharWeight:0.5}`            |
-| `autoPageLineWeight`   | `0`     | line weight value (adjusts line height)        | -1.0 to 1.0. Ex: `{autoPageLineWeight:0.5}`            |
-| `autoPageRepeatHeader` | `false` | repeat header row(s) on each auto-page slide   | `true` or `false`. Ex: `{autoPageRepeatHeader:true}`   |
-| `autoPageHeaderRows`   | `1`     | number of table rows that comprise the headers | 1-n. Ex: `2` repeats the first two rows on every slide |
-| `newSlideStartY`       |         | starting `y` value for tables on new Slides    | 0-n OR 'n%'. Ex:`{newSlideStartY:0.5}`                 |
+-   Table cells can be either a plain text string or an object with text and options properties
+-   When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
+-   Cell borders can be removed (aka: borderless table) by using the 'none' type (Ex: `border: {type:'none'}`)
+-   Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
+    as the `text` value allows fine-grained control over the text inside cells.
+-   Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
 
-### Option Details
+## Properties
 
--   `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
--   `autoPageCharWeight`: adjusts the calculated width of characters. If too much empty space is left on each line,
-    then increase char weight value. Conversely, if the table rows are overflowing, then reduce the char weight value.
--   `autoPageLineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
-    then increase line weight value. Conversely, if the tables are overflowing the bottom of the Slides, then
-    reduce the line weight value. Also helpful when using some fonts that do not have the usual golden ratio.
--   `newSlideStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
-    you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
-    tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
+### Position/Size Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
 
-## Table Auto-Paging Notes
+| Option | Type   | Default | Description            | Possible Values                              |
+| :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
+| `x`    | number | `1.0`   | hor location (inches)  | 0-n                                          |
+| `x`    | string |         | hor location (percent) | 'n%'. (Ex: `{x:'50%'}` middle of the Slide)  |
+| `y`    | number | `1.0`   | ver location (inches)  | 0-n                                          |
+| `y`    | string |         | ver location (percent) | 'n%'. (Ex: `{y:'50%'}` middle of the Slide)  |
+| `w`    | number | `1.0`   | width (inches)         | 0-n                                          |
+| `w`    | string |         | width (percent)        | 'n%'. (Ex: `{w:'50%'}` 50% the Slide width)  |
+| `h`    | number | `1.0`   | height (inches)        | 0-n                                          |
+| `h`    | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
--   New slides will be created as tables overflow. The table will start at either `newSlideStartY` (if present) or the Slide's top `margin`
--   Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides
--   Auto-paging is not an exact science! Try using different values for `autoPageCharWeight`/`autoPageLineWeight` and slide margin
--   Very small and very large font sizes cause tables to over/under-flow, be sure to adjust the char and line properties
--   There are many examples of auto-paging in the `examples` folder
+### Table Layout Options (`ITableOptions`)
 
-## Table Formatting Options (`ITableOptions`)
+| Option | Type    | Description            | Possible Values (inches or percent)                         |
+| :----- | :------ | :--------------------- | :---------------------------------------------------------- |
+| `colW` | integer | width for every column | Ex: Width for every column in table (uniform) `2.0`         |
+| `colW` | array   | column widths in order | Ex: Width for each of 5 columns `[1.0, 2.0, 2.5, 1.5, 1.0]` |
+| `rowH` | integer | height for every row   | Ex: Height for every row in table (uniform) `2.0`           |
+| `rowH` | array   | row heights in order   | Ex: Height for each of 5 rows `[1.0, 2.0, 2.5, 1.5, 1.0]`   |
+
+### Table Formatting Props (`ITableOptions`)
 
 | Option      | Type    | Unit   | Default | Description        | Possible Values                                                                   |
 | :---------- | :------ | :----- | :------ | :----------------- | :-------------------------------------------------------------------------------- |
@@ -74,7 +90,7 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `underline` | boolean |        | `false` | underline text     | `true` or `false`                                                                 |
 | `valign`    | string  |        |         | vertical alignment | `top` or `middle` or `bottom` (or `t` `m` `b`)                                    |
 
-### Border Options (`IBorderOptions`)
+### Table Border Options (`IBorderOptions`)
 
 | Option  | Type   | Default | Description      | Possible Values                                                                   |
 | :------ | :----- | :------ | :--------------- | :-------------------------------------------------------------------------------- |
@@ -82,24 +98,44 @@ slide.addTable( [rows], {any Layout/Formatting OPTIONS} );
 | `pt`    | string | `1`     | border thickness | any positive number                                                               |
 | `color` | string | `black` | cell border      | hex color code or [scheme color constant](#scheme-colors). Ex: `{color:'0088CC'}` |
 
-## Table Formatting Notes
+## Table Auto-Paging
 
--   **Formatting Options** passed to `slide.addTable()` apply to every cell in the table
--   You can selectively override formatting at a cell-level providing any **Formatting Option** in the cell `options`
+Auto-paging will create new slides as table rows overflow, doing the magical work for you.
 
-## Table Cell Formatting
+### Table Auto-Paging Options (`ITableOptions`)
 
--   Table cells can be either a plain text string or an object with text and options properties
--   When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
--   Cell borders can be removed (aka: borderless table) by using the 'none' type (Ex: `border: {type:'none'}`)
+| Option                 | Default | Description                                    | Possible Values                                        |
+| :--------------------- | :------ | :--------------------------------------------- | :----------------------------------------------------- |
+| `autoPage`             | `false` | auto-page table                                | `true` or `false`. Ex: `{autoPage:true}`               |
+| `autoPageCharWeight`   | `0`     | char weight value (adjusts letter spacing)     | -1.0 to 1.0. Ex: `{autoPageCharWeight:0.5}`            |
+| `autoPageLineWeight`   | `0`     | line weight value (adjusts line height)        | -1.0 to 1.0. Ex: `{autoPageLineWeight:0.5}`            |
+| `autoPageRepeatHeader` | `false` | repeat header row(s) on each auto-page slide   | `true` or `false`. Ex: `{autoPageRepeatHeader:true}`   |
+| `autoPageHeaderRows`   | `1`     | number of table rows that comprise the headers | 1-n. Ex: `2` repeats the first two rows on every slide |
+| `newSlideStartY`       |         | starting `y` value for tables on new Slides    | 0-n OR 'n%'. Ex:`{newSlideStartY:0.5}`                 |
 
-Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
-as the `text` value allows fine-grained control over the text inside cells.
+### Auto-Paging Property Notes
 
--   Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
--   See below for examples or view the `demos/browser/index.html` page for lots more
+-   `autoPage`: allows the auto-paging functionality (as table rows overflow the Slide, new Slides will be added) to be disabled.
+-   `autoPageCharWeight`: adjusts the calculated width of characters. If too much empty space is left on each line,
+    then increase char weight value. Conversely, if the table rows are overflowing, then reduce the char weight value.
+-   `autoPageLineWeight`: adjusts the calculated height of lines. If too much empty space is left under each table,
+    then increase line weight value. Conversely, if the tables are overflowing the bottom of the Slides, then
+    reduce the line weight value. Also helpful when using some fonts that do not have the usual golden ratio.
+-   `newSlideStartY`: provides the ability to specify where new tables will be placed on new Slides. For example,
+    you may place a table halfway down a Slide, but you wouldn't that to be the starting location for subsequent
+    tables. Use this option to ensure there is no wasted space and to guarantee a professional look.
+
+### Auto-Paging Usage Notes
+
+-   New slides will be created as tables overflow. The table will start at either `newSlideStartY` (if present) or the Slide's top `margin`
+-   Tables will retain their existing `x`, `w`, and `colW` values as they are rendered onto subsequent Slides
+-   Auto-paging is not an exact science! Try using different values for `autoPageCharWeight`/`autoPageLineWeight` and slide margin
+-   Very small and very large font sizes cause tables to over/under-flow, be sure to adjust the char and line properties
+-   There are many examples of auto-paging in the `examples` folder
 
 ## Table Cell Formatting Examples
+
+**TODO**
 
 ```javascript
 // TABLE 1: Cell-level Formatting
@@ -140,73 +176,4 @@ let arrTabRows = [
     ],
 ];
 slide.addTable(arrTabRows, { x: 0.5, y: 3.5, w: 9, h: 1, colW: [1.5, 1.5, 6] });
-```
-
-## Table Examples
-
-```javascript
-let pptx = new PptxGenJS();
-let slide = pptx.addSlide();
-slide.addText("Demo-03: Table", {
-    x: 0.5,
-    y: 0.25,
-    fontSize: 18,
-    fontFace: "Arial",
-    color: "0088CC",
-});
-
-// TABLE 1: Single-row table
-// --------
-let rows = [["Cell 1", "Cell 2", "Cell 3"]];
-let tabOpts = {
-    x: 0.5,
-    y: 1.0,
-    w: 9.0,
-    fill: "F7F7F7",
-    fontSize: 14,
-    color: "363636",
-};
-slide.addTable(rows, tabOpts);
-
-// TABLE 2: Multi-row table (each rows array element is an array of cells)
-// --------
-let rows = [
-    ["A1", "B1", "C1"],
-    ["A2", "B2", "C2"],
-];
-let tabOpts = {
-    x: 0.5,
-    y: 2.0,
-    w: 9.0,
-    fill: "F7F7F7",
-    fontSize: 18,
-    color: "6f9fc9",
-};
-slide.addTable(rows, tabOpts);
-
-// TABLE 3: Formatting at a cell level - use this to selectively override table's cell options
-// --------
-let rows = [
-    [
-        { text: "Top Lft", options: { valign: "top", align: "left", fontFace: "Arial" } },
-        { text: "Top Ctr", options: { valign: "top", align: "center", fontFace: "Verdana" } },
-        { text: "Top Rgt", options: { valign: "top", align: "right", fontFace: "Courier" } },
-    ],
-];
-let tabOpts = {
-    x: 0.5,
-    y: 4.5,
-    w: 9.0,
-    rowH: 0.6,
-    fill: "F7F7F7",
-    fontSize: 18,
-    color: "6f9fc9",
-    valign: "center",
-};
-slide.addTable(rows, tabOpts);
-
-// Multiline Text / Line Breaks - use either "\r" or "\n"
-slide.addTable([["Line 1\nLine 2\nLine 3"]], { x: 2, y: 3, w: 4 });
-
-pptx.writeFile("Demo-Tables");
 ```

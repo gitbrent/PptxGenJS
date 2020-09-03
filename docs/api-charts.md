@@ -1,22 +1,37 @@
 ---
 id: api-charts
-title: Adding Charts
+title: Charts
 ---
 
-## Syntax
+Charts of almost any type can be added to Slides.
+
+![PptxGenJS Chart Samples](/PptxGenJS/img/demo-all-charts.jpg)
+
+## Usage Example
 
 ```javascript
-slide.addChart(TYPE, DATA, OPTIONS);
+let dataChartAreaLine = [
+    {
+        name: "Actual Sales",
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121],
+    },
+    {
+        name: "Projected Sales",
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121],
+    },
+];
+
+slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 });
 ```
 
-## Features
-
-### Core Chart Types
+## Core Chart Types
 
 -   Chart type can be any one of `pptx.ChartType`
 -   Currently: `pptx.ChartType.area`, `pptx.ChartType.bar`, `pptx.ChartType.bar3d`, `pptx.ChartType.bubble`, `pptx.ChartType.doughnut`, `pptx.ChartType.line`, `pptx.ChartType.pie`, `pptx.ChartType.radar`, `pptx.ChartType.scatter`
 
-### Multi-Type Charts
+## Multi-Type Charts
 
 -   Chart types can be any one of `pptx.ChartType`, although `pptx.ChartType.area`, `pptx.ChartType.bar`, and `pptx.ChartType.line` will give the best results.
 -   There should be at least two chart-types. There should always be two value axes and category axes.
@@ -28,22 +43,30 @@ slide.addChart(TYPE, DATA, OPTIONS);
 -   If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
 -   Standard options are used, and the chart-type-options are mixed in to each.
 
-### Multi-Type Syntax
+## Usage Notes
 
-```javascript
-slide.addChart({ MULTI_TYPES_AND_DATA }, { OPTIONS_AND_AXES });
-```
+-   Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
+-   Examples: The `demos/common/demos.js` file has over 3,000 lines of well-documented examples, including charts
 
 ## Properties
+
+### Position/Size Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+
+| Option | Type   | Default | Description            | Possible Values                              |
+| :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
+| `x`    | number | `1.0`   | hor location (inches)  | 0-n                                          |
+| `x`    | string |         | hor location (percent) | 'n%'. (Ex: `{x:'50%'}` middle of the Slide)  |
+| `y`    | number | `1.0`   | ver location (inches)  | 0-n                                          |
+| `y`    | string |         | ver location (percent) | 'n%'. (Ex: `{y:'50%'}` middle of the Slide)  |
+| `w`    | number | `1.0`   | width (inches)         | 0-n                                          |
+| `w`    | string |         | width (percent)        | 'n%'. (Ex: `{w:'50%'}` 50% the Slide width)  |
+| `h`    | number | `1.0`   | height (inches)        | 0-n                                          |
+| `h`    | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
 ### General (`IChartOpts`), Data Table (`IChartPropsDataTable`), Legend (`IChartPropsLegend`), Title (`IChartPropsTitle`)
 
 | Option                    | Type    | Default    | Description                         | Possible Values                                                                                                                                                               |
 | :------------------------ | :------ | :--------- | :---------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `x`                       | number  | `1.0`      | horizontal location (inches)        | 0-n OR 'n%'. (Ex: `{x:'50%'}` places object in middle of the Slide)                                                                                                           |
-| `y`                       | number  | `1.0`      | vertical location (inches)          | 0-n OR 'n%'.                                                                                                                                                                  |
-| `w`                       | number  | `50%`      | width (inches)                      | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)                                                                                                        |
-| `h`                       | number  | `50%`      | height (inches)                     | 0-n OR 'n%'.                                                                                                                                                                  |
 | `border`                  | object  |            | chart border                        | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}`                                                                                                    |
 | `chartColors`             | array   |            | data colors                         | array of hex color codes. Ex: `['0088CC','FFCC00']`                                                                                                                           |
 | `chartColorsOpacity`      | number  | `100`      | data color opacity (percent)        | 1-100. Ex: `{ chartColorsOpacity:50 }`                                                                                                                                        |
@@ -78,7 +101,7 @@ slide.addChart({ MULTI_TYPES_AND_DATA }, { OPTIONS_AND_AXES });
 
 ### Cat Axis (`IChartPropsAxisCat`) and Val Axis (`IChartPropsAxisVal`)
 
-TODO: what about SER axie?
+TODO: what about SER axis?
 
 | Option                   | Type    | Default      | Description                      | Possible Values                                                                                                                                                                         |
 | :----------------------- | :------ | :----------- | :------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -155,36 +178,36 @@ TODO: what about SER axie?
 
 ### 3D Bar Chart (`IChartPropsChartBar`), Series Axis (`IChartPropsDataTable`)
 
-| Option                  | Type    | Default      | Description                        | Possible Values                                                                                              |
-| :---------------------- | :------ | :----------- | :--------------------------------- | :----------------------------------------------------------------------------------------------------------- |
-| `bar3DShape`            | string  | `box`        | bar 3d shape                       | `box`, `cylinder`, `coneToMax`, `pyramid`, `pyramidToMax`                                                    |
-| `barGapDepthPct`        | number  | `150`        | width between bar groups (percent) | 0-500. Ex: `{ barGapWidthPct:50 }`                                                                           |
-| `dataLabelBkgrdColors`  | boolean | `false`      | bkgd color is series color         | `true` or `false`                                                                                            |
-| `serAxisBaseTimeUnit`   | string  |              | series-axis base time unit         | `days` `months` or `years`                                                                                   |
-| `serAxisHidden`         | boolean | `false`      | hide series-axis                   | `true` or `false`                                                                                            |
-| `serAxisOrientation`    | string  | `minMax`     | series-axis orientation            | `maxMin` (high->low) or `minMax` (low->high)                                                                 |
-| `serAxisLabelColor`     | string  | `000000`     | series-axis color                  | hex color code. Ex: `{ serAxisLabelColor:'0088CC' }`                                                         |
-| `serAxisLabelFontBold`  | boolean | `false`      | make cat axis label bold           | `true` or `false`                                                                                            |
-| `serAxisLabelFontFace`  | string  | `Arial`      | series-axis font face              | font name. Ex: `{ titleFontFace:'Arial' }`                                                                   |
-| `serAxisLabelFontSize`  | integer | `18`         | series-axis font size              | 1-256. Ex: `{ titleFontSize:12 }`                                                                            |
-| `serAxisLabelFrequency` | integer |              | PPT "Interval Between Labels"      | 1-n. Ex: `{ serAxisLabelFrequency: 2 }`                                                                      |
-| `serAxisLabelPos`       | string  | `nextTo`     | axis label position                | `low`, `high`, or `nextTo` . Ex: `{ serAxisLabelPos: 'low' }`                                                |
-| `serAxisLineShow`       | boolean | `true`       | show/hide series-axis line         | `true` or `false`                                                                                            |
-| `serAxisMajorTimeUnit`  | string  |              | series-axis major time unit        | `days`, `months` or `years`                                                                                  |
-| `serAxisMajorUnit`      | integer |              | series-axis major unit             | Positive integer. Ex: `{ serAxisMajorUnit:12 }`                                                              |
-| `serAxisMinorTimeUnit`  | string  |              | series-axis minor time unit        | `days`, `months` or `years`                                                                                  |
-| `serAxisMinorUnit`      | integer |              | series-axis minor unit             | Positive integer. Ex: `{ serAxisMinorUnit:1 }`                                                               |
-| `serAxisTitle`          | string  | `Axis Title` | axis title                         | a string. Ex: `{ serAxisTitle:'Regions' }`                                                                   |
-| `serAxisTitleColor`     | string  | `000000`     | title color                        | hex color code. Ex: `{ serAxisTitleColor:'0088CC' }`                                                         |
-| `serAxisTitleFontFace`  | string  | `Arial`      | font face                          | font name. Ex: `{ serAxisTitleFontFace:'Arial' }`                                                            |
-| `serAxisTitleFontSize`  | integer |              | font size                          | 1-256. Ex: `{ serAxisTitleFontSize:12 }`                                                                     |
-| `serAxisTitleRotate`    | integer |              | title rotation (degrees)           | 0-360. Ex: `{ serAxisTitleRotate:45 }`                                                                       |
-| `serGridLine`           | object  | `none`       | series grid line style             | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
-| `v3DRAngAx`             | boolean | `true`       | Right angle axes                   | `true` or `false`                                                                                            |
-| `v3DPerspective`        | integer | `18`         | series-axis font size              | 1-240. Ex: `{ v3DPerspective:125 }`                                                                          |
-| `v3DRotX`               | integer |              | x-axis rotation (degrees)          | `-90` - `90`. Ex: `{ v3DRotX:-45 }`                                                                          |
-| `v3DRotY`               | integer |              | title rotation (degrees)           | 0-360. Ex: `{ v3DRotY:180 }`                                                                                 |
-| `valueBarColors`          | boolean | `false`     | forces chartColors on multi-data-series      | `true` or `false`                                                                                                                                                                       |
+| Option                  | Type    | Default      | Description                             | Possible Values                                                                                              |
+| :---------------------- | :------ | :----------- | :-------------------------------------- | :----------------------------------------------------------------------------------------------------------- |
+| `bar3DShape`            | string  | `box`        | bar 3d shape                            | `box`, `cylinder`, `coneToMax`, `pyramid`, `pyramidToMax`                                                    |
+| `barGapDepthPct`        | number  | `150`        | width between bar groups (percent)      | 0-500. Ex: `{ barGapWidthPct:50 }`                                                                           |
+| `dataLabelBkgrdColors`  | boolean | `false`      | bkgd color is series color              | `true` or `false`                                                                                            |
+| `serAxisBaseTimeUnit`   | string  |              | series-axis base time unit              | `days` `months` or `years`                                                                                   |
+| `serAxisHidden`         | boolean | `false`      | hide series-axis                        | `true` or `false`                                                                                            |
+| `serAxisOrientation`    | string  | `minMax`     | series-axis orientation                 | `maxMin` (high->low) or `minMax` (low->high)                                                                 |
+| `serAxisLabelColor`     | string  | `000000`     | series-axis color                       | hex color code. Ex: `{ serAxisLabelColor:'0088CC' }`                                                         |
+| `serAxisLabelFontBold`  | boolean | `false`      | make cat axis label bold                | `true` or `false`                                                                                            |
+| `serAxisLabelFontFace`  | string  | `Arial`      | series-axis font face                   | font name. Ex: `{ titleFontFace:'Arial' }`                                                                   |
+| `serAxisLabelFontSize`  | integer | `18`         | series-axis font size                   | 1-256. Ex: `{ titleFontSize:12 }`                                                                            |
+| `serAxisLabelFrequency` | integer |              | PPT "Interval Between Labels"           | 1-n. Ex: `{ serAxisLabelFrequency: 2 }`                                                                      |
+| `serAxisLabelPos`       | string  | `nextTo`     | axis label position                     | `low`, `high`, or `nextTo` . Ex: `{ serAxisLabelPos: 'low' }`                                                |
+| `serAxisLineShow`       | boolean | `true`       | show/hide series-axis line              | `true` or `false`                                                                                            |
+| `serAxisMajorTimeUnit`  | string  |              | series-axis major time unit             | `days`, `months` or `years`                                                                                  |
+| `serAxisMajorUnit`      | integer |              | series-axis major unit                  | Positive integer. Ex: `{ serAxisMajorUnit:12 }`                                                              |
+| `serAxisMinorTimeUnit`  | string  |              | series-axis minor time unit             | `days`, `months` or `years`                                                                                  |
+| `serAxisMinorUnit`      | integer |              | series-axis minor unit                  | Positive integer. Ex: `{ serAxisMinorUnit:1 }`                                                               |
+| `serAxisTitle`          | string  | `Axis Title` | axis title                              | a string. Ex: `{ serAxisTitle:'Regions' }`                                                                   |
+| `serAxisTitleColor`     | string  | `000000`     | title color                             | hex color code. Ex: `{ serAxisTitleColor:'0088CC' }`                                                         |
+| `serAxisTitleFontFace`  | string  | `Arial`      | font face                               | font name. Ex: `{ serAxisTitleFontFace:'Arial' }`                                                            |
+| `serAxisTitleFontSize`  | integer |              | font size                               | 1-256. Ex: `{ serAxisTitleFontSize:12 }`                                                                     |
+| `serAxisTitleRotate`    | integer |              | title rotation (degrees)                | 0-360. Ex: `{ serAxisTitleRotate:45 }`                                                                       |
+| `serGridLine`           | object  | `none`       | series grid line style                  | object with properties `size` (pt), `color` and `style` (`'solid'`, `'dash'` or `'dot'`) or `'none'` to hide |
+| `v3DRAngAx`             | boolean | `true`       | Right angle axes                        | `true` or `false`                                                                                            |
+| `v3DPerspective`        | integer | `18`         | series-axis font size                   | 1-240. Ex: `{ v3DPerspective:125 }`                                                                          |
+| `v3DRotX`               | integer |              | x-axis rotation (degrees)               | `-90` - `90`. Ex: `{ v3DRotX:-45 }`                                                                          |
+| `v3DRotY`               | integer |              | title rotation (degrees)                | 0-360. Ex: `{ v3DRotY:180 }`                                                                                 |
+| `valueBarColors`        | boolean | `false`      | forces chartColors on multi-data-series | `true` or `false`                                                                                            |
 
 ### Element Shadows
 
@@ -205,40 +228,3 @@ TODO: what about SER axie?
 | `secondaryCatAxis` | boolean | `false` | If data should use secondary category axis (or primary) | `true` or `false` |
 | `secondaryValAxis` | boolean | `false` | If data should use secondary value axis (or primary)    | `true` or `false` |
 | `valAxes`          | array   |         | array of two axis options objects                       | See example below |
-
-## Chart Examples
-
-### Tons of Sample Code
-
-Please check the `demos/common/demos.js` file for almost 3,000 lines of well-documented examples, including charts.
-
-There are lots of Slides filled with Charts you can copy:
-
-![HTML-to-PowerPoint Presentation](/PptxGenJS/img/demo-all-charts.jpg)
-
-### Line Chart Sample
-
-```javascript
-let slide = pres.addSlide();
-
-let dataChartAreaLine = [
-    {
-        name: "Actual Sales",
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        values: [1500, 4600, 5156, 3167, 8510, 8009, 6006, 7855, 12102, 12789, 10123, 15121],
-    },
-    {
-        name: "Projected Sales",
-        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
-        values: [1000, 2600, 3456, 4567, 5010, 6009, 7006, 8855, 9102, 10789, 11123, 12121],
-    },
-];
-
-slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 });
-
-pres.writeFile("Demo-Line-Chart");
-```
-
-## Notes
-
--   Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))

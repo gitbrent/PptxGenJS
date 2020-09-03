@@ -6,22 +6,22 @@
     "tagline": "Create JavaScript PowerPoint Presentations",
     "docs": {
       "api-charts": {
-        "title": "Adding Charts"
+        "title": "Charts"
       },
       "api-images": {
-        "title": "Adding Images"
+        "title": "Images"
       },
       "api-media": {
-        "title": "Adding Media"
+        "title": "Media"
       },
       "api-shapes": {
-        "title": "Adding Shapes"
+        "title": "Shapes"
       },
       "api-tables": {
-        "title": "Adding Tables"
+        "title": "Tables"
       },
       "api-text": {
-        "title": "Adding Text"
+        "title": "Text"
       },
       "deprecated": {
         "title": "Deprecated"

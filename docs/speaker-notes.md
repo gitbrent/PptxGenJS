@@ -2,7 +2,8 @@
 id: speaker-notes
 title: Speaker Notes
 ---
-Add Speaker Notes to any slide.
+
+Speaker Notes cn be added to a Slide.
 
 ## Syntax
 ```javascript

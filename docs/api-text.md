@@ -1,7 +1,9 @@
 ---
 id: api-text
-title: Adding Text
+title: Text
 ---
+
+Text shapes can be added to Slides.
 
 ## Syntax
 

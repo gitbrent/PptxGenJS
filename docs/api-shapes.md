@@ -1,25 +1,27 @@
 ---
 id: api-shapes
-title: Adding Shapes
+title: Shapes
 ---
 
-## Syntax
+Almost 200 shape types can be added to Slides (see `ShapeType` enum).
 
-### Shape without text
-
-```javascript
-slide.addShape(SHAPE_NAME, SHAPE_PROPS);
-```
-
-### Shape with text
+## Usage Example
 
 ```javascript
-slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
+// Shapes without text
+slide.addShape(pres.ShapeType.rect, { fill: { color: "FF0000" } });
+slide.addShape(pres.ShapeType.ellipse, { fill: { type: "solid", color: "0088CC" } });
+slide.addShape(pres.ShapeType.line, { line: { color: "FF0000", width: 1 } });
+
+// Shapes with text
+slide.addText("ShapeType.rect", { shape: pres.ShapeType.rect, fill: { color: "FF0000" } });
+slide.addText("ShapeType.ellipse", { shape: pres.ShapeType.ellipse, fill: { color: "FF0000" } });
+slide.addText("ShapeType.line", { shape: pres.ShapeType.line, line: { color: "FF0000", width: 1, dashType: "lgDash" } });
 ```
 
 ## Properties
 
-### Position Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+### Position/Size Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
 
 | Name | Type   | Default | Description            | Possible Values                              |
 | :--- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -32,7 +34,7 @@ slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 | `h`  | number | `1.0`   | height (inches)        | 0-n                                          |
 | `h`  | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
-### Shape Props (`ShapeProps`)
+### Shape Props ([ShapeProps](/PptxGenJS/docs/types.html#shape-props-shapeprops))
 
 | Name         | Type                                                                         | Description         | Possible Values                                   |
 | :----------- | :--------------------------------------------------------------------------- | :------------------ | :------------------------------------------------ |
@@ -47,28 +49,6 @@ slide.addText("This is a Triangle", { SHAPE_NAME, SHAPE_PROPS });
 | `shadow`     | [ShadowProps](/PptxGenJS/docs/types.html#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
 | `shapeName`  | string                                                                       | optional shape name | Ex: "Customer Network Diagram 99"                 |
 
-## Examples
+## Shapes Sample
 
-### Shapes without text
-
-```javascript
-let slide1 = pres.addSlide();
-slide1.addShape(pres.ShapeType.rect, { x: 0.5, y: 0.8, w: 1.5, h: 3.0, fill: { color: "FF0000" } });
-slide1.addShape(pres.ShapeType.ellipse, { x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: "solid", color: "0088CC" } });
-slide1.addShape(pres.ShapeType.line, { x: 4.2, y: 4.4, w: 5.0, h: 0.0, line: { color: "FF0000", width: 1 } });
-slide1.addShape(pres.ShapeType.line, { x: 4.2, y: 4.8, w: 5.0, h: 0.0, line: { color: "FF0000", width: 2, beginArrowType: "triangle" } });
-
-pres.writeFile("Demo-Shapes-1");
-```
-
-### Shapes with text
-
-```javascript
-let slide2 = pres.addSlide();
-slide2.addText("RECTANGLE", { shape: pres.ShapeType.rect, x: 0.5, y: 0.8, w: 1.5, h: 3.0, fill: { color: "FF0000" }, align: "center", fontSize: 14 });
-slide2.addText("ELLIPSE", { shape: pres.ShapeType.ellipse, x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { color: "FF0000" }, align: "center", fontSize: 14 });
-slide2.addText("LINE size=1", { shape: pres.ShapeType.line, align: "center", x: 4.2, y: 4.4, w: 5, h: 0, line: { color: "FF0000", width: 1, dashType: "lgDash" } });
-slide2.addText("LINE size=2", { shape: pres.ShapeType.line, align: "left", x: 4.2, y: 4.8, w: 5, h: 0, line: { color: "FF0000", width: 2, endArrowType: "triangle" } });
-
-pres.writeFile("Demo-Shapes-2");
-```
+![Shapes with Text Demo](/PptxGenJS/docs/assets/ex-shape-slide.png)
