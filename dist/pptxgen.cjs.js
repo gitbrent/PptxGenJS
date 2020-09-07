@@ -762,7 +762,7 @@ function createColorElement(colorStr, innerElements) {
  *	{ size: 8, color: 'FFFFFF', opacity: 0.75 };
  */
 function createGlowElement(options, defaults) {
-    var strXml = '', opts = getMix(defaults, options), size = opts['size'] * ONEPT, color = opts['color'], opacity = opts['opacity'] * 100000;
+    var strXml = '', opts = getMix(defaults, options), size = Math.round(opts['size'] * ONEPT), color = opts['color'], opacity = Math.round(opts['opacity'] * 100000);
     strXml += "<a:glow rad=\"" + size + "\">";
     strXml += createColorElement(color, "<a:alpha val=\"" + opacity + "\"/>");
     strXml += "</a:glow>";
@@ -2087,10 +2087,10 @@ function genXmlParagraphProperties(textObj, isDefault) {
         }
         // OPTION: Paragraph Spacing: Before/After
         if (textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0) {
-            strXmlParaSpc += "<a:spcBef><a:spcPts val=\"" + textObj.options.paraSpaceBefore * 100 + "\"/></a:spcBef>";
+            strXmlParaSpc += "<a:spcBef><a:spcPts val=\"" + Math.round(textObj.options.paraSpaceBefore * 100) + "\"/></a:spcBef>";
         }
         if (textObj.options.paraSpaceAfter && !isNaN(Number(textObj.options.paraSpaceAfter)) && textObj.options.paraSpaceAfter > 0) {
-            strXmlParaSpc += "<a:spcAft><a:spcPts val=\"" + textObj.options.paraSpaceAfter * 100 + "\"/></a:spcAft>";
+            strXmlParaSpc += "<a:spcAft><a:spcPts val=\"" + Math.round(textObj.options.paraSpaceAfter * 100) + "\"/></a:spcAft>";
         }
         // OPTION: bullet
         // NOTE: OOXML uses the unicode character set for Bullets
@@ -2160,12 +2160,12 @@ function genXmlTextRunProperties(opts, isDefault) {
     // BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
     runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '');
     runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
-    runProps += opts.bold ? ' b="1"' : '';
-    runProps += opts.italic ? ' i="1"' : '';
-    runProps += opts.strike ? ' strike="sngStrike"' : '';
-    runProps += opts.underline || opts.hyperlink ? ' u="sng"' : '';
+    runProps += opts.hasOwnProperty("bold") ? ' b="' + (opts.bold ? 1 : 0) + '"' : '';
+    runProps += opts.hasOwnProperty("italic") ? ' i="' + (opts.italic ? 1 : 0) + '"' : '';
+    runProps += opts.hasOwnProperty("strike") ? ' strike="' + (opts.strike ? 'sngStrike' : 'noStrike') + '"' : '';
+    runProps += opts.hasOwnProperty("underline") || opts.hyperlink ? ' u="' + (opts.underline || opts.hyperlink ? 'sng' : 'none') + '"' : '';
     runProps += opts.subscript ? ' baseline="-40000"' : opts.superscript ? ' baseline="30000"' : '';
-    runProps += opts.charSpacing ? ' spc="' + opts.charSpacing * 100 + '" kern="0"' : ''; // IMPORTANT: Also disable kerning; otherwise text won't actually expand
+    runProps += opts.charSpacing ? ' spc="' + Math.round(opts.charSpacing * 100) + '" kern="0"' : ''; // IMPORTANT: Also disable kerning; otherwise text won't actually expand
     runProps += ' dirty="0">';
     // Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
     if (opts.color || opts.fontFace || opts.outline) {
@@ -5845,7 +5845,7 @@ function createShadowElement(options, defaults) {
         console.warn("`shadow` options must be an object. Ex: `{shadow: {type:'none'}}`");
         return '<a:effectLst/>';
     }
-    var strXml = '<a:effectLst>', opts = getMix(defaults, options), type = opts['type'] || 'outer', blur = valToPts(opts['blur']), offset = valToPts(opts['offset']), angle = opts['angle'] * 60000, color = opts['color'], opacity = opts['opacity'] * 100000, rotateWithShape = opts['rotateWithShape'] ? 1 : 0;
+    var strXml = '<a:effectLst>', opts = getMix(defaults, options), type = opts['type'] || 'outer', blur = valToPts(opts['blur']), offset = valToPts(opts['offset']), angle = Math.round(opts['angle'] * 60000), color = opts['color'], opacity = Math.round(opts['opacity'] * 100000), rotateWithShape = opts['rotateWithShape'] ? 1 : 0;
     strXml += '<a:' + type + 'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="' + blur + '" ';
     strXml += 'rotWithShape="' + +rotateWithShape + '"';
     strXml += ' dist="' + offset + '" dir="' + angle + '">';
