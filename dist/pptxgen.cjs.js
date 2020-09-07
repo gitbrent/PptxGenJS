@@ -2449,7 +2449,7 @@ function genXmlTextBody(slideObj) {
             Object.entries(opts).forEach(function (_a) {
                 var key = _a[0], val = _a[1];
                 // NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-                if (key !== 'bullet' && !textObj.options[key])
+                if (key !== 'bullet' && !textObj.options.hasOwnProperty(key))
                     textObj.options[key] = val;
             });
             // D: Add formatted textrun
