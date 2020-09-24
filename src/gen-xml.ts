@@ -650,9 +650,10 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.chart:
+				const description = slideItemObj.options.title ? ' descr="' + slideItemObj.options.title + '"' : '';
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + '"/>'
+				strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + "'" + description + '/>'
 				strSlideXml += '   <p:cNvGraphicFramePr/>'
 				strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
 				strSlideXml += ' </p:nvGraphicFramePr>'

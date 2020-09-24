@@ -888,6 +888,9 @@ export interface TextProps {
 	text?: string
 	options?: TextPropsOptions
 }
+export interface TitleProps {
+	title?: string;
+}
 
 // charts =========================================================================================
 // FUTURE: BREAKING-CHANGE: (soln: use `OptsDataLabelPosition|string` until 3.5/4.0)
@@ -1271,7 +1274,7 @@ export interface SlideMasterProps {
 	 */
 	bkgd?: string | BackgroundProps
 }
-export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
+export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions, TitleProps {
 	_placeholderIdx?: number
 	_placeholderType?: PLACEHOLDER_TYPES
 
@@ -1280,6 +1283,7 @@ export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, Ta
 	margin?: Margin
 	colW?: number | number[] // table
 	rowH?: number | number[] // table
+	// title?: string
 }
 export interface SlideBaseProps {
 	_bkgdImgRid?: number
