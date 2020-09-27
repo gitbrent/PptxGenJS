@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-08-28T03:06:25.488Z */
+/* PptxGenJS 3.4.0-beta @ 2020-09-27T14:56:44.372Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -670,7 +670,13 @@ function encodeXmlEntities(xml) {
     // NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
     if (typeof xml === 'undefined' || xml == null)
         return '';
-    return xml.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+    return xml.toString()
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&apos;')
+        .replace(/\n/g, '&#xA;');
 }
 /**
  * Convert inches into EMU
@@ -1775,10 +1781,10 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy;
+                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy, altText = slideItemObj.options.altText;
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
-                strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">';
+                strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(altText || slideItemObj.image) + '">';
                 if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
                     strSlideXml +=
                         '<a:hlinkClick r:id="rId' +
@@ -1885,9 +1891,10 @@ function slideObjectToXml(slide) {
                 }
                 break;
             case SLIDE_OBJECT_TYPES.chart:
+                var description = slideItemObj.options.title ? ' descr="' + slideItemObj.options.title + '"' : '';
                 strSlideXml += '<p:graphicFrame>';
                 strSlideXml += ' <p:nvGraphicFramePr>';
-                strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + '"/>';
+                strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + "'" + description + '/>';
                 strSlideXml += '   <p:cNvGraphicFramePr/>';
                 strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
                 strSlideXml += ' </p:nvGraphicFramePr>';
@@ -3258,6 +3265,7 @@ function addImageDefinition(target, opt) {
     var strImageData = opt.data || '';
     var strImagePath = opt.path || '';
     var imageRelId = getNewRelId(target);
+    var altText = opt.altText || '';
     // REALITY-CHECK:
     if (!strImagePath && !strImageData) {
         console.error("ERROR: addImage() requires either 'data' or 'path' parameter!");
@@ -3298,6 +3306,7 @@ function addImageDefinition(target, opt) {
     // ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
     // if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
     newObject.options = {
+        altText: altText,
         x: intPosX || 0,
         y: intPosY || 0,
         w: intWidth || 1,
