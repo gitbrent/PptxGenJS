@@ -333,6 +333,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
 	let imageRelId = getNewRelId(target)
+	let altText = opt.altText || ''
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -375,6 +376,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	// ....: This is an async process: we need to make getSizeFromImage use callback, then set H/W...
 	// if ( !intWidth || !intHeight ) { var imgObj = getSizeFromImage(strImagePath);
 	newObject.options = {
+		altText,
 		x: intPosX || 0,
 		y: intPosY || 0,
 		w: intWidth || 1,

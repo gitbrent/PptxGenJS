@@ -534,11 +534,12 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				let sizing = slideItemObj.options.sizing,
 					rounding = slideItemObj.options.rounding,
 					width = cx,
-					height = cy
+					height = cy,
+					altText = slideItemObj.options.altText
 
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">'
+				strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(altText || slideItemObj.image) + '">'
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
 					strSlideXml +=
 						'<a:hlinkClick r:id="rId' +

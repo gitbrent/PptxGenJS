@@ -1199,6 +1199,7 @@ declare namespace PptxGenJS {
 	export interface ImageProps extends PositionProps, DataOrPathProps {
 		hyperlink?: HyperlinkProps
 		placeholder?: string // 'body' | 'title' | etc.
+		altText?: string
 		/**
 		 * Image rotation (degrees)
 		 * - range: -360 to 360

@@ -75,7 +75,13 @@ export function getMix(o1: any | IChartOpts, o2: any | IChartOpts, etc?: any) {
 export function encodeXmlEntities(xml: string): string {
 	// NOTE: Dont use short-circuit eval here as value c/b "0" (zero) etc.!
 	if (typeof xml === 'undefined' || xml == null) return ''
-	return xml.toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;')
+	return xml.toString()
+		.replace(/&/g, '&amp;')
+		.replace(/</g, '&lt;')
+		.replace(/>/g, '&gt;')
+		.replace(/"/g, '&quot;')
+		.replace(/'/g, '&apos;')
+		.replace(/\n/g, '&#xA;')
 }
 
 /**
