@@ -85,7 +85,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.4.0-beta-20200825-2145'
+const VERSION = '3.4.0-beta-20201011-1607'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -375,7 +375,7 @@ export default class PptxGenJS implements IPresentationProps {
 	/**
 	 * Create all chart and media rels for this Presentation
 	 * @param {PresSlide | SlideLayout} slide - slide with rels
-	 * @param {JSZIP} zip - JSZip instance
+	 * @param {JSZip} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
 	private createChartMediaRels = (slide: PresSlide | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
@@ -449,7 +449,7 @@ export default class PptxGenJS implements IPresentationProps {
 	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
 		let arrChartPromises: Promise<string>[] = []
 		let arrMediaPromises: Promise<string>[] = []
-		let zip: JSZip = new JSZip()
+		let zip = new JSZip()
 
 		// STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
 		this.slides.forEach(slide => {
