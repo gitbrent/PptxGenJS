@@ -31,7 +31,7 @@
     "path": false
   },
   "dependencies": {
-    "@types/node": "^14.0.5",
+    "@types/node": "^14.10.3",
     "https": "^1.0.0",
     "image-size": "^0.8.3",
     "jszip": "^3.4.0"
@@ -47,7 +47,7 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "rollup": "^2.10.5",
-    "rollup-plugin-typescript2": "^0.27.1",
+    "rollup-plugin-typescript2": "^0.27.2",
     "typescript": "^3.9.3"
   },
   "repository": {
@@ -59,14 +59,14 @@
     "javascript-create-pptx",
     "javascript-generate-pptx",
     "javascript-powerpoint",
-    "javascript-powerpoint-charts",
     "javascript-pptx",
     "js-create-powerpoint",
     "js-create-pptx",
     "js-generate-powerpoint",
     "js-powerpoint",
-    "js-powerpoint-pptx",
     "js-powerpoint-library",
+    "js-powerpoint-pptx",
+    "react-powerpoint",
     "typescript-powerpoint"
   ],
   "bugs": {
