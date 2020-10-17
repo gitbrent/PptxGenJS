@@ -748,6 +748,7 @@ export interface TableCell {
 	_lineHeight?: number
 	_hmerge?: boolean
 	_vmerge?: boolean
+	_rowContinue?: number
 	_optImp?: any
 
 	text?: string | TableCell[]
