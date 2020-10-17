@@ -82,6 +82,8 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+export type TabStopAlign = 'l' | 'r' | 'ctr' | 'dec'
+
 // used by charts, shape, text
 export interface BorderProps {
 	/**
@@ -375,6 +377,11 @@ export interface TextBaseProps {
 	 * @default 'top'
 	 */
 	valign?: VAlign
+
+	/**
+	 * tab stops
+	 */
+	tabStops?: (number | string | {position: number | string; alignment: TabStopAlign})[]
 }
 
 // image / media ==================================================================================
