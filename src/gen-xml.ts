@@ -211,10 +211,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				if (Array.isArray(objTabOpts.colW)) {
 					strXml += '<a:tblGrid>'
 					for (let col = 0; col < intColCnt; col++) {
-						strXml +=
-							'<a:gridCol w="' +
-							Math.round(inch2Emu(objTabOpts.colW[col]) || (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt) +
-							'"/>'
+						let w = inch2Emu(objTabOpts.colW[col])
+						if (w == null || isNaN(w)) {
+							w = (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt
+						}
+						strXml += '<a:gridCol w="' + Math.round(w) + '"/>'
 					}
 					strXml += '</a:tblGrid>'
 				}
