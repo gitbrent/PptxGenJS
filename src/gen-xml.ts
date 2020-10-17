@@ -905,9 +905,14 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
-		paragraphPropXml += '</' + tag + '>'
+		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet;
+		if (isDefault) childPropXml += genXmlTextRunProperties(textObj.options, true)
+		if (childPropXml) {
+			paragraphPropXml += '>' + childPropXml + '</' + tag + '>'
+		} else {
+			// self-close when no child props
+			paragraphPropXml += '/>'
+		}
 	}
 
 	return paragraphPropXml
