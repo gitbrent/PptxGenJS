@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-10-17T03:12:39.186Z */
+/* PptxGenJS 3.4.0-beta @ 2020-10-17T07:05:57.294Z */
 import * as JSZip from 'jszip';
 
 /**
@@ -1485,10 +1485,11 @@ function slideObjectToXml(slide) {
                 if (Array.isArray(objTabOpts_1.colW)) {
                     strXml_1 += '<a:tblGrid>';
                     for (var col = 0; col < intColCnt_1; col++) {
-                        strXml_1 +=
-                            '<a:gridCol w="' +
-                                Math.round(inch2Emu(objTabOpts_1.colW[col]) || (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt_1) +
-                                '"/>';
+                        var w = inch2Emu(objTabOpts_1.colW[col]);
+                        if (w == null || isNaN(w)) {
+                            w = (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt_1;
+                        }
+                        strXml_1 += '<a:gridCol w="' + Math.round(w) + '"/>';
                     }
                     strXml_1 += '</a:tblGrid>';
                 }
@@ -2143,6 +2144,7 @@ function genXmlParagraphProperties(textObj, isDefault) {
             paragraphPropXml += '>' + childPropXml + '</' + tag + '>';
         }
         else {
+            // self-close when no child props
             paragraphPropXml += '/>';
         }
     }
