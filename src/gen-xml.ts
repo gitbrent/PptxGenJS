@@ -949,9 +949,21 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
 	runProps += opts.bold ? ' b="1"' : ''
 	runProps += opts.italic ? ' i="1"' : ''
-	runProps += opts.strike ? ' strike="sngStrike"' : ''
-	runProps += opts.underline || opts.hyperlink ? ' u="sng"' : ''
-	runProps += opts.subscript ? ' baseline="-40000"' : opts.superscript ? ' baseline="30000"' : ''
+	runProps += opts.strike ? ` strike="${typeof opts.strike === "string" ? opts.strike : 'sngStrike'}"` : ''
+	if (typeof opts.underline === "object" && opts.underline?.type) {
+		runProps += ` u="${opts.underline.type}"`
+	} else if (typeof opts.underline === "string") {
+		runProps += ` u="${opts.underline}"`
+	} else if (opts.underline || opts.hyperlink) {
+		runProps += ' u="sng"'
+	}
+	if (opts.baseline) {
+		runProps += ` baseline="${Math.round(opts.baseline * 50)}"`
+	} else if (opts.subscript) {
+		runProps += ' baseline="-40000"'
+	} else if (opts.superscript) {
+		runProps += ' baseline="30000"'
+	}
 	runProps += opts.charSpacing ? ' spc="' + opts.charSpacing * 100 + '" kern="0"' : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
 	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
@@ -982,6 +994,11 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
 			}"/>`
 		}
+	}
+
+	// underline color
+	if (typeof opts.underline === "object" && opts.underline.color) {
+		runProps += `<a:uFill><a:solidFill><a:srgbClr val="${opts.underline.color}"/></a:solidFill></a:uFill>`
 	}
 
 	// END runProperties
