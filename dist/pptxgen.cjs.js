@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-08-28T03:06:25.479Z */
+/* PptxGenJS 3.4.0-beta @ 2020-10-19T02:59:40.024Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6037,7 +6037,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20200825-2145';
+var VERSION = '3.4.0-beta-20201011-1607';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6098,7 +6098,7 @@ var PptxGenJS = /** @class */ (function () {
         /**
          * Create all chart and media rels for this Presentation
          * @param {PresSlide | SlideLayout} slide - slide with rels
-         * @param {JSZIP} zip - JSZip instance
+         * @param {JSZip} zip - JSZip instance
          * @param {Promise<any>[]} chartPromises - promise array
          */
         this.createChartMediaRels = function (slide, zip, chartPromises) {
