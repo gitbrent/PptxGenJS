@@ -1609,7 +1609,14 @@ declare namespace PptxGenJS {
 		inset?: number
 		isTextBox?: boolean
 		line?: ShapeLineProps
+		/**
+		 * line spacing by pt. e.g.: 28 means 28pt
+		 */
 		lineSpacing?: number
+		/**
+		 * line spacing by multiple. e.g.: 1.2
+		 */
+		lineSpacingMultiple?: number
 		margin?: Margin
 		outline?: { color: Color; size: number }
 		paraSpaceAfter?: number

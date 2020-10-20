@@ -850,7 +850,11 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 			}
 		}
 
-		if (textObj.options.lineSpacing) strXmlLnSpc = `<a:lnSpc><a:spcPts val="${textObj.options.lineSpacing * 100}"/></a:lnSpc>`
+		if (textObj.options.lineSpacing) {
+			strXmlLnSpc = `<a:lnSpc><a:spcPts val="${Math.round(textObj.options.lineSpacing * 100)}"/></a:lnSpc>`
+		} else if (textObj.options.lineSpacingMultiple) {
+			strXmlLnSpc = `<a:lnSpc><a:spcPct val="${Math.round(textObj.options.lineSpacingMultiple * 100000)}"/></a:lnSpc>`
+		}
 
 		// OPTION: indent
 		if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
@@ -1235,6 +1239,7 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			// B: Inherit pPr-type options from parent shape's `options`
 			textObj.options.align = textObj.options.align || opts.align
 			textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing
+			textObj.options.lineSpacingMultiple = textObj.options.lineSpacingMultiple || opts.lineSpacingMultiple
 			textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel
 			textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore
 			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter
