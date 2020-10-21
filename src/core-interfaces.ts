@@ -344,6 +344,12 @@ export interface TextBaseProps {
 	 */
 	color?: Color
 	/**
+	 * Highlight color. background for text run.
+	 * - `HexColor`
+	 * @example 'FF0000' // red
+	 */
+	highlight?: HexColor;
+	/**
 	 * Font face name
 	 * @example 'Arial' // Arial font
 	 */

@@ -966,6 +966,10 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 			runProps += `<a:latin typeface="${opts.fontFace}" pitchFamily="34" charset="0"/><a:ea typeface="${opts.fontFace}" pitchFamily="34" charset="-122"/><a:cs typeface="${opts.fontFace}" pitchFamily="34" charset="-120"/>`
 		}
 	}
+	// highlight
+	if (opts.highlight) {
+		runProps += `<a:highlight><a:srgbClr val="${opts.highlight}"/></a:highlight>`
+	}
 
 	// Hyperlink support
 	if (opts.hyperlink) {
