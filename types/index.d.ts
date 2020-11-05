@@ -1297,6 +1297,20 @@ declare namespace PptxGenJS {
 		 */
 		rectRadius?: number
 		/**
+		 * Radius (only for pptx.shapes.PIE, pptx.shapes.ARC, pptx.shapes.BLOCK_ARC)
+		 * In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
+		 * - values: [0-360, 0-360]
+		 * @default [0, 270]
+		 */
+		angleRange?: [number, number]
+		/**
+		 * Radius (only for pptx.shapes.BLOCK_ARC)
+		 * You have to setup the angleRange values too.
+		 * - values: 0 - 1
+		 * @default 0.5
+		 */
+		arcThicknessRatio?: number
+		/**
 		 * Image rotation (degrees)
 		 * - range: -360 to 360
 		 * @default 0
