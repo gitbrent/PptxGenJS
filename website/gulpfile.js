@@ -18,8 +18,8 @@ var jvsSrch1 = '<script type="text/javascript" src="https://cdnjs.cloudflare.com
 var jvsSrch2 = 'pptxgen.bundle.js">';
 
 var gTag2020 =
-	`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-75147115-1"></script>\n` +
-	`<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-75147115-1');</script>\n`;
+	`<script async src="https://www.googletagmanager.com/gtag/js?id=G-4F7ZC3PH3Y"></script>\n` +
+	`<script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'G-4F7ZC3PH3Y');</script>\n`;
 
 // TASKS: Minify
 gulp.task("min-css", () => {
