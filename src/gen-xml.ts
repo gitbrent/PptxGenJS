@@ -251,7 +251,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 						let rowspan = cell.options?.rowspan
 						if (colspan && colspan > 1) {
 							let vMergeCells = new Array(colspan - 1).fill(undefined).map(_ => {
-								return { _type: SLIDE_OBJECT_TYPES.tablecell, optins: { rowspan }, _hmerge: true } as const
+								return { _type: SLIDE_OBJECT_TYPES.tablecell, options: { rowspan }, _hmerge: true } as const
 							})
 							cells.splice(cIdx + 1, 0, ...vMergeCells)
 							cIdx += colspan
