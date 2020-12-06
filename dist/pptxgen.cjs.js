@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-10-19T02:59:40.024Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-06T04:50:10.140Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1438,7 +1438,6 @@ function slideObjectToXml(slide) {
         // B: Add OBJECT to the current Slide
         switch (slideItemObj._type) {
             case SLIDE_OBJECT_TYPES.table:
-                var objTableGrid_1 = {};
                 var arrTabRows_1 = slideItemObj.arrTabRows;
                 var objTabOpts_1 = slideItemObj.options;
                 var intColCnt_1 = 0, intColW = 0;
@@ -1488,10 +1487,11 @@ function slideObjectToXml(slide) {
                 if (Array.isArray(objTabOpts_1.colW)) {
                     strXml_1 += '<a:tblGrid>';
                     for (var col = 0; col < intColCnt_1; col++) {
-                        strXml_1 +=
-                            '<a:gridCol w="' +
-                                Math.round(inch2Emu(objTabOpts_1.colW[col]) || (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt_1) +
-                                '"/>';
+                        var w = inch2Emu(objTabOpts_1.colW[col]);
+                        if (w == null || isNaN(w)) {
+                            w = (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt_1;
+                        }
+                        strXml_1 += '<a:gridCol w="' + Math.round(w) + '"/>';
                     }
                     strXml_1 += '</a:tblGrid>';
                 }
@@ -1519,55 +1519,49 @@ function slideObjectToXml(slide) {
                     |      |      |  C2  |  D2  |
                     \------|------|------|------/
                 */
-                /*
-                    Object ex: key = rowIdx / val = [cells] cellIdx { 0:{type: "tablecell", text: Array(1), options: {…}}, 1:... }
-                    {0: {…}, 1: {…}, 2: {…}, 3: {…}}
-                */
-                arrTabRows_1.forEach(function (row, rIdx) {
-                    // A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
-                    if (!objTableGrid_1[rIdx])
-                        objTableGrid_1[rIdx] = {};
-                    // B: Loop over all cells
-                    row.forEach(function (cell, cIdx) {
-                        // DESIGN: NOTE: Row cell arrays can be "uneven" (diff cell count in each) due to rowspan/colspan
-                        // Therefore, for each cell we run 0->colCount to determine the correct slot for it to reside
-                        // as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
-                        // E.g.: the 2nd element in the row array may actually go into the 5th table grid row cell b/c of colspans!
-                        for (var idx_1 = 0; cIdx + idx_1 < intColCnt_1; idx_1++) {
-                            var currColIdx = cIdx + idx_1;
-                            if (!objTableGrid_1[rIdx][currColIdx]) {
-                                // A: Set this cell
-                                objTableGrid_1[rIdx][currColIdx] = cell;
-                                // B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
-                                if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
-                                    for (var idy = 1; idy < Number(cell.options.colspan); idy++) {
-                                        objTableGrid_1[rIdx][currColIdx + idy] = { _hmerge: true, text: 'hmerge' };
-                                    }
-                                }
-                                else if (cell && cell.options && cell.options.rowspan && !isNaN(Number(cell.options.rowspan))) {
-                                    for (var idz = 1; idz < Number(cell.options.rowspan); idz++) {
-                                        if (!objTableGrid_1[rIdx + idz])
-                                            objTableGrid_1[rIdx + idz] = {};
-                                        objTableGrid_1[rIdx + idz][currColIdx] = { _vmerge: true, text: 'vmerge' };
-                                    }
-                                }
-                                // C: Break out of colCnt loop now that slot has been filled
-                                break;
-                            }
+                // A: add _hmerge cell for colspan. should reserve rowspan
+                arrTabRows_1.forEach(function (cells) {
+                    var _a, _b;
+                    var _loop_1 = function (cIdx) {
+                        var cell = cells[cIdx];
+                        var colspan = (_a = cell.options) === null || _a === void 0 ? void 0 : _a.colspan;
+                        var rowspan = (_b = cell.options) === null || _b === void 0 ? void 0 : _b.rowspan;
+                        if (colspan && colspan > 1) {
+                            var vMergeCells = new Array(colspan - 1).fill(undefined).map(function (_) {
+                                return { _type: SLIDE_OBJECT_TYPES.tablecell, options: { rowspan: rowspan }, _hmerge: true };
+                            });
+                            cells.splice.apply(cells, __spreadArrays([cIdx + 1, 0], vMergeCells));
+                            cIdx += colspan;
+                        }
+                        else {
+                            cIdx += 1;
+                        }
+                        out_cIdx_1 = cIdx;
+                    };
+                    var out_cIdx_1;
+                    for (var cIdx = 0; cIdx < cells.length;) {
+                        _loop_1(cIdx);
+                        cIdx = out_cIdx_1;
+                    }
+                });
+                // B: add _vmerge cell for rowspan. should reserve colspan/_hmerge
+                arrTabRows_1.forEach(function (cells, rIdx) {
+                    var nextRow = arrTabRows_1[rIdx + 1];
+                    if (!nextRow)
+                        return;
+                    cells.forEach(function (cell, cIdx) {
+                        var _a, _b;
+                        var rowspan = cell._rowContinue || ((_a = cell.options) === null || _a === void 0 ? void 0 : _a.rowspan);
+                        var colspan = (_b = cell.options) === null || _b === void 0 ? void 0 : _b.colspan;
+                        var _hmerge = cell._hmerge;
+                        if (rowspan && rowspan > 1) {
+                            var hMergeCell = { _type: SLIDE_OBJECT_TYPES.tablecell, options: { colspan: colspan }, _rowContinue: rowspan - 1, _vmerge: true, _hmerge: _hmerge };
+                            nextRow.splice(cIdx, 0, hMergeCell);
                         }
                     });
                 });
-                /* DEBUG: useful for rowspan/colspan testing
-                if ( objTabOpts.verbose ) {
-                    console.table(objTableGrid);
-                    let arrText = [];
-                    objTableGrid.forEach(function(row){ let arrRow = []; row.forEach(row,function(cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
-                    console.table( arrText );
-                }
-                */
                 // STEP 4: Build table rows/cells
-                Object.entries(objTableGrid_1).forEach(function (_a) {
-                    var rIdx = _a[0], rowObj = _a[1];
+                arrTabRows_1.forEach(function (cells, rIdx) {
                     // A: Table Height provided without rowH? Then distribute rows
                     var intRowH = 0; // IMPORTANT: Default must be zero for auto-sizing to work
                     if (Array.isArray(objTabOpts_1.rowH) && objTabOpts_1.rowH[rIdx])
@@ -1580,12 +1574,29 @@ function slideObjectToXml(slide) {
                     // B: Start row
                     strXml_1 += "<a:tr h=\"" + intRowH + "\">";
                     // C: Loop over each CELL
-                    Object.entries(rowObj).forEach(function (_a) {
-                        var _cIdx = _a[0], cellObj = _a[1];
+                    cells.forEach(function (cellObj) {
+                        var _a, _b;
                         var cell = cellObj;
-                        // 1: "_hmerge" cells are just place-holders in the table grid - skip those and go to next cell
-                        if (cell._hmerge)
+                        var cellSpanAttrs = {
+                            rowSpan: ((_a = cell.options) === null || _a === void 0 ? void 0 : _a.rowspan) > 1 ? cell.options.rowspan : undefined,
+                            gridSpan: ((_b = cell.options) === null || _b === void 0 ? void 0 : _b.colspan) > 1 ? cell.options.colspan : undefined,
+                            vMerge: cell._vmerge ? 1 : undefined,
+                            hMerge: cell._hmerge ? 1 : undefined,
+                        };
+                        var cellSpanAttrStr = Object.keys(cellSpanAttrs).map(function (k) { return [k, cellSpanAttrs[k]]; }).filter(function (_a) {
+                            var _k = _a[0], v = _a[1];
+                            return !!v;
+                        }).map(function (_a) {
+                            var k = _a[0], v = _a[1];
+                            return k + "=\"" + v + "\"";
+                        }).join(' ');
+                        if (cellSpanAttrStr)
+                            cellSpanAttrStr = ' ' + cellSpanAttrStr;
+                        // 1: COLSPAN/ROWSPAN: Add dummy cells for any active colspan/rowspan
+                        if (cell._hmerge || cell._vmerge) {
+                            strXml_1 += "<a:tc" + cellSpanAttrStr + "><a:tcPr/></a:tc>";
                             return;
+                        }
                         // 2: OPTIONS: Build/set cell options
                         var cellOpts = cell.options || {};
                         cell.options = cellOpts;
@@ -1605,8 +1616,6 @@ function slideObjectToXml(slide) {
                                     .replace('bottom', 'b') +
                                 '"'
                             : '';
-                        var cellColspan = cellOpts.colspan ? " gridSpan=\"" + cellOpts.colspan + "\"" : '';
-                        var cellRowspan = cellOpts.rowspan ? " rowSpan=\"" + cellOpts.rowspan + "\"" : '';
                         var fillColor = cell._optImp && cell._optImp.fill && cell._optImp.fill.color
                             ? cell._optImp.fill.color
                             : cell._optImp && cell._optImp.fill && typeof cell._optImp.fill === 'string'
@@ -1620,13 +1629,8 @@ function slideObjectToXml(slide) {
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
                         var cellMarginXml = " marL=\"" + valToPts(cellMargin[3]) + "\" marR=\"" + valToPts(cellMargin[1]) + "\" marT=\"" + valToPts(cellMargin[0]) + "\" marB=\"" + valToPts(cellMargin[2]) + "\"";
                         // FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
-                        // 3: ROWSPAN: Add dummy cells for any active rowspan
-                        if (cell._vmerge) {
-                            strXml_1 += '<a:tc vMerge="1"><a:tcPr/></a:tc>';
-                            return;
-                        }
                         // 4: Set CELL content and properties ==================================
-                        strXml_1 += "<a:tc" + cellColspan + cellRowspan + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + ">";
+                        strXml_1 += "<a:tc" + cellSpanAttrStr + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + ">";
                         //strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
                         // FIXME: 20200525: ^^^
                         // <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
@@ -1653,12 +1657,6 @@ function slideObjectToXml(slide) {
                         strXml_1 += cellFill;
                         strXml_1 += '  </a:tcPr>';
                         strXml_1 += ' </a:tc>';
-                        // LAST: COLSPAN: Add a 'merged' col for each column being merged (SEE: http://officeopenxml.com/drwTableGrid.php)
-                        if (cellOpts.colspan) {
-                            for (var tmp = 1; tmp < Number(cellOpts.colspan); tmp++) {
-                                strXml_1 += '<a:tc hMerge="1"><a:tcPr/></a:tc>';
-                            }
-                        }
                     });
                     // D: Complete row
                     strXml_1 += '</a:tr>';
@@ -2141,10 +2139,16 @@ function genXmlParagraphProperties(textObj, isDefault) {
         }
         // B: Close Paragraph-Properties
         // IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-        paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet;
+        var childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet;
         if (isDefault)
-            paragraphPropXml += genXmlTextRunProperties(textObj.options, true);
-        paragraphPropXml += '</' + tag + '>';
+            childPropXml += genXmlTextRunProperties(textObj.options, true);
+        if (childPropXml) {
+            paragraphPropXml += '>' + childPropXml + '</' + tag + '>';
+        }
+        else {
+            // self-close when no child props
+            paragraphPropXml += '/>';
+        }
     }
     return paragraphPropXml;
 }
@@ -6037,7 +6041,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201011-1607';
+var VERSION = '3.4.0-beta-20201205-2240';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
