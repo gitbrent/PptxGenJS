@@ -157,7 +157,6 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		// B: Add OBJECT to the current Slide
 		switch (slideItemObj._type) {
 			case SLIDE_OBJECT_TYPES.table:
-				let objTableGrid = {}
 				let arrTabRows = slideItemObj.arrTabRows
 				let objTabOpts = slideItemObj.options
 				let intColCnt = 0,
@@ -212,10 +211,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				if (Array.isArray(objTabOpts.colW)) {
 					strXml += '<a:tblGrid>'
 					for (let col = 0; col < intColCnt; col++) {
-						strXml +=
-							'<a:gridCol w="' +
-							Math.round(inch2Emu(objTabOpts.colW[col]) || (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt) +
-							'"/>'
+						let w = inch2Emu(objTabOpts.colW[col])
+						if (w == null || isNaN(w)) {
+							w = (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt
+						}
+						strXml += '<a:gridCol w="' + Math.round(w) + '"/>'
 					}
 					strXml += '</a:tblGrid>'
 				}
@@ -243,57 +243,40 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					|      |      |  C2  |  D2  |
 					\------|------|------|------/
 				*/
-				/*
-					Object ex: key = rowIdx / val = [cells] cellIdx { 0:{type: "tablecell", text: Array(1), options: {…}}, 1:... }
-					{0: {…}, 1: {…}, 2: {…}, 3: {…}}
-				*/
-				arrTabRows.forEach((row, rIdx) => {
-					// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
-					if (!objTableGrid[rIdx]) objTableGrid[rIdx] = {}
-
-					// B: Loop over all cells
-					row.forEach((cell, cIdx) => {
-						// DESIGN: NOTE: Row cell arrays can be "uneven" (diff cell count in each) due to rowspan/colspan
-						// Therefore, for each cell we run 0->colCount to determine the correct slot for it to reside
-						// as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
-						// E.g.: the 2nd element in the row array may actually go into the 5th table grid row cell b/c of colspans!
-						for (let idx = 0; cIdx + idx < intColCnt; idx++) {
-							let currColIdx = cIdx + idx
-
-							if (!objTableGrid[rIdx][currColIdx]) {
-								// A: Set this cell
-								objTableGrid[rIdx][currColIdx] = cell
-
-								// B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
-								if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
-									for (let idy = 1; idy < Number(cell.options.colspan); idy++) {
-										objTableGrid[rIdx][currColIdx + idy] = { _hmerge: true, text: 'hmerge' }
-									}
-								} else if (cell && cell.options && cell.options.rowspan && !isNaN(Number(cell.options.rowspan))) {
-									for (let idz = 1; idz < Number(cell.options.rowspan); idz++) {
-										if (!objTableGrid[rIdx + idz]) objTableGrid[rIdx + idz] = {}
-										objTableGrid[rIdx + idz][currColIdx] = { _vmerge: true, text: 'vmerge' }
-									}
-								}
-
-								// C: Break out of colCnt loop now that slot has been filled
-								break
-							}
+				// A: add _hmerge cell for colspan. should reserve rowspan
+				arrTabRows.forEach(cells => {
+					for (let cIdx = 0; cIdx < cells.length;) {
+						let cell = cells[cIdx]
+						let colspan = cell.options?.colspan
+						let rowspan = cell.options?.rowspan
+						if (colspan && colspan > 1) {
+							let vMergeCells = new Array(colspan - 1).fill(undefined).map(_ => {
+								return { _type: SLIDE_OBJECT_TYPES.tablecell, options: { rowspan }, _hmerge: true } as const
+							})
+							cells.splice(cIdx + 1, 0, ...vMergeCells)
+							cIdx += colspan
+						} else {
+							cIdx += 1
+						}
+					}
+				})
+				// B: add _vmerge cell for rowspan. should reserve colspan/_hmerge
+				arrTabRows.forEach((cells, rIdx) => {
+					let nextRow = arrTabRows[rIdx + 1]
+					if (!nextRow) return
+					cells.forEach((cell, cIdx) => {
+						let rowspan = cell._rowContinue || cell.options?.rowspan
+						let colspan = cell.options?.colspan
+						let _hmerge = cell._hmerge
+						if (rowspan && rowspan > 1) {
+							let hMergeCell = { _type: SLIDE_OBJECT_TYPES.tablecell, options: { colspan }, _rowContinue: rowspan - 1, _vmerge: true, _hmerge } as const
+							nextRow.splice(cIdx, 0, hMergeCell)
 						}
 					})
 				})
 
-				/* DEBUG: useful for rowspan/colspan testing
-				if ( objTabOpts.verbose ) {
-					console.table(objTableGrid);
-					let arrText = [];
-					objTableGrid.forEach(function(row){ let arrRow = []; row.forEach(row,function(cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
-					console.table( arrText );
-				}
-				*/
-
 				// STEP 4: Build table rows/cells
-				Object.entries(objTableGrid).forEach(([rIdx, rowObj]) => {
+				arrTabRows.forEach((cells, rIdx) => {
 					// A: Table Height provided without rowH? Then distribute rows
 					let intRowH = 0 // IMPORTANT: Default must be zero for auto-sizing to work
 					if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx]) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]))
@@ -308,11 +291,23 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strXml += `<a:tr h="${intRowH}">`
 
 					// C: Loop over each CELL
-					Object.entries(rowObj).forEach(([_cIdx, cellObj]) => {
+					cells.forEach((cellObj) => {
 						let cell: TableCell = cellObj
 
-						// 1: "_hmerge" cells are just place-holders in the table grid - skip those and go to next cell
-						if (cell._hmerge) return
+						let cellSpanAttrs = {
+							rowSpan: cell.options?.rowspan > 1 ? cell.options.rowspan : undefined,
+							gridSpan: cell.options?.colspan > 1 ? cell.options.colspan : undefined,
+							vMerge: cell._vmerge ? 1 : undefined,
+							hMerge: cell._hmerge ? 1 : undefined,
+						}
+						let cellSpanAttrStr = Object.keys(cellSpanAttrs).map(k => [k, cellSpanAttrs[k]]).filter(([_k, v]) => !!v).map(([k, v]) => `${k}="${v}"`).join(' ')
+						if (cellSpanAttrStr) cellSpanAttrStr = ' ' + cellSpanAttrStr
+
+						// 1: COLSPAN/ROWSPAN: Add dummy cells for any active colspan/rowspan
+						if (cell._hmerge || cell._vmerge) {
+							strXml += `<a:tc${cellSpanAttrStr}><a:tcPr/></a:tc>`
+							return
+						}
 
 						// 2: OPTIONS: Build/set cell options
 						let cellOpts = cell.options || ({} as TableCell['options'])
@@ -336,8 +331,6 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 									.replace('bottom', 'b') +
 							  '"'
 							: ''
-						let cellColspan = cellOpts.colspan ? ` gridSpan="${cellOpts.colspan}"` : ''
-						let cellRowspan = cellOpts.rowspan ? ` rowSpan="${cellOpts.rowspan}"` : ''
 						let fillColor =
 							cell._optImp && cell._optImp.fill && cell._optImp.fill.color
 								? cell._optImp.fill.color
@@ -355,14 +348,8 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 						// FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
-						// 3: ROWSPAN: Add dummy cells for any active rowspan
-						if (cell._vmerge) {
-							strXml += '<a:tc vMerge="1"><a:tcPr/></a:tc>'
-							return
-						}
-
 						// 4: Set CELL content and properties ==================================
-						strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
+						strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
 						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
 						// FIXME: 20200525: ^^^
 						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
@@ -393,13 +380,6 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 						strXml += cellFill
 						strXml += '  </a:tcPr>'
 						strXml += ' </a:tc>'
-
-						// LAST: COLSPAN: Add a 'merged' col for each column being merged (SEE: http://officeopenxml.com/drwTableGrid.php)
-						if (cellOpts.colspan) {
-							for (let tmp = 1; tmp < Number(cellOpts.colspan); tmp++) {
-								strXml += '<a:tc hMerge="1"><a:tcPr/></a:tc>'
-							}
-						}
 					})
 
 					// D: Complete row
@@ -926,9 +906,14 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
-		paragraphPropXml += '</' + tag + '>'
+		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet;
+		if (isDefault) childPropXml += genXmlTextRunProperties(textObj.options, true)
+		if (childPropXml) {
+			paragraphPropXml += '>' + childPropXml + '</' + tag + '>'
+		} else {
+			// self-close when no child props
+			paragraphPropXml += '/>'
+		}
 	}
 
 	return paragraphPropXml
