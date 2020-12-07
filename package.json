@@ -34,7 +34,7 @@
     "@types/node": "^14.14.10",
     "https": "^1.0.0",
     "image-size": "^0.9.3",
-    "jszip": "^3.4.0"
+    "jszip": "^3.5.0"
   },
   "devDependencies": {
     "doctoc": "^2.0.0",

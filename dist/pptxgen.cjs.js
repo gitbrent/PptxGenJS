@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-06T04:50:10.140Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-07T03:55:03.599Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -3312,6 +3312,8 @@ function addImageDefinition(target, opt) {
         sizing: sizing,
         placeholder: opt.placeholder,
         rotate: opt.rotate || 0,
+        flipV: opt.flipV || false,
+        flipH: opt.flipH || false
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
@@ -6041,7 +6043,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201205-2240';
+var VERSION = '3.4.0-beta-20201206-2150';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
