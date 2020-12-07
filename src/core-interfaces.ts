@@ -424,6 +424,16 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 */
 		y?: number
 	}
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide
