@@ -1,5 +1,6 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-07T03:55:03.647Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-07T05:01:42.167Z */
 import * as JSZip from 'jszip';
+import JSZip__default from 'jszip';
 
 /**
  * PptxGenJS Enums
@@ -6041,7 +6042,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201206-2150';
+var VERSION = '3.4.0-beta-20201206-2301';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6171,7 +6172,7 @@ var PptxGenJS = /** @class */ (function () {
         this.exportPresentation = function (outputType) {
             var arrChartPromises = [];
             var arrMediaPromises = [];
-            var zip = new JSZip();
+            var zip = new JSZip__default();
             // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
             _this.slides.forEach(function (slide) {
                 arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
@@ -6589,7 +6590,7 @@ var PptxGenJS = /** @class */ (function () {
             slideId: this.slides.length + 256,
             slideRId: this.slides.length + 2,
             slideNumber: this.slides.length + 1,
-            slideLayout: slideLayout
+            slideLayout: slideLayout,
         });
         // A: Add slide to pres
         this._slides.push(newSlide);
