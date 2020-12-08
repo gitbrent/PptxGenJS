@@ -48,7 +48,7 @@
     "gulp-uglify": "^3.0.2",
     "rollup": "^2.34.2",
     "rollup-plugin-typescript2": "^0.29.0",
-    "typescript": "^3.9.3"
+    "typescript": "^4.1.2"
   },
   "repository": {
     "type": "git",
