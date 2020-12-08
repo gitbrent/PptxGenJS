@@ -1,7 +1,29 @@
-/* PptxGenJS 3.4.0-beta @ 2020-10-19T02:59:40.024Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-08T05:46:11.059Z */
 'use strict';
 
 var JSZip = require('jszip');
+
+function _interopNamespace(e) {
+	if (e && e.__esModule) return e;
+	var n = Object.create(null);
+	if (e) {
+		Object.keys(e).forEach(function (k) {
+			if (k !== 'default') {
+				var d = Object.getOwnPropertyDescriptor(e, k);
+				Object.defineProperty(n, k, d.get ? d : {
+					enumerable: true,
+					get: function () {
+						return e[k];
+					}
+				});
+			}
+		});
+	}
+	n['default'] = e;
+	return Object.freeze(n);
+}
+
+var JSZip__namespace = /*#__PURE__*/_interopNamespace(JSZip);
 
 /**
  * PptxGenJS Enums
@@ -1719,14 +1741,20 @@ function slideObjectToXml(slide) {
                 strSlideXml += "<a:xfrm" + locationAttr + ">";
                 strSlideXml += "<a:off x=\"" + x + "\" y=\"" + y + "\"/>";
                 strSlideXml += "<a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></a:xfrm>";
-                strSlideXml +=
-                    '<a:prstGeom prst="' +
-                        slideItemObj.shape +
-                        '"><a:avLst>' +
-                        (slideItemObj.options.rectRadius
-                            ? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
-                            : '') +
-                        '</a:avLst></a:prstGeom>';
+                strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>';
+                if (slideItemObj.options.rectRadius) {
+                    strSlideXml += "<a:gd name=\"adj\" fmla=\"val " + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + "\"/>";
+                }
+                else if (slideItemObj.options.angleRange) {
+                    for (var i = 0; i < 2; i++) {
+                        var angle = slideItemObj.options.angleRange[i];
+                        strSlideXml += "<a:gd name=\"adj" + (i + 1) + "\" fmla=\"val " + convertRotationDegrees(angle) + "\" />";
+                    }
+                    if (slideItemObj.options.arcThicknessRatio) {
+                        strSlideXml += "<a:gd name=\"adj3\" fmla=\"val " + Math.round(slideItemObj.options.arcThicknessRatio * 50000) + "\" />";
+                    }
+                }
+                strSlideXml += '</a:avLst></a:prstGeom>';
                 // Option: FILL
                 strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>';
                 // shape Type: LINE: line color
@@ -4143,7 +4171,7 @@ var Slide = /** @class */ (function () {
 function createExcelWorksheet(chartObject, zip) {
     var data = chartObject.data;
     return new Promise(function (resolve, reject) {
-        var zipExcel = new JSZip();
+        var zipExcel = new JSZip__namespace();
         var intBubbleCols = (data.length - 1) * 2 + 1; // 1 for "X-Values", then 2 for every Y-Axis
         // A: Add folders
         zipExcel.folder('_rels');
@@ -4474,7 +4502,7 @@ function createExcelWorksheet(chartObject, zip) {
                 '</Relationships>');
             zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject));
             // 3: Done
-            resolve();
+            resolve(null);
         })
             .catch(function (strErr) {
             reject(strErr);
@@ -6037,7 +6065,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201011-1607';
+var VERSION = '3.4.0-beta-20201207-2340';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6167,7 +6195,7 @@ var PptxGenJS = /** @class */ (function () {
         this.exportPresentation = function (outputType) {
             var arrChartPromises = [];
             var arrMediaPromises = [];
-            var zip = new JSZip();
+            var zip = new JSZip__namespace();
             // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
             _this.slides.forEach(function (slide) {
                 arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));

@@ -470,15 +470,15 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 				strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>'
 				if (slideItemObj.options.rectRadius) {
-					strSlideXml += '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
+					strSlideXml += `<a:gd name="adj" fmla="val ${Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy))}"/>`
 				} else if (slideItemObj.options.angleRange) {
 					for (let i = 0; i < 2; i++) {
-						const angle = slideItemObj.options.angleRange[i];
-						strSlideXml += '<a:gd name="adj' + (i + 1) + '" fmla="val ' + convertRotationDegrees(angle) + '" />'
+						const angle = slideItemObj.options.angleRange[i]
+						strSlideXml += `<a:gd name="adj${i + 1}" fmla="val ${convertRotationDegrees(angle)}" />`
 					}
 
 					if (slideItemObj.options.arcThicknessRatio) {
-						strSlideXml += '<a:gd name="adj3" fmla="val ' + slideItemObj.options.arcThicknessRatio * 50000 + '" />'
+						strSlideXml += `<a:gd name="adj3" fmla="val ${Math.round(slideItemObj.options.arcThicknessRatio * 50000)}" />`
 					}
 				}
 				strSlideXml += '</a:avLst></a:prstGeom>'

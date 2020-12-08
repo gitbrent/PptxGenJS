@@ -408,7 +408,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject))
 
 				// 3: Done
-				resolve()
+				resolve(null)
 			})
 			.catch(strErr => {
 				reject(strErr)
