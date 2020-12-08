@@ -550,7 +550,9 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 			strXml += '	  <a:lstStyle/>'
 			strXml += '	  <a:p>'
 			strXml += '		<a:pPr rtl="0">'
-			strXml += `       <a:defRPr sz="${rel.opts.dataTableFontSize || DEF_FONT_SIZE}00" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">`
+			strXml += `       <a:defRPr sz="${Math.round(
+				(rel.opts.dataTableFontSize || DEF_FONT_SIZE) * 100
+			)}" b="0" i="0" u="none" strike="noStrike" kern="1200" baseline="0">`
 			strXml += '			<a:solidFill><a:schemeClr val="tx1"><a:lumMod val="65000"/><a:lumOff val="35000"/></a:schemeClr></a:solidFill>'
 			strXml += '			<a:latin typeface="+mn-lt"/>'
 			strXml += '			<a:ea typeface="+mn-ea"/>'
@@ -589,7 +591,7 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 				strXml += '  <a:lstStyle/>'
 				strXml += '  <a:p>'
 				strXml += '    <a:pPr>'
-				strXml += rel.opts.legendFontSize ? '<a:defRPr sz="' + Number(rel.opts.legendFontSize) * 100 + '">' : '<a:defRPr>'
+				strXml += rel.opts.legendFontSize ? '<a:defRPr sz="' + Math.round(Number(rel.opts.legendFontSize) * 100) + '">' : '<a:defRPr>'
 				if (rel.opts.legendColor) strXml += genXmlColorSelection(rel.opts.legendColor)
 				if (rel.opts.legendFontFace) strXml += '<a:latin typeface="' + rel.opts.legendFontFace + '"/>'
 				if (rel.opts.legendFontFace) strXml += '<a:cs    typeface="' + rel.opts.legendFontFace + '"/>'
@@ -704,7 +706,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				if (seriesColor === 'transparent') {
 					strXml += '<a:noFill/>'
 				} else if (opts.chartColorsOpacity) {
-					strXml += '<a:solidFill>' + createColorElement(seriesColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
+					strXml += '<a:solidFill>' + createColorElement(seriesColor, `<a:alpha val="${Math.round(opts.chartColorsOpacity * 1000)}"/>`) + '</a:solidFill>'
 				} else {
 					strXml += '<a:solidFill>' + createColorElement(seriesColor) + '</a:solidFill>'
 				}
@@ -743,7 +745,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '      <a:bodyPr/>'
 					strXml += '      <a:lstStyle/>'
 					strXml += '      <a:p><a:pPr>'
-					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">'
+					strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
 					strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 					strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 					strXml += '        </a:defRPr>'
@@ -880,7 +882,11 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
 				strXml +=
-					'        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">'
+					'        <a:defRPr b="' +
+					(opts.dataLabelFontBold ? 1 : 0) +
+					'" i="0" strike="noStrike" sz="' +
+					Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
+					'" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -959,7 +965,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					if (tmpSerColor === 'transparent') {
 						strXml += '<a:noFill/>'
 					} else if (opts.chartColorsOpacity) {
-						strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
+						strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000) + '"/>') + '</a:solidFill>'
 					} else {
 						strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 					}
@@ -1194,7 +1200,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
-				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">'
+				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -1259,7 +1265,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					if (tmpSerColor === 'transparent') {
 						strXml += '<a:noFill/>'
 					} else if (opts.chartColorsOpacity) {
-						strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + opts.chartColorsOpacity + '000"/>') + '</a:solidFill>'
+						strXml += '<a:solidFill>' + createColorElement(tmpSerColor, '<a:alpha val="' + Math.round(opts.chartColorsOpacity * 1000) + '"/>') + '</a:solidFill>'
 					} else {
 						strXml += '<a:solidFill>' + createColorElement(tmpSerColor) + '</a:solidFill>'
 					}
@@ -1348,7 +1354,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '      <a:bodyPr/>'
 				strXml += '      <a:lstStyle/>'
 				strXml += '      <a:p><a:pPr>'
-				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + (opts.dataLabelFontSize || DEF_FONT_SIZE) + '00" u="none">'
+				strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">'
 				strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>'
 				strXml += '        </a:defRPr>'
@@ -1448,7 +1454,9 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '  <c:spPr/><c:txPr>'
 				strXml += '   <a:bodyPr/><a:lstStyle/>'
 				strXml += '   <a:p><a:pPr>'
-				strXml += `   <a:defRPr sz="${opts.dataLabelFontSize || DEF_FONT_SIZE}00" b="${opts.dataLabelFontBold ? 1 : 0}" i="0" u="none" strike="noStrike">`
+				strXml += `   <a:defRPr sz="${Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="${
+					opts.dataLabelFontBold ? 1 : 0
+				}" i="0" u="none" strike="noStrike">`
 				strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>'
 				strXml += `    <a:latin typeface="${opts.dataLabelFontFace || 'Arial'}"/>`
 				strXml += '   </a:defRPr>'
@@ -1590,7 +1598,12 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	strXml += '    <a:lstStyle/>'
 	strXml += '    <a:p>'
 	strXml += '    <a:pPr>'
-	strXml += '    <a:defRPr sz="' + (opts.catAxisLabelFontSize || DEF_FONT_SIZE) + '00" b="' + (opts.catAxisLabelFontBold ? 1 : 0) + '" i="0" u="none" strike="noStrike">'
+	strXml +=
+		'    <a:defRPr sz="' +
+		Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
+		'" b="' +
+		(opts.catAxisLabelFontBold ? 1 : 0) +
+		'" i="0" u="none" strike="noStrike">'
 	strXml += '      <a:solidFill><a:srgbClr val="' + (opts.catAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>'
 	strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '   </a:defRPr>'
@@ -1687,7 +1700,12 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '  <a:lstStyle/>'
 	strXml += '  <a:p>'
 	strXml += '    <a:pPr>'
-	strXml += '      <a:defRPr sz="' + (opts.valAxisLabelFontSize || DEF_FONT_SIZE) + '00" b="' + (opts.valAxisLabelFontBold ? 1 : 0) + '" i="0" u="none" strike="noStrike">'
+	strXml +=
+		'      <a:defRPr sz="' +
+		Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
+		'" b="' +
+		(opts.valAxisLabelFontBold ? 1 : 0) +
+		'" i="0" u="none" strike="noStrike">'
 	strXml += '        <a:solidFill><a:srgbClr val="' + (opts.valAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>'
 	strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '      </a:defRPr>'
@@ -1755,7 +1773,7 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 	strXml += '    <a:lstStyle/>'
 	strXml += '    <a:p>'
 	strXml += '    <a:pPr>'
-	strXml += '    <a:defRPr sz="' + (opts.serAxisLabelFontSize || DEF_FONT_SIZE) + '00" b="0" i="0" u="none" strike="noStrike">'
+	strXml += `    <a:defRPr sz="${Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100)}" b="0" i="0" u="none" strike="noStrike">`
 	strXml += '      <a:solidFill><a:srgbClr val="' + (opts.serAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>'
 	strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>'
 	strXml += '   </a:defRPr>'
@@ -1797,7 +1815,7 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 function genXmlTitle(opts: IChartTitleOpts): string {
 	let align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : `<a:pPr>`
 	let rotate = opts.rotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.rotate)}"/>` : `<a:bodyPr/>` // don't specify rotation to get default (ex. vertical for cat axis)
-	let sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize) + '00"' : '' // only set the font size if specified.  Powerpoint will handle the default size
+	let sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : '' // only set the font size if specified.  Powerpoint will handle the default size
 	let layout =
 		opts.titlePos && opts.titlePos.x && opts.titlePos.y
 			? `<c:layout><c:manualLayout><c:xMode val="edge"/><c:yMode val="edge"/><c:x val="${opts.titlePos.x}"/><c:y val="${opts.titlePos.y}"/></c:manualLayout></c:layout>`
@@ -1869,9 +1887,9 @@ function createShadowElement(options: ShadowProps, defaults: object): string {
 		type = opts['type'] || 'outer',
 		blur = valToPts(opts['blur']),
 		offset = valToPts(opts['offset']),
-		angle = opts['angle'] * 60000,
+		angle = Math.round(opts['angle'] * 60000),
 		color = opts['color'],
-		opacity = opts['opacity'] * 100000,
+		opacity = Math.round(opts['opacity'] * 100000),
 		rotateWithShape = opts['rotateWithShape'] ? 1 : 0
 
 	strXml += '<a:' + type + 'Shdw sx="100000" sy="100000" kx="0" ky="0"  algn="bl" blurRad="' + blur + '" '

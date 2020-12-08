@@ -245,7 +245,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				*/
 				// A: add _hmerge cell for colspan. should reserve rowspan
 				arrTabRows.forEach(cells => {
-					for (let cIdx = 0; cIdx < cells.length;) {
+					for (let cIdx = 0; cIdx < cells.length; ) {
 						let cell = cells[cIdx]
 						let colspan = cell.options?.colspan
 						let rowspan = cell.options?.rowspan
@@ -291,7 +291,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strXml += `<a:tr h="${intRowH}">`
 
 					// C: Loop over each CELL
-					cells.forEach((cellObj) => {
+					cells.forEach(cellObj => {
 						let cell: TableCell = cellObj
 
 						let cellSpanAttrs = {
@@ -300,7 +300,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 							vMerge: cell._vmerge ? 1 : undefined,
 							hMerge: cell._hmerge ? 1 : undefined,
 						}
-						let cellSpanAttrStr = Object.keys(cellSpanAttrs).map(k => [k, cellSpanAttrs[k]]).filter(([_k, v]) => !!v).map(([k, v]) => `${k}="${v}"`).join(' ')
+						let cellSpanAttrStr = Object.keys(cellSpanAttrs)
+							.map(k => [k, cellSpanAttrs[k]])
+							.filter(([_k, v]) => !!v)
+							.map(([k, v]) => `${k}="${v}"`)
+							.join(' ')
 						if (cellSpanAttrStr) cellSpanAttrStr = ' ' + cellSpanAttrStr
 
 						// 1: COLSPAN/ROWSPAN: Add dummy cells for any active colspan/rowspan
@@ -683,7 +687,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		strSlideXml += '  <a:bodyPr/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
 		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
-			strSlideXml += '<a:defRPr sz="' + (slide._slideNumberProps.fontSize ? Math.round(slide._slideNumberProps.fontSize) : '12') + '00">'
+			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12) * 100)}">`
 			if (slide._slideNumberProps.color) strSlideXml += genXmlColorSelection(slide._slideNumberProps.color)
 			if (slide._slideNumberProps.fontFace)
 				strSlideXml +=
@@ -830,7 +834,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 			}
 		}
 
-		if (textObj.options.lineSpacing) strXmlLnSpc = `<a:lnSpc><a:spcPts val="${textObj.options.lineSpacing * 100}"/></a:lnSpc>`
+		if (textObj.options.lineSpacing) strXmlLnSpc = `<a:lnSpc><a:spcPts val="${Math.round(textObj.options.lineSpacing * 100)}"/></a:lnSpc>`
 
 		// OPTION: indent
 		if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
@@ -839,10 +843,10 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 
 		// OPTION: Paragraph Spacing: Before/After
 		if (textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0) {
-			strXmlParaSpc += `<a:spcBef><a:spcPts val="${textObj.options.paraSpaceBefore * 100}"/></a:spcBef>`
+			strXmlParaSpc += `<a:spcBef><a:spcPts val="${Math.round(textObj.options.paraSpaceBefore * 100)}"/></a:spcBef>`
 		}
 		if (textObj.options.paraSpaceAfter && !isNaN(Number(textObj.options.paraSpaceAfter)) && textObj.options.paraSpaceAfter > 0) {
-			strXmlParaSpc += `<a:spcAft><a:spcPts val="${textObj.options.paraSpaceAfter * 100}"/></a:spcAft>`
+			strXmlParaSpc += `<a:spcAft><a:spcPts val="${Math.round(textObj.options.paraSpaceAfter * 100)}"/></a:spcAft>`
 		}
 
 		// OPTION: bullet
@@ -906,7 +910,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet;
+		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet
 		if (isDefault) childPropXml += genXmlTextRunProperties(textObj.options, true)
 		if (childPropXml) {
 			paragraphPropXml += '>' + childPropXml + '</' + tag + '>'
@@ -932,12 +936,12 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	// BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
 	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '')
 	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
-	runProps += opts.bold ? ' b="1"' : ''
-	runProps += opts.italic ? ' i="1"' : ''
-	runProps += opts.strike ? ' strike="sngStrike"' : ''
-	runProps += opts.underline || opts.hyperlink ? ' u="sng"' : ''
+	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
+	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
+	runProps += opts.hasOwnProperty('strike') ? ` strike="${opts.strike ? 'sngStrike' : 'noStrike'}"` : ''
+	runProps += opts.hasOwnProperty('underline') || opts.hyperlink ? ` u="${opts.underline || opts.hyperlink ? 'sng' : 'none'}"` : ''
 	runProps += opts.subscript ? ' baseline="-40000"' : opts.superscript ? ' baseline="30000"' : ''
-	runProps += opts.charSpacing ? ' spc="' + opts.charSpacing * 100 + '" kern="0"' : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
+	runProps += opts.charSpacing ? ` spc="${Math.round(opts.charSpacing * 100)}" kern="0"` : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
 	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
 	if (opts.color || opts.fontFace || opts.outline) {
@@ -1249,17 +1253,17 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		 */
 		if (slideObj._type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 			if (opts.fontFace) {
-				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0">'
+				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0">'
 				strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
 				strSlideXml += `<a:ea typeface="${opts.fontFace}" charset="0"/>`
 				strSlideXml += `<a:cs typeface="${opts.fontFace}" charset="0"/>`
 				strSlideXml += '</a:endParaRPr>'
 			} else {
-				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
+				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0"/>'
 			}
 		} else if (reqsClosingFontSize) {
 			// Empty [lineBreak] lines should not contain runProp, however, they need to specify fontSize in `endParaRPr`
-			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0"/>'
 		} else {
 			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}" dirty="0"/>` // Added 20180101 to address PPT-2007 issues
 		}

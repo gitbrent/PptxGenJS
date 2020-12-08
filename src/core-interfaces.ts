@@ -1028,7 +1028,7 @@ export interface IChartPropsAxisSer {
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
 	serAxisLabelFontFace?: string
-	serAxisLabelFontSize?: string
+	serAxisLabelFontSize?: number
 	serAxisLabelFrequency?: string
 	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	serAxisLineShow?: boolean
