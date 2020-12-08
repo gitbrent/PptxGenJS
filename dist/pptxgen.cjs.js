@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-08T03:58:23.126Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-08T04:13:08.747Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -6049,7 +6049,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201207-2155';
+var VERSION = '3.4.0-beta-20201207-2210';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
