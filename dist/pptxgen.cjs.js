@@ -1,7 +1,13 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-06T04:50:10.140Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-08T03:58:23.126Z */
 'use strict';
 
+Object.defineProperty(exports, '__esModule', { value: true });
+
 var JSZip = require('jszip');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+var JSZip__default = /*#__PURE__*/_interopDefaultLegacy(JSZip);
 
 /**
  * PptxGenJS Enums
@@ -3312,6 +3318,8 @@ function addImageDefinition(target, opt) {
         sizing: sizing,
         placeholder: opt.placeholder,
         rotate: opt.rotate || 0,
+        flipV: opt.flipV || false,
+        flipH: opt.flipH || false
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
@@ -4147,7 +4155,7 @@ var Slide = /** @class */ (function () {
 function createExcelWorksheet(chartObject, zip) {
     var data = chartObject.data;
     return new Promise(function (resolve, reject) {
-        var zipExcel = new JSZip();
+        var zipExcel = new JSZip__default['default']();
         var intBubbleCols = (data.length - 1) * 2 + 1; // 1 for "X-Values", then 2 for every Y-Axis
         // A: Add folders
         zipExcel.folder('_rels');
@@ -4478,7 +4486,7 @@ function createExcelWorksheet(chartObject, zip) {
                 '</Relationships>');
             zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject));
             // 3: Done
-            resolve();
+            resolve(null);
         })
             .catch(function (strErr) {
             reject(strErr);
@@ -6041,7 +6049,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201205-2240';
+var VERSION = '3.4.0-beta-20201207-2155';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6171,7 +6179,7 @@ var PptxGenJS = /** @class */ (function () {
         this.exportPresentation = function (outputType) {
             var arrChartPromises = [];
             var arrMediaPromises = [];
-            var zip = new JSZip();
+            var zip = new JSZip__default['default']();
             // STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
             _this.slides.forEach(function (slide) {
                 arrMediaPromises = arrMediaPromises.concat(encodeSlideMediaRels(slide));
@@ -6589,7 +6597,7 @@ var PptxGenJS = /** @class */ (function () {
             slideId: this.slides.length + 256,
             slideRId: this.slides.length + 2,
             slideNumber: this.slides.length + 1,
-            slideLayout: slideLayout
+            slideLayout: slideLayout,
         });
         // A: Add slide to pres
         this._slides.push(newSlide);
@@ -6701,4 +6709,4 @@ var PptxGenJS = /** @class */ (function () {
     return PptxGenJS;
 }());
 
-module.exports = PptxGenJS;
+exports.default = PptxGenJS;

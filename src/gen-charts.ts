@@ -20,7 +20,7 @@ import {
 } from './core-enums'
 import { IChartOptsLib, ISlideRelChart, ShadowProps, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
-import * as JSZip from 'jszip'
+import JSZip from 'jszip'
 
 /**
  * Based on passed data, creates Excel Worksheet that is used as a data source for a chart.
@@ -408,7 +408,7 @@ export function createExcelWorksheet(chartObject: ISlideRelChart, zip: JSZip): P
 				zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject))
 
 				// 3: Done
-				resolve()
+				resolve(null)
 			})
 			.catch(strErr => {
 				reject(strErr)
