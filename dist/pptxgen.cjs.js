@@ -1946,7 +1946,7 @@ function slideObjectToXml(slide) {
         strSlideXml += '  <a:bodyPr/>';
         strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
         if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
-            strSlideXml += "<a:defRPr sz=\"" + Math.round((slide._slideNumberProps.fontSize || 12) * 100) + "\">";
+            strSlideXml += '<a:defRPr sz="' + Math.round((slide._slideNumberProps.fontSize || 12) * 100) + '">';
             if (slide._slideNumberProps.color)
                 strSlideXml += genXmlColorSelection(slide._slideNumberProps.color);
             if (slide._slideNumberProps.fontFace)
@@ -2463,7 +2463,7 @@ function genXmlTextBody(slideObj) {
             Object.entries(opts).forEach(function (_a) {
                 var key = _a[0], val = _a[1];
                 // NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-                if (key !== 'bullet' && !textObj.options[key])
+                if (key !== 'bullet' && !textObj.options.hasOwnProperty(key))
                     textObj.options[key] = val;
             });
             // D: Add formatted textrun
