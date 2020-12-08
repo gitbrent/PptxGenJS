@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-07T05:01:42.157Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-08T03:58:23.126Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -7,27 +7,6 @@ var JSZip = require('jszip');
 
 function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
 
-function _interopNamespace(e) {
-	if (e && e.__esModule) return e;
-	var n = Object.create(null);
-	if (e) {
-		Object.keys(e).forEach(function (k) {
-			if (k !== 'default') {
-				var d = Object.getOwnPropertyDescriptor(e, k);
-				Object.defineProperty(n, k, d.get ? d : {
-					enumerable: true,
-					get: function () {
-						return e[k];
-					}
-				});
-			}
-		});
-	}
-	n['default'] = e;
-	return Object.freeze(n);
-}
-
-var JSZip__namespace = /*#__PURE__*/_interopNamespace(JSZip);
 var JSZip__default = /*#__PURE__*/_interopDefaultLegacy(JSZip);
 
 /**
@@ -4176,7 +4155,7 @@ var Slide = /** @class */ (function () {
 function createExcelWorksheet(chartObject, zip) {
     var data = chartObject.data;
     return new Promise(function (resolve, reject) {
-        var zipExcel = new JSZip__namespace();
+        var zipExcel = new JSZip__default['default']();
         var intBubbleCols = (data.length - 1) * 2 + 1; // 1 for "X-Values", then 2 for every Y-Axis
         // A: Add folders
         zipExcel.folder('_rels');
@@ -4507,7 +4486,7 @@ function createExcelWorksheet(chartObject, zip) {
                 '</Relationships>');
             zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject));
             // 3: Done
-            resolve();
+            resolve(null);
         })
             .catch(function (strErr) {
             reject(strErr);
@@ -6070,7 +6049,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201206-2301';
+var VERSION = '3.4.0-beta-20201207-2155';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
