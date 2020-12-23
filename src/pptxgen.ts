@@ -31,19 +31,35 @@
 \*/
 
 /**
- * PPTX Units are "DXA" (except for font sizing)
- * ....: There are 1440 DXA per inch. 1 inch is 72 points. 1 DXA is 1/20th's of a point (20 DXA is 1 point).
- * ....: There is also something called EMU's (914400 EMUs is 1 inch, 12700 EMUs is 1pt).
- * SEE: https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
+ * Units of Measure used in PowerPoint documents
  *
- * OBJECT LAYOUTS: 16x9 (10" x 5.625"), 16x10 (10" x 6.25"), 4x3 (10" x 7.5"), Wide (13.33" x 7.5") and Custom (any size)
+ * PowerPoint units are in `DXA` (except for font sizing)
+ * - 1 inch is 1440 DXA
+ * - 1 inch is 72 points
+ * - 1 DXA is 1/20th's of a point
+ * - 20 DXA is 1 point
  *
- * REFERENCES:
- * @see [Structure of a PresentationML document (Open XML SDK)](https://msdn.microsoft.com/en-us/library/office/gg278335.aspx)
- * @see [TableStyleId enumeration](https://msdn.microsoft.com/en-us/library/office/hh273476(v=office.14).aspx)
+ * Another form of measurement using is an `EMU`
+ * - 914400 EMUs is 1 inch
+ * 12700 EMUs is 1 point
+ *
+ * @see https://startbigthinksmall.wordpress.com/2010/01/04/points-inches-and-emus-measuring-units-in-office-open-xml/
  */
 
-import * as JSZip from 'jszip'
+/**
+ * Object Layouts
+ *
+ * - 16x9 (10" x 5.625")
+ * - 16x10 (10" x 6.25")
+ * - 4x3 (10" x 7.5")
+ * - Wide (13.33" x 7.5")
+ * - [custom] (any size)
+ *
+ * @see https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-presentationml-document
+ * @see https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2010/hh273476(v=office.14)
+ */
+
+import JSZip from 'jszip'
 import Slide from './slide'
 import {
 	AlignH,
@@ -62,29 +78,16 @@ import {
 	ShapeType,
 	WRITE_OUTPUT_TYPE,
 } from './core-enums'
-import {
-	IAddSlideOptions,
-	ILayout,
-	ILayoutProps,
-	IPresentation,
-	ISection,
-	ISectionProps,
-	ISlide,
-	ISlideLayout,
-	ISlideLib,
-	ISlideMasterOptions,
-	ISlideNumber,
-	TableToSlidesProps,
-} from './core-interfaces'
+import { AddSlideProps, IPresentationProps, PresLayout, PresSlide, SectionProps, SlideLayout, SlideMasterProps, SlideNumberProps, TableToSlidesProps } from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.3.0-beta-20200723:2310'
+const VERSION = '3.4.0-beta-20201223-1550'
 
-export default class PptxGenJS implements IPresentation {
+export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
 
 	/**
@@ -101,7 +104,7 @@ export default class PptxGenJS implements IPresentation {
 	 */
 	private _layout: string
 	public set layout(value: string) {
-		let newLayout: ILayout = this.LAYOUTS[value]
+		let newLayout: PresLayout = this.LAYOUTS[value]
 
 		if (newLayout) {
 			this._layout = value
@@ -191,30 +194,30 @@ export default class PptxGenJS implements IPresentation {
 	}
 
 	/** master slide layout object */
-	private _masterSlide: ISlideLib
-	public get masterSlide(): ISlideLib {
+	private _masterSlide: PresSlide
+	public get masterSlide(): PresSlide {
 		return this._masterSlide
 	}
 
 	/** this Presentation's Slide objects */
-	private _slides: ISlideLib[]
-	public get slides(): ISlideLib[] {
+	private _slides: PresSlide[]
+	public get slides(): PresSlide[] {
 		return this._slides
 	}
 
 	/** this Presentation's sections */
-	private _sections: ISection[]
-	public get sections(): ISection[] {
+	private _sections: SectionProps[]
+	public get sections(): SectionProps[] {
 		return this._sections
 	}
 
 	/** slide layout definition objects, used for generating slide layout files */
-	private _slideLayouts: ISlideLayout[]
-	public get slideLayouts(): ISlideLayout[] {
+	private _slideLayouts: SlideLayout[]
+	public get slideLayouts(): SlideLayout[] {
 		return this._slideLayouts
 	}
 
-	private LAYOUTS: object
+	private LAYOUTS: { [key: string]: PresLayout }
 
 	// Exposed class props
 	private _alignH = AlignH
@@ -233,8 +236,8 @@ export default class PptxGenJS implements IPresentation {
 	public get OutputType(): typeof OutputType {
 		return this._outputType
 	}
-	private _presLayout: ILayout
-	public get presLayout(): ILayout {
+	private _presLayout: PresLayout
+	public get presLayout(): PresLayout {
 		return this._presLayout
 	}
 	private _schemeColor = SchemeColor
@@ -271,10 +274,10 @@ export default class PptxGenJS implements IPresentation {
 	constructor() {
 		// Set available layouts
 		this.LAYOUTS = {
-			LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 } as ILayout,
-			LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as ILayout,
-			LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 } as ILayout,
-			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as ILayout,
+			LAYOUT_4x3: { name: 'screen4x3', width: 9144000, height: 6858000 } as PresLayout,
+			LAYOUT_16x9: { name: 'screen16x9', width: 9144000, height: 5143500 } as PresLayout,
+			LAYOUT_16x10: { name: 'screen16x10', width: 9144000, height: 5715000 } as PresLayout,
+			LAYOUT_WIDE: { name: 'custom', width: 12192000, height: 6858000 } as PresLayout,
 		}
 
 		// Core
@@ -286,6 +289,8 @@ export default class PptxGenJS implements IPresentation {
 		// PptxGenJS props
 		this._presLayout = {
 			name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
+			_sizeW: this.LAYOUTS[DEF_PRES_LAYOUT].width,
+			_sizeH: this.LAYOUTS[DEF_PRES_LAYOUT].height,
 			width: this.LAYOUTS[DEF_PRES_LAYOUT].width,
 			height: this.LAYOUTS[DEF_PRES_LAYOUT].height,
 		}
@@ -293,16 +298,16 @@ export default class PptxGenJS implements IPresentation {
 		//
 		this._slideLayouts = [
 			{
-				presLayout: this._presLayout,
-				name: DEF_PRES_LAYOUT_NAME,
-				number: 1000,
-				slide: null,
-				data: [],
-				rels: [],
-				relsChart: [],
-				relsMedia: [],
-				margin: DEF_SLIDE_MARGIN_IN,
-				slideNumberObj: null,
+				_margin: DEF_SLIDE_MARGIN_IN,
+				_name: DEF_PRES_LAYOUT_NAME,
+				_presLayout: this._presLayout,
+				_rels: [],
+				_relsChart: [],
+				_relsMedia: [],
+				_slide: null,
+				_slideNum: 1000,
+				_slideNumberProps: null,
+				_slideObjects: [],
 			},
 		]
 		this._slides = []
@@ -316,29 +321,30 @@ export default class PptxGenJS implements IPresentation {
 			addTable: null,
 			addText: null,
 			//
-			presLayout: this._presLayout,
-			id: null,
-			rId: null,
-			name: null,
-			number: null,
-			data: [],
-			rels: [],
-			relsChart: [],
-			relsMedia: [],
-			slideLayout: null,
-			slideNumberObj: null,
+			_name: null,
+			_presLayout: this._presLayout,
+			_rId: null,
+			_rels: [],
+			_relsChart: [],
+			_relsMedia: [],
+			_slideId: null,
+			_slideLayout: null,
+			_slideNum: null,
+			_slideNumberProps: null,
+			_slideObjects: [],
 		}
 	}
 
 	/**
 	 * Provides an API for `addTableDefinition` to create slides as needed for auto-paging
 	 * @param {string} masterName - slide master name
-	 * @return {ISlide} new Slide
+	 * @return {PresSlide} new Slide
 	 */
-	private addNewSlide = (masterName: string): ISlide => {
+	private addNewSlide = (masterName: string): PresSlide => {
 		// Continue using sections if the first slide using auto-paging has a Section
 		let sectAlreadyInUse =
-			this.sections.length > 0 && this.sections[this.sections.length - 1].slides.filter(slide => slide.number === this.slides[this.slides.length - 1].number).length > 0
+			this.sections.length > 0 &&
+			this.sections[this.sections.length - 1]._slides.filter(slide => slide._slideNum === this.slides[this.slides.length - 1]._slideNum).length > 0
 
 		return this.addSlide({
 			masterName: masterName,
@@ -349,32 +355,32 @@ export default class PptxGenJS implements IPresentation {
 	/**
 	 * Provides an API for `addTableDefinition` to get slide reference by number
 	 * @param {number} slideNum - slide number
-	 * @return {ISlideLib} Slide
+	 * @return {PresSlide} Slide
 	 * @since 3.0.0
 	 */
-	private getSlide = (slideNum: number): ISlideLib => this.slides.filter(slide => slide.number === slideNum)[0]
+	private getSlide = (slideNum: number): PresSlide => this.slides.filter(slide => slide._slideNum === slideNum)[0]
 
 	/**
 	 * Enables the `Slide` class to set PptxGenJS [Presentation] master/layout slidenumbers
-	 * @param {ISlideNumber} slideNum - slide number config
+	 * @param {SlideNumberProps} slideNum - slide number config
 	 */
-	private setSlideNumber = (slideNum: ISlideNumber) => {
+	private setSlideNumber = (slideNum: SlideNumberProps) => {
 		// 1: Add slideNumber to slideMaster1.xml
-		this.masterSlide.slideNumberObj = slideNum
+		this.masterSlide._slideNumberProps = slideNum
 
 		// 2: Add slideNumber to DEF_PRES_LAYOUT_NAME layout
-		this.slideLayouts.filter(layout => layout.name === DEF_PRES_LAYOUT_NAME)[0].slideNumberObj = slideNum
+		this.slideLayouts.filter(layout => layout._name === DEF_PRES_LAYOUT_NAME)[0]._slideNumberProps = slideNum
 	}
 
 	/**
 	 * Create all chart and media rels for this Presentation
-	 * @param {ISlideLib | ISlideLayout} slide - slide with rels
-	 * @param {JSZIP} zip - JSZip instance
+	 * @param {PresSlide | SlideLayout} slide - slide with rels
+	 * @param {JSZip} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
-	private createChartMediaRels = (slide: ISlideLib | ISlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
-		slide.relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
-		slide.relsMedia.forEach(rel => {
+	private createChartMediaRels = (slide: PresSlide | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
+		slide._relsChart.forEach(rel => chartPromises.push(genCharts.createExcelWorksheet(rel, zip)))
+		slide._relsMedia.forEach(rel => {
 			if (rel.type !== 'online' && rel.type !== 'hyperlink') {
 				// A: Loop vars
 				let data: string = rel.data && typeof rel.data === 'string' ? rel.data : ''
@@ -443,7 +449,7 @@ export default class PptxGenJS implements IPresentation {
 	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
 		let arrChartPromises: Promise<string>[] = []
 		let arrMediaPromises: Promise<string>[] = []
-		let zip: JSZip = new JSZip()
+		let zip = new JSZip()
 
 		// STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
 		this.slides.forEach(slide => {
@@ -458,7 +464,7 @@ export default class PptxGenJS implements IPresentation {
 		return Promise.all(arrMediaPromises).then(() => {
 			// A: Add empty placeholder objects to slides that don't already have them
 			this.slides.forEach(slide => {
-				if (slide.slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
+				if (slide._slideLayout) genObj.addPlaceholdersToSlideLayouts(slide)
 			})
 
 			// B: Add all required folders and files
@@ -581,14 +587,14 @@ export default class PptxGenJS implements IPresentation {
 	 * @param {ISectionProps} section - section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSection(section: ISectionProps) {
+	addSection(section: SectionProps) {
 		if (!section) console.warn('addSection requires an argument')
 		else if (!section.title) console.warn('addSection requires a title')
 
-		let newSection: ISection = {
-			type: 'user',
+		let newSection: SectionProps = {
+			_type: 'user',
+			_slides: [],
 			title: section.title,
-			slides: [],
 		}
 
 		if (section.order) this.sections.splice(section.order, 0, newSection)
@@ -597,12 +603,25 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {IAddSlideOptions} options - slide options
-	 * @returns {ISlide} the new Slide
+	 * @param {AddSlideProps} options - slide options
+	 * @returns {PresSlide} the new Slide
 	 */
-	addSlide(options?: IAddSlideOptions): ISlide {
+	addSlide(options?: AddSlideProps): PresSlide {
 		// TODO: DEPRECATED: arg0 string "masterSlideName" dep as of 3.2.0
 		let masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : ''
+		let slideLayout: SlideLayout = {
+			_name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
+			_presLayout: this.presLayout,
+			_rels: [],
+			_relsChart: [],
+			_relsMedia: [],
+			_slideNum: this.slides.length + 1,
+		}
+
+		if (masterSlideName) {
+			let tmpLayout = this.slideLayouts.filter(layout => layout._name === masterSlideName)[0]
+			if (tmpLayout) slideLayout = tmpLayout
+		}
 
 		let newSlide = new Slide({
 			addSlide: this.addNewSlide,
@@ -612,9 +631,7 @@ export default class PptxGenJS implements IPresentation {
 			slideId: this.slides.length + 256,
 			slideRId: this.slides.length + 2,
 			slideNumber: this.slides.length + 1,
-			slideLayout: masterSlideName
-				? this.slideLayouts.filter(layout => layout.name === masterSlideName)[0] || this.LAYOUTS[DEF_PRES_LAYOUT]
-				: this.LAYOUTS[DEF_PRES_LAYOUT],
+			slideLayout: slideLayout,
 		})
 
 		// A: Add slide to pres
@@ -625,20 +642,20 @@ export default class PptxGenJS implements IPresentation {
 		if (options && options.sectionTitle) {
 			let sect = this.sections.filter(section => section.title === options.sectionTitle)[0]
 			if (!sect) console.warn(`addSlide: unable to find section with title: "${options.sectionTitle}"`)
-			else sect.slides.push(newSlide)
+			else sect._slides.push(newSlide)
 		}
 		// B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
 		else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
 			let lastSect = this._sections[this.sections.length - 1]
 
 			// CASE 1: The latest section is a default type - just add this one
-			if (lastSect.type === 'default') lastSect.slides.push(newSlide)
+			if (lastSect._type === 'default') lastSect._slides.push(newSlide)
 			// CASE 2: There latest section is NOT a default type - create the defualt, add this slide
 			else
 				this._sections.push({
-					type: 'default',
-					title: `Default-${this.sections.filter(sect => sect.type === 'default').length + 1}`,
-					slides: [newSlide],
+					title: `Default-${this.sections.filter(sect => sect._type === 'default').length + 1}`,
+					_type: 'default',
+					_slides: [newSlide],
 				})
 		}
 
@@ -647,10 +664,10 @@ export default class PptxGenJS implements IPresentation {
 
 	/**
 	 * Create a custom Slide Layout in any size
-	 * @param {ILayoutProps} layout - layout properties
+	 * @param {PresLayout} layout - layout properties
 	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 	 */
-	defineLayout(layout: ILayoutProps) {
+	defineLayout(layout: PresLayout) {
 		// @see https://support.office.com/en-us/article/Change-the-size-of-your-slides-040a811c-be43-40b9-8d04-0de5ed79987e
 		if (!layout) console.warn('defineLayout requires `{name, width, height}`')
 		else if (!layout.name) console.warn('defineLayout requires `name`')
@@ -659,49 +676,55 @@ export default class PptxGenJS implements IPresentation {
 		else if (typeof layout.height !== 'number') console.warn('defineLayout `height` should be a number (inches)')
 		else if (typeof layout.width !== 'number') console.warn('defineLayout `width` should be a number (inches)')
 
-		this.LAYOUTS[layout.name] = { name: layout.name, width: Math.round(Number(layout.width) * EMU), height: Math.round(Number(layout.height) * EMU) }
+		this.LAYOUTS[layout.name] = {
+			name: layout.name,
+			_sizeW: Math.round(Number(layout.width) * EMU),
+			_sizeH: Math.round(Number(layout.height) * EMU),
+			width: Math.round(Number(layout.width) * EMU),
+			height: Math.round(Number(layout.height) * EMU),
+		}
 	}
 
 	/**
 	 * Create a new slide master [layout] for the Presentation
-	 * @param {ISlideMasterOptions} options - layout options
+	 * @param {SlideMasterProps} props - layout properties
 	 */
-	defineSlideMaster(options: ISlideMasterOptions) {
-		if (!options.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+	defineSlideMaster(props: SlideMasterProps) {
+		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
-		let newLayout: ISlideLayout = {
-			presLayout: this.presLayout,
-			name: options.title,
-			number: 1000 + this.slideLayouts.length + 1,
-			slide: null,
-			data: [],
-			rels: [],
-			relsChart: [],
-			relsMedia: [],
-			margin: options.margin || DEF_SLIDE_MARGIN_IN,
-			slideNumberObj: options.slideNumber || null,
+		let newLayout: SlideLayout = {
+			_margin: props.margin || DEF_SLIDE_MARGIN_IN,
+			_name: props.title,
+			_presLayout: this.presLayout,
+			_rels: [],
+			_relsChart: [],
+			_relsMedia: [],
+			_slide: null,
+			_slideNum: 1000 + this.slideLayouts.length + 1,
+			_slideNumberProps: props.slideNumber || null,
+			_slideObjects: [],
 		}
 
 		// DEPRECATED:
-		if (options.bkgd && !options.background) {
-			options.background = {}
-			if (typeof options.bkgd === 'string') options.background.fill = options.bkgd
+		if (props.bkgd && !props.background) {
+			props.background = {}
+			if (typeof props.bkgd === 'string') props.background.fill = props.bkgd
 			else {
-				if (options.bkgd.data) options.background.data = options.bkgd.data
-				if (options.bkgd.path) options.background.path = options.bkgd.path
-				if (options.bkgd['src']) options.background.path = options.bkgd['src'] // @deprecated (drop in 4.x)
+				if (props.bkgd.data) props.background.data = props.bkgd.data
+				if (props.bkgd.path) props.background.path = props.bkgd.path
+				if (props.bkgd['src']) props.background.path = props.bkgd['src'] // @deprecated (drop in 4.x)
 			}
-			delete options.bkgd
+			delete props.bkgd
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(options, newLayout)
+		genObj.createSlideObject(props, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
 
 		// STEP 3: Add slideNumber to master slide (if any)
-		if (newLayout.slideNumberObj && !this.masterSlide.slideNumberObj) this.masterSlide.slideNumberObj = newLayout.slideNumberObj
+		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
 	}
 
 	// HTML-TO-SLIDES METHODS
@@ -717,7 +740,7 @@ export default class PptxGenJS implements IPresentation {
 			this,
 			eleId,
 			options,
-			options && options.masterSlideName ? this.slideLayouts.filter(layout => layout.name === options.masterSlideName)[0] : null
+			options && options.masterSlideName ? this.slideLayouts.filter(layout => layout._name === options.masterSlideName)[0] : null
 		)
 	}
 }
