@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-08T05:36:46.146Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-23T22:27:55.102Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -5536,7 +5536,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  </c:val>';
             // 4: Close "SERIES"
             strXml += '  </c:ser>';
-            strXml += '  <c:firstSliceAng val="0"/>';
+            strXml += "  <c:firstSliceAng val=\"" + (opts.firstSliceAng ? opts.firstSliceAng : 0) + "\"/>";
             if (chartType === CHART_TYPE.DOUGHNUT)
                 strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
             strXml += '</c:' + chartType + 'Chart>';
@@ -6067,7 +6067,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201207-2320';
+var VERSION = '3.4.0-beta-20201223-1610';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
