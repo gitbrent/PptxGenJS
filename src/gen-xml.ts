@@ -467,14 +467,21 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				strSlideXml += `<a:xfrm${locationAttr}>`
 				strSlideXml += `<a:off x="${x}" y="${y}"/>`
 				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
-				strSlideXml +=
-					'<a:prstGeom prst="' +
-					slideItemObj.shape +
-					'"><a:avLst>' +
-					(slideItemObj.options.rectRadius
-						? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
-						: '') +
-					'</a:avLst></a:prstGeom>'
+
+				strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>'
+				if (slideItemObj.options.rectRadius) {
+					strSlideXml += '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
+				} else if (slideItemObj.options.angleRange) {
+					for (let i = 0; i < 2; i++) {
+						const angle = slideItemObj.options.angleRange[i];
+						strSlideXml += '<a:gd name="adj' + (i + 1) + '" fmla="val ' + convertRotationDegrees(angle) + '" />'
+					}
+
+					if (slideItemObj.options.arcThicknessRatio) {
+						strSlideXml += '<a:gd name="adj3" fmla="val ' + slideItemObj.options.arcThicknessRatio * 50000 + '" />'
+					}
+				}
+				strSlideXml += '</a:avLst></a:prstGeom>'
 
 				// Option: FILL
 				strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>'
