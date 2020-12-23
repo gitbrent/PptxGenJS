@@ -1114,6 +1114,13 @@ export interface IChartPropsChartLine {
 }
 export interface IChartPropsChartPie {
 	dataNoEffects?: boolean
+	/**
+	 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+	 * angle (degrees)
+	 * - range: 0-359
+	 * @since v3.4.0
+	 * @default 0
+	 */
 	firstSliceAng?: number
 }
 export interface IChartPropsChartRadar {
