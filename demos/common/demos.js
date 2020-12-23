@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.4.0
-* BLD.: 20200823
+* BLD.: 20201223
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -1656,7 +1656,11 @@ function genSlides_Chart(pptx) {
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:{color:'F1F1F1'}, color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+		slide.addChart(
+			pptx.charts.PIE,
+			dataChartPieLocs,
+			{ x: 9.8, y: 4.0, w: 3.2, h: 3.2, dataBorder: { pt: '1', color: 'F1F1F1' }, showLegend: true, legendPos: 'b', showTitle: true, title: 'Title & Legend', firstSliceAng: 90 }
+		);
 	}
 
 	// SLIDE 13: Doughnut Chart ------------------------------------------------------------

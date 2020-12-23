@@ -1521,7 +1521,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 			// 4: Close "SERIES"
 			strXml += '  </c:ser>'
-			strXml += '  <c:firstSliceAng val="0"/>'
+			strXml += `  <c:firstSliceAng val="${opts.firstSliceAng ? opts.firstSliceAng : 0}"/>`
 			if (chartType === CHART_TYPE.DOUGHNUT) strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>'
 			strXml += '</c:' + chartType + 'Chart>'
 
