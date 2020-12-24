@@ -1,7 +1,7 @@
 /* PptxGenJS 3.4.0-beta @ 2020-08-24T16:12:37.493Z */
 'use strict';
 
-var JSZip = require('jszip');
+var JSZip =  require('jszip');
 
 /**
  * PptxGenJS Enums
