@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:50:04.447Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T04:18:27.369Z */
 import JSZip from 'jszip';
 
 /**
@@ -5597,9 +5597,9 @@ function makeCatAxis(opts, axisId, valAxisId) {
         strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || (opts.barDir === 'col' ? 'low' : 'nextTo')) + '"/>';
     }
     strXml += '  <c:spPr>';
-    strXml += '    <a:ln w="12700" cap="flat">';
-    strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
-    strXml += '      <a:prstDash val="solid"/>';
+    strXml += '    <a:ln w="' + (opts.catAxisLineSize ? valToPts(opts.catAxisLineSize) : ONEPT) + '" cap="flat">';
+    strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
+    strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || "solid") + '"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
     strXml += '  </c:spPr>';
@@ -5705,9 +5705,9 @@ function makeValAxis(opts, valAxisId) {
         strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || (opts.barDir === 'col' ? 'nextTo' : 'low')) + '"/>';
     }
     strXml += ' <c:spPr>';
-    strXml += '   <a:ln w="12700" cap="flat">';
-    strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
-    strXml += '     <a:prstDash val="solid"/>';
+    strXml += '   <a:ln w="' + (opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT) + '" cap="flat">';
+    strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
+    strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || "solid") + '"/>';
     strXml += '     <a:round/>';
     strXml += '   </a:ln>';
     strXml += ' </c:spPr>';
@@ -6061,7 +6061,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201223-2140';
+var VERSION = '3.4.0-beta-20201223-2218';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
