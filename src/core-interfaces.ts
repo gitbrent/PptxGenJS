@@ -411,9 +411,29 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 * Image height
 		 */
 		h: number
+		/**
+		 * Area horizontal position related to the image
+		 * - Values: 0-n
+		 * - `crop` only
+		 */
 		x?: number
+		/**
+		 * Area vertical position related to the image
+		 * - Values: 0-n
+		 * - `crop` only
+		 */
 		y?: number
 	}
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide
@@ -738,6 +758,7 @@ export interface TableCell {
 	_lineHeight?: number
 	_hmerge?: boolean
 	_vmerge?: boolean
+	_rowContinue?: number
 	_optImp?: any
 
 	text?: string | TableCell[]
@@ -916,14 +937,17 @@ export interface OptsChartGridLine {
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
-// TODO: 202008: chart types remain with predicated wiht "I" in v3.3.0 (ran out of time!)
+// TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
+/*
 export interface IChartTitleOpts extends TextBaseProps {
 	color?: Color
 	rotate?: number
 	title: string
 	titleAlign?: string // TODO: values
+	titleBold?: boolean
 	titlePos?: { x: number; y: number }
 }
+*/
 export interface IChartMulti {
 	type: CHART_NAME
 	data: any[]
@@ -1007,7 +1031,7 @@ export interface IChartPropsAxisSer {
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
 	serAxisLabelFontFace?: string
-	serAxisLabelFontSize?: string
+	serAxisLabelFontSize?: number
 	serAxisLabelFrequency?: string
 	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	serAxisLineShow?: boolean
@@ -1093,6 +1117,14 @@ export interface IChartPropsChartLine {
 }
 export interface IChartPropsChartPie {
 	dataNoEffects?: boolean
+	/**
+	 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+	 * - angle (degrees)
+	 * - range: 0-359
+	 * @since v3.4.0
+	 * @default 0
+	 */
+	firstSliceAng?: number
 }
 export interface IChartPropsChartRadar {
 	radarStyle?: 'standard' | 'marker' | 'filled'
@@ -1135,15 +1167,16 @@ export interface IChartPropsLegend {
 	legendFontSize?: number
 	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 }
-export interface IChartPropsTitle {
+export interface IChartPropsTitle extends TextBaseProps {
+//export interface IChartPropsTitle {
 	title?: string
 	titleAlign?: string
+	titleBold?: boolean
 	titleColor?: string
 	titleFontFace?: string
 	titleFontSize?: number
 	titlePos?: { x: number; y: number }
 	titleRotate?: number
-	titleBold?: boolean
 }
 export interface IChartOpts
 	extends IChartPropsAxisCat,
@@ -1246,10 +1279,7 @@ export interface PresLayout {
 	width: number
 	height: number
 }
-export interface SlideNumberProps extends PositionProps, TextBaseProps {
-	align?: HAlign
-	color?: string
-}
+export interface SlideNumberProps extends PositionProps, TextBaseProps {}
 export interface SlideMasterProps {
 	/**
 	 * Unique name for this master

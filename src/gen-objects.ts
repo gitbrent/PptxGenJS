@@ -383,6 +383,8 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		sizing: sizing,
 		placeholder: opt.placeholder,
 		rotate: opt.rotate || 0,
+		flipV: opt.flipV || false,
+		flipH: opt.flipH || false
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)

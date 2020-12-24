@@ -31,7 +31,8 @@ gulp.task('build', () => {
 		.then(bundle => {
 			bundle.write({
 				file: './src/bld/pptxgen.cjs.js',
-				format: 'cjs'
+				format: 'cjs',
+				exports: 'named'
 			})
 			return bundle
 		})
