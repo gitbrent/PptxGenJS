@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:31:43.595Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:41:32.629Z */
 import JSZip from 'jszip';
 
 /**
@@ -4509,13 +4509,13 @@ function makeXmlCharts(rel) {
         if (rel.opts.showTitle) {
             strXml += genXmlTitle({
                 title: rel.opts.title || 'Chart Title',
-                fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
                 color: rel.opts.titleColor,
                 fontFace: rel.opts.titleFontFace,
-                titleRotate: rel.opts.titleRotate,
+                fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
                 titleAlign: rel.opts.titleAlign,
+                titleBold: rel.opts.titleBold,
                 titlePos: rel.opts.titlePos,
-                bold: rel.opts.titleBold,
+                titleRotate: rel.opts.titleRotate,
             });
             strXml += '<c:autoTitleDeleted val="0"/>';
         }
@@ -5831,7 +5831,8 @@ function genXmlTitle(opts) {
     var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"" + opts.titleAlign.substring(0, 1) + "\">" : "<a:pPr>";
     var rotate = opts.titleRotate ? "<a:bodyPr rot=\"" + convertRotationDegrees(opts.titleRotate) + "\"/>" : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
     var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
-    var titleBold = opts.bold === true ? 1 : 0;
+    var titleBold = opts.titleBold === true ? 1 : 0;
+    console.log(titleBold); // TODO: // WIP:
     var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
         ? "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"" + opts.titlePos.x + "\"/><c:y val=\"" + opts.titlePos.y + "\"/></c:manualLayout></c:layout>"
         : "<c:layout/>";
