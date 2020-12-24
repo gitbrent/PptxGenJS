@@ -913,17 +913,20 @@ function genSlides_Chart(pptx) {
 			catAxisLabelColor   : 'CC0000',
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
-
 			catGridLine: { style: 'none' },
 			catAxisHidden: true,
+
 			valGridLine: { color: 'cc6699', style: 'dash', size: 1 },
+			valAxisLineColor: '44AA66',
+			valAxisLineSize: 1,
+			valAxisLineStyle: 'dash',
 
 			showLegend   : true,
-			title        : 'No CatAxis, ValGridLine=style:dash',
+			showTitle    : true,
+			title        : 'catAxisHidden:true, valGridLine/valAxisLine:dash',
 			titleColor   : 'a9a9a9',
 			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 14,
-			showTitle    : true
+			titleFontSize: 14
 		};
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
 

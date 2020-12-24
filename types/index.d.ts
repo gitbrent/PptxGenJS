@@ -1758,7 +1758,10 @@ declare namespace PptxGenJS {
 		catAxisLabelFrequency?: string
 		catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		catAxisLabelRotate?: number
+		catAxisLineColor?: string
 		catAxisLineShow?: boolean
+		catAxisLineSize?: number
+		catAxisLineStyle?: 'solid' | 'dash' | 'dot'
 		catAxisMajorTickMark?: ChartAxisTickMark
 		catAxisMajorTimeUnit?: string
 		catAxisMajorUnit?: number
@@ -1819,7 +1822,10 @@ declare namespace PptxGenJS {
 		valAxisLabelFormatCode?: string
 		valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		valAxisLabelRotate?: number
+		valAxisLineColor?: string
 		valAxisLineShow?: boolean
+		valAxisLineSize?: number
+		valAxisLineStyle?: 'solid' | 'dash' | 'dot'
 		valAxisMajorTickMark?: ChartAxisTickMark
 		valAxisMajorUnit?: number
 		valAxisMaxVal?: number

@@ -17,6 +17,7 @@ import {
 	DEF_FONT_TITLE_SIZE,
 	DEF_SHAPE_SHADOW,
 	LETTERS,
+	ONEPT,
 } from './core-enums'
 import { IChartOptsLib, ISlideRelChart, ShadowProps, OptsChartData, IChartPropsTitle, OptsChartGridLine } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
@@ -1588,7 +1589,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 		strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || (opts.barDir === 'col' ? 'low' : 'nextTo')) + '"/>'
 	}
 	strXml += '  <c:spPr>'
-	strXml += '    <a:ln w="' + (opts.catAxisLineSize !== undefined ? valToPts(opts.catAxisLineSize) : 12700) + '" cap="flat">'
+	strXml += '    <a:ln w="' + (opts.catAxisLineSize ? valToPts(opts.catAxisLineSize) : ONEPT) + '" cap="flat">'
 	strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'
 	strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || "solid") + '"/>'
 	strXml += '      <a:round/>'
@@ -1690,7 +1691,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 		strXml += ' <c:tickLblPos val="' + (opts.valAxisLabelPos || (opts.barDir === 'col' ? 'nextTo' : 'low')) + '"/>'
 	}
 	strXml += ' <c:spPr>'
-	strXml += '   <a:ln w="' + (opts.valAxisLineSize !== undefined ? valToPts(opts.valAxisLineSize) : 12700) + '" cap="flat">'
+	strXml += '   <a:ln w="' + (opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT) + '" cap="flat">'
 	strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>'
 	strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || "solid") + '"/>'
 	strXml += '     <a:round/>'
