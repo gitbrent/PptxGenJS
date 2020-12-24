@@ -1867,7 +1867,7 @@ declare namespace PptxGenJS {
 		dataNoEffects?: boolean
 		/**
 		 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
-		 * angle (degrees)
+		 * - angle (degrees)
 		 * - range: 0-359
 		 * @since v3.4.0
 		 * @default 0
