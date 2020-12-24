@@ -2662,6 +2662,15 @@ function genSlides_Shape(pptx) {
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 0.4, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', width: 3 }, shapeName:'First Right Triangle' });
 	slide.addShape(pptx.shapes.RIGHT_TRIANGLE, { x: 7.0, y: 4.3, w: 6.0, h: 3.0, fill: { color: '0088CC' }, line: { color: '000000', width: 2 }, flipH: true });
 
+	slide.addShape(pptx.shapes.CUSTOM_GEOMETRY, { x:10 , y:0.8, w:3.0, h:1.5, fill:{color:'00FF00'}, line:'000000', lineSize:1,
+		points: [
+			{ x: 0, y: 0.75 }, { x: 0.5, y: 0 }, { x: 1, y: 0.3 }, { x: 1.5, y: 0 }, { x: 2, y: 0.3 }, { x: 2.5, y: 0.2 }, { x: 3, y: 0.1 },
+			{ curve: { type:'arc', hR: 0.5, wR: 0.5, stAng: 0, swAng: 90 } },
+			{ x: 0.5, y: 1.5, curve: { type:'quadratic', x1: 2.5, y1: 1.7 } },
+			{ close: true }
+		] 
+	});
+
 	// SLIDE 2: Misc Shape Types with Text
 	// ======== -----------------------------------------------------------------------------------
 	var slide = pptx.addSlide({sectionTitle:'Shapes'});
@@ -2683,6 +2692,15 @@ function genSlides_Shape(pptx) {
 	//
 	slide.addText('RIGHT-TRIANGLE', { shape: pptx.shapes.RIGHT_TRIANGLE, align: 'center', x: 0.4, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000', width: 3 } });
 	slide.addText('HYPERLINK-SHAPE', { shape: pptx.shapes.RIGHT_TRIANGLE, align: 'center', x: 7.0, y: 4.3, w: 6, h: 3, fill: { color: '0088CC' }, line: { color: '000000', width: 2 }, flipH: true, hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" }, });
+
+	slide.addText('CUSTOM-GEOMETRY', { shape: pptx.shapes.CUSTOM_GEOMETRY, x:10 , y:0.8, w:3.0, h:1.5, fill:{color:'00FF00'}, line:'000000', lineSize:1,
+		points: [
+			{ x: 0, y: 0.75 }, { x: 0.5, y: 0 }, { x: 1, y: 0.3 }, { x: 1.5, y: 0 }, { x: 2, y: 0.3 }, { x: 2.5, y: 0.2 }, { x: 3, y: 0.1 },
+			{ curve: { type:'arc', hR: 0.5, wR: 0.5, stAng: 0, swAng: 90 } },
+			{ x: 0.5, y: 1.5, curve: { type:'quadratic', x1: 2.5, y1: 1.7 } },
+			{ close: true }
+		] 
+	});
 }
 
 function genSlides_Text(pptx) {
