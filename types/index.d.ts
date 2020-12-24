@@ -1774,7 +1774,10 @@ declare namespace PptxGenJS {
 		catAxisLabelFrequency?: string
 		catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		catAxisLabelRotate?: number
+		catAxisLineColor?: string
 		catAxisLineShow?: boolean
+		catAxisLineSize?: number
+		catAxisLineStyle?: 'solid' | 'dash' | 'dot'
 		catAxisMajorTickMark?: ChartAxisTickMark
 		catAxisMajorTimeUnit?: string
 		catAxisMajorUnit?: number
@@ -1799,7 +1802,7 @@ declare namespace PptxGenJS {
 		serAxisHidden?: boolean
 		serAxisLabelColor?: string
 		serAxisLabelFontFace?: string
-		serAxisLabelFontSize?: string
+		serAxisLabelFontSize?: number
 		serAxisLabelFrequency?: string
 		serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		serAxisLineShow?: boolean
@@ -1835,7 +1838,10 @@ declare namespace PptxGenJS {
 		valAxisLabelFormatCode?: string
 		valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		valAxisLabelRotate?: number
+		valAxisLineColor?: string
 		valAxisLineShow?: boolean
+		valAxisLineSize?: number
+		valAxisLineStyle?: 'solid' | 'dash' | 'dot'
 		valAxisMajorTickMark?: ChartAxisTickMark
 		valAxisMajorUnit?: number
 		valAxisMaxVal?: number
@@ -1881,6 +1887,14 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartPropsChartPie {
 		dataNoEffects?: boolean
+		/**
+		 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+		 * - angle (degrees)
+		 * - range: 0-359
+		 * @since v3.4.0
+		 * @default 0
+		 */
+		firstSliceAng?: number
 	}
 	export interface IChartPropsChartRadar {
 		radarStyle?: 'standard' | 'marker' | 'filled'

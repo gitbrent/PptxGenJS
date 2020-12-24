@@ -59,7 +59,7 @@
  * @see https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2010/hh273476(v=office.14)
  */
 
-import * as JSZip from 'jszip'
+import JSZip from 'jszip'
 import Slide from './slide'
 import {
 	AlignH,
@@ -611,7 +611,7 @@ export default class PptxGenJS implements IPresentationProps {
 		let masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : ''
 		let slideLayout: SlideLayout = {
 			_name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
-			_presLayout : this.presLayout,
+			_presLayout: this.presLayout,
 			_rels: [],
 			_relsChart: [],
 			_relsMedia: [],
@@ -631,7 +631,7 @@ export default class PptxGenJS implements IPresentationProps {
 			slideId: this.slides.length + 256,
 			slideRId: this.slides.length + 2,
 			slideNumber: this.slides.length + 1,
-			slideLayout: slideLayout
+			slideLayout: slideLayout,
 		})
 
 		// A: Add slide to pres

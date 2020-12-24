@@ -424,6 +424,16 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 */
 		y?: number
 	}
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide
@@ -764,6 +774,7 @@ export interface TableCell {
 	_lineHeight?: number
 	_hmerge?: boolean
 	_vmerge?: boolean
+	_rowContinue?: number
 	_optImp?: any
 
 	text?: string | TableCell[]
@@ -942,14 +953,7 @@ export interface OptsChartGridLine {
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
-// TODO: 202008: chart types remain with predicated wiht "I" in v3.3.0 (ran out of time!)
-export interface IChartTitleOpts extends TextBaseProps {
-	color?: Color
-	rotate?: number
-	title: string
-	titleAlign?: string // TODO: values
-	titlePos?: { x: number; y: number }
-}
+// TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 export interface IChartMulti {
 	type: CHART_NAME
 	data: any[]
@@ -1004,7 +1008,10 @@ export interface IChartPropsAxisCat {
 	catAxisLabelFrequency?: string
 	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	catAxisLabelRotate?: number
+	catAxisLineColor?: string
 	catAxisLineShow?: boolean
+	catAxisLineSize?: number
+	catAxisLineStyle?: 'solid' | 'dash' | 'dot'
 	catAxisMajorTickMark?: ChartAxisTickMark
 	catAxisMajorTimeUnit?: string
 	catAxisMajorUnit?: number
@@ -1033,7 +1040,7 @@ export interface IChartPropsAxisSer {
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
 	serAxisLabelFontFace?: string
-	serAxisLabelFontSize?: string
+	serAxisLabelFontSize?: number
 	serAxisLabelFrequency?: string
 	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	serAxisLineShow?: boolean
@@ -1073,7 +1080,10 @@ export interface IChartPropsAxisVal {
 	valAxisLabelFormatCode?: string
 	valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	valAxisLabelRotate?: number
+	valAxisLineColor?: string
 	valAxisLineShow?: boolean
+	valAxisLineSize?: number
+	valAxisLineStyle?: 'solid' | 'dash' | 'dot'
 	valAxisMajorTickMark?: ChartAxisTickMark
 	valAxisMajorUnit?: number
 	valAxisMaxVal?: number
@@ -1119,6 +1129,14 @@ export interface IChartPropsChartLine {
 }
 export interface IChartPropsChartPie {
 	dataNoEffects?: boolean
+	/**
+	 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+	 * - angle (degrees)
+	 * - range: 0-359
+	 * @since v3.4.0
+	 * @default 0
+	 */
+	firstSliceAng?: number
 }
 export interface IChartPropsChartRadar {
 	radarStyle?: 'standard' | 'marker' | 'filled'
@@ -1161,9 +1179,10 @@ export interface IChartPropsLegend {
 	legendFontSize?: number
 	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 }
-export interface IChartPropsTitle {
+export interface IChartPropsTitle extends TextBaseProps {
 	title?: string
 	titleAlign?: string
+	titleBold?: boolean
 	titleColor?: string
 	titleFontFace?: string
 	titleFontSize?: number
