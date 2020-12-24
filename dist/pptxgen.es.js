@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:07:41.297Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:31:43.595Z */
 import JSZip from 'jszip';
 
 /**
@@ -4515,7 +4515,7 @@ function makeXmlCharts(rel) {
                 titleRotate: rel.opts.titleRotate,
                 titleAlign: rel.opts.titleAlign,
                 titlePos: rel.opts.titlePos,
-                bold: rel.opts.titleBold
+                bold: rel.opts.titleBold,
             });
             strXml += '<c:autoTitleDeleted val="0"/>';
         }
@@ -5529,7 +5529,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  </c:val>';
             // 4: Close "SERIES"
             strXml += '  </c:ser>';
-            strXml += "  <c:firstSliceAng val=\"" + (opts.firstSliceAng ? opts.firstSliceAng : 0) + "\"/>";
+            strXml += "  <c:firstSliceAng val=\"" + (opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0) + "\"/>";
             if (chartType === CHART_TYPE.DOUGHNUT)
                 strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
             strXml += '</c:' + chartType + 'Chart>';
@@ -5831,7 +5831,7 @@ function genXmlTitle(opts) {
     var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"" + opts.titleAlign.substring(0, 1) + "\">" : "<a:pPr>";
     var rotate = opts.titleRotate ? "<a:bodyPr rot=\"" + convertRotationDegrees(opts.titleRotate) + "\"/>" : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
     var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
-    var titleBold = opts.titleBold === true ? 1 : 0;
+    var titleBold = opts.bold === true ? 1 : 0;
     var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
         ? "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"" + opts.titlePos.x + "\"/><c:y val=\"" + opts.titlePos.y + "\"/></c:manualLayout></c:layout>"
         : "<c:layout/>";
@@ -6061,7 +6061,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201223-2045';
+var VERSION = '3.4.0-beta-20201223-2131';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
