@@ -438,13 +438,13 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 		if (rel.opts.showTitle) {
 			strXml += genXmlTitle({
 				title: rel.opts.title || 'Chart Title',
-				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
 				color: rel.opts.titleColor,
 				fontFace: rel.opts.titleFontFace,
-				titleRotate: rel.opts.titleRotate,
+				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
 				titleAlign: rel.opts.titleAlign,
+				titleBold: rel.opts.titleBold,
 				titlePos: rel.opts.titlePos,
-				bold: rel.opts.titleBold,
+				titleRotate: rel.opts.titleRotate,
 			})
 			strXml += '<c:autoTitleDeleted val="0"/>'
 		} else {
