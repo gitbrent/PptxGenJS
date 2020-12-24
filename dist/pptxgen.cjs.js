@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T05:38:23.591Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T06:17:10.752Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
