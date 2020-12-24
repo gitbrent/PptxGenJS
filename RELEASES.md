@@ -19,7 +19,7 @@
 ## Build Library, Update Files
 
 1. Update `package.json` version
-2. Update `src/pptxgen.ts` version
+2. Update `src/pptxgen.ts` version (eg: `const VERSION = '3.3.1'`)
 3. Update `CHANGELOG.md` with new date
 4. Update `README.md` with new CDN links
 5. Build library: npm scripts > `ship`
@@ -54,7 +54,7 @@ React Test
 
 1. Ensure newest `dist/pptxgen.es.js` and `types/index.d.ts` under local node_modules
 2. Update `demos/react-demo/package.json` version
-3. Open `demos/react-demo/src/latest/Test.tsx`
+3. Open `demos/react-demo/src/tstest/Test.tsx`
 4. Check existing code
 5. Test defs by using auto-complete, "pptxgen.ChartType." etc.
 
@@ -82,7 +82,7 @@ $ npm run build
 ### Pre-Release Check
 
 1. Update `demos/browser/index.html` version and CDN links
-2. Is version updated in package.json and pptxgen.js?
+2. Is version updated in package.json and src/pptxgen.ts?
 3. Are `index.d.ts` defs updated?
 
 ### GitHub
@@ -103,4 +103,5 @@ $ npm run build
 2. Load **gh-pages** branch
 3. Update `installation.md` with latest CDN version
 4. Update demo-react by copying contents of the newest "build" (from above) into `./demo-react` folder
-5. Update other documentation as needed
+5. Update `demo/index.html` with newest release
+6. Update API documentation as needed

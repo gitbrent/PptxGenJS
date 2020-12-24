@@ -5,8 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.3.0">
-	<meta name="updated" content="2020-07-14">
+	<meta name="version" content="3.4.0">
+	<meta name="updated" content="2020-08-23">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -146,8 +146,8 @@
 	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/examples/images/base64Images.js" async></script>
 
 	<!-- RELEASE (CDN)
-		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js"></script>
 	-->
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
@@ -226,7 +226,7 @@
 			slide.addText('Line 1\nLine 2\nLine 3', { x:0.5, y:3.5, w:'50%', h:1, color:'AACD00', bullet:true });
 
 			// Table cell margin:0
-			slide.addTable( [['margin:0']], { x:0.5, y:1.1, margin:0, w:0.75, fill:'FFFCCC' } );
+			slide.addTable([['margin:0']], { x: 0.5, y: 1.1, margin: 0, w: 0.75, fill: { color: 'FFFCCC' } });
 
 			// Fine-grained Formatting/word-level/line-level Formatting
 			slide.addText(
@@ -235,7 +235,7 @@
 					{ text:'ctr line',   options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'center', breakLine:true } },
 					{ text:'left line',  options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'left' } }
 				],
-				{ x:0.5, y:3.0, w:8.5, h:4, margin:0.1, fill:'232323' }
+				{ x: 0.5, y: 3.0, w: 8.5, h: 4, margin: 0.1, fill: { color: '232323' } }
 			);
 
 			// Export:
@@ -250,7 +250,7 @@
 
 			slide.addText(
 				'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',
-				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'center', fontSize:18, color:'0088CC', fill:'F1F1F1' }
+				{ x:0.0, y:0.0, w:'100%', h:1.25, align:'center', fontSize:18, color:'0088CC', fill:{color:'F1F1F1'} }
 			);
 
 			slide.addText("Line-Level Formatting:", { x:0.5, y:1.5, w:'40%', h:0.38, color:'0088CC' });
@@ -260,19 +260,19 @@
 					{ text:'2nd line', options:{ fontSize:36, fontFace:'Arial',       color:'FFFF00', align:'center', breakLine:true } },
 					{ text:'3rd line', options:{ fontSize:48, fontFace:'Verdana',     color:'0088CC', align:'left' } }
 				],
-				{ x:0.5, y:2.0, w:6, h:2.25, margin:0.1, fill:'232323' }
+				{ x:0.5, y:2.0, w:6, h:2.25, margin:0.1, fill:{color:'232323'} }
 			);
 
 			slide.addText("Bullets: Normal", { x:8.0, y:1.5, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				'Line 1\nLine 2\nLine 3',
-				{ x:8.0, y:2.0, w:'30%', h:1, color:'393939', fontSize:16, fill:'F2F2F2', bullet:true }
+				{ x:8.0, y:2.0, w:'30%', h:1, color:'393939', fontSize:16, fill:{color:'F2F2F2'}, bullet:true }
 			);
 
 			slide.addText("Bullets: Numbered", { x:8.0, y:3.4, w:'40%', h:0.38, color:'0088CC' });
 			slide.addText(
 				'Line 1\nLine 2\nLine 3',
-				{ x:8.0, y:3.9, w:'30%', h:1, color:'393939', fontSize:16, fill:'F2F2F2', bullet:{type:'number'} }
+				{ x:8.0, y:3.9, w:'30%', h:1, color:'393939', fontSize:16, fill:{color:'F2F2F2'}, bullet:{type:'number'} }
 			);
 
 			slide.addText("Bullets: Custom", { x:8.0, y:5.3, w:'40%', h:0.38, color:'0088CC' });
@@ -295,10 +295,10 @@
 			pptx.layout = 'LAYOUT_WIDE';
 			/*
 			var slide = pptx.addSlide();
-			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'center', fontSize:18, color:'0088CC', fill:'F2F9FC' });
+			slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'center', fontSize:18, color:'0088CC', fill:{color:'F2F9FC'} });
 			var numMargin = 1.25;
-			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:'FFFCCC' });
-			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:'F1F1F1'} );
+			slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:{color:'FFFCCC'} });
+			slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:{color:'F1F1F1'}} );
 			*/
 
 			// Mimic "table2slides1()"
@@ -391,14 +391,17 @@
 			// 1:
 			pptx.defineSlideMaster({
 				title: 'TITLE_SLIDE',
-				background: { data:BKGD_STARLABS },
+				background: { data: BKGD_STARLABS },
 				objects: [
-					{ 'line':  { x:3.5, y:1.00, w:6.00, line:'0088CC', lineSize:5 } },
-					{ 'rect':  { x:0.0, y:5.30, w:'100%', h:0.75, fill:'F1F1F1' } },
-					{ 'text':  { text:'Global IT & Services :: Status Report',
-						options:{ x:3.0, y:5.30, w:5.5, h:0.75, fontFace:'Arial', fontSize:20, color:'363636', valign:'middle', margin:0 } }
+					{ 'line': { x: 3.5, y: 1.00, w: 6.00, line: { color: '0088CC', width: 5 } } },
+					{ 'rect': { x: 0.0, y: 5.30, w: '100%', h: 0.75, fill: { color: 'F1F1F1' } } },
+					{
+						'text': {
+							text: 'Global IT & Services :: Status Report',
+							options: { x: 3.0, y: 5.30, w: 5.5, h: 0.75, fontFace: 'Arial', fontSize: 20, color: '363636', valign: 'middle', margin: 0 }
+						}
 					},
-					{ 'image': { x:11.3, y:6.40, w:1.67, h:0.75, data:starlabsLogoSml } }
+					{ 'image': { x: 11.3, y: 6.40, w: 1.67, h: 0.75, data: starlabsLogoSml } }
 				]
 			});
 
@@ -406,11 +409,11 @@
 			pptx.defineSlideMaster({
 				title: 'MASTER_SLIDE',
 				background: { fill: 'F1F1F1' },
-				slideNumber: { x:1.0, y:7.0, color:'FFFFFF' },
-				margin:  [ 0.5, 0.25, 1.25, 0.25 ],
+				slideNumber: { x: 1.0, y: 7.0, color: 'FFFFFF' },
+				margin: [0.5, 0.25, 1.25, 0.25],
 				objects: [
-					{ 'rect': { x:0.0, y:6.9, w:'100%', h:0.6, fill:'003b75' } },
-					{ 'text': { text:'S.T.A.R. Laboratories', options:{x:0, y:6.9, w:'100%', h:0.6, align:'center', valign:'middle', color:'FFFFFF', fontSize:12} } }
+					{ 'rect': { x: 0.0, y: 6.9, w: '100%', h: 0.6, fill: { color: '003b75' } } },
+					{ 'text': { text: 'S.T.A.R. Laboratories', options: { x: 0, y: 6.9, w: '100%', h: 0.6, align: 'center', valign: 'middle', color: 'FFFFFF', fontSize: 12 } } }
 				]
 			});
 
@@ -419,9 +422,9 @@
 				title: 'THANKS_SLIDE',
 				background: { fill: '36ABFF' },
 				objects: [
-					{ 'rect':  { x:0.0, y:3.4, w:'100%', h:2.0, fill:'ffffff' } },
-					{ 'text':  { text:'Thank You!', options:{ x:0.0, y:0.9, w:'100%', h:1, fontFace:'Arial', color:'FFFFFF', fontSize:60, align:'center' } } },
-					{ 'image': { x:4.6, y:3.5, w:4, h:1.8, data:LOGO_STARLABS } }
+					{ 'rect': { x: 0.0, y: 3.4, w: '100%', h: 2.0, fill: { color: 'ffffff' } } },
+					{ 'text': { text: 'Thank You!', options: { x: 0.0, y: 0.9, w: '100%', h: 1, fontFace: 'Arial', color: 'FFFFFF', fontSize: 60, align: 'center' } } },
+					{ 'image': { x: 4.6, y: 3.5, w: 4, h: 1.8, data: LOGO_STARLABS } }
 				]
 			});
 		}
@@ -543,7 +546,7 @@
 					+ '// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n'
 					+ "slide.addText(\n"
 					+ "  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n"
-					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:'F1F1F1' }\n"
+					+ "  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'F1F1F1' } }\n"
 					+ ");\n"
 					+ '\n'
 					+ '// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n'
@@ -564,15 +567,17 @@
 
 				$('#demo-sandbox').html("var pptx = new PptxGenJS();\n"
 					+ "var slide = pptx.addSlide();\n"
+					//+ "pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });\n"
+					//+ "pptx.layout = 'A3';\n"
 					+ "\n"
 					+ "slide.addText(\n"
 					+ "  [\n"
-					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1 } },\n"
-					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
-					+ "    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6 } },\n"
+					+ "    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1, breakLine:true } },\n"
+					+ "    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n"
+					+ "    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n"
 					+ "    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n"
 					+ "  ],\n"
-					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:pptx.SchemeColor.background2 }\n"
+					+ "  { x:1, y:1, w:'80%', h:3, align:'center', fill:{ color:pptx.SchemeColor.background2, transparency:50 } }\n"
 					+ ");\n"
 					+ "\n"
 					+ "pptx.writeFile('PptxGenJS-Sandbox-'+getTimestamp())\n"
@@ -581,14 +586,14 @@
 
 				$('#demo-master').html("pptx.defineSlideMaster({\n"
 					+ "  title : 'MASTER_SLIDE',\n"
-					+ "  margin: [0.5, 0.25, 1.00, 0.25],\n"
+					+ "  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n"
 					+ "  background: { fill: 'FFFFFF' },\n"
 					+ "  objects: [\n"
-					+ "    {image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml }},\n"
-					+ "    {rect:  { x:0, y:6.9, w:'100%', h:0.6, fill:'003b75' }},\n"
-					+ "    {text:  {\n"
-					+ "        text:'S.T.A.R. Laboratories - Confidential',\n"
-					+ "        options:{x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12}\n"
+					+ "    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },\n"
+					+ "    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n"
+					+ "    { text:  {\n"
+					+ "        text: 'S.T.A.R. Laboratories - Confidential',\n"
+					+ "        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n"
 					+ "    }}\n"
 					//+ "    }},\n"
 					//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"

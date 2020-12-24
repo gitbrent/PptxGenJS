@@ -4,7 +4,7 @@
 
 import { CRLF, DEF_FONT_SIZE, DEF_SLIDE_MARGIN_IN, EMU, LINEH_MODIFIER, ONEPT, SLIDE_OBJECT_TYPES } from './core-enums'
 import PptxGenJS from './pptxgen'
-import { ILayout, ISlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps } from './core-interfaces'
+import { PresLayout, SlideLayout, TableCell, TableToSlidesProps, TableRow, TableRowSlide, TableCellProps } from './core-interfaces'
 import { inch2Emu, rgbToHex, valToPts } from './gen-utils'
 
 /**
@@ -51,11 +51,11 @@ function parseTextToLines(cell: TableCell, colWidth: number): string[] {
  * Takes an array of table rows and breaks into an array of slides, which contain the calculated amount of table rows that fit on that slide
  * @param {TableCell[][]} tableRows - HTMLElementID of the table
  * @param {ITableToSlidesOpts} tabOpts - array of options (e.g.: tabsize)
- * @param {ILayout} presLayout - Presentation layout
- * @param {ISlideLayout} masterSlide - master slide (if any)
+ * @param {PresLayout} presLayout - Presentation layout
+ * @param {SlideLayout} masterSlide - master slide (if any)
  * @return {TableRowSlide[]} array of table rows
  */
-export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: TableToSlidesProps = {}, presLayout: ILayout, masterSlide?: ISlideLayout): TableRowSlide[] {
+export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: TableToSlidesProps = {}, presLayout: PresLayout, masterSlide?: SlideLayout): TableRowSlide[] {
 	let arrInchMargins = DEF_SLIDE_MARGIN_IN,
 		emuTabCurrH = 0,
 		emuSlideTabW = EMU * 1,
@@ -83,10 +83,10 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
 		// Important: Use default size as zero cell margin is causing our tables to be too large and touch bottom of slide!
 		if (!tabOpts.slideMargin && tabOpts.slideMargin !== 0) tabOpts.slideMargin = DEF_SLIDE_MARGIN_IN[0]
 
-		if (masterSlide && typeof masterSlide.margin !== 'undefined') {
-			if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
-			else if (!isNaN(Number(masterSlide.margin)))
-				arrInchMargins = [Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin), Number(masterSlide.margin)]
+		if (masterSlide && typeof masterSlide._margin !== 'undefined') {
+			if (Array.isArray(masterSlide._margin)) arrInchMargins = masterSlide._margin
+			else if (!isNaN(Number(masterSlide._margin)))
+				arrInchMargins = [Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin), Number(masterSlide._margin)]
 		} else if (tabOpts.slideMargin || tabOpts.slideMargin === 0) {
 			if (Array.isArray(tabOpts.slideMargin)) arrInchMargins = tabOpts.slideMargin
 			else if (!isNaN(tabOpts.slideMargin)) arrInchMargins = [tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin, tabOpts.slideMargin]
@@ -344,9 +344,9 @@ export function getSlidesForTableRows(tableRows: TableCell[][] = [], tabOpts: Ta
  * @param {PptxGenJS} pptx - pptxgenjs instance
  * @param {string} tabEleId - HTMLElementID of the table
  * @param {ITableToSlidesOpts} options - array of options (e.g.: tabsize)
- * @param {ISlideLayout} masterSlide - masterSlide
+ * @param {SlideLayout} masterSlide - masterSlide
  */
-export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: TableToSlidesProps = {}, masterSlide?: ISlideLayout) {
+export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: TableToSlidesProps = {}, masterSlide?: SlideLayout) {
 	let opts = options || {}
 	opts.slideMargin = opts.slideMargin || opts.slideMargin === 0 ? opts.slideMargin : 0.5
 	let emuSlideTabW = opts.w || pptx.presLayout.width
@@ -362,9 +362,9 @@ export function genTableToSlides(pptx: PptxGenJS, tabEleId: string, options: Tab
 	if (!document.getElementById(tabEleId)) throw new Error('tableToSlides: Table ID "' + tabEleId + '" does not exist!')
 
 	// STEP 1: Set margins
-	if (masterSlide && masterSlide.margin) {
-		if (Array.isArray(masterSlide.margin)) arrInchMargins = masterSlide.margin
-		else if (!isNaN(masterSlide.margin)) arrInchMargins = [masterSlide.margin, masterSlide.margin, masterSlide.margin, masterSlide.margin]
+	if (masterSlide && masterSlide._margin) {
+		if (Array.isArray(masterSlide._margin)) arrInchMargins = masterSlide._margin
+		else if (!isNaN(masterSlide._margin)) arrInchMargins = [masterSlide._margin, masterSlide._margin, masterSlide._margin, masterSlide._margin]
 		opts.slideMargin = arrInchMargins
 	} else if (opts && opts.slideMargin) {
 		if (Array.isArray(opts.slideMargin)) arrInchMargins = opts.slideMargin

@@ -10,16 +10,16 @@ import {
 	IChartOpts,
 	IChartOptsLib,
 	ImageProps,
-	ILayout,
-	ISlideLayout,
-	ISlideNumber,
+	PresLayout,
+	SlideLayout,
+	SlideNumberProps,
 	ISlideObject,
 	ISlideRel,
 	ISlideRelChart,
 	ISlideRelMedia,
 	TableProps,
-	IText,
-	AddTextProps,
+	TextProps,
+	TextPropsOptions,
 	MediaProps,
 	ShapeProps,
 	TableRow,
@@ -30,46 +30,47 @@ export default class Slide {
 	private _setSlideNum: Function
 
 	public addSlide: Function
-	public data: ISlideObject[]
 	public getSlide: Function
-	public id: number
-	public name: string
-	public number: number
-	public presLayout: ILayout
-	public rels: ISlideRel[]
-	public relsChart: ISlideRelChart[]
-	public relsMedia: ISlideRelMedia[]
-	public rId: number
-	public slideLayout: ISlideLayout
-	public slideNumberObj: ISlideNumber
+	public _name: string
+	public _presLayout: PresLayout
+	public _rels: ISlideRel[]
+	public _relsChart: ISlideRelChart[]
+	public _relsMedia: ISlideRelMedia[]
+	public _rId: number
+	public _slideId: number
+	public _slideLayout: SlideLayout
+	public _slideNum: number
+	public _slideNumberProps: SlideNumberProps
+	public _slideObjects: ISlideObject[]
 
 	constructor(params: {
 		addSlide: Function
 		getSlide: Function
-		presLayout: ILayout
+		presLayout: PresLayout
 		setSlideNum: Function
 		slideId: number
 		slideRId: number
 		slideNumber: number
-		slideLayout?: ISlideLayout
+		slideLayout?: SlideLayout
 	}) {
 		this.addSlide = params.addSlide
 		this.getSlide = params.getSlide
-		this.presLayout = params.presLayout
+		this._name = 'Slide ' + params.slideNumber
+		this._presLayout = params.presLayout
+		this._rId = params.slideRId
+		this._rels = []
+		this._relsChart = []
+		this._relsMedia = []
 		this._setSlideNum = params.setSlideNum
-		this.id = params.slideId
-		this.rId = params.slideRId
-		this.name = 'Slide ' + params.slideNumber
-		this.number = params.slideNumber
-		this.data = []
-		this.rels = []
-		this.relsChart = []
-		this.relsMedia = []
-		this.slideLayout = params.slideLayout || null
-		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
-		// `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
-		// so, lastly, add to the Slide now.
-		this.slideNumberObj = this.slideLayout && this.slideLayout.slideNumberObj ? this.slideLayout.slideNumberObj : null
+		this._slideId = params.slideId
+		this._slideLayout = params.slideLayout || null
+		this._slideNum = params.slideNumber
+		this._slideObjects = []
+		/** NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
+		 * `defineSlideMaster` and `addNewSlide.slideNumber` will add {slideNumber} to `this.masterSlide` and `this.slideLayouts`
+		 * so, lastly, add to the Slide now.
+		 */
+		this._slideNumberProps = this._slideLayout && this._slideLayout._slideNumberProps ? this._slideLayout._slideNumberProps : null
 	}
 
 	/**
@@ -125,17 +126,15 @@ export default class Slide {
 	}
 
 	/**
-	 * @type {ISlideNumber}
+	 * @type {SlideNumberProps}
 	 */
-	private _slideNumber: ISlideNumber
-	public set slideNumber(value: ISlideNumber) {
+	public set slideNumber(value: SlideNumberProps) {
 		// NOTE: Slide Numbers: In order for Slide Numbers to function they need to be in all 3 files: master/layout/slide
-		this.slideNumberObj = value
-		this._slideNumber = value
+		this._slideNumberProps = value
 		this._setSlideNum(value)
 	}
-	public get slideNumber(): ISlideNumber {
-		return this._slideNumber
+	public get slideNumber(): SlideNumberProps {
+		return this._slideNumberProps
 	}
 
 	/**
@@ -209,17 +208,17 @@ export default class Slide {
 	 */
 	addTable(tableRows: TableRow[], options?: TableProps): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, tableRows, options, this.slideLayout, this.presLayout, this.addSlide, this.getSlide)
+		genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide)
 		return this
 	}
 
 	/**
 	 * Add text to Slide
-	 * @param {string|IText[]} text - text string or complex object
-	 * @param {AddTextProps} options - text options
+	 * @param {string|TextProps[]} text - text string or complex object
+	 * @param {TextPropsOptions} options - text options
 	 * @return {Slide} this Slide
 	 */
-	addText(text: string | IText[], options?: AddTextProps): Slide {
+	addText(text: string | TextProps[], options?: TextPropsOptions): Slide {
 		genObj.addTextDefinition(this, text, options, false)
 		return this
 	}
