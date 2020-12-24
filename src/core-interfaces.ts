@@ -473,12 +473,12 @@ export interface ShapeProps extends PositionProps {
 	 * - In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
 	 * - values: [0-359, 0-359]
 	 * @since v3.4.0
-	 * @default [0, 270]
+	 * @default [270, 0]
 	 */
 	angleRange?: [number, number]
 	/**
 	 * Radius (only for pptx.shapes.BLOCK_ARC)
-	 * - You have to setup the angleRange values too.
+	 * - You have to setup the angleRange values too
 	 * - values: 0.0-1.0
 	 * @since v3.4.0
 	 * @default 0.5
