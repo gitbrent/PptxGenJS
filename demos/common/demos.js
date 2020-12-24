@@ -1649,12 +1649,11 @@ function genSlides_Chart(pptx) {
 			x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'},
 			showLegend: true,
 			legendPos: 't',
-			showTitle: true,
-			showLeaderLines: true,
-			title:'Left Title & Large Legend',
-
 			legendFontSize: 14,
-			titleAlign: 'left',
+			showLeaderLines: true,
+			showTitle: true,
+			title:'Right Title & Large Legend',
+			titleAlign: 'right',
 			titlePos: {x: 0, y: 0}
 		});
 
