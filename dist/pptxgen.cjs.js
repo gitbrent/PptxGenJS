@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-23T22:27:55.102Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:41:32.621Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -4517,12 +4517,13 @@ function makeXmlCharts(rel) {
         if (rel.opts.showTitle) {
             strXml += genXmlTitle({
                 title: rel.opts.title || 'Chart Title',
-                fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
                 color: rel.opts.titleColor,
                 fontFace: rel.opts.titleFontFace,
-                rotate: rel.opts.titleRotate,
+                fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
                 titleAlign: rel.opts.titleAlign,
+                titleBold: rel.opts.titleBold,
                 titlePos: rel.opts.titlePos,
+                titleRotate: rel.opts.titleRotate,
             });
             strXml += '<c:autoTitleDeleted val="0"/>';
         }
@@ -5536,7 +5537,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '  </c:val>';
             // 4: Close "SERIES"
             strXml += '  </c:ser>';
-            strXml += "  <c:firstSliceAng val=\"" + (opts.firstSliceAng ? opts.firstSliceAng : 0) + "\"/>";
+            strXml += "  <c:firstSliceAng val=\"" + (opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0) + "\"/>";
             if (chartType === CHART_TYPE.DOUGHNUT)
                 strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>';
             strXml += '</c:' + chartType + 'Chart>';
@@ -5582,7 +5583,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
             color: opts.catAxisTitleColor,
             fontFace: opts.catAxisTitleFontFace,
             fontSize: opts.catAxisTitleFontSize,
-            rotate: opts.catAxisTitleRotate,
+            titleRotate: opts.catAxisTitleRotate,
             title: opts.catAxisTitle || 'Axis Title',
         });
     }
@@ -5696,7 +5697,7 @@ function makeValAxis(opts, valAxisId) {
             color: opts.valAxisTitleColor,
             fontFace: opts.valAxisTitleFontFace,
             fontSize: opts.valAxisTitleFontSize,
-            rotate: opts.valAxisTitleRotate,
+            titleRotate: opts.valAxisTitleRotate,
             title: opts.valAxisTitle || 'Axis Title',
         });
     }
@@ -5773,7 +5774,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
             color: opts.serAxisTitleColor,
             fontFace: opts.serAxisTitleFontFace,
             fontSize: opts.serAxisTitleFontSize,
-            rotate: opts.serAxisTitleRotate,
+            titleRotate: opts.serAxisTitleRotate,
             title: opts.serAxisTitle || 'Axis Title',
         });
     }
@@ -5831,17 +5832,19 @@ function makeSerAxis(opts, axisId, valAxisId) {
 }
 /**
  * Create char title elements
- * @param {IChartTitleOpts} opts - options
+ * @param {IChartPropsTitle} opts - options
  * @return {string} XML `<c:title>`
  */
 function genXmlTitle(opts) {
     var align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? "<a:pPr algn=\"" + opts.titleAlign.substring(0, 1) + "\">" : "<a:pPr>";
-    var rotate = opts.rotate ? "<a:bodyPr rot=\"" + convertRotationDegrees(opts.rotate) + "\"/>" : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
+    var rotate = opts.titleRotate ? "<a:bodyPr rot=\"" + convertRotationDegrees(opts.titleRotate) + "\"/>" : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
     var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
+    var titleBold = opts.titleBold === true ? 1 : 0;
+    console.log(titleBold); // TODO: // WIP:
     var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
         ? "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"" + opts.titlePos.x + "\"/><c:y val=\"" + opts.titlePos.y + "\"/></c:manualLayout></c:layout>"
         : "<c:layout/>";
-    return "<c:title>\n\t  <c:tx>\n\t    <c:rich>\n\t      " + rotate + "\n\t      <a:lstStyle/>\n\t      <a:p>\n\t        " + align + "\n\t        <a:defRPr " + sizeAttr + " b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:defRPr>\n\t      </a:pPr>\n\t      <a:r>\n\t        <a:rPr " + sizeAttr + " b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:rPr>\n\t        <a:t>" + (encodeXmlEntities(opts.title) || '') + "</a:t>\n\t      </a:r>\n\t    </a:p>\n\t    </c:rich>\n\t  </c:tx>\n\t  " + layout + "\n\t  <c:overlay val=\"0\"/>\n\t</c:title>";
+    return "<c:title>\n\t  <c:tx>\n\t    <c:rich>\n\t      " + rotate + "\n\t      <a:lstStyle/>\n\t      <a:p>\n\t        " + align + "\n\t        <a:defRPr " + sizeAttr + " b=\"" + titleBold + "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:defRPr>\n\t      </a:pPr>\n\t      <a:r>\n\t        <a:rPr " + sizeAttr + " b=\"" + titleBold + "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:rPr>\n\t        <a:t>" + (encodeXmlEntities(opts.title) || '') + "</a:t>\n\t      </a:r>\n\t    </a:p>\n\t    </c:rich>\n\t  </c:tx>\n\t  " + layout + "\n\t  <c:overlay val=\"0\"/>\n\t</c:title>";
 }
 /**
  * Calc and return excel column name for a given column length
@@ -6067,7 +6070,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201223-1610';
+var VERSION = '3.4.0-beta-20201223-2131';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;

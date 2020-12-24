@@ -2397,6 +2397,8 @@ function genSlides_Chart(pptx) {
 			barGrouping: 'stacked',
 			showTitle: true,
 			title: 'Red glowing shadow',
+			titleBold: true,
+			titleFontFace: 'Times',
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Times',
 			catAxisLabelFontSize: 12,

@@ -937,14 +937,7 @@ export interface OptsChartGridLine {
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
-// TODO: 202008: chart types remain with predicated wiht "I" in v3.3.0 (ran out of time!)
-export interface IChartTitleOpts extends TextBaseProps {
-	color?: Color
-	rotate?: number
-	title: string
-	titleAlign?: string // TODO: values
-	titlePos?: { x: number; y: number }
-}
+// TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 export interface IChartMulti {
 	type: CHART_NAME
 	data: any[]
@@ -1164,9 +1157,10 @@ export interface IChartPropsLegend {
 	legendFontSize?: number
 	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 }
-export interface IChartPropsTitle {
+export interface IChartPropsTitle extends TextBaseProps {
 	title?: string
 	titleAlign?: string
+	titleBold?: boolean
 	titleColor?: string
 	titleFontFace?: string
 	titleFontSize?: number
