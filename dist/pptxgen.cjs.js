@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:41:32.621Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T03:50:04.435Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -5840,7 +5840,6 @@ function genXmlTitle(opts) {
     var rotate = opts.titleRotate ? "<a:bodyPr rot=\"" + convertRotationDegrees(opts.titleRotate) + "\"/>" : "<a:bodyPr/>"; // don't specify rotation to get default (ex. vertical for cat axis)
     var sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : ''; // only set the font size if specified.  Powerpoint will handle the default size
     var titleBold = opts.titleBold === true ? 1 : 0;
-    console.log(titleBold); // TODO: // WIP:
     var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
         ? "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"" + opts.titlePos.x + "\"/><c:y val=\"" + opts.titlePos.y + "\"/></c:manualLayout></c:layout>"
         : "<c:layout/>";
@@ -6070,7 +6069,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201223-2131';
+var VERSION = '3.4.0-beta-20201223-2140';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
