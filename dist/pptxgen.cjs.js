@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T05:38:23.591Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T05:49:16.076Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -4857,7 +4857,10 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // Color chart bars various colors
                 // Allow users with a single data set to pass their own array of colors (check for this using != ours)
-                if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
+                if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
+                    (data.length === 1 || opts.valueBarColors) &&
+                    opts.chartColors !== BARCHART_COLORS &&
+                    opts.chartColors.length > 1) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
@@ -5613,7 +5616,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="' + (opts.catAxisLineSize ? valToPts(opts.catAxisLineSize) : ONEPT) + '" cap="flat">';
     strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
-    strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || "solid") + '"/>';
+    strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || 'solid') + '"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
     strXml += '  </c:spPr>';
@@ -5721,7 +5724,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += ' <c:spPr>';
     strXml += '   <a:ln w="' + (opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT) + '" cap="flat">';
     strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
-    strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || "solid") + '"/>';
+    strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || 'solid') + '"/>';
     strXml += '     <a:round/>';
     strXml += '   </a:ln>';
     strXml += ' </c:spPr>';
@@ -6075,7 +6078,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201223-2330';
+var VERSION = '3.4.0-beta-20201223-2348';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
