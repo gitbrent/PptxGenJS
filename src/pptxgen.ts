@@ -59,7 +59,7 @@
  * @see https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2010/hh273476(v=office.14)
  */
 
-import * as JSZip from 'jszip'
+import JSZip from 'jszip'
 import Slide from './slide'
 import {
 	AlignH,
@@ -85,7 +85,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.4.0-beta-20200823-2343'
+const VERSION = '3.4.0-beta-20201223-2140'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -375,7 +375,7 @@ export default class PptxGenJS implements IPresentationProps {
 	/**
 	 * Create all chart and media rels for this Presentation
 	 * @param {PresSlide | SlideLayout} slide - slide with rels
-	 * @param {JSZIP} zip - JSZip instance
+	 * @param {JSZip} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
 	private createChartMediaRels = (slide: PresSlide | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
@@ -449,7 +449,7 @@ export default class PptxGenJS implements IPresentationProps {
 	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
 		let arrChartPromises: Promise<string>[] = []
 		let arrMediaPromises: Promise<string>[] = []
-		let zip: JSZip = new JSZip()
+		let zip = new JSZip()
 
 		// STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
 		this.slides.forEach(slide => {
@@ -611,7 +611,7 @@ export default class PptxGenJS implements IPresentationProps {
 		let masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : ''
 		let slideLayout: SlideLayout = {
 			_name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
-			_presLayout : this.presLayout,
+			_presLayout: this.presLayout,
 			_rels: [],
 			_relsChart: [],
 			_relsMedia: [],
@@ -631,7 +631,7 @@ export default class PptxGenJS implements IPresentationProps {
 			slideId: this.slides.length + 256,
 			slideRId: this.slides.length + 2,
 			slideNumber: this.slides.length + 1,
-			slideLayout: slideLayout
+			slideLayout: slideLayout,
 		})
 
 		// A: Add slide to pres

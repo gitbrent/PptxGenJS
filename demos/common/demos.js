@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.4.0
-* BLD.: 20200823
+* BLD.: 20201223
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -77,7 +77,8 @@ var gPaths = {
 	'ccLicenseComp': { path:'common/images/cc_license_comp.png' },
 	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_dj.gif' },
 	'gifAnimTrippy': { path:'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/images/trippy.gif' },
-	'chicagoBean'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest' },
+	'chicagoBean': { path: 'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest' },
+	'sydneyBridge': { path: 'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/sydney_harbour_bridge_night.jpg?op=paramTest&ampersandTest&fileType=.jpg' },
 	'tokyoSubway' : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/tokyo-subway-route-map.jpg' },
 	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi' },
 	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.m4v' },
@@ -1656,7 +1657,11 @@ function genSlides_Chart(pptx) {
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:{color:'F1F1F1'}, color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+		slide.addChart(
+			pptx.charts.PIE,
+			dataChartPieLocs,
+			{ x: 9.8, y: 4.0, w: 3.2, h: 3.2, dataBorder: { pt: '1', color: 'F1F1F1' }, showLegend: true, legendPos: 'b', showTitle: true, title: 'Title & Legend', firstSliceAng: 90 }
+		);
 	}
 
 	// SLIDE 13: Doughnut Chart ------------------------------------------------------------
@@ -2393,6 +2398,8 @@ function genSlides_Chart(pptx) {
 			barGrouping: 'stacked',
 			showTitle: true,
 			title: 'Red glowing shadow',
+			titleBold: true,
+			titleFontFace: 'Times',
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Times',
 			catAxisLabelFontSize: 12,
@@ -2551,19 +2558,19 @@ function genSlides_Image(pptx) {
 		var objCodeEx1 = { x:0.5, y:0.6, w:6.0, h:0.6 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx1[key] = gOptsCode[key] });
 		slide.addText('path:"'+gPaths.ccLogo.path+'"', objCodeEx1);
-		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:1.35, h:2.5, w:3.33 });
+		slide.addImage({ path:gPaths.ccLogo.path, x:1.84, y:1.3, h:2.5, w:3.33 });
 
 		// TOP-RIGHT:
-		var objCodeEx2 = { x:6.9, y:0.6, w:6.0, h:0.6 };
+		var objCodeEx2 = { x:6.9, y:0.6, w:5.93, h:0.6 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx2[key] = gOptsCode[key] });
 		slide.addText('path:"'+gPaths.wikimedia2.path+'"', objCodeEx2);
-		slide.addImage({ path:gPaths.wikimedia2.path, x:6.9, y:1.35, h:2.5, w:3.27 });
+		slide.addImage({ path:gPaths.wikimedia2.path, x:8.23, y:1.3, h:2.5, w:3.27 });
 
 		// BTM-LEFT:
-		var objCodeEx3 = { x:0.5, y:4.2, w:12.4, h:0.8 };
+		var objCodeEx3 = { x:0.5, y:4.2, w:12.33, h:0.8 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx3[key] = gOptsCode[key] });
-		slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"'+gPaths.chicagoBean.path+'"', objCodeEx3);
-		slide.addImage({ path:gPaths.chicagoBean.path, x:0.5, y:5.1, w:2.56, h:1.92 });
+		slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"'+gPaths.sydneyBridge.path+'"', objCodeEx3);
+		slide.addImage({ path:gPaths.sydneyBridge.path, x:0.5, y:5.1, h:1.8, w:12.33 });
 
 		// BOTTOM-CENTER:
 		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {

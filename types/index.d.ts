@@ -46,18 +46,35 @@ declare class PptxGenJS {
 	layout: string
 	/**
 	 * Whether Right-to-Left (RTL) mode is enabled
+	 * @type {boolean}
 	 */
 	rtlMode: boolean
 
 	// Presentation Metadata
+	/**
+	 * Author name
+	 * @type {string}
+	 */
 	author: string
+	/**
+	 * Comapny name
+	 * @type {string}
+	 */
 	company: string
 	/**
 	 * @type {string}
 	 * @note the `revision` value must be a whole number only (without "." or "," - otherwise, PowerPoint will throw errors upon opening!)
 	 */
 	revision: string
+	/**
+	 * Presentation subject
+	 * @type {string}
+	 */
 	subject: string
+	/**
+	 * Presentation name
+	 * @type {string}
+	 */
 	title: string
 
 	// Methods
@@ -84,7 +101,7 @@ declare class PptxGenJS {
 	 * @param {SectionProps} section - section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSection(section: PptxGenJS.SectionProps)
+	addSection(section: PptxGenJS.SectionProps): void
 	/**
 	 * Add a new Slide to Presentation
 	 * @param {AddSlideProps} options - slide options
@@ -1766,7 +1783,7 @@ declare namespace PptxGenJS {
 		serAxisHidden?: boolean
 		serAxisLabelColor?: string
 		serAxisLabelFontFace?: string
-		serAxisLabelFontSize?: string
+		serAxisLabelFontSize?: number
 		serAxisLabelFrequency?: string
 		serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 		serAxisLineShow?: boolean
@@ -1848,6 +1865,14 @@ declare namespace PptxGenJS {
 	}
 	export interface IChartPropsChartPie {
 		dataNoEffects?: boolean
+		/**
+		 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+		 * - angle (degrees)
+		 * - range: 0-359
+		 * @since v3.4.0
+		 * @default 0
+		 */
+		firstSliceAng?: number
 	}
 	export interface IChartPropsChartRadar {
 		radarStyle?: 'standard' | 'marker' | 'filled'
@@ -1947,10 +1972,7 @@ declare namespace PptxGenJS {
 		width: number
 		height: number
 	}
-	export interface SlideNumberProps extends PositionProps, TextBaseProps {
-		align?: HAlign
-		color?: string
-	}
+	export interface SlideNumberProps extends PositionProps, TextBaseProps {}
 	export interface SlideMasterProps {
 		/**
 		 * Unique name for this master
@@ -2066,6 +2088,7 @@ declare namespace PptxGenJS {
 		 * @param {object[]} data - data object
 		 * @param {IChartOpts} options - chart options
 		 * @return {Slide} this Slide
+		 * @type {Function}
 		 */
 		addChart(type: CHART_NAME | IChartMulti[], data: any[], options?: IChartOpts): Slide
 		/**

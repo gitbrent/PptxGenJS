@@ -103,4 +103,5 @@ $ npm run build
 2. Load **gh-pages** branch
 3. Update `installation.md` with latest CDN version
 4. Update demo-react by copying contents of the newest "build" (from above) into `./demo-react` folder
-5. Update other documentation as needed
+5. Update `demo/index.html` with newest release
+6. Update API documentation as needed
