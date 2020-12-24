@@ -18,7 +18,7 @@ import {
 	DEF_SHAPE_SHADOW,
 	LETTERS,
 } from './core-enums'
-import { IChartOptsLib, ISlideRelChart, ShadowProps, OptsChartData, IChartTitleOpts, OptsChartGridLine } from './core-interfaces'
+import { IChartOptsLib, ISlideRelChart, ShadowProps, OptsChartData, IChartPropsTitle, OptsChartGridLine } from './core-interfaces'
 import { createColorElement, genXmlColorSelection, convertRotationDegrees, encodeXmlEntities, getMix, getUuid, valToPts } from './gen-utils'
 import JSZip from 'jszip'
 
@@ -441,10 +441,10 @@ export function makeXmlCharts(rel: ISlideRelChart): string {
 				fontSize: rel.opts.titleFontSize || DEF_FONT_TITLE_SIZE,
 				color: rel.opts.titleColor,
 				fontFace: rel.opts.titleFontFace,
-				rotate: rel.opts.titleRotate,
+				titleRotate: rel.opts.titleRotate,
 				titleAlign: rel.opts.titleAlign,
 				titlePos: rel.opts.titlePos,
-				bold: rel.opts.titleBold
+				bold: rel.opts.titleBold,
 			})
 			strXml += '<c:autoTitleDeleted val="0"/>'
 		} else {
@@ -1522,7 +1522,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 			// 4: Close "SERIES"
 			strXml += '  </c:ser>'
-			strXml += `  <c:firstSliceAng val="${opts.firstSliceAng ? opts.firstSliceAng : 0}"/>`
+			strXml += `  <c:firstSliceAng val="${opts.firstSliceAng ? Math.round(opts.firstSliceAng) : 0}"/>`
 			if (chartType === CHART_TYPE.DOUGHNUT) strXml += '  <c:holeSize val="' + (opts.holeSize || 50) + '"/>'
 			strXml += '</c:' + chartType + 'Chart>'
 
@@ -1568,7 +1568,7 @@ function makeCatAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 			color: opts.catAxisTitleColor,
 			fontFace: opts.catAxisTitleFontFace,
 			fontSize: opts.catAxisTitleFontSize,
-			rotate: opts.catAxisTitleRotate,
+			titleRotate: opts.catAxisTitleRotate,
 			title: opts.catAxisTitle || 'Axis Title',
 		})
 	}
@@ -1675,7 +1675,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 			color: opts.valAxisTitleColor,
 			fontFace: opts.valAxisTitleFontFace,
 			fontSize: opts.valAxisTitleFontSize,
-			rotate: opts.valAxisTitleRotate,
+			titleRotate: opts.valAxisTitleRotate,
 			title: opts.valAxisTitle || 'Axis Title',
 		})
 	}
@@ -1754,7 +1754,7 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 			color: opts.serAxisTitleColor,
 			fontFace: opts.serAxisTitleFontFace,
 			fontSize: opts.serAxisTitleFontSize,
-			rotate: opts.serAxisTitleRotate,
+			titleRotate: opts.serAxisTitleRotate,
 			title: opts.serAxisTitle || 'Axis Title',
 		})
 	}
@@ -1810,13 +1810,14 @@ function makeSerAxis(opts: IChartOptsLib, axisId: string, valAxisId: string): st
 
 /**
  * Create char title elements
- * @param {IChartTitleOpts} opts - options
+ * @param {IChartPropsTitle} opts - options
  * @return {string} XML `<c:title>`
  */
-function genXmlTitle(opts: IChartTitleOpts): string {
+function genXmlTitle(opts: IChartPropsTitle): string {
 	let align = opts.titleAlign === 'left' || opts.titleAlign === 'right' ? `<a:pPr algn="${opts.titleAlign.substring(0, 1)}">` : `<a:pPr>`
-	let rotate = opts.rotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.rotate)}"/>` : `<a:bodyPr/>` // don't specify rotation to get default (ex. vertical for cat axis)
+	let rotate = opts.titleRotate ? `<a:bodyPr rot="${convertRotationDegrees(opts.titleRotate)}"/>` : `<a:bodyPr/>` // don't specify rotation to get default (ex. vertical for cat axis)
 	let sizeAttr = opts.fontSize ? 'sz="' + Math.round(opts.fontSize * 100) + '"' : '' // only set the font size if specified.  Powerpoint will handle the default size
+	let titleBold = opts.titleBold === true ? 1 : 0
 	let layout =
 		opts.titlePos && opts.titlePos.x && opts.titlePos.y
 			? `<c:layout><c:manualLayout><c:xMode val="edge"/><c:yMode val="edge"/><c:x val="${opts.titlePos.x}"/><c:y val="${opts.titlePos.y}"/></c:manualLayout></c:layout>`
@@ -1829,13 +1830,13 @@ function genXmlTitle(opts: IChartTitleOpts): string {
 	      <a:lstStyle/>
 	      <a:p>
 	        ${align}
-	        <a:defRPr ${sizeAttr} b="${bold}" i="0" u="none" strike="noStrike">
+	        <a:defRPr ${sizeAttr} b="${titleBold}" i="0" u="none" strike="noStrike">
 	          <a:solidFill><a:srgbClr val="${opts.color || DEF_FONT_COLOR}"/></a:solidFill>
 	          <a:latin typeface="${opts.fontFace || 'Arial'}"/>
 	        </a:defRPr>
 	      </a:pPr>
 	      <a:r>
-	        <a:rPr ${sizeAttr} b="${bold}" i="0" u="none" strike="noStrike">
+	        <a:rPr ${sizeAttr} b="${titleBold}" i="0" u="none" strike="noStrike">
 	          <a:solidFill><a:srgbClr val="${opts.color || DEF_FONT_COLOR}"/></a:solidFill>
 	          <a:latin typeface="${opts.fontFace || 'Arial'}"/>
 	        </a:rPr>
