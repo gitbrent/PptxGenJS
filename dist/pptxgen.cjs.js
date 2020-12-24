@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T04:18:27.361Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-24T05:34:36.422Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -1727,14 +1727,20 @@ function slideObjectToXml(slide) {
                 strSlideXml += "<a:xfrm" + locationAttr + ">";
                 strSlideXml += "<a:off x=\"" + x + "\" y=\"" + y + "\"/>";
                 strSlideXml += "<a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></a:xfrm>";
-                strSlideXml +=
-                    '<a:prstGeom prst="' +
-                        slideItemObj.shape +
-                        '"><a:avLst>' +
-                        (slideItemObj.options.rectRadius
-                            ? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
-                            : '') +
-                        '</a:avLst></a:prstGeom>';
+                strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>';
+                if (slideItemObj.options.rectRadius) {
+                    strSlideXml += "<a:gd name=\"adj\" fmla=\"val " + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + "\"/>";
+                }
+                else if (slideItemObj.options.angleRange) {
+                    for (var i = 0; i < 2; i++) {
+                        var angle = slideItemObj.options.angleRange[i];
+                        strSlideXml += "<a:gd name=\"adj" + (i + 1) + "\" fmla=\"val " + convertRotationDegrees(angle) + "\" />";
+                    }
+                    if (slideItemObj.options.arcThicknessRatio) {
+                        strSlideXml += "<a:gd name=\"adj3\" fmla=\"val " + Math.round(slideItemObj.options.arcThicknessRatio * 50000) + "\" />";
+                    }
+                }
+                strSlideXml += '</a:avLst></a:prstGeom>';
                 // Option: FILL
                 strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>';
                 // shape Type: LINE: line color
@@ -6069,7 +6075,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201223-2218';
+var VERSION = '3.4.0-beta-pr861-20201223-2240';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
