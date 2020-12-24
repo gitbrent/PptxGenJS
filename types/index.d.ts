@@ -1036,11 +1036,11 @@ declare namespace PptxGenJS {
 		 */
 		lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeBegin`
+		 * @deprecated v3.3.0 - use `beginArrowType`
 		 */
 		lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeEnd`
+		 * @deprecated v3.3.0 - use `endArrowType`
 		 */
 		lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
@@ -1668,7 +1668,7 @@ declare namespace PptxGenJS {
 		 */
 		lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeBegin`
+		 * @deprecated v3.3.0 - use `beginArrowType`
 		 */
 		lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
@@ -1676,7 +1676,7 @@ declare namespace PptxGenJS {
 		 */
 		lineSize?: number
 		/**
-		 * @deprecated v3.3.0 - use `arrowTypeEnd`
+		 * @deprecated v3.3.0 - use `endArrowType`
 		 */
 		lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	}
@@ -1712,13 +1712,6 @@ declare namespace PptxGenJS {
 		 * Gridline style
 		 */
 		style?: 'solid' | 'dash' | 'dot' | 'none'
-	}
-	export interface IChartTitleOpts extends TextBaseProps {
-		color?: Color
-		rotate?: number
-		title: string
-		titleAlign?: string // TODO: values
-		titlePos?: { x: number; y: number }
 	}
 	export interface IChartMulti {
 		type: CHART_NAME
@@ -1937,9 +1930,10 @@ declare namespace PptxGenJS {
 		legendFontSize?: number
 		legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 	}
-	export interface IChartPropsTitle {
+	export interface IChartPropsTitle extends TextBaseProps {
 		title?: string
 		titleAlign?: string
+		titleBold?: boolean
 		titleColor?: string
 		titleFontFace?: string
 		titleFontSize?: number
