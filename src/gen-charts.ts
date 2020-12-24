@@ -792,7 +792,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 				// Color chart bars various colors
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-				if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS &&  opts.chartColors.length > 1) {
+				if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS && opts.chartColors.length > 1) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
 						let arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
