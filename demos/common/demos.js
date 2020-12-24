@@ -1159,7 +1159,7 @@ function genSlides_Chart(pptx) {
 			catAxisTitleColor: "4286f4",
 			catAxisTitleFontSize: 14,
 
-			chartColors: ['EE1122'],
+			chartColors: ['154384'],
 			invertedColors: ['0088CC'],
 
 			showValAxisTitle: true,
