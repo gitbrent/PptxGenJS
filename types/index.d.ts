@@ -1265,6 +1265,22 @@ declare namespace PptxGenJS {
 		 */
 		align?: HAlign
 		/**
+		 * Radius (only for pptx.shapes.PIE, pptx.shapes.ARC, pptx.shapes.BLOCK_ARC)
+		 * - In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
+		 * - values: [0-359, 0-359]
+		 * @since v3.4.0
+		 * @default [0, 270]
+		 */
+		angleRange?: [number, number]
+		/**
+		 * Radius (only for pptx.shapes.BLOCK_ARC)
+		 * - You have to setup the angleRange values too.
+		 * - values: 0.0-1.0
+		 * @since v3.4.0
+		 * @default 0.5
+		 */
+		arcThicknessRatio?: number
+		/**
 		 * Shape fill color properties
 		 * @example { color:'FF0000' } // hex string (red)
 		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
@@ -1296,20 +1312,6 @@ declare namespace PptxGenJS {
 		 * @default 0
 		 */
 		rectRadius?: number
-		/**
-		 * Radius (only for pptx.shapes.PIE, pptx.shapes.ARC, pptx.shapes.BLOCK_ARC)
-		 * In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
-		 * - values: [0-360, 0-360]
-		 * @default [0, 270]
-		 */
-		angleRange?: [number, number]
-		/**
-		 * Radius (only for pptx.shapes.BLOCK_ARC)
-		 * You have to setup the angleRange values too.
-		 * - values: 0 - 1
-		 * @default 0.5
-		 */
-		arcThicknessRatio?: number
 		/**
 		 * Image rotation (degrees)
 		 * - range: -360 to 360
