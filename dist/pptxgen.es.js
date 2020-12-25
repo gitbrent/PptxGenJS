@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-24T06:17:10.759Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-25T00:11:32.246Z */
 import JSZip from 'jszip';
 
 /**
@@ -1941,25 +1941,34 @@ function slideObjectToXml(slide) {
                 '    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
                 '  </p:spPr>';
         strSlideXml += '<p:txBody>';
-        strSlideXml += '  <a:bodyPr/>';
+        strSlideXml += '<a:bodyPr';
+        if (slide._slideNumberProps.margin && Array.isArray(slide._slideNumberProps.margin)) {
+            strSlideXml += " lIns=\"" + valToPts(slide._slideNumberProps.margin[3] || 0) + "\"";
+            strSlideXml += " tIns=\"" + valToPts(slide._slideNumberProps.margin[0] || 0) + "\"";
+            strSlideXml += " rIns=\"" + valToPts(slide._slideNumberProps.margin[1] || 0) + "\"";
+            strSlideXml += " bIns=\"" + valToPts(slide._slideNumberProps.margin[2] || 0) + "\"";
+        }
+        else if (typeof slide._slideNumberProps.margin === 'number') {
+            strSlideXml += " lIns=\"" + valToPts(slide._slideNumberProps.margin || 0) + "\"";
+            strSlideXml += " tIns=\"" + valToPts(slide._slideNumberProps.margin || 0) + "\"";
+            strSlideXml += " rIns=\"" + valToPts(slide._slideNumberProps.margin || 0) + "\"";
+            strSlideXml += " bIns=\"" + valToPts(slide._slideNumberProps.margin || 0) + "\"";
+        }
+        strSlideXml += '/>';
         strSlideXml += '  <a:lstStyle><a:lvl1pPr>';
         if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
             strSlideXml += "<a:defRPr sz=\"" + Math.round((slide._slideNumberProps.fontSize || 12) * 100) + "\">";
             if (slide._slideNumberProps.color)
                 strSlideXml += genXmlColorSelection(slide._slideNumberProps.color);
             if (slide._slideNumberProps.fontFace)
-                strSlideXml +=
-                    '<a:latin typeface="' +
-                        slide._slideNumberProps.fontFace +
-                        '"/><a:ea typeface="' +
-                        slide._slideNumberProps.fontFace +
-                        '"/><a:cs typeface="' +
-                        slide._slideNumberProps.fontFace +
-                        '"/>';
+                strSlideXml += "<a:latin typeface=\"" + slide._slideNumberProps.fontFace + "\"/><a:ea typeface=\"" + slide._slideNumberProps.fontFace + "\"/><a:cs typeface=\"" + slide._slideNumberProps.fontFace + "\"/>";
             strSlideXml += '</a:defRPr>';
         }
         strSlideXml += '</a:lvl1pPr></a:lstStyle>';
-        strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum"><a:rPr lang="en-US"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>';
+        strSlideXml += "<a:p><a:fld id=\"" + SLDNUMFLDID + "\" type=\"slidenum\"><a:rPr lang=\"en-US\"/>";
+        if (slide._slideNumberProps.align)
+            strSlideXml += "<a:pPr algn=\"" + slide._slideNumberProps.align.substring(0, 1) + "\"/>";
+        strSlideXml += "<a:t></a:t></a:fld><a:endParaRPr lang=\"en-US\"/></a:p>";
         strSlideXml += '</p:txBody></p:sp>';
     }
     // STEP 6: Close spTree and finalize slide XML
@@ -6067,7 +6076,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201223-2330';
+var VERSION = '3.4.0-beta-20201224-1810';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
