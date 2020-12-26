@@ -276,8 +276,8 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		options.dataBorder.color = 'F9F9F9'
 	//
 	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
+	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
-	if (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
 	if (!options.dataLabelFormatScatter && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatScatter = 'custom'
