@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-25T00:11:32.240Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-26T20:14:30.693Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -3234,9 +3234,9 @@ function addChartDefinition(target, type, data, opt) {
     //
     if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER)
         options.dataLabelFormatCode = 'General';
-    options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0';
-    if (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)
+    if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT))
         options.dataLabelFormatCode = options.showPercent ? '0%' : 'General';
+    options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0';
     //
     // Set default format for Scatter chart labels to custom string if not defined
     if (!options.dataLabelFormatScatter && options._type === CHART_TYPE.SCATTER)
@@ -6084,7 +6084,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201224-1810';
+var VERSION = '3.4.0-beta-20201226-1414';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
