@@ -14,7 +14,8 @@ export default {
 		},
 		{
 			file: './src/bld/pptxgen.cjs.js',
-			format: 'cjs'
+			format: 'cjs',
+			exports: 'default'
 		},
 		/*
 		{

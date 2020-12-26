@@ -12,47 +12,37 @@ import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HAL
  * - Inches
  * - Percentage
  *
- * @example 10.25
- * coordinate in inches
- * @example '75%'
- * coordinate as percentage of slide size
+ * @example 10.25 // coordinate in inches
+ * @example '75%' // coordinate as percentage of slide size
  */
 export type Coord = number | string
 export type PositionProps = {
 	/**
 	 * Horizontal position
 	 * - inches or percentage
-	 * @example 10.25
-	 * position in inches
-	 * @example '75%'
-	 * position as percentage of slide size
+	 * @example 10.25 // position in inches
+	 * @example '75%' // position as percentage of slide size
 	 */
 	x?: Coord
 	/**
 	 * Vertical position
 	 * - inches or percentage
-	 * @example 10.25
-	 * position in inches
-	 * @example '75%'
-	 * position as percentage of slide size
+	 * @example 10.25 // position in inches
+	 * @example '75%' // position as percentage of slide size
 	 */
 	y?: Coord
 	/**
 	 * Height
 	 * - inches or percentage
-	 * @example 10.25
-	 * height in inches
-	 * @example '75%'
-	 * height as percentage of slide size
+	 * @example 10.25 // height in inches
+	 * @example '75%' // height as percentage of slide size
 	 */
 	h?: Coord
 	/**
 	 * Width
 	 * - inches or percentage
-	 * @example 10.25
-	 * width in inches
-	 * @example '75%'
-	 * width as percentage of slide size
+	 * @example 10.25 // width in inches
+	 * @example '75%' // width as percentage of slide size
 	 */
 	w?: Coord
 }
@@ -63,18 +53,15 @@ export type DataOrPathProps = {
 	/**
 	 * URL or relative path
 	 *
-	 * @example 'https://onedrives.com/myimg.png`
-	 * retrieve image via URL
-	 * @example '/home/gitbrent/images/myimg.png`
-	 * retrieve image via local path
+	 * @example 'https://onedrives.com/myimg.png` // retrieve image via URL
+	 * @example '/home/gitbrent/images/myimg.png` // retrieve image via local path
 	 */
 	path?: string
 	/**
 	 * base64-encoded string
 	 * - Useful for avoiding potential path/server issues
 	 *
-	 * @example 'image/png;base64,iVtDafDrBF[...]='
-	 * adds a pre-encoded image
+	 * @example 'image/png;base64,iVtDafDrBF[...]=' // pre-encoded image in base-64
 	 */
 	data?: string
 }
@@ -108,6 +95,7 @@ export interface BorderProps {
 	 * @default '666666'
 	 */
 	color?: HexColor
+
 	// TODO: add `width` - deprecate `pt`
 	/**
 	 * Border size (points)
@@ -130,6 +118,14 @@ export interface HyperlinkProps {
 	 * Hyperlink Tooltip
 	 */
 	tooltip?: string
+}
+export interface PlaceholderProps {
+	name: string
+	type: PLACEHOLDER_TYPES
+	x: Coord
+	y: Coord
+	w: Coord
+	h: Coord
 }
 // used by: chart, text
 export interface ShadowProps {
@@ -170,11 +166,6 @@ export interface ShadowProps {
 // used by: shape, table, text
 export interface ShapeFillProps {
 	/**
-	 * Fill type
-	 * - 'solid' @deprecated 3.3.0
-	 */
-	type?: 'none' | 'solid'
-	/**
 	 * Fill color
 	 * - `HexColor` or `ThemeColor`
 	 * @example 'FF0000' // red
@@ -193,6 +184,11 @@ export interface ShapeFillProps {
 	 * @deprecated v3.3.0 - use `transparency`
 	 */
 	alpha?: number
+	/**
+	 * Fill type
+	 * - 'solid' @deprecated v3.3.0
+	 */
+	type?: 'none' | 'solid'
 }
 export interface ShapeLineProps extends ShapeFillProps {
 	/**
@@ -207,12 +203,12 @@ export interface ShapeLineProps extends ShapeFillProps {
 	dashType?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
 	 * Begin arrow type
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 */
 	beginArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
 	 * End arrow type
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 */
 	endArrowType?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	// FUTURE: beginArrowSize (1-9)
@@ -224,18 +220,23 @@ export interface ShapeLineProps extends ShapeFillProps {
 	 */
 	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 * @deprecated v3.3.0 - use `beginArrowType`
 	 */
 	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `endArrowType`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
 	 * Line width (pt)
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `width`
 	 */
 	pt?: number
+	/**
+	 * Line size (pt)
+	 * @deprecated v3.3.0 - use `width`
+	 */
+	size?: number
 }
 // used by: chart, slide, table, text
 export interface TextBaseProps {
@@ -270,20 +271,20 @@ export interface TextBaseProps {
 				type?: 'bullet' | 'number'
 				/**
 				 * Bullet character code (unicode)
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @example '25BA' // 'BLACK RIGHT-POINTING POINTER' (U+25BA)
 				 */
 				characterCode?: string
 				/**
 				 * Indentation (space between bullet and text) (points)
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @default 27 // DEF_BULLET_MARGIN
 				 * @example 10 // Indents text 10 points from bullet
 				 */
 				indent?: number
 				/**
 				 * Number type
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @example 'romanLcParenR' // roman numerals lower-case with paranthesis right
 				 */
 				numberType?:
@@ -305,7 +306,7 @@ export interface TextBaseProps {
 					| 'romanUcPeriod'
 				/**
 				 * Number bullets start at
-				 * @since 3.3.0
+				 * @since v3.3.0
 				 * @default 1
 				 * @example 10 // numbered bullets start with 10
 				 */
@@ -315,23 +316,23 @@ export interface TextBaseProps {
 
 				/**
 				 * Bullet code (unicode)
-				 * @deprecated 3.3.0 - use `characterCode`
+				 * @deprecated v3.3.0 - use `characterCode`
 				 */
 				code?: string
 				/**
 				 * Margin between bullet and text
-				 * @since 3.2.1
-				 * @deplrecated 3.3.0 - use `indent`
+				 * @since v3.2.1
+				 * @deplrecated v3.3.0 - use `indent`
 				 */
 				marginPt?: number
 				/**
 				 * Number to start with (only applies to type:number)
-				 * @deprecated 3.3.0 - use `numberStartAt`
+				 * @deprecated v3.3.0 - use `numberStartAt`
 				 */
 				startAt?: number
 				/**
 				 * Number type
-				 * @deprecated 3.3.0 - use `numberType`
+				 * @deprecated v3.3.0 - use `numberType`
 				 */
 				style?: string
 		  }
@@ -364,6 +365,11 @@ export interface TextBaseProps {
 	 * @example 'fr-CA' // french Canadian
 	 */
 	lang?: string
+	/**
+	 * underline style
+	 * @default false
+	 */
+	underline?: boolean
 	/**
 	 * vertical alignment
 	 * @default 'top'
@@ -405,9 +411,29 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 * Image height
 		 */
 		h: number
+		/**
+		 * Area horizontal position related to the image
+		 * - Values: 0-n
+		 * - `crop` only
+		 */
 		x?: number
+		/**
+		 * Area vertical position related to the image
+		 * - Values: 0-n
+		 * - `crop` only
+		 */
 		y?: number
 	}
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide
@@ -442,6 +468,22 @@ export interface ShapeProps extends PositionProps {
 	 * @default 'left'
 	 */
 	align?: HAlign
+	/**
+	 * Radius (only for pptx.shapes.PIE, pptx.shapes.ARC, pptx.shapes.BLOCK_ARC)
+	 * - In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
+	 * - values: [0-359, 0-359]
+	 * @since v3.4.0
+	 * @default [270, 0]
+	 */
+	angleRange?: [number, number]
+	/**
+	 * Radius (only for pptx.shapes.BLOCK_ARC)
+	 * - You have to setup the angleRange values too
+	 * - values: 0.0-1.0
+	 * @since v3.4.0
+	 * @default 0.5
+	 */
+	arcThicknessRatio?: number
 	/**
 	 * Shape fill color properties
 	 * @example { color:'FF0000' } // hex string (red)
@@ -516,7 +558,7 @@ export interface ShapeProps extends PositionProps {
 
 export interface TableToSlidesProps extends TableProps {
 	_arrObjTabHeadRows?: TableRow[]
-	//_masterSlide?: ISlideLayout
+	//_masterSlide?: SlideLayout
 
 	/**
 	 * Add an image to slide(s) created during autopaging
@@ -560,7 +602,7 @@ export interface TableToSlidesProps extends TableProps {
 	autoPageLineWeight?: number
 	/**
 	 * Whether to repeat head row(s) on new tables created by autopaging
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @default false
 	 */
 	autoPageRepeatHeader?: boolean
@@ -592,11 +634,11 @@ export interface TableToSlidesProps extends TableProps {
 	verbose?: boolean // Undocumented; shows verbose output
 
 	/**
-	 * @deprecated 3.3.0 - use `autoPageRepeatHeader`
+	 * @deprecated v3.3.0 - use `autoPageRepeatHeader`
 	 */
 	addHeaderToEach?: boolean
 	/**
-	 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
 }
@@ -644,7 +686,6 @@ export interface TableCellProps extends TextBaseProps {
 	 */
 	rowspan?: number
 }
-// TODO: WIP: rename to...? `AddTableOptions` ?
 export interface TableProps extends PositionProps, TextBaseProps {
 	_arrObjTabHeadRows?: TableRow[]
 
@@ -723,7 +764,7 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	rowH?: number | number[]
 
 	/**
-	 * @deprecated 3.3.0 - use `autoPageSlideStartY`
+	 * @deprecated v3.3.0 - use `autoPageSlideStartY`
 	 */
 	newSlideStartY?: number
 }
@@ -733,15 +774,15 @@ export interface TableCell {
 	_lineHeight?: number
 	_hmerge?: boolean
 	_vmerge?: boolean
+	_rowContinue?: number
 	_optImp?: any
 
-	text?: string | IText[]
+	text?: string | TableCell[]
 	options?: TableCellProps
 }
 export interface TableRowSlide {
 	rows: TableRow[]
 }
-//export type TableRow = number[] | string[] | TableCell[] // TODO: 20200523: Consistency: Remove `number[]` as Cell/IText only take strings
 export type TableRow = TableCell[]
 
 // text ===========================================================================================
@@ -763,10 +804,9 @@ export interface TextGlowProps {
 	size: number
 }
 
-// TODO: WIP: rename to...? `AddTextOptions` ?
-export interface AddTextProps extends PositionProps, DataOrPathProps, TextBaseProps {
-	bodyProp?: {
-		// Note: Many of these duplicated as user options are transformed to bodyProp options for XML processing
+export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
+	_bodyProp?: {
+		// Note: Many of these duplicated as user options are transformed to _bodyProp options for XML processing
 		autoFit?: boolean
 		align?: TEXT_HALIGN
 		anchor?: TEXT_VALIGN
@@ -777,6 +817,8 @@ export interface AddTextProps extends PositionProps, DataOrPathProps, TextBasePr
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		wrap?: 'none' | 'square'
 	}
+	_lineIdx?: number
+
 	/**
 	 * Character spacing
 	 */
@@ -793,7 +835,7 @@ export interface AddTextProps extends PositionProps, DataOrPathProps, TextBasePr
 	 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 	 *
 	 * There is no way for this library to trigger that behavior, sorry.
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @default "none"
 	 */
 	fit?: 'none' | 'shrink' | 'resize'
@@ -814,7 +856,6 @@ export interface AddTextProps extends PositionProps, DataOrPathProps, TextBasePr
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
-	lineIdx?: number // TODO: Internal field for `AddTextProps`
 	lineSpacing?: number
 	margin?: Margin
 	outline?: { color: Color; size: number }
@@ -837,19 +878,19 @@ export interface AddTextProps extends PositionProps, DataOrPathProps, TextBasePr
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
 	 * Text wrap
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @default true
 	 */
 	wrap?: boolean
 
 	/**
 	 * Whather "Fit to Shape?" is enabled
-	 * @deprecated 3.3.0 - use `textFit`
+	 * @deprecated v3.3.0 - use `textFit`
 	 */
 	autoFit?: boolean
 	/**
 	 * Whather "Shrink Text on Overflow?" is enabled
-	 * @deprecated 3.3.0 - use `textFit`
+	 * @deprecated v3.3.0 - use `textFit`
 	 */
 	shrinkText?: boolean
 	/**
@@ -858,7 +899,7 @@ export interface AddTextProps extends PositionProps, DataOrPathProps, TextBasePr
 	 */
 	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 * @deprecated v3.3.0 - use `beginArrowType`
 	 */
 	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
@@ -866,13 +907,13 @@ export interface AddTextProps extends PositionProps, DataOrPathProps, TextBasePr
 	 */
 	lineSize?: number
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `endArrowType`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
-export interface IText {
-	text: string
-	options?: AddTextProps
+export interface TextProps {
+	text?: string
+	options?: TextPropsOptions
 }
 
 // charts =========================================================================================
@@ -912,14 +953,7 @@ export interface OptsChartGridLine {
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
-
-export interface IChartTitleOpts extends TextBaseProps {
-	color?: Color
-	rotate?: number
-	title: string
-	titleAlign?: string // TODO: values
-	titlePos?: { x: number; y: number }
-}
+// TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 export interface IChartMulti {
 	type: CHART_NAME
 	data: any[]
@@ -961,7 +995,10 @@ export interface IChartPropsBase {
 	v3DRotY?: number
 }
 export interface IChartPropsAxisCat {
-	catAxes?: number[]
+	/**
+	 * Multi-Chart prop: array of cat axes
+	 */
+	catAxes?: IChartPropsAxisCat[]
 	catAxisBaseTimeUnit?: string
 	catAxisHidden?: boolean
 	catAxisLabelColor?: string
@@ -971,7 +1008,10 @@ export interface IChartPropsAxisCat {
 	catAxisLabelFrequency?: string
 	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	catAxisLabelRotate?: number
+	catAxisLineColor?: string
 	catAxisLineShow?: boolean
+	catAxisLineSize?: number
+	catAxisLineStyle?: 'solid' | 'dash' | 'dot'
 	catAxisMajorTickMark?: ChartAxisTickMark
 	catAxisMajorTimeUnit?: string
 	catAxisMajorUnit?: number
@@ -988,6 +1028,11 @@ export interface IChartPropsAxisCat {
 	catAxisTitleRotate?: number
 	catGridLine?: OptsChartGridLine
 	catLabelFormatCode?: string
+	/**
+	 * Whether data should use secondary category axis (instead of primary)
+	 * @default false
+	 */
+	secondaryCatAxis?: boolean
 	showCatAxisTitle?: boolean
 }
 export interface IChartPropsAxisSer {
@@ -995,7 +1040,7 @@ export interface IChartPropsAxisSer {
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
 	serAxisLabelFontFace?: string
-	serAxisLabelFontSize?: string
+	serAxisLabelFontSize?: number
 	serAxisLabelFrequency?: string
 	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	serAxisLineShow?: boolean
@@ -1014,8 +1059,16 @@ export interface IChartPropsAxisSer {
 	showSerAxisTitle?: boolean
 }
 export interface IChartPropsAxisVal {
+	/**
+	 * Whether data should use secondary value axis (instead of primary)
+	 * @default false
+	 */
+	secondaryValAxis?: boolean
 	showValAxisTitle?: boolean
-	valAxes?: number[]
+	/**
+	 * Multi-Chart prop: array of val axes
+	 */
+	valAxes?: IChartPropsAxisVal[]
 	valAxisCrossesAt?: string | number
 	valAxisDisplayUnit?: 'billions' | 'hundredMillions' | 'hundreds' | 'hundredThousands' | 'millions' | 'tenMillions' | 'tenThousands' | 'thousands' | 'trillions'
 	valAxisDisplayUnitLabel?: boolean
@@ -1027,7 +1080,10 @@ export interface IChartPropsAxisVal {
 	valAxisLabelFormatCode?: string
 	valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	valAxisLabelRotate?: number
+	valAxisLineColor?: string
 	valAxisLineShow?: boolean
+	valAxisLineSize?: number
+	valAxisLineStyle?: 'solid' | 'dash' | 'dot'
 	valAxisMajorTickMark?: ChartAxisTickMark
 	valAxisMajorUnit?: number
 	valAxisMaxVal?: number
@@ -1043,7 +1099,7 @@ export interface IChartPropsAxisVal {
 	/**
 	 * Value label format code
 	 * - this also directs Data Table formatting
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @example '#%' // round percent
 	 * @example '0.00%' // shows values as '0.00%'
 	 * @example '$0.00' // shows values as '$0.00'
@@ -1073,6 +1129,14 @@ export interface IChartPropsChartLine {
 }
 export interface IChartPropsChartPie {
 	dataNoEffects?: boolean
+	/**
+	 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+	 * - angle (degrees)
+	 * - range: 0-359
+	 * @since v3.4.0
+	 * @default 0
+	 */
+	firstSliceAng?: number
 }
 export interface IChartPropsChartRadar {
 	radarStyle?: 'standard' | 'marker' | 'filled'
@@ -1097,7 +1161,7 @@ export interface IChartPropsDataTable {
 	dataTableFontSize?: number
 	/**
 	 * Data table format code
-	 * @since 3.3.0
+	 * @since v3.3.0
 	 * @example '#%' // round percent
 	 * @example '0.00%' // shows values as '0.00%'
 	 * @example '$0.00' // shows values as '$0.00'
@@ -1115,9 +1179,10 @@ export interface IChartPropsLegend {
 	legendFontSize?: number
 	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 }
-export interface IChartPropsTitle {
+export interface IChartPropsTitle extends TextBaseProps {
 	title?: string
 	titleAlign?: string
+	titleBold?: boolean
 	titleColor?: string
 	titleFontFace?: string
 	titleFontSize?: number
@@ -1141,68 +1206,7 @@ export interface IChartOpts
 		OptsChartGridLine,
 		PositionProps {}
 export interface IChartOptsLib extends IChartOpts {
-	_type?: CHART_NAME | IChartMulti[]
-}
-
-// Core
-// ====
-/**
- * Section options
- */
-export interface ISectionProps {
-	title: string
-	order?: number // 1-n
-}
-export interface ISection {
-	type: 'user' | 'default'
-	title: string
-	slides: ISlideLib[]
-}
-/**
- * The Presentation Layout (ex: 'LAYOUT_WIDE')
- */
-export interface ILayout {
-	name: string
-	width?: number
-	height?: number
-}
-export interface ILayoutProps {
-	name: string
-	width: number
-	height: number
-}
-export interface ISlideNumber extends PositionProps, TextBaseProps {
-	align?: HAlign
-	color?: string
-}
-export interface ISlideMasterOptions {
-	title: string
-	height?: number
-	width?: number
-	margin?: Margin
-	background?: BackgroundProps
-	objects?: (
-		| { chart: {} }
-		| { image: {} }
-		| { line: {} }
-		| { rect: {} }
-		| { text: { options: AddTextProps; text?: string } }
-		| { placeholder: { options: ISlideMstrObjPlchldrOpts; text?: string } }
-	)[]
-	slideNumber?: ISlideNumber
-
-	/**
-	 * @deprecated v3.3.0 - use `background`
-	 */
-	bkgd?: string | BackgroundProps
-}
-export interface ISlideMstrObjPlchldrOpts {
-	name: string
-	type: PLACEHOLDER_TYPES
-	x: Coord
-	y: Coord
-	w: Coord
-	h: Coord
+	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
 }
 export interface ISlideRelChart extends OptsChartData {
 	type: CHART_NAME | IChartMulti[]
@@ -1213,6 +1217,10 @@ export interface ISlideRelChart extends OptsChartData {
 	globalId: number
 	fileName: string
 }
+
+// Core
+// ====
+// PRIVATE vvv
 export interface ISlideRel {
 	type: SLIDE_OBJECT_TYPES
 	Target: string
@@ -1235,27 +1243,11 @@ export interface ISlideRelMedia {
 	rId: number
 	Target: string
 }
-// TODO: create `ObjectOptions` (placeholder props are internal)
-export interface IObjectOptions extends ShapeProps, TableCellProps, AddTextProps, ImageProps {
-	x?: Coord
-	y?: Coord
-	cx?: Coord
-	cy?: Coord
-	w?: Coord
-	h?: Coord
-	margin?: Margin
-	// table
-	colW?: number | number[]
-	rowH?: number | number[]
-	// placeholder
-	placeholderIdx?: number
-	placeholderType?: PLACEHOLDER_TYPES
-}
 export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
-	options?: IObjectOptions
+	options?: ObjectOptions
 	// text
-	text?: string | IText[]
+	text?: string | TextProps[]
 	// table
 	arrTabRows?: TableCell[][]
 	// chart
@@ -1270,33 +1262,93 @@ export interface ISlideObject {
 	mediaRid?: number
 	shape?: SHAPE_NAME
 }
+// PRIVATE ^^^
 
-export interface ISlideLayout {
-	presLayout: ILayout
+export interface SectionProps {
+	_type: 'user' | 'default'
+	_slides: PresSlide[]
+
+	/**
+	 * Section title
+	 */
+	title: string
+	/**
+	 * Section order - uses to add section at any index
+	 * - values: 1-n
+	 */
+	order?: number
+}
+export interface PresLayout {
+	_sizeW?: number
+	_sizeH?: number
+
+	/**
+	 * Layout Name
+	 * @example 'LAYOUT_WIDE'
+	 */
 	name: string
-	number: number
+	width: number
+	height: number
+}
+export interface SlideNumberProps extends PositionProps, TextBaseProps {
+	margin?: Margin
+}
+export interface SlideMasterProps {
+	/**
+	 * Unique name for this master
+	 */
+	title: string
+	margin?: Margin
 	background?: BackgroundProps
-	bkgd?: string // @deprecated v3.3.0
-	bkgdImgRid?: number
-	slide?: {
+	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+	slideNumber?: SlideNumberProps
+
+	/**
+	 * @deprecated v3.3.0 - use `background`
+	 */
+	bkgd?: string | BackgroundProps
+}
+export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
+	_placeholderIdx?: number
+	_placeholderType?: PLACEHOLDER_TYPES
+
+	cx?: Coord
+	cy?: Coord
+	margin?: Margin
+	colW?: number | number[] // table
+	rowH?: number | number[] // table
+}
+export interface SlideBaseProps {
+	_bkgdImgRid?: number
+	_margin?: Margin
+	_name?: string
+	_presLayout: PresLayout
+	_rels: ISlideRel[]
+	_relsChart: ISlideRelChart[] // needed as we use args:"PresSlide|SlideLayout" often
+	_relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
+	_slideNum: number
+	_slideNumberProps?: SlideNumberProps
+	_slideObjects?: ISlideObject[]
+
+	background?: BackgroundProps
+	/**
+	 * @deprecated v3.3.0 - use `background`
+	 */
+	bkgd?: string
+}
+export interface SlideLayout extends SlideBaseProps {
+	_slide?: {
+		_bkgdImgRid?: number
 		back: string
-		bkgdImgRid?: number
 		color: string
 		hidden?: boolean
 	}
-	data: ISlideObject[]
-	rels: ISlideRel[]
-	relsChart: ISlideRelChart[] // needed as we use args:"ISlide|ISlideLayout" often
-	relsMedia: ISlideRelMedia[] // needed as we use args:"ISlide|ISlideLayout" often
-	margin?: Margin
-	slideNumberObj?: ISlideNumber
 }
-export interface IAddSlideOptions {
-	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
-	sectionTitle?: string
-}
-// TODO: rename `ISlide` to `Slide`, `ISlideLib` to `ISlide`
-export interface ISlide {
+export interface PresSlide extends SlideBaseProps {
+	_rId: number
+	_slideLayout: SlideLayout
+	_slideId: number
+
 	addChart: Function
 	addImage: Function
 	addMedia: Function
@@ -1304,46 +1356,58 @@ export interface ISlide {
 	addShape: Function
 	addTable: Function
 	addText: Function
+
+	/**
+	 * Background color or image (`fill` | `path` | `data`)
+	 * @example {fill: 'FF3399'} - hex fill color
+	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
+	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
+	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
+	 * @since v3.3.0
+	 */
 	background?: BackgroundProps
 	/**
 	 * Default text color (hex format)
 	 * @example 'FF3399'
+	 * @default '000000' (DEF_FONT_COLOR)
 	 */
 	color?: HexColor
-	hidden?: boolean
-	slideNumber?: ISlideNumber
-
 	/**
-	 * @deprecated 3.3.0
+	 * Whether slide is hidden
+	 * @default false
 	 */
-	bkgd?: string
+	hidden?: boolean
+	/**
+	 * Slide number options
+	 */
+	slideNumber?: SlideNumberProps
 }
-export interface ISlideLib extends ISlide {
-	bkgdImgRid?: number // FUTURE: rename
-	data?: ISlideObject[]
-	id: number
-	margin?: Margin
-	name?: string
-	number: number
-	presLayout: ILayout
-	rels: ISlideRel[]
-	relsChart: ISlideRelChart[]
-	relsMedia: ISlideRelMedia[]
-	rId: number
-	slideLayout: ISlideLayout
-	slideNumberObj?: ISlideNumber // FUTURE: rename
+export interface AddSlideProps {
+	masterName?: string // TODO: 20200528: rename to "masterTitle" (createMaster uses `title` so lets be consistent)
+	sectionTitle?: string
 }
-export interface IPresentation {
+export interface PresentationProps {
 	author: string
 	company: string
 	layout: string
-	masterSlide: ISlide
-	presLayout: ILayout
+	masterSlide: PresSlide
+	/**
+	 * Presentation's layout
+	 * read-only
+	 */
+	presLayout: PresLayout
 	revision: string
+	/**
+	 * Whether to enable right-to-left mode
+	 * @default false
+	 */
 	rtlMode: boolean
-	sections: ISection[]
-	slideLayouts: ISlideLayout[]
-	slides: ISlideLib[]
 	subject: string
 	title: string
+}
+// PRIVATE interface
+export interface IPresentationProps extends PresentationProps {
+	sections: SectionProps[]
+	slideLayouts: SlideLayout[]
+	slides: PresSlide[]
 }
