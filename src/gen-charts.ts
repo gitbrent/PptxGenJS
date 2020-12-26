@@ -1464,7 +1464,7 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 				strXml += '   </a:defRPr>'
 				strXml += '      </a:pPr></a:p>'
 				strXml += '    </c:txPr>'
-				if (chartType === CHART_TYPE.PIE) `<c:dLblPos val="${opts.dataLabelPosition || 'inEnd'}"/>`
+				if (chartType === CHART_TYPE.PIE) strXml += `<c:dLblPos val="${opts.dataLabelPosition || 'inEnd'}"/>`
 				strXml += '    <c:showLegendKey val="0"/>'
 				strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>'
 				strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>'
