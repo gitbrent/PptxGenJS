@@ -975,16 +975,16 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 		if (typeof opts.hyperlink !== 'object') throw new Error("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ")
 		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw new Error("ERROR: 'hyperlink requires either `url` or `slide`'")
 		else if (opts.hyperlink.url) {
-			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}" history="1" highlightClick="0" endSnd="0"${opts.color?'>':'/>'}`
+			}" history="1" highlightClick="0" endSnd="0"${opts.color ? '>' : '/>'}`
 		} else if (opts.hyperlink.slide) {
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" action="ppaction://hlinksldjump" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}"${opts.color?'>':'/>'}`
+			}"${opts.color ? '>' : '/>'}`
 		}
+		// TODO: FIXME: WIP: links are now black?!
 		if (opts.color) {
 			runProps += '	<a:extLst>'
 			runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">'
