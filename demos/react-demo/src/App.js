@@ -11,16 +11,16 @@ let slide = pptx.addSlide();
 
 slide.addText(
   "React Demo!",
-  { x:1, y:0.5, w:'80%', h:1, fontSize:36, align:pptx.AlignH.center, fill:pptx.SchemeColor.background2, color: pptx.SchemeColor.accent1 }
+  { x:1, y:0.5, w:'80%', h:1, fontSize:36, align:'center', fill:{ color:'D3E3F3' }, color:'008899' }
 );
 
 slide.addChart(
-  pptx.ChartType.radar, dataChartRadar, { x: 1, y: 1.9, w: 8, h: 3 }
+  pptx.ChartType.radar, dataChartRadar, { x:1.0, y:1.9, w:8, h:3 }
 );
 
 slide.addText(
   "PpptxGenJS version:",
-  { x:0, y:5.3, w:'100%', h:0.33, align:pptx.AlignH.center, fill:pptx.SchemeColor.background2, color: pptx.SchemeColor.accent1 }
+  { x:0, y:5.3, w:'100%', h:0.33, align:'center', fill:{ color:'E1E1E1' }, color:'A1A1A1' }
 );
 
 pptx.writeFile("pptxgenjs-demo-react.pptx");`;
@@ -48,9 +48,9 @@ function App() {
 			w: "80%",
 			h: 1,
 			fontSize: 36,
-			align: pptx.AlignH.center,
-			fill: pptx.SchemeColor.background2,
-			color: pptx.SchemeColor.accent1,
+			align: 'center',
+			fill: { color:'D3E3F3' },
+			color: '008899',
 		});
 
 		slide.addChart(pptx.ChartType.radar, dataChartRadar, { x: 1, y: 1.9, w: 8, h: 3 });
@@ -61,9 +61,9 @@ function App() {
 			w: "100%",
 			h: 0.33,
 			fontSize: 10,
-			align: pptx.AlignH.center,
-			fill: pptx.SchemeColor.background2,
-			color: pptx.SchemeColor.accent3,
+			align: 'center',
+			fill: 'E1E1E1', //{ color: pptx.SchemeColor.background2 },
+			color: 'A1A1A1' // pptx.SchemeColor.accent3,
 		});
 
 		pptx.writeFile("pptxgenjs-demo-react.pptx");
@@ -73,7 +73,7 @@ function App() {
 		<div>
 			<nav className="navbar navbar-expand-lg navbar-dark bg-primary">
 				<a className="navbar-brand" href="https://gitbrent.github.io/PptxGenJS/">
-					<img src={logo} width="30" height="30" className="d-inline-block align-top mr-2" alt="" />
+					<img src={logo} width="30" height="30" className="d-inline-block align-top mr-2" alt="logo" />
 					PptxGenJS
 				</a>
 				<button

@@ -5,24 +5,58 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Notes]
-- OMG, the typescript definitions were a big old mess; you guys are too nice to not have 100 issues open
-- The `core-interfaces.ts` file is now grouped and ordered, corrects a whole heap of bad/missing options and finally includes
-jsdoc details for everything other than charts (maybe next time...)
-- Lots of poorly named options have been deprecated and new, much better names created
-- Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 
-## [3.3.0] - 2020-07-??
+## [3.4.0] - 2020-12-?
+### Added
+- Added: `firstSliceAngle` (Pie, Doughnut charts) [\#666](https://github.com/gitbrent/PptxGenJS/issues/666) ([ghost](https://github.com/ghost)) [\#809](https://github.com/gitbrent/PptxGenJS/pull/809) ([cronin4392](https://github.com/cronin4392))
+- Added: Horizontal/Vertical flip capability to images [\#824](https://github.com/gitbrent/PptxGenJS/pull/824) ([luism-s](https://github.com/luism-s))
+- Added: New `titleBold` option on chart settings [\#830](https://github.com/gitbrent/PptxGenJS/pull/830) ([twatson83](https://github.com/twatson83))
+- Added: New cat/val-AxisLineColor/AxisLineSize/AxisLineStyle chart options [\#831](https://github.com/gitbrent/PptxGenJS/pull/831) ([twatson83](https://github.com/twatson83))
+- Added: New shape options: `angleRange` and `arcThicknessRatio` [\#547](https://github.com/gitbrent/PptxGenJS/issues/547) ([paolochiodi](https://github.com/paolochiodi)) [\#861](https://github.com/gitbrent/PptxGenJS/pull/861) ([apresmoi](https://github.com/apresmoi))
+### Changed
+- Fixed: logic for dataLabelFormat code in Pie and Donut charts [\#802](https://github.com/gitbrent/PptxGenJS/pull/802) ([cronin4392](https://github.com/cronin4392))
+- Fixed: data label position for Pie chart [\#808](https://github.com/gitbrent/PptxGenJS/pull/808) ([cronin4392](https://github.com/cronin4392))
+- Fixed: bug when evaluating `catAxisLabelPos`,`valAxisLabelPos` props [\#829](https://github.com/gitbrent/PptxGenJS/pull/829) ([twatson83](https://github.com/twatson83))
+- Fixed: secondary axis param (`secondaryValAxis`) check [\#832](https://github.com/gitbrent/PptxGenJS/pull/832) ([twatson83](https://github.com/twatson83))
+- Fixed: `addSection` method missing return type in `index.d.ts` [\#833](https://github.com/gitbrent/PptxGenJS/issues/833) ([dylang](https://github.com/dylang))
+- Fixed: Align property doesn't work in slide number object [\#835](https://github.com/gitbrent/PptxGenJS/issues/835) ([ax2mx](https://github.com/ax2mx))
+- Fixed: Margin doesn't work in slide number object [\#836](https://github.com/gitbrent/PptxGenJS/issues/836) ([ax2mx](https://github.com/ax2mx))
+- Fixed: several rounding mistakes for precision, accuracy, and usability [\#840](https://github.com/gitbrent/PptxGenJS/pull/840) ([michaelcbrook](https://github.com/michaelcbrook))
+- Fixed: catAxisMinorTickMark [\#841](https://github.com/gitbrent/PptxGenJS/pull/841) ([twatson83](https://github.com/twatson83))
+- Fixed: colspan/rowspan [\#852](https://github.com/gitbrent/PptxGenJS/pull/852) ([wangfengming](https://github.com/wangfengming))
+- Fixed: typo in ts doc [\#873](https://github.com/gitbrent/PptxGenJS/issues/873) ([jencii](https://github.com/jencii))
+### Internal Updates
+- Library Updates: TypeScript 4, Rollup 2.3 and more [\#866](https://github.com/gitbrent/PptxGenJS/pull/866) ([gitbrent](https://github.com/gitbrent))
+
+
+
+## [3.3.1] - 2020-08-23
+### Changed
+- Fixed: Broken pptx has generated if used custom slide layout in v3.3.0 [\#826](https://github.com/gitbrent/PptxGenJS/issues/826) ([yhatt](https://github.com/yhatt))
+- Fixed: lineSpacing option set to decimal triggers repair alert [\#827](https://github.com/gitbrent/PptxGenJS/issues/827) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Updated `demos.js` to replace all fill:string with fill:ShapeFillProps ([gitbrent](https://github.com/gitbrent))
+
+
+
+## [3.3.0] - 2020-08-16
+### Major Change Summary
+- The `addTable()` method finally supports auto-paging, including support for repeating table headers!
+- The `addText()` method text layout engine has been rewritten from scratch and handles every type of layout case now
+- New `addText()` `fit` option ('none' | 'shrink' | 'resize') addresses long-standing issues with shrink/resize objects (new demo page as well)
+- Fix for Angular "`Buffer` is unknown" issue
+- Major update of typescript defs, including tons of documentation that has been added
+- Unfotunately, `fill` no longer accepts a plain string and there was no smooth way to make that backwards compatible (sorry!)
 ### BREAKING CHANGES
 - **TypeScript users**: `fill` property no longer accepts strings, only `ShapeFill` type now (sorry!)
-- **All Users**: table and textbox text may break differently after a major rewrite to correct long-standing issues with alignment/breakLine, etc.
+- **All users**: table and textbox text linebreaks may act differently! (a major rewrite to correct long-standing issues with alignment/breakLine finally landed)
 ### Added
 - Added: Auto-Paging finally comes to `addTable()` [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
-- Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489)[phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684)[hanzi](https://github.com/hanzi))
+- Added: Chart DataTable formatting `dataTableFormatCode` and `valLabelFormatCode` [\#489](https://github.com/gitbrent/PptxGenJS/issues/489) ([phobos7000](https://github.com/phobos7000)) [\#684](https://github.com/gitbrent/PptxGenJS/pull/684) ([hanzi](https://github.com/hanzi))
 - Added: Background image for slides (deprecated `bkgd:string` with `background:BkgdOpts`) [\#610](https://github.com/gitbrent/PptxGenJS/pull/610) ([thomasowow](https://github.com/thomasowow))
-- Added: `shapeName` to objects instead of default [\#724](https://github.com/gitbrent/PptxGenJS/issues/724)[Offbeatmammal](https://github.com/Offbeatmammal))
-- Added: valAxisDisplayUnitLabel Option [\#765](https://github.com/gitbrent/PptxGenJS/pull/765)[hysh](https://github.com/hysh))
+- Added: `shapeName` to objects instead of default [\#724](https://github.com/gitbrent/PptxGenJS/issues/724) ([Offbeatmammal](https://github.com/Offbeatmammal))
+- Added: `valAxisDisplayUnitLabel` option [\#765](https://github.com/gitbrent/PptxGenJS/pull/765) ([hysh](https://github.com/hysh))
+- Added: Ability to create a hyperlink on a shape [\#767](https://github.com/gitbrent/PptxGenJS/issues/767) ([CroniD](https://github.com/CroniD))
 ### Changed
-- Aded: Set a hyperlink on a shape [\#767](https://github.com/gitbrent/PptxGenJS/issues/767)[CroniD](https://github.com/CroniD))
 - Fixed: complete rewrite of genXmlTextBody for new text run/paragraph generation. Fixes: [\#369](https://github.com/gitbrent/PptxGenJS/issues/369)
 [\#448](https://github.com/gitbrent/PptxGenJS/issues/448), [\#460](https://github.com/gitbrent/PptxGenJS/issues/460), [\#751](https://github.com/gitbrent/PptxGenJS/issues/751), [\#772](https://github.com/gitbrent/PptxGenJS/pull/772)
 - Fixed: tableToSlides `addHeaderToEach` finally duplicates all header rows, not just the first one [\#262](https://github.com/gitbrent/PptxGenJS/issues/262) ([okaiyong](https://github.com/okaiyong))
@@ -32,12 +66,10 @@ jsdoc details for everything other than charts (maybe next time...)
 - Fixed: removed `Buffer` type from `index.ts.d` [\#761](https://github.com/gitbrent/PptxGenJS/pull/761) ([lustigerlurch551](https://github.com/lustigerlurch551))
 - Fixed: addSection does not escape XML unsafe characters [\#774](https://github.com/gitbrent/PptxGenJS/issues/774) ([pimlottc-gov](https://github.com/pimlottc-gov))
 - Fixed: Multiple Border Types not supported in Table Cell [\#775](https://github.com/gitbrent/PptxGenJS/issues/775) ([jsvishal](https://github.com/jsvishal))
+- Fixed: New ITextOpts `fit` prop, removed `autoFit`/`shrinkText`, new demo slide [\#779](https://github.com/gitbrent/PptxGenJS/issues/779) ([DonnaZukowskiPfizer](https://github.com/DonnaZukowskiPfizer)) ([ReimaFrgos](https://github.com/ReimaFrgos))
 - Fixed: EMU calculations are not safe (calcPointValue in gen-xml) [\#781](https://github.com/gitbrent/PptxGenJS/issues/781) ([CroniD](https://github.com/CroniD))
-- ...
 - Fixed: type defs for `TableCell.text` not correct ([gitbrent](https://github.com/gitbrent))
 - Fixed: type defs for `ITableOptions` s/b `TableOptions` ([gitbrent](https://github.com/gitbrent))
-### WIP
-- [Text with align adds linebreaks](https://github.com/gitbrent/PptxGenJS/issues?q=is%3Aissue+is%3Aopen+label%3Atext)
 
 
 
