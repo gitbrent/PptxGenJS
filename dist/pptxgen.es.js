@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-26T20:14:30.702Z */
+/* PptxGenJS 3.4.0-beta @ 2020-12-26T20:48:03.513Z */
 import JSZip from 'jszip';
 
 /**
@@ -5488,7 +5488,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      </a:pPr></a:p>';
                 strXml += '    </c:txPr>';
                 if (chartType === CHART_TYPE.PIE)
-                    "<c:dLblPos val=\"" + (opts.dataLabelPosition || 'inEnd') + "\"/>";
+                    strXml += "<c:dLblPos val=\"" + (opts.dataLabelPosition || 'inEnd') + "\"/>";
                 strXml += '    <c:showLegendKey val="0"/>';
                 strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
                 strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>';
@@ -5608,7 +5608,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     else {
         strXml += '  <c:majorTickMark val="' + (opts.catAxisMajorTickMark || 'out') + '"/>';
-        strXml += '  <c:minorTickMark val="' + (opts.catAxisMajorTickMark || 'none') + '"/>';
+        strXml += '  <c:minorTickMark val="' + (opts.catAxisMinorTickMark || 'none') + '"/>';
         strXml += '  <c:tickLblPos val="' + (opts.catAxisLabelPos || (opts.barDir === 'col' ? 'low' : 'nextTo')) + '"/>';
     }
     strXml += '  <c:spPr>';
@@ -6076,7 +6076,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201226-1414';
+var VERSION = '3.4.0-beta-20201226-1440';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
