@@ -1,6 +1,6 @@
 {
   "name": "pptxgenjs",
-  "version": "3.4.0-beta",
+  "version": "3.4.0",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -37,6 +37,8 @@
     "jszip": "^3.5.0"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
     "doctoc": "^2.0.0",
     "express": "^4.17.1",
     "gulp": "^4.0.2",
