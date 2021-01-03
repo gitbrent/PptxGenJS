@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2021-01-03T01:59:27.197Z */
+/* PptxGenJS 3.4.0-beta @ 2021-01-03T03:43:26.745Z */
 import JSZip from 'jszip';
 
 /**
@@ -4868,9 +4868,13 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '  </c:spPr>';
                     strXml += '</c:marker>';
                 }
-                // Color chart bars various colors
                 // Allow users with a single data set to pass their own array of colors (check for this using != ours)
-                if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) && (data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
+                // Color chart bars various colors when >1 color
+                // NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
+                if ((chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
+                    data.length === 1 &&
+                    opts.chartColors !== BARCHART_COLORS &&
+                    opts.chartColors.length > 1) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
                         var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
@@ -5199,10 +5203,10 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 }
                 // Color bar chart bars various colors
                 // Allow users with a single data set to pass their own array of colors (check for this using != ours)
-                if ((data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
+                if (data.length === 1 && opts.chartColors !== BARCHART_COLORS) {
                     // Series Data Point colors
                     obj.values.forEach(function (value, index) {
-                        var arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || [];
+                        var arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || [];
                         strXml += '  <c:dPt>';
                         strXml += '    <c:idx val="' + index + '"/>';
                         strXml += '      <c:invertIfNegative val="0"/>';
@@ -5626,7 +5630,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="' + (opts.catAxisLineSize ? valToPts(opts.catAxisLineSize) : ONEPT) + '" cap="flat">';
     strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
-    strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || "solid") + '"/>';
+    strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || 'solid') + '"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
     strXml += '  </c:spPr>';
@@ -5734,7 +5738,7 @@ function makeValAxis(opts, valAxisId) {
     strXml += ' <c:spPr>';
     strXml += '   <a:ln w="' + (opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT) + '" cap="flat">';
     strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
-    strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || "solid") + '"/>';
+    strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || 'solid') + '"/>';
     strXml += '     <a:round/>';
     strXml += '   </a:ln>';
     strXml += ' </c:spPr>';
@@ -6088,7 +6092,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20210101-1958';
+var VERSION = '3.4.0-beta-20210101-2143';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
