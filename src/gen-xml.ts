@@ -984,7 +984,6 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
 			}"${opts.color ? '>' : '/>'}`
 		}
-		// TODO: FIXME: WIP: links are now black?!
 		if (opts.color) {
 			runProps += '	<a:extLst>'
 			runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">'
@@ -1256,8 +1255,10 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 			Object.entries(opts).forEach(([key, val]) => {
+				// RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
+				if (textObj.options.hyperlink && key === 'color') null
 				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-				if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
+				else if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
 			})
 
 			// D: Add formatted textrun
