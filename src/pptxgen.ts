@@ -527,6 +527,9 @@ export default class PptxGenJS implements IPresentationProps {
 					return zip.generateAsync({ type: outputType })
 				} else {
 					// C: Browser: Output blob as app/ms-pptx
+					// TODO: WIP: works fine, need to convert to option
+					//return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' })
+					//return zip.generateAsync({ type: 'blob', compression: opt.compress ? 'DEFLATE' : 'STORE' })
 					return zip.generateAsync({ type: 'blob' })
 				}
 			})
