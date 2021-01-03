@@ -1446,7 +1446,9 @@ function genSlides_Chart(pptx) {
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineSize  : 8,
 			lineSmooth: true,
-			showLegend: true, legendPos: 't'
+			showLegend: true,
+			legendPos: 't',
+			catAxisLabelPos: 'high'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 
