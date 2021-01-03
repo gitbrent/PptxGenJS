@@ -411,6 +411,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				if (!slideItemObj.options.line && cy === 0) cy = EMU * 0.3
 
 				// Margin/Padding/Inset for textboxes
+				if (!slideItemObj.options._bodyProp) slideItemObj.options._bodyProp = {}
 				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
 					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0)
 					slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0)
