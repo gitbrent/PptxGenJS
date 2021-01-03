@@ -411,6 +411,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				if (!slideItemObj.options.line && cy === 0) cy = EMU * 0.3
 
 				// Margin/Padding/Inset for textboxes
+				if (!slideItemObj.options._bodyProp) slideItemObj.options._bodyProp = {}
 				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
 					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0)
 					slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0)
@@ -691,24 +692,31 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			'    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
 			'  </p:spPr>'
 		strSlideXml += '<p:txBody>'
-		strSlideXml += '  <a:bodyPr/>'
+		strSlideXml += '<a:bodyPr'
+		if (slide._slideNumberProps.margin && Array.isArray(slide._slideNumberProps.margin)) {
+			strSlideXml += ` lIns="${valToPts(slide._slideNumberProps.margin[3] || 0)}"`
+			strSlideXml += ` tIns="${valToPts(slide._slideNumberProps.margin[0] || 0)}"`
+			strSlideXml += ` rIns="${valToPts(slide._slideNumberProps.margin[1] || 0)}"`
+			strSlideXml += ` bIns="${valToPts(slide._slideNumberProps.margin[2] || 0)}"`
+		} else if (typeof slide._slideNumberProps.margin === 'number') {
+			strSlideXml += ` lIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+			strSlideXml += ` tIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+			strSlideXml += ` rIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+			strSlideXml += ` bIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+		}
+		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
 		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
 			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12) * 100)}">`
 			if (slide._slideNumberProps.color) strSlideXml += genXmlColorSelection(slide._slideNumberProps.color)
 			if (slide._slideNumberProps.fontFace)
-				strSlideXml +=
-					'<a:latin typeface="' +
-					slide._slideNumberProps.fontFace +
-					'"/><a:ea typeface="' +
-					slide._slideNumberProps.fontFace +
-					'"/><a:cs typeface="' +
-					slide._slideNumberProps.fontFace +
-					'"/>'
+				strSlideXml += `<a:latin typeface="${slide._slideNumberProps.fontFace}"/><a:ea typeface="${slide._slideNumberProps.fontFace}"/><a:cs typeface="${slide._slideNumberProps.fontFace}"/>`
 			strSlideXml += '</a:defRPr>'
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
-		strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum"><a:rPr lang="en-US"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>'
+		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
+		if (slide._slideNumberProps.align) strSlideXml += `<a:pPr algn="${slide._slideNumberProps.align.substring(0, 1)}"/>`
+		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}
 
@@ -968,15 +976,22 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 		if (typeof opts.hyperlink !== 'object') throw new Error("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ")
 		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw new Error("ERROR: 'hyperlink requires either `url` or `slide`'")
 		else if (opts.hyperlink.url) {
-			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}" history="1" highlightClick="0" endSnd="0"/>`
+			}" history="1" highlightClick="0" endSnd="0"${opts.color ? '>' : '/>'}`
 		} else if (opts.hyperlink.slide) {
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" action="ppaction://hlinksldjump" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}"/>`
+			}"${opts.color ? '>' : '/>'}`
+		}
+		if (opts.color) {
+			runProps += '	<a:extLst>'
+			runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">'
+			runProps += '			<ahyp:hlinkClr xmlns:ahyp="http://schemas.microsoft.com/office/drawing/2018/hyperlinkcolor" val="tx"/>'
+			runProps += '		</a:ext>'
+			runProps += '	</a:extLst>'
+			runProps += '</a:hlinkClick>'
 		}
 	}
 
@@ -1241,8 +1256,10 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 			Object.entries(opts).forEach(([key, val]) => {
+				// RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
+				if (textObj.options.hyperlink && key === 'color') null
 				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-				if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
+				else if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
 			})
 
 			// D: Add formatted textrun

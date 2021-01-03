@@ -220,11 +220,11 @@ export interface ShapeLineProps extends ShapeFillProps {
 	 */
 	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 * @deprecated v3.3.0 - use `beginArrowType`
 	 */
 	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `endArrowType`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
@@ -899,7 +899,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 */
 	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 * @deprecated v3.3.0 - use `beginArrowType`
 	 */
 	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
@@ -907,7 +907,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 */
 	lineSize?: number
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `endArrowType`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
@@ -1290,7 +1290,9 @@ export interface PresLayout {
 	width: number
 	height: number
 }
-export interface SlideNumberProps extends PositionProps, TextBaseProps {}
+export interface SlideNumberProps extends PositionProps, TextBaseProps {
+	margin?: Margin
+}
 export interface SlideMasterProps {
 	/**
 	 * Unique name for this master
