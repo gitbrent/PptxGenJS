@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2020-12-26T20:48:03.513Z */
+/* PptxGenJS 3.4.0-beta @ 2021-01-03T00:38:20.892Z */
 import JSZip from 'jszip';
 
 /**
@@ -2209,12 +2209,19 @@ function genXmlTextRunProperties(opts, isDefault) {
         else if (!opts.hyperlink.url && !opts.hyperlink.slide)
             throw new Error("ERROR: 'hyperlink requires either `url` or `slide`'");
         else if (opts.hyperlink.url) {
-            // TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
             //runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
-            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink._rId + "\" invalidUrl=\"\" action=\"\" tgtFrame=\"\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\" history=\"1\" highlightClick=\"0\" endSnd=\"0\"/>";
+            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink._rId + "\" invalidUrl=\"\" action=\"\" tgtFrame=\"\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\" history=\"1\" highlightClick=\"0\" endSnd=\"0\"" + (opts.color ? '>' : '/>');
         }
         else if (opts.hyperlink.slide) {
-            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink._rId + "\" action=\"ppaction://hlinksldjump\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\"/>";
+            runProps += "<a:hlinkClick r:id=\"rId" + opts.hyperlink._rId + "\" action=\"ppaction://hlinksldjump\" tooltip=\"" + (opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : '') + "\"" + (opts.color ? '>' : '/>');
+        }
+        if (opts.color) {
+            runProps += '	<a:extLst>';
+            runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">';
+            runProps += '			<ahyp:hlinkClr xmlns:ahyp="http://schemas.microsoft.com/office/drawing/2018/hyperlinkcolor" val="tx"/>';
+            runProps += '		</a:ext>';
+            runProps += '	</a:extLst>';
+            runProps += '</a:hlinkClick>';
         }
     }
     // END runProperties
@@ -2469,8 +2476,11 @@ function genXmlTextBody(slideObj) {
             // so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
             Object.entries(opts).forEach(function (_a) {
                 var key = _a[0], val = _a[1];
+                // RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
+                if (textObj.options.hyperlink && key === 'color')
+                    ;
                 // NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-                if (key !== 'bullet' && !textObj.options[key])
+                else if (key !== 'bullet' && !textObj.options[key])
                     textObj.options[key] = val;
             });
             // D: Add formatted textrun
@@ -3330,7 +3340,7 @@ function addImageDefinition(target, opt) {
         placeholder: opt.placeholder,
         rotate: opt.rotate || 0,
         flipV: opt.flipV || false,
-        flipH: opt.flipH || false
+        flipH: opt.flipH || false,
     };
     // STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
     if (strImgExtn === 'svg') {
@@ -6076,7 +6086,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20201226-1440';
+var VERSION = '3.4.0-beta-20210101-1830';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
