@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0-beta @ 2021-01-03T00:38:20.886Z */
+/* PptxGenJS 3.4.0-beta @ 2021-01-03T01:59:27.189Z */
 'use strict';
 
 Object.defineProperty(exports, '__esModule', { value: true });
@@ -1688,6 +1688,8 @@ function slideObjectToXml(slide) {
                 if (!slideItemObj.options.line && cy === 0)
                     cy = EMU * 0.3;
                 // Margin/Padding/Inset for textboxes
+                if (!slideItemObj.options._bodyProp)
+                    slideItemObj.options._bodyProp = {};
                 if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
                     slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0);
                     slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0);
@@ -6094,7 +6096,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0-beta-20210101-1830';
+var VERSION = '3.4.0-beta-20210101-1958';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
