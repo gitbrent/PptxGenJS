@@ -77,7 +77,7 @@ $ npm run build
 
 ### Pre-Release Check
 
-1. Update `demos/browser/index.html` version and CDN links
+1. Update `demos/browser/index.html` head to use "RELEASE (CDN)"
 2. Is version updated in package.json and src/pptxgen.ts?
 3. Are `index.d.ts` defs updated?
 
