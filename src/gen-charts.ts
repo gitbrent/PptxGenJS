@@ -792,11 +792,12 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 					strXml += '</c:marker>'
 				}
 
-				// Color chart bars various colors
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
+				// Color chart bars various colors when >1 color
+				// NOTE: `<c:dPt>` created with various colors will change PPT legend by design so each dataPt/color is an legend item!
 				if (
 					(chartType === CHART_TYPE.BAR || chartType === CHART_TYPE.BAR3D) &&
-					(data.length === 1 || opts.valueBarColors) &&
+					data.length === 1 &&
 					opts.chartColors !== BARCHART_COLORS &&
 					opts.chartColors.length > 1
 				) {
@@ -1137,10 +1138,10 @@ function makeChartType(chartType: CHART_NAME, data: OptsChartData[], opts: IChar
 
 				// Color bar chart bars various colors
 				// Allow users with a single data set to pass their own array of colors (check for this using != ours)
-				if ((data.length === 1 || opts.valueBarColors) && opts.chartColors !== BARCHART_COLORS) {
+				if (data.length === 1 && opts.chartColors !== BARCHART_COLORS) {
 					// Series Data Point colors
 					obj.values.forEach((value, index) => {
-						let arrColors = value < 0 ? opts.invertedColors || BARCHART_COLORS : opts.chartColors || []
+						let arrColors = value < 0 ? opts.invertedColors || opts.chartColors || BARCHART_COLORS : opts.chartColors || []
 
 						strXml += '  <c:dPt>'
 						strXml += '    <c:idx val="' + index + '"/>'
