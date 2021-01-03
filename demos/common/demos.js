@@ -1141,7 +1141,7 @@ function genSlides_Chart(pptx) {
 
 		var arrDataHighVals = [
 			{
-				name  : 'TEST: getExcelColName',
+				name  : 'Single Data Set',
 				labels: LETTERS.concat(['AA','AB','AC','AD']),
 				values: [-5,-3,0,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
 			}
@@ -1159,7 +1159,8 @@ function genSlides_Chart(pptx) {
 			catAxisTitleColor: "4286f4",
 			catAxisTitleFontSize: 14,
 
-			chartColors: ['EE1122'],
+			showLegend: true,
+			chartColors: ['154384'],
 			invertedColors: ['0088CC'],
 
 			showValAxisTitle: true,
@@ -1183,7 +1184,7 @@ function genSlides_Chart(pptx) {
 			pptx.charts.BAR,
 			[
 				{
-					name  : 'Labels are Excel Date Values',
+					name  : 'Excel Date Values',
 					labels: [37987,38018,38047,38078,38108,38139],
 					values: [20, 30, 10, 25, 15, 5]
 				}
@@ -1775,13 +1776,16 @@ function genSlides_Chart(pptx) {
 			fill: 'f2f9fc',
 			//catAxisOrientation: 'maxMin',
 			//valAxisOrientation: 'maxMin',
+			showLegend: true,
+			chartColors: ['FF0000','0088CC'],
+
 			showValAxisTitle: false,
 			lineSize: 0,
 
 			catAxisTitle        : "Data Point Labels",
 			catAxisTitleColor   : "0088CC",
 			catAxisTitleFontSize: 14,
-			showCatAxisTitle    : true,
+			showCatAxisTitle    : false,
 
 			// Data Labels
 			showLabel             : true, // Must be set to true or labels will not be shown

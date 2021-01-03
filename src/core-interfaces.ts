@@ -1112,7 +1112,6 @@ export interface IChartPropsChartBar {
 	barGapDepthPct?: number
 	barGapWidthPct?: number
 	barGrouping?: string
-	valueBarColors?: string[]
 }
 export interface IChartPropsChartDoughnut {
 	dataNoEffects?: boolean
