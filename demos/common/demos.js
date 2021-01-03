@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.4.0
-* BLD.: 20201223
+* BLD.: 20210101
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2900,15 +2900,19 @@ function genSlides_Text(pptx) {
 		slide.addText("Hyperlinks:", { x:0.5, y:6.0, w:'90%', h:0.3, margin:0.123, color:'0088CC' });
 		slide.addText(
 			[{ text: 'Link with Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent/pptxgenjs', tooltip: 'Visit Homepage' } } }],
-			{ x:0.5, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:0.5, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
 		);
 		slide.addText(
 			[{ text: 'Link without Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent' } } }],
-			{ x:5.0, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:3.78, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+		);
+		slide.addText(
+			[{ text: 'Link with custom color', options: { hyperlink: { url: 'https://github.com/gitbrent' }, color: 'EE40EE' } }],
+			{ x:7.05, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
 		);
 		slide.addText(
 			[{ text: 'Link to Slide #5', options: { hyperlink: { slide: 5 } } }],
-			{ x:9.5, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:10.33, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'E2F0D9'}, fontSize:14, align:'center' }
 		);
 	}
 
