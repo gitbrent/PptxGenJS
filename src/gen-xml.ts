@@ -975,15 +975,22 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 		if (typeof opts.hyperlink !== 'object') throw new Error("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ")
 		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw new Error("ERROR: 'hyperlink requires either `url` or `slide`'")
 		else if (opts.hyperlink.url) {
-			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}" history="1" highlightClick="0" endSnd="0"/>`
+			}" history="1" highlightClick="0" endSnd="0"${opts.color ? '>' : '/>'}`
 		} else if (opts.hyperlink.slide) {
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" action="ppaction://hlinksldjump" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}"/>`
+			}"${opts.color ? '>' : '/>'}`
+		}
+		if (opts.color) {
+			runProps += '	<a:extLst>'
+			runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">'
+			runProps += '			<ahyp:hlinkClr xmlns:ahyp="http://schemas.microsoft.com/office/drawing/2018/hyperlinkcolor" val="tx"/>'
+			runProps += '		</a:ext>'
+			runProps += '	</a:extLst>'
+			runProps += '</a:hlinkClick>'
 		}
 	}
 
@@ -1248,8 +1255,10 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 			Object.entries(opts).forEach(([key, val]) => {
+				// RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
+				if (textObj.options.hyperlink && key === 'color') null
 				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-				if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
+				else if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
 			})
 
 			// D: Add formatted textrun

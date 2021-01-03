@@ -276,7 +276,8 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		options.dataBorder.color = 'F9F9F9'
 	//
 	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
-	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT)) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
+	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT))
+		options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
@@ -384,7 +385,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		placeholder: opt.placeholder,
 		rotate: opt.rotate || 0,
 		flipV: opt.flipV || false,
-		flipH: opt.flipH || false
+		flipH: opt.flipH || false,
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
