@@ -78,7 +78,20 @@ import {
 	ShapeType,
 	WRITE_OUTPUT_TYPE,
 } from './core-enums'
-import { AddSlideProps, IPresentationProps, PresLayout, PresSlide, SectionProps, SlideLayout, SlideMasterProps, SlideNumberProps, TableToSlidesProps } from './core-interfaces'
+import {
+	AddSlideProps,
+	IPresentationProps,
+	PresLayout,
+	PresSlide,
+	SectionProps,
+	SlideLayout,
+	SlideMasterProps,
+	SlideNumberProps,
+	TableToSlidesProps,
+	WriteBaseProps,
+	WriteFileProps,
+	WriteProps,
+} from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
@@ -446,7 +459,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WRITE_OUTPUT_TYPE} outputType - output file type
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
-	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
+	private exportPresentation = (props: WriteProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
 		let arrChartPromises: Promise<string>[] = []
 		let arrMediaPromises: Promise<string>[] = []
 		let zip = new JSZip()
@@ -519,18 +532,15 @@ export default class PptxGenJS implements IPresentationProps {
 
 			// E: Wait for Promises (if any) then generate the PPTX file
 			return Promise.all(arrChartPromises).then(() => {
-				if (outputType === 'STREAM') {
+				if (props.outputType === 'STREAM') {
 					// A: stream file
-					return zip.generateAsync({ type: 'nodebuffer' })
-				} else if (outputType) {
+					return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
+				} else if (props.outputType) {
 					// B: Node [fs]: Output type user option or default
-					return zip.generateAsync({ type: outputType })
+					return zip.generateAsync({ type: props.outputType })
 				} else {
 					// C: Browser: Output blob as app/ms-pptx
-					// TODO: WIP: works fine, need to convert to option
-					//return zip.generateAsync({ type: 'blob', compression: 'DEFLATE' })
-					//return zip.generateAsync({ type: 'blob', compression: opt.compress ? 'DEFLATE' : 'STORE' })
-					return zip.generateAsync({ type: 'blob' })
+					return zip.generateAsync({ type: 'blob', compression: props.compression ? 'DEFLATE' : 'STORE' })
 				}
 			})
 		})
@@ -540,31 +550,48 @@ export default class PptxGenJS implements IPresentationProps {
 
 	/**
 	 * Export the current Presentation to stream
+	 * @param {WriteBaseProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
-	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return this.exportPresentation('STREAM')
+	stream(props: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		return this.exportPresentation({
+			compression: props.compression || false,
+			outputType: 'STREAM',
+		})
 	}
 
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
-	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	 * @param {WriteProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
-	write(outputType: JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return this.exportPresentation(outputType)
+	write(props: WriteProps | WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		// DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
+		const propsOutType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+
+		return this.exportPresentation({
+			compression: propsCompress,
+			outputType: propsOutType,
+		})
 	}
 
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @param {string} exportName - file name
+	 * @param {WriteFileProps} props - output file properties
 	 * @returns {Promise<string>} the presentation name
 	 */
-	writeFile(exportName?: string): Promise<string> {
+	writeFile(props: WriteFileProps | string): Promise<string> {
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
-		let fileName = exportName ? (exportName.toString().toLowerCase().endsWith('.pptx') ? exportName : exportName + '.pptx') : 'Presentation.pptx'
+		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
+		const propsExpName = typeof props === 'object' && props.hasOwnProperty('exportName') ? props.exportName : typeof props === 'string' ? props : ''
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+		let fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx'
 
-		return this.exportPresentation(fs ? 'nodebuffer' : null).then(content => {
+		return this.exportPresentation({
+			compression: propsCompress,
+			outputType: fs ? 'nodebuffer' : null,
+		}).then(content => {
 			if (fs) {
 				// Node: Output
 				return new Promise<string>((resolve, reject) => {

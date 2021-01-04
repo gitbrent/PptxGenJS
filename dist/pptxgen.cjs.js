@@ -1,4 +1,4 @@
-/* PptxGenJS 3.4.0 @ 2021-01-03T20:47:26.885Z */
+/* PptxGenJS 3.5.0-beta @ 2021-01-04T01:22:19.340Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6098,7 +6098,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.4.0';
+var VERSION = '3.5.0-beta-20210103-1811';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6225,7 +6225,7 @@ var PptxGenJS = /** @class */ (function () {
          * @param {WRITE_OUTPUT_TYPE} outputType - output file type
          * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
          */
-        this.exportPresentation = function (outputType) {
+        this.exportPresentation = function (props) {
             var arrChartPromises = [];
             var arrMediaPromises = [];
             var zip = new JSZip__default['default']();
@@ -6293,17 +6293,17 @@ var PptxGenJS = /** @class */ (function () {
                 _this.createChartMediaRels(_this.masterSlide, zip, arrChartPromises);
                 // E: Wait for Promises (if any) then generate the PPTX file
                 return Promise.all(arrChartPromises).then(function () {
-                    if (outputType === 'STREAM') {
+                    if (props.outputType === 'STREAM') {
                         // A: stream file
-                        return zip.generateAsync({ type: 'nodebuffer' });
+                        return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' });
                     }
-                    else if (outputType) {
+                    else if (props.outputType) {
                         // B: Node [fs]: Output type user option or default
-                        return zip.generateAsync({ type: outputType });
+                        return zip.generateAsync({ type: props.outputType });
                     }
                     else {
                         // C: Browser: Output blob as app/ms-pptx
-                        return zip.generateAsync({ type: 'blob' });
+                        return zip.generateAsync({ type: 'blob', compression: props.compression ? 'DEFLATE' : 'STORE' });
                     }
                 });
             });
@@ -6554,29 +6554,45 @@ var PptxGenJS = /** @class */ (function () {
     // EXPORT METHODS
     /**
      * Export the current Presentation to stream
+     * @param {WriteBaseProps} props - output properties
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
      */
-    PptxGenJS.prototype.stream = function () {
-        return this.exportPresentation('STREAM');
+    PptxGenJS.prototype.stream = function (props) {
+        return this.exportPresentation({
+            compression: props.compression || false,
+            outputType: 'STREAM',
+        });
     };
     /**
      * Export the current Presentation as JSZip content with the selected type
-     * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+     * @param {WriteProps} props - output properties
      * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
      */
-    PptxGenJS.prototype.write = function (outputType) {
-        return this.exportPresentation(outputType);
+    PptxGenJS.prototype.write = function (props) {
+        // DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
+        var propsOutType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? props : null;
+        var propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false;
+        return this.exportPresentation({
+            compression: propsCompress,
+            outputType: propsOutType,
+        });
     };
     /**
      * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-     * @param {string} exportName - file name
+     * @param {WriteFileProps} props - output file properties
      * @returns {Promise<string>} the presentation name
      */
-    PptxGenJS.prototype.writeFile = function (exportName) {
+    PptxGenJS.prototype.writeFile = function (props) {
         var _this = this;
         var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
-        var fileName = exportName ? (exportName.toString().toLowerCase().endsWith('.pptx') ? exportName : exportName + '.pptx') : 'Presentation.pptx';
-        return this.exportPresentation(fs ? 'nodebuffer' : null).then(function (content) {
+        // DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
+        var propsExpName = typeof props === 'object' && props.hasOwnProperty('exportName') ? props.exportName : typeof props === 'string' ? props : '';
+        var propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false;
+        var fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx';
+        return this.exportPresentation({
+            compression: propsCompress,
+            outputType: fs ? 'nodebuffer' : null,
+        }).then(function (content) {
             if (fs) {
                 // Node: Output
                 return new Promise(function (resolve, reject) {
