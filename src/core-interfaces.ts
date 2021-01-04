@@ -1284,7 +1284,7 @@ export interface WriteFileProps extends WriteBaseProps {
 	 * Export file name
 	 * @default 'Presentation.pptx'
 	 */
-	exportName?: string
+	fileName?: string
 }
 export interface SectionProps {
 	_type: 'user' | 'default'
