@@ -1,7 +1,7 @@
 /*
  * NAME: demo_stream.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: 20200516
+ * DATE: 20210103
  * DESC: PptxGenJS feature demos for Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  *
@@ -20,8 +20,8 @@ let pptx = new PptxGenJS();
 let slide = pptx.addSlide();
 slide.addText(
 	[
-		{ text: "PptxGenJS", options: { fontSize: 48, color: pptx.colors.ACCENT1 } },
-		{ text: "Node Stream Demo", options: { fontSize: 24, color: pptx.colors.ACCENT6 } },
+		{ text: "PptxGenJS", options: { fontSize: 48, color: pptx.colors.ACCENT1, breakLine: true } },
+		{ text: "Node Stream Demo", options: { fontSize: 24, color: pptx.colors.ACCENT6, breakLine: true } },
 		{ text: "(pretty cool huh?)", options: { fontSize: 24, color: pptx.colors.ACCENT3 } },
 	],
 	{ x: 1, y: 1, w: "80%", h: 3, align: "center", fill: pptx.colors.BACKGROUND2 }

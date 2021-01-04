@@ -6,7 +6,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
-## [3.4.0] - 2021-01-?
+## [3.5.0] - 2021-04-??
+### Added
+### Changed
+
+
+
+## [3.4.0] - 2021-01-03
 ### Added
 - Added: `firstSliceAngle` (Pie, Doughnut charts) [\#666](https://github.com/gitbrent/PptxGenJS/issues/666) ([ghost](https://github.com/ghost)) [\#809](https://github.com/gitbrent/PptxGenJS/pull/809) ([cronin4392](https://github.com/cronin4392))
 - Added: Ability to change hyperlink `color` [\#389](https://github.com/gitbrent/PptxGenJS/issues/389) ([szilagyikinga](https://github.com/szilagyikinga)) [\#793](https://github.com/gitbrent/PptxGenJS/pull/793) ([ReimaFrgos](https://github.com/ReimaFrgos))

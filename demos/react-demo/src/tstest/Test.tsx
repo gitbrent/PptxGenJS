@@ -88,7 +88,7 @@ function testMethod_Table(pptx: pptxgen) {
 
 	// SLIDE 1: Table text alignment and cell styles
 	{
-		var slide = pptx.addSlide({ sectionTitle: "Tables" });
+		let slide = pptx.addSlide({ sectionTitle: "Tables" });
 		slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 		//slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
 
@@ -129,7 +129,7 @@ function testMethod_Table(pptx: pptxgen) {
 		var objOpts2 = { x: 6.0, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
 		slide.addText("Cell Styles:", objOpts2);
 
-		var arrTabRows2: pptxgen.TableRow[] = [
+		let arrTabRows2: pptxgen.TableRow[] = [
 			[
 				{ text: "White", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
 				{ text: "Yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
@@ -183,7 +183,7 @@ function testMethod_Table(pptx: pptxgen) {
 
 	// SLIDE 2: Table row/col-spans
 	{
-		var slide = pptx.addSlide({ sectionTitle: "Tables" });
+		let slide = pptx.addSlide({ sectionTitle: "Tables" });
 		slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 		// 2: Slide title
 		//slide.addTable([ [{ text:'Table Examples 2', options:gOptsTextL },gOptsTextR] ], { x:'4%', y:'2%', w:'95%', h:'4%' }); // QA: this table's x,y,w,h all using %
@@ -232,7 +232,7 @@ function testMethod_Table(pptx: pptxgen) {
 			fill: { color: "F9F9F9" },
 			border: { pt: 1, color: "c7c7c7" },
 		};
-		var arrTabRows2: pptxgen.TableRow[] = [
+		let arrTabRows2: pptxgen.TableRow[] = [
 			[
 				{ text: "A1\n--\nA2", options: { rowspan: 2, fill: { color: "99FFCC" } } },
 				{ text: "B1\n--\nB2", options: { rowspan: 2, fill: { color: "99FFCC" } } },
@@ -291,6 +291,7 @@ function testMethod_Table(pptx: pptxgen) {
 		slide.addTable(arrTabRows4, tabOpts4);
 	}
 }
+/*
 function testMethod_Tables(pptx: pptxgen) {
 	let slide = pptx.addSlide();
 
@@ -320,6 +321,7 @@ function testMethod_Tables(pptx: pptxgen) {
 		border: { type: "solid", pt: 1, color: "a9a9a9" },
 	});
 }
+*/
 function testMethod_Media(pptx: pptxgen) {
 	let slide = pptx.addSlide();
 
