@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Notes]
 
 ## [3.5.0] - 2021-04-??
-### Added
-### Changed
+### Release Summary
 - write()/writeFile() now take a props object as their argument (`WriteProps`/`WriteFileProps`)
+### Added
+- Enable JSZip compression [\#713](https://github.com/gitbrent/PptxGenJS/issues/713) ([pimlottc-gov](https://github.com/pimlottc-gov))
+### Changed
 
 
 
