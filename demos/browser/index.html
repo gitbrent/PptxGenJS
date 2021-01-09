@@ -6,7 +6,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.5.0">
-	<meta name="updated" content="2021-01-03">
+	<meta name="updated" content="2021-01-09">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -449,7 +449,7 @@
 			pptx.tableToSlides('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
-			pptx.writeFile({ fileName: 'Demo-TableToSlidesMasterSlide_'+getTimestamp() });
+			pptx.writeFile({ fileName: 'Table2Slides_MasterSlide_'+getTimestamp() });
 		}
 
 		function table2slides2() {
@@ -477,7 +477,7 @@
 			pptx.tableToSlides('tabAutoPaging', objOpts);
 
 			// LAST: Export Presentation
-			pptx.writeFile({ fileName: 'Table2Slides-with-dynamic-text' });
+			pptx.writeFile({ fileName: 'Table2Slides_DynamicText' });
 		}
 
 		function doAppStart() {
