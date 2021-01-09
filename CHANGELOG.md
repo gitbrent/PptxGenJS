@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.5.0] - 2021-04-??
 ### Added
 ### Changed
+- write()/writeFile() now take a props object as their argument (`WriteProps`/`WriteFileProps`)
 
 
 
