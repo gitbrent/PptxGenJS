@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN } from './core-enums'
+import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
 
 // Core Types
 // ==========
@@ -1263,6 +1263,29 @@ export interface ISlideObject {
 }
 // PRIVATE ^^^
 
+export interface WriteBaseProps {
+	/**
+	 * Whether to compress export (can save substantial space, but takes a bit longer to export)
+	 * @default false
+	 * @since v3.5.0
+	 */
+	compression?: boolean
+}
+export interface WriteProps extends WriteBaseProps {
+	/**
+	 * Output type
+	 * - values: 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array' | 'STREAM'
+	 * @default 'blob'
+	 */
+	outputType?: WRITE_OUTPUT_TYPE
+}
+export interface WriteFileProps extends WriteBaseProps {
+	/**
+	 * Export file name
+	 * @default 'Presentation.pptx'
+	 */
+	fileName?: string
+}
 export interface SectionProps {
 	_type: 'user' | 'default'
 	_slides: PresSlide[]

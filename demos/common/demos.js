@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.5.0
-* BLD.: 20210103
+* BLD.: 20210109
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -25,7 +25,8 @@ var NODEJS = false;
 if (NODEJS) { var LOGO_STARLABS; }
 
 // Constants
-var TESTMODE = false
+var COMPRESS = true; //false; // TEST: `compression` write prop
+var TESTMODE = false;
 var CUST_NAME = 'S.T.A.R. Laboratories';
 var USER_NAME = 'Barry Allen';
 var COLOR_RED = 'FF0000';
@@ -274,10 +275,10 @@ function execGenSlidesFuncs(type) {
 
 	// LAST: Export Presentation
 	if ( NODEJS ) {
-		return pptx.writeFile('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
+		return pptx.writeFile({ fileName: 'PptxGenJS_Demo_Node_' + type + '_' + getTimestamp() });
 	}
 	else {
-		return pptx.writeFile('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
+		return pptx.writeFile({ fileName: 'PptxGenJS_Demo_Browser_' + type + '_' + getTimestamp(), compression: COMPRESS });
 	}
 }
 

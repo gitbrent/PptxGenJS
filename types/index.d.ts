@@ -89,13 +89,13 @@ declare class PptxGenJS {
 	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file content in selected type
 	 */
-	write(outputType: PptxGenJS.JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Uint8Array>
+	write(props?: PptxGenJS.WriteProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
 	 * @param {string} exportName - file name
 	 * @returns {Promise<string>} the presentation name
 	 */
-	writeFile(exportName?: string): Promise<string>
+	writeFile(props?: PptxGenJS.WriteFileProps): Promise<string>
 	/**
 	 * Add a new Section to Presentation
 	 * @param {SectionProps} section - section properties
@@ -577,6 +577,7 @@ declare namespace PptxGenJS {
 
 	// @source `core-enums.ts`
 	export type JSZIP_OUTPUT_TYPE = 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	export type WRITE_OUTPUT_TYPE = JSZIP_OUTPUT_TYPE | 'STREAM'
 	export enum CHART_TYPE {
 		'AREA' = 'area',
 		'BAR' = 'bar',
@@ -1967,6 +1968,29 @@ declare namespace PptxGenJS {
 
 	// Core
 	// ====
+	export interface WriteBaseProps {
+		/**
+		 * Whether to compress export (can save substantial space, but takes a bit longer to export)
+		 * @default false
+		 * @since v3.5.0
+		 */
+		compression?: boolean
+	}
+	export interface WriteProps extends WriteBaseProps {
+		/**
+		 * Output type
+		 * - values: 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array' | 'STREAM'
+		 * @default 'blob'
+		 */
+		outputType?: WRITE_OUTPUT_TYPE
+	}
+	export interface WriteFileProps extends WriteBaseProps {
+		/**
+		 * Export file name
+		 * @default 'Presentation.pptx'
+		 */
+		fileName?: string
+	}
 	export interface SectionProps {
 		/**
 		 * Section title
