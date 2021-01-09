@@ -6,7 +6,7 @@
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2020 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2021 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
 |*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
@@ -98,7 +98,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.5.0-beta-20210109-1320'
+const VERSION = '3.5.0-beta-20210109-1340'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
