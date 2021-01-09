@@ -98,7 +98,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.5.0-beta-20210103-1931'
+const VERSION = '3.5.0-beta-20210109-1255'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -565,7 +565,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WriteProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
-	write(props: WriteProps | WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+	write(props?: WriteProps | WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
 		// DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
 		const propsOutType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
 		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
@@ -581,7 +581,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WriteFileProps} props - output file properties
 	 * @returns {Promise<string>} the presentation name
 	 */
-	writeFile(props: WriteFileProps | string): Promise<string> {
+	writeFile(props?: WriteFileProps | string): Promise<string> {
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
 		const propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : ''
