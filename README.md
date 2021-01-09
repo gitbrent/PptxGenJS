@@ -155,7 +155,7 @@ let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile();
 ```
 
 ### Script/Web Browser
@@ -173,7 +173,7 @@ let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile();
 ```
 
 That's really all there is to it!
@@ -209,7 +209,7 @@ Easily convert HTML tables to PowerPoint presentations in a single call.
 ```javascript
 let pptx = new PptxGenJS();
 pptx.tableToSlides("tableElementId");
-pptx.writeFile("HTML2PPT.pptx");
+pptx.writeFile();
 ```
 
 Learn more:
