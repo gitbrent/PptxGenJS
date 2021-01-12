@@ -350,7 +350,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 							cellMargin[2]
 						)}"`
 
-						// FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+						// FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 4: Set CELL content and properties ==================================
 						strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
@@ -1051,7 +1051,7 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
 		// A: Enable or disable textwrapping none or square
-		bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="' + slideObject.options._bodyProp.wrap + '"' : ' wrap="square"'
+		bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="square"' : ' wrap="none"'
 
 		// B: Textbox margins [padding]
 		if (slideObject.options._bodyProp.lIns || slideObject.options._bodyProp.lIns === 0) bodyProperties += ' lIns="' + slideObject.options._bodyProp.lIns + '"'

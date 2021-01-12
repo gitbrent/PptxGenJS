@@ -815,7 +815,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 		tIns?: number
 		bIns?: number
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-		wrap?: 'none' | 'square'
+		wrap?: boolean
 	}
 	_lineIdx?: number
 

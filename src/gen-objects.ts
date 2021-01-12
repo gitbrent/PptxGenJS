@@ -954,6 +954,7 @@ export function addTextDefinition(target: PresSlide, text: string | TextProps[],
 		newObject.options._bodyProp.autoFit = opt.autoFit || false // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
 		newObject.options._bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
 		newObject.options._bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+		newObject.options._bodyProp.wrap = typeof opt.wrap === 'boolean' ? opt.wrap : true
 
 		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
 			newObject.options._bodyProp.lIns = inch2Emu(opt.inset)
