@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-01-04T01:22:19.340Z */
+/* PptxGenJS 3.5.0-beta @ 2021-01-12T01:01:49.335Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1636,7 +1636,7 @@ function slideObjectToXml(slide) {
                         if (!Array.isArray(cellMargin) && typeof cellMargin === 'number')
                             cellMargin = [cellMargin, cellMargin, cellMargin, cellMargin];
                         var cellMarginXml = " marL=\"" + valToPts(cellMargin[3]) + "\" marR=\"" + valToPts(cellMargin[1]) + "\" marT=\"" + valToPts(cellMargin[0]) + "\" marB=\"" + valToPts(cellMargin[2]) + "\"";
-                        // FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
+                        // FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
                         // 4: Set CELL content and properties ==================================
                         strXml_1 += "<a:tc" + cellSpanAttrStr + ">" + genXmlTextBody(cell) + "<a:tcPr" + cellMarginXml + cellValign + ">";
                         //strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
@@ -2282,7 +2282,7 @@ function genXmlBodyProperties(slideObject) {
     if (slideObject && slideObject._type === SLIDE_OBJECT_TYPES.text && slideObject.options._bodyProp) {
         // PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
         // A: Enable or disable textwrapping none or square
-        bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="' + slideObject.options._bodyProp.wrap + '"' : ' wrap="square"';
+        bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="square"' : ' wrap="none"';
         // B: Textbox margins [padding]
         if (slideObject.options._bodyProp.lIns || slideObject.options._bodyProp.lIns === 0)
             bodyProperties += ' lIns="' + slideObject.options._bodyProp.lIns + '"';
@@ -3894,6 +3894,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         newObject.options._bodyProp.autoFit = opt.autoFit || false; // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
         newObject.options._bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null; // VALS: [t,ctr,b]
         newObject.options._bodyProp.vert = opt.vert || null; // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+        newObject.options._bodyProp.wrap = typeof opt.wrap === 'boolean' ? opt.wrap : true;
         if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
             newObject.options._bodyProp.lIns = inch2Emu(opt.inset);
             newObject.options._bodyProp.rIns = inch2Emu(opt.inset);
@@ -6075,7 +6076,7 @@ function createSvgPngPreview(rel) {
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2020 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2021 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
 |*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
@@ -6098,7 +6099,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.5.0-beta-20210103-1811';
+var VERSION = '3.5.0-beta-20210111-1850';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6586,7 +6587,9 @@ var PptxGenJS = /** @class */ (function () {
         var _this = this;
         var fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null; // NodeJS
         // DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
-        var propsExpName = typeof props === 'object' && props.hasOwnProperty('exportName') ? props.exportName : typeof props === 'string' ? props : '';
+        if (typeof props === 'string')
+            console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)');
+        var propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : '';
         var propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false;
         var fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx';
         return this.exportPresentation({
