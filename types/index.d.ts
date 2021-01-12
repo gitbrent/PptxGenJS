@@ -1655,29 +1655,29 @@ declare namespace PptxGenJS {
 
 		/**
 		 * Whather "Fit to Shape?" is enabled
-		 * @deprecated v3.3.0 - use `textFit`
+		 * @deprecated v3.3.0 - use `fit`
 		 */
 		autoFit?: boolean
 		/**
 		 * Whather "Shrink Text on Overflow?" is enabled
-		 * @deprecated v3.3.0 - use `textFit`
+		 * @deprecated v3.3.0 - use `fit`
 		 */
 		shrinkText?: boolean
 		/**
 		 * Dash type
-		 * @deprecated v3.3.0 - use `dashType`
+		 * @deprecated v3.3.0 - use `line.dashType`
 		 */
 		lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 		/**
-		 * @deprecated v3.3.0 - use `beginArrowType`
+		 * @deprecated v3.3.0 - use `line.beginArrowType`
 		 */
 		lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 		/**
-		 * @deprecated v3.3.0 - use `line.size`
+		 * @deprecated v3.3.0 - use `line.width`
 		 */
 		lineSize?: number
 		/**
-		 * @deprecated v3.3.0 - use `endArrowType`
+		 * @deprecated v3.3.0 - use `line.endArrowType`
 		 */
 		lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	}
