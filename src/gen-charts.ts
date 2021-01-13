@@ -1686,7 +1686,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 			title: opts.valAxisTitle || 'Axis Title',
 		})
 	}
-	strXml += ' <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>'
+	strXml += `<c:numFmt formatCode='${(opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : "General")}' sourceLinked="0"/>`;
 	if (opts._type === CHART_TYPE.SCATTER) {
 		strXml += '  <c:majorTickMark val="none"/>'
 		strXml += '  <c:minorTickMark val="none"/>'
