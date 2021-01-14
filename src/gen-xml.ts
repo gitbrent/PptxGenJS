@@ -349,12 +349,12 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 						let cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(
 							cellMargin[2]
 						)}"`
+            let cellTextDir = cellOpts.vert ? ` vert="${cellOpts.vert}"` : ''
 
 						// FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 4: Set CELL content and properties ==================================
-						strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
-						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
+						strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
 						// FIXME: 20200525: ^^^
 						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
 
