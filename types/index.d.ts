@@ -1479,6 +1479,10 @@ declare namespace PptxGenJS {
 		 * Cell rowspan
 		 */
 		rowspan?: number
+		/**
+		 * Cell text direction
+		 */
+		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	}
 	export interface TableProps extends PositionProps, TextBaseProps {
 		/**

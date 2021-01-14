@@ -349,7 +349,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 						let cellMarginXml = ` marL="${valToPts(cellMargin[3])}" marR="${valToPts(cellMargin[1])}" marT="${valToPts(cellMargin[0])}" marB="${valToPts(
 							cellMargin[2]
 						)}"`
-            let cellTextDir = cellOpts.vert ? ` vert="${cellOpts.vert}"` : ''
+						let cellTextDir = cellOpts.vert ? ` vert="${cellOpts.vert}"` : ''
 
 						// FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 

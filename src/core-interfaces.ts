@@ -685,10 +685,10 @@ export interface TableCellProps extends TextBaseProps {
 	 * Cell rowspan
 	 */
 	rowspan?: number
-  /**
-   * Cell text direction
-   */
-  vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
+	/**
+	 * Cell text direction
+	 */
+	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 }
 export interface TableProps extends PositionProps, TextBaseProps {
 	_arrObjTabHeadRows?: TableRow[]
