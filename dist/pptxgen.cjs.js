@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-01-12T01:01:49.335Z */
+/* PptxGenJS 3.5.0-beta @ 2021-01-14T05:37:45.214Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -5731,7 +5731,7 @@ function makeValAxis(opts, valAxisId) {
             title: opts.valAxisTitle || 'Axis Title',
         });
     }
-    strXml += ' <c:numFmt formatCode="' + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + '" sourceLinked="0"/>';
+    strXml += "<c:numFmt formatCode='" + (opts.valAxisLabelFormatCode ? opts.valAxisLabelFormatCode : 'General') + "' sourceLinked=\"0\"/>";
     if (opts._type === CHART_TYPE.SCATTER) {
         strXml += '  <c:majorTickMark val="none"/>';
         strXml += '  <c:minorTickMark val="none"/>';
@@ -6099,7 +6099,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.5.0-beta-20210111-1850';
+var VERSION = '3.5.0-beta-20210113-2330';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
