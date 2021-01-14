@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Enable JSZip compression [\#713](https://github.com/gitbrent/PptxGenJS/issues/713) ([pimlottc-gov](https://github.com/pimlottc-gov))
 ### Changed
 - Fixed: Setting the "Wrap text in shape" option [\#771](https://github.com/gitbrent/PptxGenJS/issues/771) ([CroniD](https://github.com/CroniD))
+- Fixed: `dataLabelFormatCode` option creates corrupted file if the value includes quotes [\#834](https://github.com/gitbrent/PptxGenJS/issues/834) ([kornarakis](https://github.com/kornarakis)) [\#884](https://github.com/gitbrent/PptxGenJS/pull/884) ([gazlo](https://github.com/gazlo))
 
 
 
