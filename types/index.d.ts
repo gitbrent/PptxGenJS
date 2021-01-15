@@ -627,7 +627,6 @@ declare namespace PptxGenJS {
 		| 'actionButtonReturn'
 		| 'actionButtonSound'
 		| 'arc'
-		| 'wedgeRoundRectCallout'
 		| 'bentArrow'
 		| 'bentUpArrow'
 		| 'bevel'
@@ -724,10 +723,6 @@ declare namespace PptxGenJS {
 		| 'accentCallout2'
 		| 'accentBorderCallout2'
 		| 'callout2'
-		| 'borderCallout3'
-		| 'accentCallout3'
-		| 'accentBorderCallout3'
-		| 'callout3'
 		| 'borderCallout3'
 		| 'accentCallout3'
 		| 'accentBorderCallout3'
@@ -1287,7 +1282,7 @@ declare namespace PptxGenJS {
 		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
 		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 */
-		fill?: ShapeFillProps
+		fill?: Color | ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1469,7 +1464,7 @@ declare namespace PptxGenJS {
 		 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
 		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 		 */
-		fill?: ShapeFillProps
+		fill?: Color | ShapeFillProps
 		/**
 		 * Cell margin
 		 * @default 0
@@ -1601,7 +1596,7 @@ declare namespace PptxGenJS {
 		 * - 'shrink' = Shrink text on overflow
 		 * - 'resize' = Resize shape to fit text
 		 *
-		 * **Note** 'shrink' and 'resize' only take effect after editting text/resize shape.
+		 * **Note** 'shrink' and 'resize' only take effect after editing text/resize shape.
 		 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 		 *
 		 * There is no way for this library to trigger that behavior, sorry.
@@ -1609,7 +1604,7 @@ declare namespace PptxGenJS {
 		 * @default "none"
 		 */
 		fit?: 'none' | 'shrink' | 'resize'
-		fill?: ShapeFillProps
+		fill?: Color | ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1780,7 +1775,7 @@ declare namespace PptxGenJS {
 		catAxisMinorTimeUnit?: string
 		catAxisMinorUnit?: string
 		catAxisMinVal?: number
-		catAxisOrientation?: 'minMax' | 'minMax'
+		catAxisOrientation?: 'minMax'
 		catAxisTitle?: string
 		catAxisTitleColor?: string
 		catAxisTitleFontFace?: string
@@ -1841,7 +1836,7 @@ declare namespace PptxGenJS {
 		valAxisMaxVal?: number
 		valAxisMinorTickMark?: ChartAxisTickMark
 		valAxisMinVal?: number
-		valAxisOrientation?: 'minMax' | 'minMax'
+		valAxisOrientation?: 'minMax'
 		valAxisTitle?: string
 		valAxisTitleColor?: string
 		valAxisTitleFontFace?: string
@@ -1906,7 +1901,7 @@ declare namespace PptxGenJS {
 		 */
 		dataLabelFormatCode?: string
 		dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
+		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd'
 	}
 	export interface IChartPropsDataTable {
 		dataTableFontSize?: number
