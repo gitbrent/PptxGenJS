@@ -1031,7 +1031,7 @@ export function addBackgroundDefinition(bkg: BackgroundProps, target: SlideLayou
 			Target: `../media/${(target._name || '').replace(/\s+/gi, '-')}-image-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target._bkgdImgRid = intRels
-	} else if (bkg && bkg.fill && typeof bkg.fill === 'string') {
+	} else if (bkg && bkg.fill) {
 		target.bkgd = bkg.fill
 	}
 }

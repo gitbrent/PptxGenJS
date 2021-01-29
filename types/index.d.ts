@@ -889,7 +889,7 @@ declare namespace PptxGenJS {
 		 * Color (hex format)
 		 * @example 'FF3399'
 		 */
-		fill?: HexColor
+		fill?: HexColor | ShapeFillProps
 	}
 	/**
 	 * Color in Hex format

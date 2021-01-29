@@ -200,8 +200,8 @@ export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLi
 	let internalElements = ''
 	let outText = ''
 
-	if (backColor && typeof backColor === 'string') {
-		outText += `<p:bg><p:bgPr>${genXmlColorSelection(backColor.replace('#', ''))}<a:effectLst/></p:bgPr></p:bg>`
+	if (backColor) {
+		outText += `<p:bg><p:bgPr>${genXmlColorSelection(typeof backColor === 'string' ? backColor.replace('#', '') : backColor)}<a:effectLst/></p:bgPr></p:bg>`
 	}
 
 	if (shapeFill) {
