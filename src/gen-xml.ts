@@ -822,7 +822,7 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 		strXmlLnSpc = '',
 		strXmlParaSpc = ''
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
-	let bulletMarL = valToPts(DEF_BULLET_MARGIN)
+	let bulletMarL = valToPts(textObj.options.bulletMargin ? textObj.options.bulletMargin : DEF_BULLET_MARGIN)
 
 	let paragraphPropXml = `<${tag}${textObj.options.rtlMode ? ' rtl="1" ' : ''}`
 

@@ -852,7 +852,8 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	flipV?: boolean
 	glow?: TextGlowProps
 	hyperlink?: HyperlinkProps
-	indentLevel?: number
+	indentLevel?: number,
+	bulletMargin?: number,
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
