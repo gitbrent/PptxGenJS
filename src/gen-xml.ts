@@ -875,10 +875,12 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 					paragraphPropXml += ` marL="${
 						textObj.options.indentLevel && textObj.options.indentLevel > 0 ? bulletMarL + bulletMarL * textObj.options.indentLevel : bulletMarL
 					}" indent="-${bulletMarL}"`
-					strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style || 'arabicPeriod'}" startAt="${
+				strXmlBullet = `<a:buSzPct val="100000"/><a:buFont typeface="+mj-lt"/><a:buAutoNum type="${textObj.options.bullet.style || 'arabicPeriod'}" startAt="${
 						textObj.options.bullet.numberStartAt || textObj.options.bullet.startAt || '1'
 					}"/>`
 				}
+			} else if (textObj.options.bullet.image) {
+				strXmlBullet = `<a:buBlip><a:blip r:embed="rId${textObj.options.bullet.relId}"/></a:buBlip>`
 			} else if (textObj.options.bullet.characterCode) {
 				let bulletCode = `&#x${textObj.options.bullet.characterCode};`
 

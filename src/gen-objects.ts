@@ -983,6 +983,12 @@ export function addTextDefinition(target: PresSlide, text: string | TextProps[],
 	if (typeof text === 'string' || typeof text === 'number') newObject.text = [{ text: text, options: newObject.options }]
 	createHyperlinkRels(target, newObject.text || '')
 
+	// STEP 5: Create image defintion for bullet
+	if (newObject.options.bullet && typeof newObject.options.bullet['image'] === 'object') {
+		newObject.options.bullet['relId'] = getNewRelId(target);
+		addImageDefinition(target, newObject.options.bullet['image']);
+	}
+
 	// LAST: Add object to Slide
 	target._slideObjects.push(newObject)
 }

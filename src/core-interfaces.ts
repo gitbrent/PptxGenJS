@@ -276,6 +276,12 @@ export interface TextBaseProps {
 				 */
 				characterCode?: string
 				/**
+				 * Bullet image path
+				 * @since v3.5.0-beta
+				 * @example 'image.png'
+				 */
+				image?: ImageProps
+				/**
 				 * Indentation (space between bullet and text) (points)
 				 * @since v3.3.0
 				 * @default 27 // DEF_BULLET_MARGIN
@@ -325,6 +331,10 @@ export interface TextBaseProps {
 				 * @deplrecated v3.3.0 - use `indent`
 				 */
 				marginPt?: number
+				/**
+				 * Rel Id
+				 */
+				relId?: string
 				/**
 				 * Number to start with (only applies to type:number)
 				 * @deprecated v3.3.0 - use `numberStartAt`
