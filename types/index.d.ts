@@ -614,6 +614,12 @@ declare namespace PptxGenJS {
 		'media' = 'media',
 	}
 	export type SHAPE_NAME =
+		| 'accentBorderCallout1'
+		| 'accentBorderCallout2'
+		| 'accentBorderCallout3'
+		| 'accentCallout1'
+		| 'accentCallout2'
+		| 'accentCallout3'
 		| 'actionButtonBackPrevious'
 		| 'actionButtonBeginning'
 		| 'actionButtonBlank'
@@ -627,11 +633,18 @@ declare namespace PptxGenJS {
 		| 'actionButtonReturn'
 		| 'actionButtonSound'
 		| 'arc'
-		| 'wedgeRoundRectCallout'
 		| 'bentArrow'
 		| 'bentUpArrow'
 		| 'bevel'
 		| 'blockArc'
+		| 'borderCallout1'
+		| 'borderCallout2'
+		| 'borderCallout3'
+		| 'bracePair'
+		| 'bracketPair'
+		| 'callout1'
+		| 'callout2'
+		| 'callout3'
 		| 'can'
 		| 'chartPlus'
 		| 'chartStar'
@@ -643,54 +656,49 @@ declare namespace PptxGenJS {
 		| 'cloudCallout'
 		| 'corner'
 		| 'cornerTabs'
-		| 'plus'
 		| 'cube'
 		| 'curvedDownArrow'
-		| 'ellipseRibbon'
 		| 'curvedLeftArrow'
 		| 'curvedRightArrow'
 		| 'curvedUpArrow'
-		| 'ellipseRibbon2'
 		| 'decagon'
 		| 'diagStripe'
 		| 'diamond'
 		| 'dodecagon'
 		| 'donut'
-		| 'bracePair'
-		| 'bracketPair'
 		| 'doubleWave'
 		| 'downArrow'
 		| 'downArrowCallout'
-		| 'ribbon'
-		| 'irregularSeal1'
-		| 'irregularSeal2'
+		| 'ellipse'
+		| 'ellipseRibbon'
+		| 'ellipseRibbon2'
 		| 'flowChartAlternateProcess'
-		| 'flowChartPunchedCard'
 		| 'flowChartCollate'
 		| 'flowChartConnector'
-		| 'flowChartInputOutput'
 		| 'flowChartDecision'
 		| 'flowChartDelay'
-		| 'flowChartMagneticDrum'
 		| 'flowChartDisplay'
 		| 'flowChartDocument'
 		| 'flowChartExtract'
+		| 'flowChartInputOutput'
 		| 'flowChartInternalStorage'
 		| 'flowChartMagneticDisk'
+		| 'flowChartMagneticDrum'
+		| 'flowChartMagneticTape'
 		| 'flowChartManualInput'
 		| 'flowChartManualOperation'
 		| 'flowChartMerge'
 		| 'flowChartMultidocument'
 		| 'flowChartOfflineStorage'
 		| 'flowChartOffpageConnector'
+		| 'flowChartOnlineStorage'
 		| 'flowChartOr'
 		| 'flowChartPredefinedProcess'
 		| 'flowChartPreparation'
 		| 'flowChartProcess'
+		| 'flowChartPunchedCard'
 		| 'flowChartPunchedTape'
-		| 'flowChartMagneticTape'
 		| 'flowChartSort'
-		| 'flowChartOnlineStorage'
 		| 'flowChartSummingJunction'
 		| 'flowChartTerminator'
 		| 'folderCorner'
@@ -702,8 +710,10 @@ declare namespace PptxGenJS {
 		| 'heart'
 		| 'heptagon'
 		| 'hexagon'
+		| 'homePlate'
 		| 'horizontalScroll'
-		| 'triangle'
+		| 'irregularSeal1'
+		| 'irregularSeal2'
 		| 'leftArrow'
 		| 'leftArrowCallout'
 		| 'leftBrace'
@@ -716,22 +726,6 @@ declare namespace PptxGenJS {
 		| 'leftRightUpArrow'
 		| 'leftUpArrow'
 		| 'lightningBolt'
-		| 'borderCallout1'
-		| 'accentCallout1'
-		| 'accentBorderCallout1'
-		| 'callout1'
-		| 'borderCallout2'
-		| 'accentCallout2'
-		| 'accentBorderCallout2'
-		| 'callout2'
-		| 'borderCallout3'
-		| 'accentCallout3'
-		| 'accentBorderCallout3'
-		| 'callout3'
-		| 'borderCallout3'
-		| 'accentCallout3'
-		| 'accentBorderCallout3'
-		| 'callout3'
 		| 'line'
 		| 'lineInv'
 		| 'mathDivide'
@@ -741,33 +735,31 @@ declare namespace PptxGenJS {
 		| 'mathNotEqual'
 		| 'mathPlus'
 		| 'moon'
+		| 'noSmoking'
 		| 'nonIsoscelesTrapezoid'
 		| 'notchedRightArrow'
-		| 'noSmoking'
 		| 'octagon'
-		| 'ellipse'
-		| 'wedgeEllipseCallout'
 		| 'parallelogram'
-		| 'homePlate'
+		| 'pentagon'
 		| 'pie'
 		| 'pieWedge'
 		| 'plaque'
 		| 'plaqueTabs'
+		| 'plus'
 		| 'quadArrow'
 		| 'quadArrowCallout'
 		| 'rect'
-		| 'wedgeRectCallout'
-		| 'pentagon'
+		| 'ribbon'
+		| 'ribbon2'
 		| 'rightArrow'
 		| 'rightArrowCallout'
 		| 'rightBrace'
 		| 'rightBracket'
-		| 'rtTriangle'
-		| 'roundRect'
-		| 'wedgeRoundRectCallout'
 		| 'round1Rect'
 		| 'round2DiagRect'
 		| 'round2SameRect'
+		| 'roundRect'
+		| 'rtTriangle'
 		| 'smileyFace'
 		| 'snip1Rect'
 		| 'snip2DiagRect'
@@ -789,14 +781,17 @@ declare namespace PptxGenJS {
 		| 'swooshArrow'
 		| 'teardrop'
 		| 'trapezoid'
+		| 'triangle'
 		| 'upArrow'
 		| 'upArrowCallout'
 		| 'upDownArrow'
 		| 'upDownArrowCallout'
-		| 'ribbon2'
 		| 'uturnArrow'
 		| 'verticalScroll'
 		| 'wave'
+		| 'wedgeEllipseCallout'
+		| 'wedgeRectCallout'
+		| 'wedgeRoundRectCallout'
 
 	export enum SLIDE_OBJECT_TYPES {
 		'chart' = 'chart',
@@ -1287,7 +1282,7 @@ declare namespace PptxGenJS {
 		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
 		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 */
-		fill?: ShapeFillProps
+		fill?: Color | ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1469,7 +1464,7 @@ declare namespace PptxGenJS {
 		 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
 		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 		 */
-		fill?: ShapeFillProps
+		fill?: Color | ShapeFillProps
 		/**
 		 * Cell margin
 		 * @default 0
@@ -1601,7 +1596,7 @@ declare namespace PptxGenJS {
 		 * - 'shrink' = Shrink text on overflow
 		 * - 'resize' = Resize shape to fit text
 		 *
-		 * **Note** 'shrink' and 'resize' only take effect after editting text/resize shape.
+		 * **Note** 'shrink' and 'resize' only take effect after editing text/resize shape.
 		 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 		 *
 		 * There is no way for this library to trigger that behavior, sorry.
@@ -1609,7 +1604,7 @@ declare namespace PptxGenJS {
 		 * @default "none"
 		 */
 		fit?: 'none' | 'shrink' | 'resize'
-		fill?: ShapeFillProps
+		fill?: Color | ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1780,7 +1775,7 @@ declare namespace PptxGenJS {
 		catAxisMinorTimeUnit?: string
 		catAxisMinorUnit?: string
 		catAxisMinVal?: number
-		catAxisOrientation?: 'minMax' | 'minMax'
+		catAxisOrientation?: 'minMax'
 		catAxisTitle?: string
 		catAxisTitleColor?: string
 		catAxisTitleFontFace?: string
@@ -1841,7 +1836,7 @@ declare namespace PptxGenJS {
 		valAxisMaxVal?: number
 		valAxisMinorTickMark?: ChartAxisTickMark
 		valAxisMinVal?: number
-		valAxisOrientation?: 'minMax' | 'minMax'
+		valAxisOrientation?: 'minMax'
 		valAxisTitle?: string
 		valAxisTitleColor?: string
 		valAxisTitleFontFace?: string
@@ -1906,7 +1901,7 @@ declare namespace PptxGenJS {
 		 */
 		dataLabelFormatCode?: string
 		dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
+		dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd'
 	}
 	export interface IChartPropsDataTable {
 		dataTableFontSize?: number
