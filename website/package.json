@@ -3,7 +3,7 @@
 		"start": "docusaurus-start",
 		"build": "docusaurus-build",
 		"deploy": "./node_modules/gulp/bin/gulp.js",
-		"ship(b+d)": "docusaurus-build && ./node_modules/gulp/bin/gulp.js"
+		"ship=b+d": "docusaurus-build && ./node_modules/gulp/bin/gulp.js"
 	},
 	"devDependencies": {
 		"docusaurus": "^1.14.6",
