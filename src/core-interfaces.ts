@@ -830,11 +830,14 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	isTextBox?: boolean
 	line?: ShapeLineProps
 	/**
-	 * line spacing by pt. e.g.: 28 means 28pt
+	 * Line spacing (pt)
+	 * @example 28 // 28pt
 	 */
 	lineSpacing?: number
 	/**
-	 * line spacing by multiple. e.g.: 1.2
+	 * line spacing multiple (percent)
+	 * range (0.0 - 9.99)
+	 * @example 1.2 // 120%
 	 */
 	lineSpacingMultiple?: number
 	margin?: Margin
