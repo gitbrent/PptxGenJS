@@ -831,7 +831,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * - 'shrink' = Shrink text on overflow
 	 * - 'resize' = Resize shape to fit text
 	 *
-	 * **Note** 'shrink' and 'resize' only take effect after editting text/resize shape.
+	 * **Note** 'shrink' and 'resize' only take effect after editing text/resize shape.
 	 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 	 *
 	 * There is no way for this library to trigger that behavior, sorry.
@@ -1020,7 +1020,7 @@ export interface IChartPropsAxisCat {
 	catAxisMinorTimeUnit?: string
 	catAxisMinorUnit?: string
 	catAxisMinVal?: number
-	catAxisOrientation?: 'minMax' | 'minMax'
+	catAxisOrientation?: 'minMax'
 	catAxisTitle?: string
 	catAxisTitleColor?: string
 	catAxisTitleFontFace?: string
@@ -1089,7 +1089,7 @@ export interface IChartPropsAxisVal {
 	valAxisMaxVal?: number
 	valAxisMinorTickMark?: ChartAxisTickMark
 	valAxisMinVal?: number
-	valAxisOrientation?: 'minMax' | 'minMax'
+	valAxisOrientation?: 'minMax'
 	valAxisTitle?: string
 	valAxisTitleColor?: string
 	valAxisTitleFontFace?: string
@@ -1154,7 +1154,7 @@ export interface IChartPropsDataLabel {
 	 */
 	dataLabelFormatCode?: string
 	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
+	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd'
 }
 export interface IChartPropsDataTable {
 	dataTableFontSize?: number
