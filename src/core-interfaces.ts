@@ -490,7 +490,7 @@ export interface ShapeProps extends PositionProps {
 	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
 	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 */
-	fill?: Color | ShapeFillProps
+	fill?: ShapeFillProps
 	/**
 	 * Flip shape horizontally?
 	 * @default false
@@ -671,11 +671,12 @@ export interface TableCellProps extends TextBaseProps {
 	colspan?: number
 	/**
 	 * Fill color
-	 * @example 'FF0000' // hex string (red)
-	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 	 */
-	fill?: Color | ShapeFillProps
+	fill?: ShapeFillProps
 	/**
 	 * Cell margin
 	 * @default 0
@@ -748,8 +749,11 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	colW?: number | number[]
 	/**
 	 * Cell background color
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 */
-	fill?: Color | ShapeFillProps
+	fill?: ShapeFillProps
 	/**
 	 * Cell margin
 	 * - affects all table cells, is superceded by cell options
@@ -839,7 +843,13 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @default "none"
 	 */
 	fit?: 'none' | 'shrink' | 'resize'
-	fill?: Color | ShapeFillProps
+	/**
+	 * Shape fill
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 */
+	fill?: ShapeFillProps
 	/**
 	 * Flip shape horizontally?
 	 * @default false

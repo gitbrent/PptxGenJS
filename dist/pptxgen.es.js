@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-01-14T05:37:45.220Z */
+/* PptxGenJS 3.5.0-beta @ 2021-02-25T04:01:04.067Z */
 import JSZip from 'jszip';
 
 /**
@@ -231,8 +231,8 @@ var ShapeType;
     ShapeType["mathNotEqual"] = "mathNotEqual";
     ShapeType["mathPlus"] = "mathPlus";
     ShapeType["moon"] = "moon";
-    ShapeType["nonIsoscelesTrapezoid"] = "nonIsoscelesTrapezoid";
     ShapeType["noSmoking"] = "noSmoking";
+    ShapeType["nonIsoscelesTrapezoid"] = "nonIsoscelesTrapezoid";
     ShapeType["notchedRightArrow"] = "notchedRightArrow";
     ShapeType["octagon"] = "octagon";
     ShapeType["parallelogram"] = "parallelogram";
@@ -6093,7 +6093,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.5.0-beta-20210113-2330';
+var VERSION = '3.5.0-beta-20210224-2200';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
