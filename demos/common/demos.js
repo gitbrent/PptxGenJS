@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.4.0
-* BLD.: 20200823
+* VER.: 3.5.0
+* BLD.: 20210109
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -25,7 +25,8 @@ var NODEJS = false;
 if (NODEJS) { var LOGO_STARLABS; }
 
 // Constants
-var TESTMODE = false
+var COMPRESS = true; //false; // TEST: `compression` write prop
+var TESTMODE = false;
 var CUST_NAME = 'S.T.A.R. Laboratories';
 var USER_NAME = 'Barry Allen';
 var COLOR_RED = 'FF0000';
@@ -77,7 +78,8 @@ var gPaths = {
 	'ccLicenseComp': { path:'common/images/cc_license_comp.png' },
 	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_dj.gif' },
 	'gifAnimTrippy': { path:'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/images/trippy.gif' },
-	'chicagoBean'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest' },
+	'chicagoBean': { path: 'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest' },
+	'sydneyBridge': { path: 'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/sydney_harbour_bridge_night.jpg?op=paramTest&ampersandTest&fileType=.jpg' },
 	'tokyoSubway' : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/tokyo-subway-route-map.jpg' },
 	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi' },
 	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.m4v' },
@@ -273,10 +275,10 @@ function execGenSlidesFuncs(type) {
 
 	// LAST: Export Presentation
 	if ( NODEJS ) {
-		return pptx.writeFile('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
+		return pptx.writeFile({ fileName: 'PptxGenJS_Demo_Node_' + type + '_' + getTimestamp() });
 	}
 	else {
-		return pptx.writeFile('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
+		return pptx.writeFile({ fileName: 'PptxGenJS_Demo_Browser_' + type + '_' + getTimestamp(), compression: COMPRESS });
 	}
 }
 
@@ -912,17 +914,20 @@ function genSlides_Chart(pptx) {
 			catAxisLabelColor   : 'CC0000',
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
-
 			catGridLine: { style: 'none' },
 			catAxisHidden: true,
+
 			valGridLine: { color: 'cc6699', style: 'dash', size: 1 },
+			valAxisLineColor: '44AA66',
+			valAxisLineSize: 1,
+			valAxisLineStyle: 'dash',
 
 			showLegend   : true,
-			title        : 'No CatAxis, ValGridLine=style:dash',
+			showTitle    : true,
+			title        : 'catAxisHidden:true, valGridLine/valAxisLine:dash',
 			titleColor   : 'a9a9a9',
 			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 14,
-			showTitle    : true
+			titleFontSize: 14
 		};
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
 
@@ -1137,7 +1142,7 @@ function genSlides_Chart(pptx) {
 
 		var arrDataHighVals = [
 			{
-				name  : 'TEST: getExcelColName',
+				name  : 'Single Data Set',
 				labels: LETTERS.concat(['AA','AB','AC','AD']),
 				values: [-5,-3,0,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
 			}
@@ -1155,7 +1160,8 @@ function genSlides_Chart(pptx) {
 			catAxisTitleColor: "4286f4",
 			catAxisTitleFontSize: 14,
 
-			chartColors: ['EE1122'],
+			showLegend: true,
+			chartColors: ['154384'],
 			invertedColors: ['0088CC'],
 
 			showValAxisTitle: true,
@@ -1179,7 +1185,7 @@ function genSlides_Chart(pptx) {
 			pptx.charts.BAR,
 			[
 				{
-					name  : 'Labels are Excel Date Values',
+					name  : 'Excel Date Values',
 					labels: [37987,38018,38047,38078,38108,38139],
 					values: [20, 30, 10, 25, 15, 5]
 				}
@@ -1441,7 +1447,9 @@ function genSlides_Chart(pptx) {
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineSize  : 8,
 			lineSmooth: true,
-			showLegend: true, legendPos: 't'
+			showLegend: true,
+			legendPos: 't',
+			catAxisLabelPos: 'high'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 
@@ -1645,18 +1653,21 @@ function genSlides_Chart(pptx) {
 			x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'},
 			showLegend: true,
 			legendPos: 't',
-			showTitle: true,
-			showLeaderLines: true,
-			title:'Left Title & Large Legend',
-
 			legendFontSize: 14,
-			titleAlign: 'left',
+			showLeaderLines: true,
+			showTitle: true,
+			title:'Right Title & Large Legend',
+			titleAlign: 'right',
 			titlePos: {x: 0, y: 0}
 		});
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:{color:'F1F1F1'}, color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+		slide.addChart(
+			pptx.charts.PIE,
+			dataChartPieLocs,
+			{ x: 9.8, y: 4.0, w: 3.2, h: 3.2, dataBorder: { pt: '1', color: 'F1F1F1' }, showLegend: true, legendPos: 'b', showTitle: true, title: 'Title & Legend', firstSliceAng: 90 }
+		);
 	}
 
 	// SLIDE 13: Doughnut Chart ------------------------------------------------------------
@@ -1768,13 +1779,16 @@ function genSlides_Chart(pptx) {
 			fill: 'f2f9fc',
 			//catAxisOrientation: 'maxMin',
 			//valAxisOrientation: 'maxMin',
+			showLegend: true,
+			chartColors: ['FF0000','0088CC'],
+
 			showValAxisTitle: false,
 			lineSize: 0,
 
 			catAxisTitle        : "Data Point Labels",
 			catAxisTitleColor   : "0088CC",
 			catAxisTitleFontSize: 14,
-			showCatAxisTitle    : true,
+			showCatAxisTitle    : false,
 
 			// Data Labels
 			showLabel             : true, // Must be set to true or labels will not be shown
@@ -2393,6 +2407,8 @@ function genSlides_Chart(pptx) {
 			barGrouping: 'stacked',
 			showTitle: true,
 			title: 'Red glowing shadow',
+			titleBold: true,
+			titleFontFace: 'Times',
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Times',
 			catAxisLabelFontSize: 12,
@@ -2551,19 +2567,19 @@ function genSlides_Image(pptx) {
 		var objCodeEx1 = { x:0.5, y:0.6, w:6.0, h:0.6 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx1[key] = gOptsCode[key] });
 		slide.addText('path:"'+gPaths.ccLogo.path+'"', objCodeEx1);
-		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:1.35, h:2.5, w:3.33 });
+		slide.addImage({ path:gPaths.ccLogo.path, x:1.84, y:1.3, h:2.5, w:3.33 });
 
 		// TOP-RIGHT:
-		var objCodeEx2 = { x:6.9, y:0.6, w:6.0, h:0.6 };
+		var objCodeEx2 = { x:6.9, y:0.6, w:5.93, h:0.6 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx2[key] = gOptsCode[key] });
 		slide.addText('path:"'+gPaths.wikimedia2.path+'"', objCodeEx2);
-		slide.addImage({ path:gPaths.wikimedia2.path, x:6.9, y:1.35, h:2.5, w:3.27 });
+		slide.addImage({ path:gPaths.wikimedia2.path, x:8.23, y:1.3, h:2.5, w:3.27 });
 
 		// BTM-LEFT:
-		var objCodeEx3 = { x:0.5, y:4.2, w:12.4, h:0.8 };
+		var objCodeEx3 = { x:0.5, y:4.2, w:12.33, h:0.8 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx3[key] = gOptsCode[key] });
-		slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"'+gPaths.chicagoBean.path+'"', objCodeEx3);
-		slide.addImage({ path:gPaths.chicagoBean.path, x:0.5, y:5.1, w:2.56, h:1.92 });
+		slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"'+gPaths.sydneyBridge.path+'"', objCodeEx3);
+		slide.addImage({ path:gPaths.sydneyBridge.path, x:0.5, y:5.1, h:1.8, w:12.33 });
 
 		// BOTTOM-CENTER:
 		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
@@ -2641,7 +2657,8 @@ function genSlides_Shape(pptx) {
 	slide.addShape(pptx.shapes.RECTANGLE, { x: 3.0, y: 0.7, w: 1.5, h: 3.0, fill: { color: 'F38E00' }, rotate: 45 });
 	slide.addShape(pptx.shapes.OVAL, { x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: 'solid', color: '0088CC' } });
 	slide.addShape(pptx.shapes.OVAL, { x: 7.7, y: 1.4, w: 3.0, h: 1.5, fill: { color: 'FF00CC' }, rotate: 90 }); // TEST: no type
-	slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:10 , y:2.5, w:3.0, h:1.5, r:0.2, fill:{color:'00FF00'}, line:'000000', lineSize:1 }); // TEST: DEPRECATED: `fill`,`line`,`lineSize`
+	slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 10, y: 2.5, w: 3.0, h: 1.5, r: 0.2, fill: { color: '00FF00' }, line: '000000', lineSize: 1 }); // TEST: DEPRECATED: `fill`,`line`,`lineSize`
+	slide.addShape(pptx.shapes.ARC, { x: 10.75, y: 0.8, w: 1.5, h: 1.5, fill: { color: '0088CC' }, angleRange: [45, 315] });
 	//
 	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.4, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 1, dashType: 'lgDash' } });
 	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.8, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 2, dashType: 'dashDot' }, lineHead: 'arrow' }); // TEST: DEPRECATED: lineHead
@@ -2663,6 +2680,7 @@ function genSlides_Shape(pptx) {
 	slide.addText('OVAL (transparency:50)', { shape: pptx.shapes.OVAL, x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: 'solid', color: '0088CC', transparency: 50 }, align: 'center', fontSize: 14 });
 	slide.addText('OVAL (rotate:90, transparency:75)', { shape: pptx.shapes.OVAL, x: 7.7, y: 1.4, w: 3.0, h: 1.5, fill: { type: 'solid', color: 'FF00CC', alpha: 75 }, rotate: 90, align: 'center', fontSize: 14 }); // TEST: DEPRECATED: `alpha`
 	slide.addText('ROUNDED-RECTANGLE\ndashType:dash\nrectRadius:10', { shape: pptx.shapes.ROUNDED_RECTANGLE, x: 10, y: 2.5, w: 3.0, h: 1.5, r: 0.2, fill: { color: '00FF00' }, align: 'center', fontSize: 14, line: { color: '000000', size: 1, dashType: 'dash' }, rectRadius:10 });
+	slide.addText('ARC', { shape: pptx.shapes.ARC, x: 10.75, y: 0.8, w: 1.5, h: 1.5, fill: { color: '0088CC' }, angleRange: [45, 315], line: { color:'002244', width: 1 }, fontSize: 14 });
 	//
 	slide.addText('LINE size=1', { shape: pptx.shapes.LINE, align: 'center', x: 4.15, y: 4.40, w: 5, h: 0, line: { color: 'FF0000', width: 1, dashType: 'lgDash' } });
 	slide.addText('LINE size=2', { shape: pptx.shapes.LINE, align: 'left', x: 4.15, y: 4.80, w: 5, h: 0, line: { color: 'FF0000', width: 2, dashType: 'dashDot', endArrowType: 'arrow' } });
@@ -2893,15 +2911,19 @@ function genSlides_Text(pptx) {
 		slide.addText("Hyperlinks:", { x:0.5, y:6.0, w:'90%', h:0.3, margin:0.123, color:'0088CC' });
 		slide.addText(
 			[{ text: 'Link with Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent/pptxgenjs', tooltip: 'Visit Homepage' } } }],
-			{ x:0.5, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:0.5, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
 		);
 		slide.addText(
 			[{ text: 'Link without Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent' } } }],
-			{ x:5.0, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:3.78, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+		);
+		slide.addText(
+			[{ text: 'Link with custom color', options: { hyperlink: { url: 'https://github.com/gitbrent' }, color: 'EE40EE' } }],
+			{ x:7.05, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
 		);
 		slide.addText(
 			[{ text: 'Link to Slide #5', options: { hyperlink: { slide: 5 } } }],
-			{ x:9.5, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:10.33, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'E2F0D9'}, fontSize:14, align:'center' }
 		);
 	}
 

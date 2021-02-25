@@ -157,7 +157,6 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		// B: Add OBJECT to the current Slide
 		switch (slideItemObj._type) {
 			case SLIDE_OBJECT_TYPES.table:
-				let objTableGrid = {}
 				let arrTabRows = slideItemObj.arrTabRows
 				let objTabOpts = slideItemObj.options
 				let intColCnt = 0,
@@ -212,10 +211,11 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				if (Array.isArray(objTabOpts.colW)) {
 					strXml += '<a:tblGrid>'
 					for (let col = 0; col < intColCnt; col++) {
-						strXml +=
-							'<a:gridCol w="' +
-							Math.round(inch2Emu(objTabOpts.colW[col]) || (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt) +
-							'"/>'
+						let w = inch2Emu(objTabOpts.colW[col])
+						if (w == null || isNaN(w)) {
+							w = (typeof slideItemObj.options.w === 'number' ? slideItemObj.options.w : 1) / intColCnt
+						}
+						strXml += '<a:gridCol w="' + Math.round(w) + '"/>'
 					}
 					strXml += '</a:tblGrid>'
 				}
@@ -243,57 +243,40 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					|      |      |  C2  |  D2  |
 					\------|------|------|------/
 				*/
-				/*
-					Object ex: key = rowIdx / val = [cells] cellIdx { 0:{type: "tablecell", text: Array(1), options: {…}}, 1:... }
-					{0: {…}, 1: {…}, 2: {…}, 3: {…}}
-				*/
-				arrTabRows.forEach((row, rIdx) => {
-					// A: Create row if needed (recall one may be created in loop below for rowspans, so dont assume we need to create one each iteration)
-					if (!objTableGrid[rIdx]) objTableGrid[rIdx] = {}
-
-					// B: Loop over all cells
-					row.forEach((cell, cIdx) => {
-						// DESIGN: NOTE: Row cell arrays can be "uneven" (diff cell count in each) due to rowspan/colspan
-						// Therefore, for each cell we run 0->colCount to determine the correct slot for it to reside
-						// as the uneven/mixed nature of the data means we cannot use the cIdx value alone.
-						// E.g.: the 2nd element in the row array may actually go into the 5th table grid row cell b/c of colspans!
-						for (let idx = 0; cIdx + idx < intColCnt; idx++) {
-							let currColIdx = cIdx + idx
-
-							if (!objTableGrid[rIdx][currColIdx]) {
-								// A: Set this cell
-								objTableGrid[rIdx][currColIdx] = cell
-
-								// B: Handle `colspan` or `rowspan` (a {cell} cant have both! TODO: FUTURE: ROWSPAN & COLSPAN in same cell)
-								if (cell && cell.options && cell.options.colspan && !isNaN(Number(cell.options.colspan))) {
-									for (let idy = 1; idy < Number(cell.options.colspan); idy++) {
-										objTableGrid[rIdx][currColIdx + idy] = { _hmerge: true, text: 'hmerge' }
-									}
-								} else if (cell && cell.options && cell.options.rowspan && !isNaN(Number(cell.options.rowspan))) {
-									for (let idz = 1; idz < Number(cell.options.rowspan); idz++) {
-										if (!objTableGrid[rIdx + idz]) objTableGrid[rIdx + idz] = {}
-										objTableGrid[rIdx + idz][currColIdx] = { _vmerge: true, text: 'vmerge' }
-									}
-								}
-
-								// C: Break out of colCnt loop now that slot has been filled
-								break
-							}
+				// A: add _hmerge cell for colspan. should reserve rowspan
+				arrTabRows.forEach(cells => {
+					for (let cIdx = 0; cIdx < cells.length; ) {
+						let cell = cells[cIdx]
+						let colspan = cell.options?.colspan
+						let rowspan = cell.options?.rowspan
+						if (colspan && colspan > 1) {
+							let vMergeCells = new Array(colspan - 1).fill(undefined).map(_ => {
+								return { _type: SLIDE_OBJECT_TYPES.tablecell, options: { rowspan }, _hmerge: true } as const
+							})
+							cells.splice(cIdx + 1, 0, ...vMergeCells)
+							cIdx += colspan
+						} else {
+							cIdx += 1
+						}
+					}
+				})
+				// B: add _vmerge cell for rowspan. should reserve colspan/_hmerge
+				arrTabRows.forEach((cells, rIdx) => {
+					let nextRow = arrTabRows[rIdx + 1]
+					if (!nextRow) return
+					cells.forEach((cell, cIdx) => {
+						let rowspan = cell._rowContinue || cell.options?.rowspan
+						let colspan = cell.options?.colspan
+						let _hmerge = cell._hmerge
+						if (rowspan && rowspan > 1) {
+							let hMergeCell = { _type: SLIDE_OBJECT_TYPES.tablecell, options: { colspan }, _rowContinue: rowspan - 1, _vmerge: true, _hmerge } as const
+							nextRow.splice(cIdx, 0, hMergeCell)
 						}
 					})
 				})
 
-				/* DEBUG: useful for rowspan/colspan testing
-				if ( objTabOpts.verbose ) {
-					console.table(objTableGrid);
-					let arrText = [];
-					objTableGrid.forEach(function(row){ let arrRow = []; row.forEach(row,function(cell){ arrRow.push(cell.text); }); arrText.push(arrRow); });
-					console.table( arrText );
-				}
-				*/
-
 				// STEP 4: Build table rows/cells
-				Object.entries(objTableGrid).forEach(([rIdx, rowObj]) => {
+				arrTabRows.forEach((cells, rIdx) => {
 					// A: Table Height provided without rowH? Then distribute rows
 					let intRowH = 0 // IMPORTANT: Default must be zero for auto-sizing to work
 					if (Array.isArray(objTabOpts.rowH) && objTabOpts.rowH[rIdx]) intRowH = inch2Emu(Number(objTabOpts.rowH[rIdx]))
@@ -308,11 +291,27 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 					strXml += `<a:tr h="${intRowH}">`
 
 					// C: Loop over each CELL
-					Object.entries(rowObj).forEach(([_cIdx, cellObj]) => {
+					cells.forEach(cellObj => {
 						let cell: TableCell = cellObj
 
-						// 1: "_hmerge" cells are just place-holders in the table grid - skip those and go to next cell
-						if (cell._hmerge) return
+						let cellSpanAttrs = {
+							rowSpan: cell.options?.rowspan > 1 ? cell.options.rowspan : undefined,
+							gridSpan: cell.options?.colspan > 1 ? cell.options.colspan : undefined,
+							vMerge: cell._vmerge ? 1 : undefined,
+							hMerge: cell._hmerge ? 1 : undefined,
+						}
+						let cellSpanAttrStr = Object.keys(cellSpanAttrs)
+							.map(k => [k, cellSpanAttrs[k]])
+							.filter(([_k, v]) => !!v)
+							.map(([k, v]) => `${k}="${v}"`)
+							.join(' ')
+						if (cellSpanAttrStr) cellSpanAttrStr = ' ' + cellSpanAttrStr
+
+						// 1: COLSPAN/ROWSPAN: Add dummy cells for any active colspan/rowspan
+						if (cell._hmerge || cell._vmerge) {
+							strXml += `<a:tc${cellSpanAttrStr}><a:tcPr/></a:tc>`
+							return
+						}
 
 						// 2: OPTIONS: Build/set cell options
 						let cellOpts = cell.options || ({} as TableCell['options'])
@@ -336,8 +335,6 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 									.replace('bottom', 'b') +
 							  '"'
 							: ''
-						let cellColspan = cellOpts.colspan ? ` gridSpan="${cellOpts.colspan}"` : ''
-						let cellRowspan = cellOpts.rowspan ? ` rowSpan="${cellOpts.rowspan}"` : ''
 						let fillColor =
 							cell._optImp && cell._optImp.fill && cell._optImp.fill.color
 								? cell._optImp.fill.color
@@ -353,16 +350,10 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 							cellMargin[2]
 						)}"`
 
-						// FUTURE: Cell NOWRAP property (text wrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
-
-						// 3: ROWSPAN: Add dummy cells for any active rowspan
-						if (cell._vmerge) {
-							strXml += '<a:tc vMerge="1"><a:tcPr/></a:tc>'
-							return
-						}
+						// FUTURE: Cell NOWRAP property (textwrap: add to a:tcPr (horzOverflow="overflow" or whatever options exist)
 
 						// 4: Set CELL content and properties ==================================
-						strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
+						strXml += `<a:tc${cellSpanAttrStr}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}>`
 						//strXml += `<a:tc${cellColspan}${cellRowspan}>${genXmlTextBody(cell)}<a:tcPr${cellMarginXml}${cellValign}${cellTextDir}>`
 						// FIXME: 20200525: ^^^
 						// <a:tcPr marL="38100" marR="38100" marT="38100" marB="38100" vert="vert270">
@@ -393,13 +384,6 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 						strXml += cellFill
 						strXml += '  </a:tcPr>'
 						strXml += ' </a:tc>'
-
-						// LAST: COLSPAN: Add a 'merged' col for each column being merged (SEE: http://officeopenxml.com/drwTableGrid.php)
-						if (cellOpts.colspan) {
-							for (let tmp = 1; tmp < Number(cellOpts.colspan); tmp++) {
-								strXml += '<a:tc hMerge="1"><a:tcPr/></a:tc>'
-							}
-						}
 					})
 
 					// D: Complete row
@@ -427,6 +411,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				if (!slideItemObj.options.line && cy === 0) cy = EMU * 0.3
 
 				// Margin/Padding/Inset for textboxes
+				if (!slideItemObj.options._bodyProp) slideItemObj.options._bodyProp = {}
 				if (slideItemObj.options.margin && Array.isArray(slideItemObj.options.margin)) {
 					slideItemObj.options._bodyProp.lIns = valToPts(slideItemObj.options.margin[0] || 0)
 					slideItemObj.options._bodyProp.rIns = valToPts(slideItemObj.options.margin[1] || 0)
@@ -467,14 +452,21 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				strSlideXml += `<a:xfrm${locationAttr}>`
 				strSlideXml += `<a:off x="${x}" y="${y}"/>`
 				strSlideXml += `<a:ext cx="${cx}" cy="${cy}"/></a:xfrm>`
-				strSlideXml +=
-					'<a:prstGeom prst="' +
-					slideItemObj.shape +
-					'"><a:avLst>' +
-					(slideItemObj.options.rectRadius
-						? '<a:gd name="adj" fmla="val ' + Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy)) + '"/>'
-						: '') +
-					'</a:avLst></a:prstGeom>'
+
+				strSlideXml += '<a:prstGeom prst="' + slideItemObj.shape + '"><a:avLst>'
+				if (slideItemObj.options.rectRadius) {
+					strSlideXml += `<a:gd name="adj" fmla="val ${Math.round((slideItemObj.options.rectRadius * EMU * 100000) / Math.min(cx, cy))}"/>`
+				} else if (slideItemObj.options.angleRange) {
+					for (let i = 0; i < 2; i++) {
+						const angle = slideItemObj.options.angleRange[i]
+						strSlideXml += `<a:gd name="adj${i + 1}" fmla="val ${convertRotationDegrees(angle)}" />`
+					}
+
+					if (slideItemObj.options.arcThicknessRatio) {
+						strSlideXml += `<a:gd name="adj3" fmla="val ${Math.round(slideItemObj.options.arcThicknessRatio * 50000)}" />`
+					}
+				}
+				strSlideXml += '</a:avLst></a:prstGeom>'
 
 				// Option: FILL
 				strSlideXml += slideItemObj.options.fill ? genXmlColorSelection(slideItemObj.options.fill) : '<a:noFill/>'
@@ -700,24 +692,31 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 			'    <a:extLst><a:ext uri="{C572A759-6A51-4108-AA02-DFA0A04FC94B}"><ma14:wrappingTextBoxFlag val="0" xmlns:ma14="http://schemas.microsoft.com/office/mac/drawingml/2011/main"/></a:ext></a:extLst>' +
 			'  </p:spPr>'
 		strSlideXml += '<p:txBody>'
-		strSlideXml += '  <a:bodyPr/>'
+		strSlideXml += '<a:bodyPr'
+		if (slide._slideNumberProps.margin && Array.isArray(slide._slideNumberProps.margin)) {
+			strSlideXml += ` lIns="${valToPts(slide._slideNumberProps.margin[3] || 0)}"`
+			strSlideXml += ` tIns="${valToPts(slide._slideNumberProps.margin[0] || 0)}"`
+			strSlideXml += ` rIns="${valToPts(slide._slideNumberProps.margin[1] || 0)}"`
+			strSlideXml += ` bIns="${valToPts(slide._slideNumberProps.margin[2] || 0)}"`
+		} else if (typeof slide._slideNumberProps.margin === 'number') {
+			strSlideXml += ` lIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+			strSlideXml += ` tIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+			strSlideXml += ` rIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+			strSlideXml += ` bIns="${valToPts(slide._slideNumberProps.margin || 0)}"`
+		}
+		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
 		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
-			strSlideXml += '<a:defRPr sz="' + (slide._slideNumberProps.fontSize ? Math.round(slide._slideNumberProps.fontSize) : '12') + '00">'
+			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12) * 100)}">`
 			if (slide._slideNumberProps.color) strSlideXml += genXmlColorSelection(slide._slideNumberProps.color)
 			if (slide._slideNumberProps.fontFace)
-				strSlideXml +=
-					'<a:latin typeface="' +
-					slide._slideNumberProps.fontFace +
-					'"/><a:ea typeface="' +
-					slide._slideNumberProps.fontFace +
-					'"/><a:cs typeface="' +
-					slide._slideNumberProps.fontFace +
-					'"/>'
+				strSlideXml += `<a:latin typeface="${slide._slideNumberProps.fontFace}"/><a:ea typeface="${slide._slideNumberProps.fontFace}"/><a:cs typeface="${slide._slideNumberProps.fontFace}"/>`
 			strSlideXml += '</a:defRPr>'
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
-		strSlideXml += '<a:p><a:fld id="' + SLDNUMFLDID + '" type="slidenum"><a:rPr lang="en-US"/><a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>'
+		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
+		if (slide._slideNumberProps.align) strSlideXml += `<a:pPr algn="${slide._slideNumberProps.align.substring(0, 1)}"/>`
+		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}
 
@@ -863,10 +862,10 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 
 		// OPTION: Paragraph Spacing: Before/After
 		if (textObj.options.paraSpaceBefore && !isNaN(Number(textObj.options.paraSpaceBefore)) && textObj.options.paraSpaceBefore > 0) {
-			strXmlParaSpc += `<a:spcBef><a:spcPts val="${textObj.options.paraSpaceBefore * 100}"/></a:spcBef>`
+			strXmlParaSpc += `<a:spcBef><a:spcPts val="${Math.round(textObj.options.paraSpaceBefore * 100)}"/></a:spcBef>`
 		}
 		if (textObj.options.paraSpaceAfter && !isNaN(Number(textObj.options.paraSpaceAfter)) && textObj.options.paraSpaceAfter > 0) {
-			strXmlParaSpc += `<a:spcAft><a:spcPts val="${textObj.options.paraSpaceAfter * 100}"/></a:spcAft>`
+			strXmlParaSpc += `<a:spcAft><a:spcPts val="${Math.round(textObj.options.paraSpaceAfter * 100)}"/></a:spcAft>`
 		}
 
 		// OPTION: bullet
@@ -930,9 +929,14 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
-		paragraphPropXml += '</' + tag + '>'
+		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet
+		if (isDefault) childPropXml += genXmlTextRunProperties(textObj.options, true)
+		if (childPropXml) {
+			paragraphPropXml += '>' + childPropXml + '</' + tag + '>'
+		} else {
+			// self-close when no child props
+			paragraphPropXml += '/>'
+		}
 	}
 
 	return paragraphPropXml
@@ -951,12 +955,12 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	// BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
 	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '')
 	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
-	runProps += opts.bold ? ' b="1"' : ''
-	runProps += opts.italic ? ' i="1"' : ''
-	runProps += opts.strike ? ' strike="sngStrike"' : ''
-	runProps += opts.underline || opts.hyperlink ? ' u="sng"' : ''
+	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
+	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
+	runProps += opts.hasOwnProperty('strike') ? ` strike="${opts.strike ? 'sngStrike' : 'noStrike'}"` : ''
+	runProps += opts.hasOwnProperty('underline') || opts.hyperlink ? ` u="${opts.underline || opts.hyperlink ? 'sng' : 'none'}"` : ''
 	runProps += opts.subscript ? ' baseline="-40000"' : opts.superscript ? ' baseline="30000"' : ''
-	runProps += opts.charSpacing ? ' spc="' + opts.charSpacing * 100 + '" kern="0"' : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
+	runProps += opts.charSpacing ? ` spc="${Math.round(opts.charSpacing * 100)}" kern="0"` : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
 	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
 	if (opts.color || opts.fontFace || opts.outline) {
@@ -976,15 +980,22 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 		if (typeof opts.hyperlink !== 'object') throw new Error("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink:{url:'https://github.com'}` ")
 		else if (!opts.hyperlink.url && !opts.hyperlink.slide) throw new Error("ERROR: 'hyperlink requires either `url` or `slide`'")
 		else if (opts.hyperlink.url) {
-			// TODO: (20170410): FUTURE-FEATURE: color (link is always blue in Keynote and PPT online, so usual text run above isnt honored for links..?)
 			//runProps += '<a:uFill>'+ genXmlColorSelection('0000FF') +'</a:uFill>'; // Breaks PPT2010! (Issue#74)
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" invalidUrl="" action="" tgtFrame="" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}" history="1" highlightClick="0" endSnd="0"/>`
+			}" history="1" highlightClick="0" endSnd="0"${opts.color ? '>' : '/>'}`
 		} else if (opts.hyperlink.slide) {
 			runProps += `<a:hlinkClick r:id="rId${opts.hyperlink._rId}" action="ppaction://hlinksldjump" tooltip="${
 				opts.hyperlink.tooltip ? encodeXmlEntities(opts.hyperlink.tooltip) : ''
-			}"/>`
+			}"${opts.color ? '>' : '/>'}`
+		}
+		if (opts.color) {
+			runProps += '	<a:extLst>'
+			runProps += '		<a:ext uri="{A12FA001-AC4F-418D-AE19-62706E023703}">'
+			runProps += '			<ahyp:hlinkClr xmlns:ahyp="http://schemas.microsoft.com/office/drawing/2018/hyperlinkcolor" val="tx"/>'
+			runProps += '		</a:ext>'
+			runProps += '	</a:extLst>'
+			runProps += '</a:hlinkClick>'
 		}
 	}
 
@@ -1044,7 +1055,7 @@ function genXmlBodyProperties(slideObject: ISlideObject | TableCell): string {
 		// PPT-2019 EX: <a:bodyPr wrap="square" lIns="1270" tIns="1270" rIns="1270" bIns="1270" rtlCol="0" anchor="ctr"/>
 
 		// A: Enable or disable textwrapping none or square
-		bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="' + slideObject.options._bodyProp.wrap + '"' : ' wrap="square"'
+		bodyProperties += slideObject.options._bodyProp.wrap ? ' wrap="square"' : ' wrap="none"'
 
 		// B: Textbox margins [padding]
 		if (slideObject.options._bodyProp.lIns || slideObject.options._bodyProp.lIns === 0) bodyProperties += ' lIns="' + slideObject.options._bodyProp.lIns + '"'
@@ -1250,8 +1261,10 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			// NOTE: We only pass the text.options to genXmlTextRun (not the Slide.options),
 			// so the run building function cant just fallback to Slide.color, therefore, we need to do that here before passing options below.
 			Object.entries(opts).forEach(([key, val]) => {
+				// RULE: Hyperlinks should not inherit `color` from main options (let PPT default tolocal color, eg: blue on MacOS)
+				if (textObj.options.hyperlink && key === 'color') null
 				// NOTE: This loop will pick up unecessary keys (`x`, etc.), but it doesnt hurt anything
-				if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
+				else if (key !== 'bullet' && !textObj.options[key]) textObj.options[key] = val
 			})
 
 			// D: Add formatted textrun
@@ -1269,17 +1282,17 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 		 */
 		if (slideObj._type === SLIDE_OBJECT_TYPES.tablecell && (opts.fontSize || opts.fontFace)) {
 			if (opts.fontFace) {
-				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0">'
+				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0">'
 				strSlideXml += `<a:latin typeface="${opts.fontFace}" charset="0"/>`
 				strSlideXml += `<a:ea typeface="${opts.fontFace}" charset="0"/>`
 				strSlideXml += `<a:cs typeface="${opts.fontFace}" charset="0"/>`
 				strSlideXml += '</a:endParaRPr>'
 			} else {
-				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
+				strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0"/>'
 			}
 		} else if (reqsClosingFontSize) {
 			// Empty [lineBreak] lines should not contain runProp, however, they need to specify fontSize in `endParaRPr`
-			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize)}00"` : '') + ' dirty="0"/>'
+			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}"` + (opts.fontSize ? ` sz="${Math.round(opts.fontSize * 100)}"` : '') + ' dirty="0"/>'
 		} else {
 			strSlideXml += `<a:endParaRPr lang="${opts.lang || 'en-US'}" dirty="0"/>` // Added 20180101 to address PPT-2007 issues
 		}

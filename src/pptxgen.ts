@@ -6,7 +6,7 @@
 |*|
 |*|  This framework is released under the MIT Public License (MIT)
 |*|
-|*|  PptxGenJS (C) 2015-2020 Brent Ely -- https://github.com/gitbrent
+|*|  PptxGenJS (C) 2015-2021 Brent Ely -- https://github.com/gitbrent
 |*|
 |*|  Some code derived from the OfficeGen project:
 |*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
@@ -59,7 +59,7 @@
  * @see https://docs.microsoft.com/en-us/previous-versions/office/developer/office-2010/hh273476(v=office.14)
  */
 
-import * as JSZip from 'jszip'
+import JSZip from 'jszip'
 import Slide from './slide'
 import {
 	AlignH,
@@ -78,14 +78,27 @@ import {
 	ShapeType,
 	WRITE_OUTPUT_TYPE,
 } from './core-enums'
-import { AddSlideProps, IPresentationProps, PresLayout, PresSlide, SectionProps, SlideLayout, SlideMasterProps, SlideNumberProps, TableToSlidesProps } from './core-interfaces'
+import {
+	AddSlideProps,
+	IPresentationProps,
+	PresLayout,
+	PresSlide,
+	SectionProps,
+	SlideLayout,
+	SlideMasterProps,
+	SlideNumberProps,
+	TableToSlidesProps,
+	WriteBaseProps,
+	WriteFileProps,
+	WriteProps,
+} from './core-interfaces'
 import * as genCharts from './gen-charts'
 import * as genObj from './gen-objects'
 import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.4.0-beta-20200825-2145'
+const VERSION = '3.5.0-beta-20210113-2330'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -375,7 +388,7 @@ export default class PptxGenJS implements IPresentationProps {
 	/**
 	 * Create all chart and media rels for this Presentation
 	 * @param {PresSlide | SlideLayout} slide - slide with rels
-	 * @param {JSZIP} zip - JSZip instance
+	 * @param {JSZip} zip - JSZip instance
 	 * @param {Promise<any>[]} chartPromises - promise array
 	 */
 	private createChartMediaRels = (slide: PresSlide | SlideLayout, zip: JSZip, chartPromises: Promise<any>[]) => {
@@ -446,10 +459,10 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WRITE_OUTPUT_TYPE} outputType - output file type
 	 * @return {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} Promise with data or stream (node) or filename (browser)
 	 */
-	private exportPresentation = (outputType?: WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
+	private exportPresentation = (props: WriteProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> => {
 		let arrChartPromises: Promise<string>[] = []
 		let arrMediaPromises: Promise<string>[] = []
-		let zip: JSZip = new JSZip()
+		let zip = new JSZip()
 
 		// STEP 1: Read/Encode all Media before zip as base64 content, etc. is required
 		this.slides.forEach(slide => {
@@ -519,15 +532,15 @@ export default class PptxGenJS implements IPresentationProps {
 
 			// E: Wait for Promises (if any) then generate the PPTX file
 			return Promise.all(arrChartPromises).then(() => {
-				if (outputType === 'STREAM') {
+				if (props.outputType === 'STREAM') {
 					// A: stream file
-					return zip.generateAsync({ type: 'nodebuffer' })
-				} else if (outputType) {
+					return zip.generateAsync({ type: 'nodebuffer', compression: props.compression ? 'DEFLATE' : 'STORE' })
+				} else if (props.outputType) {
 					// B: Node [fs]: Output type user option or default
-					return zip.generateAsync({ type: outputType })
+					return zip.generateAsync({ type: props.outputType })
 				} else {
 					// C: Browser: Output blob as app/ms-pptx
-					return zip.generateAsync({ type: 'blob' })
+					return zip.generateAsync({ type: 'blob', compression: props.compression ? 'DEFLATE' : 'STORE' })
 				}
 			})
 		})
@@ -537,31 +550,49 @@ export default class PptxGenJS implements IPresentationProps {
 
 	/**
 	 * Export the current Presentation to stream
+	 * @param {WriteBaseProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
-	stream(): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return this.exportPresentation('STREAM')
+	stream(props: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		return this.exportPresentation({
+			compression: props.compression || false,
+			outputType: 'STREAM',
+		})
 	}
 
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
-	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	 * @param {WriteProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file content in selected type
 	 */
-	write(outputType: JSZIP_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
-		return this.exportPresentation(outputType)
+	write(props?: WriteProps | WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		// DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
+		const propsOutType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+
+		return this.exportPresentation({
+			compression: propsCompress,
+			outputType: propsOutType,
+		})
 	}
 
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @param {string} exportName - file name
+	 * @param {WriteFileProps} props - output file properties
 	 * @returns {Promise<string>} the presentation name
 	 */
-	writeFile(exportName?: string): Promise<string> {
+	writeFile(props?: WriteFileProps | string): Promise<string> {
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
-		let fileName = exportName ? (exportName.toString().toLowerCase().endsWith('.pptx') ? exportName : exportName + '.pptx') : 'Presentation.pptx'
+		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
+		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)');
+		const propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : ''
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+		let fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx'
 
-		return this.exportPresentation(fs ? 'nodebuffer' : null).then(content => {
+		return this.exportPresentation({
+			compression: propsCompress,
+			outputType: fs ? 'nodebuffer' : null,
+		}).then(content => {
 			if (fs) {
 				// Node: Output
 				return new Promise<string>((resolve, reject) => {
@@ -611,7 +642,7 @@ export default class PptxGenJS implements IPresentationProps {
 		let masterSlideName = typeof options === 'string' ? options : options && options.masterName ? options.masterName : ''
 		let slideLayout: SlideLayout = {
 			_name: this.LAYOUTS[DEF_PRES_LAYOUT].name,
-			_presLayout : this.presLayout,
+			_presLayout: this.presLayout,
 			_rels: [],
 			_relsChart: [],
 			_relsMedia: [],
@@ -631,7 +662,7 @@ export default class PptxGenJS implements IPresentationProps {
 			slideId: this.slides.length + 256,
 			slideRId: this.slides.length + 2,
 			slideNumber: this.slides.length + 1,
-			slideLayout: slideLayout
+			slideLayout: slideLayout,
 		})
 
 		// A: Add slide to pres
