@@ -2778,6 +2778,10 @@ function genSlides_Text(pptx) {
 			'lineSpacing\n40pt',
 			{ x:7.0, y:3.72, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacing:39.9 } // TEST-CASE: `lineSpacing` decimal value
 		);
+		slide.addText(
+			'lineSpacingMultiple\n1.25',
+			{ x:7.0, y:4.72, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacingMultiple:1.25 }
+		);
 
 		// 3: Line-Spacing
 		slide.addText("Line-Spacing (bullets):", { x:7.0, y:5.6, w:'40%', h:0.3, margin:0, color:'0088CC' });
