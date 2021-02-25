@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.5.0
-* BLD.: 20210109
+* BLD.: 20210224
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -2825,12 +2825,21 @@ function genSlides_Text(pptx) {
 		slide.addText("Bullet Indent-Levels:", { x:0.5, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text:'Bullet one',     options:{ fontSize:24, bullet:true, color:pptx.colors.ACCENT3                } },
+				{ text:'Root-Level    ', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT3, indentLevel:0                } },
 				{ text:'Indent-Level 1', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT4, indentLevel:1 } },
-				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:pptx.colors.ACCENT5, indentLevel:2 } },
-				{ text:'Indent-Level 3', options:{ fontSize:48, bullet:true, color:pptx.colors.ACCENT6, indentLevel:3 } }
+				{ text:'Indent-Level 2', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT5, indentLevel:2 } },
+				{ text:'Indent-Level 3', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT6, indentLevel:3 } }
 			],
-			{ x:0.5, y:1.0, w:5.75, h:3.0, fill:{color:'232323'} }
+			{ x: 0.5, y: 1.0, w: 5.75, h: 2.4, fill: { color: '232323' } }
+		);
+
+		slide.addText("Bullet Spacing (Indentation):", { x:0.5, y:3.5, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText(
+			[
+				{ text: 'bullet indent: 10', options: { bullet: { indent: 10 } } },
+				{ text: 'bullet indent: 30', options: { bullet: { indent: 30 } } }
+			],
+			{ x:0.5, y:3.9, w:5.75, h:0.5, color:'393939', fontFace:'Arial', fontSize:12, fill: { color: pptx.colors.BACKGROUND2 } }
 		);
 
 		slide.addText("Bullet Styles:", { x:0.5, y:4.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
@@ -2849,44 +2858,41 @@ function genSlides_Text(pptx) {
 		// RIGHT COLUMN ------------------------------------------------------------
 
 		// 1: Regular bullets
-		slide.addText('Bullet "Start At" number option:', { x:7.0, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText('Bullet "Start At" number option:', { x:7.0, y:0.6, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			"type:'number'\nnumberStartAt:'5'",
 			{ x:7.0, y:1.0, w:'40%', h:0.75, fill:{color:pptx.colors.BACKGROUND2}, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', numberStartAt:'5'} }
 		);
 
 		// 2: Bullets: Text With Line-Breaks
-		slide.addText("Bullets made with Line Breaks:", { x:7.0, y:2.0, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
-		slide.addText('Line 1\nLine 2\nLine 3', { x: 7.0, y: 2.4, w: '40%', h: 1.0, color: '393939', fontSize: 16, fill: pptx.colors.BACKGROUND2, bullet: { type: 'number' } });
-
-		// 3: Bullets: With group of {text}
-		slide.addText("Bullets indentation option:", { x:7.0, y:3.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText("Bullets made with line breaks:", { x:7.0, y:1.95, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
-			[
-				{ text: 'bullet indent:10', options: { bullet: { indent: 10 } } },
-				{ text: 'bullet indent:30', options: { bullet: { indent: 30 } } }
-			],
-			{ x:7.0, y:3.95, w:5.75, h:0.5, margin:0.1, fontFace:'Arial', fontSize:12 }
+			'Line 1\nLine 2\nLine 3',
+			{ x: 7.0, y: 2.35, w: 5.75, h: 1.0, color: '393939', fontSize: 16, fill: pptx.colors.BACKGROUND2, bullet: { type: 'number' } }
 		);
 
-		slide.addText("Bullets with text objects:", { x:7.0, y:4.7, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		// 3: Bullets: Soft-Line-Breaks
+		slide.addText("Bullets and soft-line-break (shift+enter):", { x:7.0, y:3.5, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text: 'big red words... ', options: { fontSize: 24, color: 'FF0000' } },
-				{ text: 'some green words.', options: { fontSize: 16, color: '00FF00' } }
+				{ text: "First line", options: { bullet: true, breakLine: true } },
+				{ text: "Second line", options: { bullet: true } },
+				{ text: "Third line via `softBreakBefore:true`", options: { softBreakBefore: true } }
 			],
-			{ x: 7.0, y: 5.0, w: 5.75, h: 0.4, margin: 0.1, fontFace: 'Arial', bullet: { code: '25BA' } }
+			{ x: 7.0, y: 3.9, w: 5.75, h: 1.0, color: "393939", fontSize: 16, fill: pptx.colors.BACKGROUND2 }
 		);
 
-		// 5: Bullets: Within a {text} object
-		slide.addText("Bullets using text object options:", { x:7.0, y:5.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		// 3: Bullets: With custom unicode bullet characters
+		slide.addText("Bullets with text objects:", { x:7.0, y:5.05, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text: 'bullet:{characterCode:"25BA"}, color:"00CD00"', options: { bullet: { characterCode: '25BA' }, color: '00CD00' } },
-				{ text: 'Next bullet text', options: { bullet: true, color: '696969' } },
-				{ text: 'Last bullet text', options: { bullet: true, color: '0000AB' } }
+				{ text: "`bullet: { code: '25BA' }`", options: { fontSize: 18, color: pptx.colors.ACCENT1, bullet: { code: '25BA' } } },
+				{ text: "`bullet: { code: '25D1' }`", options: { fontSize: 18, color: pptx.colors.ACCENT5, bullet: { code: '25D1' } } },
+				{ text: "`bullet: { code: '25CC' }`", options: { fontSize: 18, color: pptx.colors.ACCENT6, bullet: { code: '25CC' } } },
+				{ text: 'Mix and... ', options: { fontSize: 24, color: 'FF0000', bullet: { code: '25BA' } } },
+				{ text: 'match formatting as well.', options: { fontSize: 16, color: '00CD00' } }
 			],
-			{ x: 7.0, y: 5.95, w: '40%', h: 1.05, color: 'ABABAB', margin: 1 }
+			{ x: 7.0, y: 5.5, w: 5.75, h: 1.5, fontFace: 'Arial', fill: pptx.colors.BACKGROUND2 }
 		);
 	}
 
