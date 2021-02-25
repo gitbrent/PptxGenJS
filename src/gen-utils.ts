@@ -3,16 +3,16 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, ILayout, TextGlowProps, ISlideLib, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
  * @param {number|string} size - numeric ("5.5") or percentage ("90%")
  * @param {'X' | 'Y'} xyDir - direction
- * @param {ILayout} layout - presentation layout
+ * @param {PresLayout} layout - presentation layout
  * @returns {number} calculated size
  */
-export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: ILayout): number {
+export function getSmartParseNumber(size: number | string, xyDir: 'X' | 'Y', layout: PresLayout): number {
 	// FIRST: Convert string numeric value if reqd
 	if (typeof size === 'string' && !isNaN(Number(size))) size = Number(size)
 
@@ -110,7 +110,7 @@ export function valToPts(pt: number | string): number {
  */
 export function convertRotationDegrees(d: number): number {
 	d = d || 0
-	return (d > 360 ? d - 360 : d) * 60000
+	return Math.round((d > 360 ? d - 360 : d) * 60000)
 }
 
 /**
@@ -177,9 +177,9 @@ export function createColorElement(colorStr: string | SCHEME_COLORS, innerElemen
 export function createGlowElement(options: TextGlowProps, defaults: TextGlowProps): string {
 	let strXml = '',
 		opts = getMix(defaults, options),
-		size = opts['size'] * ONEPT,
+		size = Math.round(opts['size'] * ONEPT),
 		color = opts['color'],
-		opacity = opts['opacity'] * 100000
+		opacity = Math.round(opts['opacity'] * 100000)
 
 	strXml += `<a:glow rad="${size}">`
 	strXml += createColorElement(color, `<a:alpha val="${opacity}"/>`)
@@ -209,8 +209,8 @@ export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLi
 		else {
 			if (shapeFill.type) fillType = shapeFill.type
 			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>` // @deprecated v3.3.0
-			if (shapeFill.transparency) internalElements += `<a:alpha val="${100 - shapeFill.transparency}000"/>`
+			if (shapeFill.alpha) internalElements += `<a:alpha val="${Math.round((100 - shapeFill.alpha) * 1000)}"/>` // @deprecated v3.3.0
+			if (shapeFill.transparency) internalElements += `<a:alpha val="${Math.round((100 - shapeFill.transparency) * 1000)}"/>`
 		}
 
 		switch (fillType) {
@@ -228,9 +228,9 @@ export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLi
 
 /**
  * Get a new rel ID (rId) for charts, media, etc.
- * @param {ISlideLib} target - the slide to use
+ * @param {PresSlide} target - the slide to use
  * @returns {number} count of all current rels plus 1 for the caller to use as its "rId"
  */
-export function getNewRelId(target: ISlideLib): number {
-	return target.rels.length + target.relsChart.length + target.relsMedia.length + 1
+export function getNewRelId(target: PresSlide): number {
+	return target._rels.length + target._relsChart.length + target._relsMedia.length + 1
 }

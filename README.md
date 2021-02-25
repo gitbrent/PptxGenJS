@@ -84,14 +84,14 @@ Use the online demo to create a simple presentation to see how easy it is to use
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.1/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.4.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.1/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.2.1/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.4.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.4.0/dist/pptxgen.min.js"></script>
 ```
 
 ## Download
@@ -155,7 +155,7 @@ let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile();
 ```
 
 ### Script/Web Browser
@@ -173,7 +173,7 @@ let textboxOpts = { x: 1, y: 1, color: "363636" };
 slide.addText(textboxText, textboxOpts);
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile();
 ```
 
 That's really all there is to it!
@@ -209,7 +209,7 @@ Easily convert HTML tables to PowerPoint presentations in a single call.
 ```javascript
 let pptx = new PptxGenJS();
 pptx.tableToSlides("tableElementId");
-pptx.writeFile("HTML2PPT.pptx");
+pptx.writeFile();
 ```
 
 Learn more:

@@ -1,6 +1,6 @@
 {
 	"name": "pptxgenjs-demos-node",
-	"version": "3.2.1",
+	"version": "3.4.0",
 	"author": {
 		"name": "Brent Ely",
 		"url": "https://github.com/gitbrent/"
@@ -13,8 +13,12 @@
 		"demo-text": "node demo.js Text",
 		"demo-stream": "node demo_stream.js"
 	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gitbrent/PptxGenJS.git"
+	},
 	"license": "MIT",
 	"dependencies": {
-		"pptxgenjs": "^3.2.1"
+		"pptxgenjs": "^3.3.1"
 	}
 }
