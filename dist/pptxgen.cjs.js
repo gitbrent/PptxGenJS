@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-02-25T04:01:04.061Z */
+/* PptxGenJS 3.5.0-beta @ 2021-02-25T04:05:48.293Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2102,8 +2102,12 @@ function genXmlParagraphProperties(textObj, isDefault) {
                     break;
             }
         }
-        if (textObj.options.lineSpacing)
+        if (textObj.options.lineSpacing) {
             strXmlLnSpc = "<a:lnSpc><a:spcPts val=\"" + Math.round(textObj.options.lineSpacing * 100) + "\"/></a:lnSpc>";
+        }
+        else if (textObj.options.lineSpacingMultiple) {
+            strXmlLnSpc = "<a:lnSpc><a:spcPct val=\"" + Math.round(textObj.options.lineSpacingMultiple * 100000) + "\"/></a:lnSpc>";
+        }
         // OPTION: indent
         if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
             paragraphPropXml += " lvl=\"" + textObj.options.indentLevel + "\"";
@@ -2474,6 +2478,7 @@ function genXmlTextBody(slideObj) {
             // B: Inherit pPr-type options from parent shape's `options`
             textObj.options.align = textObj.options.align || opts.align;
             textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing;
+            textObj.options.lineSpacingMultiple = textObj.options.lineSpacingMultiple || opts.lineSpacingMultiple;
             textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel;
             textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore;
             textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter;
@@ -3890,6 +3895,7 @@ function addTextDefinition(target, text, opts, isPlaceholder) {
         }
         // C
         newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null;
+        newObject.options.lineSpacingMultiple = opt.lineSpacingMultiple && !isNaN(opt.lineSpacingMultiple) ? opt.lineSpacingMultiple : null;
         // D: Transform text options to bodyProperties as thats how we build XML
         newObject.options._bodyProp.autoFit = opt.autoFit || false; // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
         newObject.options._bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null; // VALS: [t,ctr,b]

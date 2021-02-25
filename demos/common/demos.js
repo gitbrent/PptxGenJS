@@ -2790,14 +2790,20 @@ function genSlides_Text(pptx) {
 			{ x: 7.0, y: 1.0, w: 5.75, h: 1.6, valign: 'middle', align: 'center', color: '6c6c6c', fontSize: 16, fill: 'F2F2F2', line: { color: 'C7C7C7', width: '2' } }
 		);
 
-		// 2: Line-Spacing
-		slide.addText("Line-Spacing (text):", { x:7.0, y:3.3, w:'40%', h:0.3, margin:0, color:'0088CC' });
+		// 2: Line-Spacing (exact)
+		slide.addText("Line-Spacing (text):", { x:7.0, y:2.7, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
-			'lineSpacing\n40pt',
-			{ x:7.0, y:3.72, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacing:39.9 } // TEST-CASE: `lineSpacing` decimal value
+			'lineSpacing (Exactly)\n40pt',
+			{ x:7.0, y:3.1, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacing:39.9 } // TEST-CASE: `lineSpacing` decimal value
 		);
 
-		// 3: Line-Spacing
+		// 3: Line-Spacing (multiple)
+		slide.addText(
+			'lineSpacing (Multiple)\n1.5',
+			{ x: 7.0, y: 4.5, w: 5.75, h: 1.0, align: 'center', fill: { color: 'E6E9EC' }, color: '363636', lineSpacingMultiple: 1.5 }
+		);
+
+		// 4: Line-Spacing (bullets)
 		slide.addText("Line-Spacing (bullets):", { x:7.0, y:5.6, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
 			[

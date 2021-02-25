@@ -949,6 +949,7 @@ export function addTextDefinition(target: PresSlide, text: string | TextProps[],
 
 		// C
 		newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
+		newObject.options.lineSpacingMultiple = opt.lineSpacingMultiple && !isNaN(opt.lineSpacingMultiple) ? opt.lineSpacingMultiple : null
 
 		// D: Transform text options to bodyProperties as thats how we build XML
 		newObject.options._bodyProp.autoFit = opt.autoFit || false // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)

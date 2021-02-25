@@ -866,7 +866,19 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
+	/**
+	 * Line spacing (pt)
+	 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Exactly"
+	 * @example 28 // 28pt
+	 */
 	lineSpacing?: number
+	/**
+	 * line spacing multiple (percent)
+	 * - range (0.0 - 9.99)
+	 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Multiple"
+	 * @example 1.5 // 1.5X line spacing
+	 */
+	lineSpacingMultiple?: number
 	margin?: Margin
 	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
