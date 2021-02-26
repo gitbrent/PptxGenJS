@@ -929,13 +929,16 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 		}
 
 		// OPTION: tabStops
-		if (textObj.options.tabStops?.length) {
+		console.log(textObj.options.tabStops);
+		if (textObj.options.tabStops && Array.isArray(textObj.options.tabStops)) {
 			let tabStopsXml = textObj.options.tabStops.map(stop => {
 				let pos = inch2Emu(typeof stop === "object" ? stop.position : stop)
 				let algn = typeof stop === "object" ? stop.alignment : 'l'
 				return `<a:tab pos="${pos}" algn="${algn}"/>`
 			}).join('')
 			strXmlTabStops = `<a:tabLst>${tabStopsXml}</a:tabLst>`
+			//
+			console.log(strXmlTabStops); // TODO: WIP:
 		}
 
 		// B: Close Paragraph-Properties
