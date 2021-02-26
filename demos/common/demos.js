@@ -3,8 +3,8 @@
 * AUTH: Brent Ely (https://github.com/gitbrent/)
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
-* VER.: 3.4.0
-* BLD.: 20200823
+* VER.: 3.5.0
+* BLD.: 20210225
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -25,7 +25,8 @@ var NODEJS = false;
 if (NODEJS) { var LOGO_STARLABS; }
 
 // Constants
-var TESTMODE = false
+var COMPRESS = true; //false; // TEST: `compression` write prop
+var TESTMODE = false;
 var CUST_NAME = 'S.T.A.R. Laboratories';
 var USER_NAME = 'Barry Allen';
 var COLOR_RED = 'FF0000';
@@ -77,7 +78,8 @@ var gPaths = {
 	'ccLicenseComp': { path:'common/images/cc_license_comp.png' },
 	'ccDjGif'      : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_dj.gif' },
 	'gifAnimTrippy': { path:'https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/images/trippy.gif' },
-	'chicagoBean'  : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest' },
+	'chicagoBean': { path: 'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/chicago_bean_bohne.jpg?op=paramTest&ampersandTest' },
+	'sydneyBridge': { path: 'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/sydney_harbour_bridge_night.jpg?op=paramTest&ampersandTest&fileType=.jpg' },
 	'tokyoSubway' : { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/tokyo-subway-route-map.jpg' },
 	'sample_avi': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.avi' },
 	'sample_m4v': { path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/media/sample.m4v' },
@@ -273,10 +275,10 @@ function execGenSlidesFuncs(type) {
 
 	// LAST: Export Presentation
 	if ( NODEJS ) {
-		return pptx.writeFile('PptxGenJS_Demo_Node_'+type+'_'+getTimestamp());
+		return pptx.writeFile({ fileName: 'PptxGenJS_Demo_Node_' + type + '_' + getTimestamp() });
 	}
 	else {
-		return pptx.writeFile('PptxGenJS_Demo_Browser_'+type+'_'+getTimestamp());
+		return pptx.writeFile({ fileName: 'PptxGenJS_Demo_Browser_' + type + '_' + getTimestamp(), compression: COMPRESS });
 	}
 }
 
@@ -814,6 +816,7 @@ function genSlides_Chart(pptx) {
 			valAxisOrientation: 'maxMin',
 			valAxisMajorTickMark: 'none',
 			valAxisMinorTickMark: 'none',
+			//valAxisLogScaleBase: '25',
 
 			showLegend: false,
 			showTitle : false
@@ -912,17 +915,20 @@ function genSlides_Chart(pptx) {
 			catAxisLabelColor   : 'CC0000',
 			catAxisLabelFontFace: 'Helvetica Neue',
 			catAxisLabelFontSize: 14,
-
 			catGridLine: { style: 'none' },
 			catAxisHidden: true,
+
 			valGridLine: { color: 'cc6699', style: 'dash', size: 1 },
+			valAxisLineColor: '44AA66',
+			valAxisLineSize: 1,
+			valAxisLineStyle: 'dash',
 
 			showLegend   : true,
-			title        : 'No CatAxis, ValGridLine=style:dash',
+			showTitle    : true,
+			title        : 'catAxisHidden:true, valGridLine/valAxisLine:dash',
 			titleColor   : 'a9a9a9',
 			titleFontFace: 'Helvetica Neue',
-			titleFontSize: 14,
-			showTitle    : true
+			titleFontSize: 14
 		};
 		slide.addChart( pptx.charts.BAR, arrDataRegions, optsChartBar1 );
 
@@ -1137,7 +1143,7 @@ function genSlides_Chart(pptx) {
 
 		var arrDataHighVals = [
 			{
-				name  : 'TEST: getExcelColName',
+				name  : 'Single Data Set',
 				labels: LETTERS.concat(['AA','AB','AC','AD']),
 				values: [-5,-3,0,3,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30 ]
 			}
@@ -1155,7 +1161,8 @@ function genSlides_Chart(pptx) {
 			catAxisTitleColor: "4286f4",
 			catAxisTitleFontSize: 14,
 
-			chartColors: ['EE1122'],
+			showLegend: true,
+			chartColors: ['154384'],
 			invertedColors: ['0088CC'],
 
 			showValAxisTitle: true,
@@ -1179,7 +1186,7 @@ function genSlides_Chart(pptx) {
 			pptx.charts.BAR,
 			[
 				{
-					name  : 'Labels are Excel Date Values',
+					name  : 'Excel Date Values',
 					labels: [37987,38018,38047,38078,38108,38139],
 					values: [20, 30, 10, 25, 15, 5]
 				}
@@ -1441,7 +1448,9 @@ function genSlides_Chart(pptx) {
 			chartColors: [ COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK ],
 			lineSize  : 8,
 			lineSmooth: true,
-			showLegend: true, legendPos: 't'
+			showLegend: true,
+			legendPos: 't',
+			catAxisLabelPos: 'high'
 		};
 		slide.addChart( pptx.charts.LINE, arrDataLineStat, optsChartLine1 );
 
@@ -1645,18 +1654,21 @@ function genSlides_Chart(pptx) {
 			x:9.8, y:0.5, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'},
 			showLegend: true,
 			legendPos: 't',
-			showTitle: true,
-			showLeaderLines: true,
-			title:'Left Title & Large Legend',
-
 			legendFontSize: 14,
-			titleAlign: 'left',
+			showLeaderLines: true,
+			showTitle: true,
+			title:'Right Title & Large Legend',
+			titleAlign: 'right',
 			titlePos: {x: 0, y: 0}
 		});
 
 		// BOTH: BTM-RIGHT
 		slide.addText( '.', {x:9.8, y:4.0, w:3.2, h:3.2, fill:{color:'F1F1F1'}, color:'F1F1F1'} );
-		slide.addChart( pptx.charts.PIE, dataChartPieLocs, {x:9.8, y:4.0, w:3.2, h:3.2, dataBorder:{pt:'1',color:'F1F1F1'}, showLegend:true, legendPos:'b', showTitle:true, title:'Title & Legend'} );
+		slide.addChart(
+			pptx.charts.PIE,
+			dataChartPieLocs,
+			{ x: 9.8, y: 4.0, w: 3.2, h: 3.2, dataBorder: { pt: '1', color: 'F1F1F1' }, showLegend: true, legendPos: 'b', showTitle: true, title: 'Title & Legend', firstSliceAng: 90 }
+		);
 	}
 
 	// SLIDE 13: Doughnut Chart ------------------------------------------------------------
@@ -1768,13 +1780,16 @@ function genSlides_Chart(pptx) {
 			fill: 'f2f9fc',
 			//catAxisOrientation: 'maxMin',
 			//valAxisOrientation: 'maxMin',
+			showLegend: true,
+			chartColors: ['FF0000','0088CC'],
+
 			showValAxisTitle: false,
 			lineSize: 0,
 
 			catAxisTitle        : "Data Point Labels",
 			catAxisTitleColor   : "0088CC",
 			catAxisTitleFontSize: 14,
-			showCatAxisTitle    : true,
+			showCatAxisTitle    : false,
 
 			// Data Labels
 			showLabel             : true, // Must be set to true or labels will not be shown
@@ -2393,6 +2408,8 @@ function genSlides_Chart(pptx) {
 			barGrouping: 'stacked',
 			showTitle: true,
 			title: 'Red glowing shadow',
+			titleBold: true,
+			titleFontFace: 'Times',
 			catAxisLabelColor   : '0000CC',
 			catAxisLabelFontFace: 'Times',
 			catAxisLabelFontSize: 12,
@@ -2551,19 +2568,19 @@ function genSlides_Image(pptx) {
 		var objCodeEx1 = { x:0.5, y:0.6, w:6.0, h:0.6 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx1[key] = gOptsCode[key] });
 		slide.addText('path:"'+gPaths.ccLogo.path+'"', objCodeEx1);
-		slide.addImage({ path:gPaths.ccLogo.path, x:0.5, y:1.35, h:2.5, w:3.33 });
+		slide.addImage({ path:gPaths.ccLogo.path, x:1.84, y:1.3, h:2.5, w:3.33 });
 
 		// TOP-RIGHT:
-		var objCodeEx2 = { x:6.9, y:0.6, w:6.0, h:0.6 };
+		var objCodeEx2 = { x:6.9, y:0.6, w:5.93, h:0.6 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx2[key] = gOptsCode[key] });
 		slide.addText('path:"'+gPaths.wikimedia2.path+'"', objCodeEx2);
-		slide.addImage({ path:gPaths.wikimedia2.path, x:6.9, y:1.35, h:2.5, w:3.27 });
+		slide.addImage({ path:gPaths.wikimedia2.path, x:8.23, y:1.3, h:2.5, w:3.27 });
 
 		// BTM-LEFT:
-		var objCodeEx3 = { x:0.5, y:4.2, w:12.4, h:0.8 };
+		var objCodeEx3 = { x:0.5, y:4.2, w:12.33, h:0.8 };
 		Object.keys(gOptsCode).forEach(function(key){ objCodeEx3[key] = gOptsCode[key] });
-		slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"'+gPaths.chicagoBean.path+'"', objCodeEx3);
-		slide.addImage({ path:gPaths.chicagoBean.path, x:0.5, y:5.1, w:2.56, h:1.92 });
+		slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"'+gPaths.sydneyBridge.path+'"', objCodeEx3);
+		slide.addImage({ path:gPaths.sydneyBridge.path, x:0.5, y:5.1, h:1.8, w:12.33 });
 
 		// BOTTOM-CENTER:
 		if ( typeof window !== 'undefined' && window.location.href.indexOf('gitbrent') > 0 ) {
@@ -2641,7 +2658,8 @@ function genSlides_Shape(pptx) {
 	slide.addShape(pptx.shapes.RECTANGLE, { x: 3.0, y: 0.7, w: 1.5, h: 3.0, fill: { color: 'F38E00' }, rotate: 45 });
 	slide.addShape(pptx.shapes.OVAL, { x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: 'solid', color: '0088CC' } });
 	slide.addShape(pptx.shapes.OVAL, { x: 7.7, y: 1.4, w: 3.0, h: 1.5, fill: { color: 'FF00CC' }, rotate: 90 }); // TEST: no type
-	slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x:10 , y:2.5, w:3.0, h:1.5, r:0.2, fill:{color:'00FF00'}, line:'000000', lineSize:1 }); // TEST: DEPRECATED: `fill`,`line`,`lineSize`
+	slide.addShape(pptx.shapes.ROUNDED_RECTANGLE, { x: 10, y: 2.5, w: 3.0, h: 1.5, r: 0.2, fill: { color: '00FF00' }, line: '000000', lineSize: 1 }); // TEST: DEPRECATED: `fill`,`line`,`lineSize`
+	slide.addShape(pptx.shapes.ARC, { x: 10.75, y: 0.8, w: 1.5, h: 1.5, fill: { color: '0088CC' }, angleRange: [45, 315] });
 	//
 	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.4, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 1, dashType: 'lgDash' } });
 	slide.addShape(pptx.shapes.LINE, { x: 4.2, y: 4.8, w: 5.0, h: 0.0, line: { color: 'FF0000', width: 2, dashType: 'dashDot' }, lineHead: 'arrow' }); // TEST: DEPRECATED: lineHead
@@ -2663,6 +2681,7 @@ function genSlides_Shape(pptx) {
 	slide.addText('OVAL (transparency:50)', { shape: pptx.shapes.OVAL, x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: 'solid', color: '0088CC', transparency: 50 }, align: 'center', fontSize: 14 });
 	slide.addText('OVAL (rotate:90, transparency:75)', { shape: pptx.shapes.OVAL, x: 7.7, y: 1.4, w: 3.0, h: 1.5, fill: { type: 'solid', color: 'FF00CC', alpha: 75 }, rotate: 90, align: 'center', fontSize: 14 }); // TEST: DEPRECATED: `alpha`
 	slide.addText('ROUNDED-RECTANGLE\ndashType:dash\nrectRadius:10', { shape: pptx.shapes.ROUNDED_RECTANGLE, x: 10, y: 2.5, w: 3.0, h: 1.5, r: 0.2, fill: { color: '00FF00' }, align: 'center', fontSize: 14, line: { color: '000000', size: 1, dashType: 'dash' }, rectRadius:10 });
+	slide.addText('ARC', { shape: pptx.shapes.ARC, x: 10.75, y: 0.8, w: 1.5, h: 1.5, fill: { color: '0088CC' }, angleRange: [45, 315], line: { color:'002244', width: 1 }, fontSize: 14 });
 	//
 	slide.addText('LINE size=1', { shape: pptx.shapes.LINE, align: 'center', x: 4.15, y: 4.40, w: 5, h: 0, line: { color: 'FF0000', width: 1, dashType: 'lgDash' } });
 	slide.addText('LINE size=2', { shape: pptx.shapes.LINE, align: 'left', x: 4.15, y: 4.80, w: 5, h: 0, line: { color: 'FF0000', width: 2, dashType: 'dashDot', endArrowType: 'arrow' } });
@@ -2772,14 +2791,20 @@ function genSlides_Text(pptx) {
 			{ x: 7.0, y: 1.0, w: 5.75, h: 1.6, valign: 'middle', align: 'center', color: '6c6c6c', fontSize: 16, fill: 'F2F2F2', line: { color: 'C7C7C7', width: '2' } }
 		);
 
-		// 2: Line-Spacing
-		slide.addText("Line-Spacing (text):", { x:7.0, y:3.3, w:'40%', h:0.3, margin:0, color:'0088CC' });
+		// 2: Line-Spacing (exact)
+		slide.addText("Line-Spacing (text):", { x:7.0, y:2.7, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
-			'lineSpacing\n40pt',
-			{ x:7.0, y:3.72, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacing:39.9 } // TEST-CASE: `lineSpacing` decimal value
+			'lineSpacing (Exactly)\n40pt',
+			{ x:7.0, y:3.1, w:5.75, h:1.17, align:'center', fill:{color:'F1F1F1'}, color:'363636', lineSpacing:39.9 } // TEST-CASE: `lineSpacing` decimal value
 		);
 
-		// 3: Line-Spacing
+		// 3: Line-Spacing (multiple)
+		slide.addText(
+			'lineSpacing (Multiple)\n1.5',
+			{ x: 7.0, y: 4.5, w: 5.75, h: 1.0, align: 'center', fill: { color: 'E6E9EC' }, color: '363636', lineSpacingMultiple: 1.5 }
+		);
+
+		// 4: Line-Spacing (bullets)
 		slide.addText("Line-Spacing (bullets):", { x:7.0, y:5.6, w:'40%', h:0.3, margin:0, color:'0088CC' });
 		slide.addText(
 			[
@@ -2801,12 +2826,21 @@ function genSlides_Text(pptx) {
 		slide.addText("Bullet Indent-Levels:", { x:0.5, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text:'Bullet one',     options:{ fontSize:24, bullet:true, color:pptx.colors.ACCENT3                } },
+				{ text:'Root-Level    ', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT3, indentLevel:0                } },
 				{ text:'Indent-Level 1', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT4, indentLevel:1 } },
-				{ text:'Indent-Level 2', options:{ fontSize:42, bullet:true, color:pptx.colors.ACCENT5, indentLevel:2 } },
-				{ text:'Indent-Level 3', options:{ fontSize:48, bullet:true, color:pptx.colors.ACCENT6, indentLevel:3 } }
+				{ text:'Indent-Level 2', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT5, indentLevel:2 } },
+				{ text:'Indent-Level 3', options:{ fontSize:32, bullet:true, color:pptx.colors.ACCENT6, indentLevel:3 } }
 			],
-			{ x:0.5, y:1.0, w:5.75, h:3.0, fill:{color:'232323'} }
+			{ x: 0.5, y: 1.0, w: 5.75, h: 2.4, fill: { color: '232323' } }
+		);
+
+		slide.addText("Bullet Spacing (Indentation):", { x:0.5, y:3.5, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText(
+			[
+				{ text: 'bullet indent: 10', options: { bullet: { indent: 10 } } },
+				{ text: 'bullet indent: 30', options: { bullet: { indent: 30 } } }
+			],
+			{ x:0.5, y:3.9, w:5.75, h:0.5, color:'393939', fontFace:'Arial', fontSize:12, fill: { color: pptx.colors.BACKGROUND2 } }
 		);
 
 		slide.addText("Bullet Styles:", { x:0.5, y:4.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
@@ -2825,44 +2859,41 @@ function genSlides_Text(pptx) {
 		// RIGHT COLUMN ------------------------------------------------------------
 
 		// 1: Regular bullets
-		slide.addText('Bullet "Start At" number option:', { x:7.0, y:0.6, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText('Bullet "Start At" number option:', { x:7.0, y:0.6, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			"type:'number'\nnumberStartAt:'5'",
 			{ x:7.0, y:1.0, w:'40%', h:0.75, fill:{color:pptx.colors.BACKGROUND2}, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', numberStartAt:'5'} }
 		);
 
 		// 2: Bullets: Text With Line-Breaks
-		slide.addText("Bullets made with Line Breaks:", { x:7.0, y:2.0, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
-		slide.addText('Line 1\nLine 2\nLine 3', { x: 7.0, y: 2.4, w: '40%', h: 1.0, color: '393939', fontSize: 16, fill: pptx.colors.BACKGROUND2, bullet: { type: 'number' } });
-
-		// 3: Bullets: With group of {text}
-		slide.addText("Bullets indentation option:", { x:7.0, y:3.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		slide.addText("Bullets made with line breaks:", { x:7.0, y:1.95, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
-			[
-				{ text: 'bullet indent:10', options: { bullet: { indent: 10 } } },
-				{ text: 'bullet indent:30', options: { bullet: { indent: 30 } } }
-			],
-			{ x:7.0, y:3.95, w:5.75, h:0.5, margin:0.1, fontFace:'Arial', fontSize:12 }
+			'Line 1\nLine 2\nLine 3',
+			{ x: 7.0, y: 2.35, w: 5.75, h: 1.0, color: '393939', fontSize: 16, fill: pptx.colors.BACKGROUND2, bullet: { type: 'number' } }
 		);
 
-		slide.addText("Bullets with text objects:", { x:7.0, y:4.7, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		// 3: Bullets: Soft-Line-Breaks
+		slide.addText("Bullets and soft-line-break (shift+enter):", { x:7.0, y:3.5, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text: 'big red words... ', options: { fontSize: 24, color: 'FF0000' } },
-				{ text: 'some green words.', options: { fontSize: 16, color: '00FF00' } }
+				{ text: "First line", options: { bullet: true, breakLine: true } },
+				{ text: "Second line", options: { bullet: true } },
+				{ text: "Third line via `softBreakBefore:true`", options: { softBreakBefore: true } }
 			],
-			{ x: 7.0, y: 5.0, w: 5.75, h: 0.4, margin: 0.1, fontFace: 'Arial', bullet: { code: '25BA' } }
+			{ x: 7.0, y: 3.9, w: 5.75, h: 1.0, color: "393939", fontSize: 16, fill: pptx.colors.BACKGROUND2 }
 		);
 
-		// 5: Bullets: Within a {text} object
-		slide.addText("Bullets using text object options:", { x:7.0, y:5.65, w:'40%', h:0.3, margin:0, color:pptx.colors.ACCENT1 });
+		// 3: Bullets: With custom unicode bullet characters
+		slide.addText("Bullets with text objects:", { x:7.0, y:5.05, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			[
-				{ text: 'bullet:{characterCode:"25BA"}, color:"00CD00"', options: { bullet: { characterCode: '25BA' }, color: '00CD00' } },
-				{ text: 'Next bullet text', options: { bullet: true, color: '696969' } },
-				{ text: 'Last bullet text', options: { bullet: true, color: '0000AB' } }
+				{ text: "`bullet: { code: '25BA' }`", options: { fontSize: 18, color: pptx.colors.ACCENT1, bullet: { code: '25BA' } } },
+				{ text: "`bullet: { code: '25D1' }`", options: { fontSize: 18, color: pptx.colors.ACCENT5, bullet: { code: '25D1' } } },
+				{ text: "`bullet: { code: '25CC' }`", options: { fontSize: 18, color: pptx.colors.ACCENT6, bullet: { code: '25CC' } } },
+				{ text: 'Mix and... ', options: { fontSize: 24, color: 'FF0000', bullet: { code: '25BA' } } },
+				{ text: 'match formatting as well.', options: { fontSize: 16, color: '00CD00' } }
 			],
-			{ x: 7.0, y: 5.95, w: '40%', h: 1.05, color: 'ABABAB', margin: 1 }
+			{ x: 7.0, y: 5.5, w: 5.75, h: 1.5, fontFace: 'Arial', fill: pptx.colors.BACKGROUND2 }
 		);
 	}
 
@@ -2889,15 +2920,19 @@ function genSlides_Text(pptx) {
 		slide.addText("Hyperlinks:", { x:0.5, y:6.0, w:'90%', h:0.3, margin:0.123, color:'0088CC' });
 		slide.addText(
 			[{ text: 'Link with Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent/pptxgenjs', tooltip: 'Visit Homepage' } } }],
-			{ x:0.5, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:0.5, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
 		);
 		slide.addText(
 			[{ text: 'Link without Tooltip', options: { hyperlink: { url: 'https://github.com/gitbrent' } } }],
-			{ x:5.0, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:3.78, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+		);
+		slide.addText(
+			[{ text: 'Link with custom color', options: { hyperlink: { url: 'https://github.com/gitbrent' }, color: 'EE40EE' } }],
+			{ x:7.05, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
 		);
 		slide.addText(
 			[{ text: 'Link to Slide #5', options: { hyperlink: { slide: 5 } } }],
-			{ x:9.5, y:6.4, w:3, h:0.6, margin:10, fill:{color:'F1F1F1'}, fontSize:14, align:'center' }
+			{ x:10.33, y:6.4, w:2.5, h:0.6, margin:10, fill:{color:'E2F0D9'}, fontSize:14, align:'center' }
 		);
 	}
 
