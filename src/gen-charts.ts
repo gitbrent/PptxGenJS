@@ -1669,6 +1669,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '<c:valAx>'
 	strXml += '  <c:axId val="' + valAxisId + '"/>'
 	strXml += '  <c:scaling>'
+	if (opts.valAxisLogScaleBase) strXml += `    <c:logBase val="${opts.valAxisLogScaleBase}"/>`
 	strXml += '    <c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>'
 	if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0) strXml += '<c:max val="' + opts.valAxisMaxVal + '"/>'
 	if (opts.valAxisMinVal || opts.valAxisMinVal === 0) strXml += '<c:min val="' + opts.valAxisMinVal + '"/>'
