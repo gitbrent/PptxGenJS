@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-02-25T04:16:52.975Z */
+/* PptxGenJS 3.5.0-beta @ 2021-02-25T06:16:13.013Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2475,6 +2475,10 @@ function genXmlTextBody(slideObj) {
         line.forEach(function (textObj, idx) {
             // A: Set line index
             textObj.options._lineIdx = idx;
+            // A.1: Add soft break if not the first run of the line.
+            if (idx > 0 && textObj.options.softBreakBefore) {
+                strSlideXml += "<a:br/>";
+            }
             // B: Inherit pPr-type options from parent shape's `options`
             textObj.options.align = textObj.options.align || opts.align;
             textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing;
@@ -6105,7 +6109,7 @@ function createSvgPngPreview(rel) {
 |*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 |*|  SOFTWARE.
 \*/
-var VERSION = '3.5.0-beta-20210224-2200';
+var VERSION = '3.5.0-beta-20210224-2350';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
