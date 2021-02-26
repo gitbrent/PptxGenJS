@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-02-26T01:51:08.127Z */
+/* PptxGenJS 3.5.0-beta @ 2021-02-26T02:32:39.785Z */
 import JSZip from 'jszip';
 
 /**
@@ -5715,6 +5715,8 @@ function makeValAxis(opts, valAxisId) {
     strXml += '<c:valAx>';
     strXml += '  <c:axId val="' + valAxisId + '"/>';
     strXml += '  <c:scaling>';
+    if (opts.valAxisLogScaleBase)
+        strXml += "    <c:logBase val=\"" + opts.valAxisLogScaleBase + "\"/>";
     strXml += '    <c:orientation val="' + (opts.valAxisOrientation || (opts.barDir === 'col' ? 'minMax' : 'minMax')) + '"/>';
     if (opts.valAxisMaxVal || opts.valAxisMaxVal === 0)
         strXml += '<c:max val="' + opts.valAxisMaxVal + '"/>';
