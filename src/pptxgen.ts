@@ -1,34 +1,34 @@
-/*\
-|*|  :: pptxgen.ts ::
-|*|
-|*|  JavaScript framework that creates PowerPoint (pptx) presentations
-|*|  https://github.com/gitbrent/PptxGenJS
-|*|
-|*|  This framework is released under the MIT Public License (MIT)
-|*|
-|*|  PptxGenJS (C) 2015-2021 Brent Ely -- https://github.com/gitbrent
-|*|
-|*|  Some code derived from the OfficeGen project:
-|*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
-|*|
-|*|  Permission is hereby granted, free of charge, to any person obtaining a copy
-|*|  of this software and associated documentation files (the "Software"), to deal
-|*|  in the Software without restriction, including without limitation the rights
-|*|  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-|*|  copies of the Software, and to permit persons to whom the Software is
-|*|  furnished to do so, subject to the following conditions:
-|*|
-|*|  The above copyright notice and this permission notice shall be included in all
-|*|  copies or substantial portions of the Software.
-|*|
-|*|  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-|*|  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-|*|  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-|*|  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-|*|  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-|*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-|*|  SOFTWARE.
-\*/
+/**
+ *  :: pptxgen.ts ::
+ *
+ *  JavaScript framework that creates PowerPoint (pptx) presentations
+ *  https://github.com/gitbrent/PptxGenJS
+ *
+ *  This framework is released under the MIT Public License (MIT)
+ *
+ *  PptxGenJS (C) 2015-present Brent Ely -- https://github.com/gitbrent
+ *
+ *  Some code derived from the OfficeGen project:
+ *  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
 
 /**
  * Units of Measure used in PowerPoint documents
@@ -98,7 +98,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.5.0-beta-20210225-1950'
+const VERSION = '3.5.0-beta-20210225-2144'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -584,7 +584,7 @@ export default class PptxGenJS implements IPresentationProps {
 	writeFile(props?: WriteFileProps | string): Promise<string> {
 		const fs = typeof require !== 'undefined' && typeof window === 'undefined' ? require('fs') : null // NodeJS
 		// DEPRECATED: @deprecated v3.5.0 - fileName - [[remove in v4.0.0]]
-		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)');
+		if (typeof props === 'string') console.log('Warning: `writeFile(filename)` is deprecated - please use `WriteFileProps` argument (v3.5.0)')
 		const propsExpName = typeof props === 'object' && props.hasOwnProperty('fileName') ? props.fileName : typeof props === 'string' ? props : ''
 		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
 		let fileName = propsExpName ? (propsExpName.toString().toLowerCase().endsWith('.pptx') ? propsExpName : propsExpName + '.pptx') : 'Presentation.pptx'

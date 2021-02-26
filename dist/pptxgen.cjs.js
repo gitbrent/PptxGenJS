@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-02-26T02:32:39.773Z */
+/* PptxGenJS 3.5.0-beta @ 2021-02-26T03:45:05.938Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -6080,38 +6080,38 @@ function createSvgPngPreview(rel) {
     });
 }
 
-/*\
-|*|  :: pptxgen.ts ::
-|*|
-|*|  JavaScript framework that creates PowerPoint (pptx) presentations
-|*|  https://github.com/gitbrent/PptxGenJS
-|*|
-|*|  This framework is released under the MIT Public License (MIT)
-|*|
-|*|  PptxGenJS (C) 2015-2021 Brent Ely -- https://github.com/gitbrent
-|*|
-|*|  Some code derived from the OfficeGen project:
-|*|  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
-|*|
-|*|  Permission is hereby granted, free of charge, to any person obtaining a copy
-|*|  of this software and associated documentation files (the "Software"), to deal
-|*|  in the Software without restriction, including without limitation the rights
-|*|  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-|*|  copies of the Software, and to permit persons to whom the Software is
-|*|  furnished to do so, subject to the following conditions:
-|*|
-|*|  The above copyright notice and this permission notice shall be included in all
-|*|  copies or substantial portions of the Software.
-|*|
-|*|  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-|*|  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-|*|  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-|*|  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-|*|  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-|*|  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-|*|  SOFTWARE.
-\*/
-var VERSION = '3.5.0-beta-20210225-1950';
+/**
+ *  :: pptxgen.ts ::
+ *
+ *  JavaScript framework that creates PowerPoint (pptx) presentations
+ *  https://github.com/gitbrent/PptxGenJS
+ *
+ *  This framework is released under the MIT Public License (MIT)
+ *
+ *  PptxGenJS (C) 2015-present Brent Ely -- https://github.com/gitbrent
+ *
+ *  Some code derived from the OfficeGen project:
+ *  github.com/Ziv-Barber/officegen/ (Copyright 2013 Ziv Barber)
+ *
+ *  Permission is hereby granted, free of charge, to any person obtaining a copy
+ *  of this software and associated documentation files (the "Software"), to deal
+ *  in the Software without restriction, including without limitation the rights
+ *  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ *  copies of the Software, and to permit persons to whom the Software is
+ *  furnished to do so, subject to the following conditions:
+ *
+ *  The above copyright notice and this permission notice shall be included in all
+ *  copies or substantial portions of the Software.
+ *
+ *  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ *  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ *  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ *  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ *  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ *  SOFTWARE.
+ */
+var VERSION = '3.5.0-beta-20210225-2144';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
