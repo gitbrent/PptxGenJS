@@ -1068,8 +1068,9 @@ declare namespace PptxGenJS {
 		 */
 		breakLine?: boolean
 		/**
-		 * Add a line-break
+		 * Add a soft line-break (shift+enter) before line text content
 		 * @default false
+		 * @since v3.5.0
 		 */
 		softBreakBefore?: boolean
 		/**
@@ -1634,9 +1635,10 @@ declare namespace PptxGenJS {
 		lineSpacing?: number
 		/**
 		 * line spacing multiple (percent)
-		 * - range (0.0 - 9.99)
+		 * - range: 0.0-9.99
 		 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Multiple"
 		 * @example 1.5 // 1.5X line spacing
+		 * @since v3.5.0
 		 */
 		lineSpacingMultiple?: number
 		margin?: Margin
@@ -1848,6 +1850,12 @@ declare namespace PptxGenJS {
 		valAxisLineShow?: boolean
 		valAxisLineSize?: number
 		valAxisLineStyle?: 'solid' | 'dash' | 'dot'
+		/**
+		 * PowerPoint: Format Axis > Axis Options > Logarithmic scale - Base
+		 * - range: 2-99
+		 * @since v3.5.0
+		 */
+		valAxisLogScaleBase?: number
 		valAxisMajorTickMark?: ChartAxisTickMark
 		valAxisMajorUnit?: number
 		valAxisMaxVal?: number

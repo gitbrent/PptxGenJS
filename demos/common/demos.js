@@ -4,7 +4,7 @@
 * DESC: Common test/demo slides for all library features
 * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
 * VER.: 3.5.0
-* BLD.: 20210224
+* BLD.: 20210225
 */
 
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
@@ -816,6 +816,7 @@ function genSlides_Chart(pptx) {
 			valAxisOrientation: 'maxMin',
 			valAxisMajorTickMark: 'none',
 			valAxisMinorTickMark: 'none',
+			//valAxisLogScaleBase: '25',
 
 			showLegend: false,
 			showTitle : false
