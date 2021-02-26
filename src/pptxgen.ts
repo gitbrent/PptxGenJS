@@ -98,7 +98,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.5.0-beta-20210225-1905'
+const VERSION = '3.5.0-beta-20210225-1950'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
