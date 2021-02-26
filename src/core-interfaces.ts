@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN } from './core-enums'
+import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
 
 // Core Types
 // ==========
@@ -222,11 +222,11 @@ export interface ShapeLineProps extends ShapeFillProps {
 	 */
 	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 * @deprecated v3.3.0 - use `beginArrowType`
 	 */
 	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `endArrowType`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
@@ -257,6 +257,12 @@ export interface TextBaseProps {
 	 * @default false
 	 */
 	breakLine?: boolean
+	/**
+	 * Add a soft line-break (shift+enter) before line text content
+	 * @default false
+	 * @since v3.5.0
+	 */
+	softBreakBefore?: boolean
 	/**
 	 * Add standard or custom bullet
 	 * - use `true` for standard bullet
@@ -431,6 +437,16 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 */
 		y?: number
 	}
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide
@@ -465,6 +481,22 @@ export interface ShapeProps extends PositionProps {
 	 * @default 'left'
 	 */
 	align?: HAlign
+	/**
+	 * Radius (only for pptx.shapes.PIE, pptx.shapes.ARC, pptx.shapes.BLOCK_ARC)
+	 * - In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
+	 * - values: [0-359, 0-359]
+	 * @since v3.4.0
+	 * @default [270, 0]
+	 */
+	angleRange?: [number, number]
+	/**
+	 * Radius (only for pptx.shapes.BLOCK_ARC)
+	 * - You have to setup the angleRange values too
+	 * - values: 0.0-1.0
+	 * @since v3.4.0
+	 * @default 0.5
+	 */
+	arcThicknessRatio?: number
 	/**
 	 * Shape fill color properties
 	 * @example { color:'FF0000' } // hex string (red)
@@ -652,8 +684,9 @@ export interface TableCellProps extends TextBaseProps {
 	colspan?: number
 	/**
 	 * Fill color
-	 * @example 'FF0000' // hex string (red)
-	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 	 */
 	fill?: ShapeFillProps
@@ -729,6 +762,9 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	colW?: number | number[]
 	/**
 	 * Cell background color
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -755,6 +791,7 @@ export interface TableCell {
 	_lineHeight?: number
 	_hmerge?: boolean
 	_vmerge?: boolean
+	_rowContinue?: number
 	_optImp?: any
 
 	text?: string | TableCell[]
@@ -795,7 +832,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 		tIns?: number
 		bIns?: number
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
-		wrap?: 'none' | 'square'
+		wrap?: boolean
 	}
 	_lineIdx?: number
 
@@ -811,7 +848,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * - 'shrink' = Shrink text on overflow
 	 * - 'resize' = Resize shape to fit text
 	 *
-	 * **Note** 'shrink' and 'resize' only take effect after editting text/resize shape.
+	 * **Note** 'shrink' and 'resize' only take effect after editing text/resize shape.
 	 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 	 *
 	 * There is no way for this library to trigger that behavior, sorry.
@@ -819,6 +856,12 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @default "none"
 	 */
 	fit?: 'none' | 'shrink' | 'resize'
+	/**
+	 * Shape fill
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 */
 	fill?: ShapeFillProps
 	/**
 	 * Flip shape horizontally?
@@ -836,7 +879,20 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
+	/**
+	 * Line spacing (pt)
+	 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Exactly"
+	 * @example 28 // 28pt
+	 */
 	lineSpacing?: number
+	/**
+	 * line spacing multiple (percent)
+	 * - range: 0.0-9.99
+	 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Multiple"
+	 * @example 1.5 // 1.5X line spacing
+	 * @since v3.5.0
+	 */
+	lineSpacingMultiple?: number
 	margin?: Margin
 	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
@@ -865,29 +921,29 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 
 	/**
 	 * Whather "Fit to Shape?" is enabled
-	 * @deprecated v3.3.0 - use `textFit`
+	 * @deprecated v3.3.0 - use `fit`
 	 */
 	autoFit?: boolean
 	/**
 	 * Whather "Shrink Text on Overflow?" is enabled
-	 * @deprecated v3.3.0 - use `textFit`
+	 * @deprecated v3.3.0 - use `fit`
 	 */
 	shrinkText?: boolean
 	/**
 	 * Dash type
-	 * @deprecated v3.3.0 - use `dashType`
+	 * @deprecated v3.3.0 - use `line.dashType`
 	 */
 	lineDash?: 'solid' | 'dash' | 'dashDot' | 'lgDash' | 'lgDashDot' | 'lgDashDotDot' | 'sysDash' | 'sysDot'
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeBegin`
+	 * @deprecated v3.3.0 - use `line.beginArrowType`
 	 */
 	lineHead?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 	/**
-	 * @deprecated v3.3.0 - use `line.size`
+	 * @deprecated v3.3.0 - use `line.width`
 	 */
 	lineSize?: number
 	/**
-	 * @deprecated v3.3.0 - use `arrowTypeEnd`
+	 * @deprecated v3.3.0 - use `line.endArrowType`
 	 */
 	lineTail?: 'none' | 'arrow' | 'diamond' | 'oval' | 'stealth' | 'triangle'
 }
@@ -933,14 +989,7 @@ export interface OptsChartGridLine {
 	 */
 	style?: 'solid' | 'dash' | 'dot' | 'none'
 }
-// TODO: 202008: chart types remain with predicated wiht "I" in v3.3.0 (ran out of time!)
-export interface IChartTitleOpts extends TextBaseProps {
-	color?: Color
-	rotate?: number
-	title: string
-	titleAlign?: string // TODO: values
-	titlePos?: { x: number; y: number }
-}
+// TODO: 202008: chart types remain with predicated with "I" in v3.3.0 (ran out of time!)
 export interface IChartMulti {
 	type: CHART_NAME
 	data: any[]
@@ -995,7 +1044,10 @@ export interface IChartPropsAxisCat {
 	catAxisLabelFrequency?: string
 	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	catAxisLabelRotate?: number
+	catAxisLineColor?: string
 	catAxisLineShow?: boolean
+	catAxisLineSize?: number
+	catAxisLineStyle?: 'solid' | 'dash' | 'dot'
 	catAxisMajorTickMark?: ChartAxisTickMark
 	catAxisMajorTimeUnit?: string
 	catAxisMajorUnit?: number
@@ -1004,7 +1056,7 @@ export interface IChartPropsAxisCat {
 	catAxisMinorTimeUnit?: string
 	catAxisMinorUnit?: string
 	catAxisMinVal?: number
-	catAxisOrientation?: 'minMax' | 'minMax'
+	catAxisOrientation?: 'minMax'
 	catAxisTitle?: string
 	catAxisTitleColor?: string
 	catAxisTitleFontFace?: string
@@ -1024,7 +1076,7 @@ export interface IChartPropsAxisSer {
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
 	serAxisLabelFontFace?: string
-	serAxisLabelFontSize?: string
+	serAxisLabelFontSize?: number
 	serAxisLabelFrequency?: string
 	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	serAxisLineShow?: boolean
@@ -1064,13 +1116,22 @@ export interface IChartPropsAxisVal {
 	valAxisLabelFormatCode?: string
 	valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
 	valAxisLabelRotate?: number
+	valAxisLineColor?: string
 	valAxisLineShow?: boolean
+	valAxisLineSize?: number
+	valAxisLineStyle?: 'solid' | 'dash' | 'dot'
+	/**
+	 * PowerPoint: Format Axis > Axis Options > Logarithmic scale - Base
+	 * - range: 2-99
+	 * @since v3.5.0
+	 */
+	valAxisLogScaleBase?: number
 	valAxisMajorTickMark?: ChartAxisTickMark
 	valAxisMajorUnit?: number
 	valAxisMaxVal?: number
 	valAxisMinorTickMark?: ChartAxisTickMark
 	valAxisMinVal?: number
-	valAxisOrientation?: 'minMax' | 'minMax'
+	valAxisOrientation?: 'minMax'
 	valAxisTitle?: string
 	valAxisTitleColor?: string
 	valAxisTitleFontFace?: string
@@ -1093,7 +1154,6 @@ export interface IChartPropsChartBar {
 	barGapDepthPct?: number
 	barGapWidthPct?: number
 	barGrouping?: string
-	valueBarColors?: string[]
 }
 export interface IChartPropsChartDoughnut {
 	dataNoEffects?: boolean
@@ -1110,6 +1170,14 @@ export interface IChartPropsChartLine {
 }
 export interface IChartPropsChartPie {
 	dataNoEffects?: boolean
+	/**
+	 * MS-PPT > Format chart > Format Data Series > Series Options >  "Angle of first slice"
+	 * - angle (degrees)
+	 * - range: 0-359
+	 * @since v3.4.0
+	 * @default 0
+	 */
+	firstSliceAng?: number
 }
 export interface IChartPropsChartRadar {
 	radarStyle?: 'standard' | 'marker' | 'filled'
@@ -1128,7 +1196,7 @@ export interface IChartPropsDataLabel {
 	 */
 	dataLabelFormatCode?: string
 	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
+	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd'
 }
 export interface IChartPropsDataTable {
 	dataTableFontSize?: number
@@ -1152,9 +1220,10 @@ export interface IChartPropsLegend {
 	legendFontSize?: number
 	legendPos?: 'b' | 'l' | 'r' | 't' | 'tr'
 }
-export interface IChartPropsTitle {
+export interface IChartPropsTitle extends TextBaseProps {
 	title?: string
 	titleAlign?: string
+	titleBold?: boolean
 	titleColor?: string
 	titleFontFace?: string
 	titleFontSize?: number
@@ -1236,6 +1305,29 @@ export interface ISlideObject {
 }
 // PRIVATE ^^^
 
+export interface WriteBaseProps {
+	/**
+	 * Whether to compress export (can save substantial space, but takes a bit longer to export)
+	 * @default false
+	 * @since v3.5.0
+	 */
+	compression?: boolean
+}
+export interface WriteProps extends WriteBaseProps {
+	/**
+	 * Output type
+	 * - values: 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array' | 'STREAM'
+	 * @default 'blob'
+	 */
+	outputType?: WRITE_OUTPUT_TYPE
+}
+export interface WriteFileProps extends WriteBaseProps {
+	/**
+	 * Export file name
+	 * @default 'Presentation.pptx'
+	 */
+	fileName?: string
+}
 export interface SectionProps {
 	_type: 'user' | 'default'
 	_slides: PresSlide[]
@@ -1262,7 +1354,9 @@ export interface PresLayout {
 	width: number
 	height: number
 }
-export interface SlideNumberProps extends PositionProps, TextBaseProps {}
+export interface SlideNumberProps extends PositionProps, TextBaseProps {
+	margin?: Margin
+}
 export interface SlideMasterProps {
 	/**
 	 * Unique name for this master
