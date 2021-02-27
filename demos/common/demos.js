@@ -2753,7 +2753,8 @@ function genSlides_Text(pptx) {
 
 		var objOptions = {
 			x:0, y:7, w:'100%', h:0.5, align:'center',
-			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
+			//fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
+			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:{style:'wavyDbl', color:'#ff0000'}, margin:0, isTextBox:true
 		};
 		slide.addText('Text: Arial, 24, green, bold, italic, underline, margin:0', objOptions);
 	}

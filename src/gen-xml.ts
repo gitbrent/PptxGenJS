@@ -957,10 +957,11 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
 	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
 	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
-	//runProps += opts.hasOwnProperty('strike') ? ` strike="${opts.strike ? 'sngStrike' : 'noStrike'}"` : ''
-	runProps += opts.strike ? ` strike="${typeof opts.strike === "string" ? opts.strike : 'sngStrike'}"` : ''
-	if (typeof opts.underline === "object" && opts.underline?.type) {
-		runProps += ` u="${opts.underline.type}"`
+
+	// TODO: handle old style of bool, default to 'sng'
+	runProps += opts.hasOwnProperty('strike') ? ` strike="${typeof opts.strike === "string" ? opts.strike : 'sngStrike'}"` : ''
+	if (typeof opts.underline === "object" && opts.underline?.style) {
+		runProps += ` u="${opts.underline.style}"`
 	} else if (typeof opts.underline === "string") {
 		runProps += ` u="${opts.underline}"`
 	} else if (opts.underline || opts.hyperlink) {

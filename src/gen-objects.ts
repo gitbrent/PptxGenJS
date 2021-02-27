@@ -957,12 +957,17 @@ export function addTextDefinition(target: PresSlide, text: string | TextProps[],
 		newObject.options._bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
 		newObject.options._bodyProp.wrap = typeof opt.wrap === 'boolean' ? opt.wrap : true
 
+		// E
 		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
 			newObject.options._bodyProp.lIns = inch2Emu(opt.inset)
 			newObject.options._bodyProp.rIns = inch2Emu(opt.inset)
 			newObject.options._bodyProp.tIns = inch2Emu(opt.inset)
 			newObject.options._bodyProp.bIns = inch2Emu(opt.inset)
 		}
+
+		// F: Transform deprecated props
+		// TODO: inherit color from main obejct - otherwise line w/b black!!
+		if (typeof newObject.options.underline === 'boolean' && newObject.options.underline === true) newObject.options.underline = { style: 'sng' }
 	}
 
 	// STEP 2: Transform `align`/`valign` to XML values, store in _bodyProp for XML gen

@@ -82,7 +82,6 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
-export type UnderlineType = 'dash' | 'dashHeavy' | 'dashLong' | 'dashLongHeavy' | 'dbl' | 'dotDash' | 'dotDashHeave' | 'dotDotDash' | 'dotDotDashHeavy' |'dotted' | 'dottedHeavy' | 'heavy' | 'none' | 'sng' | 'wavy' | 'wavyDbl' | 'wavyHeavy'
 // used by charts, shape, text
 export interface BorderProps {
 	/**
@@ -373,11 +372,29 @@ export interface TextBaseProps {
 	 */
 	lang?: string
 	/**
-	 * underline style
-	 * @default false
+	 * underline properties
+	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
+	 * @default (none)
 	 */
-	underline?: boolean | string | {
-		type?: UnderlineType
+	underline?: {
+		style?:
+			| 'dash'
+			| 'dashHeavy'
+			| 'dashLong'
+			| 'dashLongHeavy'
+			| 'dbl'
+			| 'dotDash'
+			| 'dotDashHeave'
+			| 'dotDotDash'
+			| 'dotDotDashHeavy'
+			| 'dotted'
+			| 'dottedHeavy'
+			| 'heavy'
+			| 'none'
+			| 'sng'
+			| 'wavy'
+			| 'wavyDbl'
+			| 'wavyHeavy'
 		color?: HexColor
 	}
 	/**
@@ -907,10 +924,6 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	baseline?: number
 	subscript?: boolean
 	superscript?: boolean
-	underline?: boolean | string | {
-		type?: UnderlineType
-		color?: HexColor
-	}
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
