@@ -1,6 +1,6 @@
 {
   "name": "pptxgenjs",
-  "version": "3.4.0-beta",
+  "version": "3.5.0-beta",
   "author": {
     "name": "Brent Ely",
     "url": "https://github.com/gitbrent/"
@@ -31,24 +31,26 @@
     "path": false
   },
   "dependencies": {
-    "@types/node": "^14.10.3",
+    "@types/node": "^14.14.10",
     "https": "^1.0.0",
-    "image-size": "^0.8.3",
-    "jszip": "^3.4.0"
+    "image-size": "^0.9.3",
+    "jszip": "^3.5.0"
   },
   "devDependencies": {
-    "doctoc": "^1.4.0",
+    "@rollup/plugin-commonjs": "^17.0.0",
+    "@rollup/plugin-node-resolve": "^11.0.1",
+    "doctoc": "^2.0.0",
     "express": "^4.17.1",
     "gulp": "^4.0.2",
     "gulp-concat": "^2.6.1",
     "gulp-delete-lines": "0.0.7",
     "gulp-ignore": "^3.0.0",
     "gulp-insert": "^0.5.0",
-    "gulp-sourcemaps": "^2.6.5",
+    "gulp-sourcemaps": "^3.0.0",
     "gulp-uglify": "^3.0.2",
-    "rollup": "^2.10.5",
-    "rollup-plugin-typescript2": "^0.27.2",
-    "typescript": "^3.9.3"
+    "rollup": "^2.34.2",
+    "rollup-plugin-typescript2": "^0.29.0",
+    "typescript": "^4.1.2"
   },
   "repository": {
     "type": "git",

@@ -276,8 +276,9 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		options.dataBorder.color = 'F9F9F9'
 	//
 	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
+	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT))
+		options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
-	if (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT) options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	//
 	// Set default format for Scatter chart labels to custom string if not defined
 	if (!options.dataLabelFormatScatter && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatScatter = 'custom'
@@ -383,6 +384,8 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		sizing: sizing,
 		placeholder: opt.placeholder,
 		rotate: opt.rotate || 0,
+		flipV: opt.flipV || false,
+		flipH: opt.flipH || false,
 	}
 
 	// STEP 4: Add this image to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
@@ -946,11 +949,13 @@ export function addTextDefinition(target: PresSlide, text: string | TextProps[],
 
 		// C
 		newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
+		newObject.options.lineSpacingMultiple = opt.lineSpacingMultiple && !isNaN(opt.lineSpacingMultiple) ? opt.lineSpacingMultiple : null
 
 		// D: Transform text options to bodyProperties as thats how we build XML
 		newObject.options._bodyProp.autoFit = opt.autoFit || false // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
 		newObject.options._bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
 		newObject.options._bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+		newObject.options._bodyProp.wrap = typeof opt.wrap === 'boolean' ? opt.wrap : true
 
 		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
 			newObject.options._bodyProp.lIns = inch2Emu(opt.inset)
