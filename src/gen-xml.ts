@@ -707,7 +707,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		strSlideXml += '/>'
 		strSlideXml += '  <a:lstStyle><a:lvl1pPr>'
 		if (slide._slideNumberProps.fontFace || slide._slideNumberProps.fontSize || slide._slideNumberProps.color) {
-			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12) * 100)}">`
+			strSlideXml += `<a:defRPr sz="${Math.round((slide._slideNumberProps.fontSize || 12 * 100))}">`
 			if (slide._slideNumberProps.color) strSlideXml += genXmlColorSelection(slide._slideNumberProps.color)
 			if (slide._slideNumberProps.fontFace)
 				strSlideXml += `<a:latin typeface="${slide._slideNumberProps.fontFace}"/><a:ea typeface="${slide._slideNumberProps.fontFace}"/><a:cs typeface="${slide._slideNumberProps.fontFace}"/>`
@@ -954,7 +954,7 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 
 	// BEGIN runProperties (ex: `<a:rPr lang="en-US" sz="1600" b="1" dirty="0">`)
 	runProps += '<' + runPropsTag + ' lang="' + (opts.lang ? opts.lang : 'en-US') + '"' + (opts.lang ? ' altLang="en-US"' : '')
-	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
+	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize*100) + '"' : '' // NOTE: Use round so sizes like '8.2' wont cause corrupt pres. ( some values like 8.2*100 = 819.999999 (Floating point precision))
 	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
 	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
 	runProps += opts.hasOwnProperty('strike') ? ` strike="${opts.strike ? 'sngStrike' : 'noStrike'}"` : ''
