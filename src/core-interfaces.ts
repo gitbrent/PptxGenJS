@@ -395,7 +395,7 @@ export interface TextBaseProps {
 			| 'wavy'
 			| 'wavyDbl'
 			| 'wavyHeavy'
-		color?: HexColor
+		color?: Color
 	}
 	/**
 	 * vertical alignment
