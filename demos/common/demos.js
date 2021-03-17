@@ -2753,8 +2753,7 @@ function genSlides_Text(pptx) {
 
 		var objOptions = {
 			x:0, y:7, w:'100%', h:0.5, align:'center',
-			//fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
-			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:{style:'wavyDbl', color:'#ff0000'}, margin:0, isTextBox:true
+			fontFace:'Arial', fontSize:24, color:'00EC23', bold:true, italic:true, underline:true, margin:0, isTextBox:true
 		};
 		slide.addText('Text: Arial, 24, green, bold, italic, underline, margin:0', objOptions);
 	}
@@ -2778,6 +2777,8 @@ function genSlides_Text(pptx) {
 				{ text:'Verdana 48', options:{ fontSize:48, fontFace:'Verdana', color:pptx.colors.ACCENT3, align:'left', breakLine:true } },
 				{ text:'Strikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT6, align:'center', strike:true, breakLine:true } },
 				{ text:'Underline', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT4, align:'center', underline:true, breakLine:true } },
+				{ text:'FUN', options: { fontFace: 'Arial', fontSize: 32, color: pptx.colors.ACCENT6, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT4 } } },
+				{ text:'derline', options: { fontFace: 'Arial', fontSize: 32, color: pptx.colors.ACCENT4, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT5 }, breakLine:true } },
 				{ text:'\nTimes 36', options:{ fontSize:36, fontFace:'Times', color:pptx.colors.ACCENT5, align:'right' } }
 			],
 			{ x: 0.5, y: 1.0, w: 5.75, h: 6.0, margin: 5, fill: { color: pptx.colors.TEXT1 } }
