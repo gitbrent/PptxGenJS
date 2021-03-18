@@ -850,6 +850,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	}
 	_lineIdx?: number
 
+	baseline?: number
 	/**
 	 * Character spacing
 	 */
@@ -921,7 +922,6 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	shadow?: ShadowProps
 	shape?: SHAPE_NAME
 	strike?: boolean | 'dblStrike' | 'sngStrike'
-	baseline?: number
 	subscript?: boolean
 	superscript?: boolean
 	valign?: VAlign
