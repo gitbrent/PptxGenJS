@@ -958,13 +958,13 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
 	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
 
-	// TODO: handle old style of bool, default to 'sng'
-	runProps += opts.hasOwnProperty('strike') ? ` strike="${typeof opts.strike === "string" ? opts.strike : 'sngStrike'}"` : ''
-	if (typeof opts.underline === "object" && opts.underline?.style) {
+	runProps += opts.hasOwnProperty('strike') ? ` strike="${typeof opts.strike === 'string' ? opts.strike : 'sngStrike'}"` : ''
+	if (typeof opts.underline === 'object' && opts.underline?.style) {
 		runProps += ` u="${opts.underline.style}"`
-	} else if (typeof opts.underline === "string") {
+	} else if (typeof opts.underline === 'string') {
+		// DEPRECATED: opts.underline is an object in v3.5.0
 		runProps += ` u="${opts.underline}"`
-	} else if (opts.underline || opts.hyperlink) {
+	} else if (opts.hyperlink) {
 		runProps += ' u="sng"'
 	}
 	if (opts.baseline) {
@@ -977,14 +977,14 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	runProps += opts.charSpacing ? ` spc="${Math.round(opts.charSpacing * 100)}" kern="0"` : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
 	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
-	if (opts.color || opts.fontFace || opts.outline || typeof opts.underline === "object" && opts.underline.color) {
+	if (opts.color || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
 		if (opts.outline && typeof opts.outline === 'object') {
 			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
 		// underline color
-		if (typeof opts.underline === "object" && opts.underline.color) {
-			runProps += `<a:uFill><a:solidFill><a:srgbClr val="${opts.underline.color}"/></a:solidFill></a:uFill>`
+		if (typeof opts.underline === 'object' && opts.underline.color) {
+			runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
 		}
 		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
 		if (opts.fontFace) {
