@@ -2776,7 +2776,7 @@ function genSlides_Text(pptx) {
 				{ text:'48', options:{ fontSize:48, fontFace:'Courier New', color:pptx.colors.ACCENT1, breakLine:true } },
 				{ text:'Verdana 48', options:{ fontSize:48, fontFace:'Verdana', color:pptx.colors.ACCENT3, align:'left', breakLine:true } },
 				{ text:'Strikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT6, align:'center', strike:true, breakLine:true } },
-				{ text:'Underline', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT4, align:'center', underline:true, breakLine:true } },
+				{ text:'Underline', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT2, align:'center', underline:true, breakLine:true } },
 				{ text:'FUN', options: { fontFace: 'Arial', fontSize: 32, color: pptx.colors.ACCENT6, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT4 } } },
 				{ text:'derline', options: { fontFace: 'Arial', fontSize: 32, color: pptx.colors.ACCENT4, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT5 }, breakLine:true } },
 				{ text:'\nTimes 36', options:{ fontSize:36, fontFace:'Times', color:pptx.colors.ACCENT5, align:'right' } }
