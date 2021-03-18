@@ -1302,7 +1302,7 @@ export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
 	options?: ObjectOptions
 	// text
-	text?: string | TextProps[]
+	text?: TextProps[]
 	// table
 	arrTabRows?: TableCell[][]
 	// chart
