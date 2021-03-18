@@ -2775,10 +2775,10 @@ function genSlides_Text(pptx) {
 				{ text:'Arial ', options:{ fontSize:48, fontFace:'Arial', color:pptx.colors.ACCENT2 } },
 				{ text:'48', options:{ fontSize:48, fontFace:'Courier New', color:pptx.colors.ACCENT1, breakLine:true } },
 				{ text:'Verdana 48', options:{ fontSize:48, fontFace:'Verdana', color:pptx.colors.ACCENT3, align:'left', breakLine:true } },
-				{ text:'Strikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT6, align:'center', strike:true, breakLine:true } },
+				{ text:'\nStrikethrough', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT6, align:'center', strike:true, breakLine:true } },
 				{ text:'Underline', options:{ fontSize:36, fontFace:'Arial', color:pptx.colors.ACCENT2, align:'center', underline:true, breakLine:true } },
-				{ text:'FUN', options: { fontFace: 'Arial', fontSize: 32, color: pptx.colors.ACCENT6, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT4 } } },
-				{ text:'derline', options: { fontFace: 'Arial', fontSize: 32, color: pptx.colors.ACCENT4, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT5 }, breakLine:true } },
+				{ text:'FUN', options: { fontFace: 'Arial', fontSize: 48, color: pptx.colors.ACCENT6, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT4 } } },
+				{ text:'derline', options: { fontFace: 'Arial', fontSize: 48, color: pptx.colors.ACCENT4, align:'center', underline: { style: 'wavy', color: pptx.colors.ACCENT5 }, breakLine:true } },
 				{ text:'\nTimes 36', options:{ fontSize:36, fontFace:'Times', color:pptx.colors.ACCENT5, align:'right' } }
 			],
 			{ x: 0.5, y: 1.0, w: 5.75, h: 6.0, margin: 5, fill: { color: pptx.colors.TEXT1 } }
@@ -2864,7 +2864,7 @@ function genSlides_Text(pptx) {
 		slide.addText('Bullet "Start At" number option:', { x:7.0, y:0.6, w:5.75, h:0.3, margin:0, color:pptx.colors.ACCENT1 });
 		slide.addText(
 			"type:'number'\nnumberStartAt:'5'",
-			{ x:7.0, y:1.0, w:'40%', h:0.75, fill:{color:pptx.colors.BACKGROUND2}, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', numberStartAt:'5'} }
+			{ x:7.0, y:1.0, w:5.75, h:0.75, fill:{color:pptx.colors.BACKGROUND2}, color:pptx.colors.ACCENT6, fontFace:"Courier New", bullet:{type:'number', numberStartAt:'5'} }
 		);
 
 		// 2: Bullets: Text With Line-Breaks
