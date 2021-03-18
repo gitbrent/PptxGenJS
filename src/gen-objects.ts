@@ -67,7 +67,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, object[key].text, object[key].options, false)
+			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
 			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
@@ -75,7 +75,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 				object[key].options._placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
 				object[key].options._placeholderIdx = 100 + idx
-				addTextDefinition(tgt, object[key].text, object[key].options, true)
+				addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
 				// TODO: ISSUE#599 - only text is suported now (add more below)
 				//else if (object[key].image) addImageDefinition(tgt, object[key].image)
 				/* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
@@ -568,7 +568,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 export function addNotesDefinition(target: PresSlide, notes: string) {
 	target._slideObjects.push({
 		_type: SLIDE_OBJECT_TYPES.notes,
-		text: notes,
+		text: [{ text: notes }],
 	})
 }
 
@@ -897,91 +897,102 @@ export function addTableDefinition(
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(target: PresSlide, text: string | TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
-	let opt: TextPropsOptions = opts || {}
-	opt.line = opt.line || ({} as ShapeLineProps)
-	if (!opt._bodyProp) opt._bodyProp = {}
-	let newObject = {
+export function addTextDefinition(target: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
+	let newObject: ISlideObject = {
 		_type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
-		shape: opt.shape || SHAPE_TYPE.RECTANGLE,
-		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
-		options: opt,
+		shape: (opts && opts.shape) || SHAPE_TYPE.RECTANGLE,
+		text: !text || text.length === 0 ? [{ text: '', options: null }] : text,
+		options: opts || {},
 	}
-	// TODO: copy "newLineOpts" from addShape above! 20200609
 
-	// STEP 1: Set some options
-	{
-		// A.1: Placeholders should inherit their colors or override them, so don't default them
-		if (!opt.placeholder) {
-			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
-		}
-
-		// A.2: Placeholder should inherit their bullets or override them, so don't default them
-		if (opt.placeholder || isPlaceholder) {
-			opt.bullet = opt.bullet || false
-		}
-
-		// B
-		if (opt.shape === SHAPE_TYPE.LINE) {
-			// ShapeLineProps defaults
-			let newLineOpts: ShapeLineProps = {
-				type: opt.line.type || 'solid',
-				color: opt.line.color || DEF_SHAPE_LINE_COLOR,
-				transparency: opt.line.transparency || 0,
-				width: opt.line.width || 1,
-				dashType: opt.line.dashType || 'solid',
-				beginArrowType: opt.line.beginArrowType || null,
-				endArrowType: opt.line.endArrowType || null,
+	function cleanOpts(itemOpts): TextPropsOptions {
+		// STEP 1: Set some options
+		{
+			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
+			if (!itemOpts.placeholder) {
+				itemOpts.color = itemOpts.color || newObject.options.color || target.color || DEF_FONT_COLOR
 			}
-			if (typeof opt.line === 'object') opt.line = newLineOpts
 
-			// 3: Handle line (lots of deprecated opts)
-			if (typeof opt.line === 'string') {
-				let tmpOpts = newLineOpts
-				tmpOpts.color = opt.line!.toString() // @deprecated `opt.line` string (was line color)
-				opt.line = tmpOpts
+			// A.2: Placeholder should inherit their bullets or override them, so don't default them
+			if (itemOpts.placeholder || isPlaceholder) {
+				itemOpts.bullet = itemOpts.bullet || false
 			}
-			if (typeof opt.lineSize === 'number') opt.line.width = opt.lineSize // @deprecated (part of `ShapeLineProps` now)
-			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLineProps` now)
-			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLineProps` now)
-			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLineProps` now)
+
+			// B:
+			if (itemOpts.shape === SHAPE_TYPE.LINE) {
+				// ShapeLineProps defaults
+				let newLineOpts: ShapeLineProps = {
+					type: itemOpts.line.type || 'solid',
+					color: itemOpts.line.color || DEF_SHAPE_LINE_COLOR,
+					transparency: itemOpts.line.transparency || 0,
+					width: itemOpts.line.width || 1,
+					dashType: itemOpts.line.dashType || 'solid',
+					beginArrowType: itemOpts.line.beginArrowType || null,
+					endArrowType: itemOpts.line.endArrowType || null,
+				}
+				if (typeof itemOpts.line === 'object') itemOpts.line = newLineOpts
+
+				// 3: Handle line (lots of deprecated opts)
+				if (typeof itemOpts.line === 'string') {
+					let tmpOpts = newLineOpts
+					tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line` string (was line color)
+					itemOpts.line = tmpOpts
+				}
+				if (typeof itemOpts.lineSize === 'number') itemOpts.line.width = itemOpts.lineSize // @deprecated (part of `ShapeLineProps` now)
+				if (typeof itemOpts.lineDash === 'string') itemOpts.line.dashType = itemOpts.lineDash // @deprecated (part of `ShapeLineProps` now)
+				if (typeof itemOpts.lineHead === 'string') itemOpts.line.beginArrowType = itemOpts.lineHead // @deprecated (part of `ShapeLineProps` now)
+				if (typeof itemOpts.lineTail === 'string') itemOpts.line.endArrowType = itemOpts.lineTail // @deprecated (part of `ShapeLineProps` now)
+			}
+
+			// C: Line opts
+			itemOpts.line = itemOpts.line || {}
+			itemOpts.lineSpacing = itemOpts.lineSpacing && !isNaN(itemOpts.lineSpacing) ? itemOpts.lineSpacing : null
+			itemOpts.lineSpacingMultiple = itemOpts.lineSpacingMultiple && !isNaN(itemOpts.lineSpacingMultiple) ? itemOpts.lineSpacingMultiple : null
+
+			// D: Transform text options to bodyProperties as thats how we build XML
+			itemOpts._bodyProp = itemOpts._bodyProp || {}
+			itemOpts._bodyProp.autoFit = itemOpts.autoFit || false // DEPRECATED: (3.3.0) If true, shape will collapse to text size (Fit To shape)
+			itemOpts._bodyProp.anchor = !itemOpts.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
+			itemOpts._bodyProp.vert = itemOpts.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+			itemOpts._bodyProp.wrap = typeof itemOpts.wrap === 'boolean' ? itemOpts.wrap : true
+
+			// E: Inset
+			if ((itemOpts.inset && !isNaN(Number(itemOpts.inset))) || itemOpts.inset === 0) {
+				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.inset)
+				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.inset)
+				itemOpts._bodyProp.tIns = inch2Emu(itemOpts.inset)
+				itemOpts._bodyProp.bIns = inch2Emu(itemOpts.inset)
+			}
+
+			// F: Transform @deprecated props
+			if (typeof itemOpts.underline === 'boolean' && itemOpts.underline === true) itemOpts.underline = { style: 'sng' }
 		}
 
-		// C
-		newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
-		newObject.options.lineSpacingMultiple = opt.lineSpacingMultiple && !isNaN(opt.lineSpacingMultiple) ? opt.lineSpacingMultiple : null
+		// STEP 2: Transform `align`/`valign` to XML values, store in _bodyProp for XML gen
+		{
+			if ((itemOpts.align || '').toLowerCase().indexOf('c') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.center
+			else if ((itemOpts.align || '').toLowerCase().indexOf('l') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.left
+			else if ((itemOpts.align || '').toLowerCase().indexOf('r') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.right
+			else if ((itemOpts.align || '').toLowerCase().indexOf('j') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.justify
 
-		// D: Transform text options to bodyProperties as thats how we build XML
-		newObject.options._bodyProp.autoFit = opt.autoFit || false // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
-		newObject.options._bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
-		newObject.options._bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
-		newObject.options._bodyProp.wrap = typeof opt.wrap === 'boolean' ? opt.wrap : true
-
-		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
-			newObject.options._bodyProp.lIns = inch2Emu(opt.inset)
-			newObject.options._bodyProp.rIns = inch2Emu(opt.inset)
-			newObject.options._bodyProp.tIns = inch2Emu(opt.inset)
-			newObject.options._bodyProp.bIns = inch2Emu(opt.inset)
+			if ((itemOpts.valign || '').toLowerCase().indexOf('b') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.b
+			else if ((itemOpts.valign || '').toLowerCase().indexOf('m') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.ctr
+			else if ((itemOpts.valign || '').toLowerCase().indexOf('t') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.t
 		}
+
+		// STEP 3: ROBUST: Set rational values for some shadow props if needed
+		correctShadowOptions(itemOpts.shadow)
+
+		return itemOpts
 	}
 
-	// STEP 2: Transform `align`/`valign` to XML values, store in _bodyProp for XML gen
-	{
-		if ((newObject.options.align || '').toLowerCase().indexOf('c') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.center
-		else if ((newObject.options.align || '').toLowerCase().indexOf('l') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.left
-		else if ((newObject.options.align || '').toLowerCase().indexOf('r') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.right
-		else if ((newObject.options.align || '').toLowerCase().indexOf('j') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.justify
+	// STEP 1: Create/Clean object options
+	newObject.options = cleanOpts(newObject.options)
 
-		if ((newObject.options.valign || '').toLowerCase().indexOf('b') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.b
-		else if ((newObject.options.valign || '').toLowerCase().indexOf('m') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.ctr
-		else if ((newObject.options.valign || '').toLowerCase().indexOf('t') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.t
-	}
+	// STEP 2: Create/Clean text options
+	newObject.text.forEach(item => (item.options = cleanOpts(item.options || {})))
 
-	// STEP 3: ROBUST: Set rational values for some shadow props if needed
-	correctShadowOptions(opt.shadow)
-
-	// STEP 4: Create hyperlinks
-	if (typeof text === 'string' || typeof text === 'number') newObject.text = [{ text: text, options: newObject.options }]
+	// STEP 3: Create hyperlinks
 	createHyperlinkRels(target, newObject.text || '')
 
 	// LAST: Add object to Slide
@@ -1000,7 +1011,7 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
-				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
+				addTextDefinition(slide, [{ text: '' }], { placeholder: slideLayoutObj.options.placeholder }, false)
 			}
 		}
 	})

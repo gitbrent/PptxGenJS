@@ -7,6 +7,8 @@
 //                 Stephen Cronin <https://github.com/cronin4392>
 // TypeScript Version: 3.x
 
+import { HexColor, UnderlineType } from "../src/core-interfaces";
+
 export as namespace PptxGenJS
 
 export default PptxGenJS
@@ -896,6 +898,7 @@ declare namespace PptxGenJS {
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
+	export type UnderlineType = 'dash' | 'dashHeavy' | 'dashLong' | 'dashLongHeavy' | 'dbl' | 'dotDash' | 'dotDashHeave' | 'dotDotDash' | 'dotDotDashHeavy' |'dotted' | 'dottedHeavy' | 'heavy' | 'none' | 'sng' | 'wavy' | 'wavyDbl' | 'wavyHeavy'
 	// used by charts, shape, text
 	export interface BorderProps {
 		/**
@@ -1187,7 +1190,10 @@ declare namespace PptxGenJS {
 		 * underline style
 		 * @default false
 		 */
-		underline?: boolean
+		underline?: boolean | string | {
+			type?: UnderlineType
+			color?: HexColor
+		}
 		/**
 		 * vertical alignment
 		 * @default 'top'
@@ -1654,10 +1660,14 @@ declare namespace PptxGenJS {
 		rtlMode?: boolean
 		shadow?: ShadowProps
 		shape?: SHAPE_NAME
-		strike?: boolean
+		strike?: boolean | 'dblStrike' | 'sngStrike'
+		baseline?: number
 		subscript?: boolean
 		superscript?: boolean
-		underline?: boolean
+		underline?: boolean | string | {
+			type?: UnderlineType
+			color?: HexColor
+		}
 		valign?: VAlign
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		/**

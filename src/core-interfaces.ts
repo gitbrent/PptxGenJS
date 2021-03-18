@@ -372,10 +372,31 @@ export interface TextBaseProps {
 	 */
 	lang?: string
 	/**
-	 * underline style
-	 * @default false
+	 * underline properties
+	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
+	 * @default (none)
 	 */
-	underline?: boolean
+	underline?: {
+		style?:
+			| 'dash'
+			| 'dashHeavy'
+			| 'dashLong'
+			| 'dashLongHeavy'
+			| 'dbl'
+			| 'dotDash'
+			| 'dotDashHeave'
+			| 'dotDotDash'
+			| 'dotDotDashHeavy'
+			| 'dotted'
+			| 'dottedHeavy'
+			| 'heavy'
+			| 'none'
+			| 'sng'
+			| 'wavy'
+			| 'wavyDbl'
+			| 'wavyHeavy'
+		color?: Color
+	}
 	/**
 	 * vertical alignment
 	 * @default 'top'
@@ -899,10 +920,10 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	rtlMode?: boolean
 	shadow?: ShadowProps
 	shape?: SHAPE_NAME
-	strike?: boolean
+	strike?: boolean | 'dblStrike' | 'sngStrike'
+	baseline?: number
 	subscript?: boolean
 	superscript?: boolean
-	underline?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
@@ -1281,7 +1302,7 @@ export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
 	options?: ObjectOptions
 	// text
-	text?: string | TextProps[]
+	text?: TextProps[]
 	// table
 	arrTabRows?: TableCell[][]
 	// chart

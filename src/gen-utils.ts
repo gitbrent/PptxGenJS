@@ -190,9 +190,9 @@ export function createGlowElement(options: TextGlowProps, defaults: TextGlowProp
 
 /**
  * Create color selection
- * @param {shapeFill} ShapeFillProps - options
- * @param {string} backColor - color string
- * @returns {string} XML string
+ * @param shapeFill - options
+ * @param backColor - color string
+ * @returns XML string
  */
 export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLineProps, backColor?: string): string {
 	let colorVal = ''
@@ -209,7 +209,7 @@ export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLi
 		else {
 			if (shapeFill.type) fillType = shapeFill.type
 			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += `<a:alpha val="${Math.round((100 - shapeFill.alpha) * 1000)}"/>` // @deprecated v3.3.0
+			if (shapeFill.alpha) internalElements += `<a:alpha val="${Math.round((100 - shapeFill.alpha) * 1000)}"/>` // DEPRECATED: @deprecated v3.3.0
 			if (shapeFill.transparency) internalElements += `<a:alpha val="${Math.round((100 - shapeFill.transparency) * 1000)}"/>`
 		}
 
