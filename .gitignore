@@ -16,6 +16,7 @@ src/
 lib/core/metadata.js
 lib/core/MetadataBlog.js
 website/translated_docs
+website/.docusaurus
 website/build
 website/yarn.lock
 website/node_modules
