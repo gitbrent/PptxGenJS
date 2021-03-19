@@ -6,6 +6,9 @@ bower_components/
 *.icloud
 *.lock
 
+css/
+demo/
+demo-react/
 demos/
 dist/
 examples/
@@ -15,6 +18,8 @@ src/
 
 lib/core/metadata.js
 lib/core/MetadataBlog.js
+website/.docusaurus
+website/docs/*.html
 website/translated_docs
 website/build
 website/yarn.lock
