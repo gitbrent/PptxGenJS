@@ -148,7 +148,7 @@ module.exports = {
 						},
 						{
 							label: "License",
-							href: "https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE",
+							href: "/license",
 						},
 					],
 				},
