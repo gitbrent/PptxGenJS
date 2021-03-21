@@ -13,7 +13,7 @@ title: Library Integration
 * Working React demo under [demos/react-demo](https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo)
 
 ### React Example
-```
+```typescript
 import pptxgen from "pptxgenjs";
 
 let pptx = new pptxgen();
