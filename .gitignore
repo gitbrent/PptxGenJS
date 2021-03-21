@@ -14,7 +14,6 @@ dist/
 examples/
 libs/
 CHANGELOG.md
-src/
 
 lib/core/metadata.js
 lib/core/MetadataBlog.js
