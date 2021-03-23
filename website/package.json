@@ -1,15 +1,28 @@
 {
 	"scripts": {
-		"start": "docusaurus-start",
-		"build": "docusaurus-build",
-		"deploy": "./node_modules/gulp/bin/gulp.js",
-		"ship=b+d": "docusaurus-build && ./node_modules/gulp/bin/gulp.js"
+		"start": "docusaurus start",
+		"build": "docusaurus build",
+		"deploy": "docusaurus deploy",
+		"ship=b+d": "docusaurus build && ./node_modules/gulp/bin/gulp.js",
+		"swizzle": "docusaurus swizzle",
+		"docusaurus": "docusaurus",
+		"purgecss": "./purgecss.sh"
 	},
 	"devDependencies": {
-		"docusaurus": "^1.14.6",
 		"gulp": "^4.0.2",
 		"gulp-clean-css": "^4.3.0",
 		"gulp-cli": "^2.3.0",
 		"gulp-string-replace": "^1.1.2"
+	},
+	"dependencies": {
+		"@docusaurus/core": "2.0.0-alpha.72",
+		"@docusaurus/plugin-client-redirects": "2.0.0-alpha.72",
+		"@docusaurus/preset-classic": "2.0.0-alpha.72",
+		"@docusaurus/theme-classic": "^2.0.0-alpha.72",
+		"@docusaurus/theme-live-codeblock": "^2.0.0-alpha.72",
+		"clsx": "^1.1.1",
+		"purgecss": "^4.0.3",
+		"react": "^17.0.1",
+		"react-dom": "^17.0.1"
 	}
 }
