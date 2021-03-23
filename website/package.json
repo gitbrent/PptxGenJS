@@ -18,6 +18,8 @@
 		"@docusaurus/core": "2.0.0-alpha.72",
 		"@docusaurus/plugin-client-redirects": "2.0.0-alpha.72",
 		"@docusaurus/preset-classic": "2.0.0-alpha.72",
+		"@docusaurus/theme-classic": "^2.0.0-alpha.72",
+		"@docusaurus/theme-live-codeblock": "^2.0.0-alpha.72",
 		"clsx": "^1.1.1",
 		"purgecss": "^4.0.3",
 		"react": "^17.0.1",

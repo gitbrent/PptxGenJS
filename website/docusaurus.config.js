@@ -21,16 +21,19 @@ module.exports = {
 		[
 			"@docusaurus/preset-classic",
 			{
+				// Debug defaults to true in dev, false in prod
+				debug: undefined,
+				// Will be passed to @docusaurus/theme-classic.
+				theme: {
+					customCss: [require.resolve("./src/css/custom.css")],
+				},
 				docs: {
 					showLastUpdateAuthor: true,
 					showLastUpdateTime: true,
 					path: "./docs",
 					sidebarPath: "./sidebars.json",
 				},
-				blog: {},
-				theme: {
-					customCss: "../src/css/customTheme.css",
-				},
+				blog: false,
 			},
 		],
 	],
@@ -42,6 +45,7 @@ module.exports = {
 			},
 		],
 	],
+	themes: ["@docusaurus/theme-live-codeblock"],
 	themeConfig: {
 		liveCodeBlock: {
 			playgroundPosition: "bottom",

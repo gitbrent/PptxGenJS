@@ -1,0 +1,46 @@
+---
+id: demos
+title: Demos
+---
+
+There are several online demos available for you can try out.
+
+## Live Demo
+
+```jsx live
+function liveDemo(props) {
+	function demo() {
+		let pptx = new PptxGenJS();
+		let slide = pptx.addSlide();
+
+		slide.addText(
+			"BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - 你好",
+			{
+				x:0, y:1, w:'100%', h:2,
+				align:'center',
+				color:'0088CC',
+				fill:'F1F1F1',
+				fontSize:24
+			}
+		);
+
+		pptx.writeFile('PptxGenJS-Demo');
+	}
+
+	return (
+		<div>
+			<button type="button" onClick={()=>demo()}>Generate PowerPoint</button>
+		</div>
+	);
+}
+```
+
+## Full Demo
+
+Want to see more? Check out the online demo of every feature (generates about 75 pages of various feature demos)
+
+- [Library Demo](./demo/index.html)
+
+## JSFiddle Demo
+
+- [jsFiddle demo](https://jsfiddle.net/gitbrent/L1uctxm0/)
