@@ -11,7 +11,7 @@ module.exports = {
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
 	favicon: "img/favicon.png",
-	scripts: ["https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js", "https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"],
+	scripts: ["https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"],
 	customFields: {
 		repoUrl: "https://github.com/gitbrent/PptxGenJS",
 	},
@@ -165,7 +165,7 @@ module.exports = {
 			},
 		},
 		gtag: {
-			trackingID: "UA-75147115-1",
+			trackingID: "G-4F7ZC3PH3Y",
 		},
 	},
 };
