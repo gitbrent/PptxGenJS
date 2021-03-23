@@ -1,6 +1,5 @@
 import React from "react";
 import Layout from "@theme/Layout";
-//import "../css/bootstrap.min.css";
 
 export default () => {
 	return (
