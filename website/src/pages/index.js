@@ -97,8 +97,9 @@ export default () => {
 								</div>
 								<div className={`card-body ${isDarkTheme ? "bg-dark" : "bg-white"}`}>
 									<ul className="mb-0">
-										<li>Lightweight, with 1 single dependency (jszip)</li>
-										<li>Pure JavaScript solution that works with browsers, Node, Angular, Electron and more</li>
+										<li>Integrates with client browsers, Node, Angular, React and Electron</li>
+										<li>Export files direct to browser, blob, stream and more</li>
+										<li>Presentation compression supported</li>
 									</ul>
 								</div>
 							</div>
