@@ -3,7 +3,7 @@
 		"start": "docusaurus start",
 		"build": "docusaurus build",
 		"deploy": "docusaurus deploy",
-		"ship=b+d": "docusaurus-build && ./node_modules/gulp/bin/gulp.js",
+		"ship=b+d": "docusaurus build && ./node_modules/gulp/bin/gulp.js",
 		"swizzle": "docusaurus swizzle",
 		"docusaurus": "docusaurus",
 		"purgecss": "./purgecss.sh"
