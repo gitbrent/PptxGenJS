@@ -74,23 +74,18 @@ module.exports = {
 			},
 			items: [
 				{
-					href: "https://github.com/gitbrent/PptxGenJS/releases",
-					label: "Download",
-					position: "left",
-				},
-				{
 					to: "docs/",
 					label: "Get Started",
 					position: "left",
 				},
 				{
 					to: "docs/installation",
-					label: "API Documentation",
+					label: "Documentation",
 					position: "left",
 				},
 				{
-					href: "https://github.com/gitbrent/PptxGenJS/",
-					label: "GitHub",
+					href: "https://github.com/gitbrent/PptxGenJS/releases",
+					label: "Download",
 					position: "left",
 				},
 				{
@@ -98,6 +93,11 @@ module.exports = {
 					position: "right",
 					className: "header-github-link",
 					"aria-label": "GitHub repository",
+				},
+				{
+					href: "https://github.com/gitbrent/PptxGenJS/",
+					label: "GitHub",
+					position: "right",
 				},
 			],
 		},
