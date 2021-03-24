@@ -433,5 +433,5 @@ export function testTableMethod() {
 	pptx.tableToSlides("html2ppt"); // Works v3.1.1 (FIXME: formatting sucks)
 
 	// PPTX Export Method 1:
-	pptx.writeFile("html2ppt").then((fileName) => console.log(`writeFile: ${fileName}`));
+	pptx.writeFile({ fileName: "html2ppt" }).then((fileName) => console.log(`writeFile: ${fileName}`));
 }
