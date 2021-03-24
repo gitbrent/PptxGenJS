@@ -39,7 +39,7 @@ export function testMainMethods() {
 	testMethod_Media(pptx);
 
 	// PPTX Export Method 1:
-	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
+	pptx.writeFile({ fileName: "testFile" }).then((fileName) => console.log(`writeFile: ${fileName}`));
 	// PPTX Export Method 2:
 	//pptx.write(pptx.OutputType.base64).then((base64) => console.log("base64!")); // TEST-Type: outputType // Works v3.1.1
 	// PPTX Export Method 3:
