@@ -19,6 +19,7 @@
     "build": "rollup -c",
     "start": "gulp",
     "ship": "gulp ship",
+    "defs": "gulp reactTestDefs",
     "watch": "rollup -cw",
     "doctoc": "./node_modules/doctoc/doctoc.js README.md"
   },
