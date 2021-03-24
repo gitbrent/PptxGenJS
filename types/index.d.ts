@@ -26,6 +26,7 @@ declare class PptxGenJS {
 	readonly OutputType: typeof PptxGenJS.OutputType
 	readonly SchemeColor: typeof PptxGenJS.SchemeColor
 	readonly ShapeType: typeof PptxGenJS.ShapeType
+	readonly PlaceholderType: typeof PptxGenJS.PLACEHOLDER_TYPES
 
 	// Presentation Props
 
