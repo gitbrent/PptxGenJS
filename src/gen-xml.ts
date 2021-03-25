@@ -117,10 +117,12 @@ function slideItemObjsToXml(slideItemObjs: ISlideObject[], slide: PresSlide | Sl
 		if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout)
 		if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout)
 
+		// The top left corner of the container should match the position of the object that is closest to the top left corner of the slide
 		containerX = Math.min(containerX, x)
 		containerY = Math.min(containerY, y)
-		containerCx = Math.max(containerCx, cx)
-		containerCy = Math.max(containerCy, cy)
+		// If the object is outside of the bounds of the container we increase the width/height accordingly
+		containerCx = containerX + containerCx >= x + cx ? containerCx : containerCx + ((x + cx) - (containerX + containerCx))
+		containerCy = containerY + containerCy >= y + cy ? containerCy : containerCy + ((y + cy) - (containerY + containerCy))
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
