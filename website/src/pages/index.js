@@ -15,7 +15,7 @@ export default () => {
 							<div className="my-5">
 								<h1 className={`display-1 mb-3 ${isDarkTheme ? "text-light" : ""}`}>PptxGenJS</h1>
 								<h3 className={`fw-light mb-4 ${isDarkTheme ? "text-muted" : "text-muted"}`}>Create PowerPoint presentations with JavaScript</h3>
-								<h6 className="text-muted fw-light mb-4">The most popular powerpoint library on npm with nearly 1,000 stars on GitHub</h6>
+								<h6 className="text-muted fw-light mb-4">The most popular powerpoint+js library on npm with nearly 1,000 stars on GitHub</h6>
 								<div className="row row-cols-1 row-cols-md-2 g-4 my-0">
 									<div className="col">
 										<button
