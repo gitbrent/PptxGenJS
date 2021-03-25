@@ -2,7 +2,7 @@
  * PptxGenJS: Slide Class
  */
 
-import { CHART_NAME, SHAPE_NAME } from './core-enums'
+import { CHART_NAME, SHAPE_NAME, SLIDE_OBJECT_TYPES } from './core-enums'
 import {
 	BackgroundProps,
 	HexColor,
@@ -25,6 +25,7 @@ import {
 	TableRow,
 } from './core-interfaces'
 import * as genObj from './gen-objects'
+import { Group } from './group'
 
 export default class Slide {
 	private _setSlideNum: Function
@@ -149,7 +150,7 @@ export default class Slide {
 		// Set `_type` on IChartOptsLib as its what is used as object is passed around
 		let optionsWithType: IChartOptsLib = options || {}
 		optionsWithType._type = type
-		genObj.addChartDefinition(this, type, data, options)
+		genObj.addChartDefinition(this, this, type, data, options)
 		return this
 	}
 
@@ -159,7 +160,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addImage(options: ImageProps): Slide {
-		genObj.addImageDefinition(this, options)
+		genObj.addImageDefinition(this, this, options)
 		return this
 	}
 
@@ -169,7 +170,7 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addMedia(options: MediaProps): Slide {
-		genObj.addMediaDefinition(this, options)
+		genObj.addMediaDefinition(this, this, options)
 		return this
 	}
 
@@ -196,7 +197,7 @@ export default class Slide {
 		// <script./> => `pptx.shapes.RECTANGLE` [string] "rect" ... shapeName['name'] = 'rect'
 		// TypeScript => `pptxgen.shapes.RECTANGLE` [string] "rect" ... shapeName = 'rect'
 		//let shapeNameDecode = typeof shapeName === 'object' && shapeName['name'] ? shapeName['name'] : shapeName
-		genObj.addShapeDefinition(this, shapeName, options)
+		genObj.addShapeDefinition(this, this, shapeName, options)
 		return this
 	}
 
@@ -208,7 +209,7 @@ export default class Slide {
 	 */
 	addTable(tableRows: TableRow[], options?: TableProps): Slide {
 		// FUTURE: we pass `this` - we dont need to pass layouts - they can be read from this!
-		genObj.addTableDefinition(this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide)
+		genObj.addTableDefinition(this, this, tableRows, options, this._slideLayout, this._presLayout, this.addSlide, this.getSlide)
 		return this
 	}
 
@@ -220,7 +221,20 @@ export default class Slide {
 	 */
 	addText(text: string | TextProps[], options?: TextPropsOptions): Slide {
 		let textParam = typeof text === 'string' || typeof text === 'number' ? [{ text: text, options: options } as TextProps] : text
-		genObj.addTextDefinition(this, textParam, options, false)
+		genObj.addTextDefinition(this, this, textParam, options, false)
 		return this
+	}
+
+	addGroup(): Group {
+		const group = new Group({
+			slide: this,
+            addSlide: this.addSlide,
+            getSlide: this.getSlide
+		})
+		this._slideObjects.push({
+			_type: SLIDE_OBJECT_TYPES.group,
+			group
+		})
+		return group
 	}
 }

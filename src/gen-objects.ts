@@ -41,6 +41,7 @@ import {
 	TableRow,
 	TextProps,
 	TextPropsOptions,
+	Container,
 } from './core-interfaces'
 import { getSlidesForTableRows } from './gen-tables'
 import { getSmartParseNumber, inch2Emu, encodeXmlEntities, getNewRelId, valToPts } from './gen-utils'
@@ -63,11 +64,11 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 		slideDef.objects.forEach((object, idx) => {
 			let key = Object.keys(object)[0]
 			let tgt = target as PresSlide
-			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
-			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
+			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt,tgt, object[key].type, object[key].data, object[key].opts)
+			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, tgt, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, tgt, SHAPE_TYPE.LINE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, tgt, SHAPE_TYPE.RECTANGLE, object[key])
+			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, tgt, [{ text: object[key].text }], object[key].options, false)
 			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
@@ -75,7 +76,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 				object[key].options._placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
 				object[key].options._placeholderIdx = 100 + idx
-				addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
+				addTextDefinition(tgt, tgt, [{ text: object[key].text }], object[key].options, true)
 				// TODO: ISSUE#599 - only text is suported now (add more below)
 				//else if (object[key].image) addImageDefinition(tgt, object[key].image)
 				/* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
@@ -125,7 +126,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
  *	 ]
  *	}
  */
-export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartMulti[], data: any[], opt: IChartOptsLib): object {
+export function addChartDefinition(target: Container, slide: PresSlide, type: CHART_NAME | IChartMulti[], data: any[], opt: IChartOptsLib): object {
 	function correctGridLineOptions(glOpts: OptsChartGridLine) {
 		if (!glOpts || glOpts.style === 'none') return
 		if (glOpts.size !== undefined && (isNaN(Number(glOpts.size)) || glOpts.size <= 0)) {
@@ -290,11 +291,11 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	// STEP 4: Set props
 	resultObject._type = 'chart'
 	resultObject.options = options
-	resultObject.chartRid = getNewRelId(target)
+	resultObject.chartRid = getNewRelId(slide)
 
 	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
-	target._relsChart.push({
-		rId: getNewRelId(target),
+	slide._relsChart.push({
+		rId: getNewRelId(slide),
 		data: tmpData,
 		opts: options,
 		type: options._type,
@@ -315,7 +316,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
-export function addImageDefinition(target: PresSlide, opt: ImageProps) {
+export function addImageDefinition(container: Container, slide: PresSlide, opt: ImageProps) {
 	let newObject: ISlideObject = {
 		_type: null,
 		text: null,
@@ -333,7 +334,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	let objHyperlink = opt.hyperlink || ''
 	let strImageData = opt.data || ''
 	let strImagePath = opt.path || ''
-	let imageRelId = getNewRelId(target)
+	let imageRelId = getNewRelId(slide)
 
 	// REALITY-CHECK:
 	if (!strImagePath && !strImageData) {
@@ -393,34 +394,34 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		// SVG files consume *TWO* rId's: (a png version and the svg image)
 		// <Relationship Id="rId3" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image1.png"/>
 		// <Relationship Id="rId4" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image2.svg"/>
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			path: strImagePath || strImageData + 'png',
 			type: 'image/png',
 			extn: 'png',
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+			Target: '../media/image-' + slide._slideNum + '-' + (slide._relsMedia.length + 1) + '.png',
 			isSvgPng: true,
-			svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', target._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', target._presLayout) },
+			svgSize: { w: getSmartParseNumber(newObject.options.w, 'X', slide._presLayout), h: getSmartParseNumber(newObject.options.h, 'Y', slide._presLayout) },
 		})
 		newObject.imageRid = imageRelId
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			path: strImagePath || strImageData,
 			type: 'image/svg+xml',
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId + 1,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+			Target: '../media/image-' + slide._slideNum + '-' + (slide._relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		newObject.imageRid = imageRelId + 1
 	} else {
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			path: strImagePath || 'preencoded.' + strImgExtn,
 			type: 'image/' + strImgExtn,
 			extn: strImgExtn,
 			data: strImageData || '',
 			rId: imageRelId,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strImgExtn,
+			Target: '../media/image-' + slide._slideNum + '-' + (slide._relsMedia.length + 1) + '.' + strImgExtn,
 		})
 		newObject.imageRid = imageRelId
 	}
@@ -431,7 +432,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		else {
 			imageRelId++
 
-			target._rels.push({
+			slide._rels.push({
 				type: SLIDE_OBJECT_TYPES.hyperlink,
 				data: objHyperlink.slide ? 'slide' : 'dummy',
 				rId: imageRelId,
@@ -444,7 +445,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 	}
 
 	// STEP 6: Add object to slide
-	target._slideObjects.push(newObject)
+	slide._slideObjects.push(newObject)
 }
 
 /**
@@ -452,8 +453,8 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
  * @param {PresSlide} `target` - slide object that the text will be added to
  * @param {MediaProps} `opt` - media options
  */
-export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
-	let intRels = target._relsMedia.length + 1
+export function addMediaDefinition(target: Container, slide: PresSlide, opt: MediaProps) {
+	let intRels = slide._relsMedia.length + 1
 	let intPosX = opt.x || 0
 	let intPosY = opt.y || 0
 	let intSizeX = opt.w || 2
@@ -497,7 +498,7 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 	// NOTE: rId starts at 2 (hence the intRels+1 below) as slideLayout.xml is rId=1!
 	if (strType === 'online') {
 		// A: Add video
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			data: 'dummy',
 			type: 'online',
@@ -505,16 +506,16 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 			rId: intRels + 1,
 			Target: strLink,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = slide._relsMedia[slide._relsMedia.length - 1].rId
 
 		// B: Add preview/overlay image
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			path: 'preencoded.png',
 			data: IMG_PLAYBTN,
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+			Target: '../media/image-' + slide._slideNum + '-' + (slide._relsMedia.length + 1) + '.png',
 		})
 	} else {
 		/* NOTE: Audio/Video files consume *TWO* rId's:
@@ -523,34 +524,34 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 		 */
 
 		// A: "relationships/video"
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 0,
-			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.' + strExtn,
+			Target: '../media/media-' + slide._slideNum + '-' + (slide._relsMedia.length + 1) + '.' + strExtn,
 		})
-		slideData.mediaRid = target._relsMedia[target._relsMedia.length - 1].rId
+		slideData.mediaRid = slide._relsMedia[slide._relsMedia.length - 1].rId
 
 		// B: "relationships/media"
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			path: strPath || 'preencoded' + strExtn,
 			type: strType + '/' + strExtn,
 			extn: strExtn,
 			data: strData || '',
 			rId: intRels + 1,
-			Target: '../media/media-' + target._slideNum + '-' + (target._relsMedia.length + 0) + '.' + strExtn,
+			Target: '../media/media-' + slide._slideNum + '-' + (slide._relsMedia.length + 0) + '.' + strExtn,
 		})
 
 		// C: Add preview/overlay image
-		target._relsMedia.push({
+		slide._relsMedia.push({
 			data: IMG_PLAYBTN,
 			path: 'preencoded.png',
 			type: 'image/png',
 			extn: 'png',
 			rId: intRels + 2,
-			Target: '../media/image-' + target._slideNum + '-' + (target._relsMedia.length + 1) + '.png',
+			Target: '../media/image-' + slide._slideNum + '-' + (slide._relsMedia.length + 1) + '.png',
 		})
 	}
 
@@ -578,7 +579,7 @@ export function addNotesDefinition(target: PresSlide, notes: string) {
  * @param {SHAPE_NAME} shapeName shape name
  * @param {ShapeProps} opts shape options
  */
-export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opts: ShapeProps) {
+export function addShapeDefinition(target: Container, slide: PresSlide, shapeName: SHAPE_NAME, opts: ShapeProps) {
 	let options = typeof opts === 'object' ? opts : {}
 	options.line = options.line || ({ type: 'none' } as ShapeLineProps)
 	let newObject: ISlideObject = {
@@ -621,7 +622,7 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
 	if (typeof options.lineTail === 'string') options.line.endArrowType = options.lineTail // @deprecated (part of `ShapeLineProps` now)
 
 	// 4: Create hyperlink rels
-	createHyperlinkRels(target, newObject)
+	createHyperlinkRels(slide, newObject)
 
 	// LAST: Add object to slide
 	target._slideObjects.push(newObject)
@@ -638,7 +639,8 @@ export function addShapeDefinition(target: PresSlide, shapeName: SHAPE_NAME, opt
  * @param {Function} getSlide - method
  */
 export function addTableDefinition(
-	target: PresSlide,
+	target: Container,
+	slide: PresSlide,
 	tableRows: TableRow[],
 	options: TableProps,
 	slideLayout: SlideLayout,
@@ -647,7 +649,7 @@ export function addTableDefinition(
 	getSlide: Function
 ) {
 	let opt: TableProps = options && typeof options === 'object' ? options : {}
-	let slides: PresSlide[] = [target] // Create array of Slides as more may be added by auto-paging
+	let slides: PresSlide[] = [slide] // Create array of Slides as more may be added by auto-paging
 
 	// STEP 1: REALITY-CHECK
 	{
@@ -854,7 +856,7 @@ export function addTableDefinition(
 	// (used internally by `tableToSlides()` to not engage recursion - we've already paged the table data, just add this one)
 	if (opt && opt.autoPage === false) {
 		// Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
-		createHyperlinkRels(target, arrRows)
+		createHyperlinkRels(slide, arrRows)
 
 		// Add slideObjects (NOTE: Use `extend` to avoid mutation)
 		target._slideObjects.push({
@@ -866,24 +868,24 @@ export function addTableDefinition(
 		if (opt.autoPageRepeatHeader) opt._arrObjTabHeadRows = arrRows.filter((_row, idx) => idx < opt.autoPageHeaderRows)
 
 		// Loop over rows and create 1-N tables as needed (ISSUE#21)
-		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((slide, idx) => {
+		getSlidesForTableRows(arrRows, opt, presLayout, slideLayout).forEach((tableRowSlide, idx) => {
 			// A: Create new Slide when needed, otherwise, use existing (NOTE: More than 1 table can be on a Slide, so we will go up AND down the Slide chain)
-			if (!getSlide(target._slideNum + idx)) slides.push(addSlide(slideLayout ? slideLayout._name : null))
+			if (!getSlide(slide._slideNum + idx)) slides.push(addSlide(slideLayout ? slideLayout._name : null))
 
 			// B: Reset opt.y to `option`/`margin` after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
 			if (idx > 0) opt.y = inch2Emu(opt.autoPageSlideStartY || opt.newSlideStartY || arrTableMargin[0])
 
 			// C: Add this table to new Slide
 			{
-				let newSlide: PresSlide = getSlide(target._slideNum + idx)
+				let newSlide: PresSlide = getSlide(slide._slideNum + idx)
 
 				opt.autoPage = false
 
 				// Create hyperlink rels (IMPORTANT: Wait until table has been shredded across Slides or all rels will end-up on Slide 1!)
-				createHyperlinkRels(newSlide, slide.rows)
+				createHyperlinkRels(newSlide, tableRowSlide.rows)
 
 				// Add rows to new slide
-				newSlide.addTable(slide.rows, Object.assign({}, opt))
+				newSlide.addTable(tableRowSlide.rows, Object.assign({}, opt))
 			}
 		})
 	}
@@ -897,7 +899,7 @@ export function addTableDefinition(
  * @param {boolean} isPlaceholder` is this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(target: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
+export function addTextDefinition(target: Container, slide: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
 	let newObject: ISlideObject = {
 		_type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
 		shape: (opts && opts.shape) || SHAPE_TYPE.RECTANGLE,
@@ -910,7 +912,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 		{
 			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
 			if (!itemOpts.placeholder) {
-				itemOpts.color = itemOpts.color || newObject.options.color || target.color || DEF_FONT_COLOR
+				itemOpts.color = itemOpts.color || newObject.options.color || slide.color || DEF_FONT_COLOR
 			}
 
 			// A.2: Placeholder should inherit their bullets or override them, so don't default them
@@ -993,7 +995,7 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 	newObject.text.forEach(item => (item.options = cleanOpts(item.options || {})))
 
 	// STEP 3: Create hyperlinks
-	createHyperlinkRels(target, newObject.text || '')
+	createHyperlinkRels(slide, newObject.text || '')
 
 	// LAST: Add object to Slide
 	target._slideObjects.push(newObject)
@@ -1011,7 +1013,7 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
-				addTextDefinition(slide, [{ text: '' }], { placeholder: slideLayoutObj.options.placeholder }, false)
+				addTextDefinition(slide, slide, [{ text: '' }], { placeholder: slideLayoutObj.options.placeholder }, false)
 			}
 		}
 	})

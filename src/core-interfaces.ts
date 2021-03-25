@@ -2,6 +2,7 @@
  * PptxGenJS Interfaces
  */
 
+import { Group } from './group'
 import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
 
 // Core Types
@@ -1316,6 +1317,7 @@ export interface ISlideObject {
 	mtype?: MediaType
 	mediaRid?: number
 	shape?: SHAPE_NAME
+	group?: Group
 }
 // PRIVATE ^^^
 
@@ -1396,7 +1398,12 @@ export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, Ta
 	colW?: number | number[] // table
 	rowH?: number | number[] // table
 }
-export interface SlideBaseProps {
+
+// A Container is an object that holds slide objects. i.e. a Slide or Group
+export interface Container {
+	_slideObjects?: ISlideObject[]
+}
+export interface SlideBaseProps extends Container {
 	_bkgdImgRid?: number
 	_margin?: Margin
 	_name?: string
@@ -1406,7 +1413,6 @@ export interface SlideBaseProps {
 	_relsMedia: ISlideRelMedia[] // needed as we use args:"PresSlide|SlideLayout" often
 	_slideNum: number
 	_slideNumberProps?: SlideNumberProps
-	_slideObjects?: ISlideObject[]
 
 	background?: BackgroundProps
 	/**
@@ -1434,6 +1440,7 @@ export interface PresSlide extends SlideBaseProps {
 	addShape: Function
 	addTable: Function
 	addText: Function
+	addGroup: Function
 
 	/**
 	 * Background color or image (`fill` | `path` | `data`)
