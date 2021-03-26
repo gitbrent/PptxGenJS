@@ -77,13 +77,21 @@ let imageSizingXml = {
 	},
 }
 
+interface SlideItemObjsToXmlResult {
+	xmlStr: string
+	x: number
+	y: number
+	cx: number
+	cy: number
+}
+
 /**
  * Transforms a list of slide objects to an XML string and returns the position and size values for their container.
  * @param {ISlideObject[]} slideItemObjs
  * @param {PresSlide|SlideLayout} slide
- * @returns 
+ * @returns
  */
-function slideItemObjsToXml(slideItemObjs: ISlideObject[], slide: PresSlide | SlideLayout): { str: string, containerX: number, containerY: number, containerCx: number, containerCy: number } {
+function slideItemObjsToXml(slideItemObjs: ISlideObject[], slide: PresSlide | SlideLayout): SlideItemObjsToXmlResult {
 	let strSlideXml = ''
 	let intTableNum = 1
 	let containerX = Infinity
@@ -116,13 +124,6 @@ function slideItemObjsToXml(slideItemObjs: ISlideObject[], slide: PresSlide | Sl
 		if (typeof slideItemObj.options.y !== 'undefined') y = getSmartParseNumber(slideItemObj.options.y, 'Y', slide._presLayout)
 		if (typeof slideItemObj.options.w !== 'undefined') cx = getSmartParseNumber(slideItemObj.options.w, 'X', slide._presLayout)
 		if (typeof slideItemObj.options.h !== 'undefined') cy = getSmartParseNumber(slideItemObj.options.h, 'Y', slide._presLayout)
-
-		// The top left corner of the container should match the position of the object that is closest to the top left corner of the slide
-		containerX = Math.min(containerX, x)
-		containerY = Math.min(containerY, y)
-		// If the object is outside of the bounds of the container we increase the width/height accordingly
-		containerCx = containerX + containerCx >= x + cx ? containerCx : containerCx + ((x + cx) - (containerX + containerCx))
-		containerCy = containerY + containerCy >= y + cy ? containerCy : containerCy + ((y + cy) - (containerY + containerCy))
 
 		// If using a placeholder then inherit it's position
 		if (placeholderObj) {
@@ -644,19 +645,18 @@ function slideItemObjsToXml(slideItemObjs: ISlideObject[], slide: PresSlide | Sl
 
 			case SLIDE_OBJECT_TYPES.group:
 				if (slideItemObj.group._slideObjects.length > 0) {
-					const {
-						str: slideItemsXml,
-						containerX: x,
-						containerY: y,
-						containerCx: cx,
-						containerCy: cy
-					} = slideItemObjsToXml(slideItemObj.group._slideObjects, slide)
+					const res = slideItemObjsToXml(slideItemObj.group._slideObjects, slide)
+					// We only know the position and size of a group after generating the XML for it
+					x = res.x
+					y = res.y
+					cx = res.cx
+					cy = res.cy
 					strSlideXml += '<p:grpSp>'
 					strSlideXml += `<p:nvGrpSpPr><p:cNvPr id="${idx + 1}" name="Group"/><p:cNvGrpSpPr/><p:nvPr/></p:nvGrpSpPr>`
 					strSlideXml += `<p:grpSpPr><a:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/>`
 					strSlideXml += `<a:chOff x="${x}" y="${y}"/><a:chExt cx="${cx}" cy="${cy}"/></a:xfrm></p:grpSpPr>`
-					strSlideXml += slideItemsXml
-					strSlideXml += "</p:grpSp>"			
+					strSlideXml += res.xmlStr
+					strSlideXml += '</p:grpSp>'
 				}
 				break
 
@@ -664,13 +664,21 @@ function slideItemObjsToXml(slideItemObjs: ISlideObject[], slide: PresSlide | Sl
 				strSlideXml += ''
 				break
 		}
+
+		// The top left corner of the container should match the position of the object that is closest to the top left corner of the slide
+		containerX = Math.min(containerX, x)
+		containerY = Math.min(containerY, y)
+		// If the object is outside of the bounds of the container we increase the width/height accordingly
+		containerCx = containerX + containerCx >= x + cx ? containerCx : containerCx + (x + cx - (containerX + containerCx))
+		containerCy = containerY + containerCy >= y + cy ? containerCy : containerCy + (y + cy - (containerY + containerCy))
 	})
+
 	return {
-		str: strSlideXml,
-		containerX,
-		containerY,
-		containerCx,
-		containerCy,
+		xmlStr: strSlideXml,
+		x: containerX,
+		y: containerY,
+		cx: containerCx,
+		cy: containerCy,
 	}
 }
 
@@ -711,8 +719,8 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	strSlideXml += '<a:chOff x="0" y="0"/><a:chExt cx="0" cy="0"/></a:xfrm></p:grpSpPr>'
 
 	// STEP 4: Loop over all Slide.data objects and add them to this slide
-	const { str } = slideItemObjsToXml(slide._slideObjects, slide)
-	strSlideXml += str
+	const { xmlStr } = slideItemObjsToXml(slide._slideObjects, slide)
+	strSlideXml += xmlStr
 	// STEP 5: Add slide numbers (if any) last
 	if (slide._slideNumberProps) {
 		strSlideXml +=

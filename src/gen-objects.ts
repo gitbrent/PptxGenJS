@@ -64,7 +64,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 		slideDef.objects.forEach((object, idx) => {
 			let key = Object.keys(object)[0]
 			let tgt = target as PresSlide
-			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt,tgt, object[key].type, object[key].data, object[key].opts)
+			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, tgt, object[key].type, object[key].data, object[key].opts)
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, tgt, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, tgt, SHAPE_TYPE.LINE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, tgt, SHAPE_TYPE.RECTANGLE, object[key])

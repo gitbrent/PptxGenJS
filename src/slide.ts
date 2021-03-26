@@ -228,12 +228,12 @@ export default class Slide {
 	addGroup(): Group {
 		const group = new Group({
 			slide: this,
-            addSlide: this.addSlide,
-            getSlide: this.getSlide
+			addSlide: this.addSlide,
+			getSlide: this.getSlide,
 		})
 		this._slideObjects.push({
 			_type: SLIDE_OBJECT_TYPES.group,
-			group
+			group,
 		})
 		return group
 	}

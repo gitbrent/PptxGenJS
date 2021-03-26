@@ -1,25 +1,34 @@
-import { CHART_NAME, SHAPE_NAME, SLIDE_OBJECT_TYPES } from "./core-enums";
-import { IChartMulti, IChartOpts, IChartOptsLib, ImageProps, ISlideObject, MediaProps, PresSlide, ShapeProps, TableProps, TableRow, TextProps, TextPropsOptions } from "./core-interfaces";
+import { CHART_NAME, SHAPE_NAME, SLIDE_OBJECT_TYPES } from './core-enums'
+import {
+	IChartMulti,
+	IChartOpts,
+	IChartOptsLib,
+	ImageProps,
+	ISlideObject,
+	MediaProps,
+	PresSlide,
+	ShapeProps,
+	TableProps,
+	TableRow,
+	TextProps,
+	TextPropsOptions,
+} from './core-interfaces'
 import * as genObj from './gen-objects'
 
 export class Group {
-    public _slideObjects: ISlideObject[]
-    public _slide: PresSlide
-    public addSlide: Function
-    public getSlide: Function
+	public _slideObjects: ISlideObject[]
+	public _slide: PresSlide
+	public addSlide: Function
+	public getSlide: Function
 
-    constructor(params: {
-        slide: PresSlide
-        addSlide: Function
-        getSlide
-    }) {
-        this._slideObjects = []
-        this._slide = params.slide
-        this.addSlide = params.addSlide
-        this.getSlide = params.getSlide
-    }
+	constructor(params: { slide: PresSlide; addSlide: Function; getSlide }) {
+		this._slideObjects = []
+		this._slide = params.slide
+		this.addSlide = params.addSlide
+		this.getSlide = params.getSlide
+	}
 
-    /**
+	/**
 	 * Add chart to Group
 	 * @param {CHART_NAME|IChartMulti[]} type - chart type
 	 * @param {object[]} data - data object
@@ -97,13 +106,13 @@ export class Group {
 
 	addGroup(): Group {
 		const group = new Group({
-            slide: this._slide,
-            addSlide: this.addSlide,
-            getSlide: this.getSlide
-        })
+			slide: this._slide,
+			addSlide: this.addSlide,
+			getSlide: this.getSlide,
+		})
 		this._slideObjects.push({
 			_type: SLIDE_OBJECT_TYPES.group,
-			group
+			group,
 		})
 		return group
 	}
