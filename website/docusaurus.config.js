@@ -64,13 +64,14 @@ module.exports = {
 			theme: require("prism-react-renderer/themes/github"),
 			darkTheme: require("prism-react-renderer/themes/dracula"),
 		},
-		image: "img/pptxgenjs.png",
+		image: "img/app-gears.svg",
 		navbar: {
+			style: "dark",
 			title: "PptxGenJS",
 			logo: {
 				alt: "PptGenJS Logo",
-				src: "img/pptxgenjs.svg",
-				srcDark: "img/pptxgenjs.svg",
+				src: "img/app-gears.svg",
+				srcDark: "img/app-gears.svg",
 			},
 			items: [
 				{
@@ -102,7 +103,7 @@ module.exports = {
 			],
 		},
 		footer: {
-			style: "dark",
+			style: "light",
 			links: [
 				{
 					title: "Learn",
@@ -160,7 +161,7 @@ module.exports = {
 			copyright: `Copyright © ${new Date().getFullYear()} Brent Ely`,
 			logo: {
 				alt: "PptxGenJS Logo",
-				src: "img/pptxgenjs.svg",
+				src: "img/app-gears.svg",
 				href: "https://github.com/gitbrent/PptxGenJS",
 			},
 		},

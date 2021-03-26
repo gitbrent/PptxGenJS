@@ -1,0 +1,55 @@
+---
+id: demo-react
+title: React Demo
+---
+
+There are several online demos available plus thousands of examples under PptxGenjs/demos.
+
+## Live Demo
+
+```jsx live
+function liveDemo(props) {
+	function demo() {
+		let pptx = new PptxGenJS();
+		let slide = pptx.addSlide();
+
+		slide.addText(
+			"BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - 你好",
+			{
+				x:0, y:1, w:'100%', h:2,
+				align:'center',
+				color:'0088CC',
+				fill:'F1F1F1',
+				fontSize:24
+			}
+		);
+
+		pptx.writeFile('PptxGenJS-Demo');
+	}
+
+	return (
+		<div>
+			<button type="button" onClick={()=>demo()}>Generate PowerPoint</button>
+		</div>
+	);
+}
+```
+
+## JSFiddle Demo
+
+- [jsFiddle demo](https://jsfiddle.net/gitbrent/L1uctxm0/)
+
+## Full Demo
+
+Want to see more? Check out the online demo of every feature (generates about 75 pages of various feature demos)
+
+- [Library Demo](https://gitbrent.github.io/PptxGenJS/demo/)
+
+## But Wait, There's More
+
+Add the ability to generate presentations to your project today!
+
+Check out the [demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos) folder in the GitHub project.
+There are over 3,000 lines of demo code that produce almost 80 slides worth of API features that you can modify.
+
+![PptxGenJS PowerPoint Demo Slides](./assets/readme_banner.png)

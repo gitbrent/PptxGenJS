@@ -1,9 +1,28 @@
-:root{
-  --ifm-color-primary-lightest: #E98671;
-  --ifm-color-primary-lighter: #E3684F;
-  --ifm-color-primary-light: #E25F43;
-  --ifm-color-primary: #de4b2c;
-  --ifm-color-primary-dark: #CF3F20;
-  --ifm-color-primary-darker: #C43B1F;
-  --ifm-color-primary-darkest: #A13119;
+:root {
+	--ifm-color-primary-lightest: #9ec5fe;
+	--ifm-color-primary-lighter: #6ea8fe;
+	--ifm-color-primary-light: #3d8bfd;
+	--ifm-color-primary: #0d6efd;
+	--ifm-color-primary-dark: #0a58ca;
+	--ifm-color-primary-darker: #084298;
+	--ifm-color-primary-darkest: #052c65;
+}
+
+.bg-black {
+	background-color: #131313;
+}
+
+.header-light {
+	/* @see https://cssgradient.io/ */
+	background: linear-gradient(180deg, rgba(0, 136, 204, 0.50) 0%, rgba(204, 204, 204, 1) 75%, rgba(238, 238, 238, 1) 100%);
+	/*
+	backgroundimage: "url('./img/pptxgenjs-bkgd2.png')";
+	backgroundrepeat: "repeat";
+	*/
+}
+.header-dark {
+	background-color: var(--bs-dark);
+}
+.body-dark {
+	background-color: var(--bs-gray-dark);
 }

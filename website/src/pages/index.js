@@ -1,26 +1,30 @@
 import React from "react";
 import Layout from "@theme/Layout";
 import useThemeContext from "@theme/hooks/useThemeContext";
-//import "../css/bootstrap.min.css";
-import "../css/purged.min.css";
+//import "../css/bootstrap.css";
+//import "../css/bootstrap-yeti.css";
+import "../css/purged.css";
 
 export default () => {
 	const Header = () => {
 		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
+
 		return (
-			<header style={{ backgroundColor: isDarkTheme ? "var(--bs-gray-dark)" : "var(--bs-light)" }}>
+			<header className={isDarkTheme ? "header-dark" : "header-light"}>
 				<div className="container">
 					<div className="row justify-content-center">
 						<div className="col-auto">
 							<div className="my-5">
-								<h1 className={`display-1 mb-3 ${isDarkTheme ? "text-light" : ""}`}>PptxGenJS</h1>
-								<h3 className={`fw-light mb-4 ${isDarkTheme ? "text-muted" : "text-muted"}`}>Create PowerPoint presentations with JavaScript</h3>
-								<h6 className="text-muted fw-light mb-4">The most popular powerpoint+js library on npm with nearly 1,000 stars on GitHub</h6>
+								<h1 className={`display-1 mb-3 ${isDarkTheme ? "text-light" : "text-primary"}`}>PptxGenJS</h1>
+								<h3 className={`fw-light mb-4 ${isDarkTheme ? "text-white-50" : "text-black-50"}`}>Create PowerPoint presentations with JavaScript</h3>
+								<h6 className={`fw-light mb-3 ${isDarkTheme ? "text-white-50" : "text-black-50"}`}>
+									The most popular powerpoint+js library on npm with nearly 1,000 stars on GitHub
+								</h6>
 								<div className="row row-cols-1 row-cols-md-2 g-4 my-0">
 									<div className="col">
 										<button
 											type="button"
-											className={`w-100 btn ${isDarkTheme ? "btn-outline-light" : "btn-outline-dark"}`}
+											className={`w-100 btn py-3 ${isDarkTheme ? "btn-primary" : "btn-primary"}`}
 											onClick={() => (window.location = "./docs/quick-start")}
 										>
 											Get Started
@@ -29,10 +33,10 @@ export default () => {
 									<div className="col">
 										<button
 											type="button"
-											className={`w-100 btn ${isDarkTheme ? "btn-outline-light" : "btn-outline-dark"}`}
+											className={`w-100 btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
 											onClick={() => (window.location = "./docs/demos")}
 										>
-											Online Demos
+											View Demos
 										</button>
 									</div>
 								</div>
@@ -47,15 +51,15 @@ export default () => {
 	const Body = () => {
 		const { isDarkTheme, setLightTheme, setDarkTheme } = useThemeContext();
 		return (
-			<main className={`py-5 ${isDarkTheme ? "bg-dark" : "bg-white"}`}>
+			<main className={`py-5 ${isDarkTheme ? "body-dark" : "bg-light"}`}>
 				<div className="container">
 					<div className="row g-5 mb-0">
 						<div className="col-12 col-md-6">
-							<div className={`card h-100 ${isDarkTheme ? "bg-secondary text-white" : "bg-light"}`}>
-								<div className="card-header">
+							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
+								<div className="card-header bg-primary text-white">
 									<h5 className="fw-light mb-0">Works Everwhere</h5>
 								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-dark" : "bg-white"}`}>
+								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
 									<ul className="mb-0">
 										<li>Every modern desktop and mobile browser is supported</li>
 										<li>Integrates with Node, Angular, React and Electron</li>
@@ -65,11 +69,11 @@ export default () => {
 							</div>
 						</div>
 						<div className="col-12 col-md-6">
-							<div className={`card h-100 ${isDarkTheme ? "bg-secondary text-white" : "bg-light"}`}>
-								<div className="card-header">
+							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
+								<div className="card-header bg-primary text-white">
 									<h5 className="fw-light mb-0">Full Featured</h5>
 								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-dark" : "bg-white"}`}>
+								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
 									<ul className="mb-0">
 										<li>All major object types are available (charts, shapes, tables, etc.)</li>
 										<li>Master Slides for academic/corporate branding</li>
@@ -79,11 +83,11 @@ export default () => {
 							</div>
 						</div>
 						<div className="col-12 col-md-6">
-							<div className={`card h-100 ${isDarkTheme ? "bg-secondary text-white" : "bg-light"}`}>
-								<div className="card-header">
+							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
+								<div className="card-header bg-primary text-white">
 									<h5 className="fw-light mb-0">Simple And Powerful</h5>
 								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-dark" : "bg-white"}`}>
+								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
 									<ul className="mb-0">
 										<li>The absolute easiest PowerPoint library to use</li>
 										<li>Learn as you code will full typescript definitions included</li>
@@ -93,11 +97,11 @@ export default () => {
 							</div>
 						</div>
 						<div className="col-12 col-md-6">
-							<div className={`card h-100 ${isDarkTheme ? "bg-secondary text-white" : "bg-light"}`}>
-								<div className="card-header">
+							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
+								<div className="card-header bg-primary text-white">
 									<h5 className="fw-light mb-0">Export Your Way</h5>
 								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-dark" : "bg-white"}`}>
+								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
 									<ul className="mb-0">
 										<li>Exports files direct to client browsers with proper MIME-type</li>
 										<li>Other export formats available: base64, blob, stream, etc.</li>
