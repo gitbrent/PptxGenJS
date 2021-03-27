@@ -10,8 +10,8 @@ export function testMainMethods() {
 	// PPTX Method 1:
 	//pptx.layout = "LAYOUT_WIDE";
 	//pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
-	pptx.defineLayout({ name: 'TST', width: 13.4, height: 7.5 });
-	pptx.layout = 'TST';
+	pptx.defineLayout({ name: "TST", width: 13.4, height: 7.5 });
+	pptx.layout = "TST";
 
 	// PPTX Method 2:
 	pptx.defineSlideMaster({
@@ -57,7 +57,7 @@ function basicDemoSlide(pptx: pptxgen) {
 	//pptx.addSlide({ sectionTitle: "TypeScript" }); // slide2
 
 	let slide = pptx.addSlide({ sectionTitle: "TypeScript", masterName: "MASTER_SLIDE" });
-	slide.slideNumber = { x: '50%', y: '95%', w: 1, h: 1, color: '0088CC' };
+	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
 
 	let opts: pptxgen.TextPropsOptions = {
 		x: 0,
@@ -142,7 +142,7 @@ function testMethod_Table(pptx: pptxgen) {
 			],
 			[
 				{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
-				{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
+				{ text: "Underline", options: { fill: { color: "336699" }, underline: { style: "sng" } } },
 				{ text: "10pt Pad", options: { fill: { color: "6699CC" }, margin: 10 } },
 			],
 		];
@@ -398,12 +398,15 @@ function testMethod_Shape(pptx: pptxgen) {
 function testMethod_Text(pptx: pptxgen) {
 	let slide = pptx.addSlide();
 
-	slide.addText([{ text: "Link without Tooltip", options: { hyperlink: { /*slide: '1',*/ tooltip: "hi world", url: "https://github.com/gitbrent" } } }], {
-		x: 2,
-		y: 2,
-		w: 2,
-		h: 0.5,
-	});
+	slide.addText(
+		[{ text: "Link without Tooltip", options: { hyperlink: { /*slide: '1',*/ tooltip: "hi world", url: "https://github.com/gitbrent" } } }],
+		{
+			x: 2,
+			y: 2,
+			w: 2,
+			h: 0.5,
+		}
+	);
 
 	slide.addText(
 		[
