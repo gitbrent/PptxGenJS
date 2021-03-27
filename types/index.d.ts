@@ -614,6 +614,8 @@ declare namespace PptxGenJS {
 		'table' = 'tbl',
 		'media' = 'media',
 	}
+	export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media'
+
 	export type SHAPE_NAME =
 		| 'accentBorderCallout1'
 		| 'accentBorderCallout2'
@@ -934,7 +936,7 @@ declare namespace PptxGenJS {
 	}
 	export interface PlaceholderProps {
 		name: string
-		type: PLACEHOLDER_TYPES
+		type: PLACEHOLDER_TYPE
 		x: Coord
 		y: Coord
 		w: Coord
