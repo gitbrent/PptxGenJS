@@ -8,7 +8,6 @@ Several methods are available when generating a presentation.
 - All methods return a Promise
 - Working examples are available under [/demos](https://github.com/gitbrent/PptxGenJS/tree/master/demos)
 
-**************************************************************************************************
 ## Export Methods
 
 ### Regular File
@@ -73,14 +72,13 @@ pptx.stream()
 
 
 
-**************************************************************************************************
 ## Saving Multiple Presentations
 
 ### Client Browser
 - In order to generate a new, unique Presentation just create a new instance of the library then add objects and save as normal.
 
 ```javascript
-var pptx = null;
+let pptx = null;
 
 // Presentation 1:
 pptx = new PptxGenJS();
