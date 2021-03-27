@@ -3,38 +3,54 @@ id: quick-start
 title: Quick Start Guide
 ---
 
-## Library Support
+## Create a PowerPoint in 4 easy steps
 
-- Include via `<script>` for client-browser applications
-- Install via npm/yarn Angular, React, Electron, or NodeJS
+PptxGenJS PowerPoint presentations are created by following 4 basic steps. See examples below by environment.
 
-## Quick Start Guide
+That's really all there is to it!
 
-PptxGenJS PowerPoint presentations are created via JavaScript by following 4 basic steps:
+## Modern Projects
 
-### React/Angular, ES6, TypeScript
+### Sample Code
 
-```typescript
+```tsx title="HelloWorld.ts"
 import pptxgen from "pptxgenjs";
 
-// 1. Create a new Presentation
+// 1. Create a Presentation
 let pres = new pptxgen();
 
-// 2. Add a Slide
+// 2. Add a Slide to the presentation
 let slide = pres.addSlide();
 
-// 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-let textboxText = "Hello World from PptxGenJS!";
-let textboxOpts = { x: 1, y: 1, color: '363636', fill: { color:'F1F1F1' }, align: pres.AlignH.center };
-slide.addText(textboxText, textboxOpts);
+// 3. Add 1+ objects (Tables, Shapes, etc.) to the Slide
+slide.addText(
+	"Hello World from PptxGenJS...",
+	{
+		x: 1.5,
+		y: 1.5,
+		color: '363636',
+		fill: { color:'F1F1F1' },
+		align: pres.AlignH.center
+	}
+);
 
 // 4. Save the Presentation
 pres.writeFile("Sample Presentation.pptx");
 ```
 
-### Script/Web Browser
+### TypeScript Support
 
-```javascript
+Modern application developers using ES6 with Angular, React, TypeScript, etc. benefit from full typescript defs.
+
+Learn as you code in a modern development with included TypeScript definitions the documentation comes to you.
+
+![TypeScript Support](./assets/ex-typescript.png)
+
+## Client Web Browser
+
+### Sample Code
+
+```javascript title="HelloWorld.js"
 // 1. Create a new Presentation
 let pres = new PptxGenJS();
 
@@ -42,18 +58,17 @@ let pres = new PptxGenJS();
 let slide = pres.addSlide();
 
 // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-let textboxText = "Hello World from PptxGenJS!";
-let textboxOpts = { x: 1, y: 1, color: '363636', fill: { color:'F1F1F1' }, align: "center" };
-slide.addText(textboxText, textboxOpts);
+slide.addText(
+	"Hello World from PptxGenJS...",
+	{
+		x: 1.5,
+		y: 1.5,
+		color: '363636',
+		fill: { color:'F1F1F1' },
+		align: pres.AlignH.center
+	}
+);
 
 // 4. Save the Presentation
 pres.writeFile("Sample Presentation.pptx");
 ```
-
-That's really all there is to it!
-
-## TypeScript Support
-
-If you're using Angular or React, the included TypeScript definitions file brings the documentation to you.
-
-![TypeScript Support](./assets/ex-typescript.png)
