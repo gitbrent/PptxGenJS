@@ -161,7 +161,7 @@ module.exports = {
 			copyright: `Copyright © ${new Date().getFullYear()} Brent Ely`,
 			logo: {
 				alt: "PptxGenJS Logo",
-				src: "img/app-gears.svg",
+				src: "img/pptxgenjs-footer.png",
 				href: "https://github.com/gitbrent/PptxGenJS",
 			},
 		},
