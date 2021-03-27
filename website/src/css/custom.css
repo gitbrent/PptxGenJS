@@ -8,13 +8,20 @@
 	--ifm-color-primary-darkest: #052c65;
 }
 
+html[data-theme="light"] {
+	--ifm-background-color: var(--bs-light);
+}
+html[data-theme="dark"] {
+	--ifm-background-color: var(--bs-gray-dark);
+}
+
 .bg-black {
 	background-color: #131313;
 }
 
 .header-light {
 	/* @see https://cssgradient.io/ */
-	background: linear-gradient(180deg, rgba(0, 136, 204, 0.50) 0%, rgba(204, 204, 204, 1) 75%, rgba(238, 238, 238, 1) 100%);
+	background: linear-gradient(180deg, rgba(0, 136, 204, 0.5) 0%, rgba(204, 204, 204, 1) 75%, rgba(238, 238, 238, 1) 100%);
 	/*
 	backgroundimage: "url('./img/pptxgenjs-bkgd2.png')";
 	backgroundrepeat: "repeat";
