@@ -75,7 +75,7 @@ module.exports = {
 			},
 			items: [
 				{
-					to: "docs/",
+					to: "docs/quick-start",
 					label: "Get Started",
 					position: "left",
 				},
