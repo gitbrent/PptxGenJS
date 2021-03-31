@@ -5,10 +5,9 @@
 *.html
 *.icloud
 .icloud
-/demo
-/demo-react
-/docs
-/website
+demo-react/
+docs/
+website/
 bower_components/
 node_modules/
 npm-debug.log
