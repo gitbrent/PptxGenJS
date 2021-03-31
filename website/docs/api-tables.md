@@ -48,7 +48,7 @@ slide.addTable(rows, { w: 9, rowH: 1, align: "left", fontFace: "Arial" });
 
 ## Properties
 
-### Position/Size Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+### Position/Size Props ([PositionProps](/PptxGenJS/docs/types#position-props))
 
 | Option | Type   | Default | Description            | Possible Values                              |
 | :----- | :----- | :------ | :--------------------- | :------------------------------------------- |

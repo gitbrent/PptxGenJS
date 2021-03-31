@@ -8,7 +8,7 @@ title: Slide Properties
 | Option       | Type            | Default  | Description             | Possible Values                                                       |
 | :----------- | :-------------- | :------- | :---------------------- | :-------------------------------------------------------------------- |
 | `background` | BackgroundProps | `FFFFFF` | background color/images | add background color or image                                         |
-| `color`      | string          | `000000` | default text color      | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes.html). |
+| `color`      | string          | `000000` | default text color      | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes). |
 | `hidden`     | boolean         | `false`  | whether slide is hidden | Ex: `slide.hidden = true`                                             |
 
 ### Examples
@@ -31,7 +31,7 @@ slide.slideNumber = { x: 1.0, y: "90%" };
 
 ## Properties
 
-### Position Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+### Position Props ([PositionProps](/PptxGenJS/docs/types#position-props))
 
 | Option | Type   | Default | Description            | Possible Values                              |
 | :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -48,7 +48,7 @@ slide.slideNumber = { x: 1.0, y: "90%" };
 
 | Option     | Type   | Default  | Description | Possible Values                                                       |
 | :--------- | :----- | :------- | :---------- | :-------------------------------------------------------------------- |
-| `color`    | string | `000000` | color       | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes.html). |
+| `color`    | string | `000000` | color       | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes). |
 | `fontFace` | string |          | font face   | any available font. Ex: `{ fontFace:'Arial' }`                        |
 | `fontSize` | number |          | font size   | 8-256. Ex: `{ fontSize:12 }`                                          |
 

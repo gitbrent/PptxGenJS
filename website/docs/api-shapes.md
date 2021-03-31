@@ -21,7 +21,7 @@ slide.addText("ShapeType.line", { shape: pres.ShapeType.line, line: { color: "FF
 
 ## Properties
 
-### Position/Size Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+### Position/Size Props ([PositionProps](/PptxGenJS/docs/types#position-props))
 
 | Name | Type   | Default | Description            | Possible Values                              |
 | :--- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -34,20 +34,20 @@ slide.addText("ShapeType.line", { shape: pres.ShapeType.line, line: { color: "FF
 | `h`  | number | `1.0`   | height (inches)        | 0-n                                          |
 | `h`  | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
-### Shape Props ([ShapeProps](/PptxGenJS/docs/types.html#shape-props-shapeprops))
+### Shape Props ([ShapeProps](/PptxGenJS/docs/types#shape-props-shapeprops))
 
-| Name         | Type                                                                         | Description         | Possible Values                                   |
-| :----------- | :--------------------------------------------------------------------------- | :------------------ | :------------------------------------------------ |
-| `align`      | string                                                                       | alignment           | `left` or `center` or `right`. Default: `left`    |
-| `fill`       | [ShapeFillProps](/PptxGenJS/docs/types.html#fill-props-shapefillprops)       | fill props          | Fill color/transparency props                     |
-| `flipH`      | boolean                                                                      | flip Horizontal     | `true` or `false`                                 |
-| `flipV`      | boolean                                                                      | flip Vertical       | `true` or `false`                                 |
-| `hyperlink`  | [HyperlinkProps](/PptxGenJS/docs/types.html#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
-| `line`       | [ShapeLineProps](/PptxGenJS/docs/types.html#shape-line-props-shapelineprops) | border line props   | (see type link)                                   |
-| `rectRadius` | number                                                                       | rounding radius     | 0-180. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
-| `rotate`     | number                                                                       | rotation (degrees)  | -360 to 360. Default: `0`                         |
-| `shadow`     | [ShadowProps](/PptxGenJS/docs/types.html#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
-| `shapeName`  | string                                                                       | optional shape name | Ex: "Customer Network Diagram 99"                 |
+| Name         | Type                                                                    | Description         | Possible Values                                   |
+| :----------- | :---------------------------------------------------------------------- | :------------------ | :------------------------------------------------ |
+| `align`      | string                                                                  | alignment           | `left` or `center` or `right`. Default: `left`    |
+| `fill`       | [ShapeFillProps](/PptxGenJS/docs/types#fill-props-shapefillprops)       | fill props          | Fill color/transparency props                     |
+| `flipH`      | boolean                                                                 | flip Horizontal     | `true` or `false`                                 |
+| `flipV`      | boolean                                                                 | flip Vertical       | `true` or `false`                                 |
+| `hyperlink`  | [HyperlinkProps](/PptxGenJS/docs/types#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
+| `line`       | [ShapeLineProps](/PptxGenJS/docs/types#shape-line-props-shapelineprops) | border line props   | (see type link)                                   |
+| `rectRadius` | number                                                                  | rounding radius     | 0-180. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
+| `rotate`     | number                                                                  | rotation (degrees)  | -360 to 360. Default: `0`                         |
+| `shadow`     | [ShadowProps](/PptxGenJS/docs/types#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
+| `shapeName`  | string                                                                  | optional shape name | Ex: "Customer Network Diagram 99"                 |
 
 ## Shapes Sample
 

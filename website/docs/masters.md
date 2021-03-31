@@ -36,7 +36,7 @@ via View > Slide Master and will affect the Slides created using that layout.
 
 | Option         | Type   | Default  | Description  | Possible Values                                                                                           |
 | :------------- | :----- | :------- | :----------- | :-------------------------------------------------------------------------------------------------------- |
-| `color`        | string | `000000` | color        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
+| `color`        | string | `000000` | color        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes). Ex: `{line:'0088CC'}` |
 | `transparency` | number | `0`      | transparency | Percentage: 0-100                                                                                         |
 
 ### SlideNumber Props (`SlideNumberProps`)
@@ -48,7 +48,7 @@ via View > Slide Master and will affect the Slides created using that layout.
 | `w`     | number |          | width (inches)               | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)                                    |
 | `h`     | number |          | height (inches)              | 0-n OR 'n%'.                                                                                              |
 | `align` | string | `left`   | alignment                    | `left` or `center` or `right`                                                                             |
-| `color` | string | `000000` | color                        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
+| `color` | string | `000000` | color                        | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes). Ex: `{line:'0088CC'}` |
 
 **NOTES**
 

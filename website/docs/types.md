@@ -63,33 +63,40 @@ PptxGenJS Type Interfaces.
 
 ## Shape Props (`ShapeProps`)
 
-| Name         | Type                                                                         | Description         | Possible Values                                   |
-| :----------- | :--------------------------------------------------------------------------- | :------------------ | :------------------------------------------------ |
-| `align`      | string                                                                       | alignment           | `left` or `center` or `right`. Default: `left`    |
-| `fill`       | [ShapeFillProps](/PptxGenJS/docs/types.html#fill-props-shapefillprops)       | fill props          | Fill color/transparency props                     |
-| `flipH`      | boolean                                                                      | flip Horizontal     | `true` or `false`                                 |
-| `flipV`      | boolean                                                                      | flip Vertical       | `true` or `false`                                 |
-| `hyperlink`  | [HyperlinkProps](/PptxGenJS/docs/types.html#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
-| `line`       | [ShapeLineProps](/PptxGenJS/docs/types.html#shape-line-props-shapelineprops) | border line props   | (see type link)                                   |
-| `rectRadius` | number                                                                       | rounding radius     | 0-180. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
-| `rotate`     | number                                                                       | rotation (degrees)  | -360 to 360. Default: `0`                         |
-| `shadow`     | [ShadowProps](/PptxGenJS/docs/types.html#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
-| `shapeName`  | string                                                                       | optional shape name | Ex: "Customer Network Diagram 99"                 |
+| Name         | Type                                                                    | Description         | Possible Values                                   |
+| :----------- | :---------------------------------------------------------------------- | :------------------ | :------------------------------------------------ |
+| `align`      | string                                                                  | alignment           | `left` or `center` or `right`. Default: `left`    |
+| `fill`       | [ShapeFillProps](/PptxGenJS/docs/types#fill-props-shapefillprops)       | fill props          | Fill color/transparency props                     |
+| `flipH`      | boolean                                                                 | flip Horizontal     | `true` or `false`                                 |
+| `flipV`      | boolean                                                                 | flip Vertical       | `true` or `false`                                 |
+| `hyperlink`  | [HyperlinkProps](/PptxGenJS/docs/types#hyperlink-props-hyperlinkprops)  | hyperlink props     | (see type link)                                   |
+| `line`       | [ShapeLineProps](/PptxGenJS/docs/types#shape-line-props-shapelineprops) | border line props   | (see type link)                                   |
+| `rectRadius` | number                                                                  | rounding radius     | 0-180. (only for `pptx.shapes.ROUNDED_RECTANGLE`) |
+| `rotate`     | number                                                                  | rotation (degrees)  | -360 to 360. Default: `0`                         |
+| `shadow`     | [ShadowProps](/PptxGenJS/docs/types#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
+| `shapeName`  | string                                                                  | optional shape name | Ex: "Customer Network Diagram 99"                 |
 
 ## Shape Fill Props (`ShapeFillProps`)
 
-| Name           | Type   | Default  | Description            | Possible Values                                                       |
-| :------------- | :----- | :------- | :--------------------- | :-------------------------------------------------------------------- |
-| `color`        | string | `000000` | `ShapeFillProps` color | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes.html). |
-| `transparency` | number | `0`      | `ShapeFillProps` trans | transparency percentage: 0-100                                        |
+| Name           | Type   | Default  | Description            | Possible Values                                                  |
+| :------------- | :----- | :------- | :--------------------- | :--------------------------------------------------------------- |
+| `color`        | string | `000000` | `ShapeFillProps` color | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes). |
+| `transparency` | number | `0`      | `ShapeFillProps` trans | transparency percentage: 0-100                                   |
 
 ## Shape Line Props (`ShapeLineProps`)
 
-| Name             | Type   | Default | Description         | Possible Values                                                                                           |
-| :--------------- | :----- | :------ | :------------------ | :-------------------------------------------------------------------------------------------------------- |
-| `beginArrowType` | string |         | line ending         | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                                               |
-| `color`          | string |         | line color          | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes.html). Ex: `{line:'0088CC'}` |
-| `dashType`       | string | `solid` | line dash style     | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot`                  |
-| `endArrowType`   | string |         | line heading        | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                                               |
-| `transparency`   | number | `0`     | line transparency   | Percentage: 0-100                                                                                         |
-| `width`          | number | `1`     | line width (points) | 1-256. Ex: `{ width:4 }`                                                                                  |
+| Name             | Type   | Default | Description         | Possible Values                                                                          |
+| :--------------- | :----- | :------ | :------------------ | :--------------------------------------------------------------------------------------- |
+| `beginArrowType` | string |         | line ending         | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                              |
+| `color`          | string |         | line color          | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes). Ex: `{line:'0088CC'}`   |
+| `dashType`       | string | `solid` | line dash style     | `dash`, `dashDot`, `lgDash`, `lgDashDot`, `lgDashDotDot`, `solid`, `sysDash` or `sysDot` |
+| `endArrowType`   | string |         | line heading        | `arrow`, `diamond`, `oval`, `stealth`, `triangle` or `none`                              |
+| `transparency`   | number | `0`     | line transparency   | Percentage: 0-100                                                                        |
+| `width`          | number | `1`     | line width (points) | 1-256. Ex: `{ width:4 }`                                                                 |
+
+## Text Underline Props (`TextUnderlineProps`)
+
+| Name    | Type   | Description     | Possible Values                                                                                                                                                                                       |
+| :------ | :----- | :-------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `color` | string | underline color | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes).                                                                                                                                      |
+| `style` | string | underline style | `dash`, `dashHeavy`, `dashLong`, `dashLongHeavy`, `dbl`, `dotDash`, `dotDashHeave`, `dotDotDash`, `dotDotDashHeavy`, `dotted`, `dottedHeavy`, `heavy`, `none`, `sng`, `wavy` , `wavyDbl`, `wavyHeavy` |

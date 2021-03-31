@@ -42,7 +42,7 @@ It takes CPU time to read and encode images! The more images you include and the
 
 ## Properties
 
-### Position/Size Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+### Position/Size Props ([PositionProps](/PptxGenJS/docs/types#position-props))
 
 | Option | Type   | Default | Description            | Possible Values                              |
 | :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -55,18 +55,18 @@ It takes CPU time to read and encode images! The more images you include and the
 | `h`    | number | `1.0`   | height (inches)        | 0-n                                          |
 | `h`    | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
 
-### Data/Path Props ([DataOrPathProps](/PptxGenJS/docs/types.html#datapath-props-dataorpathprops))
+### Data/Path Props ([DataOrPathProps](/PptxGenJS/docs/types#datapath-props-dataorpathprops))
 
 | Option | Type   | Default | Description         | Possible Values                                                            |
 | :----- | :----- | :------ | :------------------ | :------------------------------------------------------------------------- |
 | `data` | string |         | image data (base64) | base64-encoded image string. (either `data` or `path` is required)         |
 | `path` | string |         | image path          | Same as used in an (img src="") tag. (either `data` or `path` is required) |
 
-### Image Props ([ImageProps](/PptxGenJS/docs/types.html#image-props-imageprops))
+### Image Props ([ImageProps](/PptxGenJS/docs/types#image-props-imageprops))
 
 | Option        | Type                                                                        | Default | Description        | Possible Values                        |
 | :------------ | :-------------------------------------------------------------------------- | :------ | :----------------- | :------------------------------------- |
-| `hyperlink`   | [HyperlinkProps](/PptxGenJS/docs/types.html#hyperlink-props-hyperlinkprops) |         | add hyperlink      | object with `url` or `slide`           |
+| `hyperlink`   | [HyperlinkProps](/PptxGenJS/docs/types#hyperlink-props-hyperlinkprops) |         | add hyperlink      | object with `url` or `slide`           |
 | `placeholder` | string                                                                      |         | image placeholder  | Placeholder location: `title`, `body`  |
 | `rotate`      | integer                                                                     | `0`     | rotation (degrees) | Rotation degress: `0`-`359`            |
 | `rounding`    | boolean                                                                     | `false` | image rounding     | Shapes an image into a circle          |

@@ -50,7 +50,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 
 ## Properties
 
-### Position/Size Props ([PositionProps](/PptxGenJS/docs/types.html#position-props))
+### Position/Size Props ([PositionProps](/PptxGenJS/docs/types#position-props))
 
 | Option | Type   | Default | Description            | Possible Values                              |
 | :----- | :----- | :------ | :--------------------- | :------------------------------------------- |
@@ -138,6 +138,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 | `valAxisLabelFontSize`   | integer | `18`         | value-axis font size             | 1-256. Ex: `{ titleFontSize:12 }`                                                                                                                                                       |
 | `valAxisLabelFormatCode` | string  | `General`    | value-axis number format         | format string. Ex: `{ axisLabelFormatCode:'#,##0' }` [MicroSoft Number Format Codes](https://support.office.com/en-us/article/Number-format-codes-5026bbd6-04bc-48cd-bf33-80f18b4eae68) |
 | `valAxisLineShow`        | boolean | `true`       | show/hide value-axis line        | `true` or `false`                                                                                                                                                                       |
+| `valAxisLogScaleBase`    | number  |              | logarithmic scale                | 2-99                                                                                                                                                                                    |
 | `valAxisMajorTickMark`   | string  |              | value-axis major tick mark       | `none`, `inside`, `outside`, `cross`                                                                                                                                                    |
 | `valAxisMajorUnit`       | number  | `1.0`        | value-axis tick steps            | Float or whole number. Ex: `{ majorUnit:0.2 }`                                                                                                                                          |
 | `valAxisMaxVal`          | number  |              | value-axis maximum value         | 1-N. Ex: `{ valAxisMaxVal:125 }`                                                                                                                                                        |

@@ -13,58 +13,61 @@ slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 
 ## Text Options
 
-| Option            | Type    | Unit    | Default | Description               | Possible Values                                                                                                                |
-| :---------------- | :------ | :------ | :------ | :------------------------ | :----------------------------------------------------------------------------------------------------------------------------- |
-| `x`               | number  | inches  | `1.0`   | horizontal location       | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide)                                                    |
-| `y`               | number  | inches  | `1.0`   | vertical location         | 0-n OR 'n%'.                                                                                                                   |
-| `w`               | number  | inches  |         | width                     | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)                                                         |
-| `h`               | number  | inches  |         | height                    | 0-n OR 'n%'.                                                                                                                   |
-| `align`           | string  |         | `left`  | alignment                 | `left` or `center` or `right`                                                                                                  |
-| `autoFit`         | boolean |         | `false` | "Fit to Shape"            | `true` or `false`                                                                                                              |
-| `bold`            | boolean |         | `false` | bold text                 | `true` or `false`                                                                                                              |
-| `breakLine`       | boolean |         | `false` | appends a line break      | `true` or `false` (only applies when used in text options) Ex: `{text:'hi', options:{breakLine:true}}`                         |
-| `bullet`          | boolean |         | `false` | bulleted text             | `true` or `false`                                                                                                              |
-| `bullet`          | object  |         |         | bullet options            | object with `type`, `code` or `style`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}`. Ex: `{style:'alphaLcPeriod'}` |
-| `charSpacing`     | number  | points  |         | character spacing         | 1-256. Ex: `{ charSpacing:12 }`                                                                                                |
-| `color`           | string  |         |         | text color                | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }`                                            |
-| `fill`            | string  |         |         | fill/bkgd color           | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }`                                            |
-| `fontFace`        | string  |         |         | font face                 | Ex: `{ fontFace:'Arial'}`                                                                                                      |
-| `fontSize`        | number  | points  |         | font size                 | 1-256. Ex: `{ fontSize:12 }`                                                                                                   |
-| `glow`            | object  |         |         | text glow                 | object with `size`, `opacity`, `color` (opt). Ex: `glow:{size:10, opacity:0.75, color:'0088CC'}`                               |
-| `hyperlink`       | string  |         |         | add hyperlink             | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }`                              |
-| `indentLevel`     | number  | level   | `0`     | bullet indent level       | 1-32. Ex: `{ indentLevel:1 }`                                                                                                  |
-| `inset`           | number  | inches  |         | inset/padding             | 1-256. Ex: `{ inset:1.25 }`                                                                                                    |
-| `isTextBox`       | boolean |         | `false` | PPT "Textbox"             | `true` or `false`                                                                                                              |
-| `italic`          | boolean |         | `false` | italic text               | `true` or `false`                                                                                                              |
-| `lang`            | string  |         | `en-US` | language setting          | Ex: `{ lang:'zh-TW' }` (Set this when using non-English fonts like Chinese)                                                    |
-| `line`            | object  |         |         | line/border               | adds a border. Ex: `line:{ pt:'2', color:'A9A9A9' }`                                                                           |
-| `lineSpacing`     | number  | points  |         | line spacing points       | 1-256. Ex: `{ lineSpacing:28 }`                                                                                                |
-| `margin`          | number  | points  |         | margin                    | 0-99 (ProTip: use the same value from CSS `padding`)                                                                           |
-| `outline`         | object  |         |         | text outline options      | Options: `color` & `size`. Ex: `outline:{ size:1.5, color:'FF0000' }`                                                          |
-| `paraSpaceAfter`  | number  | points  |         | paragraph spacing         | Paragraph Spacing: After. Ex: `{ paraSpaceAfter:12 }`                                                                          |
-| `paraSpaceBefore` | number  | points  |         | paragraph spacing         | Paragraph Spacing: Before. Ex: `{ paraSpaceBefore:12 }`                                                                        |
-| `rectRadius`      | number  | inches  |         | rounding radius           | rounding radius for `ROUNDED_RECTANGLE` text shapes                                                                            |
-| `rotate`          | integer | degrees | `0`     | text rotation degrees     | 0-360. Ex: `{rotate:180}`                                                                                                      |
-| `rtlMode`         | boolean |         | `false` | enable Right-to-Left mode | `true` or `false`                                                                                                              |
-| `shadow`          | object  |         |         | text shadow options       | see options below. Ex: `shadow:{ type:'outer' }`                                                                               |
-| `shrinkText`      | boolean |         | `false` | shrink text option        | whether to shrink text to fit textbox. Ex: `{ shrinkText:true }`                                                               |
-| `strike`          | boolean |         | `false` | text strikethrough        | `true` or `false`                                                                                                              |
-| `subscript`       | boolean |         | `false` | subscript text            | `true` or `false`                                                                                                              |
-| `superscript`     | boolean |         | `false` | superscript text          | `true` or `false`                                                                                                              |
-| `underline`       | boolean |         | `false` | underline text            | `true` or `false`                                                                                                              |
-| `valign`          | string  |         |         | vertical alignment        | `top` or `middle` or `bottom`                                                                                                  |
-| `vert`            | string  |         | `horz`  | text direction            | `eaVert` or `horz` or `mongolianVert` or `vert` or `vert270` or `wordArtVert` or `wordArtVertRtl`                              |
+| Option                | Type               | Unit    | Default | Description               | Possible Values                                                                                                                |
+| :-------------------- | :----------------- | :------ | :------ | :------------------------ | :----------------------------------------------------------------------------------------------------------------------------- |
+| `x`                   | number             | inches  | `1.0`   | horizontal location       | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide)                                                    |
+| `y`                   | number             | inches  | `1.0`   | vertical location         | 0-n OR 'n%'.                                                                                                                   |
+| `w`                   | number             | inches  |         | width                     | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)                                                         |
+| `h`                   | number             | inches  |         | height                    | 0-n OR 'n%'.                                                                                                                   |
+| `align`               | string             |         | `left`  | alignment                 | `left` or `center` or `right`                                                                                                  |
+| `autoFit`             | boolean            |         | `false` | "Fit to Shape"            | `true` or `false`                                                                                                              |
+| `baseline`            | number             | points  |         | text baseline value       | 0-256                                                                                                                          |
+| `bold`                | boolean            |         | `false` | bold text                 | `true` or `false`                                                                                                              |
+| `breakLine`           | boolean            |         | `false` | appends a line break      | `true` or `false` (only applies when used in text options) Ex: `{text:'hi', options:{breakLine:true}}`                         |
+| `bullet`              | boolean            |         | `false` | bulleted text             | `true` or `false`                                                                                                              |
+| `bullet`              | object             |         |         | bullet options            | object with `type`, `code` or `style`. Ex: `bullet:{type:'number'}`. Ex: `bullet:{code:'2605'}`. Ex: `{style:'alphaLcPeriod'}` |
+| `charSpacing`         | number             | points  |         | character spacing         | 1-256. Ex: `{ charSpacing:12 }`                                                                                                |
+| `color`               | string             |         |         | text color                | hex color code or [scheme color](/PptxGenJS/docs/shapes-and-schemes). Ex: `{ color:'0088CC' }`                                 |
+| `fill`                | string             |         |         | fill/bkgd color           | hex color code or [scheme color](/PptxGenJS/docs/shapes-and-schemes). Ex: `{ color:'0088CC' }`                                 |
+| `fontFace`            | string             |         |         | font face                 | Ex: `{ fontFace:'Arial'}`                                                                                                      |
+| `fontSize`            | number             | points  |         | font size                 | 1-256. Ex: `{ fontSize:12 }`                                                                                                   |
+| `glow`                | object             |         |         | text glow                 | object with `size`, `opacity`, `color` (opt). Ex: `glow:{size:10, opacity:0.75, color:'0088CC'}`                               |
+| `hyperlink`           | string             |         |         | add hyperlink             | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }`                              |
+| `indentLevel`         | number             | level   | `0`     | bullet indent level       | 1-32. Ex: `{ indentLevel:1 }`                                                                                                  |
+| `inset`               | number             | inches  |         | inset/padding             | 1-256. Ex: `{ inset:1.25 }`                                                                                                    |
+| `isTextBox`           | boolean            |         | `false` | PPT "Textbox"             | `true` or `false`                                                                                                              |
+| `italic`              | boolean            |         | `false` | italic text               | `true` or `false`                                                                                                              |
+| `lang`                | string             |         | `en-US` | language setting          | Ex: `{ lang:'zh-TW' }` (Set this when using non-English fonts like Chinese)                                                    |
+| `line`                | object             |         |         | line/border               | adds a border. Ex: `line:{ pt:'2', color:'A9A9A9' }`                                                                           |
+| `lineSpacing`         | number             | points  |         | line spacing points       | 1-256. Ex: `{ lineSpacing:28 }`                                                                                                |
+| `lineSpacingMultiple` | number             | percent |         | line spacing multiple     | 0.0-9.99                                                                                                                       |
+| `margin`              | number             | points  |         | margin                    | 0-99 (ProTip: use the same value from CSS `padding`)                                                                           |
+| `outline`             | object             |         |         | text outline options      | Options: `color` & `size`. Ex: `outline:{ size:1.5, color:'FF0000' }`                                                          |
+| `paraSpaceAfter`      | number             | points  |         | paragraph spacing         | Paragraph Spacing: After. Ex: `{ paraSpaceAfter:12 }`                                                                          |
+| `paraSpaceBefore`     | number             | points  |         | paragraph spacing         | Paragraph Spacing: Before. Ex: `{ paraSpaceBefore:12 }`                                                                        |
+| `rectRadius`          | number             | inches  |         | rounding radius           | rounding radius for `ROUNDED_RECTANGLE` text shapes                                                                            |
+| `rotate`              | integer            | degrees | `0`     | text rotation degrees     | 0-360. Ex: `{rotate:180}`                                                                                                      |
+| `rtlMode`             | boolean            |         | `false` | enable Right-to-Left mode | `true` or `false`                                                                                                              |
+| `shadow`              | object             |         |         | text shadow options       | see options below. Ex: `shadow:{ type:'outer' }`                                                                               |
+| `shrinkText`          | boolean            |         | `false` | shrink text option        | whether to shrink text to fit textbox. Ex: `{ shrinkText:true }`                                                               |
+| `softBreakBefore`     | boolean            |         | `false` | soft (shift-enter) break  | Add a soft line-break (shift+enter) before line text content                                                                   |
+| `strike`              | string             |         |         | text strikethrough        | `dblStrike` or `sngStrike`                                                                                                     |
+| `subscript`           | boolean            |         | `false` | subscript text            | `true` or `false`                                                                                                              |
+| `superscript`         | boolean            |         | `false` | superscript text          | `true` or `false`                                                                                                              |
+| `underline`           | TextUnderlineProps |         |         | underline color/style     | [TextUnderlineProps](/PptxGenJS/docs/types#text-underline-props-textunderlineprops)                                            |
+| `valign`              | string             |         |         | vertical alignment        | `top` or `middle` or `bottom`                                                                                                  |
+| `vert`                | string             |         | `horz`  | text direction            | `eaVert` or `horz` or `mongolianVert` or `vert` or `vert270` or `wordArtVert` or `wordArtVertRtl`                              |
 
 ## Text Shadow Options
 
-| Option    | Type   | Unit    | Default | Description  | Possible Values                                                                     |
-| :-------- | :----- | :------ | :------ | :----------- | :---------------------------------------------------------------------------------- |
-| `type`    | string |         | outer   | shadow type  | `outer` or `inner`                                                                  |
-| `angle`   | number | degrees |         | shadow angle | 0-359. Ex: `{ angle:180 }`                                                          |
-| `blur`    | number | points  |         | blur size    | 1-256. Ex: `{ blur:3 }`                                                             |
-| `color`   | string |         |         | text color   | hex color code or [scheme color constant](#scheme-colors). Ex: `{ color:'0088CC' }` |
-| `offset`  | number | points  |         | offset size  | 1-256. Ex: `{ offset:8 }`                                                           |
-| `opacity` | number | percent |         | opacity      | 0-1. Ex: `opacity:0.75`                                                             |
+| Option    | Type   | Unit    | Default | Description  | Possible Values                                                                                         |
+| :-------- | :----- | :------ | :------ | :----------- | :------------------------------------------------------------------------------------------------------ |
+| `type`    | string |         | outer   | shadow type  | `outer` or `inner`                                                                                      |
+| `angle`   | number | degrees |         | shadow angle | 0-359. Ex: `{ angle:180 }`                                                                              |
+| `blur`    | number | points  |         | blur size    | 1-256. Ex: `{ blur:3 }`                                                                                 |
+| `color`   | string |         |         | text color   | hex color code or [scheme color constant](/PptxGenJS/docs/shapes-and-schemes). Ex: `{ color:'0088CC' }` |
+| `offset`  | number | points  |         | offset size  | 1-256. Ex: `{ offset:8 }`                                                                               |
+| `opacity` | number | percent |         | opacity      | 0-1. Ex: `opacity:0.75`                                                                                 |
 
 ## Text Examples
 
