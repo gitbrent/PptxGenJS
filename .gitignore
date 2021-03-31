@@ -5,7 +5,6 @@
 *.lock
 
 demo/*
-demo-react/*
 demos/
 docs/*
 dist/
