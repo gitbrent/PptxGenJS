@@ -31,14 +31,14 @@ yarn add pptxgenjs
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.4.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.5.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.4.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.4.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.5.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.5.0/dist/pptxgen.min.js"></script>
 ```
 
 ### Download
