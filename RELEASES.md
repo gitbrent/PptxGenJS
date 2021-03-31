@@ -90,8 +90,10 @@ $ npm run build
 
 ### NPM
 
-1. `cd ~/GitHub/PptxGenJS`
-2. `npm publish`
+```bash
+$ cd ~/GitHub/PptxGenJS
+$ npm publish
+```
 
 ## Post-Release Tasks
 
