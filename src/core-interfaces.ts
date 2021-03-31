@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
+import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
 
 // Core Types
 // ==========
@@ -121,7 +121,7 @@ export interface HyperlinkProps {
 }
 export interface PlaceholderProps {
 	name: string
-	type: PLACEHOLDER_TYPES
+	type: PLACEHOLDER_TYPE
 	x: Coord
 	y: Coord
 	w: Coord
@@ -1388,7 +1388,7 @@ export interface SlideMasterProps {
 }
 export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
 	_placeholderIdx?: number
-	_placeholderType?: PLACEHOLDER_TYPES
+	_placeholderType?: PLACEHOLDER_TYPE
 
 	cx?: Coord
 	cy?: Coord

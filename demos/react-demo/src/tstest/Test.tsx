@@ -13,6 +13,20 @@ export function testMainMethods() {
 	pptx.defineLayout({ name: "TST", width: 13.4, height: 7.5 });
 	pptx.layout = "TST";
 
+	// TEST/FIX: For [Issue #921](https://github.com/gitbrent/PptxGenJS/issues/921)
+	pptx.defineSlideMaster({
+		title: "PLACEHOLDER_SLIDE",
+		objects: [
+			{
+				placeholder: {
+					options: { name: "body", type: "body", x: 0.6, y: 1.5, w: 12, h: 5.25 },
+					//options: { name: "body", type: pptx.PlaceholderType.body, x: 0.6, y: 1.5, w: 12, h: 5.25 },
+					text: "(custom placeholder text!)",
+				},
+			},
+		],
+	});
+
 	// PPTX Method 2:
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
