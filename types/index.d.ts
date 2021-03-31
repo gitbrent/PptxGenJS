@@ -912,6 +912,7 @@ declare namespace PptxGenJS {
 		 * @default '666666'
 		 */
 		color?: HexColor
+
 		// TODO: add `width` - deprecate `pt`
 		/**
 		 * Border size (points)
@@ -1253,9 +1254,29 @@ declare namespace PptxGenJS {
 			 * Image height
 			 */
 			h: number
+			/**
+			 * Area horizontal position related to the image
+			 * - Values: 0-n
+			 * - `crop` only
+			 */
 			x?: number
+			/**
+			 * Area vertical position related to the image
+			 * - Values: 0-n
+			 * - `crop` only
+			 */
 			y?: number
 		}
+		/**
+		 * Flip horizontally?
+		 * @default false
+		 */
+		flipH?: boolean
+		/**
+		 * Flip vertical?
+		 * @default false
+		 */
+		flipV?: boolean
 	}
 	/**
 	 * Add media (audio/video) to slide
@@ -1295,12 +1316,12 @@ declare namespace PptxGenJS {
 		 * - In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
 		 * - values: [0-359, 0-359]
 		 * @since v3.4.0
-		 * @default [0, 270]
+		 * @default [270, 0]
 		 */
 		angleRange?: [number, number]
 		/**
 		 * Radius (only for pptx.shapes.BLOCK_ARC)
-		 * - You have to setup the angleRange values too.
+		 * - You have to setup the angleRange values too
 		 * - values: 0.0-1.0
 		 * @since v3.4.0
 		 * @default 0.5
@@ -1312,7 +1333,7 @@ declare namespace PptxGenJS {
 		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
 		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 */
-		fill?: Color | ShapeFillProps
+		fill?: ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1379,6 +1400,9 @@ declare namespace PptxGenJS {
 	// tables =========================================================================================
 
 	export interface TableToSlidesProps extends TableProps {
+		//_arrObjTabHeadRows?: TableRow[]
+		//_masterSlide?: SlideLayout
+
 		/**
 		 * Add an image to slide(s) created during autopaging
 		 */
@@ -1490,11 +1514,12 @@ declare namespace PptxGenJS {
 		colspan?: number
 		/**
 		 * Fill color
-		 * @example 'FF0000' // hex string (red)
-		 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 		 */
-		fill?: Color | ShapeFillProps
+		fill?: ShapeFillProps
 		/**
 		 * Cell margin
 		 * @default 0
@@ -1506,6 +1531,8 @@ declare namespace PptxGenJS {
 		rowspan?: number
 	}
 	export interface TableProps extends PositionProps, TextBaseProps {
+		//_arrObjTabHeadRows?: TableRow[]
+
 		/**
 		 * Whether to enable auto-paging
 		 * - auto-paging creates new slides as content overflows a slide
@@ -1565,6 +1592,9 @@ declare namespace PptxGenJS {
 		colW?: number | number[]
 		/**
 		 * Cell background color
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 */
 		fill?: ShapeFillProps
 		/**
@@ -1635,7 +1665,13 @@ declare namespace PptxGenJS {
 		 * @default "none"
 		 */
 		fit?: 'none' | 'shrink' | 'resize'
-		fill?: Color | ShapeFillProps
+		/**
+		 * Shape fill
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+		 */
+		fill?: ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1826,7 +1862,11 @@ declare namespace PptxGenJS {
 		catAxisTitleRotate?: number
 		catGridLine?: OptsChartGridLine
 		catLabelFormatCode?: string
-		secondaryCatAxis?: boolean
+	/**
+	 * Whether data should use secondary category axis (instead of primary)
+	 * @default false
+	 */
+	 secondaryCatAxis?: boolean
 		showCatAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisSer {
@@ -1853,7 +1893,11 @@ declare namespace PptxGenJS {
 		showSerAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisVal {
-		secondaryValAxis?: boolean
+	/**
+	 * Whether data should use secondary value axis (instead of primary)
+	 * @default false
+	 */
+	 secondaryValAxis?: boolean
 		showValAxisTitle?: boolean
 		/**
 		 * Multi-Chart prop: array of val axes
