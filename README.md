@@ -16,21 +16,22 @@
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 
+- [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features](#features)
 - [Live Demo](#live-demo)
 - [Installation](#installation)
-  - [CDN](#cdn)
-  - [Download](#download)
-  - [Npm](#npm)
-  - [Yarn](#yarn)
-  - [Additional Builds](#additional-builds)
+	- [CDN](#cdn)
+	- [Download](#download)
+	- [Npm](#npm)
+	- [Yarn](#yarn)
+	- [Additional Builds](#additional-builds)
 - [Documentation](#documentation)
-  - [Quick Start Guide](#quick-start-guide)
-    - [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
-    - [Script/Web Browser](#scriptweb-browser)
-  - [Library API](#library-api)
-  - [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
+	- [Quick Start Guide](#quick-start-guide)
+		- [Angular/React, ES6, TypeScript](#angularreact-es6-typescript)
+		- [Script/Web Browser](#scriptweb-browser)
+	- [Library API](#library-api)
+	- [HTML-to-PowerPoint Feature](#html-to-powerpoint-feature)
 - [Library Ports](#library-ports)
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
@@ -266,6 +267,6 @@ PowerPoint shape definitions and some XML code via [Officegen Project](https://g
 
 # License
 
-Copyright &copy; 2015-2020 [Brent Ely](https://github.com/gitbrent/PptxGenJS)
+Copyright &copy; 2015-present [Brent Ely](https://github.com/gitbrent/PptxGenJS)
 
 [MIT](https://github.com/gitbrent/PptxGenJS/blob/master/LICENSE)

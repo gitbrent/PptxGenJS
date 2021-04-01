@@ -70,7 +70,6 @@ import {
 	DEF_PRES_LAYOUT_NAME,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
-	JSZIP_OUTPUT_TYPE,
 	OutputType,
 	SCHEME_COLOR_NAMES,
 	SHAPE_TYPE,
@@ -98,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.5.0'
+const VERSION = '3.6.0-beta_20210331-2050'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
