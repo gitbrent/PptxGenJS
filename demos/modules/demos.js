@@ -7,6 +7,8 @@
 * BLD.: 20210225
 */
 
+import { genSlides_Table } from './tables.js'
+
 var isIE11 = typeof window !== 'undefined' && !!window['MSInputMethodContext'] && !!document['documentMode'];
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
 var NODEJS = false;
@@ -121,7 +123,7 @@ function execGenSlidesFuncs(type) {
 			PptxGenJsLib = require("pptxgenjs");
 		}
 		pptx = new PptxGenJsLib();
-		var base64Images = require('./images/base64Images.js');
+		var base64Images = require('../common/images/base64Images.js');
 		LOGO_STARLABS = base64Images.LOGO_STARLABS();
 	}
 	else {
@@ -283,7 +285,7 @@ function execGenSlidesFuncs(type) {
 }
 
 // ==================================================================================================================
-
+/*
 function genSlides_Table(pptx) {
 	pptx.addSection({ title: 'Tables' });
 
@@ -696,7 +698,7 @@ function genSlides_Table(pptx) {
 		slide.addTable( arrText, { x:9.10, y:0.6, w:4, margin:5, border:{color:'CFCFCF'}, autoPage:true, autoPageCharWeight:-0.25 } );
 	}
 }
-
+*/
 function genSlides_Chart(pptx) {
 	var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 	var MONS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
