@@ -6,8 +6,7 @@
  * VER.: 3.5.0
  * BLD.: 20210225
  */
-import { gStrLoremIpsum } from "./enums.js";
-import { gArrNamesF } from "./demos.js";
+import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "./enums.js";
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });

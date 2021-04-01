@@ -2,8 +2,8 @@
  * browser.js
  * module for /demo/browser/index.html
  */
-import { gArrNamesF, gArrNamesL, execGenSlidesFuncs } from "../modules/demos.js";
-import { gStrLoremIpsum } from "../modules/enums.js";
+import { getTimestamp, execGenSlidesFuncs } from "../modules/demos.js";
+import { BKGD_STARLABS, LOGO_STARLABS, gArrNamesF, gArrNamesL, gStrLoremIpsum, starlabsLogoSml } from "../modules/enums.js";
 
 // ==================================================================================================================
 
@@ -65,16 +65,16 @@ function addMasterDefs(pptx) {
 	});
 }
 
-function table2slides1() {
+export function table2slides1() {
 	// FIRST: Instantiate new PptxGenJS instance
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 
 	// STEP 1: Add Master Slide defs / Set slide size/layout
 	addMasterDefs(pptx);
 	pptx.layout = "LAYOUT_WIDE";
 
 	// STEP 2: Set generated Slide options
-	var objOpts = {};
+	let objOpts = {};
 	//objOpts.verbose = true;
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.autoPageRepeatHeader = true;
 	if ($("#checkStartY").prop("checked")) objOpts.autoPageSlideStartY = Number($("#numTab2SlideStartY").val());
@@ -88,7 +88,7 @@ function table2slides1() {
 	pptx.writeFile({ fileName: "Table2Slides_MasterSlide_" + getTimestamp() });
 }
 
-function table2slides2() {
+export function table2slides2() {
 	// FIRST: Instantiate new PptxGenJS instance
 	var pptx = new PptxGenJS();
 
@@ -294,7 +294,7 @@ function runAllDemos() {
 		});
 }
 
-function execGenSlidesFunc(type) {
+export function execGenSlidesFunc(type) {
 	if (console.time) console.time("execGenSlidesFunc: " + type);
 	$("#modalBusy").modal("show");
 
