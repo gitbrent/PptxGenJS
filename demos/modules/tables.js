@@ -6,10 +6,8 @@
  * VER.: 3.5.0
  * BLD.: 20210225
  */
-import {gStrLoremIpsum} from './demos.js'
-
-const gArrNamesF = ["Markiplier", "Jack", "Brian", "Paul", "Ev", "Ann", "Michelle", "Jenny", "Lara", "Kathryn"];
-const gArrNamesL = ["Johnson", "Septiceye", "Lapston", "Lewis", "Clark", "Griswold", "Hart", "Cube", "Malloy", "Capri"];
+import { gStrLoremIpsum } from "./enums.js";
+import { gArrNamesF } from "./demos.js";
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
