@@ -3,7 +3,8 @@
  * module for /demo/browser/index.html
  */
 import { getTimestamp, execGenSlidesFuncs } from "../modules/demos.js";
-import { BKGD_STARLABS, LOGO_STARLABS, gArrNamesF, gArrNamesL, gStrLoremIpsum, starlabsLogoSml } from "../modules/enums.js";
+import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "../modules/enums.js";
+import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../modules/media.js";
 
 // ==================================================================================================================
 

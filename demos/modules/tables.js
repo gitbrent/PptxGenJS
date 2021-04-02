@@ -6,105 +6,21 @@
  * VER.: 3.5.0
  * BLD.: 20210225
  */
-import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "./enums.js";
+import {
+	gArrNamesF,
+	gDemoTitleOpts,
+	gDemoTitleText,
+	gDemoTitleTextBk,
+	gOptsSubTitle,
+	gOptsTabOpts,
+	gOptsTextL,
+	gOptsTextR,
+	gStrLoremIpsum,
+} from "./enums.js";
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });
-
-	// SLIDE 1: Table text alignment and cell styles
-	{
-		var slide = pptx.addSlide({ sectionTitle: "Tables" });
-		slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-		slide.addTable([[{ text: "Table Examples 1", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
-
-		// DEMO: align/valign -------------------------------------------------------------------------
-		var objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
-		slide.addText("Cell Text Alignment:", objOpts1);
-
-		var arrTabRows = [
-			[
-				{ text: "Top Lft", options: { valign: "top", align: "left", fontFace: "Arial" } },
-				{ text: "Top Ctr", options: { valign: "top", align: "center", fontFace: "Courier" } },
-				{ text: "Top Rgt", options: { valign: "top", align: "right", fontFace: "Verdana" } },
-			],
-			[
-				{ text: "Mdl Lft", options: { valign: "middle", align: "left" } },
-				{ text: "Mdl Ctr", options: { valign: "middle", align: "center" } },
-				{ text: "Mdl Rgt", options: { valign: "middle", align: "right" } },
-			],
-			[
-				{ text: "Btm Lft", options: { valign: "bottom", align: "left" } },
-				{ text: "Btm Ctr", options: { valign: "bottom", align: "center" } },
-				{ text: "Btm Rgt", options: { valign: "bottom", align: "right" } },
-			],
-		];
-		slide.addTable(arrTabRows, {
-			x: 0.5,
-			y: 1.1,
-			w: 5.0,
-			rowH: 0.75,
-			fill: { color: "F7F7F7" },
-			fontSize: 14,
-			color: "363636",
-			border: { pt: "1", color: "BBCCDD" },
-		});
-		// Pass default cell style as tabOpts, then just style/override individual cells as needed
-
-		// DEMO: cell styles --------------------------------------------------------------------------
-		var objOpts2 = { x: 6.0, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
-		slide.addText("Cell Styles:", objOpts2);
-
-		var arrTabRows = [
-			[
-				{ text: "White", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
-				{ text: "Yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
-				{ text: "Pink", options: { fill: { color: "AACCFF" }, color: "E140FE" } },
-			],
-			[
-				{ text: "12pt", options: { fill: { color: "FF0000" }, fontSize: 12 } },
-				{ text: "20pt", options: { fill: { color: "00FF00" }, fontSize: 20 } },
-				{ text: "28pt", options: { fill: { color: "0000FF" }, fontSize: 28 } },
-			],
-			[
-				{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
-				{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
-				{ text: "10pt Pad", options: { fill: { color: "6699CC" }, margin: 10 } },
-			],
-		];
-		slide.addTable(arrTabRows, {
-			x: 6.0,
-			y: 1.1,
-			w: 7.0,
-			rowH: 0.75,
-			fill: { color: "F7F7F7" },
-			color: "FFFFFF",
-			fontSize: 16,
-			valign: "center",
-			align: "center",
-			border: { pt: "1", color: "FFFFFF" },
-		});
-
-		// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
-		var objOpts3 = { x: 0.5, y: 3.6, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
-		slide.addText("Row/Col Heights/Widths:", objOpts3);
-
-		var arrTabRows = [
-			[{ text: "1x1" }, { text: "2x1" }, { text: "2.5x1" }, { text: "3x1" }, { text: "4x1" }],
-			[{ text: "1x2" }, { text: "2x2" }, { text: "2.5x2" }, { text: "3x2" }, { text: "4x2" }],
-		];
-		slide.addTable(arrTabRows, {
-			x: 0.5,
-			y: 4.0,
-			rowH: [1, 2],
-			colW: [1, 2, 2.5, 3, 4],
-			fill: { color: "F7F7F7" },
-			color: "6c6c6c",
-			fontSize: 14,
-			valign: "center",
-			align: "center",
-			border: { pt: "1", color: "BBCCDD" },
-		});
-	}
+	genSlide01(pptx);
 
 	// SLIDE 2: Table row/col-spans
 	{
@@ -688,4 +604,102 @@ export function genSlides_Table(pptx) {
 		);
 		slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: { color: "CFCFCF" }, autoPage: true, autoPageCharWeight: -0.25 });
 	}
+}
+
+/**
+ * SLIDE 1: Table text alignment and cell styles
+ * @param {PptxGenJS} pptx
+ */
+function genSlide01(pptx) {
+	var slide = pptx.addSlide({ sectionTitle: "Tables" });
+	slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+	slide.addTable([[{ text: "Table Examples 1", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+
+	// DEMO: align/valign -------------------------------------------------------------------------
+	var objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
+	slide.addText("Cell Text Alignment:", objOpts1);
+
+	var arrTabRows = [
+		[
+			{ text: "Top Lft", options: { valign: "top", align: "left", fontFace: "Arial" } },
+			{ text: "Top Ctr", options: { valign: "top", align: "center", fontFace: "Courier" } },
+			{ text: "Top Rgt", options: { valign: "top", align: "right", fontFace: "Verdana" } },
+		],
+		[
+			{ text: "Mdl Lft", options: { valign: "middle", align: "left" } },
+			{ text: "Mdl Ctr", options: { valign: "middle", align: "center" } },
+			{ text: "Mdl Rgt", options: { valign: "middle", align: "right" } },
+		],
+		[
+			{ text: "Btm Lft", options: { valign: "bottom", align: "left" } },
+			{ text: "Btm Ctr", options: { valign: "bottom", align: "center" } },
+			{ text: "Btm Rgt", options: { valign: "bottom", align: "right" } },
+		],
+	];
+	slide.addTable(arrTabRows, {
+		x: 0.5,
+		y: 1.1,
+		w: 5.0,
+		rowH: 0.75,
+		fill: { color: "F7F7F7" },
+		fontSize: 14,
+		color: "363636",
+		border: { pt: "1", color: "BBCCDD" },
+	});
+	// Pass default cell style as tabOpts, then just style/override individual cells as needed
+
+	// DEMO: cell styles --------------------------------------------------------------------------
+	var objOpts2 = { x: 6.0, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
+	slide.addText("Cell Styles:", objOpts2);
+
+	var arrTabRows = [
+		[
+			{ text: "White", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
+			{ text: "Yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
+			{ text: "Pink", options: { fill: { color: "AACCFF" }, color: "E140FE" } },
+		],
+		[
+			{ text: "12pt", options: { fill: { color: "FF0000" }, fontSize: 12 } },
+			{ text: "20pt", options: { fill: { color: "00FF00" }, fontSize: 20 } },
+			{ text: "28pt", options: { fill: { color: "0000FF" }, fontSize: 28 } },
+		],
+		[
+			{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
+			{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
+			{ text: "10pt Pad", options: { fill: { color: "6699CC" }, margin: 10 } },
+		],
+	];
+	slide.addTable(arrTabRows, {
+		x: 6.0,
+		y: 1.1,
+		w: 7.0,
+		rowH: 0.75,
+		fill: { color: "F7F7F7" },
+		color: "FFFFFF",
+		fontSize: 16,
+		valign: "center",
+		align: "center",
+		border: { pt: "1", color: "FFFFFF" },
+	});
+
+	// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
+	var objOpts3 = { x: 0.5, y: 3.6, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
+	slide.addText("Row/Col Heights/Widths:", objOpts3);
+
+	var arrTabRows = [
+		[{ text: "1x1" }, { text: "2x1" }, { text: "2.5x1" }, { text: "3x1" }, { text: "4x1" }],
+		[{ text: "1x2" }, { text: "2x2" }, { text: "2.5x2" }, { text: "3x2" }, { text: "4x2" }],
+	];
+	slide.addTable(arrTabRows, {
+		x: 0.5,
+		y: 4.0,
+		rowH: [1, 2],
+		colW: [1, 2, 2.5, 3, 4],
+		fill: { color: "F7F7F7" },
+		color: "6c6c6c",
+		fontSize: 14,
+		valign: "center",
+		align: "center",
+		border: { pt: "1", color: "BBCCDD" },
+	});
 }
