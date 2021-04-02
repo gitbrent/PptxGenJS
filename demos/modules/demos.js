@@ -9,48 +9,35 @@
 
 import { starlabsLogoSml } from "../modules/media.js";
 import {
-	gOptsTextL,
-	COMPRESS,
-	TESTMODE,
-	CUST_NAME,
-	gPaths,
-	USER_NAME,
-	COLOR_RED,
 	COLOR_AMB,
 	COLOR_GRN,
-	COLOR_CRT,
-	COLOR_BLU,
+	COLOR_RED,
 	COLOR_UNK,
-	ARRSTRBITES,
-	CHARSPERLINE,
-	gStrLoremEnglish,
-	gStrHello,
+	COMPRESS,
+	CUST_NAME,
+	TESTMODE,
 	gOptsTabOpts,
-	gOptsOptsR,
+	gOptsTextL,
 	gOptsTextR,
-	gOptsCode,
-	gOptsSubTitle,
-	gDemoTitleText,
-	gDemoTitleTextBk,
-	gDemoTitleOpts,
+	gPaths,
+	gStrLoremEnglish,
 } from "../modules/enums.js";
-import { genSlides_Image } from "./images.js";
-import { genSlides_Table } from "./tables.js";
+import { genSlides_Image } from "./demo_images.js";
+import { genSlides_Media } from "./demo_media.js";
+import { genSlides_Table } from "./demo_tables.js";
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
-var NODEJS = false;
-{
-	// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-	if (typeof module !== "undefined" && module.exports && typeof require === "function" && typeof window === "undefined") {
-		try {
-			require.resolve("fs");
-			NODEJS = true;
-		} catch (ex) {
-			NODEJS = false;
-		}
+let NODEJS = false;
+// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
+if (typeof module !== "undefined" && module.exports && typeof require === "function" && typeof window === "undefined") {
+	try {
+		require.resolve("fs");
+		NODEJS = true;
+	} catch (ex) {
+		NODEJS = false;
 	}
 }
-//if (NODEJS) { var LOGO_STARLABS; }
+//TODO: ? if (NODEJS) { var LOGO_STARLABS; }
 
 // ==================================================================================================================
 
@@ -284,6 +271,7 @@ export function execGenSlidesFuncs(type) {
 	arrTypes.forEach(function (type) {
 		//if (console.time) console.time(type);
 		if (type === "image") genSlides_Image(pptx);
+		else if (type === "media") genSlides_Media(pptx);
 		else if (type === "table") genSlides_Table(pptx);
 		else eval("genSlides_" + type + "(pptx)");
 		//if (console.timeEnd) console.timeEnd(type);
@@ -2308,114 +2296,6 @@ function genSlides_Chart(pptx) {
 	slide16();
 	slide17();
 	slide18();
-}
-
-function genSlides_Media(pptx) {
-	pptx.addSection({ title: "Media" });
-
-	// SLIDE 1: Video and YouTube -----------------------------------------------------------------------------------
-	var slide1 = pptx.addSlide({ sectionTitle: "Media" });
-	slide1.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
-	slide1.addTable([[{ text: "Media: Misc Video Formats; YouTube", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
-
-	slide1.addText("Video: m4v", { x: 0.5, y: 0.6, w: 4.0, h: 0.4, color: "0088CC" });
-	slide1.addMedia({
-		x: 0.5,
-		y: 1.0,
-		w: 4.0,
-		h: 2.27,
-		type: "video",
-		path: NODEJS ? gPaths.sample_m4v.path.replace(/http.+\/examples/, "../common") : gPaths.sample_m4v.path,
-	});
-
-	slide1.addText("Video: mpg", { x: 5.5, y: 0.6, w: 3.0, h: 0.4, color: "0088CC" });
-	slide1.addMedia({
-		x: 5.5,
-		y: 1.0,
-		w: 3.0,
-		h: 2.05,
-		type: "video",
-		path: NODEJS ? gPaths.sample_mpg.path.replace(/http.+\/examples/, "../common") : gPaths.sample_mpg.path,
-	});
-
-	slide1.addText("Video: mov", { x: 9.4, y: 0.6, w: 3.0, h: 0.4, color: "0088CC" });
-	slide1.addMedia({
-		x: 9.4,
-		y: 1.0,
-		w: 3.0,
-		h: 1.71,
-		type: "video",
-		path: NODEJS ? gPaths.sample_mov.path.replace(/http.+\/examples/, "../common") : gPaths.sample_mov.path,
-	});
-
-	slide1.addText("Video: mp4", { x: 0.5, y: 3.6, w: 4.0, h: 0.4, color: "0088CC" });
-	slide1.addMedia({
-		x: 0.5,
-		y: 4.0,
-		w: 4.0,
-		h: 3.0,
-		type: "video",
-		path: NODEJS ? gPaths.sample_mp4.path.replace(/http.+\/examples/, "../common") : gPaths.sample_mp4.path,
-	});
-
-	slide1.addText("Video: avi", { x: 5.5, y: 3.6, w: 3.0, h: 0.4, color: "0088CC" });
-	slide1.addMedia({
-		x: 5.5,
-		y: 4.0,
-		w: 3.0,
-		h: 2.25,
-		type: "video",
-		path: NODEJS ? gPaths.sample_avi.path.replace(/http.+\/examples/, "../common") : gPaths.sample_avi.path,
-	});
-
-	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
-	if (!NODEJS && $ && $("#chkYoutube").prop("checked")) {
-		slide1.addText("Online: YouTube", { x: 9.4, y: 3.6, w: 3.0, h: 0.4, color: "0088CC" });
-		// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)
-		slide1.addMedia({ x: 9.4, y: 4.0, w: 3.0, h: 2.25, type: "online", link: "https://www.youtube.com/embed/Dph6ynRVyUc" });
-
-		slide1.addText("**NOTE** YouTube videos will issue a content warning in older desktop PPT (they only work in PPT Online/Desktop v16+)", {
-			shape: pptx.shapes.RECTANGLE,
-			x: 0.0,
-			y: 7.0,
-			w: "100%",
-			h: 0.53,
-			fill: { color: "FFF000" },
-			align: "center",
-			fontSize: 12,
-		});
-	}
-
-	// SLIDE 2: Audio -----------------------------------------------------------------------------------
-	var slide2 = pptx.addSlide({ sectionTitle: "Media" });
-	slide2.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
-	slide2.addTable([[{ text: "Media: Misc Audio Formats", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
-
-	slide2.addText("Audio: mp3", { x: 0.5, y: 0.6, w: 4.0, h: 0.4, color: "0088CC" });
-	slide2.addMedia({
-		x: 0.5,
-		y: 1.0,
-		w: 4.0,
-		h: 0.3,
-		type: "audio",
-		path: NODEJS ? gPaths.sample_mp3.path.replace(/http.+\/examples/, "../common") : gPaths.sample_mp3.path,
-	});
-
-	slide2.addText("Audio: wav", { x: 0.5, y: 2.6, w: 4.0, h: 0.4, color: "0088CC" });
-	slide2.addMedia({
-		x: 0.5,
-		y: 3.0,
-		w: 4.0,
-		h: 0.3,
-		type: "audio",
-		path: NODEJS ? gPaths.sample_wav.path.replace(/http.+\/examples/, "../common") : gPaths.sample_wav.path,
-	});
-
-	if (typeof window !== "undefined" && window.location.href.indexOf("gitbrent") > 0) {
-		// TEST USING LOCAL FILES (OFFICE.COM)
-		slide2.addText('Audio: MP3 (path:"../media")', { x: 0.5, y: 4.6, w: 4.0, h: 0.4, color: "0088CC" });
-		slide2.addMedia({ x: 0.5, y: 5.0, w: 4.0, h: 0.3, type: "audio", path: "media/sample.mp3" });
-	}
 }
 
 function genSlides_Shape(pptx) {
