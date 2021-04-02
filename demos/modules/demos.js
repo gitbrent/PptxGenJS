@@ -22,10 +22,11 @@ import {
 	gPaths,
 	gStrLoremEnglish,
 } from "../modules/enums.js";
-import { genSlides_Image } from "./demo_images.js";
+import { genSlides_Image } from "./demo_image.js";
+import { genSlides_Master } from "./demo_master.js";
 import { genSlides_Media } from "./demo_media.js";
-import { genSlides_Shape } from "./demo_shapes.js";
-import { genSlides_Table } from "./demo_tables.js";
+import { genSlides_Shape } from "./demo_shape.js";
+import { genSlides_Table } from "./demo_table.js";
 import { genSlides_Text } from "./demo_text.js";
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
@@ -273,6 +274,7 @@ export function execGenSlidesFuncs(type) {
 	arrTypes.forEach(function (type) {
 		//if (console.time) console.time(type);
 		if (type === "image") genSlides_Image(pptx);
+		else if (type === "master") genSlides_Master(pptx);
 		else if (type === "media") genSlides_Media(pptx);
 		else if (type === "shape") genSlides_Shape(pptx);
 		else if (type === "table") genSlides_Table(pptx);
@@ -2300,69 +2302,4 @@ function genSlides_Chart(pptx) {
 	slide16();
 	slide17();
 	slide18();
-}
-
-function genSlides_Master(pptx) {
-	pptx.addSection({ title: "Masters" });
-
-	var slide1 = pptx.addSlide({ masterName: "TITLE_SLIDE", sectionTitle: "Masters" });
-	//var slide1 = pptx.addSlide({masterName:'TITLE_SLIDE', sectionTitle:'FAILTEST'}); // TEST: Should show console warning ("title not found")
-	slide1.addNotes("Master name: `TITLE_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-
-	var slide2 = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
-	slide2.addNotes("Master name: `MASTER_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide2.addText("", { placeholder: "title" });
-
-	var slide3 = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
-	slide3.addNotes("Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide3.addText("Text Placeholder", { placeholder: "title" });
-	slide3.addText(
-		[
-			{ text: "Pre-filled placeholder bullets", options: { bullet: true, valign: "top" } },
-			{ text: "Add any text, charts, whatever", options: { bullet: true, indentLevel: 1, color: "0000AB" } },
-			{ text: "Check out the online API docs for more", options: { bullet: true, indentLevel: 2, color: "0000AB" } },
-		],
-		{ placeholder: "body", valign: "top" }
-	);
-
-	var slide4 = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
-	slide4.addNotes("Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide4.addText("Image Placeholder", { placeholder: "title" });
-	slide4.addImage({
-		placeholder: "body",
-		path: NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, "../common") : gPaths.starlabsBkgd.path,
-	});
-
-	var dataChartPieLocs = [
-		{
-			name: "Location",
-			labels: ["CN", "DE", "GB", "MX", "JP", "IN", "US"],
-			values: [69, 35, 40, 85, 38, 99, 101],
-		},
-	];
-	var slide5 = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
-	slide5.addNotes("Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide5.addText("Chart Placeholder", { placeholder: "title" });
-	slide5.addChart(pptx.charts.PIE, dataChartPieLocs, { showLegend: true, legendPos: "l", placeholder: "body" });
-
-	var slide6 = pptx.addSlide({ masterName: "THANKS_SLIDE", sectionTitle: "Masters" });
-	slide6.addNotes("Master name: `THANKS_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide6.addText("Thank You!", { placeholder: "thanksText" });
-	//slide6.addText('github.com/gitbrent', { placeholder:'body' });
-
-	//var slide7 = pptx.addSlide('PLACEHOLDER_SLIDE');
-
-	// LEGACY-TEST-ONLY: To check deprecated functionality
-	/*
-	if ( pptx.masters && Object.keys(pptx.masters).length > 0 ) {
-		var slide1 = pptx.addSlide( pptx.masters.TITLE_SLIDE  );
-		var slide2 = pptx.addSlide( pptx.masters.MASTER_SLIDE );
-		var slide3 = pptx.addSlide( pptx.masters.THANKS_SLIDE );
-
-		var slide4 = pptx.addSlide( pptx.masters.TITLE_SLIDE,  { bkgd:'0088CC', slideNumber:{x:'50%', y:'90%', color:'0088CC'} } );
-		var slide5 = pptx.addSlide( pptx.masters.MASTER_SLIDE, { bkgd:{ path:'https://raw.githubusercontent.com/gitbrent/PptxGenJS/v2.1.0/examples/images/title_bkgd_alt.jpg' } } );
-		var slide6 = pptx.addSlide( pptx.masters.THANKS_SLIDE, { bkgd:'ffab33' } );
-		//var slide7 = pptx.addSlide( pptx.masters.LEGACY_TEST_ONLY );
-	}
-	*/
 }
