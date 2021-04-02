@@ -35,15 +35,15 @@ export function genSlides_Table(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide01(pptx) {
-	var slide = pptx.addSlide({ sectionTitle: "Tables" });
+	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addTable([[{ text: "Table Examples 1", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 
 	// DEMO: align/valign -------------------------------------------------------------------------
-	var objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
+	let objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
 	slide.addText("Cell Text Alignment:", objOpts1);
 
-	var arrTabRows = [
+	let arrTabRows1 = [
 		[
 			{ text: "Top Lft", options: { valign: "top", align: "left", fontFace: "Arial" } },
 			{ text: "Top Ctr", options: { valign: "top", align: "center", fontFace: "Courier" } },
@@ -60,7 +60,7 @@ function genSlide01(pptx) {
 			{ text: "Btm Rgt", options: { valign: "bottom", align: "right" } },
 		],
 	];
-	slide.addTable(arrTabRows, {
+	slide.addTable(arrTabRows1, {
 		x: 0.5,
 		y: 1.1,
 		w: 5.0,
@@ -73,10 +73,10 @@ function genSlide01(pptx) {
 	// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
 	// DEMO: cell styles --------------------------------------------------------------------------
-	var objOpts2 = { x: 6.0, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
+	let objOpts2 = { x: 6.0, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
 	slide.addText("Cell Styles:", objOpts2);
 
-	var arrTabRows = [
+	let arrTabRows2 = [
 		[
 			{ text: "White", options: { fill: { color: "6699CC" }, color: "FFFFFF" } },
 			{ text: "Yellow", options: { fill: { color: "99AACC" }, color: "FFFFAA" } },
@@ -93,7 +93,7 @@ function genSlide01(pptx) {
 			{ text: "10pt Pad", options: { fill: { color: "6699CC" }, margin: 10 } },
 		],
 	];
-	slide.addTable(arrTabRows, {
+	slide.addTable(arrTabRows2, {
 		x: 6.0,
 		y: 1.1,
 		w: 7.0,
@@ -107,14 +107,14 @@ function genSlide01(pptx) {
 	});
 
 	// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
-	var objOpts3 = { x: 0.5, y: 3.6, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
+	let objOpts3 = { x: 0.5, y: 3.6, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
 	slide.addText("Row/Col Heights/Widths:", objOpts3);
 
-	var arrTabRows = [
+	let arrTabRows3 = [
 		[{ text: "1x1" }, { text: "2x1" }, { text: "2.5x1" }, { text: "3x1" }, { text: "4x1" }],
 		[{ text: "1x2" }, { text: "2x2" }, { text: "2.5x2" }, { text: "3x2" }, { text: "4x2" }],
 	];
-	slide.addTable(arrTabRows, {
+	slide.addTable(arrTabRows3, {
 		x: 0.5,
 		y: 4.0,
 		rowH: [1, 2],
@@ -133,16 +133,16 @@ function genSlide01(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide02(pptx) {
-	var slide = pptx.addSlide({ sectionTitle: "Tables" });
+	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	// 2: Slide title
 	slide.addTable([[{ text: "Table Examples 2", options: gOptsTextL }, gOptsTextR]], { x: "4%", y: "2%", w: "95%", h: "4%" }); // QA: this table's x,y,w,h all using %
 
 	// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-	var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 	slide.addText("Colspans/Rowspans:", optsSub);
 
-	var tabOpts1 = {
+	let tabOpts1 = {
 		x: 0.67,
 		y: 1.1,
 		w: "90%",
@@ -154,7 +154,7 @@ function genSlide02(pptx) {
 		align: "center",
 		valign: "middle",
 	};
-	var arrTabRows1 = [
+	let arrTabRows1 = [
 		[
 			{ text: "A1\nA2", options: { rowspan: 2, fill: { color: "99FFCC" } } },
 			{ text: "B1" },
@@ -170,7 +170,7 @@ function genSlide02(pptx) {
 	// (e.g.: there are 5 elements in the first row, and 6 in the second)
 	slide.addTable(arrTabRows1, tabOpts1);
 
-	var tabOpts2 = {
+	let tabOpts2 = {
 		x: 0.5,
 		y: 3.3,
 		w: 12.4,
@@ -182,7 +182,7 @@ function genSlide02(pptx) {
 		fill: { color: "F9F9F9" },
 		border: { pt: "1", color: "c7c7c7" },
 	};
-	var arrTabRows2 = [
+	let arrTabRows2 = [
 		[
 			{ text: "A1\n--\nA2", options: { rowspan: 2, fill: { color: "99FFCC" } } },
 			{ text: "B1\n--\nB2", options: { rowspan: 2, fill: { color: "99FFCC" } } },
@@ -194,7 +194,7 @@ function genSlide02(pptx) {
 	];
 	slide.addTable(arrTabRows2, tabOpts2);
 
-	var tabOpts3 = {
+	let tabOpts3 = {
 		x: 0.5,
 		y: 5.15,
 		w: 6.25,
@@ -206,7 +206,7 @@ function genSlide02(pptx) {
 		border: { pt: "1", color: "c7c7c7" },
 		fill: { color: "F1F1F1" },
 	};
-	var arrTabRows3 = [
+	let arrTabRows3 = [
 		[
 			{ text: "A1\nA2\nA3", options: { rowspan: 3, fill: { color: "FFFCCC" } } },
 			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: "FFFCCC" } } },
@@ -217,7 +217,7 @@ function genSlide02(pptx) {
 	];
 	slide.addTable(arrTabRows3, tabOpts3);
 
-	var tabOpts4 = {
+	let tabOpts4 = {
 		x: 7.4,
 		y: 5.15,
 		w: 5.5,
@@ -229,7 +229,7 @@ function genSlide02(pptx) {
 		border: { pt: "1", color: "c7c7c7" },
 		fill: { color: "f2f9fc" },
 	};
-	var arrTabRows4 = [
+	let arrTabRows4 = [
 		[
 			"A1",
 			{ text: "B1\nB2", options: { rowspan: 2, fill: { color: "FFFCCC" } } },
@@ -246,24 +246,24 @@ function genSlide02(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide03(pptx) {
-	var slide = pptx.addSlide({ sectionTitle: "Tables" });
+	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addTable([[{ text: "Table Examples 3", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 
 	// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-	var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 	slide.addText("Extreme Colspans/Rowspans:", optsSub);
 
-	var optsRowspan2 = { rowspan: 2, fill: { color: "99FFCC" } };
-	var optsRowspan3 = { rowspan: 3, fill: { color: "99FFCC" } };
-	var optsRowspan4 = { rowspan: 4, fill: { color: "99FFCC" } };
-	var optsRowspan5 = { rowspan: 5, fill: { color: "99FFCC" } };
-	var optsColspan2 = { colspan: 2, fill: { color: "9999FF" } };
-	var optsColspan3 = { colspan: 3, fill: { color: "9999FF" } };
-	var optsColspan4 = { colspan: 4, fill: { color: "9999FF" } };
-	var optsColspan5 = { colspan: 5, fill: { color: "9999FF" } };
+	let optsRowspan2 = { rowspan: 2, fill: { color: "99FFCC" } };
+	let optsRowspan3 = { rowspan: 3, fill: { color: "99FFCC" } };
+	let optsRowspan4 = { rowspan: 4, fill: { color: "99FFCC" } };
+	let optsRowspan5 = { rowspan: 5, fill: { color: "99FFCC" } };
+	let optsColspan2 = { colspan: 2, fill: { color: "9999FF" } };
+	let optsColspan3 = { colspan: 3, fill: { color: "9999FF" } };
+	let optsColspan4 = { colspan: 4, fill: { color: "9999FF" } };
+	let optsColspan5 = { colspan: 5, fill: { color: "9999FF" } };
 
-	var arrTabRows5 = [
+	let arrTabRows5 = [
 		[
 			"A1",
 			"B1",
@@ -300,7 +300,7 @@ function genSlide03(pptx) {
 		["C5", "D5", "E5", "F5", { text: "G5 -> H5", options: { colspan: 2, fill: { color: "9999FF" } } }, "J5", "K5", "L5"],
 	];
 
-	var taboptions5 = { x: 0.6, y: 1.3, w: "90%", h: 5.5, margin: 0, fontSize: 14, align: "center", valign: "middle", border: { pt: "1" } };
+	let taboptions5 = { x: 0.6, y: 1.3, w: "90%", h: 5.5, margin: 0, fontSize: 14, align: "center", valign: "middle", border: { pt: "1" } };
 
 	slide.addTable(arrTabRows5, taboptions5);
 }
@@ -310,13 +310,13 @@ function genSlide03(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide04(pptx) {
-	var slide = pptx.addSlide({ sectionTitle: "Tables" });
+	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	// 2: Slide title
 	slide.addTable([[{ text: "Table Examples 4", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 
 	// Cell Margins
-	var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 	slide.addText("Cell Margins:", optsSub);
 
 	slide.addTable([["margin:0"]], { x: 0.5, y: 1.1, margin: 0, w: 1.2, fill: "FFFCCC", border: { pt: 0 } });
@@ -337,7 +337,7 @@ function genSlide04(pptx) {
 	slide.addTable([[{ text: "text-obj margin:0", options: { margin: 0 } }]], { x: 4.0, y: 1.9, w: 2, fill: { color: "f2f9fc" } });
 
 	// Test margin option when using both plain and text object cells
-	var arrTextObjects = [
+	let arrTextObjects = [
 		["Plain text", "Cell 2", 3],
 		[
 			{ text: "Text Objects", options: { color: "99ABCC", align: "right" } },
@@ -348,10 +348,9 @@ function genSlide04(pptx) {
 	slide.addTable(arrTextObjects, { x: 0.5, y: 2.7, w: 12.25, margin: 7, fill: { color: "F1F1F1" }, border: { pt: 1, color: "696969" } });
 
 	// Complex/Compound border
-	var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 	optsSub.y = 3.9;
 	slide.addText("Complex Cell Borders:", optsSub);
-	var arrBorder1 = [
+	let arrBorder1 = [
 		{ color: "FF0000", pt: 1 },
 		{ color: "00ff00", pt: 3 },
 		{ color: "0000ff", pt: 5 },
@@ -369,7 +368,7 @@ function genSlide04(pptx) {
 		align: "center",
 		valign: "middle",
 	});
-	var arrBorder2 = [{ type: "dash", color: "ff0000", pt: 2 }, null, { type: "dash", color: "0000ff", pt: 5 }, null];
+	let arrBorder2 = [{ type: "dash", color: "ff0000", pt: 2 }, null, { type: "dash", color: "0000ff", pt: 5 }, null];
 	slide.addTable([["Borders 2!"]], {
 		x: 6.75,
 		y: 4.3,
@@ -384,10 +383,9 @@ function genSlide04(pptx) {
 	});
 
 	// Invalid char check
-	var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 	optsSub.y = 6.1;
 	slide.addText("Escaped Invalid Chars:", optsSub);
-	var arrTabRows3 = [["<", ">", '"', "'", "&", "plain"]];
+	let arrTabRows3 = [["<", ">", '"', "'", "&", "plain"]];
 	slide.addTable(arrTabRows3, {
 		x: 0.5,
 		y: 6.5,
@@ -406,7 +404,7 @@ function genSlide04(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide05(pptx) {
-	var slide = pptx.addSlide({ sectionTitle: "Tables" });
+	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addTable([[{ text: "Table Examples 5", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 	slide.addText(
@@ -425,7 +423,7 @@ function genSlide05(pptx) {
 	// Textbox: Text word-level formatting
 	slide.addText("Textbox:", { x: 1, y: 2.8, w: 3, h: 2, fontSize: 18, fontFace: "Arial", color: "0088CC" });
 
-	var arrTextObjects = [
+	let arrTextObjects = [
 		{ text: "1st line", options: { fontSize: 24, color: "99ABCC", align: "right", breakLine: true } },
 		{ text: "2nd line", options: { fontSize: 36, color: "FFFF00", align: "center", breakLine: true } },
 		{ text: "3rd line", options: { fontSize: 48, color: "0088CC", align: "left" } },
@@ -435,8 +433,8 @@ function genSlide05(pptx) {
 	// Table cell: Use the exact same code from addText to do the same word-level formatting within a cell
 	slide.addText("Table:", { x: 1, y: 5, w: 3, h: 2, fontSize: 18, fontFace: "Arial", color: "0088CC" });
 
-	var opts2 = { x: 2.5, y: 5, h: 2, align: "center", valign: "middle", colW: [1.5, 1.5, 6.5], border: { pt: "1" }, fill: { color: "F1F1F1" } };
-	var arrTabRows = [
+	let opts2 = { x: 2.5, y: 5, h: 2, align: "center", valign: "middle", colW: [1.5, 1.5, 6.5], border: { pt: "1" }, fill: { color: "F1F1F1" } };
+	let arrTabRows = [
 		[
 			{ text: "Cell 1A", options: { fontFace: "Arial" } },
 			{ text: "Cell 1B", options: { fontFace: "Courier" } },
@@ -451,22 +449,22 @@ function genSlide05(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide06(pptx) {
-	var slide = pptx.addSlide({ sectionTitle: "Tables" });
+	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addTable([[{ text: "Table Examples 6", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 
-	var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 	slide.addText("Table Cell Word-Level Formatting:", optsSub);
 
 	// EX 1:
-	var arrCell1 = [{ text: "Cell\n#1", options: { color: "0088cc" } }];
-	var arrCell2 = [
+	let arrCell1 = [{ text: "Cell\n#1", options: { color: "0088cc" } }];
+	let arrCell2 = [
 		{ text: "Red ", options: { color: "FF0000" } },
 		{ text: "Green ", options: { color: "00FF00" } },
 		{ text: "Blue", options: { color: "0000FF" } },
 	];
-	var arrCell3 = [{ text: "Bullets\nBullets\nBullets", options: { color: "0088cc", bullet: true } }];
-	var arrCell4 = [{ text: "Numbers\nNumbers\nNumbers", options: { color: "0088cc", bullet: { type: "number" } } }];
+	let arrCell3 = [{ text: "Bullets\nBullets\nBullets", options: { color: "0088cc", bullet: true } }];
+	let arrCell4 = [{ text: "Numbers\nNumbers\nNumbers", options: { color: "0088cc", bullet: { type: "number" } } }];
 	slide.addTable(
 		[
 			[
@@ -514,30 +512,31 @@ function genSlide06(pptx) {
  * @param {PptxGenJS} pptx
  */
 function genSlide07(pptx) {
-	var arrRows = [];
-	var arrText = [];
+	let slide = null;
+	let arrRows = [];
+	let arrText = [];
 	arrRows.push([
 		{ text: "ID#", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 		{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 		{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 	]);
-	gArrNamesF.forEach(function (name, idx) {
-		var strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
+	gArrNamesF.forEach((name, idx) => {
+		let strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
 		arrRows.push([idx, name, strText]);
 		arrText.push([strText]);
 	});
 
-	var arrRowsHead1 = [];
-	arrRows.forEach(function (row, idx) {
+	let arrRowsHead1 = [];
+	arrRows.forEach((row, idx) => {
 		if (idx < 6) arrRowsHead1.push(row);
 	});
-	var arrRowsHead2 = [[{ text: "Title Header", options: { fill: "0088cc", color: "ffffff", align: "center", bold: true, colspan: 3, colW: 4 } }]];
-	arrRows.forEach(function (row, idx) {
+	let arrRowsHead2 = [[{ text: "Title Header", options: { fill: "0088cc", color: "ffffff", align: "center", bold: true, colspan: 3, colW: 4 } }]];
+	arrRows.forEach((row, idx) => {
 		if (idx < 6) arrRowsHead2.push(row);
 	});
 
 	pptx.addSection({ title: "Tables: Auto-Paging" });
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addText(
 		[
@@ -548,7 +547,7 @@ function genSlide07(pptx) {
 	);
 	slide.addTable(arrRows, { x: 0.5, y: 0.6, colW: [0.75, 1.75, 10], margin: 2, border: { color: "CFCFCF" }, autoPage: true });
 
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: gDemoTitleText },
@@ -558,7 +557,7 @@ function genSlide07(pptx) {
 	);
 	slide.addTable(arrRows, { x: 3.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, autoPage: true });
 
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: gDemoTitleText },
@@ -568,7 +567,7 @@ function genSlide07(pptx) {
 	);
 	slide.addTable(arrRows, { x: 3.0, y: 4.0, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, fontFace: "Arial", autoPage: true });
 
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: gDemoTitleText },
@@ -586,7 +585,7 @@ function genSlide07(pptx) {
 		autoPageSlideStartY: 1.5,
 	});
 
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: gDemoTitleText },
@@ -596,7 +595,7 @@ function genSlide07(pptx) {
 	);
 	slide.addTable(arrRows, { x: 1.0, y: 0.6, colW: [0.75, 1.75, 7], margin: 5, border: { color: "CFCFCF" }, autoPage: true });
 
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: gDemoTitleText },
@@ -608,7 +607,7 @@ function genSlide07(pptx) {
 
 	// `autoPageRepeatHeader` option demos
 	pptx.addSection({ title: "Tables: Auto-Paging Repeat Header" });
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Repeat Header" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Repeat Header" });
 	slide.addText(
 		[
 			{ text: "Table Examples: autoPageHeaderRows", options: gDemoTitleTextBk },
@@ -667,7 +666,7 @@ function genSlide07(pptx) {
 
 	// autoPageLineWeight option demos
 	pptx.addSection({ title: "Tables: Auto-Paging LineWeight" });
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging LineWeight" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging LineWeight" });
 	slide.addText(
 		[
 			{ text: "Table Examples: Line Weight Options", options: gDemoTitleTextBk },
@@ -697,7 +696,7 @@ function genSlide07(pptx) {
 
 	// autoPageCharWeight option demos
 	pptx.addSection({ title: "Tables: Auto-Paging CharWeight" });
-	var slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging CharWeight" });
+	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging CharWeight" });
 	slide.addText(
 		[
 			{ text: "Table Examples: Char Weight Options", options: gDemoTitleTextBk },
