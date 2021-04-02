@@ -238,9 +238,10 @@
 	<script src="./js/pptxgen.bundle.js"></script>
 	<script type="module" src="../modules/demos.js"></script>
 	<script type="module">
-		import { doAppStart, execGenSlidesFunc, table2slides1, table2slides2 } from './browser.js';
+		import { doAppStart, execGenSlidesFunc, runAllDemos, table2slides1, table2slides2, table2slidesDemoForTab } from './browser.js';
 
-		// TODO: update all other buttons like below
+		$('#btnRunAllDemos').click(() => runAllDemos());
+
 		$('#btnGenFunc_Chart').click(() => execGenSlidesFunc('Chart'));
 		$('#btnGenFunc_Image').click(() => execGenSlidesFunc('Image'));
 		$('#btnGenFunc_Media').click(() => execGenSlidesFunc('Media'));
@@ -251,6 +252,8 @@
 
 		$('#table2slides1').click(() => table2slides1());
 		$('#table2slides2').click(() => table2slides2());
+		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle'));
+		// TODO: more like above
 
 		$(document).ready(() => { doAppStart() });
 	</script>
@@ -312,7 +315,7 @@
 					<h2 class="text-primary mb-0">PptxGenJS Feature Demos</h2>
 				</div>
 				<div class="col-auto">
-					<button id="btnRun" type="button" class="btn btn-lg btn-success px-5" onclick="runAllDemos()">Run All Demos</button>
+					<button id="btnRunAllDemos" type="button" class="btn btn-lg btn-success px-5">Run All Demos</button>
 				</div>
 			</div>
 		</header>
@@ -535,7 +538,7 @@
 										</tbody>
 									</table>
 									<div class="mt-5 text-center">
-										<button type="button" class="btn btn-success w-25" onclick="table2slidesDemoForTab('tabNoStyle')">Unstyled Demo</button>
+										<button id="tab2slides_tabNoStyle" type="button" class="btn btn-success w-25">Unstyled Demo</button>
 									</div>
 								</div>
 							</div>

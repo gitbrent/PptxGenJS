@@ -2,7 +2,7 @@
  * browser.js
  * module for /demo/browser/index.html
  */
-import { getTimestamp, execGenSlidesFuncs } from "../modules/demos.js";
+import { getTimestamp, execGenSlidesFuncs, runEveryTest } from "../modules/demos.js";
 import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "../modules/enums.js";
 import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../modules/media.js";
 
@@ -280,7 +280,7 @@ export function doAppStart() {
 
 //////
 
-function runAllDemos() {
+export function runAllDemos() {
 	if (console.time) console.time("runAllDemos");
 	$("#modalBusy").modal("show");
 
@@ -545,7 +545,7 @@ function buildDataTable() {
 	$("#tabAutoPaging tbody tr:last-child td:last-child").css("font-size", "16px");
 }
 
-function table2slidesDemoForTab(inTabId, inOpts) {
+export function table2slidesDemoForTab(inTabId, inOpts) {
 	var pptx = new PptxGenJS();
 	pptx.tableToSlides(inTabId, inOpts || null);
 	pptx.writeFile({ fileName: inTabId + "_" + getTimestamp() });

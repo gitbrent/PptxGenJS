@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.5.0
- * BLD.: 20210225
+ * BLD.: 20210401
  */
 
 import { COMPRESS, CUST_NAME, gPaths } from "../modules/enums.js";
@@ -28,7 +28,7 @@ if (typeof module !== "undefined" && module.exports && typeof require === "funct
 		NODEJS = false;
 	}
 }
-//TODO: ? if (NODEJS) { var LOGO_STARLABS; }
+//TODO: ? if (NODEJS) { let LOGO_STARLABS; }
 
 // ==================================================================================================================
 
@@ -60,10 +60,10 @@ export function runEveryTest() {
 
 export function execGenSlidesFuncs(type) {
 	// STEP 1: Instantiate new PptxGenJS object
-	var pptx;
+	let pptx;
 	if (NODEJS) {
-		var PptxGenJsLib;
-		var fs = require("fs");
+		let PptxGenJsLib;
+		let fs = require("fs");
 		// TODO: we dont use local anymore as of 3.1
 		if (fs.existsSync("../../dist/pptxgen.cjs.js")) {
 			PptxGenJsLib = require("../../dist/pptxgen.cjs.js"); // for LOCAL TESTING
@@ -71,7 +71,7 @@ export function execGenSlidesFuncs(type) {
 			PptxGenJsLib = require("pptxgenjs");
 		}
 		pptx = new PptxGenJsLib();
-		var base64Images = require("../common/images/base64Images.js");
+		let base64Images = require("../common/images/base64Images.js");
 		LOGO_STARLABS = base64Images.LOGO_STARLABS();
 	} else {
 		pptx = new PptxGenJS();
@@ -89,8 +89,8 @@ export function execGenSlidesFuncs(type) {
 
 	// STEP 4: Create Master Slides (from the old `pptxgen.masters.js` file - `gObjPptxMasters` items)
 	{
-		var objBkg = { path: NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, "../common") : gPaths.starlabsBkgd.path };
-		var objImg = {
+		let objBkg = { path: NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, "../common") : gPaths.starlabsBkgd.path };
+		let objImg = {
 			path: NODEJS ? gPaths.starlabsLogo.path.replace(/http.+\/examples/, "../common") : gPaths.starlabsLogo.path,
 			x: 4.6,
 			y: 3.5,
@@ -258,7 +258,7 @@ export function execGenSlidesFuncs(type) {
 	}
 
 	// STEP 5: Run requested test
-	var arrTypes = typeof type === "string" ? [type] : type;
+	let arrTypes = typeof type === "string" ? [type] : type;
 	arrTypes.forEach((type) => {
 		//if (console.time) console.time(type);
 		if (type === "Chart") genSlides_Chart(pptx);
