@@ -241,6 +241,8 @@
 		import { doAppStart, execGenSlidesFunc, table2slides1, table2slides2 } from './browser.js';
 
 		// TODO: update all other buttons like below
+		$('#btnGenFunc_Image').click(() => execGenSlidesFunc('Image'));
+		$('#btnGenFunc_Media').click(() => execGenSlidesFunc('Media'));
 		$('#btnGenFunc_Table').click(() => execGenSlidesFunc('Table'));
 		$('#btnGenFunc_Master').click(() => execGenSlidesFunc('Master'));
 
@@ -901,7 +903,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Image')">Image Demo</button>
+					<button id="btnGenFunc_Image" type="button" class="btn btn-success w-25">Image Demo</button>
 				</div>
 				<h4 class="text-primary mt-4">Media Demos</h4>
 				<p>
@@ -932,7 +934,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Media')">Media Demo</button>
+					<button id="btnGenFunc_Media" type="button" class="btn btn-success w-25">Media Demo</button>
 				</div>
 			</div>
 			<div class="tab-pane shadow p-4" id="shapes" role="tabpanel" aria-labelledby="shapes-tab">
