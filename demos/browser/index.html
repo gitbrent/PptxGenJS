@@ -243,7 +243,9 @@
 		// TODO: update all other buttons like below
 		$('#btnGenFunc_Image').click(() => execGenSlidesFunc('Image'));
 		$('#btnGenFunc_Media').click(() => execGenSlidesFunc('Media'));
+		$('#btnGenFunc_Shape').click(() => execGenSlidesFunc('Shape'));
 		$('#btnGenFunc_Table').click(() => execGenSlidesFunc('Table'));
+		$('#btnGenFunc_Text').click(() => execGenSlidesFunc('Text'));
 		$('#btnGenFunc_Master').click(() => execGenSlidesFunc('Master'));
 
 		$('#table2slides1').click(() => table2slides1());
@@ -965,7 +967,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Shape')">Shape Demo</button>
+					<button id="btnGenFunc_Shape" type="button" class="btn btn-success w-25">Shape Demo</button>
 				</div>
 				<h4 class="text-primary mt-4">Text Demos</h4>
 				<p>
@@ -1027,7 +1029,7 @@
 					</div>
 				</div>
 				<div class="text-center">
-					<button type="button" class="btn btn-success w-25" onclick="execGenSlidesFunc('Text')">Text Demo</button>
+					<button id="btnGenFunc_Text" type="button" class="btn btn-success w-25">Text Demo</button>
 				</div>
 			</div>
 			<div class="tab-pane shadow p-4" id="tables" role="tabpanel" aria-labelledby="tables-tab">
