@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { IMAGE_PATHS, gOptsTabOpts, gOptsTextL, gOptsTextR } from "./enums.js";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, gOptsTextL, gOptsTextR } from "./enums.js";
 
 export function genSlides_Media(pptx) {
 	pptx.addSection({ title: "Media" });
@@ -23,7 +23,7 @@ export function genSlides_Media(pptx) {
 function genSlide01(pptx) {
 	let slide1 = pptx.addSlide({ sectionTitle: "Media" });
 	slide1.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
-	slide1.addTable([[{ text: "Media: Misc Video Formats; YouTube", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide1.addTable([[{ text: "Media: Misc Video Formats; YouTube", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	slide1.addText("Video: m4v", { x: 0.5, y: 0.6, w: 4.0, h: 0.4, color: "0088CC" });
 	slide1.addMedia({
@@ -101,7 +101,7 @@ function genSlide01(pptx) {
 function genSlide02(pptx) {
 	let slide2 = pptx.addSlide({ sectionTitle: "Media" });
 	slide2.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-media.html");
-	slide2.addTable([[{ text: "Media: Misc Audio Formats", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide2.addTable([[{ text: "Media: Misc Audio Formats", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	slide2.addText("Audio: mp3", { x: 0.5, y: 0.6, w: 4.0, h: 0.4, color: "0088CC" });
 	slide2.addMedia({

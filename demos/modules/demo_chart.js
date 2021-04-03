@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { IMAGE_PATHS, gOptsTabOpts, gOptsTextL, gOptsTextR, COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK, TESTMODE } from "./enums.js";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, gOptsTextL, gOptsTextR, COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK, TESTMODE } from "./enums.js";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -77,7 +77,7 @@ function initTestData() {
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Bar Chart", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Bar Chart", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{
@@ -229,7 +229,7 @@ function genSlide01(pptx) {
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Bar Chart Grid/Axis Options", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Bar Chart Grid/Axis Options", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{
@@ -391,7 +391,7 @@ function genSlide02(pptx) {
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{
@@ -520,7 +520,7 @@ function genSlide03(pptx) {
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Lots of Bars (>26 letters)", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Lots of Bars (>26 letters)", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataHighVals = [
 		{
@@ -574,7 +574,7 @@ function genSlide05(pptx) {
 				gOptsTextR,
 			],
 		],
-		gOptsTabOpts
+		BASE_TABLE_OPTS
 	);
 
 	// TOP-LEFT
@@ -697,7 +697,7 @@ function genSlide05(pptx) {
 function genSlide06(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: 3D Bar Chart", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: 3D Bar Chart", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{
@@ -825,7 +825,7 @@ function genSlide06(pptx) {
 function genSlide07(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Tornado Chart - Grid and Axis Formatting", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Tornado Chart - Grid and Axis Formatting", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	slide.addChart(
 		pptx.charts.BAR,
@@ -871,7 +871,7 @@ function genSlide08(pptx) {
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
 	slide.addTable(
 		[[{ text: "Chart Examples: Line Smoothing, Line Size, Line Shadow, Symbol Size", options: gOptsTextL }, gOptsTextR]],
-		gOptsTabOpts
+		BASE_TABLE_OPTS
 	);
 
 	slide.addText("..", { x: 0.5, y: 0.6, w: 6.0, h: 3.0, fill: { color: "F1F1F1" }, color: "F1F1F1" });
@@ -941,7 +941,7 @@ function genSlide09(pptx) {
 	let opts_lineDataSymbol = ["circle", "dash", "diamond", "dot", "none", "square", "triangle"];
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Line Chart: lineDataSymbol option test", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Line Chart: lineDataSymbol option test", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	opts_lineDataSymbol.forEach(function (opt, idx) {
 		slide.addChart(pptx.charts.LINE, arrDataLineStat, {
@@ -961,7 +961,7 @@ function genSlide09(pptx) {
 function genSlide10(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Line Chart: Lots of Lines", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Line Chart: Lots of Lines", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let MAXVAL = 20000;
 
@@ -1000,7 +1000,7 @@ function genSlide10(pptx) {
 function genSlide11(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Area Chart, Stacked Area Chart", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Area Chart, Stacked Area Chart", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataAreaSm = [
 		{
@@ -1074,7 +1074,7 @@ function genSlide11(pptx) {
 function genSlide12(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Pie Charts: Legends", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Pie Charts: Legends", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// [TEST][INTERNAL USE]: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
 	if (TESTMODE)
@@ -1157,7 +1157,7 @@ function genSlide12(pptx) {
 function genSlide13(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Doughnut Chart", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Doughnut Chart", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let optsChartPie1 = {
 		x: 0.5,
@@ -1213,7 +1213,7 @@ function genSlide13(pptx) {
 function genSlide14(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: XY Scatter Chart", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: XY Scatter Chart", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataScatter1 = [
 		{ name: "X-Axis", values: [0, 1, 2, 3, 4, 5] },
@@ -1308,7 +1308,7 @@ function genSlide14(pptx) {
 function genSlide15(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Bubble Charts", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Bubble Charts", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataBubble1 = [
 		{ name: "X-Axis", values: [0.3, 0.6, 0.9, 1.2, 1.5, 1.7] },
@@ -1382,7 +1382,7 @@ function genSlide15(pptx) {
 function genSlide16(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Radar Chart", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Radar Chart", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{
@@ -1475,7 +1475,7 @@ function genSlide17(pptx) {
 
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Multi-Type Charts", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Examples: Multi-Type Charts", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	function doStackedLine() {
 		// TOP-RIGHT:
@@ -1889,7 +1889,7 @@ function genSlide17(pptx) {
 function genSlide18(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Options: Shadow, Transparent Colors", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Chart Options: Shadow, Transparent Colors", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let arrDataRegions = [
 		{

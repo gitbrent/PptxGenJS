@@ -14,7 +14,7 @@
  * - Image source: either `data` or `path` is required
  */
 
-import { IMAGE_PATHS, gOptsTabOpts, gOptsTextL, gOptsTextR, gOptsCode } from "./enums.js";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, gOptsTextL, gOptsTextR, gOptsCode } from "./enums.js";
 import { checkGreen, LOGO_STARLABS, svgBase64, svgHyperlinkImage } from "./media.js";
 
 export function genSlides_Image(pptx) {
@@ -34,7 +34,7 @@ function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Misc Image Types", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Image Examples: Misc Image Types", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// TOP: 1
 	slide.addText("Type: Animated GIF", { x: 0.5, y: 0.6, w: 2.5, h: 0.4, color: "0088CC" });
@@ -97,7 +97,7 @@ function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Image Sizing/Rounding", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Image Examples: Image Sizing/Rounding", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// TOP: 1
 	slide.addText("Sizing: Orig `w:6, h:2.7`", { x: 0.5, y: 0.6, w: 3.0, h: 0.3, color: "0088CC" });
@@ -133,7 +133,7 @@ function genSlide03(pptx) {
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 
-	slide.addTable([[{ text: "Image Examples: Image Rotation", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Image Examples: Image Rotation", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// EXAMPLES
 	slide.addText("Rotate: `rotate:45`, `rotate:180`, `rotate:315`", { x: 0.5, y: 0.6, w: 6.0, h: 0.3, color: "0088CC" });
@@ -150,7 +150,7 @@ function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Image URLs", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Image Examples: Image URLs", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// TOP-LEFT: jpg
 	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLogo.path}"` }], { ...gOptsCode, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });

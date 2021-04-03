@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { gOptsTabOpts, gOptsTextL, gOptsTextR, gStrLoremEnglish } from "./enums.js";
+import { BASE_TABLE_OPTS, gOptsTextL, gOptsTextR, gStrLoremEnglish } from "./enums.js";
 
 export function genSlides_Text(pptx) {
 	pptx.addSection({ title: "Text" });
@@ -31,7 +31,7 @@ function genSlide01(pptx) {
 	slide.bkgd = "030303";
 	slide.color = "9F9F9F";
 	// Title
-	slide.addTable([[{ text: "Text Examples: Text alignment, percent x/y, etc.", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Text Examples: Text alignment, percent x/y, etc.", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// Actual Textbox shape (can have any Height, can wrap text, etc.)
 	slide.addText(
@@ -109,7 +109,7 @@ function genSlide01(pptx) {
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
-	slide.addTable([[{ text: "Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// LEFT COLUMN ------------------------------------------------------------
 
@@ -211,7 +211,7 @@ function genSlide02(pptx) {
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
-	slide.addTable([[{ text: "Text Examples: Bullets", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Text Examples: Bullets", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// LEFT COLUMN ------------------------------------------------------------
 
@@ -321,7 +321,7 @@ function genSlide03(pptx) {
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
-	slide.addTable([[{ text: "Text Examples: Hyperlinks, Text Shadow, Text Outline, Text Glow", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Text Examples: Hyperlinks, Text Shadow, Text Outline, Text Glow", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// 2: Text Effects: Outline
 	slide.addText("Text Outline:", { x: 0.5, y: 0.6, w: "90%", h: 0.3, margin: 0, color: "0088CC" });
@@ -397,7 +397,7 @@ function genSlide04(pptx) {
 function genSlide05(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
-	slide.addTable([[{ text: "Text Examples: Text Fit", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Text Examples: Text Fit", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	slide.addText(gStrLoremEnglish.substring(0, 1200), { x: 0.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: "none" });
 	slide.addText(gStrLoremEnglish.substring(0, 1200), { x: 4.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: "shrink" });
@@ -437,7 +437,7 @@ function genSlide05(pptx) {
 function genSlide06(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
-	slide.addTable([[{ text: "Text Examples: Scheme Colors", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Text Examples: Scheme Colors", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// MISC ------------------------------------------------------------
 

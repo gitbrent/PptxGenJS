@@ -8,16 +8,15 @@ export const COMPRESS = true; //false; // TEST: `compression` write prop
 export const TESTMODE = false;
 
 // CONST
-export const gStrHello = "BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好";
 export const CUST_NAME = "S.T.A.R. Laboratories";
 export const USER_NAME = "Barry Allen";
 export const ARRSTRBITES = [130];
 export const CHARSPERLINE = 130; // "Open Sans", 13px, 900px-colW = ~19 words/line ~130 chars/line
 
 // TABLES
-export const gArrNamesF = ["Markiplier", "Jack", "Brian", "Paul", "Ev", "Ann", "Michelle", "Jenny", "Lara", "Kathryn"];
-export const gArrNamesL = ["Johnson", "Septiceye", "Lapston", "Lewis", "Clark", "Griswold", "Hart", "Cube", "Malloy", "Capri"];
-export const gOptsTabOpts = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=13.33
+export const TABLE_NAMES_F = ["Markiplier", "Jack", "Brian", "Paul", "Ev", "Ann", "Michelle", "Jenny", "Lara", "Kathryn"];
+export const TABLE_NAMES_L = ["Johnson", "Septiceye", "Lapston", "Lewis", "Clark", "Griswold", "Hart", "Cube", "Malloy", "Capri"];
+export const BASE_TABLE_OPTS = { x: 0.5, y: 0.13, colW: [9, 3.33] }; // LAYOUT_WIDE w=13.33
 
 // STYLES
 export const COLOR_RED = "FF0000";

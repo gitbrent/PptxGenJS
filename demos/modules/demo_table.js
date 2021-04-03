@@ -7,12 +7,12 @@
  * BLD.: 20210225
  */
 import {
-	gArrNamesF,
+	TABLE_NAMES_F,
 	gDemoTitleOpts,
 	gDemoTitleText,
 	gDemoTitleTextBk,
 	gOptsSubTitle,
-	gOptsTabOpts,
+	BASE_TABLE_OPTS,
 	gOptsTextL,
 	gOptsTextR,
 	gStrLoremIpsum,
@@ -37,7 +37,7 @@ export function genSlides_Table(pptx) {
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 1", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Table Examples 1", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// DEMO: align/valign -------------------------------------------------------------------------
 	let objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
@@ -248,7 +248,7 @@ function genSlide02(pptx) {
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 3", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Table Examples 3", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
@@ -313,7 +313,7 @@ function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	// 2: Slide title
-	slide.addTable([[{ text: "Table Examples 4", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Table Examples 4", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	// Cell Margins
 	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
@@ -406,7 +406,7 @@ function genSlide04(pptx) {
 function genSlide05(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 5", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Table Examples 5", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 	slide.addText(
 		"The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.",
 		{ x: 0.5, y: 0.5, w: "95%", h: 0.5, margin: 0.1, fontSize: 14 }
@@ -451,7 +451,7 @@ function genSlide05(pptx) {
 function genSlide06(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 6", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
+	slide.addTable([[{ text: "Table Examples 6", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
 
 	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
 	slide.addText("Table Cell Word-Level Formatting:", optsSub);
@@ -520,7 +520,7 @@ function genSlide07(pptx) {
 		{ text: "First Name", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 		{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 	]);
-	gArrNamesF.forEach((name, idx) => {
+	TABLE_NAMES_F.forEach((name, idx) => {
 		let strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
 		arrRows.push([idx, name, strText]);
 		arrText.push([strText]);

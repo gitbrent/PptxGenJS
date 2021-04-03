@@ -3,7 +3,7 @@
  * module for /demo/browser/index.html
  */
 import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.js";
-import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "../../modules/enums.js";
+import { TABLE_NAMES_F, TABLE_NAMES_L, gStrLoremIpsum } from "../../modules/enums.js";
 import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../../modules/media.js";
 
 // ==================================================================================================================
@@ -464,9 +464,9 @@ function testTTSMulti() {
 	let pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
 
-	for (let idx = 0; idx < gArrNamesF.length; idx++) {
+	for (let idx = 0; idx < TABLE_NAMES_F.length; idx++) {
 		let strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
-		arrRows.push([idx, gArrNamesF[idx], strText]);
+		arrRows.push([idx, TABLE_NAMES_F[idx], strText]);
 		arrText.push([strText]);
 	}
 
@@ -514,10 +514,10 @@ function buildDataTable() {
 			(idx + 1) +
 			"</td>" +
 			"<td>" +
-			gArrNamesL[Math.floor(Math.random() * 10)] +
+			TABLE_NAMES_L[Math.floor(Math.random() * 10)] +
 			"</td>" +
 			"<td>" +
-			gArrNamesF[Math.floor(Math.random() * 10)] +
+			TABLE_NAMES_F[Math.floor(Math.random() * 10)] +
 			"</td>" +
 			"<td>Text:<br>" +
 			gStrLoremIpsum.substring(0, (Math.floor(Math.random() * 10) + 2) * 130) +
