@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { gPaths, gOptsTabOpts, gOptsTextL, gOptsTextR, COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK, TESTMODE } from "./enums.js";
+import { IMAGE_PATHS, gOptsTabOpts, gOptsTextL, gOptsTextR, COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK, TESTMODE } from "./enums.js";
 
 const LETTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 const MONS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -1079,7 +1079,7 @@ function genSlide12(pptx) {
 	// [TEST][INTERNAL USE]: Not visible to user (its behind a chart): Used for ensuring ref counting works across obj types (eg: `rId` check/test)
 	if (TESTMODE)
 		slide.addImage({
-			path: NODEJS ? gPaths.ccCopyRemix.path.replace(/http.+\/examples/, "../common") : gPaths.ccCopyRemix.path,
+			path: NODEJS ? IMAGE_PATHS.ccCopyRemix.path.replace(/http.+\/examples/, "../common") : IMAGE_PATHS.ccCopyRemix.path,
 			x: 0.5,
 			y: 1.0,
 			w: 1.2,

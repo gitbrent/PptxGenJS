@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { gPaths, gOptsTabOpts, gOptsTextL, gOptsTextR } from "./enums.js";
+import { IMAGE_PATHS, gOptsTabOpts, gOptsTextL, gOptsTextR } from "./enums.js";
 
 export function genSlides_Media(pptx) {
 	pptx.addSection({ title: "Media" });
@@ -32,7 +32,7 @@ function genSlide01(pptx) {
 		w: 4.0,
 		h: 2.27,
 		type: "video",
-		path: gPaths.sample_m4v.path,
+		path: IMAGE_PATHS.sample_m4v.path,
 	});
 
 	slide1.addText("Video: mpg", { x: 5.5, y: 0.6, w: 3.0, h: 0.4, color: "0088CC" });
@@ -42,7 +42,7 @@ function genSlide01(pptx) {
 		w: 3.0,
 		h: 2.05,
 		type: "video",
-		path: gPaths.sample_mpg.path,
+		path: IMAGE_PATHS.sample_mpg.path,
 	});
 
 	slide1.addText("Video: mov", { x: 9.4, y: 0.6, w: 3.0, h: 0.4, color: "0088CC" });
@@ -52,7 +52,7 @@ function genSlide01(pptx) {
 		w: 3.0,
 		h: 1.71,
 		type: "video",
-		path: gPaths.sample_mov.path,
+		path: IMAGE_PATHS.sample_mov.path,
 	});
 
 	slide1.addText("Video: mp4", { x: 0.5, y: 3.6, w: 4.0, h: 0.4, color: "0088CC" });
@@ -62,7 +62,7 @@ function genSlide01(pptx) {
 		w: 4.0,
 		h: 3.0,
 		type: "video",
-		path: gPaths.sample_mp4.path,
+		path: IMAGE_PATHS.sample_mp4.path,
 	});
 
 	slide1.addText("Video: avi", { x: 5.5, y: 3.6, w: 3.0, h: 0.4, color: "0088CC" });
@@ -72,7 +72,7 @@ function genSlide01(pptx) {
 		w: 3.0,
 		h: 2.25,
 		type: "video",
-		path: gPaths.sample_avi.path,
+		path: IMAGE_PATHS.sample_avi.path,
 	});
 
 	// NOTE: Only generated on Node as I dont want everyone who downloads and runs this to be greated with an error!
@@ -110,7 +110,7 @@ function genSlide02(pptx) {
 		w: 4.0,
 		h: 0.3,
 		type: "audio",
-		path: gPaths.sample_mp3.path,
+		path: IMAGE_PATHS.sample_mp3.path,
 	});
 
 	slide2.addText("Audio: wav", { x: 0.5, y: 2.6, w: 4.0, h: 0.4, color: "0088CC" });
@@ -120,7 +120,7 @@ function genSlide02(pptx) {
 		w: 4.0,
 		h: 0.3,
 		type: "audio",
-		path: gPaths.sample_wav.path,
+		path: IMAGE_PATHS.sample_wav.path,
 	});
 
 	if (typeof window !== "undefined" && window.location.href.indexOf("gitbrent") > 0) {

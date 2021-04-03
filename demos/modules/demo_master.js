@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { gPaths } from "./enums.js";
+import { IMAGE_PATHS } from "./enums.js";
 
 export function genSlides_Master(pptx) {
 	pptx.addSection({ title: "Masters" });
@@ -69,7 +69,7 @@ function genSlide04(pptx) {
 	slide.addText("Image Placeholder", { placeholder: "title" });
 	slide.addImage({
 		placeholder: "body",
-		path: gPaths.starlabsBkgd.path,
+		path: IMAGE_PATHS.starlabsBkgd.path,
 	});
 }
 

@@ -43,7 +43,7 @@ export const gDemoTitleTextBk = { fontSize: 14, color: "0088CC", bold: true, bre
 export const gDemoTitleOpts = { fontSize: 13, color: "9F9F9F" };
 
 // PATHS
-export const gPaths = {
+export const IMAGE_PATHS = {
 	starlabsBkgd: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_bkgd.jpg" },
 	starlabsLogo: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/starlabs_logo.png" },
 	wikimedia1: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/wiki-example.jpg" },

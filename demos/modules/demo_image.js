@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.5.0
- * BLD.: 20210401
+ * BLD.: 20210403
  */
 
 /**
@@ -14,7 +14,7 @@
  * - Image source: either `data` or `path` is required
  */
 
-import { gPaths, gOptsTabOpts, gOptsTextL, gOptsTextR, gOptsCode } from "./enums.js";
+import { IMAGE_PATHS, gOptsTabOpts, gOptsTextL, gOptsTextR, gOptsCode } from "./enums.js";
 import { checkGreen, LOGO_STARLABS, svgBase64, svgHyperlinkImage } from "./media.js";
 
 export function genSlides_Image(pptx) {
@@ -38,21 +38,21 @@ function genSlide01(pptx) {
 
 	// TOP: 1
 	slide.addText("Type: Animated GIF", { x: 0.5, y: 0.6, w: 2.5, h: 0.4, color: "0088CC" });
-	slide.addImage({ x: 1.0, y: 1.1, w: 1.5, h: 1.5, path: gPaths.gifAnimTrippy.path });
+	slide.addImage({ x: 1.0, y: 1.1, w: 1.5, h: 1.5, path: IMAGE_PATHS.gifAnimTrippy.path });
 	slide.addText("(use slide Show)", {
 		x: 1.0,
 		y: 2.7,
 		w: 1.5,
 		h: 0.3,
-		color: "696969",
-		fill: { color: "FFFCCC" },
 		align: "center",
 		fontSize: 10,
+		color: "696969",
+		fill: { color: "FFFCCC" },
 	});
 
 	// TOP: 2
 	slide.addText("Type: GIF", { x: 4.35, y: 0.6, w: 1.4, h: 0.4, color: "0088CC" });
-	slide.addImage({ x: 4.4, y: 1.05, w: 1.2, h: 1.2, path: gPaths.ccDjGif.path });
+	slide.addImage({ x: 4.4, y: 1.05, w: 1.2, h: 1.2, path: IMAGE_PATHS.ccDjGif.path });
 
 	// TOP: 3
 	slide.addText("Type: base64 PNG", { x: 7.2, y: 0.6, w: 2.4, h: 0.4, color: "0088CC" });
@@ -71,15 +71,15 @@ function genSlide01(pptx) {
 
 	// BOTTOM-LEFT:
 	slide.addText("Type: JPG", { x: 0.5, y: 3.3, w: 4.5, h: 0.4, color: "0088CC" });
-	slide.addImage({ path: gPaths.ccCopyRemix.path, x: 0.5, y: 3.8, w: 3.0, h: 3.07 });
+	slide.addImage({ path: IMAGE_PATHS.ccCopyRemix.path, x: 0.5, y: 3.8, w: 3.0, h: 3.07 });
 
 	// BOTTOM-CENTER:
 	slide.addText("Type: PNG", { x: 5.1, y: 3.3, w: 4.0, h: 0.4, color: "0088CC" });
-	slide.addImage({ path: gPaths.wikimedia1.path, x: 5.1, y: 3.8, w: 3.0, h: 2.78 });
+	slide.addImage({ path: IMAGE_PATHS.wikimedia1.path, x: 5.1, y: 3.8, w: 3.0, h: 2.78 });
 
 	// BOTTOM-RIGHT:
 	slide.addText("Type: SVG", { x: 9.5, y: 3.3, w: 4.0, h: 0.4, color: "0088CC" });
-	slide.addImage({ path: gPaths.wikimedia_svg.path, x: 9.5, y: 3.8, w: 2.0, h: 2.0 }); // TEST: `path`
+	slide.addImage({ path: IMAGE_PATHS.wikimedia_svg.path, x: 9.5, y: 3.8, w: 2.0, h: 2.0 }); // TEST: `path`
 	slide.addImage({ data: svgBase64, x: 11.1, y: 5.1, w: 1.5, h: 1.5 }); // TEST: `data`
 
 	// TEST: Ensure framework corrects for missing all header
@@ -120,7 +120,7 @@ function genSlide02(pptx) {
 
 	// TOP-RIGHT:
 	slide.addText("Rounding: `rounding:true`", { x: 10.0, y: 0.6, w: 3.0, h: 0.3, color: "0088CC" });
-	slide.addImage({ path: gPaths.ccLogo.path, x: 9.9, y: 1.1, w: 2.5, h: 2.5, rounding: true });
+	slide.addImage({ path: IMAGE_PATHS.ccLogo.path, x: 9.9, y: 1.1, w: 2.5, h: 2.5, rounding: true });
 }
 
 /**
@@ -129,15 +129,17 @@ function genSlide02(pptx) {
  */
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
+
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
+
 	slide.addTable([[{ text: "Image Examples: Image Rotation", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 
 	// EXAMPLES
 	slide.addText("Rotate: `rotate:45`, `rotate:180`, `rotate:315`", { x: 0.5, y: 0.6, w: 6.0, h: 0.3, color: "0088CC" });
-	slide.addImage({ path: gPaths.tokyoSubway.path, x: 0.78, y: 2.46, w: 4.3, h: 3, rotate: 45 });
-	slide.addImage({ path: gPaths.tokyoSubway.path, x: 4.52, y: 2.25, w: 4.3, h: 3, rotate: 180 });
-	slide.addImage({ path: gPaths.tokyoSubway.path, x: 8.25, y: 2.84, w: 4.3, h: 3, rotate: 315 });
+	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 0.78, y: 2.46, w: 4.3, h: 3, rotate: 45 });
+	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 4.52, y: 2.25, w: 4.3, h: 3, rotate: 180 });
+	slide.addImage({ path: IMAGE_PATHS.tokyoSubway.path, x: 8.25, y: 2.84, w: 4.3, h: 3, rotate: 315 });
 }
 
 /**
@@ -151,24 +153,24 @@ function genSlide04(pptx) {
 	slide.addTable([[{ text: "Image Examples: Image URLs", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 
 	// TOP-LEFT: jpg
-	slide.addText([{ text: `path:"${gPaths.ccLogo.path}"` }], { ...gOptsCode, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });
-	slide.addImage({ path: gPaths.ccLogo.path, x: 0.5, y: 1.44, h: 2.5, w: 3.33 });
+	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLogo.path}"` }], { ...gOptsCode, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });
+	slide.addImage({ path: IMAGE_PATHS.ccLogo.path, x: 0.5, y: 1.44, h: 2.5, w: 3.33 });
 
 	// TOP-CENTER: png
-	slide.addText([{ text: `path:"${gPaths.wikimedia2.path}"` }], { ...gOptsCode, ...{ x: 4.55, y: 0.6, w: 3.27, h: 0.7, fontSize: 11 } });
-	slide.addImage({ path: gPaths.wikimedia2.path, x: 4.55, y: 1.44, h: 2.5, w: 3.27 });
+	slide.addText([{ text: `path:"${IMAGE_PATHS.wikimedia2.path}"` }], { ...gOptsCode, ...{ x: 4.55, y: 0.6, w: 3.27, h: 0.7, fontSize: 11 } });
+	slide.addImage({ path: IMAGE_PATHS.wikimedia2.path, x: 4.55, y: 1.44, h: 2.5, w: 3.27 });
 
 	// TOP-RIGHT: relative-path test
-	slide.addText([{ text: `path:"${gPaths.ccLicenseComp.path}"` }], { ...gOptsCode, ...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 } });
-	slide.addImage({ path: gPaths.ccLicenseComp.path, x: 8.55, y: 1.43, h: 2.51, w: 4.28 });
+	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLicenseComp.path}"` }], { ...gOptsCode, ...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 } });
+	slide.addImage({ path: IMAGE_PATHS.ccLicenseComp.path, x: 8.55, y: 1.43, h: 2.51, w: 4.28 });
 
 	// BOTTOM: wide, url-sourced
 	slide.addText(
-		[{ text: '// Test: URL variables, plus more than one ".jpg"', options: { breakLine: true } }, { text: `path:"${gPaths.sydneyBridge.path}"` }],
+		[{ text: '// Test: URL variables, plus more than one ".jpg"', options: { breakLine: true } }, { text: `path:"${IMAGE_PATHS.sydneyBridge.path}"` }],
 		{
 			...gOptsCode,
 			...{ x: 0.5, y: 4.2, w: 12.33, h: 0.8, fontSize: 11 },
 		}
 	);
-	slide.addImage({ path: gPaths.sydneyBridge.path, x: 0.5, y: 5.16, h: 1.8, w: 12.33 });
+	slide.addImage({ path: IMAGE_PATHS.sydneyBridge.path, x: 0.5, y: 5.16, h: 1.8, w: 12.33 });
 }

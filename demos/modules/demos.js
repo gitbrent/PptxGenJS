@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { COMPRESS, CUST_NAME, gPaths } from "../modules/enums.js";
+import { COMPRESS, CUST_NAME, IMAGE_PATHS } from "../modules/enums.js";
 import { starlabsLogoSml } from "../modules/media.js";
 import { genSlides_Chart } from "./demo_chart.js";
 import { genSlides_Image } from "./demo_image.js";
@@ -70,9 +70,9 @@ export function execGenSlidesFuncs(type) {
 
 	// STEP 4: Create Master Slides (from the old `pptxgen.masters.js` file - `gObjPptxMasters` items)
 	{
-		let objBkg = { path: NODEJS ? gPaths.starlabsBkgd.path.replace(/http.+\/examples/, "../common") : gPaths.starlabsBkgd.path };
+		let objBkg = { path: NODEJS ? IMAGE_PATHS.starlabsBkgd.path.replace(/http.+\/examples/, "../common") : IMAGE_PATHS.starlabsBkgd.path };
 		let objImg = {
-			path: NODEJS ? gPaths.starlabsLogo.path.replace(/http.+\/examples/, "../common") : gPaths.starlabsLogo.path,
+			path: NODEJS ? IMAGE_PATHS.starlabsLogo.path.replace(/http.+\/examples/, "../common") : IMAGE_PATHS.starlabsLogo.path,
 			x: 4.6,
 			y: 3.5,
 			w: 4,
