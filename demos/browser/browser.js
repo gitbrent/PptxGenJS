@@ -2,17 +2,164 @@
  * browser.js
  * module for /demo/browser/index.html
  */
-import { getTimestamp, execGenSlidesFuncs, runEveryTest } from "../modules/demos.js";
+import { execGenSlidesFuncs, runEveryTest } from "../modules/demos.js";
 import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "../modules/enums.js";
 import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../modules/media.js";
 
 // ==================================================================================================================
 
+export function doAppStart() {
+	// REALITY-CHECK: Ensure user has a modern browser
+	if (!window.Blob) {
+		alert("Unsupported Browser\n\nSorry, but you'll need a modern browser - (Chrome, Firefox, Edge, Opera) - to enable this feature.");
+		return;
+	} else if (typeof PptxGenJS === "undefined") {
+		alert("Oops!\n\n`PptxGenJS` is undefined - maybe a bad link to the 'pptxgen.js' file or something...?\n");
+		return;
+	}
+
+	// STEP 1: Set UI (if you're me :-)
+	if (window.location.href.indexOf("http://localhost:8000/") > -1) {
+		$("#tab1sec1").click();
+		$("#tab1sec2").click();
+	}
+
+	// STEP 2: Show library info
+	{
+		if (typeof Promise !== "function") {
+			$("header").after('<div class="alert alert-danger">Promise is undefined! (IE11 requires promise.min.js)</div>');
+		} else {
+			let pptx = new PptxGenJS();
+			$("#infoBar").append(
+				'<div class="col px-0 text-primary"><div class="iconSvg size24 info"></div>Version: <span>' + pptx.version + "</span></div>"
+			);
+			$("#infoBar").append(
+				"<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='" +
+					Object.keys(pptx.ChartType).join(" | ") +
+					"'><div class='iconSvg size24 circle check'></div>pptx.ChartType = " +
+					Object.keys(pptx.ChartType).length +
+					"</span></div>"
+			);
+			$("#infoBar").append(
+				"<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='" +
+					Object.keys(pptx.SchemeColor).join(" | ") +
+					"'><div class='iconSvg size24 circle check'></div>pptx.SchemeColor = " +
+					Object.keys(pptx.SchemeColor).length +
+					"</span></div>"
+			);
+			$("#infoBar").append(
+				'<div class="col-auto text-success text-nowrap"><span><div class="iconSvg size24 circle check"></div>pptx.ShapeType = ' +
+					Object.keys(pptx.ShapeType).length +
+					"</span></div>"
+			);
+		}
+	}
+
+	// STEP 3: Build UI elements
+	buildDataTable();
+	let pptx = new PptxGenJS();
+	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach(function (name, idx) {
+		$("#selSlideMaster").append('<option value="' + name + '">' + name + "</option>");
+	});
+
+	// STEP 4: Populate code areas
+	{
+		$("#demo-basic").text(
+			"// STEP 1: Create a new Presentation\n" +
+				"let pptx = new PptxGenJS();\n" +
+				"\n" +
+				"// STEP 2: Add a new Slide to the Presentation\n" +
+				"let slide = pptx.addSlide();\n" +
+				"\n" +
+				"// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n" +
+				"slide.addText(\n" +
+				"  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n" +
+				"  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'F1F1F1' } }\n" +
+				");\n" +
+				"\n" +
+				"// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n" +
+				"pptx.writeFile({ fileName: 'PptxGenJs-Basic-Slide-Demo' });\n"
+		);
+
+		$("#demo-sandbox").html(
+			"let pptx = new PptxGenJS();\n" +
+				"let slide = pptx.addSlide();\n" +
+				//+ "pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });\n"
+				//+ "pptx.layout = 'A3';\n"
+				"\n" +
+				"slide.addText(\n" +
+				"  [\n" +
+				"    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1, breakLine:true } },\n" +
+				"    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
+				"    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
+				"    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n" +
+				"  ],\n" +
+				"  { x:1, y:1, w:'80%', h:3, align:'center', fill:{ color:pptx.SchemeColor.background2, transparency:50 } }\n" +
+				");\n" +
+				"\n" +
+				"pptx.writeFile({ fileName: 'PptxGenJS-Sandbox.pptx' });\n"
+		);
+
+		$("#demo-master").html(
+			"pptx.defineSlideMaster({\n" +
+				"  title : 'MASTER_SLIDE',\n" +
+				"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
+				"  background: { fill: 'FFFFFF' },\n" +
+				"  objects: [\n" +
+				"    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },\n" +
+				"    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n" +
+				"    { text:  {\n" +
+				"        text: 'S.T.A.R. Laboratories - Confidential',\n" +
+				"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n" +
+				"    }}\n" +
+				//+ "    }},\n"
+				//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
+				//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
+				"  ],\n" +
+				"  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n" +
+				"});\n"
+		);
+	}
+
+	// STEP 5: Demo setup
+	$("#tabLargeCellText tbody td").text(gStrLoremIpsum.substring(0, 3000));
+	for (let idx = 0; idx < 30; idx++) {
+		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
+	}
+
+	// LAST: Re-highlight code
+	$(".tab-content code.language-javascript").each(function (idx, ele) {
+		Prism.highlightElement($(ele)[0]);
+	});
+
+	// LAST: Nav across sessions
+	doNavRestore();
+}
+
 function doNavRestore() {
 	$('.nav a[href="' + window.location.href.substring(window.location.href.toLowerCase().indexOf(".html#") + 5) + '"]').tab("show");
 }
 
-// Table-to-Slides Demos =======================================================================
+// ==================================================================================================================
+
+function getTimestamp() {
+	let dateNow = new Date();
+	let dateMM = dateNow.getMonth() + 1;
+	let dateDD = dateNow.getDate();
+	let h = dateNow.getHours();
+	let m = dateNow.getMinutes();
+	return (
+		dateNow.getFullYear() +
+		"" +
+		(dateMM <= 9 ? "0" + dateMM : dateMM) +
+		"" +
+		(dateDD <= 9 ? "0" + dateDD : dateDD) +
+		(h <= 9 ? "0" + h : h) +
+		(m <= 9 ? "0" + m : m)
+	);
+}
+
+// Table-to-Slides Demos
 
 function addMasterDefs(pptx) {
 	// 1:
@@ -86,19 +233,19 @@ export function table2slides1() {
 	pptx.tableToSlides("tabAutoPaging", objOpts);
 
 	// LAST: Export Presentation
-	pptx.writeFile({ fileName: "Table2Slides_MasterSlide_" + getTimestamp() });
+	pptx.writeFile({ fileName: `Table2Slides_MasterSlide_${getTimestamp()}` });
 }
 
 export function table2slides2() {
 	// FIRST: Instantiate new PptxGenJS instance
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 
 	// STEP 1: Add Master Slide defs / Set slide size/layout
 	addMasterDefs(pptx);
 	pptx.layout = "LAYOUT_WIDE";
 
 	// STEP 2: Set generated Slide options
-	var objOpts = {};
+	let objOpts = {};
 	//objOpts.verbose = true;
 	if ($("input[name=radioHead]:checked").val() == "Y") objOpts.addHeaderToEach = true; // TEST: DEPRECATED: addHeaderToEach
 	if ($("#checkStartY").prop("checked")) objOpts.newSlideStartY = Number($("#numTab2SlideStartY").val()); // TEST: DEPRECATED: `newSlideStartY`
@@ -118,164 +265,6 @@ export function table2slides2() {
 
 	// LAST: Export Presentation
 	pptx.writeFile({ fileName: "Table2Slides_DynamicText" });
-}
-
-export function doAppStart() {
-	// REALITY-CHECK: Ensure user has a modern browser
-	if (!window.Blob) {
-		alert("Unsupported Browser\n\nSorry, but you'll need a modern browser - (Chrome, Firefox, Edge, Opera) or IE11 - to enable this feature.");
-		return;
-	} else if (typeof PptxGenJS === "undefined") {
-		alert("Oops!\n\n`PptxGenJS` is undefined - maybe a bad link to the 'pptxgen.js' file or something...?\n");
-		return;
-	}
-
-	/* FIXME: Abadoned: jquery cant parse `demo.js` for some reason...
-			// If you're me: Load newest/local copy for dev/test work :-)
-			if ( window.location.href.toLowerCase().indexOf('gitbrent') > -1 ) {
-				// Dynamically load library as SharePoint Online is *BAD* about caching
-				$.getScript("../SiteAssets/pptxgenjs/dist/pptxgen.js", function(){
-					console.log('DEBUG: local file loaded: `dist/pptxgen.js`');
-					$.getScript("../SiteAssets/pptxgenjs/demos/demo.js", function(){
-						console.log('DEBUG: local file loaded: `demos/demo.js`');
-					})
-					.fail(function(err){
-						console.error(err.statusText);
-						console.log(err);
-					});
-				});
-			}
-			*/
-
-	// STEP 1: Set UI (if you're me :-)
-	if (window.location.href.indexOf("brentely") > 0) {
-		$("#tab1sec1").click();
-		$("#tab1sec2").click();
-	}
-
-	// STEP 2: Show library info
-	{
-		if (typeof Promise !== "function") {
-			$("header").after('<div class="alert alert-danger">Promise is undefined! (IE11 requires promise.min.js)</div>');
-		} else {
-			var pptx = new PptxGenJS();
-			$("#infoBar").append(
-				'<div class="col px-0 text-primary"><div class="iconSvg size24 info"></div>Version: <span>' + pptx.version + "</span></div>"
-			);
-			$("#infoBar").append(
-				"<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='" +
-					Object.keys(pptx.ChartType).join(" | ") +
-					"'><div class='iconSvg size24 circle check'></div>pptx.ChartType = " +
-					Object.keys(pptx.ChartType).length +
-					"</span></div>"
-			);
-			$("#infoBar").append(
-				"<div class='col-auto text-success text-nowrap'><span style='cursor:help' title='" +
-					Object.keys(pptx.SchemeColor).join(" | ") +
-					"'><div class='iconSvg size24 circle check'></div>pptx.SchemeColor = " +
-					Object.keys(pptx.SchemeColor).length +
-					"</span></div>"
-			);
-			$("#infoBar").append(
-				'<div class="col-auto text-success text-nowrap"><span><div class="iconSvg size24 circle check"></div>pptx.ShapeType = ' +
-					Object.keys(pptx.ShapeType).length +
-					"</span></div>"
-			);
-		}
-	}
-
-	// STEP 3: Build UI elements
-	buildDataTable();
-	var pptx = new PptxGenJS();
-	["MASTER_SLIDE", "THANKS_SLIDE", "TITLE_SLIDE"].forEach(function (name, idx) {
-		$("#selSlideMaster").append('<option value="' + name + '">' + name + "</option>");
-	});
-
-	// STEP 4: Populate code areas
-	{
-		$("#demo-basic").text(
-			"// STEP 1: Create a new Presentation\n" +
-				"var pptx = new PptxGenJS();\n" +
-				"\n" +
-				"// STEP 2: Add a new Slide to the Presentation\n" +
-				"var slide = pptx.addSlide();\n" +
-				"\n" +
-				"// STEP 3: Add any objects to the Slide (charts, tables, shapes, images, etc.)\n" +
-				"slide.addText(\n" +
-				"  'BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - NAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好',\n" +
-				"  { x:0.0, y:0.25, w:'100%', h:1.5, align:'center', fontSize:24, color:'0088CC', fill:{ color:'F1F1F1' } }\n" +
-				");\n" +
-				"\n" +
-				"// STEP 4: Send the PPTX Presentation to the user, using your choice of file name\n" +
-				"pptx.writeFile({ fileName: 'PptxGenJs-Basic-Slide-Demo' });\n"
-		);
-
-		/*
-				$('#demo-youtube').html("var pptx = new PptxGenJS();\n"
-					+ "var slide = pptx.addSlide();\n"
-					+ '\n'
-					+ "// Provide the usual options (locations and size), then pass the embed code from YouTube (it's on every video page)\n"
-					+ "slide.addText('TED Talks 2016: Top 10', { x:0.5, y:0.2, w:8.00, h:0.4, color:'0088CC' });\n"
-					+ "slide.addMedia({ type:'online', link:'https://www.youtube.com/embed/Dph6ynRVyUc', x:0.5, y:0.6, w:8.00, h:4.54 });\n"
-					+ '\n'
-					+ "pptx.writeFile({ fileName: 'PptxGenJs-YouTube-Demo' });\n"
-				);
-				*/
-
-		$("#demo-sandbox").html(
-			"var pptx = new PptxGenJS();\n" +
-				"var slide = pptx.addSlide();\n" +
-				//+ "pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });\n"
-				//+ "pptx.layout = 'A3';\n"
-				"\n" +
-				"slide.addText(\n" +
-				"  [\n" +
-				"    { text:'Did You Know?', options:{ fontSize:48, color:pptx.SchemeColor.accent1, breakLine:true } },\n" +
-				"    { text:'writeFile() returns a Promise', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
-				"    { text:'!', options:{ fontSize:24, color:pptx.SchemeColor.accent6, breakLine:true } },\n" +
-				"    { text:'(pretty cool huh?)', options:{ fontSize:24, color:pptx.SchemeColor.accent3 } }\n" +
-				"  ],\n" +
-				"  { x:1, y:1, w:'80%', h:3, align:'center', fill:{ color:pptx.SchemeColor.background2, transparency:50 } }\n" +
-				");\n" +
-				"\n" +
-				"pptx.writeFile({ fileName: 'PptxGenJS-Sandbox-'+getTimestamp() })\n" +
-				".then(function(fileName){ console.log('Saved! File Name: '+fileName) });\n"
-		);
-
-		$("#demo-master").html(
-			"pptx.defineSlideMaster({\n" +
-				"  title : 'MASTER_SLIDE',\n" +
-				"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
-				"  background: { fill: 'FFFFFF' },\n" +
-				"  objects: [\n" +
-				"    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },\n" +
-				"    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n" +
-				"    { text:  {\n" +
-				"        text: 'S.T.A.R. Laboratories - Confidential',\n" +
-				"        options: { x:0, y:6.9, w:'100%', align:'center', color:'FFFFFF', fontSize:12 }\n" +
-				"    }}\n" +
-				//+ "    }},\n"
-				//+ "    {placeholder: { options:{ name:'title', type:'title', x:0.5, y:0.2, w:12, h:1.0 }, text:'' }}\n"
-				//+ "    {placeholder: { options:{ name:'body', type:'body', x:6.0, y:1.5, w:12, h:5.25 }, text:'' }}\n"
-				"  ],\n" +
-				"  slideNumber: { x:1.0, y:7.0, color:'FFFFFF' }\n" +
-				"});\n"
-		);
-	}
-
-	// STEP 5: Demo setup
-	$("#tabLargeCellText tbody td").text(gStrLoremIpsum.substring(0, 3000));
-	for (let idx = 0; idx < 30; idx++) {
-		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
-	}
-
-	// LAST: Re-highlight code
-	$(".tab-content code.language-javascript").each(function (idx, ele) {
-		Prism.highlightElement($(ele)[0]);
-	});
-
-	// LAST: Nav across sessions
-	doNavRestore();
 }
 
 //////
@@ -312,9 +301,9 @@ export function execGenSlidesFunc(type) {
 
 /* DESC: old/undocumented/unused */
 function doTestSimple() {
-	var pptx = new PptxGenJS();
-	var slide = pptx.addSlide();
-	var optsTitle = { color: "9F9F9F", marginPt: 3, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0] };
+	let pptx = new PptxGenJS();
+	let slide = pptx.addSlide();
+	let optsTitle = { color: "9F9F9F", marginPt: 3, border: [0, 0, { pt: "1", color: "CFCFCF" }, 0] };
 
 	pptx.layout({ name: "A3", width: 16.5, height: 11.7 });
 	slide.slideNumber({ x: 0.5, y: "90%" });
@@ -375,9 +364,9 @@ function doTestSimple() {
 
 /* The "Text" demo on the PptxGenJS homepage - codified here so we can quickly reproduce the screencaps, etc. as needed */
 function doHomepageDemo_Text() {
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
-	var slide = pptx.addSlide();
+	let slide = pptx.addSlide();
 
 	slide.addText("BONJOUR - CIAO - GUTEN TAG - HELLO - HOLA - \nNAMASTE - OLÀ - ZDRAS-TVUY-TE - こんにちは - 你好", {
 		x: 0.0,
@@ -428,7 +417,7 @@ function doHomepageDemo_Text() {
 	slide.addText("Star bullet! ", { x: 8.0, y: 5.6, w: "40%", h: 0.38, color: "CC0000", bullet: { code: "2605" } });
 	slide.addText("Check bullet!", { x: 8.0, y: 5.9, w: "40%", h: 0.38, color: "00CD00", bullet: { code: "2713" } });
 
-	var shadowOpts = { type: "outer", color: "696969", blur: 3, offset: 10, angle: 45, opacity: 0.8 };
+	let shadowOpts = { type: "outer", color: "696969", blur: 3, offset: 10, angle: 45, opacity: 0.8 };
 	slide.addText("Text Shadow:", { x: 0.5, y: 6.0, w: "40%", h: 0.38, color: "0088CC" });
 	slide.addText("Outer Shadow (blur:3, offset:10, angle:45, opacity:80%)", {
 		x: 0.5,
@@ -445,12 +434,12 @@ function doHomepageDemo_Text() {
 
 // UNDOCUMENTED: Run from console
 function testTTS() {
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
 	/*
-	var slide = pptx.addSlide();
+	let slide = pptx.addSlide();
 	slide.addText('Table Paging Logic Check', { x:0.0, y:'90%', w:'100%', align:'center', fontSize:18, color:'0088CC', fill:{color:'F2F9FC'} });
-	var numMargin = 1.25;
+	let numMargin = 1.25;
 	slide.addShape(pptx.shapes.RECTANGLE, { x:0.0, y:0.0, w:numMargin, h:numMargin, fill:{color:'FFFCCC'} });
 	slide.addTable( ['short','table','whatever'], {x:numMargin, y:numMargin, margin:numMargin, colW:2.5, fill:{color:'F1F1F1'}} );
 	*/
@@ -462,27 +451,27 @@ function testTTS() {
 	//pptx.tableToSlides('tabAutoPaging');
 	pptx.tableToSlides("tabAutoPaging", { verbose: true, autoPageRepeatHeader: true /*, autoPageSlideStartY:2*/ });
 
-	pptx.writeFile({ fileName: "PptxGenJs_TTSTest_" + getTimestamp() });
+	pptx.writeFile({ fileName: `PptxGenJs_TTSTest_${getTimestamp()}` });
 }
 
 // UNDOCUMENTED:
 function testTTSMulti() {
-	var ttsTitleText = { fontSize: 14, color: "0088CC", bold: true };
-	var ttsMultiOpts = { fontSize: 13, color: "9F9F9F", verbose: true };
-	var arrRows = [];
-	var arrText = [];
+	let ttsTitleText = { fontSize: 14, color: "0088CC", bold: true };
+	let ttsMultiOpts = { fontSize: 13, color: "9F9F9F", verbose: true };
+	let arrRows = [];
+	let arrText = [];
 	//
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
 
-	for (var idx = 0; idx < gArrNamesF.length; idx++) {
-		var strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
+	for (let idx = 0; idx < gArrNamesF.length; idx++) {
+		let strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
 		arrRows.push([idx, gArrNamesF[idx], strText]);
 		arrText.push([strText]);
 	}
 
 	// autoPageLineWeight option demos
-	var slide = pptx.addSlide();
+	let slide = pptx.addSlide();
 	slide.addText(
 		[
 			{ text: "Table Examples: ", options: ttsTitleText },
@@ -510,7 +499,7 @@ function testTTSMulti() {
 	);
 	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: "CFCFCF", autoPage: true, autoPageLineWeight: -0.5 });
 
-	pptx.writeFile({ fileName: "PptxGenJS_TTSMulti_" + getTimestamp() });
+	pptx.writeFile({ fileName: `PptxGenJS_TTSMulti_${getTimestamp()}` });
 }
 
 function buildDataTable() {
@@ -518,8 +507,8 @@ function buildDataTable() {
 	$("#tabAutoPaging tbody").empty();
 
 	// STEP 2:
-	for (var idx = 0; idx < $("#numTab2SlideRows").val(); idx++) {
-		var strHtml =
+	for (let idx = 0; idx < $("#numTab2SlideRows").val(); idx++) {
+		let strHtml =
 			"<tr>" +
 			'<td style="text-align:center">' +
 			(idx + 1) +
@@ -546,22 +535,22 @@ function buildDataTable() {
 }
 
 export function table2slidesDemoForTab(inTabId, inOpts) {
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 	pptx.tableToSlides(inTabId, inOpts || null);
-	pptx.writeFile({ fileName: inTabId + "_" + getTimestamp() });
+	pptx.writeFile({ fileName: `${inTabId}_${getTimestamp()}` });
 }
 
 function table2slidesBullets() {
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 	pptx.tableToSlides("tableWithBullets");
-	pptx.writeFile({ fileName: "tabBullets_" + getTimestamp() });
+	pptx.writeFile({ fileName: `tabBullets_${getTimestamp()}` });
 }
 
 /* DESC: Test for backward compatibility with Slide Masters defined in `pptxgen.masters.js` */
 function testOnly_LegacyMasterSlides() {
 	// TEST-ONLY: DO NOT USE/COPY ME!!
-	var pptx = new PptxGenJS();
+	let pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
-	var slide = pptx.addSlide(pptx.masters.TITLE_SLIDE);
-	pptx.writeFile({ fileName: "Demo-LegacyMasterSlides_" + getTimestamp() });
+	let slide = pptx.addSlide(pptx.masters.TITLE_SLIDE);
+	pptx.writeFile({ fileName: `Demo-LegacyMasterSlides_${getTimestamp()}` });
 }

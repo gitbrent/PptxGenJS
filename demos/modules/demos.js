@@ -32,25 +32,6 @@ if (typeof module !== "undefined" && module.exports && typeof require === "funct
 
 // ==================================================================================================================
 
-export function getTimestamp() {
-	let dateNow = new Date();
-	let dateMM = dateNow.getMonth() + 1;
-	let dateDD = dateNow.getDate();
-	let h = dateNow.getHours();
-	let m = dateNow.getMinutes();
-	return (
-		dateNow.getFullYear() +
-		"" +
-		(dateMM <= 9 ? "0" + dateMM : dateMM) +
-		"" +
-		(dateDD <= 9 ? "0" + dateDD : dateDD) +
-		(h <= 9 ? "0" + h : h) +
-		(m <= 9 ? "0" + m : m)
-	);
-}
-
-// ==================================================================================================================
-
 export function runEveryTest() {
 	return execGenSlidesFuncs(["Master", "Chart", "Image", "Media", "Shape", "Text", "Table"]);
 
@@ -273,8 +254,8 @@ export function execGenSlidesFuncs(type) {
 
 	// LAST: Export Presentation
 	if (NODEJS) {
-		return pptx.writeFile({ fileName: "PptxGenJS_Demo_Node_" + type + "_" + getTimestamp() });
+		return pptx.writeFile({ fileName: `PptxGenJS_Demo_Node_${type}_${new Date().toISOString().replace(/\D/gi, "")}` });
 	} else {
-		return pptx.writeFile({ fileName: "PptxGenJS_Demo_Browser_" + type + "_" + getTimestamp(), compression: COMPRESS });
+		return pptx.writeFile({ fileName: `PptxGenJS_Demo_Browser_${type}_${new Date().toISOString().replace(/\D/gi, "")}`, compression: COMPRESS });
 	}
 }
