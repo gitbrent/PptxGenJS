@@ -6,6 +6,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
+## [3.6.0] - 2021-??-??
+### Release Summary
+- Demos: Major Update (five years in the nmaking! IE11 is dead, long live IE11!)
+- Browser Demo: Dropped support for IE11 (use v3.5.0 or below) (library still works with IE11 using polyfill)
+### Changes
+- Doc/Website Updates: Docusaurus docs and website updated to v2.0 [\#931](https://github.com/gitbrent/PptxGenJS/pull/931) ([gitbrent](https://github.com/gitbrent))
+
+
+
 ## [3.5.0] - 2021-03-30
 ### Release Summary
 - write()/writeFile() method string arguments are deprecated - props object in now the sole arg (`WriteProps`/`WriteFileProps`)
