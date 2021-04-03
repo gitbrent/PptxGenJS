@@ -16,7 +16,7 @@ import {
 	BASE_TEXT_OPTS_L,
 	BASE_TEXT_OPTS_R,
 	LOREM_IPSUM,
-} from "./enums.js";
+} from "./enums.mjs";
 
 export function genSlides_Table(pptx) {
 	pptx.addSection({ title: "Tables" });

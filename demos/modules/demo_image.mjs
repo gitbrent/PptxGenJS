@@ -14,8 +14,8 @@
  * - Image source: either `data` or `path` is required
  */
 
-import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS } from "./enums.js";
-import { CHECKMARK_GRN, LOGO_STARLABS, SVG_BASE64, HYPERLINK_SVG } from "./media.js";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS } from "./enums.mjs";
+import { CHECKMARK_GRN, LOGO_STARLABS, SVG_BASE64, HYPERLINK_SVG } from "./media.mjs";
 
 export function genSlides_Image(pptx) {
 	pptx.addSection({ title: "Images" });

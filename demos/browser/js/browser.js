@@ -2,9 +2,9 @@
  * browser.js
  * module for /demo/browser/index.html
  */
-import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.js";
-import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.js";
-import { BKGD_STARLABS, LOGO_STARLABS, STARLABS_LOGO_SM } from "../../modules/media.js";
+import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.mjs";
+import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.mjs";
+import { BKGD_STARLABS, LOGO_STARLABS, STARLABS_LOGO_SM } from "../../modules/media.mjs";
 
 // ==================================================================================================================
 

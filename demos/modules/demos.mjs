@@ -3,19 +3,19 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.5.0
- * BLD.: 20210401
+ * VER.: 3.6.0
+ * BLD.: 20210403
  */
 
-import { COMPRESS, CUST_NAME, IMAGE_PATHS } from "../modules/enums.js";
-import { STARLABS_LOGO_SM } from "../modules/media.js";
-import { genSlides_Chart } from "./demo_chart.js";
-import { genSlides_Image } from "./demo_image.js";
-import { genSlides_Master } from "./demo_master.js";
-import { genSlides_Media } from "./demo_media.js";
-import { genSlides_Shape } from "./demo_shape.js";
-import { genSlides_Table } from "./demo_table.js";
-import { genSlides_Text } from "./demo_text.js";
+import { COMPRESS, CUST_NAME, IMAGE_PATHS } from "../modules/enums.mjs";
+import { STARLABS_LOGO_SM } from "../modules/media.mjs";
+import { genSlides_Chart } from "./demo_chart.mjs";
+import { genSlides_Image } from "./demo_image.mjs";
+import { genSlides_Master } from "./demo_master.mjs";
+import { genSlides_Media } from "./demo_media.mjs";
+import { genSlides_Shape } from "./demo_shape.mjs";
+import { genSlides_Table } from "./demo_table.mjs";
+import { genSlides_Text } from "./demo_text.mjs";
 
 // Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
 let NODEJS = false;

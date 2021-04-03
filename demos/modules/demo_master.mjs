@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { IMAGE_PATHS } from "./enums.js";
+import { IMAGE_PATHS } from "./enums.mjs";
 
 export function genSlides_Master(pptx) {
 	pptx.addSection({ title: "Masters" });

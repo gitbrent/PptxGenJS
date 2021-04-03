@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.js";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.mjs";
 
 export function genSlides_Media(pptx) {
 	pptx.addSection({ title: "Media" });

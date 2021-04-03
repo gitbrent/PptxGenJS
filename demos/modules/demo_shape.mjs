@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.js";
+import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.mjs";
 
 export function genSlides_Shape(pptx) {
 	pptx.addSection({ title: "Shapes" });
