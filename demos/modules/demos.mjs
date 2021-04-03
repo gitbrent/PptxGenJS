@@ -17,46 +17,18 @@ import { genSlides_Shape } from "./demo_shape.mjs";
 import { genSlides_Table } from "./demo_table.mjs";
 import { genSlides_Text } from "./demo_text.mjs";
 
-// Detect Node.js (NODEJS is ultimately used to determine how to save: either `fs` or web-based, so using fs-detection is perfect)
-let NODEJS = false;
-// NOTE: `NODEJS` determines which network library to use, so using fs-detection is apropos.
-if (typeof module !== "undefined" && module.exports && typeof require === "function" && typeof window === "undefined") {
-	try {
-		require.resolve("fs");
-		NODEJS = true;
-	} catch (ex) {
-		NODEJS = false;
-	}
-}
-//TODO: ? if (NODEJS) { let LOGO_STARLABS; }
-
 // ==================================================================================================================
 
-export function runEveryTest() {
-	return execGenSlidesFuncs(["Master", "Chart", "Image", "Media", "Shape", "Text", "Table"]);
+export function runEveryTest(pptxgen) {
+	return execGenSlidesFuncs(["Master", "Chart", "Image", "Media", "Shape", "Text", "Table"], pptxgen);
 
 	// NOTE: Html2Pptx needs table to be visible (otherwise col widths are even and look horrible)
 	// ....: Therefore, run it mnaually. // if ( typeof table2slides1 !== 'undefined' ) table2slides1();
 }
 
-export function execGenSlidesFuncs(type) {
+export function execGenSlidesFuncs(type, pptxgen) {
 	// STEP 1: Instantiate new PptxGenJS object
-	let pptx;
-	if (NODEJS) {
-		let PptxGenJsLib;
-		let fs = require("fs");
-		// TODO: we dont use local anymore as of 3.1
-		if (fs.existsSync("../../dist/pptxgen.cjs.js")) {
-			PptxGenJsLib = require("../../dist/pptxgen.cjs.js"); // for LOCAL TESTING
-		} else {
-			PptxGenJsLib = require("pptxgenjs");
-		}
-		pptx = new PptxGenJsLib();
-		let base64Images = require("../common/images/base64Images.js");
-		LOGO_STARLABS = base64Images.LOGO_STARLABS();
-	} else {
-		pptx = new PptxGenJS();
-	}
+	let pptx = typeof PptxGenJS !== "undefined" ? new PptxGenJS() : new pptxgen();
 
 	// STEP 2: Set Presentation props (as QA test only - these are not required)
 	pptx.title = "PptxGenJS Test Suite Presentation";
@@ -70,9 +42,9 @@ export function execGenSlidesFuncs(type) {
 
 	// STEP 4: Create Master Slides (from the old `pptxgen.masters.js` file - `gObjPptxMasters` items)
 	{
-		let objBkg = { path: NODEJS ? IMAGE_PATHS.starlabsBkgd.path.replace(/http.+\/examples/, "../common") : IMAGE_PATHS.starlabsBkgd.path };
+		let objBkg = { path: IMAGE_PATHS.starlabsBkgd.path };
 		let objImg = {
-			path: NODEJS ? IMAGE_PATHS.starlabsLogo.path.replace(/http.+\/examples/, "../common") : IMAGE_PATHS.starlabsLogo.path,
+			path: IMAGE_PATHS.starlabsLogo.path,
 			x: 4.6,
 			y: 3.5,
 			w: 4,
@@ -253,9 +225,5 @@ export function execGenSlidesFuncs(type) {
 	});
 
 	// LAST: Export Presentation
-	if (NODEJS) {
-		return pptx.writeFile({ fileName: `PptxGenJS_Demo_Node_${type}_${new Date().toISOString().replace(/\D/gi, "")}` });
-	} else {
-		return pptx.writeFile({ fileName: `PptxGenJS_Demo_Browser_${type}_${new Date().toISOString().replace(/\D/gi, "")}`, compression: COMPRESS });
-	}
+	return pptx.writeFile({ fileName: `PptxGenJS_Demo_${type}_${new Date().toISOString().replace(/\D/gi, "")}`, compression: COMPRESS });
 }

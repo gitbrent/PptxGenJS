@@ -10,23 +10,24 @@
  * USAGE: `node demo.js Text`  (runs pre-defined single test in `../common/demos.js`)
  */
 
-// ============================================================================
 import { execGenSlidesFuncs, runEveryTest } from "../modules/demos.mjs";
-let PptxGenJS = require("pptxgenjs");
-//let demo = require("../modules/demos.js");
-let pptx = new PptxGenJS();
-let exportName = "PptxGenJS_Demo_Node";
+import pptxgen from "pptxgenjs";
+
+// ============================================================================
+
+const exportName = "PptxGenJS_Demo_Node";
+let pptx = new pptxgen();
 
 console.log(`\n\n--------------------==~==~==~==[ STARTING DEMO... ]==~==~==~==--------------------\n`);
 console.log(`* pptxgenjs ver: ${pptx.version}`);
-console.log(`* save location: ${__dirname}`);
+console.log(`* save location: ${process.cwd()}`);
 
 if (process.argv.length > 2) {
 	// A: Run predefined test from `../common/demos.js` //-OR-// Local Tests (callbacks, etc.)
 	Promise.resolve()
 		.then(() => {
-			if (process.argv[2].toLowerCase() === "all") return runEveryTest();
-			return execGenSlidesFuncs(process.argv[2]);
+			if (process.argv[2].toLowerCase() === "all") return runEveryTest(pptxgen);
+			return execGenSlidesFuncs(process.argv[2], pptxgen);
 		})
 		.catch((err) => {
 			throw new Error(err);

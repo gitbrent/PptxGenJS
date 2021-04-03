@@ -161,12 +161,19 @@ function genSlide04(pptx) {
 	slide.addImage({ path: IMAGE_PATHS.wikimedia2.path, x: 4.55, y: 1.44, h: 2.5, w: 3.27 });
 
 	// TOP-RIGHT: relative-path test
-	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLicenseComp.path}"` }], { ...BASE_CODE_OPTS, ...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 } });
-	slide.addImage({ path: IMAGE_PATHS.ccLicenseComp.path, x: 8.55, y: 1.43, h: 2.51, w: 4.28 });
+	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLicenseComp.path}"` }], {
+		...BASE_CODE_OPTS,
+		...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 },
+	});
+	// NOTE: Node will throw exception when using "/" path
+	slide.addImage({ path: `${typeof window === "undefined" ? ".." : ""}${IMAGE_PATHS.ccLicenseComp.path}`, x: 8.55, y: 1.43, h: 2.51, w: 4.28 });
 
 	// BOTTOM: wide, url-sourced
 	slide.addText(
-		[{ text: '// Test: URL variables, plus more than one ".jpg"', options: { breakLine: true } }, { text: `path:"${IMAGE_PATHS.sydneyBridge.path}"` }],
+		[
+			{ text: '// Test: URL variables, plus more than one ".jpg"', options: { breakLine: true } },
+			{ text: `path:"${IMAGE_PATHS.sydneyBridge.path}"` },
+		],
 		{
 			...BASE_CODE_OPTS,
 			...{ x: 0.5, y: 4.2, w: 12.33, h: 0.8, fontSize: 11 },
