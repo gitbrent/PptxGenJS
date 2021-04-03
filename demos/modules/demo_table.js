@@ -8,14 +8,14 @@
  */
 import {
 	TABLE_NAMES_F,
-	gDemoTitleOpts,
-	gDemoTitleText,
-	gDemoTitleTextBk,
-	gOptsSubTitle,
+	DEMO_TITLE_OPTS,
+	DEMO_TITLE_TEXT,
+	DEMO_TITLE_TEXTBK,
+	BASE_OPTS_SUBTITLE,
 	BASE_TABLE_OPTS,
-	gOptsTextL,
-	gOptsTextR,
-	gStrLoremIpsum,
+	BASE_TEXT_OPTS_L,
+	BASE_TEXT_OPTS_R,
+	LOREM_IPSUM,
 } from "./enums.js";
 
 export function genSlides_Table(pptx) {
@@ -37,7 +37,7 @@ export function genSlides_Table(pptx) {
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 1", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Table Examples 1", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// DEMO: align/valign -------------------------------------------------------------------------
 	let objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
@@ -136,10 +136,10 @@ function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	// 2: Slide title
-	slide.addTable([[{ text: "Table Examples 2", options: gOptsTextL }, gOptsTextR]], { x: "4%", y: "2%", w: "95%", h: "4%" }); // QA: this table's x,y,w,h all using %
+	slide.addTable([[{ text: "Table Examples 2", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], { x: "4%", y: "2%", w: "95%", h: "4%" }); // QA: this table's x,y,w,h all using %
 
 	// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 	slide.addText("Colspans/Rowspans:", optsSub);
 
 	let tabOpts1 = {
@@ -248,10 +248,10 @@ function genSlide02(pptx) {
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 3", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Table Examples 3", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 	slide.addText("Extreme Colspans/Rowspans:", optsSub);
 
 	let optsRowspan2 = { rowspan: 2, fill: { color: "99FFCC" } };
@@ -313,10 +313,10 @@ function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	// 2: Slide title
-	slide.addTable([[{ text: "Table Examples 4", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Table Examples 4", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// Cell Margins
-	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 	slide.addText("Cell Margins:", optsSub);
 
 	slide.addTable([["margin:0"]], { x: 0.5, y: 1.1, margin: 0, w: 1.2, fill: "FFFCCC", border: { pt: 0 } });
@@ -406,7 +406,7 @@ function genSlide04(pptx) {
 function genSlide05(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 5", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Table Examples 5", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addText(
 		"The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.",
 		{ x: 0.5, y: 0.5, w: "95%", h: 0.5, margin: 0.1, fontSize: 14 }
@@ -451,9 +451,9 @@ function genSlide05(pptx) {
 function genSlide06(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 6", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Table Examples 6", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	let optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 	slide.addText("Table Cell Word-Level Formatting:", optsSub);
 
 	// EX 1:
@@ -521,7 +521,7 @@ function genSlide07(pptx) {
 		{ text: "Lorum Ipsum", options: { fill: "0088cc", color: "ffffff", valign: "middle" } },
 	]);
 	TABLE_NAMES_F.forEach((name, idx) => {
-		let strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
+		let strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
 		arrRows.push([idx, name, strText]);
 		arrText.push([strText]);
 	});
@@ -540,8 +540,8 @@ function genSlide07(pptx) {
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 	slide.addText(
 		[
-			{ text: "Table Examples: ", options: gDemoTitleText },
-			{ text: "Auto-Paging Example", options: gDemoTitleOpts },
+			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+			{ text: "Auto-Paging Example", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
@@ -550,8 +550,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
-			{ text: "Table Examples: ", options: gDemoTitleText },
-			{ text: "Smaller Table Area", options: gDemoTitleOpts },
+			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+			{ text: "Smaller Table Area", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
@@ -560,8 +560,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
-			{ text: "Table Examples: ", options: gDemoTitleText },
-			{ text: "Test: Correct starting Y location upon paging", options: gDemoTitleOpts },
+			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+			{ text: "Test: Correct starting Y location upon paging", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
@@ -570,8 +570,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
-			{ text: "Table Examples: ", options: gDemoTitleText },
-			{ text: "Test: `{ autoPageSlideStartY: 1.5 }`", options: gDemoTitleOpts },
+			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+			{ text: "Test: `{ autoPageSlideStartY: 1.5 }`", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
@@ -588,8 +588,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging", masterName: "MASTER_PLAIN" });
 	slide.addText(
 		[
-			{ text: "Table Examples: ", options: gDemoTitleText },
-			{ text: "Master Page with Auto-Paging", options: gDemoTitleOpts },
+			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+			{ text: "Master Page with Auto-Paging", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
@@ -598,8 +598,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging" });
 	slide.addText(
 		[
-			{ text: "Table Examples: ", options: gDemoTitleText },
-			{ text: "Auto-Paging Disabled", options: gDemoTitleOpts },
+			{ text: "Table Examples: ", options: DEMO_TITLE_TEXT },
+			{ text: "Auto-Paging Disabled", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.5, y: 0.13, w: "90%" }
 	);
@@ -610,8 +610,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging Repeat Header" });
 	slide.addText(
 		[
-			{ text: "Table Examples: autoPageHeaderRows", options: gDemoTitleTextBk },
-			{ text: "no autoPageHeaderRows", options: gDemoTitleOpts },
+			{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
+			{ text: "no autoPageHeaderRows", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -628,8 +628,8 @@ function genSlide07(pptx) {
 
 	slide.addText(
 		[
-			{ text: "Table Examples: autoPageHeaderRows", options: gDemoTitleTextBk },
-			{ text: "autoPageHeaderRows:1", options: gDemoTitleOpts },
+			{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageHeaderRows:1", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -647,8 +647,8 @@ function genSlide07(pptx) {
 
 	slide.addText(
 		[
-			{ text: "Table Examples: autoPageHeaderRows", options: gDemoTitleTextBk },
-			{ text: "autoPageHeaderRows:2", options: gDemoTitleOpts },
+			{ text: "Table Examples: autoPageHeaderRows", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageHeaderRows:2", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -669,8 +669,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging LineWeight" });
 	slide.addText(
 		[
-			{ text: "Table Examples: Line Weight Options", options: gDemoTitleTextBk },
-			{ text: "autoPageLineWeight:0.0", options: gDemoTitleOpts },
+			{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageLineWeight:0.0", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -678,8 +678,8 @@ function genSlide07(pptx) {
 
 	slide.addText(
 		[
-			{ text: "Table Examples: Line Weight Options", options: gDemoTitleTextBk },
-			{ text: "autoPageLineWeight:0.5", options: gDemoTitleOpts },
+			{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageLineWeight:0.5", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -687,8 +687,8 @@ function genSlide07(pptx) {
 
 	slide.addText(
 		[
-			{ text: "Table Examples: Line Weight Options", options: gDemoTitleTextBk },
-			{ text: "autoPageLineWeight:-0.5", options: gDemoTitleOpts },
+			{ text: "Table Examples: Line Weight Options", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageLineWeight:-0.5", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -699,8 +699,8 @@ function genSlide07(pptx) {
 	slide = pptx.addSlide({ sectionTitle: "Tables: Auto-Paging CharWeight" });
 	slide.addText(
 		[
-			{ text: "Table Examples: Char Weight Options", options: gDemoTitleTextBk },
-			{ text: "autoPageCharWeight:0.0", options: gDemoTitleOpts },
+			{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageCharWeight:0.0", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 0.23, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -708,8 +708,8 @@ function genSlide07(pptx) {
 
 	slide.addText(
 		[
-			{ text: "Table Examples: Char Weight Options", options: gDemoTitleTextBk },
-			{ text: "autoPageCharWeight:0.25", options: gDemoTitleOpts },
+			{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageCharWeight:0.25", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 4.75, y: 0.13, w: 4, h: 0.4 }
 	);
@@ -717,8 +717,8 @@ function genSlide07(pptx) {
 
 	slide.addText(
 		[
-			{ text: "Table Examples: Char Weight Options", options: gDemoTitleTextBk },
-			{ text: "autoPageCharWeight:-0.25", options: gDemoTitleOpts },
+			{ text: "Table Examples: Char Weight Options", options: DEMO_TITLE_TEXTBK },
+			{ text: "autoPageCharWeight:-0.25", options: DEMO_TITLE_OPTS },
 		],
 		{ x: 9.1, y: 0.13, w: 4, h: 0.4 }
 	);

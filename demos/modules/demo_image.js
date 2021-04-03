@@ -14,7 +14,7 @@
  * - Image source: either `data` or `path` is required
  */
 
-import { IMAGE_PATHS, BASE_TABLE_OPTS, gOptsTextL, gOptsTextR, gOptsCode } from "./enums.js";
+import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS } from "./enums.js";
 import { checkGreen, LOGO_STARLABS, svgBase64, svgHyperlinkImage } from "./media.js";
 
 export function genSlides_Image(pptx) {
@@ -34,7 +34,7 @@ function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Misc Image Types", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Image Examples: Misc Image Types", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP: 1
 	slide.addText("Type: Animated GIF", { x: 0.5, y: 0.6, w: 2.5, h: 0.4, color: "0088CC" });
@@ -97,7 +97,7 @@ function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Image Sizing/Rounding", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Image Examples: Image Sizing/Rounding", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP: 1
 	slide.addText("Sizing: Orig `w:6, h:2.7`", { x: 0.5, y: 0.6, w: 3.0, h: 0.3, color: "0088CC" });
@@ -133,7 +133,7 @@ function genSlide03(pptx) {
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 
-	slide.addTable([[{ text: "Image Examples: Image Rotation", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Image Examples: Image Rotation", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// EXAMPLES
 	slide.addText("Rotate: `rotate:45`, `rotate:180`, `rotate:315`", { x: 0.5, y: 0.6, w: 6.0, h: 0.3, color: "0088CC" });
@@ -150,25 +150,25 @@ function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Image URLs", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Image Examples: Image URLs", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP-LEFT: jpg
-	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLogo.path}"` }], { ...gOptsCode, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });
+	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLogo.path}"` }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });
 	slide.addImage({ path: IMAGE_PATHS.ccLogo.path, x: 0.5, y: 1.44, h: 2.5, w: 3.33 });
 
 	// TOP-CENTER: png
-	slide.addText([{ text: `path:"${IMAGE_PATHS.wikimedia2.path}"` }], { ...gOptsCode, ...{ x: 4.55, y: 0.6, w: 3.27, h: 0.7, fontSize: 11 } });
+	slide.addText([{ text: `path:"${IMAGE_PATHS.wikimedia2.path}"` }], { ...BASE_CODE_OPTS, ...{ x: 4.55, y: 0.6, w: 3.27, h: 0.7, fontSize: 11 } });
 	slide.addImage({ path: IMAGE_PATHS.wikimedia2.path, x: 4.55, y: 1.44, h: 2.5, w: 3.27 });
 
 	// TOP-RIGHT: relative-path test
-	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLicenseComp.path}"` }], { ...gOptsCode, ...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 } });
+	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLicenseComp.path}"` }], { ...BASE_CODE_OPTS, ...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 } });
 	slide.addImage({ path: IMAGE_PATHS.ccLicenseComp.path, x: 8.55, y: 1.43, h: 2.51, w: 4.28 });
 
 	// BOTTOM: wide, url-sourced
 	slide.addText(
 		[{ text: '// Test: URL variables, plus more than one ".jpg"', options: { breakLine: true } }, { text: `path:"${IMAGE_PATHS.sydneyBridge.path}"` }],
 		{
-			...gOptsCode,
+			...BASE_CODE_OPTS,
 			...{ x: 0.5, y: 4.2, w: 12.33, h: 0.8, fontSize: 11 },
 		}
 	);

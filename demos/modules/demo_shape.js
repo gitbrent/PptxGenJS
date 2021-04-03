@@ -7,7 +7,7 @@
  * BLD.: 20210401
  */
 
-import { BASE_TABLE_OPTS, gOptsTextL, gOptsTextR } from "./enums.js";
+import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R } from "./enums.js";
 
 export function genSlides_Shape(pptx) {
 	pptx.addSection({ title: "Shapes" });
@@ -23,7 +23,7 @@ export function genSlides_Shape(pptx) {
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Shapes" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
-	slide.addTable([[{ text: "Shape Examples 1: Misc Shape Types (no text)", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Shape Examples 1: Misc Shape Types (no text)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:{color:'F9F9F9'} });
 	slide.addShape(pptx.shapes.RECTANGLE, { x: 0.5, y: 0.8, w: 1.5, h: 3.0, fill: { color: "FF0000" }, line: { type: "none" } });
@@ -72,7 +72,7 @@ function genSlide01(pptx) {
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Shapes" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
-	slide.addTable([[{ text: "Shape Examples 2: Misc Shape Types (with text)", options: gOptsTextL }, gOptsTextR]], BASE_TABLE_OPTS);
+	slide.addTable([[{ text: "Shape Examples 2: Misc Shape Types (with text)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	slide.addText("RECTANGLE", {
 		shape: pptx.shapes.RECTANGLE,

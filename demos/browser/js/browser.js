@@ -3,7 +3,7 @@
  * module for /demo/browser/index.html
  */
 import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.js";
-import { TABLE_NAMES_F, TABLE_NAMES_L, gStrLoremIpsum } from "../../modules/enums.js";
+import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.js";
 import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../../modules/media.js";
 
 // ==================================================================================================================
@@ -122,7 +122,7 @@ export function doAppStart() {
 	}
 
 	// STEP 5: Demo setup
-	$("#tabLargeCellText tbody td").text(gStrLoremIpsum.substring(0, 3000));
+	$("#tabLargeCellText tbody td").text(LOREM_IPSUM.substring(0, 3000));
 	for (let idx = 0; idx < 30; idx++) {
 		$("#tabLotsOfLines tbody").append("<tr><td>Row-" + idx + "</td><td>Col-B</td><td>Col-C</td></tr>");
 	}
@@ -465,7 +465,7 @@ function testTTSMulti() {
 	pptx.layout = "LAYOUT_WIDE";
 
 	for (let idx = 0; idx < TABLE_NAMES_F.length; idx++) {
-		let strText = idx == 0 ? gStrLoremIpsum.substring(0, 100) : gStrLoremIpsum.substring(idx * 100, idx * 200);
+		let strText = idx == 0 ? LOREM_IPSUM.substring(0, 100) : LOREM_IPSUM.substring(idx * 100, idx * 200);
 		arrRows.push([idx, TABLE_NAMES_F[idx], strText]);
 		arrText.push([strText]);
 	}
@@ -520,7 +520,7 @@ function buildDataTable() {
 			TABLE_NAMES_F[Math.floor(Math.random() * 10)] +
 			"</td>" +
 			"<td>Text:<br>" +
-			gStrLoremIpsum.substring(0, (Math.floor(Math.random() * 10) + 2) * 130) +
+			LOREM_IPSUM.substring(0, (Math.floor(Math.random() * 10) + 2) * 130) +
 			"</td>" +
 			"</tr>";
 		$("#tabAutoPaging tbody").append(strHtml);
