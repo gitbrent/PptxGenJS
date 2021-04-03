@@ -104,7 +104,7 @@ function testMethod_Table(pptx: pptxgen) {
 	{
 		let slide = pptx.addSlide({ sectionTitle: "Tables" });
 		slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-		//slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		//slide.addTable( [ [{ text:'Table Examples 1', options:BASE_TEXT_OPTS_L },BASE_TEXT_OPTS_R] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
 		var objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
@@ -200,10 +200,10 @@ function testMethod_Table(pptx: pptxgen) {
 		let slide = pptx.addSlide({ sectionTitle: "Tables" });
 		slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 		// 2: Slide title
-		//slide.addTable([ [{ text:'Table Examples 2', options:gOptsTextL },gOptsTextR] ], { x:'4%', y:'2%', w:'95%', h:'4%' }); // QA: this table's x,y,w,h all using %
+		//slide.addTable([ [{ text:'Table Examples 2', options:BASE_TEXT_OPTS_L },BASE_TEXT_OPTS_R] ], { x:'4%', y:'2%', w:'95%', h:'4%' }); // QA: this table's x,y,w,h all using %
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-		//var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+		//var optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 		//slide.addText('Colspans/Rowspans:', optsSub);
 
 		var tabOpts1: pptxgen.TableProps = {
