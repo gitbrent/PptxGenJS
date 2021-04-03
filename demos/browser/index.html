@@ -6,17 +6,18 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.6.0">
-	<meta name="updated" content="2021-04-02">
+	<meta name="updated" content="2021-04-03">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
 	<title>PptxGenJS Examples/Demo Page</title>
-	<link rel="stylesheet" href="./css/style.css">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.0/yeti/bootstrap.min.css">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.0/cyborg/bootstrap.min.css" media="(prefers-color-scheme: dark)">
-	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.0/yeti/bootstrap.min.css"
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/yeti/bootstrap.min.css">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/darkly/bootstrap.min.css"
+		integrity="sha384-nNK9n28pDUDDgIiIqZ/MiyO3F4/9vsMtReZK39klb/MtkZI3/LtjSjlmyVPS3KdN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootswatch/4.5.2/yeti/bootstrap.min.css"
 		media="(prefers-color-scheme: no-preference), (prefers-color-scheme: light)">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/themes/prism-okaidia.min.css">
+	<link rel="stylesheet" href="./css/style.css">
 
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
 		crossorigin="anonymous"></script>
@@ -27,8 +28,8 @@
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.15.0/prism.min.js"></script>
 
 	<!-- RELEASE (CDN)
-		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
-		<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js type="module""></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"></script>
+	<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/demos.js type="module""></script>
 	-->
 	<!--
 	TODO: [only used during `-beta` dev cycles; update to below on release]
@@ -40,13 +41,13 @@
 	<script src="../../dist/pptxgen.min.js"></script>
 	-->
 	<script src="./js/pptxgen.bundle.js"></script>
-	<script type="module" src="../modules/demos.js"></script>
+	<script src="../modules/demos.js" type="module"></script>
 
 	<script type="module">
 		import { doAppStart, execGenSlidesFunc, runAllDemos, table2slides1, table2slides2, table2slidesDemoForTab } from './js/browser.js';
 
 		$('#btnRunAllDemos').click(() => runAllDemos());
-
+		//
 		$('#btnGenFunc_Chart').click(() => execGenSlidesFunc('Chart'));
 		$('#btnGenFunc_Image').click(() => execGenSlidesFunc('Image'));
 		$('#btnGenFunc_Media').click(() => execGenSlidesFunc('Media'));
@@ -54,7 +55,7 @@
 		$('#btnGenFunc_Text').click(() => execGenSlidesFunc('Text'));
 		$('#btnGenFunc_Table').click(() => execGenSlidesFunc('Table'));
 		$('#btnGenFunc_Master').click(() => execGenSlidesFunc('Master'));
-
+		//
 		$('#table2slides1').click(() => table2slides1());
 		$('#table2slides2').click(() => table2slides2());
 		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle'));
@@ -68,7 +69,7 @@
 		$(document).ready(() => { doAppStart() });
 	</script>
 </head>
-<body class="bg-light">
+<body>
 	<div id="modalBusy" class="modal fade" tabindex="-1" role="dialog" data-backdrop="static">
 		<div class="modal-dialog modal-dialog-centered" role="document">
 			<div class="modal-content">

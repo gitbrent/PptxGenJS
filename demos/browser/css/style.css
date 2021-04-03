@@ -54,8 +54,12 @@
 }
 
 /* -- brentstrap.css ---------- */
+
+body {
+	background-color: var(--light) !important;
+}
 .tab-pane {
-	background-color: var(--white);
+	background-color: var(--white) !important;
 }
 
 @media (prefers-color-scheme: dark) {
