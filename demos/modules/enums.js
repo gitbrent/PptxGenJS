@@ -51,7 +51,7 @@ export const gPaths = {
 	wikimedia_svg: { path: "https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@master/demos/common/images/lock-green.svg" },
 	ccCopyRemix: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_copyremix.gif" },
 	ccLogo: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_logo.jpg" },
-	ccLicenseComp: { path: "common/images/cc_license_comp.png" },
+	ccLicenseComp: { path: "/common/images/cc_license_comp.png" },
 	ccDjGif: { path: "https://raw.githubusercontent.com/gitbrent/PptxGenJS/master/demos/common/images/cc_dj.gif" },
 	gifAnimTrippy: { path: "https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/demos/common/images/trippy.gif" },
 	chicagoBean: {
