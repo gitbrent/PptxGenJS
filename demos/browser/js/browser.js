@@ -4,7 +4,7 @@
  */
 import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.js";
 import { TABLE_NAMES_F, TABLE_NAMES_L, LOREM_IPSUM } from "../../modules/enums.js";
-import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../../modules/media.js";
+import { BKGD_STARLABS, LOGO_STARLABS, STARLABS_LOGO_SM } from "../../modules/media.js";
 
 // ==================================================================================================================
 
@@ -106,7 +106,7 @@ export function doAppStart() {
 				"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
 				"  background: { fill: 'FFFFFF' },\n" +
 				"  objects: [\n" +
-				"    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },\n" +
+				"    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },\n" +
 				"    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n" +
 				"    { text:  {\n" +
 				"        text: 'S.T.A.R. Laboratories - Confidential',\n" +
@@ -175,7 +175,7 @@ function addMasterDefs(pptx) {
 					options: { x: 3.0, y: 5.3, w: 5.5, h: 0.75, fontFace: "Arial", fontSize: 20, color: "363636", valign: "middle", margin: 0 },
 				},
 			},
-			{ image: { x: 11.3, y: 6.4, w: 1.67, h: 0.75, data: starlabsLogoSml } },
+			{ image: { x: 11.3, y: 6.4, w: 1.67, h: 0.75, data: STARLABS_LOGO_SM } },
 		],
 	});
 

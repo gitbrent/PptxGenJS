@@ -8,7 +8,7 @@
  */
 
 import { COMPRESS, CUST_NAME, IMAGE_PATHS } from "../modules/enums.js";
-import { starlabsLogoSml } from "../modules/media.js";
+import { STARLABS_LOGO_SM } from "../modules/media.js";
 import { genSlides_Chart } from "./demo_chart.js";
 import { genSlides_Image } from "./demo_image.js";
 import { genSlides_Master } from "./demo_master.js";
@@ -87,7 +87,7 @@ export function execGenSlidesFuncs(type) {
 			objects: [
 				//{ 'line':  { x:3.5, y:1.0, w:6.0, h:0.0, line:{color:'0088CC'}, lineSize:5 } },
 				//{ 'chart': { type:'PIE', data:[{labels:['R','G','B'], values:[10,10,5]}], options:{x:11.3, y:0.0, w:2, h:2, dataLabelFontSize:9} } },
-				//{ 'image': { x:11.3, y:6.4, w:1.67, h:0.75, data:starlabsLogoSml } },
+				//{ 'image': { x:11.3, y:6.4, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },
 				{ rect: { x: 0.0, y: 5.7, w: "100%", h: 0.75, fill: { color: "F1F1F1" } } },
 				{
 					text: {
@@ -116,7 +116,7 @@ export function execGenSlidesFuncs(type) {
 			margin: [0.5, 0.25, 1.0, 0.25],
 			objects: [
 				{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },
-				{ image: { x: 11.45, y: 5.95, w: 1.67, h: 0.75, data: starlabsLogoSml } },
+				{ image: { x: 11.45, y: 5.95, w: 1.67, h: 0.75, data: STARLABS_LOGO_SM } },
 				{
 					text: {
 						options: { x: 0, y: 6.9, w: "100%", h: 0.6, align: "center", valign: "middle", color: "FFFFFF", fontSize: 12 },
@@ -135,7 +135,7 @@ export function execGenSlidesFuncs(type) {
 			slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
 			objects: [
 				{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },
-				//{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml } },
+				//{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },
 				{
 					text: {
 						options: { x: 0, y: 6.9, w: "100%", h: 0.6, align: "center", valign: "middle", color: "FFFFFF", fontSize: 12 },
@@ -210,7 +210,7 @@ export function execGenSlidesFuncs(type) {
 			  { 'placeholder':
 			  	{
 					options: {type:'body'},
-					image: {x:11.45, y:5.95, w:1.67, h:0.75, data:starlabsLogoSml}
+					image: {x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM}
 				}
 			},
 			  { 'placeholder':

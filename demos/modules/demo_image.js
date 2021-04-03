@@ -15,7 +15,7 @@
  */
 
 import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, BASE_CODE_OPTS } from "./enums.js";
-import { checkGreen, LOGO_STARLABS, svgBase64, svgHyperlinkImage } from "./media.js";
+import { CHECKMARK_GRN, LOGO_STARLABS, SVG_BASE64, HYPERLINK_SVG } from "./media.js";
 
 export function genSlides_Image(pptx) {
 	pptx.addSection({ title: "Images" });
@@ -56,7 +56,7 @@ function genSlide01(pptx) {
 
 	// TOP: 3
 	slide.addText("Type: base64 PNG", { x: 7.2, y: 0.6, w: 2.4, h: 0.4, color: "0088CC" });
-	slide.addImage({ x: 7.87, y: 1.1, w: 1.0, h: 1.0, data: checkGreen });
+	slide.addImage({ x: 7.87, y: 1.1, w: 1.0, h: 1.0, data: CHECKMARK_GRN });
 
 	// TOP: 4
 	slide.addText("Image Hyperlink", { x: 10.9, y: 0.6, w: 2.2, h: 0.4, color: "0088CC" });
@@ -65,7 +65,7 @@ function genSlide01(pptx) {
 		y: 1.2,
 		w: 0.8,
 		h: 0.8,
-		data: svgHyperlinkImage,
+		data: HYPERLINK_SVG,
 		hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" },
 	});
 
@@ -80,7 +80,7 @@ function genSlide01(pptx) {
 	// BOTTOM-RIGHT:
 	slide.addText("Type: SVG", { x: 9.5, y: 3.3, w: 4.0, h: 0.4, color: "0088CC" });
 	slide.addImage({ path: IMAGE_PATHS.wikimedia_svg.path, x: 9.5, y: 3.8, w: 2.0, h: 2.0 }); // TEST: `path`
-	slide.addImage({ data: svgBase64, x: 11.1, y: 5.1, w: 1.5, h: 1.5 }); // TEST: `data`
+	slide.addImage({ data: SVG_BASE64, x: 11.1, y: 5.1, w: 1.5, h: 1.5 }); // TEST: `data`
 
 	// TEST: Ensure framework corrects for missing all header
 	// (Please **DO NOT** pass base64 data without the header! This is a JUNK TEST!)
