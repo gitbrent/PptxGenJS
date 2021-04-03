@@ -2,9 +2,9 @@
  * browser.js
  * module for /demo/browser/index.html
  */
-import { execGenSlidesFuncs, runEveryTest } from "../modules/demos.js";
-import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "../modules/enums.js";
-import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../modules/media.js";
+import { execGenSlidesFuncs, runEveryTest } from "../../modules/demos.js";
+import { gArrNamesF, gArrNamesL, gStrLoremIpsum } from "../../modules/enums.js";
+import { BKGD_STARLABS, LOGO_STARLABS, starlabsLogoSml } from "../../modules/media.js";
 
 // ==================================================================================================================
 
