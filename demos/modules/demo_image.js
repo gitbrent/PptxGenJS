@@ -151,22 +151,24 @@ function genSlide04(pptx) {
 	slide.addTable([[{ text: "Image Examples: Image URLs", options: gOptsTextL }, gOptsTextR]], gOptsTabOpts);
 
 	// TOP-LEFT: jpg
-	slide.addText(`path:"${gPaths.ccLogo.path}"`, { ...gOptsCode, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });
+	slide.addText([{ text: `path:"${gPaths.ccLogo.path}"` }], { ...gOptsCode, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });
 	slide.addImage({ path: gPaths.ccLogo.path, x: 0.5, y: 1.44, h: 2.5, w: 3.33 });
 
 	// TOP-CENTER: png
-	slide.addText(`path:"${gPaths.wikimedia2.path}"`, { ...gOptsCode, ...{ x: 4.55, y: 0.6, w: 3.27, h: 0.7, fontSize: 11 } });
+	slide.addText([{ text: `path:"${gPaths.wikimedia2.path}"` }], { ...gOptsCode, ...{ x: 4.55, y: 0.6, w: 3.27, h: 0.7, fontSize: 11 } });
 	slide.addImage({ path: gPaths.wikimedia2.path, x: 4.55, y: 1.44, h: 2.5, w: 3.27 });
 
 	// TOP-RIGHT: relative-path test
-	slide.addText(`path:"${gPaths.ccLicenseComp.path}"`, { ...gOptsCode, ...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 } });
+	slide.addText([{ text: `path:"${gPaths.ccLicenseComp.path}"` }], { ...gOptsCode, ...{ x: 8.55, y: 0.6, w: 4.28, h: 0.7, fontSize: 11 } });
 	slide.addImage({ path: gPaths.ccLicenseComp.path, x: 8.55, y: 1.43, h: 2.51, w: 4.28 });
 
 	// BOTTOM: wide, url-sourced
-	let objCodeEx3 = { x: 0.5, y: 4.2, w: 12.33, h: 0.8 };
-	Object.keys(gOptsCode).forEach((key) => {
-		objCodeEx3[key] = gOptsCode[key];
-	});
-	slide.addText('// Test: URL variables, plus more than one ".jpg"\npath:"' + gPaths.sydneyBridge.path + '"', objCodeEx3);
+	slide.addText(
+		[{ text: '// Test: URL variables, plus more than one ".jpg"', options: { breakLine: true } }, { text: `path:"${gPaths.sydneyBridge.path}"` }],
+		{
+			...gOptsCode,
+			...{ x: 0.5, y: 4.2, w: 12.33, h: 0.8, fontSize: 11 },
+		}
+	);
 	slide.addImage({ path: gPaths.sydneyBridge.path, x: 0.5, y: 5.16, h: 1.8, w: 12.33 });
 }
