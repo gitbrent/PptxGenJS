@@ -3,7 +3,7 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.5.0
+ * VER.: 3.6.0
  * BLD.: 20210401
  */
 
@@ -26,12 +26,14 @@ export function genSlides_Text(pptx) {
  */
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
+
+	// Slide title
+	slide.addTable([[{ text: "Text Examples: Text alignment, percent x/y, etc.", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	// Slide colors: bkgd/fore
 	slide.bkgd = "030303";
 	slide.color = "9F9F9F";
-	// Title
-	slide.addTable([[{ text: "Text Examples: Text alignment, percent x/y, etc.", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	// Slide notes
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
 
 	// Actual Textbox shape (can have any Height, can wrap text, etc.)
 	slide.addText(
@@ -109,7 +111,10 @@ function genSlide01(pptx) {
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
-	slide.addTable([[{ text: "Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable(
+		[[{ text: "Text Examples: Multi-Line Formatting, Line Breaks, Line Spacing", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		BASE_TABLE_OPTS
+	);
 
 	// LEFT COLUMN ------------------------------------------------------------
 
@@ -320,8 +325,12 @@ function genSlide03(pptx) {
  */
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
+
+	slide.addTable(
+		[[{ text: "Text Examples: Hyperlinks, Text Shadow, Text Outline, Text Glow", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		BASE_TABLE_OPTS
+	);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
-	slide.addTable([[{ text: "Text Examples: Hyperlinks, Text Shadow, Text Outline, Text Glow", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// 2: Text Effects: Outline
 	slide.addText("Text Outline:", { x: 0.5, y: 0.6, w: "90%", h: 0.3, margin: 0, color: "0088CC" });
@@ -396,8 +405,9 @@ function genSlide04(pptx) {
  */
 function genSlide05(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
+
 	slide.addTable([[{ text: "Text Examples: Text Fit", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
 
 	slide.addText(LOREM_IPSUM_ENG.substring(0, 1200), { x: 0.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: "none" });
 	slide.addText(LOREM_IPSUM_ENG.substring(0, 1200), { x: 4.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: "shrink" });
