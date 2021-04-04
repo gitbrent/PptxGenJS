@@ -32,9 +32,10 @@ export function genSlides_Image(pptx) {
  */
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
+
+	slide.addTable([[{ text: "Image Examples: Misc Image Types", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Misc Image Types", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP: 1
 	slide.addText("Type: Animated GIF", { x: 0.5, y: 0.6, w: 2.5, h: 0.4, color: "0088CC" });
@@ -95,9 +96,10 @@ function genSlide01(pptx) {
  */
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
+
+	slide.addTable([[{ text: "Image Examples: Image Sizing/Rounding", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Image Sizing/Rounding", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP: 1
 	slide.addText("Sizing: Orig `w:6, h:2.7`", { x: 0.5, y: 0.6, w: 3.0, h: 0.3, color: "0088CC" });
@@ -130,10 +132,9 @@ function genSlide02(pptx) {
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
 
-	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
-
 	slide.addTable([[{ text: "Image Examples: Image Rotation", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
+	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
 
 	// EXAMPLES
 	slide.addText("Rotate: `rotate:45`, `rotate:180`, `rotate:315`", { x: 0.5, y: 0.6, w: 6.0, h: 0.3, color: "0088CC" });
@@ -148,9 +149,10 @@ function genSlide03(pptx) {
  */
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Images" });
+
+	slide.addTable([[{ text: "Image Examples: Image URLs", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-images.html");
 	slide.slideNumber = { x: "50%", y: "95%", color: "0088CC" };
-	slide.addTable([[{ text: "Image Examples: Image URLs", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
 	// TOP-LEFT: jpg
 	slide.addText([{ text: `path:"${IMAGE_PATHS.ccLogo.path}"` }], { ...BASE_CODE_OPTS, ...{ x: 0.5, y: 0.6, w: 3.3, h: 0.7, fontSize: 11 } });
