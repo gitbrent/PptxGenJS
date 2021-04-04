@@ -1,5 +1,5 @@
 /**
- * enums.js
+ * enums.mjs
  * global variables
  */
 

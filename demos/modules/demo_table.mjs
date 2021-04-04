@@ -1,5 +1,5 @@
 /**
- * NAME: demo_tables.js
+ * NAME: demo_tables.mjs
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)

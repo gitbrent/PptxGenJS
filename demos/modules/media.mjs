@@ -1,5 +1,5 @@
 /**
- * media.js
+ * media.mjs
  * base64 and other long variables
  */
 
