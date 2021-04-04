@@ -6,7 +6,7 @@
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
 	<meta name="version" content="3.6.0">
-	<meta name="updated" content="2021-04-03">
+	<meta name="updated" content="2021-04-04">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -56,6 +56,7 @@
 		$('#btnGenFunc_Table').click(() => execGenSlidesFunc('Table'));
 		$('#btnGenFunc_Master').click(() => execGenSlidesFunc('Master'));
 		//
+		$('#table2slides1').change(() => buildDataTable());
 		$('#table2slides1').click(() => table2slides1());
 		$('#table2slides2').click(() => table2slides2());
 		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle'));
@@ -229,7 +230,7 @@
 									<div class="row align-items-start">
 										<div class="col">
 											<label for="numTab2SlideRows">Table Rows</label>
-											<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4" onchange="buildDataTable()">
+											<input id="numTab2SlideRows" class="form-control" type="number" min="1" max="25" value="4">
 										</div>
 										<div class="col">
 											<label for="numTab2Padding">Cell Padding</label>
