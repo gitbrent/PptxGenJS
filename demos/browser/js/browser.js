@@ -136,81 +136,72 @@ export function doAppStart() {
 	doNavRestore();
 }
 
-function doNavRestore() {
-	$('.nav a[href="' + window.location.href.substring(window.location.href.toLowerCase().indexOf(".html#") + 5) + '"]').tab("show");
+export function runAllDemos() {
+	if (console.time) console.time("runAllDemos");
+	$("#modalBusy").modal("show");
+
+	runEveryTest()
+		.catch(function (err) {
+			console.error(err.toString());
+			$("#modalBusy").modal("hide");
+		})
+		.then(function () {
+			if (console.timeEnd) console.timeEnd("runAllDemos");
+			$("#modalBusy").modal("hide");
+		});
 }
 
-// ==================================================================================================================
+export function execGenSlidesFunc(type) {
+	if (console.time) console.time("execGenSlidesFunc: " + type);
+	$("#modalBusy").modal("show");
 
-function getTimestamp() {
-	let dateNow = new Date();
-	let dateMM = dateNow.getMonth() + 1;
-	let dateDD = dateNow.getDate();
-	let h = dateNow.getHours();
-	let m = dateNow.getMinutes();
-	return (
-		dateNow.getFullYear() +
-		"" +
-		(dateMM <= 9 ? "0" + dateMM : dateMM) +
-		"" +
-		(dateDD <= 9 ? "0" + dateDD : dateDD) +
-		(h <= 9 ? "0" + h : h) +
-		(m <= 9 ? "0" + m : m)
-	);
+	execGenSlidesFuncs(type)
+		.catch(function (err) {
+			$("#modalBusy").modal("hide");
+			console.error(err);
+		})
+		.then(function () {
+			$("#modalBusy").modal("hide");
+			if (console.timeEnd) console.timeEnd("execGenSlidesFunc: " + type);
+		});
 }
 
-// Table-to-Slides Demos
+export function buildDataTable() {
+	// STEP 1:
+	$("#tabAutoPaging tbody").empty();
 
-function addMasterDefs(pptx) {
-	// 1:
-	pptx.defineSlideMaster({
-		title: "TITLE_SLIDE",
-		background: { data: BKGD_STARLABS },
-		objects: [
-			{ line: { x: 3.5, y: 1.0, w: 6.0, line: { color: "0088CC", width: 5 } } },
-			{ rect: { x: 0.0, y: 5.3, w: "100%", h: 0.75, fill: { color: "F1F1F1" } } },
-			{
-				text: {
-					text: "Global IT & Services :: Status Report",
-					options: { x: 3.0, y: 5.3, w: 5.5, h: 0.75, fontFace: "Arial", fontSize: 20, color: "363636", valign: "middle", margin: 0 },
-				},
-			},
-			{ image: { x: 11.3, y: 6.4, w: 1.67, h: 0.75, data: STARLABS_LOGO_SM } },
-		],
-	});
+	// STEP 2:
+	for (let idx = 0; idx < $("#numTab2SlideRows").val(); idx++) {
+		let strHtml =
+			"<tr>" +
+			'<td style="text-align:center">' +
+			(idx + 1) +
+			"</td>" +
+			"<td>" +
+			TABLE_NAMES_L[Math.floor(Math.random() * 10)] +
+			"</td>" +
+			"<td>" +
+			TABLE_NAMES_F[Math.floor(Math.random() * 10)] +
+			"</td>" +
+			"<td>Text:<br>" +
+			LOREM_IPSUM.substring(0, (Math.floor(Math.random() * 10) + 2) * 130) +
+			"</td>" +
+			"</tr>";
+		$("#tabAutoPaging tbody").append(strHtml);
+	}
 
-	// 2:
-	pptx.defineSlideMaster({
-		title: "MASTER_SLIDE",
-		background: { fill: "F1F1F1" },
-		slideNumber: { x: 1.0, y: 7.0, color: "FFFFFF" },
-		margin: [0.5, 0.25, 1.25, 0.25],
-		objects: [
-			{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },
-			{
-				text: {
-					text: "S.T.A.R. Laboratories",
-					options: { x: 0, y: 6.9, w: "100%", h: 0.6, align: "center", valign: "middle", color: "FFFFFF", fontSize: 12 },
-				},
-			},
-		],
-	});
+	// STEP 3: Add some style to table for testing
+	// TEST Padding
+	$("#tabAutoPaging thead th").css("padding", "10px 5px");
+	// TEST font-size/auto-paging
+	$("#tabAutoPaging tbody tr:first-child td:last-child").css("font-size", "12px");
+	$("#tabAutoPaging tbody tr:last-child td:last-child").css("font-size", "16px");
+}
 
-	// 3:
-	pptx.defineSlideMaster({
-		title: "THANKS_SLIDE",
-		background: { fill: "36ABFF" },
-		objects: [
-			{ rect: { x: 0.0, y: 3.4, w: "100%", h: 2.0, fill: { color: "ffffff" } } },
-			{
-				text: {
-					text: "Thank You!",
-					options: { x: 0.0, y: 0.9, w: "100%", h: 1, fontFace: "Arial", color: "FFFFFF", fontSize: 60, align: "center" },
-				},
-			},
-			{ image: { x: 4.6, y: 3.5, w: 4, h: 1.8, data: LOGO_STARLABS } },
-		],
-	});
+export function table2slidesDemoForTab(inTabId, inOpts) {
+	let pptx = new PptxGenJS();
+	pptx.tableToSlides(inTabId, inOpts || null);
+	pptx.writeFile({ fileName: `${inTabId}_${getTimestamp()}` });
 }
 
 export function table2slides1() {
@@ -267,39 +258,85 @@ export function table2slides2() {
 	pptx.writeFile({ fileName: "Table2Slides_DynamicText" });
 }
 
-//////
+// ==================================================================================================================
 
-export function runAllDemos() {
-	if (console.time) console.time("runAllDemos");
-	$("#modalBusy").modal("show");
-
-	runEveryTest()
-		.catch(function (err) {
-			console.error(err.toString());
-			$("#modalBusy").modal("hide");
-		})
-		.then(function () {
-			if (console.timeEnd) console.timeEnd("runAllDemos");
-			$("#modalBusy").modal("hide");
-		});
+function doNavRestore() {
+	$('.nav a[href="' + window.location.href.substring(window.location.href.toLowerCase().indexOf(".html#") + 5) + '"]').tab("show");
 }
 
-export function execGenSlidesFunc(type) {
-	if (console.time) console.time("execGenSlidesFunc: " + type);
-	$("#modalBusy").modal("show");
-
-	execGenSlidesFuncs(type)
-		.catch(function (err) {
-			$("#modalBusy").modal("hide");
-			console.error(err);
-		})
-		.then(function () {
-			$("#modalBusy").modal("hide");
-			if (console.timeEnd) console.timeEnd("execGenSlidesFunc: " + type);
-		});
+function getTimestamp() {
+	let dateNow = new Date();
+	let dateMM = dateNow.getMonth() + 1;
+	let dateDD = dateNow.getDate();
+	let h = dateNow.getHours();
+	let m = dateNow.getMinutes();
+	return (
+		dateNow.getFullYear() +
+		"" +
+		(dateMM <= 9 ? "0" + dateMM : dateMM) +
+		"" +
+		(dateDD <= 9 ? "0" + dateDD : dateDD) +
+		(h <= 9 ? "0" + h : h) +
+		(m <= 9 ? "0" + m : m)
+	);
 }
 
-/* DESC: old/undocumented/unused */
+function addMasterDefs(pptx) {
+	// 1:
+	pptx.defineSlideMaster({
+		title: "TITLE_SLIDE",
+		background: { data: BKGD_STARLABS },
+		objects: [
+			{ line: { x: 3.5, y: 1.0, w: 6.0, line: { color: "0088CC", width: 5 } } },
+			{ rect: { x: 0.0, y: 5.3, w: "100%", h: 0.75, fill: { color: "F1F1F1" } } },
+			{
+				text: {
+					text: "Global IT & Services :: Status Report",
+					options: { x: 3.0, y: 5.3, w: 5.5, h: 0.75, fontFace: "Arial", fontSize: 20, color: "363636", valign: "middle", margin: 0 },
+				},
+			},
+			{ image: { x: 11.3, y: 6.4, w: 1.67, h: 0.75, data: STARLABS_LOGO_SM } },
+		],
+	});
+
+	// 2:
+	pptx.defineSlideMaster({
+		title: "MASTER_SLIDE",
+		background: { fill: "F1F1F1" },
+		slideNumber: { x: 1.0, y: 7.0, color: "FFFFFF" },
+		margin: [0.5, 0.25, 1.25, 0.25],
+		objects: [
+			{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },
+			{
+				text: {
+					text: "S.T.A.R. Laboratories",
+					options: { x: 0, y: 6.9, w: "100%", h: 0.6, align: "center", valign: "middle", color: "FFFFFF", fontSize: 12 },
+				},
+			},
+		],
+	});
+
+	// 3:
+	pptx.defineSlideMaster({
+		title: "THANKS_SLIDE",
+		background: { fill: "36ABFF" },
+		objects: [
+			{ rect: { x: 0.0, y: 3.4, w: "100%", h: 2.0, fill: { color: "ffffff" } } },
+			{
+				text: {
+					text: "Thank You!",
+					options: { x: 0.0, y: 0.9, w: "100%", h: 1, fontFace: "Arial", color: "FFFFFF", fontSize: 60, align: "center" },
+				},
+			},
+			{ image: { x: 4.6, y: 3.5, w: 4, h: 1.8, data: LOGO_STARLABS } },
+		],
+	});
+}
+
+// ==================================================================================================================
+// Old, undocumented, legacy tests below
+// ==================================================================================================================
+
 function doTestSimple() {
 	let pptx = new PptxGenJS();
 	let slide = pptx.addSlide();
@@ -432,7 +469,6 @@ function doHomepageDemo_Text() {
 	pptx.writeFile({ fileName: "Demo-Text" });
 }
 
-// UNDOCUMENTED: Run from console
 function testTTS() {
 	let pptx = new PptxGenJS();
 	pptx.layout = "LAYOUT_WIDE";
@@ -454,7 +490,6 @@ function testTTS() {
 	pptx.writeFile({ fileName: `PptxGenJs_TTSTest_${getTimestamp()}` });
 }
 
-// UNDOCUMENTED:
 function testTTSMulti() {
 	let ttsTitleText = { fontSize: 14, color: "0088CC", bold: true };
 	let ttsMultiOpts = { fontSize: 13, color: "9F9F9F", verbose: true };
@@ -500,44 +535,6 @@ function testTTSMulti() {
 	slide.addTable(arrText, { x: 9.1, y: 0.6, w: 4, margin: 5, border: "CFCFCF", autoPage: true, autoPageLineWeight: -0.5 });
 
 	pptx.writeFile({ fileName: `PptxGenJS_TTSMulti_${getTimestamp()}` });
-}
-
-function buildDataTable() {
-	// STEP 1:
-	$("#tabAutoPaging tbody").empty();
-
-	// STEP 2:
-	for (let idx = 0; idx < $("#numTab2SlideRows").val(); idx++) {
-		let strHtml =
-			"<tr>" +
-			'<td style="text-align:center">' +
-			(idx + 1) +
-			"</td>" +
-			"<td>" +
-			TABLE_NAMES_L[Math.floor(Math.random() * 10)] +
-			"</td>" +
-			"<td>" +
-			TABLE_NAMES_F[Math.floor(Math.random() * 10)] +
-			"</td>" +
-			"<td>Text:<br>" +
-			LOREM_IPSUM.substring(0, (Math.floor(Math.random() * 10) + 2) * 130) +
-			"</td>" +
-			"</tr>";
-		$("#tabAutoPaging tbody").append(strHtml);
-	}
-
-	// STEP 3: Add some style to table for testing
-	// TEST Padding
-	$("#tabAutoPaging thead th").css("padding", "10px 5px");
-	// TEST font-size/auto-paging
-	$("#tabAutoPaging tbody tr:first-child td:last-child").css("font-size", "12px");
-	$("#tabAutoPaging tbody tr:last-child td:last-child").css("font-size", "16px");
-}
-
-export function table2slidesDemoForTab(inTabId, inOpts) {
-	let pptx = new PptxGenJS();
-	pptx.tableToSlides(inTabId, inOpts || null);
-	pptx.writeFile({ fileName: `${inTabId}_${getTimestamp()}` });
 }
 
 function table2slidesBullets() {
