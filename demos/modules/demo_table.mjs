@@ -3,9 +3,10 @@
  * AUTH: Brent Ely (https://github.com/gitbrent/)
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
- * VER.: 3.5.0
- * BLD.: 20210225
+ * VER.: 3.6.0
+ * BLD.: 20210404
  */
+
 import {
 	TABLE_NAMES_F,
 	DEMO_TITLE_OPTS,
@@ -36,10 +37,11 @@ export function genSlides_Table(pptx) {
  */
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
-	slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	slide.addTable([[{ text: "Table Examples 1", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	// DEMO: align/valign -------------------------------------------------------------------------
+	slide.addTable([[{ text: "Table Examples 1", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+
+	// DEMO: align/valign
 	let objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
 	slide.addText("Cell Text Alignment:", objOpts1);
 
@@ -72,7 +74,7 @@ function genSlide01(pptx) {
 	});
 	// Pass default cell style as tabOpts, then just style/override individual cells as needed
 
-	// DEMO: cell styles --------------------------------------------------------------------------
+	// DEMO: cell styles
 	let objOpts2 = { x: 6.0, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
 	slide.addText("Cell Styles:", objOpts2);
 
@@ -106,7 +108,7 @@ function genSlide01(pptx) {
 		border: { pt: "1", color: "FFFFFF" },
 	});
 
-	// DEMO: Row/Col Width/Heights ----------------------------------------------------------------
+	// DEMO: Row/Col Width/Heights
 	let objOpts3 = { x: 0.5, y: 3.6, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
 	slide.addText("Row/Col Heights/Widths:", objOpts3);
 
@@ -134,11 +136,11 @@ function genSlide01(pptx) {
  */
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	// 2: Slide title
-	slide.addTable([[{ text: "Table Examples 2", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], { x: "4%", y: "2%", w: "95%", h: "4%" }); // QA: this table's x,y,w,h all using %
 
-	// DEMO: Rowspans/Colspans ----------------------------------------------------------------
+	slide.addTable([[{ text: "Table Examples 2", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], { x: "4%", y: "2%", w: "95%", h: "4%" }); // QA: this table's x,y,w,h all using %
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+
+	// DEMO: Rowspans/Colspans
 	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 	slide.addText("Colspans/Rowspans:", optsSub);
 
@@ -247,8 +249,9 @@ function genSlide02(pptx) {
  */
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+
 	slide.addTable([[{ text: "Table Examples 3", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 
 	// DEMO: Rowspans/Colspans ----------------------------------------------------------------
 	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
@@ -311,9 +314,9 @@ function genSlide03(pptx) {
  */
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-	// 2: Slide title
+
 	slide.addTable([[{ text: "Table Examples 4", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 
 	// Cell Margins
 	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
@@ -405,8 +408,10 @@ function genSlide04(pptx) {
  */
 function genSlide05(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+
 	slide.addTable([[{ text: "Table Examples 5", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+
 	slide.addText(
 		"The following textbox and table cell use the same array of text/options objects, making word-level formatting familiar and consistent across the library.",
 		{ x: 0.5, y: 0.5, w: "95%", h: 0.5, margin: 0.1, fontSize: 14 }
@@ -450,8 +455,9 @@ function genSlide05(pptx) {
  */
 function genSlide06(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Tables" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
+
 	slide.addTable([[{ text: "Table Examples 6", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 
 	let optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 	slide.addText("Table Cell Word-Level Formatting:", optsSub);
@@ -513,6 +519,7 @@ function genSlide06(pptx) {
  */
 function genSlide07(pptx) {
 	let slide = null;
+
 	let arrRows = [];
 	let arrText = [];
 	arrRows.push([

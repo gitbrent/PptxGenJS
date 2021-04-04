@@ -22,10 +22,10 @@ export function genSlides_Shape(pptx) {
  */
 function genSlide01(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Shapes" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
-	slide.addTable([[{ text: "Shape Examples 1: Misc Shape Types (no text)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
 
-	//slide.addShape(pptx.shapes.RECTANGLE,         { x:0.5, y:0.8, w:12.5,h:0.5, fill:{color:'F9F9F9'} });
+	slide.addTable([[{ text: "Shape Examples 1: Misc Shape Types (no text)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
+
 	slide.addShape(pptx.shapes.RECTANGLE, { x: 0.5, y: 0.8, w: 1.5, h: 3.0, fill: { color: "FF0000" }, line: { type: "none" } });
 	slide.addShape(pptx.shapes.RECTANGLE, { x: 3.0, y: 0.7, w: 1.5, h: 3.0, fill: { color: "F38E00" }, rotate: 45 });
 	slide.addShape(pptx.shapes.OVAL, { x: 5.4, y: 0.8, w: 3.0, h: 1.5, fill: { type: "solid", color: "0088CC" } });
@@ -71,8 +71,9 @@ function genSlide01(pptx) {
  */
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Shapes" });
-	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
+
 	slide.addTable([[{ text: "Shape Examples 2: Misc Shape Types (with text)", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html");
 
 	slide.addText("RECTANGLE", {
 		shape: pptx.shapes.RECTANGLE,
@@ -105,6 +106,7 @@ function genSlide02(pptx) {
 		align: "center",
 		fontSize: 14,
 	});
+	// TEST: DEPRECATED: `alpha`
 	slide.addText("OVAL (rotate:90, transparency:75)", {
 		shape: pptx.shapes.OVAL,
 		x: 7.7,
@@ -115,7 +117,7 @@ function genSlide02(pptx) {
 		rotate: 90,
 		align: "center",
 		fontSize: 14,
-	}); // TEST: DEPRECATED: `alpha`
+	});
 	slide.addText("ROUNDED-RECTANGLE\ndashType:dash\nrectRadius:10", {
 		shape: pptx.shapes.ROUNDED_RECTANGLE,
 		x: 10,
