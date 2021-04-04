@@ -44,7 +44,7 @@
 	<script src="../modules/demos.mjs" type="module"></script>
 
 	<script type="module">
-		import { doAppStart, execGenSlidesFunc, runAllDemos, table2slides1, table2slides2, table2slidesDemoForTab } from './js/browser.js';
+		import { buildDataTable, doAppStart, execGenSlidesFunc, runAllDemos, table2slides1, table2slides2, table2slidesDemoForTab } from './js/browser.js';
 
 		$('#btnRunAllDemos').click(() => runAllDemos());
 		//
@@ -56,7 +56,7 @@
 		$('#btnGenFunc_Table').click(() => execGenSlidesFunc('Table'));
 		$('#btnGenFunc_Master').click(() => execGenSlidesFunc('Master'));
 		//
-		$('#table2slides1').change(() => buildDataTable());
+		$('#numTab2SlideRows').change(() => buildDataTable());
 		$('#table2slides1').click(() => table2slides1());
 		$('#table2slides2').click(() => table2slides2());
 		$('#tab2slides_tabNoStyle').click(() => table2slidesDemoForTab('tabNoStyle'));
