@@ -11,7 +11,6 @@ module.exports = {
 	onBrokenLinks: "throw",
 	onBrokenMarkdownLinks: "warn",
 	favicon: "img/favicon.png",
-	scripts: ["https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@latest/dist/pptxgen.bundle.js"],
 	customFields: {
 		repoUrl: "https://github.com/gitbrent/PptxGenJS",
 	},
@@ -81,24 +80,42 @@ module.exports = {
 				},
 				{
 					to: "docs/installation",
-					label: "Documentation",
+					label: "Installation",
+					position: "left",
+				},
+				{
+					to: "demos",
+					label: "Demos",
 					position: "left",
 				},
 				{
 					href: "https://github.com/gitbrent/PptxGenJS/releases",
-					label: "Download",
+					label: "Latest Release",
 					position: "left",
+				},
+				/*{
+					href: "https://www.npmjs.com/package/pptxgenjs",
+					position: "right",
+					className: "header-npm-link",
+					"aria-label": "NPM homepage",
 				},
 				{
 					href: "https://github.com/gitbrent/PptxGenJS",
 					position: "right",
 					className: "header-github-link",
 					"aria-label": "GitHub repository",
+				},*/
+				{
+					href: "https://www.npmjs.com/package/pptxgenjs",
+					label: "npm",
+					position: "right",
+					"aria-label": "npm home page",
 				},
 				{
 					href: "https://github.com/gitbrent/PptxGenJS/",
 					label: "GitHub",
 					position: "right",
+					"aria-label": "GitHub repository",
 				},
 			],
 		},

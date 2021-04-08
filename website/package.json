@@ -21,8 +21,10 @@
 		"@docusaurus/theme-classic": "^2.0.0-alpha.72",
 		"@docusaurus/theme-live-codeblock": "^2.0.0-alpha.72",
 		"clsx": "^1.1.1",
+		"pptxgenjs": "^3.5.0",
 		"purgecss": "^4.0.3",
 		"react": "^17.0.1",
-		"react-dom": "^17.0.1"
+		"react-dom": "^17.0.1",
+		"react-gist": "^1.2.2"
 	}
 }

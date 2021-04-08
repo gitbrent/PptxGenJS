@@ -183,6 +183,10 @@
    color: inherit;
  }
 
+ img {
+   vertical-align: middle;
+ }
+
  button {
    border-radius: 0;
  }
@@ -545,9 +549,19 @@
    justify-content: center !important;
  }
 
+ .justify-content-between {
+   -ms-flex-pack: justify !important;
+   justify-content: space-between !important;
+ }
+
  .my-0 {
    margin-top: 0 !important;
    margin-bottom: 0 !important;
+ }
+
+ .my-4 {
+   margin-top: 1.5rem !important;
+   margin-bottom: 1.5rem !important;
  }
 
  .my-5 {
@@ -565,6 +579,14 @@
 
  .mb-4 {
    margin-bottom: 1.5rem !important;
+ }
+
+ .mb-5 {
+   margin-bottom: 3rem !important;
+ }
+
+ .p-4 {
+   padding: 1.5rem !important;
  }
 
  .py-3 {
