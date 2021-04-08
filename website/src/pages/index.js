@@ -21,22 +21,31 @@ export default () => {
 									The most popular powerpoint+js library on npm with nearly 1,000 stars on GitHub
 								</h6>
 								<div className="row row-cols-1 row-cols-md-2 g-4 my-0">
-									<div className="col">
+									<div className="col-12 col-md-4">
 										<button
 											type="button"
-											className={`w-100 btn py-3 ${isDarkTheme ? "btn-primary" : "btn-primary"}`}
+											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-primary" : "btn-primary"}`}
 											onClick={() => (window.location = "./docs/quick-start")}
 										>
 											Get Started
 										</button>
 									</div>
-									<div className="col">
+									<div className="col-12 col-md-4">
 										<button
 											type="button"
-											className={`w-100 btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-											onClick={() => (window.location = "./docs/demos")}
+											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
+											onClick={() => (window.location = "./demos")}
 										>
-											View Demos
+											Demos
+										</button>
+									</div>
+									<div className="col-12 col-md-4">
+										<button
+											type="button"
+											className={`w-100 fw-bold btn fw-bold py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
+											onClick={() => (window.location = "./html2pptx")}
+										>
+											HTML to PPTX
 										</button>
 									</div>
 								</div>
@@ -91,7 +100,7 @@ export default () => {
 									<ul className="mb-0">
 										<li>The absolute easiest PowerPoint library to use</li>
 										<li>Learn as you code will full typescript definitions included</li>
-										<li>Tons of demo code comes included (almost 80 slides of features)</li>
+										<li>Tons of demo code comes included (over 70 slides of features)</li>
 									</ul>
 								</div>
 							</div>
