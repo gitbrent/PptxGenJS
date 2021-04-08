@@ -11,7 +11,7 @@ export default () => {
 
 		return (
 			<section className={`mb-5 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
-				<h4>Tables to Slides Feature</h4>
+				<h4>Table to Slides Feature</h4>
 				<p>Create a presentation from an HTML table with a single line of code. Creates slides as needed (auto-paging).</p>
 				<div className="row align-items-center">
 					<div className="col-auto">
