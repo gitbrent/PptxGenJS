@@ -15,13 +15,17 @@ export default () => {
 				<p>Create a presentation from an HTML table with a single line of code. Creates slides as needed (auto-paging).</p>
 				<div className="row align-items-center">
 					<div className="col-auto">
-						<img alt="HTML Table" src="img/ex-html-to-powerpoint-1.png" height="500" className="border border-light" />
+						<img className="d-none d-md-none d-lg-block border border-light" alt="input: html table" src="img/ex-html-to-powerpoint-1.png" height="500" />
+						<img className="d-none d-md-block d-lg-none border border-light" alt="input: html table" src="img/ex-html-to-powerpoint-1.png" height="300" />
+						<img className="d-block d-md-none d-lg-none border border-light" alt="input: html table" src="img/ex-html-to-powerpoint-1.png" height="200" />
 					</div>
-					<div className="col text-center">
+					<div className="col-auto col-md text-center">
 						<h1 className="mb-0">→</h1>
 					</div>
 					<div className="col-auto">
-						<img alt="PowerPoint with HTML Table" src="img/ex-html-to-powerpoint-2.png" height="500" />
+						<img className="d-none d-md-none d-lg-block border border-light" alt="output: powerpoint slides" src="img/ex-html-to-powerpoint-2.png" height="500" />
+						<img className="d-none d-md-block d-lg-none border border-light" alt="output: powerpoint slides" src="img/ex-html-to-powerpoint-2.png" height="300" />
+						<img className="d-block d-md-none d-lg-none border border-light" alt="output: powerpoint slides" src="img/ex-html-to-powerpoint-2.png" height="200" />
 					</div>
 				</div>
 			</section>
@@ -36,13 +40,19 @@ export default () => {
 			<section className={`mb-5 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
 				<h4>Demo Code</h4>
 				<p>
-					The <code>tableToSlides</code> method clones the table including CSS style and creates slides as needed (auto-paging).
+					The <code>tableToSlides</code> method clones the table including CSS style and creates slides as needed (auto-paging). These 3 lines of code were all it took to
+					produce the slides shown above!
 				</p>
-				<p>
-					View the <a href="docs/html-to-powerpoint">HTML-to-PowerPoint docs</a> for a complete list of options like repeating header, start location on subsequnet
-					slides, character and line weight, etc.
-				</p>
+				<p>View the HTML-to-PowerPoint docs for a complete list of options like repeating header, start location on subsequnet slides, character and line weight, etc.</p>
 				<Gist id="494850b6775dd5c8ce314672a1846208" />
+				<button
+					type="button"
+					aria-label="HTML to PowerPoint Documentation"
+					className={`w-100 mt-4 btn ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
+					onClick={() => (window.location.href = "docs/html-to-powerpoint")}
+				>
+					HTML to PowerPoint Docs
+				</button>
 			</section>
 		);
 	};
@@ -53,12 +63,18 @@ export default () => {
 		return (
 			<section className={`mb-5 p-4 ${isDarkTheme ? "bg-black" : "bg-white"}`}>
 				<h4>Live Demo</h4>
-				<p>
-					The <a href="demo/index.html#html2pptx">complete library demo</a> has an interactive table and options you can interact with.
-				</p>
+				<p>Try it for yourself! The demo below has an interactive table plus various options to test drive.</p>
 				<div className="text-center">
 					<img alt="HTML Table" src="img/ex-html-to-powerpoint-3.png" height="500" className="border border-light" />
 				</div>
+				<button
+					type="button"
+					aria-label="HTML to PowerPoint Demo"
+					className={`w-100 mt-4 btn ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
+					onClick={() => (window.location.href = "demo/index.html#html2pptx")}
+				>
+					HTML to PowerPoint Demo
+				</button>
 			</section>
 		);
 	};
