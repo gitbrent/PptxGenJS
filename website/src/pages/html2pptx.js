@@ -64,7 +64,7 @@ export default () => {
 					type="button"
 					aria-label="HTML to PowerPoint Documentation"
 					className={`w-100 mt-4 btn ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-					onClick={() => (window.location.href = "docs/html-to-powerpoint")}
+					onClick={() => (window.location.href = "/PptxGenJS/docs/html-to-powerpoint")}
 				>
 					HTML to PowerPoint Docs
 				</button>
@@ -86,7 +86,7 @@ export default () => {
 					type="button"
 					aria-label="HTML to PowerPoint Demo"
 					className={`w-100 mt-4 btn ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-					onClick={() => (window.location.href = "demo/index.html#html2pptx")}
+					onClick={() => (window.location.href = "/PptxGenJS/demo/index.html#html2pptx")}
 				>
 					HTML to PowerPoint Demo
 				</button>
