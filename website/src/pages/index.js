@@ -24,8 +24,9 @@ export default () => {
 									<div className="col-12 col-md-4">
 										<button
 											type="button"
+											aria-label="Get Started"
 											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-primary" : "btn-primary"}`}
-											onClick={() => (window.location = "./docs/quick-start")}
+											onClick={() => (window.location.href = "docs/quick-start")}
 										>
 											Get Started
 										</button>
@@ -33,8 +34,9 @@ export default () => {
 									<div className="col-12 col-md-4">
 										<button
 											type="button"
+											aria-label="View Demos"
 											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-											onClick={() => (window.location = "./demos")}
+											onClick={() => (window.location.href = "demos")}
 										>
 											Demos
 										</button>
@@ -42,8 +44,9 @@ export default () => {
 									<div className="col-12 col-md-4">
 										<button
 											type="button"
+											aria-label="Learn about HTML to PowerPoint"
 											className={`w-100 fw-bold btn fw-bold py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-											onClick={() => (window.location = "./html2pptx")}
+											onClick={() => (window.location.href = "html2pptx")}
 										>
 											HTML to PPTX
 										</button>
