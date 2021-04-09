@@ -17,8 +17,8 @@ gulp.task("deploy-docs", () => {
 gulp.task("deploy-html", () => {
 	return gulp.src("./build/*.html").pipe(gulp.dest("../"));
 });
-gulp.task("deploy-demos", () => {
-	return gulp.src("./build/demos**/**").pipe(gulp.dest("../"));
+gulp.task("deploy-demoinfo", () => {
+	return gulp.src("./build/demoinfo**/**").pipe(gulp.dest("../"));
 });
 gulp.task("deploy-html2pptx", () => {
 	return gulp.src("./build/html2pptx**/**").pipe(gulp.dest("../"));
@@ -40,7 +40,7 @@ gulp.task("deploy-sitemap", () => {
 // Build/Deploy
 gulp.task(
 	"default",
-	gulp.parallel("deploy-assets", "deploy-docs", "deploy-html", "deploy-demos", "deploy-html2pptx", "deploy-license", "deploy-privacy", "deploy-img", "deploy-sitemap"),
+	gulp.parallel("deploy-assets", "deploy-docs", "deploy-html", "deploy-demoinfo", "deploy-html2pptx", "deploy-license", "deploy-privacy", "deploy-img", "deploy-sitemap"),
 	() => {
 		console.log("Done");
 	}
