@@ -26,7 +26,7 @@ export default () => {
 											type="button"
 											aria-label="Get Started"
 											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-primary" : "btn-primary"}`}
-											onClick={() => (window.location.href = "docs/quick-start")}
+											onClick={() => (window.location.href = "/PptxGenJS/docs/quick-start")}
 										>
 											Get Started
 										</button>
@@ -36,7 +36,7 @@ export default () => {
 											type="button"
 											aria-label="View Demos"
 											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-											onClick={() => (window.location.href = "demos")}
+											onClick={() => (window.location.href = "/PptxGenJS/demos")}
 										>
 											Demos
 										</button>
@@ -46,7 +46,7 @@ export default () => {
 											type="button"
 											aria-label="Learn about HTML to PowerPoint"
 											className={`w-100 fw-bold btn fw-bold py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-											onClick={() => (window.location.href = "html2pptx")}
+											onClick={() => (window.location.href = "/PptxGenJS/html2pptx")}
 										>
 											HTML to PPTX
 										</button>
