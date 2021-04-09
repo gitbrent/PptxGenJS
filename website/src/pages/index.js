@@ -32,16 +32,14 @@ export default () => {
 										</button>
 									</div>
 									<div className="col-12 col-md-4">
-										<a href="/PptxGenJS/demos" className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-											tabindex="-1" role="button" aria-label="View Demos">Demos</a>
-										{/*<button
+										<button
 											type="button"
 											aria-label="View Demos"
 											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
 											onClick={() => (window.location.href = "/PptxGenJS/demos")}
 										>
 											Demos
-										</button>*/}
+										</button>
 									</div>
 									<div className="col-12 col-md-4">
 										<button
