@@ -36,7 +36,7 @@ export default () => {
 											type="button"
 											aria-label="View Demos"
 											className={`w-100 fw-bold btn py-3 ${isDarkTheme ? "btn-outline-primary" : "btn-outline-primary"}`}
-											onClick={() => (window.location.href = "/PptxGenJS/demos")}
+											onClick={() => (window.location.href = "/PptxGenJS/demoinfo")}
 										>
 											Demos
 										</button>

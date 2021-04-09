@@ -84,7 +84,7 @@ module.exports = {
 					position: "left",
 				},
 				{
-					to: "demos",
+					to: "demoinfo",
 					label: "Demos",
 					position: "left",
 				},
