@@ -80,7 +80,7 @@ export default () => {
 				<h4>Live Demo</h4>
 				<p>Try it for yourself! The demo below has an interactive table plus various options to test drive.</p>
 				<div className="text-center">
-					<img alt="HTML Table" src="img/ex-html-to-powerpoint-3.png" height="500" className="border border-light" />
+					<img alt="HTML Table" src="/PptxGenJS/img/ex-html-to-powerpoint-3.png" height="500" className="border border-light" />
 				</div>
 				<button
 					type="button"
