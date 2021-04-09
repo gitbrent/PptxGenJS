@@ -15,9 +15,9 @@ export default () => {
 				<p>Create a presentation from an HTML table with a single line of code. Creates slides as needed (auto-paging).</p>
 				<div className="row align-items-center">
 					<div className="col-auto">
-						<img className="d-none d-md-none d-lg-block border border-light" alt="input: html table" src="/pptxgenjs/img/ex-html-to-powerpoint-1.png" height="500" />
-						<img className="d-none d-md-block d-lg-none border border-light" alt="input: html table" src="/pptxgenjs/img/ex-html-to-powerpoint-1.png" height="300" />
-						<img className="d-block d-md-none d-lg-none border border-light" alt="input: html table" src="/pptxgenjs/img/ex-html-to-powerpoint-1.png" height="200" />
+						<img className="d-none d-md-none d-lg-block border border-light" alt="input: html table" src="/PptxGenJS/img/ex-html-to-powerpoint-1.png" height="500" />
+						<img className="d-none d-md-block d-lg-none border border-light" alt="input: html table" src="/PptxGenJS/img/ex-html-to-powerpoint-1.png" height="300" />
+						<img className="d-block d-md-none d-lg-none border border-light" alt="input: html table" src="/PptxGenJS/img/ex-html-to-powerpoint-1.png" height="200" />
 					</div>
 					<div className="col-auto col-md text-center">
 						<h1 className="mb-0">→</h1>
@@ -26,19 +26,19 @@ export default () => {
 						<img
 							className="d-none d-md-none d-lg-block border border-light"
 							alt="output: powerpoint slides"
-							src="/pptxgenjs/img/ex-html-to-powerpoint-2.png"
+							src="/PptxGenJS/img/ex-html-to-powerpoint-2.png"
 							height="500"
 						/>
 						<img
 							className="d-none d-md-block d-lg-none border border-light"
 							alt="output: powerpoint slides"
-							src="/pptxgenjs/img/ex-html-to-powerpoint-2.png"
+							src="/PptxGenJS/img/ex-html-to-powerpoint-2.png"
 							height="300"
 						/>
 						<img
 							className="d-block d-md-none d-lg-none border border-light"
 							alt="output: powerpoint slides"
-							src="/pptxgenjs/img/ex-html-to-powerpoint-2.png"
+							src="/PptxGenJS/img/ex-html-to-powerpoint-2.png"
 							height="200"
 						/>
 					</div>

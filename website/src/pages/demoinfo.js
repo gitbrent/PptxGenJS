@@ -76,7 +76,7 @@ export default () => {
 								Function demos for every feature are available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/browser">browser demo</a>,
 								which is hosted online below. Over 70 slides worth of various PowerPoint objects can be produced.
 							</p>
-							<button type="button" className="btn btn-primary" onClick={() => (location.href = "https://gitbrent.github.io/PptxGenJS/demo/")}>
+							<button type="button" className="btn btn-primary" onClick={() => (window.location.href = "https://gitbrent.github.io/PptxGenJS/demo/")}>
 								Complete Library Demo
 							</button>
 						</div>
@@ -88,7 +88,7 @@ export default () => {
 								There is a complete react application available in the <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/react-demo">demos/react</a>{" "}
 								folder. The latest build can be run as a demo below.
 							</p>
-							<button type="button" className="btn btn-primary" onClick={() => window.open("demo-react/index.html", "_blank")}>
+							<button type="button" className="btn btn-primary" onClick={() => window.open("/PptxGenJS/demo-react/index.html", "_blank")}>
 								React App Demo
 							</button>
 						</div>
@@ -109,7 +109,7 @@ export default () => {
 					<br />
 					All demo code is divided into modules on github under <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/modules">demos/modules</a>.
 				</p>
-				<img alt="PptxGenJS PowerPoint Demo Slides" src="/pptxgenjs/img/readme_banner.png"></img>
+				<img alt="PptxGenJS PowerPoint Demo Slides" src="/PptxGenJS/img/readme_banner.png"></img>
 			</section>
 		);
 	};
