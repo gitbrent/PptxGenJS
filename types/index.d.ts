@@ -82,9 +82,10 @@ declare class PptxGenJS {
 
 	/**
 	 * Export the current Presentation to stream
+	 * @param {WriteBaseProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file stream
 	 */
-	stream(): Promise<string | ArrayBuffer | Blob | Uint8Array>
+	stream(props?: PptxGenJS.WriteBaseProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
 	 * @param {WriteProps} props - output properties

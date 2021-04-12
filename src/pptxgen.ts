@@ -552,9 +552,9 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {WriteBaseProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
-	stream(props: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+	stream(props?: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
 		return this.exportPresentation({
-			compression: props.compression || false,
+			compression: props && props.hasOwnProperty('compression') ? props.compression : false,
 			outputType: 'STREAM',
 		})
 	}
