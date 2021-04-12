@@ -553,8 +553,10 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @returns {Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array>} file stream
 	 */
 	stream(props?: WriteBaseProps): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
+		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
+
 		return this.exportPresentation({
-			compression: props && props.hasOwnProperty('compression') ? props.compression : false,
+			compression: propsCompress,
 			outputType: 'STREAM',
 		})
 	}
@@ -566,12 +568,12 @@ export default class PptxGenJS implements IPresentationProps {
 	 */
 	write(props?: WriteProps | WRITE_OUTPUT_TYPE): Promise<string | ArrayBuffer | Blob | Buffer | Uint8Array> {
 		// DEPRECATED: @deprecated v3.5.0 - outputType - [[remove in v4.0.0]]
-		const propsOutType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
+		const propsOutpType = typeof props === 'object' && props.hasOwnProperty('outputType') ? props.outputType : props ? (props as WRITE_OUTPUT_TYPE) : null
 		const propsCompress = typeof props === 'object' && props.hasOwnProperty('compression') ? props.compression : false
 
 		return this.exportPresentation({
 			compression: propsCompress,
-			outputType: propsOutType,
+			outputType: propsOutpType,
 		})
 	}
 
