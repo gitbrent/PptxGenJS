@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0-beta @ 2021-04-12T02:40:35.992Z */
+/* PptxGenJS 3.6.0-beta @ 2021-04-12T02:51:14.809Z */
 import JSZip from 'jszip';
 
 /**
@@ -6132,7 +6132,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.6.0-beta_20210403-1745';
+var VERSION = '3.6.0-beta_20210410-2141';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6593,7 +6593,7 @@ var PptxGenJS = /** @class */ (function () {
      */
     PptxGenJS.prototype.stream = function (props) {
         return this.exportPresentation({
-            compression: props.compression || false,
+            compression: props && props.hasOwnProperty('compression') ? props.compression : false,
             outputType: 'STREAM',
         });
     };
