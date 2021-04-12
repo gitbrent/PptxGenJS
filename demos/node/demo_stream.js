@@ -41,7 +41,7 @@ pptx.stream()
 		app.listen(3000, () => {
 			console.log(`\n\n--------------------==~==~==~==[ STARTING STREAM DEMO... ]==~==~==~==--------------------\n`);
 			console.log(`* pptxgenjs ver: ${pptx.version}`);
-			console.log(`* save location: ${__dirname}`);
+			console.log(`* save location: ${process.cwd()}`);
 			console.log(`\n`);
 			console.log("PptxGenJS Node Stream Demo app listening on port 3000!");
 			console.log("Visit: http://localhost:3000/");
