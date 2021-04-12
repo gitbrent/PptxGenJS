@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0-beta @ 2021-04-03T22:45:45.704Z */
+/* PptxGenJS 3.6.0-beta @ 2021-04-12T02:40:35.987Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -594,12 +594,10 @@ OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
 PERFORMANCE OF THIS SOFTWARE.
 ***************************************************************************** */
 
-function __spreadArrays() {
-    for (var s = 0, i = 0, il = arguments.length; i < il; i++) s += arguments[i].length;
-    for (var r = Array(s), k = 0, i = 0; i < il; i++)
-        for (var a = arguments[i], j = 0, jl = a.length; j < jl; j++, k++)
-            r[k] = a[j];
-    return r;
+function __spreadArray(to, from) {
+    for (var i = 0, il = from.length, j = to.length; i < il; i++, j++)
+        to[j] = from[i];
+    return to;
 }
 
 /**
@@ -1082,7 +1080,7 @@ function getSlidesForTableRows(tableRows, tabOpts, presLayout, masterSlide) {
                         row.forEach(function (cell) { return newHeadRow.push(cell); });
                         tableHeadRows_1.push(newHeadRow);
                     });
-                    tableRows = __spreadArrays(tableHeadRows_1, tableRows);
+                    tableRows = __spreadArray(__spreadArray([], tableHeadRows_1), tableRows);
                     return "break";
                 }
                 else {
@@ -1213,7 +1211,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
         var colSelectorSet = document.querySelector("#" + tabEleId + " thead tr:first-child th:nth-child(" + (idxW + 1) + ")");
         if (colSelectorSet)
             intMinWidth = Number(colSelectorSet.getAttribute('data-pptx-width'));
-        arrColW.push( intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
+        arrColW.push(intMinWidth > intCalcWidth ? intMinWidth : intCalcWidth);
     });
     if (opts.verbose) {
         console.log("arrColW ................ = " + arrColW.toString());
@@ -1325,7 +1323,7 @@ function genTableToSlides(pptx, tabEleId, options, masterSlide) {
     // Pass head-rows as there is an option to add to each table and the parse func needs this data to fulfill that option
     opts._arrObjTabHeadRows = arrObjTabHeadRows || null;
     opts.colW = arrColW;
-    getSlidesForTableRows(__spreadArrays(arrObjTabHeadRows, arrObjTabBodyRows, arrObjTabFootRows), opts, pptx.presLayout, masterSlide).forEach(function (slide, idxTr) {
+    getSlidesForTableRows(__spreadArray(__spreadArray(__spreadArray([], arrObjTabHeadRows), arrObjTabBodyRows), arrObjTabFootRows), opts, pptx.presLayout, masterSlide).forEach(function (slide, idxTr) {
         // A: Create new Slide
         var newSlide = pptx.addSlide({ masterName: opts.masterSlideName || null });
         // B: DESIGN: Reset `y` to startY or margin after first Slide (ISSUE#43, ISSUE#47, ISSUE#48)
@@ -1534,7 +1532,7 @@ function slideObjectToXml(slide) {
                             var vMergeCells = new Array(colspan - 1).fill(undefined).map(function (_) {
                                 return { _type: SLIDE_OBJECT_TYPES.tablecell, options: { rowspan: rowspan }, _hmerge: true };
                             });
-                            cells.splice.apply(cells, __spreadArrays([cIdx + 1, 0], vMergeCells));
+                            cells.splice.apply(cells, __spreadArray([cIdx + 1, 0], vMergeCells));
                             cIdx += colspan;
                         }
                         else {
@@ -1590,7 +1588,7 @@ function slideObjectToXml(slide) {
                         var cellSpanAttrStr = Object.keys(cellSpanAttrs)
                             .map(function (k) { return [k, cellSpanAttrs[k]]; })
                             .filter(function (_a) {
-                            var _k = _a[0], v = _a[1];
+                            _a[0]; var v = _a[1];
                             return !!v;
                         })
                             .map(function (_a) {
