@@ -18,6 +18,7 @@ website/build
 website/node_modules
 website/yarn.lock
 
+!website/docs
 !website/gulpfile.js
 !website/package.json
 !website/i18n/en.json
