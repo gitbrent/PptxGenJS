@@ -3,15 +3,15 @@ id: speaker-notes
 title: Speaker Notes
 ---
 
-Speaker Notes cn be added to a Slide.
+Speaker Notes can be included on any Slide.
 
 ## Syntax
-```javascript
+```typescript
 slide.addNotes('TEXT');
 ```
 
 ## Example: JavaScript
-```javascript
+```typescript
 let pres = new PptxGenJS();
 let slide = pptx.addSlide();
 
