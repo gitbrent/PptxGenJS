@@ -3,7 +3,7 @@ id: types
 title: Type Interfaces
 ---
 
-PptxGenJS Type Interfaces.
+The PptxGenJS interfaces referenced in surrounding documentation. See the [complete list](https://github.com/gitbrent/PptxGenJS/blob/master/types/index.d.ts) on GitHub.
 
 ## Position Props (`PositionProps`)
 
