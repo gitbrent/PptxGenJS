@@ -14,11 +14,8 @@ slide.addTable(rows, { w: 9 });
 
 // TABLE 2: Multi-row table
 // - each row's array element is an array of cells
-let rows = [
-    ["A1", "B1", "C1"],
-    ["A2", "B2", "C2"],
-];
-slide.addTable(rows, { w: "100%" });
+let rows = [["A1", "B1", "C1"]];
+slide.addTable(rows, { align: "left", fontFace: "Arial" });
 
 // TABLE 3: Formatting at a cell level
 // - use this to selectively override the table's cell options
@@ -45,6 +42,12 @@ slide.addTable(rows, { w: 9, rowH: 1, align: "left", fontFace: "Arial" });
 -   Bullets and word-level formatting are supported inside table cells. Passing an array of objects with text/options values
     as the `text` value allows fine-grained control over the text inside cells.
 -   Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
+
+## Table Row Height
+
+-   Use the `h` property to have row(s) divided evenly across the defined area
+-   Use the `rowH` property with an array of values to specify row heights (indexed 0-n)
+-   Omit both properties to have table rows consume only the space required for its contents
 
 ## Properties
 
@@ -135,28 +138,37 @@ Auto-paging will create new slides as table rows overflow, doing the magical wor
 
 ## Table Cell Formatting Examples
 
-**TODO**
+-   Sample Code: [`demo_table.mjs`](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_table.mjs) for 700+ lines of demo code
+-   Online Demo: [pptxgenjs Table Demos](https://gitbrent.github.io/PptxGenJS/demo/#tables)
 
-```javascript
+```typescript
+// -------
 // TABLE 1: Cell-level Formatting
+// -------
 let rows = [];
+
 // Row One: cells will be formatted according to any options provided to `addTable()`
 rows.push(["First", "Second", "Third"]);
+
 // Row Two: set/override formatting for each cell
 rows.push([
     { text: "1st", options: { color: "ff0000" } },
     { text: "2nd", options: { color: "00ff00" } },
     { text: "3rd", options: { color: "0000ff" } },
 ]);
+
 slide.addTable(rows, { x: 0.5, y: 1.0, w: 9.0, color: "363636" });
 
+// -------
 // TABLE 2: Using word-level formatting inside cells
+// -------
 // NOTE: An array of text/options objects provides fine-grained control over formatting
 let arrObjText = [
     { text: "Red ", options: { color: "FF0000" } },
     { text: "Green ", options: { color: "00FF00" } },
     { text: "Blue", options: { color: "0000FF" } },
 ];
+
 // EX A: Pass an array of text objects to `addText()`
 slide.addText(arrObjText, {
     x: 0.5,
@@ -175,5 +187,10 @@ let arrTabRows = [
         { text: arrObjText, options: { fill: "232323" } },
     ],
 ];
+
 slide.addTable(arrTabRows, { x: 0.5, y: 3.5, w: 9, h: 1, colW: [1.5, 1.5, 6] });
 ```
+
+## Table Cell Formatting Sample
+
+![Table Cell Formatting Demo](./assets/ex-table-cell-format.png)
