@@ -316,7 +316,7 @@ export function addChartDefinition(target: Container, slide: PresSlide, type: CH
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
-export function addImageDefinition(container: Container, slide: PresSlide, opt: ImageProps) {
+export function addImageDefinition(target: Container, slide: PresSlide, opt: ImageProps) {
 	let newObject: ISlideObject = {
 		_type: null,
 		text: null,
@@ -445,7 +445,7 @@ export function addImageDefinition(container: Container, slide: PresSlide, opt: 
 	}
 
 	// STEP 6: Add object to slide
-	slide._slideObjects.push(newObject)
+	target._slideObjects.push(newObject)
 }
 
 /**

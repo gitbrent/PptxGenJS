@@ -1,4 +1,4 @@
-/* PptxGenJS 3.5.0-beta @ 2021-03-26T13:34:49.694Z */
+/* PptxGenJS 3.5.0-beta @ 2021-04-14T16:49:28.529Z */
 import JSZip from 'jszip';
 
 /**
@@ -3350,7 +3350,7 @@ function addChartDefinition(target, slide, type, data, opt) {
  * @note: Remote images (eg: "http://whatev.com/blah"/from web and/or remote server arent supported yet - we'd need to create an <img>, load it, then send to canvas
  * @see: https://stackoverflow.com/questions/164181/how-to-fetch-a-remote-image-to-display-in-a-canvas)
  */
-function addImageDefinition(container, slide, opt) {
+function addImageDefinition(target, slide, opt) {
     var newObject = {
         _type: null,
         text: null,
@@ -3474,7 +3474,7 @@ function addImageDefinition(container, slide, opt) {
         }
     }
     // STEP 6: Add object to slide
-    slide._slideObjects.push(newObject);
+    target._slideObjects.push(newObject);
 }
 /**
  * Adds a media object to a slide definition.
