@@ -7,8 +7,10 @@
 .icloud
 demo-react/
 docs/
-website/
+img/
+website
 bower_components/
 node_modules/
 npm-debug.log
 src/bld
+./*.html
