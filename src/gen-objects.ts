@@ -894,7 +894,7 @@ export function addTableDefinition(
  * @param {PresSlide} target - slide object that the text should be added to
  * @param {string|TextProps[]} text text string or object
  * @param {TextPropsOptions} opts text options
- * @param {boolean} isPlaceholder` is this a placeholder object
+ * @param {boolean} isPlaceholder whether this a placeholder object
  * @since: 1.0.0
  */
 export function addTextDefinition(target: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
@@ -916,6 +916,14 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 			// A.2: Placeholder should inherit their bullets or override them, so don't default them
 			if (itemOpts.placeholder || isPlaceholder) {
 				itemOpts.bullet = itemOpts.bullet || false
+			}
+
+			// A.3: Text targeting a placeholder need to inherit the placeholders options (eg: margin, valign, etc.) (Issue #640)
+			if (itemOpts.placeholder && target._slideLayout && target._slideLayout._slideObjects) {
+				let placeHold = target._slideLayout._slideObjects.filter(
+					item => item._type === 'placeholder' && item.options && item.options.placeholder && item.options.placeholder === itemOpts.placeholder
+				)[0]
+				if (placeHold && placeHold.options) itemOpts = { ...itemOpts, ...placeHold.options }
 			}
 
 			// B:
@@ -1011,7 +1019,7 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
-				addTextDefinition(slide, [{ text: '' }], { placeholder: slideLayoutObj.options.placeholder }, false)
+				addTextDefinition(slide, [{ text: '' }], slideLayoutObj.options, false)
 			}
 		}
 	})

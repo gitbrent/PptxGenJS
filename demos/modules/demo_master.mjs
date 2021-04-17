@@ -38,7 +38,6 @@ function genSlide01(pptx) {
 function genSlide02(pptx) {
 	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
 	slide.addNotes("Master name: `MASTER_SLIDE`\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide.addText("", { placeholder: "title" });
 }
 
 /**
@@ -48,7 +47,7 @@ function genSlide02(pptx) {
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
 	slide.addNotes("Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide.addText("Text Placeholder", { placeholder: "title" });
+	slide.addText("Text Placeholder", { placeholder: "header" });
 	slide.addText(
 		[
 			{ text: "Pre-filled placeholder bullets", options: { bullet: true, valign: "top" } },
@@ -66,7 +65,7 @@ function genSlide03(pptx) {
 function genSlide04(pptx) {
 	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
 	slide.addNotes("Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide.addText("Image Placeholder", { placeholder: "title" });
+	slide.addText("Image Placeholder", { placeholder: "header" });
 	slide.addImage({
 		placeholder: "body",
 		path: IMAGE_PATHS.starlabsBkgd.path,
@@ -87,7 +86,7 @@ function genSlide05(pptx) {
 	];
 	let slide = pptx.addSlide({ masterName: "MASTER_SLIDE", sectionTitle: "Masters" });
 	slide.addNotes("Master name: `MASTER_SLIDE` using pre-filled placeholders\nAPI Docs: https://gitbrent.github.io/PptxGenJS/docs/masters.html");
-	slide.addText("Chart Placeholder", { placeholder: "title" });
+	slide.addText("Chart Placeholder", { placeholder: "header" });
 	slide.addChart(pptx.charts.PIE, dataChartPieLocs, { showLegend: true, legendPos: "l", placeholder: "body" });
 }
 

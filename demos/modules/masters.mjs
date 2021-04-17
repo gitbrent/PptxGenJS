@@ -75,8 +75,10 @@ export function createMasterSlides(pptx) {
 		margin: [0.5, 0.25, 1.0, 0.25],
 		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
 		objects: [
-			{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },
 			//{ 'image': { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },
+			{
+				rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } },
+			},
 			{
 				text: {
 					options: { x: 0, y: 6.9, w: "100%", h: 0.6, align: "center", valign: "middle", color: "FFFFFF", fontSize: 12 },
@@ -85,13 +87,25 @@ export function createMasterSlides(pptx) {
 			},
 			{
 				placeholder: {
-					options: { name: "title", type: "title", x: 0.6, y: 0.2, w: 12, h: 1.0 },
-					text: "",
+					options: {
+						name: "header",
+						type: "title",
+						x: 0.6,
+						y: 0.2,
+						w: 12,
+						h: 1.0,
+						margin: 0,
+						align: "center",
+						valign: "middle",
+						color: "404040",
+						//fontSize: 18,
+					},
+					text: "", // USAGE: Leave blank to have powerpoint substitute default placeholder text (ex: "Click to add title")
 				},
 			},
 			{
 				placeholder: {
-					options: { name: "body", type: "body", x: 0.6, y: 1.5, w: 12, h: 5.25 },
+					options: { name: "body", type: "body", x: 0.6, y: 1.5, w: 12, h: 5.25, fontSize: 28 },
 					text: "(supports custom placeholder text!)",
 				},
 			},
