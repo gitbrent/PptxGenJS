@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/PptxGenJS/demo-react/static/css/main.b100e6da.chunk.css",
-    "main.js": "/PptxGenJS/demo-react/static/js/main.c3f5c8ee.chunk.js",
-    "main.js.map": "/PptxGenJS/demo-react/static/js/main.c3f5c8ee.chunk.js.map",
+    "main.js": "/PptxGenJS/demo-react/static/js/main.00eafecd.chunk.js",
+    "main.js.map": "/PptxGenJS/demo-react/static/js/main.00eafecd.chunk.js.map",
     "runtime-main.js": "/PptxGenJS/demo-react/static/js/runtime-main.41ac10bb.js",
     "runtime-main.js.map": "/PptxGenJS/demo-react/static/js/runtime-main.41ac10bb.js.map",
-    "static/js/2.afe923fa.chunk.js": "/PptxGenJS/demo-react/static/js/2.afe923fa.chunk.js",
-    "static/js/2.afe923fa.chunk.js.map": "/PptxGenJS/demo-react/static/js/2.afe923fa.chunk.js.map",
+    "static/js/2.f3c0b08d.chunk.js": "/PptxGenJS/demo-react/static/js/2.f3c0b08d.chunk.js",
+    "static/js/2.f3c0b08d.chunk.js.map": "/PptxGenJS/demo-react/static/js/2.f3c0b08d.chunk.js.map",
     "index.html": "/PptxGenJS/demo-react/index.html",
-    "precache-manifest.d0f81ec3469626409049a9f093a32c78.js": "/PptxGenJS/demo-react/precache-manifest.d0f81ec3469626409049a9f093a32c78.js",
+    "precache-manifest.da0ceec32cd4c32a33e12e52b4994120.js": "/PptxGenJS/demo-react/precache-manifest.da0ceec32cd4c32a33e12e52b4994120.js",
     "service-worker.js": "/PptxGenJS/demo-react/service-worker.js",
     "static/css/main.b100e6da.chunk.css.map": "/PptxGenJS/demo-react/static/css/main.b100e6da.chunk.css.map",
     "static/media/logo.svg": "/PptxGenJS/demo-react/static/media/logo.bcad93ae.svg"
