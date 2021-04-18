@@ -668,6 +668,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 	// STEP 5: Add slide numbers (if any) last
 	if (slide._slideNumberProps) {
+		// Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
+		if (!slide._slideNumberProps.align) slide._slideNumberProps.align = 'left'
+
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
@@ -715,7 +718,10 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
 		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
-		if (slide._slideNumberProps.align) strSlideXml += `<a:pPr algn="${slide._slideNumberProps.align.substring(0, 1)}"/>`
+		if (slide._slideNumberProps.align.startsWith('l')) strSlideXml += '<a:pPr algn="l"/>'
+		else if (slide._slideNumberProps.align.startsWith('c')) strSlideXml += '<a:pPr algn="ctr"/>'
+		else if (slide._slideNumberProps.align.startsWith('r')) strSlideXml += '<a:pPr algn="r"/>'
+		else strSlideXml += `<a:pPr algn="l"/>`
 		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}

@@ -65,7 +65,7 @@ export function createMasterSlides(pptx) {
 				},
 			},
 		],
-		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
+		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: "center" },
 	});
 
 	// MASTER_SLIDE (MASTER_PLACEHOLDER)
