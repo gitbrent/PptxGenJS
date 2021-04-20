@@ -219,7 +219,8 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addText(text: string | TextProps[], options?: TextPropsOptions): Slide {
-		genObj.addTextDefinition(this, text, options, false)
+		let textParam = typeof text === 'string' || typeof text === 'number' ? [{ text: text, options: options } as TextProps] : text
+		genObj.addTextDefinition(this, textParam, options, false)
 		return this
 	}
 }

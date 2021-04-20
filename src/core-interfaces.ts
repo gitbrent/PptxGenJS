@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
+import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
 
 // Core Types
 // ==========
@@ -121,7 +121,7 @@ export interface HyperlinkProps {
 }
 export interface PlaceholderProps {
 	name: string
-	type: PLACEHOLDER_TYPES
+	type: PLACEHOLDER_TYPE
 	x: Coord
 	y: Coord
 	w: Coord
@@ -256,6 +256,12 @@ export interface TextBaseProps {
 	 */
 	breakLine?: boolean
 	/**
+	 * Add a soft line-break (shift+enter) before line text content
+	 * @default false
+	 * @since v3.5.0
+	 */
+	softBreakBefore?: boolean
+	/**
 	 * Add standard or custom bullet
 	 * - use `true` for standard bullet
 	 * - pass object options for custom bullet
@@ -366,10 +372,31 @@ export interface TextBaseProps {
 	 */
 	lang?: string
 	/**
-	 * underline style
-	 * @default false
+	 * underline properties
+	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
+	 * @default (none)
 	 */
-	underline?: boolean
+	underline?: {
+		style?:
+			| 'dash'
+			| 'dashHeavy'
+			| 'dashLong'
+			| 'dashLongHeavy'
+			| 'dbl'
+			| 'dotDash'
+			| 'dotDashHeave'
+			| 'dotDotDash'
+			| 'dotDotDashHeavy'
+			| 'dotted'
+			| 'dottedHeavy'
+			| 'heavy'
+			| 'none'
+			| 'sng'
+			| 'wavy'
+			| 'wavyDbl'
+			| 'wavyHeavy'
+		color?: Color
+	}
 	/**
 	 * vertical alignment
 	 * @default 'top'
@@ -671,8 +698,9 @@ export interface TableCellProps extends TextBaseProps {
 	colspan?: number
 	/**
 	 * Fill color
-	 * @example 'FF0000' // hex string (red)
-	 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 	 */
 	fill?: ShapeFillProps
@@ -748,6 +776,9 @@ export interface TableProps extends PositionProps, TextBaseProps {
 	colW?: number | number[]
 	/**
 	 * Cell background color
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 	 */
 	fill?: ShapeFillProps
 	/**
@@ -819,6 +850,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	}
 	_lineIdx?: number
 
+	baseline?: number
 	/**
 	 * Character spacing
 	 */
@@ -831,7 +863,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * - 'shrink' = Shrink text on overflow
 	 * - 'resize' = Resize shape to fit text
 	 *
-	 * **Note** 'shrink' and 'resize' only take effect after editting text/resize shape.
+	 * **Note** 'shrink' and 'resize' only take effect after editing text/resize shape.
 	 * Both PowerPoint and Word dynamically calculate a scaling factor and apply it when edit/resize occurs.
 	 *
 	 * There is no way for this library to trigger that behavior, sorry.
@@ -839,6 +871,12 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	 * @default "none"
 	 */
 	fit?: 'none' | 'shrink' | 'resize'
+	/**
+	 * Shape fill
+	 * @example { color:'FF0000' } // hex string (red)
+	 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+	 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+	 */
 	fill?: ShapeFillProps
 	/**
 	 * Flip shape horizontally?
@@ -856,7 +894,20 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	inset?: number
 	isTextBox?: boolean
 	line?: ShapeLineProps
+	/**
+	 * Line spacing (pt)
+	 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Exactly"
+	 * @example 28 // 28pt
+	 */
 	lineSpacing?: number
+	/**
+	 * line spacing multiple (percent)
+	 * - range: 0.0-9.99
+	 * - PowerPoint: Paragraph > Indents and Spacing > Line Spacing: > "Multiple"
+	 * @example 1.5 // 1.5X line spacing
+	 * @since v3.5.0
+	 */
+	lineSpacingMultiple?: number
 	margin?: Margin
 	outline?: { color: Color; size: number }
 	paraSpaceAfter?: number
@@ -870,10 +921,9 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	rtlMode?: boolean
 	shadow?: ShadowProps
 	shape?: SHAPE_NAME
-	strike?: boolean
+	strike?: boolean | 'dblStrike' | 'sngStrike'
 	subscript?: boolean
 	superscript?: boolean
-	underline?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
@@ -1020,7 +1070,7 @@ export interface IChartPropsAxisCat {
 	catAxisMinorTimeUnit?: string
 	catAxisMinorUnit?: string
 	catAxisMinVal?: number
-	catAxisOrientation?: 'minMax' | 'minMax'
+	catAxisOrientation?: 'minMax'
 	catAxisTitle?: string
 	catAxisTitleColor?: string
 	catAxisTitleFontFace?: string
@@ -1084,12 +1134,18 @@ export interface IChartPropsAxisVal {
 	valAxisLineShow?: boolean
 	valAxisLineSize?: number
 	valAxisLineStyle?: 'solid' | 'dash' | 'dot'
+	/**
+	 * PowerPoint: Format Axis > Axis Options > Logarithmic scale - Base
+	 * - range: 2-99
+	 * @since v3.5.0
+	 */
+	valAxisLogScaleBase?: number
 	valAxisMajorTickMark?: ChartAxisTickMark
 	valAxisMajorUnit?: number
 	valAxisMaxVal?: number
 	valAxisMinorTickMark?: ChartAxisTickMark
 	valAxisMinVal?: number
-	valAxisOrientation?: 'minMax' | 'minMax'
+	valAxisOrientation?: 'minMax'
 	valAxisTitle?: string
 	valAxisTitleColor?: string
 	valAxisTitleFontFace?: string
@@ -1154,7 +1210,7 @@ export interface IChartPropsDataLabel {
 	 */
 	dataLabelFormatCode?: string
 	dataLabelFormatScatter?: 'custom' | 'customXY' | 'XY'
-	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd' | 'bestFit'
+	dataLabelPosition?: 'b' | 'bestFit' | 'ctr' | 'l' | 'r' | 't' | 'inEnd' | 'outEnd'
 }
 export interface IChartPropsDataTable {
 	dataTableFontSize?: number
@@ -1246,7 +1302,7 @@ export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
 	options?: ObjectOptions
 	// text
-	text?: string | TextProps[]
+	text?: TextProps[]
 	// table
 	arrTabRows?: TableCell[][]
 	// chart
@@ -1332,7 +1388,7 @@ export interface SlideMasterProps {
 }
 export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
 	_placeholderIdx?: number
-	_placeholderType?: PLACEHOLDER_TYPES
+	_placeholderType?: PLACEHOLDER_TYPE
 
 	cx?: Coord
 	cy?: Coord

@@ -6,14 +6,35 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
-## [3.5.0] - 2021-04-??
+## [3.6.0] - 2021-??-??
 ### Release Summary
-- write()/writeFile() now take a props object as their argument (`WriteProps`/`WriteFileProps`)
+- Demos: Major Update (five years in the making! IE11 is dead, long live IE11!)
+- Browser Demo: Dropped support for IE11 (use v3.5.0 or below) (library still works with IE11 using polyfill)
+### Changes
+- Margin not working with placeholder text [\#640](https://github.com/gitbrent/PptxGenJS/issues/640) ([bestis](https://github.com/bestis))
+- Small API documentation glitch [\#895](https://github.com/gitbrent/PptxGenJS/issues/895) ([Slidemagic](https://github.com/Slidemagic))
+- Doc/Website Updates: Docusaurus docs and website updated to v2.0 [\#931](https://github.com/gitbrent/PptxGenJS/pull/931) ([gitbrent](https://github.com/gitbrent))
+- pptx.stream() WriteBaseProps should be optional [\#932](https://github.com/gitbrent/PptxGenJS/issues/932) ([arbourd](https://github.com/arbourd))
+- Running StdTests generate a corrupt PPT [\#937](https://github.com/gitbrent/PptxGenJS/issues/937) ([michaeltford](https://github.com/michaeltford))
+
+
+
+## [3.5.0] - 2021-03-30
+### Release Summary
+- write()/writeFile() method string arguments are deprecated - props object in now the sole arg (`WriteProps`/`WriteFileProps`)
 ### Added
-- Enable JSZip compression [\#713](https://github.com/gitbrent/PptxGenJS/issues/713) ([pimlottc-gov](https://github.com/pimlottc-gov))
+- Enabled JSZip compression [\#713](https://github.com/gitbrent/PptxGenJS/issues/713) ([pimlottc-gov](https://github.com/pimlottc-gov))
+- Soft line break property: `softBreakBefore` [\#806](https://github.com/gitbrent/PptxGenJS/pull/806) ([memorsolutions](https://github.com/memorsolutions))
+- More text styles: underline/strike/baseline [\#854](https://github.com/gitbrent/PptxGenJS/pull/854) ([wangfengming](https://github.com/wangfengming))
+- Support line spacing by multiple: `lineSpacingMultiple` [\#855](https://github.com/gitbrent/PptxGenJS/pull/855) ([wangfengming](https://github.com/wangfengming))
+- Chart val axis option: logarithmic scale base: `valAxisLogScaleBase` [\#878](https://github.com/gitbrent/PptxGenJS/issues/878) ([rkspx](https://github.com/rkspx))
 ### Changed
 - Fixed: Setting the "Wrap text in shape" option [\#771](https://github.com/gitbrent/PptxGenJS/issues/771) ([CroniD](https://github.com/CroniD))
 - Fixed: `dataLabelFormatCode` option creates corrupted file if the value includes quotes [\#834](https://github.com/gitbrent/PptxGenJS/issues/834) ([kornarakis](https://github.com/kornarakis)) [\#884](https://github.com/gitbrent/PptxGenJS/pull/884) ([gazlo](https://github.com/gazlo))
+- Fixed: Improve typescipt defs: fix dupes, etc [\#886](https://github.com/gitbrent/PptxGenJS/pull/886) ([mmarkelov](https://github.com/mmarkelov))
+- Fixed: Wrong type definition for placeholder type property [\#921](https://github.com/gitbrent/PptxGenJS/issues/921) ([lukevella](https://github.com/lukevella))
+### Internal Updates
+- Doc/Website Updates: Docusaurus docs and website updated to v2.0 [\#924](https://github.com/gitbrent/PptxGenJS/pull/924) ([gitbrent](https://github.com/gitbrent))
 
 
 

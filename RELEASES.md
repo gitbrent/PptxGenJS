@@ -49,10 +49,11 @@ $ npm run demo-stream
 ### React/TypeScript Test
 
 1. Ensure newest `dist/pptxgen.es.js` and `types/index.d.ts` under local node_modules
-2. Update `demos/react-demo/package.json` version
-3. Open `demos/react-demo/src/tstest/Test.tsx`
-4. Check existing code
-5. Test defs by using auto-complete, "pptxgen.ChartType." etc.
+2. Note: Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
+3. Update `demos/react-demo/package.json` version
+4. Open `demos/react-demo/src/tstest/Test.tsx`
+5. Check existing code
+6. Test defs by using auto-complete, "pptxgen.ChartType." etc.
 
 ```bash
 $ cd ~/GitHub/PptxGenJS/demos/react-demo
@@ -69,9 +70,8 @@ $ cd ~/GitHub/PptxGenJS/demos/react-demo
 $ npm run build
 ```
 
-1. Copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build (DO NOT use the deploy script offered onscreen!)
-
-**NOTE** Any updates to `node_modules/dist/pptxgen.es.js` are not picked up by the server (ctrl-C and restart)
+1. Copy entire "build" folder to Downloads for subsequently updating gh-pages with latest build
+2. Note: **DO NOT** use the deploy script offered onscreen!
 
 ## Release New Version
 
@@ -90,8 +90,10 @@ $ npm run build
 
 ### NPM
 
-1. `cd ~/GitHub/PptxGenJS`
-2. `npm publish`
+```bash
+$ cd ~/GitHub/PptxGenJS
+$ npm publish
+```
 
 ## Post-Release Tasks
 

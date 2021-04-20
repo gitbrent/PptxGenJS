@@ -10,13 +10,27 @@ export function testMainMethods() {
 	// PPTX Method 1:
 	//pptx.layout = "LAYOUT_WIDE";
 	//pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
-	pptx.defineLayout({ name: 'TST', width: 13.4, height: 7.5 });
-	pptx.layout = 'TST';
+	pptx.defineLayout({ name: "TST", width: 13.4, height: 7.5 });
+	pptx.layout = "TST";
+
+	// TEST/FIX: For [Issue #921](https://github.com/gitbrent/PptxGenJS/issues/921)
+	pptx.defineSlideMaster({
+		title: "PLACEHOLDER_SLIDE",
+		objects: [
+			{
+				placeholder: {
+					options: { name: "body", type: "body", x: 0.6, y: 1.5, w: 12, h: 5.25 },
+					//options: { name: "body", type: pptx.PlaceholderType.body, x: 0.6, y: 1.5, w: 12, h: 5.25 },
+					text: "(custom placeholder text!)",
+				},
+			},
+		],
+	});
 
 	// PPTX Method 2:
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
-		bkgd: "FFFFFF",
+		background: { fill: "FFFFFF" },
 		margin: [0.5, 0.25, 1.0, 0.25],
 		slideNumber: { x: 0.6, y: 7.0, color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: pptx.AlignH.center },
 		objects: [
@@ -39,7 +53,7 @@ export function testMainMethods() {
 	testMethod_Media(pptx);
 
 	// PPTX Export Method 1:
-	pptx.writeFile("testFile").then((fileName) => console.log(`writeFile: ${fileName}`));
+	pptx.writeFile({ fileName: "testFile" }).then((fileName) => console.log(`writeFile: ${fileName}`));
 	// PPTX Export Method 2:
 	//pptx.write(pptx.OutputType.base64).then((base64) => console.log("base64!")); // TEST-Type: outputType // Works v3.1.1
 	// PPTX Export Method 3:
@@ -57,7 +71,7 @@ function basicDemoSlide(pptx: pptxgen) {
 	//pptx.addSlide({ sectionTitle: "TypeScript" }); // slide2
 
 	let slide = pptx.addSlide({ sectionTitle: "TypeScript", masterName: "MASTER_SLIDE" });
-	slide.slideNumber = { x: '50%', y: '95%', w: 1, h: 1, color: '0088CC' };
+	slide.slideNumber = { x: "50%", y: "95%", w: 1, h: 1, color: "0088CC" };
 
 	let opts: pptxgen.TextPropsOptions = {
 		x: 0,
@@ -90,7 +104,7 @@ function testMethod_Table(pptx: pptxgen) {
 	{
 		let slide = pptx.addSlide({ sectionTitle: "Tables" });
 		slide.addNotes("API Docs:\nhttps://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
-		//slide.addTable( [ [{ text:'Table Examples 1', options:gOptsTextL },gOptsTextR] ], gOptsTabOpts );
+		//slide.addTable( [ [{ text:'Table Examples 1', options:BASE_TEXT_OPTS_L },BASE_TEXT_OPTS_R] ], gOptsTabOpts );
 
 		// DEMO: align/valign -------------------------------------------------------------------------
 		var objOpts1 = { x: 0.5, y: 0.7, w: 4, h: 0.3, margin: 0, fontSize: 18, fontFace: "Arial", color: "0088CC" };
@@ -142,7 +156,7 @@ function testMethod_Table(pptx: pptxgen) {
 			],
 			[
 				{ text: "Bold", options: { fill: { color: "003366" }, bold: true } },
-				{ text: "Underline", options: { fill: { color: "336699" }, underline: true } },
+				{ text: "Underline", options: { fill: { color: "336699" }, underline: { style: "sng" } } },
 				{ text: "10pt Pad", options: { fill: { color: "6699CC" }, margin: 10 } },
 			],
 		];
@@ -186,10 +200,10 @@ function testMethod_Table(pptx: pptxgen) {
 		let slide = pptx.addSlide({ sectionTitle: "Tables" });
 		slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-tables.html");
 		// 2: Slide title
-		//slide.addTable([ [{ text:'Table Examples 2', options:gOptsTextL },gOptsTextR] ], { x:'4%', y:'2%', w:'95%', h:'4%' }); // QA: this table's x,y,w,h all using %
+		//slide.addTable([ [{ text:'Table Examples 2', options:BASE_TEXT_OPTS_L },BASE_TEXT_OPTS_R] ], { x:'4%', y:'2%', w:'95%', h:'4%' }); // QA: this table's x,y,w,h all using %
 
 		// DEMO: Rowspans/Colspans ----------------------------------------------------------------
-		//var optsSub = JSON.parse(JSON.stringify(gOptsSubTitle));
+		//var optsSub = JSON.parse(JSON.stringify(BASE_OPTS_SUBTITLE));
 		//slide.addText('Colspans/Rowspans:', optsSub);
 
 		var tabOpts1: pptxgen.TableProps = {
@@ -398,12 +412,15 @@ function testMethod_Shape(pptx: pptxgen) {
 function testMethod_Text(pptx: pptxgen) {
 	let slide = pptx.addSlide();
 
-	slide.addText([{ text: "Link without Tooltip", options: { hyperlink: { /*slide: '1',*/ tooltip: "hi world", url: "https://github.com/gitbrent" } } }], {
-		x: 2,
-		y: 2,
-		w: 2,
-		h: 0.5,
-	});
+	slide.addText(
+		[{ text: "Link without Tooltip", options: { hyperlink: { /*slide: '1',*/ tooltip: "hi world", url: "https://github.com/gitbrent" } } }],
+		{
+			x: 2,
+			y: 2,
+			w: 2,
+			h: 0.5,
+		}
+	);
 
 	slide.addText(
 		[
@@ -433,5 +450,5 @@ export function testTableMethod() {
 	pptx.tableToSlides("html2ppt"); // Works v3.1.1 (FIXME: formatting sucks)
 
 	// PPTX Export Method 1:
-	pptx.writeFile("html2ppt").then((fileName) => console.log(`writeFile: ${fileName}`));
+	pptx.writeFile({ fileName: "html2ppt" }).then((fileName) => console.log(`writeFile: ${fileName}`));
 }

@@ -668,6 +668,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 	// STEP 5: Add slide numbers (if any) last
 	if (slide._slideNumberProps) {
+		// Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
+		if (!slide._slideNumberProps.align) slide._slideNumberProps.align = 'left'
+
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
@@ -715,7 +718,10 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
 		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
-		if (slide._slideNumberProps.align) strSlideXml += `<a:pPr algn="${slide._slideNumberProps.align.substring(0, 1)}"/>`
+		if (slide._slideNumberProps.align.startsWith('l')) strSlideXml += '<a:pPr algn="l"/>'
+		else if (slide._slideNumberProps.align.startsWith('c')) strSlideXml += '<a:pPr algn="ctr"/>'
+		else if (slide._slideNumberProps.align.startsWith('r')) strSlideXml += '<a:pPr algn="r"/>'
+		else strSlideXml += `<a:pPr algn="l"/>`
 		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}
@@ -849,7 +855,11 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 			}
 		}
 
-		if (textObj.options.lineSpacing) strXmlLnSpc = `<a:lnSpc><a:spcPts val="${Math.round(textObj.options.lineSpacing * 100)}"/></a:lnSpc>`
+		if (textObj.options.lineSpacing) {
+			strXmlLnSpc = `<a:lnSpc><a:spcPts val="${Math.round(textObj.options.lineSpacing * 100)}"/></a:lnSpc>`
+		} else if (textObj.options.lineSpacingMultiple) {
+			strXmlLnSpc = `<a:lnSpc><a:spcPct val="${Math.round(textObj.options.lineSpacingMultiple * 100000)}"/></a:lnSpc>`
+		}
 
 		// OPTION: indent
 		if (textObj.options.indentLevel && !isNaN(Number(textObj.options.indentLevel)) && textObj.options.indentLevel > 0) {
@@ -953,17 +963,35 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	runProps += opts.fontSize ? ' sz="' + Math.round(opts.fontSize) + '00"' : '' // NOTE: Use round so sizes like '7.5' wont cause corrupt pres.
 	runProps += opts.hasOwnProperty('bold') ? ` b="${opts.bold ? 1 : 0}"` : ''
 	runProps += opts.hasOwnProperty('italic') ? ` i="${opts.italic ? 1 : 0}"` : ''
-	runProps += opts.hasOwnProperty('strike') ? ` strike="${opts.strike ? 'sngStrike' : 'noStrike'}"` : ''
-	runProps += opts.hasOwnProperty('underline') || opts.hyperlink ? ` u="${opts.underline || opts.hyperlink ? 'sng' : 'none'}"` : ''
-	runProps += opts.subscript ? ' baseline="-40000"' : opts.superscript ? ' baseline="30000"' : ''
+
+	runProps += opts.hasOwnProperty('strike') ? ` strike="${typeof opts.strike === 'string' ? opts.strike : 'sngStrike'}"` : ''
+	if (typeof opts.underline === 'object' && opts.underline?.style) {
+		runProps += ` u="${opts.underline.style}"`
+	} else if (typeof opts.underline === 'string') {
+		// DEPRECATED: opts.underline is an object in v3.5.0
+		runProps += ` u="${opts.underline}"`
+	} else if (opts.hyperlink) {
+		runProps += ' u="sng"'
+	}
+	if (opts.baseline) {
+		runProps += ` baseline="${Math.round(opts.baseline * 50)}"`
+	} else if (opts.subscript) {
+		runProps += ' baseline="-40000"'
+	} else if (opts.superscript) {
+		runProps += ' baseline="30000"'
+	}
 	runProps += opts.charSpacing ? ` spc="${Math.round(opts.charSpacing * 100)}" kern="0"` : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
 	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
-	if (opts.color || opts.fontFace || opts.outline) {
+	if (opts.color || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
 		if (opts.outline && typeof opts.outline === 'object') {
 			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
+		// underline color
+		if (typeof opts.underline === 'object' && opts.underline.color) {
+			runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
+		}
 		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
 		if (opts.fontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
@@ -1243,9 +1271,15 @@ export function genXmlTextBody(slideObj: ISlideObject | TableCell): string {
 			// A: Set line index
 			textObj.options._lineIdx = idx
 
+			// A.1: Add soft break if not the first run of the line.
+			if (idx > 0 && textObj.options.softBreakBefore) {
+				strSlideXml += `<a:br/>`
+			}
+
 			// B: Inherit pPr-type options from parent shape's `options`
 			textObj.options.align = textObj.options.align || opts.align
 			textObj.options.lineSpacing = textObj.options.lineSpacing || opts.lineSpacing
+			textObj.options.lineSpacingMultiple = textObj.options.lineSpacingMultiple || opts.lineSpacingMultiple
 			textObj.options.indentLevel = textObj.options.indentLevel || opts.indentLevel
 			textObj.options.paraSpaceBefore = textObj.options.paraSpaceBefore || opts.paraSpaceBefore
 			textObj.options.paraSpaceAfter = textObj.options.paraSpaceAfter || opts.paraSpaceAfter

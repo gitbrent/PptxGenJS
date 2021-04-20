@@ -1,15 +1,16 @@
 ### MacOS
 .DS_Store
-### Node
+
+### Others
+*.html
+*.icloud
+.icloud
+demo-react/
+docs/
+img/
+website
+bower_components/
 node_modules/
 npm-debug.log
-bower_components/
-.icloud
-*.icloud
-/.idea
-/website
-/demo
-/demo-react
-/docs
-/.rpt2_cache
 src/bld
+./*.html

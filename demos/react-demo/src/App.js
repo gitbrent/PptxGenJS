@@ -23,7 +23,7 @@ slide.addText(
   { x:0, y:5.3, w:'100%', h:0.33, align:'center', fill:{ color:'E1E1E1' }, color:'A1A1A1' }
 );
 
-pptx.writeFile("pptxgenjs-demo-react.pptx");`;
+pptx.writeFile({ fileName: 'pptxgenjs-demo-react.pptx' });`;
 
 function App() {
 	function runDemo() {
@@ -66,7 +66,7 @@ function App() {
 			color: 'A1A1A1' // pptx.SchemeColor.accent3,
 		});
 
-		pptx.writeFile("pptxgenjs-demo-react.pptx");
+		pptx.writeFile({ fileName: "pptxgenjs-demo-react.pptx" });
 	}
 
 	return (
@@ -115,7 +115,6 @@ function App() {
 						>
 							GitHub Project
 						</button>
-
 						<button
 							type="button"
 							className="btn btn-outline-info mx-3 my-2 my-sm-0"
