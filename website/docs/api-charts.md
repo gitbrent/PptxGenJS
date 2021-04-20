@@ -5,7 +5,7 @@ title: Charts
 
 Charts of almost any type can be added to Slides.
 
-![PptxGenJS Chart Samples](./assets/demo-all-charts.jpg)
+![PptxGenJS Chart Samples](./assets/demo-all-charts.png)
 
 ## Usage Example
 
