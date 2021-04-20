@@ -65,10 +65,10 @@ export type DataOrPathProps = {
 	 */
 	data?: string
 }
-export interface BackgroundProps extends DataOrPathProps {
+export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	/**
 	 * Color (hex format)
-	 * @example 'FF3399'
+	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 	 */
 	fill?: HexColor
 }
