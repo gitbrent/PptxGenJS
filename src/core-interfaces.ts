@@ -1412,7 +1412,7 @@ export interface SlideBaseProps {
 	/**
 	 * @deprecated v3.3.0 - use `background`
 	 */
-	bkgd?: string
+	bkgd?: string | BackgroundProps
 }
 export interface SlideLayout extends SlideBaseProps {
 	_slide?: {

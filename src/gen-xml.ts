@@ -31,6 +31,7 @@ import {
 	TextProps,
 	TextPropsOptions,
 } from './core-interfaces'
+import { addBackgroundDefinition } from './gen-objects'
 import {
 	convertRotationDegrees,
 	createColorElement,
@@ -87,8 +88,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	let intTableNum: number = 1
 
 	// STEP 1: Add background
-	if (slide.bkgd) {
-		strSlideXml += genXmlColorSelection(null, slide.bkgd)
+	if (slide.background || slide.bkgd) {
+		addBackgroundDefinition(slide.background, slide)
+		strSlideXml += `<p:bg><p:bgPr>${genXmlColorSelection(slide.background)}</p:bgPr></p:bg>`
 	} else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
 		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
 		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'

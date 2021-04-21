@@ -11,6 +11,7 @@ import {
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
+	DEF_SLIDE_BKGD,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
@@ -51,16 +52,17 @@ let _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * @param {SlideMasterProps} slideDef - slide definition
+ * @param {SlideMasterProps} props - slide definition
  * @param {PresSlide|SlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayout) {
-	// STEP 1: Add background
-	if (slideDef.background) addBackgroundDefinition(slideDef.background, target)
+export function createSlideMaster(props: SlideMasterProps, target: SlideLayout) {
+	// STEP 1: Add background if either the slide or layout has background props
+	//	if (props.background || target.background) addBackgroundDefinition(props.background, target)
+	if (props.bkgd) target.bkgd = props.bkgd // DEPRECATED: (remove in v4.0.0)
 
 	// STEP 2: Add all Slide Master objects in the order they were given
-	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-		slideDef.objects.forEach((object, idx) => {
+	if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
+		props.objects.forEach((object, idx) => {
 			let key = Object.keys(object)[0]
 			let tgt = target as PresSlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
@@ -95,9 +97,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 	}
 
 	// STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
-	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-		target._slideNumberProps = slideDef.slideNumber
-	}
+	if (props.slideNumber && typeof props.slideNumber === 'object') target._slideNumberProps = props.slideNumber
 }
 
 /**
@@ -1029,30 +1029,54 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {BackgroundProps} bkg - color string or an object with image definition
+ * @param {BackgroundProps} props - color string or an object with image definition
  * @param {PresSlide} target - slide object that the background is set to
  */
-export function addBackgroundDefinition(bkg: BackgroundProps, target: SlideLayout) {
-	if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
+export function addBackgroundDefinition(props: BackgroundProps = {}, target: SlideLayout) {
+	//console.log(props)
+	console.log(target)
+	//console.log(target.bkgd)
+	//console.log(target.background)
+
+	target.background = target.background || {}
+	// A: Set base props for color/trans
+	// handle @deprecated `fill`
+	const bkgdBaseProps: BackgroundProps = {
+		color: target.background.color || target.background.fill || target.background.fill || DEF_SLIDE_BKGD,
+		transparency: target.background.transparency || 0,
+	}
+	// IMPORTANT: inherit color/trans from layout (master), merge as slide may have a background imade, etc.
+	target.background = { ...bkgdBaseProps, ...target.background, ...target.background }
+
+	// DEPRECATED:
+	if (target.bkgd) {
+		if (typeof target.bkgd === 'string') target.background.color = target.bkgd
+		else {
+			if (target.bkgd.data) target.background.data = target.bkgd.data
+			if (target.bkgd.path) target.background.path = target.bkgd.path
+			if (target.bkgd['src']) target.background.path = target.bkgd['src'] // @deprecated (drop in 4.x)
+		}
+	}
+
+	// B: Handle media
+	if (props.path || props.data) {
 		// Allow the use of only the data key (`path` isnt reqd)
-		bkg.path = bkg.path || 'preencoded.png'
-		let strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
+		props.path = props.path || 'preencoded.png'
+		let strImgExtn = (props.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
 		target._relsMedia = target._relsMedia || []
 		let intRels = target._relsMedia.length + 1
 		// NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
 		target._relsMedia.push({
-			path: bkg.path,
+			path: props.path,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
-			data: bkg.data || null,
+			data: props.data || null,
 			rId: intRels,
 			Target: `../media/${(target._name || '').replace(/\s+/gi, '-')}-image-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target._bkgdImgRid = intRels
-	} else if (bkg && bkg.fill) {
-		target.bkgd = bkg.fill
 	}
 }
 

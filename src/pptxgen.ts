@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.6.0-beta_20210418-1235'
+const VERSION = '3.6.0-beta_20210420-2012'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -666,17 +666,21 @@ export default class PptxGenJS implements IPresentationProps {
 			slideLayout: slideLayout,
 		})
 
-		// A: Add slide to pres
+		// A: Inherit Master Slide's background props
+		if (slideLayout.background) newSlide.background = slideLayout.background
+		if (slideLayout.bkgd) newSlide.bkgd = slideLayout.bkgd // @deprecated
+
+		// B: Add slide to pres
 		this._slides.push(newSlide)
 
-		// B: Sections
-		// B-1: Add slide to section (if any provided)
+		// C: Sections
+		// C-1: Add slide to section (if any provided)
 		if (options && options.sectionTitle) {
 			let sect = this.sections.filter(section => section.title === options.sectionTitle)[0]
 			if (!sect) console.warn(`addSlide: unable to find section with title: "${options.sectionTitle}"`)
 			else sect._slides.push(newSlide)
 		}
-		// B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
+		// C-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
 		else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
 			let lastSect = this._sections[this.sections.length - 1]
 
@@ -722,7 +726,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {SlideMasterProps} props - layout properties
 	 */
 	defineSlideMaster(props: SlideMasterProps) {
-		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+		if (!props.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: SlideLayout = {
 			_margin: props.margin || DEF_SLIDE_MARGIN_IN,
@@ -737,20 +741,8 @@ export default class PptxGenJS implements IPresentationProps {
 			_slideObjects: [],
 		}
 
-		// DEPRECATED:
-		if (props.bkgd && !props.background) {
-			props.background = {}
-			if (typeof props.bkgd === 'string') props.background.fill = props.bkgd
-			else {
-				if (props.bkgd.data) props.background.data = props.bkgd.data
-				if (props.bkgd.path) props.background.path = props.bkgd.path
-				if (props.bkgd['src']) props.background.path = props.bkgd['src'] // @deprecated (drop in 4.x)
-			}
-			delete props.bkgd
-		}
-
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(props, newLayout)
+		genObj.createSlideMaster(props, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
