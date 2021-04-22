@@ -2199,7 +2199,7 @@ declare namespace PptxGenJS {
 	export class Slide {
 		/**
 		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399'} - hex fill color
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string

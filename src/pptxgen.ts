@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.6.0-beta_20210421-2212'
+const VERSION = '3.6.0-beta_20210421-2322'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -666,22 +666,17 @@ export default class PptxGenJS implements IPresentationProps {
 			slideLayout: slideLayout,
 		})
 
-		// A: Inherit Master Slide's background props
-		//if (slideLayout.background) newSlide.background = slideLayout.background
-		//if (slideLayout.bkgd) newSlide.bkgd = slideLayout.bkgd // @deprecated
-		// WIP: wait, hold on - we cant add images, etc to main slide - those are onyl for layotu behind main slide
-
-		// B: Add slide to pres
+		// A: Add slide to pres
 		this._slides.push(newSlide)
 
-		// C: Sections
-		// C-1: Add slide to section (if any provided)
+		// B: Sections
+		// B-1: Add slide to section (if any provided)
 		if (options && options.sectionTitle) {
 			let sect = this.sections.filter(section => section.title === options.sectionTitle)[0]
 			if (!sect) console.warn(`addSlide: unable to find section with title: "${options.sectionTitle}"`)
 			else sect._slides.push(newSlide)
 		}
-		// C-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
+		// B-2: Handle slides without a section when sections are already is use ("loose" slides arent allowed, they all need a section)
 		else if (this.sections && this.sections.length > 0 && (!options || !options.sectionTitle)) {
 			let lastSect = this._sections[this.sections.length - 1]
 
@@ -741,8 +736,8 @@ export default class PptxGenJS implements IPresentationProps {
 			_slideNumberProps: props.slideNumber || null,
 			_slideObjects: [],
 			background: props.background || null,
+			bkgd: props.bkgd || null,
 		}
-		console.log(props.background);
 
 		// STEP 1: Create the Slide Master/Layout
 		genObj.createSlideMaster(props, newLayout)
@@ -750,7 +745,10 @@ export default class PptxGenJS implements IPresentationProps {
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
 
-		// STEP 3: Add slideNumber to master slide (if any)
+		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
+		if (props.background) genObj.addBackgroundDefinition(props.background, newLayout)
+
+		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
 	}
 

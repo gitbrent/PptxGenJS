@@ -2,7 +2,7 @@
  * PptxGenJS: Slide Class
  */
 
-import { CHART_NAME, DEF_SLIDE_BKGD, SHAPE_NAME } from './core-enums'
+import { CHART_NAME, SHAPE_NAME } from './core-enums'
 import {
 	BackgroundProps,
 	HexColor,
@@ -81,6 +81,10 @@ export default class Slide {
 	private _bkgd: string | BackgroundProps
 	public set bkgd(value: string | BackgroundProps) {
 		this._bkgd = value
+		if (!this._background || !this._background.color) {
+			if (!this._background) this._background = {}
+			if (typeof value === 'string') this._background.color = value
+		}
 	}
 	public get bkgd(): string | BackgroundProps {
 		return this._bkgd
@@ -98,7 +102,8 @@ export default class Slide {
 	private _background: BackgroundProps
 	public set background(props: BackgroundProps) {
 		this._background = props
-		//genObj.addBackgroundDefinition(props, this) // WHY ARE WE CALLING THIS? // FIXME: WIP:
+		// Add background (image data/path must be captured before `exportPresentation()` is called)
+		if (props) genObj.addBackgroundDefinition(props, this)
 	}
 	public get background(): BackgroundProps {
 		return this._background

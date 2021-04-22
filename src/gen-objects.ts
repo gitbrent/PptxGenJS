@@ -1033,23 +1033,10 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
  * @param {PresSlide} target - slide object that the background is set to
  */
 export function addBackgroundDefinition(props: BackgroundProps, target: SlideLayout) {
-	console.log(props)
-	//console.log(target)
-	//console.log(target.bkgd)
-	console.log(target.background)
-
-	target.background = target.background || {}
-	// A: Set base props for color/trans
-	// handle @deprecated `fill`
-	const bkgdBaseProps: BackgroundProps = {
-		//color: target.background.color || target.background.fill || target.background.fill || DEF_SLIDE_BKGD,
-		//transparency: target.background.transparency || 0,
-	}
-	// IMPORTANT: inherit color/trans from layout (master), merge as slide may have a background imade, etc.
-	//target.background = { ...bkgdBaseProps, ...props, ...target.background }
-
-	// DEPRECATED:
+	// A: @deprecated
 	if (target.bkgd) {
+		if (!target.background) target.background = {}
+
 		if (typeof target.bkgd === 'string') target.background.color = target.bkgd
 		else {
 			if (target.bkgd.data) target.background.data = target.bkgd.data
@@ -1057,6 +1044,7 @@ export function addBackgroundDefinition(props: BackgroundProps, target: SlideLay
 			if (target.bkgd['src']) target.background.path = target.bkgd['src'] // @deprecated (drop in 4.x)
 		}
 	}
+	if (target.background && target.background.fill) target.background.color = target.background.fill
 
 	// B: Handle media
 	if (props && (props.path || props.data)) {
