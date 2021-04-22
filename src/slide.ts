@@ -95,7 +95,7 @@ export default class Slide {
 	 * @example url `background: { path:'https://some.url/image.jpg'}`
 	 * @since v3.3.0
 	 */
-	private _background: BackgroundProps = {}
+	private _background: BackgroundProps
 	public set background(props: BackgroundProps) {
 		this._background = props
 		//genObj.addBackgroundDefinition(props, this) // WHY ARE WE CALLING THIS? // FIXME: WIP:
