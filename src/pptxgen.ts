@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.6.0-beta_20210420-2012'
+const VERSION = '3.6.0-beta_20210421-2212'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -667,8 +667,9 @@ export default class PptxGenJS implements IPresentationProps {
 		})
 
 		// A: Inherit Master Slide's background props
-		if (slideLayout.background) newSlide.background = slideLayout.background
-		if (slideLayout.bkgd) newSlide.bkgd = slideLayout.bkgd // @deprecated
+		//if (slideLayout.background) newSlide.background = slideLayout.background
+		//if (slideLayout.bkgd) newSlide.bkgd = slideLayout.bkgd // @deprecated
+		// WIP: wait, hold on - we cant add images, etc to main slide - those are onyl for layotu behind main slide
 
 		// B: Add slide to pres
 		this._slides.push(newSlide)
@@ -739,7 +740,9 @@ export default class PptxGenJS implements IPresentationProps {
 			_slideNum: 1000 + this.slideLayouts.length + 1,
 			_slideNumberProps: props.slideNumber || null,
 			_slideObjects: [],
+			background: props.background || null,
 		}
+		console.log(props.background);
 
 		// STEP 1: Create the Slide Master/Layout
 		genObj.createSlideMaster(props, newLayout)

@@ -1032,21 +1032,21 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
  * @param {BackgroundProps} props - color string or an object with image definition
  * @param {PresSlide} target - slide object that the background is set to
  */
-export function addBackgroundDefinition(props: BackgroundProps = {}, target: SlideLayout) {
-	//console.log(props)
-	console.log(target)
+export function addBackgroundDefinition(props: BackgroundProps, target: SlideLayout) {
+	console.log(props)
+	//console.log(target)
 	//console.log(target.bkgd)
-	//console.log(target.background)
+	console.log(target.background)
 
 	target.background = target.background || {}
 	// A: Set base props for color/trans
 	// handle @deprecated `fill`
 	const bkgdBaseProps: BackgroundProps = {
-		color: target.background.color || target.background.fill || target.background.fill || DEF_SLIDE_BKGD,
-		transparency: target.background.transparency || 0,
+		//color: target.background.color || target.background.fill || target.background.fill || DEF_SLIDE_BKGD,
+		//transparency: target.background.transparency || 0,
 	}
 	// IMPORTANT: inherit color/trans from layout (master), merge as slide may have a background imade, etc.
-	target.background = { ...bkgdBaseProps, ...target.background, ...target.background }
+	//target.background = { ...bkgdBaseProps, ...props, ...target.background }
 
 	// DEPRECATED:
 	if (target.bkgd) {
@@ -1059,7 +1059,7 @@ export function addBackgroundDefinition(props: BackgroundProps = {}, target: Sli
 	}
 
 	// B: Handle media
-	if (props.path || props.data) {
+	if (props && (props.path || props.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
 		props.path = props.path || 'preencoded.png'
 		let strImgExtn = (props.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
