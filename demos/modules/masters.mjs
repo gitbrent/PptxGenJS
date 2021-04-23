@@ -187,3 +187,20 @@ export function createMasterSlides(pptx) {
 		],
 	});
 }
+
+/**
+ * Test Slide BACKGROUNDS
+ */
+export function testSlideBackgrounds(pptx) {
+	let slide1 = pptx.addSlide();
+	slide1.bkgd = "909090";
+	slide1.addText([{ text: "TEST `bkgd:string`" }], { x: 1, y: 1, w: "80%", h: 3, align: "center", fill: { color: "a1a1a1" } });
+
+	let slide2 = pptx.addSlide();
+	slide2.background = { fill: "909090" };
+	slide2.addText([{ text: "TEST `background.fill`" }], { x: 1, y: 1, w: "80%", h: 3, align: "center", fill: { color: "a1a1a1" } });
+
+	let slide3 = pptx.addSlide();
+	slide3.background = { color: "909090", transparency: 50 };
+	slide3.addText([{ text: "TEST `background`[correct]" }], { x: 1, y: 1, w: "80%", h: 3, align: "center", fill: { color: "a1a1a1" } });
+}
