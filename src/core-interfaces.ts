@@ -1378,7 +1378,23 @@ export interface SlideMasterProps {
 	title: string
 	margin?: Margin
 	background?: BackgroundProps
-	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+	objects?: (
+		| { chart: {} }
+		| { image: {} }
+		| { line: {} }
+		| { rect: {} }
+		| { text: TextProps }
+		| {
+				placeholder: {
+					options: PlaceholderProps
+					/**
+					 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+					 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+					 */
+					text?: string
+				}
+		  }
+	)[]
 	slideNumber?: SlideNumberProps
 
 	/**
