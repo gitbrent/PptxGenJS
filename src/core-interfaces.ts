@@ -178,17 +178,17 @@ export interface ShapeFillProps {
 	 * @default 0
 	 */
 	transparency?: number
+	/**
+	 * Fill type
+	 * @default 'solid'
+	 */
+	type?: 'none' | 'solid'
 
 	/**
 	 * Transparency (percent)
 	 * @deprecated v3.3.0 - use `transparency`
 	 */
 	alpha?: number
-	/**
-	 * Fill type
-	 * - 'solid' @deprecated v3.3.0
-	 */
-	type?: 'none' | 'solid'
 }
 export interface ShapeLineProps extends ShapeFillProps {
 	/**
