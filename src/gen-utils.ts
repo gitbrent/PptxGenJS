@@ -190,22 +190,22 @@ export function createGlowElement(options: TextGlowProps, defaults: TextGlowProp
 
 /**
  * Create color selection
- * @param shapeFill - options
+ * @param {Color | ShapeFillProps | ShapeLineProps} props fill props
  * @returns XML string
  */
-export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLineProps): string {
-	let colorVal = ''
+export function genXmlColorSelection(props: Color | ShapeFillProps | ShapeLineProps): string {
 	let fillType = 'solid'
+	let colorVal = ''
 	let internalElements = ''
 	let outText = ''
 
-	if (shapeFill) {
-		if (typeof shapeFill === 'string') colorVal = shapeFill
+	if (props) {
+		if (typeof props === 'string') colorVal = props
 		else {
-			if (shapeFill.type) fillType = shapeFill.type
-			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += `<a:alpha val="${Math.round((100 - shapeFill.alpha) * 1000)}"/>` // DEPRECATED: @deprecated v3.3.0
-			if (shapeFill.transparency) internalElements += `<a:alpha val="${Math.round((100 - shapeFill.transparency) * 1000)}"/>`
+			if (props.type) fillType = props.type
+			if (props.color) colorVal = props.color
+			if (props.alpha) internalElements += `<a:alpha val="${Math.round((100 - props.alpha) * 1000)}"/>` // DEPRECATED: @deprecated v3.3.0
+			if (props.transparency) internalElements += `<a:alpha val="${Math.round((100 - props.transparency) * 1000)}"/>`
 		}
 
 		switch (fillType) {
