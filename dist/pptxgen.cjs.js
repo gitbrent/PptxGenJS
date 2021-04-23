@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0-beta @ 2021-04-23T02:47:48.137Z */
+/* PptxGenJS 3.6.0-beta @ 2021-04-23T04:16:21.520Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -783,26 +783,26 @@ function createGlowElement(options, defaults) {
 }
 /**
  * Create color selection
- * @param shapeFill - options
+ * @param {Color | ShapeFillProps | ShapeLineProps} props fill props
  * @returns XML string
  */
-function genXmlColorSelection(shapeFill) {
-    var colorVal = '';
+function genXmlColorSelection(props) {
     var fillType = 'solid';
+    var colorVal = '';
     var internalElements = '';
     var outText = '';
-    if (shapeFill) {
-        if (typeof shapeFill === 'string')
-            colorVal = shapeFill;
+    if (props) {
+        if (typeof props === 'string')
+            colorVal = props;
         else {
-            if (shapeFill.type)
-                fillType = shapeFill.type;
-            if (shapeFill.color)
-                colorVal = shapeFill.color;
-            if (shapeFill.alpha)
-                internalElements += "<a:alpha val=\"" + Math.round((100 - shapeFill.alpha) * 1000) + "\"/>"; // DEPRECATED: @deprecated v3.3.0
-            if (shapeFill.transparency)
-                internalElements += "<a:alpha val=\"" + Math.round((100 - shapeFill.transparency) * 1000) + "\"/>";
+            if (props.type)
+                fillType = props.type;
+            if (props.color)
+                colorVal = props.color;
+            if (props.alpha)
+                internalElements += "<a:alpha val=\"" + Math.round((100 - props.alpha) * 1000) + "\"/>"; // DEPRECATED: @deprecated v3.3.0
+            if (props.transparency)
+                internalElements += "<a:alpha val=\"" + Math.round((100 - props.transparency) * 1000) + "\"/>";
         }
         switch (fillType) {
             case 'solid':
@@ -1751,7 +1751,8 @@ function slideObjectToXml(slide) {
                 // shape Type: LINE: line color
                 if (slideItemObj.options.line) {
                     strSlideXml += slideItemObj.options.line.width ? "<a:ln w=\"" + valToPts(slideItemObj.options.line.width) + "\">" : '<a:ln>';
-                    strSlideXml += genXmlColorSelection(slideItemObj.options.line.color);
+                    if (slideItemObj.options.line.color)
+                        strSlideXml += genXmlColorSelection(slideItemObj.options.line);
                     if (slideItemObj.options.line.dashType)
                         strSlideXml += "<a:prstDash val=\"" + slideItemObj.options.line.dashType + "\"/>";
                     if (slideItemObj.options.line.beginArrowType)
@@ -2748,8 +2749,8 @@ function makeXmlSlide(slide) {
 function getNotesFromSlide(slide) {
     var notesText = '';
     slide._slideObjects.forEach(function (data) {
-        if (data._type === 'notes')
-            notesText += data.text;
+        if (data._type === SLIDE_OBJECT_TYPES.notes)
+            notesText += data.text && data.text[0] ? data.text[0].text : '';
     });
     return notesText.replace(/\r*\n/g, CRLF);
 }
@@ -3555,9 +3556,8 @@ function addMediaDefinition(target, opt) {
 }
 /**
  * Adds Notes to a slide.
- * @param {String} `notes`
- * @param {Object} opt (*unused*)
  * @param {PresSlide} `target` slide object
+ * @param {string} `notes`
  * @since 2.3.0
  */
 function addNotesDefinition(target, notes) {
