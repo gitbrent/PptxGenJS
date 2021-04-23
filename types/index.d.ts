@@ -2208,7 +2208,7 @@ declare namespace PptxGenJS {
 		/**
 		 * Background color or image (`Color` | `path` | `data`)
 		 * @example {color: 'FF3399'} - hex fill color
-		 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
+		 * @example {color: 'FF3399', transparency: 50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
