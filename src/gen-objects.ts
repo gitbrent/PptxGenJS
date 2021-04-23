@@ -560,9 +560,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 /**
  * Adds Notes to a slide.
- * @param {String} `notes`
- * @param {Object} opt (*unused*)
  * @param {PresSlide} `target` slide object
+ * @param {string} `notes`
  * @since 2.3.0
  */
 export function addNotesDefinition(target: PresSlide, notes: string) {

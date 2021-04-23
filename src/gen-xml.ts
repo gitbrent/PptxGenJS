@@ -1584,7 +1584,7 @@ export function getNotesFromSlide(slide: PresSlide): string {
 	let notesText = ''
 
 	slide._slideObjects.forEach(data => {
-		if (data._type === 'notes') notesText += data.text
+		if (data._type === SLIDE_OBJECT_TYPES.notes) notesText += data.text && data.text[0] ? data.text[0].text : ''
 	})
 
 	return notesText.replace(/\r*\n/g, CRLF)
