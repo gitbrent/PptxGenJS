@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.6.0-beta_20210421-2322'
+const VERSION = '3.6.0-beta_20210422-2112'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -746,7 +746,7 @@ export default class PptxGenJS implements IPresentationProps {
 		this.slideLayouts.push(newLayout)
 
 		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
-		if (props.background) genObj.addBackgroundDefinition(props.background, newLayout)
+		if (props.background || props.bkgd) genObj.addBackgroundDefinition(props.background, newLayout)
 
 		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps

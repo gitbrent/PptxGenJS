@@ -110,7 +110,6 @@ export function createMasterSlides(pptx) {
 	pptx.defineSlideMaster({
 		title: "THANKS_SLIDE",
 		background: { color: "36ABFF" }, // CORRECT WAY TO SET BACKGROUND COLOR
-		// FIXME: BELOW IS THE LAST ISSUE!!!
 		//bkgd: "36ABFF", // [[BACKWARDS-COMPAT/DEPRECATED/UAT (`bkgd` will be removed in v4.x)]] **DO NOT USE THIS IN YOUR CODE**
 		objects: [
 			{ rect: { x: 0.0, y: 3.4, w: "100%", h: 2.0, fill: { color: "FFFFFF" } } },
