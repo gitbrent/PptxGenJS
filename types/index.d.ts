@@ -883,12 +883,12 @@ declare namespace PptxGenJS {
 		 */
 		data?: string
 	}
-	export interface BackgroundProps extends DataOrPathProps {
+	export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 		/**
 		 * Color (hex format)
-		 * @example 'FF3399'
+		 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 		 */
-		fill?: HexColor | ShapeFillProps
+		fill?: HexColor
 	}
 	/**
 	 * Color in Hex format
@@ -1863,11 +1863,11 @@ declare namespace PptxGenJS {
 		catAxisTitleRotate?: number
 		catGridLine?: OptsChartGridLine
 		catLabelFormatCode?: string
-	/**
-	 * Whether data should use secondary category axis (instead of primary)
-	 * @default false
-	 */
-	 secondaryCatAxis?: boolean
+		/**
+		 * Whether data should use secondary category axis (instead of primary)
+		 * @default false
+		 */
+		secondaryCatAxis?: boolean
 		showCatAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisSer {
@@ -1894,11 +1894,11 @@ declare namespace PptxGenJS {
 		showSerAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisVal {
-	/**
-	 * Whether data should use secondary value axis (instead of primary)
-	 * @default false
-	 */
-	 secondaryValAxis?: boolean
+		/**
+		 * Whether data should use secondary value axis (instead of primary)
+		 * @default false
+		 */
+		secondaryValAxis?: boolean
 		showValAxisTitle?: boolean
 		/**
 		 * Multi-Chart prop: array of val axes
@@ -2110,16 +2110,23 @@ declare namespace PptxGenJS {
 		title: string
 		margin?: Margin
 		background?: BackgroundProps
-		objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | {
-			placeholder: {
-				options: PlaceholderProps;
-				/**
-				 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
-				 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
-				 */
-				text?: string
-			}
-		})[]
+		objects?: (
+			| { chart: {} }
+			| { image: {} }
+			| { line: {} }
+			| { rect: {} }
+			| { text: TextProps }
+			| {
+					placeholder: {
+						options: PlaceholderProps
+						/**
+						 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+						 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+						 */
+						text?: string
+					}
+			  }
+		)[]
 		slideNumber?: SlideNumberProps
 
 		/**
@@ -2144,8 +2151,9 @@ declare namespace PptxGenJS {
 		addText: Function
 
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * Background color or image (`Color` | `path` | `data`)
+		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
@@ -2198,8 +2206,9 @@ declare namespace PptxGenJS {
 	 */
 	export class Slide {
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
+		 * Background color or image (`Color` | `path` | `data`)
 		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
