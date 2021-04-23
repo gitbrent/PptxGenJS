@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0-beta @ 2021-04-22T04:59:54.374Z */
+/* PptxGenJS 3.6.0-beta @ 2021-04-23T02:16:05.476Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -6178,7 +6178,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.6.0-beta_20210421-2322';
+var VERSION = '3.6.0-beta_20210422-2112';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
@@ -6827,7 +6827,7 @@ var PptxGenJS = /** @class */ (function () {
         // STEP 2: Add it to layout defs
         this.slideLayouts.push(newLayout);
         // STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
-        if (props.background)
+        if (props.background || props.bkgd)
             addBackgroundDefinition(props.background, newLayout);
         // STEP 4: Add slideNumber to master slide (if any)
         if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps)
