@@ -2,7 +2,7 @@
  * PptxGenJS Interfaces
  */
 
-import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
+import { CHART_NAME, PLACEHOLDER_TYPE, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN, WRITE_OUTPUT_TYPE } from './core-enums'
 
 // Core Types
 // ==========
@@ -65,10 +65,10 @@ export type DataOrPathProps = {
 	 */
 	data?: string
 }
-export interface BackgroundProps extends DataOrPathProps {
+export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	/**
 	 * Color (hex format)
-	 * @example 'FF3399'
+	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 	 */
 	fill?: HexColor
 }
@@ -123,7 +123,7 @@ export interface HyperlinkProps {
 }
 export interface PlaceholderProps {
 	name: string
-	type: PLACEHOLDER_TYPES
+	type: PLACEHOLDER_TYPE
 	x: Coord
 	y: Coord
 	w: Coord
@@ -180,17 +180,17 @@ export interface ShapeFillProps {
 	 * @default 0
 	 */
 	transparency?: number
+	/**
+	 * Fill type
+	 * @default 'solid'
+	 */
+	type?: 'none' | 'solid'
 
 	/**
 	 * Transparency (percent)
 	 * @deprecated v3.3.0 - use `transparency`
 	 */
 	alpha?: number
-	/**
-	 * Fill type
-	 * - 'solid' @deprecated v3.3.0
-	 */
-	type?: 'none' | 'solid'
 }
 export interface ShapeLineProps extends ShapeFillProps {
 	/**
@@ -374,10 +374,31 @@ export interface TextBaseProps {
 	 */
 	lang?: string
 	/**
-	 * underline style
-	 * @default false
+	 * underline properties
+	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
+	 * @default (none)
 	 */
-	underline?: boolean
+	underline?: {
+		style?:
+			| 'dash'
+			| 'dashHeavy'
+			| 'dashLong'
+			| 'dashLongHeavy'
+			| 'dbl'
+			| 'dotDash'
+			| 'dotDashHeave'
+			| 'dotDotDash'
+			| 'dotDotDashHeavy'
+			| 'dotted'
+			| 'dottedHeavy'
+			| 'heavy'
+			| 'none'
+			| 'sng'
+			| 'wavy'
+			| 'wavyDbl'
+			| 'wavyHeavy'
+		color?: Color
+	}
 	/**
 	 * vertical alignment
 	 * @default 'top'
@@ -836,6 +857,7 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	}
 	_lineIdx?: number
 
+	baseline?: number
 	/**
 	 * Character spacing
 	 */
@@ -906,10 +928,9 @@ export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBa
 	rtlMode?: boolean
 	shadow?: ShadowProps
 	shape?: SHAPE_NAME
-	strike?: boolean
+	strike?: boolean | 'dblStrike' | 'sngStrike'
 	subscript?: boolean
 	superscript?: boolean
-	underline?: boolean
 	valign?: VAlign
 	vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 	/**
@@ -1288,7 +1309,7 @@ export interface ISlideObject {
 	_type: SLIDE_OBJECT_TYPES
 	options?: ObjectOptions
 	// text
-	text?: string | TextProps[]
+	text?: TextProps[]
 	// table
 	arrTabRows?: TableCell[][]
 	// chart
@@ -1364,7 +1385,23 @@ export interface SlideMasterProps {
 	title: string
 	margin?: Margin
 	background?: BackgroundProps
-	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+	objects?: (
+		| { chart: {} }
+		| { image: {} }
+		| { line: {} }
+		| { rect: {} }
+		| { text: TextProps }
+		| {
+				placeholder: {
+					options: PlaceholderProps
+					/**
+					 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+					 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+					 */
+					text?: string
+				}
+		  }
+	)[]
 	slideNumber?: SlideNumberProps
 
 	/**
@@ -1374,7 +1411,7 @@ export interface SlideMasterProps {
 }
 export interface ObjectOptions extends ImageProps, PositionProps, ShapeProps, TableCellProps, TextPropsOptions {
 	_placeholderIdx?: number
-	_placeholderType?: PLACEHOLDER_TYPES
+	_placeholderType?: PLACEHOLDER_TYPE
 
 	cx?: Coord
 	cy?: Coord
@@ -1398,7 +1435,7 @@ export interface SlideBaseProps {
 	/**
 	 * @deprecated v3.3.0 - use `background`
 	 */
-	bkgd?: string
+	bkgd?: string | BackgroundProps
 }
 export interface SlideLayout extends SlideBaseProps {
 	_slide?: {
@@ -1422,8 +1459,9 @@ export interface PresSlide extends SlideBaseProps {
 	addText: Function
 
 	/**
-	 * Background color or image (`fill` | `path` | `data`)
-	 * @example {fill: 'FF3399'} - hex fill color
+	 * Background color or image (`Color` | `path` | `data`)
+	 * @example {color: 'FF3399'} - hex fill color
+	 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string

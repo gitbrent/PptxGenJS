@@ -75,28 +75,35 @@ export default class Slide {
 
 	/**
 	 * Background color
-	 * @type {string}
+	 * @type {string|BackgroundProps}
 	 * @deprecated in v3.3.0 - use `background` instead
 	 */
-	private _bkgd: string
-	public set bkgd(value: string) {
+	private _bkgd: string | BackgroundProps
+	public set bkgd(value: string | BackgroundProps) {
 		this._bkgd = value
+		if (!this._background || !this._background.color) {
+			if (!this._background) this._background = {}
+			if (typeof value === 'string') this._background.color = value
+		}
 	}
-	public get bkgd(): string {
+	public get bkgd(): string | BackgroundProps {
 		return this._bkgd
 	}
 
 	/**
 	 * Background color or image
 	 * @type {BackgroundProps}
-	 * @example solid color `background: {fill:'FF0000'}
-	 * @example base64 `background: {data:'image/png;base64,ABC[...]123'}`
-	 * @example url  `background: {path:'https://some.url/image.jpg'}`
+	 * @example solid color `background: { color:'FF0000' }`
+	 * @example color+trans `background: { color:'FF0000', transparency:0.5 }`
+	 * @example base64 `background: { data:'image/png;base64,ABC[...]123' }`
+	 * @example url `background: { path:'https://some.url/image.jpg'}`
 	 * @since v3.3.0
 	 */
 	private _background: BackgroundProps
-	public set background(value: BackgroundProps) {
-		genObj.addBackgroundDefinition(value, this)
+	public set background(props: BackgroundProps) {
+		this._background = props
+		// Add background (image data/path must be captured before `exportPresentation()` is called)
+		if (props) genObj.addBackgroundDefinition(props, this)
 	}
 	public get background(): BackgroundProps {
 		return this._background
@@ -219,7 +226,8 @@ export default class Slide {
 	 * @return {Slide} this Slide
 	 */
 	addText(text: string | TextProps[], options?: TextPropsOptions): Slide {
-		genObj.addTextDefinition(this, text, options, false)
+		let textParam = typeof text === 'string' || typeof text === 'number' ? [{ text: text, options: options } as TextProps] : text
+		genObj.addTextDefinition(this, textParam, options, false)
 		return this
 	}
 }

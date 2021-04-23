@@ -11,6 +11,7 @@ import {
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
+	DEF_SLIDE_BKGD,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
@@ -51,23 +52,24 @@ let _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * @param {SlideMasterProps} slideDef - slide definition
+ * @param {SlideMasterProps} props - slide definition
  * @param {PresSlide|SlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayout) {
-	// STEP 1: Add background
-	if (slideDef.background) addBackgroundDefinition(slideDef.background, target)
+export function createSlideMaster(props: SlideMasterProps, target: SlideLayout) {
+	// STEP 1: Add background if either the slide or layout has background props
+	//	if (props.background || target.background) addBackgroundDefinition(props.background, target)
+	if (props.bkgd) target.bkgd = props.bkgd // DEPRECATED: (remove in v4.0.0)
 
 	// STEP 2: Add all Slide Master objects in the order they were given
-	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-		slideDef.objects.forEach((object, idx) => {
+	if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
+		props.objects.forEach((object, idx) => {
 			let key = Object.keys(object)[0]
 			let tgt = target as PresSlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
 			else if (MASTER_OBJECTS[key] && key === 'image') addImageDefinition(tgt, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'line') addShapeDefinition(tgt, SHAPE_TYPE.LINE, object[key])
 			else if (MASTER_OBJECTS[key] && key === 'rect') addShapeDefinition(tgt, SHAPE_TYPE.RECTANGLE, object[key])
-			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, object[key].text, object[key].options, false)
+			else if (MASTER_OBJECTS[key] && key === 'text') addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, false)
 			else if (MASTER_OBJECTS[key] && key === 'placeholder') {
 				// TODO: 20180820: Check for existing `name`?
 				object[key].options.placeholder = object[key].options.name
@@ -75,7 +77,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 				object[key].options._placeholderType = object[key].options.type
 				delete object[key].options.type // remap name for earier handling internally
 				object[key].options._placeholderIdx = 100 + idx
-				addTextDefinition(tgt, object[key].text, object[key].options, true)
+				addTextDefinition(tgt, [{ text: object[key].text }], object[key].options, true)
 				// TODO: ISSUE#599 - only text is suported now (add more below)
 				//else if (object[key].image) addImageDefinition(tgt, object[key].image)
 				/* 20200120: So... image placeholders go into the "slideLayoutN.xml" file and addImage doesnt do this yet...
@@ -95,9 +97,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 	}
 
 	// STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
-	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-		target._slideNumberProps = slideDef.slideNumber
-	}
+	if (props.slideNumber && typeof props.slideNumber === 'object') target._slideNumberProps = props.slideNumber
 }
 
 /**
@@ -560,15 +560,14 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 /**
  * Adds Notes to a slide.
- * @param {String} `notes`
- * @param {Object} opt (*unused*)
  * @param {PresSlide} `target` slide object
+ * @param {string} `notes`
  * @since 2.3.0
  */
 export function addNotesDefinition(target: PresSlide, notes: string) {
 	target._slideObjects.push({
 		_type: SLIDE_OBJECT_TYPES.notes,
-		text: notes,
+		text: [{ text: notes }],
 	})
 }
 
@@ -894,94 +893,113 @@ export function addTableDefinition(
  * @param {PresSlide} target - slide object that the text should be added to
  * @param {string|TextProps[]} text text string or object
  * @param {TextPropsOptions} opts text options
- * @param {boolean} isPlaceholder` is this a placeholder object
+ * @param {boolean} isPlaceholder whether this a placeholder object
  * @since: 1.0.0
  */
-export function addTextDefinition(target: PresSlide, text: string | TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
-	let opt: TextPropsOptions = opts || {}
-	opt.line = opt.line || ({} as ShapeLineProps)
-	if (!opt._bodyProp) opt._bodyProp = {}
-	let newObject = {
+export function addTextDefinition(target: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
+	let newObject: ISlideObject = {
 		_type: isPlaceholder ? SLIDE_OBJECT_TYPES.placeholder : SLIDE_OBJECT_TYPES.text,
-		shape: opt.shape || SHAPE_TYPE.RECTANGLE,
-		text: (Array.isArray(text) && text.length === 0 ? '' : text || '') || '',
-		options: opt,
+		shape: (opts && opts.shape) || SHAPE_TYPE.RECTANGLE,
+		text: !text || text.length === 0 ? [{ text: '', options: null }] : text,
+		options: opts || {},
 	}
-	// TODO: copy "newLineOpts" from addShape above! 20200609
 
-	// STEP 1: Set some options
-	{
-		// A.1: Placeholders should inherit their colors or override them, so don't default them
-		if (!opt.placeholder) {
-			opt.color = opt.color || target.color || DEF_FONT_COLOR // Set color (options > inherit from Slide > default to black)
-		}
-
-		// A.2: Placeholder should inherit their bullets or override them, so don't default them
-		if (opt.placeholder || isPlaceholder) {
-			opt.bullet = opt.bullet || false
-		}
-
-		// B
-		if (opt.shape === SHAPE_TYPE.LINE) {
-			// ShapeLineProps defaults
-			let newLineOpts: ShapeLineProps = {
-				type: opt.line.type || 'solid',
-				color: opt.line.color || DEF_SHAPE_LINE_COLOR,
-				transparency: opt.line.transparency || 0,
-				width: opt.line.width || 1,
-				dashType: opt.line.dashType || 'solid',
-				beginArrowType: opt.line.beginArrowType || null,
-				endArrowType: opt.line.endArrowType || null,
+	function cleanOpts(itemOpts): TextPropsOptions {
+		// STEP 1: Set some options
+		{
+			// A.1: Color (placeholders should inherit their colors or override them, so don't default them)
+			if (!itemOpts.placeholder) {
+				itemOpts.color = itemOpts.color || newObject.options.color || target.color || DEF_FONT_COLOR
 			}
-			if (typeof opt.line === 'object') opt.line = newLineOpts
 
-			// 3: Handle line (lots of deprecated opts)
-			if (typeof opt.line === 'string') {
-				let tmpOpts = newLineOpts
-				tmpOpts.color = opt.line!.toString() // @deprecated `opt.line` string (was line color)
-				opt.line = tmpOpts
+			// A.2: Placeholder should inherit their bullets or override them, so don't default them
+			if (itemOpts.placeholder || isPlaceholder) {
+				itemOpts.bullet = itemOpts.bullet || false
 			}
-			if (typeof opt.lineSize === 'number') opt.line.width = opt.lineSize // @deprecated (part of `ShapeLineProps` now)
-			if (typeof opt.lineDash === 'string') opt.line.dashType = opt.lineDash // @deprecated (part of `ShapeLineProps` now)
-			if (typeof opt.lineHead === 'string') opt.line.beginArrowType = opt.lineHead // @deprecated (part of `ShapeLineProps` now)
-			if (typeof opt.lineTail === 'string') opt.line.endArrowType = opt.lineTail // @deprecated (part of `ShapeLineProps` now)
+
+			// A.3: Text targeting a placeholder need to inherit the placeholders options (eg: margin, valign, etc.) (Issue #640)
+			if (itemOpts.placeholder && target._slideLayout && target._slideLayout._slideObjects) {
+				let placeHold = target._slideLayout._slideObjects.filter(
+					item => item._type === 'placeholder' && item.options && item.options.placeholder && item.options.placeholder === itemOpts.placeholder
+				)[0]
+				if (placeHold && placeHold.options) itemOpts = { ...itemOpts, ...placeHold.options }
+			}
+
+			// B:
+			if (itemOpts.shape === SHAPE_TYPE.LINE) {
+				// ShapeLineProps defaults
+				let newLineOpts: ShapeLineProps = {
+					type: itemOpts.line.type || 'solid',
+					color: itemOpts.line.color || DEF_SHAPE_LINE_COLOR,
+					transparency: itemOpts.line.transparency || 0,
+					width: itemOpts.line.width || 1,
+					dashType: itemOpts.line.dashType || 'solid',
+					beginArrowType: itemOpts.line.beginArrowType || null,
+					endArrowType: itemOpts.line.endArrowType || null,
+				}
+				if (typeof itemOpts.line === 'object') itemOpts.line = newLineOpts
+
+				// 3: Handle line (lots of deprecated opts)
+				if (typeof itemOpts.line === 'string') {
+					let tmpOpts = newLineOpts
+					tmpOpts.color = itemOpts.line!.toString() // @deprecated `itemOpts.line` string (was line color)
+					itemOpts.line = tmpOpts
+				}
+				if (typeof itemOpts.lineSize === 'number') itemOpts.line.width = itemOpts.lineSize // @deprecated (part of `ShapeLineProps` now)
+				if (typeof itemOpts.lineDash === 'string') itemOpts.line.dashType = itemOpts.lineDash // @deprecated (part of `ShapeLineProps` now)
+				if (typeof itemOpts.lineHead === 'string') itemOpts.line.beginArrowType = itemOpts.lineHead // @deprecated (part of `ShapeLineProps` now)
+				if (typeof itemOpts.lineTail === 'string') itemOpts.line.endArrowType = itemOpts.lineTail // @deprecated (part of `ShapeLineProps` now)
+			}
+
+			// C: Line opts
+			itemOpts.line = itemOpts.line || {}
+			itemOpts.lineSpacing = itemOpts.lineSpacing && !isNaN(itemOpts.lineSpacing) ? itemOpts.lineSpacing : null
+			itemOpts.lineSpacingMultiple = itemOpts.lineSpacingMultiple && !isNaN(itemOpts.lineSpacingMultiple) ? itemOpts.lineSpacingMultiple : null
+
+			// D: Transform text options to bodyProperties as thats how we build XML
+			itemOpts._bodyProp = itemOpts._bodyProp || {}
+			itemOpts._bodyProp.autoFit = itemOpts.autoFit || false // DEPRECATED: (3.3.0) If true, shape will collapse to text size (Fit To shape)
+			itemOpts._bodyProp.anchor = !itemOpts.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
+			itemOpts._bodyProp.vert = itemOpts.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
+			itemOpts._bodyProp.wrap = typeof itemOpts.wrap === 'boolean' ? itemOpts.wrap : true
+
+			// E: Inset
+			if ((itemOpts.inset && !isNaN(Number(itemOpts.inset))) || itemOpts.inset === 0) {
+				itemOpts._bodyProp.lIns = inch2Emu(itemOpts.inset)
+				itemOpts._bodyProp.rIns = inch2Emu(itemOpts.inset)
+				itemOpts._bodyProp.tIns = inch2Emu(itemOpts.inset)
+				itemOpts._bodyProp.bIns = inch2Emu(itemOpts.inset)
+			}
+
+			// F: Transform @deprecated props
+			if (typeof itemOpts.underline === 'boolean' && itemOpts.underline === true) itemOpts.underline = { style: 'sng' }
 		}
 
-		// C
-		newObject.options.lineSpacing = opt.lineSpacing && !isNaN(opt.lineSpacing) ? opt.lineSpacing : null
-		newObject.options.lineSpacingMultiple = opt.lineSpacingMultiple && !isNaN(opt.lineSpacingMultiple) ? opt.lineSpacingMultiple : null
+		// STEP 2: Transform `align`/`valign` to XML values, store in _bodyProp for XML gen
+		{
+			if ((itemOpts.align || '').toLowerCase().indexOf('c') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.center
+			else if ((itemOpts.align || '').toLowerCase().indexOf('l') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.left
+			else if ((itemOpts.align || '').toLowerCase().indexOf('r') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.right
+			else if ((itemOpts.align || '').toLowerCase().indexOf('j') === 0) itemOpts._bodyProp.align = TEXT_HALIGN.justify
 
-		// D: Transform text options to bodyProperties as thats how we build XML
-		newObject.options._bodyProp.autoFit = opt.autoFit || false // @deprecated (3.3.0) If true, shape will collapse to text size (Fit To shape)
-		newObject.options._bodyProp.anchor = !opt.placeholder ? TEXT_VALIGN.ctr : null // VALS: [t,ctr,b]
-		newObject.options._bodyProp.vert = opt.vert || null // VALS: [eaVert,horz,mongolianVert,vert,vert270,wordArtVert,wordArtVertRtl]
-		newObject.options._bodyProp.wrap = typeof opt.wrap === 'boolean' ? opt.wrap : true
-
-		if ((opt.inset && !isNaN(Number(opt.inset))) || opt.inset === 0) {
-			newObject.options._bodyProp.lIns = inch2Emu(opt.inset)
-			newObject.options._bodyProp.rIns = inch2Emu(opt.inset)
-			newObject.options._bodyProp.tIns = inch2Emu(opt.inset)
-			newObject.options._bodyProp.bIns = inch2Emu(opt.inset)
+			if ((itemOpts.valign || '').toLowerCase().indexOf('b') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.b
+			else if ((itemOpts.valign || '').toLowerCase().indexOf('m') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.ctr
+			else if ((itemOpts.valign || '').toLowerCase().indexOf('t') === 0) itemOpts._bodyProp.anchor = TEXT_VALIGN.t
 		}
+
+		// STEP 3: ROBUST: Set rational values for some shadow props if needed
+		correctShadowOptions(itemOpts.shadow)
+
+		return itemOpts
 	}
 
-	// STEP 2: Transform `align`/`valign` to XML values, store in _bodyProp for XML gen
-	{
-		if ((newObject.options.align || '').toLowerCase().indexOf('c') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.center
-		else if ((newObject.options.align || '').toLowerCase().indexOf('l') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.left
-		else if ((newObject.options.align || '').toLowerCase().indexOf('r') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.right
-		else if ((newObject.options.align || '').toLowerCase().indexOf('j') === 0) newObject.options._bodyProp.align = TEXT_HALIGN.justify
+	// STEP 1: Create/Clean object options
+	newObject.options = cleanOpts(newObject.options)
 
-		if ((newObject.options.valign || '').toLowerCase().indexOf('b') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.b
-		else if ((newObject.options.valign || '').toLowerCase().indexOf('m') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.ctr
-		else if ((newObject.options.valign || '').toLowerCase().indexOf('t') === 0) newObject.options._bodyProp.anchor = TEXT_VALIGN.t
-	}
+	// STEP 2: Create/Clean text options
+	newObject.text.forEach(item => (item.options = cleanOpts(item.options || {})))
 
-	// STEP 3: ROBUST: Set rational values for some shadow props if needed
-	correctShadowOptions(opt.shadow)
-
-	// STEP 4: Create hyperlinks
-	if (typeof text === 'string' || typeof text === 'number') newObject.text = [{ text: text, options: newObject.options }]
+	// STEP 3: Create hyperlinks
 	createHyperlinkRels(target, newObject.text || '')
 
 	// LAST: Add object to Slide
@@ -1000,7 +1018,7 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
-				addTextDefinition(slide, '', { placeholder: slideLayoutObj.options.placeholder }, false)
+				addTextDefinition(slide, [{ text: '' }], slideLayoutObj.options, false)
 			}
 		}
 	})
@@ -1010,30 +1028,42 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {BackgroundProps} bkg - color string or an object with image definition
+ * @param {BackgroundProps} props - color string or an object with image definition
  * @param {PresSlide} target - slide object that the background is set to
  */
-export function addBackgroundDefinition(bkg: BackgroundProps, target: SlideLayout) {
-	if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
+export function addBackgroundDefinition(props: BackgroundProps, target: SlideLayout) {
+	// A: @deprecated
+	if (target.bkgd) {
+		if (!target.background) target.background = {}
+
+		if (typeof target.bkgd === 'string') target.background.color = target.bkgd
+		else {
+			if (target.bkgd.data) target.background.data = target.bkgd.data
+			if (target.bkgd.path) target.background.path = target.bkgd.path
+			if (target.bkgd['src']) target.background.path = target.bkgd['src'] // @deprecated (drop in 4.x)
+		}
+	}
+	if (target.background && target.background.fill) target.background.color = target.background.fill
+
+	// B: Handle media
+	if (props && (props.path || props.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
-		bkg.path = bkg.path || 'preencoded.png'
-		let strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
+		props.path = props.path || 'preencoded.png'
+		let strImgExtn = (props.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
 		target._relsMedia = target._relsMedia || []
 		let intRels = target._relsMedia.length + 1
 		// NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
 		target._relsMedia.push({
-			path: bkg.path,
+			path: props.path,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
-			data: bkg.data || null,
+			data: props.data || null,
 			rId: intRels,
 			Target: `../media/${(target._name || '').replace(/\s+/gi, '-')}-image-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target._bkgdImgRid = intRels
-	} else if (bkg && bkg.fill && typeof bkg.fill === 'string') {
-		target.bkgd = bkg.fill
 	}
 }
 

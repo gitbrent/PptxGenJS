@@ -1,7 +1,7 @@
 /*
  * NAME: demo.js
  * AUTH: Brent Ely (https://github.com/gitbrent/)
- * DATE: 20200516
+ * DATE: 20210403
  * DESC: PptxGenJS feature demos for Node.js
  * REQS: npm 4.x + `npm install pptxgenjs`
  *
@@ -10,22 +10,24 @@
  * USAGE: `node demo.js Text`  (runs pre-defined single test in `../common/demos.js`)
  */
 
+import { execGenSlidesFuncs, runEveryTest } from "../modules/demos.mjs";
+import pptxgen from "pptxgenjs";
+
 // ============================================================================
-let PptxGenJS = require("pptxgenjs");
-let demo = require("../common/demos.js");
-let pptx = new PptxGenJS();
-let exportName = "PptxGenJS_Demo_Node";
+
+const exportName = "PptxGenJS_Demo_Node";
+let pptx = new pptxgen();
 
 console.log(`\n\n--------------------==~==~==~==[ STARTING DEMO... ]==~==~==~==--------------------\n`);
 console.log(`* pptxgenjs ver: ${pptx.version}`);
-console.log(`* save location: ${__dirname}`);
+console.log(`* save location: ${process.cwd()}`);
 
 if (process.argv.length > 2) {
 	// A: Run predefined test from `../common/demos.js` //-OR-// Local Tests (callbacks, etc.)
 	Promise.resolve()
 		.then(() => {
-			if (process.argv[2].toLowerCase() === "all") return demo.runEveryTest();
-			return demo.execGenSlidesFuncs(process.argv[2]);
+			if (process.argv[2].toLowerCase() === "all") return runEveryTest(pptxgen);
+			return execGenSlidesFuncs(process.argv[2], pptxgen);
 		})
 		.catch((err) => {
 			throw new Error(err);

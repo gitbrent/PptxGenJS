@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.5.0
+// Type definitions for pptxgenjs 3.6.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -26,6 +26,7 @@ declare class PptxGenJS {
 	readonly OutputType: typeof PptxGenJS.OutputType
 	readonly SchemeColor: typeof PptxGenJS.SchemeColor
 	readonly ShapeType: typeof PptxGenJS.ShapeType
+	readonly PlaceholderType: typeof PptxGenJS.PLACEHOLDER_TYPES
 
 	// Presentation Props
 
@@ -81,18 +82,19 @@ declare class PptxGenJS {
 
 	/**
 	 * Export the current Presentation to stream
+	 * @param {WriteBaseProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file stream
 	 */
-	stream(): Promise<string | ArrayBuffer | Blob | Uint8Array>
+	stream(props?: PptxGenJS.WriteBaseProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
-	 * @param {JSZIP_OUTPUT_TYPE} outputType - 'arraybuffer' | 'base64' | 'binarystring' | 'blob' | 'nodebuffer' | 'uint8array'
+	 * @param {WriteProps} props - output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file content in selected type
 	 */
 	write(props?: PptxGenJS.WriteProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @param {string} exportName - file name
+	 * @param {WriteFileProps} props - output file properties
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(props?: PptxGenJS.WriteFileProps): Promise<string>
@@ -613,6 +615,8 @@ declare namespace PptxGenJS {
 		'table' = 'tbl',
 		'media' = 'media',
 	}
+	export type PLACEHOLDER_TYPE = 'title' | 'body' | 'pic' | 'chart' | 'tbl' | 'media'
+
 	export type SHAPE_NAME =
 		| 'accentBorderCallout1'
 		| 'accentBorderCallout2'
@@ -879,10 +883,10 @@ declare namespace PptxGenJS {
 		 */
 		data?: string
 	}
-	export interface BackgroundProps extends DataOrPathProps {
+	export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 		/**
 		 * Color (hex format)
-		 * @example 'FF3399'
+		 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 		 */
 		fill?: HexColor
 	}
@@ -910,6 +914,7 @@ declare namespace PptxGenJS {
 		 * @default '666666'
 		 */
 		color?: HexColor
+
 		// TODO: add `width` - deprecate `pt`
 		/**
 		 * Border size (points)
@@ -934,7 +939,7 @@ declare namespace PptxGenJS {
 	}
 	export interface PlaceholderProps {
 		name: string
-		type: PLACEHOLDER_TYPES
+		type: PLACEHOLDER_TYPE
 		x: Coord
 		y: Coord
 		w: Coord
@@ -1185,10 +1190,31 @@ declare namespace PptxGenJS {
 		 */
 		lang?: string
 		/**
-		 * underline style
-		 * @default false
+		 * underline properties
+		 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
+		 * @default (none)
 		 */
-		underline?: boolean
+		underline?: {
+			style?:
+				| 'dash'
+				| 'dashHeavy'
+				| 'dashLong'
+				| 'dashLongHeavy'
+				| 'dbl'
+				| 'dotDash'
+				| 'dotDashHeave'
+				| 'dotDotDash'
+				| 'dotDotDashHeavy'
+				| 'dotted'
+				| 'dottedHeavy'
+				| 'heavy'
+				| 'none'
+				| 'sng'
+				| 'wavy'
+				| 'wavyDbl'
+				| 'wavyHeavy'
+			color?: Color
+		}
 		/**
 		 * vertical alignment
 		 * @default 'top'
@@ -1234,9 +1260,29 @@ declare namespace PptxGenJS {
 			 * Image height
 			 */
 			h: number
+			/**
+			 * Area horizontal position related to the image
+			 * - Values: 0-n
+			 * - `crop` only
+			 */
 			x?: number
+			/**
+			 * Area vertical position related to the image
+			 * - Values: 0-n
+			 * - `crop` only
+			 */
 			y?: number
 		}
+		/**
+		 * Flip horizontally?
+		 * @default false
+		 */
+		flipH?: boolean
+		/**
+		 * Flip vertical?
+		 * @default false
+		 */
+		flipV?: boolean
 	}
 	/**
 	 * Add media (audio/video) to slide
@@ -1276,12 +1322,12 @@ declare namespace PptxGenJS {
 		 * - In the case of pptx.shapes.BLOCK_ARC you have to setup the arcThicknessRatio
 		 * - values: [0-359, 0-359]
 		 * @since v3.4.0
-		 * @default [0, 270]
+		 * @default [270, 0]
 		 */
 		angleRange?: [number, number]
 		/**
 		 * Radius (only for pptx.shapes.BLOCK_ARC)
-		 * - You have to setup the angleRange values too.
+		 * - You have to setup the angleRange values too
 		 * - values: 0.0-1.0
 		 * @since v3.4.0
 		 * @default 0.5
@@ -1293,7 +1339,7 @@ declare namespace PptxGenJS {
 		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
 		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 */
-		fill?: Color | ShapeFillProps
+		fill?: ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1360,6 +1406,9 @@ declare namespace PptxGenJS {
 	// tables =========================================================================================
 
 	export interface TableToSlidesProps extends TableProps {
+		//_arrObjTabHeadRows?: TableRow[]
+		//_masterSlide?: SlideLayout
+
 		/**
 		 * Add an image to slide(s) created during autopaging
 		 */
@@ -1471,11 +1520,12 @@ declare namespace PptxGenJS {
 		colspan?: number
 		/**
 		 * Fill color
-		 * @example 'FF0000' // hex string (red)
-		 * @example 'pptx.SchemeColor.accent1' // theme color Accent1
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 * @example { type:'solid', color:'0088CC', alpha:50 } // ShapeFillProps object with 50% transparent
 		 */
-		fill?: Color | ShapeFillProps
+		fill?: ShapeFillProps
 		/**
 		 * Cell margin
 		 * @default 0
@@ -1487,6 +1537,8 @@ declare namespace PptxGenJS {
 		rowspan?: number
 	}
 	export interface TableProps extends PositionProps, TextBaseProps {
+		//_arrObjTabHeadRows?: TableRow[]
+
 		/**
 		 * Whether to enable auto-paging
 		 * - auto-paging creates new slides as content overflows a slide
@@ -1546,6 +1598,9 @@ declare namespace PptxGenJS {
 		colW?: number | number[]
 		/**
 		 * Cell background color
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
 		 */
 		fill?: ShapeFillProps
 		/**
@@ -1595,6 +1650,7 @@ declare namespace PptxGenJS {
 	}
 
 	export interface TextPropsOptions extends PositionProps, DataOrPathProps, TextBaseProps {
+		baseline?: number
 		/**
 		 * Character spacing
 		 */
@@ -1615,7 +1671,13 @@ declare namespace PptxGenJS {
 		 * @default "none"
 		 */
 		fit?: 'none' | 'shrink' | 'resize'
-		fill?: Color | ShapeFillProps
+		/**
+		 * Shape fill
+		 * @example { color:'FF0000' } // hex string (red)
+		 * @example { color:'pptx.SchemeColor.accent1' } // theme color Accent1
+		 * @example { color:'0088CC', transparency:50 } // 50% transparent color
+		 */
+		fill?: ShapeFillProps
 		/**
 		 * Flip shape horizontally?
 		 * @default false
@@ -1659,10 +1721,9 @@ declare namespace PptxGenJS {
 		rtlMode?: boolean
 		shadow?: ShadowProps
 		shape?: SHAPE_NAME
-		strike?: boolean
+		strike?: boolean | 'dblStrike' | 'sngStrike'
 		subscript?: boolean
 		superscript?: boolean
-		underline?: boolean
 		valign?: VAlign
 		vert?: 'eaVert' | 'horz' | 'mongolianVert' | 'vert' | 'vert270' | 'wordArtVert' | 'wordArtVertRtl'
 		/**
@@ -1807,6 +1868,10 @@ declare namespace PptxGenJS {
 		catAxisTitleRotate?: number
 		catGridLine?: OptsChartGridLine
 		catLabelFormatCode?: string
+		/**
+		 * Whether data should use secondary category axis (instead of primary)
+		 * @default false
+		 */
 		secondaryCatAxis?: boolean
 		showCatAxisTitle?: boolean
 	}
@@ -1834,6 +1899,10 @@ declare namespace PptxGenJS {
 		showSerAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisVal {
+		/**
+		 * Whether data should use secondary value axis (instead of primary)
+		 * @default false
+		 */
 		secondaryValAxis?: boolean
 		showValAxisTitle?: boolean
 		/**
@@ -2046,7 +2115,23 @@ declare namespace PptxGenJS {
 		title: string
 		margin?: Margin
 		background?: BackgroundProps
-		objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+		objects?: (
+			| { chart: {} }
+			| { image: {} }
+			| { line: {} }
+			| { rect: {} }
+			| { text: TextProps }
+			| {
+					placeholder: {
+						options: PlaceholderProps
+						/**
+						 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+						 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+						 */
+						text?: string
+					}
+			  }
+		)[]
 		slideNumber?: SlideNumberProps
 
 		/**
@@ -2071,8 +2156,9 @@ declare namespace PptxGenJS {
 		addText: Function
 
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * Background color or image (`Color` | `path` | `data`)
+		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
@@ -2125,8 +2211,9 @@ declare namespace PptxGenJS {
 	 */
 	export class Slide {
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * Background color or image (`Color` | `path` | `data`)
+		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency: 50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
