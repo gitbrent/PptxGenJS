@@ -65,10 +65,10 @@ export type DataOrPathProps = {
 	 */
 	data?: string
 }
-export interface BackgroundProps extends DataOrPathProps {
+export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	/**
 	 * Color (hex format)
-	 * @example 'FF3399'
+	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 	 */
 	fill?: HexColor
 }
@@ -1412,7 +1412,7 @@ export interface SlideBaseProps {
 	/**
 	 * @deprecated v3.3.0 - use `background`
 	 */
-	bkgd?: string
+	bkgd?: string | BackgroundProps
 }
 export interface SlideLayout extends SlideBaseProps {
 	_slide?: {
@@ -1436,8 +1436,9 @@ export interface PresSlide extends SlideBaseProps {
 	addText: Function
 
 	/**
-	 * Background color or image (`fill` | `path` | `data`)
-	 * @example {fill: 'FF3399'} - hex fill color
+	 * Background color or image (`Color` | `path` | `data`)
+	 * @example {color: 'FF3399'} - hex fill color
+	 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string

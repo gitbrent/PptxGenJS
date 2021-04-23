@@ -97,7 +97,7 @@ import * as genMedia from './gen-media'
 import * as genTable from './gen-tables'
 import * as genXml from './gen-xml'
 
-const VERSION = '3.6.0-beta_20210418-1235'
+const VERSION = '3.6.0-beta_20210422-2112'
 
 export default class PptxGenJS implements IPresentationProps {
 	// Property getters/setters
@@ -722,7 +722,7 @@ export default class PptxGenJS implements IPresentationProps {
 	 * @param {SlideMasterProps} props - layout properties
 	 */
 	defineSlideMaster(props: SlideMasterProps) {
-		if (!props.title) throw Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
+		if (!props.title) throw new Error('defineSlideMaster() object argument requires a `title` value. (https://gitbrent.github.io/PptxGenJS/docs/masters.html)')
 
 		let newLayout: SlideLayout = {
 			_margin: props.margin || DEF_SLIDE_MARGIN_IN,
@@ -735,27 +735,20 @@ export default class PptxGenJS implements IPresentationProps {
 			_slideNum: 1000 + this.slideLayouts.length + 1,
 			_slideNumberProps: props.slideNumber || null,
 			_slideObjects: [],
-		}
-
-		// DEPRECATED:
-		if (props.bkgd && !props.background) {
-			props.background = {}
-			if (typeof props.bkgd === 'string') props.background.fill = props.bkgd
-			else {
-				if (props.bkgd.data) props.background.data = props.bkgd.data
-				if (props.bkgd.path) props.background.path = props.bkgd.path
-				if (props.bkgd['src']) props.background.path = props.bkgd['src'] // @deprecated (drop in 4.x)
-			}
-			delete props.bkgd
+			background: props.background || null,
+			bkgd: props.bkgd || null,
 		}
 
 		// STEP 1: Create the Slide Master/Layout
-		genObj.createSlideObject(props, newLayout)
+		genObj.createSlideMaster(props, newLayout)
 
 		// STEP 2: Add it to layout defs
 		this.slideLayouts.push(newLayout)
 
-		// STEP 3: Add slideNumber to master slide (if any)
+		// STEP 3: Add background (image data/path must be captured before `exportPresentation()` is called)
+		if (props.background || props.bkgd) genObj.addBackgroundDefinition(props.background, newLayout)
+
+		// STEP 4: Add slideNumber to master slide (if any)
 		if (newLayout._slideNumberProps && !this.masterSlide._slideNumberProps) this.masterSlide._slideNumberProps = newLayout._slideNumberProps
 	}
 

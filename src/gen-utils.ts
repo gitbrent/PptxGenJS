@@ -191,18 +191,13 @@ export function createGlowElement(options: TextGlowProps, defaults: TextGlowProp
 /**
  * Create color selection
  * @param shapeFill - options
- * @param backColor - color string
  * @returns XML string
  */
-export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLineProps, backColor?: string): string {
+export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLineProps): string {
 	let colorVal = ''
 	let fillType = 'solid'
 	let internalElements = ''
 	let outText = ''
-
-	if (backColor && typeof backColor === 'string') {
-		outText += `<p:bg><p:bgPr>${genXmlColorSelection(backColor.replace('#', ''))}<a:effectLst/></p:bgPr></p:bg>`
-	}
 
 	if (shapeFill) {
 		if (typeof shapeFill === 'string') colorVal = shapeFill

@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.6.0
- * BLD.: 20210414
+ * BLD.: 20210421
  */
 
 import { IMAGE_PATHS } from "../modules/enums.mjs";
@@ -12,13 +12,7 @@ import { STARLABS_LOGO_SM } from "../modules/media.mjs";
 
 export function createMasterSlides(pptx) {
 	let objBkg = { path: IMAGE_PATHS.starlabsBkgd.path };
-	let objImg = {
-		path: IMAGE_PATHS.starlabsLogo.path,
-		x: 4.6,
-		y: 3.5,
-		w: 4,
-		h: 1.8,
-	};
+	let objImg = { path: IMAGE_PATHS.starlabsLogo.path, x: 4.6, y: 3.5, w: 4, h: 1.8 };
 
 	// TITLE_SLIDE
 	pptx.defineSlideMaster({
@@ -53,7 +47,7 @@ export function createMasterSlides(pptx) {
 	// MASTER_PLAIN
 	pptx.defineSlideMaster({
 		title: "MASTER_PLAIN",
-		background: { fill: "FFFFFF" },
+		background: { fill: "F1F1F1" }, // [[BACKWARDS-COMPAT/DEPRECATED CHECK:changed to `color` in v3.5.0]]
 		margin: [0.5, 0.25, 1.0, 0.25],
 		objects: [
 			{ rect: { x: 0.0, y: 6.9, w: "100%", h: 0.6, fill: { color: "003b75" } } },
@@ -71,7 +65,7 @@ export function createMasterSlides(pptx) {
 	// MASTER_SLIDE (MASTER_PLACEHOLDER)
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
-		background: { fill: "F1F1F1" },
+		background: { color: "E1E1E1", transparency: 50 },
 		margin: [0.5, 0.25, 1.0, 0.25],
 		slideNumber: { x: 0.6, y: 7.1, color: "FFFFFF", fontFace: "Arial", fontSize: 10 },
 		objects: [
@@ -115,7 +109,8 @@ export function createMasterSlides(pptx) {
 	// THANKS_SLIDE (THANKS_PLACEHOLDER)
 	pptx.defineSlideMaster({
 		title: "THANKS_SLIDE",
-		bkgd: "36ABFF", // BACKWARDS-COMPAT/DEPRECATED CHECK (`bkgd` will be removed in v4.x)
+		background: { color: "36ABFF" }, // CORRECT WAY TO SET BACKGROUND COLOR
+		//bkgd: "36ABFF", // [[BACKWARDS-COMPAT/DEPRECATED/UAT (`bkgd` will be removed in v4.x)]] **DO NOT USE THIS IN YOUR CODE**
 		objects: [
 			{ rect: { x: 0.0, y: 3.4, w: "100%", h: 2.0, fill: { color: "FFFFFF" } } },
 			{ image: objImg },

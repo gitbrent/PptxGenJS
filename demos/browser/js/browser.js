@@ -104,7 +104,7 @@ export function doAppStart() {
 			"pptx.defineSlideMaster({\n" +
 				"  title : 'MASTER_SLIDE',\n" +
 				"  margin: [ 0.5, 0.25, 1.00, 0.25 ],\n" +
-				"  background: { fill: 'FFFFFF' },\n" +
+				"  background: { color: 'FFFFFF' },\n" +
 				"  objects: [\n" +
 				"    { image: { x:11.45, y:5.95, w:1.67, h:0.75, data:STARLABS_LOGO_SM } },\n" +
 				"    { rect:  { x:0, y:6.9, w:'100%', h:0.6, fill: { color:'003b75' } } },\n" +
