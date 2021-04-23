@@ -82,7 +82,6 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
-export type TabStopAlign = 'l' | 'r' | 'ctr' | 'dec'
 
 // used by charts, shape, text
 export interface BorderProps {
@@ -374,6 +373,12 @@ export interface TextBaseProps {
 	 */
 	lang?: string
 	/**
+	 * tab stops
+	 * - PowerPoint: Paragraph > Tabs > Tab stop position
+	 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
+	 */
+	tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
+	/**
 	 * underline properties
 	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
 	 * @default (none)
@@ -404,11 +409,6 @@ export interface TextBaseProps {
 	 * @default 'top'
 	 */
 	valign?: VAlign
-
-	/**
-	 * tab stops
-	 */
-	tabStops?: (number | string | {position: number | string; alignment: TabStopAlign})[]
 }
 
 // image / media ==================================================================================

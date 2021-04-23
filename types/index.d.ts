@@ -1190,6 +1190,12 @@ declare namespace PptxGenJS {
 		 */
 		lang?: string
 		/**
+		 * tab stops
+		 * - PowerPoint: Paragraph > Tabs > Tab stop position
+		 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
+		 */
+		tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
+		/**
 		 * underline properties
 		 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
 		 * @default (none)
@@ -1220,10 +1226,6 @@ declare namespace PptxGenJS {
 		 * @default 'top'
 		 */
 		valign?: VAlign
-		/**
-		 * tab stops
-		 */
-		tabStops?: (number | string | {position: number | string; alignment: TabStopAlign})[]
 	}
 
 	// image / media ==================================================================================
