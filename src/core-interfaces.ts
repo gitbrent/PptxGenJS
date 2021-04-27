@@ -361,6 +361,11 @@ export interface TextBaseProps {
 	 */
 	fontSize?: number
 	/**
+	 * Text highlight color (hex format)
+	 * @example 'FFFF00' // yellow
+	 */
+	highlight?: HexColor
+	/**
 	 * italic style
 	 * @default false
 	 */
