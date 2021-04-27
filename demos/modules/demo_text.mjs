@@ -156,7 +156,10 @@ function genSlide02(pptx) {
 					breakLine: true,
 				},
 			},
-			{ text: "\nTimes 36", options: { fontSize: 36, fontFace: "Times", color: pptx.colors.ACCENT5, align: "right" } },
+			{ text: " ", options: { breakLine: true } },
+			{ text: "Also: ", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right" } },
+			{ text: "highlighted", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right", highlight: "FFFF00" } },
+			{ text: " text!", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right" } },
 		],
 		{ x: 0.5, y: 1.0, w: 5.75, h: 6.0, margin: 5, fill: { color: pptx.colors.TEXT1 } }
 	);
@@ -380,9 +383,9 @@ function genSlide04(pptx) {
 	});
 	slide.addText(
 		"// Code for example above\n" +
-		"{\n" +
+			"{\n" +
 			"  text: 'text...\\tTab1\\tTab2\\tTab3',\n" +
-			"  options: { tabStops: [{ position: 1 }, { position: 3 }, { position: 7 }] } },\n" +
+			"  options: { tabStops: [{ position: 1 }, { position: 3 }, { position: 7 }] },\n" +
 			"};",
 		{ x: 0.5, y: 3.3, w: 12.3, h: 2.0, fontFace: "Courier", fontSize: 13, fill: { color: "D1E1F1" }, color: "363636" }
 	);
