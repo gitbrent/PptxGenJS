@@ -6,11 +6,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
-## [3.4.0] - 2020-?-?
+## [3.6.0] - 2021-??-??
+### Release Summary
+- Demos: Major Update (five years in the making! IE11 is dead, long live IE11!)
+- Browser Demo: Dropped support for IE11 (use v3.5.0 or below) (library still works with IE11 using polyfill)
+### Added
+- Add Alt Text to charts [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
+- Add support for Tab Stops [\#853](https://github.com/gitbrent/PptxGenJS/pull/853) ([wangfengming](https://github.com/wangfengming))
+- Add transparency to line [\#889](https://github.com/gitbrent/PptxGenJS/pull/889) ([mmarkelov](https://github.com/mmarkelov))
+- Add transparency to slide [\#891](https://github.com/gitbrent/PptxGenJS/pull/891) ([mmarkelov](https://github.com/mmarkelov))
+### Changes
+- Margin not working with placeholder text [\#640](https://github.com/gitbrent/PptxGenJS/issues/640) ([bestis](https://github.com/bestis))
+- Small API documentation glitch [\#895](https://github.com/gitbrent/PptxGenJS/issues/895) ([Slidemagic](https://github.com/Slidemagic))
+- Doc/Website Updates: Docusaurus docs and website updated to v2.0 [\#931](https://github.com/gitbrent/PptxGenJS/pull/931) ([gitbrent](https://github.com/gitbrent))
+- pptx.stream() WriteBaseProps should be optional [\#932](https://github.com/gitbrent/PptxGenJS/issues/932) ([arbourd](https://github.com/arbourd))
+- Running StdTests generate a corrupt PPT [\#937](https://github.com/gitbrent/PptxGenJS/issues/937) ([michaeltford](https://github.com/michaeltford))
+- addNotes function adding notes as an array of objects, parsed as [object Object] in notes field [\#941](https://github.com/gitbrent/PptxGenJS/issues/941) ([karlolsonuc](https://github.com/karlolsonuc))
+
+
+
+## [3.5.0] - 2021-03-30
+### Release Summary
+- write()/writeFile() method string arguments are deprecated - props object in now the sole arg (`WriteProps`/`WriteFileProps`)
+### Added
+- Enabled JSZip compression [\#713](https://github.com/gitbrent/PptxGenJS/issues/713) ([pimlottc-gov](https://github.com/pimlottc-gov))
+- Soft line break property: `softBreakBefore` [\#806](https://github.com/gitbrent/PptxGenJS/pull/806) ([memorsolutions](https://github.com/memorsolutions))
+- More text styles: underline/strike/baseline [\#854](https://github.com/gitbrent/PptxGenJS/pull/854) ([wangfengming](https://github.com/wangfengming))
+- Support line spacing by multiple: `lineSpacingMultiple` [\#855](https://github.com/gitbrent/PptxGenJS/pull/855) ([wangfengming](https://github.com/wangfengming))
+- Chart val axis option: logarithmic scale base: `valAxisLogScaleBase` [\#878](https://github.com/gitbrent/PptxGenJS/issues/878) ([rkspx](https://github.com/rkspx))
 ### Changed
+- Fixed: Setting the "Wrap text in shape" option [\#771](https://github.com/gitbrent/PptxGenJS/issues/771) ([CroniD](https://github.com/CroniD))
+- Fixed: `dataLabelFormatCode` option creates corrupted file if the value includes quotes [\#834](https://github.com/gitbrent/PptxGenJS/issues/834) ([kornarakis](https://github.com/kornarakis)) [\#884](https://github.com/gitbrent/PptxGenJS/pull/884) ([gazlo](https://github.com/gazlo))
+- Fixed: Improve typescipt defs: fix dupes, etc [\#886](https://github.com/gitbrent/PptxGenJS/pull/886) ([mmarkelov](https://github.com/mmarkelov))
+- Fixed: Wrong type definition for placeholder type property [\#921](https://github.com/gitbrent/PptxGenJS/issues/921) ([lukevella](https://github.com/lukevella))
+### Internal Updates
+- Doc/Website Updates: Docusaurus docs and website updated to v2.0 [\#924](https://github.com/gitbrent/PptxGenJS/pull/924) ([gitbrent](https://github.com/gitbrent))
+
+
+
+## [3.4.0] - 2021-01-03
+### Added
+- Added: `firstSliceAngle` (Pie, Doughnut charts) [\#666](https://github.com/gitbrent/PptxGenJS/issues/666) ([ghost](https://github.com/ghost)) [\#809](https://github.com/gitbrent/PptxGenJS/pull/809) ([cronin4392](https://github.com/cronin4392))
+- Added: Ability to change hyperlink `color` [\#389](https://github.com/gitbrent/PptxGenJS/issues/389) ([szilagyikinga](https://github.com/szilagyikinga)) [\#793](https://github.com/gitbrent/PptxGenJS/pull/793) ([ReimaFrgos](https://github.com/ReimaFrgos))
+- Added: Horizontal/Vertical flip capability to images [\#824](https://github.com/gitbrent/PptxGenJS/pull/824) ([luism-s](https://github.com/luism-s))
+- Added: New `titleBold` option on chart settings [\#830](https://github.com/gitbrent/PptxGenJS/pull/830) ([twatson83](https://github.com/twatson83))
+- Added: New cat/val-AxisLineColor/AxisLineSize/AxisLineStyle chart options [\#831](https://github.com/gitbrent/PptxGenJS/pull/831) ([twatson83](https://github.com/twatson83))
+- Added: New shape options: `angleRange` and `arcThicknessRatio` [\#547](https://github.com/gitbrent/PptxGenJS/issues/547) ([paolochiodi](https://github.com/paolochiodi)) [\#861](https://github.com/gitbrent/PptxGenJS/pull/861) ([apresmoi](https://github.com/apresmoi))
+### Changed
+- Fixed: catAxisLabelPos and valAxisLabelPos options are not working [\#709](https://github.com/gitbrent/PptxGenJS/issues/709) ([cpf121](https://github.com/cpf121))
+- Fixed: logic for dataLabelFormat code in Pie and Donut charts [\#802](https://github.com/gitbrent/PptxGenJS/pull/802) ([cronin4392](https://github.com/cronin4392))
+- Fixed: data label position for Pie chart [\#808](https://github.com/gitbrent/PptxGenJS/pull/808) ([cronin4392](https://github.com/cronin4392))
+- Fixed: Single data set with a custom color should not create legends for each category [\#821](https://github.com/gitbrent/PptxGenJS/issues/821) ([tvt](https://github.com/tvt))
 - Fixed: bug when evaluating `catAxisLabelPos`,`valAxisLabelPos` props [\#829](https://github.com/gitbrent/PptxGenJS/pull/829) ([twatson83](https://github.com/twatson83))
 - Fixed: secondary axis param (`secondaryValAxis`) check [\#832](https://github.com/gitbrent/PptxGenJS/pull/832) ([twatson83](https://github.com/twatson83))
 - Fixed: `addSection` method missing return type in `index.d.ts` [\#833](https://github.com/gitbrent/PptxGenJS/issues/833) ([dylang](https://github.com/dylang))
+- Fixed: Align property doesn't work in slide number object [\#835](https://github.com/gitbrent/PptxGenJS/issues/835) ([ax2mx](https://github.com/ax2mx))
+- Fixed: Margin doesn't work in slide number object [\#836](https://github.com/gitbrent/PptxGenJS/issues/836) ([ax2mx](https://github.com/ax2mx))
+- Fixed: several rounding mistakes for precision, accuracy, and usability [\#840](https://github.com/gitbrent/PptxGenJS/pull/840) ([michaelcbrook](https://github.com/michaelcbrook))
+- Fixed: catAxisMinorTickMark [\#841](https://github.com/gitbrent/PptxGenJS/pull/841) ([twatson83](https://github.com/twatson83))
+- Fixed: colspan/rowspan [\#852](https://github.com/gitbrent/PptxGenJS/pull/852) ([wangfengming](https://github.com/wangfengming))
+- Fixed: typo in ts doc [\#873](https://github.com/gitbrent/PptxGenJS/issues/873) ([jencii](https://github.com/jencii))
+- Fixed: TypeError: Cannot set property 'lIns' of undefined [\#879](https://github.com/gitbrent/PptxGenJS/issues/879) ([CroniD](https://github.com/CroniD))
+### Internal Updates
+- Library Updates: TypeScript 4, Rollup 2.3 and more [\#866](https://github.com/gitbrent/PptxGenJS/pull/866) ([gitbrent](https://github.com/gitbrent))
 
 
 

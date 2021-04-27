@@ -110,7 +110,7 @@ export function valToPts(pt: number | string): number {
  */
 export function convertRotationDegrees(d: number): number {
 	d = d || 0
-	return (d > 360 ? d - 360 : d) * 60000
+	return Math.round((d > 360 ? d - 360 : d) * 60000)
 }
 
 /**
@@ -177,9 +177,9 @@ export function createColorElement(colorStr: string | SCHEME_COLORS, innerElemen
 export function createGlowElement(options: TextGlowProps, defaults: TextGlowProps): string {
 	let strXml = '',
 		opts = getMix(defaults, options),
-		size = opts['size'] * ONEPT,
+		size = Math.round(opts['size'] * ONEPT),
 		color = opts['color'],
-		opacity = opts['opacity'] * 100000
+		opacity = Math.round(opts['opacity'] * 100000)
 
 	strXml += `<a:glow rad="${size}">`
 	strXml += createColorElement(color, `<a:alpha val="${opacity}"/>`)
@@ -190,27 +190,22 @@ export function createGlowElement(options: TextGlowProps, defaults: TextGlowProp
 
 /**
  * Create color selection
- * @param {shapeFill} ShapeFillProps - options
- * @param {string} backColor - color string
- * @returns {string} XML string
+ * @param {Color | ShapeFillProps | ShapeLineProps} props fill props
+ * @returns XML string
  */
-export function genXmlColorSelection(shapeFill: Color | ShapeFillProps | ShapeLineProps, backColor?: string): string {
-	let colorVal = ''
+export function genXmlColorSelection(props: Color | ShapeFillProps | ShapeLineProps): string {
 	let fillType = 'solid'
+	let colorVal = ''
 	let internalElements = ''
 	let outText = ''
 
-	if (backColor && typeof backColor === 'string') {
-		outText += `<p:bg><p:bgPr>${genXmlColorSelection(backColor.replace('#', ''))}<a:effectLst/></p:bgPr></p:bg>`
-	}
-
-	if (shapeFill) {
-		if (typeof shapeFill === 'string') colorVal = shapeFill
+	if (props) {
+		if (typeof props === 'string') colorVal = props
 		else {
-			if (shapeFill.type) fillType = shapeFill.type
-			if (shapeFill.color) colorVal = shapeFill.color
-			if (shapeFill.alpha) internalElements += `<a:alpha val="${100 - shapeFill.alpha}000"/>` // @deprecated v3.3.0
-			if (shapeFill.transparency) internalElements += `<a:alpha val="${100 - shapeFill.transparency}000"/>`
+			if (props.type) fillType = props.type
+			if (props.color) colorVal = props.color
+			if (props.alpha) internalElements += `<a:alpha val="${Math.round((100 - props.alpha) * 1000)}"/>` // DEPRECATED: @deprecated v3.3.0
+			if (props.transparency) internalElements += `<a:alpha val="${Math.round((100 - props.transparency) * 1000)}"/>`
 		}
 
 		switch (fillType) {
