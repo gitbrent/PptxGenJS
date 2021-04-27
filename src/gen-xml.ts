@@ -826,7 +826,8 @@ function slideObjectRelationsToXml(slide: PresSlide | SlideLayout, defaultRels: 
 function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault: boolean): string {
 	let strXmlBullet = '',
 		strXmlLnSpc = '',
-		strXmlParaSpc = ''
+		strXmlParaSpc = '',
+		strXmlTabStops = ''
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
 	let bulletMarL = valToPts(DEF_BULLET_MARGIN)
 
@@ -933,16 +934,17 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 			strXmlBullet = '<a:buNone/>'
 		}
 
+		// OPTION: tabStops
+		if (textObj.options.tabStops && Array.isArray(textObj.options.tabStops)) {
+			let tabStopsXml = textObj.options.tabStops.map(stop => `<a:tab pos="${inch2Emu(stop.position || 1)}" algn="${stop.alignment || 'l'}"/>`).join('')
+			strXmlTabStops = `<a:tabLst>${tabStopsXml}</a:tabLst>`
+		}
+
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) childPropXml += genXmlTextRunProperties(textObj.options, true)
-		if (childPropXml) {
-			paragraphPropXml += '>' + childPropXml + '</' + tag + '>'
-		} else {
-			// self-close when no child props
-			paragraphPropXml += '/>'
-		}
+		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet + strXmlTabStops
+		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
+		paragraphPropXml += '</' + tag + '>'
 	}
 
 	return paragraphPropXml

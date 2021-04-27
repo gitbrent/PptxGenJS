@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0-beta @ 2021-04-23T04:16:21.520Z */
+/* PptxGenJS 3.6.0-beta @ 2021-04-23T04:52:38.464Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2091,7 +2091,7 @@ function slideObjectRelationsToXml(slide, defaultRels) {
  * @return {string} XML
  */
 function genXmlParagraphProperties(textObj, isDefault) {
-    var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '';
+    var strXmlBullet = '', strXmlLnSpc = '', strXmlParaSpc = '', strXmlTabStops = '';
     var tag = isDefault ? 'a:lvl1pPr' : 'a:pPr';
     var bulletMarL = valToPts(DEF_BULLET_MARGIN);
     var paragraphPropXml = "<" + tag + (textObj.options.rtlMode ? ' rtl="1" ' : '');
@@ -2181,18 +2181,17 @@ function genXmlParagraphProperties(textObj, isDefault) {
             paragraphPropXml += " indent=\"0\" marL=\"0\""; // FIX: ISSUE#589 - specify zero indent and marL or default will be hanging paragraph
             strXmlBullet = '<a:buNone/>';
         }
+        // OPTION: tabStops
+        if (textObj.options.tabStops && Array.isArray(textObj.options.tabStops)) {
+            var tabStopsXml = textObj.options.tabStops.map(function (stop) { return "<a:tab pos=\"" + inch2Emu(stop.position || 1) + "\" algn=\"" + (stop.alignment || 'l') + "\"/>"; }).join('');
+            strXmlTabStops = "<a:tabLst>" + tabStopsXml + "</a:tabLst>";
+        }
         // B: Close Paragraph-Properties
         // IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-        var childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet;
+        paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet + strXmlTabStops;
         if (isDefault)
-            childPropXml += genXmlTextRunProperties(textObj.options, true);
-        if (childPropXml) {
-            paragraphPropXml += '>' + childPropXml + '</' + tag + '>';
-        }
-        else {
-            // self-close when no child props
-            paragraphPropXml += '/>';
-        }
+            paragraphPropXml += genXmlTextRunProperties(textObj.options, true);
+        paragraphPropXml += '</' + tag + '>';
     }
     return paragraphPropXml;
 }
@@ -6184,7 +6183,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.6.0-beta_20210422-2142';
+var VERSION = '3.6.0-pr853-20210422-2320';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
