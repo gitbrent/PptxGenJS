@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0-beta @ 2021-04-27T02:41:53.565Z */
+/* PptxGenJS 3.6.0-beta @ 2021-04-27T03:16:49.360Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1460,32 +1460,13 @@ function slideObjectToXml(slide) {
                 });
                 // STEP 1: Start Table XML
                 // NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-                var strXml_1 = '<p:graphicFrame>' +
-                    '  <p:nvGraphicFramePr>' +
-                    '    <p:cNvPr id="' +
-                    (intTableNum * slide._slideNum + 1) +
-                    '" name="Table ' +
-                    intTableNum * slide._slideNum +
-                    '"/>' +
-                    '    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
-                    '    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
-                    '  </p:nvGraphicFramePr>' +
-                    '  <p:xfrm>' +
-                    '    <a:off x="' +
-                    (x || (x === 0 ? 0 : EMU)) +
-                    '" y="' +
-                    (y || (y === 0 ? 0 : EMU)) +
-                    '"/>' +
-                    '    <a:ext cx="' +
-                    (cx || (cx === 0 ? 0 : EMU)) +
-                    '" cy="' +
-                    (cy || EMU) +
-                    '"/>' +
-                    '  </p:xfrm>' +
-                    '  <a:graphic>' +
-                    '    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table">' +
-                    '      <a:tbl>' +
-                    '        <a:tblPr/>';
+                var strXml_1 = "<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id=\"" + (intTableNum * slide._slideNum + 1) + "\" name=\"Table " + intTableNum * slide._slideNum + "\"/>";
+                strXml_1 +=
+                    '<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
+                        '  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
+                        '</p:nvGraphicFramePr>';
+                strXml_1 += "<p:xfrm><a:off x=\"" + (x || (x === 0 ? 0 : EMU)) + "\" y=\"" + (y || (y === 0 ? 0 : EMU)) + "\"/><a:ext cx=\"" + (cx || (cx === 0 ? 0 : EMU)) + "\" cy=\"" + (cy || EMU) + "\"/></p:xfrm>";
+                strXml_1 += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>';
                 // + '        <a:tblPr bandRow="1"/>';
                 // TODO: Support banded rows, first/last row, etc.
                 // NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
@@ -1907,19 +1888,17 @@ function slideObjectToXml(slide) {
                 }
                 break;
             case SLIDE_OBJECT_TYPES.chart:
+                var chartOpts = slideItemObj.options;
                 strSlideXml += '<p:graphicFrame>';
                 strSlideXml += ' <p:nvGraphicFramePr>';
-                strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + '"/>';
+                strSlideXml += "   <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Chart " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(chartOpts.altText || '') + "\"/>";
                 strSlideXml += '   <p:cNvGraphicFramePr/>';
-                strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
+                strSlideXml += "   <p:nvPr>" + genXmlPlaceholder(placeholderObj) + "</p:nvPr>";
                 strSlideXml += ' </p:nvGraphicFramePr>';
-                strSlideXml += ' <p:xfrm>';
-                strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>';
-                strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>';
-                strSlideXml += ' </p:xfrm>';
+                strSlideXml += " <p:xfrm><a:off x=\"" + x + "\" y=\"" + y + "\"/><a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></p:xfrm>";
                 strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">';
                 strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">';
-                strSlideXml += '   <c:chart r:id="rId' + slideItemObj.chartRid + '" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>';
+                strSlideXml += "   <c:chart r:id=\"rId" + slideItemObj.chartRid + "\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\"/>";
                 strSlideXml += '  </a:graphicData>';
                 strSlideXml += ' </a:graphic>';
                 strSlideXml += '</p:graphicFrame>';
