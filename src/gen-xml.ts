@@ -17,6 +17,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
+	IChartOpts,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -624,16 +625,14 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.chart:
+				let chartOpts = slideItemObj.options as IChartOpts
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}"/>`
+				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}"/>`
 				strSlideXml += '   <p:cNvGraphicFramePr/>'
 				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += ' </p:nvGraphicFramePr>'
-				strSlideXml += ' <p:xfrm>'
-				strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
-				strSlideXml += ' </p:xfrm>'
+				strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
 				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
 				strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
 				strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`

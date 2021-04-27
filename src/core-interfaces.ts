@@ -1266,7 +1266,13 @@ export interface IChartOpts
 		IChartPropsLegend,
 		IChartPropsTitle,
 		OptsChartGridLine,
-		PositionProps {}
+		PositionProps {
+	/**
+	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
+	 */
+	altText?: string
+}
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
 }
@@ -1274,6 +1280,7 @@ export interface ISlideRelChart extends OptsChartData {
 	type: CHART_NAME | IChartMulti[]
 	opts: IChartOptsLib
 	data: OptsChartData[]
+	// internal below
 	rId: number
 	Target: string
 	globalId: number
