@@ -351,12 +351,6 @@ export interface TextBaseProps {
 	 */
 	color?: Color
 	/**
-	 * Highlight color. background for text run.
-	 * - `HexColor`
-	 * @example 'FF0000' // red
-	 */
-	highlight?: HexColor;
-	/**
 	 * Font face name
 	 * @example 'Arial' // Arial font
 	 */
@@ -366,6 +360,11 @@ export interface TextBaseProps {
 	 * @example 12 // Font size 12
 	 */
 	fontSize?: number
+	/**
+	 * Text highlight color (hex format)
+	 * @example 'FFFF00' // yellow
+	 */
+	highlight?: HexColor
 	/**
 	 * italic style
 	 * @default false
