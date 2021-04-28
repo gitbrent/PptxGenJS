@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0-beta @ 2021-04-27T03:16:49.360Z */
+/* PptxGenJS 3.6.0-beta @ 2021-04-28T04:08:52.618Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -2211,17 +2211,17 @@ function genXmlTextRunProperties(opts, isDefault) {
     }
     runProps += opts.charSpacing ? " spc=\"" + Math.round(opts.charSpacing * 100) + "\" kern=\"0\"" : ''; // IMPORTANT: Also disable kerning; otherwise text won't actually expand
     runProps += ' dirty="0">';
-    // Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
+    // Color / Font / Highlight / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
     if (opts.color || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
         if (opts.outline && typeof opts.outline === 'object') {
             runProps += "<a:ln w=\"" + valToPts(opts.outline.size || 0.75) + "\">" + genXmlColorSelection(opts.outline.color || 'FFFFFF') + "</a:ln>";
         }
         if (opts.color)
             runProps += genXmlColorSelection(opts.color);
-        // underline color
-        if (typeof opts.underline === 'object' && opts.underline.color) {
+        if (opts.highlight)
+            runProps += "<a:highlight>" + createColorElement(opts.highlight) + "</a:highlight>";
+        if (typeof opts.underline === 'object' && opts.underline.color)
             runProps += "<a:uFill>" + genXmlColorSelection(opts.underline.color) + "</a:uFill>";
-        }
         if (opts.glow)
             runProps += "<a:effectLst>" + createGlowElement(opts.glow, DEF_TEXT_GLOW) + "</a:effectLst>";
         if (opts.fontFace) {
@@ -4042,8 +4042,13 @@ function createHyperlinkRels(target, text) {
         textObjs = [text];
     textObjs.forEach(function (text) {
         // `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
-        if (Array.isArray(text))
+        if (Array.isArray(text)) {
             createHyperlinkRels(target, text);
+        }
+        else if (Array.isArray(text.text)) {
+            // this handles TableCells with hyperlinks
+            createHyperlinkRels(target, text.text);
+        }
         else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
             if (typeof text.options.hyperlink !== 'object')
                 console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ");
@@ -6162,7 +6167,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.6.0-20210426-2141';
+var VERSION = '3.6.0-20210427-2305';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
