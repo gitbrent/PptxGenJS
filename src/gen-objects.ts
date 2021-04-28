@@ -1083,8 +1083,12 @@ function createHyperlinkRels(target: PresSlide, text: number | string | ISlideOb
 
 	textObjs.forEach((text: TextProps) => {
 		// `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
-		if (Array.isArray(text)) createHyperlinkRels(target, text)
-		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
+		if (Array.isArray(text)) {
+			createHyperlinkRels(target, text)
+		} else if (Array.isArray(text.text)) {
+			// this handles TableCells with hyperlinks
+			createHyperlinkRels(target, text.text)
+		} else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
 			if (typeof text.options.hyperlink !== 'object') console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ")
 			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
 			else {
