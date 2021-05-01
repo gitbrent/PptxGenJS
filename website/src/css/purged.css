@@ -65,7 +65,7 @@
    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
  }
 
- h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
+ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h6, .h6 {
    margin-top: 0;
    margin-bottom: 0.5rem;
    font-weight: 300;
@@ -110,10 +110,6 @@
    h4, .h4 {
 	 font-size: 1.5rem;
    }
- }
-
- h5, .h5 {
-   font-size: 1.25rem;
  }
 
  h6, .h6 {
@@ -200,7 +196,7 @@
    outline: 0;
  }
 
- 
+ input,
  button {
    margin: 0;
    font-family: inherit;
@@ -519,17 +515,6 @@
    padding: 1rem 1rem;
  }
 
- .card-header {
-   padding: 0.5rem 1rem;
-   margin-bottom: 0;
-   background-color: rgba(0, 0, 0, 0.03);
-   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
- }
-
- .card-header:first-child {
-   border-radius: 0 0 0 0;
- }
-
  @keyframes progress-bar-stripes {
    0% {
 	 background-position-x: 1rem;
@@ -591,8 +576,20 @@
    border: 0 !important;
  }
 
+ .border-top {
+   border-top: 1px solid #dee2e6 !important;
+ }
+
+ .border-primary {
+   border-color: #008cba !important;
+ }
+
  .border-light {
    border-color: #eee !important;
+ }
+
+ .border-2 {
+   border-width: 2px !important;
  }
 
  .w-100 {
@@ -701,10 +698,6 @@
 
  .text-white-50 {
    color: rgba(255, 255, 255, 0.5) !important;
- }
-
- .bg-primary {
-   background-color: #008cba !important;
  }
 
  .bg-light {

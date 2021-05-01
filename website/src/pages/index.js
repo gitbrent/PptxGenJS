@@ -68,25 +68,21 @@ export default () => {
 					<div className="row g-5 mb-0">
 						<div className="col-12 col-md-6">
 							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
-								<div className="card-header bg-primary text-white">
-									<h5 className="fw-light mb-0">Works Everwhere</h5>
-								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
-									<ul className="mb-0">
+								<div className={`card-body border-top border-2 border-primary p-4 border-0 ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
+									<h4 className="text-primary mb-4">Works Everywhere</h4>
+									<ul className={`mb-0 ${isDarkTheme ? "text-white-50" : "text-black-50"}`}>
 										<li>Every modern desktop and mobile browser is supported</li>
 										<li>Integrates with Node, Angular, React and Electron</li>
-										<li>IE11 support available via polyfill</li>
+										<li>Compatible with PowerPoint, Keynote, and more</li>
 									</ul>
 								</div>
 							</div>
 						</div>
 						<div className="col-12 col-md-6">
 							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
-								<div className="card-header bg-primary text-white">
-									<h5 className="fw-light mb-0">Full Featured</h5>
-								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
-									<ul className="mb-0">
+								<div className={`card-body border-top border-2 border-primary p-4 border-0 ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
+									<h4 className="text-primary mb-4">Full Featured</h4>
+									<ul className={`mb-0 ${isDarkTheme ? "text-white-50" : "text-black-50"}`}>
 										<li>All major object types are available (charts, shapes, tables, etc.)</li>
 										<li>Master Slides for academic/corporate branding</li>
 										<li>SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts</li>
@@ -96,11 +92,9 @@ export default () => {
 						</div>
 						<div className="col-12 col-md-6">
 							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
-								<div className="card-header bg-primary text-white">
-									<h5 className="fw-light mb-0">Simple And Powerful</h5>
-								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
-									<ul className="mb-0">
+								<div className={`card-body border-top border-2 border-primary p-4 border-0 ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
+									<h4 className="text-primary mb-4">Simple And Powerful</h4>
+									<ul className={`mb-0 ${isDarkTheme ? "text-white-50" : "text-black-50"}`}>
 										<li>The absolute easiest PowerPoint library to use</li>
 										<li>Learn as you code will full typescript definitions included</li>
 										<li>Tons of demo code comes included (over 70 slides of features)</li>
@@ -110,11 +104,9 @@ export default () => {
 						</div>
 						<div className="col-12 col-md-6">
 							<div className={`card h-100 ${isDarkTheme ? "border-0" : ""}`}>
-								<div className="card-header bg-primary text-white">
-									<h5 className="fw-light mb-0">Export Your Way</h5>
-								</div>
-								<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
-									<ul className="mb-0">
+								<div className={`card-body border-top border-2 border-primary p-4 border-0 ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
+									<h4 className="text-primary mb-4">Export Your Way</h4>
+									<ul className={`mb-0 ${isDarkTheme ? "text-white-50" : "text-black-50"}`}>
 										<li>Exports files direct to client browsers with proper MIME-type</li>
 										<li>Other export formats available: base64, blob, stream, etc.</li>
 										<li>Presentation compression options and more</li>
