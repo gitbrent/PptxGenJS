@@ -6,21 +6,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
-## [3.6.0] - 2021-??-??
+## [3.6.0] - 2021-05-02
 ### Release Summary
-- Demos: Major Update (five years in the making! IE11 is dead, long live IE11!)
-- Browser Demo: Dropped support for IE11 (use v3.5.0 or below) (library still works with IE11 using polyfill)
+- **Major Update**: demo code (they're all .mjs modules now!); dropped support for IE11 (RIP!) in demo app.
+- **IE11 Note**: Dropped support for IE11 (use v3.5.0 or below) (library still works with IE11 using polyfill)
 ### Added
-- Add Alt Text to charts [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
-- Add support for Tab Stops [\#853](https://github.com/gitbrent/PptxGenJS/pull/853) ([wangfengming](https://github.com/wangfengming))
-- Add support for text highlight [\#857](https://github.com/gitbrent/PptxGenJS/pull/857) ([wangfengming](https://github.com/wangfengming))
-- Add transparency to line [\#889](https://github.com/gitbrent/PptxGenJS/pull/889) ([mmarkelov](https://github.com/mmarkelov))
-- Add transparency to slide [\#891](https://github.com/gitbrent/PptxGenJS/pull/891) ([mmarkelov](https://github.com/mmarkelov))
-### Changes
+- Alt Text to charts [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
+- support for Tab Stops [\#853](https://github.com/gitbrent/PptxGenJS/pull/853) ([wangfengming](https://github.com/wangfengming))
+- support for text highlight [\#857](https://github.com/gitbrent/PptxGenJS/pull/857) ([wangfengming](https://github.com/wangfengming))
+- transparency to line [\#889](https://github.com/gitbrent/PptxGenJS/pull/889) ([mmarkelov](https://github.com/mmarkelov))
+- transparency to slide [\#891](https://github.com/gitbrent/PptxGenJS/pull/891) ([mmarkelov](https://github.com/mmarkelov))
+### Changed
+- Website/Docs Docusaurus v2.0; major UI facelift [\#931](https://github.com/gitbrent/PptxGenJS/pull/931) ([gitbrent](https://github.com/gitbrent))
+### Deprecated
+- TODO: do diff and gather these
+### Removed
+- Browser Demo: Dropped support for IE11 (use v3.5.0 or below) (library still works with IE11 using polyfill)
+### Fixed
 - Margin not working with placeholder text [\#640](https://github.com/gitbrent/PptxGenJS/issues/640) ([bestis](https://github.com/bestis))
 - Cant create a list of bulleted links in a table cell [\#763](https://github.com/gitbrent/PptxGenJS/issues/763) ([avillamaina](https://github.com/avillamaina))
 - Small API documentation glitch [\#895](https://github.com/gitbrent/PptxGenJS/issues/895) ([Slidemagic](https://github.com/Slidemagic))
-- Doc/Website Updates: Docusaurus docs and website updated to v2.0 [\#931](https://github.com/gitbrent/PptxGenJS/pull/931) ([gitbrent](https://github.com/gitbrent))
 - pptx.stream() WriteBaseProps should be optional [\#932](https://github.com/gitbrent/PptxGenJS/issues/932) ([arbourd](https://github.com/arbourd))
 - Running StdTests generate a corrupt PPT [\#937](https://github.com/gitbrent/PptxGenJS/issues/937) ([michaeltford](https://github.com/michaeltford))
 - addNotes function adding notes as an array of objects, parsed as [object Object] in notes field [\#941](https://github.com/gitbrent/PptxGenJS/issues/941) ([karlolsonuc](https://github.com/karlolsonuc))
