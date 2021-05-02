@@ -46,23 +46,29 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 # Features
 
-**Extensive Support**
+**Works Everywhere**
 
-- Generate presentations on every modern desktop & mobile web browser
-- IE11 is supported via bundle polyfill
+- Every modern desktop and mobile browser is supported
+- Integrates with Node, Angular, React and Electron
+- Compatible with PowerPoint, Keynote, and more
 
-**Comprehensive Objects**
+**Full Featured**
 
-- Create any object type: Charts, Images, Links, Media, Shapes, Tables, Text
-- SVG images and YouTube videos are supported when viewed in PowerPoint online/2019+ desktop application
+- All major object types are available (charts, shapes, tables, etc.)
+- Master Slides for academic/corporate branding
+- SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts
 
-**Modern Architecture**
+**Simple And Powerful**
 
-- Supports client web browsers, NodeJS, and React/Angular/Electron
-- Export methods return promises
-- Client browsers have only a single dependency: JSZip
-- Easy Angular/React integration (available via npm, cjs or es files)
-- Typescript definitions included
+- The absolute easiest PowerPoint library to use
+- Learn as you code will full typescript definitions included
+- Tons of demo code comes included (over 70 slides of features)
+
+**Export Your Way**
+
+- Exports files direct to client browsers with proper MIME-type
+- Other export formats available: base64, blob, stream, etc.
+- Presentation compression options and more
 
 **HTML to PowerPoint**
 
@@ -85,21 +91,23 @@ Use the online demo to create a simple presentation to see how easy it is to use
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.5.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.6.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.5.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.5.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.6.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.6.0/dist/pptxgen.min.js"></script>
 ```
 
 ## Download
 
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
-Bundle: Modern Browsers and IE11
+Bundle: Modern Browsers
+
+- Use the bundle for IE11 support
 
 ```html
 <script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
@@ -210,7 +218,7 @@ Easily convert HTML tables to PowerPoint presentations in a single call.
 ```javascript
 let pptx = new PptxGenJS();
 pptx.tableToSlides("tableElementId");
-pptx.writeFile();
+pptx.writeFile({ fileName:"html2pptx-demo.pptx" });
 ```
 
 Learn more:
