@@ -2,15 +2,18 @@
 .DS_Store
 
 ### Others
-*.html
 *.icloud
 .icloud
-demo-react/
-docs/
-img/
-website
 bower_components/
 node_modules/
 npm-debug.log
 src/bld
+
+### docusaurus
 ./*.html
+*.html
+demo-react/
+docs/
+img/
+privacy.html
+website
