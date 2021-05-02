@@ -900,7 +900,7 @@ declare namespace PptxGenJS {
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
-	export type TabStopAlign = 'l' | 'r' | 'ctr' | 'dec'
+
 	// used by charts, shape, text
 	export interface BorderProps {
 		/**
@@ -996,17 +996,17 @@ declare namespace PptxGenJS {
 		 * @default 0
 		 */
 		transparency?: number
+		/**
+		 * Fill type
+		 * @default 'solid'
+		 */
+		type?: 'none' | 'solid'
 
 		/**
 		 * Transparency (percent)
 		 * @deprecated v3.3.0 - use `transparency`
 		 */
 		alpha?: number
-		/**
-		 * Fill type
-		 * - 'solid' @deprecated v3.3.0
-		 */
-		type?: 'none' | 'solid'
 	}
 	export interface ShapeLineProps extends ShapeFillProps {
 		/**
