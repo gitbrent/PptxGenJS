@@ -65,7 +65,7 @@
    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
  }
 
- h1, .h1, h2, .h2, h3, .h3, h4, .h4, h6, .h6 {
+ h1, .h1, h2, .h2, h3, .h3, h4, .h4, h5, .h5, h6, .h6 {
    margin-top: 0;
    margin-bottom: 0.5rem;
    font-weight: 300;
@@ -110,6 +110,10 @@
    h4, .h4 {
 	 font-size: 1.5rem;
    }
+ }
+
+ h5, .h5 {
+   font-size: 1.25rem;
  }
 
  h6, .h6 {
@@ -325,6 +329,14 @@
    width: 100%;
  }
 
+ .g-3 {
+   --bs-gutter-x: 1rem;
+ }
+
+ .g-3 {
+   --bs-gutter-y: 1rem;
+ }
+
  .g-4 {
    --bs-gutter-x: 1.5rem;
  }
@@ -495,6 +507,12 @@
    background-color: transparent;
  }
 
+ .btn-sm {
+   padding: 0.25rem 0.5rem;
+   font-size: 0.875rem;
+   border-radius: 0;
+ }
+
  .card {
    position: relative;
    display: -ms-flexbox;
@@ -513,6 +531,21 @@
    -ms-flex: 1 1 auto;
    flex: 1 1 auto;
    padding: 1rem 1rem;
+ }
+
+ .card-text:last-child {
+   margin-bottom: 0;
+ }
+
+ .card-header {
+   padding: 0.5rem 1rem;
+   margin-bottom: 0;
+   background-color: rgba(0, 0, 0, 0.03);
+   border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+ }
+
+ .card-header:first-child {
+   border-radius: 0 0 0 0;
  }
 
  @keyframes progress-bar-stripes {
@@ -664,6 +697,10 @@
    padding-bottom: 3rem !important;
  }
 
+ .font-monospace {
+   font-family: var(--bs-font-monospace) !important;
+ }
+
  .fw-light {
    font-weight: 300 !important;
  }
@@ -698,6 +735,10 @@
 
  .text-white-50 {
    color: rgba(255, 255, 255, 0.5) !important;
+ }
+
+ .bg-success {
+   background-color: #43ac6a !important;
  }
 
  .bg-light {

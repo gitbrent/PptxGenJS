@@ -109,13 +109,13 @@ export default () => {
 					<br />
 					All demo code is divided into modules on github under <a href="https://github.com/gitbrent/PptxGenJS/tree/master/demos/modules">demos/modules</a>.
 				</p>
-				<img alt="PptxGenJS PowerPoint Demo Slides" src="/PptxGenJS/img/readme_banner.png"></img>
+				<img alt="PptxGenJS PowerPoint Demo Slides" src="/PptxGenJS/img/readme_banner.png" />
 			</section>
 		);
 	};
 
 	return (
-		<Layout title="PptxGenJS Demos">
+		<Layout title="Demos">
 			<div className="container my-4">
 				<h1 className="mb-4">Demos</h1>
 				<LiveDemo />

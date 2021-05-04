@@ -84,7 +84,7 @@ module.exports = {
 					position: "left",
 				},
 				{
-					to: "demoinfo",
+					to: "pptxdemos",
 					label: "Demos",
 					position: "left",
 				},
@@ -139,8 +139,8 @@ module.exports = {
 							to: "docs/installation",
 						},
 						{
-							label: "JSFiddle Demo",
-							href: "https://jsfiddle.net/gitbrent/L1uctxm0/",
+							label: "Demos",
+							href: "pptxdemos",
 						},
 					],
 				},
