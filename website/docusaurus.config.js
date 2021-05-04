@@ -93,6 +93,11 @@ module.exports = {
 					label: "Latest Release",
 					position: "left",
 				},
+				{
+					to: "sponsor",
+					label: "Sponsor",
+					position: "left",
+				},
 				/*{
 					href: "https://www.npmjs.com/package/pptxgenjs",
 					position: "right",
