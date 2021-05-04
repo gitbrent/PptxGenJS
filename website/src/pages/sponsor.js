@@ -19,7 +19,7 @@ export default () => {
 					<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
 						<p className="card-text">Are you building killer apps? Showcasing your amazing research? Selling products that include our library?</p>
 						<p className="card-text">Consider making a contribution to sponsor library development.</p>
-						<p className="card-text">❤️ Thanks to all of our sponsors and contributors! ❤️</p>
+						<p className="card-text">❤️&nbsp; Thanks to all of our sponsors and contributors! ❤️</p>
 					</div>
 				</div>
 			</section>
