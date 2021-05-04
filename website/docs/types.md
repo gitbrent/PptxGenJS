@@ -78,10 +78,11 @@ The PptxGenJS interfaces referenced in surrounding documentation. See the [compl
 
 ## Shape Fill Props (`ShapeFillProps`)
 
-| Name           | Type   | Default  | Description            | Possible Values                                                  |
-| :------------- | :----- | :------- | :--------------------- | :--------------------------------------------------------------- |
-| `color`        | string | `000000` | `ShapeFillProps` color | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes). |
-| `transparency` | number | `0`      | `ShapeFillProps` trans | transparency percentage: 0-100                                   |
+| Name           | Type   | Default  | Description  | Possible Values                                                  |
+| :------------- | :----- | :------- | :----------- | :--------------------------------------------------------------- |
+| `color`        | string | `000000` | fill color   | hex color or [scheme color](/PptxGenJS/docs/shapes-and-schemes). |
+| `transparency` | number | `0`      | transparency | transparency percentage: 0-100                                   |
+| `type`         | string | `solid`  | fill type    | shape fill type                                                  |
 
 ## Shape Line Props (`ShapeLineProps`)
 

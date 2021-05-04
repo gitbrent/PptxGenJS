@@ -3,11 +3,11 @@ id: api-shapes
 title: Shapes
 ---
 
-Almost 200 shape types can be added to Slides (see `ShapeType` enum).
+Almost 200 shape types can be added to Slides (see [`ShapeType`](https://github.com/gitbrent/PptxGenJS/blob/master/types/index.d.ts) enum).
 
-## Usage Example
+## Usage
 
-```javascript
+```typescript
 // Shapes without text
 slide.addShape(pres.ShapeType.rect, { fill: { color: "FF0000" } });
 slide.addShape(pres.ShapeType.ellipse, { fill: { type: "solid", color: "0088CC" } });
@@ -49,6 +49,10 @@ slide.addText("ShapeType.line", { shape: pres.ShapeType.line, line: { color: "FF
 | `shadow`     | [ShadowProps](/PptxGenJS/docs/types#shadow-props-shadowprops)           | shadow props        | (see type link)                                   |
 | `shapeName`  | string                                                                  | optional shape name | Ex: "Customer Network Diagram 99"                 |
 
-## Shapes Sample
+## Examples
 
 ![Shapes with Text Demo](./assets/ex-shape-slide.png)
+
+## Samples
+
+Sample code all available types: [demos/modules/demo_shape.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_shape.mjs)

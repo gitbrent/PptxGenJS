@@ -5,20 +5,31 @@ title: Text
 
 Text shapes can be added to Slides.
 
-## Syntax
+## Usage
 
-```javascript
+```typescript
 slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 ```
 
-## Text Options
+## Properties
+
+### Position/Size Props (`PositionProps`)
+
+| Name | Type   | Default | Description            | Possible Values                              |
+| :--- | :----- | :------ | :--------------------- | :------------------------------------------- |
+| `x`  | number | `1.0`   | hor location (inches)  | 0-n                                          |
+| `x`  | string |         | hor location (percent) | 'n%'. (Ex: `{x:'50%'}` middle of the Slide)  |
+| `y`  | number | `1.0`   | ver location (inches)  | 0-n                                          |
+| `y`  | string |         | ver location (percent) | 'n%'. (Ex: `{y:'50%'}` middle of the Slide)  |
+| `w`  | number | `1.0`   | width (inches)         | 0-n                                          |
+| `w`  | string |         | width (percent)        | 'n%'. (Ex: `{w:'50%'}` 50% the Slide width)  |
+| `h`  | number | `1.0`   | height (inches)        | 0-n                                          |
+| `h`  | string |         | height (percent)       | 'n%'. (Ex: `{h:'50%'}` 50% the Slide height) |
+
+### Base Properties (`TextPropsOptions`)
 
 | Option                | Type               | Unit    | Default | Description               | Possible Values                                                                                                                |
 | :-------------------- | :----------------- | :------ | :------ | :------------------------ | :----------------------------------------------------------------------------------------------------------------------------- |
-| `x`                   | number             | inches  | `1.0`   | horizontal location       | 0-n OR 'n%'. (Ex: `{x:'50%'}` will place object in the middle of the Slide)                                                    |
-| `y`                   | number             | inches  | `1.0`   | vertical location         | 0-n OR 'n%'.                                                                                                                   |
-| `w`                   | number             | inches  |         | width                     | 0-n OR 'n%'. (Ex: `{w:'50%'}` will make object 50% width of the Slide)                                                         |
-| `h`                   | number             | inches  |         | height                    | 0-n OR 'n%'.                                                                                                                   |
 | `align`               | string             |         | `left`  | alignment                 | `left` or `center` or `right`                                                                                                  |
 | `autoFit`             | boolean            |         | `false` | "Fit to Shape"            | `true` or `false`                                                                                                              |
 | `baseline`            | number             | points  |         | text baseline value       | 0-256                                                                                                                          |
@@ -32,6 +43,7 @@ slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 | `fontFace`            | string             |         |         | font face                 | Ex: `{ fontFace:'Arial'}`                                                                                                      |
 | `fontSize`            | number             | points  |         | font size                 | 1-256. Ex: `{ fontSize:12 }`                                                                                                   |
 | `glow`                | object             |         |         | text glow                 | object with `size`, `opacity`, `color` (opt). Ex: `glow:{size:10, opacity:0.75, color:'0088CC'}`                               |
+| `highlight`           | string             |         |         | highlight color           | hex color code or [scheme color](/PptxGenJS/docs/shapes-and-schemes). Ex: `{ color:'0088CC' }`                                 |
 | `hyperlink`           | string             |         |         | add hyperlink             | object with `url` or `slide` (`tooltip` optional). Ex: `{ hyperlink:{url:'https://github.com'} }`                              |
 | `indentLevel`         | number             | level   | `0`     | bullet indent level       | 1-32. Ex: `{ indentLevel:1 }`                                                                                                  |
 | `inset`               | number             | inches  |         | inset/padding             | 1-256. Ex: `{ inset:1.25 }`                                                                                                    |
@@ -48,7 +60,7 @@ slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 | `rectRadius`          | number             | inches  |         | rounding radius           | rounding radius for `ROUNDED_RECTANGLE` text shapes                                                                            |
 | `rotate`              | integer            | degrees | `0`     | text rotation degrees     | 0-360. Ex: `{rotate:180}`                                                                                                      |
 | `rtlMode`             | boolean            |         | `false` | enable Right-to-Left mode | `true` or `false`                                                                                                              |
-| `shadow`              | object             |         |         | text shadow options       | see options below. Ex: `shadow:{ type:'outer' }`                                                                               |
+| `shadow`              | object             |         |         | text shadow options       | see "Shadow Properties" below. Ex: `shadow:{ type:'outer' }`                                                                   |
 | `shrinkText`          | boolean            |         | `false` | shrink text option        | whether to shrink text to fit textbox. Ex: `{ shrinkText:true }`                                                               |
 | `softBreakBefore`     | boolean            |         | `false` | soft (shift-enter) break  | Add a soft line-break (shift+enter) before line text content                                                                   |
 | `strike`              | string             |         |         | text strikethrough        | `dblStrike` or `sngStrike`                                                                                                     |
@@ -58,7 +70,7 @@ slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 | `valign`              | string             |         |         | vertical alignment        | `top` or `middle` or `bottom`                                                                                                  |
 | `vert`                | string             |         | `horz`  | text direction            | `eaVert` or `horz` or `mongolianVert` or `vert` or `vert270` or `wordArtVert` or `wordArtVertRtl`                              |
 
-## Text Shadow Options
+### Shadow Properties (`ShadowProps`)
 
 | Option    | Type   | Unit    | Default | Description  | Possible Values                                                                                         |
 | :-------- | :----- | :------ | :------ | :----------- | :------------------------------------------------------------------------------------------------------ |
@@ -69,9 +81,11 @@ slide.addText([{ text: "TEXT", options: { OPTIONS } }]);
 | `offset`  | number | points  |         | offset size  | 1-256. Ex: `{ offset:8 }`                                                                               |
 | `opacity` | number | percent |         | opacity      | 0-1. Ex: `opacity:0.75`                                                                                 |
 
-## Text Examples
+## Examples
 
-```javascript
+### Text Options
+
+```typescript
 var pptx = new PptxGenJS();
 var slide = pptx.addSlide();
 
@@ -190,9 +204,10 @@ slide.addText(
 pptx.writeFile("Demo-Text");
 ```
 
-## Break Line Option
+### Line Break Options
 
-Use the `breakLine` option to force line breaks when composing text objects using complex objects.
+-   Use the `breakLine` prop to force line breaks when composing text objects using an array of text objects.
+-   Use the `softBreakBefore` prop to create a "soft line break" (shift-enter)
 
 ```javascript
 let arrTextObjs1 = [
@@ -210,4 +225,18 @@ let arrTextObjs2 = [
 slide.addText(arrTextObjs2, { x: 0.5, y: 4, w: 8, h: 2, fill: { color: "232323" } });
 ```
 
-![breakLine option](./assets/ex-text-breakLine.png)
+### Text Formatting
+
+![text general](./assets/ex-text-general.png)
+
+### Text Bullets
+
+![text bullets](./assets/ex-text-bullets.png)
+
+### Text Line Breaks
+
+![text linebreaks](./assets/ex-text-linebreak.png)
+
+## Samples
+
+Sample code: [demos/modules/demo_text.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_text.mjs)

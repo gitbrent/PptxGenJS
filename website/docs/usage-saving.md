@@ -109,7 +109,7 @@ pptx.writeFile({ fileName: "PptxGenJS-Presentation-2" });
 -   See `demos/node/demo_stream.js` for a working demo using streaming
 
 ```javascript
-let pptxgen = require("pptxgenjs");
+import pptxgen from "pptxgenjs";
 
 // Presentation 1:
 let pptx1 = new pptxgen();

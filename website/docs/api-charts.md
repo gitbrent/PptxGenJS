@@ -3,13 +3,14 @@ id: api-charts
 title: Charts
 ---
 
-Charts of almost any type can be added to Slides.
+Charts of almost any type can be added to Slides. See [demos/modules/demo_chart.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_chart.mjs) for the charts shown below.
 
 ![PptxGenJS Chart Samples](./assets/demo-all-charts.png)
 
-## Usage Example
+## Usage
 
-```javascript
+```typescript
+let pres = new pptxgen();
 let dataChartAreaLine = [
     {
         name: "Actual Sales",
@@ -26,12 +27,12 @@ let dataChartAreaLine = [
 slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 });
 ```
 
-## Core Chart Types
+### Core Chart Types
 
 -   Chart type can be any one of `pptx.ChartType`
 -   Currently: `pptx.ChartType.area`, `pptx.ChartType.bar`, `pptx.ChartType.bar3d`, `pptx.ChartType.bubble`, `pptx.ChartType.doughnut`, `pptx.ChartType.line`, `pptx.ChartType.pie`, `pptx.ChartType.radar`, `pptx.ChartType.scatter`
 
-## Multi-Type Charts
+### Multi-Type Charts
 
 -   Chart types can be any one of `pptx.ChartType`, although `pptx.ChartType.area`, `pptx.ChartType.bar`, and `pptx.ChartType.line` will give the best results.
 -   There should be at least two chart-types. There should always be two value axes and category axes.
@@ -43,10 +44,10 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 -   If there is secondary value axis, a secondary category axis is required in order to render, but currently always uses the primary labels. It is recommended to use `catAxisHidden: true` on the secondary category axis.
 -   Standard options are used, and the chart-type-options are mixed in to each.
 
-## Usage Notes
+### Usage Notes
 
 -   Zero values can be hidden using Microsoft formatting specs (see [Issue #288](https://github.com/gitbrent/PptxGenJS/issues/278))
--   Examples: The `demos/common/demos.js` file has over 3,000 lines of well-documented examples, including charts
+-   Examples: The [`demos/modules/demo_image.mjs`](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_image.mjs) file has over 3,000 lines of well-documented examples, including charts
 
 ## Properties
 
@@ -67,6 +68,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 
 | Option                    | Type    | Default    | Description                         | Possible Values                                                                                                                                                               |
 | :------------------------ | :------ | :--------- | :---------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `altText`                 | string  |            | chart alt text                      | string shown in the "alt text" panel in PowerPoint                                                                                                                            |
 | `border`                  | object  |            | chart border                        | object with `pt` and `color` values. Ex: `border:{pt:'1', color:'f1f1f1'}`                                                                                                    |
 | `chartColors`             | array   |            | data colors                         | array of hex color codes. Ex: `['0088CC','FFCC00']`                                                                                                                           |
 | `chartColorsOpacity`      | number  | `100`      | data color opacity (percent)        | 1-100. Ex: `{ chartColorsOpacity:50 }`                                                                                                                                        |
@@ -231,3 +233,7 @@ slide.addChart(pres.ChartType.line, dataChartAreaLine, { x: 1, y: 1, w: 8, h: 4 
 | `secondaryCatAxis` | boolean | `false` | If data should use secondary category axis (or primary) | `true` or `false` |
 | `secondaryValAxis` | boolean | `false` | If data should use secondary value axis (or primary)    | `true` or `false` |
 | `valAxes`          | array   |         | array of two axis options objects                       | See example below |
+
+## Samples
+
+Sample code: [demos/modules/demo_chart.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_chart.mjs)

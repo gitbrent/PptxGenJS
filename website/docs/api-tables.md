@@ -5,9 +5,9 @@ title: Tables
 
 Tables and content can be added to Slides.
 
-## Usage Example
+## Usage
 
-```javascript
+```typescript
 // TABLE 1: Single-row table
 let rows = [["Cell 1", "Cell 2", "Cell 3"]];
 slide.addTable(rows, { w: 9 });
@@ -29,12 +29,12 @@ let rows = [
 slide.addTable(rows, { w: 9, rowH: 1, align: "left", fontFace: "Arial" });
 ```
 
-## Usage Notes
+### Usage Notes
 
 -   Properties passed to `addTable()` apply to every cell in the table
 -   Selectively override formatting at a cell-level by providing properties to the cell object
 
-## Table Cell Formatting
+### Table Cell Formatting
 
 -   Table cells can be either a plain text string or an object with text and options properties
 -   When using an object, any of the formatting options above can be passed in `options` and will apply to that cell only
@@ -43,7 +43,7 @@ slide.addTable(rows, { w: 9, rowH: 1, align: "left", fontFace: "Arial" });
     as the `text` value allows fine-grained control over the text inside cells.
 -   Available formatting options are here: [Text Options](/PptxGenJS/docs/api-text.html#text-options)
 
-## Table Row Height
+### Table Row Height
 
 -   Use the `h` property to have row(s) divided evenly across the defined area
 -   Use the `rowH` property with an array of values to specify row heights (indexed 0-n)
@@ -136,7 +136,9 @@ Auto-paging will create new slides as table rows overflow, doing the magical wor
 -   Very small and very large font sizes cause tables to over/under-flow, be sure to adjust the char and line properties
 -   There are many examples of auto-paging in the `examples` folder
 
-## Table Cell Formatting Examples
+## Examples
+
+### Table Cell Formatting
 
 -   Sample Code: [`demo_table.mjs`](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_table.mjs) for 700+ lines of demo code
 -   Online Demo: [pptxgenjs Table Demos](https://gitbrent.github.io/PptxGenJS/demo/#tables)
@@ -191,6 +193,8 @@ let arrTabRows = [
 slide.addTable(arrTabRows, { x: 0.5, y: 3.5, w: 9, h: 1, colW: [1.5, 1.5, 6] });
 ```
 
-## Table Cell Formatting Sample
+![Table Cell Formatting](./assets/ex-table-cell-format.png)
 
-![Table Cell Formatting Demo](./assets/ex-table-cell-format.png)
+## Samples
+
+Sample code: [demos/modules/demo_table.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_table.mjs)

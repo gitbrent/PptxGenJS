@@ -5,9 +5,9 @@ title: Media
 
 Media enables the addition of audio, video and online video to Slides.
 
-## Usage Example
+## Usage
 
-```javascript
+```typescript
 // Path: full or relative
 slide.addMedia({ type: "video", path: "https://example.com/media/sample.mov" });
 slide.addMedia({ type: "video", path: "../media/sample.mov" });
@@ -19,7 +19,7 @@ slide.addMedia({ type: "audio", data: "audio/mp3;base64,iVtDafDrBF[...]=" });
 slide.addMedia({ type: "online", link: "https://www.youtube.com/embed/Dph6ynRVyUc" });
 ```
 
-## Usage Notes
+### Usage Notes
 
 Either provide a URL location or base64 data along with type to create media.
 
@@ -27,7 +27,7 @@ Either provide a URL location or base64 data along with type to create media.
 -   `path` - URL: relative or full
 -   `data` - base64: string representing an encoded image
 
-## Supported Formats and Notes
+### Supported Formats and Notes
 
 -   Video (mpg, mov, mp4, m4v, et al.); Audio (mp3, wav, et al.); (see [Video and Audio file formats supported in PowerPoint](https://support.office.com/en-us/article/Video-and-audio-file-formats-supported-in-PowerPoint-d8b12450-26db-4c7b-a5c1-593d3418fb59#OperatingSystem=Windows))
 -   YouTube videos can be viewed using Microsoft 365/Office 365 (they may show errors on older desktop PowerPoint versions)
@@ -63,3 +63,11 @@ Either provide a URL location or base64 data along with type to create media.
 | :----- | :----- | :---------- | :-------------------------------------------------------------------------------- |
 | `type` | string | media type  | media type: `audio` or `video` (reqs: `data` or `path`) or `online` (reqs:`link`) |
 | `link` | string | video URL   | (YouTube only): link to online video                                              |
+
+## Example
+
+![Media Examples](./assets/ex-media-slide.png)
+
+## Samples
+
+Sample code: [demos/modules/demo_media.mjs](https://github.com/gitbrent/PptxGenJS/blob/master/demos/modules/demo_media.mjs)
