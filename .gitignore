@@ -4,7 +4,7 @@
 *.icloud
 *.lock
 
-demos/
+demos
 docs/
 dist/
 examples/
