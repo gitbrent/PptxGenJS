@@ -27,10 +27,10 @@ gulp.task("deploy-license", () => {
 	return gulp.src("./build/license**/**").pipe(gulp.dest("../"));
 });
 gulp.task("deploy-privacy", () => {
-	return gulp.src("./build/privacy/**/**").pipe(gulp.dest("../"));
+	return gulp.src("./build/privacy**/**").pipe(gulp.dest("../"));
 });
 gulp.task("deploy-sponsor", () => {
-	return gulp.src("./build/sponsor/**/**").pipe(gulp.dest("../"));
+	return gulp.src("./build/sponsor**/**").pipe(gulp.dest("../"));
 });
 
 gulp.task("deploy-img", () => {
