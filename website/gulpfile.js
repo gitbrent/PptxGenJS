@@ -18,7 +18,7 @@ gulp.task("deploy-html", () => {
 	return gulp.src("./build/*.html").pipe(gulp.dest("../"));
 });
 gulp.task("deploy-demoinfo", () => {
-	return gulp.src("./build/demoinfo**/**").pipe(gulp.dest("../"));
+	return gulp.src("./build/pptxdemo**/**").pipe(gulp.dest("../"));
 });
 gulp.task("deploy-html2pptx", () => {
 	return gulp.src("./build/html2pptx**/**").pipe(gulp.dest("../"));
@@ -28,6 +28,9 @@ gulp.task("deploy-license", () => {
 });
 gulp.task("deploy-privacy", () => {
 	return gulp.src("./build/privacy/**/**").pipe(gulp.dest("../"));
+});
+gulp.task("deploy-sponsor", () => {
+	return gulp.src("./build/sponsor/**/**").pipe(gulp.dest("../"));
 });
 
 gulp.task("deploy-img", () => {
