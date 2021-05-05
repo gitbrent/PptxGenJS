@@ -225,17 +225,21 @@ let arrTextObjs2 = [
 slide.addText(arrTextObjs2, { x: 0.5, y: 4, w: 8, h: 2, fill: { color: "232323" } });
 ```
 
+### Line Break Examples
+
+![text line breaks](./assets/ex-text-linebreak.png)
+
 ### Text Formatting
 
-![text general](./assets/ex-text-general.png)
+![text formatting](./assets/ex-text-general.png)
 
-### Text Bullets
+### Bullet Options
 
-![text bullets](./assets/ex-text-bullets.png)
+![bullets options](./assets/ex-text-bullets.png)
 
-### Text Line Breaks
+### Tab Stops
 
-![text linebreaks](./assets/ex-text-linebreak.png)
+![tab stops](./assets/ex-text-tabstops.png)
 
 ## Samples
 
