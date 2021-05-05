@@ -43,7 +43,18 @@ gulp.task("deploy-sitemap", () => {
 // Build/Deploy
 gulp.task(
 	"default",
-	gulp.parallel("deploy-assets", "deploy-docs", "deploy-html", "deploy-demoinfo", "deploy-html2pptx", "deploy-license", "deploy-privacy", "deploy-img", "deploy-sitemap"),
+	gulp.parallel(
+		"deploy-assets",
+		"deploy-docs",
+		"deploy-html",
+		"deploy-demoinfo",
+		"deploy-html2pptx",
+		"deploy-license",
+		"deploy-privacy",
+		"deploy-sponsor",
+		"deploy-img",
+		"deploy-sitemap"
+	),
 	() => {
 		console.log("Done");
 	}
