@@ -95,7 +95,7 @@ module.exports = {
 				},
 				{
 					to: "sponsor",
-					label: "Sponsor",
+					label: "Sponsor Us",
 					position: "left",
 				},
 				/*{
@@ -131,7 +131,7 @@ module.exports = {
 					title: "Learn",
 					items: [
 						{
-							label: "Introduction",
+							label: "Quick Start",
 							to: "docs/quick-start",
 						},
 						{
