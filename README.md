@@ -13,9 +13,6 @@
 
 # Table of Contents
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features](#features)
@@ -36,9 +33,8 @@
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Contributors](#contributors)
+- [Sponsor Us](#sponsor-us)
 - [License](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Introduction
 
@@ -218,7 +214,7 @@ Easily convert HTML tables to PowerPoint presentations in a single call.
 ```javascript
 let pptx = new PptxGenJS();
 pptx.tableToSlides("tableElementId");
-pptx.writeFile({ fileName:"html2pptx-demo.pptx" });
+pptx.writeFile({ fileName: "html2pptx-demo.pptx" });
 ```
 
 Learn more:
@@ -270,6 +266,12 @@ Special Thanks:
 - [Joonas](https://github.com/wyozi) - React port
 
 PowerPoint shape definitions and some XML code via [Officegen Project](https://github.com/Ziv-Barber/officegen)
+
+---
+
+# Sponsor Us
+
+If you find this library useful, please consider sponsoring us through a [donation](https://gitbrent.github.io/PptxGenJS/sponsor)
 
 ---
 
