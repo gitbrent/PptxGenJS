@@ -82,58 +82,60 @@ declare class PptxGenJS {
 
 	/**
 	 * Export the current Presentation to stream
-	 * @param {WriteBaseProps} props - output properties
+	 * @param {WriteBaseProps} props output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file stream
 	 */
 	stream(props?: PptxGenJS.WriteBaseProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
-	 * @param {WriteProps} props - output properties
+	 * @param {WriteProps} props output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file content in selected type
 	 */
 	write(props?: PptxGenJS.WriteProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @param {WriteFileProps} props - output file properties
+	 * @param {WriteFileProps} props output file properties
+	 * @example pptx.writeFile({ fileName:'CustomerReport.pptx' }) // export presentation as "CustomerReport.pptx"
+	 * @example pptx.writeFile({ fileName:'CustomerReport.pptx', compression:true }) // export presentation as "CustomerReport.pptx" compressed (can save up to 30%)
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(props?: PptxGenJS.WriteFileProps): Promise<string>
 	/**
 	 * Add a new Section to Presentation
-	 * @param {SectionProps} section - section properties
+	 * @param {SectionProps} props section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSection(section: PptxGenJS.SectionProps): void
+	addSection(props: PptxGenJS.SectionProps): void
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {AddSlideProps} options - slide options
+	 * @param {AddSlideProps} props slide options
 	 * @returns {Slide} the new Slide
 	 */
-	addSlide(options?: PptxGenJS.AddSlideProps): PptxGenJS.Slide
+	addSlide(props?: PptxGenJS.AddSlideProps): PptxGenJS.Slide
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {string} masterName - master slide name
+	 * @param {string} masterName master slide name
 	 * @returns {Slide} the new Slide
 	 * @deprecated use `addSlide(IAddSlideOptions)`
 	 */
 	addSlide(masterName?: string): PptxGenJS.Slide
 	/**
 	 * Create a custom Slide Layout in any size
-	 * @param {PresLayout} layout - an object with user-defined w/h
+	 * @param {PresLayout} layout an object with user-defined w/h
 	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 	 */
 	defineLayout(layout: PptxGenJS.PresLayout): void
 	/**
 	 * Create a new slide master [layout] for the Presentation
-	 * @param {SlideMasterProps} slideMasterOpts - layout definition
+	 * @param {SlideMasterProps} props layout definition
 	 */
 	defineSlideMaster(props: PptxGenJS.SlideMasterProps): void
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-	 * @param {string} eleId - table HTML element ID
-	 * @param {TableToSlidesProps} options - generation options
+	 * @param {string} eleId table HTML element ID
+	 * @param {TableToSlidesProps} props generation options
 	 */
-	tableToSlides(eleId: string, options?: PptxGenJS.TableToSlidesProps): void
+	tableToSlides(eleId: string, props?: PptxGenJS.TableToSlidesProps): void
 }
 
 declare namespace PptxGenJS {
