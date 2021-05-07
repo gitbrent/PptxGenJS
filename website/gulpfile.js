@@ -34,7 +34,7 @@ gulp.task("deploy-sponsor", () => {
 });
 
 gulp.task("deploy-oopsdemo", () => {
-	return gulp.src("./build/demo/demo.index").pipe(gulp.dest("../demo/"));
+	return gulp.src("./build/demo/index.html").pipe(gulp.dest("../demo/"));
 });
 
 gulp.task("deploy-img", () => {
