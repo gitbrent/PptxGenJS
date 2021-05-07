@@ -33,6 +33,10 @@ gulp.task("deploy-sponsor", () => {
 	return gulp.src("./build/sponsor**/**").pipe(gulp.dest("../"));
 });
 
+gulp.task("deploy-oopsdemo", () => {
+	return gulp.src("./build/demo/demo.index").pipe(gulp.dest("../demo/"));
+});
+
 gulp.task("deploy-img", () => {
 	return gulp.src("./build/img/*.*").pipe(gulp.dest("../img/"));
 });
@@ -48,6 +52,7 @@ gulp.task(
 		"deploy-docs",
 		"deploy-html",
 		"deploy-demoinfo",
+		"deploy-oopsdemo",
 		"deploy-html2pptx",
 		"deploy-license",
 		"deploy-privacy",
