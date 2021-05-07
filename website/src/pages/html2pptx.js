@@ -95,7 +95,7 @@ export default () => {
 	};
 
 	return (
-		<Layout title="PptxGenJS Demos">
+		<Layout title="HTML-to-PowerPoint">
 			<div className="container my-4">
 				<h1 className="mb-4">HTML to PowerPoint</h1>
 				<Header />
