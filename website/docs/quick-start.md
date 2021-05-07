@@ -9,7 +9,7 @@ PptxGenJS PowerPoint presentations are created by following 4 basic steps. See e
 
 That's really all there is to it!
 
-## Modern Projects
+## Modern Node.js Projects
 
 ### Sample Code
 
@@ -23,19 +23,16 @@ let pres = new pptxgen();
 let slide = pres.addSlide();
 
 // 3. Add 1+ objects (Tables, Shapes, etc.) to the Slide
-slide.addText(
-	"Hello World from PptxGenJS...",
-	{
-		x: 1.5,
-		y: 1.5,
-		color: '363636',
-		fill: { color:'F1F1F1' },
-		align: pres.AlignH.center
-	}
-);
+slide.addText("Hello World from PptxGenJS...", {
+    x: 1.5,
+    y: 1.5,
+    color: "363636",
+    fill: { color: "F1F1F1" },
+    align: pres.AlignH.center,
+});
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile({ fileName: "Sample Presentation.pptx" });
 ```
 
 ### TypeScript Support
@@ -45,6 +42,10 @@ Modern application developers using ES6 with Angular, React, TypeScript, etc. be
 Learn as you code in a modern development with included TypeScript definitions the documentation comes to you.
 
 ![TypeScript Support](./assets/ex-typescript.png)
+
+Develop your apps quickly without needing to look up documentation.
+
+![TypeScript Support](./assets/ex-typescript-writefile.png)
 
 ## Client Web Browser
 
@@ -58,17 +59,14 @@ let pres = new PptxGenJS();
 let slide = pres.addSlide();
 
 // 3. Add one or more objects (Tables, Shapes, Images, Text and Media) to the Slide
-slide.addText(
-	"Hello World from PptxGenJS...",
-	{
-		x: 1.5,
-		y: 1.5,
-		color: '363636',
-		fill: { color:'F1F1F1' },
-		align: pres.AlignH.center
-	}
-);
+slide.addText("Hello World from PptxGenJS...", {
+    x: 1.5,
+    y: 1.5,
+    color: "363636",
+    fill: { color: "F1F1F1" },
+    align: pres.AlignH.center,
+});
 
 // 4. Save the Presentation
-pres.writeFile("Sample Presentation.pptx");
+pres.writeFile({ fileName: "Sample Presentation.pptx" });
 ```
