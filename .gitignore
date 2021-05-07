@@ -12,7 +12,7 @@ src/bld
 ### docusaurus
 ./*.html
 *.html
-demo/
+demo
 docs/
 img/
 privacy.html

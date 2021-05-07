@@ -74,7 +74,7 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
-- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/pptxdemos)
+- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demo)
 
 # Installation
 
