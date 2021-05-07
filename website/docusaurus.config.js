@@ -84,7 +84,7 @@ module.exports = {
 					position: "left",
 				},
 				{
-					to: "pptxdemos",
+					to: "demo",
 					label: "Demos",
 					position: "left",
 				},
@@ -140,7 +140,7 @@ module.exports = {
 						},
 						{
 							label: "Demos",
-							href: "pptxdemos",
+							href: "demo",
 						},
 					],
 				},
