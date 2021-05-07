@@ -16,7 +16,7 @@
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features](#features)
-- [Live Demo](#live-demo)
+- [Live Demos](#live-demos)
 - [Installation](#installation)
 	- [CDN](#cdn)
 	- [Download](#download)
@@ -70,13 +70,11 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 - Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
 
-# Live Demo
+# Live Demos
 
-Use the online demo to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
+Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
-- [Simple Demo](https://gitbrent.github.io/PptxGenJS)
-- [Complete Feature Demo](https://gitbrent.github.io/PptxGenJS/demo/)
-- [PptxGenJS jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
+- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/pptxdemos)
 
 # Installation
 
