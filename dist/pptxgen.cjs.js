@@ -1,4 +1,4 @@
-/* PptxGenJS 3.6.0 @ 2021-05-02T20:03:50.903Z */
+/* PptxGenJS 3.7.0-beta @ 2021-05-09T21:12:49.530Z */
 'use strict';
 
 var JSZip = require('jszip');
@@ -1778,24 +1778,15 @@ function slideObjectToXml(slide) {
                 strSlideXml += '</p:sp>';
                 break;
             case SLIDE_OBJECT_TYPES.image:
-                var sizing = slideItemObj.options.sizing, rounding = slideItemObj.options.rounding, width = cx, height = cy;
+                var imageOpts = slideItemObj.options;
+                var sizing = imageOpts.sizing, rounding = imageOpts.rounding, width = cx, height = cy;
                 strSlideXml += '<p:pic>';
                 strSlideXml += '  <p:nvPicPr>';
-                strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">';
+                strSlideXml += "<p:cNvPr id=\"" + (idx + 2) + "\" name=\"Object " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(imageOpts.altText || slideItemObj.image) + "\">";
                 if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
-                    strSlideXml +=
-                        '<a:hlinkClick r:id="rId' +
-                            slideItemObj.hyperlink._rId +
-                            '" tooltip="' +
-                            (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-                            '"/>';
+                    strSlideXml += "<a:hlinkClick r:id=\"rId" + slideItemObj.hyperlink._rId + "\" tooltip=\"" + (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') + "\"/>";
                 if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
-                    strSlideXml +=
-                        '<a:hlinkClick r:id="rId' +
-                            slideItemObj.hyperlink._rId +
-                            '" tooltip="' +
-                            (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-                            '" action="ppaction://hlinksldjump"/>';
+                    strSlideXml += "<a:hlinkClick r:id=\"rId" + slideItemObj.hyperlink._rId + "\" tooltip=\"" + (slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') + "\" action=\"ppaction://hlinksldjump\"/>";
                 strSlideXml += '    </p:cNvPr>';
                 strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>';
                 strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>';
@@ -3367,6 +3358,7 @@ function addImageDefinition(target, opt) {
         y: intPosY || 0,
         w: intWidth || 1,
         h: intHeight || 1,
+        altText: opt.altText || '',
         rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
         sizing: sizing,
         placeholder: opt.placeholder,
@@ -6167,7 +6159,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.6.0';
+var VERSION = '3.7.0-beta-20210509-1540';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
