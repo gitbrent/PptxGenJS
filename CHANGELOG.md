@@ -6,6 +6,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Notes]
 
+## [3.7.0] - 2021-06-??
+### Added
+- Alt Text to images [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
+
+
+
 ## [3.6.0] - 2021-05-02
 ### Release Summary
 - **Major Update**: demo code (they're all .mjs modules now!); dropped support for IE11 (RIP!) in demo app.

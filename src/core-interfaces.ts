@@ -420,8 +420,29 @@ export interface TextBaseProps {
 export type MediaType = 'audio' | 'online' | 'video'
 
 export interface ImageProps extends PositionProps, DataOrPathProps {
+	/**
+	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
+	 */
+	altText?: string
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 	hyperlink?: HyperlinkProps
-	placeholder?: string // 'body' | 'title' | etc.
+	/**
+	 * Placeholder type
+	 * - values: 'body' | 'header' | 'footer' | 'title' | et. al.
+	 * @example 'body'
+	 * @see https://docs.microsoft.com/en-us/office/vba/api/powerpoint.ppplaceholdertype
+	 */
+	placeholder?: string
 	/**
 	 * Image rotation (degrees)
 	 * - range: -360 to 360
@@ -463,16 +484,6 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 */
 		y?: number
 	}
-	/**
-	 * Flip horizontally?
-	 * @default false
-	 */
-	flipH?: boolean
-	/**
-	 * Flip vertical?
-	 * @default false
-	 */
-	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide

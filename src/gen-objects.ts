@@ -380,6 +380,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		y: intPosY || 0,
 		w: intWidth || 1,
 		h: intHeight || 1,
+		altText: opt.altText || '',
 		rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
 		sizing: sizing,
 		placeholder: opt.placeholder,

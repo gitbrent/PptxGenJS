@@ -2,6 +2,7 @@
  * PptxGenJS: XML Generation
  */
 
+import { IImage } from 'image-size/dist/types/interface'
 import {
 	BULLET_TYPES,
 	CRLF,
@@ -18,6 +19,7 @@ import {
 } from './core-enums'
 import {
 	IChartOpts,
+	ImageProps,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -506,28 +508,23 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.image:
-				let sizing = slideItemObj.options.sizing,
-					rounding = slideItemObj.options.rounding,
+				let imageOpts = slideItemObj.options as ImageProps
+				let sizing = imageOpts.sizing,
+					rounding = imageOpts.rounding,
 					width = cx,
 					height = cy
 
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">'
+				strSlideXml += `<p:cNvPr id="${idx + 2}" name="Object ${idx + 1}" descr="${encodeXmlEntities(imageOpts.altText || slideItemObj.image)}">`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink._rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'"/>'
+					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+					}"/>`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink._rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'" action="ppaction://hlinksldjump"/>'
+					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+					}" action="ppaction://hlinksldjump"/>`
 				strSlideXml += '    </p:cNvPr>'
 				strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 				strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
