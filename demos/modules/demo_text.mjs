@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.6.0
- * BLD.: 20210401
+ * BLD.: 20210426
  */
 
 import { BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, LOREM_IPSUM_ENG } from "./enums.mjs";
@@ -119,7 +119,7 @@ function genSlide02(pptx) {
 	// LEFT COLUMN ------------------------------------------------------------
 
 	// 1: Multi-Line Formatting
-	slide.addText("Word-Level Formatting:", { x: 0.5, y: 0.6, w: "40%", h: 0.3, margin: 0, color: "0088CC" });
+	slide.addText("Word-Level Formatting:", { x: 0.5, y: 0.6, w: "40%", h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
 	slide.addText(
 		[
 			{ text: "Courier New ", options: { fontSize: 36, fontFace: "Courier New", color: pptx.colors.ACCENT6 } },
@@ -156,7 +156,10 @@ function genSlide02(pptx) {
 					breakLine: true,
 				},
 			},
-			{ text: "\nTimes 36", options: { fontSize: 36, fontFace: "Times", color: pptx.colors.ACCENT5, align: "right" } },
+			{ text: " ", options: { breakLine: true } },
+			{ text: "Also: ", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right" } },
+			{ text: "highlighted", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right", highlight: "FFFF00" } },
+			{ text: " text!", options: { fontSize: 36, fontFace: "Arial", color: pptx.colors.ACCENT5, align: "right" } },
 		],
 		{ x: 0.5, y: 1.0, w: 5.75, h: 6.0, margin: 5, fill: { color: pptx.colors.TEXT1 } }
 	);
@@ -164,7 +167,7 @@ function genSlide02(pptx) {
 	// RIGHT COLUMN ------------------------------------------------------------
 
 	// 1: Line-Breaks
-	slide.addText("Line-Breaks:", { x: 7.0, y: 0.6, w: "40%", h: 0.3, margin: 0, color: "0088CC" });
+	slide.addText("Line-Breaks:", { x: 7.0, y: 0.6, w: "40%", h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
 	slide.addText("***Line Breaks / Multi Lines***\nFirst line\nSecond line\nThird line", {
 		x: 7.0,
 		y: 1.0,
@@ -179,7 +182,7 @@ function genSlide02(pptx) {
 	});
 
 	// 2: Line-Spacing (exact)
-	slide.addText("Line-Spacing (text):", { x: 7.0, y: 2.7, w: "40%", h: 0.3, margin: 0, color: "0088CC" });
+	slide.addText("Line-Spacing (text):", { x: 7.0, y: 2.7, w: "40%", h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
 	slide.addText(
 		"lineSpacing (Exactly)\n40pt",
 		{ x: 7.0, y: 3.1, w: 5.75, h: 1.17, align: "center", fill: { color: "F1F1F1" }, color: "363636", lineSpacing: 39.9 } // TEST-CASE: `lineSpacing` decimal value
@@ -198,7 +201,7 @@ function genSlide02(pptx) {
 	});
 
 	// 4: Line-Spacing (bullets)
-	slide.addText("Line-Spacing (bullets):", { x: 7.0, y: 5.6, w: "40%", h: 0.3, margin: 0, color: "0088CC" });
+	slide.addText("Line-Spacing (bullets):", { x: 7.0, y: 5.6, w: "40%", h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
 	slide.addText([{ text: "lineSpacing\n35pt", options: { fontSize: 24, bullet: true, color: "99ABCC", lineSpacing: 35 } }], {
 		x: 7.0,
 		y: 6.0,
@@ -327,49 +330,20 @@ function genSlide04(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Text" });
 
 	slide.addTable(
-		[[{ text: "Text Examples: Hyperlinks, Text Shadow, Text Outline, Text Glow", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		[[{ text: "Text Examples: Hyperlinks, Tab Stops, Text Effects: Shadow, Outline, and Glow", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
 		BASE_TABLE_OPTS
 	);
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-text.html");
 
-	// 2: Text Effects: Outline
-	slide.addText("Text Outline:", { x: 0.5, y: 0.6, w: "90%", h: 0.3, margin: 0, color: "0088CC" });
-	slide.addText("size:2, color:ACCENT3", {
-		x: 0.5,
-		y: 1.0,
-		w: "90%",
-		h: 1.1,
-		fontSize: 72,
-		color: "0088CC",
-		outline: { size: 2, color: pptx.colors.ACCENT3 },
-	});
-
-	// 3: Text Effects: Glow
-	slide.addText("Text Glow:", { x: 0.5, y: 2.6, w: "90%", h: 0.3, margin: 0, color: "0088CC" });
-	slide.addText("size:10, color:ACCENT2", {
-		x: 0.5,
-		y: 3.0,
-		w: "90%",
-		h: 1.1,
-		fontSize: 72,
-		color: "0088CC",
-		glow: { size: 10, opacity: 0.25, color: pptx.colors.ACCENT2 },
-	});
-
-	// 4: Text Effects: Shadow
-	let shadowOpts = { type: "outer", color: "696969", blur: 3, offset: 10, angle: 45, opacity: 0.6 };
-	slide.addText("Text Shadow:", { x: 0.5, y: 4.6, w: "90%", h: 0.3, margin: 0, color: "0088CC" });
-	slide.addText("type:outer, offset:10, blur:3", { x: 0.5, y: 4.9, w: "90%", h: 0.5, fontSize: 32, color: "0088cc", shadow: shadowOpts });
-
-	// Hyperlinks
-	slide.addText("Hyperlinks:", { x: 0.5, y: 6.0, w: "90%", h: 0.3, margin: 0.123, color: "0088CC" });
+	// 1: TOP_ROW: Hyperlinks
+	slide.addText("Hyperlinks:", { x: 0.5, y: 0.6, w: "90%", h: 0.3, margin: 0.123, color: pptx.colors.ACCENT1 });
 	slide.addText(
 		[{ text: "Link with Tooltip", options: { hyperlink: { url: "https://github.com/gitbrent/pptxgenjs", tooltip: "Visit Homepage" } } }],
-		{ x: 0.5, y: 6.4, w: 2.5, h: 0.6, margin: 10, fill: { color: "F1F1F1" }, fontSize: 14, align: "center" }
+		{ x: 0.5, y: 1.0, w: 2.5, h: 0.6, margin: 10, fill: { color: "F1F1F1" }, fontSize: 14, align: "center" }
 	);
 	slide.addText([{ text: "Link without Tooltip", options: { hyperlink: { url: "https://github.com/gitbrent" } } }], {
 		x: 3.78,
-		y: 6.4,
+		y: 1.0,
 		w: 2.5,
 		h: 0.6,
 		margin: 10,
@@ -379,7 +353,7 @@ function genSlide04(pptx) {
 	});
 	slide.addText([{ text: "Link with custom color", options: { hyperlink: { url: "https://github.com/gitbrent" }, color: "EE40EE" } }], {
 		x: 7.05,
-		y: 6.4,
+		y: 1.0,
 		w: 2.5,
 		h: 0.6,
 		margin: 10,
@@ -389,7 +363,7 @@ function genSlide04(pptx) {
 	});
 	slide.addText([{ text: "Link to Slide #5", options: { hyperlink: { slide: 5 } } }], {
 		x: 10.33,
-		y: 6.4,
+		y: 1.0,
 		w: 2.5,
 		h: 0.6,
 		margin: 10,
@@ -397,6 +371,54 @@ function genSlide04(pptx) {
 		fontSize: 14,
 		align: "center",
 	});
+
+	// 2: CTR_ROW: Tab Stops: Set tab points (inches), then use "\t" to add tab characters in your text string
+	slide.addText("Tab Stops:", { x: 0.5, y: 2.1, w: 12.0, h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
+	slide.addText([{ text: "text...\tTab1\tTab2\tTab3", options: { tabStops: [{ position: 1 }, { position: 3 }, { position: 7 }] } }], {
+		x: 0.5,
+		y: 2.5,
+		w: 12.3,
+		h: 0.6,
+		fill: { color: pptx.colors.BACKGROUND2 },
+	});
+	slide.addText(
+		"// Code for example above\n" +
+			"{\n" +
+			"  text: 'text...\\tTab1\\tTab2\\tTab3',\n" +
+			"  options: { tabStops: [{ position: 1 }, { position: 3 }, { position: 7 }] },\n" +
+			"};",
+		{ x: 0.5, y: 3.3, w: 12.3, h: 2.0, fontFace: "Courier", fontSize: 13, fill: { color: "D1E1F1" }, color: "363636" }
+	);
+
+	// 3a: BTM_ROW: Text Effects: Outline
+	slide.addText("Text Outline:", { x: 0.5, y: 5.8, w: 3.0, h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
+	slide.addText("size:2", {
+		x: 0.5,
+		y: 6.2,
+		w: 3.0,
+		h: 1.1,
+		fontSize: 72,
+		bold: true,
+		color: pptx.colors.ACCENT1,
+		outline: { size: 2, color: pptx.colors.ACCENT4 },
+	});
+
+	// 3b: Text Effects: Glow
+	slide.addText("Text Glow:", { x: 3.9, y: 5.8, w: 5.0, h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
+	slide.addText("size:10", {
+		x: 3.9,
+		y: 6.2,
+		w: 3.0,
+		h: 1.1,
+		fontSize: 72,
+		color: pptx.colors.ACCENT1,
+		glow: { size: 10, opacity: 0.25, color: pptx.colors.ACCENT2 },
+	});
+
+	// 3c: Text Effects: Shadow
+	let shadowOpts = { type: "outer", color: "696969", blur: 3, offset: 10, angle: 45, opacity: 0.6 };
+	slide.addText("Text Shadow:", { x: 7.5, y: 5.8, w: 5.0, h: 0.3, margin: 0, color: pptx.colors.ACCENT1 });
+	slide.addText("type:outer, offset:10, blur:3", { x: 7.5, y: 6.2, w: 5.5, h: 1.1, fontSize: 32, color: "0088cc", shadow: shadowOpts });
 }
 
 /**
@@ -414,9 +436,9 @@ function genSlide05(pptx) {
 	slide.addText(LOREM_IPSUM_ENG.substring(0, 1200), { x: 8.5, y: 1.3, w: 4, h: 4, fontSize: 12, fit: "resize" });
 
 	// titles last so they overlay the overflowing text from above
-	slide.addText("fit:'none'  ", { x: 0.5, y: 0.6, w: 4, h: 0.3, color: "0088CC", fill: { color: "ffffff" } });
-	slide.addText("fit:'shrink'", { x: 4.5, y: 0.6, w: 4, h: 0.3, color: "0088CC", fill: { color: "ffffff" } });
-	slide.addText("fit:'resize'", { x: 8.5, y: 0.6, w: 4, h: 0.3, color: "0088CC", fill: { color: "ffffff" } });
+	slide.addText("fit:'none'  ", { x: 0.5, y: 0.6, w: 4, h: 0.3, color: pptx.colors.ACCENT1, fill: { color: "ffffff" } });
+	slide.addText("fit:'shrink'", { x: 4.5, y: 0.6, w: 4, h: 0.3, color: pptx.colors.ACCENT1, fill: { color: "ffffff" } });
+	slide.addText("fit:'resize'", { x: 8.5, y: 0.6, w: 4, h: 0.3, color: pptx.colors.ACCENT1, fill: { color: "ffffff" } });
 
 	slide.addText(
 		[

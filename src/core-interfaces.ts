@@ -65,10 +65,10 @@ export type DataOrPathProps = {
 	 */
 	data?: string
 }
-export interface BackgroundProps extends DataOrPathProps {
+export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 	/**
 	 * Color (hex format)
-	 * @example 'FF3399'
+	 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 	 */
 	fill?: HexColor
 }
@@ -82,6 +82,7 @@ export type Color = HexColor | ThemeColor
 export type Margin = number | [number, number, number, number]
 export type HAlign = 'left' | 'center' | 'right' | 'justify'
 export type VAlign = 'top' | 'middle' | 'bottom'
+
 // used by charts, shape, text
 export interface BorderProps {
 	/**
@@ -178,17 +179,17 @@ export interface ShapeFillProps {
 	 * @default 0
 	 */
 	transparency?: number
+	/**
+	 * Fill type
+	 * @default 'solid'
+	 */
+	type?: 'none' | 'solid'
 
 	/**
 	 * Transparency (percent)
 	 * @deprecated v3.3.0 - use `transparency`
 	 */
 	alpha?: number
-	/**
-	 * Fill type
-	 * - 'solid' @deprecated v3.3.0
-	 */
-	type?: 'none' | 'solid'
 }
 export interface ShapeLineProps extends ShapeFillProps {
 	/**
@@ -360,6 +361,11 @@ export interface TextBaseProps {
 	 */
 	fontSize?: number
 	/**
+	 * Text highlight color (hex format)
+	 * @example 'FFFF00' // yellow
+	 */
+	highlight?: HexColor
+	/**
 	 * italic style
 	 * @default false
 	 */
@@ -371,6 +377,12 @@ export interface TextBaseProps {
 	 * @example 'fr-CA' // french Canadian
 	 */
 	lang?: string
+	/**
+	 * tab stops
+	 * - PowerPoint: Paragraph > Tabs > Tab stop position
+	 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
+	 */
+	tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
 	/**
 	 * underline properties
 	 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
@@ -408,8 +420,29 @@ export interface TextBaseProps {
 export type MediaType = 'audio' | 'online' | 'video'
 
 export interface ImageProps extends PositionProps, DataOrPathProps {
+	/**
+	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+	 * - PowerPoint: [right-click on an image] > "Edit Alt Text..."
+	 */
+	altText?: string
+	/**
+	 * Flip horizontally?
+	 * @default false
+	 */
+	flipH?: boolean
+	/**
+	 * Flip vertical?
+	 * @default false
+	 */
+	flipV?: boolean
 	hyperlink?: HyperlinkProps
-	placeholder?: string // 'body' | 'title' | etc.
+	/**
+	 * Placeholder type
+	 * - values: 'body' | 'header' | 'footer' | 'title' | et. al.
+	 * @example 'body'
+	 * @see https://docs.microsoft.com/en-us/office/vba/api/powerpoint.ppplaceholdertype
+	 */
+	placeholder?: string
 	/**
 	 * Image rotation (degrees)
 	 * - range: -360 to 360
@@ -451,16 +484,6 @@ export interface ImageProps extends PositionProps, DataOrPathProps {
 		 */
 		y?: number
 	}
-	/**
-	 * Flip horizontally?
-	 * @default false
-	 */
-	flipH?: boolean
-	/**
-	 * Flip vertical?
-	 * @default false
-	 */
-	flipV?: boolean
 }
 /**
  * Add media (audio/video) to slide
@@ -1265,7 +1288,13 @@ export interface IChartOpts
 		IChartPropsLegend,
 		IChartPropsTitle,
 		OptsChartGridLine,
-		PositionProps {}
+		PositionProps {
+	/**
+	 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+	 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
+	 */
+	altText?: string
+}
 export interface IChartOptsLib extends IChartOpts {
 	_type?: CHART_NAME | IChartMulti[] // TODO: v3.4.0 - move to `IChartOpts`, remove `IChartOptsLib`
 }
@@ -1273,6 +1302,7 @@ export interface ISlideRelChart extends OptsChartData {
 	type: CHART_NAME | IChartMulti[]
 	opts: IChartOptsLib
 	data: OptsChartData[]
+	// internal below
 	rId: number
 	Target: string
 	globalId: number
@@ -1384,7 +1414,23 @@ export interface SlideMasterProps {
 	title: string
 	margin?: Margin
 	background?: BackgroundProps
-	objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+	objects?: (
+		| { chart: {} }
+		| { image: {} }
+		| { line: {} }
+		| { rect: {} }
+		| { text: TextProps }
+		| {
+				placeholder: {
+					options: PlaceholderProps
+					/**
+					 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+					 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+					 */
+					text?: string
+				}
+		  }
+	)[]
 	slideNumber?: SlideNumberProps
 
 	/**
@@ -1418,7 +1464,7 @@ export interface SlideBaseProps {
 	/**
 	 * @deprecated v3.3.0 - use `background`
 	 */
-	bkgd?: string
+	bkgd?: string | BackgroundProps
 }
 export interface SlideLayout extends SlideBaseProps {
 	_slide?: {
@@ -1442,8 +1488,9 @@ export interface PresSlide extends SlideBaseProps {
 	addText: Function
 
 	/**
-	 * Background color or image (`fill` | `path` | `data`)
-	 * @example {fill: 'FF3399'} - hex fill color
+	 * Background color or image (`Color` | `path` | `data`)
+	 * @example {color: 'FF3399'} - hex fill color
+	 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 	 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 	 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 	 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string

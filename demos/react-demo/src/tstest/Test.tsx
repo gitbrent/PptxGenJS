@@ -30,7 +30,7 @@ export function testMainMethods() {
 	// PPTX Method 2:
 	pptx.defineSlideMaster({
 		title: "MASTER_SLIDE",
-		bkgd: "FFFFFF",
+		background: { fill: "FFFFFF" },
 		margin: [0.5, 0.25, 1.0, 0.25],
 		slideNumber: { x: 0.6, y: 7.0, color: "FFFFFF", fontFace: "Arial", fontSize: 10, align: pptx.AlignH.center },
 		objects: [

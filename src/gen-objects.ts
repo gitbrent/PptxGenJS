@@ -11,6 +11,7 @@ import {
 	DEF_FONT_COLOR,
 	DEF_FONT_SIZE,
 	DEF_SHAPE_LINE_COLOR,
+	DEF_SLIDE_BKGD,
 	DEF_SLIDE_MARGIN_IN,
 	EMU,
 	IMG_PLAYBTN,
@@ -51,16 +52,17 @@ let _chartCounter: number = 0
 
 /**
  * Transforms a slide definition to a slide object that is then passed to the XML transformation process.
- * @param {SlideMasterProps} slideDef - slide definition
+ * @param {SlideMasterProps} props - slide definition
  * @param {PresSlide|SlideLayout} target - empty slide object that should be updated by the passed definition
  */
-export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayout) {
-	// STEP 1: Add background
-	if (slideDef.background) addBackgroundDefinition(slideDef.background, target)
+export function createSlideMaster(props: SlideMasterProps, target: SlideLayout) {
+	// STEP 1: Add background if either the slide or layout has background props
+	//	if (props.background || target.background) addBackgroundDefinition(props.background, target)
+	if (props.bkgd) target.bkgd = props.bkgd // DEPRECATED: (remove in v4.0.0)
 
 	// STEP 2: Add all Slide Master objects in the order they were given
-	if (slideDef.objects && Array.isArray(slideDef.objects) && slideDef.objects.length > 0) {
-		slideDef.objects.forEach((object, idx) => {
+	if (props.objects && Array.isArray(props.objects) && props.objects.length > 0) {
+		props.objects.forEach((object, idx) => {
 			let key = Object.keys(object)[0]
 			let tgt = target as PresSlide
 			if (MASTER_OBJECTS[key] && key === 'chart') addChartDefinition(tgt, object[key].type, object[key].data, object[key].opts)
@@ -95,9 +97,7 @@ export function createSlideObject(slideDef: SlideMasterProps, target: SlideLayou
 	}
 
 	// STEP 3: Add Slide Numbers (NOTE: Do this last so numbers are not covered by objects!)
-	if (slideDef.slideNumber && typeof slideDef.slideNumber === 'object') {
-		target._slideNumberProps = slideDef.slideNumber
-	}
+	if (props.slideNumber && typeof props.slideNumber === 'object') target._slideNumberProps = props.slideNumber
 }
 
 /**
@@ -410,6 +410,7 @@ export function addImageDefinition(target: PresSlide, opt: ImageProps) {
 		y: intPosY || 0,
 		w: intWidth || 1,
 		h: intHeight || 1,
+		altText: opt.altText || '',
 		rounding: typeof opt.rounding === 'boolean' ? opt.rounding : false,
 		sizing: sizing,
 		placeholder: opt.placeholder,
@@ -590,9 +591,8 @@ export function addMediaDefinition(target: PresSlide, opt: MediaProps) {
 
 /**
  * Adds Notes to a slide.
- * @param {String} `notes`
- * @param {Object} opt (*unused*)
  * @param {PresSlide} `target` slide object
+ * @param {string} `notes`
  * @since 2.3.0
  */
 export function addNotesDefinition(target: PresSlide, notes: string) {
@@ -924,7 +924,7 @@ export function addTableDefinition(
  * @param {PresSlide} target - slide object that the text should be added to
  * @param {string|TextProps[]} text text string or object
  * @param {TextPropsOptions} opts text options
- * @param {boolean} isPlaceholder` is this a placeholder object
+ * @param {boolean} isPlaceholder whether this a placeholder object
  * @since: 1.0.0
  */
 export function addTextDefinition(target: PresSlide, text: TextProps[], opts: TextPropsOptions, isPlaceholder: boolean) {
@@ -946,6 +946,14 @@ export function addTextDefinition(target: PresSlide, text: TextProps[], opts: Te
 			// A.2: Placeholder should inherit their bullets or override them, so don't default them
 			if (itemOpts.placeholder || isPlaceholder) {
 				itemOpts.bullet = itemOpts.bullet || false
+			}
+
+			// A.3: Text targeting a placeholder need to inherit the placeholders options (eg: margin, valign, etc.) (Issue #640)
+			if (itemOpts.placeholder && target._slideLayout && target._slideLayout._slideObjects) {
+				let placeHold = target._slideLayout._slideObjects.filter(
+					item => item._type === 'placeholder' && item.options && item.options.placeholder && item.options.placeholder === itemOpts.placeholder
+				)[0]
+				if (placeHold && placeHold.options) itemOpts = { ...itemOpts, ...placeHold.options }
 			}
 
 			// B:
@@ -1041,7 +1049,7 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 			// NOTE: Check to ensure a placeholder does not already exist on the Slide
 			// They are created when they have been populated with text (ex: `slide.addText('Hi', { placeholder:'title' });`)
 			if (slide._slideObjects.filter(slideObj => slideObj.options && slideObj.options.placeholder === slideLayoutObj.options.placeholder).length === 0) {
-				addTextDefinition(slide, [{ text: '' }], { placeholder: slideLayoutObj.options.placeholder }, false)
+				addTextDefinition(slide, [{ text: '' }], slideLayoutObj.options, false)
 			}
 		}
 	})
@@ -1051,30 +1059,42 @@ export function addPlaceholdersToSlideLayouts(slide: PresSlide) {
 
 /**
  * Adds a background image or color to a slide definition.
- * @param {BackgroundProps} bkg - color string or an object with image definition
+ * @param {BackgroundProps} props - color string or an object with image definition
  * @param {PresSlide} target - slide object that the background is set to
  */
-export function addBackgroundDefinition(bkg: BackgroundProps, target: SlideLayout) {
-	if (typeof bkg === 'object' && (bkg.path || bkg.data)) {
+export function addBackgroundDefinition(props: BackgroundProps, target: SlideLayout) {
+	// A: @deprecated
+	if (target.bkgd) {
+		if (!target.background) target.background = {}
+
+		if (typeof target.bkgd === 'string') target.background.color = target.bkgd
+		else {
+			if (target.bkgd.data) target.background.data = target.bkgd.data
+			if (target.bkgd.path) target.background.path = target.bkgd.path
+			if (target.bkgd['src']) target.background.path = target.bkgd['src'] // @deprecated (drop in 4.x)
+		}
+	}
+	if (target.background && target.background.fill) target.background.color = target.background.fill
+
+	// B: Handle media
+	if (props && (props.path || props.data)) {
 		// Allow the use of only the data key (`path` isnt reqd)
-		bkg.path = bkg.path || 'preencoded.png'
-		let strImgExtn = (bkg.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
+		props.path = props.path || 'preencoded.png'
+		let strImgExtn = (props.path.split('.').pop() || 'png').split('?')[0] // Handle "blah.jpg?width=540" etc.
 		if (strImgExtn === 'jpg') strImgExtn = 'jpeg' // base64-encoded jpg's come out as "data:image/jpeg;base64,/9j/[...]", so correct exttnesion to avoid content warnings at PPT startup
 
 		target._relsMedia = target._relsMedia || []
 		let intRels = target._relsMedia.length + 1
 		// NOTE: `Target` cannot have spaces (eg:"Slide 1-image-1.jpg") or a "presentation is corrupt" warning comes up
 		target._relsMedia.push({
-			path: bkg.path,
+			path: props.path,
 			type: SLIDE_OBJECT_TYPES.image,
 			extn: strImgExtn,
-			data: bkg.data || null,
+			data: props.data || null,
 			rId: intRels,
 			Target: `../media/${(target._name || '').replace(/\s+/gi, '-')}-image-${target._relsMedia.length + 1}.${strImgExtn}`,
 		})
 		target._bkgdImgRid = intRels
-	} else if (bkg && bkg.fill && typeof bkg.fill === 'string') {
-		target.bkgd = bkg.fill
 	}
 }
 
@@ -1094,8 +1114,12 @@ function createHyperlinkRels(target: PresSlide, text: number | string | ISlideOb
 
 	textObjs.forEach((text: TextProps) => {
 		// `text` can be an array of other `text` objects (table cell word-level formatting), continue parsing using recursion
-		if (Array.isArray(text)) createHyperlinkRels(target, text)
-		else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
+		if (Array.isArray(text)) {
+			createHyperlinkRels(target, text)
+		} else if (Array.isArray(text.text)) {
+			// this handles TableCells with hyperlinks
+			createHyperlinkRels(target, text.text)
+		} else if (text && typeof text === 'object' && text.options && text.options.hyperlink && !text.options.hyperlink._rId) {
 			if (typeof text.options.hyperlink !== 'object') console.log("ERROR: text `hyperlink` option should be an object. Ex: `hyperlink: {url:'https://github.com'}` ")
 			else if (!text.options.hyperlink.url && !text.options.hyperlink.slide) console.log("ERROR: 'hyperlink requires either: `url` or `slide`'")
 			else {

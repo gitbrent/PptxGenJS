@@ -469,7 +469,8 @@ function genSlide06(pptx) {
 		{ text: "Green ", options: { color: "00FF00" } },
 		{ text: "Blue", options: { color: "0000FF" } },
 	];
-	let arrCell3 = [{ text: "Bullets\nBullets\nBullets", options: { color: "0088cc", bullet: true } }];
+	let arrCell3 = [{ text: "google", options: { bullet: true, color: pptx.colors.ACCENT1, hyperlink: { url: "https://www.google.com" } } }];
+
 	let arrCell4 = [{ text: "Numbers\nNumbers\nNumbers", options: { color: "0088cc", bullet: { type: "number" } } }];
 	slide.addTable(
 		[

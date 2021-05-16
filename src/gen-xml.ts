@@ -2,6 +2,7 @@
  * PptxGenJS: XML Generation
  */
 
+import { IImage } from 'image-size/dist/types/interface'
 import {
 	BULLET_TYPES,
 	CRLF,
@@ -17,6 +18,8 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
+	IChartOpts,
+	ImageProps,
 	IPresentationProps,
 	ISlideObject,
 	ISlideRel,
@@ -87,8 +90,8 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 	let intTableNum: number = 1
 
 	// STEP 1: Add background
-	if (slide.bkgd) {
-		strSlideXml += genXmlColorSelection(null, slide.bkgd)
+	if (slide.background && slide.background.color) {
+		strSlideXml += `<p:bg><p:bgPr>${genXmlColorSelection(slide.background)}</p:bgPr></p:bg>`
 	} else if (!slide.bkgd && slide._name && slide._name === DEF_PRES_LAYOUT_NAME) {
 		// NOTE: Default [white] background is needed on slideMaster1.xml to avoid gray background in Keynote (and Finder previews)
 		strSlideXml += '<p:bg><p:bgRef idx="1001"><a:schemeClr val="bg1"/></p:bgRef></p:bg>'
@@ -173,33 +176,15 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 				// STEP 1: Start Table XML
 				// NOTE: Non-numeric cNvPr id values will trigger "presentation needs repair" type warning in MS-PPT-2013
-				let strXml =
-					'<p:graphicFrame>' +
-					'  <p:nvGraphicFramePr>' +
-					'    <p:cNvPr id="' +
-					(intTableNum * slide._slideNum + 1) +
-					'" name="Table ' +
-					intTableNum * slide._slideNum +
-					'"/>' +
-					'    <p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
-					'    <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
-					'  </p:nvGraphicFramePr>' +
-					'  <p:xfrm>' +
-					'    <a:off x="' +
-					(x || (x === 0 ? 0 : EMU)) +
-					'" y="' +
-					(y || (y === 0 ? 0 : EMU)) +
-					'"/>' +
-					'    <a:ext cx="' +
-					(cx || (cx === 0 ? 0 : EMU)) +
-					'" cy="' +
-					(cy || EMU) +
-					'"/>' +
-					'  </p:xfrm>' +
-					'  <a:graphic>' +
-					'    <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table">' +
-					'      <a:tbl>' +
-					'        <a:tblPr/>'
+				let strXml = `<p:graphicFrame><p:nvGraphicFramePr><p:cNvPr id="${intTableNum * slide._slideNum + 1}" name="Table ${intTableNum * slide._slideNum}"/>`
+				strXml +=
+					'<p:cNvGraphicFramePr><a:graphicFrameLocks noGrp="1"/></p:cNvGraphicFramePr>' +
+					'  <p:nvPr><p:extLst><p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}"><p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1579011935"/></p:ext></p:extLst></p:nvPr>' +
+					'</p:nvGraphicFramePr>'
+				strXml += `<p:xfrm><a:off x="${x || (x === 0 ? 0 : EMU)}" y="${y || (y === 0 ? 0 : EMU)}"/><a:ext cx="${cx || (cx === 0 ? 0 : EMU)}" cy="${
+					cy || EMU
+				}"/></p:xfrm>`
+				strXml += '<a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/table"><a:tbl><a:tblPr/>'
 				// + '        <a:tblPr bandRow="1"/>';
 				// TODO: Support banded rows, first/last row, etc.
 				// NOTE: Banding, etc. only shows when using a table style! (or set alt row color if banding)
@@ -474,7 +459,7 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				// shape Type: LINE: line color
 				if (slideItemObj.options.line) {
 					strSlideXml += slideItemObj.options.line.width ? `<a:ln w="${valToPts(slideItemObj.options.line.width)}">` : '<a:ln>'
-					strSlideXml += genXmlColorSelection(slideItemObj.options.line.color)
+					if (slideItemObj.options.line.color) strSlideXml += genXmlColorSelection(slideItemObj.options.line)
 					if (slideItemObj.options.line.dashType) strSlideXml += `<a:prstDash val="${slideItemObj.options.line.dashType}"/>`
 					if (slideItemObj.options.line.beginArrowType) strSlideXml += `<a:headEnd type="${slideItemObj.options.line.beginArrowType}"/>`
 					if (slideItemObj.options.line.endArrowType) strSlideXml += `<a:tailEnd type="${slideItemObj.options.line.endArrowType}"/>`
@@ -523,28 +508,23 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.image:
-				let sizing = slideItemObj.options.sizing,
-					rounding = slideItemObj.options.rounding,
+				let imageOpts = slideItemObj.options as ImageProps
+				let sizing = imageOpts.sizing,
+					rounding = imageOpts.rounding,
 					width = cx,
 					height = cy
 
 				strSlideXml += '<p:pic>'
 				strSlideXml += '  <p:nvPicPr>'
-				strSlideXml += '    <p:cNvPr id="' + (idx + 2) + '" name="Object ' + (idx + 1) + '" descr="' + encodeXmlEntities(slideItemObj.image) + '">'
+				strSlideXml += `<p:cNvPr id="${idx + 2}" name="Object ${idx + 1}" descr="${encodeXmlEntities(imageOpts.altText || slideItemObj.image)}">`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.url)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink._rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'"/>'
+					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+					}"/>`
 				if (slideItemObj.hyperlink && slideItemObj.hyperlink.slide)
-					strSlideXml +=
-						'<a:hlinkClick r:id="rId' +
-						slideItemObj.hyperlink._rId +
-						'" tooltip="' +
-						(slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : '') +
-						'" action="ppaction://hlinksldjump"/>'
+					strSlideXml += `<a:hlinkClick r:id="rId${slideItemObj.hyperlink._rId}" tooltip="${
+						slideItemObj.hyperlink.tooltip ? encodeXmlEntities(slideItemObj.hyperlink.tooltip) : ''
+					}" action="ppaction://hlinksldjump"/>`
 				strSlideXml += '    </p:cNvPr>'
 				strSlideXml += '    <p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr>'
 				strSlideXml += '    <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
@@ -642,19 +622,17 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.chart:
+				let chartOpts = slideItemObj.options as IChartOpts
 				strSlideXml += '<p:graphicFrame>'
 				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += '   <p:cNvPr id="' + (idx + 2) + '" name="Chart ' + (idx + 1) + '"/>'
+				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}"/>`
 				strSlideXml += '   <p:cNvGraphicFramePr/>'
-				strSlideXml += '   <p:nvPr>' + genXmlPlaceholder(placeholderObj) + '</p:nvPr>'
+				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
 				strSlideXml += ' </p:nvGraphicFramePr>'
-				strSlideXml += ' <p:xfrm>'
-				strSlideXml += '  <a:off x="' + x + '" y="' + y + '"/>'
-				strSlideXml += '  <a:ext cx="' + cx + '" cy="' + cy + '"/>'
-				strSlideXml += ' </p:xfrm>'
+				strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
 				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
 				strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
-				strSlideXml += '   <c:chart r:id="rId' + slideItemObj.chartRid + '" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>'
+				strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
 				strSlideXml += '  </a:graphicData>'
 				strSlideXml += ' </a:graphic>'
 				strSlideXml += '</p:graphicFrame>'
@@ -668,6 +646,9 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 
 	// STEP 5: Add slide numbers (if any) last
 	if (slide._slideNumberProps) {
+		// Set some defaults (done here b/c SlideNumber canbe added to masters or slides and has numerous entry points)
+		if (!slide._slideNumberProps.align) slide._slideNumberProps.align = 'left'
+
 		strSlideXml +=
 			'<p:sp>' +
 			'  <p:nvSpPr>' +
@@ -715,7 +696,10 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 		}
 		strSlideXml += '</a:lvl1pPr></a:lstStyle>'
 		strSlideXml += `<a:p><a:fld id="${SLDNUMFLDID}" type="slidenum"><a:rPr lang="en-US"/>`
-		if (slide._slideNumberProps.align) strSlideXml += `<a:pPr algn="${slide._slideNumberProps.align.substring(0, 1)}"/>`
+		if (slide._slideNumberProps.align.startsWith('l')) strSlideXml += '<a:pPr algn="l"/>'
+		else if (slide._slideNumberProps.align.startsWith('c')) strSlideXml += '<a:pPr algn="ctr"/>'
+		else if (slide._slideNumberProps.align.startsWith('r')) strSlideXml += '<a:pPr algn="r"/>'
+		else strSlideXml += `<a:pPr algn="l"/>`
 		strSlideXml += `<a:t></a:t></a:fld><a:endParaRPr lang="en-US"/></a:p>`
 		strSlideXml += '</p:txBody></p:sp>'
 	}
@@ -820,7 +804,8 @@ function slideObjectRelationsToXml(slide: PresSlide | SlideLayout, defaultRels: 
 function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault: boolean): string {
 	let strXmlBullet = '',
 		strXmlLnSpc = '',
-		strXmlParaSpc = ''
+		strXmlParaSpc = '',
+		strXmlTabStops = ''
 	let tag = isDefault ? 'a:lvl1pPr' : 'a:pPr'
 	let bulletMarL = valToPts(DEF_BULLET_MARGIN)
 
@@ -927,16 +912,17 @@ function genXmlParagraphProperties(textObj: ISlideObject | TextProps, isDefault:
 			strXmlBullet = '<a:buNone/>'
 		}
 
+		// OPTION: tabStops
+		if (textObj.options.tabStops && Array.isArray(textObj.options.tabStops)) {
+			let tabStopsXml = textObj.options.tabStops.map(stop => `<a:tab pos="${inch2Emu(stop.position || 1)}" algn="${stop.alignment || 'l'}"/>`).join('')
+			strXmlTabStops = `<a:tabLst>${tabStopsXml}</a:tabLst>`
+		}
+
 		// B: Close Paragraph-Properties
 		// IMPORTANT: strXmlLnSpc, strXmlParaSpc, and strXmlBullet require strict ordering - anything out of order is ignored. (PPT-Online, PPT for Mac)
-		let childPropXml = strXmlLnSpc + strXmlParaSpc + strXmlBullet
-		if (isDefault) childPropXml += genXmlTextRunProperties(textObj.options, true)
-		if (childPropXml) {
-			paragraphPropXml += '>' + childPropXml + '</' + tag + '>'
-		} else {
-			// self-close when no child props
-			paragraphPropXml += '/>'
-		}
+		paragraphPropXml += '>' + strXmlLnSpc + strXmlParaSpc + strXmlBullet + strXmlTabStops
+		if (isDefault) paragraphPropXml += genXmlTextRunProperties(textObj.options, true)
+		paragraphPropXml += '</' + tag + '>'
 	}
 
 	return paragraphPropXml
@@ -976,16 +962,14 @@ function genXmlTextRunProperties(opts: ObjectOptions | TextPropsOptions, isDefau
 	}
 	runProps += opts.charSpacing ? ` spc="${Math.round(opts.charSpacing * 100)}" kern="0"` : '' // IMPORTANT: Also disable kerning; otherwise text won't actually expand
 	runProps += ' dirty="0">'
-	// Color / Font / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
+	// Color / Font / Highlight / Outline are children of <a:rPr>, so add them now before closing the runProperties tag
 	if (opts.color || opts.fontFace || opts.outline || (typeof opts.underline === 'object' && opts.underline.color)) {
 		if (opts.outline && typeof opts.outline === 'object') {
 			runProps += `<a:ln w="${valToPts(opts.outline.size || 0.75)}">${genXmlColorSelection(opts.outline.color || 'FFFFFF')}</a:ln>`
 		}
 		if (opts.color) runProps += genXmlColorSelection(opts.color)
-		// underline color
-		if (typeof opts.underline === 'object' && opts.underline.color) {
-			runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
-		}
+		if (opts.highlight) runProps += `<a:highlight>${createColorElement(opts.highlight)}</a:highlight>`
+		if (typeof opts.underline === 'object' && opts.underline.color) runProps += `<a:uFill>${genXmlColorSelection(opts.underline.color)}</a:uFill>`
 		if (opts.glow) runProps += `<a:effectLst>${createGlowElement(opts.glow, DEF_TEXT_GLOW)}</a:effectLst>`
 		if (opts.fontFace) {
 			// NOTE: 'cs' = Complex Script, 'ea' = East Asian (use "-120" instead of "0" - per Issue #174); ea must come first (Issue #174)
@@ -1578,7 +1562,7 @@ export function getNotesFromSlide(slide: PresSlide): string {
 	let notesText = ''
 
 	slide._slideObjects.forEach(data => {
-		if (data._type === 'notes') notesText += data.text
+		if (data._type === SLIDE_OBJECT_TYPES.notes) notesText += data.text && data.text[0] ? data.text[0].text : ''
 	})
 
 	return notesText.replace(/\r*\n/g, CRLF)

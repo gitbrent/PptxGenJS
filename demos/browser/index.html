@@ -5,8 +5,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta name="author" content="https://github.com/gitbrent">
 	<meta name="website" content="https://github.com/gitbrent/PptxGenJS/">
-	<meta name="version" content="3.6.0">
-	<meta name="updated" content="2021-04-04">
+	<meta name="version" content="3.7.0">
+	<meta name="updated" content="2021-05-03">
 	<link rel="icon" href="images/favicon-32x32.png" sizes="32x32" type="image/png">
 	<link rel="icon" href="images/favicon-16x16.png" sizes="16x16" type="image/png">
 	<link rel="icon" href="images/favicon.png">
@@ -107,13 +107,13 @@
 				</li>
 			</ul>
 			<form class="form-inline my-2 my-lg-0">
-				<button type="button" class="btn btn-outline-secondary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS/releases')">
+				<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS/releases')">
 					Download
 				</button>
-				<button type="button" class="btn btn-outline-secondary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS')">
+				<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://github.com/gitbrent/PptxGenJS')">
 					GitHub Project
 				</button>
-				<button type="button" class="btn btn-outline-secondary mx-2 my-2 my-sm-0" onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation.html')">
+				<button type="button" class="btn btn-outline-primary mx-2 my-2 my-sm-0" onClick="window.open('https://gitbrent.github.io/PptxGenJS/docs/installation.html')">
 					API Documentation
 				</button>
 			</form>
@@ -360,7 +360,7 @@
 								<h6 class="card-header">CSS via <code>&lt;style&gt;</code></h6>
 								<div class="card-body">
 									<table id="tabInheritStyle" class="tabHtmlToPpt w-100">
-										<thead>
+										<thead class="table-light">
 											<tr>
 												<th>Company</th>
 												<th>Contact</th>
@@ -402,7 +402,7 @@
 						<h6 class="card-header">Colspan</h6>
 						<div class="card-body">
 							<table id="tabColspan" class="tabHtmlToPpt w-100">
-								<thead>
+								<thead class="table-light">
 									<tr>
 										<th class="tg-header">First Name</th>
 										<th class="tg-header">Last Name</th>
@@ -439,7 +439,7 @@
 						<h6 class="card-header">Rowspan</h6>
 						<div class="card-body">
 							<table id="tabRowspan" class="tabHtmlToPpt w-100">
-								<thead>
+								<thead class="table-light">
 									<tr>
 										<th class="tg-header">Last Name</th>
 										<th class="tg-header">First Name</th>
@@ -471,7 +471,7 @@
 						<h6 class="card-header">Rowspan and Colspan</h6>
 						<div class="card-body">
 							<table id="tabRowColspan" class="tabHtmlToPpt w-100">
-								<thead>
+								<thead class="table-light">
 									<tr>
 										<th class="tg-header" colspan="2">Name</th>
 										<th class="tg-header" rowspan="2">Count</th>
@@ -510,7 +510,7 @@
 						<h6 class="card-header">Example: Lots of Single-Line Rows</h6>
 						<div class="card-body">
 							<table id="tabLotsOfLines" class="tabHtmlToPpt w-100">
-								<thead>
+								<thead class="table-light">
 									<tr>
 										<th class="tg-header">A</th>
 										<th class="tg-header">B</th>
@@ -529,7 +529,7 @@
 						<h6 class="card-header">Example: Paging needed due to cell with large amount of text</h6>
 						<div class="card-body">
 							<table id="tabLargeCellText" class="tabHtmlToPpt">
-								<thead>
+								<thead class="table-light">
 									<tr>
 										<th class="tg-header">Executive Status</th>
 									</tr>
@@ -747,26 +747,27 @@
 				<p>
 					View the <a href="https://gitbrent.github.io/PptxGenJS/docs/api-text.html" target="_blank">text documentation</a> for full details and examples
 				</p>
-				<div class="card-deck mb-4">
-					<div class="card">
-						<h6 class="card-header">Text Alignment</h6>
+				<div class="d-flex flex-wrap mb-4">
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Alignment, Location, Sub/Super Script</h6>
 						<div class="card-body">
 							<div>Slide 1</div>
 							<div>- Text alignment</div>
-							<div>- x/y percent values</div>
+							<div>- Text locations</div>
+							<div>- Sub/Super Script</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Text Types</h6>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Formatting, Line Breaks, Line Spacing</h6>
 						<div class="card-body">
 							<div>Slide 2</div>
-							<div>- Word-Level Formatting</div>
-							<div>- Multi-Line Text</div>
+							<div>- Text Formatting</div>
+							<div>- Line Breaks</div>
 							<div>- Line Spacing</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Text Bullets</h6>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Bullets: Styles, Shapes, Indent</h6>
 						<div class="card-body">
 							<div>Slide 3</div>
 							<div>- Indent-Levels</div>
@@ -775,18 +776,17 @@
 							<div>- Custom Shapes</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Text Effects/Hyperlinks</h6>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Hyperlinks, Tab Stops, Text Effects</h6>
 						<div class="card-body">
 							<div>Slide 4</div>
-							<div>- Text Outline</div>
-							<div>- Text Glow</div>
-							<div>- Text Shadow</div>
 							<div>- Hyperlinks</div>
+							<div>- Tab Stops</div>
+							<div>- Text Effects: Outline, Glow, Shadow</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Text Fit</h6>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Fit: Resize &amp; Shrink</h6>
 						<div class="card-body">
 							<div>Slide 5</div>
 							<div>- None</div>
@@ -794,8 +794,8 @@
 							<div>- Shrink</div>
 						</div>
 					</div>
-					<div class="card">
-						<h6 class="card-header">Text Schemes</h6>
+					<div class="card mr-4 mb-4 flex-grow-1">
+						<h6 class="card-header">Text/Background Scheme Colors</h6>
 						<div class="card-body">
 							<div>Slide 6</div>
 							<div>- Scheme Colors</div>

@@ -172,14 +172,7 @@ div.iconSvg.refresh {
 }
 
 .tabHtmlToPpt thead th {
-	background: var(--light);
-	color: white;
 	font-weight: normal;
-}
-
-.tabHtmlToPpt tbody td {
-	background: var(--light);
-	color: var(--dark);
 }
 
 .tabHtmlToPpt th,

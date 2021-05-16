@@ -115,7 +115,6 @@ function App() {
 						>
 							GitHub Project
 						</button>
-
 						<button
 							type="button"
 							className="btn btn-outline-info mx-3 my-2 my-sm-0"

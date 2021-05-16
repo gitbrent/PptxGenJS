@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.6.0
+// Type definitions for pptxgenjs 3.7.0
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -82,58 +82,60 @@ declare class PptxGenJS {
 
 	/**
 	 * Export the current Presentation to stream
-	 * @param {WriteBaseProps} props - output properties
+	 * @param {WriteBaseProps} props output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file stream
 	 */
 	stream(props?: PptxGenJS.WriteBaseProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation as JSZip content with the selected type
-	 * @param {WriteProps} props - output properties
+	 * @param {WriteProps} props output properties
 	 * @returns {Promise<string | ArrayBuffer | Blob | Uint8Array>} file content in selected type
 	 */
 	write(props?: PptxGenJS.WriteProps): Promise<string | ArrayBuffer | Blob | Uint8Array>
 	/**
 	 * Export the current Presentation. Writes file to local file system if `fs` exists, otherwise, initiates download in browsers
-	 * @param {WriteFileProps} props - output file properties
+	 * @param {WriteFileProps} props output file properties
+	 * @example pptx.writeFile({ fileName:'CustomerReport.pptx' }) // export presentation as "CustomerReport.pptx"
+	 * @example pptx.writeFile({ fileName:'CustomerReport.pptx', compression:true }) // export presentation as "CustomerReport.pptx" compressed (can save up to 30%)
 	 * @returns {Promise<string>} the presentation name
 	 */
 	writeFile(props?: PptxGenJS.WriteFileProps): Promise<string>
 	/**
 	 * Add a new Section to Presentation
-	 * @param {SectionProps} section - section properties
+	 * @param {SectionProps} props section properties
 	 * @example pptx.addSection({ title:'Charts' });
 	 */
-	addSection(section: PptxGenJS.SectionProps): void
+	addSection(props: PptxGenJS.SectionProps): void
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {AddSlideProps} options - slide options
+	 * @param {AddSlideProps} props slide options
 	 * @returns {Slide} the new Slide
 	 */
-	addSlide(options?: PptxGenJS.AddSlideProps): PptxGenJS.Slide
+	addSlide(props?: PptxGenJS.AddSlideProps): PptxGenJS.Slide
 	/**
 	 * Add a new Slide to Presentation
-	 * @param {string} masterName - master slide name
+	 * @param {string} masterName master slide name
 	 * @returns {Slide} the new Slide
 	 * @deprecated use `addSlide(IAddSlideOptions)`
 	 */
 	addSlide(masterName?: string): PptxGenJS.Slide
 	/**
 	 * Create a custom Slide Layout in any size
-	 * @param {PresLayout} layout - an object with user-defined w/h
+	 * @param {PresLayout} layout an object with user-defined w/h
 	 * @example pptx.defineLayout({ name:'A3', width:16.5, height:11.7 });
 	 */
 	defineLayout(layout: PptxGenJS.PresLayout): void
 	/**
 	 * Create a new slide master [layout] for the Presentation
-	 * @param {SlideMasterProps} slideMasterOpts - layout definition
+	 * @param {SlideMasterProps} props layout definition
 	 */
 	defineSlideMaster(props: PptxGenJS.SlideMasterProps): void
 	/**
 	 * Reproduces an HTML table as a PowerPoint table - including column widths, style, etc. - creates 1 or more slides as needed
-	 * @param {string} eleId - table HTML element ID
-	 * @param {TableToSlidesProps} options - generation options
+	 * @param {string} eleId table HTML element ID
+	 * @param {TableToSlidesProps} props generation options
 	 */
-	tableToSlides(eleId: string, options?: PptxGenJS.TableToSlidesProps): void
+	tableToSlides(eleId: string, props?: PptxGenJS.TableToSlidesProps): void
 }
 
 declare namespace PptxGenJS {
@@ -883,10 +885,10 @@ declare namespace PptxGenJS {
 		 */
 		data?: string
 	}
-	export interface BackgroundProps extends DataOrPathProps {
+	export interface BackgroundProps extends DataOrPathProps, ShapeFillProps {
 		/**
 		 * Color (hex format)
-		 * @example 'FF3399'
+		 * @deprecated v3.6.0 - use `ShapeFillProps` instead
 		 */
 		fill?: HexColor
 	}
@@ -900,6 +902,7 @@ declare namespace PptxGenJS {
 	export type Margin = number | [number, number, number, number]
 	export type HAlign = 'left' | 'center' | 'right' | 'justify'
 	export type VAlign = 'top' | 'middle' | 'bottom'
+
 	// used by charts, shape, text
 	export interface BorderProps {
 		/**
@@ -995,17 +998,17 @@ declare namespace PptxGenJS {
 		 * @default 0
 		 */
 		transparency?: number
+		/**
+		 * Fill type
+		 * @default 'solid'
+		 */
+		type?: 'none' | 'solid'
 
 		/**
 		 * Transparency (percent)
 		 * @deprecated v3.3.0 - use `transparency`
 		 */
 		alpha?: number
-		/**
-		 * Fill type
-		 * - 'solid' @deprecated v3.3.0
-		 */
-		type?: 'none' | 'solid'
 	}
 	export interface ShapeLineProps extends ShapeFillProps {
 		/**
@@ -1177,6 +1180,11 @@ declare namespace PptxGenJS {
 		 */
 		fontSize?: number
 		/**
+		 * Text highlight color (hex format)
+		 * @example 'FFFF00' // yellow
+		 */
+		highlight?: HexColor
+		/**
 		 * italic style
 		 * @default false
 		 */
@@ -1188,6 +1196,12 @@ declare namespace PptxGenJS {
 		 * @example 'fr-CA' // french Canadian
 		 */
 		lang?: string
+		/**
+		 * tab stops
+		 * - PowerPoint: Paragraph > Tabs > Tab stop position
+		 * @example [{ position:1 }, { position:3 }] // Set first tab stop to 1 inch, set second tab stop to 3 inches
+		 */
+		tabStops?: { position: number; alignment?: 'l' | 'r' | 'ctr' | 'dec' }[]
 		/**
 		 * underline properties
 		 * - PowerPoint: Font > Color & Underline > Underline Style/Underline Color
@@ -1863,11 +1877,11 @@ declare namespace PptxGenJS {
 		catAxisTitleRotate?: number
 		catGridLine?: OptsChartGridLine
 		catLabelFormatCode?: string
-	/**
-	 * Whether data should use secondary category axis (instead of primary)
-	 * @default false
-	 */
-	 secondaryCatAxis?: boolean
+		/**
+		 * Whether data should use secondary category axis (instead of primary)
+		 * @default false
+		 */
+		secondaryCatAxis?: boolean
 		showCatAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisSer {
@@ -1894,11 +1908,11 @@ declare namespace PptxGenJS {
 		showSerAxisTitle?: boolean
 	}
 	export interface IChartPropsAxisVal {
-	/**
-	 * Whether data should use secondary value axis (instead of primary)
-	 * @default false
-	 */
-	 secondaryValAxis?: boolean
+		/**
+		 * Whether data should use secondary value axis (instead of primary)
+		 * @default false
+		 */
+		secondaryValAxis?: boolean
 		showValAxisTitle?: boolean
 		/**
 		 * Multi-Chart prop: array of val axes
@@ -2044,7 +2058,13 @@ declare namespace PptxGenJS {
 			IChartPropsLegend,
 			IChartPropsTitle,
 			OptsChartGridLine,
-			PositionProps {}
+			PositionProps {
+		/**
+		 * Alt Text value ("How would you describe this object and its contents to someone who is blind?")
+		 * - PowerPoint: [right-click on a chart] > "Edit Alt Text..."
+		 */
+		altText?: string
+	}
 	export interface ISlideRelChart extends OptsChartData {
 		type: CHART_NAME | IChartMulti[]
 		opts: IChartOpts
@@ -2110,7 +2130,23 @@ declare namespace PptxGenJS {
 		title: string
 		margin?: Margin
 		background?: BackgroundProps
-		objects?: ({ chart: {} } | { image: {} } | { line: {} } | { rect: {} } | { text: TextProps } | { placeholder: { options: PlaceholderProps; text?: string } })[]
+		objects?: (
+			| { chart: {} }
+			| { image: {} }
+			| { line: {} }
+			| { rect: {} }
+			| { text: TextProps }
+			| {
+					placeholder: {
+						options: PlaceholderProps
+						/**
+						 * Text to be shown in placeholder (shown until user focuses textbox or adds text)
+						 * - Leave blank to have powerpoint show default phrase (ex: "Click to add title")
+						 */
+						text?: string
+					}
+			  }
+		)[]
 		slideNumber?: SlideNumberProps
 
 		/**
@@ -2135,8 +2171,9 @@ declare namespace PptxGenJS {
 		addText: Function
 
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * Background color or image (`Color` | `path` | `data`)
+		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency:50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string
@@ -2189,8 +2226,9 @@ declare namespace PptxGenJS {
 	 */
 	export class Slide {
 		/**
-		 * Background color or image (`fill` | `path` | `data`)
-		 * @example {fill: 'FF3399'} - hex fill color
+		 * Background color or image (`Color` | `path` | `data`)
+		 * @example {color: 'FF3399'} - hex fill color
+		 * @example {color: 'FF3399', transparency: 50} - hex fill color with transparency of 50%
 		 * @example {path: 'https://onedrives.com/myimg.png`} - retrieve image via URL
 		 * @example {path: '/home/gitbrent/images/myimg.png`} - retrieve image via local path
 		 * @example {data: 'image/png;base64,iVtDaDrF[...]='} - base64 string

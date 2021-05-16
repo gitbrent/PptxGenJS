@@ -13,13 +13,10 @@
 
 # Table of Contents
 
-<!-- START doctoc generated TOC please keep comment here to allow auto update -->
-<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
-
 - [Table of Contents](#table-of-contents)
 - [Introduction](#introduction)
 - [Features](#features)
-- [Live Demo](#live-demo)
+- [Live Demos](#live-demos)
 - [Installation](#installation)
 	- [CDN](#cdn)
 	- [Download](#download)
@@ -36,9 +33,8 @@
 - [Issues / Suggestions](#issues--suggestions)
 - [Need Help?](#need-help)
 - [Contributors](#contributors)
+- [Sponsor Us](#sponsor-us)
 - [License](#license)
-
-<!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Introduction
 
@@ -46,35 +42,39 @@ This library creates Open Office XML (OOXML) Presentations which are compatible 
 
 # Features
 
-**Extensive Support**
+**Works Everywhere**
 
-- Generate presentations on every modern desktop & mobile web browser
-- IE11 is supported via bundle polyfill
+- Every modern desktop and mobile browser is supported
+- Integrates with Node, Angular, React and Electron
+- Compatible with PowerPoint, Keynote, and more
 
-**Comprehensive Objects**
+**Full Featured**
 
-- Create any object type: Charts, Images, Links, Media, Shapes, Tables, Text
-- SVG images and YouTube videos are supported when viewed in PowerPoint online/2019+ desktop application
+- All major object types are available (charts, shapes, tables, etc.)
+- Master Slides for academic/corporate branding
+- SVG images, animated gifs, YouTube videos, RTL text, and Asian fonts
 
-**Modern Architecture**
+**Simple And Powerful**
 
-- Supports client web browsers, NodeJS, and React/Angular/Electron
-- Export methods return promises
-- Client browsers have only a single dependency: JSZip
-- Easy Angular/React integration (available via npm, cjs or es files)
-- Typescript definitions included
+- The absolute easiest PowerPoint library to use
+- Learn as you code will full typescript definitions included
+- Tons of demo code comes included (over 70 slides of features)
+
+**Export Your Way**
+
+- Exports files direct to client browsers with proper MIME-type
+- Other export formats available: base64, blob, stream, etc.
+- Presentation compression options and more
 
 **HTML to PowerPoint**
 
 - Includes powerful [HTML-to-PowerPoint](#html-to-powerpoint-feature) feature to transform HTML tables into presentations with a single line of code
 
-# Live Demo
+# Live Demos
 
-Use the online demo to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
+Visit the demos page to create a simple presentation to see how easy it is to use pptxgenjs, or check out the complete demo which showcases every available feature.
 
-- [Simple Demo](https://gitbrent.github.io/PptxGenJS)
-- [Complete Feature Demo](https://gitbrent.github.io/PptxGenJS/demo/)
-- [PptxGenJS jsFiddle](https://jsfiddle.net/gitbrent/L1uctxm0/)
+- [PptxGenJS Demos](https://gitbrent.github.io/PptxGenJS/demo)
 
 # Installation
 
@@ -85,21 +85,23 @@ Use the online demo to create a simple presentation to see how easy it is to use
 Bundle: Modern Browsers and IE11
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.5.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.6.0/dist/pptxgen.bundle.js"></script>
 ```
 
 Min files: Modern Browsers
 
 ```html
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.5.0/libs/jszip.min.js"></script>
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.5.0/dist/pptxgen.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.6.0/libs/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/pptxgenjs@3.6.0/dist/pptxgen.min.js"></script>
 ```
 
 ## Download
 
 [GitHub Latest Release](https://github.com/gitbrent/PptxGenJS/releases/latest)
 
-Bundle: Modern Browsers and IE11
+Bundle: Modern Browsers
+
+- Use the bundle for IE11 support
 
 ```html
 <script src="PptxGenJS/dist/pptxgen.bundle.js"></script>
@@ -210,7 +212,7 @@ Easily convert HTML tables to PowerPoint presentations in a single call.
 ```javascript
 let pptx = new PptxGenJS();
 pptx.tableToSlides("tableElementId");
-pptx.writeFile();
+pptx.writeFile({ fileName: "html2pptx-demo.pptx" });
 ```
 
 Learn more:
@@ -262,6 +264,12 @@ Special Thanks:
 - [Joonas](https://github.com/wyozi) - React port
 
 PowerPoint shape definitions and some XML code via [Officegen Project](https://github.com/Ziv-Barber/officegen)
+
+---
+
+# Sponsor Us
+
+If you find this library useful, please consider sponsoring us through a [donation](https://gitbrent.github.io/PptxGenJS/sponsor)
 
 ---
 

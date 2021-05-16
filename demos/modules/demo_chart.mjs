@@ -4,7 +4,7 @@
  * DESC: Common test/demo slides for all library features
  * DEPS: Used by various demos (./demos/browser, ./demos/node, etc.)
  * VER.: 3.6.0
- * BLD.: 20210404
+ * BLD.: 20210426
  */
 
 import { IMAGE_PATHS, BASE_TABLE_OPTS, BASE_TEXT_OPTS_L, BASE_TEXT_OPTS_R, COLOR_RED, COLOR_AMB, COLOR_GRN, COLOR_UNK, TESTMODE } from "./enums.mjs";
@@ -110,6 +110,8 @@ function genSlide01(pptx) {
 		y: 0.6,
 		w: 6.0,
 		h: 3.0,
+		altText: "this is the alt text content",
+
 		barDir: "bar",
 		border: { pt: "3", color: "00EE00" },
 		fill: "F1F1F1",
@@ -391,7 +393,10 @@ function genSlide02(pptx) {
 function genSlide03(pptx) {
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable(
+		[[{ text: "Chart Examples: Bar Chart: Stacked/PercentStacked and Data Table", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		BASE_TABLE_OPTS
+	);
 
 	let arrDataRegions = [
 		{
@@ -941,7 +946,10 @@ function genSlide09(pptx) {
 	let opts_lineDataSymbol = ["circle", "dash", "diamond", "dot", "none", "square", "triangle"];
 	let slide = pptx.addSlide({ sectionTitle: "Charts" });
 	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
-	slide.addTable([[{ text: "Chart Examples: Line Chart: lineDataSymbol option test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+	slide.addTable(
+		[[{ text: "Chart Examples: Line Chart: lineDataSymbol option test", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]],
+		BASE_TABLE_OPTS
+	);
 
 	opts_lineDataSymbol.forEach(function (opt, idx) {
 		slide.addChart(pptx.charts.LINE, arrDataLineStat, {
