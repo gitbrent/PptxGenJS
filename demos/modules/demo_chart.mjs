@@ -738,14 +738,15 @@ function genSlide06(pptx) {
 		barDir: "bar",
 		fill: "F1F1F1",
 
-		catAxisLabelColor: "CC0000",
+		catAxisLabelColor: pptx.colors.ACCENT2,
 		catAxisLabelFontFace: "Arial",
 		catAxisLabelFontSize: 10,
 		catAxisOrientation: "maxMin",
 
-		serAxisLabelColor: "00EE00",
+		serAxisLabelColor: pptx.colors.ACCENT4,
 		serAxisLabelFontFace: "Arial",
 		serAxisLabelFontSize: 10,
+		serAxisLineColor: pptx.colors.ACCENT6,
 	};
 	slide.addChart(pptx.charts.BAR3D, arrDataRegions, optsChartBar1);
 
