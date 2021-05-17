@@ -1077,6 +1077,7 @@ export interface IChartPropsAxisCat {
 	catAxisLabelColor?: string
 	catAxisLabelFontBold?: boolean
 	catAxisLabelFontFace?: string
+	catAxisLabelFontItalic?: boolean
 	catAxisLabelFontSize?: number
 	catAxisLabelFrequency?: string
 	catAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
@@ -1112,10 +1113,13 @@ export interface IChartPropsAxisSer {
 	serAxisBaseTimeUnit?: string
 	serAxisHidden?: boolean
 	serAxisLabelColor?: string
+	serAxisLabelFontBold?: boolean
 	serAxisLabelFontFace?: string
+	serAxisLabelFontItalic?: boolean
 	serAxisLabelFontSize?: number
 	serAxisLabelFrequency?: string
 	serAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
+	serAxisLineColor?: string
 	serAxisLineShow?: boolean
 	serAxisMajorTimeUnit?: string
 	serAxisMajorUnit?: number
@@ -1149,6 +1153,7 @@ export interface IChartPropsAxisVal {
 	valAxisLabelColor?: string
 	valAxisLabelFontBold?: boolean
 	valAxisLabelFontFace?: string
+	valAxisLabelFontItalic?: boolean
 	valAxisLabelFontSize?: number
 	valAxisLabelFormatCode?: string
 	valAxisLabelPos?: 'none' | 'low' | 'high' | 'nextTo'
@@ -1224,6 +1229,7 @@ export interface IChartPropsDataLabel {
 	dataLabelColor?: string
 	dataLabelFontBold?: boolean
 	dataLabelFontFace?: string
+	dataLabelFontItalic?: boolean
 	dataLabelFontSize?: number
 	/**
 	 * Data label format code
