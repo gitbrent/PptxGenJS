@@ -3,7 +3,7 @@
  */
 
 import { EMU, REGEX_HEX_COLOR, DEF_FONT_COLOR, ONEPT, SchemeColor, SCHEME_COLORS } from './core-enums'
-import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps } from './core-interfaces'
+import { IChartOpts, PresLayout, TextGlowProps, PresSlide, ShapeFillProps, Color, ShapeLineProps, ModifiedThemeColor } from './core-interfaces'
 
 /**
  * Convert string percentages to number relative to slide size
@@ -134,15 +134,67 @@ export function rgbToHex(r: number, g: number, b: number): string {
 	return (componentToHex(r) + componentToHex(g) + componentToHex(b)).toUpperCase()
 }
 
+const percentColorModifiers = [
+	'alpha',
+	'alphaMod',
+	'alphaOff',
+	'blue',
+	'blueMod',
+	'blueOff',
+	'green',
+	'greenMod',
+	'greenOff',
+	'red',
+	'redMod',
+	'redOff',
+	'hue',
+	'hueMod',
+	'hueOff',
+	'lum',
+	'lumMod',
+	'lumOff',
+	'sat',
+	'satMod',
+	'satOff',
+	'shade',
+	'tint',
+]
+
+const flagColorModifiers = ['comp', 'gray', 'inv', 'gamma']
+
+function handleModifiedColorProps(color: ModifiedThemeColor): string {
+	let output = ''
+
+	for (let modifier of percentColorModifiers) {
+		let modifierValue = color[modifier]
+		if (modifierValue !== undefined) {
+			output += `<a:${modifier} val="${Math.round(modifierValue * 1000)}"/>`
+		}
+	}
+
+	for (let modifier of flagColorModifiers) {
+		if (color[modifier]) {
+			output += `<a:${modifier}/>`
+		}
+	}
+
+	return output
+}
+
 /**
  * Create either a `a:schemeClr` - (scheme color) or `a:srgbClr` (hexa representation).
  * @param {string|SCHEME_COLORS} colorStr - hexa representation (eg. "FFFF00") or a scheme color constant (eg. pptx.SchemeColor.ACCENT1)
  * @param {string} innerElements - additional elements that adjust the color and are enclosed by the color element
  * @returns {string} XML string
  */
-export function createColorElement(colorStr: string | SCHEME_COLORS, innerElements?: string): string {
+export function createColorElement(colorInput: string | SCHEME_COLORS | ModifiedThemeColor, innerElements?: string): string {
+	let colorStr = typeof colorInput === 'object' ? colorInput.baseColor : colorInput
 	let colorVal = (colorStr || '').replace('#', '')
 	let isHexaRgb = REGEX_HEX_COLOR.test(colorVal)
+
+	if (typeof colorInput == 'object') {
+		innerElements = (innerElements || '') + handleModifiedColorProps(colorInput)
+	}
 
 	if (
 		!isHexaRgb &&
@@ -195,13 +247,16 @@ export function createGlowElement(options: TextGlowProps, defaults: TextGlowProp
  */
 export function genXmlColorSelection(props: Color | ShapeFillProps | ShapeLineProps): string {
 	let fillType = 'solid'
-	let colorVal = ''
+	let colorVal: string | ModifiedThemeColor = ''
 	let internalElements = ''
 	let outText = ''
 
 	if (props) {
 		if (typeof props === 'string') colorVal = props
-		else {
+		else if ('baseColor' in props) {
+			internalElements = handleModifiedColorProps(props)
+			colorVal = props.baseColor
+		} else {
 			if (props.type) fillType = props.type
 			if (props.color) colorVal = props.color
 			if (props.alpha) internalElements += `<a:alpha val="${Math.round((100 - props.alpha) * 1000)}"/>` // DEPRECATED: @deprecated v3.3.0
