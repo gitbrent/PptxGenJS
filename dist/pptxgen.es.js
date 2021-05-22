@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.0-beta @ 2021-05-09T21:31:30.688Z */
+/* PptxGenJS 3.7.0-beta @ 2021-05-22T01:50:55.963Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -3165,20 +3165,51 @@ function addChartDefinition(target, type, data, opt) {
     // B: Options: misc
     if (['bar', 'col'].indexOf(options.barDir || '') < 0)
         options.barDir = 'col';
-    // IMPORTANT: 'bestFit' will cause issues with PPT-Online in some cases, so defualt to 'ctr'!
-    if (['bestFit', 'b', 'ctr', 'inBase', 'inEnd', 'l', 'outEnd', 'r', 't'].indexOf(options.dataLabelPosition || '') < 0)
-        options.dataLabelPosition = options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT ? 'bestFit' : 'ctr';
-    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
-    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
-        options.legendPos = 'r';
     // barGrouping: "21.2.3.17 ST_Grouping (Grouping)"
-    if (['clustered', 'standard', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
-        options.barGrouping = 'standard';
-    if (options.barGrouping.indexOf('tacked') > -1) {
-        options.dataLabelPosition = 'ctr'; // IMPORTANT: PPT-Online will not open Presentation when 'outEnd' etc is used on stacked!
+    // barGrouping must be handled before data label validation as it can affect valid label positioning
+    if (options._type === CHART_TYPE.AREA) {
+        if (['stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+            options.barGrouping = 'standard';
+    }
+    if (options._type === CHART_TYPE.BAR) {
+        if (['clustered', 'stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+            options.barGrouping = 'clustered';
+    }
+    if (options._type === CHART_TYPE.BAR3D) {
+        if (['clustered', 'stacked', 'standard', 'percentStacked'].indexOf(options.barGrouping || '') < 0)
+            options.barGrouping = 'standard';
+    }
+    if (options.barGrouping && options.barGrouping.indexOf('tacked') > -1) {
         if (!options.barGapWidthPct)
             options.barGapWidthPct = 50;
     }
+    // Clean up and validate data label positions
+    // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
+    if (options.dataLabelPosition) {
+        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR)
+            delete options.dataLabelPosition;
+        if (options._type === CHART_TYPE.PIE) {
+            if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
+                delete options.dataLabelPosition;
+        }
+        if (options._type === CHART_TYPE.BUBBLE || options._type === CHART_TYPE.LINE || options._type === CHART_TYPE.SCATTER) {
+            if (['b', 'ctr', 'l', 'r', 't'].indexOf(options.dataLabelPosition) < 0)
+                delete options.dataLabelPosition;
+        }
+        if (options._type === CHART_TYPE.BAR) {
+            if (['stacked', 'percentStacked'].indexOf(options.barGrouping || '') < 0) {
+                if (['ctr', 'inBase', 'inEnd'].indexOf(options.dataLabelPosition) < 0)
+                    delete options.dataLabelPosition;
+            }
+            if (['clustered'].indexOf(options.barGrouping || '') < 0) {
+                if (['ctr', 'inBase', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
+                    delete options.dataLabelPosition;
+            }
+        }
+    }
+    options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
+    if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0)
+        options.legendPos = 'r';
     // 3D bar: ST_Shape
     if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0)
         options.bar3DShape = 'box';
@@ -4648,11 +4679,11 @@ function makeXmlCharts(rel) {
             var valAxisId = options['secondaryValAxis'] ? AXIS_ID_VALUE_SECONDARY : AXIS_ID_VALUE_PRIMARY;
             var catAxisId = options['secondaryCatAxis'] ? AXIS_ID_CATEGORY_SECONDARY : AXIS_ID_CATEGORY_PRIMARY;
             usesSecondaryValAxis = usesSecondaryValAxis || options.secondaryValAxis;
-            strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId, true);
+            strXml += makeChartType(type.type, type.data, options, valAxisId, catAxisId);
         });
     }
     else {
-        strXml += makeChartType(rel.opts._type, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY, false);
+        strXml += makeChartType(rel.opts._type, rel.data, rel.opts, AXIS_ID_VALUE_PRIMARY, AXIS_ID_CATEGORY_PRIMARY);
     }
     // B: Axes -----------------------------------------------------------
     if (rel.opts._type !== CHART_TYPE.PIE && rel.opts._type !== CHART_TYPE.DOUGHNUT) {
@@ -4884,17 +4915,14 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                     strXml += '      <a:bodyPr/>';
                     strXml += '      <a:lstStyle/>';
                     strXml += '      <a:p><a:pPr>';
-                    strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
+                    strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                     strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                     strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                     strXml += '        </a:defRPr>';
                     strXml += '      </a:pPr></a:p>';
                     strXml += '    </c:txPr>';
-                    // Setting dLblPos tag for bar3D seems to break the generated chart
-                    if (chartType !== CHART_TYPE.AREA && chartType !== CHART_TYPE.BAR3D) {
-                        if (opts.dataLabelPosition)
-                            strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
-                    }
+                    if (opts.dataLabelPosition)
+                        strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
                     strXml += '    <c:showLegendKey val="0"/>';
                     strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
                     strXml += '    <c:showCatName val="0"/>';
@@ -5021,21 +5049,14 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
                 strXml +=
-                    '        <a:defRPr b="' +
-                        (opts.dataLabelFontBold ? 1 : 0) +
-                        '" i="0" strike="noStrike" sz="' +
-                        Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) +
-                        '" u="none">';
+                    '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
                 strXml += '      </a:pPr></a:p>';
                 strXml += '    </c:txPr>';
-                // NOTE: Throwing an error while creating a multi type chart which contains area chart as the below line appears for the other chart type.
-                // Either the given change can be made or the below line can be removed to stop the slide containing multi type chart with area to crash.
-                if (opts._type !== CHART_TYPE.AREA && opts._type !== CHART_TYPE.RADAR && !isMultiTypeChart)
-                    if (opts.dataLabelPosition)
-                        strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
+                if (opts.dataLabelPosition)
+                    strXml += ' <c:dLblPos val="' + opts.dataLabelPosition + '"/>';
                 strXml += '    <c:showLegendKey val="0"/>';
                 strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
                 strXml += '    <c:showCatName val="0"/>';
@@ -5327,7 +5348,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
+                strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5467,7 +5488,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '      <a:bodyPr/>';
                 strXml += '      <a:lstStyle/>';
                 strXml += '      <a:p><a:pPr>';
-                strXml += '        <a:defRPr b="0" i="0" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
+                strXml += '        <a:defRPr b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" strike="noStrike" sz="' + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + '" u="none">';
                 strXml += '          <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += '          <a:latin typeface="' + (opts.dataLabelFontFace || 'Arial') + '"/>';
                 strXml += '        </a:defRPr>';
@@ -5556,14 +5577,14 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
                 strXml += '  <c:spPr/><c:txPr>';
                 strXml += '   <a:bodyPr/><a:lstStyle/>';
                 strXml += '   <a:p><a:pPr>';
-                strXml += "   <a:defRPr sz=\"" + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + "\" b=\"" + (opts.dataLabelFontBold ? 1 : 0) + "\" i=\"0\" u=\"none\" strike=\"noStrike\">";
+                strXml += "   <a:defRPr sz=\"" + Math.round((opts.dataLabelFontSize || DEF_FONT_SIZE) * 100) + "\" b=\"" + (opts.dataLabelFontBold ? 1 : 0) + "\" i=\"" + (opts.dataLabelFontItalic ? 1 : 0) + "\" u=\"none\" strike=\"noStrike\">";
                 strXml += '    <a:solidFill>' + createColorElement(opts.dataLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
                 strXml += "    <a:latin typeface=\"" + (opts.dataLabelFontFace || 'Arial') + "\"/>";
                 strXml += '   </a:defRPr>';
                 strXml += '      </a:pPr></a:p>';
                 strXml += '    </c:txPr>';
-                if (chartType === CHART_TYPE.PIE)
-                    strXml += "<c:dLblPos val=\"" + (opts.dataLabelPosition || 'inEnd') + "\"/>";
+                if (chartType === CHART_TYPE.PIE && opts.dataLabelPosition)
+                    strXml += "    <c:dLblPos val=\"" + opts.dataLabelPosition + "\"/>";
                 strXml += '    <c:showLegendKey val="0"/>';
                 strXml += '    <c:showVal val="' + (opts.showValue ? '1' : '0') + '"/>';
                 strXml += '    <c:showCatName val="' + (opts.showLabel ? '1' : '0') + '"/>';
@@ -5578,7 +5599,7 @@ function makeChartType(chartType, data, opts, valAxisId, catAxisId, isMultiTypeC
             strXml += '	  <a:lstStyle/>';
             strXml += '	  <a:p>';
             strXml += '		<a:pPr>';
-            strXml += '		  <a:defRPr sz="1800" b="0" i="0" u="none" strike="noStrike">';
+            strXml += '		  <a:defRPr sz="1800" b="' + (opts.dataLabelFontBold ? 1 : 0) + '" i="' + (opts.dataLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">';
             strXml += '			<a:solidFill><a:srgbClr val="000000"/></a:solidFill><a:latin typeface="Arial"/>';
             strXml += '		  </a:defRPr>';
             strXml += '		</a:pPr>';
@@ -5688,7 +5709,7 @@ function makeCatAxis(opts, axisId, valAxisId) {
     }
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="' + (opts.catAxisLineSize ? valToPts(opts.catAxisLineSize) : ONEPT) + '" cap="flat">';
-    strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
+    strXml += opts.catAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.catAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
     strXml += '      <a:prstDash val="' + (opts.catAxisLineStyle || 'solid') + '"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
@@ -5701,10 +5722,8 @@ function makeCatAxis(opts, axisId, valAxisId) {
     strXml +=
         '    <a:defRPr sz="' +
             Math.round((opts.catAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-            '" b="' +
-            (opts.catAxisLabelFontBold ? 1 : 0) +
-            '" i="0" u="none" strike="noStrike">';
-    strXml += '      <a:solidFill><a:srgbClr val="' + (opts.catAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>';
+            '" b="' + (opts.catAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.catAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">';
+    strXml += '      <a:solidFill>' + createColorElement(opts.catAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '      <a:latin typeface="' + (opts.catAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '   </a:defRPr>';
     strXml += '  </a:pPr>';
@@ -5719,20 +5738,23 @@ function makeCatAxis(opts, axisId, valAxisId) {
     if (opts.catAxisLabelFrequency)
         strXml += ' <c:tickLblSkip val="' + opts.catAxisLabelFrequency + '"/>';
     // Issue#149: PPT will auto-adjust these as needed after calcing the date bounds, so we only include them when specified by user
-    if (opts.catLabelFormatCode) {
-        ['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(function (opt) {
-            // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
-            if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opts[opt].toLowerCase()) === -1)) {
-                console.warn('`' + opt + "` must be one of: 'days','months','years' !");
-                opts[opt] = null;
-            }
-        });
-        if (opts.catAxisBaseTimeUnit)
-            strXml += '<c:baseTimeUnit val="' + opts.catAxisBaseTimeUnit.toLowerCase() + '"/>';
-        if (opts.catAxisMajorTimeUnit)
-            strXml += '<c:majorTimeUnit val="' + opts.catAxisMajorTimeUnit.toLowerCase() + '"/>';
-        if (opts.catAxisMinorTimeUnit)
-            strXml += '<c:minorTimeUnit val="' + opts.catAxisMinorTimeUnit.toLowerCase() + '"/>';
+    // Allow major and minor units to be set for double value axis charts
+    if (opts.catLabelFormatCode || opts._type === CHART_TYPE.SCATTER || opts._type === CHART_TYPE.BUBBLE) {
+        if (opts.catLabelFormatCode) {
+            ['catAxisBaseTimeUnit', 'catAxisMajorTimeUnit', 'catAxisMinorTimeUnit'].forEach(function (opt) {
+                // Validate input as poorly chosen/garbage options will cause chart corruption and it wont render at all!
+                if (opts[opt] && (typeof opts[opt] !== 'string' || ['days', 'months', 'years'].indexOf(opts[opt].toLowerCase()) === -1)) {
+                    console.warn('`' + opt + "` must be one of: 'days','months','years' !");
+                    opts[opt] = null;
+                }
+            });
+            if (opts.catAxisBaseTimeUnit)
+                strXml += '<c:baseTimeUnit val="' + opts.catAxisBaseTimeUnit.toLowerCase() + '"/>';
+            if (opts.catAxisMajorTimeUnit)
+                strXml += '<c:majorTimeUnit val="' + opts.catAxisMajorTimeUnit.toLowerCase() + '"/>';
+            if (opts.catAxisMinorTimeUnit)
+                strXml += '<c:minorTimeUnit val="' + opts.catAxisMinorTimeUnit.toLowerCase() + '"/>';
+        }
         if (opts.catAxisMajorUnit)
             strXml += '<c:majorUnit val="' + opts.catAxisMajorUnit + '"/>';
         if (opts.catAxisMinorUnit)
@@ -5798,7 +5820,7 @@ function makeValAxis(opts, valAxisId) {
     }
     strXml += ' <c:spPr>';
     strXml += '   <a:ln w="' + (opts.valAxisLineSize ? valToPts(opts.valAxisLineSize) : ONEPT) + '" cap="flat">';
-    strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + (opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '"/></a:solidFill>';
+    strXml += opts.valAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.valAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
     strXml += '     <a:prstDash val="' + (opts.valAxisLineStyle || 'solid') + '"/>';
     strXml += '     <a:round/>';
     strXml += '   </a:ln>';
@@ -5809,12 +5831,8 @@ function makeValAxis(opts, valAxisId) {
     strXml += '  <a:p>';
     strXml += '    <a:pPr>';
     strXml +=
-        '      <a:defRPr sz="' +
-            Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) +
-            '" b="' +
-            (opts.valAxisLabelFontBold ? 1 : 0) +
-            '" i="0" u="none" strike="noStrike">';
-    strXml += '        <a:solidFill><a:srgbClr val="' + (opts.valAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>';
+        '      <a:defRPr sz="' + Math.round((opts.valAxisLabelFontSize || DEF_FONT_SIZE) * 100) + '" b="' + (opts.valAxisLabelFontBold ? 1 : 0) + '" i="' + (opts.valAxisLabelFontItalic ? 1 : 0) + '" u="none" strike="noStrike">';
+    strXml += '        <a:solidFill>' + createColorElement(opts.valAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '        <a:latin typeface="' + (opts.valAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '      </a:defRPr>';
     strXml += '    </a:pPr>';
@@ -5868,7 +5886,7 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += '  <c:tickLblPos val="' + (opts.serAxisLabelPos || opts.barDir === 'col' ? 'low' : 'nextTo') + '"/>';
     strXml += '  <c:spPr>';
     strXml += '    <a:ln w="12700" cap="flat">';
-    strXml += opts.serAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill><a:srgbClr val="' + DEF_CHART_GRIDLINE.color + '"/></a:solidFill>';
+    strXml += opts.serAxisLineShow === false ? '<a:noFill/>' : '<a:solidFill>' + createColorElement(opts.serAxisLineColor || DEF_CHART_GRIDLINE.color) + '</a:solidFill>';
     strXml += '      <a:prstDash val="solid"/>';
     strXml += '      <a:round/>';
     strXml += '    </a:ln>';
@@ -5878,8 +5896,8 @@ function makeSerAxis(opts, axisId, valAxisId) {
     strXml += '    <a:lstStyle/>';
     strXml += '    <a:p>';
     strXml += '    <a:pPr>';
-    strXml += "    <a:defRPr sz=\"" + Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100) + "\" b=\"0\" i=\"0\" u=\"none\" strike=\"noStrike\">";
-    strXml += '      <a:solidFill><a:srgbClr val="' + (opts.serAxisLabelColor || DEF_FONT_COLOR) + '"/></a:solidFill>';
+    strXml += "    <a:defRPr sz=\"" + Math.round((opts.serAxisLabelFontSize || DEF_FONT_SIZE) * 100) + "\" b=\"" + (opts.serAxisLabelFontBold || 0) + "\" i=\"" + (opts.serAxisLabelFontItalic || 0) + "\" u=\"none\" strike=\"noStrike\">";
+    strXml += '      <a:solidFill>' + createColorElement(opts.serAxisLabelColor || DEF_FONT_COLOR) + '</a:solidFill>';
     strXml += '      <a:latin typeface="' + (opts.serAxisLabelFontFace || 'Arial') + '"/>';
     strXml += '   </a:defRPr>';
     strXml += '  </a:pPr>';
@@ -5927,7 +5945,7 @@ function genXmlTitle(opts) {
     var layout = opts.titlePos && opts.titlePos.x && opts.titlePos.y
         ? "<c:layout><c:manualLayout><c:xMode val=\"edge\"/><c:yMode val=\"edge\"/><c:x val=\"" + opts.titlePos.x + "\"/><c:y val=\"" + opts.titlePos.y + "\"/></c:manualLayout></c:layout>"
         : "<c:layout/>";
-    return "<c:title>\n\t  <c:tx>\n\t    <c:rich>\n\t      " + rotate + "\n\t      <a:lstStyle/>\n\t      <a:p>\n\t        " + align + "\n\t        <a:defRPr " + sizeAttr + " b=\"" + titleBold + "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:defRPr>\n\t      </a:pPr>\n\t      <a:r>\n\t        <a:rPr " + sizeAttr + " b=\"" + titleBold + "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill><a:srgbClr val=\"" + (opts.color || DEF_FONT_COLOR) + "\"/></a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:rPr>\n\t        <a:t>" + (encodeXmlEntities(opts.title) || '') + "</a:t>\n\t      </a:r>\n\t    </a:p>\n\t    </c:rich>\n\t  </c:tx>\n\t  " + layout + "\n\t  <c:overlay val=\"0\"/>\n\t</c:title>";
+    return "<c:title>\n\t  <c:tx>\n\t    <c:rich>\n\t      " + rotate + "\n\t      <a:lstStyle/>\n\t      <a:p>\n\t        " + align + "\n\t        <a:defRPr " + sizeAttr + " b=\"" + titleBold + "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill>" + createColorElement(opts.color || DEF_FONT_COLOR) + "</a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:defRPr>\n\t      </a:pPr>\n\t      <a:r>\n\t        <a:rPr " + sizeAttr + " b=\"" + titleBold + "\" i=\"0\" u=\"none\" strike=\"noStrike\">\n\t          <a:solidFill>" + createColorElement(opts.color || DEF_FONT_COLOR) + "</a:solidFill>\n\t          <a:latin typeface=\"" + (opts.fontFace || 'Arial') + "\"/>\n\t        </a:rPr>\n\t        <a:t>" + (encodeXmlEntities(opts.title) || '') + "</a:t>\n\t      </a:r>\n\t    </a:p>\n\t    </c:rich>\n\t  </c:tx>\n\t  " + layout + "\n\t  <c:overlay val=\"0\"/>\n\t</c:title>";
 }
 /**
  * Calc and return excel column name for a given column length
@@ -6153,7 +6171,7 @@ function createSvgPngPreview(rel) {
  *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  *  SOFTWARE.
  */
-var VERSION = '3.7.0-beta-20210509-1540';
+var VERSION = '3.7.0-beta-20210521-2050';
 var PptxGenJS = /** @class */ (function () {
     function PptxGenJS() {
         var _this = this;
