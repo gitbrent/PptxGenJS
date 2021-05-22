@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [3.7.0] - 2021-06-??
 ### Added
 - Alt Text to images [\#848](https://github.com/gitbrent/PptxGenJS/pull/848) ([yorch](https://github.com/yorch))
+### Chart Updates
+Comprehensive Pull
+- Multiple Chart Enhancements and Bugfixes [\#938](https://github.com/gitbrent/PptxGenJS/pull/938) ([ReimaFrgos](https://github.com/ReimaFrgos))
+Resolves:
+- Using scheme colors and fonts in chart axis labels, axis lines and series labels #858 [robertedjones]
+- dataLabelPosition option for Pie charts #837 kornarakis
+- Bubble chart catAxisMajorUnit not working #747 dscdngnw
+- dataLabelFontBold option not working as expected. #662 belall-shaikh
+- dataLabelPosition is not working in Multi Type Charts #815 Adt-SakshamSethi
+- dataLabelPosition "t" in Bar chart is crashing ppt in latest MS office Power Point #788 jsvishal
+- Setting dataLabelPosition to a line chart causes latest office application to ask for repair #768 artdomg
 
 
 
