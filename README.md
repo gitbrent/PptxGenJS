@@ -187,21 +187,21 @@ That's really all there is to it!
 
 Full documentation and code examples are available
 
-- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create.html)
-- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options.html)
-- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide.html)
-- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options.html)
-- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving.html)
-- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters.html)
-- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts.html)
-- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images.html)
-- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media.html)
-- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes.html)
-- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables.html)
-- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text.html)
-- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes.html)
-- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes.html)
-- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration.html)
+- [Creating a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-create)
+- [Presentation Options](https://gitbrent.github.io/PptxGenJS/docs/usage-pres-options)
+- [Adding a Slide](https://gitbrent.github.io/PptxGenJS/docs/usage-add-slide)
+- [Slide Options](https://gitbrent.github.io/PptxGenJS/docs/usage-slide-options)
+- [Saving a Presentation](https://gitbrent.github.io/PptxGenJS/docs/usage-saving)
+- [Master Slides](https://gitbrent.github.io/PptxGenJS/docs/masters)
+- [Adding Charts](https://gitbrent.github.io/PptxGenJS/docs/api-charts)
+- [Adding Images](https://gitbrent.github.io/PptxGenJS/docs/api-images)
+- [Adding Media](https://gitbrent.github.io/PptxGenJS/docs/api-media)
+- [Adding Shapes](https://gitbrent.github.io/PptxGenJS/docs/api-shapes)
+- [Adding Tables](https://gitbrent.github.io/PptxGenJS/docs/api-tables)
+- [Adding Text](https://gitbrent.github.io/PptxGenJS/docs/api-text)
+- [Speaker Notes](https://gitbrent.github.io/PptxGenJS/docs/speaker-notes)
+- [Using Scheme Colors](https://gitbrent.github.io/PptxGenJS/docs/shapes-and-schemes)
+- [Integration with Other Libraries](https://gitbrent.github.io/PptxGenJS/docs/integration)
 
 ---
 
@@ -217,7 +217,7 @@ pptx.writeFile({ fileName: "html2pptx-demo.pptx" });
 
 Learn more:
 
-- [HTML-to-PowerPoint Documentation](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint.html)
+- [HTML-to-PowerPoint Documentation](https://gitbrent.github.io/PptxGenJS/docs/html-to-powerpoint)
 - [Online HTML-to-PowerPoint Demo](https://gitbrent.github.io/PptxGenJS/demo/#html2pptx)
 
 ---
