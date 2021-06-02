@@ -77,26 +77,32 @@ module.exports = {
 					to: "docs/quick-start",
 					label: "Get Started",
 					position: "left",
+					"aria-label": "get started",
 				},
 				{
 					to: "docs/installation",
 					label: "Installation",
 					position: "left",
+					"aria-label": "installation",
 				},
 				{
 					to: "demo",
 					label: "Demos",
 					position: "left",
+					"aria-label": "demos",
 				},
 				{
 					href: "https://github.com/gitbrent/PptxGenJS/releases",
 					label: "Latest Release",
 					position: "left",
+					"aria-label": "latest release",
 				},
 				{
 					to: "sponsor",
-					label: "Sponsor Us",
+					label: "Donate",
 					position: "left",
+					className: "navbar-sponsor icon-svg-coin",
+					"aria-label": "sponsor us with a donation",
 				},
 				/*{
 					href: "https://www.npmjs.com/package/pptxgenjs",

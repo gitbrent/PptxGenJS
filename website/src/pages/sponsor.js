@@ -16,7 +16,7 @@ export default () => {
 			<section className="mb-5">
 				<div className={`card ${isDarkTheme ? "border-0" : ""}`}>
 					<div className="card-header bg-success text-white">
-						<h5 className="mb-0">Support this project by contributing!</h5>
+						<h5 className="mb-0">Support this project by making a donation!</h5>
 					</div>
 					<div className={`card-body ${isDarkTheme ? "bg-black text-white" : "bg-white"}`}>
 						<p className="card-text">Are you building killer apps? Showcasing your amazing research? Selling products that include our library?</p>
@@ -112,7 +112,7 @@ export default () => {
 	return (
 		<Layout title="Sponsor Us">
 			<div className="container my-4">
-				<h1 className="mb-4">Sponsor Us</h1>
+				<h1 className="mb-4">Donate / Sponsor</h1>
 				<PageHeader />
 				<CryptoCards />
 			</div>
