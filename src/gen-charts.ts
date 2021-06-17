@@ -1708,7 +1708,7 @@ function makeValAxis(opts: IChartOptsLib, valAxisId: string): string {
 	strXml += '  </a:p>'
 	strXml += ' </c:txPr>'
 	strXml += ' <c:crossAx val="' + crossAxId + '"/>'
-	strXml += ' <c:crosses val="' + crosses + '"/>'
+	strXml += ' <c:' + (typeof opts.catAxisCrossesAt === 'number' ? 'crossesAt' : 'crosses') + ' val="' + opts.catAxisCrossesAt + '"/>'
 	strXml +=
 		' <c:crossBetween val="' +
 		(opts._type === CHART_TYPE.SCATTER || (Array.isArray(opts._type) && opts._type.filter(type => type.type === CHART_TYPE.AREA).length > 0 ? true : false)

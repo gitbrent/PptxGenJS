@@ -1108,6 +1108,7 @@ export interface IChartPropsAxisCat {
 	 */
 	secondaryCatAxis?: boolean
 	showCatAxisTitle?: boolean
+	catAxisCrossesAt?: string | number
 }
 export interface IChartPropsAxisSer {
 	serAxisBaseTimeUnit?: string
