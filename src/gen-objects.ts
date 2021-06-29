@@ -216,7 +216,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	// Clean up and validate data label positions
     // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
     if (options.dataLabelPosition) {
-        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR) delete options.dataLabelPosition 
+        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.SUNBURST || options._type === CHART_TYPE.RADAR) delete options.dataLabelPosition
         if (options._type === CHART_TYPE.PIE) {
             if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0) delete options.dataLabelPosition;
         }
@@ -234,7 +234,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
     }
     options.dataLabelBkgrdColors = options.dataLabelBkgrdColors === true || options.dataLabelBkgrdColors === false ? options.dataLabelBkgrdColors : false;
     if (['b', 'l', 'r', 't', 'tr'].indexOf(options.legendPos || '') < 0) options.legendPos = 'r';
-	
+
 	// 3D bar: ST_Shape
 	if (['cone', 'coneToMax', 'box', 'cylinder', 'pyramid', 'pyramidToMax'].indexOf(options.bar3DShape || '') < 0) options.bar3DShape = 'box'
 	// lineDataSymbol: http://www.datypic.com/sc/ooxml/a-val-32.html
@@ -291,9 +291,9 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 
 	options.chartColors = Array.isArray(options.chartColors)
 		? options.chartColors
-		: options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
-		? PIECHART_COLORS
-		: BARCHART_COLORS
+		: (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
+			? PIECHART_COLORS
+			: (options._type === CHART_TYPE.SUNBURST ? null : BARCHART_COLORS))
 	options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null
 	//
 	options.border = options.border && typeof options.border === 'object' ? options.border : null
@@ -306,7 +306,7 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 		options.dataBorder.color = 'F9F9F9'
 	//
 	if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER) options.dataLabelFormatCode = 'General'
-	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT))
+	if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.SUNBURST))
 		options.dataLabelFormatCode = options.showPercent ? '0%' : 'General'
 	options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0'
 	//
@@ -323,14 +323,15 @@ export function addChartDefinition(target: PresSlide, type: CHART_NAME | IChartM
 	resultObject.chartRid = getNewRelId(target)
 
 	// STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+	const name = options._type === CHART_TYPE.SUNBURST ? 'chartEx' : 'chart'
 	target._relsChart.push({
 		rId: getNewRelId(target),
 		data: tmpData,
 		opts: options,
 		type: options._type,
 		globalId: chartId,
-		fileName: 'chart' + chartId + '.xml',
-		Target: '/ppt/charts/chart' + chartId + '.xml',
+		fileName: name + chartId + '.xml',
+		Target: '/ppt/charts/' + name + chartId + '.xml',
 	})
 
 	target._slideObjects.push(resultObject)

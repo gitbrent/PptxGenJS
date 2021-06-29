@@ -1,4 +1,4 @@
-// Type definitions for pptxgenjs 3.7.0
+// Type definitions for pptxgenjs 3.7.0-beta
 // Project: https://gitbrent.github.io/PptxGenJS/
 // Definitions by: Brent Ely <https://github.com/gitbrent/>
 //                 Michael Beaumont <https://github.com/michaelbeaumont>
@@ -162,6 +162,7 @@ declare namespace PptxGenJS {
 		'pie' = 'pie',
 		'radar' = 'radar',
 		'scatter' = 'scatter',
+		'sunburst' = 'sunburst',
 	}
 	export enum OutputType {
 		'arraybuffer' = 'arraybuffer',
@@ -392,6 +393,7 @@ declare namespace PptxGenJS {
 		'PIE' = 'pie',
 		'RADAR' = 'radar',
 		'SCATTER' = 'scatter',
+		'SUNBURST' = 'sunburst'
 	}
 	export enum shapes {
 		ACTION_BUTTON_BACK_OR_PREVIOUS = 'actionButtonBackPrevious',
@@ -592,6 +594,7 @@ declare namespace PptxGenJS {
 		'PIE' = 'pie',
 		'RADAR' = 'radar',
 		'SCATTER' = 'scatter',
+		'SUNBURST' = 'sunburst',
 	}
 	export enum SCHEME_COLOR_NAMES {
 		'TEXT1' = 'tx1',
@@ -608,7 +611,7 @@ declare namespace PptxGenJS {
 
 	// @source `core-interfaces.d.ts` (via import)
 	// @code `import { CHART_NAME, PLACEHOLDER_TYPES, SHAPE_NAME, SLIDE_OBJECT_TYPES, TEXT_HALIGN, TEXT_VALIGN } from './core-enums'`
-	export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter'
+	export type CHART_NAME = 'area' | 'bar' | 'bar3D' | 'bubble' | 'doughnut' | 'line' | 'pie' | 'radar' | 'scatter' | 'sunburst'
 	export enum PLACEHOLDER_TYPES {
 		'title' = 'title',
 		'body' = 'body',

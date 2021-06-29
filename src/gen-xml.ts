@@ -4,7 +4,7 @@
 
 import { IImage } from 'image-size/dist/types/interface'
 import {
-	BULLET_TYPES,
+	BULLET_TYPES, CHART_TYPE,
 	CRLF,
 	DEF_BULLET_MARGIN,
 	DEF_CELL_MARGIN_PT,
@@ -18,7 +18,7 @@ import {
 	SLIDE_OBJECT_TYPES,
 } from './core-enums'
 import {
-	IChartOpts,
+	IChartOpts, IChartOptsLib,
 	ImageProps,
 	IPresentationProps,
 	ISlideObject,
@@ -622,22 +622,53 @@ function slideObjectToXml(slide: PresSlide | SlideLayout): string {
 				break
 
 			case SLIDE_OBJECT_TYPES.chart:
-				let chartOpts = slideItemObj.options as IChartOpts
-				strSlideXml += '<p:graphicFrame>'
-				strSlideXml += ' <p:nvGraphicFramePr>'
-				strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}"/>`
-				strSlideXml += '   <p:cNvGraphicFramePr/>'
-				strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
-				strSlideXml += ' </p:nvGraphicFramePr>'
-				strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
-				strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
-				strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
-				strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
-				strSlideXml += '  </a:graphicData>'
-				strSlideXml += ' </a:graphic>'
-				strSlideXml += '</p:graphicFrame>'
+				let chartOpts = slideItemObj.options as IChartOptsLib
+				if (chartOpts._type === CHART_TYPE.SUNBURST) {
+					strSlideXml += '<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">'
+					strSlideXml += '	<mc:Choice xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" Requires="cx1">'
+					strSlideXml += '		<p:graphicFrame>'
+					strSlideXml += '			<p:nvGraphicFramePr>'
+					strSlideXml += `				<p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}">`
+					strSlideXml += '					<a:extLst>'
+					strSlideXml += '						<a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">'
+					strSlideXml += '							<a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{'  + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') +  '}"/>'
+					strSlideXml += '						</a:ext>'
+					strSlideXml += '					</a:extLst>'
+					strSlideXml += '				</p:cNvPr>'
+					strSlideXml += '				<p:cNvGraphicFramePr/>'
+					strSlideXml += '				<p:nvPr>'
+					strSlideXml += '					<p:extLst>'
+					strSlideXml += '						<p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}">'
+					strSlideXml += `							<p14:modId xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="479373619"/>`
+					strSlideXml += '						</p:ext>'
+					strSlideXml += '					</p:extLst>'
+					strSlideXml += '				</p:nvPr>'
+					strSlideXml += '			</p:nvGraphicFramePr>'
+					strSlideXml += ` 			<p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
+					strSlideXml += '			<a:graphic>'
+					strSlideXml += '				<a:graphicData uri="http://schemas.microsoft.com/office/drawing/2014/chartex">'
+					strSlideXml += `					<cx:chart xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" r:id="rId${slideItemObj.chartRid}"/>`
+					strSlideXml += '				</a:graphicData>'
+					strSlideXml += '			</a:graphic>'
+					strSlideXml += '		</p:graphicFrame>'
+					strSlideXml += '	</mc:Choice>'
+					strSlideXml += '</mc:AlternateContent>'
+				} else {
+					strSlideXml += '<p:graphicFrame>'
+					strSlideXml += ' <p:nvGraphicFramePr>'
+					strSlideXml += `   <p:cNvPr id="${idx + 2}" name="Chart ${idx + 1}" descr="${encodeXmlEntities(chartOpts.altText || '')}"/>`
+					strSlideXml += '   <p:cNvGraphicFramePr/>'
+					strSlideXml += `   <p:nvPr>${genXmlPlaceholder(placeholderObj)}</p:nvPr>`
+					strSlideXml += ' </p:nvGraphicFramePr>'
+					strSlideXml += ` <p:xfrm><a:off x="${x}" y="${y}"/><a:ext cx="${cx}" cy="${cy}"/></p:xfrm>`
+					strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">'
+					strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">'
+					strSlideXml += `   <c:chart r:id="rId${slideItemObj.chartRid}" xmlns:c="http://schemas.openxmlformats.org/drawingml/2006/chart"/>`
+					strSlideXml += '  </a:graphicData>'
+					strSlideXml += ' </a:graphic>'
+					strSlideXml += '</p:graphicFrame>'
+				}
 				break
-
 			default:
 				strSlideXml += ''
 				break
@@ -752,7 +783,11 @@ function slideObjectRelationsToXml(slide: PresSlide | SlideLayout, defaultRels: 
 	})
 	;(slide._relsChart || []).forEach((rel: ISlideRelChart) => {
 		lastRid = Math.max(lastRid, rel.rId)
-		strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>'
+		if (rel.type === CHART_TYPE.SUNBURST) {
+			strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2014/relationships/chartEx" Target="' + rel.Target + '"/>'
+		} else {
+			strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>'
+		}
 	})
 	;(slide._relsMedia || []).forEach((rel: ISlideRelMedia) => {
 		lastRid = Math.max(lastRid, rel.rId)
@@ -1376,7 +1411,13 @@ export function makeXmlContTypes(slides: PresSlide[], slideLayouts: SlideLayout[
 		strXml += '<Override PartName="/ppt/slides/slide' + (idx + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>'
 		// Add charts if any
 		slide._relsChart.forEach(rel => {
-			strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
+			if (rel.type === CHART_TYPE.SUNBURST) {
+				strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.ms-office.chartex+xml"/>'
+				strXml += `<Override ContentType="application/vnd.ms-office.chartstyle+xml" PartName="/ppt/charts/style${rel.globalId}.xml"/>`
+				strXml += `<Override ContentType="application/vnd.ms-office.chartcolorstyle+xml" PartName="/ppt/charts/colors${rel.globalId}.xml"/>`
+			} else {
+				strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>'
+			}
 		})
 	})
 
@@ -1710,7 +1751,7 @@ export function makeXmlSlideRel(slides: PresSlide[], slideLayouts: SlideLayout[]
 		{
 			target: '../notesSlides/notesSlide' + slideNumber + '.xml',
 			type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide',
-		},
+		}
 	])
 }
 
@@ -1848,7 +1889,36 @@ export function makeXmlPresentation(pres: IPresentationProps): string {
  * @return {string} XML
  */
 export function makeXmlPresProps(): string {
-	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<p:presentationPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main"/>`
+	return `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>${CRLF}<p:presentationPr xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:p="http://schemas.openxmlformats.org/presentationml/2006/main">` +
+		'<p:showPr showNarration="1">' +
+		'<p:present/>' +
+		'<p:sldAll/>' +
+		'<p:penClr>' +
+		'<a:prstClr val="red"/>' +
+		'</p:penClr>' +
+		'<p:extLst>' +
+		'<p:ext uri="{EC167BDD-8182-4AB7-AECC-EB403E3ABB37}">' +
+		'<p14:laserClr xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">' +
+		'<a:srgbClr val="FF0000"/>' +
+		'</p14:laserClr>' +
+		'</p:ext>' +
+		'<p:ext uri="{2FDB2607-1784-4EEB-B798-7EB5836EED8A}">' +
+		'<p14:showMediaCtrls xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1"/>' +
+		'</p:ext>' +
+		'</p:extLst>' +
+		'</p:showPr>' +
+		'<p:extLst>' +
+		'<p:ext uri="{E76CE94A-603C-4142-B9EB-6D1370010A27}">' +
+		'<p14:discardImageEditData xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="0"/>' +
+		'</p:ext>' +
+		'<p:ext uri="{D31A062A-798A-4329-ABDD-BBA856620510}">' +
+		'<p14:defaultImageDpi xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="220"/>' +
+		'</p:ext>' +
+		'<p:ext uri="{FD5EFAAD-0ECE-453E-9831-46B23BE46B34}">' +
+		'<p15:chartTrackingRefBased xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main" val="0"/>' +
+		'</p:ext>' +
+		'</p:extLst>' +
+	'</p:presentationPr>'
 }
 
 /**

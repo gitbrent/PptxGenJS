@@ -1,4 +1,4 @@
-/* PptxGenJS 3.7.0-beta @ 2021-05-22T01:50:55.963Z */
+/* PptxGenJS 3.7.0-beta @ 2021-06-14T11:37:03.803Z */
 import JSZip from 'jszip';
 
 /*! *****************************************************************************
@@ -139,6 +139,7 @@ var ChartType;
     ChartType["pie"] = "pie";
     ChartType["radar"] = "radar";
     ChartType["scatter"] = "scatter";
+    ChartType["sunburst"] = "sunburst";
 })(ChartType || (ChartType = {}));
 var ShapeType;
 (function (ShapeType) {
@@ -544,6 +545,7 @@ var CHART_TYPE;
     CHART_TYPE["PIE"] = "pie";
     CHART_TYPE["RADAR"] = "radar";
     CHART_TYPE["SCATTER"] = "scatter";
+    CHART_TYPE["SUNBURST"] = "sunburst";
 })(CHART_TYPE || (CHART_TYPE = {}));
 var SCHEME_COLOR_NAMES;
 (function (SCHEME_COLOR_NAMES) {
@@ -1874,19 +1876,52 @@ function slideObjectToXml(slide) {
                 break;
             case SLIDE_OBJECT_TYPES.chart:
                 var chartOpts = slideItemObj.options;
-                strSlideXml += '<p:graphicFrame>';
-                strSlideXml += ' <p:nvGraphicFramePr>';
-                strSlideXml += "   <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Chart " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(chartOpts.altText || '') + "\"/>";
-                strSlideXml += '   <p:cNvGraphicFramePr/>';
-                strSlideXml += "   <p:nvPr>" + genXmlPlaceholder(placeholderObj) + "</p:nvPr>";
-                strSlideXml += ' </p:nvGraphicFramePr>';
-                strSlideXml += " <p:xfrm><a:off x=\"" + x + "\" y=\"" + y + "\"/><a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></p:xfrm>";
-                strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">';
-                strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">';
-                strSlideXml += "   <c:chart r:id=\"rId" + slideItemObj.chartRid + "\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\"/>";
-                strSlideXml += '  </a:graphicData>';
-                strSlideXml += ' </a:graphic>';
-                strSlideXml += '</p:graphicFrame>';
+                if (chartOpts._type === CHART_TYPE.SUNBURST) {
+                    strSlideXml += '<mc:AlternateContent xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006">';
+                    strSlideXml += '	<mc:Choice xmlns:cx1="http://schemas.microsoft.com/office/drawing/2015/9/8/chartex" Requires="cx1">';
+                    strSlideXml += '		<p:graphicFrame>';
+                    strSlideXml += '			<p:nvGraphicFramePr>';
+                    strSlideXml += "\t\t\t\t<p:cNvPr id=\"" + (idx + 2) + "\" name=\"Chart " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(chartOpts.altText || '') + "\">";
+                    strSlideXml += '					<a:extLst>';
+                    strSlideXml += '						<a:ext uri="{FF2B5EF4-FFF2-40B4-BE49-F238E27FC236}">';
+                    strSlideXml += '							<a16:creationId xmlns:a16="http://schemas.microsoft.com/office/drawing/2014/main" id="{' + getUuid('xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}"/>';
+                    strSlideXml += '						</a:ext>';
+                    strSlideXml += '					</a:extLst>';
+                    strSlideXml += '				</p:cNvPr>';
+                    strSlideXml += '				<p:cNvGraphicFramePr/>';
+                    strSlideXml += '				<p:nvPr>';
+                    strSlideXml += '					<p:extLst>';
+                    strSlideXml += '						<p:ext uri="{D42A27DB-BD31-4B8C-83A1-F6EECF244321}">';
+                    strSlideXml += "\t\t\t\t\t\t\t<p14:modId xmlns:p14=\"http://schemas.microsoft.com/office/powerpoint/2010/main\" val=\"479373619\"/>";
+                    strSlideXml += '						</p:ext>';
+                    strSlideXml += '					</p:extLst>';
+                    strSlideXml += '				</p:nvPr>';
+                    strSlideXml += '			</p:nvGraphicFramePr>';
+                    strSlideXml += " \t\t\t<p:xfrm><a:off x=\"" + x + "\" y=\"" + y + "\"/><a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></p:xfrm>";
+                    strSlideXml += '			<a:graphic>';
+                    strSlideXml += '				<a:graphicData uri="http://schemas.microsoft.com/office/drawing/2014/chartex">';
+                    strSlideXml += "\t\t\t\t\t<cx:chart xmlns:cx=\"http://schemas.microsoft.com/office/drawing/2014/chartex\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" r:id=\"rId" + slideItemObj.chartRid + "\"/>";
+                    strSlideXml += '				</a:graphicData>';
+                    strSlideXml += '			</a:graphic>';
+                    strSlideXml += '		</p:graphicFrame>';
+                    strSlideXml += '	</mc:Choice>';
+                    strSlideXml += '</mc:AlternateContent>';
+                }
+                else {
+                    strSlideXml += '<p:graphicFrame>';
+                    strSlideXml += ' <p:nvGraphicFramePr>';
+                    strSlideXml += "   <p:cNvPr id=\"" + (idx + 2) + "\" name=\"Chart " + (idx + 1) + "\" descr=\"" + encodeXmlEntities(chartOpts.altText || '') + "\"/>";
+                    strSlideXml += '   <p:cNvGraphicFramePr/>';
+                    strSlideXml += "   <p:nvPr>" + genXmlPlaceholder(placeholderObj) + "</p:nvPr>";
+                    strSlideXml += ' </p:nvGraphicFramePr>';
+                    strSlideXml += " <p:xfrm><a:off x=\"" + x + "\" y=\"" + y + "\"/><a:ext cx=\"" + cx + "\" cy=\"" + cy + "\"/></p:xfrm>";
+                    strSlideXml += ' <a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main">';
+                    strSlideXml += '  <a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/chart">';
+                    strSlideXml += "   <c:chart r:id=\"rId" + slideItemObj.chartRid + "\" xmlns:c=\"http://schemas.openxmlformats.org/drawingml/2006/chart\"/>";
+                    strSlideXml += '  </a:graphicData>';
+                    strSlideXml += ' </a:graphic>';
+                    strSlideXml += '</p:graphicFrame>';
+                }
                 break;
             default:
                 strSlideXml += '';
@@ -2005,7 +2040,12 @@ function slideObjectRelationsToXml(slide, defaultRels) {
     });
     (slide._relsChart || []).forEach(function (rel) {
         lastRid = Math.max(lastRid, rel.rId);
-        strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>';
+        if (rel.type === CHART_TYPE.SUNBURST) {
+            strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.microsoft.com/office/2014/relationships/chartEx" Target="' + rel.Target + '"/>';
+        }
+        else {
+            strXml += '<Relationship Id="rId' + rel.rId + '" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/chart" Target="' + rel.Target + '"/>';
+        }
     });
     (slide._relsMedia || []).forEach(function (rel) {
         lastRid = Math.max(lastRid, rel.rId);
@@ -2590,7 +2630,14 @@ function makeXmlContTypes(slides, slideLayouts, masterSlide) {
         strXml += '<Override PartName="/ppt/slides/slide' + (idx + 1) + '.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/>';
         // Add charts if any
         slide._relsChart.forEach(function (rel) {
-            strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+            if (rel.type === CHART_TYPE.SUNBURST) {
+                strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.ms-office.chartex+xml"/>';
+                strXml += "<Override ContentType=\"application/vnd.ms-office.chartstyle+xml\" PartName=\"/ppt/charts/style" + rel.globalId + ".xml\"/>";
+                strXml += "<Override ContentType=\"application/vnd.ms-office.chartcolorstyle+xml\" PartName=\"/ppt/charts/colors" + rel.globalId + ".xml\"/>";
+            }
+            else {
+                strXml += ' <Override PartName="' + rel.Target + '" ContentType="application/vnd.openxmlformats-officedocument.drawingml.chart+xml"/>';
+            }
         });
     });
     // STEP 3: Core PPT
@@ -2847,7 +2894,7 @@ function makeXmlSlideRel(slides, slideLayouts, slideNumber) {
         {
             target: '../notesSlides/notesSlide' + slideNumber + '.xml',
             type: 'http://schemas.openxmlformats.org/officeDocument/2006/relationships/notesSlide',
-        },
+        }
     ]);
 }
 /**
@@ -2961,7 +3008,36 @@ function makeXmlPresentation(pres) {
  * @return {string} XML
  */
 function makeXmlPresProps() {
-    return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + CRLF + "<p:presentationPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\"/>";
+    return "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>" + CRLF + "<p:presentationPr xmlns:a=\"http://schemas.openxmlformats.org/drawingml/2006/main\" xmlns:r=\"http://schemas.openxmlformats.org/officeDocument/2006/relationships\" xmlns:p=\"http://schemas.openxmlformats.org/presentationml/2006/main\">" +
+        '<p:showPr showNarration="1">' +
+        '<p:present/>' +
+        '<p:sldAll/>' +
+        '<p:penClr>' +
+        '<a:prstClr val="red"/>' +
+        '</p:penClr>' +
+        '<p:extLst>' +
+        '<p:ext uri="{EC167BDD-8182-4AB7-AECC-EB403E3ABB37}">' +
+        '<p14:laserClr xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main">' +
+        '<a:srgbClr val="FF0000"/>' +
+        '</p14:laserClr>' +
+        '</p:ext>' +
+        '<p:ext uri="{2FDB2607-1784-4EEB-B798-7EB5836EED8A}">' +
+        '<p14:showMediaCtrls xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="1"/>' +
+        '</p:ext>' +
+        '</p:extLst>' +
+        '</p:showPr>' +
+        '<p:extLst>' +
+        '<p:ext uri="{E76CE94A-603C-4142-B9EB-6D1370010A27}">' +
+        '<p14:discardImageEditData xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="0"/>' +
+        '</p:ext>' +
+        '<p:ext uri="{D31A062A-798A-4329-ABDD-BBA856620510}">' +
+        '<p14:defaultImageDpi xmlns:p14="http://schemas.microsoft.com/office/powerpoint/2010/main" val="220"/>' +
+        '</p:ext>' +
+        '<p:ext uri="{FD5EFAAD-0ECE-453E-9831-46B23BE46B34}">' +
+        '<p15:chartTrackingRefBased xmlns:p15="http://schemas.microsoft.com/office/powerpoint/2012/main" val="0"/>' +
+        '</p:ext>' +
+        '</p:extLst>' +
+        '</p:presentationPr>';
 }
 /**
  * Create `ppt/tableStyles.xml`
@@ -3186,7 +3262,7 @@ function addChartDefinition(target, type, data, opt) {
     // Clean up and validate data label positions
     // REFERENCE: https://docs.microsoft.com/en-us/openspecs/office_standards/ms-oi29500/e2b1697c-7adc-463d-9081-3daef72f656f?redirectedfrom=MSDN
     if (options.dataLabelPosition) {
-        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.RADAR)
+        if (options._type === CHART_TYPE.AREA || options._type === CHART_TYPE.BAR3D || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.SUNBURST || options._type === CHART_TYPE.RADAR)
             delete options.dataLabelPosition;
         if (options._type === CHART_TYPE.PIE) {
             if (['bestFit', 'ctr', 'inEnd', 'outEnd'].indexOf(options.dataLabelPosition) < 0)
@@ -3265,9 +3341,9 @@ function addChartDefinition(target, type, data, opt) {
     options.barGapDepthPct = !isNaN(options.barGapDepthPct) && options.barGapDepthPct >= 0 && options.barGapDepthPct <= 1000 ? options.barGapDepthPct : 150;
     options.chartColors = Array.isArray(options.chartColors)
         ? options.chartColors
-        : options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
+        : (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT
             ? PIECHART_COLORS
-            : BARCHART_COLORS;
+            : (options._type === CHART_TYPE.SUNBURST ? null : BARCHART_COLORS));
     options.chartColorsOpacity = options.chartColorsOpacity && !isNaN(options.chartColorsOpacity) ? options.chartColorsOpacity : null;
     //
     options.border = options.border && typeof options.border === 'object' ? options.border : null;
@@ -3284,7 +3360,7 @@ function addChartDefinition(target, type, data, opt) {
     //
     if (!options.dataLabelFormatCode && options._type === CHART_TYPE.SCATTER)
         options.dataLabelFormatCode = 'General';
-    if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT))
+    if (!options.dataLabelFormatCode && (options._type === CHART_TYPE.PIE || options._type === CHART_TYPE.DOUGHNUT || options._type === CHART_TYPE.SUNBURST))
         options.dataLabelFormatCode = options.showPercent ? '0%' : 'General';
     options.dataLabelFormatCode = options.dataLabelFormatCode && typeof options.dataLabelFormatCode === 'string' ? options.dataLabelFormatCode : '#,##0';
     //
@@ -3300,14 +3376,15 @@ function addChartDefinition(target, type, data, opt) {
     resultObject.options = options;
     resultObject.chartRid = getNewRelId(target);
     // STEP 5: Add this chart to this Slide Rels (rId/rels count spans all slides! Count all images to get next rId)
+    var name = options._type === CHART_TYPE.SUNBURST ? 'chartEx' : 'chart';
     target._relsChart.push({
         rId: getNewRelId(target),
         data: tmpData,
         opts: options,
         type: options._type,
         globalId: chartId,
-        fileName: 'chart' + chartId + '.xml',
-        Target: '/ppt/charts/chart' + chartId + '.xml',
+        fileName: name + chartId + '.xml',
+        Target: '/ppt/charts/' + name + chartId + '.xml',
     });
     target._slideObjects.push(resultObject);
     return resultObject;
@@ -4352,6 +4429,15 @@ function createExcelWorksheet(chartObject, zip) {
                 strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data.length + 1) + '" uniqueCount="' + (data.length + 1) + '">';
             }
+            else if (chartObject.opts._type === CHART_TYPE.SUNBURST) {
+                strSharedStrings_1 +=
+                    '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' + (data[0].labels.length + 1) + '" uniqueCount="' + (data[0].labels.reduce(function (acc, label) {
+                        if (!acc.includes(label)) {
+                            acc.push(label);
+                        }
+                        return acc;
+                    }, []).length + 1) + '">';
+            }
             else {
                 strSharedStrings_1 +=
                     '<sst xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" count="' +
@@ -4372,6 +4458,9 @@ function createExcelWorksheet(chartObject, zip) {
                         strSharedStrings_1 += '<si><t>' + encodeXmlEntities('Size ' + idx) + '</t></si>';
                     }
                 });
+            }
+            else if (chartObject.opts._type === CHART_TYPE.SUNBURST) {
+                strSharedStrings_1 += '<si><t>' + encodeXmlEntities((data[0].name || ' ').replace('X-Axis', 'X-Values')) + '</t></si>';
             }
             else {
                 data.forEach(function (objData) {
@@ -4402,6 +4491,19 @@ function createExcelWorksheet(chartObject, zip) {
                     strTableXml_1 += '<tableColumn id="' + (idx + 1) + '" name="' + (idx === 0 ? 'X-Values' : 'Y-Value ' + idx) + '" />';
                 });
             }
+            else if (chartObject.opts._type === CHART_TYPE.SUNBURST) {
+                var _a = getRowsAndColumnsData(chartObject.data[0]), rowsData = _a.rowsData, colsData = _a.colsData;
+                strTableXml_1 +=
+                    '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
+                        LETTERS[colsData.length] +
+                        (rowsData.length + 1) +
+                        '" totalsRowShown="0">';
+                strTableXml_1 += '<tableColumns count="' + (colsData.length + 1) + '">';
+                colsData.forEach(function (col, idx) {
+                    strTableXml_1 += "<tableColumn id=\"" + (idx + 1) + "\" name=\" \" />";
+                });
+                strTableXml_1 += '<tableColumn id="' + (colsData.length + 1) + '" name="' + encodeXmlEntities(data[0].name) + '" />';
+            }
             else {
                 strTableXml_1 +=
                     '<table xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" id="1" name="Table1" displayName="Table1" ref="A1:' +
@@ -4423,12 +4525,16 @@ function createExcelWorksheet(chartObject, zip) {
         {
             var strSheetXml_1 = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
             strSheetXml_1 +=
-                '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac">';
+                '<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="x14ac xr xr2 xr3" xmlns:x14ac="http://schemas.microsoft.com/office/spreadsheetml/2009/9/ac" xmlns:xr="http://schemas.microsoft.com/office/spreadsheetml/2014/revision" xmlns:xr2="http://schemas.microsoft.com/office/spreadsheetml/2015/revision2" xmlns:xr3="http://schemas.microsoft.com/office/spreadsheetml/2016/revision3" xr:uid="{47E290ED-8723-4BB1-AC15-878C53E0834A}">';
             if (chartObject.opts._type === CHART_TYPE.BUBBLE) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[intBubbleCols - 1] + (data[0].values.length + 1) + '" />';
             }
             else if (chartObject.opts._type === CHART_TYPE.SCATTER) {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length - 1] + (data[0].values.length + 1) + '" />';
+            }
+            else if (chartObject.opts._type === CHART_TYPE.SUNBURST) {
+                var _b = getRowsAndColumnsData(data[0]), rowsData = _b.rowsData, colsData = _b.colsData;
+                strSheetXml_1 += '<dimension ref="A1:' + LETTERS[colsData.length] + (Math.max(rowsData.length + 1, 17)) + '" />';
             }
             else {
                 strSheetXml_1 += '<dimension ref="A1:' + LETTERS[data.length] + (data[0].labels.length + 1) + '" />';
@@ -4526,6 +4632,48 @@ function createExcelWorksheet(chartObject, zip) {
                     strSheetXml_1 += '</row>';
                 });
             }
+            else if (chartObject.opts._type === CHART_TYPE.SUNBURST) {
+                /* EX: INPUT: `data`
+                [
+                    {
+                        name: 'Datenreihe 1',
+                        labels: ["Verzweigung 1", "Stamm 1", "Blatt 1", "", "", "Blatt 2", "", "", "Blatt 3", "Verzweigung 2", "Stamm 3", "Blatt 4", ..],
+                        values: [32, 13, 66, 54, 3, 13]
+                     }
+                ];
+                */
+                /* EX: OUTPUT: scatterChart Worksheet:
+                    -|---------------|------------|----------/----------/ Datenreihe1
+                    1| Verzweigung 1 | Stamm 1    | Ast 1    / Blatt 1  / 32
+                    1|               |            |          / Blatt 2  / 13
+                    1|               | Stamm 2    | Ast 2    / Blatt 3  / 66
+                    1| Verzweigung 2 | Stamm 3    | Blatt 4  /          / 54
+                    1|               |            | Ast 3    / Blatt 5  / 3
+                    1| Verzweigung 3 | Blatt 6    |          /          / 13
+                    -|---------------|------------|----------/----------/--------------
+                */
+                // generate rows
+                var colCount_1 = data[0].sizes[0];
+                strSheetXml_1 += '<sheetData>';
+                strSheetXml_1 += "<row r=\"1\" spans=\"1:" + (colCount_1 + 1) + "\" x14ac:dyDescent=\"0.25\"><c r=\"" + LETTERS[colCount_1] + "1\" t=\"s\"><v>0</v></c></row>";
+                var _c = getRowsAndColumnsData(data[0]), rowsData = _c.rowsData, colsData_1 = _c.colsData;
+                rowsData.forEach(function (row, i) {
+                    strSheetXml_1 += "<row r=\"" + (i + 2) + "\" spans=\"1:" + (colCount_1 + 1) + "\" x14ac:dyDescent=\"0.25\">";
+                    colsData_1.forEach(function (col, colIdx) {
+                        strSheetXml_1 += "<c r=\"" + LETTERS[colIdx] + (i + 2) + "\" t=\"s\">";
+                        strSheetXml_1 += col[i] ? " <v>" + ((i * colCount_1) + (colIdx + 1)) + "</v>" : '';
+                        strSheetXml_1 += "</c>";
+                    });
+                    strSheetXml_1 += "<c r=\"" + LETTERS[colsData_1.length] + (i + 2) + "\"><v>" + data[0].values[i] + "</v></c>";
+                    strSheetXml_1 += "</row>";
+                });
+                var countEmptyRows = 17 - rowsData.length - 1;
+                if (countEmptyRows > 0) {
+                    for (var i = rowsData.length + 2; i <= 17; i++) {
+                        strSheetXml_1 += "<row r=\"" + i + "\" spans=\"1:" + (colCount_1 + 1) + "\"/>";
+                    }
+                }
+            }
             else {
                 strSheetXml_1 += '<cols>';
                 strSheetXml_1 += '<col min="1" max="1" width="11" customWidth="1" />';
@@ -4590,14 +4738,34 @@ function createExcelWorksheet(chartObject, zip) {
             .then(function (content) {
             // 1: Create the embedded Excel worksheet with labels and data
             zip.file('ppt/embeddings/Microsoft_Excel_Worksheet' + chartObject.globalId + '.xlsx', content, { base64: true });
+            // http://schemas.microsoft.com/office/2012/relationships/chartColorStyle
             // 2: Create the chart.xml and rel files
-            zip.file('ppt/charts/_rels/' + chartObject.fileName + '.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
-                '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
-                '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet' +
-                chartObject.globalId +
-                '.xlsx"/>' +
-                '</Relationships>');
-            zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject));
+            if (chartObject.opts._type === CHART_TYPE.SUNBURST) {
+                zip.file('ppt/charts/_rels/' + chartObject.fileName + '.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+                    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+                    '<Relationship Id="rId3" Type="http://schemas.microsoft.com/office/2011/relationships/chartColorStyle" Target="colors' +
+                    chartObject.globalId +
+                    '.xml"/>' +
+                    '<Relationship Id="rId2" Type="http://schemas.microsoft.com/office/2011/relationships/chartStyle" Target="style' +
+                    chartObject.globalId +
+                    '.xml"/>' +
+                    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet' +
+                    chartObject.globalId +
+                    '.xlsx"/>' +
+                    '</Relationships>');
+                zip.file("ppt/charts/colors" + chartObject.globalId + ".xml", makeXmlColors());
+                zip.file("ppt/charts/style" + chartObject.globalId + ".xml", makeXmlStyle());
+                zip.file('ppt/charts/' + chartObject.fileName, makeXmlExtendedCharts(chartObject));
+            }
+            else {
+                zip.file('ppt/charts/_rels/' + chartObject.fileName + '.rels', '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' +
+                    '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' +
+                    '<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/package" Target="../embeddings/Microsoft_Excel_Worksheet' +
+                    chartObject.globalId +
+                    '.xlsx"/>' +
+                    '</Relationships>');
+                zip.file('ppt/charts/' + chartObject.fileName, makeXmlCharts(chartObject));
+            }
             // 3: Done
             resolve(null);
         })
@@ -4605,6 +4773,744 @@ function createExcelWorksheet(chartObject, zip) {
             reject(strErr);
         });
     });
+}
+function getRowsAndColumnsData(data) {
+    var colCount = data.sizes[0];
+    var rowCounter = 0;
+    var row = [];
+    var rowsData = data.labels.reduce(function (acc, label, i) {
+        row.push(label);
+        rowCounter = rowCounter + 1;
+        if (rowCounter === colCount || i === data.labels.length - 1) {
+            acc.push(row);
+            row = [];
+            rowCounter = 0;
+        }
+        return acc;
+    }, []);
+    var colsData = [];
+    var _loop_1 = function (i) {
+        var col = [];
+        rowsData.forEach(function (row) {
+            col.push(row[i] ? row[i] : '');
+        });
+        colsData.push(col);
+    };
+    for (var i = 0; i < colCount; i++) {
+        _loop_1(i);
+    }
+    return { rowsData: rowsData, colsData: colsData };
+}
+/**
+ * TODO HPE documentation
+ * @param rel
+ */
+function makeXmlExtendedCharts(rel) {
+    var data = rel.data[0];
+    var _a = getRowsAndColumnsData(data), rowsData = _a.rowsData, colsData = _a.colsData;
+    var strXml = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>';
+    strXml += '<cx:chartSpace xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:cx="http://schemas.microsoft.com/office/drawing/2014/chartex">';
+    strXml += ' <cx:chartData>';
+    strXml += "  <cx:externalData r:id=\"rId1\" cx:autoUpdate=\"0\"/>";
+    strXml += '  <cx:data id="0">';
+    strXml += '   <cx:strDim type="cat">';
+    strXml += "    <cx:f>Sheet1!$A$2:$" + LETTERS[colsData.length - 1] + "$" + (1 + rowsData.length) + "</cx:f>";
+    colsData.reverse().forEach(function (col) {
+        strXml += "    <cx:lvl ptCount=\"" + rowsData.length + "\">";
+        col.forEach(function (label, iLabel) {
+            strXml += "     <cx:pt idx=\"" + iLabel + "\">" + encodeXmlEntities(label) + "</cx:pt>";
+        });
+        strXml += '    </cx:lvl>';
+    });
+    strXml += '   </cx:strDim>';
+    strXml += '   <cx:numDim type="size">';
+    strXml += "    <cx:f>Sheet1!$" + LETTERS[colsData.length] + "$2:$" + LETTERS[colsData.length] + "$" + (1 + rowsData.length) + "</cx:f>";
+    strXml += "    <cx:lvl ptCount=\"" + rowsData.length + "\" formatCode=\"Standard\">";
+    data.values.forEach(function (value, iV) {
+        strXml += "     <cx:pt idx=\"" + iV + "\">" + value + "</cx:pt>";
+    });
+    strXml += '    </cx:lvl>';
+    strXml += '   </cx:numDim>';
+    strXml += '  </cx:data>';
+    strXml += ' </cx:chartData>';
+    strXml += ' <cx:chart>';
+    if (rel.opts.showTitle) {
+        strXml += '<cx:title pos="t" align="ctr" overlay="0">';
+        strXml += '	<cx:tx>';
+        strXml += '		<cx:rich>';
+        strXml += '			<a:bodyPr spcFirstLastPara="1" vertOverflow="ellipsis" horzOverflow="overflow" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="1"/>';
+        strXml += '			<a:lstStyle/>';
+        strXml += '			<a:p>';
+        strXml += '				<a:pPr algn="ctr" rtl="0">';
+        strXml += '					<a:defRPr/>';
+        strXml += '				</a:pPr>';
+        strXml += '				<a:r>';
+        strXml += '					<a:rPr lang="" sz="1862" b="0" i="0" u="none" strike="noStrike" baseline="0" dirty="0">';
+        strXml += '						<a:solidFill>';
+        strXml += '							<a:prstClr val="black">';
+        strXml += '								<a:lumMod val="65000"/>';
+        strXml += '								<a:lumOff val="35000"/>';
+        strXml += '							</a:prstClr>';
+        strXml += '						</a:solidFill>';
+        strXml += '						<a:latin typeface="Calibri" panose="020F0502020204030204"/>';
+        strXml += '					</a:rPr>';
+        strXml += "\t\t\t\t\t<a:t>" + encodeXmlEntities(data.name) + "</a:t>";
+        strXml += '				</a:r>';
+        strXml += '			</a:p>';
+        strXml += '		</cx:rich>';
+        strXml += '	</cx:tx>';
+        strXml += '</cx:title>';
+    }
+    strXml += '   <cx:plotArea>';
+    strXml += '    <cx:plotAreaRegion>';
+    strXml += "     <cx:series layoutId=\"sunburst\" uniqueId=\"{" + '00000000'.substring(0, 8 - (rel.globalId + 1).toString().length).toString() + (rel.globalId + 1) + getUuid('-xxxx-xxxx-xxxx-xxxxxxxxxxxx') + '}">';
+    strXml += '      <cx:tx>';
+    strXml += '       <cx:txData>';
+    strXml += "        <cx:f>Sheet1!$" + LETTERS[colsData.length] + "$1</cx:f>";
+    strXml += "        <cx:v>" + encodeXmlEntities(data.name) + "</cx:v>";
+    strXml += '      </cx:txData>';
+    strXml += '     </cx:tx>';
+    // colors for data points
+    var borderColors = rel.data.find(function (d) {
+        return d.name === 'borderColors';
+    });
+    if (rel.opts.chartColors) {
+        rel.opts.chartColors.forEach(function (color, iColor) {
+            if (color !== '') {
+                strXml += "<cx:dataPt idx=\"" + iColor + "\">";
+                strXml += '	<cx:spPr>';
+                strXml += '		<a:solidFill>';
+                strXml += "\t\t\t" + createColorElement(color);
+                strXml += '		</a:solidFill>';
+                strXml += '     <a:ln w="6350">';
+                strXml += '	     <a:solidFill>';
+                strXml += "\t\t\t" + createColorElement(borderColors ? (borderColors.labels[iColor] || DEF_SHAPE_LINE_COLOR) : DEF_SHAPE_LINE_COLOR, '     <a:lumMod val="20000"/>' +
+                    '     <a:lumOff val="80000"/>');
+                strXml += '	     </a:solidFill>';
+                strXml += '     </a:ln>';
+                strXml += '	</cx:spPr>';
+                strXml += '</cx:dataPt>';
+            }
+        });
+    }
+    strXml += '     <cx:dataLabels pos="ctr">';
+    strXml += "      <cx:visibility seriesName=\"0\" categoryName=\"" + (rel.opts.showLabel ? 1 : 0) + "\" value=\"" + (rel.opts.showValue ? 1 : 0) + "\"/>"; // show only value with categoryName="0" value="1"
+    rel.data.find(function (d) {
+        return d.name === 'textColors';
+    });
+    var labels = getRowsAndColumnsData(data);
+    var showedValues = data.values.map(function (v) {
+        if (v < 0) {
+            return -v;
+        }
+        return v;
+    });
+    labels.colsData.forEach(function (col, iCol) {
+        col.forEach(function (label, iLabel) {
+            if (label !== '') {
+                // get index in labels without empty entries
+                var idx = iCol + (data.sizes[0] * iLabel);
+                var countEmptyEntries = data.labels.slice(0, idx).filter(function (el) {
+                    return el === '';
+                }).length;
+                strXml += "<cx:dataLabel idx=\"" + (idx - countEmptyEntries) + "\">";
+                /*				strXml += '	<cx:txPr>'
+                                strXml += '		<a:bodyPr spcFirstLastPara="1" vertOverflow="ellipsis" horzOverflow="overflow" wrap="square" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="1"/>'
+                                strXml += '		<a:lstStyle/>'
+                                strXml += '		<a:p>'
+                                strXml += '			<a:pPr algn="ctr" rtl="0">'
+                                strXml += `				<a:defRPr sz="${Math.round((rel.opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}"/>`
+                                strXml += '			</a:pPr>'
+                                strXml += '			<a:r>'
+                                strXml += `				<a:rPr lang="en-US" sz="${Math.round((rel.opts.dataLabelFontSize || DEF_FONT_SIZE) * 100)}" b="0" i="0" u="none" strike="noStrike" baseline="0">`
+                                strXml += '					<a:solidFill>'
+                                strXml += `						${createColorElement(textColorsObject.colsData[iCol][iLabel] || DEF_FONT_COLOR)}` // text color from data
+                                strXml += '					</a:solidFill>'
+                                strXml += `					<a:latin typeface="${rel.opts.dataLabelFontFace || 'Calibri'}" panose="020F0502020204030204"/>`
+                                strXml += '				</a:rPr>'
+                                strXml += `				<a:t>${encodeXmlEntities(label)}</a:t>`
+                                strXml += '			</a:r>'
+                                strXml += '		</a:p>'
+                                strXml += '	</cx:txPr>'*/
+                strXml += '	<cx:txPr>';
+                strXml += '		<a:bodyPr rtlCol="0" anchor="ctr">';
+                strXml += '		    <a:normAutofit fontScale="3000" lnSpcReduction="10000"/>';
+                strXml += '		</a:bodyPr>';
+                strXml += '		<a:lstStyle/>';
+                strXml += '		<a:p>';
+                strXml += '			<a:r>';
+                strXml += "\t\t\t\t<a:t>" + encodeXmlEntities(label) + "</a:t>";
+                strXml += '			</a:r>';
+                strXml += '		</a:p>';
+                strXml += '	</cx:txPr>';
+                strXml += "\t<cx:numFmt formatCode=\"&quot;" + showedValues[idx - countEmptyEntries] + "&quot;;&quot;" + showedValues[idx - countEmptyEntries] + "&quot;\" sourceLinked=\"0\"/>";
+                strXml += '</cx:dataLabel>';
+            }
+        });
+    });
+    strXml += '     </cx:dataLabels>';
+    strXml += '     <cx:dataId val="0"/>';
+    strXml += '    </cx:series>';
+    strXml += '   </cx:plotAreaRegion>';
+    strXml += '  </cx:plotArea>';
+    if (rel.opts.showLegend) {
+        strXml += "  <cx:legend pos=\"r\" align=\"ctr\" overlay=\"0\"/>";
+    }
+    strXml += ' </cx:chart>';
+    strXml += '</cx:chartSpace>';
+    return strXml;
+}
+function makeXmlColors(chartObject) {
+    // TODO HPE dynamisch generieren
+    var strXml = '<cs:colorStyle xmlns:cs="http://schemas.microsoft.com/office/drawing/2012/chartStyle" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" meth="cycle" id="10">';
+    strXml += '	<a:schemeClr val="accent1"/>';
+    strXml += '	<a:schemeClr val="accent2"/>';
+    strXml += '	<a:schemeClr val="accent3"/>';
+    strXml += '	<a:schemeClr val="accent4"/>';
+    strXml += '	<a:schemeClr val="accent5"/>';
+    strXml += '	<a:schemeClr val="accent6"/>';
+    strXml += '	<cs:variation/>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="60000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="80000"/>';
+    strXml += '		<a:lumOff val="20000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="80000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="60000"/>';
+    strXml += '		<a:lumOff val="40000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="50000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="70000"/>';
+    strXml += '		<a:lumOff val="30000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="70000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '	<cs:variation>';
+    strXml += '		<a:lumMod val="50000"/>';
+    strXml += '		<a:lumOff val="50000"/>';
+    strXml += '	</cs:variation>';
+    strXml += '</cs:colorStyle>';
+    return strXml;
+}
+function makeXmlStyle(chartObject) {
+    // TODO HPE dynamisch
+    var strXml = '<cs:chartStyle xmlns:cs="http://schemas.microsoft.com/office/drawing/2012/chartStyle" xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main" id="381">';
+    strXml += '	<cs:axisTitle>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:axisTitle>';
+    strXml += '	<cs:categoryAxis>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="15000"/>';
+    strXml += '						<a:lumOff val="85000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:categoryAxis>';
+    strXml += '	<cs:chartArea mods="allowNoFillOverride allowNoLineOverride">';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:solidFill>';
+    strXml += '				<a:schemeClr val="bg1"/>';
+    strXml += '			</a:solidFill>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="15000"/>';
+    strXml += '						<a:lumOff val="85000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '		<cs:defRPr sz="1330"/>';
+    strXml += '	</cs:chartArea>';
+    strXml += '	<cs:dataLabel>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="lt1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:dataLabel>';
+    strXml += '	<cs:dataLabelCallout>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="dk1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:solidFill>';
+    strXml += '				<a:schemeClr val="lt1"/>';
+    strXml += '			</a:solidFill>';
+    strXml += '			<a:ln>';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="dk1">';
+    strXml += '						<a:lumMod val="25000"/>';
+    strXml += '						<a:lumOff val="75000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '		<cs:bodyPr rot="0" spcFirstLastPara="1" vertOverflow="clip" horzOverflow="clip" vert="horz" wrap="square" lIns="36576" tIns="18288" rIns="36576" bIns="18288" anchor="ctr" anchorCtr="1">';
+    strXml += '			<a:spAutoFit/>';
+    strXml += '		</cs:bodyPr>';
+    strXml += '	</cs:dataLabelCallout>';
+    strXml += '	<cs:dataPoint>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0">';
+    strXml += '			<cs:styleClr val="auto"/>';
+    strXml += '		</cs:fillRef>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:solidFill>';
+    strXml += '				<a:schemeClr val="phClr"/>';
+    strXml += '			</a:solidFill>';
+    strXml += '			<a:ln w="19050">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="lt1"/>';
+    strXml += '				</a:solidFill>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:dataPoint>';
+    strXml += '	<cs:dataPoint3D>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0">';
+    strXml += '			<cs:styleClr val="auto"/>';
+    strXml += '		</cs:fillRef>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:solidFill>';
+    strXml += '				<a:schemeClr val="phClr"/>';
+    strXml += '			</a:solidFill>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:dataPoint3D>';
+    strXml += '	<cs:dataPointLine>';
+    strXml += '		<cs:lnRef idx="0">';
+    strXml += '			<cs:styleClr val="auto"/>';
+    strXml += '		</cs:lnRef>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="28575" cap="rnd">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="phClr"/>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:dataPointLine>';
+    strXml += '	<cs:dataPointMarker>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0">';
+    strXml += '			<cs:styleClr val="auto"/>';
+    strXml += '		</cs:fillRef>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:solidFill>';
+    strXml += '				<a:schemeClr val="phClr"/>';
+    strXml += '			</a:solidFill>';
+    strXml += '			<a:ln w="9525">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="lt1"/>';
+    strXml += '				</a:solidFill>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:dataPointMarker>';
+    strXml += '	<cs:dataPointMarkerLayout symbol="circle" size="5"/>';
+    strXml += '	<cs:dataPointWireframe>';
+    strXml += '		<cs:lnRef idx="0">';
+    strXml += '			<cs:styleClr val="auto"/>';
+    strXml += '		</cs:lnRef>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="28575" cap="rnd">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="phClr"/>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:dataPointWireframe>';
+    strXml += '	<cs:dataTable>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="15000"/>';
+    strXml += '						<a:lumOff val="85000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:dataTable>';
+    strXml += '	<cs:downBar>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="dk1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:solidFill>';
+    strXml += '				<a:schemeClr val="dk1">';
+    strXml += '					<a:lumMod val="65000"/>';
+    strXml += '					<a:lumOff val="35000"/>';
+    strXml += '				</a:schemeClr>';
+    strXml += '			</a:solidFill>';
+    strXml += '			<a:ln w="9525">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="65000"/>';
+    strXml += '						<a:lumOff val="35000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:downBar>';
+    strXml += '	<cs:dropLine>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="35000"/>';
+    strXml += '						<a:lumOff val="65000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:dropLine>';
+    strXml += '	<cs:errorBar>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="65000"/>';
+    strXml += '						<a:lumOff val="35000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:errorBar>';
+    strXml += '	<cs:floor>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '	</cs:floor>';
+    strXml += '	<cs:gridlineMajor>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="15000"/>';
+    strXml += '						<a:lumOff val="85000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:gridlineMajor>';
+    strXml += '	<cs:gridlineMinor>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="15000"/>';
+    strXml += '						<a:lumOff val="85000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:gridlineMinor>';
+    strXml += '	<cs:hiLoLine>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="75000"/>';
+    strXml += '						<a:lumOff val="25000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:hiLoLine>';
+    strXml += '	<cs:leaderLine>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="35000"/>';
+    strXml += '						<a:lumOff val="65000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:leaderLine>';
+    strXml += '	<cs:legend>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:legend>';
+    strXml += '	<cs:plotArea mods="allowNoFillOverride allowNoLineOverride">';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '	</cs:plotArea>';
+    strXml += '	<cs:plotArea3D mods="allowNoFillOverride allowNoLineOverride">';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '	</cs:plotArea3D>';
+    strXml += '	<cs:seriesAxis>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat" cmpd="sng" algn="ctr">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="15000"/>';
+    strXml += '						<a:lumOff val="85000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:seriesAxis>';
+    strXml += '	<cs:seriesLine>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="9525" cap="flat">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:srgbClr val="D9D9D9"/>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:round/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:seriesLine>';
+    strXml += '	<cs:title>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:defRPr sz="1862"/>';
+    strXml += '	</cs:title>';
+    strXml += '	<cs:trendline>';
+    strXml += '		<cs:lnRef idx="0">';
+    strXml += '			<cs:styleClr val="auto"/>';
+    strXml += '		</cs:lnRef>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:ln w="19050" cap="rnd">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="phClr"/>';
+    strXml += '				</a:solidFill>';
+    strXml += '				<a:prstDash val="sysDash"/>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:trendline>';
+    strXml += '	<cs:trendlineLabel>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:trendlineLabel>';
+    strXml += '	<cs:upBar>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="dk1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:spPr>';
+    strXml += '			<a:solidFill>';
+    strXml += '				<a:schemeClr val="lt1"/>';
+    strXml += '			</a:solidFill>';
+    strXml += '			<a:ln w="9525">';
+    strXml += '				<a:solidFill>';
+    strXml += '					<a:schemeClr val="tx1">';
+    strXml += '						<a:lumMod val="15000"/>';
+    strXml += '						<a:lumOff val="85000"/>';
+    strXml += '					</a:schemeClr>';
+    strXml += '				</a:solidFill>';
+    strXml += '			</a:ln>';
+    strXml += '		</cs:spPr>';
+    strXml += '	</cs:upBar>';
+    strXml += '	<cs:valueAxis>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1">';
+    strXml += '				<a:lumMod val="65000"/>';
+    strXml += '				<a:lumOff val="35000"/>';
+    strXml += '			</a:schemeClr>';
+    strXml += '		</cs:fontRef>';
+    strXml += '		<cs:defRPr sz="1197"/>';
+    strXml += '	</cs:valueAxis>';
+    strXml += '	<cs:wall>';
+    strXml += '		<cs:lnRef idx="0"/>';
+    strXml += '		<cs:fillRef idx="0"/>';
+    strXml += '		<cs:effectRef idx="0"/>';
+    strXml += '		<cs:fontRef idx="minor">';
+    strXml += '			<a:schemeClr val="tx1"/>';
+    strXml += '		</cs:fontRef>';
+    strXml += '	</cs:wall>';
+    strXml += '</cs:chartStyle>';
+    return strXml;
 }
 /**
  * Main entry point method for create charts

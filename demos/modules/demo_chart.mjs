@@ -52,6 +52,7 @@ export function genSlides_Chart(pptx) {
 	genSlide16(pptx);
 	genSlide17(pptx);
 	genSlide18(pptx);
+	genSlide19(pptx);
 }
 
 function initTestData() {
@@ -2027,4 +2028,233 @@ function genSlide18(pptx) {
 	slide.addChart(pptx.charts.PIE, dataChartPieStat, pieOptions);
 	slide.addChart(pptx.charts.BAR, arrDataRegions, optsChartBar3);
 	slide.addChart(pptx.charts.BAR, arrDataHighVals, optsChartBar4);
+}
+
+// SLIDE 19: Sunburst Chart
+function genSlide19(pptx) {
+	let slide = pptx.addSlide({ sectionTitle: "Charts" });
+	slide.addNotes("API Docs: https://gitbrent.github.io/PptxGenJS/docs/api-charts.html");
+	slide.addTable([[{ text: "Chart Examples: Sunburst Chart", options: BASE_TEXT_OPTS_L }, BASE_TEXT_OPTS_R]], BASE_TABLE_OPTS);
+
+	// necessary for sunburst: array of objects "dataChartSunburst", array of color-Strings "chartColors" and option-Object "optsChartSunburst"
+	// dataChartSunburst[0] contains
+	//      name -> is displayed as title of diagram, if option "showTitle" true
+	//      labels -> hierarchy labels in correct order; have to build a "label matrix"; example contains 3 hierarchy levels
+	//      values -> 15 values, one for every row of label matrix
+	// textColors and borderColors
+	//      are optional
+	//      if not used (recommended)
+	//         -> ppt sets readable colors related to chartColors
+	//         -> and labels that do not fit in the segment are not displayed
+	// chartColors is required: slice colors in correct order (for every slice 1 color in order of labels without empty cells)
+	// optsChartSunburst is required
+	//      x, y, w, h -> position and size of diagram,
+	// 		showTitle: boolean, showLegend: boolean,
+	// 		dataLabelFontSize: number (pt),
+	// 		dataLabelFontFace: example 'Calibri',
+	// 		chartColors: see before
+	let dataChartSunburst1 = [
+		{
+			name: "Quarterly sales with chartColors",
+			labels: ["1.", "January", "",
+				"", "February", "Week 1",
+				"", "", "Week 2",
+				"", "", "Week 3",
+				"", "", "Week 4",
+				"", "March", "",
+				"2.", "April", "",
+				"", "May", "",
+				"", "June", "",
+				"3.", "July", "",
+				"", "August", "",
+				"", "September", "",
+				"4.", "October", "",
+				"", "November", "",
+				"", "December", ""],
+			values: [3.5, 1.2, 0.8, 0.6, 0.5, 1.7, 1.1, 0.8, 0.3, 0.7, 0.6, 0.1, 0.5, 0.4, 0.3],
+			sizes: [3]
+		}];
+	let chartColors1 = ["354567", "354567",
+		"354567", "354567",
+		"354567",
+		"354567",
+		"354567",
+		"354567",
+		"3a87ad", "3a87ad",
+		"3a87ad",
+		"3a87ad",
+		"ffffff", "ffffff",
+		"ffffff",
+		"ffffff",
+		"ebad60", "ebad60",
+		"ebad60",
+		"ebad60"]
+	let optsChartSunburst1 = {
+		x: 0.6,
+		y: 1.0,
+		w: 6,
+		h: 6,
+		showTitle: true,
+		showLegend: true,
+		showLabel: true,
+		showValue: false,
+		dataLabelFontSize: 10,
+		dataLabelFontFace: 'Calibri',
+		chartColors: chartColors1
+	};
+	slide.addChart(pptx.charts.SUNBURST, dataChartSunburst1, optsChartSunburst1);
+
+	let dataChartSunburst2 = [
+		{
+			name: "Quarterly sales with textColors, borderColors, dataLabelFontSize und dataLabelFontFace",
+			labels: ["1.", "January", "",
+				"", "February", "Week 1",
+				"", "", "Week 2",
+				"", "", "Week 3",
+				"", "", "Week 4",
+				"", "March", "",
+				"2.", "April", "",
+				"", "May", "",
+				"", "June", "",
+				"3.", "July", "",
+				"", "August", "",
+				"", "September", "",
+				"4.", "October", "",
+				"", "November", "",
+				"", "December", ""],
+			values: [3.5, 1.2, 0.8, 0.6, 0.5, 1.7, 1.1, 0.8, 0.3, 0.7, 0.6, 0.1, 0.5, 0.4, 0.3],
+			sizes: [3]
+		}, {
+			name: "textColors",
+			labels: ["ffffff", "ffffff", "",
+				"", "ffffff", "ffffff",
+				"", "", "ffffff",
+				"", "", "ffffff",
+				"", "", "ffffff",
+				"", "ffffff", "",
+				"ffffff", "ffffff", "",
+				"", "ffffff", "",
+				"", "ffffff", "",
+				"131313", "131313", "",
+				"", "131313", "",
+				"", "131313", "",
+				"ffffff", "ffffff", "",
+				"", "ffffff", "",
+				"", "ffffff", ""], // for every slice 1 color in order of labels with empty entries
+			sizes: [3]
+		}, {
+			name: "borderColors",
+			labels: ["cccccc", "cccccc",
+				"cccccc", "cccccc",
+				"cccccc",
+				"cccccc",
+				"cccccc",
+				"cccccc",
+				"cccccc", "cccccc",
+				"cccccc",
+				"cccccc",
+				"131313", "131313",
+				"131313",
+				"131313",
+				"cccccc", "cccccc",
+				"cccccc",
+				"cccccc"], // for every slice 1 color in order of labels without empty cells
+		}];
+	let optsChartSunburst2 = {
+		x: 6.2,
+		y: 1.0,
+		w: 6,
+		h: 6,
+		showTitle: true,
+		showLegend: true,
+		dataLabelFontSize: 10,
+		showLabel: false,
+		showValue: true,
+		dataLabelFontFace: 'Calibri'
+	};
+	slide.addChart(pptx.charts.SUNBURST, dataChartSunburst2, optsChartSunburst2);
+
+	let data = [{
+		name: "Items",
+		labels: ["", "49", "", "", "", "",
+			"", "4", "", "", "", "",
+			"", "2", "", "2", "", "2",
+			"", "", "", "2", "", "2",
+			"", "", "", "2", "", "2",
+			"", "", "", "", "", "2",
+			"", "13", "", "", "", "",
+			"", "5", "", "3", "", "4",
+			"", "", "", "", "", "6",
+			"", "", "", "", "", "1",
+			"", "", "", "", "", "3",
+			"", "", "", "", "", "5",
+			"", "", "", "", "", "29",
+			"", "", "", "", "", "1",
+			"", "38", "", "", "", "",
+			"", "6", "", "", "", "",
+			"", "1", "", "", "", "",
+			"", "20", "", "", "", "",
+			"", "1", "", "", "", "",
+			"", "13", "", "7", "", "",
+			"", "", "", "3", "", "",
+			"", "", "", "3", "", "",
+			"", "10", "", "", "", "",
+			"", "5", "", "", "", "",
+			"", "43", "", "", "", "",
+			"", "13", "", "", "", "",
+			"", "12", "", "", "", "",
+			"", "8", "", "", "", "",
+			"", "6", "", "", "", "",
+			"", "2", "", "", "", "",
+			"", "7", "", "", "", "",
+			"", "227", "", "", "", ""],
+		values: ["49", "4", "2", "2", "2", "2", "13", "4", "6", "1", "3", "5", "29", "1", "38", "6", "1", "20", "1", "7", "3", "3", "10", "5", "43", "13", "12", "8", "6", "2", "7", "227"],
+		sizes: [6]
+	}];
+	let colors = ["354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad", "354567", "3a87ad", "354567", "3a87ad",
+		"354567", "3a87ad", "354567", "3a87ad",
+		"354567", "3a87ad", "354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad", "354567", "3a87ad", "354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad", "354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad",
+		"354567", "3a87ad"];
+	let opts = {
+		x: 1.36,
+		y: 1.0,
+		w: 6,
+		h: 6,
+		showTitle: false,
+		showLegend: false,
+		dataLabelFontSize: 10,
+		dataLabelFontFace: 'Calibri',
+		chartColors: colors
+	};
+
+	//slide.addChart(pptx.charts.SUNBURST, data, opts);
+
 }
