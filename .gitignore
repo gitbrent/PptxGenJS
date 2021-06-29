@@ -12,8 +12,9 @@ src/bld
 ### docusaurus
 ./*.html
 *.html
-demo
+demo/
+demo/react/
 docs/
 img/
 privacy.html
-website
+website/
